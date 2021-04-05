@@ -490,6 +490,53 @@ int GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
 	return 0;
 }
 
+int CheckGuardOnTrigger()
+{
+	int slot;
+	short room_number;
+	creature_info* cinfo;
+	ITEM_INFO* item;
+
+	room_number = lara_item->room_number;
+	cinfo = &baddie_slots[0];
+	GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number);
+
+	for (slot = 0; slot < 5; slot++, cinfo++)
+	{
+		if (cinfo->item_num != -1 && cinfo->alerted)
+		{
+			item = &items[cinfo->item_num];
+
+			if (room_number == item->room_number && item->current_anim_state == 1)
+			{
+				if (ABS(item->pos.x_pos - lara_item->pos.x_pos) < 1024 &&
+					ABS(item->pos.z_pos - lara_item->pos.z_pos) < 1024 &&
+					ABS(item->pos.y_pos - lara_item->pos.y_pos) < 256)
+					return 1;
+			}
+		}
+	}
+
+	return 0;
+}
+
+void InterpolateAngle(short dest, short* src, short* diff, short speed)
+{
+	long adiff;
+
+	adiff = (dest & 0xFFFF) - *src;
+
+	if (adiff > 32768)
+		adiff -= 65536;
+	else if (adiff < -32768)
+		adiff += 65536;
+
+	if (diff)
+		diff[0] = adiff;
+
+	*src += adiff >> speed;
+}
+
 void TranslateItem(ITEM_INFO* item, short x, short y, short z)
 {
 	short sin;
@@ -578,6 +625,10 @@ void inject_control()
 	INJECT(0x004A7C40, GetRandomDraw);
 	INJECT(0x004A7C90, SeedRandomDraw);
 	INJECT(0x00415890, GetChange);
+	INJECT(0x0041AD60, CheckGuardOnTrigger);
+	INJECT(0x0041AEA0, InterpolateAngle);
+	INJECT(0x00415960, TranslateItem);
+	INJECT(0x0041B180, InitCutPlayed);
 	INJECT(0x0041B1A0, SetCutPlayed);
 	INJECT(0x0041B1F0, SetCutNotPlayed);
 	INJECT(0x0041B240, CheckCutPlayed);

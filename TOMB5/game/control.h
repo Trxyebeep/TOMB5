@@ -8,6 +8,8 @@ void SeedRandomControl(long seed);
 int GetRandomDraw();
 void SeedRandomDraw(long seed);
 int GetChange(ITEM_INFO* item, ANIM_STRUCT* anim);
+int CheckGuardOnTrigger();
+void InterpolateAngle(short dest, short* src, short* diff, short speed);
 void TranslateItem(ITEM_INFO* item, short x, short y, short z);
 void InitCutPlayed();
 void SetCutPlayed(int num);
