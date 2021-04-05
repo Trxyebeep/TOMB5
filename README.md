@@ -1,13 +1,12 @@
 # TOMB5
 ## PC Tomb Raider Chronicles decompilation project
 
-Inspired by the [TR2Main](https://github.com/Arsunt/TR2Main/), made by Arsunt. 
+Inspired by [TR2Main](https://github.com/Arsunt/TR2Main/), made by Arsunt. 
 
-And by the [tomb5-decompile](https://github.com/TOMB5/TOMB5) project, by Gh0stblade and zdimension. 
+And by the [tomb5 decompile](https://github.com/TOMB5/TOMB5) project, by Gh0stblade and zdimension. 
 
 ### goals
 Preserving the original source code of the PC version of Tomb Raider Chronicles.
-
 
 note: All information (variable, file names, method names and data structures) have been obtained from PSX debugging symbols (.SYM, .MAP), and PC-specific function names from the Mac executable.
 
