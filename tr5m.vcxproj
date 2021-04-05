@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{56FC1B73-20AA-4279-9453-A5045903E2FC}</ProjectGuid>
+    <RootNamespace>tr4m</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>tomb5</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>F:\SteamLibrary\steamapps\common\Tomb Raider (V) Chronicles/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>F:\SteamLibrary\steamapps\common\Tomb Raider (V) Chronicles/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="TOMB5\game\bat.h" />
+    <ClInclude Include="TOMB5\game\box.h" />
+    <ClInclude Include="TOMB5\game\bubbles.h" />
+    <ClInclude Include="TOMB5\game\debris.h" />
+    <ClInclude Include="TOMB5\game\door.h" />
+    <ClInclude Include="TOMB5\game\hair.h" />
+    <ClInclude Include="TOMB5\game\health.h" />
+    <ClInclude Include="TOMB5\game\laraclmb.h" />
+    <ClInclude Include="TOMB5\game\larasurf.h" />
+    <ClInclude Include="TOMB5\game\laraswim.h" />
+    <ClInclude Include="TOMB5\game\sphere.h" />
+    <ClInclude Include="TOMB5\game\switch.h" />
+    <ClInclude Include="TOMB5\game\traps.h" />
+    <ClInclude Include="TOMB5\specific\calclara.h" />
+    <ClInclude Include="TOMB5\game\camera.h" />
+    <ClInclude Include="TOMB5\game\collide.h" />
+    <ClInclude Include="TOMB5\game\control.h" />
+    <ClInclude Include="TOMB5\game\deltapak.h" />
+    <ClInclude Include="TOMB5\specific\display.h" />
+    <ClInclude Include="TOMB5\game\draw.h" />
+    <ClInclude Include="TOMB5\game\effect2.h" />
+    <ClInclude Include="TOMB5\game\effects.h" />
+    <ClInclude Include="TOMB5\game\flmtorch.h" />
+    <ClInclude Include="TOMB5\specific\drawprimitive.h" />
+    <ClInclude Include="TOMB5\specific\DS.h" />
+    <ClInclude Include="TOMB5\specific\pcsetup.h" />
+    <ClInclude Include="TOMB5\tomb5\framework.h" />
+    <ClInclude Include="TOMB5\specific\game.h" />
+    <ClInclude Include="TOMB5\game\gameflow.h" />
+    <ClInclude Include="TOMB5\specific\global.h" />
+    <ClInclude Include="TOMB5\specific\input.h" />
+    <ClInclude Include="TOMB5\game\items.h" />
+    <ClInclude Include="TOMB5\game\lara.h" />
+    <ClInclude Include="TOMB5\game\lara1gun.h" />
+    <ClInclude Include="TOMB5\game\lara2gun.h" />
+    <ClInclude Include="TOMB5\game\larafire.h" />
+    <ClInclude Include="TOMB5\game\laraflar.h" />
+    <ClInclude Include="TOMB5\game\laramisc.h" />
+    <ClInclude Include="TOMB5\game\lara_states.h" />
+    <ClInclude Include="TOMB5\game\lot.h" />
+    <ClInclude Include="TOMB5\specific\maths.h" />
+    <ClInclude Include="TOMB5\global\math_tbls.h" />
+    <ClInclude Include="TOMB5\specific\matrix_shit.h" />
+    <ClInclude Include="TOMB5\game\newinv2.h" />
+    <ClInclude Include="TOMB5\game\objects.h" />
+    <ClInclude Include="TOMB5\tomb5\pch.h" />
+    <ClInclude Include="TOMB5\game\pickup.h" />
+    <ClInclude Include="TOMB5\game\sound.h" />
+    <ClInclude Include="TOMB5\specific\specific.h" />
+    <ClInclude Include="TOMB5\game\spotcam.h" />
+    <ClInclude Include="TOMB5\game\tomb4fx.h" />
+    <ClInclude Include="TOMB5\global\types.h" />
+    <ClInclude Include="TOMB5\global\vars.h" />
+    <ClInclude Include="TOMB5\game\xatracks.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="TOMB5\game\bat.cpp" />
+    <ClCompile Include="TOMB5\game\box.cpp" />
+    <ClCompile Include="TOMB5\game\bubbles.cpp" />
+    <ClCompile Include="TOMB5\game\debris.cpp" />
+    <ClCompile Include="TOMB5\game\door.cpp" />
+    <ClCompile Include="TOMB5\game\hair.cpp" />
+    <ClCompile Include="TOMB5\game\health.cpp" />
+    <ClCompile Include="TOMB5\game\laraclmb.cpp" />
+    <ClCompile Include="TOMB5\game\larasurf.cpp" />
+    <ClCompile Include="TOMB5\game\laraswim.cpp" />
+    <ClCompile Include="TOMB5\game\sphere.cpp" />
+    <ClCompile Include="TOMB5\game\camera.cpp" />
+    <ClCompile Include="TOMB5\game\collide.cpp" />
+    <ClCompile Include="TOMB5\game\control.cpp">
+      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</AssemblerListingLocation>
+      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NoListing</AssemblerOutput>
+    </ClCompile>
+    <ClCompile Include="TOMB5\game\deltapak.cpp" />
+    <ClCompile Include="TOMB5\game\switch.cpp" />
+    <ClCompile Include="TOMB5\game\traps.cpp" />
+    <ClCompile Include="TOMB5\specific\display.cpp" />
+    <ClCompile Include="TOMB5\specific\drawprimitive.cpp" />
+    <ClCompile Include="TOMB5\specific\DS.cpp" />
+    <ClCompile Include="TOMB5\specific\pcsetup.cpp" />
+    <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
+    <ClCompile Include="TOMB5\game\draw.cpp" />
+    <ClCompile Include="TOMB5\game\effect2.cpp" />
+    <ClCompile Include="TOMB5\game\effects.cpp" />
+    <ClCompile Include="TOMB5\game\flmtorch.cpp" />
+    <ClCompile Include="TOMB5\specific\game.cpp" />
+    <ClCompile Include="TOMB5\game\gameflow.cpp" />
+    <ClCompile Include="TOMB5\specific\input.cpp" />
+    <ClCompile Include="TOMB5\game\items.cpp" />
+    <ClCompile Include="TOMB5\game\lara.cpp" />
+    <ClCompile Include="TOMB5\game\lara1gun.cpp" />
+    <ClCompile Include="TOMB5\game\lara2gun.cpp" />
+    <ClCompile Include="TOMB5\game\larafire.cpp" />
+    <ClCompile Include="TOMB5\game\laraflar.cpp" />
+    <ClCompile Include="TOMB5\game\laramisc.cpp" />
+    <ClCompile Include="TOMB5\game\lot.cpp" />
+    <ClCompile Include="TOMB5\specific\maths.cpp" />
+    <ClCompile Include="TOMB5\specific\matrix_shit.cpp" />
+    <ClCompile Include="TOMB5\game\newinv2.cpp" />
+    <ClCompile Include="TOMB5\game\objects.cpp" />
+    <ClCompile Include="TOMB5\tomb5\pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TOMB5\game\pickup.cpp" />
+    <ClCompile Include="TOMB5\game\sound.cpp" />
+    <ClCompile Include="TOMB5\specific\calclara.cpp" />
+    <ClCompile Include="TOMB5\specific\specific.cpp" />
+    <ClCompile Include="TOMB5\game\spotcam.cpp" />
+    <ClCompile Include="TOMB5\game\tomb4fx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="TOMB5\global\progress.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
