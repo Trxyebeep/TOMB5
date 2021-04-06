@@ -22,8 +22,6 @@
 #include "objects.h"
 #include "newinv2.h"
 
-char special1_flip_flag;//original one is on 0051CA84. some sort of flipmap flag for special1 cutscene in the title. original name unknown
-
 unsigned short larson_pistols_info1[2] =
 {
 	0x0390, 0xFFFF
@@ -308,17 +306,6 @@ short admiral_chat_ranges_joby10[42] =
 	0x0570, 0x060F, 0x061E, 0x06E8, 0x06F3, 0x0742, 0x07A0, 0x07DC, 0x07EB, 0x08BB,
 	0x08CC, 0x0983, 0x0A3E, 0x0A62, 0x0A74, 0x0A80, 0x0A8F, 0x0AB3, 0x0ABF, 0x0B0D,
 	-1, -1
-};
-
-unsigned short special2_pistols_info[13] =
-{
-	0x00C4, 0x00CC, 0x00D4, 0x00DC, 0x00E4, 0x00EC, 0x00F4, 0x00FC, 0x0104, 0x010C,
-	0x0114, 0x0121, 0xFFFF
-};
-
-unsigned short special3_pistols_info[] =
-{
-	0x0102, 0x010A, 0x0114, 0xFFFF, 0, 0, 0, 0, 0x00FF, 0x0100, 0x0114, 0xFF9C, 0x0064, 0x0100, 0x0200
 };
 
 void andrea1_init()
@@ -2105,41 +2092,12 @@ void special1_init()
 
 void special1_control()
 {
-	special1_control_reloc();
+	_special1_control();
 }
 
 void special1_end()
 {
-	special1_end_reloc();
-}
-
-void special1_control_reloc()
-{
-	if (GLOBAL_cutseq_frame == 300)
-	{
-		FlipMap(0);
-		special1_flip_flag = 1;
-	}
-
-	dword_00E916F0 = 1;
-}
-
-void special1_end_reloc()
-{
-	if (special1_flip_flag)
-	{
-		FlipMap(0);
-		special1_flip_flag = 0;
-	}
-
-	if (!bDoCredits)
-	{
-		lara_item->mesh_bits = 0;
-		trigger_title_spotcam(2);
-	}
-
-	Chris_Menu = 0;
-	title_controls_locked_out = 0;
+	_special1_end();
 }
 
 void special2_init()
@@ -2167,91 +2125,12 @@ void special2_init()
 
 void special2_control()
 {
-	special2_control_reloc();
+	_special2_control();
 }
 
 void special2_end()
 {
-	special2_end_reloc();
-}
-
-void special2_control_reloc()
-{
-	PHD_VECTOR pos;
-	ITEM_INFO* item;
-
-	pos.x = 12;
-	pos.y = 200;
-	pos.z = 92;
-	deal_with_actor_shooting(special2_pistols_info, 1, 13, &pos);
-
-	switch (GLOBAL_cutseq_frame)
-	{
-	case 197:
-		item = find_a_fucking_item(ANIMATING1_MIP);
-		ExplodeItemNode(item, 0, 0, 64);
-		break;
-	case 200:
-		item = find_a_fucking_item(ANIMATING2_MIP);
-		ExplodeItemNode(item, 0, 0, 64);
-		break;
-	case 201:
-		triggerwindowsmash(50);
-		break;
-	case 207:
-		item = find_a_fucking_item(ANIMATING3_MIP);
-		ExplodeItemNode(item, 0, 0, 64);
-		break;
-	case 209:
-		triggerwindowsmash(52);
-		break;
-	case 221:
-		item = find_a_fucking_item(ANIMATING4_MIP);
-		ExplodeItemNode(item, 0, 0, 64);
-		break;
-	case 224:
-		triggerwindowsmash(54);
-		break;
-	case 229:
-		Cutanimate(446);
-		break;
-	case 245:
-		triggerwindowsmash(56);
-		break;
-	case 261:
-		item = find_a_fucking_item(ANIMATING5_MIP);
-		ExplodeItemNode(item, 0, 0, 64);
-		break;
-	case 269:
-		triggerwindowsmash(58);
-		break;
-	case 280:
-		item = find_a_fucking_item(ANIMATING6_MIP);
-		ExplodeItemNode(item, 0, 0, 64);
-		break;
-	case 282:
-		item = find_a_fucking_item(ANIMATING7_MIP);
-		ExplodeItemNode(item, 0, 0, 64);
-		break;
-	case 284:
-		Cutanimate(ANIMATING5);
-		break;
-	case 291:
-		triggerwindowsmash(60);
-		break;
-	}
-}
-
-void special2_end_reloc()
-{
-	if (!bDoCredits)
-	{
-		trigger_title_spotcam(3);
-		lara_item->mesh_bits = 0;
-	}
-
-	Chris_Menu = 0;
-	title_controls_locked_out = 0;
+	_special2_end();
 }
 
 void special3_init()
@@ -2264,133 +2143,12 @@ void special3_init()
 
 void special3_control()
 {
-	special3_control_reloc();
+	_special3_control();
 }
 
 void special3_end()
 {
-	special3_end_reloc();
-}
-
-void special3_control_reloc()
-{
-	PHD_VECTOR pos, pos2;
-	SPARKS* sptr;
-
-	pos.x = 12;
-	pos.y = 200;
-	pos.z = 92;
-	deal_with_actor_shooting(special3_pistols_info, 1, 13, &pos);
-
-	if (GLOBAL_cutseq_frame == 92 || GLOBAL_cutseq_frame == 93 || GLOBAL_cutseq_frame == 143 || GLOBAL_cutseq_frame == 144)
-	{
-		pos.x = 0;
-		pos.y = 0;
-		pos.z = 0;
-		GetLaraJointPos(&pos, 0);
-		pos.z -= 256;
-		TriggerDynamic(pos.x, pos.y, pos.z, 10, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 0x3F);
-	}
-
-	if (GLOBAL_cutseq_frame == 472 || GLOBAL_cutseq_frame == 528)
-	{
-		pos.x = 8;
-		pos.y = 230;
-		pos.z = 40;
-		GetActorJointAbsPosition(2, 5, &pos);
-
-		pos2.x = 8;
-		pos2.y = 4326;
-		pos2.z = 40;
-		GetActorJointAbsPosition(2, 5, &pos2);
-
-		FireTwoGunTitleWeapon(&pos, &pos2);
-	}
-
-	if (GLOBAL_cutseq_frame == 500)
-	{
-		pos.x = 0;
-		pos.y = 230;
-		pos.z = 40;
-		GetActorJointAbsPosition(2, 8, &pos);
-
-		pos2.x = 0;
-		pos2.y = 4326;
-		pos2.z = 40;
-		GetActorJointAbsPosition(2, 8, &pos2);
-
-		FireTwoGunTitleWeapon(&pos, &pos2);
-
-	}
-
-	if (GLOBAL_cutseq_frame == 610)
-	{
-		pos.x = 0;
-		pos.y = 2278;
-		pos.z = 40;
-		GetActorJointAbsPosition(2, 8, &pos);
-
-		pos2.x = 0;
-		pos2.y = 0;
-		pos2.z = -1024;
-		GetActorJointAbsPosition(1, 0, &pos2);
-
-		FireTwoGunTitleWeapon(&pos, &pos2);
-	}
-
-	if (GLOBAL_cutseq_frame >= 610 && GLOBAL_cutseq_frame <= 642)
-	{
-		pos2.x = 0;
-		pos2.y = 0;
-		pos2.z = -1024;
-		GetActorJointAbsPosition(1, 0, &pos2);
-
-		TriggerDynamic(pos2.x, pos2.y, pos2.z, (GetRandomControl() & 3) + 8, 0,
-			(((GetRandomControl() & 0x3F) + 64) * (642 - GLOBAL_cutseq_frame)) >> 5,
-			((642 - GLOBAL_cutseq_frame) * ((GetRandomControl() & 0x3F) + 180)) >> 5);
-
-		sptr = &spark[GetFreeSpark()];
-		sptr->On = 1;
-		sptr->dR = 0;
-		sptr->sB = (16 * ((GetRandomControl() & 0x7F) + 128)) >> 4;
-		sptr->sR = sptr->sB - (sptr->sB >> 2);
-		sptr->sG = sptr->sB - (sptr->sB >> 2);
-		sptr->dB = (16 * ((GetRandomControl() & 0x7F) + 32)) >> 4;
-		sptr->dG = (unsigned char)sptr->dB >> 2;
-		sptr->FadeToBlack = 8;
-		sptr->ColFadeSpeed = (GetRandomControl() & 3) + 8;
-		sptr->TransType = 2;
-		sptr->Life = (GetRandomControl() & 3) + 24;
-		sptr->sLife = (GetRandomControl() & 3) + 24;
-		sptr->x = pos2.x;
-		sptr->y = pos2.y;
-		sptr->z = pos2.z;
-		sptr->Xvel = ((COS(2 * GetRandomControl()) >> 2) * SIN(GetRandomControl() * 2)) >> 14;
-		sptr->Zvel = ((COS(2 * GetRandomControl()) >> 2) * COS(GetRandomControl() * 2)) >> 14;
-		sptr->Yvel = SIN(-GetRandomControl() * 2) >> 4;
-		sptr->Friction = 0;
-		sptr->Flags = 538;
-		sptr->RotAng = GetRandomControl() & 0xFFF;
-		sptr->RotAdd = (GetRandomControl() & 0x7F) - 64;
-		sptr->MaxYvel = 0;
-		sptr->Scalar = 2;
-		sptr->Gravity = (GetRandomControl() & 0x1F) + 32;
-		sptr->dSize = 1;
-		sptr->sSize = (GetRandomControl() & 0x3F) + 16;
-		sptr->Size = (GetRandomControl() & 0x3F) + 16;
-	}
-}
-
-void special3_end_reloc()
-{
-	if (!bDoCredits)
-	{
-		trigger_title_spotcam(4);
-		lara_item->mesh_bits = 0;
-	}
-
-	Chris_Menu = 0;
-	title_controls_locked_out = 0;
+	_special3_end();
 }
 
 void special4_init()
@@ -2403,50 +2161,12 @@ void special4_init()
 
 void special4_control()
 {
-	special4_control_reloc();
+	_special4_control();
 }
 
 void special4_end()
 {
-	special4_end_reloc();
-}
-
-void special4_control_reloc()
-{
-	PHD_VECTOR pos;
-
-	pos.x = 85834;
-	pos.z = 72300;
-	pos.y = -3138;
-
-	TriggerFireFlame(85834, -3010, 72300, -1, 1);
-	TriggerFireFlame(85834, -3010, 72044, -1, 1);
-	TriggerFireFlame(85834, -3010, 72556, -1, 1);
-	TriggerFireFlame(85578, -3010, 72300, -1, 1);
-	TriggerFireFlame(86090, -3010, 72300, -1, 1);
-
-	if (GLOBAL_cutseq_frame >= 460)
-		FlamingHell(&pos);
-
-	if (GLOBAL_cutseq_frame < 470)
-		TriggerDynamic(pos.x, pos.y, pos.z, 10,	(GetRandomControl() & 0x3F) + 31, (GetRandomControl() & 0xF) + 31, GetRandomControl() & 0x3F);
-	else
-		TriggerDynamic(pos.x, pos.y, pos.z, 10,	(GetRandomControl() & 0x7F) + 127, (GetRandomControl() & 0x7F) + 127, GetRandomControl() & 0x3F);
-
-	if (GLOBAL_cutseq_frame == 390)
-		Cutanimate(STROBE_LIGHT);
-}
-
-void special4_end_reloc()
-{
-	if (!bDoCredits)
-	{
-		trigger_title_spotcam(1);
-		lara_item->mesh_bits = 0;
-	}
-
-	Chris_Menu = 0;
-	title_controls_locked_out = 0;
+	_special4_end();
 }
 
 void handle_cutseq_triggering(int name)
@@ -2729,22 +2449,11 @@ void do_chalk_meshswap()//optimized out
 	meshes[objects[MAFIA_MIP].mesh_index + 2 * LM_RHAND] = temp;
 }
 
-void triggerwindowsmash(int item_num)
-{
-	ITEM_INFO* item = find_a_fucking_item(item_num);
-	ExplodeItemNode(item, 0, 0, 64);
-	item->mesh_bits = 2;
-}
 
-void resetwindowsmash(int item_num)
-{
-	find_a_fucking_item(item_num)->mesh_bits = 1;
-}
 
-void ResetCutItem(int item_num)
-{
-	find_a_fucking_item(item_num)->mesh_bits = -1;
-}
+
+
+
 
 void cutseq_shoot_pistols(int left_or_right)
 {
@@ -2937,23 +2646,15 @@ void inject_deltaPak()
 	INJECT(0x00423B40, special1_init);
 	INJECT(0x00423B60, special1_control);
 	INJECT(0x00423B80, special1_end);
-	INJECT(0x0041BCF0, special1_control_reloc);//figure out where these relocs actually go
-	INJECT(0x0041BD40, special1_end_reloc);//or just get rid of them, idk
 	INJECT(0x00423BA0, special2_init);
 	INJECT(0x00423BC0, special2_control);
 	INJECT(0x00423BE0, special2_end);
-	INJECT(0x0041BE90, special2_control_reloc);
-	INJECT(0x0041C0F0, special2_end_reloc);
 	INJECT(0x00423C00, special3_init);
 	INJECT(0x00423C20, special3_control);
 	INJECT(0x00423C40, special3_end);
-	INJECT(0x0041C160, special3_control_reloc);
-	INJECT(0x0041C610, special3_end_reloc);
 	INJECT(0x00423C60, special4_init);
 	INJECT(0x00423C80, special4_control);
 	INJECT(0x00423CA0, special4_end);
-	INJECT(0x0041C690, special4_control_reloc);
-	INJECT(0x0041C860, special4_end_reloc);
 	INJECT(0x00425B30, do_catapult_meshswap);
 	INJECT(0x00426180, do_clanger_meshswap);
 	INJECT(0x00424D80, do_hammer_meshswap);
@@ -2963,9 +2664,6 @@ void inject_deltaPak()
 	INJECT(0x00420E10, handle_cutseq_triggering);
 	INJECT(0x00422680, cutseq_givelara_pistols);
 	INJECT(0x004226B0, cutseq_removelara_pistols);
-	INJECT(0x0041C8E0, triggerwindowsmash);
-	INJECT(0x0041C920, resetwindowsmash);
-	INJECT(0x0041C8B0, ResetCutItem);
 //	INJECT(0x00421480, do_new_cutscene_camera);	
 //	INJECT(0x00421880, InitPackNodes);
 //	INJECT(0x00421D60, frigup_lara);

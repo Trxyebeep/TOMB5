@@ -1,3 +1,120 @@
 TOMB5 progress.
 
-##soon
+empty space for functions not decompiled yet.
++ for functions decompiled and injected.
+x for functions decompiled but not injected, for one reason or another.
+
+// ======================================
+// GAME
+// ======================================
+
+		game/control.cpp
+
+0x00414620		KillMoveItems
+0x004146A0		KillMoveEffects
+UpdateSky
+0x004147C0	+	ControlPhase
+0x00415300		AnimateItem
+0x00415890	+	GetChange
+0x00415960	+	TranslateItem
+0x004159F0		AlterFloorHeight
+0x00415B20		GetFloor
+0x00415DA0		GetWaterHeight
+0x00415FB0		GetHeight
+0x004165E0		RefreshCamera
+0x00416760		TestTriggers
+0x004167B0		_TestTriggers
+0x004175B0		TriggerActive
+0x00417640		GetCeiling
+0x00417C00		GetDoor
+0x00417CF0		LOS
+0x00417DC0		zLOS
+0x004181F0		xLOS
+0x00418620		ClipTarget
+0x00418910		FlipMap
+0x00418A50		RemoveRoomFlipItems
+0x00418AF0		AddRoomFlipItems
+0x00418B90		TriggerCDTrack
+0x00418BC0		TriggerNormalCDTrack
+0x00418C80		CheckNoColFloorTriangle
+0x00418D60		CheckNoColCeilingTriangle
+0x00418E90		IsRoomOutside
+0x00419110		ObjectOnLOS2
+0x004193C0		DoRayBox
+0x00419D00		RayBoxIntersect
+0x0041A0B0		FireCrossBowFromLaserSight
+0x0041A170		GetTargetOnLOS
+0x0041ABF0		ExplodeItemNode
+0x0041AD60	+	CheckGuardOnTrigger
+0x0041AEA0	+	InterpolateAngle
+0x0041AF10		ResetGuards
+0x0041B180	+	InitCutPlayed
+0x0041B1A0	+	SetCutPlayed
+0x0041B1F0	+	SetCutNotPlayed
+0x0041B240	+	CheckCutPlayed
+0x0041B280		NeatAndTidyTriggerCutscene
+0x0041B8B0	+	is_object_in_room
+0x0041B930	+	check_xray_machine_trigger
+0x0041B980		InitialiseCrow
+0x0041BA00		CrowControl
+0x0041BCF0	+	_special1_control
+0x0041BD40	+	_special1_end
+0x0041BE90	+	_special2_control
+0x0041C0F0	+	_special2_end
+0x0041C160	+	_special3_control
+0x0041C610	+	_special3_end
+0x0041C690	+	_special4_control
+0x0041C860	+	_special4_end
+0x0041C8B0	+	ResetCutItem
+0x0041C8E0	+	triggerwindowsmash
+0x0041C920	+	resetwindowsmash
+0x0041C950		FlamingHell
+0x0041CB10		FireTwoGunTitleWeapon
+0x0041CC70		InitialiseDeathSlide
+0x0041CCE0		DeathSlideCollision
+0x0041CE00		ControlDeathSlide
+
+
+		game/collide.cpp
+
+0x00410EF0	+	GetTiltType
+0x00411100	+	GetCollisionInfo
+0x00411D70	+	FindGridShift
+0x00411DB0		CollideStaticObjects
+0x004120A0	+	ShiftItem
+0x004120F0		UpdateLaraRoom
+0x00412170		LaraBaddieCollision
+0x004124E0		CreatureCollision
+0x004126E0		ObjectCollision
+0x00412770		AIPickupCollision
+0x004127C0		TrapCollision
+0x00412860		ItemPushLara
+0x00412CC0		TestBoundsCollide
+0x00412DE0		TestBoundsCollideStatic
+0x00412F20		ItemPushLaraStatic
+0x00413210		TestLaraPosition
+0x004133C0		AlignLaraPosition
+0x004134E0		Move3DPosTo3DPos
+0x00413840		MoveLaraPosition
+0x00413A90		GenericSphereBoxCollision
+0x00413CF0		GetCollidedObjects
+0x00414370	+	TriggerLaraBlood
+0x00414450		TestForObjectOnLedge
+
+
+		game/camera.cpp
+
+0x0040C690	+	InitialiseCamera
+0x0040C7A0		MoveCamera
+0x0040D150		ChaseCamera
+0x0040D640		CombatCamera
+0x0040DC10		LookCamera
+0x0040E890		FixedCamera
+0x0040ED30	+	CalculateCamera
+0x0040F5C0		CameraCollisionBounds
+0x0040FA70		mgLOS
+0x0040FC20		BinocularCamera
+0x00410550	+	LaraTorch
+0x00410680		ConfirmCameraTargetPos
+0x004107C0		UpdateCameraElevation
+0x004108D0		ScreenShake

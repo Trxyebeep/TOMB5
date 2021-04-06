@@ -115,23 +115,15 @@ void joby10_end();
 void special1_init();
 void special1_control();
 void special1_end();
-void special1_control_reloc();
-void special1_end_reloc();
 void special2_init();
 void special2_control();
 void special2_end();
-void special2_control_reloc();
-void special2_end_reloc();
 void special3_init();
 void special3_control();
 void special3_end();
-void special3_control_reloc();
-void special3_end_reloc();
 void special4_init();
 void special4_control();
 void special4_end();
-void special4_control_reloc();
-void special4_end_reloc();
 void handle_cutseq_triggering(int name);
 void cutseq_givelara_pistols();
 void cutseq_removelara_pistols();
@@ -141,9 +133,6 @@ void do_clanger_meshswap();
 void do_hammer_meshswap();
 void setup_preist_meshswap();
 void do_chalk_meshswap();//optimized out
-void triggerwindowsmash(int item_num);
-void resetwindowsmash(int item_num);
-void ResetCutItem(int item_num);
 void cutseq_shoot_pistols(int left_or_right);
 ITEM_INFO* ResetCutanimate(int objnum);
 void Cutanimate(int objnum);
@@ -168,8 +157,7 @@ void trigger_weapon_dynamics(int left_or_right);
 #define TriggerDelBrownSmoke	( (void(__cdecl*)(long, long, long)) 0x004274B0 )
 #define CutLaraBubbles	( (void(__cdecl*)()) 0x00428390 )
 #define trigger_title_spotcam	( (void(__cdecl*)(int)) 0x004284A0 )
-#define FireTwoGunTitleWeapon	( (void(__cdecl*)(PHD_VECTOR*, PHD_VECTOR*)) 0x0041CB10 )
-#define FlamingHell	( (void(__cdecl*)(PHD_VECTOR*)) 0x0041C950 )
+
 
 enum cutscenes
 {
