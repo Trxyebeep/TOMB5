@@ -15,6 +15,7 @@ void InitCutPlayed();
 void SetCutPlayed(int num);
 void SetCutNotPlayed(int num);
 int CheckCutPlayed(int num);
+void NeatAndTidyTriggerCutscene(int value, int timer);
 int is_object_in_room(int roomnumber, int objnumber);
 int check_xray_machine_trigger();
 void _special1_control();

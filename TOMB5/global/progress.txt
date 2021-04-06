@@ -52,7 +52,7 @@ UpdateSky
 0x0041B1A0	+	SetCutPlayed
 0x0041B1F0	+	SetCutNotPlayed
 0x0041B240	+	CheckCutPlayed
-0x0041B280		NeatAndTidyTriggerCutscene
+0x0041B280	+	NeatAndTidyTriggerCutscene
 0x0041B8B0	+	is_object_in_room
 0x0041B930	+	check_xray_machine_trigger
 0x0041B980		InitialiseCrow

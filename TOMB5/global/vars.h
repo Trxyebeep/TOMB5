@@ -225,6 +225,7 @@
 #define IsRoomOutsideNo	VAR_U_(0x00EEF902, short)
 #define _CutSceneTriggered1	VAR_U_(0x00EEF004, unsigned long)
 #define _CutSceneTriggered2	VAR_U_(0x00EEF000, unsigned long)
+#define richcutfrigflag	VAR_U_(0x0051CA5E, char)
 
 
 

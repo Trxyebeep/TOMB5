@@ -601,6 +601,203 @@ int CheckCutPlayed(int num)
 	return ret;
 }
 
+void NeatAndTidyTriggerCutscene(int value, int timer)
+{
+	int inv_item_stealth_frigggggs;
+
+	if (value == 65)
+	{
+		if (lara_item->pos.y_pos <= 13824)
+		{
+			if (have_i_got_object(PICKUP_ITEM1))
+				gfLevelComplete = gfCurrentLevel + 1;
+		}
+
+		return;
+	}
+
+	if ((value == 28 || value == 29 || value == 30 || value == 31) && cutseq_trig == 0)
+	{
+		cutseq_num = value;
+		cutrot = timer & 3;
+		return;
+	}
+
+	if (!lara.burn)
+	{
+		if (value == 23)
+		{
+			if (cutseq_trig == 0)
+				if (CheckCutPlayed(23))
+					richcutfrigflag = 1;
+		}
+
+		if (cutseq_trig == 0 && !CheckCutPlayed(value))
+		{
+			cutrot = timer & 3;
+
+			if (value <= 4 || value > 63)
+			{
+				if (value == 2)
+					inv_item_stealth_frigggggs = CROWBAR_ITEM;
+				else
+					inv_item_stealth_frigggggs = WET_CLOTH;
+
+				if (input & IN_ACTION &&
+					!BinocularRange &&
+					lara.gun_status == LG_NO_ARMS &&
+					lara_item->current_anim_state == STATE_LARA_STOP &&
+					lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
+					GLOBAL_inventoryitemchosen == NO_ITEM &&
+					have_i_got_object(inv_item_stealth_frigggggs))
+				{
+					if (CheckGuardOnTrigger())
+						GLOBAL_enterinventory = inv_item_stealth_frigggggs;
+
+					return;
+				}
+
+				if (GLOBAL_enterinventory != inv_item_stealth_frigggggs || !CheckGuardOnTrigger())
+					return;
+
+				if (inv_item_stealth_frigggggs == WET_CLOTH)
+					lara.wetcloth = 1;
+
+				GLOBAL_inventoryitemchosen = -1;
+			}
+			else
+			{
+				switch (value)
+				{
+				case 43:
+					if (cutrot != 1 || is_object_in_room(lara_item->room_number, GREEN_TEETH) && !have_i_got_object(PUZZLE_ITEM2))
+						cutseq_num = 43;
+
+					return;
+
+				case 39:
+					if (input & IN_ACTION &&
+						!BinocularRange &&
+						lara.gun_status == LG_NO_ARMS &&
+						lara_item->current_anim_state == STATE_LARA_UNDERWATER_STOP &&
+						lara_item->anim_number == ANIMATION_LARA_UNDERWATER_IDLE &&
+						GLOBAL_inventoryitemchosen == NO_ITEM &&
+						have_i_got_object(PUZZLE_ITEM2))
+						GLOBAL_enterinventory = PUZZLE_ITEM2;
+					else if (GLOBAL_inventoryitemchosen == PUZZLE_ITEM2)
+					{
+						GLOBAL_inventoryitemchosen = NO_ITEM;
+						cutseq_num = 39;
+					}
+
+					return;
+
+				case 38:
+					if (input & IN_ACTION &&
+						!BinocularRange &&
+						lara.gun_status == LG_NO_ARMS &&
+						lara_item->current_anim_state == STATE_LARA_STOP &&
+						lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
+						GLOBAL_inventoryitemchosen == NO_ITEM &&
+						have_i_got_object(PUZZLE_ITEM1))
+						GLOBAL_enterinventory = PUZZLE_ITEM1;
+					else if (GLOBAL_inventoryitemchosen == PUZZLE_ITEM1)
+					{
+						GLOBAL_inventoryitemchosen = NO_ITEM;
+						cutseq_num = 38;
+					}
+
+					return;
+
+				case 10:
+					if (have_i_got_object(PUZZLE_ITEM3))
+					{
+						SetCutPlayed(10);
+						cutseq_num = 9;
+						return;
+					}
+
+					break;
+
+				case 24:
+					short item_num, nex;
+					ITEM_INFO* item;
+
+					item_num = room[lara_item->room_number].item_number;
+
+					if (item_num != -1)
+					{
+						while (1)
+						{
+							nex = items[item_num].next_item;
+							item = &items[item_num];
+
+							if (items[item_num].object_number == SCIENTIST && item->hit_points > 0)
+							{
+								if (item->anim_number == objects[BLUE_GUARD].anim_index + 62 && item->frame_number == anims[item->anim_number].frame_end)
+									break;
+							}
+
+							item_num = nex;
+
+							if (nex == -1)
+								return;
+						}
+
+						cutseq_num = 24;
+					}
+
+					return;
+
+				case 20:
+					if (input & IN_ACTION &&
+						!BinocularRange &&
+						lara.gun_status == LG_NO_ARMS &&
+						lara_item->current_anim_state == STATE_LARA_STOP &&
+						lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
+						GLOBAL_inventoryitemchosen == NO_ITEM &&
+						have_i_got_object(KEY_ITEM7))
+						GLOBAL_enterinventory = KEY_ITEM7;
+					else if (GLOBAL_inventoryitemchosen == KEY_ITEM7)
+					{
+						GLOBAL_inventoryitemchosen = NO_ITEM;
+						cutseq_num = 20;
+					}
+
+					return;
+
+				case 14:
+					if (input & IN_ACTION &&
+						!BinocularRange &&
+						lara.gun_status == LG_NO_ARMS &&
+						lara_item->current_anim_state == STATE_LARA_STOP &&
+						lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
+						GLOBAL_inventoryitemchosen == NO_ITEM &&
+						have_i_got_object(PUZZLE_ITEM2))
+						GLOBAL_enterinventory = PUZZLE_ITEM2;
+					else if (GLOBAL_inventoryitemchosen == PUZZLE_ITEM2)
+					{
+						GLOBAL_inventoryitemchosen = NO_ITEM;
+						cutseq_num = 14;
+						remove_inventory_item(PUZZLE_ITEM2);
+					}
+
+					return;
+
+				case 23:
+					if (lara.hk_type_carried && !check_xray_machine_trigger() && !richcutfrigflag)
+						cutseq_num = 23;
+
+					return;
+				}
+			}
+
+			cutseq_num = value;
+			return;
+		}
+	}
+}
+
 int is_object_in_room(int roomnumber, int objnumber)
 {
 	short item_num, nex;
@@ -930,6 +1127,7 @@ void inject_control()
 	INJECT(0x0041B1A0, SetCutPlayed);
 	INJECT(0x0041B1F0, SetCutNotPlayed);
 	INJECT(0x0041B240, CheckCutPlayed);
+	INJECT(0x0041B280, NeatAndTidyTriggerCutscene);
 	INJECT(0x0041B8B0, is_object_in_room);
 	INJECT(0x0041B930, check_xray_machine_trigger);
 	INJECT(0x0041BCF0, _special1_control);
