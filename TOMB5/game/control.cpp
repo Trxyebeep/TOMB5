@@ -1,4 +1,3 @@
-#pragma once
 #include "../tomb5/pch.h"
 #include "lara.h"
 #include "control.h"
@@ -23,7 +22,7 @@
 #include "effects.h"
 #include "objects.h"
 #include "deltapak.h"
-#include "../specific/calclara.h"
+#include "delstuff.h"
 
 char special1_flip_flag;//original one is on 0051CA84. some sort of flipmap flag for special1 cutscene in the title. original name unknown
 

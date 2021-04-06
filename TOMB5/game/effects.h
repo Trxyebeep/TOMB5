@@ -6,7 +6,6 @@ void inject_effects();
 
 extern void(*effect_routines[])(ITEM_INFO* item);
 
-void SoundEffects();
 void WaterFall(short item_number);
 void void_effect(ITEM_INFO* item);
 void turn180_effect(ITEM_INFO* item);
@@ -33,6 +32,7 @@ void AddFootprint(ITEM_INFO* item);
 void ResetTest(ITEM_INFO* item);
 void LaraLocationPad(ITEM_INFO* item);
 void KillActiveBaddies(ITEM_INFO* item);
+void BaddieBiteEffect(ITEM_INFO* item, BITE_INFO* bite);
 void TL_1(ITEM_INFO* item);
 void TL_2(ITEM_INFO* item);
 void TL_3(ITEM_INFO* item);

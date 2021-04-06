@@ -1,6 +1,10 @@
 #pragma once
 #include "../global/types.h"
 
+void inject_effect2();
+
+void SoundEffects();
+
 #define TriggerDynamic	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431240 )
 #define TriggerDynamic_MIRROR	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431420 )
 #define TriggerGunSmoke	( (void(__cdecl*)(long, long, long, long, long, long, int, int, int)) 0x004820A0 )

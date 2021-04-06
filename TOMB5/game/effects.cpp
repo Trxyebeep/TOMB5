@@ -1,9 +1,8 @@
-#pragma once
 #include "../tomb5/pch.h"
 #include "effects.h"
 #include "sound.h"
 #include "hair.h"
-#include "../specific/calclara.h"
+#include "delstuff.h"
 #include "control.h"
 #include "tomb4fx.h"
 #include "items.h"
@@ -12,8 +11,8 @@
 #include "../specific/specific.h"
 #include "xatracks.h"
 #include "effect2.h"
-#include "../specific/DS.h"
 #include "objects.h"
+#include "sphere.h"
 
 int flare_table[56] =
 {
@@ -92,73 +91,6 @@ void(*effect_routines[59])(ITEM_INFO* item) =
 	TL_11,
 	TL_12,
 };
-
-void SoundEffects()
-{
-	OBJECT_VECTOR* sound;
-	sound = &sound_effects[0];
-
-	for (int i = number_sound_effects; i > 0; --i, sound++)
-	{
-		if (flip_stats[((sound->flags & 1)
-			+ (sound->flags & 2)
-			+ 3 * (((sound->flags & 0x1F) >> 2) & 1)
-			+ 5 * (((sound->flags & 0x1F) >> 4) & 1)
-			+ 4 * (((sound->flags & 0x1F) >> 3) & 1))])
-		{
-			if (sound->flags & 0x40)
-			{
-				SoundEffect(sound->data, (PHD_3DPOS*)sound, 0);
-				continue;
-			}
-		}
-		else if (sound->flags & 0x80)
-		{
-			SoundEffect(sound->data, (PHD_3DPOS*)sound, 0);
-			continue;
-		}
-	}
-
-	if (flipeffect != -1)
-		effect_routines[flipeffect](0);
-
-	if (!sound_active)
-		return;
-
-	SoundSlot* slot;
-	int j;
-
-	for (j = 0, slot = &LaSlot[j]; j < 32; j++, slot++)
-	{
-		if (slot->nSampleInfo >= 0)
-		{
-			if ((sample_infos[slot->nSampleInfo].flags & 3) != 3)
-			{
-				if (S_SoundSampleIsPlaying(j) == 0)
-					slot->nSampleInfo = -1;
-				else
-				{
-					GetPanVolume(slot);
-					S_SoundSetPanAndVolume(j, slot->nPan, slot->nVolume);
-				}
-			}
-			else
-			{
-				if (!slot->nVolume)
-				{
-					S_SoundStopSample(j);
-					slot->nSampleInfo = -1;
-				}
-				else
-				{
-					S_SoundSetPanAndVolume(j, slot->nPan, slot->nVolume);
-					S_SoundSetPitch(j, slot->nPitch);
-					slot->nVolume = 0;
-				}
-			}
-		}
-	}
-}
 
 void WaterFall(short item_number)//FIXME idek man
 {
@@ -543,6 +475,16 @@ void KillActiveBaddies(ITEM_INFO* item)
 	flipeffect = -1;
 }
 
+void BaddieBiteEffect(ITEM_INFO* item, BITE_INFO* bite)
+{
+	PHD_VECTOR pos;
+
+	pos.x = bite->x;
+	pos.y = bite->y;
+	pos.z = bite->z;
+	GetJointAbsPosition(item, &pos, bite->mesh_num);
+	DoBloodSplat(pos.x, pos.y, pos.z, (GetRandomControl() & 3) + 4, item->pos.y_rot, item->room_number);
+}
 
 void TL_1(ITEM_INFO* item)
 {
@@ -667,7 +609,6 @@ void TL_12(ITEM_INFO* item)
 
 void inject_effects()
 {
-	INJECT(0x00432640, SoundEffects);
 	INJECT(0x00432CA0, WaterFall);
 	INJECT(0x00432DD0, void_effect);
 	INJECT(0x00432E10, turn180_effect);
@@ -689,11 +630,12 @@ void inject_effects()
 	INJECT(0x004335C0, reset_hair);
 	INJECT(0x004334A0, SetFog);
 	INJECT(0x004330C0, LaraLocation);
-	INJECT(0x00402FB3, ClearSpidersPatch);
+	INJECT(0x00433670, ClearSpidersPatch);
 	INJECT(0x004346A0, AddFootprint);
 	INJECT(0x00433130, ResetTest);
 	INJECT(0x00433100, LaraLocationPad);
 	INJECT(0x00433360, KillActiveBaddies);
+	INJECT(0x004335E0, BaddieBiteEffect);
 	INJECT(0x00433690, TL_1);
 	INJECT(0x004336D0, TL_2);
 	INJECT(0x00433710, TL_3);

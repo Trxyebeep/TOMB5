@@ -1,4 +1,3 @@
-#pragma once
 #include "../tomb5/pch.h"
 #include "../global/types.h"
 #include "lara.h"
@@ -10,7 +9,8 @@
 #include "sound.h"
 #include "control.h"
 #include "effect2.h"
-#include "../specific/calclara.h"
+#include "draw.h"
+#include "delstuff.h"
 #include "camera.h"
 #include "items.h"
 #include "sound.h"

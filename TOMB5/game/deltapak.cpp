@@ -1,4 +1,3 @@
-#pragma once
 #include "../tomb5/pch.h"
 #include "lara.h"
 #include "lara_states.h"
@@ -14,7 +13,7 @@
 #include "camera.h"
 #include "gameflow.h"
 #include "hair.h"
-#include "../specific/calclara.h"
+#include "delstuff.h"
 #include "effects.h"
 #include "../specific/display.h"
 #include "sphere.h"

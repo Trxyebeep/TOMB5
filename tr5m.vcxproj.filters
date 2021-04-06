@@ -105,9 +105,6 @@
     <ClInclude Include="TOMB5\game\gameflow.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\specific\calclara.h">
-      <Filter>TOMB5\specific</Filter>
-    </ClInclude>
     <ClInclude Include="TOMB5\game\draw.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
@@ -154,6 +151,7 @@
     <ClInclude Include="TOMB5\game\laraclmb.h" />
     <ClInclude Include="TOMB5\game\health.h" />
     <ClInclude Include="TOMB5\game\debris.h" />
+    <ClInclude Include="TOMB5\game\delstuff.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TOMB5\game\lara.cpp">
@@ -228,9 +226,6 @@
     <ClCompile Include="TOMB5\game\gameflow.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\specific\calclara.cpp">
-      <Filter>TOMB5\specific</Filter>
-    </ClCompile>
     <ClCompile Include="TOMB5\game\draw.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
@@ -274,6 +269,7 @@
     <ClCompile Include="TOMB5\game\laraclmb.cpp" />
     <ClCompile Include="TOMB5\game\health.cpp" />
     <ClCompile Include="TOMB5\game\debris.cpp" />
+    <ClCompile Include="TOMB5\game\delstuff.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

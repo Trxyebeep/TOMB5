@@ -1340,4 +1340,12 @@ struct INVOBJ
 	short objname; // size=0, offset=14
 	unsigned long meshbits; // size=0, offset=16
 };
+
+struct BITE_INFO
+{
+	long x; // size=0, offset=0
+	long y; // size=0, offset=4
+	long z; // size=0, offset=8
+	long mesh_num; // size=0, offset=12
+};
 #pragma pack(pop)

@@ -1,4 +1,2 @@
 #include "../tomb5/pch.h"
-#include "game.h"
-
-//tingz
+#include "delstuff.h"

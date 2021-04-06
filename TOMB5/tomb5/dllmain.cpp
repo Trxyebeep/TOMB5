@@ -5,7 +5,6 @@
 #include "../game/deltapak.h"
 #include "../game/control.h"
 #include "../game/tomb4fx.h"
-#include "../specific/calclara.h"
 #include "../game/pickup.h"
 #include "../game/camera.h"
 #include "../game/laramisc.h"
@@ -27,6 +26,7 @@
 #include "../game/door.h"
 #include "../game/laraclmb.h"
 #include "../game/health.h"
+
 HINSTANCE hinstance = NULL;
 
 #ifndef BUILD_DLL
@@ -48,7 +48,6 @@ void inject_all()
     inject_deltaPak();
     inject_control();
     inject_tomb4fx();
-    inject_calclara();
     inject_pickup();
     inject_camera();
     inject_laramisc();
@@ -69,6 +68,7 @@ void inject_all()
     inject_door();
     inject_laraclmb();
     inject_health();
+    inject_effect2();
 }
 
 BOOL APIENTRY DllMain( HINSTANCE hModule,

@@ -1,17 +1,17 @@
-#pragma once
 #include "../tomb5/pch.h"
 #include "camera.h"
 #include "../global/types.h"
 #include "gameflow.h"
 #include "../specific/DS.h"
 #include "effects.h"
-#include "../specific/calclara.h"
+#include "draw.h"
 #include "sound.h"
 #include "../specific/maths.h"
 #include "deltapak.h"
 #include "control.h"
 #include "effect2.h"
 #include "objects.h"
+#include "delstuff.h"
 
 void InitialiseCamera()
 {

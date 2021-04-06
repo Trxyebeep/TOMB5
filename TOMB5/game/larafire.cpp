@@ -1,4 +1,3 @@
-#pragma once
 #include "../tomb5/pch.h"
 #include "larafire.h"
 #include "../global/types.h"
@@ -14,7 +13,7 @@
 #include "sound.h"
 #include "items.h"
 #include "draw.h"
-#include "../specific/calclara.h"
+#include "delstuff.h"
 #include "../specific/matrix_shit.h"
 #include "sphere.h"
 #include "objects.h"

@@ -160,6 +160,7 @@
     <ClInclude Include="TOMB5\game\box.h" />
     <ClInclude Include="TOMB5\game\bubbles.h" />
     <ClInclude Include="TOMB5\game\debris.h" />
+    <ClInclude Include="TOMB5\game\delstuff.h" />
     <ClInclude Include="TOMB5\game\door.h" />
     <ClInclude Include="TOMB5\game\hair.h" />
     <ClInclude Include="TOMB5\game\health.h" />
@@ -169,7 +170,6 @@
     <ClInclude Include="TOMB5\game\sphere.h" />
     <ClInclude Include="TOMB5\game\switch.h" />
     <ClInclude Include="TOMB5\game\traps.h" />
-    <ClInclude Include="TOMB5\specific\calclara.h" />
     <ClInclude Include="TOMB5\game\camera.h" />
     <ClInclude Include="TOMB5\game\collide.h" />
     <ClInclude Include="TOMB5\game\control.h" />
@@ -216,6 +216,7 @@
     <ClCompile Include="TOMB5\game\box.cpp" />
     <ClCompile Include="TOMB5\game\bubbles.cpp" />
     <ClCompile Include="TOMB5\game\debris.cpp" />
+    <ClCompile Include="TOMB5\game\delstuff.cpp" />
     <ClCompile Include="TOMB5\game\door.cpp" />
     <ClCompile Include="TOMB5\game\hair.cpp" />
     <ClCompile Include="TOMB5\game\health.cpp" />
@@ -264,7 +265,6 @@
     </ClCompile>
     <ClCompile Include="TOMB5\game\pickup.cpp" />
     <ClCompile Include="TOMB5\game\sound.cpp" />
-    <ClCompile Include="TOMB5\specific\calclara.cpp" />
     <ClCompile Include="TOMB5\specific\specific.cpp" />
     <ClCompile Include="TOMB5\game\spotcam.cpp" />
     <ClCompile Include="TOMB5\game\tomb4fx.cpp" />

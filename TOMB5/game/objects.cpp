@@ -1,4 +1,3 @@
-#pragma once
 #include "../tomb5/pch.h"
 #include "objects.h"
 #include "gameflow.h"
@@ -12,7 +11,7 @@
 #include "effect2.h"
 #include "debris.h"
 #include "lara_states.h"
-#include "../specific/calclara.h"
+#include "delstuff.h"
 #include "tomb4fx.h"
 
 static short ParallelBarsBounds[12] =

@@ -1,4 +1,3 @@
-#pragma once
 #include "../tomb5/pch.h"
 #include "pcsetup.h"
 #include "../global/types.h"

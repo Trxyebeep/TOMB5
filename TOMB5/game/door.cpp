@@ -1,8 +1,7 @@
-#pragma once
 #include "../tomb5/pch.h"
 #include "door.h"
 #include "../global/types.h"
-#include "../specific/calclara.h"
+#include "draw.h"
 #include "objects.h"
 #include "control.h"
 #include "gameflow.h"

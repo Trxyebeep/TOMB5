@@ -1,7 +1,6 @@
-#pragma once
 #include "../tomb5/pch.h"
 #include "../global/types.h"
-#include "../specific/calclara.h"
+#include "delstuff.h"
 #include "lara1gun.h"
 #include "lara2gun.h"
 #include "larafire.h"
