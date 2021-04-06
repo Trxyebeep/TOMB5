@@ -1348,4 +1348,20 @@ struct BITE_INFO
 	long z; // size=0, offset=8
 	long mesh_num; // size=0, offset=12
 };
+
+struct TWOGUN_INFO
+{
+	PHD_3DPOS pos; // size=20, offset=0
+	short life; // size=0, offset=20
+	short coil; // size=0, offset=22
+	short spin; // size=0, offset=24
+	short spinadd; // size=0, offset=26
+	short length; // size=0, offset=28
+	short dlength; // size=0, offset=30
+	short size; // size=0, offset=32
+	char r; // size=0, offset=34
+	char g; // size=0, offset=35
+	char b; // size=0, offset=36
+	char fadein; // size=0, offset=37
+};
 #pragma pack(pop)

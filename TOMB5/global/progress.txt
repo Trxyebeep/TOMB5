@@ -68,8 +68,8 @@ UpdateSky
 0x0041C8B0	+	ResetCutItem
 0x0041C8E0	+	triggerwindowsmash
 0x0041C920	+	resetwindowsmash
-0x0041C950		FlamingHell
-0x0041CB10		FireTwoGunTitleWeapon
+0x0041C950	+	FlamingHell
+0x0041CB10	+	FireTwoGunTitleWeapon
 0x0041CC70		InitialiseDeathSlide
 0x0041CCE0		DeathSlideCollision
 0x0041CE00		ControlDeathSlide

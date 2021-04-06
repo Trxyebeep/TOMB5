@@ -282,6 +282,7 @@
 #define spark	ARRAY_(0x00E5F380, SPARKS, [128])
 #define pickups	ARRAY_(0x00E5BF40, DISPLAYPU, [8])
 #define ShatterSounds	ARRAY_(0x00506BAC, unsigned char, [18][10])
+#define twogun	ARRAY_(0x00EEEB00, TWOGUN_INFO, [3])
 
 
 //defs

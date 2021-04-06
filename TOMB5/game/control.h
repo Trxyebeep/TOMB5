@@ -29,6 +29,8 @@ void _special4_end();
 void ResetCutItem(int item_num);
 void resetwindowsmash(int item_num);
 void triggerwindowsmash(int item_num);
+void FlamingHell(PHD_VECTOR* pos);
+void FireTwoGunTitleWeapon(PHD_VECTOR* pos, PHD_VECTOR* pos2);
 
 #define	GetTargetOnLOS	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, int, int)) 0x0041A170 )
 #define ObjectOnLOS2	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, PHD_VECTOR*, MESH_INFO**)) 0x00419110 )
@@ -49,6 +51,4 @@ void triggerwindowsmash(int item_num);
 #define	GetWaterHeight	( (long(__cdecl*)(long, long, long, short)) 0x00415DA0 )
 #define TriggerActive	( (int(__cdecl*)(ITEM_INFO*)) 0x004175B0 )
 #define	FlipMap	( (void(__cdecl*)(int)) 0x00418910 )
-#define FlamingHell	( (void(__cdecl*)(PHD_VECTOR*)) 0x0041C950 )
-#define FireTwoGunTitleWeapon	( (void(__cdecl*)(PHD_VECTOR*, PHD_VECTOR*)) 0x0041CB10 )
 

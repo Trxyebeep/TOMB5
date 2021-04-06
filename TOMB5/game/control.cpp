@@ -23,6 +23,7 @@
 #include "objects.h"
 #include "deltapak.h"
 #include "delstuff.h"
+#include "../specific/matrix_shit.h"
 
 char special1_flip_flag;//original one is on 0051CA84. some sort of flipmap flag for special1 cutscene in the title. original name unknown
 
@@ -1111,6 +1112,92 @@ void triggerwindowsmash(int item_num)
 	item->mesh_bits = 2;
 }
 
+void FlamingHell(PHD_VECTOR* pos)
+{
+
+	SPARKS* sptr;
+	int r, size;
+
+	r = (GetRandomControl() & 0x1FF) - 128;
+
+	if (r < 512)
+		r = 512;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = (GetRandomControl() & 0x1F) + 48;
+	sptr->sG = (GetRandomControl() & 0x1F) + 48;
+	sptr->sB = (GetRandomControl() & 0x3F) - 64;
+	sptr->dR = (GetRandomControl() & 0x3F) - 64;
+	sptr->dB = 32;
+	sptr->dG = (GetRandomControl() & 0x3F) + 128;
+	sptr->ColFadeSpeed = 8;
+	sptr->FadeToBlack = 8;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 0x3F) + 90;
+	sptr->sLife = (GetRandomControl() & 0x3F) + 90;
+	sptr->x = (GetRandomControl() & 0xFF) + pos->x - 128;
+	sptr->y = (GetRandomControl() & 0xFF) + (pos->y - 128) - 128;
+	sptr->z = (GetRandomControl() & 0xFF) + pos->z - 128;
+	sptr->Friction = 51;
+	sptr->MaxYvel = 0;
+	sptr->Flags = 538;
+	sptr->Scalar = 2;
+	size = (GetRandomControl() & 0xF) + (r >> 6) + 16;
+	sptr->dSize = size;
+	sptr->sSize = size >> 1;
+	sptr->Size = size >> 1;
+	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
+	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Yvel = -(short)r;
+	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->dSize += sptr->dSize >> 2;
+}
+
+void FireTwoGunTitleWeapon(PHD_VECTOR* pos, PHD_VECTOR* pos2)
+{
+	TWOGUN_INFO* gun;
+	PHD_VECTOR pos3;
+	short angles[2];
+	int i;
+
+	phd_GetVectorAngles(pos2->x - pos->x, pos2->y - pos->y, pos2->z - pos->z, &angles[0]);
+	gun = &twogun[0];
+
+	i = 0;
+
+	if (gun->life != 0)
+	{
+		gun++;
+
+		do
+		{
+			if (++i < 4)
+			{
+				if (gun->life == 0)
+					break;
+			}
+
+		} while (i++ != 3);
+	}
+
+	gun->pos.x_pos = pos->x;
+	gun->pos.y_pos = pos->y;
+	gun->pos.z_pos = pos->z;
+	gun->pos.y_rot = angles[0];
+	gun->pos.x_rot = angles[1];
+	gun->pos.z_rot = 0;
+	gun->life = 17;
+	gun->spin = (short)(GetRandomControl() << 11);
+	gun->dlength = 4096;
+	gun->r = 0;
+	gun->b = -1;
+	gun->g = 96;
+	gun->fadein = 8;
+	TriggerLightningGlow(gun->pos.x_pos, gun->pos.y_pos, gun->pos.z_pos, ((gun->b >> 1) << 16) | ((gun->g & 0xFFFFFFFE) << 7) | (((GetRandomControl() & 0x3) + 64) << 24));
+	TriggerLightning(pos, pos2, (GetRandomControl() & 7) + 8, (gun->b & 0xFF) | (((gun->b & 0xFF) | 0x160000) >> 8), 12, 80, 5);
+}
+
 void inject_control()
 {
 	INJECT(0x004147C0, ControlPhase);
@@ -1141,4 +1228,6 @@ void inject_control()
 	INJECT(0x0041C8B0, ResetCutItem);
 	INJECT(0x0041C920, resetwindowsmash);
 	INJECT(0x0041C8E0, triggerwindowsmash);
+	INJECT(0x0041C950, FlamingHell);
+	INJECT(0x0041CB10, FireTwoGunTitleWeapon);
 }

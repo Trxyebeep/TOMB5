@@ -29,4 +29,5 @@ void TriggerBlood(int x, int y, int z, int a4, int num);
 #define TriggerExplosionSparks	( (void(__cdecl*)(int, int, int, int, int, int, short)) 0x0042F610 )
 #define GetFreeSpark	( (int(__cdecl*)()) 0x0042E790 )
 #define TriggerLightning	( (void(__cdecl*)(PHD_VECTOR*, PHD_VECTOR*, char, int, char, char, char)) 0x00484B30 )
+#define TriggerLightningGlow	( (void(__cdecl*)(long, long, long, long)) 0x004851B0 )
 #define ExplodingDeath2	( (void(__cdecl*)(short, long, short)) 0x00484080 )
