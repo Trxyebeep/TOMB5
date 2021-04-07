@@ -254,7 +254,7 @@ void LaraGun()
 		if (camera.type != CINEMATIC_CAMERA && camera.type != LOOK_CAMERA && camera.type != HEAVY_CAMERA)
 			camera.type = COMBAT_CAMERA;
 
-		if (input & IN_ACTION && get_current_ammo_pointer(lara.gun_type) == 0)
+		if (input & IN_ACTION && *get_current_ammo_pointer(lara.gun_type) == 0)
 		{
 			if (objects[PISTOLS_ITEM].loaded)
 				lara.request_gun_type = WEAPON_PISTOLS;

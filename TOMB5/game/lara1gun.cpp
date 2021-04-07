@@ -70,6 +70,7 @@ void RifleHandler(int weapon_type)
 	{
 		lara.torso_x_rot = lara.left_arm.x_rot;
 		lara.torso_y_rot = lara.left_arm.y_rot;
+
 		if (camera.old_type != LOOK_CAMERA && !BinocularRange)
 		{
 			lara.head_y_rot = 0;
@@ -86,73 +87,34 @@ void RifleHandler(int weapon_type)
 	{
 		if (weapon_type == WEAPON_SHOTGUN || weapon_type == WEAPON_HK)
 		{
-			if (gfLevelFlags & GF_LVOP_MIRROR_USED)
+			if (gfLevelFlags & GF_LVOP_MIRROR_USED && lara_item->room_number == gfMirrorRoom)
 			{
-				if (lara_item->room_number == gfMirrorRoom)
-				{
-					TriggerDynamic_MIRROR
-					(
-						(GetRandomControl() & 0xFF) + (SIN(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos, 
-						((GetRandomControl() & 0x7F) - 0x23F) + lara_item->pos.y_pos, 
-						(GetRandomControl() & 0xFF) + (COS(lara_item->pos.y_rot) >> 4) + lara_item->pos.z_pos, 
-						0xC, 
-						(GetRandomControl() & 0x3F) + 0xC0, 
-						(GetRandomControl() & 0x1F) + 0x80, 
-						GetRandomControl() & 0x3F
-					);
-				}
+					TriggerDynamic_MIRROR((GetRandomControl() & 0xFF) + (SIN(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos,
+						((GetRandomControl() & 0x7F) - 0x23F) + lara_item->pos.y_pos,
+						(GetRandomControl() & 0xFF) + (COS(lara_item->pos.y_rot) >> 4) + lara_item->pos.z_pos,
+						12, (GetRandomControl() & 0x3F) + 0xC0, (GetRandomControl() & 0x1F) + 0x80, GetRandomControl() & 0x3F);
 			}
 			else
 			{
-				TriggerDynamic
-				(
-					(GetRandomControl() & 0xFF) + (SIN(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos,
+				TriggerDynamic((GetRandomControl() & 0xFF) + (SIN(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos,
 					((GetRandomControl() & 0x7F) - 0x23F) + lara_item->pos.y_pos,
 					(GetRandomControl() & 0xFF) + (COS(lara_item->pos.y_rot) >> 4) + lara_item->pos.z_pos,
-					0xC,
-					(GetRandomControl() & 0x3F) + 0xC0,
-					(GetRandomControl() & 0x1F) + 0x80,
-					GetRandomControl() & 0x3F
-				);
+					12, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 63);
 			}
 		}
-		else
+		else if(weapon_type == WEAPON_REVOLVER)
 		{
-			if (weapon_type == WEAPON_REVOLVER)
-			{
-				PHD_VECTOR pos;
+			PHD_VECTOR pos;
 
-				pos.x = (GetRandomControl() & 0xFF) - 0x80;
-				pos.y = (GetRandomControl() & 0x7F) - 0x3F;
-				pos.x = (GetRandomControl() & 0xFF) - 0x80;
-				GetLaraJointPos(&pos, 0xB);
+			pos.x = (GetRandomControl() & 0xFF) - 128;
+			pos.y = (GetRandomControl() & 0x7F) - 63;
+			pos.z = (GetRandomControl() & 0xFF) - 128;
+			GetLaraJointPos(&pos, 11);
 
-				if (gfLevelFlags & GF_LVOP_MIRROR_USED)
-				{
-					if (lara_item->room_number == gfMirrorRoom)
-					{
-						TriggerDynamic_MIRROR
-						(
-							pos.x, pos.y, pos.z, 
-							0xC, 
-							GetRandomControl() & 0x3F, 
-							(GetRandomControl() & 0x1F) + 0x80, 
-							GetRandomControl() & 0x3F
-						);
-					}
-				}
-				else
-				{
-					TriggerDynamic
-					(
-						pos.x, pos.y, pos.z,
-						0xC,
-						GetRandomControl() & 0x3F,
-						(GetRandomControl() & 0x1F) + 0x80,
-						GetRandomControl() & 0x3F
-					);
-				}
-			}
+			if (gfLevelFlags & GF_LVOP_MIRROR_USED && lara_item->room_number == gfMirrorRoom)
+				TriggerDynamic_MIRROR(pos.x, pos.y, pos.z, 12, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 0x3F);
+			else
+				TriggerDynamic(pos.x, pos.y, pos.z, 12, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 0x3F);
 		}
 	}
 
@@ -181,6 +143,7 @@ void FireShotgun()
 		angles[0] += lara.torso_y_rot;
 		angles[1] += lara.torso_x_rot;
 	}
+
 	fired = 0;
 
 	if (lara.shotgun_type_carried & 8)
@@ -191,13 +154,18 @@ void FireShotgun()
 	for (i = 0; i < 6; i++)
 	{
 		r = (GetRandomControl() - 16384) * scatter;
+
 		if (r < 0)
 			r += 65535;
+
 		dangles[0] = angles[0] + (r >> 16);
 		r = (GetRandomControl() - 16384) * scatter;
+
 		if (r < 0)
 			r += 65535;
+
 		dangles[1] = angles[1] + (r >> 16);
+
 		if (FireWeapon(WEAPON_SHOTGUN, lara.target, lara_item, &dangles[0]))
 			fired = 1;
 	}
@@ -238,6 +206,7 @@ void FireHK(int running)
 	else if (lara.hk_type_carried & WTYPE_AMMO_2)
 	{
 		HKShotsFired++;
+
 		if ((HKShotsFired & 0xFF) == 5)
 		{
 			HKShotsFired = 0;
@@ -341,6 +310,7 @@ void _ControlCrossbow(short item_number)//needs fixing
 		if (*itemslist)
 		{
 			target = *itemslist;
+
 			while (!(gfLevelFlags & GF_LVOP_TRAIN) || target->object_number != GRAPPLING_TARGET)
 			{
 				target = itemslist[1];
