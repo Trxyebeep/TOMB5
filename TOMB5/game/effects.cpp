@@ -6,6 +6,7 @@
 #include "control.h"
 #include "tomb4fx.h"
 #include "items.h"
+#include "deltapak.h"
 #include "bat.h"//for spiders, fix
 #include "lot.h"
 #include "../specific/specific.h"

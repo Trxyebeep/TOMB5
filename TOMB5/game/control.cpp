@@ -1157,7 +1157,6 @@ void FlamingHell(PHD_VECTOR* pos)
 void FireTwoGunTitleWeapon(PHD_VECTOR* pos, PHD_VECTOR* pos2)
 {
 	TWOGUN_INFO* gun;
-	PHD_VECTOR pos3;
 	short angles[2];
 	int i;
 

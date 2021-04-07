@@ -141,6 +141,7 @@ void cutseq_givelara_hk();
 void TriggerActorBlood(int actornum, unsigned long nodenum, struct PHD_VECTOR* pos, int direction, int speed);
 void finish_cutseq(int name);
 void trigger_weapon_dynamics(int left_or_right);
+ITEM_INFO* find_a_fucking_item(int object_number);
 
 #define deal_with_actor_shooting	( (void(__cdecl*)(unsigned short*, int, int, PHD_VECTOR*)) 0x00423FB0 )
 #define handle_lara_chatting	( (void(__cdecl*)(short*)) 0x00423170 )

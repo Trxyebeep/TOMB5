@@ -191,7 +191,7 @@ UpdateSky
 0x00433950	+	TL_12
 
 
-		game/objects.h
+		game/objects.cpp
 
 0x00464F60	+	EarthQuake
 0x00465200	+	SmashObject
@@ -214,3 +214,178 @@ UpdateSky
 0x00466720	+	CutsceneRopeControl
 0x00466880	+	DrawBaddieGunFlash
 0x00466AA0	+	HybridCollision
+
+
+		game/deltapak.cpp
+
+0x00420E10	+	handle_cutseq_triggering
+0x00421480		do_new_cutscene_camera
+0x00421880		InitPackNodes
+0x004219E0		DecodeAnim
+0x00421B50		DecodeTrack
+0x00421CD0		TrackWord
+0x00421D60		frigup_lara
+0x00421E90		updateAnimFrame
+0x00422010	+	finish_cutseq
+0x00422030		DrawCutSeqActors
+0x004223C0		CalcActorLighting
+0x00422490		GetJointAbsPositionCutSeq
+0x00422570		CalculateObjectLightingLaraCutSeq
+0x00422680	+	cutseq_givelara_pistols
+0x004226B0	+	cutseq_removelara_pistols
+0x004226E0	+	cutseq_givelara_hk
+0x00422700	+	cutseq_removelara_hk
+0x00422740	+	cutseq_shoot_pistols
+0x00422780	+	trigger_weapon_dynamics
+0x00422840		deal_with_pistols
+0x00422A20		cutseq_kill_item
+0x00422AF0		cutseq_restore_item
+0x00422B90		Load_and_Init_Cutseq
+0x00422C30		init_cutseq_actors
+0x00422EF0		
+0x00422F80		DelsHandyTeleportLara
+0x004230F0		
+0x00423170		handle_lara_chatting
+0x00423210		handle_actor_chatting
+0x00423330		
+0x004233D0
+0x00423470	+	find_a_fucking_item
+0x004234B0	+	cranecut_init
+0x00423530	+	cranecut_end
+0x004235C0	+	cranecut_control
+0x00423790	+	richcut1_init
+0x004238A0	+	richcut1_end
+0x004238E0	+	richcut1_control
+0x004239B0	+	richcut2_init
+0x004239E0	+	richcut2_end
+0x00423A00	+	richcut2_control
+0x00423A90	+	richcut3_init
+0x00423AC0	+	richcut3_end
+0x00423B00	+	richcut3_control
+0x00423B40	+	special1_init
+0x00423B60	+	special1_control
+0x00423B80	+	special1_end
+0x00423BA0	+	special2_init
+0x00423BC0	+	special2_control
+0x00423BE0	+	special2_end
+0x00423C00	+	special3_init
+0x00423C20	+	special3_control
+0x00423C40	+	special3_end
+0x00423C60	+	special4_init
+0x00423C80	+	special4_control
+0x00423CA0	+	special4_end
+0x00423CC0	+	stealth3_start
+0x00423DF0	+	stealth3_end
+0x00423FB0	+	deal_with_actor_shooting
+0x00424080		GrabActorMatrix
+0x004243A0	+	GetActorJointAbsPosition
+0x00424570	+	TriggerActorBlood
+0x004245C0	+	TriggerDelSmoke
+0x004247A0	+	joby2_init
+0x00424820	+	joby2_control
+0x00424A20	+	joby2_end
+0x00424A70	+	joby3_init
+0x00424A90	+	joby3_control
+0x00424B20	+	joby3_end
+0x00424B40	+	andy1_init
+0x00424B60	+	andy1_control
+0x00424C00	+	andy1_end
+0x00424C30	+	hamgate_init
+0x00424CC0	+	hamgate_control
+0x00424D30	+	hamgate_end
+0x00424D80	+	do_hammer_meshswap
+0x00424DC0	+	andy2_init
+0x00424DE0	+	andy2_control
+0x00424EC0	+	andy2_end
+0x00424EF0	+	setup_preist_meshswap
+0x00424F30	+	DelTorchFlames
+0x004251F0	+	joby4_init
+0x00425230	+	joby4_control
+0x00425340	+	joby4_end
+0x00425390	+	andrea1_init
+0x004253B0	+	andrea1_control
+0x004254F0	+	andrea1_end
+0x00425520	+	andrea2_init
+0x00425540	+	andrea2_control
+0x004258D0	+	andrea2_end
+0x004258F0	+	joby5_init
+0x00425940	+	joby5_control
+0x00425A20	+	joby5_end
+0x00425A70	+	andy3_init
+0x00425AC0	+	andy3_control
+0x00425AF0	+	andy3_end
+0x00425B30	+	do_catapult_meshswap
+0x00425B70	+	joby9_init
+0x00425B90	+	joby9_control
+0x00425BD0	+	joby9_end
+0x00425C00	+	joby10_init
+0x00425C20	+	joby10_control
+0x00425CA0	+	joby10_end
+0x00425CE0	+	richcut4_init
+0x00425D80	+	richcut4_control
+0x00425E60	+	richcut4_end
+0x00425EB0	+	andy4_init
+0x00425ED0	+	andy4_control
+0x00425FF0	+	andy4_end
+0x00426030	+	andy4b_init
+0x00426050	+	andy4b_control
+0x00426140	+	andy4b_end
+0x00426180	+	do_clanger_meshswap
+0x004261C0	+	andrea3_init
+0x004261E0	+	andrea3_control
+0x00426270	+	andrea3_end
+0x00426350	+	andrea3b_init
+0x00426410	+	andrea3b_control
+0x00426570	+	andrea3b_end
+0x00426660	+	andy5_init
+0x00426680	+	andy5_control
+0x004267F0	+	andy5_end
+0x00426810	+	joby6_init
+0x00426890	+	joby6_control
+0x004268D0	+	joby6_end
+0x00426910	+	joby8_init
+0x00426A00	+	joby8_control
+0x00426F40	+	joby8_end
+0x00426F70	+	andy6_init
+0x00426F90	+	andy6_control
+0x004270B0	+	andy6_end
+0x004270D0	+	andypew_init
+0x004270F0	+	andypew_control
+0x00427110	+	andypew_end
+0x00427150	+	andy7_init
+0x00427170	+	andy7_control
+0x004271B0	+	andy7_end
+0x004271E0	+	cossack_init
+0x00427200	+	cossack_control
+0x00427470	+	cossack_end
+0x004274B0		TriggerDelBrownSmoke
+0x00427630	+	andy9_init
+0x00427660	+	andy9_control
+0x00427720	+	andy9_end
+0x00427750	+	andy8_init
+0x00427770	+	andy8_control
+0x00427810	+	andy8_end
+#########	+	do_chalk_meshswap
+0x00427880	+	andy10_init
+0x004279C0	+	andy10_control
+0x00427B30	+	andy10_end
+0x00427C10	+	joby7_init
+0x00427C50	+	joby7_control
+0x00427EA0	+	joby7_end
+0x00427F70	+	andrea4_init
+0x00427F90	+	andrea4_control
+0x00428020	+	andrea4_end
+0x00428040	+	do_pierre_gun_meshswap
+0x00428080	+	monk2_init
+0x004280A0	+	monk2_control
+0x004281B0	+	monk2_end
+0x004281D0	+	swampy_init
+0x00428270	+	swampy_control
+0x004282A0	+	swampy_end
+0x00428390		CutLaraBubbles
+0x004284A0		trigger_title_spotcam
+0x00428650	+	ResetCutanimate
+0x004286E0	+	Cutanimate
+0x00428770	+	andy11_init
+0x004287C0	+	andy11_control
+0x00428920	+	andy11_end

@@ -2448,12 +2448,6 @@ void do_chalk_meshswap()//optimized out
 	meshes[objects[MAFIA_MIP].mesh_index + 2 * LM_RHAND] = temp;
 }
 
-
-
-
-
-
-
 void cutseq_shoot_pistols(int left_or_right)
 {
 	if (left_or_right == 14)
@@ -2528,6 +2522,24 @@ void trigger_weapon_dynamics(int left_or_right)
 	pos.z = (GetRandomControl() & 0xFF) - 128;
 	GetLaraJointPos(&pos, left_or_right);
 	TriggerDynamic(pos.x, pos.y, pos.z, 10, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, (GetRandomControl() & 0x3F));
+}
+
+ITEM_INFO* find_a_fucking_item(int object_number)
+{
+	int i;
+
+	if (level_items > 0)
+	{
+		for (i = 0; i < level_items; i++)
+		{
+			if (items[i].object_number == object_number)
+			{
+				return &items[i];
+			}
+		}
+	}
+
+	return 0;
 }
 
 void inject_deltaPak()
@@ -2693,6 +2705,7 @@ void inject_deltaPak()
 //	INJECT(0x004284A0, trigger_title_spotcam);
 	INJECT(0x00428650, ResetCutanimate);
 	INJECT(0x004286E0, Cutanimate);
+	INJECT(0x00423470, find_a_fucking_item);
 	//DecodeAnim..
 	//DecodeTrack
 	//TrackWord

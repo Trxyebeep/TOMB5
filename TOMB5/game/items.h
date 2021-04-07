@@ -3,9 +3,6 @@
 
 void inject_items();
 
-
-ITEM_INFO* find_a_fucking_item(int object_number);
-
 #define ItemNewRoom	( (void(__cdecl*)(short, short)) 0x00440DA0 )
 #define KillItem	( (void(__cdecl*)(short)) 0x00440620 )
 #define AddActiveItem	( (void(__cdecl*)(short)) 0x00440D10 )

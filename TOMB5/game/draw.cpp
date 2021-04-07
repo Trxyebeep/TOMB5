@@ -4,14 +4,16 @@
 
 short* GetBoundsAccurate(ITEM_INFO* item)
 {
-	int rate;
+	int rate, frac;
 	short* frmptr[2];
-	int frac = GetFrames(item, frmptr, &rate);
+	short* bptr;
+	
+	frac = GetFrames(item, frmptr, &rate);
 
 	if (frac == 0)
 		return frmptr[0];
 
-	short* bptr = interpolated_bounds;
+	bptr = interpolated_bounds;
 
 	for (int i = 0; i < 6; i++, bptr++, frmptr[0]++, frmptr[1]++)
 		*bptr = *frmptr[0] + (*frmptr[1] - *frmptr[0]) * frac / rate;
@@ -36,5 +38,6 @@ short* GetBestFrame(ITEM_INFO* item)
 
 void inject_draw()
 {
+	INJECT(0x0042CF80, GetBoundsAccurate);
 	INJECT(0x0042D020, GetBestFrame);
 }
