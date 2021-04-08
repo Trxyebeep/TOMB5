@@ -1,4 +1,4 @@
-#include "../tomb5/pch.h"
+#include "pch.h"
 #include "door.h"
 #include "../global/types.h"
 #include "draw.h"

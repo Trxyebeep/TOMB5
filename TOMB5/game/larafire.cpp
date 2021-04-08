@@ -1,4 +1,4 @@
-#include "../tomb5/pch.h"
+#include "pch.h"
 #include "larafire.h"
 #include "../global/types.h"
 #include "flmtorch.h"

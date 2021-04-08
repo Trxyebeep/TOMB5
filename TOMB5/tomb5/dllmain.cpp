@@ -1,5 +1,5 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
-#include "../tomb5/pch.h"
+#include "pch.h"
 #include "../game/lara.h"
 #include "../game/collide.h"
 #include "../game/deltapak.h"
