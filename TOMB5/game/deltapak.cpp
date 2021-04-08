@@ -2755,6 +2755,165 @@ void trigger_title_spotcam(int num)
 	}	
 }
 
+void CutLaraBubbles()
+{
+	PHD_VECTOR offset;
+	PHD_VECTOR pos;
+	short roomnum;
+
+	offset.x = 0;
+	offset.y = -4;
+	offset.z = 64;
+	GetLaraJointPos(&offset, 8);
+	roomnum = camera.pos.room_number;
+	IsRoomOutsideNo = -1;
+	IsRoomOutside(offset.x, offset.y, offset.z);
+
+	if (IsRoomOutsideNo != -1)
+		roomnum = IsRoomOutsideNo;
+
+	for (int i = 2; i > 0; --i)
+	{
+		pos.x = (GetRandomControl() & 0x3F) + offset.x - 32;
+		pos.y = (GetRandomControl() & 0x3F) + offset.y - 32;
+		pos.z = (GetRandomControl() & 0x3F) + offset.z - 32;
+		CreateBubble(&pos, roomnum, 7, 8, 0, 0, -96, 0);
+	}
+}
+
+void deal_with_pistols(unsigned short* shootdata)
+{
+	PHD_VECTOR pos;
+	int f;
+
+	f = GLOBAL_cutseq_frame;
+
+	while (1)
+	{
+		short dat;
+
+		dat = *shootdata++;
+
+		if (dat == -1)
+			break;
+
+		if (f == (dat & 0x3FFF))
+		{
+			if (dat & 0x8000)
+				cutseq_shoot_pistols(14);
+
+			if (dat & 0x4000)
+				cutseq_shoot_pistols(11);
+		}
+	}
+
+	if (SmokeCountL || SmokeCountR)
+	{
+		lara.mesh_ptrs[14] = meshes[objects[LARA_SCREAM].mesh_index + (14 * 2)];
+
+		if (SmokeCountL)
+		{
+			pos.x = 4;
+			pos.y = 128;
+			pos.z = 40;
+			GetLaraJointPos(&pos, 14);
+			TriggerGunSmoke(pos.x, pos.y, pos.z, 0, 0, 0, 0, SmokeWeapon, SmokeCountL);
+		}
+
+		if (SmokeCountR)
+		{
+			pos.x = -16;
+			pos.y = 128;
+			pos.z = 40;
+			GetLaraJointPos(&pos, 11);
+			TriggerGunSmoke(pos.x, pos.y, pos.z, 0, 0, 0, 0, SmokeWeapon, SmokeCountR);
+		}
+	}
+	else
+		lara.mesh_ptrs[14] = meshes[objects[0].mesh_index + (14 * 2)];
+
+	if (lara.left_arm.flash_gun)
+	{
+		lara.left_arm.flash_gun--;
+		trigger_weapon_dynamics(14);
+	}
+	if (lara.right_arm.flash_gun)
+	{
+		lara.right_arm.flash_gun--;
+		trigger_weapon_dynamics(11);
+	}
+}
+
+void handle_lara_chatting(short* _ranges)//short* ranges//until the anim ranges array is moved into the dll.
+{
+	int r1, r2, f, rndme;
+	short* poo;
+
+	f = GLOBAL_cutseq_frame;
+	lara_chat_cnt = (lara_chat_cnt - 1) & 1;
+	poo = _ranges;
+
+	while (1)
+	{
+		r1 = poo[0];
+		r2 = poo[1];
+
+		if (r1 == -1)
+		{
+			lara.mesh_ptrs[14] = meshes[objects[LARA_SKIN].mesh_index + 2 * 14];
+			return;
+		}
+
+		if (f >= r1 && f <= r2)
+			break;
+
+		poo += 2;
+	}
+
+	if (!lara_chat_cnt)
+	{
+		rndme = objects[(GetRandomControl() & 3) + LARA_SPEECH_HEAD1].mesh_index;	
+		lara.mesh_ptrs[14] = meshes[rndme + (14 * 2)];
+	}
+}
+
+void handle_actor_chatting(int speechslot, int node, int slot, int objslot, short* _ranges)//short* ranges//until the anim ranges array is moved into the dll.
+{
+	int r1, r2, f, rnd;
+
+	f = GLOBAL_cutseq_frame;
+	rnd = GetRandomControl() & 1;
+
+	while (1)
+	{
+		r1 = _ranges[0];
+		r2 = _ranges[1];
+
+		if (r1 == -1)
+		{
+			cutseq_meshswapbits[slot] &= ~(1 << node);
+			return;
+		}
+
+		if (f >= r1 && f <= r2)
+			break;
+
+		_ranges += 2;
+	}
+
+	if (!actor_chat_cnt)
+	{
+		cutseq_meshswapbits[slot] |= 1 << node;
+		*(&meshes[2 * node] + objects[objslot].mesh_index + 1) = (&meshes[2 * node])[objects[speechslot + rnd].mesh_index];
+
+		if ((GetRandomControl() & 7) >= 6)
+			cutseq_meshswapbits[slot] &= ~(1 << node);
+	}
+
+}
+
+
+
 void inject_deltaPak()
 {
 	INJECT(0x00425390, andrea1_init);
@@ -2897,24 +3056,22 @@ void inject_deltaPak()
 	INJECT(0x00422700, cutseq_removelara_hk);
 	INJECT(0x00422740, cutseq_shoot_pistols);
 	INJECT(0x00422780, trigger_weapon_dynamics);
-//	INJECT(0x00422840, deal_with_pistols);
+	INJECT(0x00422840, deal_with_pistols);
 //	INJECT(0x00422A20, cutseq_kill_item);
 //	INJECT(0x00422AF0, cutseq_restore_item);
 //	INJECT(0x00422B90, Load_and_Init_Cutseq);
 //	INJECT(0x00422C30, init_cutseq_actors);
 //	INJECT(0x00422F80, DelsHandyTeleportLara);
-//	INJECT(0x00423170, handle_lara_chatting);
-//	INJECT(0x00423210, handle_actor_chatting);
+	INJECT(0x00423170, handle_lara_chatting);
+	INJECT(0x00423210, handle_actor_chatting);
 //	INJECT(0x00423FB0, deal_with_actor_shooting);
 //	INJECT(0x00424080, GrabActorMatrix);
 //	INJECT(0x004243A0, GetActorJointAbsPosition);
 	INJECT(0x00424570, TriggerActorBlood);
 	INJECT(0x004245C0, TriggerDelSmoke);
 	INJECT(0x004274B0, TriggerDelBrownSmoke);
-
 	INJECT(0x00424F30, DelTorchFlames);
-
-//	INJECT(0x00428390, CutLaraBubbles);
+	INJECT(0x00428390, CutLaraBubbles);
 	INJECT(0x004284A0, trigger_title_spotcam);
 	INJECT(0x00428650, ResetCutanimate);
 	INJECT(0x004286E0, Cutanimate);

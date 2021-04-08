@@ -237,7 +237,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00422700	+	cutseq_removelara_hk
 0x00422740	+	cutseq_shoot_pistols
 0x00422780	+	trigger_weapon_dynamics
-0x00422840		deal_with_pistols
+0x00422840	+	deal_with_pistols
 0x00422A20		cutseq_kill_item
 0x00422AF0		cutseq_restore_item
 0x00422B90		Load_and_Init_Cutseq
@@ -245,8 +245,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00422EF0		
 0x00422F80		DelsHandyTeleportLara
 0x004230F0		
-0x00423170		handle_lara_chatting
-0x00423210		handle_actor_chatting
+0x00423170	+	handle_lara_chatting
+0x00423210	+	handle_actor_chatting
 0x00423330		
 0x004233D0
 0x00423470	+	find_a_fucking_item
@@ -382,7 +382,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004281D0	+	swampy_init
 0x00428270	+	swampy_control
 0x004282A0	+	swampy_end
-0x00428390		CutLaraBubbles
+0x00428390	+	CutLaraBubbles
 0x004284A0	+	trigger_title_spotcam
 0x00428650	+	ResetCutanimate
 0x004286E0	+	Cutanimate
@@ -397,3 +397,11 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047A890		Spline
 0x0047A9D0		InitialiseSpotCam
 0x0047B280		CalculateSpotCams
+
+
+		game/bubbles.cpp
+
+0x004832C0		GetFreeBubble
+0x00483350		CreateBubble
+0x00483470		LaraBubbles
+0x00483540		UpdateBubbles

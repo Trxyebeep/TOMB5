@@ -146,18 +146,18 @@ void TriggerDelSmoke(long x, long y, long z, int sizeme);
 void TriggerDelBrownSmoke(long x, long y, long z);
 void DelTorchFlames(PHD_VECTOR* pos);
 void trigger_title_spotcam(int num);
+void CutLaraBubbles();
+void deal_with_pistols(unsigned short* shootdata);
+void handle_lara_chatting(short* _ranges);
+void handle_actor_chatting(int speechslot, int node, int slot, int objslot, short* _ranges);
 
 #define deal_with_actor_shooting	( (void(__cdecl*)(unsigned short*, int, int, PHD_VECTOR*)) 0x00423FB0 )
-#define handle_lara_chatting	( (void(__cdecl*)(short*)) 0x00423170 )
-#define handle_actor_chatting	( (void(__cdecl*)(int, int, int, int, short*)) 0x00423210 )
 #define GetActorJointAbsPosition ((void(__cdecl*)(int, unsigned long, PHD_VECTOR*)) 0x004243A0 )
-#define deal_with_pistols	( (void(__cdecl*)(unsigned short*)) 0x00422840 )
 #define	DelsHandyTeleportLara	( (void(__cdecl*)(int, int, int, int)) 0x00422F80 )
 #define	cutseq_kill_item	( (void(__cdecl*)(int)) 0x00422A20 )
 #define Load_and_Init_Cutseq	( (int(__cdecl*)(int)) 0x00422B90 )
 #define do_new_cutscene_camera	( (void(__cdecl*)()) 0x00421480 )
 #define	cutseq_restore_item	( (ITEM_INFO*(__cdecl*)(int)) 0x00422AF0 )
-#define CutLaraBubbles	( (void(__cdecl*)()) 0x00428390 )
 
 
 enum cutscenes
