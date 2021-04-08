@@ -12,7 +12,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00414620		KillMoveItems
 0x004146A0		KillMoveEffects
-UpdateSky
+0x00414720		UpdateSky
 0x004147C0	+	ControlPhase
 0x00415300		AnimateItem
 0x00415890	+	GetChange
@@ -298,7 +298,7 @@ UpdateSky
 0x00424DE0	+	andy2_control
 0x00424EC0	+	andy2_end
 0x00424EF0	+	setup_preist_meshswap
-0x00424F30		DelTorchFlames
+0x00424F30	+	DelTorchFlames
 0x004251F0	+	joby4_init
 0x00425230	+	joby4_control
 0x00425340	+	joby4_end
@@ -383,9 +383,17 @@ UpdateSky
 0x00428270	+	swampy_control
 0x004282A0	+	swampy_end
 0x00428390		CutLaraBubbles
-0x004284A0		trigger_title_spotcam
+0x004284A0	+	trigger_title_spotcam
 0x00428650	+	ResetCutanimate
 0x004286E0	+	Cutanimate
 0x00428770	+	andy11_init
 0x004287C0	+	andy11_control
 0x00428920	+	andy11_end
+
+
+		game/spotcam.cpp
+
+0x0047A800		InitSpotCamSequences
+0x0047A890		Spline
+0x0047A9D0		InitialiseSpotCam
+0x0047B280		CalculateSpotCams

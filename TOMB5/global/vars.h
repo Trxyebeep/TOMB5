@@ -197,6 +197,7 @@
 #define CurrentPickup	VAR_U_(0x00E5BF3C, short)
 #define Chris_Menu	VAR_U_(0x0051CE2E, char)
 #define title_controls_locked_out	VAR_U_(0x00E5C2A8, char)
+#define jobyfrigger	VAR_U_(0x0051CA9C, char)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)

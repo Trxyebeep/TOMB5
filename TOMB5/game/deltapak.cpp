@@ -20,6 +20,8 @@
 #include "health.h"
 #include "objects.h"
 #include "newinv2.h"
+#include "xatracks.h"
+#include "spotcam.h"
 
 unsigned short larson_pistols_info1[2] =
 {
@@ -2622,6 +2624,137 @@ void TriggerDelBrownSmoke(long x, long y, long z)
 	sptr->Size = size >> 2;
 }
 
+void DelTorchFlames(PHD_VECTOR* pos)
+{
+	long x, y, z, size;
+	SPARKS* sptr;
+
+	x = pos->x;
+	y = pos->y;
+	z = pos->z;
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = -1;
+	sptr->sG = (GetRandomControl() & 0x1F) + 48;
+	sptr->sB = 48;
+	sptr->dR = (GetRandomControl() & 0x3F) - 64;
+	sptr->dG = (GetRandomControl() & 0x3F) + 128;
+	sptr->dB = 32;
+	sptr->FadeToBlack = 8;
+	sptr->ColFadeSpeed = (GetRandomControl() & 3) + 16;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 7) + 32;
+	sptr->sLife = (GetRandomControl() & 7) + 32;
+	sptr->x = x;
+	sptr->y = y;
+	sptr->z = z;
+	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Yvel = -16 - (GetRandomControl() & 0xF);
+	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Friction = 51;
+	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
+	sptr->Flags = -32230;
+	sptr->MaxYvel = -16 - (GetRandomControl() & 7);
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0x1F) - 16;
+	sptr->Scalar = 2;
+	size = (GetRandomControl() & 0xF) + 16;
+	sptr->sSize = size;
+	sptr->Size = size;
+	sptr->dSize = size >> 4;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = (GetRandomControl() & 0x3F) - 64;
+	sptr->sG = (GetRandomControl() & 0x3F) - 64;
+	sptr->sB = (GetRandomControl() & 0xF) + 16;
+	sptr->dR >>= 2;
+	sptr->dG >>= 2;
+	sptr->dB >>= 2;
+	sptr->ColFadeSpeed = 8;
+	sptr->FadeToBlack = 8;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 0xF) + 24; 
+	sptr->sLife = (GetRandomControl() & 0xF) + 24;
+	sptr->x = (GetRandomControl() & 0x3F) + x - 32;
+	sptr->y = (GetRandomControl() & 0x3F) + y - 32;
+	sptr->z = (GetRandomControl() & 0x3F) + z - 32;
+	sptr->Friction = 51;
+	sptr->MaxYvel = 0;
+	sptr->Flags = -32230;
+	sptr->Scalar = 2;
+	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
+	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Yvel = -22;
+	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
+	size = (GetRandomControl() & 0xF) + 16;
+	sptr->dSize = size;
+	sptr->sSize = size >> 1;
+	sptr->Size = size >> 1;
+	sptr->dSize += sptr->dSize >> 2;
+}
+
+void trigger_title_spotcam(int num)
+{
+	ITEM_INFO* item;
+
+	jobyfrigger = 0;
+
+	switch (num)
+	{
+	case 1:
+		item = ResetCutanimate(ANIMATING10);
+		item->pos.x_pos = 59904;
+		item->pos.y_pos = 0;
+		item->pos.z_pos = 42496;
+		item->room_number = 0;
+		item = ResetCutanimate(ANIMATING11);
+		item->pos.x_pos = 59904;
+		item->pos.y_pos = 0;
+		item->pos.z_pos = 42496;
+		item->room_number = 0;
+		S_CDPlay(CDA_XA11_FLYBY1, 0);
+		InitialiseSpotCam(1);
+		return;
+
+	case 4:
+		jobyfrigger = 1;
+		ResetCutanimate(ANIMATING4);
+		item = ResetCutanimate(ANIMATING7);
+		item->pos.x_pos = 32256;
+		item->pos.y_pos = 0;
+		item->pos.z_pos = 90624;
+		item->room_number = 104;
+		ResetCutanimate(ANIMATING8);
+		item = ResetCutanimate(ANIMATING9);
+		item->pos.x_pos = 31232;
+		item->pos.y_pos = 0;
+		item->pos.z_pos = 91648;
+		item->room_number = 61;
+		ResetCutanimate(ANIMATING12);
+		ResetCutanimate(ANIMATING13);
+		ResetCutanimate(ANIMATING14);
+		ResetCutanimate(ANIMATING15);
+		S_CDPlay(CDA_XA12_FLYBY4, 0);
+		InitialiseSpotCam(num);
+		return;
+
+	case 2:
+		S_CDPlay(CDA_XA11_FLYBY3, 0);
+		InitialiseSpotCam(2);
+		return;
+
+	case 3:
+		S_CDPlay(CDA_XA11_FLYBY2, 0);
+		InitialiseSpotCam(3);
+		return;
+
+	default:
+		InitialiseSpotCam(num);
+		return;
+	}	
+}
+
 void inject_deltaPak()
 {
 	INJECT(0x00425390, andrea1_init);
@@ -2779,10 +2912,10 @@ void inject_deltaPak()
 	INJECT(0x004245C0, TriggerDelSmoke);
 	INJECT(0x004274B0, TriggerDelBrownSmoke);
 
-//	INJECT(0x00424F30, DelTorchFlames);
+	INJECT(0x00424F30, DelTorchFlames);
 
 //	INJECT(0x00428390, CutLaraBubbles);
-//	INJECT(0x004284A0, trigger_title_spotcam);
+	INJECT(0x004284A0, trigger_title_spotcam);
 	INJECT(0x00428650, ResetCutanimate);
 	INJECT(0x004286E0, Cutanimate);
 	INJECT(0x00423470, find_a_fucking_item);
