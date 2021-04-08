@@ -276,9 +276,9 @@ UpdateSky
 0x00423CA0	+	special4_end
 0x00423CC0	+	stealth3_start
 0x00423DF0	+	stealth3_end
-0x00423FB0	+	deal_with_actor_shooting
+0x00423FB0		deal_with_actor_shooting
 0x00424080		GrabActorMatrix
-0x004243A0	+	GetActorJointAbsPosition
+0x004243A0		GetActorJointAbsPosition
 0x00424570	+	TriggerActorBlood
 0x004245C0	+	TriggerDelSmoke
 0x004247A0	+	joby2_init
@@ -298,7 +298,7 @@ UpdateSky
 0x00424DE0	+	andy2_control
 0x00424EC0	+	andy2_end
 0x00424EF0	+	setup_preist_meshswap
-0x00424F30	+	DelTorchFlames
+0x00424F30		DelTorchFlames
 0x004251F0	+	joby4_init
 0x00425230	+	joby4_control
 0x00425340	+	joby4_end
@@ -358,7 +358,7 @@ UpdateSky
 0x004271E0	+	cossack_init
 0x00427200	+	cossack_control
 0x00427470	+	cossack_end
-0x004274B0		TriggerDelBrownSmoke
+0x004274B0	+	TriggerDelBrownSmoke
 0x00427630	+	andy9_init
 0x00427660	+	andy9_control
 0x00427720	+	andy9_end

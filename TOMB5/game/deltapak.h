@@ -142,6 +142,8 @@ void TriggerActorBlood(int actornum, unsigned long nodenum, struct PHD_VECTOR* p
 void finish_cutseq(int name);
 void trigger_weapon_dynamics(int left_or_right);
 ITEM_INFO* find_a_fucking_item(int object_number);
+void TriggerDelSmoke(long x, long y, long z, int sizeme);
+void TriggerDelBrownSmoke(long x, long y, long z);
 
 #define deal_with_actor_shooting	( (void(__cdecl*)(unsigned short*, int, int, PHD_VECTOR*)) 0x00423FB0 )
 #define handle_lara_chatting	( (void(__cdecl*)(short*)) 0x00423170 )
@@ -153,9 +155,7 @@ ITEM_INFO* find_a_fucking_item(int object_number);
 #define	cutseq_kill_item	( (void(__cdecl*)(int)) 0x00422A20 )
 #define Load_and_Init_Cutseq	( (int(__cdecl*)(int)) 0x00422B90 )
 #define do_new_cutscene_camera	( (void(__cdecl*)()) 0x00421480 )
-#define TriggerDelSmoke	( (void(__cdecl*)(long, long, long, int)) 0x004245C0 )
 #define	cutseq_restore_item	( (ITEM_INFO*(__cdecl*)(int)) 0x00422AF0 )
-#define TriggerDelBrownSmoke	( (void(__cdecl*)(long, long, long)) 0x004274B0 )
 #define CutLaraBubbles	( (void(__cdecl*)()) 0x00428390 )
 #define trigger_title_spotcam	( (void(__cdecl*)(int)) 0x004284A0 )
 

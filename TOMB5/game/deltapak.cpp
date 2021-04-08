@@ -2542,6 +2542,86 @@ ITEM_INFO* find_a_fucking_item(int object_number)
 	return 0;
 }
 
+void TriggerDelSmoke(long x, long y, long z, int sizeme)
+{
+	long size, dx, dz;
+	SPARKS* sptr;
+
+	dx = lara_item->pos.x_pos - x;
+	dz = lara_item->pos.z_pos - z;
+
+	if (dx >= -16384 && dx <= 16384 && dz >= -16384 && dz <= 16384)
+	{
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->sR = 128;
+		sptr->sG = 128;
+		sptr->sB = 128;
+		sptr->dR = 64;
+		sptr->dG = 64;
+		sptr->dB = 64;
+		sptr->ColFadeSpeed = 2;
+		sptr->FadeToBlack = 8;
+		sptr->TransType = 2;
+		sptr->Life = (GetRandomControl() & 3) + 11;
+		sptr->sLife = (GetRandomControl() & 3) + 11;
+		sptr->x = (GetRandomControl() & 0x1FF) + x - 256;
+		sptr->y = (GetRandomControl() & 0x1FF) + y - 256;
+		sptr->z = (GetRandomControl() & 0x1FF) + z - 256;
+		sptr->Xvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
+		sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
+		sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
+		sptr->Friction = 2;
+		sptr->Flags = 538;
+		sptr->RotAng = GetRandomControl() & 0xFFF;
+		sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
+		sptr->Scalar = 2;
+		sptr->Gravity = -3 - (GetRandomControl() & 3);
+		sptr->MaxYvel = -4 - (GetRandomControl() & 3);
+		size = sizeme + (GetRandomControl() & 0x1F);
+		sptr->dSize = size;
+		sptr->sSize = size >> 2;
+		sptr->Size = size >> 2;
+	}
+}
+
+void TriggerDelBrownSmoke(long x, long y, long z)
+{
+	long size;
+	SPARKS* sptr;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 50;
+	sptr->sG = 45;
+	sptr->sB = 40;
+	sptr->dR = 40;
+	sptr->dG = 35;
+	sptr->dB = 30;
+	sptr->ColFadeSpeed = 2;
+	sptr->FadeToBlack = 5;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 7) + 20;
+	sptr->sLife = (GetRandomControl() & 7) + 20;
+	sptr->x = (GetRandomControl() & 0x7F) + x - 63;
+	sptr->y = (GetRandomControl() & 0x7F) + y - 63;
+	sptr->z = (GetRandomControl() & 0x7F) + z - 63;
+	sptr->Xvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
+	sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
+	sptr->Friction = 2;
+	sptr->Flags = 538;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
+	sptr->Scalar = 2;
+	sptr->Gravity = -3 - (GetRandomControl() & 3);
+	sptr->MaxYvel = -4 - (GetRandomControl() & 3);
+	size = (GetRandomControl() & 0x1F) + 40;
+	sptr->dSize = size;
+	sptr->sSize = size >> 2;
+	sptr->Size = size >> 2;
+}
+
 void inject_deltaPak()
 {
 	INJECT(0x00425390, andrea1_init);
@@ -2696,8 +2776,8 @@ void inject_deltaPak()
 //	INJECT(0x00424080, GrabActorMatrix);
 //	INJECT(0x004243A0, GetActorJointAbsPosition);
 	INJECT(0x00424570, TriggerActorBlood);
-//	INJECT(0x004245C0, TriggerDelSmoke);
-//	INJECT(0x004274B0, TriggerDelBrownSmoke);
+	INJECT(0x004245C0, TriggerDelSmoke);
+	INJECT(0x004274B0, TriggerDelBrownSmoke);
 
 //	INJECT(0x00424F30, DelTorchFlames);
 
