@@ -18,6 +18,112 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="TOMB5\game\bat.cpp" />
+    <ClCompile Include="TOMB5\game\box.cpp" />
+    <ClCompile Include="TOMB5\game\bubbles.cpp" />
+    <ClCompile Include="TOMB5\game\camera.cpp" />
+    <ClCompile Include="TOMB5\game\collide.cpp" />
+    <ClCompile Include="TOMB5\game\control.cpp" />
+    <ClCompile Include="TOMB5\game\debris.cpp" />
+    <ClCompile Include="TOMB5\game\delstuff.cpp" />
+    <ClCompile Include="TOMB5\game\deltapak.cpp" />
+    <ClCompile Include="TOMB5\game\door.cpp" />
+    <ClCompile Include="TOMB5\game\draw.cpp" />
+    <ClCompile Include="TOMB5\game\effect2.cpp" />
+    <ClCompile Include="TOMB5\game\effects.cpp" />
+    <ClCompile Include="TOMB5\game\flmtorch.cpp" />
+    <ClCompile Include="TOMB5\game\gameflow.cpp" />
+    <ClCompile Include="TOMB5\game\hair.cpp" />
+    <ClCompile Include="TOMB5\game\health.cpp" />
+    <ClCompile Include="TOMB5\game\items.cpp" />
+    <ClCompile Include="TOMB5\game\lara.cpp" />
+    <ClCompile Include="TOMB5\game\lara1gun.cpp" />
+    <ClCompile Include="TOMB5\game\lara2gun.cpp" />
+    <ClCompile Include="TOMB5\game\laraclmb.cpp" />
+    <ClCompile Include="TOMB5\game\larafire.cpp" />
+    <ClCompile Include="TOMB5\game\laraflar.cpp" />
+    <ClCompile Include="TOMB5\game\laramisc.cpp" />
+    <ClCompile Include="TOMB5\game\larasurf.cpp" />
+    <ClCompile Include="TOMB5\game\laraswim.cpp" />
+    <ClCompile Include="TOMB5\game\lot.cpp" />
+    <ClCompile Include="TOMB5\game\newinv2.cpp" />
+    <ClCompile Include="TOMB5\game\objects.cpp" />
+    <ClCompile Include="TOMB5\game\pickup.cpp" />
+    <ClCompile Include="TOMB5\game\sound.cpp" />
+    <ClCompile Include="TOMB5\game\sphere.cpp" />
+    <ClCompile Include="TOMB5\game\spotcam.cpp" />
+    <ClCompile Include="TOMB5\game\switch.cpp" />
+    <ClCompile Include="TOMB5\game\tomb4fx.cpp" />
+    <ClCompile Include="TOMB5\game\traps.cpp" />
+    <ClCompile Include="TOMB5\specific\display.cpp" />
+    <ClCompile Include="TOMB5\specific\drawprimitive.cpp" />
+    <ClCompile Include="TOMB5\specific\DS.cpp" />
+    <ClCompile Include="TOMB5\specific\game.cpp" />
+    <ClCompile Include="TOMB5\specific\input.cpp" />
+    <ClCompile Include="TOMB5\specific\maths.cpp" />
+    <ClCompile Include="TOMB5\specific\matrix_shit.cpp" />
+    <ClCompile Include="TOMB5\specific\pcsetup.cpp" />
+    <ClCompile Include="TOMB5\specific\specific.cpp" />
+    <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
+    <ClCompile Include="TOMB5\tomb5\pch.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="TOMB5\game\bat.h" />
+    <ClInclude Include="TOMB5\game\box.h" />
+    <ClInclude Include="TOMB5\game\bubbles.h" />
+    <ClInclude Include="TOMB5\game\camera.h" />
+    <ClInclude Include="TOMB5\game\collide.h" />
+    <ClInclude Include="TOMB5\game\control.h" />
+    <ClInclude Include="TOMB5\game\debris.h" />
+    <ClInclude Include="TOMB5\game\delstuff.h" />
+    <ClInclude Include="TOMB5\game\deltapak.h" />
+    <ClInclude Include="TOMB5\game\door.h" />
+    <ClInclude Include="TOMB5\game\draw.h" />
+    <ClInclude Include="TOMB5\game\effect2.h" />
+    <ClInclude Include="TOMB5\game\effects.h" />
+    <ClInclude Include="TOMB5\game\flmtorch.h" />
+    <ClInclude Include="TOMB5\game\gameflow.h" />
+    <ClInclude Include="TOMB5\game\hair.h" />
+    <ClInclude Include="TOMB5\game\health.h" />
+    <ClInclude Include="TOMB5\game\items.h" />
+    <ClInclude Include="TOMB5\game\lara.h" />
+    <ClInclude Include="TOMB5\game\lara1gun.h" />
+    <ClInclude Include="TOMB5\game\lara2gun.h" />
+    <ClInclude Include="TOMB5\game\laraclmb.h" />
+    <ClInclude Include="TOMB5\game\larafire.h" />
+    <ClInclude Include="TOMB5\game\laraflar.h" />
+    <ClInclude Include="TOMB5\game\laramisc.h" />
+    <ClInclude Include="TOMB5\game\larasurf.h" />
+    <ClInclude Include="TOMB5\game\laraswim.h" />
+    <ClInclude Include="TOMB5\game\lara_states.h" />
+    <ClInclude Include="TOMB5\game\lot.h" />
+    <ClInclude Include="TOMB5\game\newinv2.h" />
+    <ClInclude Include="TOMB5\game\objects.h" />
+    <ClInclude Include="TOMB5\game\pickup.h" />
+    <ClInclude Include="TOMB5\game\sound.h" />
+    <ClInclude Include="TOMB5\game\sphere.h" />
+    <ClInclude Include="TOMB5\game\spotcam.h" />
+    <ClInclude Include="TOMB5\game\switch.h" />
+    <ClInclude Include="TOMB5\game\tomb4fx.h" />
+    <ClInclude Include="TOMB5\game\traps.h" />
+    <ClInclude Include="TOMB5\game\xatracks.h" />
+    <ClInclude Include="TOMB5\global\math_tbls.h" />
+    <ClInclude Include="TOMB5\global\types.h" />
+    <ClInclude Include="TOMB5\global\vars.h" />
+    <ClInclude Include="TOMB5\specific\display.h" />
+    <ClInclude Include="TOMB5\specific\drawprimitive.h" />
+    <ClInclude Include="TOMB5\specific\DS.h" />
+    <ClInclude Include="TOMB5\specific\game.h" />
+    <ClInclude Include="TOMB5\specific\global.h" />
+    <ClInclude Include="TOMB5\specific\input.h" />
+    <ClInclude Include="TOMB5\specific\maths.h" />
+    <ClInclude Include="TOMB5\specific\matrix_shit.h" />
+    <ClInclude Include="TOMB5\specific\pcsetup.h" />
+    <ClInclude Include="TOMB5\specific\specific.h" />
+    <ClInclude Include="TOMB5\tomb5\framework.h" />
+    <ClInclude Include="TOMB5\tomb5\pch.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -155,123 +261,6 @@
       <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="TOMB5\game\bat.h" />
-    <ClInclude Include="TOMB5\game\box.h" />
-    <ClInclude Include="TOMB5\game\bubbles.h" />
-    <ClInclude Include="TOMB5\game\debris.h" />
-    <ClInclude Include="TOMB5\game\delstuff.h" />
-    <ClInclude Include="TOMB5\game\door.h" />
-    <ClInclude Include="TOMB5\game\hair.h" />
-    <ClInclude Include="TOMB5\game\health.h" />
-    <ClInclude Include="TOMB5\game\laraclmb.h" />
-    <ClInclude Include="TOMB5\game\larasurf.h" />
-    <ClInclude Include="TOMB5\game\laraswim.h" />
-    <ClInclude Include="TOMB5\game\sphere.h" />
-    <ClInclude Include="TOMB5\game\switch.h" />
-    <ClInclude Include="TOMB5\game\traps.h" />
-    <ClInclude Include="TOMB5\game\camera.h" />
-    <ClInclude Include="TOMB5\game\collide.h" />
-    <ClInclude Include="TOMB5\game\control.h" />
-    <ClInclude Include="TOMB5\game\deltapak.h" />
-    <ClInclude Include="TOMB5\specific\display.h" />
-    <ClInclude Include="TOMB5\game\draw.h" />
-    <ClInclude Include="TOMB5\game\effect2.h" />
-    <ClInclude Include="TOMB5\game\effects.h" />
-    <ClInclude Include="TOMB5\game\flmtorch.h" />
-    <ClInclude Include="TOMB5\specific\drawprimitive.h" />
-    <ClInclude Include="TOMB5\specific\DS.h" />
-    <ClInclude Include="TOMB5\specific\pcsetup.h" />
-    <ClInclude Include="TOMB5\tomb5\framework.h" />
-    <ClInclude Include="TOMB5\specific\game.h" />
-    <ClInclude Include="TOMB5\game\gameflow.h" />
-    <ClInclude Include="TOMB5\specific\global.h" />
-    <ClInclude Include="TOMB5\specific\input.h" />
-    <ClInclude Include="TOMB5\game\items.h" />
-    <ClInclude Include="TOMB5\game\lara.h" />
-    <ClInclude Include="TOMB5\game\lara1gun.h" />
-    <ClInclude Include="TOMB5\game\lara2gun.h" />
-    <ClInclude Include="TOMB5\game\larafire.h" />
-    <ClInclude Include="TOMB5\game\laraflar.h" />
-    <ClInclude Include="TOMB5\game\laramisc.h" />
-    <ClInclude Include="TOMB5\game\lara_states.h" />
-    <ClInclude Include="TOMB5\game\lot.h" />
-    <ClInclude Include="TOMB5\specific\maths.h" />
-    <ClInclude Include="TOMB5\global\math_tbls.h" />
-    <ClInclude Include="TOMB5\specific\matrix_shit.h" />
-    <ClInclude Include="TOMB5\game\newinv2.h" />
-    <ClInclude Include="TOMB5\game\objects.h" />
-    <ClInclude Include="TOMB5\tomb5\pch.h" />
-    <ClInclude Include="TOMB5\game\pickup.h" />
-    <ClInclude Include="TOMB5\game\sound.h" />
-    <ClInclude Include="TOMB5\specific\specific.h" />
-    <ClInclude Include="TOMB5\game\spotcam.h" />
-    <ClInclude Include="TOMB5\game\tomb4fx.h" />
-    <ClInclude Include="TOMB5\global\types.h" />
-    <ClInclude Include="TOMB5\global\vars.h" />
-    <ClInclude Include="TOMB5\game\xatracks.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="TOMB5\game\bat.cpp" />
-    <ClCompile Include="TOMB5\game\box.cpp" />
-    <ClCompile Include="TOMB5\game\bubbles.cpp" />
-    <ClCompile Include="TOMB5\game\debris.cpp" />
-    <ClCompile Include="TOMB5\game\delstuff.cpp" />
-    <ClCompile Include="TOMB5\game\door.cpp" />
-    <ClCompile Include="TOMB5\game\hair.cpp" />
-    <ClCompile Include="TOMB5\game\health.cpp" />
-    <ClCompile Include="TOMB5\game\laraclmb.cpp" />
-    <ClCompile Include="TOMB5\game\larasurf.cpp" />
-    <ClCompile Include="TOMB5\game\laraswim.cpp" />
-    <ClCompile Include="TOMB5\game\sphere.cpp" />
-    <ClCompile Include="TOMB5\game\camera.cpp" />
-    <ClCompile Include="TOMB5\game\collide.cpp" />
-    <ClCompile Include="TOMB5\game\control.cpp">
-      <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)</AssemblerListingLocation>
-      <AssemblerOutput Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NoListing</AssemblerOutput>
-    </ClCompile>
-    <ClCompile Include="TOMB5\game\deltapak.cpp" />
-    <ClCompile Include="TOMB5\game\switch.cpp" />
-    <ClCompile Include="TOMB5\game\traps.cpp" />
-    <ClCompile Include="TOMB5\specific\display.cpp" />
-    <ClCompile Include="TOMB5\specific\drawprimitive.cpp" />
-    <ClCompile Include="TOMB5\specific\DS.cpp" />
-    <ClCompile Include="TOMB5\specific\pcsetup.cpp" />
-    <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
-    <ClCompile Include="TOMB5\game\draw.cpp" />
-    <ClCompile Include="TOMB5\game\effect2.cpp" />
-    <ClCompile Include="TOMB5\game\effects.cpp" />
-    <ClCompile Include="TOMB5\game\flmtorch.cpp" />
-    <ClCompile Include="TOMB5\specific\game.cpp" />
-    <ClCompile Include="TOMB5\game\gameflow.cpp" />
-    <ClCompile Include="TOMB5\specific\input.cpp" />
-    <ClCompile Include="TOMB5\game\items.cpp" />
-    <ClCompile Include="TOMB5\game\lara.cpp" />
-    <ClCompile Include="TOMB5\game\lara1gun.cpp" />
-    <ClCompile Include="TOMB5\game\lara2gun.cpp" />
-    <ClCompile Include="TOMB5\game\larafire.cpp" />
-    <ClCompile Include="TOMB5\game\laraflar.cpp" />
-    <ClCompile Include="TOMB5\game\laramisc.cpp" />
-    <ClCompile Include="TOMB5\game\lot.cpp" />
-    <ClCompile Include="TOMB5\specific\maths.cpp" />
-    <ClCompile Include="TOMB5\specific\matrix_shit.cpp" />
-    <ClCompile Include="TOMB5\game\newinv2.cpp" />
-    <ClCompile Include="TOMB5\game\objects.cpp" />
-    <ClCompile Include="TOMB5\tomb5\pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="TOMB5\game\pickup.cpp" />
-    <ClCompile Include="TOMB5\game\sound.cpp" />
-    <ClCompile Include="TOMB5\specific\specific.cpp" />
-    <ClCompile Include="TOMB5\game\spotcam.cpp" />
-    <ClCompile Include="TOMB5\game\tomb4fx.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="TOMB5\global\progress.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
