@@ -3,6 +3,31 @@
 
 void inject_newinv2();
 
+void combine_HK_SILENCER(int flag);
+void combine_revolver_lasersight(int flag);
+void combine_crossbow_lasersight(int flag);
+void combine_PuzzleItem1(int flag);
+void combine_PuzzleItem2(int flag);
+void combine_PuzzleItem3(int flag);
+void combine_PuzzleItem4(int flag);
+void combine_PuzzleItem5(int flag);
+void combine_PuzzleItem6(int flag);
+void combine_PuzzleItem7(int flag);
+void combine_PuzzleItem8(int flag);
+void combine_KeyItem1(int flag);
+void combine_KeyItem2(int flag);
+void combine_KeyItem3(int flag);
+void combine_KeyItem4(int flag);
+void combine_KeyItem5(int flag);
+void combine_KeyItem6(int flag);
+void combine_KeyItem7(int flag);
+void combine_KeyItem8(int flag);
+void combine_PickupItem1(int flag);
+void combine_PickupItem2(int flag);
+void combine_PickupItem3(int flag);
+void combine_PickupItem4(int flag);
+void combine_clothbottle(int flag);
+void NailInvItem(short objnum);
 int have_i_got_object(short object_number);
 void remove_inventory_item(short object_number);
 int convert_obj_to_invobj(short obj);
@@ -18,7 +43,7 @@ void S_DrawPickup(short object_number);
 #define DrawThreeDeeObject2D	( (void(__cdecl*)(int, int, int, int, int, int, int, int, int)) 0x00460350 )
 #define S_CallInventory2	( (int(__cdecl*)()) 0x0045F9D0 )
 #define	DEL_picked_up_object	( (void(__cdecl*)(short)) 0x00463B60 )
-#define NailInvItem	( (void(__cdecl*)(short)) 0x004640B0 )
+//#define NailInvItem	( (void(__cdecl*)(short)) 0x004640B0 )
 
 enum ring_types
 {

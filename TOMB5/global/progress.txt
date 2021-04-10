@@ -405,3 +405,73 @@ x for functions decompiled but not injected, for one reason or another.
 0x00483350		CreateBubble
 0x00483470		LaraBubbles
 0x00483540		UpdateBubbles
+
+
+		game/newinv2.cpp
+
+0x0045F9D0		S_CallInventory2
+0x0045FEF0		init_new_inventry
+0x004601A0		do_debounced_joystick_poo
+0x00460350		DrawThreeDeeObject2D
+0x00460580		DrawInventoryItemMe
+0x00460920		go_and_load_game
+0x00460940		go_and_save_game
+0x00460960		construct_combine_object_list
+0x00460B40		insert_object_into_list_v2
+0x00460BD0		construct_object_list
+0x00461120		insert_object_into_list
+0x00461190		draw_current_object_list
+0x00461D90		handle_object_changeover
+0x00461DC0		handle_inventry_menu
+0x00462740		setup_ammo_selector
+0x00462A00		fade_ammo_selector
+0x00462AD0		draw_ammo_selector
+0x00462DD0		spinback
+0x00462E60		update_laras_weapons_status
+0x00462EF0		is_item_currently_combinable
+0x00462F60		have_i_got_item
+0x00462FA0		do_these_objects_combine
+0x00462FF0		combine_these_two_objects
+0x00463080		seperate_object
+0x004630F0	+	combine_HK_SILENCER
+0x00463130	+	combine_revolver_lasersight
+0x004631B0	+	combine_crossbow_lasersight
+0x00463230	+	combine_PuzzleItem1
+0x00463260	+	combine_PuzzleItem2
+0x00463290	+	combine_PuzzleItem3
+0x004632C0	+	combine_PuzzleItem4
+0x004632F0	+	combine_PuzzleItem5
+0x00463320	+	combine_PuzzleItem6
+0x00463350	+	combine_PuzzleItem7
+0x00463380	+	combine_PuzzleItem8
+0x004633B0	+	combine_KeyItem1
+0x004633E0	+	combine_KeyItem2
+0x00463410	+	combine_KeyItem3
+0x00463440	+	combine_KeyItem4
+0x00463470	+	combine_KeyItem5
+0x004634A0	+	combine_KeyItem6
+0x004634D0	+	combine_KeyItem7
+0x00463500	+	combine_KeyItem8
+0x00463530	+	combine_PickupItem1
+0x00463560	+	combine_PickupItem2
+0x00463590	+	combine_PickupItem3
+0x004635C0	+	combine_PickupItem4
+0x004635F0	+	combine_clothbottle
+0x00463620		setup_objectlist_startposition
+0x00463660		setup_objectlist_startposition2
+0x004636B0		use_current_item
+0x00463B60		DEL_picked_up_object
+0x004640B0	+	NailInvItem
+0x00464360	+	have_i_got_object
+0x00464490	+	remove_inventory_item
+0x004645B0	+	convert_obj_to_invobj
+0x004645F0	+	convert_invobj_to_obj
+0x00464610	+	init_keypad_mode
+0x00464650	+	do_keypad_mode
+0x00464AB0	+	do_examine_mode
+0x00464BF0	+	do_stats_mode
+0x00464C60	+	dels_give_lara_items_cheat
+0x00464C80	+	dels_give_lara_guns_cheat
+0x00464CA0		
+0x00464EF0		LoadGame
+0x00464F20		SaveGame
