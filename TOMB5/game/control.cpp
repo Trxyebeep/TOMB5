@@ -515,9 +515,10 @@ int CheckGuardOnTrigger()
 	room_number = lara_item->room_number;
 	GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number);
 
-	for (slot = 0; slot < 5; slot++, cinfo++)
+	for (slot = 0; slot < 5; slot++)
 	{
 		cinfo = &baddie_slots[slot];
+
 		if (cinfo->item_num != -1 && !cinfo->alerted)
 		{
 			item = &items[cinfo->item_num];
