@@ -745,9 +745,10 @@ struct creature_info
 	mood_type mood; // size=4, offset=14
 	ITEM_INFO* enemy; // size=144, offset=18
 	ITEM_INFO ai_target; // size=144, offset=22
-	short item_num; // size=0, offset=5644
-	PHD_VECTOR target; // size=12, offset=5646
-	lot_info LOT; // size=44, offset=5658
+	short pad;
+	short item_num; // size=0, offset=5646
+	PHD_VECTOR target; // size=12, offset=5648
+	lot_info LOT; // size=44, offset=5660
 };
 
 struct COLL_INFO
@@ -1218,6 +1219,14 @@ struct RINGME
 	int objlistmovement; // size=0, offset=604
 	int curobjinlist; // size=0, offset=608
 	int numobjectsinlist; // size=0, offset=612
+};
+
+struct COMBINELIST
+{
+	void(*combine_routine)(int flag); // size=0, offset=0
+	short item1; // size=0, offset=4
+	short item2; // size=0, offset=6
+	short combined_item; // size=0, offset=8
 };
 
 struct DOORPOS_DATA

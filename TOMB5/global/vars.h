@@ -199,6 +199,23 @@
 #define Chris_Menu	VAR_U_(0x0051CE2E, char)
 #define title_controls_locked_out	VAR_U_(0x00E5C2A8, char)
 #define jobyfrigger	VAR_U_(0x0051CA9C, char)
+#define CurrentPistolsAmmoType	VAR_U_(0x0051CF06, char)
+#define CurrentUziAmmoType	VAR_U_(0x0051CF11, char)
+#define CurrentRevolverAmmoType	VAR_U_(0x0051CF0A, char)
+#define CurrentShotGunAmmoType	VAR_U_(0x0051CF0B, char)
+#define CurrentGrenadeGunAmmoType	VAR_U_(0x0051CF00, char)
+#define CurrentCrossBowAmmoType	VAR_U_(0x0051CF1C, char)
+#define AmountPistolsAmmo	VAR_U_(0x0051CF16, short)
+#define AmountRevolverAmmo	VAR_U_(0x0051CF14, short)
+#define AmountHKAmmo1	VAR_U_(0x0051CF08, short)
+#define AmountCrossBowAmmo1	VAR_U_(0x0051CF0E, short)
+#define AmountCrossBowAmmo2	VAR_U_(0x0051CF0C, short)
+#define AmountShotGunAmmo1	VAR_U_(0x0051CF04, short)
+#define AmountShotGunAmmo2	VAR_U_(0x0051CF02, short)
+#define AmountUziAmmo	VAR_U_(0x0051CF1A, short)
+#define current_selected_option	VAR_U_(0x00E598F9, char)
+#define ammo_active	VAR_U_(0x00E5991F, char)
+
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)

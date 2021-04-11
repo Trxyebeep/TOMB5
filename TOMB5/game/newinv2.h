@@ -3,6 +3,17 @@
 
 void inject_newinv2();
 
+void construct_combine_object_list();
+void insert_object_into_list_v2(int num);
+void construct_object_list();
+void insert_object_into_list(int num);
+void handle_object_changeover(int ringnum);
+void update_laras_weapons_status();
+int is_item_currently_combinable(short obj);
+int have_i_got_item(short obj);
+int do_these_objects_combine(int obj1, int obj2);
+void combine_these_two_objects(short obj1, short obj2);
+void seperate_object(short obj);
 void combine_HK_SILENCER(int flag);
 void combine_revolver_lasersight(int flag);
 void combine_crossbow_lasersight(int flag);
@@ -27,6 +38,8 @@ void combine_PickupItem2(int flag);
 void combine_PickupItem3(int flag);
 void combine_PickupItem4(int flag);
 void combine_clothbottle(int flag);
+void setup_objectlist_startposition(short newobj);
+void setup_objectlist_startposition2(short newobj);
 void NailInvItem(short objnum);
 int have_i_got_object(short object_number);
 void remove_inventory_item(short object_number);
@@ -43,7 +56,7 @@ void S_DrawPickup(short object_number);
 #define DrawThreeDeeObject2D	( (void(__cdecl*)(int, int, int, int, int, int, int, int, int)) 0x00460350 )
 #define S_CallInventory2	( (int(__cdecl*)()) 0x0045F9D0 )
 #define	DEL_picked_up_object	( (void(__cdecl*)(short)) 0x00463B60 )
-//#define NailInvItem	( (void(__cdecl*)(short)) 0x004640B0 )
+#define setup_ammo_selector	( (void(__cdecl*)()) 0x00462740 )
 
 enum ring_types
 {
