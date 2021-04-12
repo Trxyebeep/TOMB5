@@ -422,10 +422,10 @@ x for functions decompiled but not injected, for one reason or another.
 0x00461120	+	insert_object_into_list
 0x00461190		draw_current_object_list
 0x00461D90	+	handle_object_changeover
-0x00461DC0		handle_inventry_menu
-0x00462740		setup_ammo_selector
-0x00462A00		fade_ammo_selector
-0x00462AD0		draw_ammo_selector
+0x00461DC0	+	handle_inventry_menu
+0x00462740	+	setup_ammo_selector
+0x00462A00	+	fade_ammo_selector
+0x00462AD0	+	draw_ammo_selector
 0x00462DD0		spinback
 0x00462E60	+	update_laras_weapons_status
 0x00462EF0	+	is_item_currently_combinable

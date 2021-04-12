@@ -8,6 +8,11 @@ void insert_object_into_list_v2(int num);
 void construct_object_list();
 void insert_object_into_list(int num);
 void handle_object_changeover(int ringnum);
+void handle_inventry_menu();
+void setup_ammo_selector();
+void fade_ammo_selector();
+void draw_ammo_selector();
+//spinback
 void update_laras_weapons_status();
 int is_item_currently_combinable(short obj);
 int have_i_got_item(short obj);
@@ -56,7 +61,7 @@ void S_DrawPickup(short object_number);
 #define DrawThreeDeeObject2D	( (void(__cdecl*)(int, int, int, int, int, int, int, int, int)) 0x00460350 )
 #define S_CallInventory2	( (int(__cdecl*)()) 0x0045F9D0 )
 #define	DEL_picked_up_object	( (void(__cdecl*)(short)) 0x00463B60 )
-#define setup_ammo_selector	( (void(__cdecl*)()) 0x00462740 )
+#define spinback	( (void(__cdecl*)(unsigned short*)) 0x00462DD0 )
 
 enum ring_types
 {
@@ -64,18 +69,7 @@ enum ring_types
 	RING_AMMO
 };
 
-enum inv_options
-{
-	OPT_SHOTGUN = 0x40,
-	OPT_CROSSBOW_TYPE2 = 0x80,
-	OPT_HK = 0x100,
-	OPT_UZI = 0x200,
-	OPT_PISTOLS = 0x400,
-	OPT_REVOLVER = 0x800,
-	OPT_CROSSBOW_TYPE1 = 0x4000
-};
-
-enum invobj_types // update this whenever inventry_objects_list is modified
+enum invobj_types
 {
 	INV_UZI_ITEM = 0,
 	INV_PISTOLS_ITEM = 1,

@@ -215,7 +215,32 @@
 #define AmountUziAmmo	VAR_U_(0x0051CF1A, short)
 #define current_selected_option	VAR_U_(0x00E598F9, char)
 #define ammo_active	VAR_U_(0x00E5991F, char)
-
+#define right_repeat	VAR_U_(0x00E59915, unsigned char)
+#define right_debounce	VAR_U_(0x00E59914, unsigned char)
+#define left_repeat	VAR_U_(0x00E59E29, unsigned char)
+#define left_debounce	VAR_U_(0x00E5989B, unsigned char)
+#define	ammo_selector_fade_dir	VAR_U_(0x00E59926, short)
+#define	ammo_selector_fade_val	VAR_U_(0x00E5990A, short)
+#define	ammo_selector_flag	VAR_U_(0x00E59928, char)
+#define num_ammo_slots	VAR_U_(0x00E598A4, char)
+#define current_ammo_type	VAR_U_(0x00E59918, char*)
+#define OBJLIST_SPACING	VAR_U_(0x00E59894, int)
+#define combine_ring_fade_dir	VAR_U_(0x00E5991C, short)
+#define	combine_obj1	VAR_U_(0x00E59912, short)
+#define	combine_obj2	VAR_U_(0x00E59910, short)
+#define	combine_ring_fade_val	VAR_U_(0x00E598F6, short)
+#define	combine_type_flag	VAR_U_(0x00E59E28, short)
+#define seperate_type_flag	VAR_U_(0x00E598F8, short)
+#define loading_or_saving	VAR_U_(0x00E5989D, char)
+#define normal_ring_fade_dir	VAR_U_(0x00E59924, short)
+#define normal_ring_fade_val	VAR_U_(0x00E59908, short)
+#define StashedCurrentPistolsAmmoType	VAR_U_(0x0051CF12, char)//static
+#define StashedCurrentUziAmmoType	VAR_U_(0x0051CF01, char)//static
+#define StashedCurrentRevolverAmmoType	VAR_U_(0x0051CF1D, char)//static
+#define StashedCurrentShotGunAmmoType	VAR_U_(0x0051CF18, char)//static
+#define StashedCurrentGrenadeGunAmmoType	VAR_U_(0x0051CF10, char)//static
+#define StashedCurrentCrossBowAmmoType	VAR_U_(0x0051CF13, char)//static
+#define Stashedcurrent_selected_option	VAR_U_(0x00E5992B, char)//static
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)
@@ -302,6 +327,8 @@
 #define pickups	ARRAY_(0x00E5BF40, DISPLAYPU, [8])
 #define ShatterSounds	ARRAY_(0x00506BAC, unsigned char, [18][10])
 #define twogun	ARRAY_(0x00EEEB00, TWOGUN_INFO, [3])
+#define ammo_object_list	ARRAY_(0x00E598E0, AMMOLIST, [3])
+#define current_options	ARRAY_(0x00E598C0, MENUTHANG, [3])
 
 
 //defs

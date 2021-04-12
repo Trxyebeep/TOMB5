@@ -1377,4 +1377,17 @@ struct TWOGUN_INFO
 	char b; // size=0, offset=36
 	char fadein; // size=0, offset=37
 };
+
+struct AMMOLIST
+{
+	short invitem; // size=0, offset=0
+	short amount; // size=0, offset=2
+	unsigned short yrot; // size=0, offset=4
+};
+
+struct MENUTHANG
+{
+	int type; // size=0, offset=0
+	char* text; // size=0, offset=4
+};
 #pragma pack(pop)
