@@ -18,6 +18,7 @@
 #define effects	VAR_U_(0x00E5C5E0, FX_INFO*)
 #define room	VAR_U_(0x00875154, room_info*)
 #define	meshes	VAR_U_(0x00875170, short**)
+#define bones	VAR_U_(0x00875178, long*)
 #define height_type VAR_U_(0x00EEEFF4, int)
 #define trigger_index VAR_U_(0x00EEEF9C, short*)
 #define xfront VAR_U_(0x00EEf928, long)
@@ -241,6 +242,7 @@
 #define StashedCurrentGrenadeGunAmmoType	VAR_U_(0x0051CF10, char)//static
 #define StashedCurrentCrossBowAmmoType	VAR_U_(0x0051CF13, char)//static
 #define Stashedcurrent_selected_option	VAR_U_(0x00E5992B, char)//static
+#define	GLOBAL_invkeypadmode	VAR_U_(0x0051CF28, int)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)
@@ -277,6 +279,9 @@
 #define gfFogColour	VAR_U_(0x0051CE30, CVECTOR)
 #define	lara1_look_fade	VAR_U_(0x00511A18, short)
 #define	lara4_look_fade	VAR_U_(0x00511A1A, short)
+#define inv_light	VAR_U_(0x00508E10, long)//seems to only affect the ammo ring?
+#define inv_item_xpos	VAR_U_(0x00E598A0, float)
+#define inv_item_ypos	VAR_U_(0x00E5990C, float)
 
 //arrays
 #define cutseq_meshbits	ARRAY_(0x00E7EEA0, unsigned long, [10])
@@ -343,3 +348,4 @@
 #define	dword_55D224	VAR_U_(0x0055D224, int)//AlterFOV
 #define byte_51CB40	VAR_U_(0x0051CB40, char)//OpenThatDoor//DoorControl
 #define dword_00E916F0	VAR_U_(0x00E916F0, int)//special 1 control, special 2 init, special 3 init, special 4 init
+#define dword_506D3C	VAR_U_(0x00506D3C, int)//DrawInventoryItemMe

@@ -643,17 +643,17 @@ struct ITEM_INFO
 	unsigned short fired_weapon; // size=0, offset=50
 	short item_flags[4]; // size=8, offset=52
 	void* data; // size=0, offset=60
-	struct PHD_3DPOS pos; // size=20, offset=64
-	struct ITEM_LIGHT il; // size=48, offset=84
-	struct PCLIGHT lights_1[21];
-	struct PCLIGHT lights_2[21];
-	DWORD num_lights_1;
-	DWORD num_lights_2;
-	DWORD light_room_num;
-	DWORD unk_thing;
-	struct PHD_VECTOR ambient_light_pos;
-	struct PCLIGHT* ptr_lights_1;
-	struct PCLIGHT* ptr_lights_2;
+	PHD_3DPOS pos; // size=20, offset=64
+	ITEM_LIGHT il; // size=48, offset=84
+	PCLIGHT lights_1[21];
+	PCLIGHT lights_2[21];
+	unsigned long num_lights_1;
+	unsigned long num_lights_2;
+	unsigned long light_room_num;
+	unsigned long unk_thing;
+	PHD_VECTOR ambient_light_pos;
+	PCLIGHT* ptr_lights_1;
+	PCLIGHT* ptr_lights_2;
 	unsigned long active : 1; // offset=132.0 OFF=5610
 	unsigned long status : 2; // offset=132.1
 	unsigned long gravity_status : 1; // offset=132.3
@@ -1389,5 +1389,13 @@ struct MENUTHANG
 {
 	int type; // size=0, offset=0
 	char* text; // size=0, offset=4
+};
+
+struct VECTOR
+{
+	long vx;
+	long vy;
+	long vz;
+	long pad;
 };
 #pragma pack(pop)

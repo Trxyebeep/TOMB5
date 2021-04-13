@@ -58,6 +58,162 @@ COMBINELIST dels_handy_combine_table[24] =
 	{combine_clothbottle, INV_CLOTH, INV_BOTTLE, INV_WET_CLOTH}
 };
 
+void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, int zrot, int bright, int overlay)
+{
+	ITEM_INFO item;
+	INVOBJ* objme;
+
+	objme = &inventry_objects_list[num];
+	item.pos.x_rot = xrot + objme->xrot;
+	item.pos.y_rot = yrot + objme->yrot;
+	item.pos.z_rot = zrot + objme->zrot;
+	item.object_number = objme->object_number;
+	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
+	phd_QuickW2VMatrix({0, 1024, 0}, {100, 0, 200}, 0);
+
+	if (!bright)
+		inv_light = 0x007F7F7F;
+	else if (bright == 1)
+		inv_light = 0x002F2F2F;
+	else
+		inv_light = bright | ((bright | (bright << 8)) << 8);
+
+	SetD3DViewMatrix();
+	phd_PushUnitMatrix();
+	phd_TranslateRel(0, 0, objme->scale1);
+	inv_item_ypos = objme->yoff + y;
+	item.mesh_bits = objme->meshbits;
+	inv_item_xpos = x;
+	item.shade = -1;
+	item.pos.x_pos = 0;
+	item.pos.y_pos = 0;
+	item.pos.z_pos = 0;
+	item.room_number = 0;
+	item.num_lights_1 = 0;
+	item.num_lights_2 = 0;
+	item.il.room_ambient.rgbcd = 0x007F7F7F;
+	item.anim_number = objects[item.object_number].anim_index;
+
+	if (objme->flags & 8)
+		DrawInventoryItemMe(&item, shade, overlay, 1);
+	else
+		DrawInventoryItemMe(&item, shade, overlay, 0);
+		
+	phd_mxptr -= 12;
+	phd_dxptr -= 12;
+	inv_item_xpos = phd_centerx;
+	inv_item_ypos = phd_centery;
+}
+
+void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
+{
+	ANIM_STRUCT* anim;
+	OBJECT_INFO* object;
+	VECTOR vec;
+	long* bone;
+	short* rotation1;
+	short** meshpp;
+	short* frmptr;
+	long i, m, poppush;
+	unsigned long bit;
+	int unk_bak;////
+
+	frmptr = anims[item->anim_number].frame_ptr;
+	object = &objects[item->object_number];
+	phd_PushMatrix();
+
+	if ((item->object_number == PC_LOAD_INV_ITEM || item->object_number == PC_SAVE_INV_ITEM) && !IsHardware())
+	{
+		if (IsSuperLowRes())
+		{
+			if (IsSuperLowRes() == 1)
+				phd_TranslateRel(0, -390, 0);
+			else
+				phd_TranslateRel(0, -190, 0);
+		}
+	}
+
+	if (item->object_number == HK_ITEM && gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
+		phd_TranslateRel(0, 70, 0);
+
+	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+
+	if (item->object_number == PUZZLE_HOLE8 && GLOBAL_invkeypadmode)
+	{
+		vec.vx = 24576;
+		vec.vy = 16384;
+		vec.vz = 4096;
+		ScaleCurrentMatrix(&vec);
+	}
+
+	bit = 1;
+	meshpp = &meshes[object->mesh_index];
+	bone = &bones[object->bone_index];
+
+	if (!shagflag)
+		phd_TranslateRel(frmptr[6], frmptr[7], frmptr[8]);
+
+	rotation1 = &frmptr[9];
+	gar_RotYXZsuperpack(&rotation1, 0);
+
+	if ((item->mesh_bits & 1))
+	{
+		if (overlay)
+			phd_PutPolygons_pickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
+		else
+		{
+			unk_bak = dword_506D3C;
+			dword_506D3C = 0xFF000000;
+			phd_PutPolygons_pickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
+			dword_506D3C = unk_bak;
+		}
+	}
+
+	for (i = 0, m = 2; i < object->nmeshes - 1; i++, m += 2)
+	{
+		poppush = bone[i];
+
+		if (poppush & 1)
+		{
+			phd_mxptr -= 12;
+			phd_dxptr -= 12;
+		}
+
+		if (poppush & 2)
+			phd_PushMatrix();
+
+		phd_TranslateRel(bone[1], bone[2], bone[3]);
+		gar_RotYXZsuperpack(&rotation1, 0);
+		bit <<= 1;
+
+		if ((bit & item->mesh_bits))
+		{
+			if (overlay)
+				phd_PutPolygons_pickup(meshpp[m], inv_item_xpos, inv_item_ypos, inv_light);
+			else
+			{
+				unk_bak = dword_506D3C;
+				dword_506D3C = 0xFF000000;
+				phd_PutPolygons_pickup(meshpp[m], inv_item_xpos, inv_item_ypos, inv_light);
+				dword_506D3C = unk_bak;
+			}
+		}
+	}
+
+	phd_mxptr -= 12;
+	phd_dxptr -= 12;
+}
+
+int go_and_load_game()
+{
+	return LoadGame();
+}
+
+int go_and_save_game()
+{
+	return SaveGame();
+}
+
 void construct_combine_object_list()
 {
 	rings[RING_AMMO]->numobjectsinlist = 0;
@@ -313,6 +469,8 @@ void insert_object_into_list(int num)
 	rings[RING_INVENTORY]->numobjectsinlist++;
 }
 
+//draw_current_object_list
+
 void handle_object_changeover(int ringnum)
 {
 	current_selected_option = 0;
@@ -401,7 +559,7 @@ void handle_inventry_menu()
 				n++;
 			}
 
-			if ((opts & 0x8000))//opts < 0.. wat
+			if ((opts & 0x8000))
 			{
 				current_options[n].type = 12;
 				current_options[n].text = &gfStringWad[gfStringOffset[optmessages[9]]];
@@ -1588,6 +1746,10 @@ void S_DrawPickup(short object_number)
 
 void inject_newinv2()
 {
+	INJECT(0x00460350, DrawThreeDeeObject2D);
+	INJECT(0x00460580, DrawInventoryItemMe);
+	INJECT(0x00460920, go_and_load_game);
+	INJECT(0x00460940, go_and_save_game);
 	INJECT(0x00460960, construct_combine_object_list);
 	INJECT(0x00460B40, insert_object_into_list_v2);
 	INJECT(0x00460BD0, construct_object_list);

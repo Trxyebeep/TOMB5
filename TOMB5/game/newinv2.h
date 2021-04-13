@@ -1,8 +1,12 @@
 #pragma once
-
+#include "../global/types.h"
 
 void inject_newinv2();
 
+void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, int zrot, int bright, int overlay);
+void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag);
+int go_and_load_game();
+int go_and_save_game();
 void construct_combine_object_list();
 void insert_object_into_list_v2(int num);
 void construct_object_list();
@@ -58,10 +62,13 @@ void dels_give_lara_items_cheat();
 void dels_give_lara_guns_cheat();
 void S_DrawPickup(short object_number);
 
-#define DrawThreeDeeObject2D	( (void(__cdecl*)(int, int, int, int, int, int, int, int, int)) 0x00460350 )
+//#define DrawThreeDeeObject2D	( (void(__cdecl*)(int, int, int, int, int, int, int, int, int)) 0x00460350 )
+//#define DrawInventoryItemMe	( (void(__cdecl*)(ITEM_INFO*, long, int, int)) 0x00460580 )
 #define S_CallInventory2	( (int(__cdecl*)()) 0x0045F9D0 )
 #define	DEL_picked_up_object	( (void(__cdecl*)(short)) 0x00463B60 )
 #define spinback	( (void(__cdecl*)(unsigned short*)) 0x00462DD0 )
+#define LoadGame	( (int(__cdecl*)()) 0x00464EF0 )
+#define SaveGame	( (int(__cdecl*)()) 0x00464F20 )
 
 enum ring_types
 {
