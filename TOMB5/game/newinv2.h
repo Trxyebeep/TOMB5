@@ -5,7 +5,7 @@ void inject_newinv2();
 
 //S_CallInventory2
 void init_new_inventry();
-//do_debounced_joystick_poo
+void do_debounced_joystick_poo();
 void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, int zrot, int bright, int overlay);
 void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag);
 int go_and_load_game();
@@ -54,7 +54,7 @@ void combine_clothbottle(int flag);
 void setup_objectlist_startposition(short newobj);
 void setup_objectlist_startposition2(short newobj);
 //use_current_item
-//DEL_picked_up_object
+void DEL_picked_up_object(short objnum);
 void NailInvItem(short objnum);
 int have_i_got_object(short object_number);
 void remove_inventory_item(short object_number);
@@ -69,7 +69,7 @@ void dels_give_lara_guns_cheat();
 void S_DrawPickup(short object_number);
 
 #define S_CallInventory2	( (int(__cdecl*)()) 0x0045F9D0 )
-#define	DEL_picked_up_object	( (void(__cdecl*)(short)) 0x00463B60 )
+//#define	DEL_picked_up_object	( (void(__cdecl*)(short)) 0x00463B60 )
 #define spinback	( (void(__cdecl*)(unsigned short*)) 0x00462DD0 )
 #define LoadGame	( (int(__cdecl*)()) 0x00464EF0 )
 #define SaveGame	( (int(__cdecl*)()) 0x00464F20 )

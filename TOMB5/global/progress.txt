@@ -411,7 +411,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x0045F9D0		S_CallInventory2
 0x0045FEF0	+	init_new_inventry
-0x004601A0		do_debounced_joystick_poo
+0x004601A0	+	do_debounced_joystick_poo
 0x00460350	+	DrawThreeDeeObject2D
 0x00460580	+	DrawInventoryItemMe
 0x00460920	+	go_and_load_game
@@ -460,7 +460,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00463620	+	setup_objectlist_startposition
 0x00463660	+	setup_objectlist_startposition2
 0x004636B0		use_current_item
-0x00463B60		DEL_picked_up_object
+0x00463B60	+	DEL_picked_up_object
 0x004640B0	+	NailInvItem
 0x00464360	+	have_i_got_object
 0x00464490	+	remove_inventory_item

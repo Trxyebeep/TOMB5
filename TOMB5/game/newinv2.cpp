@@ -11,6 +11,8 @@
 #include "lara1gun.h"
 #include "lara2gun.h"
 #include "camera.h"
+#include "control.h"
+#include "xatracks.h"
 
 short optmessages[11] =
 {
@@ -143,7 +145,93 @@ void init_new_inventry()
 	handle_object_changeover(RING_INVENTORY);
 }
 
-//do_debounced_joystick_poo
+void do_debounced_joystick_poo()
+{
+	go_left = 0;
+	go_right = 0;
+	go_up = 0;
+	go_down = 0;
+	go_select = 0;
+	go_deselect = 0;
+
+	if ((input & IN_LEFT))
+	{
+		if (left_repeat >= 8)
+			go_left = 1;
+		else
+			left_repeat++;
+
+		if (!left_debounce)
+			go_left = 1;
+
+		left_debounce = 1;
+	}
+	else
+	{
+		left_debounce = 0;
+		left_repeat = 0;
+	}
+
+	if ((input & IN_RIGHT))
+	{
+		if (right_repeat >= 8)
+			go_right = 1;
+		else
+			right_repeat++;
+
+		if (!right_debounce)
+			go_right = 1;
+
+		right_debounce = 1;
+	}
+	else
+	{
+		right_debounce = 0;
+		right_repeat = 0;
+	}
+
+	if ((input & IN_FORWARD))
+	{
+		if (!up_debounce)
+			go_up = 1;
+
+		up_debounce = 1;
+	}
+	else
+		up_debounce = 0;
+
+	if ((input & IN_BACK))
+	{
+		if (!down_debounce)
+			go_down = 1;
+
+		down_debounce = 1;
+	}
+	else
+		down_debounce = 0;
+
+	if (input & IN_ACTION || input & IN_SELECT)
+		select_debounce = 1;
+	else
+	{
+		if (select_debounce == 1 && !friggrimmer)
+			go_select = 1;
+
+		select_debounce = 0;
+		friggrimmer = 0;
+	}
+
+	if ((input & IN_DESELECT))
+		deselect_debounce = 1;
+	else
+	{
+		if (deselect_debounce == 1 && !friggrimmer2)
+			go_deselect = 1;
+
+		deselect_debounce = 0;
+		friggrimmer2 = 0;
+	}
+}
 
 void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, int zrot, int bright, int overlay)
 {
@@ -782,14 +870,11 @@ void draw_current_object_list(int ringnum)
 						case PICKUP_ITEM4:
 							nummeup = savegame.Level.Secrets;
 							break;
-						default:
-							sprintf(textbufme, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
-							break;
 						}
 					}
 					else
 					{
-						nummeup = *((char*)&lara.mesh_ptrs[6] + inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number);
+						nummeup = lara.puzzleitems[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number - PUZZLE_ITEM1];//*((char*)&lara.mesh_ptrs[6] + inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number);
 
 						if (nummeup <= 1)
 							sprintf(textbufme, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
@@ -798,17 +883,21 @@ void draw_current_object_list(int ringnum)
 					break;
 				}
 
-				if (nummeup)
+				if (inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number < PUZZLE_ITEM1 ||
+					inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number > PUZZLE_ITEM8)
 				{
-					if (inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number == PICKUP_ITEM4)
-						sprintf(textbufme, &gfStringWad[gfStringOffset_bis[185]], nummeup, wanky_secrets_table[gfCurrentLevel]);
-					else if (nummeup == -1)
-						sprintf(textbufme, &gfStringWad[gfStringOffset[STR_UNLIMITED]], &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+					if (nummeup)
+					{
+						if (inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number == PICKUP_ITEM4)
+							sprintf(textbufme, &gfStringWad[gfStringOffset_bis[STR_SECRETS_NUM]], nummeup, wanky_secrets_table[gfCurrentLevel]);
+						else if (nummeup == -1)
+							sprintf(textbufme, &gfStringWad[gfStringOffset[STR_UNLIMITED]], &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+						else
+							sprintf(textbufme, "%d x %s", nummeup, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+					}
 					else
-						sprintf(textbufme, "%d x %s", nummeup, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+						sprintf(textbufme, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
 				}
-				else
-					sprintf(textbufme, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
 
 				if (ringnum == RING_INVENTORY)
 					objmeup = phd_centery - (phd_winymax + 1) * 0.0625 * 3.0;
@@ -906,7 +995,7 @@ void draw_current_object_list(int ringnum)
 
 				if (rings[ringnum]->objlistmovement < 65536)
 				{
-					if (rings[ringnum]->objlistmovement < -65536)
+					if (rings[ringnum]->objlistmovement < -65535)
 					{
 						rings[ringnum]->curobjinlist++;
 
@@ -1728,6 +1817,208 @@ void setup_objectlist_startposition2(short newobj)
 			rings[RING_INVENTORY]->curobjinlist = i;
 }
 
+void DEL_picked_up_object(short objnum)
+{
+	switch (objnum)
+	{
+	case UZI_ITEM:
+		if (!(lara.uzis_type_carried & WTYPE_PRESENT))
+			lara.uzis_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
+
+		if (lara.num_uzi_ammo != -1)
+			lara.num_uzi_ammo += 30;
+
+		return;
+
+	case PISTOLS_ITEM:
+		if (!(lara.uzis_type_carried & WTYPE_PRESENT))
+			lara.pistols_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
+
+		lara.num_pistols_ammo = -1;
+		return;
+
+	case SHOTGUN_ITEM:
+		if (!(lara.shotgun_type_carried & WTYPE_PRESENT))
+			lara.shotgun_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
+
+		if (lara.num_shotgun_ammo1 != -1)
+			lara.num_shotgun_ammo1 += 36;
+
+		return;
+
+	case REVOLVER_ITEM:
+		if (!(lara.sixshooter_type_carried & WTYPE_PRESENT))
+			lara.sixshooter_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
+
+		if (lara.num_revolver_ammo != -1)
+			lara.num_revolver_ammo += 6;
+
+		return;
+
+	case CROSSBOW_ITEM:
+		if (gfCurrentLevel < LVL5_THIRTEENTH_FLOOR || gfCurrentLevel > LVL5_RED_ALERT)
+		{
+			if (!(lara.crossbow_type_carried & WTYPE_PRESENT))
+				lara.crossbow_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
+
+			if (lara.num_crossbow_ammo1 != -1)
+				lara.num_crossbow_ammo1 += 10;
+		}
+		else
+		{
+			lara.crossbow_type_carried = WTYPE_PRESENT | WTYPE_LASERSIGHT | WTYPE_AMMO_1;
+			lara.num_crossbow_ammo2 = 0;
+		}
+
+		return;
+
+	case HK_ITEM:
+		SetCutNotPlayed(23);
+
+		if (!(lara.hk_type_carried & WTYPE_PRESENT))
+			lara.hk_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
+
+		if (gfCurrentLevel != LVL5_ESCAPE_WITH_THE_IRIS)
+			if (lara.num_hk_ammo1 != -1)
+				lara.num_hk_ammo1 += 30;
+
+		return;
+
+	case SHOTGUN_AMMO1_ITEM:
+		if (lara.num_shotgun_ammo1 != -1)
+			lara.num_shotgun_ammo1 += 36;
+
+		return;
+
+	case SHOTGUN_AMMO2_ITEM:
+		if (lara.num_shotgun_ammo2 != -1)
+			lara.num_shotgun_ammo2 += 36;
+
+		return;
+
+	case HK_AMMO_ITEM:
+		if (lara.num_hk_ammo1 != -1)
+			lara.num_hk_ammo1 += 30;
+
+		return;
+
+	case CROSSBOW_AMMO1_ITEM:
+		if (lara.num_crossbow_ammo1 != -1)
+			lara.num_crossbow_ammo1 += 10;
+
+		return;
+
+	case CROSSBOW_AMMO2_ITEM:
+		if (lara.num_crossbow_ammo2 != -1)
+			lara.num_crossbow_ammo2 += 10;
+
+		return;
+
+	case REVOLVER_AMMO_ITEM:
+		if (lara.num_revolver_ammo != -1)
+			lara.num_revolver_ammo += 6;
+
+		return;
+
+	case UZI_AMMO_ITEM:
+		if (lara.num_uzi_ammo != -1)
+			lara.num_uzi_ammo += 30;
+
+		return;
+		
+	case FLARE_INV_ITEM:
+		if (lara.num_flares != -1)
+			lara.num_flares += 12;
+
+		return;
+
+	case SILENCER_ITEM:
+		if (!((lara.uzis_type_carried |lara.pistols_type_carried | lara.shotgun_type_carried | lara.sixshooter_type_carried | lara.crossbow_type_carried | lara.hk_type_carried) & WTYPE_SILENCER))
+			lara.silencer = 1;
+
+		return;
+
+	case LASERSIGHT_ITEM:
+		if (!((lara.uzis_type_carried | lara.pistols_type_carried | lara.shotgun_type_carried | lara.sixshooter_type_carried | lara.crossbow_type_carried | lara.hk_type_carried) & WTYPE_LASERSIGHT))
+			lara.lasersight = 1;
+
+		return;
+
+	case BIGMEDI_ITEM:
+		lara.num_large_medipack++;
+		return;
+
+	case SMALLMEDI_ITEM:
+		lara.num_small_medipack++;
+		return;
+
+	case BINOCULARS_ITEM:
+		lara.binoculars = 1;
+		return;
+
+	case PICKUP_ITEM4:
+		IsAtmospherePlaying = 0;
+		S_CDPlay(CDA_XA1_SECRET, 0);
+		lara.pickupitems |= 8u;
+		savegame.Level.Secrets++;
+		savegame.Game.Secrets++;
+
+		if (gfCurrentLevel >= LVL5_THIRTEENTH_FLOOR && gfCurrentLevel <= LVL5_RED_ALERT)
+			savegame.CampaignSecrets[3]++;
+		else if (gfCurrentLevel >= LVL5_BASE && gfCurrentLevel <= LVL5_SINKING_SUBMARINE)
+			savegame.CampaignSecrets[2]++;
+		else if (gfCurrentLevel >= LVL5_STREETS_OF_ROME && gfCurrentLevel <= LVL5_COLOSSEUM)
+			savegame.CampaignSecrets[0]++;
+		else if (gfCurrentLevel >= LVL5_GALLOWS_TREE && gfCurrentLevel <= LVL5_OLD_MILL)
+			savegame.CampaignSecrets[1]++;
+
+		return;
+
+	case CROWBAR_ITEM:
+		lara.crowbar = 1;
+		return;
+
+	case EXAMINE1:
+		lara.examine1 = 1;
+		return;
+
+	case EXAMINE2:
+		lara.examine2 = 1;
+		return;
+
+	case EXAMINE3:
+		lara.examine3 = 1;
+		return;
+
+	case WET_CLOTH:
+		lara.wetcloth = CLOTH_WET;
+		return;
+
+	case CLOTH:
+		lara.wetcloth = CLOTH_DRY;
+		return;
+
+	case BOTTLE:
+		lara.bottle++;
+		return;
+
+	default:
+
+		if (objnum >= PICKUP_ITEM1 && objnum <= PICKUP_ITEM4)
+			lara.pickupitems |= 1 << (objnum - PICKUP_ITEM1);
+		else if (objnum >= PICKUP_ITEM1_COMBO1 && objnum <= PICKUP_ITEM4_COMBO2)
+			lara.pickupitemscombo |= 1 << (objnum - PICKUP_ITEM1_COMBO1);
+		else if (objnum >= KEY_ITEM1 && objnum <= KEY_ITEM8)
+			lara.keyitems |= 1 << (objnum - KEY_ITEM1);
+		else if (objnum >= KEY_ITEM1_COMBO1 && objnum <= KEY_ITEM8_COMBO2)
+			lara.keyitemscombo |= 1 << (objnum - KEY_ITEM1_COMBO1);
+		else if (objnum >= PUZZLE_ITEM1 && objnum <= PUZZLE_ITEM8)
+			lara.puzzleitems[objnum - PUZZLE_ITEM1]++;
+		else if (objnum >= PUZZLE_ITEM1_COMBO1 && objnum <= PUZZLE_ITEM8_COMBO2)
+			lara.puzzleitemscombo |= 1 << (objnum - PUZZLE_ITEM1_COMBO1);
+	}
+}
+
 void NailInvItem(short objnum)
 {
 	switch (objnum)
@@ -1952,11 +2243,11 @@ void do_keypad_mode()
 	buf[1] = 45;
 	buf[2] = 45;
 	buf[3] = 45;
-	
+
 	if (keypadnuminputs != 0)
 	{		
-		for (int i = 0; i < keypadnuminputs; ++i)
-			buf[i] = keypadinputs[i] + 48;
+		for (n = 0; n < keypadnuminputs; n++)
+			buf[n] = keypadinputs[n] + 48;
 	}
 
 	PrintString(0x100, (phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 + 64, 1, buf, 0x8000);
@@ -2213,7 +2504,7 @@ void inject_newinv2()
 {
 //	INJECT(0x0045F9D0, S_CallInventory2);
 	INJECT(0x0045FEF0, init_new_inventry);
-//	INJECT(0x004601A0, do_debounced_joystick_poo);
+	INJECT(0x004601A0, do_debounced_joystick_poo);
 	INJECT(0x00460350, DrawThreeDeeObject2D);
 	INJECT(0x00460580, DrawInventoryItemMe);
 	INJECT(0x00460920, go_and_load_game);
@@ -2262,7 +2553,7 @@ void inject_newinv2()
 	INJECT(0x00463620, setup_objectlist_startposition);
 	INJECT(0x00463660, setup_objectlist_startposition2);
 //	INJECT(0x004636B0, use_current_item);
-//	INJECT(0x00463B60, DEL_picked_up_object);
+	INJECT(0x00463B60, DEL_picked_up_object);
 	INJECT(0x004640B0, NailInvItem);
 	INJECT(0x00464360, have_i_got_object);
 	INJECT(0x00464490, remove_inventory_item);
