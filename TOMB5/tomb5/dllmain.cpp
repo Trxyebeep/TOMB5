@@ -26,6 +26,7 @@
 #include "../game/door.h"
 #include "../game/laraclmb.h"
 #include "../game/health.h"
+#include "../game/spotcam.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -69,6 +70,7 @@ void inject_all()
     inject_laraclmb();
     inject_health();
     inject_effect2();
+    inject_spotcam();
 }
 
 BOOL APIENTRY DllMain( HINSTANCE hModule,
