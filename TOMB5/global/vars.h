@@ -243,6 +243,11 @@
 #define StashedCurrentCrossBowAmmoType	VAR_U_(0x0051CF13, char)//static
 #define Stashedcurrent_selected_option	VAR_U_(0x00E5992B, char)//static
 #define	GLOBAL_invkeypadmode	VAR_U_(0x0051CF28, int)
+#define up_debounce	VAR_U_(0x00E5992A, unsigned char)
+#define down_debounce	VAR_U_(0x00E598D8, unsigned char)
+#define GLOBAL_lastinvitem	VAR_U_(0x00508E14, int)
+#define select_debounce	VAR_U_(0x00E59920, unsigned char)
+#define deselect_debounce	VAR_U_(0x00E598F2, unsigned char)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)

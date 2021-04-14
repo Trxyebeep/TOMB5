@@ -10,10 +10,16 @@
 #include "objects.h"
 #include "lara1gun.h"
 #include "lara2gun.h"
+#include "camera.h"
 
 short optmessages[11] =
 {
 	STR_USE, STR_CHOOSE_AMMO, STR_COMBINE, STR_SEPARATE, STR_EQUIP, STR_COMBINE_WITH, STR_LOAD_GAME, STR_SAVE_GAME, STR_EXAMINE, STR_STATISTICS, STR_CHOOSE_WEAPON_MODE
+};
+
+unsigned char wanky_secrets_table[18] =
+{
+	0, 3, 3, 3, 3, 3, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
 };
 
 unsigned short options_table[99] =
@@ -57,6 +63,87 @@ COMBINELIST dels_handy_combine_table[24] =
 	{combine_PickupItem4, INV_PICKUP_ITEM4_COMBO1, INV_PICKUP_ITEM4_COMBO2, INV_PICKUP_ITEM4},
 	{combine_clothbottle, INV_CLOTH, INV_BOTTLE, INV_WET_CLOTH}
 };
+
+void init_new_inventry()
+{
+	examine_mode = 0;
+	stats_mode = 0;
+	AlterFOV(14560);
+	lara.Busy = 0;
+	GLOBAL_inventoryitemchosen = NO_ITEM;
+	left_debounce = 0;
+	right_debounce = 0;
+	up_debounce = 0;
+	down_debounce = 0;
+	go_left = 0;
+	go_right = 0;
+	go_up = 0;
+	go_down = 0;
+	select_debounce = 0;
+	deselect_debounce = 0;
+	go_select = 0;
+	go_deselect = 0;
+	left_repeat = 0;
+	right_repeat = 0;
+	loading_or_saving = 0;
+	use_the_bitch = 0;
+
+	if (lara.num_shotgun_ammo1 == -1)
+		AmountShotGunAmmo1 = -1;
+	else
+		AmountShotGunAmmo1 = lara.num_shotgun_ammo1 / 6;
+
+	if (lara.num_shotgun_ammo2 == -1)
+		AmountShotGunAmmo2 = -1;
+	else
+		AmountShotGunAmmo2 = lara.num_shotgun_ammo2 / 6;
+
+	AmountHKAmmo1 = lara.num_hk_ammo1;
+	AmountCrossBowAmmo1 = lara.num_crossbow_ammo1;
+	AmountCrossBowAmmo2 = lara.num_crossbow_ammo2;
+	AmountUziAmmo = lara.num_uzi_ammo;
+	AmountRevolverAmmo = lara.num_revolver_ammo;
+	AmountPistolsAmmo = lara.num_pistols_ammo;
+	construct_object_list();
+
+	if (GLOBAL_enterinventory == NO_ITEM)
+	{
+		if (GLOBAL_lastinvitem != NO_ITEM)
+		{
+			if (have_i_got_item(GLOBAL_lastinvitem))
+				setup_objectlist_startposition(GLOBAL_lastinvitem);
+
+			GLOBAL_lastinvitem = NO_ITEM;
+		}
+	}
+	else if (GLOBAL_enterinventory == 0xDEADBEEF)
+	{
+		GLOBAL_invkeypadmode = 1;
+		init_keypad_mode();
+		GLOBAL_enterinventory = NO_ITEM;
+	}
+	else
+	{
+		if (have_i_got_object(GLOBAL_enterinventory))
+			setup_objectlist_startposition2(GLOBAL_enterinventory);
+
+		GLOBAL_enterinventory = NO_ITEM;
+	}
+
+	ammo_selector_fade_val = 0;
+	ammo_selector_fade_dir = 0;
+	combine_ring_fade_val = 0;
+	combine_ring_fade_dir = 0;
+	combine_type_flag = 0;
+	seperate_type_flag = 0;
+	combine_obj1 = 0;
+	combine_obj2 = 0;
+	normal_ring_fade_val = 128;
+	normal_ring_fade_dir = 0;
+	handle_object_changeover(RING_INVENTORY);
+}
+
+//do_debounced_joystick_poo
 
 void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, int zrot, int bright, int overlay)
 {
@@ -469,7 +556,385 @@ void insert_object_into_list(int num)
 	rings[RING_INVENTORY]->numobjectsinlist++;
 }
 
-//draw_current_object_list
+void draw_current_object_list(int ringnum)
+{
+	int n;
+	int maxobj;
+	int xoff;
+	int i;
+	int shade;
+	int minobj;
+	char textbufme[128];
+	int objmeup;
+	int nummeup;
+	short ymeup;
+	short yrot;
+//	INVOBJ* objme;
+	int activenum;
+
+	if (rings[ringnum]->current_object_list <= 0)
+		return;
+
+	if (ringnum == RING_AMMO)
+	{
+		ammo_selector_fade_val = 0;
+		ammo_selector_fade_dir = 0;
+
+		if (combine_ring_fade_dir == 1)
+		{
+			if (combine_ring_fade_val < 128)
+				combine_ring_fade_val += 32;
+
+			if (combine_ring_fade_val > 128)
+			{
+				combine_ring_fade_val = 128;
+				combine_ring_fade_dir = 0;
+			}
+		}
+		else if (combine_ring_fade_dir == 2)
+		{
+			combine_ring_fade_val -= 32;
+
+			if (combine_ring_fade_val <= 0)
+			{
+				combine_ring_fade_val = 0;
+				combine_ring_fade_dir = 0;
+
+				if (combine_type_flag)
+					normal_ring_fade_dir = 2;
+				else
+				{
+					rings[RING_INVENTORY]->ringactive = 1;
+					menu_active = 1;
+					rings[RING_AMMO]->ringactive = 0;
+					handle_object_changeover(RING_INVENTORY);
+				}
+
+				rings[RING_AMMO]->ringactive = 0;
+			}
+		}
+	}
+	else if (normal_ring_fade_dir == 1)
+	{
+		if (normal_ring_fade_val < 128)
+			normal_ring_fade_val += 32;
+
+		if (normal_ring_fade_val > 128)
+		{
+			normal_ring_fade_val = 128;
+			normal_ring_fade_dir = 0;
+			rings[RING_INVENTORY]->ringactive = 1;
+			menu_active = 1;
+		}
+
+	}
+	else if (normal_ring_fade_dir == 2)
+	{
+		normal_ring_fade_val -= 32;
+
+		if (normal_ring_fade_val <= 0)
+		{
+			normal_ring_fade_val = 0;
+			normal_ring_fade_dir = 1;
+
+			if (combine_type_flag == 1)
+			{
+				combine_type_flag = 0;
+				combine_these_two_objects(combine_obj1, combine_obj2);
+			}
+			else if (seperate_type_flag)
+				seperate_object(rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem);
+
+			handle_object_changeover(RING_INVENTORY);
+		}
+	}
+
+	minobj = 0;
+	maxobj = 0;
+	xoff = 0;
+	n = 0;
+
+	if (rings[ringnum]->numobjectsinlist != 1)
+		xoff = (OBJLIST_SPACING * rings[ringnum]->objlistmovement) >> 16;
+
+	if (rings[ringnum]->numobjectsinlist == 2)
+	{
+		minobj = -1;
+		maxobj = 0;
+		n = rings[ringnum]->curobjinlist - 1;
+	}
+
+	if (rings[ringnum]->numobjectsinlist == 3 || rings[ringnum]->numobjectsinlist == 4)
+	{
+		minobj = -2;
+		maxobj = 1;
+		n = rings[ringnum]->curobjinlist - 2;
+	}
+
+	if (rings[ringnum]->numobjectsinlist >= 5)
+	{
+		minobj = -3;
+		maxobj = 2;
+		n = rings[ringnum]->curobjinlist - 3;
+	}
+
+	if (n < 0)
+		n += rings[ringnum]->numobjectsinlist;
+
+	if (rings[ringnum]->objlistmovement < 0)
+		maxobj++;
+
+	if (minobj <= maxobj)
+	{
+		for (i = minobj; i <= maxobj; i++)
+		{
+			if (minobj == i)
+			{
+				if (rings[ringnum]->objlistmovement < 0)
+					shade = 0;
+				else
+					shade = rings[ringnum]->objlistmovement >> 9;
+			}
+			else if (i != minobj + 1 || maxobj == minobj + 1)
+			{
+				if (i != maxobj)
+					shade = 128;
+				else
+				{
+					if (rings[ringnum]->objlistmovement < 0)
+						shade = (-128 * rings[ringnum]->objlistmovement) >> 16;
+					else
+						shade = 128 - (short)(rings[ringnum]->objlistmovement >> 9);
+				}
+			}
+			else
+			{
+				if (rings[ringnum]->objlistmovement < 0)
+					shade = 128 - ((-128 * rings[ringnum]->objlistmovement) >> 16);
+				else
+					shade = 128;
+			}
+
+			if (!minobj && !maxobj)
+				shade = 128;
+
+			if (ringnum == RING_AMMO && combine_ring_fade_val < 128 && shade)
+				shade = combine_ring_fade_val;
+			else if (ringnum == RING_INVENTORY && normal_ring_fade_val < 128 && shade)
+				shade = normal_ring_fade_val;
+
+			if (!i)
+			{
+				nummeup = 0;
+
+				switch (inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number)
+				{
+				case BIGMEDI_ITEM:
+					nummeup = lara.num_large_medipack;
+					break;
+
+				case SMALLMEDI_ITEM:
+					nummeup = lara.num_small_medipack;
+					break;
+
+				case FLARE_INV_ITEM:
+					nummeup = lara.num_flares;
+					break;
+
+				default:
+					if (inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number < PUZZLE_ITEM1 ||
+						inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number > PUZZLE_ITEM8)
+					{
+						switch (inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number)
+						{
+						case SHOTGUN_AMMO1_ITEM:
+							nummeup = lara.num_shotgun_ammo1 == -1 ? lara.num_shotgun_ammo1 : lara.num_shotgun_ammo1 / 6;
+							break;
+
+						case SHOTGUN_AMMO2_ITEM:
+							nummeup = lara.num_crossbow_ammo2 == -1 ? lara.num_shotgun_ammo2 : lara.num_shotgun_ammo2 / 6;
+							break;
+
+						case HK_AMMO_ITEM:
+							nummeup = lara.num_hk_ammo1;
+							break;
+
+						case CROSSBOW_AMMO1_ITEM:
+							nummeup = lara.num_crossbow_ammo1;
+							break;
+
+						case CROSSBOW_AMMO2_ITEM:
+							nummeup = lara.num_crossbow_ammo2;
+							break;
+
+						case REVOLVER_AMMO_ITEM:
+							nummeup = lara.num_revolver_ammo;
+							break;
+
+						case UZI_AMMO_ITEM:
+							nummeup = lara.num_uzi_ammo;
+							break;
+
+						case BOTTLE:
+							nummeup = lara.bottle;
+							break;
+
+						case PICKUP_ITEM4:
+							nummeup = savegame.Level.Secrets;
+							break;
+						default:
+							sprintf(textbufme, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+							break;
+						}
+					}
+					else
+					{
+						nummeup = *((char*)&lara.mesh_ptrs[6] + inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number);
+
+						if (nummeup <= 1)
+							sprintf(textbufme, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+					}
+
+					break;
+				}
+
+				if (nummeup)
+				{
+					if (inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number == PICKUP_ITEM4)
+						sprintf(textbufme, &gfStringWad[gfStringOffset_bis[185]], nummeup, wanky_secrets_table[gfCurrentLevel]);
+					else if (nummeup == -1)
+						sprintf(textbufme, &gfStringWad[gfStringOffset[STR_UNLIMITED]], &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+					else
+						sprintf(textbufme, "%d x %s", nummeup, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+				}
+				else
+					sprintf(textbufme, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+
+				if (ringnum == RING_INVENTORY)
+					objmeup = phd_centery - (phd_winymax + 1) * 0.0625 * 3.0;
+				else
+					objmeup = (phd_winymax + 1) * 0.0625 * 3.0 + phd_centery;
+
+				PrintString(phd_centerx, objmeup, 8, textbufme, 0x8000);
+			}
+
+			if (!i && !rings[ringnum]->objlistmovement)
+			{
+				if ((inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].flags & 2))
+					rings[ringnum]->current_object_list[n].yrot += 1022;
+			}
+			else
+				spinback(&rings[ringnum]->current_object_list[n].yrot);
+
+			yrot = rings[ringnum]->current_object_list[n].yrot;
+
+			if (rings[ringnum]->objlistmovement)
+			{
+				if (rings[ringnum]->objlistmovement > 0)
+					activenum = -1;
+				else
+					activenum = 1;
+			}
+			else
+				activenum = 0;
+
+			if (i == activenum)
+			{
+				if (rings[ringnum]->current_object_list[n].bright < 160)
+					rings[ringnum]->current_object_list[n].bright += 16;
+
+				if (rings[ringnum]->current_object_list[n].bright > 160)
+					rings[ringnum]->current_object_list[n].bright = 160;
+			}
+			else
+			{
+				if (rings[ringnum]->current_object_list[n].bright > 32)
+					rings[ringnum]->current_object_list[n].bright -= 16;
+
+				if (rings[ringnum]->current_object_list[n].bright < 32)
+					rings[ringnum]->current_object_list[n].bright = 32;
+			}
+
+			if (ringnum == RING_INVENTORY)
+				ymeup = 42;
+			else
+				ymeup = 190;
+
+			DrawThreeDeeObject2D((phd_centerx * 0.00390625 * 256.0 + inventry_xpos) + xoff + i * OBJLIST_SPACING,
+				phd_centery * 0.0083333338 * ymeup + inventry_ypos,
+				rings[ringnum]->current_object_list[n].invitem,
+				shade, 0, yrot, 0, rings[ringnum]->current_object_list[n].bright, 0);
+
+			if (++n >= rings[ringnum]->numobjectsinlist)
+				n = 0;
+		}
+
+		if (rings[ringnum]->ringactive)
+		{
+			if (rings[ringnum]->numobjectsinlist != 1 && (ringnum != 1 || combine_ring_fade_val == 128))
+			{
+				if (rings[ringnum]->objlistmovement > 0)
+					rings[ringnum]->objlistmovement += 8192;
+
+				if (rings[ringnum]->objlistmovement < 0)
+					rings[ringnum]->objlistmovement -= 8192;
+
+				if (go_left)
+				{
+					if (!rings[ringnum]->objlistmovement)
+					{
+						SoundEffect(SFX_MENU_ROTATE, 0, SFX_ALWAYS);
+						rings[ringnum]->objlistmovement += 8192;
+
+						if (ammo_selector_flag)
+							ammo_selector_fade_dir = 2;
+					}
+				}
+
+				if (go_right)
+				{
+					if (!rings[ringnum]->objlistmovement)
+					{
+						SoundEffect(SFX_MENU_ROTATE, 0, SFX_DEFAULT);
+						rings[ringnum]->objlistmovement -= 8192;
+
+						if (ammo_selector_flag)
+							ammo_selector_fade_dir = 2;
+					}
+
+				}
+
+				if (rings[ringnum]->objlistmovement < 65536)
+				{
+					if (rings[ringnum]->objlistmovement < -65536)
+					{
+						rings[ringnum]->curobjinlist++;
+
+						if (rings[ringnum]->curobjinlist >= rings[ringnum]->numobjectsinlist)
+							rings[ringnum]->curobjinlist = 0;
+
+						rings[ringnum]->objlistmovement = 0;
+
+						if (ringnum == RING_INVENTORY)
+							handle_object_changeover(0);
+					}
+				}
+				else
+				{
+					rings[ringnum]->curobjinlist--;
+
+					if (rings[ringnum]->curobjinlist < 0)
+						rings[ringnum]->curobjinlist = rings[ringnum]->numobjectsinlist - 1;
+
+					rings[ringnum]->objlistmovement = 0;
+
+					if (ringnum == RING_INVENTORY)
+						handle_object_changeover(0);
+				}
+			}
+		}
+	}
+}
 
 void handle_object_changeover(int ringnum)
 {
@@ -685,7 +1150,7 @@ void handle_inventry_menu()
 				if (go_right && current_selected_option < n - 1)
 				{
 					current_selected_option++;
-					SoundEffect(SFX_MENU_SELECT, NULL, SFX_ALWAYS);
+					SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 				}
 
 				current_ammo_type[0] = current_selected_option;
@@ -757,7 +1222,7 @@ void handle_inventry_menu()
 
 			if (go_deselect && ammo_active)
 			{
-				SoundEffect(SFX_MENU_SELECT, NULL, SFX_ALWAYS);
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 				go_deselect = 0;
 				ammo_active = 0;
 				rings[RING_INVENTORY]->ringactive = 1;
@@ -905,7 +1370,7 @@ void draw_ammo_selector()
 	int n;
 	int xpos;
 	short yrot;
-	struct INVOBJ* objme;
+	INVOBJ* objme;
 	char cunter[256];
 
 	if (!ammo_selector_flag)
@@ -1746,6 +2211,9 @@ void S_DrawPickup(short object_number)
 
 void inject_newinv2()
 {
+//	INJECT(0x0045F9D0, S_CallInventory2);
+	INJECT(0x0045FEF0, init_new_inventry);
+//	INJECT(0x004601A0, do_debounced_joystick_poo);
 	INJECT(0x00460350, DrawThreeDeeObject2D);
 	INJECT(0x00460580, DrawInventoryItemMe);
 	INJECT(0x00460920, go_and_load_game);
@@ -1754,7 +2222,7 @@ void inject_newinv2()
 	INJECT(0x00460B40, insert_object_into_list_v2);
 	INJECT(0x00460BD0, construct_object_list);
 	INJECT(0x00461120, insert_object_into_list);
-//	INJECT(0x00461190, draw_current_object_list);
+	INJECT(0x00461190, draw_current_object_list);
 	INJECT(0x00461D90, handle_object_changeover);
 	INJECT(0x00461DC0, handle_inventry_menu);
 	INJECT(0x00462740, setup_ammo_selector);

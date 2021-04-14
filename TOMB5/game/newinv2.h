@@ -3,6 +3,9 @@
 
 void inject_newinv2();
 
+//S_CallInventory2
+void init_new_inventry();
+//do_debounced_joystick_poo
 void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, int zrot, int bright, int overlay);
 void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag);
 int go_and_load_game();
@@ -11,6 +14,7 @@ void construct_combine_object_list();
 void insert_object_into_list_v2(int num);
 void construct_object_list();
 void insert_object_into_list(int num);
+void draw_current_object_list(int ringnum);
 void handle_object_changeover(int ringnum);
 void handle_inventry_menu();
 void setup_ammo_selector();
@@ -49,6 +53,8 @@ void combine_PickupItem4(int flag);
 void combine_clothbottle(int flag);
 void setup_objectlist_startposition(short newobj);
 void setup_objectlist_startposition2(short newobj);
+//use_current_item
+//DEL_picked_up_object
 void NailInvItem(short objnum);
 int have_i_got_object(short object_number);
 void remove_inventory_item(short object_number);
@@ -62,8 +68,6 @@ void dels_give_lara_items_cheat();
 void dels_give_lara_guns_cheat();
 void S_DrawPickup(short object_number);
 
-//#define DrawThreeDeeObject2D	( (void(__cdecl*)(int, int, int, int, int, int, int, int, int)) 0x00460350 )
-//#define DrawInventoryItemMe	( (void(__cdecl*)(ITEM_INFO*, long, int, int)) 0x00460580 )
 #define S_CallInventory2	( (int(__cdecl*)()) 0x0045F9D0 )
 #define	DEL_picked_up_object	( (void(__cdecl*)(short)) 0x00463B60 )
 #define spinback	( (void(__cdecl*)(unsigned short*)) 0x00462DD0 )

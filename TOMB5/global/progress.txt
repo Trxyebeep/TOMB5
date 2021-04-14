@@ -410,7 +410,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/newinv2.cpp
 
 0x0045F9D0		S_CallInventory2
-0x0045FEF0		init_new_inventry
+0x0045FEF0	+	init_new_inventry
 0x004601A0		do_debounced_joystick_poo
 0x00460350	+	DrawThreeDeeObject2D
 0x00460580	+	DrawInventoryItemMe
@@ -420,7 +420,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00460B40	+	insert_object_into_list_v2
 0x00460BD0	+	construct_object_list
 0x00461120	+	insert_object_into_list
-0x00461190		draw_current_object_list
+0x00461190	+	draw_current_object_list
 0x00461D90	+	handle_object_changeover
 0x00461DC0	+	handle_inventry_menu
 0x00462740	+	setup_ammo_selector
