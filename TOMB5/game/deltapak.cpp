@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../tomb5/pch.h"
 #include "lara.h"
 #include "lara_states.h"
 #include "items.h"

@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../tomb5/pch.h"
 #include "camera.h"
 #include "../global/types.h"
 #include "gameflow.h"

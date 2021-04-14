@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../tomb5/pch.h"
 #include "../global/types.h"
 #include "lara.h"
 #include "collide.h"

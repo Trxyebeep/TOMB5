@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../tomb5/pch.h"
 #include "effects.h"
 #include "sound.h"
 #include "hair.h"

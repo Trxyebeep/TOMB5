@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../tomb5/pch.h"
 #include "lara.h"
 #include "control.h"
 #include "pickup.h"

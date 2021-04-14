@@ -1,4 +1,4 @@
-#include "pch.h"
+#include "../tomb5/pch.h"
 #include "input.h"
 #include "../global/types.h"
 #include <dinput.h>
