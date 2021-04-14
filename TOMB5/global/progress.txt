@@ -12,7 +12,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00414620		KillMoveItems
 0x004146A0		KillMoveEffects
-UpdateSky
+0x00414720		UpdateSky
 0x004147C0	+	ControlPhase
 0x00415300		AnimateItem
 0x00415890	+	GetChange
@@ -237,7 +237,7 @@ UpdateSky
 0x00422700	+	cutseq_removelara_hk
 0x00422740	+	cutseq_shoot_pistols
 0x00422780	+	trigger_weapon_dynamics
-0x00422840		deal_with_pistols
+0x00422840	+	deal_with_pistols
 0x00422A20		cutseq_kill_item
 0x00422AF0		cutseq_restore_item
 0x00422B90		Load_and_Init_Cutseq
@@ -245,8 +245,8 @@ UpdateSky
 0x00422EF0		
 0x00422F80		DelsHandyTeleportLara
 0x004230F0		
-0x00423170		handle_lara_chatting
-0x00423210		handle_actor_chatting
+0x00423170	+	handle_lara_chatting
+0x00423210	+	handle_actor_chatting
 0x00423330		
 0x004233D0
 0x00423470	+	find_a_fucking_item
@@ -276,9 +276,9 @@ UpdateSky
 0x00423CA0	+	special4_end
 0x00423CC0	+	stealth3_start
 0x00423DF0	+	stealth3_end
-0x00423FB0	+	deal_with_actor_shooting
+0x00423FB0		deal_with_actor_shooting
 0x00424080		GrabActorMatrix
-0x004243A0	+	GetActorJointAbsPosition
+0x004243A0		GetActorJointAbsPosition
 0x00424570	+	TriggerActorBlood
 0x004245C0	+	TriggerDelSmoke
 0x004247A0	+	joby2_init
@@ -358,7 +358,7 @@ UpdateSky
 0x004271E0	+	cossack_init
 0x00427200	+	cossack_control
 0x00427470	+	cossack_end
-0x004274B0		TriggerDelBrownSmoke
+0x004274B0	+	TriggerDelBrownSmoke
 0x00427630	+	andy9_init
 0x00427660	+	andy9_control
 0x00427720	+	andy9_end
@@ -382,10 +382,26 @@ UpdateSky
 0x004281D0	+	swampy_init
 0x00428270	+	swampy_control
 0x004282A0	+	swampy_end
-0x00428390		CutLaraBubbles
-0x004284A0		trigger_title_spotcam
+0x00428390	+	CutLaraBubbles
+0x004284A0	+	trigger_title_spotcam
 0x00428650	+	ResetCutanimate
 0x004286E0	+	Cutanimate
 0x00428770	+	andy11_init
 0x004287C0	+	andy11_control
 0x00428920	+	andy11_end
+
+
+		game/spotcam.cpp
+
+0x0047A800		InitSpotCamSequences
+0x0047A890		Spline
+0x0047A9D0		InitialiseSpotCam
+0x0047B280		CalculateSpotCams
+
+
+		game/bubbles.cpp
+
+0x004832C0		GetFreeBubble
+0x00483350		CreateBubble
+0x00483470		LaraBubbles
+0x00483540		UpdateBubbles

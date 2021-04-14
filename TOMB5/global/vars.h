@@ -25,6 +25,7 @@
 #define GLOBAL_cutseq_frame VAR_U_(0x00E7F024, int)
 #define old_lara_holster VAR_U_(0x00E7EFE0, unsigned short)
 #define actor_chat_cnt VAR_U_(0x0051CAB6, char)
+#define lara_chat_cnt	VAR_U_(0x0051CAB5, char)
 #define gfCurrentLevel VAR_U_(0x00E5C2D0, int)
 #define gfLevelComplete VAR_U_(0x00E5C2F0, int)
 #define gfLevelFlags	VAR_U_(0x00E5C2A0, short)
@@ -197,6 +198,7 @@
 #define CurrentPickup	VAR_U_(0x00E5BF3C, short)
 #define Chris_Menu	VAR_U_(0x0051CE2E, char)
 #define title_controls_locked_out	VAR_U_(0x00E5C2A8, char)
+#define jobyfrigger	VAR_U_(0x0051CA9C, char)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)
