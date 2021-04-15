@@ -459,7 +459,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004635F0	+	combine_clothbottle
 0x00463620	+	setup_objectlist_startposition
 0x00463660	+	setup_objectlist_startposition2
-0x004636B0		use_current_item
+0x004636B0	+	use_current_item
 0x00463B60	+	DEL_picked_up_object
 0x004640B0	+	NailInvItem
 0x00464360	+	have_i_got_object
@@ -472,6 +472,6 @@ x for functions decompiled but not injected, for one reason or another.
 0x00464BF0	+	do_stats_mode
 0x00464C60	+	dels_give_lara_items_cheat
 0x00464C80	+	dels_give_lara_guns_cheat
-0x00464CA0		
+0x00464CA0		//Not called anywhere it seems.
 0x00464EF0		LoadGame
 0x00464F20		SaveGame

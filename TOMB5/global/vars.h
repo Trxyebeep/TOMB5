@@ -250,6 +250,7 @@
 #define deselect_debounce	VAR_U_(0x00E598F2, unsigned char)
 #define friggrimmer	VAR_U_(0x00E598F4, char)
 #define friggrimmer2	VAR_U_(0x00E598F3, char)
+#define oldLaraBusy	VAR_U_(0x00E59898, char)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)

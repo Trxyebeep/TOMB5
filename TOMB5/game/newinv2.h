@@ -53,7 +53,7 @@ void combine_PickupItem4(int flag);
 void combine_clothbottle(int flag);
 void setup_objectlist_startposition(short newobj);
 void setup_objectlist_startposition2(short newobj);
-//use_current_item
+void use_current_item();
 void DEL_picked_up_object(short objnum);
 void NailInvItem(short objnum);
 int have_i_got_object(short object_number);
@@ -69,7 +69,6 @@ void dels_give_lara_guns_cheat();
 void S_DrawPickup(short object_number);
 
 #define S_CallInventory2	( (int(__cdecl*)()) 0x0045F9D0 )
-//#define	DEL_picked_up_object	( (void(__cdecl*)(short)) 0x00463B60 )
 #define spinback	( (void(__cdecl*)(unsigned short*)) 0x00462DD0 )
 #define LoadGame	( (int(__cdecl*)()) 0x00464EF0 )
 #define SaveGame	( (int(__cdecl*)()) 0x00464F20 )

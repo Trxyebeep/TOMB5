@@ -13,6 +13,9 @@
 #include "camera.h"
 #include "control.h"
 #include "xatracks.h"
+#include "lara.h"
+#include "larafire.h"
+#include "lara_states.h"
 
 short optmessages[11] =
 {
@@ -1817,6 +1820,226 @@ void setup_objectlist_startposition2(short newobj)
 			rings[RING_INVENTORY]->curobjinlist = i;
 }
 
+void use_current_item()
+{
+	short invobject, gmeobject;
+	long OldBinocular;
+
+	OldBinocular = BinocularRange;
+	oldLaraBusy = 0;
+	BinocularRange = 0;
+	lara_item->mesh_bits = -1;
+	invobject = rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem;
+	gmeobject = inventry_objects_list[invobject].object_number;
+
+	if (gfCurrentLevel == LVL5_DEEPSEA_DIVE && gmeobject == PUZZLE_ITEM1)
+	{
+		FireChaff();
+		return;
+	}
+
+	if (lara.water_status == LW_ABOVE_WATER || lara.water_status == LW_WADE)
+	{
+		if (gmeobject == PISTOLS_ITEM)
+		{
+			lara.request_gun_type = WEAPON_PISTOLS;
+
+			if (lara.gun_status != LG_NO_ARMS)
+				return;
+
+			if (lara.gun_type == WEAPON_PISTOLS)
+				lara.gun_status = LG_DRAW_GUNS;
+
+			return;
+		}
+
+		if (gmeobject == UZI_ITEM)
+		{
+			lara.request_gun_type = WEAPON_UZI;
+
+			if (lara.gun_status != LG_NO_ARMS)
+				return;
+
+			if (lara.gun_type == WEAPON_UZI)
+				lara.gun_status = LG_DRAW_GUNS;
+
+			return;
+
+		}
+	}
+
+	if (gmeobject != SHOTGUN_ITEM && gmeobject != REVOLVER_ITEM && gmeobject != HK_ITEM && gmeobject != CROSSBOW_ITEM)
+	{
+		if (gmeobject == FLARE_INV_ITEM)
+		{
+			if (lara.gun_status == LG_NO_ARMS)
+			{
+				if (lara_item->current_anim_state != STATE_LARA_CRAWL_IDLE &&
+					lara_item->current_anim_state != STATE_LARA_CRAWL_FORWARD &&
+					lara_item->current_anim_state != STATE_LARA_CRAWL_TURN_LEFT &&
+					lara_item->current_anim_state != STATE_LARA_CRAWL_TURN_RIGHT &&
+					lara_item->current_anim_state != STATE_LARA_CRAWL_BACK &&
+					lara_item->current_anim_state != STATE_LARA_CRAWL_TO_CLIMB)
+				{
+					if (lara.gun_type != 7)
+					{
+						input = IN_FLARE;
+						LaraGun();
+						input = 0;
+					}
+
+					return;
+				}
+			}
+
+			SayNo();
+			return;
+		}
+
+		switch (invobject)
+		{
+		case INV_BINOCULARS_ITEM:
+
+			if ((lara_item->current_anim_state == STATE_LARA_STOP && lara_item->anim_number == ANIMATION_LARA_STAY_IDLE
+				|| lara.IsDucked && !(input & IN_DUCK))
+				&& !SniperCamActive
+				&& !bUseSpotCam
+				&& !bTrackCamInit)
+			{
+				oldLaraBusy = 1;
+				BinocularRange = 128;
+
+				if (lara.gun_status != LG_NO_ARMS)
+					lara.gun_status = LG_UNDRAW_GUNS;
+			}
+
+			if (OldBinocular)
+				BinocularRange = OldBinocular;
+			else
+				BinocularOldCamera = camera.old_type;
+			return;
+
+		case INV_SMALLMEDI_ITEM:
+
+			if ((lara_item->hit_points <= 0 || lara_item->hit_points >= 1000) && !lara.poisoned)
+			{
+				SayNo();
+				return;
+			}
+
+			if (lara.num_small_medipack != -1)
+				lara.num_small_medipack--;
+
+			lara.dpoisoned = 0;
+			lara_item->hit_points += 500;
+
+			if (lara_item->hit_points > 1000)
+				lara_item->hit_points = 1000;
+
+			SoundEffect(SFX_MENU_MEDI, 0, SFX_ALWAYS);
+			savegame.Game.HealthUsed++;
+			return;
+
+		case INV_BIGMEDI_ITEM:
+
+			if ((lara_item->hit_points <= 0 || lara_item->hit_points >= 1000) && !lara.poisoned)
+			{
+				SayNo();
+				return;
+			}
+
+			if (lara.num_large_medipack != -1)
+				lara.num_large_medipack--;
+
+			lara.dpoisoned = 0;
+			lara_item->hit_points += 1000;
+
+			if (lara_item->hit_points > 1000)
+				lara_item->hit_points = 1000;
+
+			SoundEffect(SFX_MENU_MEDI, 0, SFX_ALWAYS);
+			savegame.Game.HealthUsed++;
+			return;
+
+		default:
+			GLOBAL_inventoryitemchosen = gmeobject;
+			return;
+		}
+
+		return;
+	}
+
+	if (lara.gun_status == LG_HANDS_BUSY)
+	{
+		SayNo();
+		return;
+	}
+
+	if (lara_item->current_anim_state == STATE_LARA_CRAWL_IDLE ||
+		lara_item->current_anim_state == STATE_LARA_CRAWL_FORWARD ||
+		lara_item->current_anim_state == STATE_LARA_CRAWL_TURN_LEFT ||
+		lara_item->current_anim_state == STATE_LARA_CRAWL_TURN_RIGHT ||
+		lara_item->current_anim_state == STATE_LARA_CRAWL_BACK ||
+		lara_item->current_anim_state == STATE_LARA_CRAWL_TO_CLIMB ||
+		lara_item->current_anim_state == STATE_LARA_CROUCH_IDLE ||
+		lara_item->current_anim_state == STATE_LARA_CROUCH_TURN_LEFT ||
+		lara_item->current_anim_state == STATE_LARA_CROUCH_TURN_RIGHT)
+	{
+		SayNo();
+		return;
+	}
+
+	if (gmeobject == SHOTGUN_ITEM)
+	{
+		lara.request_gun_type = WEAPON_SHOTGUN;
+
+		if (lara.gun_status != LG_NO_ARMS)
+			return;
+
+		if (lara.gun_type == 4)
+			lara.gun_status = LG_DRAW_GUNS;
+
+		return;
+	}
+
+	if (gmeobject == REVOLVER_ITEM)
+	{
+		lara.request_gun_type = WEAPON_REVOLVER;
+
+		if (lara.gun_status != LG_NO_ARMS)
+			return;
+
+		if (lara.gun_type == WEAPON_REVOLVER)
+			lara.gun_status = WEAPON_REVOLVER;
+
+		return;
+	}
+	else if (gmeobject == HK_ITEM)
+	{
+		lara.request_gun_type = WEAPON_HK;
+
+		if (lara.gun_status != 0)
+			return;
+
+		if (lara.gun_type == 5)
+			lara.gun_status = 2;
+
+		return;
+	}
+	else
+	{
+		lara.request_gun_type = WEAPON_CROSSBOW;
+
+		if (lara.gun_status != LG_NO_ARMS)
+			return;
+
+		if (lara.gun_type == WEAPON_CROSSBOW)
+			lara.gun_status = 2;
+
+		return;
+	}
+}
+
 void DEL_picked_up_object(short objnum)
 {
 	switch (objnum)
@@ -2552,7 +2775,7 @@ void inject_newinv2()
 	INJECT(0x004635F0, combine_clothbottle);
 	INJECT(0x00463620, setup_objectlist_startposition);
 	INJECT(0x00463660, setup_objectlist_startposition2);
-//	INJECT(0x004636B0, use_current_item);
+	INJECT(0x004636B0, use_current_item);
 	INJECT(0x00463B60, DEL_picked_up_object);
 	INJECT(0x004640B0, NailInvItem);
 	INJECT(0x00464360, have_i_got_object);
