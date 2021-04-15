@@ -513,12 +513,13 @@ int CheckGuardOnTrigger()
 	ITEM_INFO* item;
 
 	room_number = lara_item->room_number;
-	cinfo = &baddie_slots[0];
 	GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number);
 
-	for (slot = 0; slot < 5; slot++, cinfo++)
+	for (slot = 0; slot < 5; slot++)
 	{
-		if (cinfo->item_num != -1 && cinfo->alerted)
+		cinfo = &baddie_slots[slot];
+
+		if (cinfo->item_num != -1 && !cinfo->alerted)
 		{
 			item = &items[cinfo->item_num];
 
@@ -658,7 +659,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 					return;
 				}
 
-				if (GLOBAL_enterinventory != inv_item_stealth_frigggggs || !CheckGuardOnTrigger())
+				if (GLOBAL_inventoryitemchosen != inv_item_stealth_frigggggs || !CheckGuardOnTrigger())
 					return;
 
 				if (inv_item_stealth_frigggggs == WET_CLOTH)

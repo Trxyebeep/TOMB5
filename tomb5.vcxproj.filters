@@ -327,4 +327,7 @@
       <Filter>TOMB5\tomb5</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="TOMB5\global\progress.txt" />
+  </ItemGroup>
 </Project>

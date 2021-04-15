@@ -1,8 +1,61 @@
 #pragma once
-
+#include "../global/types.h"
 
 void inject_newinv2();
 
+//S_CallInventory2
+void init_new_inventry();
+void do_debounced_joystick_poo();
+void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, int zrot, int bright, int overlay);
+void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag);
+int go_and_load_game();
+int go_and_save_game();
+void construct_combine_object_list();
+void insert_object_into_list_v2(int num);
+void construct_object_list();
+void insert_object_into_list(int num);
+void draw_current_object_list(int ringnum);
+void handle_object_changeover(int ringnum);
+void handle_inventry_menu();
+void setup_ammo_selector();
+void fade_ammo_selector();
+void draw_ammo_selector();
+//spinback
+void update_laras_weapons_status();
+int is_item_currently_combinable(short obj);
+int have_i_got_item(short obj);
+int do_these_objects_combine(int obj1, int obj2);
+void combine_these_two_objects(short obj1, short obj2);
+void seperate_object(short obj);
+void combine_HK_SILENCER(int flag);
+void combine_revolver_lasersight(int flag);
+void combine_crossbow_lasersight(int flag);
+void combine_PuzzleItem1(int flag);
+void combine_PuzzleItem2(int flag);
+void combine_PuzzleItem3(int flag);
+void combine_PuzzleItem4(int flag);
+void combine_PuzzleItem5(int flag);
+void combine_PuzzleItem6(int flag);
+void combine_PuzzleItem7(int flag);
+void combine_PuzzleItem8(int flag);
+void combine_KeyItem1(int flag);
+void combine_KeyItem2(int flag);
+void combine_KeyItem3(int flag);
+void combine_KeyItem4(int flag);
+void combine_KeyItem5(int flag);
+void combine_KeyItem6(int flag);
+void combine_KeyItem7(int flag);
+void combine_KeyItem8(int flag);
+void combine_PickupItem1(int flag);
+void combine_PickupItem2(int flag);
+void combine_PickupItem3(int flag);
+void combine_PickupItem4(int flag);
+void combine_clothbottle(int flag);
+void setup_objectlist_startposition(short newobj);
+void setup_objectlist_startposition2(short newobj);
+void use_current_item();
+void DEL_picked_up_object(short objnum);
+void NailInvItem(short objnum);
 int have_i_got_object(short object_number);
 void remove_inventory_item(short object_number);
 int convert_obj_to_invobj(short obj);
@@ -15,10 +68,10 @@ void dels_give_lara_items_cheat();
 void dels_give_lara_guns_cheat();
 void S_DrawPickup(short object_number);
 
-#define DrawThreeDeeObject2D	( (void(__cdecl*)(int, int, int, int, int, int, int, int, int)) 0x00460350 )
 #define S_CallInventory2	( (int(__cdecl*)()) 0x0045F9D0 )
-#define	DEL_picked_up_object	( (void(__cdecl*)(short)) 0x00463B60 )
-#define NailInvItem	( (void(__cdecl*)(short)) 0x004640B0 )
+#define spinback	( (void(__cdecl*)(unsigned short*)) 0x00462DD0 )
+#define LoadGame	( (int(__cdecl*)()) 0x00464EF0 )
+#define SaveGame	( (int(__cdecl*)()) 0x00464F20 )
 
 enum ring_types
 {
@@ -26,18 +79,7 @@ enum ring_types
 	RING_AMMO
 };
 
-enum inv_options
-{
-	OPT_SHOTGUN = 0x40,
-	OPT_CROSSBOW_TYPE2 = 0x80,
-	OPT_HK = 0x100,
-	OPT_UZI = 0x200,
-	OPT_PISTOLS = 0x400,
-	OPT_REVOLVER = 0x800,
-	OPT_CROSSBOW_TYPE1 = 0x4000
-};
-
-enum invobj_types // update this whenever inventry_objects_list is modified
+enum invobj_types
 {
 	INV_UZI_ITEM = 0,
 	INV_PISTOLS_ITEM = 1,
