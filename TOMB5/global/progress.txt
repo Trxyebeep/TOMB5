@@ -243,12 +243,12 @@ x for functions decompiled but not injected, for one reason or another.
 0x00422B90		Load_and_Init_Cutseq
 0x00422C30		init_cutseq_actors
 0x00422EF0		
-0x00422F80		DelsHandyTeleportLara
-0x004230F0		
+0x00422F80	+	DelsHandyTeleportLara
+0x004230F0		nail_intelligent_object
 0x00423170	+	handle_lara_chatting
 0x00423210	+	handle_actor_chatting
-0x00423330		
-0x004233D0
+0x00423330	+	trigger_item_in_room
+0x004233D0	+	untrigger_item_in_room
 0x00423470	+	find_a_fucking_item
 0x004234B0	+	cranecut_init
 0x00423530	+	cranecut_end
@@ -276,7 +276,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00423CA0	+	special4_end
 0x00423CC0	+	stealth3_start
 0x00423DF0	+	stealth3_end
-0x00423FB0		deal_with_actor_shooting
+0x00423FB0	+	deal_with_actor_shooting
 0x00424080		GrabActorMatrix
 0x004243A0		GetActorJointAbsPosition
 0x00424570	+	TriggerActorBlood

@@ -22,6 +22,7 @@
 #include "newinv2.h"
 #include "xatracks.h"
 #include "spotcam.h"
+#include <d3dtypes.h>
 
 unsigned short larson_pistols_info1[2] =
 {
@@ -2912,7 +2913,108 @@ void handle_actor_chatting(int speechslot, int node, int slot, int objslot, shor
 
 }
 
+void trigger_item_in_room(short room_number, int object)
+{
+	short num, nex;
+	ITEM_INFO* item;
 
+	num = room[room_number].item_number;
+
+	while (num != NO_ITEM)
+	{
+		item = &items[num];
+		nex = item->next_item;
+
+		if (item->object_number == object)
+		{
+			AddActiveItem(num);
+			item->status = ITEM_ACTIVE;
+			item->flags |= IFLAG_ACTIVATION_MASK;
+		}
+
+		num = nex;
+	}
+}
+
+void untrigger_item_in_room(short room_number, int object)
+{
+	short num, nex;
+	ITEM_INFO* item;
+
+	num = room[room_number].item_number;
+
+	while (num != NO_ITEM)
+	{
+		item = &items[num];
+		nex = item->next_item;
+
+		if (item->object_number == object)
+		{
+			RemoveActiveItem(num);
+			item->status = ITEM_DEACTIVATED;
+			item->flags |= ~IFLAG_ACTIVATION_MASK;
+		}
+
+		num = nex;
+	}
+}
+
+void deal_with_actor_shooting(unsigned short* shootdata, int actornum, int nodenum, PHD_VECTOR* pos)
+{
+	int f;
+	unsigned short dat;
+	D3DMATRIX arse;
+
+	dat = *shootdata++;
+	f = GLOBAL_cutseq_frame;
+
+	if (dat != -1)
+	{
+		do
+		{
+			if (f == dat || f == dat + 1)
+			{
+				GrabActorMatrix(actornum, nodenum, &arse);
+				trig_actor_gunflash(&arse, pos);
+				GetActorJointAbsPosition(actornum, nodenum, pos);
+				TriggerDynamic(pos->x, pos->y, pos->z, 16, (GetRandomControl() & 0x3F) + 0xC0, (GetRandomControl() & 0x1F) + 0x80, (GetRandomControl() & 0x3F));
+				break;
+			}
+
+			dat = *shootdata++;
+
+		} while (dat != 0xFFFF);
+	}
+
+}
+
+void DelsHandyTeleportLara(int x, int y, int z, int yrot)
+{
+	lara_item->pos.x_pos = x;
+	lara_item->pos.y_pos = y;
+	lara_item->pos.z_pos = z;
+	lara.head_x_rot = 0;
+	lara.head_y_rot = 0;
+	lara.torso_x_rot = 0;
+	lara.torso_y_rot = 0;
+	lara_item->pos.x_rot = 0;
+	lara_item->pos.y_rot = yrot;
+	lara_item->pos.z_rot = 0;
+	IsRoomOutside(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+
+	if (IsRoomOutsideNo != lara_item->room_number)
+		ItemNewRoom(lara.item_number, IsRoomOutsideNo);
+
+	lara_item->goal_anim_state = STATE_LARA_STOP;
+	lara_item->current_anim_state = STATE_LARA_STOP;
+	lara_item->frame_number = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
+	lara_item->anim_number = ANIMATION_LARA_STAY_SOLID;
+	lara_item->speed = 0;
+	lara_item->fallspeed = 0;
+	lara_item->gravity_status = 0;
+	lara.gun_status = LG_NO_ARMS;
+	camera.fixed_camera = 1;
+}
 
 void inject_deltaPak()
 {
@@ -3061,10 +3163,12 @@ void inject_deltaPak()
 //	INJECT(0x00422AF0, cutseq_restore_item);
 //	INJECT(0x00422B90, Load_and_Init_Cutseq);
 //	INJECT(0x00422C30, init_cutseq_actors);
-//	INJECT(0x00422F80, DelsHandyTeleportLara);
+	INJECT(0x00422F80, DelsHandyTeleportLara);
 	INJECT(0x00423170, handle_lara_chatting);
 	INJECT(0x00423210, handle_actor_chatting);
-//	INJECT(0x00423FB0, deal_with_actor_shooting);
+	INJECT(0x00423330, trigger_item_in_room);
+	INJECT(0x004233D0, untrigger_item_in_room);
+	INJECT(0x00423FB0, deal_with_actor_shooting);
 //	INJECT(0x00424080, GrabActorMatrix);
 //	INJECT(0x004243A0, GetActorJointAbsPosition);
 	INJECT(0x00424570, TriggerActorBlood);
