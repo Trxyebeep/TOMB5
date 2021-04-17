@@ -162,6 +162,9 @@
     <ClCompile Include="TOMB5\tomb5\pch.cpp">
       <Filter>TOMB5\tomb5</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\game\cutseq.cpp" />
+    <ClCompile Include="TOMB5\game\chef.cpp" />
+    <ClCompile Include="TOMB5\game\people.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -326,6 +329,9 @@
     <ClInclude Include="TOMB5\tomb5\pch.h">
       <Filter>TOMB5\tomb5</Filter>
     </ClInclude>
+    <ClInclude Include="TOMB5\game\cutseq.h" />
+    <ClInclude Include="TOMB5\game\chef.h" />
+    <ClInclude Include="TOMB5\game\people.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

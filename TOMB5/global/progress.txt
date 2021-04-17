@@ -55,8 +55,16 @@ x for functions decompiled but not injected, for one reason or another.
 0x0041B280	+	NeatAndTidyTriggerCutscene
 0x0041B8B0	+	is_object_in_room
 0x0041B930	+	check_xray_machine_trigger
+
+
+		game/crow.cpp
+
 0x0041B980		InitialiseCrow
 0x0041BA00		CrowControl
+
+
+		game/cutseq.cpp
+
 0x0041BCF0	+	_special1_control
 0x0041BD40	+	_special1_end
 0x0041BE90	+	_special2_control
@@ -70,10 +78,19 @@ x for functions decompiled but not injected, for one reason or another.
 0x0041C920	+	resetwindowsmash
 0x0041C950	+	FlamingHell
 0x0041CB10	+	FireTwoGunTitleWeapon
+
+		
+		game/deathslide.cpp
+
 0x0041CC70		InitialiseDeathSlide
 0x0041CCE0		DeathSlideCollision
 0x0041CE00		ControlDeathSlide
 
+
+		game/chef.cpp
+
+0x00410990	+	InitialiseChef
+0x00410A60		ChefControl
 
 		game/collide.cpp
 

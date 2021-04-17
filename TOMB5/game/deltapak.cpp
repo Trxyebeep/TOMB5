@@ -23,6 +23,7 @@
 #include "xatracks.h"
 #include "spotcam.h"
 #include <d3dtypes.h>
+#include "cutseq.h"
 
 unsigned short larson_pistols_info1[2] =
 {

@@ -1398,4 +1398,16 @@ struct VECTOR
 	long vz;
 	long pad;
 };
+
+struct AI_info
+{
+	short zone_number; // size=0, offset=0
+	short enemy_zone; // size=0, offset=2
+	long distance; // size=0, offset=4
+	long ahead; // size=0, offset=8
+	long bite; // size=0, offset=12
+	short angle; // size=0, offset=16
+	short x_angle; // size=0, offset=18
+	short enemy_facing; // size=0, offset=20
+};
 #pragma pack(pop)
