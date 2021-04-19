@@ -3,6 +3,10 @@
 
 void inject_lara();
 
+extern void (*lara_control_routines[])(ITEM_INFO* item, COLL_INFO* coll);
+extern void (*lara_collision_routines[])(ITEM_INFO* item, COLL_INFO* coll);
+
+void KlaxonTremor();
 void LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll);
 void GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 int LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll);
@@ -40,8 +44,6 @@ void lara_as_back(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_back(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_wade(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_wade(ITEM_INFO* item, COLL_INFO* coll);
-void DoSubsuitStuff();
-void FireChaff();
 void lara_as_dash(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_dash(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_dashdive(ITEM_INFO* item, COLL_INFO* coll);
@@ -113,6 +115,7 @@ void lara_col_monkeyswing(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_monkeyl(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_monkeyl(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_monkeyr(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_monkeyr(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_monkey180(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_monkey180(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_all4s(ITEM_INFO* item, COLL_INFO* coll);
@@ -149,7 +152,18 @@ void lara_as_extcornerr(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_intcornerl(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_intcornerr(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_pulley(ITEM_INFO* item, COLL_INFO* coll);
-
+void lara_as_rope(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_rope(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_climbrope(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_climbroped(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_ropefwd(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_ropel(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_roper(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_trpose(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_trwalk(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_trfall(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_parallelbars(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_pbleapoff(ITEM_INFO* item, COLL_INFO* coll);
 
 #define LaraTestClimbStance	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00445580 )
 #define LaraHangTest	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x004460F0 )
@@ -161,3 +175,9 @@ void lara_as_pulley(ITEM_INFO* item, COLL_INFO* coll);
 #define TestMonkeyLeft	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446810 )
 #define TestMonkeyRight	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446960 )
 #define SetCornerAnim	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, short, short)) 0x0044A980 )
+#define FallFromRope	( (void(__cdecl*)(ITEM_INFO*)) 0x004475C0 )
+#define UpdateRopeSwing	( (void(__cdecl*)(ITEM_INFO*)) 0x00447820 )
+#define LaraClimbRope	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x0046F240 )
+#define ApplyVelocityToRope	( (void(__cdecl*)(int, unsigned short, unsigned short)) 0x00447690 )
+#define JumpOffRope	( (void(__cdecl*)(ITEM_INFO*)) 0x00447E60 )
+#define GetTighRopeFallOff	( (void(__cdecl*)(long)) 0x0044D570 )
