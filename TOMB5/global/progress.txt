@@ -55,8 +55,16 @@ x for functions decompiled but not injected, for one reason or another.
 0x0041B280	+	NeatAndTidyTriggerCutscene
 0x0041B8B0	+	is_object_in_room
 0x0041B930	+	check_xray_machine_trigger
+
+
+		game/crow.cpp
+
 0x0041B980		InitialiseCrow
 0x0041BA00		CrowControl
+
+
+		game/cutseq.cpp
+
 0x0041BCF0	+	_special1_control
 0x0041BD40	+	_special1_end
 0x0041BE90	+	_special2_control
@@ -70,10 +78,19 @@ x for functions decompiled but not injected, for one reason or another.
 0x0041C920	+	resetwindowsmash
 0x0041C950	+	FlamingHell
 0x0041CB10	+	FireTwoGunTitleWeapon
+
+		
+		game/deathslide.cpp
+
 0x0041CC70		InitialiseDeathSlide
 0x0041CCE0		DeathSlideCollision
 0x0041CE00		ControlDeathSlide
 
+
+		game/chef.cpp
+
+0x00410990	+	InitialiseChef
+0x00410A60	+	ChefControl
 
 		game/collide.cpp
 
@@ -243,12 +260,12 @@ x for functions decompiled but not injected, for one reason or another.
 0x00422B90		Load_and_Init_Cutseq
 0x00422C30		init_cutseq_actors
 0x00422EF0		
-0x00422F80		DelsHandyTeleportLara
-0x004230F0		
+0x00422F80	+	DelsHandyTeleportLara
+0x004230F0		nail_intelligent_object
 0x00423170	+	handle_lara_chatting
 0x00423210	+	handle_actor_chatting
-0x00423330		
-0x004233D0
+0x00423330	+	trigger_item_in_room
+0x004233D0	+	untrigger_item_in_room
 0x00423470	+	find_a_fucking_item
 0x004234B0	+	cranecut_init
 0x00423530	+	cranecut_end
@@ -276,7 +293,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00423CA0	+	special4_end
 0x00423CC0	+	stealth3_start
 0x00423DF0	+	stealth3_end
-0x00423FB0		deal_with_actor_shooting
+0x00423FB0	+	deal_with_actor_shooting
 0x00424080		GrabActorMatrix
 0x004243A0		GetActorJointAbsPosition
 0x00424570	+	TriggerActorBlood
@@ -475,3 +492,13 @@ x for functions decompiled but not injected, for one reason or another.
 0x00464CA0		//Not called anywhere it seems.
 0x00464EF0		LoadGame
 0x00464F20		SaveGame
+
+
+		game/people.cpp
+
+0x004671E0	+	TargetVisible
+0x004672F0	+	Targetable
+0x00467420	+	GunShot
+0x00467440	+	GunHit
+0x00467530	+	GunMiss
+0x00467610	+	ShotLara
