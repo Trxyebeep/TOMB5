@@ -13,4 +13,6 @@
 #define CreatureJoint	( (void(__cdecl*)(ITEM_INFO*, short, short)) 0x0040B240 )
 #define CreatureAnimation	( (int(__cdecl*)(short, short, short)) 0x0040A1D0 )
 typedef short(__cdecl* generate)(long, long, long, short, short, short);
+typedef short(__cdecl* generate2)(long, long, long, short, int, int);
 #define CreatureEffectT	( (short(__cdecl*)(ITEM_INFO*, BITE_INFO*, short, short, generate)) 0x0040B550 )
+#define CreatureEffect	( (short(__cdecl*)(ITEM_INFO*, BITE_INFO*, generate2)) 0x0040B4D0 )

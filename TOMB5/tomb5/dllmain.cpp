@@ -29,6 +29,7 @@
 #include "../game/spotcam.h"
 #include "../game/cutseq.h"
 #include "../game/chef.h"
+#include "../game/people.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -75,6 +76,7 @@ void inject_all()
     inject_spotcam();
     inject_cutseq();
     inject_chef();
+    inject_people();
 }
 
 BOOL APIENTRY DllMain( HINSTANCE hModule,

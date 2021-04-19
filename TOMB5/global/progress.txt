@@ -90,7 +90,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/chef.cpp
 
 0x00410990	+	InitialiseChef
-0x00410A60		ChefControl
+0x00410A60	+	ChefControl
 
 		game/collide.cpp
 
@@ -492,3 +492,13 @@ x for functions decompiled but not injected, for one reason or another.
 0x00464CA0		//Not called anywhere it seems.
 0x00464EF0		LoadGame
 0x00464F20		SaveGame
+
+
+		game/people.cpp
+
+0x004671E0	+	TargetVisible
+0x004672F0	+	Targetable
+0x00467420	+	GunShot
+0x00467440	+	GunHit
+0x00467530	+	GunMiss
+0x00467610	+	ShotLara
