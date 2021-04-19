@@ -16,8 +16,11 @@ void lara_as_fallback(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_fallback(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_jumper(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_leftjump(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_leftjump(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_rightjump(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_rightjump(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_backjump(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_backjump(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_forwardjump(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_forwardjump(ITEM_INFO* item, COLL_INFO* coll);
 void LookUpDown();
@@ -123,6 +126,30 @@ void lara_col_hangturnlr(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_all4turnl(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_all4turnr(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_all4turnlr(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_crawlb(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_crawlb(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_crawl2hang(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_controlled(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_controlledl(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_roll(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_pose(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_waterout(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_deathslide(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_turnswitch(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_poleleft(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_poleright(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_polestat(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_poleup(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_poledown(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_duckl(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_duckr(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_ducklr(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_extcornerl(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_extcornerr(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_intcornerl(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_intcornerr(ITEM_INFO* item, COLL_INFO* coll);
+void lara_as_pulley(ITEM_INFO* item, COLL_INFO* coll);
+
 
 #define LaraTestClimbStance	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00445580 )
 #define LaraHangTest	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x004460F0 )
@@ -133,3 +160,4 @@ void lara_col_all4turnlr(ITEM_INFO* item, COLL_INFO* coll);
 #define TestHangSwingIn	( (int(__cdecl*)(ITEM_INFO*, short)) 0x00444B30 )
 #define TestMonkeyLeft	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446810 )
 #define TestMonkeyRight	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446960 )
+#define SetCornerAnim	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, short, short)) 0x0044A980 )

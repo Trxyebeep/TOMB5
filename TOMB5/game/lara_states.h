@@ -1,4 +1,8 @@
 #pragma once
+#include "lara.h"
+#include "larasurf.h"
+#include "laraswim.h"
+#include "laraclmb.h"
 #include "../global/types.h"
 
 enum lara_anim_state
@@ -626,7 +630,7 @@ enum lara_anim
 	NUM_LARA_ANIMS
 };
 
-/*void(*lara_control_routines[NUM_LARA_STATES + 1])(struct ITEM_INFO* item, struct COLL_INFO* coll) =
+/*void(*lara_control_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* coll) =
 {
 	lara_as_walk,
 	lara_as_run,
@@ -769,7 +773,7 @@ enum lara_anim
 	lara_as_null
 };
 
-void(*lara_collision_routines[NUM_LARA_STATES + 1])(struct ITEM_INFO* item, struct COLL_INFO* coll) =
+void(*lara_collision_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* coll) =
 {
 	lara_col_walk,
 	lara_col_run,
