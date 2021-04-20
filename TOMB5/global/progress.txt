@@ -236,11 +236,11 @@ x for functions decompiled but not injected, for one reason or another.
 		game/deltapak.cpp
 
 0x00420E10	+	handle_cutseq_triggering
-0x00421480		do_new_cutscene_camera
-0x00421880		InitPackNodes
-0x004219E0		DecodeAnim
-0x00421B50		DecodeTrack
-0x00421CD0		TrackWord
+0x00421480	+	do_new_cutscene_camera
+0x00421880	+	InitPackNodes
+0x004219E0	+	DecodeAnim
+0x00421B50	+	DecodeTrack
+0x00421CD0	+	GetTrackWord
 0x00421D60		frigup_lara
 0x00421E90		updateAnimFrame
 0x00422010	+	finish_cutseq

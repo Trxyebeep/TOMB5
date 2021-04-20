@@ -1410,4 +1410,45 @@ struct AI_info
 	short x_angle; // size=0, offset=18
 	short enemy_facing; // size=0, offset=20
 };
+
+struct RTDECODE
+{
+	unsigned long length; // size=0, offset=0
+	unsigned long off; // size=0, offset=4
+	unsigned short counter; // size=0, offset=8
+	unsigned short data; // size=0, offset=10
+	unsigned char decodetype; // size=0, offset=12
+	unsigned char packmethod; // size=0, offset=13
+	unsigned short padfuck; // size=0, offset=14
+};
+
+struct PACKNODE
+{
+	short xrot_run; // size=0, offset=0
+	short yrot_run; // size=0, offset=2
+	short zrot_run; // size=0, offset=4
+	short xkey; // size=0, offset=6
+	short ykey; // size=0, offset=8
+	short zkey; // size=0, offset=10
+	RTDECODE decode_x; // size=16, offset=12
+	RTDECODE decode_y; // size=16, offset=28
+	RTDECODE decode_z; // size=16, offset=44
+	unsigned long xlength; // size=0, offset=60
+	unsigned long ylength; // size=0, offset=64
+	unsigned long zlength; // size=0, offset=68
+	char* xpacked; // size=0, offset=72
+	char* ypacked; // size=0, offset=76
+	char* zpacked; // size=0, offset=80
+};
+
+struct NODELOADHEADER
+{
+	short xkey; // size=0, offset=0
+	short ykey; // size=0, offset=2
+	short zkey; // size=0, offset=4
+	short packmethod; // size=0, offset=6
+	short xlength; // size=0, offset=8
+	short ylength; // size=0, offset=10
+	short zlength; // size=0, offset=12
+};
 #pragma pack(pop)

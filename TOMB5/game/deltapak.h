@@ -154,13 +154,16 @@ void trigger_item_in_room(short room_number, int object);
 void untrigger_item_in_room(short room_number, int object);
 void deal_with_actor_shooting(unsigned short* shootdata, int actornum, int nodenum, PHD_VECTOR* pos);
 void DelsHandyTeleportLara(int x, int y, int z, int yrot);
+void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int numnodes);
+int GetTrackWord(unsigned long off, char* packed, unsigned char packmethod);
+int DecodeTrack(char* packed, RTDECODE* decode);
+void DecodeAnim(PACKNODE* node, int num_nodes, int frame, unsigned short flags);
+void do_new_cutscene_camera();
 
-//#define deal_with_actor_shooting	( (void(__cdecl*)(unsigned short*, int, int, PHD_VECTOR*)) 0x00423FB0 )
+
 #define GetActorJointAbsPosition ((void(__cdecl*)(int, unsigned long, PHD_VECTOR*)) 0x004243A0 )
-//#define	DelsHandyTeleportLara	( (void(__cdecl*)(int, int, int, int)) 0x00422F80 )
 #define	cutseq_kill_item	( (void(__cdecl*)(int)) 0x00422A20 )
 #define Load_and_Init_Cutseq	( (int(__cdecl*)(int)) 0x00422B90 )
-#define do_new_cutscene_camera	( (void(__cdecl*)()) 0x00421480 )
 #define	cutseq_restore_item	( (ITEM_INFO*(__cdecl*)(int)) 0x00422AF0 )
 #define GrabActorMatrix	( (void(__cdecl*)(int, int, D3DMATRIX*)) 0x00424080 )
 #define trig_actor_gunflash	( (void(__cdecl*)(D3DMATRIX*, PHD_VECTOR*)) 0x00485EC0 )//somewhere in specific I think? only ever called in deal_with_actor_shooting anyway so keeping it here for now

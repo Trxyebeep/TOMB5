@@ -251,6 +251,8 @@
 #define friggrimmer	VAR_U_(0x00E598F4, char)
 #define friggrimmer2	VAR_U_(0x00E598F3, char)
 #define oldLaraBusy	VAR_U_(0x00E59898, char)
+#define GLOBAL_numcutseq_frames	VAR_U_(0x00E7F020, int)
+#define camera_pnodes	VAR_U_(0x00E7EE9C, PACKNODE*)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)
@@ -342,6 +344,7 @@
 #define twogun	ARRAY_(0x00EEEB00, TWOGUN_INFO, [3])
 #define ammo_object_list	ARRAY_(0x00E598E0, AMMOLIST, [3])
 #define current_options	ARRAY_(0x00E598C0, MENUTHANG, [3])
+#define actor_pnodes	ARRAY_(0x00E71180, PACKNODE*, [10])
 
 
 //defs

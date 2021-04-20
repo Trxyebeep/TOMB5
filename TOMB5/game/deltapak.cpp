@@ -24,6 +24,7 @@
 #include "spotcam.h"
 #include <d3dtypes.h>
 #include "cutseq.h"
+#include "../specific/matrix_shit.h"
 
 unsigned short larson_pistols_info1[2] =
 {
@@ -3017,6 +3018,252 @@ void DelsHandyTeleportLara(int x, int y, int z, int yrot)
 	camera.fixed_camera = 1;
 }
 
+void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int numnodes)
+{
+	int offset;
+	int xoff;
+	int yoffset;
+	int yoff;
+	int zoffset;
+	int zoff;
+
+	offset = ((numnodes << 3) - numnodes) << 1;
+
+	if (numnodes > 0)
+	{
+		for (int i = 0; i < numnodes; i++)
+		{
+			pnode->xkey = (unsigned short)lnode->xkey;
+			pnode->ykey = (unsigned short)lnode->ykey;
+			pnode->zkey = (unsigned short)lnode->zkey;
+			pnode->decode_x.packmethod = (lnode->packmethod >> 10) & 0xF;
+			pnode->decode_y.packmethod = (lnode->packmethod >> 5) & 0xF;
+			pnode->decode_z.packmethod = (lnode->packmethod) & 0xF;
+			pnode->xlength = lnode->xlength;
+			pnode->ylength = lnode->ylength;
+			pnode->zlength = lnode->zlength;
+			xoff = ((lnode->xlength * pnode->decode_x.packmethod) >> 3) + 4;
+			yoff = ((lnode->ylength * pnode->decode_y.packmethod) >> 3) + 4;
+			zoff = ((lnode->zlength * pnode->decode_z.packmethod) >> 3) + 4;
+			lnode++;
+			pnode->xpacked = &packed[offset];
+			pnode->ypacked = &packed[offset + xoff];
+			pnode->zpacked = &packed[offset + xoff + yoff];
+			pnode++;
+			offset += xoff + yoff + zoff;
+		}
+	}
+
+	return;
+}
+
+int GetTrackWord(unsigned long off, char* packed, unsigned char packmethod)
+{
+	int ret;
+	long offset, offset2;
+
+	offset = packmethod * off;
+	offset2 = offset >> 3;
+
+	ret = ((1 << packmethod) - 1) & ((unsigned int)(*(unsigned char*)(packed + offset2) |
+		((*(unsigned char*)(packed + offset2 + 1) |
+			(*(unsigned short*)(packed + offset2 + 2) << 8)) << 8)) >> (offset & 7));
+
+	if (((1 << (packmethod - 1)) & ret) != 0)
+		return (unsigned int)(ret | ~((1 << packmethod) - 1));
+
+	return ret;
+}
+
+int DecodeTrack(char* packed, RTDECODE* decode)
+{
+	int word;
+
+	if (!decode->decodetype)
+	{
+		word = GetTrackWord(decode->off, packed, decode->packmethod);
+
+		if ((word & 0x20))
+		{
+			if (!(word & 0xF))
+				decode->counter = 16;
+			else
+				decode->counter = (word & 0xF);
+
+			decode->decodetype = 1;
+			decode->off++;
+			decode->length--;
+		}
+		else
+		{
+			decode->decodetype = 2;
+
+			if ((word & 0x10))
+			{
+				GetTrackWord(decode->off + 1, packed, decode->packmethod);
+				decode->counter = ((word & 7) << 5) | (GetTrackWord(decode->off + 1, packed, decode->packmethod) & 0x1F);
+				decode->data = GetTrackWord(decode->off + 2, packed, decode->packmethod);
+				decode->off += 3;
+				decode->length -= 3;
+			}
+			else
+			{
+				decode->data = GetTrackWord(decode->off + 1, packed, decode->packmethod);
+				decode->counter = word & 0x7;
+				decode->off += 2;
+				decode->length -= 2;
+			}
+		}
+	}
+
+	if (decode->decodetype == 2)
+	{
+		if (!--decode->counter)
+			decode->decodetype = 0;
+
+		return decode->data;
+	}
+	else
+	{
+		word = GetTrackWord(decode->off, packed, decode->packmethod);
+		decode->off++;
+		decode->length--;
+
+		if (!--decode->counter)
+			decode->decodetype = 0;
+
+		return word;
+	}
+}
+
+void DecodeAnim(PACKNODE* node, int num_nodes, int frame, unsigned short flags)
+{
+	int i;
+
+	if (!frame)
+	{
+		for (i = num_nodes; i; i--, node++)
+		{
+			node->decode_x.off = 0;
+			node->decode_x.counter = 0;
+			node->decode_x.data = 0;
+			node->decode_x.decodetype = 0;
+			node->decode_y.off = 0;
+			node->decode_y.counter = 0;
+			node->decode_y.data = 0;
+			node->decode_y.decodetype = 0;
+			node->decode_z.off = 0;
+			node->decode_z.counter = 0;
+			node->decode_z.data = 0;
+			node->decode_z.decodetype = 0;
+			node->xrot_run = node->xkey;
+			node->yrot_run = node->ykey;
+			node->zrot_run = node->zkey;
+			node->decode_x.length = node->xlength;
+			node->decode_y.length = node->ylength;
+			node->decode_z.length = node->zlength;
+		}
+
+		return;
+	}
+
+	node->xrot_run += DecodeTrack(node->xpacked, &node->decode_x);
+	node->yrot_run += DecodeTrack(node->ypacked, &node->decode_y);
+	node->zrot_run += DecodeTrack(node->zpacked, &node->decode_z);
+	node++;
+
+	for (i = 1; i < num_nodes; i++, node++)
+	{
+		node->xrot_run += DecodeTrack(node->xpacked, &node->decode_x);
+		node->yrot_run += DecodeTrack(node->ypacked, &node->decode_y);
+		node->zrot_run += DecodeTrack(node->zpacked, &node->decode_z);
+		node->xrot_run &= flags;
+		node->yrot_run &= flags;
+		node->zrot_run &= flags;
+	}
+}
+
+void do_new_cutscene_camera()
+{
+	PACKNODE* nodes;
+	tr5_vertex cam_pos;
+	tr5_vertex cam_target;
+
+	if (cutseq_control_routines[cutseq_num].control_func)
+		cutseq_control_routines[cutseq_num].control_func();
+
+	DecodeAnim(camera_pnodes, 2, GLOBAL_cutseq_frame, 65535);
+	nodes = camera_pnodes;
+	camera.target.y = nodes[0].yrot_run << 1;
+	camera.pos.y = nodes[1].yrot_run << 1;
+
+	switch (cutrot)
+	{
+	case 0:
+		camera.target.x = nodes[0].xrot_run << 1;
+		camera.target.z = nodes[0].zrot_run << 1;
+		camera.pos.x = nodes[1].xrot_run << 1;
+		camera.pos.z = nodes[1].zrot_run << 1;
+		break;
+
+	case 1:
+		camera.target.x = nodes[0].zrot_run << 1;
+		camera.target.z = -(nodes[0].xrot_run << 1);
+		camera.pos.x = nodes[1].zrot_run << 1;
+		camera.pos.z = -(nodes[1].xrot_run << 1);
+		break;
+
+	case 2:
+		camera.target.x = -(nodes[0].xrot_run << 1);
+		camera.target.z = -(nodes[0].zrot_run << 1);
+		camera.pos.x = -(nodes[1].xrot_run << 1);
+		camera.pos.z = -(nodes[1].zrot_run << 1);
+		break;
+
+	case 3:
+		camera.target.x = -(nodes[0].zrot_run << 1);
+		camera.target.z = nodes[0].xrot_run << 1;
+		camera.pos.x = -(nodes[1].zrot_run << 1);
+		camera.pos.z = nodes[1].xrot_run << 1;
+		break;
+	}
+
+	camera.target.x += GLOBAL_cutme->orgx;
+	camera.target.y += GLOBAL_cutme->orgy;
+	camera.target.z += GLOBAL_cutme->orgz;
+	camera.pos.x += GLOBAL_cutme->orgx;
+	camera.pos.y += GLOBAL_cutme->orgy;
+	camera.pos.z += GLOBAL_cutme->orgz;
+	IsRoomOutsideNo = -1;
+	IsRoomOutside(camera.pos.x, camera.pos.y, camera.pos.z);
+
+	if (IsRoomOutsideNo != -1)
+		camera.pos.room_number = IsRoomOutsideNo;
+
+	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+	cam_pos.x = camera.pos.x;
+	cam_pos.y = camera.pos.y;
+	cam_pos.z = camera.pos.z;
+	cam_target.x = camera.target.x;
+	cam_target.y = camera.target.y;
+	cam_target.z = camera.target.z;
+	phd_QuickW2VMatrix(cam_pos, cam_target, 0);
+
+	if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
+		DecodeAnim(actor_pnodes[0], 16, GLOBAL_cutseq_frame, 1023);
+
+	for (int n = 1; n < GLOBAL_cutme->numactors; n++)
+		DecodeAnim(actor_pnodes[n], GLOBAL_cutme->actor_data[n].nodes + 1, GLOBAL_cutseq_frame, 1023);
+
+	GLOBAL_cutseq_frame++;
+
+	if (GLOBAL_cutseq_frame > GLOBAL_numcutseq_frames - 8 && cutseq_trig == 2)
+		cutseq_trig = 3;
+
+	if (GLOBAL_cutseq_frame > GLOBAL_numcutseq_frames)
+		GLOBAL_cutseq_frame = GLOBAL_numcutseq_frames;
+}
+
 void inject_deltaPak()
 {
 	INJECT(0x00425390, andrea1_init);
@@ -3150,8 +3397,8 @@ void inject_deltaPak()
 	INJECT(0x00420E10, handle_cutseq_triggering);
 	INJECT(0x00422680, cutseq_givelara_pistols);
 	INJECT(0x004226B0, cutseq_removelara_pistols);
-//	INJECT(0x00421480, do_new_cutscene_camera);	
-//	INJECT(0x00421880, InitPackNodes);
+	INJECT(0x00421480, do_new_cutscene_camera);	
+	INJECT(0x00421880, InitPackNodes);
 //	INJECT(0x00421D60, frigup_lara);
 	INJECT(0x00422010, finish_cutseq);
 //	INJECT(0x00422570, CalculateObjectLightingLaraCutSeq);
@@ -3181,9 +3428,9 @@ void inject_deltaPak()
 	INJECT(0x00428650, ResetCutanimate);
 	INJECT(0x004286E0, Cutanimate);
 	INJECT(0x00423470, find_a_fucking_item);
-	//DecodeAnim..
-	//DecodeTrack
-	//TrackWord
+	INJECT(0x004219E0, DecodeAnim);
+	INJECT(0x00421B50, DecodeTrack);
+	INJECT(0x00421CD0, GetTrackWord);
 	//updateAnimFrame
 	//DrawCutSeqActors
 	//CalcActorLighting
