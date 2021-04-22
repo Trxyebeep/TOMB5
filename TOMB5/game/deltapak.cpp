@@ -1646,12 +1646,12 @@ void stealth3_start()
 
 void stealth3_end()
 {
-	int i;
 	ITEM_INFO* item;
 	
-	item = &items[0];
-	for (i = 0; i < level_items; i++, item++)
+	for (int i = 0; i < level_items; i++)
 	{
+		item = &items[i];
+
 		if (cutseq_num == 3)
 			continue;
 
@@ -1667,16 +1667,27 @@ void stealth3_end()
 				ABS(item->pos.y_pos - lara_item->pos.y_pos) < 256)
 			{
 				item->hit_points = 0;
-				item->current_anim_state = 6;
 
 				if (item->object_number == TWOGUN)
+				{
 					item->anim_number = objects[TWOGUN].anim_index + 3;
-				else if (item->object_number == CHEF)			
-					item->anim_number = objects[CHEF].anim_index + 11;			
+					item->current_anim_state = 7;
+				}
+				else if (item->object_number == CHEF)
+				{
+					item->anim_number = objects[CHEF].anim_index + 11;
+					item->current_anim_state = 6;
+				}
 				else if (objects[SWAT].loaded)
+				{
 					item->anim_number = objects[SWAT].anim_index + 11;
+					item->current_anim_state = 6;
+				}
 				else
+				{
 					item->anim_number = objects[BLUE_GUARD].anim_index + 11;
+					item->current_anim_state = 6;
+				}
 
 				item->frame_number = anims[item->anim_number].frame_end;
 				AddActiveItem(i);
