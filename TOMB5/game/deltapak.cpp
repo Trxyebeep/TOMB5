@@ -1646,12 +1646,12 @@ void stealth3_start()
 
 void stealth3_end()
 {
-	int i;
 	ITEM_INFO* item;
 	
-	item = &items[0];
-	for (i = 0; i < level_items; i++, item++)
+	for (int i = 0; i < level_items; i++)
 	{
+		item = &items[i];
+
 		if (cutseq_num == 3)
 			continue;
 
@@ -1667,16 +1667,27 @@ void stealth3_end()
 				ABS(item->pos.y_pos - lara_item->pos.y_pos) < 256)
 			{
 				item->hit_points = 0;
-				item->current_anim_state = 6;
 
 				if (item->object_number == TWOGUN)
+				{
 					item->anim_number = objects[TWOGUN].anim_index + 3;
-				else if (item->object_number == CHEF)			
-					item->anim_number = objects[CHEF].anim_index + 11;			
+					item->current_anim_state = 7;
+				}
+				else if (item->object_number == CHEF)
+				{
+					item->anim_number = objects[CHEF].anim_index + 11;
+					item->current_anim_state = 6;
+				}
 				else if (objects[SWAT].loaded)
+				{
 					item->anim_number = objects[SWAT].anim_index + 11;
+					item->current_anim_state = 6;
+				}
 				else
+				{
 					item->anim_number = objects[BLUE_GUARD].anim_index + 11;
+					item->current_anim_state = 6;
+				}
 
 				item->frame_number = anims[item->anim_number].frame_end;
 				AddActiveItem(i);
@@ -3316,6 +3327,7 @@ void do_new_cutscene_camera()
 
 void updateAnimFrame(PACKNODE* node, int flags, short* frame)
 {
+	short y;
 	short* nex;
 
 	frame[7] = 3 * node->yrot_run;
@@ -3329,16 +3341,16 @@ void updateAnimFrame(PACKNODE* node, int flags, short* frame)
 
 	case 1:
 		frame[6] = 3 * node->zrot_run;
-		frame[8] = -(3 * node->xrot_run);
+		frame[8] = -3 * node->xrot_run;
 		break;
 
 	case 2:
-		frame[6] = -(3 * node->xrot_run);
-		frame[8] = -(3 * node->zrot_run);
+		frame[6] = -3 * node->xrot_run;
+		frame[8] = -3 * node->zrot_run;
 		break;
 
 	case 3:
-		frame[6] = -(3 * node->zrot_run);
+		frame[6] = -3 * node->zrot_run;
 		frame[8] = 3 * node->xrot_run;
 		break;
 	}
@@ -3347,11 +3359,13 @@ void updateAnimFrame(PACKNODE* node, int flags, short* frame)
 
 	for (int i = 1; i < flags; i++, nex += 2)
 	{
-		if (cutrot && i == 1)
-			node[i].yrot_run = (node[i].yrot_run + (cutrot << 8)) & 0x3FF;
+		y = node[i].yrot_run;
 
-		nex[0] = ((node[i].zrot_run) | (((node[i].yrot_run) | ((node[i].xrot_run) << 10)) << 10)) >> 16;
-		nex[1] = (node[i].zrot_run) | (((node[i].yrot_run) | ((node[i].xrot_run) << 10)) << 10);
+		if (cutrot && i == 1)
+			y = (y + (cutrot << 8)) & 0x3FF;
+
+		nex[0] = (((node[i].xrot_run << 10 | y) << 10) | node[i].zrot_run) >> 16;
+		nex[1] = ((node[i].xrot_run << 10 | y) << 10) | node[i].zrot_run;
 	}
 }
 
