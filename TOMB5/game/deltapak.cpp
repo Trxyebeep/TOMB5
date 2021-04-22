@@ -3316,6 +3316,7 @@ void do_new_cutscene_camera()
 
 void updateAnimFrame(PACKNODE* node, int flags, short* frame)
 {
+	short y;
 	short* nex;
 
 	frame[7] = 3 * node->yrot_run;
@@ -3329,16 +3330,16 @@ void updateAnimFrame(PACKNODE* node, int flags, short* frame)
 
 	case 1:
 		frame[6] = 3 * node->zrot_run;
-		frame[8] = -(3 * node->xrot_run);
+		frame[8] = -3 * node->xrot_run;
 		break;
 
 	case 2:
-		frame[6] = -(3 * node->xrot_run);
-		frame[8] = -(3 * node->zrot_run);
+		frame[6] = -3 * node->xrot_run;
+		frame[8] = -3 * node->zrot_run;
 		break;
 
 	case 3:
-		frame[6] = -(3 * node->zrot_run);
+		frame[6] = -3 * node->zrot_run;
 		frame[8] = 3 * node->xrot_run;
 		break;
 	}
@@ -3347,11 +3348,13 @@ void updateAnimFrame(PACKNODE* node, int flags, short* frame)
 
 	for (int i = 1; i < flags; i++, nex += 2)
 	{
-		if (cutrot && i == 1)
-			node[i].yrot_run = (node[i].yrot_run + (cutrot << 8)) & 0x3FF;
+		y = node[i].yrot_run;
 
-		nex[0] = ((node[i].zrot_run) | (((node[i].yrot_run) | ((node[i].xrot_run) << 10)) << 10)) >> 16;
-		nex[1] = (node[i].zrot_run) | (((node[i].yrot_run) | ((node[i].xrot_run) << 10)) << 10);
+		if (cutrot && i == 1)
+			y = (y + (cutrot << 8)) & 0x3FF;
+
+		nex[0] = (((node[i].xrot_run << 10 | y) << 10) | node[i].zrot_run) >> 16;
+		nex[1] = ((node[i].xrot_run << 10 | y) << 10) | node[i].zrot_run;
 	}
 }
 
