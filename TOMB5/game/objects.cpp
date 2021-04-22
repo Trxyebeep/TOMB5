@@ -410,7 +410,7 @@ void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 		}
 	}
 	else if (input & IN_ACTION && lara.gun_status == LG_NO_ARMS && l->gravity_status != 0 && l->fallspeed > 0 &&
-		(l->current_anim_state == STATE_LARA_REACH || l->current_anim_state == STATE_LARA_SLIDE_FORWARD))
+		(l->current_anim_state == STATE_LARA_REACH || l->current_anim_state == STATE_LARA_JUMP_UP))
 	{
 		if (TestBoundsCollide(item, l, 100) && TestCollision(item, l))
 		{

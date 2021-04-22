@@ -18,6 +18,7 @@
 #define effects	VAR_U_(0x00E5C5E0, FX_INFO*)
 #define room	VAR_U_(0x00875154, room_info*)
 #define	meshes	VAR_U_(0x00875170, short**)
+#define bones	VAR_U_(0x00875178, long*)
 #define height_type VAR_U_(0x00EEEFF4, int)
 #define trigger_index VAR_U_(0x00EEEF9C, short*)
 #define xfront VAR_U_(0x00EEf928, long)
@@ -199,6 +200,61 @@
 #define Chris_Menu	VAR_U_(0x0051CE2E, char)
 #define title_controls_locked_out	VAR_U_(0x00E5C2A8, char)
 #define jobyfrigger	VAR_U_(0x0051CA9C, char)
+#define CurrentPistolsAmmoType	VAR_U_(0x0051CF06, char)
+#define CurrentUziAmmoType	VAR_U_(0x0051CF11, char)
+#define CurrentRevolverAmmoType	VAR_U_(0x0051CF0A, char)
+#define CurrentShotGunAmmoType	VAR_U_(0x0051CF0B, char)
+#define CurrentGrenadeGunAmmoType	VAR_U_(0x0051CF00, char)
+#define CurrentCrossBowAmmoType	VAR_U_(0x0051CF1C, char)
+#define AmountPistolsAmmo	VAR_U_(0x0051CF16, short)
+#define AmountRevolverAmmo	VAR_U_(0x0051CF14, short)
+#define AmountHKAmmo1	VAR_U_(0x0051CF08, short)
+#define AmountCrossBowAmmo1	VAR_U_(0x0051CF0E, short)
+#define AmountCrossBowAmmo2	VAR_U_(0x0051CF0C, short)
+#define AmountShotGunAmmo1	VAR_U_(0x0051CF04, short)
+#define AmountShotGunAmmo2	VAR_U_(0x0051CF02, short)
+#define AmountUziAmmo	VAR_U_(0x0051CF1A, short)
+#define current_selected_option	VAR_U_(0x00E598F9, char)
+#define ammo_active	VAR_U_(0x00E5991F, char)
+#define right_repeat	VAR_U_(0x00E59915, unsigned char)
+#define right_debounce	VAR_U_(0x00E59914, unsigned char)
+#define left_repeat	VAR_U_(0x00E59E29, unsigned char)
+#define left_debounce	VAR_U_(0x00E5989B, unsigned char)
+#define	ammo_selector_fade_dir	VAR_U_(0x00E59926, short)
+#define	ammo_selector_fade_val	VAR_U_(0x00E5990A, short)
+#define	ammo_selector_flag	VAR_U_(0x00E59928, char)
+#define num_ammo_slots	VAR_U_(0x00E598A4, char)
+#define current_ammo_type	VAR_U_(0x00E59918, char*)
+#define OBJLIST_SPACING	VAR_U_(0x00E59894, int)
+#define combine_ring_fade_dir	VAR_U_(0x00E5991C, short)
+#define	combine_obj1	VAR_U_(0x00E59912, short)
+#define	combine_obj2	VAR_U_(0x00E59910, short)
+#define	combine_ring_fade_val	VAR_U_(0x00E598F6, short)
+#define	combine_type_flag	VAR_U_(0x00E59E28, short)
+#define seperate_type_flag	VAR_U_(0x00E598F8, short)
+#define loading_or_saving	VAR_U_(0x00E5989D, char)
+#define normal_ring_fade_dir	VAR_U_(0x00E59924, short)
+#define normal_ring_fade_val	VAR_U_(0x00E59908, short)
+#define StashedCurrentPistolsAmmoType	VAR_U_(0x0051CF12, char)//static
+#define StashedCurrentUziAmmoType	VAR_U_(0x0051CF01, char)//static
+#define StashedCurrentRevolverAmmoType	VAR_U_(0x0051CF1D, char)//static
+#define StashedCurrentShotGunAmmoType	VAR_U_(0x0051CF18, char)//static
+#define StashedCurrentGrenadeGunAmmoType	VAR_U_(0x0051CF10, char)//static
+#define StashedCurrentCrossBowAmmoType	VAR_U_(0x0051CF13, char)//static
+#define Stashedcurrent_selected_option	VAR_U_(0x00E5992B, char)//static
+#define	GLOBAL_invkeypadmode	VAR_U_(0x0051CF28, int)
+#define up_debounce	VAR_U_(0x00E5992A, unsigned char)
+#define down_debounce	VAR_U_(0x00E598D8, unsigned char)
+#define GLOBAL_lastinvitem	VAR_U_(0x00508E14, int)
+#define select_debounce	VAR_U_(0x00E59920, unsigned char)
+#define deselect_debounce	VAR_U_(0x00E598F2, unsigned char)
+#define friggrimmer	VAR_U_(0x00E598F4, char)
+#define friggrimmer2	VAR_U_(0x00E598F3, char)
+#define oldLaraBusy	VAR_U_(0x00E59898, char)
+#define GLOBAL_numcutseq_frames	VAR_U_(0x00E7F020, int)
+#define camera_pnodes	VAR_U_(0x00E7EE9C, PACKNODE*)
+#define duff_item	VAR_U_(0x00E71300, ITEM_INFO)
+#define GLaraShadowframe	VAR_U_(0x00E86300, short*)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)
@@ -235,6 +291,9 @@
 #define gfFogColour	VAR_U_(0x0051CE30, CVECTOR)
 #define	lara1_look_fade	VAR_U_(0x00511A18, short)
 #define	lara4_look_fade	VAR_U_(0x00511A1A, short)
+#define inv_light	VAR_U_(0x00508E10, long)//seems to only affect the ammo ring?
+#define inv_item_xpos	VAR_U_(0x00E598A0, float)
+#define inv_item_ypos	VAR_U_(0x00E5990C, float)
 
 //arrays
 #define cutseq_meshbits	ARRAY_(0x00E7EEA0, unsigned long, [10])
@@ -253,7 +312,6 @@
 #define	weapons	ARRAY_(0x005085B0, WEAPON_INFO, [9])
 #define	DeadlyBounds	ARRAY_(0x00E6C3C0, long, [6])
 #define cutseq_meshswapbits	ARRAY_(0x00E7EEE0, unsigned long, [10])
-#define	cutseq_control_routines	ARRAY_(0x00506DA0, CUTSEQ_ROUTINES, [45])
 #define fmv_to_play	ARRAY_(0x0051CE28, char, [2])
 #define gfResidentCut	ARRAY_(0x00E5C278, unsigned char, [4])
 #define	LightningRGB	ARRAY_(0x00E6E4B8, unsigned short, [3])
@@ -285,6 +343,10 @@
 #define pickups	ARRAY_(0x00E5BF40, DISPLAYPU, [8])
 #define ShatterSounds	ARRAY_(0x00506BAC, unsigned char, [18][10])
 #define twogun	ARRAY_(0x00EEEB00, TWOGUN_INFO, [3])
+#define ammo_object_list	ARRAY_(0x00E598E0, AMMOLIST, [3])
+#define current_options	ARRAY_(0x00E598C0, MENUTHANG, [3])
+#define actor_pnodes	ARRAY_(0x00E71180, PACKNODE*, [10])
+#define temp_rotation_buffer	ARRAY_(0x00E711C0, short, [160])
 
 
 //defs
@@ -299,3 +361,5 @@
 #define	dword_55D224	VAR_U_(0x0055D224, int)//AlterFOV
 #define byte_51CB40	VAR_U_(0x0051CB40, char)//OpenThatDoor//DoorControl
 #define dword_00E916F0	VAR_U_(0x00E916F0, int)//special 1 control, special 2 init, special 3 init, special 4 init
+#define dword_506D3C	VAR_U_(0x00506D3C, int)//DrawInventoryItemMe
+#define dword_9158A8	VAR_U_(0x009158A8, ITEM_INFO*)//game is horny to save some item's pointer (:

@@ -4,6 +4,8 @@
 void inject_effect2();
 
 void SoundEffects();
+void FireChaff();
+void DoSubsuitStuff();
 
 #define TriggerDynamic	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431240 )
 #define TriggerDynamic_MIRROR	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431420 )

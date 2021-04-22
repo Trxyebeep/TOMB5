@@ -643,17 +643,17 @@ struct ITEM_INFO
 	unsigned short fired_weapon; // size=0, offset=50
 	short item_flags[4]; // size=8, offset=52
 	void* data; // size=0, offset=60
-	struct PHD_3DPOS pos; // size=20, offset=64
-	struct ITEM_LIGHT il; // size=48, offset=84
-	struct PCLIGHT lights_1[21];
-	struct PCLIGHT lights_2[21];
-	DWORD num_lights_1;
-	DWORD num_lights_2;
-	DWORD light_room_num;
-	DWORD unk_thing;
-	struct PHD_VECTOR ambient_light_pos;
-	struct PCLIGHT* ptr_lights_1;
-	struct PCLIGHT* ptr_lights_2;
+	PHD_3DPOS pos; // size=20, offset=64
+	ITEM_LIGHT il; // size=48, offset=84
+	PCLIGHT lights_1[21];
+	PCLIGHT lights_2[21];
+	unsigned long num_lights_1;
+	unsigned long num_lights_2;
+	unsigned long light_room_num;
+	unsigned long unk_thing;
+	PHD_VECTOR ambient_light_pos;
+	PCLIGHT* ptr_lights_1;
+	PCLIGHT* ptr_lights_2;
 	unsigned long active : 1; // offset=132.0 OFF=5610
 	unsigned long status : 2; // offset=132.1
 	unsigned long gravity_status : 1; // offset=132.3
@@ -745,9 +745,10 @@ struct creature_info
 	mood_type mood; // size=4, offset=14
 	ITEM_INFO* enemy; // size=144, offset=18
 	ITEM_INFO ai_target; // size=144, offset=22
-	short item_num; // size=0, offset=5644
-	PHD_VECTOR target; // size=12, offset=5646
-	lot_info LOT; // size=44, offset=5658
+	short pad;
+	short item_num; // size=0, offset=5646
+	PHD_VECTOR target; // size=12, offset=5648
+	lot_info LOT; // size=44, offset=5660
 };
 
 struct COLL_INFO
@@ -1220,6 +1221,14 @@ struct RINGME
 	int numobjectsinlist; // size=0, offset=612
 };
 
+struct COMBINELIST
+{
+	void(*combine_routine)(int flag); // size=0, offset=0
+	short item1; // size=0, offset=4
+	short item2; // size=0, offset=6
+	short combined_item; // size=0, offset=8
+};
+
 struct DOORPOS_DATA
 {
 	FLOOR_INFO* floor; // size=8, offset=0
@@ -1367,5 +1376,79 @@ struct TWOGUN_INFO
 	char g; // size=0, offset=35
 	char b; // size=0, offset=36
 	char fadein; // size=0, offset=37
+};
+
+struct AMMOLIST
+{
+	short invitem; // size=0, offset=0
+	short amount; // size=0, offset=2
+	unsigned short yrot; // size=0, offset=4
+};
+
+struct MENUTHANG
+{
+	int type; // size=0, offset=0
+	char* text; // size=0, offset=4
+};
+
+struct VECTOR
+{
+	long vx;
+	long vy;
+	long vz;
+	long pad;
+};
+
+struct AI_info
+{
+	short zone_number; // size=0, offset=0
+	short enemy_zone; // size=0, offset=2
+	long distance; // size=0, offset=4
+	long ahead; // size=0, offset=8
+	long bite; // size=0, offset=12
+	short angle; // size=0, offset=16
+	short x_angle; // size=0, offset=18
+	short enemy_facing; // size=0, offset=20
+};
+
+struct RTDECODE
+{
+	unsigned long length; // size=0, offset=0
+	unsigned long off; // size=0, offset=4
+	unsigned short counter; // size=0, offset=8
+	unsigned short data; // size=0, offset=10
+	unsigned char decodetype; // size=0, offset=12
+	unsigned char packmethod; // size=0, offset=13
+	unsigned short padfuck; // size=0, offset=14
+};
+
+struct PACKNODE
+{
+	short xrot_run; // size=0, offset=0
+	short yrot_run; // size=0, offset=2
+	short zrot_run; // size=0, offset=4
+	short xkey; // size=0, offset=6
+	short ykey; // size=0, offset=8
+	short zkey; // size=0, offset=10
+	RTDECODE decode_x; // size=16, offset=12
+	RTDECODE decode_y; // size=16, offset=28
+	RTDECODE decode_z; // size=16, offset=44
+	unsigned long xlength; // size=0, offset=60
+	unsigned long ylength; // size=0, offset=64
+	unsigned long zlength; // size=0, offset=68
+	char* xpacked; // size=0, offset=72
+	char* ypacked; // size=0, offset=76
+	char* zpacked; // size=0, offset=80
+};
+
+struct NODELOADHEADER
+{
+	short xkey; // size=0, offset=0
+	short ykey; // size=0, offset=2
+	short zkey; // size=0, offset=4
+	short packmethod; // size=0, offset=6
+	short xlength; // size=0, offset=8
+	short ylength; // size=0, offset=10
+	short zlength; // size=0, offset=12
 };
 #pragma pack(pop)

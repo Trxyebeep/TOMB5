@@ -197,7 +197,7 @@ void lara_col_climbing(ITEM_INFO* item, COLL_INFO* coll)
 
 		item->pos.y_pos += yshift - 256;
 		result_r = LaraTestClimbUpPos(item, coll->radius, coll->radius + 120, &shift_r, &ledge_r);
-		result_l = LaraTestClimbUpPos(item, coll->radius, coll->radius + 120, &shift_l, &ledge_l);
+		result_l = LaraTestClimbUpPos(item, coll->radius, -(coll->radius + 120), &shift_l, &ledge_l);
 		item->pos.y_pos += 256;
 
 		if (result_r && result_l && input & IN_FORWARD)
@@ -209,15 +209,15 @@ void lara_col_climbing(ITEM_INFO* item, COLL_INFO* coll)
 
 				if (ABS(ledge_r - ledge_l) <= 120)
 				{
-					if (result_r != -1 || result_l != -1)
-					{
-						item->goal_anim_state = STATE_LARA_UNKNOWN_138;
-						item->required_anim_state = STATE_LARA_CROUCH_IDLE;
-					}
-					else
+					if (result_r == -1 || result_l == -1)
 					{
 						item->goal_anim_state = STATE_LARA_GRABBING;
 						item->pos.y_pos += (ledge_r + ledge_l) / 2 - 256;
+					}
+					else
+					{
+						item->goal_anim_state = STATE_LARA_UNKNOWN_138;
+						item->required_anim_state = STATE_LARA_CROUCH_IDLE;
 					}
 				}
 			}
@@ -231,7 +231,7 @@ void lara_col_climbing(ITEM_INFO* item, COLL_INFO* coll)
 		{
 			item->goal_anim_state = STATE_LARA_LADDER_IDLE;
 
-			if (yshift != 0)
+			if (yshift)
 				AnimateLara(item);
 		}
 	}

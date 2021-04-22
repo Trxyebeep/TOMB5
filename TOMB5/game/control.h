@@ -2,7 +2,8 @@
 #include "../global/types.h"
 
 void inject_control();
-void KlaxonTremor();
+
+long ControlPhase(long nframes, int demo_mode);
 int GetRandomControl();
 void SeedRandomControl(long seed);
 int GetRandomDraw();
@@ -18,19 +19,6 @@ int CheckCutPlayed(int num);
 void NeatAndTidyTriggerCutscene(int value, int timer);
 int is_object_in_room(int roomnumber, int objnumber);
 int check_xray_machine_trigger();
-void _special1_control();
-void _special1_end();
-void _special2_control();
-void _special2_end();
-void _special3_control();
-void _special3_end();
-void _special4_control();
-void _special4_end();
-void ResetCutItem(int item_num);
-void resetwindowsmash(int item_num);
-void triggerwindowsmash(int item_num);
-void FlamingHell(PHD_VECTOR* pos);
-void FireTwoGunTitleWeapon(PHD_VECTOR* pos, PHD_VECTOR* pos2);
 
 #define	GetTargetOnLOS	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, int, int)) 0x0041A170 )
 #define ObjectOnLOS2	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, PHD_VECTOR*, MESH_INFO**)) 0x00419110 )

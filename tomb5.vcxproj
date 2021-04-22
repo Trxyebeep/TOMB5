@@ -23,8 +23,10 @@
     <ClCompile Include="TOMB5\game\box.cpp" />
     <ClCompile Include="TOMB5\game\bubbles.cpp" />
     <ClCompile Include="TOMB5\game\camera.cpp" />
+    <ClCompile Include="TOMB5\game\chef.cpp" />
     <ClCompile Include="TOMB5\game\collide.cpp" />
     <ClCompile Include="TOMB5\game\control.cpp" />
+    <ClCompile Include="TOMB5\game\cutseq.cpp" />
     <ClCompile Include="TOMB5\game\debris.cpp" />
     <ClCompile Include="TOMB5\game\delstuff.cpp" />
     <ClCompile Include="TOMB5\game\deltapak.cpp" />
@@ -49,6 +51,7 @@
     <ClCompile Include="TOMB5\game\lot.cpp" />
     <ClCompile Include="TOMB5\game\newinv2.cpp" />
     <ClCompile Include="TOMB5\game\objects.cpp" />
+    <ClCompile Include="TOMB5\game\people.cpp" />
     <ClCompile Include="TOMB5\game\pickup.cpp" />
     <ClCompile Include="TOMB5\game\sound.cpp" />
     <ClCompile Include="TOMB5\game\sphere.cpp" />
@@ -61,6 +64,7 @@
     <ClCompile Include="TOMB5\specific\DS.cpp" />
     <ClCompile Include="TOMB5\specific\game.cpp" />
     <ClCompile Include="TOMB5\specific\input.cpp" />
+    <ClCompile Include="TOMB5\specific\light.cpp" />
     <ClCompile Include="TOMB5\specific\maths.cpp" />
     <ClCompile Include="TOMB5\specific\matrix_shit.cpp" />
     <ClCompile Include="TOMB5\specific\pcsetup.cpp" />
@@ -78,8 +82,10 @@
     <ClInclude Include="TOMB5\game\box.h" />
     <ClInclude Include="TOMB5\game\bubbles.h" />
     <ClInclude Include="TOMB5\game\camera.h" />
+    <ClInclude Include="TOMB5\game\chef.h" />
     <ClInclude Include="TOMB5\game\collide.h" />
     <ClInclude Include="TOMB5\game\control.h" />
+    <ClInclude Include="TOMB5\game\cutseq.h" />
     <ClInclude Include="TOMB5\game\debris.h" />
     <ClInclude Include="TOMB5\game\delstuff.h" />
     <ClInclude Include="TOMB5\game\deltapak.h" />
@@ -105,6 +111,7 @@
     <ClInclude Include="TOMB5\game\lot.h" />
     <ClInclude Include="TOMB5\game\newinv2.h" />
     <ClInclude Include="TOMB5\game\objects.h" />
+    <ClInclude Include="TOMB5\game\people.h" />
     <ClInclude Include="TOMB5\game\pickup.h" />
     <ClInclude Include="TOMB5\game\sound.h" />
     <ClInclude Include="TOMB5\game\sphere.h" />
@@ -122,12 +129,16 @@
     <ClInclude Include="TOMB5\specific\game.h" />
     <ClInclude Include="TOMB5\specific\global.h" />
     <ClInclude Include="TOMB5\specific\input.h" />
+    <ClInclude Include="TOMB5\specific\light.h" />
     <ClInclude Include="TOMB5\specific\maths.h" />
     <ClInclude Include="TOMB5\specific\matrix_shit.h" />
     <ClInclude Include="TOMB5\specific\pcsetup.h" />
     <ClInclude Include="TOMB5\specific\specific.h" />
     <ClInclude Include="TOMB5\tomb5\framework.h" />
     <ClInclude Include="TOMB5\tomb5\pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="TOMB5\global\progress.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -550,7 +550,7 @@ void lara_col_waterroll(ITEM_INFO* item, COLL_INFO* coll)
 
 void inject_laraswim()
 {
-	//LaraTestWaterDepth
+	INJECT(0x00459470, LaraTestWaterDepth);
 	INJECT(0x00458FF0, LaraSwimCollision);
 	INJECT(0x00458BC0, SwimTurn);
 	INJECT(0x00458C80, SwimTurnSubsuit);
