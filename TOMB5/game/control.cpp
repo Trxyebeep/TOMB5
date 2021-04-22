@@ -170,22 +170,20 @@ long ControlPhase(long nframes, int demo_mode)
 			else
 				InfraRed = 0;
 		}
+
+		if (LaserSight)
+		{
+			if (!(gfLevelFlags & GF_LVOP_TRAIN))
+				InfraRed = 1;
+			else
+				InfraRed = 0;
+		}
 		else
 		{
-			if (LaserSight)
-			{
-				if (!(gfLevelFlags & GF_LVOP_TRAIN))
-					InfraRed = 1;
-				else
-					InfraRed = 0;
-			}
+			if ((gfLevelFlags & GF_LVOP_TRAIN) && (inputBusy & IN_ACTION))
+				InfraRed = 1;
 			else
-			{
-				if ((gfLevelFlags & GF_LVOP_TRAIN) && (inputBusy & IN_ACTION))
-					InfraRed = 1;
-				else
-					InfraRed = 0;
-			}
+				InfraRed = 0;
 		}
 
 		ClearDynamics();
