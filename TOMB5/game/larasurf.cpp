@@ -40,7 +40,7 @@ int LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll)
 	UpdateLaraRoom(item, -381);
 	item->pos.z_rot = 0;
 	item->pos.x_rot = 0;
-	item->gravity_status = true;
+	item->gravity_status = 0;
 	item->speed = 0;
 	item->fallspeed = 0;
 	lara.water_status = LW_WADE;
