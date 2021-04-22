@@ -236,16 +236,16 @@ x for functions decompiled but not injected, for one reason or another.
 		game/deltapak.cpp
 
 0x00420E10	+	handle_cutseq_triggering
-0x00421480		do_new_cutscene_camera
-0x00421880		InitPackNodes
-0x004219E0		DecodeAnim
-0x00421B50		DecodeTrack
-0x00421CD0		TrackWord
-0x00421D60		frigup_lara
-0x00421E90		updateAnimFrame
+0x00421480	+	do_new_cutscene_camera
+0x00421880	+	InitPackNodes
+0x004219E0	+	DecodeAnim
+0x00421B50	+	DecodeTrack
+0x00421CD0	+	GetTrackWord
+0x00421D60	+	frigup_lara
+0x00421E90	+	updateAnimFrame
 0x00422010	+	finish_cutseq
-0x00422030		DrawCutSeqActors
-0x004223C0		CalcActorLighting
+0x00422030	x	DrawCutSeqActors
+0x004223C0	+	CalcActorLighting
 0x00422490		GetJointAbsPositionCutSeq
 0x00422570		CalculateObjectLightingLaraCutSeq
 0x00422680	+	cutseq_givelara_pistols
@@ -502,3 +502,184 @@ x for functions decompiled but not injected, for one reason or another.
 0x00467440	+	GunHit
 0x00467530	+	GunMiss
 0x00467610	+	ShotLara
+
+
+		game/lara.cpp
+
+0x00442C90	+	KlaxonTremor
+0x00442DB0	+	LaraCeilingFront
+0x00442E70		LaraAboveWater
+0x00443020	+	lara_as_duckl
+0x00443070	+	lara_as_duckr
+0x004430C0	+	lara_col_ducklr
+0x004431F0	+	TestLaraSlide
+0x00443380	+	LaraFallen
+0x00443400	+	lara_as_duck
+0x00443560	+	lara_col_duck
+0x004436D0	+	lara_as_all4s
+0x004438F0	+	LaraFloorFront
+0x00443990	+	lara_col_all4s
+0x00443F30	+	lara_as_crawl
+0x00444050	+	lara_col_crawl
+0x004441B0	+	LaraDeflectEdgeDuck
+0x00444250	+	lara_as_all4turnl
+0x004442D0	+	lara_col_all4turnlr
+0x00444340	+	lara_as_all4turnr
+0x004443C0	+	lara_as_crawlb
+0x004444B0	+	lara_col_crawlb
+0x00444620	+	lara_col_crawl2hang
+0x00444890		LaraTestEdgeCatch
+0x00444970		LaraTestHangOnClimbWall
+0x00444B30		TestHangSwingIn
+0x00444C20	+	lara_as_dash
+0x00444DD0	+	lara_col_dash
+0x00444F80	+	GetLaraCollisionInfo
+0x00444FD0	+	LaraHitCeiling
+0x00445060	+	LaraDeflectEdge
+0x00445100	+	TestLaraVault
+0x00445580		LaraTestClimbStance
+0x00445670	+	TestWall
+0x004457B0	+	LaraCollideStop
+0x004458A0	+	lara_as_dashdive
+0x004458E0	+	lara_col_dashdive
+0x00445A50	+	LaraLandedBad
+0x00445AE0	+	LaraDeflectEdgeJump
+0x00445CE0	+	lara_as_hang2
+0x00445D70	+	MonkeySwingFall
+0x00445DF0	+	lara_col_hang2
+0x004460F0		LaraHangTest
+0x004466C0		SnapLaraToEdgeOfBlock
+0x004467A0	+	MonkeySwingSnap
+0x00446810		TestMonkeyLeft
+0x00446920		GetDirOctant
+0x00446960		TestMonkeyRight
+0x00446A70	+	lara_as_monkeyswing
+0x00446B50	+	lara_col_monkeyswing
+0x00446CD0	+	lara_as_monkeyl
+0x00446D50	+	lara_col_monkeyl
+0x00446DE0	+	lara_as_monkeyr
+0x00446E60	+	lara_col_monkeyr
+0x00446EF0	+	lara_as_hangturnl
+0x00446F40	+	lara_col_hangturnlr
+0x00447010	+	lara_as_hangturnr
+0x00447060	+	lara_as_monkey180
+0x00447090	+	lara_col_monkey180
+0x004470C0	+	lara_col_polestat
+0x004472A0	+	lara_as_poleleft
+0x004472F0	+	lara_as_poleright
+0x00447340	+	lara_col_poleup
+0x00447400	+	lara_col_poledown
+0x004475C0		FallFromRope
+0x00447690		ApplyVelocityToRope
+0x00447700	+	lara_as_rope
+0x00447740	+	lara_col_rope
+0x00447820		UpdateRopeSwing
+0x00447BE0	+	lara_as_ropel
+0x00447C20	+	lara_as_roper
+0x00447C60	+	lara_col_ropefwd
+0x00447E60		JumpOffRope
+0x00447F50	+	lara_as_climbrope
+0x00447FE0	+	lara_as_climbroped
+0x00448010	+	lara_as_stop
+0x00448540	+	lara_col_stop
+0x00448610	+	lara_as_upjump
+0x00448640	+	lara_col_upjump
+0x00448A70	+	lara_as_forwardjump
+0x00448B80	+	lara_col_forwardjump
+0x00448CA0	+	lara_as_reach
+0x00448CD0	+	lara_col_reach
+0x00449120	+	LaraSlideEdgeJump
+0x00449260	+	lara_as_walk
+0x00449330	+	lara_as_run
+0x00449550	+	lara_as_fastback
+0x004495D0	+	lara_as_turn_r
+0x004496B0	+	lara_as_turn_l
+0x00449780	+	lara_as_death
+0x004497F0	+	lara_as_fastfall
+0x00449840	+	lara_void_func
+0x00449860	+	lara_as_hang
+0x004498D0	+	lara_col_hang
+0x00449CC0		LaraHangRightCornerTest
+0x0044A190		IsValidHangPos
+0x0044A2B0		LaraHangLeftCornerTest
+0x0044A780	+	CanLaraHangSideways
+0x0044A840	+	lara_as_hangleft
+0x0044A890	+	lara_col_hangleft
+0x0044A8E0	+	lara_as_hangright
+0x0044A930	+	lara_col_hangright
+0x0044A980		SetCornerAnim
+0x0044AAE0	+	lara_as_extcornerl
+0x0044AB50	+	lara_as_extcornerr
+0x0044ABC0	+	lara_as_intcornerl
+0x0044AC30	+	lara_as_intcornerr
+0x0044ACA0	+	lara_as_splat
+0x0044ACC0	+	lara_as_compress
+0x0044AE20	+	lara_as_back
+0x0044AEE0	+	lara_as_null
+0x0044AF00	+	lara_as_fastturn
+0x0044AF70	+	lara_col_fastturn
+0x0044AFA0	+	lara_as_stepright
+0x0044B060	+	lara_as_stepleft
+0x0044B120	+	lara_as_slide
+0x0044B160	+	lara_as_backjump
+0x0044B1D0	+	lara_as_rightjump
+0x0044B220	+	lara_as_leftjump
+0x0044B270	+	lara_as_fallback
+0x0044B2B0	+	lara_as_slideback
+0x0044B2E0	+	lara_as_pushblock
+0x0044B330	+	lara_as_pullblock
+0x0044B380	+	lara_as_ppready
+0x0044B3C0	+	lara_as_pickup
+0x0044B410	+	lara_as_pickupflare
+0x0044B490	+	lara_as_switchon
+0x0044B4E0	+	lara_as_switchoff
+0x0044B530	+	lara_as_usekey
+0x0044B580	+	lara_as_usepuzzle
+0x0044B620	+	lara_as_special
+0x0044B650	+	lara_as_swandive
+0x0044B6A0	+	lara_as_fastdive
+0x0044B720	+	lara_as_gymnast
+0x0044B740	+	lara_as_waterout
+0x0044B770	+	lara_as_wade
+0x0044B880	+	lara_as_deathslide
+0x0044B950	+	lara_as_controlled
+0x0044B9C0	+	lara_as_controlledl
+0x0044B9F0	+	lara_col_turnswitch
+0x0044BA80	+	lara_as_pulley
+0x0044BBC0	+	lara_col_walk
+0x0044BE30	+	lara_col_run
+0x0044C050	+	lara_col_pose
+0x0044C080	+	lara_col_fastback
+0x0044C1B0	+	lara_col_turn_r
+0x0044C2A0	+	lara_col_turn_l
+0x0044C2D0	+	lara_col_death
+0x0044C360	+	lara_col_fastfall
+0x0044C440	+	lara_col_splat
+0x0044C4D0	+	lara_col_land
+0x0044C500	+	lara_col_compress
+0x0044C5E0	+	lara_col_back
+0x0044C750	+	lara_col_stepright
+0x0044C870	+	lara_col_stepleft
+0x0044C8A0	+	lara_col_slide
+0x0044C8D0	+	lara_slide_slope
+0x0044CA30	+	lara_col_backjump
+0x0044CA70	+	lara_col_rightjump
+0x0044CAB0	+	lara_col_leftjump
+0x0044CAF0	+	lara_col_fallback
+0x0044CBB0	+	lara_col_slideback
+0x0044CBF0	+	lara_col_roll
+0x0044CCC0	+	lara_col_roll2
+0x0044CDE0	+	lara_col_swandive
+0x0044CE80	+	lara_col_fastdive
+0x0044CF40	+	lara_col_wade
+0x0044D110	+	lara_default_col
+0x0044D180	+	lara_col_jumper
+0x0044D220	+	ResetLook
+0x0044D310	+	LookUpDown
+0x0044D440	+	LookLeftRight
+0x0044D570		GetTighRopeFallOff
+0x0044D610	+	lara_as_trpose
+0x0044D6E0	+	lara_as_trwalk
+0x0044D800	+	lara_as_trfall
+0x0044DA10	+	lara_as_parallelbars
+0x0044DA40	+	lara_as_pbleapoff

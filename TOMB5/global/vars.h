@@ -251,6 +251,10 @@
 #define friggrimmer	VAR_U_(0x00E598F4, char)
 #define friggrimmer2	VAR_U_(0x00E598F3, char)
 #define oldLaraBusy	VAR_U_(0x00E59898, char)
+#define GLOBAL_numcutseq_frames	VAR_U_(0x00E7F020, int)
+#define camera_pnodes	VAR_U_(0x00E7EE9C, PACKNODE*)
+#define duff_item	VAR_U_(0x00E71300, ITEM_INFO)
+#define GLaraShadowframe	VAR_U_(0x00E86300, short*)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)
@@ -308,7 +312,6 @@
 #define	weapons	ARRAY_(0x005085B0, WEAPON_INFO, [9])
 #define	DeadlyBounds	ARRAY_(0x00E6C3C0, long, [6])
 #define cutseq_meshswapbits	ARRAY_(0x00E7EEE0, unsigned long, [10])
-#define	cutseq_control_routines	ARRAY_(0x00506DA0, CUTSEQ_ROUTINES, [45])
 #define fmv_to_play	ARRAY_(0x0051CE28, char, [2])
 #define gfResidentCut	ARRAY_(0x00E5C278, unsigned char, [4])
 #define	LightningRGB	ARRAY_(0x00E6E4B8, unsigned short, [3])
@@ -342,6 +345,8 @@
 #define twogun	ARRAY_(0x00EEEB00, TWOGUN_INFO, [3])
 #define ammo_object_list	ARRAY_(0x00E598E0, AMMOLIST, [3])
 #define current_options	ARRAY_(0x00E598C0, MENUTHANG, [3])
+#define actor_pnodes	ARRAY_(0x00E71180, PACKNODE*, [10])
+#define temp_rotation_buffer	ARRAY_(0x00E711C0, short, [160])
 
 
 //defs
@@ -357,3 +362,4 @@
 #define byte_51CB40	VAR_U_(0x0051CB40, char)//OpenThatDoor//DoorControl
 #define dword_00E916F0	VAR_U_(0x00E916F0, int)//special 1 control, special 2 init, special 3 init, special 4 init
 #define dword_506D3C	VAR_U_(0x00506D3C, int)//DrawInventoryItemMe
+#define dword_9158A8	VAR_U_(0x009158A8, ITEM_INFO*)//game is horny to save some item's pointer (:

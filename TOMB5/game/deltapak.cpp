@@ -24,6 +24,13 @@
 #include "spotcam.h"
 #include <d3dtypes.h>
 #include "cutseq.h"
+#include "../specific/matrix_shit.h"
+#include "../specific/light.h"
+
+short frig_shadow_bbox[6] =
+{
+	-165, 150, -777, 1, -87, 78
+};
 
 unsigned short larson_pistols_info1[2] =
 {
@@ -309,6 +316,55 @@ short admiral_chat_ranges_joby10[42] =
 	0x0570, 0x060F, 0x061E, 0x06E8, 0x06F3, 0x0742, 0x07A0, 0x07DC, 0x07EB, 0x08BB,
 	0x08CC, 0x0983, 0x0A3E, 0x0A62, 0x0A74, 0x0A80, 0x0A8F, 0x0AB3, 0x0ABF, 0x0B0D,
 	-1, -1
+};
+
+CUTSEQ_ROUTINES cutseq_control_routines[45] =
+{
+	{ 0, 0, 0 },
+	{ stealth3_start, 0, stealth3_end },
+	{ stealth3_start, 0, stealth3_end },
+	{ stealth3_start, 0, stealth3_end },
+	{ stealth3_start, 0, stealth3_end },
+	{ joby6_init, joby6_control, joby6_end },
+	{ andy5_init, andy5_control, andy5_end },
+	{ andrea3b_init, andrea3b_control, andrea3b_end },
+	{ andrea3_init, andrea3_control, andrea3_end },
+	{ andy4b_init, andy4b_control, andy4b_end },
+	{ andy4_init, andy4_control, andy4_end },
+	{ richcut4_init, richcut4_control, richcut4_end },
+	{ joby10_init, joby10_control, joby10_end },
+	{ joby9_init, joby9_control, joby9_end },
+	{ andy3_init, andy3_control, andy3_end },
+	{ joby5_init, joby5_control, joby5_end },
+	{ andrea2_init, andrea2_control, andrea2_end },
+	{ andrea1_init, andrea1_control, andrea1_end },
+	{ joby4_init, joby4_control, joby4_end },
+	{ andy2_init, andy2_control, andy2_end },
+	{ hamgate_init, hamgate_control, hamgate_end },
+	{ andy1_init, andy1_control, andy1_end },
+	{ joby3_init, joby3_control, joby3_end },
+	{ richcut3_init, richcut3_control, richcut3_end },
+	{ richcut1_init, richcut1_control, richcut1_end },
+	{ joby2_init, joby2_control, joby2_end },
+	{ richcut2_init, richcut2_control, richcut2_end },
+	{ cranecut_init, cranecut_control, cranecut_end },
+	{ special1_init, special1_control, special1_end },
+	{ special2_init, special2_control, special2_end },
+	{ special3_init, special3_control, special3_end },
+	{ special4_init, special4_control, special4_end },
+	{ joby8_init, joby8_control, joby8_end },
+	{ andy6_init, andy6_control, andy6_end },
+	{ andypew_init, andypew_control, andypew_end },
+	{ andy7_init, andy7_control, andy7_end },
+	{ cossack_init, cossack_control, cossack_end },
+	{ andy9_init, andy9_control, andy9_end },
+	{ andy8_init, andy8_control, andy8_end },
+	{ andy10_init, andy10_control, andy10_end },
+	{ joby7_init, joby7_control, joby7_end },
+	{ andrea4_init, andrea4_control, andrea4_end },
+	{ monk2_init, monk2_control, monk2_end },
+	{ swampy_init, swampy_control, swampy_end },
+	{ andy11_init, andy11_control, andy11_end },
 };
 
 void andrea1_init()
@@ -970,7 +1026,7 @@ void andy4_end()
 {
 	cutseq_restore_item(ANIMATING5_MIP);
 	DelsHandyTeleportLara(43484, 5376, 50626, 0);
-	SetCutNotPlayed(CUT_ANDY4);
+	SetCutNotPlayed(10);
 }
 
 void andy4b_init()
@@ -1159,7 +1215,7 @@ void andy8_control()
 
 void andy8_end()
 {
-	SetCutPlayed(CUT_COSSACK);
+	SetCutPlayed(36);
 	do_chalk_meshswap();
 	lara.puzzleitems[0] = 0;
 }
@@ -1260,7 +1316,7 @@ void andy10_control()
 void andy10_end()
 {
 	lara_item->mesh_bits = -1;
-	SetCutPlayed(CUT_SWAMPY);
+	SetCutPlayed(43);
 	Cutanimate(ANIMATING12);
 	Cutanimate(ANIMATING13);
 	FlipMap(7);
@@ -1417,7 +1473,7 @@ void cossack_control()
 void cossack_end()
 {
 	DelsHandyTeleportLara(78080, 5376, 37888, 0);
-	SetCutNotPlayed(CUT_COSSACK);
+	SetCutNotPlayed(36);
 }
 
 void monk2_init()
@@ -1503,7 +1559,7 @@ void swampy_control()
 
 void swampy_end()
 {
-	SetCutNotPlayed(CUT_SWAMPY);
+	SetCutNotPlayed(43);
 	AddActiveItem(find_a_fucking_item(GREEN_TEETH) - items);
 	DelsHandyTeleportLara(42477, 12456, 55982, 28953);
 	lara.water_status = LW_UNDERWATER;
@@ -1584,7 +1640,7 @@ void stealth3_start()
 		}
 	}
 
-	if (cutseq_num == CUT_STEALTH3_2)
+	if (cutseq_num == 2)
 		SwapCrowbar(0);
 }
 
@@ -1596,7 +1652,7 @@ void stealth3_end()
 	item = &items[0];
 	for (i = 0; i < level_items; i++, item++)
 	{
-		if (cutseq_num == CUT_STEALTH3_3)
+		if (cutseq_num == 3)
 			continue;
 
 		if (item->object_number == CHEF ||
@@ -1628,7 +1684,7 @@ void stealth3_end()
 		}
 	}
 
-	if (cutseq_num == CUT_STEALTH3_2)
+	if (cutseq_num == 2)
 		SwapCrowbar(0);
 }
 
@@ -2174,9 +2230,11 @@ void special4_end()
 
 void handle_cutseq_triggering(int name)
 {
-	int goin;
-	goin = cutseq_num;
-	if (!cutseq_num)
+	int n, goin;// , fuck;//idk where to use it
+
+	n = cutseq_num;
+
+	if (!n)
 		return;
 
 	if (!cutseq_trig)
@@ -2189,16 +2247,17 @@ void handle_cutseq_triggering(int name)
 		cutseq_busy_timeout = 50;
 		memset(cutseq_meshbits, 0xFF, sizeof(cutseq_meshbits));
 
-		if (gfCurrentLevel)
+		if (gfCurrentLevel != LVL5_TITLE)
 			SetFadeClip(28, 1);
 
 		if (!ScreenFadedOut)
 		{
-			if (gfCurrentLevel)
+			if (gfCurrentLevel != LVL5_TITLE)
 				S_CDFade(0);
 
 			SetScreenFadeOut(16, 0);
 		}
+
 		return;
 	}
 
@@ -2208,7 +2267,7 @@ void handle_cutseq_triggering(int name)
 		{
 			SetScreenFadeOut(16, 1);
 
-			if (gfCurrentLevel)
+			if (gfCurrentLevel != LVL5_TITLE)
 				S_CDFade(0);
 
 			cutseq_trig = 4;
@@ -2218,26 +2277,25 @@ void handle_cutseq_triggering(int name)
 		if (cutseq_trig != 4 || !ScreenFadedOut)
 			return;
 
-		if (gfCurrentLevel)
+		if (gfCurrentLevel != LVL5_TITLE)
 		{
 			S_CDStop();
-			goin = cutseq_num;
+			n = cutseq_num;
 		}
 
 		ScreenFadedOut = 0;
 		numnailed = 0;
 
-		void(*end)() = cutseq_control_routines[cutseq_num].end_func;
-		if (end != NULL)
+		if (cutseq_control_routines[cutseq_num].end_func)
 		{
-			end();
-			goin = cutseq_num;
+			cutseq_control_routines[cutseq_num].end_func();
+			n = cutseq_num;
 		}
 
-		if (goin <= 4)
+		if (n <= 4)
 		{
 			DelsHandyTeleportLara(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, cutrot << 14);
-			goin = cutseq_num;
+			n = cutseq_num;
 		}
 
 		cutseq_trig = 0;
@@ -2252,64 +2310,57 @@ void handle_cutseq_triggering(int name)
 			}
 			else
 			{
-				if (goin != CUT_RICH_CUT_2 &&
-					goin != CUT_JOBY_CUT_3 &&
-					goin != CUT_JOBY6 &&
-					goin != CUT_ANDREA2 &&
-					goin != CUT_ANDY6 &&
-					goin != CUT_ANDY11 &&
-					goin != CUT_JOBY10)
+				if (n != 26 && n != 22 && n != 5 && n != 16 && n != 33 && n != 44 && n != 12)
 				{
-
 					finish_cutseq(name);
-					cutseq_num = CUT_NULL;
+					cutseq_num = 0;
 					camera.type = GLOBAL_oldcamtype;
 
-					if (gfCurrentLevel)
+					if (gfCurrentLevel != LVL5_TITLE)
 						SetFadeClip(0, 1);
 
 					AlterFOV(14560);
 
-					if (gfCurrentLevel)
+					if (gfCurrentLevel != LVL5_TITLE)
 						S_CDPlay(CurrentAtmosphere, 1);
 
 					IsAtmospherePlaying = 1;
 					return;
 				}
+
 				gfLevelComplete = gfCurrentLevel + 1;
 			}
-			gfRequiredStartPos = 0;
 
+			gfRequiredStartPos = 0;
 			cutseq_num = 0;
 			GLOBAL_playing_cutseq = 0;
 			cutseq_trig = 0;
-
 			AlterFOV(14560);
-
 			ScreenFade = 0;
 			dScreenFade = 0;
-
 			ScreenFadeSpeed = 8;
 			ScreenFadeBack = 0;
 			ScreenFadedOut = 0;
 			ScreenFading = 0;
-
 			return;
 		}
 
-		switch (goin)
+		switch (n)
 		{
 		case 28:
 			goin = 29;
 			break;
+
 		case 29:
 			goin = 30;
 			break;
+
 		case 30:
 			goin = 28;
 			break;
+
 		default:
-			Load_and_Init_Cutseq(goin);
+			Load_and_Init_Cutseq(n);
 			cutseq_trig = 2;
 			return;
 		}
@@ -2366,8 +2417,9 @@ void handle_cutseq_triggering(int name)
 		lara_item->anim_number = ANIMATION_LARA_STAY_SOLID;
 		lara_item->speed = 0;
 		lara_item->fallspeed = 0;
-		lara_item->gravity_status = FALSE;
+		lara_item->gravity_status = 0;
 		lara.back_gun = 0;
+
 		if (lara.weapon_item != NO_ITEM)
 		{
 			KillItem(lara.weapon_item);
@@ -2377,7 +2429,7 @@ void handle_cutseq_triggering(int name)
 
 	lara.water_status = LW_ABOVE_WATER;
 
-	if (gfCurrentLevel)
+	if (gfCurrentLevel != LVL5_TITLE)
 		S_CDStop();
 
 	numnailed = 0;
@@ -2388,9 +2440,8 @@ void handle_cutseq_triggering(int name)
 	cutseq_trig = 2;
 	cut_seethrough = 128;
 
-	void(*init)() = cutseq_control_routines[cutseq_num].init_func;
-	if (init != NULL)
-		init();
+	if (cutseq_control_routines[cutseq_num].init_func)
+		cutseq_control_routines[cutseq_num].init_func();
 
 	AlterFOV(11488);
 
@@ -3017,6 +3068,455 @@ void DelsHandyTeleportLara(int x, int y, int z, int yrot)
 	camera.fixed_camera = 1;
 }
 
+void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int numnodes)
+{
+	int offset;
+	int xoff;
+	int yoffset;
+	int yoff;
+	int zoffset;
+	int zoff;
+
+	offset = ((numnodes << 3) - numnodes) << 1;
+
+	if (numnodes > 0)
+	{
+		for (int i = 0; i < numnodes; i++)
+		{
+			pnode->xkey = (unsigned short)lnode->xkey;
+			pnode->ykey = (unsigned short)lnode->ykey;
+			pnode->zkey = (unsigned short)lnode->zkey;
+			pnode->decode_x.packmethod = (lnode->packmethod >> 10) & 0xF;
+			pnode->decode_y.packmethod = (lnode->packmethod >> 5) & 0xF;
+			pnode->decode_z.packmethod = (lnode->packmethod) & 0xF;
+			pnode->xlength = lnode->xlength;
+			pnode->ylength = lnode->ylength;
+			pnode->zlength = lnode->zlength;
+			xoff = ((lnode->xlength * pnode->decode_x.packmethod) >> 3) + 4;
+			yoff = ((lnode->ylength * pnode->decode_y.packmethod) >> 3) + 4;
+			zoff = ((lnode->zlength * pnode->decode_z.packmethod) >> 3) + 4;
+			lnode++;
+			pnode->xpacked = &packed[offset];
+			pnode->ypacked = &packed[offset + xoff];
+			pnode->zpacked = &packed[offset + xoff + yoff];
+			pnode++;
+			offset += xoff + yoff + zoff;
+		}
+	}
+
+	return;
+}
+
+int GetTrackWord(unsigned long off, char* packed, unsigned char packmethod)
+{
+	int ret;
+	long offset, offset2;
+
+	offset = packmethod * off;
+	offset2 = offset >> 3;
+
+	ret = ((1 << packmethod) - 1) & ((unsigned int)(*(unsigned char*)(packed + offset2) |
+		((*(unsigned char*)(packed + offset2 + 1) |
+			(*(unsigned short*)(packed + offset2 + 2) << 8)) << 8)) >> (offset & 7));
+
+	if (((1 << (packmethod - 1)) & ret) != 0)
+		return (unsigned int)(ret | ~((1 << packmethod) - 1));
+
+	return ret;
+}
+
+int DecodeTrack(char* packed, RTDECODE* decode)
+{
+	int word;
+
+	if (!decode->decodetype)
+	{
+		word = GetTrackWord(decode->off, packed, decode->packmethod);
+
+		if ((word & 0x20))
+		{
+			if (!(word & 0xF))
+				decode->counter = 16;
+			else
+				decode->counter = (word & 0xF);
+
+			decode->decodetype = 1;
+			decode->off++;
+			decode->length--;
+		}
+		else
+		{
+			decode->decodetype = 2;
+
+			if ((word & 0x10))
+			{
+				GetTrackWord(decode->off + 1, packed, decode->packmethod);
+				decode->counter = ((word & 7) << 5) | (GetTrackWord(decode->off + 1, packed, decode->packmethod) & 0x1F);
+				decode->data = GetTrackWord(decode->off + 2, packed, decode->packmethod);
+				decode->off += 3;
+				decode->length -= 3;
+			}
+			else
+			{
+				decode->data = GetTrackWord(decode->off + 1, packed, decode->packmethod);
+				decode->counter = word & 0x7;
+				decode->off += 2;
+				decode->length -= 2;
+			}
+		}
+	}
+
+	if (decode->decodetype == 2)
+	{
+		if (!--decode->counter)
+			decode->decodetype = 0;
+
+		return decode->data;
+	}
+	else
+	{
+		word = GetTrackWord(decode->off, packed, decode->packmethod);
+		decode->off++;
+		decode->length--;
+
+		if (!--decode->counter)
+			decode->decodetype = 0;
+
+		return word;
+	}
+}
+
+void DecodeAnim(PACKNODE* node, int num_nodes, int frame, unsigned short flags)
+{
+	int i;
+
+	if (!frame)
+	{
+		for (i = num_nodes; i; i--, node++)
+		{
+			node->decode_x.off = 0;
+			node->decode_x.counter = 0;
+			node->decode_x.data = 0;
+			node->decode_x.decodetype = 0;
+			node->decode_y.off = 0;
+			node->decode_y.counter = 0;
+			node->decode_y.data = 0;
+			node->decode_y.decodetype = 0;
+			node->decode_z.off = 0;
+			node->decode_z.counter = 0;
+			node->decode_z.data = 0;
+			node->decode_z.decodetype = 0;
+			node->xrot_run = node->xkey;
+			node->yrot_run = node->ykey;
+			node->zrot_run = node->zkey;
+			node->decode_x.length = node->xlength;
+			node->decode_y.length = node->ylength;
+			node->decode_z.length = node->zlength;
+		}
+
+		return;
+	}
+
+	node->xrot_run += DecodeTrack(node->xpacked, &node->decode_x);
+	node->yrot_run += DecodeTrack(node->ypacked, &node->decode_y);
+	node->zrot_run += DecodeTrack(node->zpacked, &node->decode_z);
+	node++;
+
+	for (i = 1; i < num_nodes; i++, node++)
+	{
+		node->xrot_run += DecodeTrack(node->xpacked, &node->decode_x);
+		node->yrot_run += DecodeTrack(node->ypacked, &node->decode_y);
+		node->zrot_run += DecodeTrack(node->zpacked, &node->decode_z);
+		node->xrot_run &= flags;
+		node->yrot_run &= flags;
+		node->zrot_run &= flags;
+	}
+}
+
+void do_new_cutscene_camera()
+{
+	PACKNODE* nodes;
+	tr5_vertex cam_pos;
+	tr5_vertex cam_target;
+
+	if (cutseq_control_routines[cutseq_num].control_func)
+		cutseq_control_routines[cutseq_num].control_func();
+
+	DecodeAnim(camera_pnodes, 2, GLOBAL_cutseq_frame, 65535);
+	nodes = camera_pnodes;
+	camera.target.y = nodes[0].yrot_run << 1;
+	camera.pos.y = nodes[1].yrot_run << 1;
+
+	switch (cutrot)
+	{
+	case 0:
+		camera.target.x = nodes[0].xrot_run << 1;
+		camera.target.z = nodes[0].zrot_run << 1;
+		camera.pos.x = nodes[1].xrot_run << 1;
+		camera.pos.z = nodes[1].zrot_run << 1;
+		break;
+
+	case 1:
+		camera.target.x = nodes[0].zrot_run << 1;
+		camera.target.z = -(nodes[0].xrot_run << 1);
+		camera.pos.x = nodes[1].zrot_run << 1;
+		camera.pos.z = -(nodes[1].xrot_run << 1);
+		break;
+
+	case 2:
+		camera.target.x = -(nodes[0].xrot_run << 1);
+		camera.target.z = -(nodes[0].zrot_run << 1);
+		camera.pos.x = -(nodes[1].xrot_run << 1);
+		camera.pos.z = -(nodes[1].zrot_run << 1);
+		break;
+
+	case 3:
+		camera.target.x = -(nodes[0].zrot_run << 1);
+		camera.target.z = nodes[0].xrot_run << 1;
+		camera.pos.x = -(nodes[1].zrot_run << 1);
+		camera.pos.z = nodes[1].xrot_run << 1;
+		break;
+	}
+
+	camera.target.x += GLOBAL_cutme->orgx;
+	camera.target.y += GLOBAL_cutme->orgy;
+	camera.target.z += GLOBAL_cutme->orgz;
+	camera.pos.x += GLOBAL_cutme->orgx;
+	camera.pos.y += GLOBAL_cutme->orgy;
+	camera.pos.z += GLOBAL_cutme->orgz;
+	IsRoomOutsideNo = -1;
+	IsRoomOutside(camera.pos.x, camera.pos.y, camera.pos.z);
+
+	if (IsRoomOutsideNo != -1)
+		camera.pos.room_number = IsRoomOutsideNo;
+
+	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+	cam_pos.x = camera.pos.x;
+	cam_pos.y = camera.pos.y;
+	cam_pos.z = camera.pos.z;
+	cam_target.x = camera.target.x;
+	cam_target.y = camera.target.y;
+	cam_target.z = camera.target.z;
+	phd_QuickW2VMatrix(cam_pos, cam_target, 0);
+
+	if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
+		DecodeAnim(actor_pnodes[0], 16, GLOBAL_cutseq_frame, 1023);
+
+	for (int n = 1; n < GLOBAL_cutme->numactors; n++)
+		DecodeAnim(actor_pnodes[n], GLOBAL_cutme->actor_data[n].nodes + 1, GLOBAL_cutseq_frame, 1023);
+
+	GLOBAL_cutseq_frame++;
+
+	if (GLOBAL_cutseq_frame > GLOBAL_numcutseq_frames - 8 && cutseq_trig == 2)
+		cutseq_trig = 3;
+
+	if (GLOBAL_cutseq_frame > GLOBAL_numcutseq_frames)
+		GLOBAL_cutseq_frame = GLOBAL_numcutseq_frames;
+}
+
+void updateAnimFrame(PACKNODE* node, int flags, short* frame)
+{
+	short* nex;
+
+	frame[7] = 3 * node->yrot_run;
+
+	switch (cutrot)
+	{
+	case 0:
+		frame[6] = 3 * node->xrot_run;
+		frame[8] = 3 * node->zrot_run;
+		break;
+
+	case 1:
+		frame[6] = 3 * node->zrot_run;
+		frame[8] = -(3 * node->xrot_run);
+		break;
+
+	case 2:
+		frame[6] = -(3 * node->xrot_run);
+		frame[8] = -(3 * node->zrot_run);
+		break;
+
+	case 3:
+		frame[6] = -(3 * node->zrot_run);
+		frame[8] = 3 * node->xrot_run;
+		break;
+	}
+
+	nex = frame + 9;
+
+	for (int i = 1; i < flags; i++, nex += 2)
+	{
+		if (cutrot && i == 1)
+			node[i].yrot_run = (node[i].yrot_run + (cutrot << 8)) & 0x3FF;
+
+		nex[0] = ((node[i].zrot_run) | (((node[i].yrot_run) | ((node[i].xrot_run) << 10)) << 10)) >> 16;
+		nex[1] = (node[i].zrot_run) | (((node[i].yrot_run) | ((node[i].xrot_run) << 10)) << 10);
+	}
+}
+
+void _DrawCutSeqActors()//fix
+{
+	OBJECT_INFO* obj;
+	short* mesh;
+	long* bone;
+	short* rot;
+	int n;
+
+	phd_PushMatrix();
+
+	if (GLOBAL_cutme->numactors <= 1)
+	{
+		phd_mxptr -= 12;
+		phd_dxptr -= 12;
+	}
+	else
+	{
+		for (int i = 1; i < GLOBAL_cutme->numactors; i++)
+		{
+			phd_PushMatrix();
+
+			if (cutseq_meshbits[i] < 0)
+			{
+				n = 1;
+				updateAnimFrame(actor_pnodes[i], GLOBAL_cutme->actor_data[i].nodes + 1, temp_rotation_buffer);
+				phd_TranslateAbs(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz);
+				obj = &objects[GLOBAL_cutme->actor_data[i].objslot];
+				CalcActorLighting(&duff_item, obj, temp_rotation_buffer);
+				phd_TranslateRel(temp_rotation_buffer[6], temp_rotation_buffer[7], temp_rotation_buffer[8]);
+				rot = &temp_rotation_buffer[9];
+				gar_RotYXZsuperpack(&rot, 0);
+
+				if (cutseq_meshbits[i] & 1)
+				{
+					if (cutseq_meshswapbits[i] & 1)
+					{
+						if (i != 1 || cut_seethrough == 128)
+							phd_PutPolygons(&meshes[obj->mesh_index][1]);
+						else
+							phd_PutPolygons_seethrough(&meshes[obj->mesh_index][1], cut_seethrough);
+					}
+					else if (i != 1 || cut_seethrough == 128)
+						phd_PutPolygons(&(*meshes[obj->mesh_index]));
+					else
+						phd_PutPolygons_seethrough(&(*meshes[obj->mesh_index]), cut_seethrough);
+				}
+
+				if (obj->nmeshes - 1 > 0)
+				{
+					bone = &bones[obj->bone_index];
+					mesh = &meshes[obj->mesh_index][1] + 2;
+
+					for (int j = 0; j < obj->nmeshes - 1; j++, bone++, mesh++)
+					{
+						if (*bone & 1)
+						{
+							phd_mxptr -= 12;
+							phd_dxptr -= 12;
+						}
+
+						if (*bone & 2)
+							phd_PushMatrix();
+
+						phd_TranslateRel(bone[1], bone[2], bone[3]);
+						gar_RotYXZsuperpack(&rot, 0);
+						n <<= 1;
+
+						if (cutseq_meshbits[i] & n)
+						{
+							if (n & cutseq_meshswapbits[i])
+							{
+								if (i != 1 || cut_seethrough == 128)
+									phd_PutPolygons(&mesh[1]);
+								else
+									phd_PutPolygons_seethrough(&mesh[1], cut_seethrough);
+							}
+							else if (i != 1 || cut_seethrough == 128)
+								phd_PutPolygons(&(*mesh));
+							else
+								phd_PutPolygons_seethrough(&(*mesh), cut_seethrough);
+						}
+					}
+				}
+			}
+
+			phd_mxptr -= 12;
+			phd_dxptr -= 12;
+		}
+
+		phd_mxptr -= 12;
+		phd_dxptr -= 12;
+	}
+}
+
+void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot)
+{
+	PHD_VECTOR pos;
+
+	GetJointAbsPositionCutSeq(item, obj, rot, &pos);
+	IsRoomOutsideNo = -1;
+	IsRoomOutside(pos.x, pos.y, pos.z);
+
+	if (IsRoomOutsideNo != -1)
+		item->room_number = IsRoomOutsideNo;
+
+	dword_9158A8 = item;
+	item->il.room_num = -1;
+	item->ambient_light_pos.x = pos.x;
+	item->ambient_light_pos.y = pos.y;
+	item->ambient_light_pos.z = pos.z;
+	CalcAmbientLight(item);
+	CreateLightList(item);
+}
+
+void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, __int16* rot, PHD_VECTOR* pos)
+{
+	short* rotation1;
+
+	phd_PushUnitMatrix();
+	phd_TranslateRel(rot[6], rot[7], rot[8]);
+	rotation1 = rot + 9;
+	gar_RotYXZsuperpack(&rotation1, 0);
+	pos->x = phd_mxptr[3] >> 14;
+	pos->y = phd_mxptr[7] >> 14;
+	pos->z = phd_mxptr[11] >> 14;
+	pos->x += item->pos.x_pos;
+	pos->y += item->pos.y_pos;
+	pos->z += item->pos.z_pos;
+	phd_mxptr -= 12;
+	phd_dxptr -= 12;
+}
+
+void frigup_lara()
+{
+	OBJECT_INFO* object;
+	long* bone;
+	short* frame;
+
+	lara_item->pos.x_pos = GLOBAL_cutme->orgx;
+	lara_item->pos.y_pos = GLOBAL_cutme->orgy;
+	lara_item->pos.z_pos = GLOBAL_cutme->orgz;
+
+	if (GLOBAL_cutme->actor_data[0].objslot == NO_ITEM)
+		return;
+
+	frame = &temp_rotation_buffer[0];
+	object = &objects[lara_item->object_number];
+	bone = &bones[object->bone_index];
+	updateAnimFrame(actor_pnodes[0], 16, frame);
+	Rich_CalcLaraMatrices_Normal(frame, bone, 0);
+	phd_PushUnitMatrix();
+	Rich_CalcLaraMatrices_Normal(frame, bone, 1);
+	phd_mxptr -= 12;
+	phd_dxptr -= 12;
+	HairControl(0, 0, frame);
+
+	if ((gfLevelFlags & GF_LVOP_YOUNG_LARA))
+		HairControl(0, 1, frame);
+
+	GLaraShadowframe = &frig_shadow_bbox[0];
+}
+
 void inject_deltaPak()
 {
 	INJECT(0x00425390, andrea1_init);
@@ -3150,9 +3650,9 @@ void inject_deltaPak()
 	INJECT(0x00420E10, handle_cutseq_triggering);
 	INJECT(0x00422680, cutseq_givelara_pistols);
 	INJECT(0x004226B0, cutseq_removelara_pistols);
-//	INJECT(0x00421480, do_new_cutscene_camera);	
-//	INJECT(0x00421880, InitPackNodes);
-//	INJECT(0x00421D60, frigup_lara);
+	INJECT(0x00421480, do_new_cutscene_camera);	
+	INJECT(0x00421880, InitPackNodes);
+	INJECT(0x00421D60, frigup_lara);
 	INJECT(0x00422010, finish_cutseq);
 //	INJECT(0x00422570, CalculateObjectLightingLaraCutSeq);
 	INJECT(0x004226E0, cutseq_givelara_hk);
@@ -3181,12 +3681,11 @@ void inject_deltaPak()
 	INJECT(0x00428650, ResetCutanimate);
 	INJECT(0x004286E0, Cutanimate);
 	INJECT(0x00423470, find_a_fucking_item);
-	//DecodeAnim..
-	//DecodeTrack
-	//TrackWord
-	//updateAnimFrame
+	INJECT(0x004219E0, DecodeAnim);
+	INJECT(0x00421B50, DecodeTrack);
+	INJECT(0x00421CD0, GetTrackWord);
+	INJECT(0x00421E90, updateAnimFrame);
 	//DrawCutSeqActors
-	//CalcActorLighting
-	//GetJointAbsPositionCutSeq
-
+	INJECT(0x004223C0, CalcActorLighting);
+	INJECT(0x00422490, GetJointAbsPositionCutSeq);
 }

@@ -183,7 +183,7 @@ void LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
 		ResetLook();
 
 	lara.look = 1;
-//	lara_control_routines[item->current_anim_state](item, coll);
+	lara_control_routines[item->current_anim_state](item, coll);
 	
 	if (item->pos.z_rot >= -364 || item->pos.z_rot <= 364)
 		item->pos.z_rot = 0;
@@ -196,10 +196,10 @@ void LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
 		LaraWaterCurrent(coll);
 
 	AnimateLara(item);
-	item->pos.x_pos += item->fallspeed * SIN(lara.move_angle) >> 14;
-	item->pos.z_pos += item->fallspeed * COS(lara.move_angle) >> 14;
+	item->pos.x_pos += item->fallspeed * SIN(lara.move_angle) >> 16;
+	item->pos.z_pos += item->fallspeed * COS(lara.move_angle) >> 16;
 	LaraBaddieCollision(item, coll);
-//	lara_collision_routines[item->current_anim_state](item, coll);
+	lara_collision_routines[item->current_anim_state](item, coll);
 	UpdateLaraRoom(item, 100);
 	LaraGun();
 	TestTriggers(coll->trigger, 0, 0);
@@ -396,7 +396,7 @@ void inject_larasurf()
 	INJECT(0x00458240, LaraTestWaterStepOut);
 	INJECT(0x00457E50, LaraTestWaterClimbOut);
 	INJECT(0x00458100, LaraSurfaceCollision);
-//	INJECT(0x00457940, LaraSurface);//until state and collision routines are decomped
+	INJECT(0x00457940, LaraSurface);
 	INJECT(0x00457B10, lara_as_surfswim);
 	INJECT(0x00457BA0, lara_as_surfback);
 	INJECT(0x00457C20, lara_as_surfleft);

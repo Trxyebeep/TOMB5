@@ -397,38 +397,6 @@ long ControlPhase(long nframes, int demo_mode)
 	return 0;
 }
 
-void KlaxonTremor()
-{
-	static short timer;
-
-	if (!(GlobalCounter & 0x1FF))
-		SoundEffect(SFX_KLAXON, 0, 0x1000 | SFX_SETVOL);
-
-	if (timer >= 0)
-		timer++;
-
-	if (timer > 450)
-	{
-		if (!(GetRandomControl() & 0x1FF))
-		{
-			InGameCnt = 0;
-			timer = -32 - (GetRandomControl() & 0x1F);
-			return;
-		}
-	}
-
-	if (timer < 0)
-	{
-		if ((signed int)InGameCnt >= ABS(timer))
-		{
-			camera.bounce = -(GetRandomControl() % ABS(timer));
-			++timer;
-		}
-		else
-			camera.bounce = -(GetRandomControl() % ++InGameCnt);
-	}
-}
-
 int GetRandomControl()
 {
 	rand_1 = 1103515245 * rand_1 + 12345;
@@ -816,7 +784,6 @@ int check_xray_machine_trigger()
 void inject_control()
 {
 	INJECT(0x004147C0, ControlPhase);
-	INJECT(0x00442C90, KlaxonTremor);
 	INJECT(0x004A7C10, GetRandomControl);
 	INJECT(0x004A7C70, SeedRandomControl);
 	INJECT(0x004A7C40, GetRandomDraw);

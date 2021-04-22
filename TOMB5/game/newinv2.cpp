@@ -16,6 +16,7 @@
 #include "lara.h"
 #include "larafire.h"
 #include "lara_states.h"
+#include "effect2.h"
 
 short optmessages[11] =
 {

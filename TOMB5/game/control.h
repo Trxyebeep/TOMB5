@@ -4,7 +4,6 @@
 void inject_control();
 
 long ControlPhase(long nframes, int demo_mode);
-void KlaxonTremor();
 int GetRandomControl();
 void SeedRandomControl(long seed);
 int GetRandomDraw();

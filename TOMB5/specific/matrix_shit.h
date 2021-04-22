@@ -2,6 +2,8 @@
 #include "../global/types.h"
 
 #define phd_PutPolygons_train	( (void(__cdecl*)(short*)) 0x004B74A0 )//literally only calls phd_PutPolygons
+#define phd_PutPolygons	( (void(__cdecl*)(short*)) 0x004B3F00 )
+#define phd_PutPolygons_seethrough	( (void(__cdecl*)(short*, int)) 0x004B4F10 )
 #define phd_PutPolygons_pickup	( (void(__cdecl*)(short*, float, float, long)) 0x004B66B0 )
 #define phd_TranslateAbs	( (void(__cdecl*)(long, long, long)) 0x004903F0 )
 #define phd_PushMatrix	( (void(__cdecl*)()) 0x0048F9C0 )
