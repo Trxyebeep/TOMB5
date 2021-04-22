@@ -166,6 +166,7 @@
     <ClCompile Include="TOMB5\game\chef.cpp" />
     <ClCompile Include="TOMB5\game\people.cpp" />
     <ClCompile Include="TOMB5\specific\light.cpp" />
+    <ClCompile Include="TOMB5\specific\init.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -334,6 +335,7 @@
     <ClInclude Include="TOMB5\game\chef.h" />
     <ClInclude Include="TOMB5\game\people.h" />
     <ClInclude Include="TOMB5\specific\light.h" />
+    <ClInclude Include="TOMB5\specific\init.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

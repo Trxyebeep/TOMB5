@@ -63,6 +63,7 @@
     <ClCompile Include="TOMB5\specific\drawprimitive.cpp" />
     <ClCompile Include="TOMB5\specific\DS.cpp" />
     <ClCompile Include="TOMB5\specific\game.cpp" />
+    <ClCompile Include="TOMB5\specific\init.cpp" />
     <ClCompile Include="TOMB5\specific\input.cpp" />
     <ClCompile Include="TOMB5\specific\light.cpp" />
     <ClCompile Include="TOMB5\specific\maths.cpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="TOMB5\specific\DS.h" />
     <ClInclude Include="TOMB5\specific\game.h" />
     <ClInclude Include="TOMB5\specific\global.h" />
+    <ClInclude Include="TOMB5\specific\init.h" />
     <ClInclude Include="TOMB5\specific\input.h" />
     <ClInclude Include="TOMB5\specific\light.h" />
     <ClInclude Include="TOMB5\specific\maths.h" />

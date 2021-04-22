@@ -255,6 +255,11 @@
 #define camera_pnodes	VAR_U_(0x00E7EE9C, PACKNODE*)
 #define duff_item	VAR_U_(0x00E71300, ITEM_INFO)
 #define GLaraShadowframe	VAR_U_(0x00E86300, short*)
+#define malloc_buffer	VAR_U_(0x00E4B10C, char*)
+#define malloc_ptr	VAR_U_(0x00E4B0DC, char*)
+#define malloc_size	VAR_U_(0x00E4B058, int)
+#define malloc_used	VAR_U_(0x00E4B0F0, int)
+#define malloc_free	VAR_U_(0x00E4B0F4, int)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)
