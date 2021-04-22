@@ -4164,7 +4164,7 @@ void lara_col_roll(ITEM_INFO* item, COLL_INFO* coll)
 	coll->bad_pos = -NO_HEIGHT;
 	coll->bad_neg = -384;
 	coll->bad_ceiling = 0;
-	item->gravity_status = FALSE;
+	item->gravity_status = 0;
 	item->fallspeed = 0;
 	coll->slopes_are_pits = 0;
 	coll->slopes_are_walls = 1;

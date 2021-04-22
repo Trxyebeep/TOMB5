@@ -50,6 +50,7 @@ void andy4b_control();
 void andy4b_end();
 void andy5_init();
 void andy5_control();
+void andy5_end();
 void andy6_init();
 void andy6_control();
 void andy6_end();
@@ -159,6 +160,11 @@ int GetTrackWord(unsigned long off, char* packed, unsigned char packmethod);
 int DecodeTrack(char* packed, RTDECODE* decode);
 void DecodeAnim(PACKNODE* node, int num_nodes, int frame, unsigned short flags);
 void do_new_cutscene_camera();
+void updateAnimFrame(PACKNODE* node, int flags, short* frame);
+void _DrawCutSeqActors();
+void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot);
+void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, __int16* rot, PHD_VECTOR* pos);
+void frigup_lara();
 
 
 #define GetActorJointAbsPosition ((void(__cdecl*)(int, unsigned long, PHD_VECTOR*)) 0x004243A0 )
@@ -167,53 +173,3 @@ void do_new_cutscene_camera();
 #define	cutseq_restore_item	( (ITEM_INFO*(__cdecl*)(int)) 0x00422AF0 )
 #define GrabActorMatrix	( (void(__cdecl*)(int, int, D3DMATRIX*)) 0x00424080 )
 #define trig_actor_gunflash	( (void(__cdecl*)(D3DMATRIX*, PHD_VECTOR*)) 0x00485EC0 )//somewhere in specific I think? only ever called in deal_with_actor_shooting anyway so keeping it here for now
-
-
-enum cutscenes
-{
-	CUT_NULL,
-	CUT_STEALTH3_1,
-	CUT_STEALTH3_2,
-	CUT_STEALTH3_3,
-	CUT_STEALTH3_4,
-	CUT_JOBY6,
-	CUT_ANDY5,
-	CUT_ANDREA3B,
-	CUT_ANDREA3,
-	CUT_ANDY4B,
-	CUT_ANDY4,
-	CUT_RICHCUT4,
-	CUT_JOBY10,
-	CUT_JOBY9,
-	CUT_ANDY3,
-	CUT_JOBY5,
-	CUT_ANDREA2,
-	CUT_ANDREA1,
-	CUT_JOBY4,
-	CUT_ANDY2,
-	CUT_RICH1,
-	CUT_ANDY1,
-	CUT_JOBY_CUT_3,
-	CUT_RICH_CUT_3,
-	CUT_RICH_CUT_1,
-	CUT_JOBY_CUT_2,
-	CUT_RICH_CUT_2,
-	CUT_JOBY_CRANE_CUT,
-	CUT_SPECIAL1,
-	CUT_SPECIAL2,
-	CUT_SPECIAL3,
-	CUT_SPECIAL4,
-	CUT_JOBY8,
-	CUT_ANDY6,
-	CUT_ANDYPEW,
-	CUT_ANDY7,
-	CUT_COSSACK,
-	CUT_ANDY9,
-	CUT_ANDY8,
-	CUT_ANDY10,
-	CUT_JOBY7,
-	CUT_ANDREA4,
-	CUT_MONK2,
-	CUT_SWAMPY,
-	CUT_ANDY11,
-};

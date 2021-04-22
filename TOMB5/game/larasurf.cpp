@@ -196,8 +196,8 @@ void LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
 		LaraWaterCurrent(coll);
 
 	AnimateLara(item);
-	item->pos.x_pos += item->fallspeed * SIN(lara.move_angle) >> 14;
-	item->pos.z_pos += item->fallspeed * COS(lara.move_angle) >> 14;
+	item->pos.x_pos += item->fallspeed * SIN(lara.move_angle) >> 16;
+	item->pos.z_pos += item->fallspeed * COS(lara.move_angle) >> 16;
 	LaraBaddieCollision(item, coll);
 	lara_collision_routines[item->current_anim_state](item, coll);
 	UpdateLaraRoom(item, 100);
