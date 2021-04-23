@@ -20,6 +20,7 @@
 #include "bubbles.h"
 #include "bat.h"
 #include "objects.h"
+#include "../specific/init.h"//for Log
 
 
 long ControlPhase(long nframes, int demo_mode)
@@ -779,6 +780,226 @@ int check_xray_machine_trigger()
 	return 0;
 }
 
+int GetHeight(FLOOR_INFO* floor, int x, int y, int z)
+{
+	int height;
+	room_info* r;
+	short* data;
+	short type, dx, dz;
+	unsigned short trigger;
+	ITEM_INFO* item;
+	short xoff, yoff;
+	short tilt, wat;
+	short tilt0, tilt1, tilt2, tilt3;
+
+	tiltxoff = 0;
+	tiltyoff = 0;
+	OnObject = 0;
+	height_type = WALL;
+
+	while (floor->pit_room != 0xFF)
+	{
+		if (CheckNoColFloorTriangle(floor, x, z) == 1)
+			break;
+
+		r = &room[floor->pit_room];
+		floor = &r->floor[((z - r->z) >> 10) + ((x - r->x) >> 10) * r->x_size];
+	}
+
+	height = floor->floor << 8;
+
+	if (height == NO_HEIGHT)
+		return height;
+
+	trigger_index = 0;
+
+	if (!floor->index)
+		return height;
+
+	data = &floor_data[floor->index];
+
+	do
+	{
+		type = *(data++);
+
+		switch ((type & 0x1F))
+		{
+		case DOOR_TYPE:
+		case ROOF_TYPE:
+		case SPLIT3:
+		case SPLIT4:
+		case NOCOLC1T:
+		case NOCOLC1B:
+		case NOCOLC2T:
+		case NOCOLC2B:
+			data++;
+			break;
+
+		case TILT_TYPE:
+			xoff = (*data) >> 8;
+			yoff = *(char*)(data);
+			tiltxoff = xoff;
+			tiltyoff = yoff;
+
+
+			if ((ABS(xoff)) > 2 || (ABS(yoff)) > 2)
+				height_type = BIG_SLOPE;
+			else
+				height_type = SMALL_SLOPE;
+
+			if (xoff < 0)
+				height -= ((xoff * (z & 1023)) >> 2);
+			else
+				height += ((xoff * ((-1 - z) & 1023)) >> 2);
+
+			if (yoff < 0)
+				height -= (yoff * ((-1 - x) & 1023)) >> 2;
+			else
+				height += ((yoff * (x & 1023)) >> 2);
+
+			data++;
+			break;
+
+		case TRIGGER_TYPE:
+
+			if (!trigger_index)
+				trigger_index = data - 1;
+
+			data++;
+			
+			do
+			{
+
+				trigger = *(data++);
+
+				if (trigger & 0x3C00)
+				{
+					if ((trigger & 0x3C00) == 1024 || (trigger & 0x3C00) == 12288)
+						trigger = *(data++);
+
+					continue;
+				}
+				
+				item = &items[trigger & 0x3FF];
+
+				if (objects[item->object_number].floor && !(item->flags & 0x8000))
+					(*objects[item->object_number].floor)(item, x, y, z, &height);
+
+			} while (!(type & 0x8000));
+
+			break;
+
+		case LAVA_TYPE:
+			trigger_index = data - 1;
+			break;
+
+		case CLIMB_TYPE:
+		case MONKEY_TYPE:
+		case TRIGTRIGGER_TYPE:
+
+			if (!trigger_index)
+				trigger_index = data - 1;
+
+			break;
+
+		case SPLIT1:
+		case SPLIT2:
+		case NOCOLF1T:
+		case NOCOLF1B:
+		case NOCOLF2T:
+		case NOCOLF2B:
+
+			tilt = *data;
+			tilt0 = tilt & 0xF;
+			tilt1 = (tilt >> 4) & 0xF;
+			tilt2 = (tilt >> 8) & 0xF;
+			tilt3 = (tilt >> 12) & 0xF;
+			dx = x & 1023;
+			dz = z & 1023;
+			height_type = SPLIT_TRI;
+
+			if ((type & 0x1F) == SPLIT1 || (type & 0x1F) == NOCOLF1T || (type & 0x1F) == NOCOLF1B)
+			{
+				if (dx > (1024 - dz))
+				{
+					wat = (type >> 5) & 0x1F;
+
+					if ((type >> 5) & 0x10)
+						wat |= 0xFFF0;
+
+					height += wat << 8;
+					xoff = tilt3 - tilt0;
+					yoff = tilt3 - tilt2;
+				}
+				else
+				{
+					wat = (type >> 10) & 0x1F;
+
+					if ((type >> 10) & 0x10)
+						wat |= 0xFFF0;
+
+					height += wat << 8;
+					xoff = tilt2 - tilt1;
+					yoff = tilt0 - tilt1;
+				}
+			}
+			else
+			{
+				if (dx > dz)
+				{
+					wat = (type >> 5) & 0x1F;
+
+					if ((type >> 5) & 0x10)
+						wat |= 0xFFF0;
+
+					height += wat << 8;
+					xoff = tilt3 - tilt0;
+					yoff = tilt0 - tilt1;
+				}
+				else
+				{
+					
+					wat = (type >> 10) & 0x1F;
+
+					if ((type >> 10) & 0x10)
+						wat |= 0xFFF0;
+
+					height += wat << 8;
+					xoff = tilt2 - tilt1;
+					yoff = tilt3 - tilt2;
+				}
+			}
+
+			tiltxoff = xoff;
+			tiltyoff = yoff;
+
+			if ((ABS(xoff)) > 2 || (ABS(yoff)) > 2)
+				height_type = DIAGONAL;
+
+			if (xoff >= 0)
+				height += (xoff * ((-1 - z) & 0x3FF)) >> 2;
+			else
+				height -= (xoff * (z & 0x3FF)) >> 2;
+
+			if (yoff >= 0)
+				height += (yoff * ((-1 - x) & 0x3FF)) >> 2;
+			else
+				height -= (yoff * (x & 0x3FF)) >> 2;
+
+			break;
+
+		default:
+		//	Error("GetHeight(): Unknown type");
+			Log(0, "**** GetHeight(): Unknown type ****");
+			break;
+		}
+
+
+	} while (!(type & 0x8000));
+
+	return height;
+}
+
 void inject_control()
 {
 	INJECT(0x004147C0, ControlPhase);
@@ -797,4 +1018,5 @@ void inject_control()
 	INJECT(0x0041B280, NeatAndTidyTriggerCutscene);
 	INJECT(0x0041B8B0, is_object_in_room);
 	INJECT(0x0041B930, check_xray_machine_trigger);
+	INJECT(0x00415FB0, GetHeight);
 }
