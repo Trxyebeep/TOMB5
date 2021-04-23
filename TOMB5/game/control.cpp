@@ -848,14 +848,14 @@ int GetHeight(FLOOR_INFO* floor, int x, int y, int z)
 				height_type = SMALL_SLOPE;
 
 			if (xoff < 0)
-				height -= ((xoff * (z & 1023)) >> 2);
+				height -= (xoff * (z & 1023) >> 2);
 			else
-				height += ((xoff * ((-1 - z) & 1023)) >> 2);
+				height += (xoff * ((-1 - z) & 1023) >> 2);
 
 			if (yoff < 0)
-				height -= (yoff * ((-1 - x) & 1023)) >> 2;
+				height -= yoff * (x & 1023) >> 2;
 			else
-				height += ((yoff * (x & 1023)) >> 2);
+				height += yoff * ((-1 - x) & 1023) >> 2;
 
 			data++;
 			break;
@@ -879,7 +879,7 @@ int GetHeight(FLOOR_INFO* floor, int x, int y, int z)
 
 					continue;
 				}
-				
+
 				item = &items[trigger & 0x3FF];
 
 				if (objects[item->object_number].floor && !(item->flags & 0x8000))
@@ -977,15 +977,16 @@ int GetHeight(FLOOR_INFO* floor, int x, int y, int z)
 				height_type = DIAGONAL;
 
 			if (xoff >= 0)
-				height += (xoff * ((-1 - z) & 0x3FF)) >> 2;
+				height += xoff * ((-1 - z) & 1023) >> 2;
 			else
-				height -= (xoff * (z & 0x3FF)) >> 2;
+				height -= xoff * (z & 1023) >> 2;
 
 			if (yoff >= 0)
-				height += (yoff * ((-1 - x) & 0x3FF)) >> 2;
+				height += yoff * ((-1 - x) & 1023) >> 2;
 			else
-				height -= (yoff * (x & 0x3FF)) >> 2;
+				height -= yoff * (x & 1023) >> 2;
 
+			data++;
 			break;
 
 		default:
@@ -993,7 +994,6 @@ int GetHeight(FLOOR_INFO* floor, int x, int y, int z)
 			Log(0, "**** GetHeight(): Unknown type ****");
 			break;
 		}
-
 
 	} while (!(type & 0x8000));
 
