@@ -1000,6 +1000,96 @@ int GetHeight(FLOOR_INFO* floor, int x, int y, int z)
 	return height;
 }
 
+FLOOR_INFO* GetFloor(int x, int y, int z, short* room_number)
+{
+	room_info* r;
+	FLOOR_INFO* floor;
+	long x_floor, y_floor;
+	short door;
+
+	r = &room[*room_number];
+
+	do
+	{
+		x_floor = (z - r->z) >> 10;
+		y_floor = (x - r->x) >> 10;
+
+		if (x_floor <= 0)
+		{
+			x_floor = 0;
+
+			if (y_floor < 1)
+				y_floor = 1;
+			else if (y_floor > r->y_size - 2)
+				y_floor = r->y_size - 2;
+		}
+		else if (x_floor >= r->x_size - 1)
+		{
+			x_floor = r->x_size - 1;
+
+			if (y_floor < 1)
+				y_floor = 1;
+			else if (y_floor > r->y_size - 2)
+				y_floor = r->y_size - 2;
+		}
+		else if (y_floor < 0)
+			y_floor = 0;
+		else if (y_floor >= r->y_size)
+			y_floor = r->y_size - 1;
+
+		floor = &r->floor[x_floor + (y_floor * r->x_size)];
+		door = GetDoor(floor);
+
+		if (door == 0xFF)
+			break;
+
+		*room_number = door;
+		r = &room[door];
+
+	} while (door != 0xFF);
+
+	if (y < floor->floor << 8)
+	{
+		if (y < floor->ceiling << 8 && floor->sky_room != 0xFF)
+		{
+			do
+			{
+				if (CheckNoColCeilingTriangle(floor, x, z) == 1 || CheckNoColCeilingTriangle(floor, x, z) == -1 && y >= r->maxceiling)
+					break;
+
+				*room_number = floor->sky_room;
+				r = &room[floor->sky_room];
+				floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
+
+				if (y >= floor->ceiling << 8)
+					break;
+
+			} while (floor->sky_room != 0xFF);
+		}
+	}
+	else if (floor->pit_room != 0xFF)
+	{
+		while (1)
+		{
+			if (CheckNoColFloorTriangle(floor, x, z) == 1 || CheckNoColFloorTriangle(floor, x, z) == -1 && y < r->minfloor)
+				break;
+
+			*room_number = floor->pit_room;
+			r = &room[floor->pit_room];
+
+			floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
+
+			if (y < floor->floor << 8)
+				break;
+
+			if (floor->pit_room == 0xFF)
+				return floor;
+		}
+	}
+
+	return floor;
+}
+
 void inject_control()
 {
 	INJECT(0x004147C0, ControlPhase);
@@ -1019,4 +1109,5 @@ void inject_control()
 	INJECT(0x0041B8B0, is_object_in_room);
 	INJECT(0x0041B930, check_xray_machine_trigger);
 	INJECT(0x00415FB0, GetHeight);
+	INJECT(0x00415B20, GetFloor);
 }
