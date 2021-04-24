@@ -4671,7 +4671,7 @@ void lara_as_roper(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (input & IN_ACTION)
 	{
-		if (input & IN_LEFT)
+		if (input & IN_RIGHT)
 			lara.RopeY -= 256;
 		else
 			item->goal_anim_state = STATE_LARA_ROPE_IDLE;

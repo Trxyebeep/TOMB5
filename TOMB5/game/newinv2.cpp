@@ -2605,7 +2605,7 @@ void do_stats_mode()
 
 void dels_give_lara_items_cheat()
 {
-	//original function is EMPTY on Steam/GOG, but exists on JP and the DEMO EXEs.
+#ifdef VER_JP
 	int piss;
 
 	if (objects[CROWBAR_ITEM].loaded)
@@ -2644,13 +2644,14 @@ void dels_give_lara_items_cheat()
 		lara.keyitemscombo = 0;
 		lara.pickupitemscombo = 0;
 	}
-
+#endif
 	return;
 }
 
 void dels_give_lara_guns_cheat()
 {
-	//original function is EMPTY on all PC EXEs, this is taken from PSX code.
+#ifdef VER_JP
+	//actually this isn't in the JP exe either, it's taken from PSX code
 	if (objects[FLARE_INV_ITEM].loaded)
 		lara.num_flares = -1;
 
@@ -2702,6 +2703,9 @@ void dels_give_lara_guns_cheat()
 		if (objects[SILENCER_ITEM].loaded)
 			lara.silencer = 1;
 	}
+#else
+	return;
+#endif
 }
 
 void S_DrawPickup(short object_number)
