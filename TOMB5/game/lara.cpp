@@ -15,6 +15,8 @@
 #include "items.h"
 #include "sound.h"
 #include "objects.h"
+#include "gameflow.h"
+#include "larafire.h"
 
 void(*lara_control_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* coll) =
 {
@@ -4845,6 +4847,57 @@ void lara_as_pbleapoff(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
+void LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
+{
+	coll->old.x = item->pos.x_pos;
+	coll->old.y = item->pos.y_pos;
+	coll->old.z = item->pos.z_pos;
+	coll->old_anim_state = item->current_anim_state;
+	coll->old_anim_number = item->anim_number;
+	coll->old_frame_number = item->frame_number;
+	coll->radius = 100;
+	coll->trigger = 0;
+	coll->slopes_are_walls = 0;
+	coll->slopes_are_pits = 0;
+	coll->lava_is_pit = 0;
+	coll->enable_baddie_push = 1;
+	coll->enable_spaz = 1;
+
+	if (input & IN_LOOK && lara.look)
+		LookLeftRight();
+	else
+		ResetLook();
+
+	lara.look = 1;
+
+	lara_control_routines[item->current_anim_state](item, coll);
+
+	if (item->pos.z_rot < -182)
+		item->pos.z_rot += 182;
+	else if (item->pos.z_rot > 182)
+		item->pos.z_rot -= 182;
+	else item->pos.z_rot = 0;
+
+	if (lara.turn_rate < -364)
+		lara.turn_rate += 364;
+	else if (lara.turn_rate > 364)
+		lara.turn_rate -= 364;
+	else
+		lara.turn_rate = 0;
+
+	item->pos.y_rot += lara.turn_rate;
+
+	AnimateLara(item);
+	LaraBaddieCollision(item, coll);
+	lara_collision_routines[item->current_anim_state](item, coll);
+	UpdateLaraRoom(item, -381);
+
+	if (lara.gun_type == WEAPON_CROSSBOW && !LaserSight && gfLevelFlags & GF_LVOP_TRAIN)
+		input &= ~IN_ACTION;
+
+	LaraGun();
+	TestTriggers(coll->trigger, 0, 0);
+}
 
 void inject_lara()
 {
@@ -5002,5 +5055,6 @@ void inject_lara()
 	INJECT(0x0044D6E0, lara_as_trwalk);
 	INJECT(0x0044D800, lara_as_trfall);
 	INJECT(0x0044DA40, lara_as_pbleapoff);
+	INJECT(0x00442E70, LaraAboveWater);
 }
 

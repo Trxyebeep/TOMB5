@@ -18,9 +18,9 @@ x for functions decompiled but not injected, for one reason or another.
 0x00415890	+	GetChange
 0x00415960	+	TranslateItem
 0x004159F0		AlterFloorHeight
-0x00415B20		GetFloor
+0x00415B20	+	GetFloor
 0x00415DA0		GetWaterHeight
-0x00415FB0		GetHeight
+0x00415FB0	+	GetHeight
 0x004165E0		RefreshCamera
 0x00416760		TestTriggers
 0x004167B0		_TestTriggers
@@ -508,7 +508,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00442C90	+	KlaxonTremor
 0x00442DB0	+	LaraCeilingFront
-0x00442E70		LaraAboveWater
+0x00442E70	+	LaraAboveWater
 0x00443020	+	lara_as_duckl
 0x00443070	+	lara_as_duckr
 0x004430C0	+	lara_col_ducklr
@@ -683,3 +683,46 @@ x for functions decompiled but not injected, for one reason or another.
 0x0044D800	+	lara_as_trfall
 0x0044DA10	+	lara_as_parallelbars
 0x0044DA40	+	lara_as_pbleapoff
+
+
+		game/larasurf.cpp
+
+0x00457940	+	LaraSurface
+0x00457B10	+	lara_as_surfswim
+0x00457BA0	+	lara_as_surfback
+0x00457C20	+	lara_as_surfleft
+0x00457CA0	+	lara_as_surfright
+0x00457D20	+	lara_as_surftread
+0x00457E10	+	lara_col_surfswim
+0x00457E50	+	LaraTestWaterClimbOut
+0x00458100	+	LaraSurfaceCollision
+0x00458240	+	LaraTestWaterStepOut
+0x00458380	+	lara_col_surfback
+0x004583C0	+	lara_col_surfleft
+0x00458400	+	lara_col_surfright
+0x00458440	+	lara_col_surftread
+
+
+		game/laraswim.cpp
+
+0x004584C0	+	UpdateSubsuitAngles
+0x004586F0	+	LaraUnderWater
+0x004589F0	+	lara_as_swimcheat
+0x00458B20	+	lara_as_swim
+0x00458BC0	+	SwimTurn
+0x00458C80	+	SwimTurnSubsuit
+0x00458D60	+	lara_as_glide
+0x00458E20	+	lara_as_tread
+0x00458EF0	+	lara_as_dive
+0x00458F20	+	lara_as_uwdeath
+0x00458FA0	+	lara_as_waterroll
+0x00458FC0	+	lara_col_swim
+0x00458FF0	+	LaraSwimCollision
+0x00459470	+	LaraTestWaterDepth
+0x00459590	+	lara_col_glide
+0x004595C0	+	lara_col_tread
+0x004595F0	+	lara_col_dive
+0x00459620	+	lara_col_uwdeath
+0x004596A0	+	lara_col_waterroll
+0x004596D0		GetWaterDepth
+0x004598F0		LaraWaterCurrent
