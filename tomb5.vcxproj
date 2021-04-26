@@ -68,7 +68,9 @@
     <ClCompile Include="TOMB5\specific\light.cpp" />
     <ClCompile Include="TOMB5\specific\maths.cpp" />
     <ClCompile Include="TOMB5\specific\matrix_shit.cpp" />
+    <ClCompile Include="TOMB5\specific\output.cpp" />
     <ClCompile Include="TOMB5\specific\pcsetup.cpp" />
+    <ClCompile Include="TOMB5\specific\picture.cpp" />
     <ClCompile Include="TOMB5\specific\specific.cpp" />
     <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
     <ClCompile Include="TOMB5\tomb5\pch.cpp">
@@ -134,7 +136,9 @@
     <ClInclude Include="TOMB5\specific\light.h" />
     <ClInclude Include="TOMB5\specific\maths.h" />
     <ClInclude Include="TOMB5\specific\matrix_shit.h" />
+    <ClInclude Include="TOMB5\specific\output.h" />
     <ClInclude Include="TOMB5\specific\pcsetup.h" />
+    <ClInclude Include="TOMB5\specific\picture.h" />
     <ClInclude Include="TOMB5\specific\specific.h" />
     <ClInclude Include="TOMB5\tomb5\framework.h" />
     <ClInclude Include="TOMB5\tomb5\pch.h" />

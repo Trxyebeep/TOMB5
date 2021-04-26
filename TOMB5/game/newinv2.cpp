@@ -17,6 +17,11 @@
 #include "larafire.h"
 #include "lara_states.h"
 #include "effect2.h"
+#include "../specific/picture.h"
+#include "../specific/input.h"
+#include "../specific/output.h"
+#include "../specific/drawprimitive.h"
+#include "health.h"
 
 short optmessages[11] =
 {
@@ -69,6 +74,189 @@ COMBINELIST dels_handy_combine_table[24] =
 	{combine_PickupItem4, INV_PICKUP_ITEM4_COMBO1, INV_PICKUP_ITEM4_COMBO2, INV_PICKUP_ITEM4},
 	{combine_clothbottle, INV_CLOTH, INV_BOTTLE, INV_WET_CLOTH}
 };
+
+int S_CallInventory2()
+{
+	int return_value;
+
+	if (gfCurrentLevel < LVL5_BASE || gfCurrentLevel > LVL5_SINKING_SUBMARINE)
+	{
+		inventry_objects_list[INV_REVOLVER_ITEM1].objname = STR_REVOLVER;
+		inventry_objects_list[INV_REVOLVER_ITEM2].objname = STR_REVOLVER_LASERSIGHT;
+		inventry_objects_list[INV_REVOLVER_AMMO_ITEM].objname = STR_REVOLVER_AMMO;
+	}
+	else
+	{
+		inventry_objects_list[INV_REVOLVER_ITEM1].objname = STR_DESERTEAGLE;
+		inventry_objects_list[INV_REVOLVER_ITEM2].objname = STR_DESERTEAGLE_LASERSIGHT;
+		inventry_objects_list[INV_REVOLVER_AMMO_ITEM].objname = STR_DESERTEAGLE_AMMO;
+	}
+
+	if (gfCurrentLevel > LVL5_THIRTEENTH_FLOOR && gfCurrentLevel < LVL5_RED_ALERT)
+		inventry_objects_list[INV_BINOCULARS_ITEM].objname = STR_HEADSET;
+	else
+		inventry_objects_list[INV_BINOCULARS_ITEM].objname = STR_BINOCULARS;
+
+	friggrimmer = 0;
+	oldLaraBusy = lara.Busy != 0;
+
+	if (input & IN_SELECT)
+		friggrimmer = 1;
+
+	rings[RING_INVENTORY] = &inv_ring_ptr;
+	rings[RING_AMMO] = &ammo_ring_ptr;
+	CreateMonoScreen();
+	in_inv_or_pause = 0;
+	init_new_inventry();
+	camera.number_frames = 2;
+
+	while (!reset_flag)
+	{
+		int val = 0;
+
+		OBJLIST_SPACING = phd_centerx >> 1;
+		GPU_BeginScene();
+		SetDebounce = 1;
+		S_UpdateInput();
+		input = inputBusy;
+		UpdatePulseColour();
+		GameTimer++;
+
+		if (dbinput & IN_OPTION)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			val = 1;
+		}
+
+		return_value = thread_started;
+
+		if (return_value)
+			return return_value;
+
+		DisplayMonoScreen();
+
+		if (dword_E5C2F8)
+		{
+			dword_E5C2F8 = 0;
+			val = 1;
+		}
+
+		do_debounced_joystick_poo();
+
+		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM
+			&& keymap[34] //G
+			&& keymap[22] //U
+			&& keymap[49] //N
+			&& keymap[31])//S
+			dels_give_lara_guns_cheat();
+
+		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM
+			&& keymap[48] //B
+			&& keymap[23] //I
+			&& keymap[20] //T
+			&& keymap[31])//S
+		{
+			dels_give_lara_items_cheat();
+			savegame.CampaignSecrets[0] = 9;
+			savegame.CampaignSecrets[1] = 9;
+			savegame.CampaignSecrets[2] = 9;
+			savegame.CampaignSecrets[3] = 9;
+		}
+
+		if (GLOBAL_invkeypadmode)
+			do_keypad_mode();
+		else if (examine_mode)
+			do_examine_mode();
+		else if (stats_mode)
+			do_stats_mode();
+		else
+		{
+			draw_current_object_list(RING_INVENTORY);
+			handle_inventry_menu();
+			
+			if (rings[RING_AMMO]->ringactive)
+				draw_current_object_list(RING_AMMO);
+
+			draw_ammo_selector();
+			fade_ammo_selector();
+		}
+
+		if (use_the_bitch & !input)
+			val = 1;
+
+		S_OutputPolyList();
+		camera.number_frames = S_DumpScreen();
+
+		if (loading_or_saving)
+		{
+			do
+			{
+				GPU_BeginScene();
+				SetDebounce = 1;
+				S_UpdateInput();
+				input = inputBusy;
+				UpdatePulseColour();
+
+				if (loading_or_saving == 1)
+					val = go_and_load_game();
+				else if (go_and_save_game())
+					val = 1;
+
+			} while (!val);
+
+			if (val == 1 && loading_or_saving == val)
+			{
+				return_value = 1;
+				val = 1;
+			}
+
+			friggrimmer2 = 1;
+			friggrimmer = 1;
+			deselect_debounce = 0;
+			go_deselect = 0;
+			loading_or_saving = 0;
+		}
+
+		if (val)
+			break;
+	}
+
+	InitialisePickUpDisplay();
+	GLOBAL_lastinvitem = rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem;
+	update_laras_weapons_status();
+
+	if (use_the_bitch && !GLOBAL_invkeypadmode)
+		use_current_item();
+
+	FreeMonoScreen();
+
+	lara.Busy = oldLaraBusy & 1;
+	in_inv_or_pause = 0;
+
+	if (GLOBAL_invkeypadmode)
+	{
+		short room_number;
+		ITEM_INFO* item;
+		int val;
+		
+		val = 0;
+		GLOBAL_invkeypadmode = 0;
+
+		if (keypadnuminputs == 4)
+			val = keypadinputs[3]+ 10 * (keypadinputs[2] + 10 * (keypadinputs[1] + 10 * keypadinputs[0]));
+
+		if (GLOBAL_invkeypadcombination == val)
+		{
+			item = lara_item;
+			room_number = lara_item->room_number;
+			GetHeight(GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number),
+				item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+			TestTriggers(trigger_index, 1, 0);
+		}
+	}
+
+	return return_value;
+}
 
 void init_new_inventry()
 {
@@ -293,7 +481,7 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 	short* rotation1;
 	short** meshpp;
 	short* frmptr;
-	long i, m, poppush;
+	long i, poppush;
 	unsigned long bit;
 	int unk_bak;////
 
@@ -348,9 +536,11 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 		}
 	}
 
-	for (i = 0, m = 2; i < object->nmeshes - 1; i++, m += 2)
+	meshpp += 2;
+
+	for (i = 0; i < object->nmeshes - 1; i++, meshpp += 2, bone += 4)
 	{
-		poppush = bone[i];
+		poppush = *bone;
 
 		if (poppush & 1)
 		{
@@ -368,12 +558,12 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 		if ((bit & item->mesh_bits))
 		{
 			if (overlay)
-				phd_PutPolygons_pickup(meshpp[m], inv_item_xpos, inv_item_ypos, inv_light);
+				phd_PutPolygons_pickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
 			else
 			{
 				unk_bak = dword_506D3C;
 				dword_506D3C = 0xFF000000;
-				phd_PutPolygons_pickup(meshpp[m], inv_item_xpos, inv_item_ypos, inv_light);
+				phd_PutPolygons_pickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
 				dword_506D3C = unk_bak;
 			}
 		}
@@ -2730,7 +2920,7 @@ void S_DrawPickup(short object_number)
 
 void inject_newinv2()
 {
-//	INJECT(0x0045F9D0, S_CallInventory2);
+	INJECT(0x0045F9D0, S_CallInventory2);
 	INJECT(0x0045FEF0, init_new_inventry);
 	INJECT(0x004601A0, do_debounced_joystick_poo);
 	INJECT(0x00460350, DrawThreeDeeObject2D);

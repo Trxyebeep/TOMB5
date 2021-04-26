@@ -21,6 +21,8 @@
 #include "bat.h"
 #include "objects.h"
 #include "../specific/init.h"//for Log
+#include "sphere.h"
+#include "debris.h"
 
 
 long ControlPhase(long nframes, int demo_mode)
@@ -885,7 +887,7 @@ int GetHeight(FLOOR_INFO* floor, int x, int y, int z)
 				if (objects[item->object_number].floor && !(item->flags & 0x8000))
 					(*objects[item->object_number].floor)(item, x, y, z, &height);
 
-			} while (!(type & 0x8000));
+			} while (!(trigger & 0x8000));
 
 			break;
 
@@ -1090,6 +1092,82 @@ FLOOR_INFO* GetFloor(int x, int y, int z, short* room_number)
 	return floor;
 }
 
+int ExplodeItemNode(ITEM_INFO* item, int Node, int NoXZVel, long bits)
+{
+	OBJECT_INFO* object;
+	short** meshpp;
+
+	if (!(item->mesh_bits & (1 << Node)))
+		return 0;
+
+	if (item->object_number == SWITCH_TYPE7 && (gfCurrentLevel == LVL5_SINKING_SUBMARINE || gfCurrentLevel == LVL5_BASE))
+		SoundEffect(SFX_SMASH_METAL, &item->pos, SFX_DEFAULT);
+	else if (bits == 256)
+		bits = -64;
+
+	GetSpheres(item, Slist, 3);
+	object = &objects[item->object_number];
+	ShatterItem.YRot = item->pos.y_rot;
+	meshpp = &meshes[object->mesh_index + 2 * Node];
+	ShatterItem.Bit = 1 << Node;
+	ShatterItem.meshp = *meshpp;
+	ShatterItem.Sphere.x = Slist[Node].x;
+	ShatterItem.Sphere.y = Slist[Node].y;
+	ShatterItem.Sphere.z = Slist[Node].z;
+	ShatterItem.il = &item->il;
+	ShatterItem.Flags = item->object_number != CROSSBOW_BOLT ? 0 : 1024;
+	ShatterObject(&ShatterItem, 0, bits, item->room_number, NoXZVel);
+	item->mesh_bits &= ~ShatterItem.Bit;
+	return 1;
+}
+
+short GetDoor(FLOOR_INFO* floor)
+{
+	short* data;
+	short type;
+
+	if (!floor->index)
+		return 255;
+
+	data = &floor_data[floor->index];
+	type = *data++;
+
+	if ((type & 0x1F) == TILT_TYPE
+		|| (type & 0x1F) == SPLIT1
+		|| (type & 0x1F) == SPLIT2
+		|| (type & 0x1F) == NOCOLF1B
+		|| (type & 0x1F) == NOCOLF1T
+		|| (type & 0x1F) == NOCOLF2B
+		|| (type & 0x1F) == NOCOLF2T)
+	{
+		if (type < 0)
+			return 255;
+	
+		data++;
+		type = *data++;
+	}
+
+	if ((type & 0x1F) == ROOF_TYPE
+		|| (type & 0x1F) == SPLIT3
+		|| (type & 0x1F) == SPLIT4
+		|| (type & 0x1F) == NOCOLC1B
+		|| (type & 0x1F) == NOCOLC1T
+		|| (type & 0x1F) == NOCOLC2B
+		|| (type & 0x1F) == NOCOLC2T)
+	{
+		if (type < 0)
+			return 255;
+
+		data++;
+		type = *data++;
+	}
+
+	if ((type & 0x1F) == DOOR_TYPE)
+		return *data;
+
+	return 255;
+}
+
 void inject_control()
 {
 	INJECT(0x004147C0, ControlPhase);
@@ -1110,4 +1188,6 @@ void inject_control()
 	INJECT(0x0041B930, check_xray_machine_trigger);
 	INJECT(0x00415FB0, GetHeight);
 	INJECT(0x00415B20, GetFloor);
+	INJECT(0x0041ABF0, ExplodeItemNode);
+	INJECT(0x00417C00, GetDoor);
 }

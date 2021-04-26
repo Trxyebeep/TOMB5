@@ -3,7 +3,7 @@
 
 void inject_newinv2();
 
-//S_CallInventory2
+int S_CallInventory2();
 void init_new_inventry();
 void do_debounced_joystick_poo();
 void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, int zrot, int bright, int overlay);
@@ -68,7 +68,7 @@ void dels_give_lara_items_cheat();
 void dels_give_lara_guns_cheat();
 void S_DrawPickup(short object_number);
 
-#define S_CallInventory2	( (int(__cdecl*)()) 0x0045F9D0 )
+//#define S_CallInventory2	( (int(__cdecl*)()) 0x0045F9D0 )
 #define spinback	( (void(__cdecl*)(unsigned short*)) 0x00462DD0 )
 #define LoadGame	( (int(__cdecl*)()) 0x00464EF0 )
 #define SaveGame	( (int(__cdecl*)()) 0x00464F20 )
