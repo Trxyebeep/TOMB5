@@ -425,7 +425,7 @@ void LaraTargetInfo(WEAPON_INFO* winfo)
 	lara.target_angles[1] = ang[1];
 }
 
-void _LaraGetNewTarget(WEAPON_INFO* winfo)
+void LaraGetNewTarget(WEAPON_INFO* winfo)
 {
 	ITEM_INFO* item;
 	ITEM_INFO* bestitem;
@@ -433,7 +433,7 @@ void _LaraGetNewTarget(WEAPON_INFO* winfo)
 	short bestyrot;
 	GAME_VECTOR src, target;
 	creature_info* creature;
-	int x, y, z, slot, dist, maxdist, bestdist;
+	int x, y, z, slot, dist, maxdist, maxdist2, bestdist;
 	short targets, match;
 
 	if (BinocularRange)
@@ -450,6 +450,7 @@ void _LaraGetNewTarget(WEAPON_INFO* winfo)
 	bestyrot = 0x7FFF;
 	bestdist = 0x7FFFFFFF;
 	maxdist = winfo->target_dist;
+	maxdist2 = SQUARE(maxdist);
 	creature = baddie_slots;
 	targets = 0;
 
@@ -468,7 +469,7 @@ void _LaraGetNewTarget(WEAPON_INFO* winfo)
 				if ((ABS(x)) <= maxdist && (ABS(y)) <= maxdist && (ABS(z)) <= maxdist)
 				{
 					dist = x * x + y * y + z * z;
-					if (dist < maxdist * maxdist)
+					if (dist < maxdist2)
 					{
 						find_target_point(item, &target);
 
@@ -502,63 +503,56 @@ void _LaraGetNewTarget(WEAPON_INFO* winfo)
 
 	if (TargetList[0])
 	{
-		if (savegame.AutoTarget)
+		for (slot = 0; slot < 8; ++slot)
 		{
-			for (slot = 0; slot < 8; ++slot)
-			{
-				if (!TargetList[slot])
-					lara.target = NULL;
+			if (!TargetList[slot])
+				lara.target = NULL;
 
-				if (TargetList[slot] == lara.target)
-					break;
+			if (TargetList[slot] == lara.target)
+				break;
+		}
+
+		if (savegame.AutoTarget || input & IN_UNK31)
+		{
+			if (!lara.target)
+			{
+				lara.target = bestitem;
+				LastTargets[0] = 0;
 			}
-
-			if (input & IN_UNK31)
+			else if (input & IN_UNK31)
 			{
+				lara.target = 0;
+
+				for (match = 0; match < 8; ++match)
+				{
+					if (!TargetList[match])
+						break;
+
+					for (slot = 0; slot < 8; ++slot)
+					{
+						if (!LastTargets[slot])
+						{
+							slot = 8;
+							break;
+						}
+
+						if (LastTargets[slot] == TargetList[match])
+							break;
+					}
+
+					if (slot == 8)
+					{
+						lara.target = TargetList[match];
+						break;
+					}
+				}
+
 				if (!lara.target)
 				{
 					lara.target = bestitem;
-					LastTargets[0] = 0;
-				}
-				else
-				{
-					bool flag, loop;
-					lara.target = 0;
-					flag = true;
-
-					for (match = 0; match < 8 && TargetList[match]; ++match)
-					{
-						loop = false;
-
-						for (slot = 0; slot < 8 && LastTargets[slot]; ++slot)
-						{
-							if (LastTargets[slot] == TargetList[match])
-							{
-								loop = true;
-								break;
-							}
-						}
-
-						if (!loop)
-						{
-							lara.target = TargetList[match];
-							if (lara.target)
-								flag = false;
-							break;
-						}
-					}
-
-					if (flag)
-					{
-						lara.target = bestitem;
-						LastTargets[0] = NULL;
-					}
+					LastTargets[0] = NULL;
 				}
 			}
-		}
-		else
-		{
-			//manual targetting
 		}
 	}
 	else
@@ -1347,7 +1341,7 @@ void inject_larafire()
 	INJECT(0x00452AF0, CheckForHoldingState);
 	INJECT(0x00452B30, InitialiseNewWeapon);
 	INJECT(0x00452CC0, LaraTargetInfo);
-//	INJECT(0x00452ED0, LaraGetNewTarget);//finish manual targetting, actually fix it
+	INJECT(0x00452ED0, LaraGetNewTarget);
 	INJECT(0x004533A0, find_target_point);
 	INJECT(0x00453490, AimWeapon);
 	INJECT(0x00453580, FireWeapon);

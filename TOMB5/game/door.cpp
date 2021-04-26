@@ -702,7 +702,7 @@ void SequenceDoorControl(short item_number)
 	AnimateItem(item);
 }
 
-void ProcessClosedDoors()//keep an eye on it--update: no
+void ProcessClosedDoors()
 {
 	ITEM_INFO* item;
 	short room_number;
@@ -731,7 +731,7 @@ void ProcessClosedDoors()//keep an eye on it--update: no
 		else if (item->InDrawRoom)
 		{
 			item->room_number = item->draw_room;
-			ItemNewRoom(items - item, room_number);
+			ItemNewRoom(item - items, room_number);
 			item->InDrawRoom = 0;
 		}
 	}
@@ -748,5 +748,5 @@ void inject_door()
 	INJECT(0x00429B30, DoubleDoorCollision);
 	INJECT(0x00429CF0, UnderwaterDoorCollision);
 	INJECT(0x00429EC0, SequenceDoorControl);
-//	INJECT(0x0042A050, ProcessClosedDoors);//no
+	INJECT(0x0042A050, ProcessClosedDoors);
 }
