@@ -260,6 +260,8 @@
 #define malloc_size	VAR_U_(0x00E4B058, int)
 #define malloc_used	VAR_U_(0x00E4B0F0, int)
 #define malloc_free	VAR_U_(0x00E4B0F4, int)
+#define ShatterItem	VAR_U_(0x00EEFAE0, SHATTER_ITEM)
+#define GLOBAL_invkeypadcombination	VAR_U_(0x0051CF2C, int)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)
@@ -299,6 +301,10 @@
 #define inv_light	VAR_U_(0x00508E10, long)//seems to only affect the ammo ring?
 #define inv_item_xpos	VAR_U_(0x00E598A0, float)
 #define inv_item_ypos	VAR_U_(0x00E5990C, float)
+#define in_inv_or_pause	VAR_U_(0x0051CF20, int)//1 in inv, pause screen, save load, 0 everywhere else. including in title screen. even save/load from title is 0. 0 in loading screens.
+#define inv_ring_ptr	VAR_U_(0x00E59BC0, RINGME)
+#define ammo_ring_ptr	VAR_U_(0x00E59940, RINGME)
+
 
 //arrays
 #define cutseq_meshbits	ARRAY_(0x00E7EEA0, unsigned long, [10])
@@ -368,3 +374,4 @@
 #define dword_00E916F0	VAR_U_(0x00E916F0, int)//special 1 control, special 2 init, special 3 init, special 4 init
 #define dword_506D3C	VAR_U_(0x00506D3C, int)//DrawInventoryItemMe
 #define dword_9158A8	VAR_U_(0x009158A8, ITEM_INFO*)//game is horny to save some item's pointer (:
+#define dword_E5C2F8	VAR_U_(0x00E5C2F8, int)//S_CallInventory2, DoLevel... some sort of flag

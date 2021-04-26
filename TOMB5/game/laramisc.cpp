@@ -254,6 +254,62 @@ void InitialiseLara(int restore)
 	lara.wetcloth = CLOTH_MISSING;
 }
 
+void LaraCheatyBits()
+{
+	if (objects[CROWBAR_ITEM].loaded)
+		lara.crowbar = 1;
+
+	lara.num_flares = -1;
+	lara.num_small_medipack = -1;
+	lara.num_large_medipack = -1;
+	lara.lasersight = 1;
+	lara.uzis_type_carried = 9;
+	lara.shotgun_type_carried = 9;
+	lara.sixshooter_type_carried = 9;
+	lara.num_uzi_ammo = -1;
+	lara.num_revolver_ammo = -1;
+	lara.num_shotgun_ammo1 = -1;
+}
+
+#ifdef VER_JP
+void _cheats()
+{
+	if (!Gameflow->CheatEnabled)
+		return;
+
+	if (input & IN_D)
+	{
+		LaraCheatyBits();
+		lara_item->hit_points = 1000;
+	}
+
+	if (input & IN_CHEAT)
+	{
+		dels_give_lara_items_cheat();
+		lara_item->pos.y_pos -= 128;
+
+		if (lara.water_status != LW_FLYCHEAT)
+		{
+			lara.water_status = LW_FLYCHEAT;
+			lara_item->frame_number = anims[ANIMATION_LARA_DOZY].frame_base;
+			lara_item->anim_number = ANIMATION_LARA_DOZY;
+			lara_item->current_anim_state = STATE_LARA_DOZY;
+			lara_item->goal_anim_state = STATE_LARA_DOZY;
+			lara_item->gravity_status = 1;
+			lara_item->pos.x_rot = 5460;
+			lara_item->fallspeed = 30;
+			lara.air = 1800;
+			lara.death_count = 0;
+			lara.torso_y_rot = 0;
+			lara.torso_x_rot = 0;
+			lara.head_y_rot = 0;
+			lara.head_x_rot = 0;
+			cheat_hit_points = lara_item->hit_points;
+		}
+	}
+}
+#endif
+
 void inject_laramisc()
 {
 	INJECT(0x004569C0, GetLaraDeadlyBounds);
@@ -262,5 +318,6 @@ void inject_laramisc()
 	INJECT(0x00456320, LaraCheat);
 	INJECT(0x00455680, LaraInitialiseMeshes);
 	INJECT(0x00473210, InitialiseLara);
+	INJECT(0x004557B0, LaraCheatyBits);
 //	INJECT(0x004563F0, AnimateLara);
 }

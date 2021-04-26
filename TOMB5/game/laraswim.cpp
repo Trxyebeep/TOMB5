@@ -8,6 +8,8 @@
 #include "effects.h"
 #include "sound.h"
 #include "collide.h"
+#include "laramisc.h"
+#include "larafire.h"
 
 void LaraTestWaterDepth(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -548,6 +550,95 @@ void lara_col_waterroll(ITEM_INFO* item, COLL_INFO* coll)
 	LaraSwimCollision(item, coll);
 }
 
+void LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
+{
+	coll->bad_pos = -NO_HEIGHT;
+	coll->bad_neg = -400;
+	coll->bad_ceiling = 400;
+	coll->old.x = item->pos.x_pos;
+	coll->old.y = item->pos.y_pos;
+	coll->old.z = item->pos.z_pos;
+	coll->slopes_are_walls = 0;
+	coll->slopes_are_pits = 0;
+	coll->lava_is_pit = 0;
+	coll->enable_spaz = 0;
+	coll->enable_baddie_push = 1;
+	coll->radius = 300;
+	coll->trigger = 0;
+
+	if (input & IN_LOOK && lara.look)
+		LookLeftRight();
+	else
+		ResetLook();
+
+	lara.look = 1;
+	lara_control_routines[item->current_anim_state](item, coll);
+
+	if (LaraDrawType == LARA_DIVESUIT)
+	{
+		if (lara.turn_rate < -91)
+			lara.turn_rate += 91;
+		else if (lara.turn_rate > 91)
+			lara.turn_rate -= 91;
+		else
+			lara.turn_rate = 0;
+	}
+	else
+	{
+		if (lara.turn_rate < -364)
+			lara.turn_rate += 364;
+		else if (lara.turn_rate > 364)
+			lara.turn_rate -= 364;
+		else
+			lara.turn_rate = 0;
+	}
+
+	item->pos.y_rot += lara.turn_rate;
+
+	if (LaraDrawType == LARA_DIVESUIT)
+		UpdateSubsuitAngles();
+
+	if (item->pos.z_rot < -364)
+		item->pos.z_rot += 364;
+	else if (item->pos.z_rot > 364)
+		item->pos.z_rot -= 364;
+	else
+		item->pos.z_rot = 0;
+
+	if (item->pos.x_rot < -15470)
+		item->pos.x_rot = -15470;
+	else if (item->pos.x_rot > 15470)
+		item->pos.x_rot = 15470;
+
+	if (LaraDrawType == LARA_DIVESUIT)
+	{
+		if (item->pos.z_rot < -8008)
+			item->pos.z_rot = -8008;
+		else if (item->pos.z_rot > 8008)
+			item->pos.z_rot = 8008;
+	}
+	else
+	{
+		if (item->pos.z_rot < -4004)
+			item->pos.z_rot = -4004;
+		else if (item->pos.z_rot > 4004)
+			item->pos.z_rot = 4004;
+	}
+
+	if (lara.current_active && lara.water_status != LW_FLYCHEAT)
+		LaraWaterCurrent(coll);
+
+	AnimateLara(item);
+	item->pos.x_pos += (((SIN(item->pos.y_rot) * item->fallspeed) >> 16) * COS(item->pos.x_rot)) >> 14;
+	item->pos.y_pos -= (SIN(item->pos.x_rot) * item->fallspeed) >> 16;
+	item->pos.z_pos += (((COS(item->pos.y_rot) * item->fallspeed) >> 16) * COS(item->pos.x_rot)) >> 14;
+	LaraBaddieCollision(item, coll);
+	lara_collision_routines[item->current_anim_state](item, coll);
+	UpdateLaraRoom(item, 0);
+	LaraGun();
+	TestTriggers(coll->trigger, 0, 0);
+}
+
 void inject_laraswim()
 {
 	INJECT(0x00459470, LaraTestWaterDepth);
@@ -555,7 +646,7 @@ void inject_laraswim()
 	INJECT(0x00458BC0, SwimTurn);
 	INJECT(0x00458C80, SwimTurnSubsuit);
 	INJECT(0x004584C0, UpdateSubsuitAngles);
-	//LaraUnderWater
+	INJECT(0x004586F0, LaraUnderWater);
 	INJECT(0x004589F0, lara_as_swimcheat);
 	INJECT(0x00458B20, lara_as_swim);
 	INJECT(0x00458D60, lara_as_glide);

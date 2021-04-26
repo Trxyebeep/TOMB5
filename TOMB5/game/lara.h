@@ -164,6 +164,7 @@ void lara_as_trwalk(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_trfall(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_parallelbars(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_pbleapoff(ITEM_INFO* item, COLL_INFO* coll);
+void LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
 
 #define LaraTestClimbStance	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00445580 )
 #define LaraHangTest	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x004460F0 )

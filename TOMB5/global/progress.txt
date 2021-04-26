@@ -18,15 +18,15 @@ x for functions decompiled but not injected, for one reason or another.
 0x00415890	+	GetChange
 0x00415960	+	TranslateItem
 0x004159F0		AlterFloorHeight
-0x00415B20		GetFloor
+0x00415B20	+	GetFloor
 0x00415DA0		GetWaterHeight
-0x00415FB0		GetHeight
+0x00415FB0	+	GetHeight
 0x004165E0		RefreshCamera
 0x00416760		TestTriggers
 0x004167B0		_TestTriggers
 0x004175B0		TriggerActive
 0x00417640		GetCeiling
-0x00417C00		GetDoor
+0x00417C00	+	GetDoor
 0x00417CF0		LOS
 0x00417DC0		zLOS
 0x004181F0		xLOS
@@ -44,7 +44,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00419D00		RayBoxIntersect
 0x0041A0B0		FireCrossBowFromLaserSight
 0x0041A170		GetTargetOnLOS
-0x0041ABF0		ExplodeItemNode
+0x0041ABF0	+	ExplodeItemNode
 0x0041AD60	+	CheckGuardOnTrigger
 0x0041AEA0	+	InterpolateAngle
 0x0041AF10		ResetGuards
@@ -426,7 +426,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/newinv2.cpp
 
-0x0045F9D0		S_CallInventory2
+0x0045F9D0	+	S_CallInventory2
 0x0045FEF0	+	init_new_inventry
 0x004601A0	+	do_debounced_joystick_poo
 0x00460350	+	DrawThreeDeeObject2D
@@ -443,7 +443,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00462740	+	setup_ammo_selector
 0x00462A00	+	fade_ammo_selector
 0x00462AD0	+	draw_ammo_selector
-0x00462DD0		spinback
+0x00462DD0	x	spinback
 0x00462E60	+	update_laras_weapons_status
 0x00462EF0	+	is_item_currently_combinable
 0x00462F60	+	have_i_got_item
@@ -508,7 +508,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00442C90	+	KlaxonTremor
 0x00442DB0	+	LaraCeilingFront
-0x00442E70		LaraAboveWater
+0x00442E70	+	LaraAboveWater
 0x00443020	+	lara_as_duckl
 0x00443070	+	lara_as_duckr
 0x004430C0	+	lara_col_ducklr
@@ -683,3 +683,58 @@ x for functions decompiled but not injected, for one reason or another.
 0x0044D800	+	lara_as_trfall
 0x0044DA10	+	lara_as_parallelbars
 0x0044DA40	+	lara_as_pbleapoff
+
+
+		game/larasurf.cpp
+
+0x00457940	+	LaraSurface
+0x00457B10	+	lara_as_surfswim
+0x00457BA0	+	lara_as_surfback
+0x00457C20	+	lara_as_surfleft
+0x00457CA0	+	lara_as_surfright
+0x00457D20	+	lara_as_surftread
+0x00457E10	+	lara_col_surfswim
+0x00457E50	+	LaraTestWaterClimbOut
+0x00458100	+	LaraSurfaceCollision
+0x00458240	+	LaraTestWaterStepOut
+0x00458380	+	lara_col_surfback
+0x004583C0	+	lara_col_surfleft
+0x00458400	+	lara_col_surfright
+0x00458440	+	lara_col_surftread
+
+
+		game/laraswim.cpp
+
+0x004584C0	+	UpdateSubsuitAngles
+0x004586F0	+	LaraUnderWater
+0x004589F0	+	lara_as_swimcheat
+0x00458B20	+	lara_as_swim
+0x00458BC0	+	SwimTurn
+0x00458C80	+	SwimTurnSubsuit
+0x00458D60	+	lara_as_glide
+0x00458E20	+	lara_as_tread
+0x00458EF0	+	lara_as_dive
+0x00458F20	+	lara_as_uwdeath
+0x00458FA0	+	lara_as_waterroll
+0x00458FC0	+	lara_col_swim
+0x00458FF0	+	LaraSwimCollision
+0x00459470	+	LaraTestWaterDepth
+0x00459590	+	lara_col_glide
+0x004595C0	+	lara_col_tread
+0x004595F0	+	lara_col_dive
+0x00459620	+	lara_col_uwdeath
+0x004596A0	+	lara_col_waterroll
+0x004596D0		GetWaterDepth
+0x004598F0		LaraWaterCurrent
+
+
+		game/laramisc.cpp
+
+0x00455680	+	LaraInitialiseMeshes
+0x004557B0	+	LaraCheatyBits
+0x00455830		LaraControl
+0x00456320	+	LaraCheat
+0x004563F0		AnimateLara
+0x004568C0	+	InitialiseLaraLoad
+0x00456900	+	InitialiseLaraAnims
+0x004569C0	+	GetLaraDeadlyBounds
