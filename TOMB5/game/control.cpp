@@ -20,6 +20,9 @@
 #include "bubbles.h"
 #include "bat.h"
 #include "objects.h"
+#include "../specific/init.h"//for Log
+#include "sphere.h"
+#include "debris.h"
 
 
 long ControlPhase(long nframes, int demo_mode)
@@ -779,6 +782,392 @@ int check_xray_machine_trigger()
 	return 0;
 }
 
+int GetHeight(FLOOR_INFO* floor, int x, int y, int z)
+{
+	int height;
+	room_info* r;
+	short* data;
+	short type, dx, dz;
+	unsigned short trigger;
+	ITEM_INFO* item;
+	short xoff, yoff;
+	short tilt, wat;
+	short tilt0, tilt1, tilt2, tilt3;
+
+	tiltxoff = 0;
+	tiltyoff = 0;
+	OnObject = 0;
+	height_type = WALL;
+
+	while (floor->pit_room != 0xFF)
+	{
+		if (CheckNoColFloorTriangle(floor, x, z) == 1)
+			break;
+
+		r = &room[floor->pit_room];
+		floor = &r->floor[((z - r->z) >> 10) + ((x - r->x) >> 10) * r->x_size];
+	}
+
+	height = floor->floor << 8;
+
+	if (height == NO_HEIGHT)
+		return height;
+
+	trigger_index = 0;
+
+	if (!floor->index)
+		return height;
+
+	data = &floor_data[floor->index];
+
+	do
+	{
+		type = *(data++);
+
+		switch ((type & 0x1F))
+		{
+		case DOOR_TYPE:
+		case ROOF_TYPE:
+		case SPLIT3:
+		case SPLIT4:
+		case NOCOLC1T:
+		case NOCOLC1B:
+		case NOCOLC2T:
+		case NOCOLC2B:
+			data++;
+			break;
+
+		case TILT_TYPE:
+			xoff = (*data) >> 8;
+			yoff = *(char*)(data);
+			tiltxoff = xoff;
+			tiltyoff = yoff;
+
+
+			if ((ABS(xoff)) > 2 || (ABS(yoff)) > 2)
+				height_type = BIG_SLOPE;
+			else
+				height_type = SMALL_SLOPE;
+
+			if (xoff < 0)
+				height -= (xoff * (z & 1023) >> 2);
+			else
+				height += (xoff * ((-1 - z) & 1023) >> 2);
+
+			if (yoff < 0)
+				height -= yoff * (x & 1023) >> 2;
+			else
+				height += yoff * ((-1 - x) & 1023) >> 2;
+
+			data++;
+			break;
+
+		case TRIGGER_TYPE:
+
+			if (!trigger_index)
+				trigger_index = data - 1;
+
+			data++;
+			
+			do
+			{
+
+				trigger = *(data++);
+
+				if (trigger & 0x3C00)
+				{
+					if ((trigger & 0x3C00) == 1024 || (trigger & 0x3C00) == 12288)
+						trigger = *(data++);
+
+					continue;
+				}
+
+				item = &items[trigger & 0x3FF];
+
+				if (objects[item->object_number].floor && !(item->flags & 0x8000))
+					(*objects[item->object_number].floor)(item, x, y, z, &height);
+
+			} while (!(trigger & 0x8000));
+
+			break;
+
+		case LAVA_TYPE:
+			trigger_index = data - 1;
+			break;
+
+		case CLIMB_TYPE:
+		case MONKEY_TYPE:
+		case TRIGTRIGGER_TYPE:
+
+			if (!trigger_index)
+				trigger_index = data - 1;
+
+			break;
+
+		case SPLIT1:
+		case SPLIT2:
+		case NOCOLF1T:
+		case NOCOLF1B:
+		case NOCOLF2T:
+		case NOCOLF2B:
+
+			tilt = *data;
+			tilt0 = tilt & 0xF;
+			tilt1 = (tilt >> 4) & 0xF;
+			tilt2 = (tilt >> 8) & 0xF;
+			tilt3 = (tilt >> 12) & 0xF;
+			dx = x & 1023;
+			dz = z & 1023;
+			height_type = SPLIT_TRI;
+
+			if ((type & 0x1F) == SPLIT1 || (type & 0x1F) == NOCOLF1T || (type & 0x1F) == NOCOLF1B)
+			{
+				if (dx > (1024 - dz))
+				{
+					wat = (type >> 5) & 0x1F;
+
+					if ((type >> 5) & 0x10)
+						wat |= 0xFFF0;
+
+					height += wat << 8;
+					xoff = tilt3 - tilt0;
+					yoff = tilt3 - tilt2;
+				}
+				else
+				{
+					wat = (type >> 10) & 0x1F;
+
+					if ((type >> 10) & 0x10)
+						wat |= 0xFFF0;
+
+					height += wat << 8;
+					xoff = tilt2 - tilt1;
+					yoff = tilt0 - tilt1;
+				}
+			}
+			else
+			{
+				if (dx > dz)
+				{
+					wat = (type >> 5) & 0x1F;
+
+					if ((type >> 5) & 0x10)
+						wat |= 0xFFF0;
+
+					height += wat << 8;
+					xoff = tilt3 - tilt0;
+					yoff = tilt0 - tilt1;
+				}
+				else
+				{
+					
+					wat = (type >> 10) & 0x1F;
+
+					if ((type >> 10) & 0x10)
+						wat |= 0xFFF0;
+
+					height += wat << 8;
+					xoff = tilt2 - tilt1;
+					yoff = tilt3 - tilt2;
+				}
+			}
+
+			tiltxoff = xoff;
+			tiltyoff = yoff;
+
+			if ((ABS(xoff)) > 2 || (ABS(yoff)) > 2)
+				height_type = DIAGONAL;
+
+			if (xoff >= 0)
+				height += xoff * ((-1 - z) & 1023) >> 2;
+			else
+				height -= xoff * (z & 1023) >> 2;
+
+			if (yoff >= 0)
+				height += yoff * ((-1 - x) & 1023) >> 2;
+			else
+				height -= yoff * (x & 1023) >> 2;
+
+			data++;
+			break;
+
+		default:
+		//	Error("GetHeight(): Unknown type");
+			Log(0, "**** GetHeight(): Unknown type ****");
+			break;
+		}
+
+	} while (!(type & 0x8000));
+
+	return height;
+}
+
+FLOOR_INFO* GetFloor(int x, int y, int z, short* room_number)
+{
+	room_info* r;
+	FLOOR_INFO* floor;
+	long x_floor, y_floor;
+	short door;
+
+	r = &room[*room_number];
+
+	do
+	{
+		x_floor = (z - r->z) >> 10;
+		y_floor = (x - r->x) >> 10;
+
+		if (x_floor <= 0)
+		{
+			x_floor = 0;
+
+			if (y_floor < 1)
+				y_floor = 1;
+			else if (y_floor > r->y_size - 2)
+				y_floor = r->y_size - 2;
+		}
+		else if (x_floor >= r->x_size - 1)
+		{
+			x_floor = r->x_size - 1;
+
+			if (y_floor < 1)
+				y_floor = 1;
+			else if (y_floor > r->y_size - 2)
+				y_floor = r->y_size - 2;
+		}
+		else if (y_floor < 0)
+			y_floor = 0;
+		else if (y_floor >= r->y_size)
+			y_floor = r->y_size - 1;
+
+		floor = &r->floor[x_floor + (y_floor * r->x_size)];
+		door = GetDoor(floor);
+
+		if (door == 0xFF)
+			break;
+
+		*room_number = door;
+		r = &room[door];
+
+	} while (door != 0xFF);
+
+	if (y < floor->floor << 8)
+	{
+		if (y < floor->ceiling << 8 && floor->sky_room != 0xFF)
+		{
+			do
+			{
+				if (CheckNoColCeilingTriangle(floor, x, z) == 1 || CheckNoColCeilingTriangle(floor, x, z) == -1 && y >= r->maxceiling)
+					break;
+
+				*room_number = floor->sky_room;
+				r = &room[floor->sky_room];
+				floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
+
+				if (y >= floor->ceiling << 8)
+					break;
+
+			} while (floor->sky_room != 0xFF);
+		}
+	}
+	else if (floor->pit_room != 0xFF)
+	{
+		while (1)
+		{
+			if (CheckNoColFloorTriangle(floor, x, z) == 1 || CheckNoColFloorTriangle(floor, x, z) == -1 && y < r->minfloor)
+				break;
+
+			*room_number = floor->pit_room;
+			r = &room[floor->pit_room];
+
+			floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
+
+			if (y < floor->floor << 8)
+				break;
+
+			if (floor->pit_room == 0xFF)
+				return floor;
+		}
+	}
+
+	return floor;
+}
+
+int ExplodeItemNode(ITEM_INFO* item, int Node, int NoXZVel, long bits)
+{
+	OBJECT_INFO* object;
+	short** meshpp;
+
+	if (!(item->mesh_bits & (1 << Node)))
+		return 0;
+
+	if (item->object_number == SWITCH_TYPE7 && (gfCurrentLevel == LVL5_SINKING_SUBMARINE || gfCurrentLevel == LVL5_BASE))
+		SoundEffect(SFX_SMASH_METAL, &item->pos, SFX_DEFAULT);
+	else if (bits == 256)
+		bits = -64;
+
+	GetSpheres(item, Slist, 3);
+	object = &objects[item->object_number];
+	ShatterItem.YRot = item->pos.y_rot;
+	meshpp = &meshes[object->mesh_index + 2 * Node];
+	ShatterItem.Bit = 1 << Node;
+	ShatterItem.meshp = *meshpp;
+	ShatterItem.Sphere.x = Slist[Node].x;
+	ShatterItem.Sphere.y = Slist[Node].y;
+	ShatterItem.Sphere.z = Slist[Node].z;
+	ShatterItem.il = &item->il;
+	ShatterItem.Flags = item->object_number != CROSSBOW_BOLT ? 0 : 1024;
+	ShatterObject(&ShatterItem, 0, bits, item->room_number, NoXZVel);
+	item->mesh_bits &= ~ShatterItem.Bit;
+	return 1;
+}
+
+short GetDoor(FLOOR_INFO* floor)
+{
+	short* data;
+	short type;
+
+	if (!floor->index)
+		return 255;
+
+	data = &floor_data[floor->index];
+	type = *data++;
+
+	if ((type & 0x1F) == TILT_TYPE
+		|| (type & 0x1F) == SPLIT1
+		|| (type & 0x1F) == SPLIT2
+		|| (type & 0x1F) == NOCOLF1B
+		|| (type & 0x1F) == NOCOLF1T
+		|| (type & 0x1F) == NOCOLF2B
+		|| (type & 0x1F) == NOCOLF2T)
+	{
+		if (type < 0)
+			return 255;
+	
+		data++;
+		type = *data++;
+	}
+
+	if ((type & 0x1F) == ROOF_TYPE
+		|| (type & 0x1F) == SPLIT3
+		|| (type & 0x1F) == SPLIT4
+		|| (type & 0x1F) == NOCOLC1B
+		|| (type & 0x1F) == NOCOLC1T
+		|| (type & 0x1F) == NOCOLC2B
+		|| (type & 0x1F) == NOCOLC2T)
+	{
+		if (type < 0)
+			return 255;
+
+		data++;
+		type = *data++;
+	}
+
+	if ((type & 0x1F) == DOOR_TYPE)
+		return *data;
+
+	return 255;
+}
+
 void inject_control()
 {
 	INJECT(0x004147C0, ControlPhase);
@@ -797,4 +1186,8 @@ void inject_control()
 	INJECT(0x0041B280, NeatAndTidyTriggerCutscene);
 	INJECT(0x0041B8B0, is_object_in_room);
 	INJECT(0x0041B930, check_xray_machine_trigger);
+	INJECT(0x00415FB0, GetHeight);
+	INJECT(0x00415B20, GetFloor);
+	INJECT(0x0041ABF0, ExplodeItemNode);
+	INJECT(0x00417C00, GetDoor);
 }

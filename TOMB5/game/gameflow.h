@@ -4,6 +4,7 @@
 void inject_gameflow();
 
 void DoGameflow();
+int GetCampaignCheatValue();//somewhere in specific 
 //#define DoGameflow	( (void(__cdecl*)()) 0x004354B0 )
 #define DoLevel	( (void(__cdecl*)(unsigned char, unsigned char)) 0x00435F60 )
 #define DoTitle	( (void(__cdecl*)(unsigned char, unsigned char)) 0x00435C70 )

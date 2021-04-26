@@ -5,3 +5,4 @@
 #define	StashSkinVertices	( (void(__cdecl*)(int)) 0x004B2270 )
 #define GetCorrectStashPoints	( (void(__cdecl*)(int, int, int)) 0x00439950 )
 #define SkinVerticesToScratch	( (void(__cdecl*)(int)) 0x004B2340 )
+#define GPU_BeginScene	( (void(__cdecl*)()) 0x004B2110 )
