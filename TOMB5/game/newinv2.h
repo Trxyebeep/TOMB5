@@ -20,7 +20,7 @@ void handle_inventry_menu();
 void setup_ammo_selector();
 void fade_ammo_selector();
 void draw_ammo_selector();
-//spinback
+void _spinback(unsigned short* cock);
 void update_laras_weapons_status();
 int is_item_currently_combinable(short obj);
 int have_i_got_item(short obj);

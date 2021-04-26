@@ -1705,7 +1705,47 @@ void draw_ammo_selector()
 	}
 }
 
-//spinback
+void _spinback(unsigned short* cock)
+{
+	unsigned short val;
+	unsigned short val2;
+
+	val = *cock;
+
+	if (val)
+	{
+		if (val <= 32768)
+		{
+			if (val < 1022)
+				val = 1022;
+
+			if (val > 16384)
+				val = 16384;
+
+			val2 = val - (val >> 3);
+
+			if (val2 > 32768)
+				val2 = 0;
+		}
+		else
+		{
+			val = -val;
+
+			if (val < 1022)
+				val = 1022;
+
+			if (val > 16384)
+				val = 16384;
+
+			val2 = (val >> 3) + val;
+
+			if (val2 < 32768)
+				val2 = 0;
+		}
+
+		*cock = val2;
+	}
+}
 
 void update_laras_weapons_status()
 {
