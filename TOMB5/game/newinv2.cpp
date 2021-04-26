@@ -1705,7 +1705,7 @@ void draw_ammo_selector()
 	}
 }
 
-void _spinback(unsigned short* cock)
+void spinback(unsigned short* cock)
 {
 	unsigned short val;
 	unsigned short val2;
@@ -1716,34 +1716,32 @@ void _spinback(unsigned short* cock)
 	{
 		if (val <= 32768)
 		{
-			if (val < 1022)
+			val2 = val;
+			if (val2 < 1022)
 				val = 1022;
+			else if (val2 > 16384)
+				val2 = 16384;
 
-			if (val > 16384)
-				val = 16384;
+			val -= (val2 >> 3);
 
-			val2 = val - (val >> 3);
-
-			if (val2 > 32768)
-				val2 = 0;
+			if (val > 32768)
+				val = 0;
 		}
 		else
 		{
-			val = -val;
-
-			if (val < 1022)
+			val2 = -val;
+			if (val2 < 1022)
 				val = 1022;
+			else if (val2 > 16384)
+				val2 = 16384;
 
-			if (val > 16384)
-				val = 16384;
+			val += (val2 >> 3);
 
-			val2 = (val >> 3) + val;
-
-			if (val2 < 32768)
-				val2 = 0;
+			if (val < 32768)
+				val = 0;
 		}
 
-		*cock = val2;
+		*cock = val;
 	}
 }
 
@@ -2977,7 +2975,7 @@ void inject_newinv2()
 	INJECT(0x00462740, setup_ammo_selector);
 	INJECT(0x00462A00, fade_ammo_selector);
 	INJECT(0x00462AD0, draw_ammo_selector);
-//	INJECT(0x00462DD0, spinback);
+	INJECT(0x00462DD0, spinback);
 	INJECT(0x00462E60, update_laras_weapons_status);
 	INJECT(0x00462EF0, is_item_currently_combinable);
 	INJECT(0x00462F60, have_i_got_item);
