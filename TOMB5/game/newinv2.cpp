@@ -243,7 +243,7 @@ int S_CallInventory2()
 		GLOBAL_invkeypadmode = 0;
 
 		if (keypadnuminputs == 4)
-			val = keypadinputs[3]+ 10 * (keypadinputs[2] + 10 * (keypadinputs[1] + 10 * keypadinputs[0]));
+			val = keypadinputs[3] + 10 * (keypadinputs[2] + 10 * (keypadinputs[1] + 10 * keypadinputs[0]));
 
 		if (GLOBAL_invkeypadcombination == val)
 		{
@@ -1717,6 +1717,7 @@ void spinback(unsigned short* cock)
 		if (val <= 32768)
 		{
 			val2 = val;
+
 			if (val2 < 1022)
 				val = 1022;
 			else if (val2 > 16384)
@@ -1730,6 +1731,7 @@ void spinback(unsigned short* cock)
 		else
 		{
 			val2 = -val;
+
 			if (val2 < 1022)
 				val = 1022;
 			else if (val2 > 16384)
@@ -2146,6 +2148,7 @@ void use_current_item()
 				BinocularRange = OldBinocular;
 			else
 				BinocularOldCamera = camera.old_type;
+
 			return;
 
 		case INV_SMALLMEDI_ITEM:
@@ -2411,7 +2414,7 @@ void DEL_picked_up_object(short objnum)
 	case PICKUP_ITEM4:
 		IsAtmospherePlaying = 0;
 		S_CDPlay(CDA_XA1_SECRET, 0);
-		lara.pickupitems |= 8u;
+		lara.pickupitems |= 8;
 		savegame.Level.Secrets++;
 		savegame.Game.Secrets++;
 
@@ -2632,9 +2635,7 @@ void remove_inventory_item(short object_number)
 
 int convert_obj_to_invobj(short obj)
 {
-	int i;
-
-	for (i = 0; i < 100; i++)
+	for (int i = 0; i < 100; i++)
 	{
 		if (inventry_objects_list[i].object_number == obj)
 			return i;
@@ -2669,7 +2670,7 @@ void do_keypad_mode()
 
 	val = 0x1FFF;
 
-	if (keypadnuminputs != 0)
+	if (keypadnuminputs)
 	{
 		for (n = 0; n < (int)keypadnuminputs; n++)
 		{
@@ -2678,7 +2679,7 @@ void do_keypad_mode()
 			if (!val2)
 				val2 = 11;
 
-			val = val & ~(1 << (val2 & 0x1f)) | 1 << (val2 + 0xc & 0x1f);
+			val = val & ~(1 << (val2 & 31)) | 1 << (val2 + 12 & 31);
 		}
 	}
 
@@ -2696,11 +2697,9 @@ void do_keypad_mode()
 	buf[2] = 45;
 	buf[3] = 45;
 
-	if (keypadnuminputs != 0)
-	{		
+	if (keypadnuminputs)
 		for (n = 0; n < keypadnuminputs; n++)
 			buf[n] = keypadinputs[n] + 48;
-	}
 
 	PrintString(0x100, (phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 + 64, 1, buf, 0x8000);
 
@@ -2744,14 +2743,14 @@ void do_keypad_mode()
 
 		n = 0;
 
-		if (keypadnuminputs != 0)
+		if (keypadnuminputs)
 		{
 			do
 			{
 				if (keypadinputs[n] == va)
 					return;
 
-				n = n + 1;
+				n++;
 
 			} while (n < keypadnuminputs);
 		}
@@ -2784,26 +2783,20 @@ void do_keypad_mode()
 
 void do_examine_mode()
 {
-	INVOBJ* objme = &inventry_objects_list[rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem];
-	int saved_scale = objme->scale1;
+	INVOBJ* objme;
+	int saved_scale;
 
+	objme = &inventry_objects_list[rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem];
+	saved_scale = objme->scale1;
 	examine_mode += 8;
+
 	if (examine_mode > 128)
 		examine_mode = 128;
 
 	objme->scale1 = 300;
-
-	DrawThreeDeeObject2D(
-		(phd_centerx + inventry_xpos),
-		(phd_centery / 120.0 * 256.0 + inventry_xpos) / 2,
+	DrawThreeDeeObject2D((phd_centerx + inventry_xpos), (phd_centery / 120.0 * 256.0 + inventry_xpos) / 2,
 		rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem,
-		examine_mode,
-		0x8000,
-		0x4000,
-		0x4000,
-		96,
-		0);
-
+		examine_mode, 32768, 16384, 16384, 96, 0);
 	objme->scale1 = saved_scale;
 
 	if (go_deselect)
@@ -2817,8 +2810,8 @@ void do_examine_mode()
 void do_stats_mode()
 {
 	stats_mode += 8;
-	if (stats_mode > 0x80)
-		stats_mode = 0x80;
+	if (stats_mode > 128)
+		stats_mode = 128;
 
 	DisplayStatsUCunt();
 
@@ -2828,6 +2821,7 @@ void do_stats_mode()
 		go_deselect = 0;
 		stats_mode = 0;
 	}
+
 	return;
 }
 
@@ -2939,21 +2933,10 @@ void dels_give_lara_guns_cheat()
 void S_DrawPickup(short object_number)
 {
 	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
-
 	SetD3DViewMatrix();
-
 	aSetViewMatrix();
-
-	DrawThreeDeeObject2D(
-		(phd_winxmax * 0.001953125 * 448.0 + PickupX),
-		(phd_winymax * 0.00390625 * 216.0),
-		convert_obj_to_invobj(object_number),
-		128,
-		0,
-		(GnFrameCounter & 0x7F) << 9,
-		0,
-		0,
-		1);
+	DrawThreeDeeObject2D((phd_winxmax * 0.001953125 * 448.0 + PickupX), (phd_winymax * 0.00390625 * 216.0), convert_obj_to_invobj(object_number),
+		128, 0, (GnFrameCounter & 0x7F) << 9, 0, 0, 1);
 }
 
 void inject_newinv2()
