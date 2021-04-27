@@ -5,6 +5,10 @@ void inject_specific();
 
 void DoStatScreen();
 void DisplayStatsUCunt();
+#define DoLoadSave	( (int(__cdecl*)(int)) 0x004AD460 )
+#define S_LoadGame	( (int(__cdecl*)(int)) 0x004A8E10 )
+#define GetSaveLoadFiles	( (void(__cdecl*)()) 0x004AD290 )
+#define S_SoundStopAllSamples	( (void(__cdecl*)()) 0x004A39D0 )
 #define S_CDLoop	( (void(__cdecl*)()) 0x004A7BD0 )
 #define S_SoundStopAllSamples	( (void(__cdecl*)()) 0x004A39D0 )
 #define S_LoadSave	( (int(__cdecl*)(int, int)) 0x004B1120 )

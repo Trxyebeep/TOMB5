@@ -5,9 +5,15 @@ void inject_gameflow();
 
 void DoGameflow();
 int GetCampaignCheatValue();//somewhere in specific 
-//#define DoGameflow	( (void(__cdecl*)()) 0x004354B0 )
+int TitleOptions();
+
 #define DoLevel	( (void(__cdecl*)(unsigned char, unsigned char)) 0x00435F60 )
 #define DoTitle	( (void(__cdecl*)(unsigned char, unsigned char)) 0x00435C70 )
+#define DoOptions	( (void(__cdecl*)()) 0x004ADF90 )
+#define do_dels_cutseq_selector	( (void(__cdecl*)()) 0x004364B0 )
+#define DoCredits	( (int(__cdecl*)()) 0x004927C0 )//somewhere in specific
+#define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )//somewhere in specific 
+#define SetFade	( (void(__cdecl*)(int, int)) 0x004CA720 )//somewhere in specific 
 
 enum gf_languages
 {
