@@ -25,12 +25,12 @@ x for functions decompiled but not injected, for one reason or another.
 0x00416760		TestTriggers
 0x004167B0		_TestTriggers
 0x004175B0		TriggerActive
-0x00417640		GetCeiling
+0x00417640	+	GetCeiling
 0x00417C00	+	GetDoor
-0x00417CF0		LOS
-0x00417DC0		zLOS
-0x004181F0		xLOS
-0x00418620		ClipTarget
+0x00417CF0	+	LOS
+0x00417DC0	+	zLOS
+0x004181F0	+	xLOS
+0x00418620	+	ClipTarget
 0x00418910		FlipMap
 0x00418A50		RemoveRoomFlipItems
 0x00418AF0		AddRoomFlipItems

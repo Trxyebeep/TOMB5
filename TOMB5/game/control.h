@@ -24,6 +24,10 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z);
 FLOOR_INFO* GetFloor(int x, int y, int z, short* room_number);
 int ExplodeItemNode(ITEM_INFO* item, int Node, int NoXZVel, long bits);
 short GetDoor(FLOOR_INFO* floor);
+int LOS(GAME_VECTOR* start, GAME_VECTOR* target);
+int xLOS(GAME_VECTOR* start, GAME_VECTOR* target);
+int zLOS(GAME_VECTOR* start, GAME_VECTOR* target);
+int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target);
 
 #define	GetTargetOnLOS	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, int, int)) 0x0041A170 )
 #define ObjectOnLOS2	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, PHD_VECTOR*, MESH_INFO**)) 0x00419110 )
@@ -35,7 +39,6 @@ short GetDoor(FLOOR_INFO* floor);
 #define TestTriggers	( (void(__cdecl*)(short*, int, int)) 0x00416760 )
 #define UpdatePulseColour	( (void(__cdecl*)()) 0x00480830 )
 #define	CheckNoColFloorTriangle	( (long(__cdecl*)(FLOOR_INFO*, long, long)) 0x00418C80 )
-#define	LOS	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*)) 0x00417CF0 )
 #define AnimateItem	( (void(__cdecl*)(ITEM_INFO*)) 0x00415300 )
 #define	GetWaterHeight	( (long(__cdecl*)(long, long, long, short)) 0x00415DA0 )
 #define TriggerActive	( (int(__cdecl*)(ITEM_INFO*)) 0x004175B0 )

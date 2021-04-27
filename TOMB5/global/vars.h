@@ -291,7 +291,7 @@
 #define _CutSceneTriggered1	VAR_U_(0x00EEF004, unsigned long)
 #define _CutSceneTriggered2	VAR_U_(0x00EEF000, unsigned long)
 #define richcutfrigflag	VAR_U_(0x0051CA5E, char)
-
+#define number_los_rooms VAR_U_(0x0051CA70, int)
 
 
 //GUESSED
@@ -358,7 +358,7 @@
 #define current_options	ARRAY_(0x00E598C0, MENUTHANG, [3])
 #define actor_pnodes	ARRAY_(0x00E71180, PACKNODE*, [10])
 #define temp_rotation_buffer	ARRAY_(0x00E711C0, short, [160])
-
+#define los_rooms ARRAY_(0x00EEEFC0, short, [20])
 
 //defs
 #define NO_HEIGHT -32512
