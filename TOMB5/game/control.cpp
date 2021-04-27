@@ -1362,6 +1362,11 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 						}
 					}
 					while (!(trigger & 0x8000));
+					break;
+
+				default:
+					Log(0, "**** GetCeiling(): Unknown type ****");
+					break;
 				}
 			}
 			while (!(type & 0x8000));
