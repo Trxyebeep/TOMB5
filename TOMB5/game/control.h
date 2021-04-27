@@ -19,14 +19,14 @@ int CheckCutPlayed(int num);
 void NeatAndTidyTriggerCutscene(int value, int timer);
 int is_object_in_room(int roomnumber, int objnumber);
 int check_xray_machine_trigger();
-int GetHeight(FLOOR_INFO* floor, int x, int y, int z);
+long GetHeight(FLOOR_INFO* floor, long x, long y, long z);
+long GetCeiling(FLOOR_INFO* floor, long x, long y, long z);
 FLOOR_INFO* GetFloor(int x, int y, int z, short* room_number);
 int ExplodeItemNode(ITEM_INFO* item, int Node, int NoXZVel, long bits);
 short GetDoor(FLOOR_INFO* floor);
 
 #define	GetTargetOnLOS	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, int, int)) 0x0041A170 )
 #define ObjectOnLOS2	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, PHD_VECTOR*, MESH_INFO**)) 0x00419110 )
-#define GetCeiling ( (short(__cdecl*)(FLOOR_INFO*, int, int, int)) 0x00417640 )
 #define UpdateSky	( (void(__cdecl*)()) 0x00414720 )
 #define ClearDynamics	( (void(__cdecl*)()) 0x00431530 )
 #define ClearFires	( (void(__cdecl*)()) 0x00481B10 )
