@@ -36,6 +36,7 @@
     <ClCompile Include="TOMB5\game\effects.cpp" />
     <ClCompile Include="TOMB5\game\flmtorch.cpp" />
     <ClCompile Include="TOMB5\game\gameflow.cpp" />
+    <ClCompile Include="TOMB5\game\gameflow_helpers.cpp" />
     <ClCompile Include="TOMB5\game\hair.cpp" />
     <ClCompile Include="TOMB5\game\health.cpp" />
     <ClCompile Include="TOMB5\game\items.cpp" />
@@ -62,6 +63,7 @@
     <ClCompile Include="TOMB5\specific\display.cpp" />
     <ClCompile Include="TOMB5\specific\drawprimitive.cpp" />
     <ClCompile Include="TOMB5\specific\DS.cpp" />
+    <ClCompile Include="TOMB5\specific\file.cpp" />
     <ClCompile Include="TOMB5\specific\game.cpp" />
     <ClCompile Include="TOMB5\specific\init.cpp" />
     <ClCompile Include="TOMB5\specific\input.cpp" />
@@ -98,6 +100,7 @@
     <ClInclude Include="TOMB5\game\effects.h" />
     <ClInclude Include="TOMB5\game\flmtorch.h" />
     <ClInclude Include="TOMB5\game\gameflow.h" />
+    <ClInclude Include="TOMB5\game\gameflow_helpers.h" />
     <ClInclude Include="TOMB5\game\hair.h" />
     <ClInclude Include="TOMB5\game\health.h" />
     <ClInclude Include="TOMB5\game\items.h" />
@@ -129,6 +132,7 @@
     <ClInclude Include="TOMB5\specific\display.h" />
     <ClInclude Include="TOMB5\specific\drawprimitive.h" />
     <ClInclude Include="TOMB5\specific\DS.h" />
+    <ClInclude Include="TOMB5\specific\file.h" />
     <ClInclude Include="TOMB5\specific\game.h" />
     <ClInclude Include="TOMB5\specific\global.h" />
     <ClInclude Include="TOMB5\specific\init.h" />

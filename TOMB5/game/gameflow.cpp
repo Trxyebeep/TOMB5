@@ -4,7 +4,18 @@
 #include "../specific/game.h"
 #include "../specific/display.h"
 #include "../specific/specific.h"
+#include "../specific/drawprimitive.h"
+#include "../specific/file.h"
 #include "sound.h"
+#include "spotcam.h"
+#include "health.h"
+#include "camera.h"
+#include "deltapak.h"
+#include "tomb4fx.h"
+#include "control.h"
+#include "gameflow_helpers.h"
+#include "items.h"
+#include "lot.h"
 
 void DoGameflow()
 {
@@ -243,86 +254,6 @@ void DoGameflow()
 			continue;
 		}
 	}
-}
-
-int GetCampaignCheatValue()//somewhere in specific 
-{
-	static int counter = 0;
-	static int timer;
-	int jump;
-
-	if (timer)
-		timer--;
-	else
-		counter = 0;
-
-	jump = 0;
-
-	switch (counter)
-	{
-	case 0:
-
-		if (keymap[33])//F
-		{
-			timer = 450;
-			counter = 1;
-		}
-
-		break;
-
-	case 1:
-		if (keymap[23])//I
-			counter = 2;
-
-		break;
-
-	case 2:
-		if (keymap[38])//L
-			counter = 3;
-
-		break;
-
-	case 3:
-		if (keymap[20])//T
-			counter = 4;
-
-		break;
-
-	case 4:
-		if (keymap[35])//H
-			counter = 5;
-
-		break;
-
-	case 5:
-		if (keymap[21])//Y
-			counter = 6;
-
-		break;
-
-	case 6:
-		if (keymap[2])//1, not the numpad
-			jump = LVL5_STREETS_OF_ROME;
-
-		if (keymap[3])//2, not the numpad
-			jump = LVL5_BASE;
-
-		if (keymap[4])//3, not the numpad
-			jump = LVL5_GALLOWS_TREE;
-
-		if (keymap[5])//4, not the numpad
-			jump = LVL5_THIRTEENTH_FLOOR;
-
-		if (jump)
-		{
-			counter = 0;
-			timer = 0;
-		}
-
-		break;
-	}
-
-	return jump;
 }
 
 int TitleOptions()
@@ -646,9 +577,101 @@ int TitleOptions()
 	return ret;
 }
 
+void DoTitle(unsigned char name, unsigned char audio)
+{
+	CreditsDone = 0;
+	DoFrontEndOneShotStuff();
+	CanLoad = 0;
+	SetFade(255, 0);
+	savegame.Level.Timer = 0;
+	savegame.Game.Timer = 0;
+	savegame.Level.Distance = 0;
+	savegame.Game.Distance = 0;
+	savegame.Level.AmmoUsed = 0;
+	savegame.Game.AmmoUsed = 0;
+	savegame.Level.AmmoHits = 0;
+	savegame.Game.AmmoHits = 0;
+	savegame.Level.Kills = 0;
+	savegame.Game.Kills = 0;
+	num_fmvs = 0;
+	fmv_to_play[1] = 0;
+	fmv_to_play[0] = 0;
+	S_LoadLevelFile(name);
+	GLOBAL_lastinvitem = -1;
+	dels_cutseq_player = 0;
+	InitSpotCamSequences();
+	title_controls_locked_out = 0;
+	InitialiseFXArray(1);
+	InitialiseLOTarray(1);
+	SetFogColor(gfFogColour.r, gfFogColour.g, gfFogColour.b);
+	ClearFXFogBulbs();
+	InitialisePickUpDisplay();
+	S_InitialiseScreen();
+	SOUND_Stop();
+	IsAtmospherePlaying = 0;
+	S_SetReverbType(1);
+	InitialiseCamera();
+	sound_cut_flag = 1;
+
+	if (bDoCredits)
+	{
+		cutseq_num = 28;
+		SetFadeClip(32, 1);
+		ScreenFadedOut = 1;
+		ScreenFade = 255;
+		dScreenFade = 255;
+		S_CDPlay(111, 1);
+	}
+	else
+	{
+		trigger_title_spotcam(1);
+		ScreenFadedOut = 0;
+		ScreenFade = 0;
+		dScreenFade = 0;
+		ScreenFadeBack = 0;
+		ScreenFadeSpeed = 8;
+		ScreenFading = 0;
+	}
+	
+	bUseSpotCam = 1;
+	lara_item->mesh_bits = 0;
+	gfGameMode = 1;
+	gfLevelComplete = 0;
+	weirdo = 2;
+	gfStatus = ControlPhase(2, 0);
+	JustLoaded = 0;
+
+	while (!gfStatus)
+	{
+		GPU_BeginScene();
+		SkyDrawPhase();
+		gfStatus = TitleOptions();
+
+		if (gfStatus)
+			break;
+
+		handle_cutseq_triggering(name);
+		weirdo = DrawPhaseGame();
+		gfStatus = ControlPhase(weirdo, 0);
+		DoSpecialFeaturesServer();
+	}
+
+	S_SoundStopAllSamples();
+	S_CDStop();
+	sound_cut_flag = 0;
+	bUseSpotCam = 0;
+	bDisableLaraControl = 0;
+
+	if (gfLevelComplete == 1 && gfStatus != 2)
+		PlayFmvNow(2);
+
+	if (gfStatus != 4)
+		input = 0;
+}
+
 void inject_gameflow()
 {
 	INJECT(0x00434B60, TitleOptions);
 	INJECT(0x004354B0, DoGameflow);
-	INJECT(0x004B1F00, GetCampaignCheatValue);
+	INJECT(0x00435C70, DoTitle);
 }

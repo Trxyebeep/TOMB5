@@ -328,6 +328,10 @@
 #define selected_level	VAR_U_(0x0051CE50, int)//# (on the list) of the selected level in the level select menu
 
 #define level_select_names	ARRAY_(0x005082C8, char, [40])
+
+#define CreditsDone	VAR_U_(0x00E6D838, unsigned char)
+#define CanLoad	VAR_U_(0x0051CE54, char)
+#define JustLoaded	VAR_U_(0x0051D001, char)
 /*title shit*/
 
 //arrays
