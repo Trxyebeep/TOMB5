@@ -262,6 +262,8 @@
 #define malloc_free	VAR_U_(0x00E4B0F4, int)
 #define ShatterItem	VAR_U_(0x00EEFAE0, SHATTER_ITEM)
 #define GLOBAL_invkeypadcombination	VAR_U_(0x0051CF2C, int)
+#define DestFadeScreenHeight	VAR_U_(0x0051D076, short)
+#define dels_cutseq_selector_flag	VAR_U_(0x0051CE2A, short)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)
@@ -305,6 +307,32 @@
 #define inv_ring_ptr	VAR_U_(0x00E59BC0, RINGME)
 #define ammo_ring_ptr	VAR_U_(0x00E59940, RINGME)
 
+/*title shit*/
+#define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
+//if 0 + playing cut menu selections dont make a sound. never seems to be the case though!
+
+#define selected_option	VAR_U_(0x005082F0, int)//currently selected option in the title screen. 
+//"new game" = 1, "load game" = 2, "options" = 3, "exit" = 4
+
+#define selected_option_4	VAR_U_(0x005082F4, int)//gay
+
+#define menu_to_display	VAR_U_(0x0051CE40, int)//which menu should we be displaying right now??
+//0 main menu, del's cutseq selector. 1 level select. 2 the reload menu. 3 the options menu
+
+#define _00C87BF0	VAR_U_(0x00C87BF0, int)// 2 everywhere, 1 in loading screens...?????????????????
+
+#define title_string	ARRAY_(0x0050842C, char, [8])
+
+#define weirdo	VAR_U_(0x005082C4, int)
+
+#define selected_level	VAR_U_(0x0051CE50, int)//# (on the list) of the selected level in the level select menu
+
+#define level_select_names	ARRAY_(0x005082C8, char, [40])
+
+#define CreditsDone	VAR_U_(0x00E6D838, unsigned char)
+#define CanLoad	VAR_U_(0x0051CE54, char)
+#define JustLoaded	VAR_U_(0x0051D001, char)
+/*title shit*/
 
 //arrays
 #define cutseq_meshbits	ARRAY_(0x00E7EEA0, unsigned long, [10])

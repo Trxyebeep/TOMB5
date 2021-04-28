@@ -4,10 +4,13 @@
 void inject_gameflow();
 
 void DoGameflow();
-int GetCampaignCheatValue();//somewhere in specific 
-//#define DoGameflow	( (void(__cdecl*)()) 0x004354B0 )
+int TitleOptions();
+void DoTitle(unsigned char name, unsigned char audio);
+
 #define DoLevel	( (void(__cdecl*)(unsigned char, unsigned char)) 0x00435F60 )
-#define DoTitle	( (void(__cdecl*)(unsigned char, unsigned char)) 0x00435C70 )
+//#define DoTitle	( (void(__cdecl*)(unsigned char, unsigned char)) 0x00435C70 )
+#define DoOptions	( (void(__cdecl*)()) 0x004ADF90 )
+#define do_dels_cutseq_selector	( (void(__cdecl*)()) 0x004364B0 )
 
 enum gf_languages
 {
