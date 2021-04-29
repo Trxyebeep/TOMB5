@@ -28,8 +28,8 @@ int LOS(GAME_VECTOR* start, GAME_VECTOR* target);
 int xLOS(GAME_VECTOR* start, GAME_VECTOR* target);
 int zLOS(GAME_VECTOR* start, GAME_VECTOR* target);
 int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target);
+int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firing);
 
-#define	GetTargetOnLOS	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, int, int)) 0x0041A170 )
 #define ObjectOnLOS2	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, PHD_VECTOR*, MESH_INFO**)) 0x00419110 )
 #define UpdateSky	( (void(__cdecl*)()) 0x00414720 )
 #define ClearDynamics	( (void(__cdecl*)()) 0x00431530 )
@@ -44,3 +44,4 @@ int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target);
 #define TriggerActive	( (int(__cdecl*)(ITEM_INFO*)) 0x004175B0 )
 #define	FlipMap	( (void(__cdecl*)(int)) 0x00418910 )
 #define CheckNoColCeilingTriangle	( (long(__cdecl*)(FLOOR_INFO*, long, long)) 0x00418D60 )
+#define FireCrossBowFromLaserSight	( (void(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*)) 0x0041A0B0 )

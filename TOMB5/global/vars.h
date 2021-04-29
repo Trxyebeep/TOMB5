@@ -292,6 +292,11 @@
 #define _CutSceneTriggered2	VAR_U_(0x00EEF000, unsigned long)
 #define richcutfrigflag	VAR_U_(0x0051CA5E, char)
 #define number_los_rooms VAR_U_(0x0051CA70, int)
+#define LaserSightActive VAR_U_(0x0051D072, char)
+#define LaserSightY VAR_U_(0x00E4C9A0, long)
+#define LaserSightZ VAR_U_(0x00E4C9A4, long)
+#define LaserSightX VAR_U_(0x00E4C9A8, long)
+#define LaserSightCol VAR_U_(0x0051D073, char)
 
 
 //GUESSED

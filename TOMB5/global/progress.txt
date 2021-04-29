@@ -43,7 +43,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004193C0		DoRayBox
 0x00419D00		RayBoxIntersect
 0x0041A0B0		FireCrossBowFromLaserSight
-0x0041A170		GetTargetOnLOS
+0x0041A170	+	GetTargetOnLOS
 0x0041ABF0	+	ExplodeItemNode
 0x0041AD60	+	CheckGuardOnTrigger
 0x0041AEA0	+	InterpolateAngle
