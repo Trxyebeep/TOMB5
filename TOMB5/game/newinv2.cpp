@@ -1068,10 +1068,12 @@ void draw_current_object_list(int ringnum)
 					}
 					else
 					{
-						nummeup = lara.puzzleitems[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number - PUZZLE_ITEM1];//*((char*)&lara.mesh_ptrs[6] + inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number);
+						nummeup = lara.puzzleitems[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number - PUZZLE_ITEM1];
 
 						if (nummeup <= 1)
 							sprintf(textbufme, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+						else
+							sprintf(textbufme, "%d x %s", nummeup, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
 					}
 
 					break;

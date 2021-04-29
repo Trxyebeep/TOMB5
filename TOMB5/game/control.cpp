@@ -56,9 +56,19 @@ long ControlPhase(long nframes, int demo_mode)
 			input &= IN_LOOK;
 		}
 
+#ifdef cutseq_skipper
+		if (cutseq_trig != 0)
+		{
+			if (keymap[1] && !ScreenFading)//skip them with esc
+				cutseq_trig = 3;
+
+
+			input = 0;
+		}
+#else
 		if (cutseq_trig != 0)
 			input = 0;
-
+#endif
 		SetDebounce = 0;
 
 		if (gfCurrentLevel != LVL5_TITLE)
