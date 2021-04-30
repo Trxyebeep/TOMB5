@@ -6,12 +6,12 @@
 #include "effects.h"
 #include "draw.h"
 #include "sound.h"
-#include "../specific/maths.h"
 #include "deltapak.h"
 #include "control.h"
 #include "effect2.h"
 #include "objects.h"
 #include "delstuff.h"
+#include "../specific/3dmath.h"
 
 void InitialiseCamera()
 {
@@ -40,29 +40,6 @@ void InitialiseCamera()
 	AlterFOV(14560);
 	UseForcedFixedCamera = 0;
 	CalculateCamera();
-}
-
-void AlterFOV(short fov)//why is this here
-{
-	short FOV;
-
-	FOV = fov;
-
-	if (!fov ) 
-		FOV = (short)dword_55D224;
-	else 
-		dword_55D224 = (int)fov;
-
-	CurrentFOV = FOV;
-	phd_persp = phd_winwidth / 2 * phd_cos(fov / 2) / (phd_sin(fov / 2));
-	f_persp_bis = (float)phd_persp;
-	flt_55D1F8 = dword_50A440 / f_persp_bis;
-	f_persp_bis_over_znear3 = f_persp_bis / f_znear3;
-	LfAspectCorrection = (4.0f / 3.0f) / (phd_winwidth / phd_winheight);
-	f_persp = phd_persp;
-	f_oneopersp = one / f_persp;
-	f_perspoznear = f_persp / f_znear;
-	return;
 }
 
 void CalculateCamera()
@@ -393,7 +370,6 @@ void LaraTorch(PHD_VECTOR* Soffset, PHD_VECTOR* Eoffset, short yrot, long bright
 void inject_camera()
 {
 	INJECT(0x0040C690, InitialiseCamera);
-	INJECT(0x0048EDC0, AlterFOV);
 	INJECT(0x0040ED30, CalculateCamera);
 	INJECT(0x00410550, LaraTorch);
 }

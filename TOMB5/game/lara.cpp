@@ -4,19 +4,21 @@
 #include "collide.h"
 #include "laramisc.h"
 #include "lara_states.h"
-#include "../specific/maths.h"
 #include "effects.h"
 #include "sound.h"
 #include "control.h"
 #include "effect2.h"
 #include "draw.h"
 #include "delstuff.h"
-#include "camera.h"
 #include "items.h"
 #include "sound.h"
 #include "objects.h"
 #include "gameflow.h"
 #include "larafire.h"
+#include "laraswim.h"
+#include "larasurf.h"
+#include "laraclmb.h"
+#include "../specific/3dmath.h"
 
 void(*lara_control_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* coll) =
 {
@@ -303,38 +305,6 @@ void(*lara_collision_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* 
 	lara_void_func,
 	lara_void_func
 };
-
-void KlaxonTremor()
-{
-	static short timer;
-
-	if (!(GlobalCounter & 0x1FF))
-		SoundEffect(SFX_KLAXON, 0, 0x1000 | SFX_SETVOL);
-
-	if (timer >= 0)
-		timer++;
-
-	if (timer > 450)
-	{
-		if (!(GetRandomControl() & 0x1FF))
-		{
-			InGameCnt = 0;
-			timer = -32 - (GetRandomControl() & 0x1F);
-			return;
-		}
-	}
-
-	if (timer < 0)
-	{
-		if ((signed int)InGameCnt >= ABS(timer))
-		{
-			camera.bounce = -(GetRandomControl() % ABS(timer));
-			++timer;
-		}
-		else
-			camera.bounce = -(GetRandomControl() % ++InGameCnt);
-	}
-}
 
 void LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -4901,7 +4871,6 @@ void LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
 
 void inject_lara()
 {
-	INJECT(0x00442C90, KlaxonTremor);
 	INJECT(0x00445AE0, LaraDeflectEdgeJump);
 	INJECT(0x00445A50, LaraLandedBad);
 	INJECT(0x004431F0, TestLaraSlide);

@@ -16,6 +16,7 @@
 #include "gameflow_helpers.h"
 #include "items.h"
 #include "lot.h"
+#include "../specific/output.h"
 
 struct cutseq_selector_item
 {
@@ -691,7 +692,7 @@ void DoTitle(unsigned char name, unsigned char audio)
 
 	while (!gfStatus)
 	{
-		GPU_BeginScene();
+		S_InitialisePolyList();
 		SkyDrawPhase();
 		gfStatus = TitleOptions();
 

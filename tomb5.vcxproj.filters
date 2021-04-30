@@ -144,12 +144,6 @@
     <ClCompile Include="TOMB5\specific\input.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\specific\maths.cpp">
-      <Filter>TOMB5\specific</Filter>
-    </ClCompile>
-    <ClCompile Include="TOMB5\specific\matrix_shit.cpp">
-      <Filter>TOMB5\specific</Filter>
-    </ClCompile>
     <ClCompile Include="TOMB5\specific\pcsetup.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
@@ -171,6 +165,8 @@
     <ClCompile Include="TOMB5\specific\output.cpp" />
     <ClCompile Include="TOMB5\specific\file.cpp" />
     <ClCompile Include="TOMB5\game\gameflow_helpers.cpp" />
+    <ClCompile Include="TOMB5\game\joby.cpp" />
+    <ClCompile Include="TOMB5\specific\3dmath.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -311,13 +307,7 @@
     <ClInclude Include="TOMB5\specific\game.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\specific\global.h">
-      <Filter>TOMB5\specific</Filter>
-    </ClInclude>
     <ClInclude Include="TOMB5\specific\input.h">
-      <Filter>TOMB5\specific</Filter>
-    </ClInclude>
-    <ClInclude Include="TOMB5\specific\maths.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\specific\matrix_shit.h">
@@ -344,6 +334,8 @@
     <ClInclude Include="TOMB5\specific\output.h" />
     <ClInclude Include="TOMB5\specific\file.h" />
     <ClInclude Include="TOMB5\game\gameflow_helpers.h" />
+    <ClInclude Include="TOMB5\game\joby.h" />
+    <ClInclude Include="TOMB5\specific\3dmath.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

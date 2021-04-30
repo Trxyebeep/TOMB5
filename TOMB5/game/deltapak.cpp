@@ -26,6 +26,8 @@
 #include "cutseq.h"
 #include "../specific/matrix_shit.h"
 #include "../specific/light.h"
+#include "../specific/3dmath.h"
+#include "../specific/output.h"
 
 short frig_shadow_bbox[6] =
 {
@@ -3308,7 +3310,7 @@ void do_new_cutscene_camera()
 	cam_target.x = camera.target.x;
 	cam_target.y = camera.target.y;
 	cam_target.z = camera.target.z;
-	phd_QuickW2VMatrix(cam_pos, cam_target, 0);
+	aLookAt(cam_pos, cam_target, 0);
 
 	if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
 		DecodeAnim(actor_pnodes[0], 16, GLOBAL_cutseq_frame, 1023);
@@ -3406,12 +3408,12 @@ void _DrawCutSeqActors()//fix
 					if (cutseq_meshswapbits[i] & 1)
 					{
 						if (i != 1 || cut_seethrough == 128)
-							phd_PutPolygons(&meshes[obj->mesh_index][1]);
+							phd_PutPolygons(&meshes[obj->mesh_index][1], -1);
 						else
 							phd_PutPolygons_seethrough(&meshes[obj->mesh_index][1], cut_seethrough);
 					}
 					else if (i != 1 || cut_seethrough == 128)
-						phd_PutPolygons(&(*meshes[obj->mesh_index]));
+						phd_PutPolygons(&(*meshes[obj->mesh_index]), -1);
 					else
 						phd_PutPolygons_seethrough(&(*meshes[obj->mesh_index]), cut_seethrough);
 				}
@@ -3441,12 +3443,12 @@ void _DrawCutSeqActors()//fix
 							if (n & cutseq_meshswapbits[i])
 							{
 								if (i != 1 || cut_seethrough == 128)
-									phd_PutPolygons(&mesh[1]);
+									phd_PutPolygons(&mesh[1], -1);
 								else
 									phd_PutPolygons_seethrough(&mesh[1], cut_seethrough);
 							}
 							else if (i != 1 || cut_seethrough == 128)
-								phd_PutPolygons(&(*mesh));
+								phd_PutPolygons(&(*mesh), -1);
 							else
 								phd_PutPolygons_seethrough(&(*mesh), cut_seethrough);
 						}

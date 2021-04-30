@@ -6,7 +6,6 @@ void inject_lara();
 extern void (*lara_control_routines[])(ITEM_INFO* item, COLL_INFO* coll);
 extern void (*lara_collision_routines[])(ITEM_INFO* item, COLL_INFO* coll);
 
-void KlaxonTremor();
 void LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll);
 void GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 int LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll);

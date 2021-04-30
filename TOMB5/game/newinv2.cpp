@@ -22,6 +22,8 @@
 #include "../specific/output.h"
 #include "../specific/drawprimitive.h"
 #include "health.h"
+#include "../specific/3dmath.h"
+#include "../specific/output.h"
 
 short optmessages[11] =
 {
@@ -115,7 +117,7 @@ int S_CallInventory2()
 		int val = 0;
 
 		OBJLIST_SPACING = phd_centerx >> 1;
-		GPU_BeginScene();
+		S_InitialisePolyList();
 		SetDebounce = 1;
 		S_UpdateInput();
 		input = inputBusy;
@@ -191,7 +193,7 @@ int S_CallInventory2()
 		{
 			do
 			{
-				GPU_BeginScene();
+				S_InitialisePolyList();
 				SetDebounce = 1;
 				S_UpdateInput();
 				input = inputBusy;
@@ -436,7 +438,7 @@ void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, 
 	item.pos.z_rot = zrot + objme->zrot;
 	item.object_number = objme->object_number;
 	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
-	phd_QuickW2VMatrix({0, 1024, 0}, {100, 0, 200}, 0);
+	aLookAt({0, 1024, 0}, {100, 0, 200}, 0);
 
 	if (!bright)
 		inv_light = 0x007F7F7F;
@@ -526,12 +528,12 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 	if ((item->mesh_bits & 1))
 	{
 		if (overlay)
-			phd_PutPolygons_pickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
+			phd_PutPolygonsPickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
 		else
 		{
 			unk_bak = dword_506D3C;
 			dword_506D3C = 0xFF000000;
-			phd_PutPolygons_pickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
+			phd_PutPolygonsPickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
 			dword_506D3C = unk_bak;
 		}
 	}
@@ -558,12 +560,12 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 		if ((bit & item->mesh_bits))
 		{
 			if (overlay)
-				phd_PutPolygons_pickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
+				phd_PutPolygonsPickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
 			else
 			{
 				unk_bak = dword_506D3C;
 				dword_506D3C = 0xFF000000;
-				phd_PutPolygons_pickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
+				phd_PutPolygonsPickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
 				dword_506D3C = unk_bak;
 			}
 		}
@@ -2932,15 +2934,6 @@ void dels_give_lara_guns_cheat()
 #endif
 }
 
-void S_DrawPickup(short object_number)
-{
-	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
-	SetD3DViewMatrix();
-	aSetViewMatrix();
-	DrawThreeDeeObject2D((phd_winxmax * 0.001953125 * 448.0 + PickupX), (phd_winymax * 0.00390625 * 216.0), convert_obj_to_invobj(object_number),
-		128, 0, (GnFrameCounter & 0x7F) << 9, 0, 0, 1);
-}
-
 void inject_newinv2()
 {
 	INJECT(0x0045F9D0, S_CallInventory2);
@@ -3006,5 +2999,4 @@ void inject_newinv2()
 	INJECT(0x00464BF0, do_stats_mode);
 	INJECT(0x00464C60, dels_give_lara_items_cheat);
 	INJECT(0x00464C80, dels_give_lara_guns_cheat);
-	INJECT(0x004B78D0, S_DrawPickup);//this should be in specific actually
 }
