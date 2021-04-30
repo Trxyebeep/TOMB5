@@ -112,8 +112,8 @@ void WaterFall(short item_number)//FIXME idek man
 	}
 	else
 	{
-		x = a + (wf * (SIN(item->pos.y_rot + 0x4000) >> 14));
-		z = b + (wf * (COS(item->pos.y_rot + 0x4000) >> 14));
+		x = a + (wf * (phd_sin(item->pos.y_rot + 0x4000) >> 14));
+		z = b + (wf * (phd_cos(item->pos.y_rot + 0x4000) >> 14));
 	}
 
 	TriggerWaterfallMist(x, item->pos.y_pos, z, item->pos.y_rot + 0x8000);

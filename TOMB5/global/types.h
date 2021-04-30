@@ -3,6 +3,8 @@
 #include "vars.h"
 #include "math_tbls.h"
 #include <stdio.h>
+#include <d3d.h>
+#include <d3dtypes.h>
 
 #pragma pack(push, 1)
 typedef struct 
@@ -21,13 +23,13 @@ typedef struct
 #define ABS(x) (((x)<0) ? (-(x)) : (x))
 #endif // ABS
 
-#ifndef SIN
-#define SIN(x) (4 * rcossin_tbl[((int)(x) >> 3) & 0x1FFE])
-#endif // SIN
+#ifndef phd_sin
+#define phd_sin(x) (4 * rcossin_tbl[((int)(x) >> 3) & 0x1FFE])
+#endif // phd_sin
 
-#ifndef COS
-#define COS(x) (4 * rcossin_tbl[(((int)(x) >> 3) & 0x1FFE) + 1])
-#endif // COS
+#ifndef phd_cos
+#define phd_cos(x) (4 * rcossin_tbl[(((int)(x) >> 3) & 0x1FFE) + 1])
+#endif // phd_cos
 
 #ifndef SQUARE
 #define SQUARE(x) ((x)*(x))
@@ -435,6 +437,7 @@ struct HAIR_STRUCT
 {
 	PHD_3DPOS pos; // size=20, offset=0
 	PHD_VECTOR vel; // size=12, offset=20
+	float	fx, fy, fz;
 };
 
 struct DISPLAYPU
@@ -516,44 +519,61 @@ struct ANIM_STRUCT
 	short command_index; // size=0, offset=38
 };
 
-struct PCLIGHT
+struct PCLIGHT//evil bitch
 {
-	float x, y, z;       // Position of light, in world coordinates
-	float r, g, b;       // Colour of the light
-
-	uint32_t ShadowIntensity;    // only if LightType == LIGHT_SHADOW
-
-	float In;            // Cosine of the IN value for light / size of IN value
-	float Out;           // Cosine of the OUT value for light / size of OUT value
-	float RadIn;         // (IN radians) * 2
-	float RadOut;        // (OUT radians) * 2
-	float Range;         // Range of light
-
-	float dx, dy, dz;    // Direction - used only by sun and spot lights
-	int32_t x2, y2, z2;    // Same as position, only in integer.
-	int32_t dx2, dy2, dz2; // Same as direction, only in integer.
-
-	float r2, g2, b2;
-	float r3, g3, b3;
-
-	int32_t UnknownInt;
-	uint8_t LightType;
-	uint8_t UnknownByte;
-
-	int32_t dx3, dy3, dz3;
-	int32_t magnsq;
+	float x;
+	float y;
+	float z;
+	float r;
+	float g;
+	float b;
+	long shadow;
+	float Inner;
+	float Outer;
+	float InnerAngle;
+	float OuterAngle;
+	float Cutoff;
+	float nx;
+	float ny;
+	float nz;
+	long ix;
+	long iy;
+	long iz;
+	long inx;
+	long iny;
+	long inz;
+	float tr;
+	float tg;
+	float tb;
+	float rs;
+	float gs;
+	float bs;
+	long fcnt;
+	unsigned char Type;
+	unsigned char Active;
+	PHD_VECTOR rlp;
+	long Range;
 };
 
 struct ITEM_LIGHT
 {
-	int red;
-	int green;
-	int blue;
-	CVECTOR room_ambient;
-	int d_red;
-	int d_green;
-	int d_blue;
-	int room_num;
+	long r;
+	long g;
+	long b;
+	long ambient;
+	long rs;
+	long gs;
+	long bs;
+	long fcnt;
+	PCLIGHT	CurrentLights[21];
+	PCLIGHT	PrevLights[21];
+	int nCurrentLights;
+	int nPrevLights;
+	int	room_number;
+	int RoomChange;
+	PHD_VECTOR item_pos;
+	void* pCurrentLights;
+	void* pPrevLights;
 };
 
 struct SAMPLE_INFO
@@ -587,22 +607,21 @@ struct box_node
 
 struct LIGHTINFO
 {
-	long x; // size=0, offset=0
-	long y; // size=0, offset=4
-	long z; // size=0, offset=8
-	unsigned char Type; // size=0, offset=12
-	unsigned char r; // size=0, offset=13
-	unsigned char g; // size=0, offset=14
-	unsigned char b; // size=0, offset=15
-	short nx; // size=0, offset=16
-	short ny; // size=0, offset=18
-	short nz; // size=0, offset=20
-	short Intensity; // size=0, offset=22
-	unsigned char Inner; // size=0, offset=24
-	unsigned char Outer; // size=0, offset=25
-	short FalloffScale; // size=0, offset=26
-	short Length; // size=0, offset=28
-	short Cutoff; // size=0, offset=30
+	long x;
+	long y;
+	long z;
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+	unsigned char Type;
+	short Intensity;
+	float Inner;
+	float Outer;
+	short Length;
+	short Cutoff;
+	float nx;
+	float ny;
+	float nz;
 };
 
 struct MESH_INFO
@@ -645,15 +664,6 @@ struct ITEM_INFO
 	void* data; // size=0, offset=60
 	PHD_3DPOS pos; // size=20, offset=64
 	ITEM_LIGHT il; // size=48, offset=84
-	PCLIGHT lights_1[21];
-	PCLIGHT lights_2[21];
-	unsigned long num_lights_1;
-	unsigned long num_lights_2;
-	unsigned long light_room_num;
-	unsigned long unk_thing;
-	PHD_VECTOR ambient_light_pos;
-	PCLIGHT* ptr_lights_1;
-	PCLIGHT* ptr_lights_2;
 	unsigned long active : 1; // offset=132.0 OFF=5610
 	unsigned long status : 2; // offset=132.1
 	unsigned long gravity_status : 1; // offset=132.3
@@ -864,6 +874,47 @@ struct OBJECT_INFO
 	unsigned long padfuck; // size=0, offset=60
 };
 
+struct FOGBULB
+{
+	float px;
+	float py;
+	float pz;
+	float rad;
+	float sqrad;
+	float den;
+	float r; 
+	float g;
+	float b;
+};
+
+struct PCLIGHT_INFO
+{
+	float x;
+	float y;
+	float z;
+	float r;
+	float g;
+	float b;
+	long shadow;
+	float Inner;
+	float Outer;
+	float InnerAngle;
+	float OuterAngle;
+	float Cutoff;
+	float nx;
+	float ny;
+	float nz;
+	long ix;
+	long iy;
+	long iz;
+	long inx;
+	long iny;
+	long inz;
+	unsigned char Type;
+	unsigned char Pad;
+	short	fuckpad;
+};
+
 struct room_info
 {
 	short* data; // size=0, offset=0
@@ -897,47 +948,38 @@ struct room_info
 	short fx_number; // size=0, offset=74
 	short flipped_room; // size=0, offset=76
 	unsigned short flags; // size=0, offset=78
-
-	uint32_t Unknown1;
-	uint32_t Unknown2;     // Always 0
-	uint32_t Unknown3;     // Always 0
-
-	uint32_t Separator;    // 0xCDCDCDCD
-
-	uint16_t Unknown4;
-	uint16_t Unknown5;
-
-	float RoomX;
-	float RoomY;
-	float RoomZ;
-
-	uint32_t Separator1[4]; // Always 0xCDCDCDCD
-	uint32_t Separator2;    // 0 for normal rooms and 0xCDCDCDCD for null rooms
-	uint32_t Separator3;    // Always 0xCDCDCDCD
-
-	uint32_t NumRoomTriangles;
-	uint32_t NumRoomRectangles;
-
-	ROOM_LIGHT* RoomLights;
-
-	uint32_t LightDataSize;
-	uint32_t NumLights2;    // Always same as NumLights
-
-	uint32_t Unknown6;
-
-	int32_t RoomYTop;
-	int32_t RoomYBottom;
-
-	uint32_t NumLayers;
-
-	ROOMLET* LayerOffset;
-	tr5_room_vertex* VerticesOffset;
-	void* PolyOffset;
-	void* PolyOffset2;   // Same as PolyOffset
-
-	uint32_t NumVertices;
-
-	uint32_t Separator5[4];  // Always 0xCDCDCDCD
+	int nVerts;
+	int nWaterVerts;
+	int nShoreVerts;
+	LPDIRECT3DVERTEXBUFFER SourceVB;
+	short* FaceData;
+	float posx;
+	float posy;
+	float posz;
+	D3DVECTOR* vnormals;
+	D3DVECTOR* fnormals;
+	long* prelight;
+	long* prelightwater;
+	int	watercalc;
+	D3DVECTOR* verts;
+	int gt3cnt;
+	int gt4cnt;
+	PCLIGHT_INFO* pclight;
+	FOGBULB* fogbulb;
+	int nPCLight;
+	int nFogBulbs;
+	float cy0;
+	float cy1;
+	int nRoomlets;
+	ROOMLET* pRoomlets;
+	float* pRmVtx;		// Roomlet vertex dump
+	short* pRmFace;
+	int* pRmPrelight;
+	int	vDumpSz;		// Vertex dump size
+	float fLeft;
+	float fRight;
+	float fTop;
+	float fBottom;
 };
 
 struct STATS 

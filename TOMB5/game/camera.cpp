@@ -54,7 +54,7 @@ void AlterFOV(short fov)//why is this here
 		dword_55D224 = (int)fov;
 
 	CurrentFOV = FOV;
-	phd_persp = phd_winwidth / 2 * COS(fov / 2) / (SIN(fov / 2));
+	phd_persp = phd_winwidth / 2 * phd_cos(fov / 2) / (phd_sin(fov / 2));
 	f_persp_bis = (float)phd_persp;
 	flt_55D1F8 = dword_50A440 / f_persp_bis;
 	f_persp_bis_over_znear3 = f_persp_bis / f_znear3;
@@ -241,8 +241,8 @@ void CalculateCamera()
 			if (!flag)
 			{
 					shift = (bounds[0] + bounds[1] + bounds[4] + bounds[5]) >> 2;
-					camera.target.x = ((SIN(item->pos.y_rot) * shift) >> 12) + item->pos.x_pos;
-					camera.target.z = ((COS(item->pos.y_rot) * shift) >> 12) + item->pos.z_pos;
+					camera.target.x = ((phd_sin(item->pos.y_rot) * shift) >> 12) + item->pos.x_pos;
+					camera.target.z = ((phd_cos(item->pos.y_rot) * shift) >> 12) + item->pos.z_pos;
 
 					if (item->object_number == LARA)
 					{

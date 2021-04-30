@@ -32,8 +32,8 @@ void LaraTestWaterDepth(ITEM_INFO* item, COLL_INFO* coll)
 	{
 		item->anim_number = ANIMATION_LARA_UNDERWATER_TO_WADE;
 		item->frame_number = anims[ANIMATION_LARA_UNDERWATER_TO_WADE].frame_base;
-		item->current_anim_state = STATE_LARA_ONWATER_EXIT;
-		item->goal_anim_state = STATE_LARA_STOP;
+		item->current_anim_state = AS_WATEROUT;
+		item->goal_anim_state = AS_STOP;
 		item->pos.z_rot = 0;
 		item->pos.x_rot = 0;
 		item->gravity_status = 0;
@@ -75,7 +75,7 @@ void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 		coll->facing = item->pos.y_rot;
 	}
 
-	height = 762 * SIN(item->pos.x_rot) >> 14;
+	height = 762 * phd_sin(item->pos.x_rot) >> 14;
 
 	if (height < ((LaraDrawType == LARA_DIVESUIT) * 64) + 200)
 		height = ((LaraDrawType == LARA_DIVESUIT) * 64) + 200;
@@ -377,7 +377,7 @@ void lara_as_swim(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (item->hit_points <= 0)
 	{
-		item->goal_anim_state = STATE_LARA_WATER_DEATH;
+		item->goal_anim_state = AS_UWDEATH;
 		return;
 	}
 
@@ -385,7 +385,7 @@ void lara_as_swim(ITEM_INFO* item, COLL_INFO* coll)
 	{
 		if (LaraDrawType != LARA_DIVESUIT)
 		{
-			item->current_anim_state = STATE_LARA_UNDERWATER_TURNAROUND;
+			item->current_anim_state = AS_WATERROLL;
 			item->anim_number = ANIMATION_LARA_UNDERWATER_ROLL_BEGIN;
 			item->frame_number = anims[ANIMATION_LARA_UNDERWATER_ROLL_BEGIN].frame_base;
 			return;
@@ -402,14 +402,14 @@ void lara_as_swim(ITEM_INFO* item, COLL_INFO* coll)
 		item->fallspeed = 200;
 
 	if (!(input & IN_JUMP))
-		item->goal_anim_state = STATE_LARA_UNDERWATER_INERTIA;
+		item->goal_anim_state = AS_GLIDE;
 }
 
 void lara_as_glide(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (item->hit_points <= 0)
 	{
-		item->goal_anim_state = STATE_LARA_WATER_DEATH;
+		item->goal_anim_state = AS_UWDEATH;
 		return;
 	}
 
@@ -417,7 +417,7 @@ void lara_as_glide(ITEM_INFO* item, COLL_INFO* coll)
 	{
 		if (LaraDrawType != LARA_DIVESUIT)
 		{
-			item->current_anim_state = STATE_LARA_UNDERWATER_TURNAROUND;
+			item->current_anim_state = AS_WATERROLL;
 			item->anim_number = ANIMATION_LARA_UNDERWATER_ROLL_BEGIN;
 			item->frame_number = anims[ANIMATION_LARA_UNDERWATER_ROLL_BEGIN].frame_base;
 			return;
@@ -429,7 +429,7 @@ void lara_as_glide(ITEM_INFO* item, COLL_INFO* coll)
 		SwimTurnSubsuit(item);
 
 	if (input & IN_JUMP)
-		item->goal_anim_state = STATE_LARA_UNDERWATER_FORWARD;
+		item->goal_anim_state = AS_SWIM;
 
 	item->fallspeed -= 6;
 
@@ -437,20 +437,20 @@ void lara_as_glide(ITEM_INFO* item, COLL_INFO* coll)
 		item->fallspeed = 0;
 
 	if (item->fallspeed <= 133)
-		item->goal_anim_state = STATE_LARA_UNDERWATER_STOP;
+		item->goal_anim_state = AS_TREAD;
 }
 
 void lara_as_tread(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (item->hit_points <= 0)
 	{
-		item->goal_anim_state = STATE_LARA_WATER_DEATH;
+		item->goal_anim_state = AS_UWDEATH;
 		return;
 	}
 
 	if (input & IN_ROLL && LaraDrawType != LARA_DIVESUIT)
 	{
-		item->current_anim_state = STATE_LARA_UNDERWATER_TURNAROUND;
+		item->current_anim_state = AS_WATERROLL;
 		item->anim_number = ANIMATION_LARA_UNDERWATER_ROLL_BEGIN;
 		item->frame_number = anims[ANIMATION_LARA_UNDERWATER_ROLL_BEGIN].frame_base;
 	}
@@ -465,7 +465,7 @@ void lara_as_tread(ITEM_INFO* item, COLL_INFO* coll)
 			SwimTurn(item);
 
 		if (input & IN_JUMP)
-			item->goal_anim_state = STATE_LARA_UNDERWATER_FORWARD;
+			item->goal_anim_state = AS_SWIM;
 
 		item->fallspeed -= 6;
 
@@ -629,9 +629,9 @@ void LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
 		LaraWaterCurrent(coll);
 
 	AnimateLara(item);
-	item->pos.x_pos += (((SIN(item->pos.y_rot) * item->fallspeed) >> 16) * COS(item->pos.x_rot)) >> 14;
-	item->pos.y_pos -= (SIN(item->pos.x_rot) * item->fallspeed) >> 16;
-	item->pos.z_pos += (((COS(item->pos.y_rot) * item->fallspeed) >> 16) * COS(item->pos.x_rot)) >> 14;
+	item->pos.x_pos += (((phd_sin(item->pos.y_rot) * item->fallspeed) >> 16) * phd_cos(item->pos.x_rot)) >> 14;
+	item->pos.y_pos -= (phd_sin(item->pos.x_rot) * item->fallspeed) >> 16;
+	item->pos.z_pos += (((phd_cos(item->pos.y_rot) * item->fallspeed) >> 16) * phd_cos(item->pos.x_rot)) >> 14;
 	LaraBaddieCollision(item, coll);
 	lara_collision_routines[item->current_anim_state](item, coll);
 	UpdateLaraRoom(item, 0);

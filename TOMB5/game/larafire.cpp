@@ -26,22 +26,22 @@ ITEM_INFO* LastTargets[8];
 
 static short HoldStates[18] =
 {
-	STATE_LARA_WALK_FORWARD,
-	STATE_LARA_RUN_FORWARD,
-	STATE_LARA_STOP,
-	STATE_LARA_POSE,
-	STATE_LARA_TURN_RIGHT_SLOW,
-	STATE_LARA_TURN_LEFT_SLOW, 
-	STATE_LARA_WALK_BACK, 
-	STATE_LARA_TURN_FAST, 
-	STATE_LARA_WALK_LEFT, 
-	STATE_LARA_WALK_RIGHT,
-	STATE_LARA_WADE_FORWARD,
-	STATE_LARA_PICKUP,
-	STATE_LARA_SWITCH_DOWN, STATE_LARA_SWITCH_UP,
-	STATE_LARA_CROUCH_IDLE,
-	STATE_LARA_CROUCH_TURN_LEFT,
-	STATE_LARA_CROUCH_TURN_RIGHT,
+	AS_WALK,
+	AS_RUN,
+	AS_STOP,
+	AS_POSE,
+	AS_TURN_R,
+	AS_TURN_L, 
+	AS_BACK, 
+	AS_FASTTURN, 
+	AS_STEPLEFT, 
+	AS_STEPRIGHT,
+	AS_WADE,
+	AS_PICKUP,
+	AS_SWITCHON, AS_SWITCHOFF,
+	AS_DUCK,
+	AS_DUCKROTL,
+	AS_DUCKROTR,
 	-1
 };
 
@@ -71,7 +71,7 @@ void LaraGun()
 			{
 				if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
 				{
-					if (lara_item->current_anim_state == STATE_LARA_CROUCH_IDLE && lara_item->anim_number != ANIMATION_LARA_CROUCH_IDLE)
+					if (lara_item->current_anim_state == AS_DUCK && lara_item->anim_number != ANIMATION_LARA_CROUCH_IDLE)
 						return;
 
 					if (lara.gun_type == WEAPON_FLARE)
@@ -91,9 +91,9 @@ void LaraGun()
 
 			if ((input & IN_DRAW) || lara.request_gun_type != lara.gun_type)
 			{
-				if ((lara_item->current_anim_state == STATE_LARA_CROUCH_IDLE ||
-					lara_item->current_anim_state == STATE_LARA_CROUCH_TURN_LEFT ||
-					lara_item->current_anim_state == STATE_LARA_CROUCH_TURN_RIGHT) &&
+				if ((lara_item->current_anim_state == AS_DUCK ||
+					lara_item->current_anim_state == AS_DUCKROTL ||
+					lara_item->current_anim_state == AS_DUCKROTR) &&
 					(lara.request_gun_type == WEAPON_SHOTGUN || lara.request_gun_type == WEAPON_HK || lara.request_gun_type == WEAPON_CROSSBOW))
 				{
 					if (lara.gun_type == WEAPON_FLARE)
@@ -136,7 +136,7 @@ void LaraGun()
 				lara.water_surface_dist < -weapons[lara.gun_type].gun_height)
 				lara.gun_status = LG_UNDRAW_GUNS;
 		}
-		else if (lara.gun_status == LG_HANDS_BUSY && (input & IN_FLARE) && lara_item->current_anim_state == STATE_LARA_CRAWL_IDLE
+		else if (lara.gun_status == LG_HANDS_BUSY && (input & IN_FLARE) && lara_item->current_anim_state == AS_ALL4S
 			&& lara_item->anim_number == ANIMATION_LARA_CRAWL_IDLE)
 			lara.request_gun_type = WEAPON_FLARE;
 	}
@@ -578,8 +578,8 @@ void find_target_point(ITEM_INFO* item, GAME_VECTOR* target)
 	x = (bounds[0] + bounds[1]) >> 1;
 	y = (bounds[2] + (bounds[3] - bounds[2]) / 3);
 	z = (bounds[4] + bounds[5]) / 2;
-	s = SIN(item->pos.y_rot);
-	c = COS(item->pos.y_rot);
+	s = phd_sin(item->pos.y_rot);
+	c = phd_cos(item->pos.y_rot);
 	target->x = item->pos.x_pos + ((x * c + z * s) >> 14);
 	target->y = item->pos.y_pos + y;
 	target->z = item->pos.z_pos + ((z * c - x * s) >> 14);
