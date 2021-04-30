@@ -281,21 +281,21 @@ void FireCrossbow(PHD_3DPOS* Start)
 	}
 }
 
-void _ControlCrossbow(short item_number)//needs fixing
+void ControlCrossbow(short item_number)
 {
 	ITEM_INFO* item;
 	ITEM_INFO* target;
 	ITEM_INFO** itemslist;
-//	MESH_INFO** staticslist;
-//	char* cptr;
+	MESH_INFO** staticslist;
+	//char* cptr;
 	short room_number;
 	long speed;
 
 	item = &items[item_number];
 	speed = item->speed;
-	item->pos.x_pos += speed * SIN(item->pos.x_rot) >> 14;
+	item->pos.x_pos += (speed * COS(item->pos.x_rot) >> 14) * SIN(item->pos.y_rot) >> 14;
 	item->pos.y_pos += speed * SIN(-item->pos.x_rot) >> 14;
-	item->pos.z_pos += speed * COS(item->pos.y_rot) >> 14;
+	item->pos.z_pos += (speed * COS(item->pos.x_rot) >> 14) * COS(item->pos.y_rot) >> 14;
 	room_number = item->room_number;
 	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 
@@ -303,29 +303,27 @@ void _ControlCrossbow(short item_number)//needs fixing
 		ItemNewRoom(item_number, room_number);
 
 	itemslist = itemlist;
-	int collided = GetCollidedObjects(item, 128, 1, itemlist, staticlist, 1);
+	staticslist = staticlist;
+	GetCollidedObjects(item, 128, 1, itemslist, staticslist, 1);
 
-	if (collided)
+	if (*itemslist)
 	{
-		if (*itemslist)
+		target = *itemslist;
+
+		while (!(gfLevelFlags & GF_LVOP_TRAIN) || target->object_number != GRAPPLING_TARGET)
 		{
+			++itemslist;
 			target = *itemslist;
-
-			while (!(gfLevelFlags & GF_LVOP_TRAIN) || target->object_number != GRAPPLING_TARGET)
-			{
-				target = itemslist[1];
-				++itemslist;
-				if (!target)
-					return;
-			}
-
-			TriggerGrapplingEffect(target->pos.x_pos, target->pos.y_pos + 32, target->pos.z_pos);
-			TestTriggersAtXYZ(target->pos.x_pos, target->pos.y_pos, target->pos.z_pos, target->room_number, 1, 0);
-			ExplodeItemNode(item, 0, 0, 256);
-			SoundEffect(SFX_SMASH_METAL, &item->pos, 0);
-			KillItem(item_number);
-			target->mesh_bits <<= 1;
+			if (!target)
+				return;
 		}
+
+		TriggerGrapplingEffect(target->pos.x_pos, target->pos.y_pos + 32, target->pos.z_pos);
+		TestTriggersAtXYZ(target->pos.x_pos, target->pos.y_pos, target->pos.z_pos, target->room_number, 1, 0);
+		ExplodeItemNode(item, 0, 0, 256);
+		SoundEffect(SFX_SMASH_METAL, &item->pos, 0);
+		KillItem(item_number);
+		target->mesh_bits <<= 1;
 	}
 }
 
@@ -713,7 +711,7 @@ void inject_lara1gun()
 	INJECT(0x0044E380, FireHK);
 	INJECT(0x0044E4B0, FireCrossbow);
 //	INJECT(0x0044E5E0, CrossbowHitSwitchType78);
-//	INJECT(0x0044E8B0, ControlCrossbow);
+	INJECT(0x0044E8B0, ControlCrossbow);
 	INJECT(0x0044EAC0, draw_shotgun);
 	INJECT(0x0044ECA0, undraw_shotgun)
 	INJECT(0x0044EE00, AnimateShotgun);
