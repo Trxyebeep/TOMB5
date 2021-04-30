@@ -259,7 +259,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00422AF0		cutseq_restore_item
 0x00422B90		Load_and_Init_Cutseq
 0x00422C30		init_cutseq_actors
-0x00422EF0		
+0x00422EF0		init_resident_cutseq
 0x00422F80	+	DelsHandyTeleportLara
 0x004230F0		nail_intelligent_object
 0x00423170	+	handle_lara_chatting
@@ -489,7 +489,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00464BF0	+	do_stats_mode
 0x00464C60	+	dels_give_lara_items_cheat
 0x00464C80	+	dels_give_lara_guns_cheat
-0x00464CA0		//Not called anywhere it seems.
+0x00464CA0		DelDrawSprite
 0x00464EF0		LoadGame
 0x00464F20		SaveGame
 
@@ -748,3 +748,37 @@ x for functions decompiled but not injected, for one reason or another.
 0x00435C70	+	DoTitle
 0x00435F60		DoLevel
 0x004364B0		do_dels_cutseq_selector
+
+
+		game/gladiatr.cpp
+
+0x00436670		InitialiseGladiator
+0x00436700		GladiatorControl
+
+
+		game/guardian.cpp
+
+0x00436FE0		InitialiseGuardian
+0x00437170		TriggerGuardianSparks
+0x004372E0		TriggerBaseLightning
+0x00437680		GuardianControl
+
+
+		game/hair.cpp
+
+0x00438BE0		InitialiseHair
+0x00438C80		HairControl
+0x00439950		GetCorrectStashPoints
+0x00439A40		DrawHair
+
+
+		game/health.cpp
+
+0x00439C10	+	FlashIt
+0x00439C50	+	DrawGameInfo
+0x00439E50	+	DrawHealthBar
+0x00439FC0	+	DrawAirBar
+0x0043A0A0		MakeAmmoString
+0x0043A0E0	+	InitialisePickUpDisplay
+0x0043A130	+	DrawPickups
+0x0043A240	+	AddDisplayPickup
