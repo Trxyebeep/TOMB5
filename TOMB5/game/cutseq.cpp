@@ -7,9 +7,9 @@
 #include "effect2.h"
 #include "tomb4fx.h"
 #include "delstuff.h"
-#include "../specific/matrix_shit.h"
+#include "../specific/3dmath.h"
 
-char special1_flip_flag;//original one is on 0051CA84. some sort of flipmap flag for special1 cutscene in the title. original name unknown
+char iswappedit;//original one is on 0051CA84.
 
 unsigned short special2_pistols_info[13] =
 {
@@ -27,7 +27,7 @@ void _special1_control()
 	if (GLOBAL_cutseq_frame == 300)
 	{
 		FlipMap(0);
-		special1_flip_flag = 1;
+		iswappedit = 1;
 	}
 
 	dword_00E916F0 = 1;
@@ -35,10 +35,10 @@ void _special1_control()
 
 void _special1_end()
 {
-	if (special1_flip_flag)
+	if (iswappedit)
 	{
 		FlipMap(0);
-		special1_flip_flag = 0;
+		iswappedit = 0;
 	}
 
 	if (!bDoCredits)

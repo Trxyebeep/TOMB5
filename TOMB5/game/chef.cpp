@@ -4,7 +4,7 @@
 #include "box.h"
 #include "objects.h"
 #include "people.h"
-#include "../specific/maths.h"
+#include "../specific/3dmath.h"
 #include "sound.h"
 #include "tomb4fx.h"
 

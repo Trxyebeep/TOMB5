@@ -1,8 +1,8 @@
 #include "../tomb5/pch.h"
 #include "hair.h"
 #include "../global/types.h"
-#include "../specific/matrix_shit.h"
-#include "../specific/drawprimitive.h"
+#include "../specific/3dmath.h"
+#include "../specific/output.h"
 #include "gameflow.h"
 #include "objects.h"
 
@@ -29,7 +29,7 @@ void _DrawHair()//fix later
 			phd_TranslateAbs(hair->pos.x_pos, hair->pos.y_pos, hair->pos.z_pos);
 			phd_RotY(hair->pos.y_rot);
 			phd_RotX(hair->pos.x_rot);
-			phd_PutPolygons(*meshptr);
+			phd_PutPolygons(*meshptr, -1);
 			if (i == 5)
 				StashSkinVertices(c + 33);
 			else
@@ -49,7 +49,7 @@ void _DrawHair()//fix later
 			SkinVerticesToScratch(z - 1);
 			GetCorrectStashPoints(b, a + z - 29, z);
 			SkinVerticesToScratch(z);
-			phd_PutPolygons(*meshptr2);
+			phd_PutPolygons(*meshptr2, -1);
 		}
 		if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
 			break;

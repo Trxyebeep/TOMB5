@@ -6,7 +6,7 @@
 #include "items.h"
 #include "sound.h"
 #include "collide.h"
-#include "../specific/maths.h"
+#include "../specific/3dmath.h"
 #include "switch.h"
 #include "effect2.h"
 #include "debris.h"

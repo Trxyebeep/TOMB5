@@ -6,6 +6,7 @@
 #include "../specific/specific.h"
 #include "newinv2.h"
 #include "objects.h"
+#include "../specific/output.h"
 
 int FlashIt()
 {
