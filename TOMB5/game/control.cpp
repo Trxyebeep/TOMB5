@@ -26,6 +26,7 @@
 #include "../specific/maths.h"
 #include "larafire.h"
 #include "switch.h"
+#include "draw.h"
 
 long ControlPhase(long nframes, int demo_mode)
 {
@@ -1918,6 +1919,69 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 	return hit;
 }
 
+int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MESH_INFO** StaticMesh)
+{
+	ITEM_INFO* item;
+	MESH_INFO* mesh;
+	room_info* r;
+	PHD_3DPOS ItemPos;
+	long dx, dy, dz;
+	short item_number, i, lp;
+	short* bounds;
+
+	ClosestItem = 999;
+	dx = target->x - start->x;
+	dy = target->y - start->y;
+	dz = target->z - start->z;
+	ClosestDist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+
+	for (i = 0; i < number_los_rooms; ++i)
+	{
+		r = &room[los_rooms[i]];
+
+		for (item_number = r->item_number; item_number != NO_ITEM; item_number = item->next_item)
+		{
+			item = &items[item_number];
+
+			if (item->status != ITEM_DEACTIVATED && item->status != ITEM_INVISIBLE && (item->object_number != LARA && objects[item->object_number].collision || item->object_number == LARA && GetLaraOnLOS))
+			{
+				bounds = GetBoundsAccurate(item);
+				ItemPos.x_pos = item->pos.x_pos;
+				ItemPos.y_pos = item->pos.y_pos;
+				ItemPos.z_pos = item->pos.z_pos;
+				ItemPos.y_rot = item->pos.y_rot;
+
+				if (DoRayBox(start, target, bounds, &ItemPos, Coord, item_number))
+					target->room_number = los_rooms[i];
+			}
+		}
+
+		for (lp = 0; lp < r->num_meshes; ++lp)
+		{
+			mesh = &r->mesh[lp];
+
+			if (mesh->Flags & 1)
+			{
+				ItemPos.x_pos = mesh->x;
+				ItemPos.y_pos = mesh->y;
+				ItemPos.z_pos = mesh->z;
+				ItemPos.y_rot = mesh->y_rot;
+
+				if (DoRayBox(start, target, &static_objects[mesh->static_number].x_minc, &ItemPos, Coord, -1 - mesh->static_number))
+				{
+					*StaticMesh = mesh;
+					target->room_number = los_rooms[i];
+				}
+			}
+		}
+	}
+
+	Coord->x = ClosestCoord.x;
+	Coord->y = ClosestCoord.y;
+	Coord->z = ClosestCoord.z;
+	return ClosestItem;
+}
+
 void inject_control()
 {
 	INJECT(0x004147C0, ControlPhase);
@@ -1946,4 +2010,5 @@ void inject_control()
 	INJECT(0x004181F0, xLOS);
 	INJECT(0x00418620, ClipTarget);
 	INJECT(0x0041A170, GetTargetOnLOS);
+	INJECT(0x00419110, ObjectOnLOS2);
 }

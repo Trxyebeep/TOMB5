@@ -299,6 +299,10 @@
 #define LaserSightZ VAR_U_(0x00E4C9A4, long)
 #define LaserSightX VAR_U_(0x00E4C9A8, long)
 #define LaserSightCol VAR_U_(0x0051D073, char)
+#define GetLaraOnLOS VAR_U_(0x0051CA64, char)
+#define ClosestDist VAR_U_(0x00EEF4A4, int)
+#define ClosestCoord VAR_U_(0x00EEF460, PHD_VECTOR)
+#define ClosestItem VAR_U_(0x00EEEFF8, int)
 
 
 //GUESSED
@@ -392,6 +396,7 @@
 #define actor_pnodes	ARRAY_(0x00E71180, PACKNODE*, [10])
 #define temp_rotation_buffer	ARRAY_(0x00E711C0, short, [160])
 #define los_rooms ARRAY_(0x00EEEFC0, short, [20])
+#define static_objects ARRAY_(0x00874988, static_info, [70])
 
 //defs
 #define NO_HEIGHT -32512
