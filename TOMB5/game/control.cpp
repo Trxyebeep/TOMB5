@@ -56,9 +56,19 @@ long ControlPhase(long nframes, int demo_mode)
 			input &= IN_LOOK;
 		}
 
+#ifdef cutseq_skipper
+		if (cutseq_trig != 0)
+		{
+			if (keymap[1] && !ScreenFading)//skip them with esc
+				cutseq_trig = 3;
+
+
+			input = 0;
+		}
+#else
 		if (cutseq_trig != 0)
 			input = 0;
-
+#endif
 		SetDebounce = 0;
 
 		if (gfCurrentLevel != LVL5_TITLE)
@@ -116,11 +126,11 @@ long ControlPhase(long nframes, int demo_mode)
 			|| bUseSpotCam
 			|| bTrackCamInit
 			||
-			((lara_item->current_anim_state != STATE_LARA_STOP || lara_item->anim_number != ANIMATION_LARA_STAY_IDLE)
+			((lara_item->current_anim_state != AS_STOP || lara_item->anim_number != ANIMATION_LARA_STAY_IDLE)
 				&& (!lara.IsDucked
 					|| input & IN_DUCK
 					|| lara_item->anim_number != ANIMATION_LARA_CROUCH_IDLE
-					|| lara_item->goal_anim_state != STATE_LARA_CROUCH_IDLE)))
+					|| lara_item->goal_anim_state != AS_DUCK)))
 		{
 			if (!BinocularRange)
 			{
@@ -511,8 +521,8 @@ void TranslateItem(ITEM_INFO* item, short x, short y, short z)
 	short sin;
 	short cos;
 
-	cos = COS(item->pos.y_rot);
-	sin = SIN(item->pos.y_rot);
+	cos = phd_cos(item->pos.y_rot);
+	sin = phd_sin(item->pos.y_rot);
 
 	item->pos.x_pos += ((cos * x) + (sin * z)) >> 14;
 	item->pos.y_pos += y;
@@ -601,7 +611,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 				if (input & IN_ACTION &&
 					!BinocularRange &&
 					lara.gun_status == LG_NO_ARMS &&
-					lara_item->current_anim_state == STATE_LARA_STOP &&
+					lara_item->current_anim_state == AS_STOP &&
 					lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
 					GLOBAL_inventoryitemchosen == NO_ITEM &&
 					have_i_got_object(inv_item_stealth_frigggggs))
@@ -634,7 +644,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 					if (input & IN_ACTION &&
 						!BinocularRange &&
 						lara.gun_status == LG_NO_ARMS &&
-						lara_item->current_anim_state == STATE_LARA_UNDERWATER_STOP &&
+						lara_item->current_anim_state == AS_TREAD &&
 						lara_item->anim_number == ANIMATION_LARA_UNDERWATER_IDLE &&
 						GLOBAL_inventoryitemchosen == NO_ITEM &&
 						have_i_got_object(PUZZLE_ITEM2))
@@ -651,7 +661,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 					if (input & IN_ACTION &&
 						!BinocularRange &&
 						lara.gun_status == LG_NO_ARMS &&
-						lara_item->current_anim_state == STATE_LARA_STOP &&
+						lara_item->current_anim_state == AS_STOP &&
 						lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
 						GLOBAL_inventoryitemchosen == NO_ITEM &&
 						have_i_got_object(PUZZLE_ITEM1))
@@ -708,7 +718,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 					if (input & IN_ACTION &&
 						!BinocularRange &&
 						lara.gun_status == LG_NO_ARMS &&
-						lara_item->current_anim_state == STATE_LARA_STOP &&
+						lara_item->current_anim_state == AS_STOP &&
 						lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
 						GLOBAL_inventoryitemchosen == NO_ITEM &&
 						have_i_got_object(KEY_ITEM7))
@@ -725,7 +735,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 					if (input & IN_ACTION &&
 						!BinocularRange &&
 						lara.gun_status == LG_NO_ARMS &&
-						lara_item->current_anim_state == STATE_LARA_STOP &&
+						lara_item->current_anim_state == AS_STOP &&
 						lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
 						GLOBAL_inventoryitemchosen == NO_ITEM &&
 						have_i_got_object(PUZZLE_ITEM2))

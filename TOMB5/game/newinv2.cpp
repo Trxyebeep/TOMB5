@@ -456,9 +456,9 @@ void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, 
 	item.pos.y_pos = 0;
 	item.pos.z_pos = 0;
 	item.room_number = 0;
-	item.num_lights_1 = 0;
-	item.num_lights_2 = 0;
-	item.il.room_ambient.rgbcd = 0x007F7F7F;
+	item.il.nCurrentLights = 0;
+	item.il.nPrevLights = 0;
+	item.il.ambient = 0x007F7F7F;
 	item.anim_number = objects[item.object_number].anim_index;
 
 	if (objme->flags & 8)
@@ -1068,10 +1068,12 @@ void draw_current_object_list(int ringnum)
 					}
 					else
 					{
-						nummeup = lara.puzzleitems[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number - PUZZLE_ITEM1];//*((char*)&lara.mesh_ptrs[6] + inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number);
+						nummeup = lara.puzzleitems[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number - PUZZLE_ITEM1];
 
 						if (nummeup <= 1)
 							sprintf(textbufme, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+						else
+							sprintf(textbufme, "%d x %s", nummeup, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
 					}
 
 					break;
@@ -2105,12 +2107,12 @@ void use_current_item()
 		{
 			if (lara.gun_status == LG_NO_ARMS)
 			{
-				if (lara_item->current_anim_state != STATE_LARA_CRAWL_IDLE &&
-					lara_item->current_anim_state != STATE_LARA_CRAWL_FORWARD &&
-					lara_item->current_anim_state != STATE_LARA_CRAWL_TURN_LEFT &&
-					lara_item->current_anim_state != STATE_LARA_CRAWL_TURN_RIGHT &&
-					lara_item->current_anim_state != STATE_LARA_CRAWL_BACK &&
-					lara_item->current_anim_state != STATE_LARA_CRAWL_TO_CLIMB)
+				if (lara_item->current_anim_state != AS_ALL4S &&
+					lara_item->current_anim_state != AS_CRAWL &&
+					lara_item->current_anim_state != AS_ALL4TURNL &&
+					lara_item->current_anim_state != AS_ALL4TURNR &&
+					lara_item->current_anim_state != AS_CRAWLBACK &&
+					lara_item->current_anim_state != AS_CRAWL2HANG)
 				{
 					if (lara.gun_type != 7)
 					{
@@ -2131,7 +2133,7 @@ void use_current_item()
 		{
 		case INV_BINOCULARS_ITEM:
 
-			if ((lara_item->current_anim_state == STATE_LARA_STOP && lara_item->anim_number == ANIMATION_LARA_STAY_IDLE
+			if ((lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIMATION_LARA_STAY_IDLE
 				|| lara.IsDucked && !(input & IN_DUCK))
 				&& !SniperCamActive
 				&& !bUseSpotCam
@@ -2207,15 +2209,15 @@ void use_current_item()
 		return;
 	}
 
-	if (lara_item->current_anim_state == STATE_LARA_CRAWL_IDLE ||
-		lara_item->current_anim_state == STATE_LARA_CRAWL_FORWARD ||
-		lara_item->current_anim_state == STATE_LARA_CRAWL_TURN_LEFT ||
-		lara_item->current_anim_state == STATE_LARA_CRAWL_TURN_RIGHT ||
-		lara_item->current_anim_state == STATE_LARA_CRAWL_BACK ||
-		lara_item->current_anim_state == STATE_LARA_CRAWL_TO_CLIMB ||
-		lara_item->current_anim_state == STATE_LARA_CROUCH_IDLE ||
-		lara_item->current_anim_state == STATE_LARA_CROUCH_TURN_LEFT ||
-		lara_item->current_anim_state == STATE_LARA_CROUCH_TURN_RIGHT)
+	if (lara_item->current_anim_state == AS_ALL4S ||
+		lara_item->current_anim_state == AS_CRAWL ||
+		lara_item->current_anim_state == AS_ALL4TURNL ||
+		lara_item->current_anim_state == AS_ALL4TURNR ||
+		lara_item->current_anim_state == AS_CRAWLBACK ||
+		lara_item->current_anim_state == AS_CRAWL2HANG ||
+		lara_item->current_anim_state == AS_DUCK ||
+		lara_item->current_anim_state == AS_DUCKROTL ||
+		lara_item->current_anim_state == AS_DUCKROTR)
 	{
 		SayNo();
 		return;

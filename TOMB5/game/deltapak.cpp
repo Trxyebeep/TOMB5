@@ -1323,8 +1323,8 @@ void andy10_end()
 	DelsHandyTeleportLara(39424, 15360, 48640, 0);
 	lara.water_status = LW_UNDERWATER;
 	lara_item->pos.x_rot = -5278;
-	lara_item->goal_anim_state = STATE_LARA_UNDERWATER_STOP;
-	lara_item->current_anim_state = STATE_LARA_UNDERWATER_STOP;
+	lara_item->goal_anim_state = AS_TREAD;
+	lara_item->current_anim_state = AS_TREAD;
 	lara_item->frame_number = anims[ANIMATION_LARA_UNDERWATER_IDLE].frame_base;
 	lara_item->anim_number = ANIMATION_LARA_UNDERWATER_IDLE;
 	NailInvItem(PUZZLE_ITEM2);
@@ -1564,8 +1564,8 @@ void swampy_end()
 	DelsHandyTeleportLara(42477, 12456, 55982, 28953);
 	lara.water_status = LW_UNDERWATER;
 	lara_item->pos.x_rot = -5278;
-	lara_item->goal_anim_state = STATE_LARA_UNDERWATER_STOP;
-	lara_item->current_anim_state = STATE_LARA_UNDERWATER_STOP;
+	lara_item->goal_anim_state = AS_TREAD;
+	lara_item->current_anim_state = AS_TREAD;
 	lara_item->frame_number = anims[ANIMATION_LARA_UNDERWATER_IDLE].frame_base;
 	lara_item->anim_number = ANIMATION_LARA_UNDERWATER_IDLE;
 	if (lara.air > 200)
@@ -1952,8 +1952,8 @@ void joby7_end()
 	DelsHandyTeleportLara(30049, 17583, 69794, 51830);
 	lara.water_status = LW_UNDERWATER;
 	lara_item->pos.x_rot = 1090;
-	lara_item->goal_anim_state = STATE_LARA_UNDERWATER_STOP;
-	lara_item->current_anim_state = STATE_LARA_UNDERWATER_STOP;
+	lara_item->goal_anim_state = AS_TREAD;
+	lara_item->current_anim_state = AS_TREAD;
 	lara_item->frame_number = anims[ANIMATION_LARA_UNDERWATER_IDLE].frame_base;
 	lara_item->anim_number = ANIMATION_LARA_UNDERWATER_IDLE;
 	lara.Anxiety = 80;
@@ -2069,9 +2069,9 @@ void joby8_control()
 			TriggerFireFlame(s.x, s.y, s.z, -1, 254);
 		}
 
-		d.x = s.x + (SIN(2 * (GetRandomControl() & 0x7FFF)) >> 3);
+		d.x = s.x + (phd_sin(2 * (GetRandomControl() & 0x7FFF)) >> 3);
 		d.y = s.y;
-		d.z = s.z + (COS(2 * (GetRandomControl() & 0x7FFF)) >> 3);
+		d.z = s.z + (phd_cos(2 * (GetRandomControl() & 0x7FFF)) >> 3);
 
 		TriggerLightning(&s, &d, (GetRandomControl() & 0xF) + 30, RGBA(r, g, b, 16), 15, 40, 5);
 		TriggerDynamic(s.x, s.y, s.z, 10, (GetRandomControl() & 0x7F) + 128, g, b);
@@ -2389,11 +2389,11 @@ void handle_cutseq_triggering(int name)
 	{
 		if (lara.gun_status != LG_HANDS_BUSY
 			&& (lara.gun_status != LG_NO_ARMS || lara.flare_control_left)
-			&& lara_item->current_anim_state != STATE_LARA_CRAWL_IDLE
-			&& lara_item->current_anim_state != STATE_LARA_CRAWL_FORWARD
-			&& lara_item->current_anim_state != STATE_LARA_CRAWL_TURN_LEFT
-			&& lara_item->current_anim_state != STATE_LARA_CRAWL_TURN_RIGHT
-			&& lara_item->current_anim_state != STATE_LARA_CRAWL_BACK)
+			&& lara_item->current_anim_state != AS_ALL4S
+			&& lara_item->current_anim_state != AS_CRAWL
+			&& lara_item->current_anim_state != AS_ALL4TURNL
+			&& lara_item->current_anim_state != AS_ALL4TURNR
+			&& lara_item->current_anim_state != AS_CRAWLBACK)
 			return;
 	}
 	else
@@ -2422,8 +2422,8 @@ void handle_cutseq_triggering(int name)
 		lara.target = 0;
 		lara.right_arm.lock = 0;
 		lara.left_arm.lock = 0;
-		lara_item->goal_anim_state = STATE_LARA_STOP;
-		lara_item->current_anim_state = STATE_LARA_STOP;
+		lara_item->goal_anim_state = AS_STOP;
+		lara_item->current_anim_state = AS_STOP;
 		lara_item->frame_number = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
 		lara_item->anim_number = ANIMATION_LARA_STAY_SOLID;
 		lara_item->speed = 0;
@@ -3068,8 +3068,8 @@ void DelsHandyTeleportLara(int x, int y, int z, int yrot)
 	if (IsRoomOutsideNo != lara_item->room_number)
 		ItemNewRoom(lara.item_number, IsRoomOutsideNo);
 
-	lara_item->goal_anim_state = STATE_LARA_STOP;
-	lara_item->current_anim_state = STATE_LARA_STOP;
+	lara_item->goal_anim_state = AS_STOP;
+	lara_item->current_anim_state = AS_STOP;
 	lara_item->frame_number = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
 	lara_item->anim_number = ANIMATION_LARA_STAY_SOLID;
 	lara_item->speed = 0;
@@ -3475,10 +3475,10 @@ void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot)
 		item->room_number = IsRoomOutsideNo;
 
 	dword_9158A8 = item;
-	item->il.room_num = -1;
-	item->ambient_light_pos.x = pos.x;
-	item->ambient_light_pos.y = pos.y;
-	item->ambient_light_pos.z = pos.z;
+	item->il.fcnt = -1;
+	item->il.item_pos.x = pos.x;
+	item->il.item_pos.y = pos.y;
+	item->il.item_pos.z = pos.z;
 	CalcAmbientLight(item);
 	CreateLightList(item);
 }
