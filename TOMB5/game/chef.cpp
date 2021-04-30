@@ -20,8 +20,8 @@ void InitialiseChef(short item_number)
 	chef->frame_number = anims[objects[CHEF].anim_index].frame_base;
 	chef->current_anim_state = 1;
 	chef->goal_anim_state = 1;
-	chef->pos.x_pos += (192 * SIN(chef->pos.y_rot)) >> 14;
-	chef->pos.z_pos += (192 * COS(chef->pos.y_rot)) >> 14;
+	chef->pos.x_pos += (192 * phd_sin(chef->pos.y_rot)) >> 14;
+	chef->pos.z_pos += (192 * phd_cos(chef->pos.y_rot)) >> 14;
 }
 
 void ChefControl(short item_number)

@@ -89,16 +89,16 @@ void RifleHandler(int weapon_type)
 		{
 			if (gfLevelFlags & GF_LVOP_MIRROR_USED && lara_item->room_number == gfMirrorRoom)
 			{
-					TriggerDynamic_MIRROR((GetRandomControl() & 0xFF) + (SIN(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos,
+					TriggerDynamic_MIRROR((GetRandomControl() & 0xFF) + (phd_sin(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos,
 						((GetRandomControl() & 0x7F) - 0x23F) + lara_item->pos.y_pos,
-						(GetRandomControl() & 0xFF) + (COS(lara_item->pos.y_rot) >> 4) + lara_item->pos.z_pos,
+						(GetRandomControl() & 0xFF) + (phd_cos(lara_item->pos.y_rot) >> 4) + lara_item->pos.z_pos,
 						12, (GetRandomControl() & 0x3F) + 0xC0, (GetRandomControl() & 0x1F) + 0x80, GetRandomControl() & 0x3F);
 			}
 			else
 			{
-				TriggerDynamic((GetRandomControl() & 0xFF) + (SIN(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos,
+				TriggerDynamic((GetRandomControl() & 0xFF) + (phd_sin(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos,
 					((GetRandomControl() & 0x7F) - 0x23F) + lara_item->pos.y_pos,
-					(GetRandomControl() & 0xFF) + (COS(lara_item->pos.y_rot) >> 4) + lara_item->pos.z_pos,
+					(GetRandomControl() & 0xFF) + (phd_cos(lara_item->pos.y_rot) >> 4) + lara_item->pos.z_pos,
 					12, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 63);
 			}
 		}
@@ -293,9 +293,9 @@ void _ControlCrossbow(short item_number)//needs fixing
 
 	item = &items[item_number];
 	speed = item->speed;
-	item->pos.x_pos += speed * SIN(item->pos.x_rot) >> 14;
-	item->pos.y_pos += speed * SIN(-item->pos.x_rot) >> 14;
-	item->pos.z_pos += speed * COS(item->pos.y_rot) >> 14;
+	item->pos.x_pos += speed * phd_sin(item->pos.x_rot) >> 14;
+	item->pos.y_pos += speed * phd_sin(-item->pos.x_rot) >> 14;
+	item->pos.z_pos += speed * phd_cos(item->pos.y_rot) >> 14;
 	room_number = item->room_number;
 	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 

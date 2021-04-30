@@ -37,8 +37,8 @@ void FlareControl(short item_number)
 	x = flare->pos.x_pos;
 	y = flare->pos.y_pos;
 	z = flare->pos.z_pos;
-	xv = flare->speed * SIN(flare->pos.y_rot) >> 14;
-	zv = flare->speed * COS(flare->pos.y_rot) >> 14;
+	xv = flare->speed * phd_sin(flare->pos.y_rot) >> 14;
+	zv = flare->speed * phd_cos(flare->pos.y_rot) >> 14;
 	flare->pos.x_pos += xv;
 	flare->pos.z_pos += zv;
 
@@ -129,8 +129,8 @@ void CreateFlare(short object, int thrown)
 		{
 			collided = 1;
 			flare->pos.y_rot = lara_item->pos.y_rot - 32768;
-			flare->pos.x_pos = lara_item->pos.x_pos + (320 * SIN(flare->pos.y_rot) >> 14);
-			flare->pos.z_pos = lara_item->pos.z_pos + (320 * COS(flare->pos.y_rot) >> 14);
+			flare->pos.x_pos = lara_item->pos.x_pos + (320 * phd_sin(flare->pos.y_rot) >> 14);
+			flare->pos.z_pos = lara_item->pos.z_pos + (320 * phd_cos(flare->pos.y_rot) >> 14);
 			flare->room_number = room_number;
 		}
 
@@ -317,8 +317,8 @@ void draw_flare()
 {
 	short ani;
 
-	if (lara_item->current_anim_state == STATE_LARA_FLARE_PICKUP ||
-		lara_item->current_anim_state == STATE_LARA_PICKUP)
+	if (lara_item->current_anim_state == AS_FLAREPICKUP ||
+		lara_item->current_anim_state == AS_PICKUP)
 	{
 		DoFlareInHand(lara.flare_age);
 		lara.flare_control_left = 0;
@@ -367,7 +367,7 @@ void undraw_flare()
 	ani2 = lara.flare_frame;
 	lara.flare_control_left = 1;
 
-	if (lara_item->goal_anim_state == STATE_LARA_STOP)
+	if (lara_item->goal_anim_state == AS_STOP)
 	{
 		if (lara_item->anim_number == ANIMATION_LARA_STAY_IDLE)
 		{
@@ -393,15 +393,15 @@ void undraw_flare()
 				lara_item->anim_number = ANIMATION_LARA_STAY_SOLID;
 				lara_item->frame_number = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
 				lara.flare_frame = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
-				lara_item->current_anim_state = STATE_LARA_STOP;
-				lara_item->goal_anim_state = STATE_LARA_STOP;
+				lara_item->current_anim_state = AS_STOP;
+				lara_item->goal_anim_state = AS_STOP;
 			}
 
 			ani2++;
 			lara.flare_frame = ani2;
 		}
 	}
-	else if (lara_item->current_anim_state == STATE_LARA_STOP)
+	else if (lara_item->current_anim_state == AS_STOP)
 	{
 		lara_item->anim_number = ANIMATION_LARA_STAY_SOLID;
 		lara_item->frame_number = anims[ANIMATION_LARA_STAY_SOLID].frame_base;

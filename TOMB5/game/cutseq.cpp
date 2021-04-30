@@ -223,9 +223,9 @@ void _special3_control()
 		sptr->x = pos2.x;
 		sptr->y = pos2.y;
 		sptr->z = pos2.z;
-		sptr->Xvel = ((COS(2 * GetRandomControl()) >> 2) * SIN(GetRandomControl() * 2)) >> 14;
-		sptr->Zvel = ((COS(2 * GetRandomControl()) >> 2) * COS(GetRandomControl() * 2)) >> 14;
-		sptr->Yvel = SIN(-GetRandomControl() * 2) >> 4;
+		sptr->Xvel = ((phd_cos(2 * GetRandomControl()) >> 2) * phd_sin(GetRandomControl() * 2)) >> 14;
+		sptr->Zvel = ((phd_cos(2 * GetRandomControl()) >> 2) * phd_cos(GetRandomControl() * 2)) >> 14;
+		sptr->Yvel = phd_sin(-GetRandomControl() * 2) >> 4;
 		sptr->Friction = 0;
 		sptr->Flags = 538;
 		sptr->RotAng = GetRandomControl() & 0xFFF;

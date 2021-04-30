@@ -40,16 +40,16 @@ void InitialiseLaraAnims(ITEM_INFO* item)
 	{
 		lara.water_status = LW_UNDERWATER;
 		item->fallspeed = 0;
-		item->goal_anim_state = STATE_LARA_UNDERWATER_STOP;
-		item->current_anim_state = STATE_LARA_UNDERWATER_STOP;
+		item->goal_anim_state = AS_TREAD;
+		item->current_anim_state = AS_TREAD;
 		item->anim_number = ANIMATION_LARA_UNDERWATER_IDLE;
 		item->frame_number = anims[ANIMATION_LARA_UNDERWATER_IDLE].frame_base;
 	}
 	else
 	{
 		lara.water_status = LW_ABOVE_WATER;
-		item->goal_anim_state = STATE_LARA_STOP;
-		item->current_anim_state = STATE_LARA_STOP;
+		item->goal_anim_state = AS_STOP;
+		item->current_anim_state = AS_STOP;
 		item->anim_number = ANIMATION_LARA_STAY_SOLID;
 		item->frame_number = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
 	}
@@ -293,8 +293,8 @@ void _cheats()
 			lara.water_status = LW_FLYCHEAT;
 			lara_item->frame_number = anims[ANIMATION_LARA_DOZY].frame_base;
 			lara_item->anim_number = ANIMATION_LARA_DOZY;
-			lara_item->current_anim_state = STATE_LARA_DOZY;
-			lara_item->goal_anim_state = STATE_LARA_DOZY;
+			lara_item->current_anim_state = AS_SWIMCHEAT;
+			lara_item->goal_anim_state = AS_SWIMCHEAT;
 			lara_item->gravity_status = 1;
 			lara_item->pos.x_rot = 5460;
 			lara_item->fallspeed = 30;

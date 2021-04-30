@@ -82,7 +82,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	switch (coll->quadrant)
 	{
 	case NORTH:
-		xfront = (SIN((unsigned short)(coll->facing) * coll->radius)) >> 14;
+		xfront = (phd_sin((unsigned short)(coll->facing) * coll->radius)) >> 14;
 		zfront = coll->radius;
 		xright = coll->radius; 
 		zright = coll->radius; 
@@ -91,14 +91,14 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		break;
 	case EAST:
 		xfront = coll->radius;
-		zfront = (COS((unsigned short)(coll->facing) * coll->radius)) >> 14;
+		zfront = (phd_cos((unsigned short)(coll->facing) * coll->radius)) >> 14;
 		xright = coll->radius;
 		zright = -coll->radius;
 		zleft = coll->radius;
 		xleft = coll->radius;
 		break;
 	case SOUTH:
-		xfront = (SIN((unsigned short)coll->facing) * coll->radius) >> 14;
+		xfront = (phd_sin((unsigned short)coll->facing) * coll->radius) >> 14;
 		zfront = -coll->radius;
 		xright = -coll->radius;
 		zright = -coll->radius;
@@ -107,7 +107,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		break;
 	case WEST:
 		xfront = -coll->radius;
-		zfront = (COS((unsigned short)coll->facing) * coll->radius) >> 14;
+		zfront = (phd_cos((unsigned short)coll->facing) * coll->radius) >> 14;
 		xright = -coll->radius;
 		zright = coll->radius;
 		zleft = -coll->radius;
