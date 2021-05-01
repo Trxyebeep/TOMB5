@@ -838,8 +838,8 @@ struct OBJECT_INFO
 	short* frame_base; // size=0, offset=8
 	void (*initialise)(short item_number); // size=0, offset=12
 	void (*control)(short item_number); // size=0, offset=16
-	void (*floor)(ITEM_INFO* item, int x, int y, int z, int* height); // size=0, offset=20
-	void (*ceiling)(ITEM_INFO* item, int x, int y, int z, int* height); // size=0, offset=24
+	void (*floor)(ITEM_INFO* item, long x, long y, long z, long* height); // size=0, offset=20
+	void (*ceiling)(ITEM_INFO* item, long x, long y, long z, long* height); // size=0, offset=24
 	void (*draw_routine)(ITEM_INFO* item); // size=0, offset=28
 	void (*collision)(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll); // size=0, offset=32
 	short object_mip; // size=0, offset=36
@@ -1485,5 +1485,23 @@ struct NODELOADHEADER
 	short xlength; // size=0, offset=8
 	short ylength; // size=0, offset=10
 	short zlength; // size=0, offset=12
+};
+
+struct static_info
+{
+	short mesh_number;
+	short flags;
+	short x_minp;
+	short x_maxp;
+	short y_minp;
+	short y_maxp;
+	short z_minp;
+	short z_maxp;
+	short x_minc;
+	short x_maxc;
+	short y_minc;
+	short y_maxc;
+	short z_minc;
+	short z_maxc;
 };
 #pragma pack(pop)
