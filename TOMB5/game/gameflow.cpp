@@ -106,10 +106,10 @@ void DoGameflow()
 			gfNumMips = 0;
 			gfNumPickups = 0;
 			gfMirrorRoom = -1;
-			gfFogColour.r = 0;
-			gfFogColour.g = 0;
-			gfFogColour.b = 0;
-			gfFogColour.cd = 0;
+			gfFog.r = 0;
+			gfFog.g = 0;
+			gfFog.b = 0;
+			gfFog.cd = 0;
 
 			if (gfStatus != 2)
 			{
@@ -251,9 +251,9 @@ void DoGameflow()
 
 		case GF_FOG:
 			m = gf++;
-			gfFogColour.b = *gf;
-			gfFogColour.g = *(char*)(m)++;
-			gfFogColour.r = *(char*)(gf++);
+			gfFog.b = *gf;
+			gfFog.g = *(char*)(m)++;
+			gfFog.r = *(char*)(gf++);
 			gf = (unsigned __int8*)((char*)(gf++) + 1);
 			continue;
 
@@ -320,7 +320,7 @@ int TitleOptions()
 	{
 		ret2 = load_or_new;
 
-		if (_00C87BF0 == 2)
+		if (DoFade == 2)
 		{
 			gfLevelComplete = gfLevelComplete_bak;
 			gfLevelComplete_bak = 0;
@@ -436,7 +436,7 @@ int TitleOptions()
 					if (selected_option & (1 << n))
 						PrintString(phd_centerx, height, 1, &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], 0x8000);
 					else
-						PrintString(phd_centerx, height, 3 - (*((char*)&weirdo + i + 3) != 0), &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], 0x8000);
+						PrintString(phd_centerx, height, 3 - (*((char*)&nframes + i + 3) != 0), &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], 0x8000);
 
 					if (selected_option & (1 << n))
 						selected_level = n;
@@ -652,7 +652,7 @@ void DoTitle(unsigned char name, unsigned char audio)
 	title_controls_locked_out = 0;
 	InitialiseFXArray(1);
 	InitialiseLOTarray(1);
-	SetFogColor(gfFogColour.r, gfFogColour.g, gfFogColour.b);
+	SetFogColor(gfFog.r, gfFog.g, gfFog.b);
 	ClearFXFogBulbs();
 	InitialisePickUpDisplay();
 	S_InitialiseScreen();
@@ -686,7 +686,7 @@ void DoTitle(unsigned char name, unsigned char audio)
 	lara_item->mesh_bits = 0;
 	gfGameMode = 1;
 	gfLevelComplete = 0;
-	weirdo = 2;
+	nframes = 2;
 	gfStatus = ControlPhase(2, 0);
 	JustLoaded = 0;
 
@@ -700,8 +700,8 @@ void DoTitle(unsigned char name, unsigned char audio)
 			break;
 
 		handle_cutseq_triggering(name);
-		weirdo = DrawPhaseGame();
-		gfStatus = ControlPhase(weirdo, 0);
+		nframes = DrawPhaseGame();
+		gfStatus = ControlPhase(nframes, 0);
 		DoSpecialFeaturesServer();
 	}
 

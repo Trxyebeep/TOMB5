@@ -3,7 +3,7 @@
 
 void inject_control();
 
-long ControlPhase(long nframes, int demo_mode);
+long ControlPhase(long _nframes, int demo_mode);
 int GetRandomControl();
 void SeedRandomControl(long seed);
 int GetRandomDraw();

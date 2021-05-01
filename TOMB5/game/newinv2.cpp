@@ -104,10 +104,10 @@ int S_CallInventory2()
 	if (input & IN_SELECT)
 		friggrimmer = 1;
 
-	rings[RING_INVENTORY] = &inv_ring_ptr;
-	rings[RING_AMMO] = &ammo_ring_ptr;
+	rings[RING_INVENTORY] = &pcring1;
+	rings[RING_AMMO] = &pcring2;
 	CreateMonoScreen();
-	in_inv_or_pause = 0;
+	InventoryActive = 0;
 	init_new_inventry();
 	camera.number_frames = 2;
 
@@ -136,9 +136,9 @@ int S_CallInventory2()
 
 		DisplayMonoScreen();
 
-		if (dword_E5C2F8)
+		if (GlobalSoftReset)
 		{
-			dword_E5C2F8 = 0;
+			GlobalSoftReset = 0;
 			val = 1;
 		}
 
@@ -232,7 +232,7 @@ int S_CallInventory2()
 	FreeMonoScreen();
 
 	lara.Busy = oldLaraBusy & 1;
-	in_inv_or_pause = 0;
+	InventoryActive = 0;
 
 	if (GLOBAL_invkeypadmode)
 	{
@@ -440,18 +440,18 @@ void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, 
 	aLookAt({0, 1024, 0}, {100, 0, 200}, 0);
 
 	if (!bright)
-		inv_light = 0x007F7F7F;
+		pcbright = 0x007F7F7F;
 	else if (bright == 1)
-		inv_light = 0x002F2F2F;
+		pcbright = 0x002F2F2F;
 	else
-		inv_light = bright | ((bright | (bright << 8)) << 8);
+		pcbright = bright | ((bright | (bright << 8)) << 8);
 
 	SetD3DViewMatrix();
 	phd_PushUnitMatrix();
 	phd_TranslateRel(0, 0, objme->scale1);
-	inv_item_ypos = objme->yoff + y;
+	yoffset = objme->yoff + y;
 	item.mesh_bits = objme->meshbits;
-	inv_item_xpos = x;
+	xoffset = x;
 	item.shade = -1;
 	item.pos.x_pos = 0;
 	item.pos.y_pos = 0;
@@ -469,8 +469,8 @@ void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, 
 		
 	phd_mxptr -= 12;
 	phd_dxptr -= 12;
-	inv_item_xpos = phd_centerx;
-	inv_item_ypos = phd_centery;
+	xoffset = phd_centerx;
+	yoffset = phd_centery;
 }
 
 void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
@@ -527,13 +527,13 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 	if ((item->mesh_bits & 1))
 	{
 		if (overlay)
-			phd_PutPolygonsPickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
+			phd_PutPolygonsPickup(*meshpp, xoffset, yoffset, pcbright);
 		else
 		{
-			unk_bak = dword_506D3C;
-			dword_506D3C = 0xFF000000;
-			phd_PutPolygonsPickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
-			dword_506D3C = unk_bak;
+			unk_bak = GlobalAlpha;
+			GlobalAlpha = 0xFF000000;
+			phd_PutPolygonsPickup(*meshpp, xoffset, yoffset, pcbright);
+			GlobalAlpha = unk_bak;
 		}
 	}
 
@@ -559,13 +559,13 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 		if ((bit & item->mesh_bits))
 		{
 			if (overlay)
-				phd_PutPolygonsPickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
+				phd_PutPolygonsPickup(*meshpp, xoffset, yoffset, pcbright);
 			else
 			{
-				unk_bak = dword_506D3C;
-				dword_506D3C = 0xFF000000;
-				phd_PutPolygonsPickup(*meshpp, inv_item_xpos, inv_item_ypos, inv_light);
-				dword_506D3C = unk_bak;
+				unk_bak = GlobalAlpha;
+				GlobalAlpha = 0xFF000000;
+				phd_PutPolygonsPickup(*meshpp, xoffset, yoffset, pcbright);
+				GlobalAlpha = unk_bak;
 			}
 		}
 	}

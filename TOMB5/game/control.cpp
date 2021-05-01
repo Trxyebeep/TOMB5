@@ -25,19 +25,19 @@
 #include "joby.h"
 
 
-long ControlPhase(long nframes, int demo_mode)
+long ControlPhase(long _nframes, int demo_mode)
 {
 	RegeneratePickups();
 
-	if (10 < nframes)
-		nframes = 10;
+	if (10 < _nframes)
+		_nframes = 10;
 
 	if (bTrackCamInit != 0)
 		bUseSpotCam = 0;
 
 	SetDebounce = 1;
 
-	for (framecount += nframes; framecount > 0; framecount -= 2)
+	for (framecount += _nframes; framecount > 0; framecount -= 2)
 	{
 		GlobalCounter++;
 		UpdateSky();

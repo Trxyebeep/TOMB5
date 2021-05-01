@@ -104,7 +104,7 @@ void OpenThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 
 		if (d->block != 2047)
 		{
-			if (!byte_51CB40)
+			if (!LiftDoor)
 				boxes[d->block].overlap_index &= 0xBF;
 
 			for (short slot = 0; slot < 5; slot++)
@@ -315,12 +315,12 @@ void DoorControl(short item_number)
 
 		if (!door->Opened)
 		{
-			byte_51CB40 = 1;
+			LiftDoor = 1;
 			OpenThatDoor(&door->d1, door);
 			OpenThatDoor(&door->d2, door);
 			OpenThatDoor(&door->d1flip, door);
 			OpenThatDoor(&door->d2flip, door);
-			byte_51CB40 = 0;
+			LiftDoor = 0;
 			door->Opened = 1;
 		}
 	}

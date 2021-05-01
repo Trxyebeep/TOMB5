@@ -3473,7 +3473,7 @@ void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot)
 	if (IsRoomOutsideNo != -1)
 		item->room_number = IsRoomOutsideNo;
 
-	dword_9158A8 = item;
+	current_item = item;
 	item->il.fcnt = -1;
 	item->il.item_pos.x = pos.x;
 	item->il.item_pos.y = pos.y;
