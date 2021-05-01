@@ -244,7 +244,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00421D60	+	frigup_lara
 0x00421E90	+	updateAnimFrame
 0x00422010	+	finish_cutseq
-0x00422030	x	DrawCutSeqActors
+0x00422030	+	DrawCutSeqActors
 0x004223C0	+	CalcActorLighting
 0x00422490		GetJointAbsPositionCutSeq
 0x00422570		CalculateObjectLightingLaraCutSeq

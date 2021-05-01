@@ -3371,10 +3371,10 @@ void updateAnimFrame(PACKNODE* node, int flags, short* frame)
 	}
 }
 
-void _DrawCutSeqActors()//fix
+void DrawCutSeqActors()
 {
 	OBJECT_INFO* obj;
-	short* mesh;
+	short** mesh;
 	long* bone;
 	short* rot;
 	int n;
@@ -3385,84 +3385,81 @@ void _DrawCutSeqActors()//fix
 	{
 		phd_mxptr -= 12;
 		phd_dxptr -= 12;
+		return;
 	}
-	else
+
+	for (int i = 1; i < GLOBAL_cutme->numactors; i++)
 	{
-		for (int i = 1; i < GLOBAL_cutme->numactors; i++)
+		phd_PushMatrix();
+
+		if (cutseq_meshbits[i] & 0x80000000)
 		{
-			phd_PushMatrix();
+			n = 1;
+			updateAnimFrame(actor_pnodes[i], GLOBAL_cutme->actor_data[i].nodes + 1, temp_rotation_buffer);
+			phd_TranslateAbs(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz);
+			obj = &objects[GLOBAL_cutme->actor_data[i].objslot];
+			bone = &bones[obj->bone_index];
+			mesh = &meshes[obj->mesh_index];
+			CalcActorLighting(&duff_item, obj, temp_rotation_buffer);
+			phd_TranslateRel(temp_rotation_buffer[6], temp_rotation_buffer[7], temp_rotation_buffer[8]);
+			rot = &temp_rotation_buffer[9];
+			gar_RotYXZsuperpack(&rot, 0);
 
-			if (cutseq_meshbits[i] < 0)
+			if (cutseq_meshbits[i] & 1)
 			{
-				n = 1;
-				updateAnimFrame(actor_pnodes[i], GLOBAL_cutme->actor_data[i].nodes + 1, temp_rotation_buffer);
-				phd_TranslateAbs(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz);
-				obj = &objects[GLOBAL_cutme->actor_data[i].objslot];
-				CalcActorLighting(&duff_item, obj, temp_rotation_buffer);
-				phd_TranslateRel(temp_rotation_buffer[6], temp_rotation_buffer[7], temp_rotation_buffer[8]);
-				rot = &temp_rotation_buffer[9];
-				gar_RotYXZsuperpack(&rot, 0);
-
-				if (cutseq_meshbits[i] & 1)
+				if (cutseq_meshswapbits[i] & 1)
 				{
-					if (cutseq_meshswapbits[i] & 1)
-					{
-						if (i != 1 || cut_seethrough == 128)
-							phd_PutPolygons(&meshes[obj->mesh_index][1], -1);
-						else
-							phd_PutPolygons_seethrough(&meshes[obj->mesh_index][1], cut_seethrough);
-					}
-					else if (i != 1 || cut_seethrough == 128)
-						phd_PutPolygons(&(*meshes[obj->mesh_index]), -1);
+					if (i != 1 || cut_seethrough == 128)
+						phd_PutPolygons(*(mesh + 1), -1);
 					else
-						phd_PutPolygons_seethrough(&(*meshes[obj->mesh_index]), cut_seethrough);
+						phd_PutPolygons_seethrough(*(mesh + 1), cut_seethrough);
 				}
-
-				if (obj->nmeshes - 1 > 0)
-				{
-					bone = &bones[obj->bone_index];
-					mesh = &meshes[obj->mesh_index][1] + 2;
-
-					for (int j = 0; j < obj->nmeshes - 1; j++, bone++, mesh++)
-					{
-						if (*bone & 1)
-						{
-							phd_mxptr -= 12;
-							phd_dxptr -= 12;
-						}
-
-						if (*bone & 2)
-							phd_PushMatrix();
-
-						phd_TranslateRel(bone[1], bone[2], bone[3]);
-						gar_RotYXZsuperpack(&rot, 0);
-						n <<= 1;
-
-						if (cutseq_meshbits[i] & n)
-						{
-							if (n & cutseq_meshswapbits[i])
-							{
-								if (i != 1 || cut_seethrough == 128)
-									phd_PutPolygons(&mesh[1], -1);
-								else
-									phd_PutPolygons_seethrough(&mesh[1], cut_seethrough);
-							}
-							else if (i != 1 || cut_seethrough == 128)
-								phd_PutPolygons(&(*mesh), -1);
-							else
-								phd_PutPolygons_seethrough(&(*mesh), cut_seethrough);
-						}
-					}
-				}
+				else if (i != 1 || cut_seethrough == 128)
+					phd_PutPolygons(*mesh, -1);
+				else
+					phd_PutPolygons_seethrough(*mesh, cut_seethrough);
 			}
 
-			phd_mxptr -= 12;
-			phd_dxptr -= 12;
+			mesh += 2;
+
+			for (int j = 0; j < obj->nmeshes - 1; j++, bone += 4, mesh += 2)
+			{
+				if (*bone & 1)
+				{
+					phd_mxptr -= 12;
+					phd_dxptr -= 12;
+				}
+
+				if (*bone & 2)
+					phd_PushMatrix();
+
+				phd_TranslateRel(bone[1], bone[2], bone[3]);
+				gar_RotYXZsuperpack(&rot, 0);
+				n <<= 1;
+
+				if (cutseq_meshbits[i] & n)
+				{
+					if (n & cutseq_meshswapbits[i])
+					{
+						if (i != 1 || cut_seethrough == 128)
+							phd_PutPolygons(*(mesh + 1), -1);
+						else
+							phd_PutPolygons_seethrough(*(mesh + 1), cut_seethrough);
+					}
+					else if (i != 1 || cut_seethrough == 128)
+						phd_PutPolygons(*mesh, -1);
+					else
+						phd_PutPolygons_seethrough(*mesh, cut_seethrough);
+				}
+			}
 		}
 
 		phd_mxptr -= 12;
 		phd_dxptr -= 12;
 	}
+
+	phd_mxptr -= 12;
+	phd_dxptr -= 12;
 }
 
 void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot)
@@ -3701,7 +3698,7 @@ void inject_deltaPak()
 	INJECT(0x00421B50, DecodeTrack);
 	INJECT(0x00421CD0, GetTrackWord);
 	INJECT(0x00421E90, updateAnimFrame);
-	//DrawCutSeqActors
+	INJECT(0x00422030, DrawCutSeqActors);
 	INJECT(0x004223C0, CalcActorLighting);
 	INJECT(0x00422490, GetJointAbsPositionCutSeq);
 }
