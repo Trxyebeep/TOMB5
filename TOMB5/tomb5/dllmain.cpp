@@ -31,6 +31,9 @@
 #include "../game/chef.h"
 #include "../game/people.h"
 #include "../specific/init.h"
+#include "../game/joby.h"
+#include "../specific/output.h"
+#include "../specific/3dmath.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -79,6 +82,9 @@ void inject_all()
     inject_chef();
     inject_people();
     inject_init();
+    inject_joby();
+    inject_3dmath();
+    inject_output();
 }
 
 BOOL APIENTRY DllMain( HINSTANCE hModule,

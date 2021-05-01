@@ -11,8 +11,9 @@
 #include "items.h"
 #include "collide.h"
 #include "larafire.h"
-#include "../specific/matrix_shit.h"
+#include "../specific/output.h"
 #include "objects.h"
+#include "../specific/3dmath.h"
 
 void FlareControl(short item_number)
 {
@@ -456,7 +457,7 @@ void DrawFlareInAir(ITEM_INFO* item)
 	phd_PushMatrix();
 	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-	phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index]);
+	phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
 	phd_mxptr -= 12;
 	phd_dxptr -= 12;
 
@@ -467,7 +468,7 @@ void DrawFlareInAir(ITEM_INFO* item)
 			phd_PushMatrix();
 			phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, 2 * gfMirrorZPlane - item->pos.z_pos);
 			phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-			phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index]);
+			phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
 			phd_mxptr -= 12;
 			phd_dxptr -= 12;
 		}

@@ -14,7 +14,7 @@
 #include "items.h"
 #include "draw.h"
 #include "delstuff.h"
-#include "../specific/matrix_shit.h"
+#include "../specific/3dmath.h"
 #include "sphere.h"
 #include "objects.h"
 

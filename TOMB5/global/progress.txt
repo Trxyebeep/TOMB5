@@ -506,7 +506,6 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/lara.cpp
 
-0x00442C90	+	KlaxonTremor
 0x00442DB0	+	LaraCeilingFront
 0x00442E70	+	LaraAboveWater
 0x00443020	+	lara_as_duckl
@@ -782,3 +781,150 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043A0E0	+	InitialisePickUpDisplay
 0x0043A130	+	DrawPickups
 0x0043A240	+	AddDisplayPickup
+
+
+		game/andrea.cpp
+
+0x00405610		ControlPropeller
+0x00405C00		TriggerFanEffects
+0x00406040		ControlRaisingCog
+0x004062B0		ControlPortalDoor
+0x00406580		ControlGenSlot1
+0x004067E0		ControlRaisingPlinth
+
+
+		game/joby.cpp
+
+0x00441410		ControlWreckingBall
+0x00441D50		WreckingBallCollision
+0x00441F50		DrawWreckingBall
+0x004421C0		ControlSecurityScreens
+0x00442250		CookerFlameControl
+0x00442320		TriggerLaraSparks
+0x00442480		TriggerCableSparks
+0x00442610		ControlElectricalCables
+0x00442BE0		CheckCableBox
+0x00442C90	+	KlaxonTremor
+
+
+		game/andy.cpp
+
+0x00406C10		TriggerRopeFlame
+0x00406E10		ControlBurningRoots
+0x004070D0		ControlLavaEffect
+0x00407350		TriggerCoinGlow
+
+
+		game/rope.cpp
+
+0x0046D130		GetRopePos
+0x0046D200		RopeNodeCollision
+0x0046D310		vMul
+0x0046D360		mDotProduct
+0x0046D3A0		mCrossProduct
+0x0046D420		phd_GetMatrixAngles
+0x0046D510		AlignLaraToRope
+0x0046DAE0		RopeCollision
+0x0046DD40		RopeControl
+0x0046DDC0		DrawRopeList
+0x0046DE10		Normalise
+0x0046DF00		ModelRigid
+0x0046E080		ModelRigidRope
+0x0046E1C0		SetPendulumPoint
+0x0046E280		SetPendulumVelocity
+0x0046E370		CalculateRope
+0x0046EC70		ProjectRopePoints
+0x0046EE40		init_all_ropes
+0x0046EE80		CreateRope
+0x0046F060		InitialiseRope
+0x0046F170		SaveRope
+0x0046F1F0		LoadRope
+0x0046F240		LaraClimbRope
+0x0046F3C0		StraightenRope
+0x0046F480		_Straighten
+
+
+// ======================================
+// SPECIFIC
+// ======================================
+
+		specific/3dmath.cpp
+
+0x0048EDC0	+	AlterFOV
+0x0048EEE0		SetupZRange
+0x0048EFF0		ScaleCurrentMatrix
+0x0048F0E0		InitWindow
+0x0048F290		mGetAngle
+0x0048F330		phd_GenerateW2V
+0x0048F760		phd_LookAt
+0x0048F8A0		phd_atan
+0x0048F980		phd_sqrt
+0x0048F9C0		phd_PushMatrix
+0x0048FA40		phd_SetTrans
+0x0048FA90		phd_PushUnitMatrix
+0x0048FB20		phd_TranslateRel
+0x0048FBE0		phd_RotX
+0x0048FCD0		phd_RotY
+0x0048FDC0		phd_RotZ
+0x0048FEB0		phd_RotYXZpack
+0x00490150		phd_RotYXZ
+0x004903F0		phd_TranslateAbs
+0x004904B0		phd_GetVectorAngles
+0x00490550		phd_TransposeMatrix
+0x00490590		aInitMatrix
+0x004905E0		aSetTrans
+0x00490610		aTranslateAbs
+0x00490720		aPushUnitMatrix
+0x00490790		aTranslateRel
+0x00490810		aRotX
+0x004908E0		aRotY
+0x004909B0		aRotZ
+0x00490A80		aRotYXZPack
+0x00490AF0		aRotYXZ
+0x00490B40		aScaleCurrentMatrix
+0x00490BE0		aSetViewMatrix
+0x00490C20		aLookAt
+0x00490F30		aPointCamera
+0x00490FA0		aPointCameraByVector
+0x004910D0		aVectorNormal
+0x00491120		aOuterProduct
+0x00491170		aPerpVectors
+0x004912E0		aUnitMatrixByMat
+0x00491320		gte_sttr
+
+
+		specific/output.cpp
+
+0x004B20D0		DebugString
+0x004B2110		S_InitialisePolyList
+0x004B2270		StashSkinVertices
+0x004B2340		SkinVerticesToScratch
+0x004B2410		StashSkinNormals
+0x004B2480		SkinNormalsToScratch
+0x004B24F0		CalcVertsColorSplitMMX
+0x004B2620		PrelightVerts
+0x004B27E0		SetGlobalAmbient
+0x004B2800		aCheckMeshClip
+0x004B2BA0		aTransformLightClipMesh
+0x004B35F0		aTransformLightPrelightClipMesh
+0x004B3F00		phd_PutPolygons
+0x004B4CA0		phd_PutPolygonsSpcXLU
+0x004B4F10		phd_PutPolygons_seethrough
+0x004B5190		phd_PutPolygonsSpcEnvmap
+0x004B66B0		phd_PutPolygonsPickup
+0x004B74A0		phd_PutPolygons_train
+0x004B74D0		phd_PutPolygonSkyMesh
+0x004B78B0		S_InsertRoom
+0x004B78D0	+	S_DrawPickup
+0x004B79A0		S_OutputPolyList
+0x004B7DA0		S_DumpScreen
+0x004B7E40		S_DumpScreenFrame
+0x004B7EB0		S_GetObjectBounds
+0x004B8310		S_AnimateTextures
+0x004B8530		ProjectTrainVerts
+0x004B8660		RenderLoadPic
+0x004B8780		DDCopyBitmap
+0x004B8930		LoadBitmap
+0x004B89F0		aLoadBitmap
+0x004B8A80		do_boot_screen
+0x004B8C50		aCalcColorSplit

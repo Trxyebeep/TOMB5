@@ -1,9 +1,4 @@
 #pragma once
-#include "lara.h"
-#include "larasurf.h"
-#include "laraswim.h"
-#include "laraclmb.h"
-#include "../global/types.h"
 
 enum lara_anim_state
 {

@@ -1,5 +1,4 @@
 #include "../tomb5/pch.h"
-#include "lara.h"
 #include "control.h"
 #include "pickup.h"
 #include "../specific/specific.h"
@@ -14,7 +13,7 @@
 #include "laramisc.h"
 #include "spotcam.h"
 #include "tomb4fx.h"
-#include "../specific/global.h"
+#include "../specific/3dmath.h"
 #include "sound.h"
 #include "hair.h"
 #include "bubbles.h"
@@ -27,6 +26,7 @@
 #include "larafire.h"
 #include "switch.h"
 #include "draw.h"
+#include "joby.h"
 
 long ControlPhase(long nframes, int demo_mode)
 {

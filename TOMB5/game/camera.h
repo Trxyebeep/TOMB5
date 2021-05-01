@@ -4,7 +4,6 @@
 void inject_camera();
 
 void InitialiseCamera();
-void AlterFOV(short fov);
 void CalculateCamera();
 void LaraTorch(PHD_VECTOR* Soffset, PHD_VECTOR* Eoffset, short yrot, long brightness);
 

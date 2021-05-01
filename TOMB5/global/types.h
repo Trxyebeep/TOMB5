@@ -317,26 +317,19 @@ struct SUBSUIT_INFO
 
 struct ROOMLET   // 56 bytes
 {
-	uint16_t NumLayerVertices;   // Number of vertices in this layer (2 bytes)
-	uint16_t NumLayerVerticesWater; // Number of underwater vertices in this layer (2 bytes)
-	uint16_t UnknownL1;
-	uint16_t NumLayerRectangles; // Number of rectangles in this layer (2 bytes)
-	uint16_t NumLayerTriangles;  // Number of triangles in this layer (2 bytes)
-	uint16_t UnknownL2;
-
-	uint16_t Filler;             // Always 0
-	uint16_t Filler2;            // Always 0
-
-	// The following 6 floats define the bounding box for the layer
-
-
-
-	bounding_box_f BoundingBox;
-
-	uint32_t Filler3;     // Always 0 (4 bytes)
-	void* VerticesOffset;
-	void* PolyOffset;
-	void* PolyOffset2;
+	short	nVtx;
+	short	nWVtx;
+	short	nSVtx;
+	short	nQuad;
+	short	nTri;
+	short	nWQuad;
+	short	nWTri;
+	short	padd;
+	float	bBox[6];
+	LPDIRECT3DVERTEXBUFFER	pVtx;
+	float* pSVtx;
+	short* pFac;
+	int* pPrelight;
 };
 
 struct ROOM_LIGHT   // 88 bytes
