@@ -410,7 +410,7 @@ short GetTiltType(FLOOR_INFO* floor, long x, long y, long z)
 
 	while (floor->pit_room != 255)
 	{
-		if (CheckNoColFloorTriangle(floor, x, z))
+		if (CheckNoColFloorTriangle(floor, x, z) == 1)
 			break;
 
 		Room = &room[floor->pit_room];

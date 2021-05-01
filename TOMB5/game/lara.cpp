@@ -2293,14 +2293,6 @@ void lara_col_hang(ITEM_INFO* item, COLL_INFO* coll)
 				}
 			}
 
-			if (lara.climb_status != 0)
-			{
-				item->goal_anim_state = AS_HANG2DUCK;
-				item->required_anim_state = AS_DUCK;
-			}
-			else
-				item->goal_anim_state = AS_NULL;
-
 			if (lara.climb_status != 0 &&
 				coll->mid_ceiling <= -256 &&
 				ABS(coll->left_ceiling2 - coll->right_ceiling2) < 60)

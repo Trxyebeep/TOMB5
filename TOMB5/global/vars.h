@@ -264,6 +264,18 @@
 #define GLOBAL_invkeypadcombination	VAR_U_(0x0051CF2C, int)
 #define DestFadeScreenHeight	VAR_U_(0x0051D076, short)
 #define dels_cutseq_selector_flag	VAR_U_(0x0051CE2A, short)
+#define pcring1	VAR_U_(0x00E59BC0, RINGME)
+#define pcring2	VAR_U_(0x00E59940, RINGME)
+#define InventoryActive	VAR_U_(0x0051CF20, int)
+#define xoffset	VAR_U_(0x00E598A0, int)//inv
+#define yoffset	VAR_U_(0x00E5990C, int)//inv
+#define pcbright	VAR_U_(0x00508E10, long)//inv
+#define gfFog	VAR_U_(0x0051CE30, CVECTOR)
+#define GlobalFogOff	VAR_U_(0x0051CE04, int)
+#define LiftDoor	VAR_U_(0x0051CB40, char)
+#define GlobalSoftReset	VAR_U_(0x00E5C2F8, int)
+#define GlobalAlpha	VAR_U_(0x00506D3C, int)
+#define current_item	VAR_U_(0x009158A8, ITEM_INFO*)
 
 
 #define	phd_winxmax	VAR_U_(0x0055D218, short)
@@ -306,33 +318,25 @@
 
 
 //GUESSED
-#define gfFogColour	VAR_U_(0x0051CE30, CVECTOR)
 #define	lara1_look_fade	VAR_U_(0x00511A18, short)
 #define	lara4_look_fade	VAR_U_(0x00511A1A, short)
-#define inv_light	VAR_U_(0x00508E10, long)//seems to only affect the ammo ring?
-#define inv_item_xpos	VAR_U_(0x00E598A0, float)
-#define inv_item_ypos	VAR_U_(0x00E5990C, float)
-#define in_inv_or_pause	VAR_U_(0x0051CF20, int)//1 in inv, pause screen, save load, 0 everywhere else. including in title screen. even save/load from title is 0. 0 in loading screens.
-#define inv_ring_ptr	VAR_U_(0x00E59BC0, RINGME)
-#define ammo_ring_ptr	VAR_U_(0x00E59940, RINGME)
+
+
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
 //if 0 + playing cut menu selections dont make a sound. never seems to be the case though!
 
-#define selected_option	VAR_U_(0x005082F0, int)//currently selected option in the title screen. 
-//"new game" = 1, "load game" = 2, "options" = 3, "exit" = 4
-
-#define selected_option_4	VAR_U_(0x005082F4, int)//gay
+#define selected_option	VAR_U_(0x005082F0, __int64)
 
 #define menu_to_display	VAR_U_(0x0051CE40, int)//which menu should we be displaying right now??
 //0 main menu, del's cutseq selector. 1 level select. 2 the reload menu. 3 the options menu
 
-#define _00C87BF0	VAR_U_(0x00C87BF0, int)// 2 everywhere, 1 in loading screens...?????????????????
+#define DoFade	VAR_U_(0x00C87BF0, int)// 2 everywhere, 1 in loading screens
 
 #define title_string	ARRAY_(0x0050842C, char, [8])
 
-#define weirdo	VAR_U_(0x005082C4, int)
+#define nframes	VAR_U_(0x005082C4, int)
 
 #define selected_level	VAR_U_(0x0051CE50, int)//# (on the list) of the selected level in the level select menu
 
@@ -404,12 +408,8 @@
 
 
 //unknowns
-#define dword_51CE04	VAR_U_(0x0051CE04, int)//SetFog
 #define	dword_50A440	VAR_U_(0x0050A440, float)//AlterFOV
 #define	flt_55D1F8	VAR_U_(0x0055D1F8, float)//AlterFOV
-#define	dword_55D224	VAR_U_(0x0055D224, int)//AlterFOV
-#define byte_51CB40	VAR_U_(0x0051CB40, char)//OpenThatDoor//DoorControl
 #define dword_00E916F0	VAR_U_(0x00E916F0, int)//special 1 control, special 2 init, special 3 init, special 4 init
-#define dword_506D3C	VAR_U_(0x00506D3C, int)//DrawInventoryItemMe
-#define dword_9158A8	VAR_U_(0x009158A8, ITEM_INFO*)//game is horny to save some item's pointer (:
-#define dword_E5C2F8	VAR_U_(0x00E5C2F8, int)//S_CallInventory2, DoLevel... some sort of flag
+
+

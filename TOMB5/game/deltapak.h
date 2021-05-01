@@ -161,7 +161,7 @@ int DecodeTrack(char* packed, RTDECODE* decode);
 void DecodeAnim(PACKNODE* node, int num_nodes, int frame, unsigned short flags);
 void do_new_cutscene_camera();
 void updateAnimFrame(PACKNODE* node, int flags, short* frame);
-void _DrawCutSeqActors();
+void DrawCutSeqActors();
 void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot);
 void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, __int16* rot, PHD_VECTOR* pos);
 void frigup_lara();
