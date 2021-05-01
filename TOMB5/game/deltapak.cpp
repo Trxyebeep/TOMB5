@@ -24,10 +24,10 @@
 #include "spotcam.h"
 #include <d3dtypes.h>
 #include "cutseq.h"
-#include "../specific/matrix_shit.h"
 #include "../specific/light.h"
 #include "../specific/3dmath.h"
 #include "../specific/output.h"
+#include "draw.h"
 
 short frig_shadow_bbox[6] =
 {
@@ -3482,7 +3482,7 @@ void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot)
 	CreateLightList(item);
 }
 
-void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, __int16* rot, PHD_VECTOR* pos)
+void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PHD_VECTOR* pos)
 {
 	short* rotation1;
 

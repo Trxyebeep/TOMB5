@@ -4,7 +4,6 @@
 #include "../specific/game.h"
 #include "../specific/display.h"
 #include "../specific/specific.h"
-#include "../specific/drawprimitive.h"
 #include "../specific/file.h"
 #include "sound.h"
 #include "spotcam.h"
@@ -17,6 +16,7 @@
 #include "items.h"
 #include "lot.h"
 #include "../specific/output.h"
+#include "draw.h"
 
 struct cutseq_selector_item
 {

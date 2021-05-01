@@ -20,10 +20,9 @@
 #include "../specific/picture.h"
 #include "../specific/input.h"
 #include "../specific/output.h"
-#include "../specific/drawprimitive.h"
 #include "health.h"
 #include "../specific/3dmath.h"
-#include "../specific/output.h"
+#include "draw.h"
 
 short optmessages[11] =
 {

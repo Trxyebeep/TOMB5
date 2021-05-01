@@ -844,6 +844,48 @@ x for functions decompiled but not injected, for one reason or another.
 0x0046F480		_Straighten
 
 
+		game/draw.cpp
+
+0x0042A1B0		CalculateObjectLightingLara
+0x0042A310		UpdateSkyLightning
+0x0042A400		DrawPhaseGame
+0x0042A4A0		SkyDrawPhase
+0x0042A7A0		DrawRooms
+0x0042AF50		ClipRoom
+0x0042B340		DrawEffect
+0x0042B4C0		calc_animating_item_clip_window
+0x0042B900		DrawAnimatingItem
+0x0042BE90		InitInterpolate
+0x0042BF00		phd_PopMatrix_I
+0x0042BF50		phd_PushMatrix_I
+0x0042BFC0		phd_RotY_I
+0x0042C030		phd_RotX_I
+0x0042C0A0		phd_RotZ_I
+0x0042C110		phd_TranslateRel_I
+0x0042C190		phd_TranslateRel_ID
+0x0042C210		phd_RotYXZ_I
+0x0042C290		gar_RotYXZsuperpack_I
+0x0042C310		gar_RotYXZsuperpack
+0x0042C3F0		phd_PutPolygons_I
+0x0042C440		aInterpolateMatrix
+0x0042C790		aInterpolateArmMatrix
+0x0042C8F0		InterpolateMatrix
+0x0042CC10		InterpolateArmMatrix
+0x0042CD50		CalculateObjectLighting
+0x0042CEB0		GetFrames
+0x0042CF80	+	GetBoundsAccurate
+0x0042D020	+	GetBestFrame
+0x0042D060		DrawStaticObjects
+0x0042D290		PrintObjects
+0x0042D4F0		GetRoomBounds
+0x0042D790		SetRoomBounds
+0x0042DE20		RenderIt
+0x0042E1C0		PrintRooms
+0x0042E240		mRotBoundingBoxNoPersp
+0x0042E500		SetupSkelebobMeshswaps
+0x0042E630		RestoreLaraMeshswaps
+
+
 // ======================================
 // SPECIFIC
 // ======================================
