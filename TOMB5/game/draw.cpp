@@ -170,12 +170,12 @@ void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, int skip)
 
 void gar_RotYXZsuperpack(short** pprot, int skip)
 {
-	short* prot;
+	unsigned short* prot;
 	long packed;
 
 	while (skip)
 	{
-		prot = *pprot;
+		prot = (unsigned short*)*pprot;
 
 		if (*prot & (49152))
 			*pprot += 1;
@@ -185,7 +185,7 @@ void gar_RotYXZsuperpack(short** pprot, int skip)
 		skip--;
 	}
 
-	prot = *pprot;
+	prot = (unsigned short*)*pprot;
 
 	if ((*prot >> 14))
 	{
