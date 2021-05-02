@@ -3384,7 +3384,7 @@ void DrawCutSeqActors()
 	if (GLOBAL_cutme->numactors <= 1)
 	{
 		phd_mxptr -= 12;
-		phd_dxptr -= 12;
+		aMXPtr -= 12;
 		return;
 	}
 
@@ -3427,7 +3427,7 @@ void DrawCutSeqActors()
 				if (*bone & 1)
 				{
 					phd_mxptr -= 12;
-					phd_dxptr -= 12;
+					aMXPtr -= 12;
 				}
 
 				if (*bone & 2)
@@ -3455,11 +3455,11 @@ void DrawCutSeqActors()
 		}
 
 		phd_mxptr -= 12;
-		phd_dxptr -= 12;
+		aMXPtr -= 12;
 	}
 
 	phd_mxptr -= 12;
-	phd_dxptr -= 12;
+	aMXPtr -= 12;
 }
 
 void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot)
@@ -3497,7 +3497,7 @@ void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PH
 	pos->y += item->pos.y_pos;
 	pos->z += item->pos.z_pos;
 	phd_mxptr -= 12;
-	phd_dxptr -= 12;
+	aMXPtr -= 12;
 }
 
 void frigup_lara()
@@ -3521,7 +3521,7 @@ void frigup_lara()
 	phd_PushUnitMatrix();
 	Rich_CalcLaraMatrices_Normal(frame, bone, 1);
 	phd_mxptr -= 12;
-	phd_dxptr -= 12;
+	aMXPtr -= 12;
 	HairControl(0, 0, frame);
 
 	if ((gfLevelFlags & GF_LVOP_YOUNG_LARA))

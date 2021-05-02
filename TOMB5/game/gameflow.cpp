@@ -109,7 +109,7 @@ void DoGameflow()
 			gfFog.r = 0;
 			gfFog.g = 0;
 			gfFog.b = 0;
-			gfFog.cd = 0;
+			gfFog.a = 0;
 
 			if (gfStatus != 2)
 			{
@@ -537,6 +537,11 @@ int TitleOptions()
 				gfLevelComplete = cheat_jump;
 				ret = 3;
 			}
+
+#ifdef cutseq_selector
+			if (keymap[33] && keymap[22] && keymap[46] && keymap[37])//F U C K because this is fucking shit.
+				dels_cutseq_selector_flag = 1;
+#endif
 		}
 
 		if (dbinput & IN_SELECT && !keymap[56] && menu_to_display < 2)
@@ -733,10 +738,10 @@ void do_dels_cutseq_selector()
 	if (dbinput & IN_FORWARD && selection)
 		selection--;
 
-	if (dbinput & IN_BACK && selection < 36)
+	if (dbinput & IN_BACK && selection < 35)
 		selection++;
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; num < 36 && i < 5; i++)
 	{
 		name = &cutseq_selector_data[num].string;
 		PrintString((short)phd_centerx, i * font_height + 136, (-(selection != num) & 4) + 1, &gfStringWad[gfStringOffset_bis[*name]], 0x8000);

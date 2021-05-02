@@ -468,7 +468,7 @@ void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, 
 		DrawInventoryItemMe(&item, shade, overlay, 0);
 		
 	phd_mxptr -= 12;
-	phd_dxptr -= 12;
+	aMXPtr -= 12;
 	xoffset = phd_centerx;
 	yoffset = phd_centery;
 }
@@ -546,7 +546,7 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 		if (poppush & 1)
 		{
 			phd_mxptr -= 12;
-			phd_dxptr -= 12;
+			aMXPtr -= 12;
 		}
 
 		if (poppush & 2)
@@ -571,7 +571,7 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 	}
 
 	phd_mxptr -= 12;
-	phd_dxptr -= 12;
+	aMXPtr -= 12;
 }
 
 int go_and_load_game()

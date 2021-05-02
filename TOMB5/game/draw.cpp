@@ -1,6 +1,7 @@
 #include "../tomb5/pch.h"
 #include "../global/types.h"
 #include "draw.h"
+#include "../specific/3dmath.h"
 
 short* GetBoundsAccurate(ITEM_INFO* item)
 {
@@ -35,9 +36,189 @@ short* GetBestFrame(ITEM_INFO* item)
 		return frm[0];
 }
 
+void InitInterpolate(int frac, int rate)
+{
+	IM_rate = rate;
+	IM_frac = frac;
+	IMptr = IMstack;
+	aIMXPtr = aIFMStack;
+	memcpy(IMstack, phd_mxptr, 48);
+	memcpy(aIFMStack, aMXPtr, 48);
+}
+
+void phd_PopMatrix_I()
+{
+	phd_mxptr -= 12;
+	aMXPtr -= 12;
+	IMptr -= 12;
+	aIMXPtr -= 12;
+}
+
+void phd_PushMatrix_I()
+{
+	phd_PushMatrix();
+	memcpy(IMptr + 12, IMptr, 48);
+	memcpy(aIMXPtr + 12, aIMXPtr, 48);
+	IMptr += 12;
+	aIMXPtr += 12;
+}
+
+void phd_RotY_I(short ang)
+{
+	int* mxptr;
+	float* amxptr;
+
+	phd_RotY(ang);
+	mxptr = phd_mxptr;
+	amxptr = aMXPtr;
+	phd_mxptr = IMptr;
+	aMXPtr = aIMXPtr;
+	phd_RotY(ang);
+	phd_mxptr = mxptr;
+	aMXPtr = amxptr;
+}
+
+void phd_RotX_I(short ang)
+{
+	int* mxptr;
+	float* amxptr;
+
+	phd_RotX(ang);
+	mxptr = phd_mxptr;
+	amxptr = aMXPtr;
+	phd_mxptr = IMptr;
+	aMXPtr = aIMXPtr;
+	phd_RotX(ang);
+	phd_mxptr = mxptr;
+	aMXPtr = amxptr;
+}
+
+void phd_RotZ_I(short ang)
+{
+	int* mxptr;
+	float* amxptr;
+
+	phd_RotZ(ang);
+	mxptr = phd_mxptr;
+	amxptr = aMXPtr;
+	phd_mxptr = IMptr;
+	aMXPtr = aIMXPtr;
+	phd_RotZ(ang);
+	phd_mxptr = mxptr;
+	aMXPtr = amxptr;
+}
+
+void phd_TranslateRel_I(int x, int y, int z)
+{
+	int* mxptr;
+	float* amxptr;
+
+	phd_TranslateRel(x, y, z);
+	mxptr = phd_mxptr;
+	phd_mxptr = IMptr;
+	amxptr = aMXPtr;
+	aMXPtr = aIMXPtr;
+	phd_TranslateRel(x, y, z);
+	phd_mxptr = mxptr;
+	aMXPtr = amxptr;
+}
+
+void phd_TranslateRel_ID(int x, int y, int z, int x2, int y2, int z2)
+{
+	int* mxptr;
+	float* amxptr;
+
+	phd_TranslateRel(x, y, z);
+	mxptr = phd_mxptr;
+	amxptr = aMXPtr;
+	phd_mxptr = IMptr;
+	aMXPtr = aIMXPtr;
+	phd_TranslateRel(x2, y2, z2);
+	aMXPtr = amxptr;
+	phd_mxptr = mxptr;
+}
+
+void phd_RotYXZ_I(short y, short x, short z)
+{
+	int* mxptr;
+	float* amxptr;
+
+	phd_RotYXZ(y, x, z);
+	mxptr = phd_mxptr;
+	phd_mxptr = IMptr;
+	amxptr = aMXPtr;
+	aMXPtr = aIMXPtr;
+	phd_RotYXZ(y, x, z);
+	phd_mxptr = mxptr;
+	aMXPtr = amxptr;
+}
+
+void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, int skip)
+{
+	int* mxptr;
+	float* amxptr;
+
+	gar_RotYXZsuperpack(pprot1, skip);
+	mxptr = phd_mxptr;
+	amxptr = aMXPtr;
+	phd_mxptr = IMptr;
+	aMXPtr = aIMXPtr;
+	gar_RotYXZsuperpack(pprot2, skip);
+	phd_mxptr = mxptr;
+	aMXPtr = amxptr;
+}
+
+void gar_RotYXZsuperpack(short** pprot, int skip)
+{
+	short* prot;
+	long packed;
+
+	while (skip)
+	{
+		prot = *pprot;
+
+		if (*prot & (49152))
+			*pprot += 1;
+		else
+			*pprot += 2;
+
+		skip--;
+	}
+
+	prot = *pprot;
+
+	if ((*prot >> 14))
+	{
+		if ((*prot >> 14) == 1)
+			phd_RotX((short)((*prot & 4095) << 4));
+		else if ((*prot >> 14) == 2)
+			phd_RotY((short)((*prot & 4095) << 4));
+		else
+			phd_RotZ((short)((*prot & 4095) << 4));
+	}
+	else
+	{
+		phd_RotYXZpack(((unsigned short)**pprot << 16) + (unsigned short)(*pprot)[1]);
+		*pprot += 2;
+		return;
+	}
+
+	++*pprot;
+}
 
 void inject_draw()
 {
 	INJECT(0x0042CF80, GetBoundsAccurate);
 	INJECT(0x0042D020, GetBestFrame);
+	INJECT(0x0042BE90, InitInterpolate);
+	INJECT(0x0042BF00, phd_PopMatrix_I);
+	INJECT(0x0042BF50, phd_PushMatrix_I);
+	INJECT(0x0042BFC0, phd_RotY_I);
+	INJECT(0x0042C030, phd_RotX_I);
+	INJECT(0x0042C0A0, phd_RotZ_I);
+	INJECT(0x0042C110, phd_TranslateRel_I);
+	INJECT(0x0042C190, phd_TranslateRel_ID);
+	INJECT(0x0042C210, phd_RotYXZ_I);
+	INJECT(0x0042C290, gar_RotYXZsuperpack_I);
+	INJECT(0x0042C310, gar_RotYXZsuperpack);
 }

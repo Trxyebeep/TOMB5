@@ -40,7 +40,7 @@ void DrawHair()
 			}
 
 			phd_mxptr -= 12;
-			phd_dxptr -= 12;
+			aMXPtr -= 12;
 		}
 
 		meshpp = &meshes[objects[HAIR].mesh_index];

@@ -396,27 +396,8 @@ struct SVECTOR
 };
 
 struct CVECTOR
-{        /* color type vector */
-	union
-	{
-		struct
-		{
-			unsigned char b, g, r, cd;
-		};
-		uint32_t rgbcd{};
-	};
-
-	CVECTOR() = default;
-
-	CVECTOR(BYTE r, BYTE g, BYTE b)
-		: b(b), g(g), r(r), cd(0)
-	{
-	}
-
-	CVECTOR(BYTE r, BYTE g, BYTE b, BYTE cd)
-		: b(b), g(g), r(r), cd(cd)
-	{
-	}
+{
+	char b, g, r, a;
 };
 
 struct CHANGE_STRUCT
