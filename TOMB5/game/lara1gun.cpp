@@ -694,9 +694,9 @@ void TriggerGrapplingEffect(long x, long y, long z)
 		sptr->MaxYvel = 0;
 		sptr->Gravity = 0;
 		size = (GetRandomControl() & 0xF) + 48;
-		sptr->dSize = size << 1;
-		sptr->sSize = size >> 2;
-		sptr->Size = size >> 2;
+		sptr->dSize = (unsigned char)(size >> 1);
+		sptr->sSize = (unsigned char)(size >> 2);
+		sptr->Size = (unsigned char)(size >> 2);
 		sptr->mirror = 0;
 	}
 }

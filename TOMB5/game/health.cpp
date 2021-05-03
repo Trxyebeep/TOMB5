@@ -7,6 +7,7 @@
 #include "newinv2.h"
 #include "objects.h"
 #include "../specific/output.h"
+#include "../specific/LoadSave.h"
 
 int FlashIt()
 {

@@ -9,7 +9,7 @@ void S_DrawPickup(short object_number)
 	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
 	SetD3DViewMatrix();
 	aSetViewMatrix();
-	DrawThreeDeeObject2D((phd_winxmax * 0.001953125 * 448.0 + PickupX), (phd_winymax * 0.00390625 * 216.0), convert_obj_to_invobj(object_number),
+	DrawThreeDeeObject2D((int)(phd_winxmax * 0.001953125 * 448.0 + PickupX), (int)(phd_winymax * 0.00390625 * 216.0), convert_obj_to_invobj(object_number),
 		128, 0, (GnFrameCounter & 0x7F) << 9, 0, 0, 1);
 }
 

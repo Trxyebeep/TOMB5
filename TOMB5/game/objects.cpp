@@ -499,7 +499,7 @@ void ControlTriggerTriggerer(short item_number)
 void AnimateWaterfalls()
 {
 	waterfallY = ((char)waterfallY - 7) & 0x3F;
-	float speed = (float)waterfallY * 0.00390625;
+	float speed = (float)(waterfallY * 0.00390625);
 	for (int i = 0; i < 6; i++)
 	{
 		OBJECT_INFO* obj = &objects[WATERFALL1 + i];
@@ -508,17 +508,17 @@ void AnimateWaterfalls()
 			if (obj->nmeshes & 1)
 			{
 				OBJECT_TEXTURE* Twaterfall = AnimatingWaterfalls[i];
-				Twaterfall->vertices[0].y = speed + AnimatingWaterfallsV[i];
-				Twaterfall->vertices[1].y = speed + AnimatingWaterfallsV[i];
-				Twaterfall->vertices[2].y = speed + AnimatingWaterfallsV[i] + 0.24609375;
-				Twaterfall->vertices[3].y = speed + AnimatingWaterfallsV[i] + 0.24609375;
+				Twaterfall->vertices[0].y = (float)(speed + AnimatingWaterfallsV[i]);
+				Twaterfall->vertices[1].y = (float)(speed + AnimatingWaterfallsV[i]);
+				Twaterfall->vertices[2].y = (float)(speed + AnimatingWaterfallsV[i] + 0.24609375);
+				Twaterfall->vertices[3].y = (float)(speed + AnimatingWaterfallsV[i] + 0.24609375);
 				if (i < 4)
 				{
 					OBJECT_TEXTURE* Twaterfall1 = Twaterfall + 1;
-					Twaterfall1->vertices[0].y = speed + AnimatingWaterfallsV[i];
-					Twaterfall1->vertices[1].y = speed + AnimatingWaterfallsV[i];
-					Twaterfall1->vertices[2].y = speed + AnimatingWaterfallsV[i] + 0.24609375;
-					Twaterfall1->vertices[3].y = speed + AnimatingWaterfallsV[i] + 0.24609375;
+					Twaterfall1->vertices[0].y = (float)(speed + AnimatingWaterfallsV[i]);
+					Twaterfall1->vertices[1].y = (float)(speed + AnimatingWaterfallsV[i]);
+					Twaterfall1->vertices[2].y = (float)(speed + AnimatingWaterfallsV[i] + 0.24609375);
+					Twaterfall1->vertices[3].y = (float)(speed + AnimatingWaterfallsV[i] + 0.24609375);
 				}
 			}
 		}
@@ -800,7 +800,7 @@ void CutsceneRopeControl(short item_number)
 	dy = (pos2.y - pos1.y) * (pos2.y - pos1.y);
 	dz = (pos2.z - pos1.z) * (pos2.z - pos1.z);
 
-	item->item_flags[1] = ((phd_sqrt(dx + dy + dz) << 1) + phd_sqrt(dx + dy + dz)) << 1;
+	item->item_flags[1] = (short)(((phd_sqrt(dx + dy + dz) << 1) + phd_sqrt(dx + dy + dz)) << 1);
 	item->pos.x_rot = -4869;
 }
 

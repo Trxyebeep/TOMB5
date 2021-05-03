@@ -788,7 +788,7 @@ void LookUpDown()
 		if (lara.head_x_rot > -6370)
 		{
 			if (BinocularRange)
-				lara.head_x_rot += 364 * (BinocularRange - 1792) / 3072;
+				lara.head_x_rot += (short)(364 * (BinocularRange - 1792) / 3072);
 			else
 				lara.head_x_rot -= 364;
 		}
@@ -800,7 +800,7 @@ void LookUpDown()
 		if (lara.head_x_rot < 5460)
 		{
 			if (BinocularRange)
-				lara.head_x_rot += 364 * (1792 - BinocularRange) / 3072;
+				lara.head_x_rot += (short)(364 * (1792 - BinocularRange) / 3072);
 			else
 				lara.head_x_rot += 364;
 		}
@@ -820,7 +820,7 @@ void LookLeftRight()
 		if (lara.head_y_rot > -8008)
 		{
 			if (BinocularRange)
-				lara.head_y_rot += 364 * (BinocularRange - 1792) / 1536;
+				lara.head_y_rot += (short)(364 * (BinocularRange - 1792) / 1536);
 			else
 				lara.head_y_rot -= 364;
 		}
@@ -832,7 +832,7 @@ void LookLeftRight()
 		if (lara.head_y_rot < 8008)
 		{
 			if (BinocularRange)
-				lara.head_y_rot += 364 * (1792 - BinocularRange) / 1536;
+				lara.head_y_rot += (short)(364 * (1792 - BinocularRange) / 1536);
 			else
 				lara.head_y_rot += 364;
 		}
@@ -1121,7 +1121,7 @@ int TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
 		item->frame_number = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
 		item->goal_anim_state = AS_UPJUMP;
 		item->current_anim_state = AS_STOP;
-		lara.calc_fallspeed = -3 - phd_sqrt(hdif * -12 + -9600);
+		lara.calc_fallspeed = (short)(-3 - phd_sqrt(hdif * -12 + -9600));
 		AnimateLara(item);
 	}
 
@@ -1929,7 +1929,7 @@ short LaraFloorFront(ITEM_INFO* item, short ang, long dist)
 	long x;
 	long y;
 	long z;
-	short height;
+	long height;
 
 	room_num = item->room_number;
 	x = item->pos.x_pos + ((dist * phd_sin(ang)) >> 14);
@@ -1940,14 +1940,14 @@ short LaraFloorFront(ITEM_INFO* item, short ang, long dist)
 	if (height != NO_HEIGHT)
 		height -= item->pos.y_pos;
 
-	return height;
+	return (short)height;
 }
 
 short LaraCeilingFront(ITEM_INFO* item, short ang, long dist, long h)
 {
 	short room_num;
 	long x, y, z;
-	short height;
+	long height;
 
 	x = item->pos.x_pos + ((dist * phd_sin(ang)) >> 14);
 	y = item->pos.y_pos - h;
@@ -1958,7 +1958,7 @@ short LaraCeilingFront(ITEM_INFO* item, short ang, long dist, long h)
 	if (height != NO_HEIGHT)
 		height += h - item->pos.y_pos;
 
-	return height;
+	return (short)height;
 }
 
 void lara_as_turn_r(ITEM_INFO* item, COLL_INFO* coll)
@@ -3729,7 +3729,7 @@ void lara_col_all4s(ITEM_INFO* item, COLL_INFO* coll)
 											item->pos.x_pos = (item->pos.x_pos & 0xFFFFFC00) + 225;
 											break;
 										case SOUTH:
-											item->pos.y_rot = 32768;
+											item->pos.y_rot = -32768;
 											item->pos.z_pos = (item->pos.z_pos | 0x3FF) - 225;
 											break;
 										case WEST:
@@ -4055,7 +4055,7 @@ void lara_col_crawl2hang(ITEM_INFO* item, COLL_INFO* coll)
 		else if (angle >= 10014 && angle <= 22754)
 			angle = 16384;
 		else if (angle >= 26397 || angle <= -26397)
-			angle = 32768;
+			angle = -32768;
 		else if (angle >= -22754 && angle <= -10014)
 			angle = -16384;
 
@@ -4578,7 +4578,7 @@ void lara_col_ropefwd(ITEM_INFO* item, COLL_INFO* coll)
 			else
 				Vel = 0;
 
-			ApplyVelocityToRope(lara.RopeSegment - 2, item->pos.y_rot + (!lara.RopeDirection ? 32760 : 0), Vel >> 5);
+			ApplyVelocityToRope(lara.RopeSegment - 2, item->pos.y_rot + (!lara.RopeDirection ? 32760 : 0), (unsigned short)(Vel >> 5));
 		}
 
 		if (lara.RopeFrame > lara.RopeDFrame)
@@ -4596,7 +4596,7 @@ void lara_col_ropefwd(ITEM_INFO* item, COLL_INFO* coll)
 				lara.RopeFrame = lara.RopeDFrame;
 		}
 
-		item->frame_number = lara.RopeFrame >> 8;
+		item->frame_number = (short)(lara.RopeFrame >> 8);
 
 		if (!(input & IN_SPRINT) &&
 			lara.RopeFrame >> 8 == anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base + 32 &&
@@ -4793,8 +4793,8 @@ void lara_as_pbleapoff(ITEM_INFO* item, COLL_INFO* coll)
 		else
 			Dist = pitem->trigger_flags % 100 - 2;
 
-		item->fallspeed = -(20 * Dist + 64);
-		item->speed = 20 * Dist + 58;
+		item->fallspeed = -((short)(20 * Dist + 64));
+		item->speed = short(20 * Dist + 58);
 	}
 
 	if (item->frame_number == anims[item->anim_number].frame_end)

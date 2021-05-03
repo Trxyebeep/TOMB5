@@ -35,7 +35,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	int xright, xleft, zright, zleft;
 	int x, z;
 	long height;
-	short ceiling;
+	long ceiling;
 	unsigned short tilt_type;
 
 	if (objheight < 0)
