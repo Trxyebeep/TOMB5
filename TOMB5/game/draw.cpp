@@ -2,6 +2,7 @@
 #include "../global/types.h"
 #include "draw.h"
 #include "../specific/3dmath.h"
+#include "../specific/output.h"
 
 short* GetBoundsAccurate(ITEM_INFO* item)
 {
@@ -206,6 +207,105 @@ void gar_RotYXZsuperpack(short** pprot, int skip)
 	++*pprot;
 }
 
+void phd_PutPolygons_I(short* ptr, int clip)
+{
+	phd_PushMatrix();
+	InterpolateMatrix();
+	phd_PutPolygons(ptr, clip);
+	phd_mxptr -= 12;
+	aMXPtr -= 12;
+}
+
+void aInterpolateMatrix()
+{
+	float* matrixp;
+	float* iMatrixp;
+
+	matrixp = aMXPtr;
+	iMatrixp = aIMXPtr;
+
+	if (IM_rate == 2)
+	{
+		matrixp[0] = (iMatrixp[0] + matrixp[0]) * 0.5;
+		matrixp[1] = (iMatrixp[1] + matrixp[1]) * 0.5;
+		matrixp[2] = (iMatrixp[2] + matrixp[2]) * 0.5;
+		matrixp[3] = (iMatrixp[3] + matrixp[3]) * 0.5;
+		matrixp[4] = (iMatrixp[4] + matrixp[4]) * 0.5;
+		matrixp[5] = (iMatrixp[5] + matrixp[5]) * 0.5;
+		matrixp[6] = (iMatrixp[6] + matrixp[6]) * 0.5;
+		matrixp[7] = (iMatrixp[7] + matrixp[7]) * 0.5;
+		matrixp[8] = (iMatrixp[8] + matrixp[8]) * 0.5;
+		matrixp[9] = (iMatrixp[9] + matrixp[9]) * 0.5;
+		matrixp[10] = (iMatrixp[10] + matrixp[10]) * 0.5;
+		matrixp[11] = (iMatrixp[11] + matrixp[11]) * 0.5;
+		return;
+	}
+
+	if (IM_frac == 2)
+	{
+		if (IM_rate != 4)
+		{
+			matrixp[0] = iMatrixp[0] - (float)((iMatrixp[0] - matrixp[0]) * 0.25);
+			matrixp[1] = iMatrixp[1] - (float)((iMatrixp[1] - matrixp[1]) * 0.25);
+			matrixp[2] = iMatrixp[2] - (float)((iMatrixp[2] - matrixp[2]) * 0.25);
+			matrixp[3] = iMatrixp[3] - (float)((iMatrixp[3] - matrixp[3]) * 0.25);
+			matrixp[4] = iMatrixp[4] - (float)((iMatrixp[4] - matrixp[4]) * 0.25);
+			matrixp[5] = iMatrixp[5] - (float)((iMatrixp[5] - matrixp[5]) * 0.25);
+			matrixp[6] = iMatrixp[6] - (float)((iMatrixp[6] - matrixp[6]) * 0.25);
+			matrixp[7] = iMatrixp[7] - (float)((iMatrixp[7] - matrixp[7]) * 0.25);
+			matrixp[8] = iMatrixp[8] - (float)((iMatrixp[8] - matrixp[8]) * 0.25);
+			matrixp[9] = iMatrixp[9] - (float)((iMatrixp[9] - matrixp[9]) * 0.25);
+			matrixp[10] = iMatrixp[10] - (float)((iMatrixp[10] - matrixp[10]) * 0.25);
+			matrixp[11] = iMatrixp[11] - (float)((iMatrixp[11] - matrixp[11]) * 0.25);
+			return;
+		}
+
+		matrixp[0] = (iMatrixp[0] + matrixp[0]) * 0.5;
+		matrixp[1] = (iMatrixp[1] + matrixp[1]) * 0.5;
+		matrixp[2] = (iMatrixp[2] + matrixp[2]) * 0.5;
+		matrixp[3] = (iMatrixp[3] + matrixp[3]) * 0.5;
+		matrixp[4] = (iMatrixp[4] + matrixp[4]) * 0.5;
+		matrixp[5] = (iMatrixp[5] + matrixp[5]) * 0.5;
+		matrixp[6] = (iMatrixp[6] + matrixp[6]) * 0.5;
+		matrixp[7] = (iMatrixp[7] + matrixp[7]) * 0.5;
+		matrixp[8] = (iMatrixp[8] + matrixp[8]) * 0.5;
+		matrixp[9] = (iMatrixp[9] + matrixp[9]) * 0.5;
+		matrixp[10] = (iMatrixp[10] + matrixp[10]) * 0.5;
+		matrixp[11] = (iMatrixp[11] + matrixp[11]) * 0.5;
+		return;
+	}
+
+	if (IM_frac != 1)
+	{
+		matrixp[0] = iMatrixp[0] - (float)((iMatrixp[0] - matrixp[0]) * 0.25);
+		matrixp[1] = iMatrixp[1] - (float)((iMatrixp[1] - matrixp[1]) * 0.25);
+		matrixp[2] = iMatrixp[2] - (float)((iMatrixp[2] - matrixp[2]) * 0.25);
+		matrixp[3] = iMatrixp[3] - (float)((iMatrixp[3] - matrixp[3]) * 0.25);
+		matrixp[4] = iMatrixp[4] - (float)((iMatrixp[4] - matrixp[4]) * 0.25);
+		matrixp[5] = iMatrixp[5] - (float)((iMatrixp[5] - matrixp[5]) * 0.25);
+		matrixp[6] = iMatrixp[6] - (float)((iMatrixp[6] - matrixp[6]) * 0.25);
+		matrixp[7] = iMatrixp[7] - (float)((iMatrixp[7] - matrixp[7]) * 0.25);
+		matrixp[8] = iMatrixp[8] - (float)((iMatrixp[8] - matrixp[8]) * 0.25);
+		matrixp[9] = iMatrixp[9] - (float)((iMatrixp[9] - matrixp[9]) * 0.25);
+		matrixp[10] = iMatrixp[10] - (float)((iMatrixp[10] - matrixp[10]) * 0.25);
+		matrixp[11] = iMatrixp[11] - (float)((iMatrixp[11] - matrixp[11]) * 0.25);
+		return;
+	}
+
+	matrixp[0] += (float)((iMatrixp[0] - matrixp[0]) * 0.25);
+	matrixp[1] += (float)((iMatrixp[1] - matrixp[1]) * 0.25);
+	matrixp[2] += (float)((iMatrixp[2] - matrixp[2]) * 0.25);
+	matrixp[3] += (float)((iMatrixp[3] - matrixp[3]) * 0.25);
+	matrixp[4] += (float)((iMatrixp[4] - matrixp[4]) * 0.25);
+	matrixp[5] += (float)((iMatrixp[5] - matrixp[5]) * 0.25);
+	matrixp[6] += (float)((iMatrixp[6] - matrixp[6]) * 0.25);
+	matrixp[7] += (float)((iMatrixp[7] - matrixp[7]) * 0.25);
+	matrixp[8] += (float)((iMatrixp[8] - matrixp[8]) * 0.25);
+	matrixp[9] += (float)((iMatrixp[9] - matrixp[9]) * 0.25);
+	matrixp[10] += (float)((iMatrixp[10] - matrixp[10]) * 0.25);
+	matrixp[11] += (float)((iMatrixp[11] - matrixp[11]) * 0.25);
+}
+
 void inject_draw()
 {
 	INJECT(0x0042CF80, GetBoundsAccurate);
@@ -221,4 +321,6 @@ void inject_draw()
 	INJECT(0x0042C210, phd_RotYXZ_I);
 	INJECT(0x0042C290, gar_RotYXZsuperpack_I);
 	INJECT(0x0042C310, gar_RotYXZsuperpack);
+	INJECT(0x0042C3F0, phd_PutPolygons_I);
+	INJECT(0x0042C440, aInterpolateMatrix);
 }

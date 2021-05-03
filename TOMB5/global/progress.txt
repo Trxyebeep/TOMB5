@@ -866,8 +866,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042C210	+	phd_RotYXZ_I
 0x0042C290	+	gar_RotYXZsuperpack_I
 0x0042C310	+	gar_RotYXZsuperpack
-0x0042C3F0		phd_PutPolygons_I
-0x0042C440		aInterpolateMatrix
+0x0042C3F0	+	phd_PutPolygons_I
+0x0042C440	+	aInterpolateMatrix
 0x0042C790		aInterpolateArmMatrix
 0x0042C8F0		InterpolateMatrix
 0x0042CC10		InterpolateArmMatrix
