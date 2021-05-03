@@ -9,7 +9,6 @@ void DoTitle(unsigned char name, unsigned char audio);
 void do_dels_cutseq_selector();
 
 #define DoLevel	( (void(__cdecl*)(unsigned char, unsigned char)) 0x00435F60 )
-#define DoOptions	( (void(__cdecl*)()) 0x004ADF90 )
 
 enum gf_languages
 {

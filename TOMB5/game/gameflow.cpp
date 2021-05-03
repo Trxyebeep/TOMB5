@@ -17,6 +17,9 @@
 #include "lot.h"
 #include "../specific/output.h"
 #include "draw.h"
+#include "../specific/LoadSave.h"
+
+unsigned char dels_cutseq_selector_cursorpos = 0;
 
 struct cutseq_selector_item
 {
@@ -27,6 +30,7 @@ struct cutseq_selector_item
 
 cutseq_selector_item cutseq_selector_data[] =
 {
+	{0,0,0},
 	{STR_ANDY4B, LVL5_SINKING_SUBMARINE, 13},//cmon del this should be gallows, cut 9!
 	{STR_ANDY11, LVL5_OLD_MILL, 44},
 	{STR_SWAMPY, LVL5_OLD_MILL, 43},
@@ -63,7 +67,6 @@ cutseq_selector_item cutseq_selector_data[] =
 	{STR_ANDY6, LVL5_LABYRINTH, 33},
 	{STR_ANDYPEW, LVL5_LABYRINTH, 34},
 	{STR_ANDY7, LVL5_OLD_MILL, 35},
-	{0, 0, 0}
 };
 
 void DoGameflow()
@@ -312,7 +315,7 @@ int TitleOptions()
 	static int load_or_new;
 	static int always0 = 0;//leftover debug thing? if it's ever 1, the menu and logo don't show.
 	static int gfLevelComplete_bak;
-	static int selected_option_bak = 0;
+	static __int64 selected_option_bak = 0;
 
 	ret = 0;
 
@@ -390,7 +393,7 @@ int TitleOptions()
 
 			if (Gameflow->nLevels >= 10)
 			{
-				i = selected_option;
+				i = (int)selected_option;
 				n = 0;
 
 				for (colorFlag = 10; i; ++n)
@@ -433,12 +436,12 @@ int TitleOptions()
 				{
 					height += font_height;
 
-					if (selected_option & (1 << n))
+					if (selected_option & (1i64 << n))
 						PrintString(phd_centerx, height, 1, &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], 0x8000);
 					else
 						PrintString(phd_centerx, height, 3 - (*((char*)&nframes + i + 3) != 0), &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], 0x8000);
 
-					if (selected_option & (1 << n))
+					if (selected_option & (1i64 << n))
 						selected_level = n;
 
 					n++;
@@ -555,7 +558,7 @@ int TitleOptions()
 					gfLevelComplete = 0;
 
 					n = 0;
-					n2 = selected_option;
+					n2 = (int)selected_option;
 
 					if (n2)
 					{
@@ -725,26 +728,25 @@ void DoTitle(unsigned char name, unsigned char audio)
 
 void do_dels_cutseq_selector()
 {
-	static char selection = 0;
 	int num;
 	short* name;
 
 	PrintString(256, 102, 6, &gfStringWad[gfStringOffset_bis[STR_SELECT_CUTSCENE]], 0x8000);
-	num = selection - 4;
+	num = dels_cutseq_selector_cursorpos - 4;
 
 	if (num < 0)
 		num = 0;
 
-	if (dbinput & IN_FORWARD && selection)
-		selection--;
+	if (dbinput & IN_FORWARD && dels_cutseq_selector_cursorpos)
+		dels_cutseq_selector_cursorpos--;
 
-	if (dbinput & IN_BACK && selection < 35)
-		selection++;
+	if (dbinput & IN_BACK && dels_cutseq_selector_cursorpos < 35)
+		dels_cutseq_selector_cursorpos++;
 
 	for (int i = 0; num < 36 && i < 5; i++)
 	{
-		name = &cutseq_selector_data[num].string;
-		PrintString((short)phd_centerx, i * font_height + 136, (-(selection != num) & 4) + 1, &gfStringWad[gfStringOffset_bis[*name]], 0x8000);
+		name = &cutseq_selector_data[num + 1].string;
+		PrintString((short)phd_centerx, i * font_height + 136, (-(dels_cutseq_selector_cursorpos != num) & 4) + 1, &gfStringWad[gfStringOffset_bis[*name]], 0x8000);
 		num++;
 	}
 
@@ -753,9 +755,9 @@ void do_dels_cutseq_selector()
 		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
 		dels_cutseq_selector_flag = 0;
 		cutrot = 0;
-		gfLevelComplete = cutseq_selector_data[selection].lvl;
-		dels_cutseq_player = cutseq_selector_data[selection].num;
-		selection = 0;
+		gfLevelComplete = cutseq_selector_data[dels_cutseq_selector_cursorpos + 1].lvl;
+		dels_cutseq_player = cutseq_selector_data[dels_cutseq_selector_cursorpos + 1].num;
+		dels_cutseq_selector_cursorpos = 0;
 	}
 
 	if (dbinput & IN_JUMP)

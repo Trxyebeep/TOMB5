@@ -20,7 +20,7 @@ void AlterFOV(short fov)
 	flt_55D1F8 = dword_50A440 / f_persp_bis;
 	f_persp_bis_over_znear3 = f_persp_bis / f_znear3;
 	LfAspectCorrection = (4.0f / 3.0f) / (phd_winwidth / phd_winheight);
-	f_persp = phd_persp;
+	f_persp = (float)phd_persp;
 	f_oneopersp = one / f_persp;
 	f_perspoznear = f_persp / f_znear;
 }

@@ -286,7 +286,7 @@
 #define aMXPtr	VAR_U_(0x0055DA2C, float*)//formerly named phd_dxptr!
 #define IM_rate	VAR_U_(0x00E6E464, int)
 #define IM_frac	VAR_U_(0x00E6D734, int)
-#define IMptr	VAR_I_(0x00E6E468, int*)
+#define IMptr	VAR_U_(0x00E6E468, int*)
 #define aIMXPtr	VAR_U_(0x00E6D834, float*)
 #define aIFMStack	ARRAY_(0x00E6D860, float, [768])
 #define	IMstack	ARRAY_(0x00E6CB00, int, [768])

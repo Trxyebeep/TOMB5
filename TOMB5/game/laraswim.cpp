@@ -227,7 +227,7 @@ void SwimTurn(ITEM_INFO* item)
 void SwimTurnSubsuit(ITEM_INFO* item)
 {
 	if (item->pos.y_pos < 14080)
-		subsuit.YVel += (14080 - item->pos.y_pos) >> 4;
+		subsuit.YVel += (short)((14080 - item->pos.y_pos) >> 4);
 
 	if (input & IN_FORWARD && item->pos.x_rot > -15470)
 		subsuit.dXRot = -8190;

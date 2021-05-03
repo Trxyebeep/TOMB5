@@ -17,7 +17,7 @@
 #include "larafire.h"
 #include "lara_states.h"
 #include "effect2.h"
-#include "../specific/picture.h"
+#include "../specific/LoadSave.h"
 #include "../specific/input.h"
 #include "../specific/output.h"
 #include "health.h"
@@ -134,7 +134,7 @@ int S_CallInventory2()
 		if (return_value)
 			return return_value;
 
-		DisplayMonoScreen();
+		S_DisplayMonoScreen();
 
 		if (GlobalSoftReset)
 		{
@@ -475,7 +475,7 @@ void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, 
 
 void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 {
-	ANIM_STRUCT* anim;
+//	ANIM_STRUCT* anim;
 	OBJECT_INFO* object;
 	VECTOR vec;
 	long* bone;
@@ -527,12 +527,12 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 	if ((item->mesh_bits & 1))
 	{
 		if (overlay)
-			phd_PutPolygonsPickup(*meshpp, xoffset, yoffset, pcbright);
+			phd_PutPolygonsPickup(*meshpp, (float)xoffset, (float)yoffset, pcbright);
 		else
 		{
 			unk_bak = GlobalAlpha;
 			GlobalAlpha = 0xFF000000;
-			phd_PutPolygonsPickup(*meshpp, xoffset, yoffset, pcbright);
+			phd_PutPolygonsPickup(*meshpp, (float)xoffset, (float)yoffset, pcbright);
 			GlobalAlpha = unk_bak;
 		}
 	}
@@ -559,12 +559,12 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 		if ((bit & item->mesh_bits))
 		{
 			if (overlay)
-				phd_PutPolygonsPickup(*meshpp, xoffset, yoffset, pcbright);
+				phd_PutPolygonsPickup(*meshpp, (float)xoffset, (float)yoffset, pcbright);
 			else
 			{
 				unk_bak = GlobalAlpha;
 				GlobalAlpha = 0xFF000000;
-				phd_PutPolygonsPickup(*meshpp, xoffset, yoffset, pcbright);
+				phd_PutPolygonsPickup(*meshpp, (float)xoffset, (float)yoffset, pcbright);
 				GlobalAlpha = unk_bak;
 			}
 		}
@@ -1097,9 +1097,9 @@ void draw_current_object_list(int ringnum)
 				}
 
 				if (ringnum == RING_INVENTORY)
-					objmeup = phd_centery - (phd_winymax + 1) * 0.0625 * 3.0;
+					objmeup = (int)(phd_centery - (phd_winymax + 1) * 0.0625 * 3.0);
 				else
-					objmeup = (phd_winymax + 1) * 0.0625 * 3.0 + phd_centery;
+					objmeup = (int)((phd_winymax + 1) * 0.0625 * 3.0 + phd_centery);
 
 				PrintString(phd_centerx, objmeup, 8, textbufme, 0x8000);
 			}
@@ -1146,8 +1146,8 @@ void draw_current_object_list(int ringnum)
 			else
 				ymeup = 190;
 
-			DrawThreeDeeObject2D((phd_centerx * 0.00390625 * 256.0 + inventry_xpos) + xoff + i * OBJLIST_SPACING,
-				phd_centery * 0.0083333338 * ymeup + inventry_ypos,
+			DrawThreeDeeObject2D((int)((phd_centerx * 0.00390625 * 256.0 + inventry_xpos) + xoff + i * OBJLIST_SPACING),
+				(int)(phd_centery * 0.0083333338 * ymeup + inventry_ypos),
 				rings[ringnum]->current_object_list[n].invitem,
 				shade, 0, yrot, 0, rings[ringnum]->current_object_list[n].bright, 0);
 
@@ -1696,12 +1696,12 @@ void draw_ammo_selector()
 					PrintString(phd_centerx, font_height + phd_centery + 2 * font_height - 9, 8, &cunter[0], FF_CENTER);
 
 				if (n == current_ammo_type[0])
-					DrawThreeDeeObject2D(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos, phd_centery * 0.0083333338 * 190.0 + inventry_ypos, ammo_object_list[n].invitem, ammo_selector_fade_val, 0, yrot, 0, 0, 0);
+					DrawThreeDeeObject2D((int)(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos), (int)(phd_centery * 0.0083333338 * 190.0 + inventry_ypos), ammo_object_list[n].invitem, ammo_selector_fade_val, 0, yrot, 0, 0, 0);
 				else
-					DrawThreeDeeObject2D(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos, phd_centery * 0.0083333338 * 190.0 + inventry_ypos, ammo_object_list[n].invitem, ammo_selector_fade_val, 0, yrot, 0, 1, 0);
+					DrawThreeDeeObject2D((int)(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos), (int)(phd_centery * 0.0083333338 * 190.0 + inventry_ypos), ammo_object_list[n].invitem, ammo_selector_fade_val, 0, yrot, 0, 1, 0);
 			}
 			else
-				DrawThreeDeeObject2D(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos, phd_centery * 0.0083333338 * 190.0 + inventry_ypos, ammo_object_list[n].invitem, ammo_selector_fade_val, 0, yrot, 0, 1, 0);
+				DrawThreeDeeObject2D((int)(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos), (int)(phd_centery * 0.0083333338 * 190.0 + inventry_ypos), ammo_object_list[n].invitem, ammo_selector_fade_val, 0, yrot, 0, 1, 0);
 
 			xpos += OBJLIST_SPACING;
 		}
@@ -2693,8 +2693,8 @@ void do_keypad_mode()
 	else
 		objme->meshbits = val & ~(1 << (((keypadx + 3 * keypady) + 1) & 0x1F)) | 1 << (((keypadx + 3 * keypady) + 13) & 0x1F);
 
-	DrawThreeDeeObject2D((phd_centerx * 0.00390625 * 256.0 + inventry_xpos), (phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2, INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
-	PrintString(0x100, (phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64, 6, &gfStringWad[gfStringOffset_bis[STR_ENTER_COMBINATION]], 0x8000);
+	DrawThreeDeeObject2D((int)(phd_centerx * 0.00390625 * 256.0 + inventry_xpos), (int)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2), INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
+	PrintString(0x100, (unsigned short)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, &gfStringWad[gfStringOffset_bis[STR_ENTER_COMBINATION]], 0x8000);
 	buf[0] = 45;
 	buf[1] = 45;
 	buf[2] = 45;
@@ -2704,7 +2704,7 @@ void do_keypad_mode()
 		for (n = 0; n < keypadnuminputs; n++)
 			buf[n] = keypadinputs[n] + 48;
 
-	PrintString(0x100, (phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 + 64, 1, buf, 0x8000);
+	PrintString(0x100, (unsigned short)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 + 64), 1, buf, 0x8000);
 
 	if (keypadpause)
 	{
@@ -2797,7 +2797,7 @@ void do_examine_mode()
 		examine_mode = 128;
 
 	objme->scale1 = 300;
-	DrawThreeDeeObject2D((phd_centerx + inventry_xpos), (phd_centery / 120.0 * 256.0 + inventry_xpos) / 2,
+	DrawThreeDeeObject2D((int)(phd_centerx + inventry_xpos), (int)(phd_centery / 120.0 * 256.0 + inventry_xpos) / 2,
 		rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem,
 		examine_mode, 32768, 16384, 16384, 96, 0);
 	objme->scale1 = saved_scale;

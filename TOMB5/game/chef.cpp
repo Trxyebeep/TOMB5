@@ -56,7 +56,7 @@ void ChefControl(short item_number)
 	{
 		dx = lara_item->pos.x_pos - chef->pos.x_pos;
 		dz = lara_item->pos.z_pos - chef->pos.z_pos;
-		laraAI.angle = phd_atan(dz, dx) - chef->pos.y_rot;
+		laraAI.angle = (short)(phd_atan(dz, dx) - chef->pos.y_rot);
 		laraAI.ahead = 1;
 
 		if (laraAI.angle <= -16384 || laraAI.angle >= 16384)

@@ -2647,9 +2647,9 @@ void TriggerDelSmoke(long x, long y, long z, int sizeme)
 		sptr->Gravity = -3 - (GetRandomControl() & 3);
 		sptr->MaxYvel = -4 - (GetRandomControl() & 3);
 		size = sizeme + (GetRandomControl() & 0x1F);
-		sptr->dSize = size;
-		sptr->sSize = size >> 2;
-		sptr->Size = size >> 2;
+		sptr->dSize = (unsigned char)size;
+		sptr->sSize = (unsigned char)(size >> 2);
+		sptr->Size = (unsigned char)(size >> 2);
 	}
 }
 
@@ -2685,9 +2685,9 @@ void TriggerDelBrownSmoke(long x, long y, long z)
 	sptr->Gravity = -3 - (GetRandomControl() & 3);
 	sptr->MaxYvel = -4 - (GetRandomControl() & 3);
 	size = (GetRandomControl() & 0x1F) + 40;
-	sptr->dSize = size;
-	sptr->sSize = size >> 2;
-	sptr->Size = size >> 2;
+	sptr->dSize = (unsigned char)size;
+	sptr->sSize = (unsigned char)(size >> 2);
+	sptr->Size = (unsigned char)(size >> 2);
 }
 
 void DelTorchFlames(PHD_VECTOR* pos)
@@ -2725,9 +2725,9 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->RotAdd = (GetRandomControl() & 0x1F) - 16;
 	sptr->Scalar = 2;
 	size = (GetRandomControl() & 0xF) + 16;
-	sptr->sSize = size;
-	sptr->Size = size;
-	sptr->dSize = size >> 4;
+	sptr->sSize = (unsigned char)size;
+	sptr->Size = (unsigned char)size;
+	sptr->dSize = (unsigned char)(size >> 4);
 
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
@@ -2754,9 +2754,9 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->Yvel = -22;
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	size = (GetRandomControl() & 0xF) + 16;
-	sptr->dSize = size;
-	sptr->sSize = size >> 1;
-	sptr->Size = size >> 1;
+	sptr->dSize = (unsigned char)size;
+	sptr->sSize = (unsigned char)(size >> 1);
+	sptr->Size = (unsigned char)(size >> 1);
 	sptr->dSize += sptr->dSize >> 2;
 }
 
@@ -3085,9 +3085,7 @@ void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int num
 {
 	int offset;
 	int xoff;
-	int yoffset;
 	int yoff;
-	int zoffset;
 	int zoff;
 
 	offset = ((numnodes << 3) - numnodes) << 1;
@@ -3304,12 +3302,12 @@ void do_new_cutscene_camera()
 		camera.pos.room_number = IsRoomOutsideNo;
 
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-	cam_pos.x = camera.pos.x;
-	cam_pos.y = camera.pos.y;
-	cam_pos.z = camera.pos.z;
-	cam_target.x = camera.target.x;
-	cam_target.y = camera.target.y;
-	cam_target.z = camera.target.z;
+	cam_pos.x = (float)camera.pos.x;
+	cam_pos.y = (float)camera.pos.y;
+	cam_pos.z = (float)camera.pos.z;
+	cam_target.x = (float)camera.target.x;
+	cam_target.y = (float)camera.target.y;
+	cam_target.z = (float)camera.target.z;
 	aLookAt(cam_pos, cam_target, 0);
 
 	if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
