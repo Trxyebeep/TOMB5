@@ -66,7 +66,7 @@ void phd_PushMatrix_I()
 
 void phd_RotY_I(short ang)
 {
-	int* mxptr;
+	long* mxptr;
 	float* amxptr;
 
 	phd_RotY(ang);
@@ -81,7 +81,7 @@ void phd_RotY_I(short ang)
 
 void phd_RotX_I(short ang)
 {
-	int* mxptr;
+	long* mxptr;
 	float* amxptr;
 
 	phd_RotX(ang);
@@ -96,7 +96,7 @@ void phd_RotX_I(short ang)
 
 void phd_RotZ_I(short ang)
 {
-	int* mxptr;
+	long* mxptr;
 	float* amxptr;
 
 	phd_RotZ(ang);
@@ -111,7 +111,7 @@ void phd_RotZ_I(short ang)
 
 void phd_TranslateRel_I(int x, int y, int z)
 {
-	int* mxptr;
+	long* mxptr;
 	float* amxptr;
 
 	phd_TranslateRel(x, y, z);
@@ -126,7 +126,7 @@ void phd_TranslateRel_I(int x, int y, int z)
 
 void phd_TranslateRel_ID(int x, int y, int z, int x2, int y2, int z2)
 {
-	int* mxptr;
+	long* mxptr;
 	float* amxptr;
 
 	phd_TranslateRel(x, y, z);
@@ -141,7 +141,7 @@ void phd_TranslateRel_ID(int x, int y, int z, int x2, int y2, int z2)
 
 void phd_RotYXZ_I(short y, short x, short z)
 {
-	int* mxptr;
+	long* mxptr;
 	float* amxptr;
 
 	phd_RotYXZ(y, x, z);
@@ -156,7 +156,7 @@ void phd_RotYXZ_I(short y, short x, short z)
 
 void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, int skip)
 {
-	int* mxptr;
+	long* mxptr;
 	float* amxptr;
 
 	gar_RotYXZsuperpack(pprot1, skip);

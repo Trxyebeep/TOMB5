@@ -576,7 +576,7 @@ void AlignLaraToRope(ITEM_INFO* l)
 	l->pos.y_pos += -112 * mptr[6] >> 14;
 	l->pos.z_pos += -112 * mptr[10] >> 14;
 	phd_mxptr -= 12;
-	phd_dxptr -= 12;
+	aMXPtr -= 12;
 	l->pos.x_rot = xyz[0];
 	l->pos.y_rot = xyz[1];
 	l->pos.z_rot = xyz[2];
