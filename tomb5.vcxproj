@@ -55,6 +55,7 @@
     <ClCompile Include="TOMB5\game\objects.cpp" />
     <ClCompile Include="TOMB5\game\people.cpp" />
     <ClCompile Include="TOMB5\game\pickup.cpp" />
+    <ClCompile Include="TOMB5\game\rope.cpp" />
     <ClCompile Include="TOMB5\game\sound.cpp" />
     <ClCompile Include="TOMB5\game\sphere.cpp" />
     <ClCompile Include="TOMB5\game\spotcam.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="TOMB5\game\objects.h" />
     <ClInclude Include="TOMB5\game\people.h" />
     <ClInclude Include="TOMB5\game\pickup.h" />
+    <ClInclude Include="TOMB5\game\rope.h" />
     <ClInclude Include="TOMB5\game\sound.h" />
     <ClInclude Include="TOMB5\game\sphere.h" />
     <ClInclude Include="TOMB5\game\spotcam.h" />

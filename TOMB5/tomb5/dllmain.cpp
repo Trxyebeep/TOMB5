@@ -34,6 +34,7 @@
 #include "../game/joby.h"
 #include "../specific/output.h"
 #include "../specific/3dmath.h"
+#include "../game/rope.h"
 #include "../specific/LoadSave.h"
 
 HINSTANCE hinstance = NULL;
@@ -86,6 +87,7 @@ void inject_all()
     inject_joby();
     inject_3dmath();
     inject_output();
+	inject_rope();
     inject_LoadSave();
 }
 

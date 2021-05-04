@@ -160,6 +160,9 @@
     <ClCompile Include="TOMB5\game\gameflow_helpers.cpp" />
     <ClCompile Include="TOMB5\game\joby.cpp" />
     <ClCompile Include="TOMB5\specific\3dmath.cpp" />
+    <ClCompile Include="TOMB5\game\rope.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
     <ClCompile Include="TOMB5\specific\LoadSave.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -323,6 +326,9 @@
     <ClInclude Include="TOMB5\game\gameflow_helpers.h" />
     <ClInclude Include="TOMB5\game\joby.h" />
     <ClInclude Include="TOMB5\specific\3dmath.h" />
+    <ClInclude Include="TOMB5\game\rope.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
     <ClInclude Include="TOMB5\specific\LoadSave.h" />
   </ItemGroup>
   <ItemGroup>

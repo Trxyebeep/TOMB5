@@ -282,14 +282,14 @@
 #define	phd_winxmin	VAR_U_(0x0055D234, short)
 #define	phd_winymax	VAR_U_(0x0055D240, short)
 #define	phd_winymin	VAR_U_(0x0055D1E8, short)
-#define phd_mxptr	VAR_U_(0x00E4B0F8, int*)
+#define phd_mxptr	VAR_U_(0x00E4B0F8, long*)
 #define aMXPtr	VAR_U_(0x0055DA2C, float*)//formerly named phd_dxptr!
-#define IM_rate	VAR_U_(0x00E6E464, int)
-#define IM_frac	VAR_U_(0x00E6D734, int)
-#define IMptr	VAR_U_(0x00E6E468, int*)
+#define IM_rate	VAR_U_(0x00E6E464, long)
+#define IM_frac	VAR_U_(0x00E6D734, long)
+#define IMptr	VAR_U_(0x00E6E468, long*)
 #define aIMXPtr	VAR_U_(0x00E6D834, float*)
 #define aIFMStack	ARRAY_(0x00E6D860, float, [768])
-#define	IMstack	ARRAY_(0x00E6CB00, int, [768])
+#define	IMstack	ARRAY_(0x00E6CB00, long, [768])
 #define f_persp	VAR_U_(0x0051D15C, float)
 #define f_znear	VAR_U_(0x0051D158, float)
 #define	f_znear3	VAR_U_(0x0055D24C, float)
@@ -321,6 +321,9 @@
 #define ClosestDist VAR_U_(0x00EEF4A4, int)
 #define ClosestCoord VAR_U_(0x00EEF460, PHD_VECTOR)
 #define ClosestItem VAR_U_(0x00EEEFF8, int)
+#define nRope VAR_U_(0x0051CA60, int)
+#define CurrentPendulum VAR_U_(0x00EEF020, PENDULUM)
+#define NullPendulum VAR_U_(0x0051CFD0, PENDULUM)
 
 
 //GUESSED
@@ -407,6 +410,7 @@
 #define temp_rotation_buffer	ARRAY_(0x00E711C0, short, [160])
 #define los_rooms ARRAY_(0x00EEEFC0, short, [20])
 #define static_objects ARRAY_(0x00874988, static_info, [70])
+#define RopeList ARRAY_(0x00E54CC0, ROPE_STRUCT, [8])
 
 //defs
 #define NO_HEIGHT -32512

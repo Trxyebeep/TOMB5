@@ -16,4 +16,3 @@ void _cheats();
 
 #define AnimateLara ( (void(__cdecl*)(ITEM_INFO*)) 0x004563F0 )
 #define LaraControl	( (void(__cdecl*)(short)) 0x00455830 )
-#define DelAlignLaraToRope	( (void(__cdecl*)(ITEM_INFO*)) 0x0046D510 )//in rope.cpp i think
