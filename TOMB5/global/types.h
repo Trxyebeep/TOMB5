@@ -1504,4 +1504,32 @@ struct static_info
 	short z_minc;
 	short z_maxc;
 };
+
+struct ROPE_STRUCT
+{
+	PHD_VECTOR Segment[24];
+	PHD_VECTOR Velocity[24];
+	PHD_VECTOR NormalisedSegment[24];
+	PHD_VECTOR MeshSegment[24];
+	PHD_VECTOR Position;
+	long Coords[24][3];
+	long SegmentLength;
+	short Active;
+	short Coiled;
+};
+
+struct PENDULUM
+{
+	PHD_VECTOR Position;
+	PHD_VECTOR Velocity;
+	int node;
+	ROPE_STRUCT* Rope;
+};
+
+struct MATRIX3D
+{
+	long m00, m01, m02, m03;
+	long m10, m11, m12, m13;
+	long m20, m21, m22, m23;
+};
 #pragma pack(pop)

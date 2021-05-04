@@ -39,7 +39,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00418C80		CheckNoColFloorTriangle
 0x00418D60		CheckNoColCeilingTriangle
 0x00418E90		IsRoomOutside
-0x00419110		ObjectOnLOS2
+0x00419110	+	ObjectOnLOS2
 0x004193C0		DoRayBox
 0x00419D00		RayBoxIntersect
 0x0041A0B0		FireCrossBowFromLaserSight
@@ -817,29 +817,29 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/rope.cpp
 
-0x0046D130		GetRopePos
-0x0046D200		RopeNodeCollision
-0x0046D310		vMul
-0x0046D360		mDotProduct
-0x0046D3A0		mCrossProduct
-0x0046D420		phd_GetMatrixAngles
-0x0046D510		AlignLaraToRope
-0x0046DAE0		RopeCollision
-0x0046DD40		RopeControl
+0x0046D130	+	GetRopePos
+0x0046D200	+	RopeNodeCollision
+0x0046D310	+	vMul
+0x0046D360	+	mDotProduct
+0x0046D3A0	+	mCrossProduct
+0x0046D420	+	phd_GetMatrixAngles
+0x0046D510	+	AlignLaraToRope
+0x0046DAE0	+	RopeCollision
+0x0046DD40	+	RopeControl
 0x0046DDC0		DrawRopeList
-0x0046DE10		Normalise
-0x0046DF00		ModelRigid
-0x0046E080		ModelRigidRope
-0x0046E1C0		SetPendulumPoint
-0x0046E280		SetPendulumVelocity
-0x0046E370		CalculateRope
+0x0046DE10	+	Normalise
+0x0046DF00	+	ModelRigid
+0x0046E080	+	ModelRigidRope
+0x0046E1C0	+	SetPendulumPoint
+0x0046E280	+	SetPendulumVelocity
+0x0046E370	+	CalculateRope
 0x0046EC70		ProjectRopePoints
 0x0046EE40		init_all_ropes
-0x0046EE80		CreateRope
-0x0046F060		InitialiseRope
+0x0046EE80	+	CreateRope
+0x0046F060	+	InitialiseRope
 0x0046F170		SaveRope
 0x0046F1F0		LoadRope
-0x0046F240		LaraClimbRope
+0x0046F240	+	LaraClimbRope
 0x0046F3C0		StraightenRope
 0x0046F480		_Straighten
 

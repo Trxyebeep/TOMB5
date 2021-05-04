@@ -177,7 +177,6 @@ void LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
 #define SetCornerAnim	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, short, short)) 0x0044A980 )
 #define FallFromRope	( (void(__cdecl*)(ITEM_INFO*)) 0x004475C0 )
 #define UpdateRopeSwing	( (void(__cdecl*)(ITEM_INFO*)) 0x00447820 )
-#define LaraClimbRope	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x0046F240 )
 #define ApplyVelocityToRope	( (void(__cdecl*)(int, unsigned short, unsigned short)) 0x00447690 )
 #define JumpOffRope	( (void(__cdecl*)(ITEM_INFO*)) 0x00447E60 )
 #define GetTighRopeFallOff	( (void(__cdecl*)(long)) 0x0044D570 )

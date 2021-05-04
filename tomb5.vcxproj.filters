@@ -167,6 +167,9 @@
     <ClCompile Include="TOMB5\game\gameflow_helpers.cpp" />
     <ClCompile Include="TOMB5\game\joby.cpp" />
     <ClCompile Include="TOMB5\specific\3dmath.cpp" />
+    <ClCompile Include="TOMB5\game\rope.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -336,6 +339,9 @@
     <ClInclude Include="TOMB5\game\gameflow_helpers.h" />
     <ClInclude Include="TOMB5\game\joby.h" />
     <ClInclude Include="TOMB5\specific\3dmath.h" />
+    <ClInclude Include="TOMB5\game\rope.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

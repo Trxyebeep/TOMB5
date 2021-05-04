@@ -270,7 +270,7 @@
 #define	phd_winxmin	VAR_U_(0x0055D234, short)
 #define	phd_winymax	VAR_U_(0x0055D240, short)
 #define	phd_winymin	VAR_U_(0x0055D1E8, short)
-#define phd_mxptr	VAR_U_(0x00E4B0F8, int*)
+#define phd_mxptr	VAR_U_(0x00E4B0F8, long*)
 #define phd_dxptr	VAR_U_(0x0055DA2C, int*)
 #define f_persp	VAR_U_(0x0051D15C, float)
 #define f_znear	VAR_U_(0x0051D158, float)
@@ -303,6 +303,9 @@
 #define ClosestDist VAR_U_(0x00EEF4A4, int)
 #define ClosestCoord VAR_U_(0x00EEF460, PHD_VECTOR)
 #define ClosestItem VAR_U_(0x00EEEFF8, int)
+#define nRope VAR_U_(0x0051CA60, int)
+#define CurrentPendulum VAR_U_(0x00EEF020, PENDULUM)
+#define NullPendulum VAR_U_(0x0051CFD0, PENDULUM)
 
 
 //GUESSED
@@ -397,6 +400,7 @@
 #define temp_rotation_buffer	ARRAY_(0x00E711C0, short, [160])
 #define los_rooms ARRAY_(0x00EEEFC0, short, [20])
 #define static_objects ARRAY_(0x00874988, static_info, [70])
+#define RopeList ARRAY_(0x00E54CC0, ROPE_STRUCT, [8])
 
 //defs
 #define NO_HEIGHT -32512
