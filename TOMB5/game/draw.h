@@ -24,3 +24,4 @@ void aInterpolateMatrix();
 #define GetFrames	( (long(__cdecl*)(ITEM_INFO*, short*[], int*)) 0x0042CEB0 )
 #define DrawPhaseGame	( (int(__cdecl*)()) 0x0042A400 )
 #define SkyDrawPhase	( (void(__cdecl*)()) 0x0042A4A0 )
+#define CalculateObjectLightingLara	( (void(__cdecl*)()) 0x0042A1B0 )

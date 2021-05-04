@@ -164,7 +164,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00429B30	+	DoubleDoorCollision
 0x00429CF0	+	UnderwaterDoorCollision
 0x00429EC0	+	SequenceDoorControl
-0x0042A050	x	ProcessClosedDoors
+0x0042A050	+	ProcessClosedDoors
 
 
 		game/effects.cpp
@@ -1007,3 +1007,13 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B1C00		SpecialFeaturesDisplayScreens
 0x004B1D90		DoSpecialFeaturesServer
 0x004B1E30		S_MemSet
+
+
+		specific/drawlara.cpp
+
+0x00498030	+	DrawLara
+0x00498100	+	DrawLara__1
+0x00498C70		DrawLara__4
+0x004995C0		DrawLara__5
+0x00499BA0		DrawLara__6
+0x0049A210		SetLaraUnderwaterNodes

@@ -23,8 +23,7 @@ void GetLaraDeadlyBounds()
 	phd_RotYXZ(lara_item->pos.y_rot, lara_item->pos.x_rot, lara_item->pos.z_rot);
 	phd_SetTrans(0, 0, 0);
 	mRotBoundingBoxNoPersp(bounds, tbounds);
-	phd_mxptr -= 12;
-	aMXPtr -= 12;
+	phd_PopMatrix();
 	DeadlyBounds[0] = lara_item->pos.x_pos + tbounds[0];
 	DeadlyBounds[1] = lara_item->pos.x_pos + tbounds[1];
 	DeadlyBounds[2] = lara_item->pos.y_pos + tbounds[2];

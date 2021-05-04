@@ -39,8 +39,7 @@ void DrawHair()
 				StashSkinVertices(29 + ii + j);
 			}
 
-			phd_mxptr -= 12;
-			aMXPtr -= 12;
+			phd_PopMatrix();
 		}
 
 		meshpp = &meshes[objects[HAIR].mesh_index];

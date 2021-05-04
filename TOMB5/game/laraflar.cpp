@@ -458,8 +458,7 @@ void DrawFlareInAir(ITEM_INFO* item)
 	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 	phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
-	phd_mxptr -= 12;
-	aMXPtr -= 12;
+	phd_PopMatrix();
 
 	if (gfLevelFlags & GF_LVOP_MIRROR_USED)
 	{
@@ -469,8 +468,7 @@ void DrawFlareInAir(ITEM_INFO* item)
 			phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, 2 * gfMirrorZPlane - item->pos.z_pos);
 			phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 			phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
-			phd_mxptr -= 12;
-			aMXPtr -= 12;
+			phd_PopMatrix();
 		}
 	}
 }

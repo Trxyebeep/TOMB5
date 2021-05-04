@@ -49,8 +49,7 @@ void InitInterpolate(int frac, int rate)
 
 void phd_PopMatrix_I()
 {
-	phd_mxptr -= 12;
-	aMXPtr -= 12;
+	phd_PopMatrix();
 	IMptr -= 12;
 	aIMXPtr -= 12;
 }
@@ -212,8 +211,7 @@ void phd_PutPolygons_I(short* ptr, int clip)
 	phd_PushMatrix();
 	InterpolateMatrix();
 	phd_PutPolygons(ptr, clip);
-	phd_mxptr -= 12;
-	aMXPtr -= 12;
+	phd_PopMatrix();
 }
 
 void aInterpolateMatrix()

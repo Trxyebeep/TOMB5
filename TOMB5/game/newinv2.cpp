@@ -467,8 +467,7 @@ void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, 
 	else
 		DrawInventoryItemMe(&item, shade, overlay, 0);
 		
-	phd_mxptr -= 12;
-	aMXPtr -= 12;
+	phd_PopMatrix();
 	xoffset = phd_centerx;
 	yoffset = phd_centery;
 }
@@ -544,10 +543,7 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 		poppush = *bone;
 
 		if (poppush & 1)
-		{
-			phd_mxptr -= 12;
-			aMXPtr -= 12;
-		}
+			phd_PopMatrix();
 
 		if (poppush & 2)
 			phd_PushMatrix();
@@ -570,8 +566,7 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 		}
 	}
 
-	phd_mxptr -= 12;
-	aMXPtr -= 12;
+	phd_PopMatrix();
 }
 
 int go_and_load_game()
