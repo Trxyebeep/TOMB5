@@ -274,7 +274,7 @@ void SetFog(ITEM_INFO* item)
 	int color;
 	unsigned char r, g, b;
 
-	dword_51CE04 = 0;
+	GlobalFogOff = 0;
 	color_index = TriggerTimer;
 
 	if (!IsVolumetric())
@@ -285,7 +285,7 @@ void SetFog(ITEM_INFO* item)
 
 	if (TriggerTimer == 100)
 	{
-		dword_51CE04 = 1;
+		GlobalFogOff = 1;
 		flipeffect = -1;
 		return;
 	}
@@ -297,9 +297,9 @@ void SetFog(ITEM_INFO* item)
 	SetFogColor(r, g, b);
 	g = color;
 	b = color & 0xFF;
-	gfFogColour.r = r;
-	gfFogColour.g = g;
-	gfFogColour.b = b;
+	gfFog.r = r;
+	gfFog.g = g;
+	gfFog.b = b;
 	flipeffect = -1;
 	return;
 }

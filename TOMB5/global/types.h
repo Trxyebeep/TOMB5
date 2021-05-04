@@ -396,27 +396,8 @@ struct SVECTOR
 };
 
 struct CVECTOR
-{        /* color type vector */
-	union
-	{
-		struct
-		{
-			unsigned char b, g, r, cd;
-		};
-		uint32_t rgbcd{};
-	};
-
-	CVECTOR() = default;
-
-	CVECTOR(BYTE r, BYTE g, BYTE b)
-		: b(b), g(g), r(r), cd(0)
-	{
-	}
-
-	CVECTOR(BYTE r, BYTE g, BYTE b, BYTE cd)
-		: b(b), g(g), r(r), cd(cd)
-	{
-	}
+{
+	char b, g, r, a;
 };
 
 struct CHANGE_STRUCT
@@ -655,22 +636,22 @@ struct ITEM_INFO
 	unsigned short fired_weapon; // size=0, offset=50
 	short item_flags[4]; // size=8, offset=52
 	void* data; // size=0, offset=60
-	PHD_3DPOS pos; // size=20, offset=64
-	ITEM_LIGHT il; // size=48, offset=84
-	unsigned long active : 1; // offset=132.0 OFF=5610
-	unsigned long status : 2; // offset=132.1
-	unsigned long gravity_status : 1; // offset=132.3
-	unsigned long hit_status : 1; // offset=132.4
-	unsigned long collidable : 1; // offset=132.5
-	unsigned long looked_at : 1; // offset=132.6
-	unsigned long dynamic_light : 1; // offset=132.7
-	unsigned long poisoned : 1; // offset=133.0
-	unsigned long ai_bits : 5; // offset=133.1
-	unsigned long really_active : 1; // offset=133.6
-	unsigned long InDrawRoom : 1; // offset=133.7
-	unsigned long meshswap_meshbits; // size=0, offset=136 OFF=132
-	short draw_room; // size=0, offset=140 OFF=136
-	short TOSSPAD; // size=0, offset=142 OFF=138
+	PHD_3DPOS pos; // size=18, offset=64
+	ITEM_LIGHT il; // size=5528, offset=82
+	unsigned long active : 1; // offset=5610.0
+	unsigned long status : 2; // offset=5610.1
+	unsigned long gravity_status : 1; // offset=5610.3
+	unsigned long hit_status : 1; // offset=5610.4
+	unsigned long collidable : 1; // offset=5610.5
+	unsigned long looked_at : 1; // offset=5610.6
+	unsigned long dynamic_light : 1; // offset=5610.7
+	unsigned long poisoned : 1; // offset=5611.0
+	unsigned long ai_bits : 5; // offset=5611.1
+	unsigned long really_active : 1; // offset=5611.6
+	unsigned long InDrawRoom : 1; // offset=5611.7
+	unsigned long meshswap_meshbits; // size=0, offset=5614
+	short draw_room; // size=0, offset=5618
+	short TOSSPAD; // size=0, offset=5620
 };
 
 struct lara_arm
@@ -1139,33 +1120,27 @@ typedef struct lara_info
 	unsigned char ChaffTimer; // size=0, offset=350
 } LARA_INFO;
 
-struct savegame_info
+struct savegame_info//size=7656
 {
-	short Checksum; // size=0, offset=0
-	unsigned short VolumeCD; // size=0, offset=2
-	unsigned short VolumeFX; // size=0, offset=4
-	short ScreenX; // size=0, offset=6
-	short ScreenY; // size=0, offset=8
-	unsigned char ControlOption; // size=0, offset=10
-	unsigned char VibrateOn; // size=0, offset=11
-	char pad[3];
-	unsigned char AutoTarget; // size=0, offset=12
-	LARA_INFO Lara; // size=352, offset=16
-	STATS Level; // size=20, offset=368
-	STATS Game; // size=20, offset=388
-	short WeaponObject; // size=0, offset=408
-	short WeaponAnim; // size=0, offset=410
-	short WeaponFrame; // size=0, offset=412
-	short WeaponCurrent; // size=0, offset=414
-	short WeaponGoal; // size=0, offset=416
-	unsigned long CutSceneTriggered1; // size=0, offset=420
-	unsigned long CutSceneTriggered2; // size=0, offset=424
-	char GameComplete; // size=0, offset=428
-	unsigned char CurrentLevel; // size=0, offset=429
-	unsigned char CampaignSecrets[4]; // size=4, offset=430
-	unsigned char TLCount; // size=0, offset=434
+	short Checksum;
+	char things_to_figure_out[13];
+	unsigned char AutoTarget;
+	LARA_INFO Lara;
+	STATS Level;
+	STATS Game;
+	short WeaponObject;
+	short WeaponAnim;
+	short WeaponFrame;
+	short WeaponCurrent;
+	short WeaponGoal;
+	unsigned long CutSceneTriggered1;
+	unsigned long CutSceneTriggered2;
+	char GameComplete;
+	unsigned char CurrentLevel;
+	unsigned char CampaignSecrets[4];
+	unsigned char TLCount;
+	char buffer[7232];
 };
-
 
 struct OBJECT_TEXTURE_VERT
 {

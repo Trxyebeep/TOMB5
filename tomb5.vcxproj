@@ -64,16 +64,14 @@
     <ClCompile Include="TOMB5\game\traps.cpp" />
     <ClCompile Include="TOMB5\specific\3dmath.cpp" />
     <ClCompile Include="TOMB5\specific\display.cpp" />
-    <ClCompile Include="TOMB5\specific\drawprimitive.cpp" />
     <ClCompile Include="TOMB5\specific\DS.cpp" />
     <ClCompile Include="TOMB5\specific\file.cpp" />
     <ClCompile Include="TOMB5\specific\game.cpp" />
     <ClCompile Include="TOMB5\specific\init.cpp" />
     <ClCompile Include="TOMB5\specific\input.cpp" />
     <ClCompile Include="TOMB5\specific\light.cpp" />
+    <ClCompile Include="TOMB5\specific\LoadSave.cpp" />
     <ClCompile Include="TOMB5\specific\output.cpp" />
-    <ClCompile Include="TOMB5\specific\pcsetup.cpp" />
-    <ClCompile Include="TOMB5\specific\picture.cpp" />
     <ClCompile Include="TOMB5\specific\specific.cpp" />
     <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
     <ClCompile Include="TOMB5\tomb5\pch.cpp">
@@ -134,17 +132,15 @@
     <ClInclude Include="TOMB5\global\vars.h" />
     <ClInclude Include="TOMB5\specific\3dmath.h" />
     <ClInclude Include="TOMB5\specific\display.h" />
-    <ClInclude Include="TOMB5\specific\drawprimitive.h" />
     <ClInclude Include="TOMB5\specific\DS.h" />
     <ClInclude Include="TOMB5\specific\file.h" />
     <ClInclude Include="TOMB5\specific\game.h" />
     <ClInclude Include="TOMB5\specific\init.h" />
     <ClInclude Include="TOMB5\specific\input.h" />
     <ClInclude Include="TOMB5\specific\light.h" />
+    <ClInclude Include="TOMB5\specific\LoadSave.h" />
     <ClInclude Include="TOMB5\specific\matrix_shit.h" />
     <ClInclude Include="TOMB5\specific\output.h" />
-    <ClInclude Include="TOMB5\specific\pcsetup.h" />
-    <ClInclude Include="TOMB5\specific\picture.h" />
     <ClInclude Include="TOMB5\specific\specific.h" />
     <ClInclude Include="TOMB5\tomb5\framework.h" />
     <ClInclude Include="TOMB5\tomb5\pch.h" />
@@ -227,7 +223,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;VER_JP;cutseq_skipper;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;VER_JP;cutseq_skipper;cutseq_selector;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
@@ -248,7 +244,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;VER_JP;cutseq_skipper;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;VER_JP;cutseq_skipper;cutseq_selector;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>

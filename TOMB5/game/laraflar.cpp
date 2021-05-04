@@ -459,7 +459,7 @@ void DrawFlareInAir(ITEM_INFO* item)
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 	phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
 	phd_mxptr -= 12;
-	phd_dxptr -= 12;
+	aMXPtr -= 12;
 
 	if (gfLevelFlags & GF_LVOP_MIRROR_USED)
 	{
@@ -470,7 +470,7 @@ void DrawFlareInAir(ITEM_INFO* item)
 			phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 			phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
 			phd_mxptr -= 12;
-			phd_dxptr -= 12;
+			aMXPtr -= 12;
 		}
 	}
 }

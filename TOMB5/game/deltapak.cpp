@@ -24,10 +24,10 @@
 #include "spotcam.h"
 #include <d3dtypes.h>
 #include "cutseq.h"
-#include "../specific/matrix_shit.h"
 #include "../specific/light.h"
 #include "../specific/3dmath.h"
 #include "../specific/output.h"
+#include "draw.h"
 
 short frig_shadow_bbox[6] =
 {
@@ -2647,9 +2647,9 @@ void TriggerDelSmoke(long x, long y, long z, int sizeme)
 		sptr->Gravity = -3 - (GetRandomControl() & 3);
 		sptr->MaxYvel = -4 - (GetRandomControl() & 3);
 		size = sizeme + (GetRandomControl() & 0x1F);
-		sptr->dSize = size;
-		sptr->sSize = size >> 2;
-		sptr->Size = size >> 2;
+		sptr->dSize = (unsigned char)size;
+		sptr->sSize = (unsigned char)(size >> 2);
+		sptr->Size = (unsigned char)(size >> 2);
 	}
 }
 
@@ -2685,9 +2685,9 @@ void TriggerDelBrownSmoke(long x, long y, long z)
 	sptr->Gravity = -3 - (GetRandomControl() & 3);
 	sptr->MaxYvel = -4 - (GetRandomControl() & 3);
 	size = (GetRandomControl() & 0x1F) + 40;
-	sptr->dSize = size;
-	sptr->sSize = size >> 2;
-	sptr->Size = size >> 2;
+	sptr->dSize = (unsigned char)size;
+	sptr->sSize = (unsigned char)(size >> 2);
+	sptr->Size = (unsigned char)(size >> 2);
 }
 
 void DelTorchFlames(PHD_VECTOR* pos)
@@ -2725,9 +2725,9 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->RotAdd = (GetRandomControl() & 0x1F) - 16;
 	sptr->Scalar = 2;
 	size = (GetRandomControl() & 0xF) + 16;
-	sptr->sSize = size;
-	sptr->Size = size;
-	sptr->dSize = size >> 4;
+	sptr->sSize = (unsigned char)size;
+	sptr->Size = (unsigned char)size;
+	sptr->dSize = (unsigned char)(size >> 4);
 
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
@@ -2754,9 +2754,9 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->Yvel = -22;
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	size = (GetRandomControl() & 0xF) + 16;
-	sptr->dSize = size;
-	sptr->sSize = size >> 1;
-	sptr->Size = size >> 1;
+	sptr->dSize = (unsigned char)size;
+	sptr->sSize = (unsigned char)(size >> 1);
+	sptr->Size = (unsigned char)(size >> 1);
 	sptr->dSize += sptr->dSize >> 2;
 }
 
@@ -3085,9 +3085,7 @@ void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int num
 {
 	int offset;
 	int xoff;
-	int yoffset;
 	int yoff;
-	int zoffset;
 	int zoff;
 
 	offset = ((numnodes << 3) - numnodes) << 1;
@@ -3304,12 +3302,12 @@ void do_new_cutscene_camera()
 		camera.pos.room_number = IsRoomOutsideNo;
 
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-	cam_pos.x = camera.pos.x;
-	cam_pos.y = camera.pos.y;
-	cam_pos.z = camera.pos.z;
-	cam_target.x = camera.target.x;
-	cam_target.y = camera.target.y;
-	cam_target.z = camera.target.z;
+	cam_pos.x = (float)camera.pos.x;
+	cam_pos.y = (float)camera.pos.y;
+	cam_pos.z = (float)camera.pos.z;
+	cam_target.x = (float)camera.target.x;
+	cam_target.y = (float)camera.target.y;
+	cam_target.z = (float)camera.target.z;
 	aLookAt(cam_pos, cam_target, 0);
 
 	if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
@@ -3371,10 +3369,10 @@ void updateAnimFrame(PACKNODE* node, int flags, short* frame)
 	}
 }
 
-void _DrawCutSeqActors()//fix
+void DrawCutSeqActors()
 {
 	OBJECT_INFO* obj;
-	short* mesh;
+	short** mesh;
 	long* bone;
 	short* rot;
 	int n;
@@ -3384,85 +3382,82 @@ void _DrawCutSeqActors()//fix
 	if (GLOBAL_cutme->numactors <= 1)
 	{
 		phd_mxptr -= 12;
-		phd_dxptr -= 12;
+		aMXPtr -= 12;
+		return;
 	}
-	else
+
+	for (int i = 1; i < GLOBAL_cutme->numactors; i++)
 	{
-		for (int i = 1; i < GLOBAL_cutme->numactors; i++)
+		phd_PushMatrix();
+
+		if (cutseq_meshbits[i] & 0x80000000)
 		{
-			phd_PushMatrix();
+			n = 1;
+			updateAnimFrame(actor_pnodes[i], GLOBAL_cutme->actor_data[i].nodes + 1, temp_rotation_buffer);
+			phd_TranslateAbs(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz);
+			obj = &objects[GLOBAL_cutme->actor_data[i].objslot];
+			bone = &bones[obj->bone_index];
+			mesh = &meshes[obj->mesh_index];
+			CalcActorLighting(&duff_item, obj, temp_rotation_buffer);
+			phd_TranslateRel(temp_rotation_buffer[6], temp_rotation_buffer[7], temp_rotation_buffer[8]);
+			rot = &temp_rotation_buffer[9];
+			gar_RotYXZsuperpack(&rot, 0);
 
-			if (cutseq_meshbits[i] < 0)
+			if (cutseq_meshbits[i] & 1)
 			{
-				n = 1;
-				updateAnimFrame(actor_pnodes[i], GLOBAL_cutme->actor_data[i].nodes + 1, temp_rotation_buffer);
-				phd_TranslateAbs(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz);
-				obj = &objects[GLOBAL_cutme->actor_data[i].objslot];
-				CalcActorLighting(&duff_item, obj, temp_rotation_buffer);
-				phd_TranslateRel(temp_rotation_buffer[6], temp_rotation_buffer[7], temp_rotation_buffer[8]);
-				rot = &temp_rotation_buffer[9];
-				gar_RotYXZsuperpack(&rot, 0);
-
-				if (cutseq_meshbits[i] & 1)
+				if (cutseq_meshswapbits[i] & 1)
 				{
-					if (cutseq_meshswapbits[i] & 1)
-					{
-						if (i != 1 || cut_seethrough == 128)
-							phd_PutPolygons(&meshes[obj->mesh_index][1], -1);
-						else
-							phd_PutPolygons_seethrough(&meshes[obj->mesh_index][1], cut_seethrough);
-					}
-					else if (i != 1 || cut_seethrough == 128)
-						phd_PutPolygons(&(*meshes[obj->mesh_index]), -1);
+					if (i != 1 || cut_seethrough == 128)
+						phd_PutPolygons(*(mesh + 1), -1);
 					else
-						phd_PutPolygons_seethrough(&(*meshes[obj->mesh_index]), cut_seethrough);
+						phd_PutPolygons_seethrough(*(mesh + 1), cut_seethrough);
 				}
-
-				if (obj->nmeshes - 1 > 0)
-				{
-					bone = &bones[obj->bone_index];
-					mesh = &meshes[obj->mesh_index][1] + 2;
-
-					for (int j = 0; j < obj->nmeshes - 1; j++, bone++, mesh++)
-					{
-						if (*bone & 1)
-						{
-							phd_mxptr -= 12;
-							phd_dxptr -= 12;
-						}
-
-						if (*bone & 2)
-							phd_PushMatrix();
-
-						phd_TranslateRel(bone[1], bone[2], bone[3]);
-						gar_RotYXZsuperpack(&rot, 0);
-						n <<= 1;
-
-						if (cutseq_meshbits[i] & n)
-						{
-							if (n & cutseq_meshswapbits[i])
-							{
-								if (i != 1 || cut_seethrough == 128)
-									phd_PutPolygons(&mesh[1], -1);
-								else
-									phd_PutPolygons_seethrough(&mesh[1], cut_seethrough);
-							}
-							else if (i != 1 || cut_seethrough == 128)
-								phd_PutPolygons(&(*mesh), -1);
-							else
-								phd_PutPolygons_seethrough(&(*mesh), cut_seethrough);
-						}
-					}
-				}
+				else if (i != 1 || cut_seethrough == 128)
+					phd_PutPolygons(*mesh, -1);
+				else
+					phd_PutPolygons_seethrough(*mesh, cut_seethrough);
 			}
 
-			phd_mxptr -= 12;
-			phd_dxptr -= 12;
+			mesh += 2;
+
+			for (int j = 0; j < obj->nmeshes - 1; j++, bone += 4, mesh += 2)
+			{
+				if (*bone & 1)
+				{
+					phd_mxptr -= 12;
+					aMXPtr -= 12;
+				}
+
+				if (*bone & 2)
+					phd_PushMatrix();
+
+				phd_TranslateRel(bone[1], bone[2], bone[3]);
+				gar_RotYXZsuperpack(&rot, 0);
+				n <<= 1;
+
+				if (cutseq_meshbits[i] & n)
+				{
+					if (n & cutseq_meshswapbits[i])
+					{
+						if (i != 1 || cut_seethrough == 128)
+							phd_PutPolygons(*(mesh + 1), -1);
+						else
+							phd_PutPolygons_seethrough(*(mesh + 1), cut_seethrough);
+					}
+					else if (i != 1 || cut_seethrough == 128)
+						phd_PutPolygons(*mesh, -1);
+					else
+						phd_PutPolygons_seethrough(*mesh, cut_seethrough);
+				}
+			}
 		}
 
 		phd_mxptr -= 12;
-		phd_dxptr -= 12;
+		aMXPtr -= 12;
 	}
+
+	phd_mxptr -= 12;
+	aMXPtr -= 12;
 }
 
 void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot)
@@ -3476,7 +3471,7 @@ void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot)
 	if (IsRoomOutsideNo != -1)
 		item->room_number = IsRoomOutsideNo;
 
-	dword_9158A8 = item;
+	current_item = item;
 	item->il.fcnt = -1;
 	item->il.item_pos.x = pos.x;
 	item->il.item_pos.y = pos.y;
@@ -3485,7 +3480,7 @@ void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot)
 	CreateLightList(item);
 }
 
-void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, __int16* rot, PHD_VECTOR* pos)
+void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PHD_VECTOR* pos)
 {
 	short* rotation1;
 
@@ -3500,7 +3495,7 @@ void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, __int16* rot, 
 	pos->y += item->pos.y_pos;
 	pos->z += item->pos.z_pos;
 	phd_mxptr -= 12;
-	phd_dxptr -= 12;
+	aMXPtr -= 12;
 }
 
 void frigup_lara()
@@ -3524,7 +3519,7 @@ void frigup_lara()
 	phd_PushUnitMatrix();
 	Rich_CalcLaraMatrices_Normal(frame, bone, 1);
 	phd_mxptr -= 12;
-	phd_dxptr -= 12;
+	aMXPtr -= 12;
 	HairControl(0, 0, frame);
 
 	if ((gfLevelFlags & GF_LVOP_YOUNG_LARA))
@@ -3701,7 +3696,7 @@ void inject_deltaPak()
 	INJECT(0x00421B50, DecodeTrack);
 	INJECT(0x00421CD0, GetTrackWord);
 	INJECT(0x00421E90, updateAnimFrame);
-	//DrawCutSeqActors
+	INJECT(0x00422030, DrawCutSeqActors);
 	INJECT(0x004223C0, CalcActorLighting);
 	INJECT(0x00422490, GetJointAbsPositionCutSeq);
 }

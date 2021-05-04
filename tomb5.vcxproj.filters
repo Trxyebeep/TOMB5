@@ -132,9 +132,6 @@
     <ClCompile Include="TOMB5\specific\display.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\specific\drawprimitive.cpp">
-      <Filter>TOMB5\specific</Filter>
-    </ClCompile>
     <ClCompile Include="TOMB5\specific\DS.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
@@ -142,9 +139,6 @@
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
     <ClCompile Include="TOMB5\specific\input.cpp">
-      <Filter>TOMB5\specific</Filter>
-    </ClCompile>
-    <ClCompile Include="TOMB5\specific\pcsetup.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
     <ClCompile Include="TOMB5\specific\specific.cpp">
@@ -161,7 +155,6 @@
     <ClCompile Include="TOMB5\game\people.cpp" />
     <ClCompile Include="TOMB5\specific\light.cpp" />
     <ClCompile Include="TOMB5\specific\init.cpp" />
-    <ClCompile Include="TOMB5\specific\picture.cpp" />
     <ClCompile Include="TOMB5\specific\output.cpp" />
     <ClCompile Include="TOMB5\specific\file.cpp" />
     <ClCompile Include="TOMB5\game\gameflow_helpers.cpp" />
@@ -170,6 +163,7 @@
     <ClCompile Include="TOMB5\game\rope.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\specific\LoadSave.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -301,9 +295,6 @@
     <ClInclude Include="TOMB5\specific\display.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\specific\drawprimitive.h">
-      <Filter>TOMB5\specific</Filter>
-    </ClInclude>
     <ClInclude Include="TOMB5\specific\DS.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
@@ -314,9 +305,6 @@
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\specific\matrix_shit.h">
-      <Filter>TOMB5\specific</Filter>
-    </ClInclude>
-    <ClInclude Include="TOMB5\specific\pcsetup.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\specific\specific.h">
@@ -333,7 +321,6 @@
     <ClInclude Include="TOMB5\game\people.h" />
     <ClInclude Include="TOMB5\specific\light.h" />
     <ClInclude Include="TOMB5\specific\init.h" />
-    <ClInclude Include="TOMB5\specific\picture.h" />
     <ClInclude Include="TOMB5\specific\output.h" />
     <ClInclude Include="TOMB5\specific\file.h" />
     <ClInclude Include="TOMB5\game\gameflow_helpers.h" />
@@ -342,6 +329,7 @@
     <ClInclude Include="TOMB5\game\rope.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
+    <ClInclude Include="TOMB5\specific\LoadSave.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

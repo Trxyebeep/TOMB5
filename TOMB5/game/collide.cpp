@@ -35,7 +35,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	int xright, xleft, zright, zleft;
 	int x, z;
 	long height;
-	short ceiling;
+	long ceiling;
 	unsigned short tilt_type;
 
 	if (objheight < 0)
@@ -410,7 +410,7 @@ short GetTiltType(FLOOR_INFO* floor, long x, long y, long z)
 
 	while (floor->pit_room != 255)
 	{
-		if (CheckNoColFloorTriangle(floor, x, z))
+		if (CheckNoColFloorTriangle(floor, x, z) == 1)
 			break;
 
 		Room = &room[floor->pit_room];

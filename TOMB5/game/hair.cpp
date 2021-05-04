@@ -9,48 +9,50 @@
 //0x00439A40 DrawHair
 //HairControl	00438C80
 
-void _DrawHair()//fix later
+void DrawHair()
 {
-	return;
 	HAIR_STRUCT* hair;
-	short** meshptr;
-	short** meshptr2;
+	short** meshpp;
+	int ii;
 
-	hair = &hairs[0][1];
-
-	int a, b, c;
-	for (a = 0, b = 0, c = 0; a > -12; a -= 6, ++b, c += 6, hair++)
+	for (int i = 0; i < 2; i++)
 	{
-		HAIR_STRUCT* hair1 = hair;
-		for (int i = 1; i < 6; i += 2, meshptr += 3, hair1 += 2)
+		ii = i * 6;
+		meshpp = &meshes[objects[HAIR].mesh_index];
+		meshpp += 2;
+
+		hair = &hairs[i][1];
+
+		for (int j = 1; j < 6; j += 2, meshpp += 4, hair += 2)
 		{
-			meshptr = &meshes[objects[HAIR].mesh_index + 2 * i];
 			phd_PushMatrix();
 			phd_TranslateAbs(hair->pos.x_pos, hair->pos.y_pos, hair->pos.z_pos);
 			phd_RotY(hair->pos.y_rot);
 			phd_RotX(hair->pos.x_rot);
-			phd_PutPolygons(*meshptr, -1);
-			if (i == 5)
-				StashSkinVertices(c + 33);
+			phd_PutPolygons(*meshpp, -1);
+
+			if (j == 5)
+				StashSkinVertices(33 + ii);
 			else
 			{
-				StashSkinVertices(c + i + 28);
-				StashSkinVertices(c + i + 29);
+				StashSkinVertices(28 + ii + j);
+				StashSkinVertices(29 + ii + j);
 			}
+
 			phd_mxptr -= 12;
-			phd_dxptr -= 12;
+			aMXPtr -= 12;
 		}
 
-		meshptr2 = &meshes[objects[30].mesh_index];
-		int z = c + 29;
-		int l = a + c - 29;
-		for (; a + z - 29 < 6; z += 2, meshptr2 += 4)
+		meshpp = &meshes[objects[HAIR].mesh_index];
+
+		for (int j = 0; j < 6; j += 2, meshpp += 4)
 		{
-			SkinVerticesToScratch(z - 1);
-			GetCorrectStashPoints(b, a + z - 29, z);
-			SkinVerticesToScratch(z);
-			phd_PutPolygons(*meshptr2, -1);
+			SkinVerticesToScratch(28 + ii + j);
+			GetCorrectStashPoints(i, j, 29 + ii + j);
+			SkinVerticesToScratch(29 + ii + j);
+			phd_PutPolygons(*meshpp, -1);
 		}
+
 		if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
 			break;
 	}
@@ -58,5 +60,5 @@ void _DrawHair()//fix later
 
 void inject_hair()
 {
-//	INJECT(0x00439A40, DrawHair)
+	INJECT(0x00439A40, DrawHair)
 }

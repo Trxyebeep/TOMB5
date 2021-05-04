@@ -26,20 +26,22 @@
 #include "switch.h"
 #include "draw.h"
 #include "joby.h"
+#include "../specific/LoadSave.h"
 
-long ControlPhase(long nframes, int demo_mode)
+
+long ControlPhase(long _nframes, int demo_mode)
 {
 	RegeneratePickups();
 
-	if (10 < nframes)
-		nframes = 10;
+	if (10 < _nframes)
+		_nframes = 10;
 
 	if (bTrackCamInit != 0)
 		bUseSpotCam = 0;
 
 	SetDebounce = 1;
 
-	for (framecount += nframes; framecount > 0; framecount -= 2)
+	for (framecount += _nframes; framecount > 0; framecount -= 2)
 	{
 		GlobalCounter++;
 		UpdateSky();
@@ -513,9 +515,9 @@ void InterpolateAngle(short dest, short* src, short* diff, short speed)
 		adiff += 65536;
 
 	if (diff)
-		diff[0] = adiff;
+		diff[0] = (short)adiff;
 
-	*src += adiff >> speed;
+	*src += (short)(adiff >> speed);
 }
 
 void TranslateItem(ITEM_INFO* item, short x, short y, short z)
@@ -1128,7 +1130,7 @@ int ExplodeItemNode(ITEM_INFO* item, int Node, int NoXZVel, long bits)
 	ShatterItem.Sphere.z = Slist[Node].z;
 	ShatterItem.il = &item->il;
 	ShatterItem.Flags = item->object_number != CROSSBOW_BOLT ? 0 : 1024;
-	ShatterObject(&ShatterItem, 0, bits, item->room_number, NoXZVel);
+	ShatterObject(&ShatterItem, 0, (short)bits, item->room_number, NoXZVel);
 	item->mesh_bits &= ~ShatterItem.Bit;
 	return 1;
 }
@@ -1720,7 +1722,8 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 {
 	GAME_VECTOR target;
 	PHD_VECTOR v;
-	MESH_INFO* StaticMesh, *Mesh;
+//	MESH_INFO* StaticMesh, *Mesh;//StaticMesh: unreferenced local variable
+	MESH_INFO* Mesh;
 	short item_no, hit, ricochet, room_number, TriggerItems[8], NumTrigs;
 	int i;
 	ITEM_INFO* shotitem;
@@ -1767,6 +1770,9 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 						++SmashedMeshCount;
 						Mesh->Flags &= ~0x1;
 						SoundEffect(ShatterSounds[gfCurrentLevel - 5][Mesh->static_number], (PHD_3DPOS *) Mesh, 0);
+						//to reach the block Mesh->static_number has to be bigger than 50, and the range for ShatterSounds[][here] is 10.
+						//this is an original game bug. fixing static_number back to range with -50 removes errors, but messes up the
+						//sounds of shattering ingame.
 					}
 
 					TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);

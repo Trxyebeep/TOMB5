@@ -244,7 +244,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00421D60	+	frigup_lara
 0x00421E90	+	updateAnimFrame
 0x00422010	+	finish_cutseq
-0x00422030	x	DrawCutSeqActors
+0x00422030	+	DrawCutSeqActors
 0x004223C0	+	CalcActorLighting
 0x00422490		GetJointAbsPositionCutSeq
 0x00422570		CalculateObjectLightingLaraCutSeq
@@ -844,6 +844,48 @@ x for functions decompiled but not injected, for one reason or another.
 0x0046F480		_Straighten
 
 
+		game/draw.cpp
+
+0x0042A1B0		CalculateObjectLightingLara
+0x0042A310		UpdateSkyLightning
+0x0042A400		DrawPhaseGame
+0x0042A4A0		SkyDrawPhase
+0x0042A7A0		DrawRooms
+0x0042AF50		ClipRoom
+0x0042B340		DrawEffect
+0x0042B4C0		calc_animating_item_clip_window
+0x0042B900		DrawAnimatingItem
+0x0042BE90	+	InitInterpolate
+0x0042BF00	+	phd_PopMatrix_I
+0x0042BF50	+	phd_PushMatrix_I
+0x0042BFC0	+	phd_RotY_I
+0x0042C030	+	phd_RotX_I
+0x0042C0A0	+	phd_RotZ_I
+0x0042C110	+	phd_TranslateRel_I
+0x0042C190	+	phd_TranslateRel_ID
+0x0042C210	+	phd_RotYXZ_I
+0x0042C290	+	gar_RotYXZsuperpack_I
+0x0042C310	+	gar_RotYXZsuperpack
+0x0042C3F0	+	phd_PutPolygons_I
+0x0042C440	+	aInterpolateMatrix
+0x0042C790		aInterpolateArmMatrix
+0x0042C8F0		InterpolateMatrix
+0x0042CC10		InterpolateArmMatrix
+0x0042CD50		CalculateObjectLighting
+0x0042CEB0		GetFrames
+0x0042CF80	+	GetBoundsAccurate
+0x0042D020	+	GetBestFrame
+0x0042D060		DrawStaticObjects
+0x0042D290		PrintObjects
+0x0042D4F0		GetRoomBounds
+0x0042D790		SetRoomBounds
+0x0042DE20		RenderIt
+0x0042E1C0		PrintRooms
+0x0042E240		mRotBoundingBoxNoPersp
+0x0042E500		SetupSkelebobMeshswaps
+0x0042E630		RestoreLaraMeshswaps
+
+
 // ======================================
 // SPECIFIC
 // ======================================
@@ -928,3 +970,40 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B89F0		aLoadBitmap
 0x004B8A80		do_boot_screen
 0x004B8C50		aCalcColorSplit
+
+
+		specific/LoadSave.cpp
+
+0x004AB9F0		CalculateNumSpecialFeatures
+0x004ABA60		FindSFCursor
+0x004ABAE0		MemBltSurf
+0x004AC010		RGBM_Mono
+0x004AC050		ConvertSurfaceToTextures
+0x004AC430		CreateMonoScreen
+0x004AC460		FreeMonoScreen
+0x004AC810		LoadScreen
+0x004ACA30		ReleaseScreen
+0x004ACAB0		DrawLoadingScreen
+0x004ACC70		S_DrawTile
+0x004AD010		S_DisplayMonoScreen
+0x004AD290		GetSaveLoadFiles
+0x004AD460		DoLoadSave
+0x004AD820		DoSlider
+0x004ADF40	+	CheckKeyConflicts
+0x004ADF90		DoOptions
+0x004B0910	+	DoStatScreen
+0x004B0D60		S_DisplayPauseMenu
+0x004B1030		S_PauseMenu
+0x004B1120		S_LoadSave
+0x004B1250		DoBar
+0x004B1890		S_DrawDashBar
+0x004B18E0		S_DrawAirBar
+0x004B1950		S_DrawHealthBar
+0x004B19C0		S_DrawHealthBar2
+0x004B1A40		S_InitLoadBar
+0x004B1A80		S_UpdateLoadBar
+0x004B1AB0		S_DrawLoadBar
+0x004B1BE0		S_LoadBar
+0x004B1C00		SpecialFeaturesDisplayScreens
+0x004B1D90		DoSpecialFeaturesServer
+0x004B1E30		S_MemSet
