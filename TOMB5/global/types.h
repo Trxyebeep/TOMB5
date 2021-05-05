@@ -1516,4 +1516,37 @@ struct PCSVECTOR
 	long vy;
 	long vz;
 };
+
+struct ACMESHVERTEX
+{
+	float	x;
+	float	y;
+	float	z;
+	float	nx;
+	float	ny;
+	float	nz;
+	int		prelight;
+	int		padd;
+};
+
+struct MESH_DATA
+{
+	short x;
+	short y;
+	short z;
+	short r;
+	short flags;
+	short nVerts;
+	short nNorms;
+	short ngt4;
+	short* gt4;
+	short ngt3;
+	short* gt3;
+	long* prelight;
+	LPDIRECT3DVERTEXBUFFER SourceVB;
+	D3DVECTOR* Normals;
+	int	aFlags;
+	ACMESHVERTEX* aVtx;
+	float bbox[6];
+};
 #pragma pack(pop)

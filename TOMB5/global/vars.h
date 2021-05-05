@@ -330,6 +330,7 @@
 #define CamPos	VAR_U_(0x00E4B0D0, PHD_VECTOR)
 #define bLaraUnderWater	VAR_U_(0x0057A150, int)
 #define bLaraSkinBits	VAR_U_(0x0057A458, int)
+#define aMappedNormals	VAR_U_(0x0057A45C, LPD3DVECTOR)
 
 
 //GUESSED
@@ -420,6 +421,7 @@
 #define lara_matricesF	ARRAY_(0x00E868E0, float, [180])
 #define LaraNodeUnderwater	ARRAY_(0x00E862F0, unsigned char, [15])
 #define lara_matrices	ARRAY_(0x00E86320, MATRIX3D, [15])
+#define aScratchNormals	ARRAY_(0x0057A158, D3DVECTOR, [64])
 
 //defs
 #define NO_HEIGHT -32512
