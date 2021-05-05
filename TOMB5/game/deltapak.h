@@ -163,8 +163,9 @@ void do_new_cutscene_camera();
 void updateAnimFrame(PACKNODE* node, int flags, short* frame);
 void DrawCutSeqActors();
 void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot);
-void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, __int16* rot, PHD_VECTOR* pos);
+void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PHD_VECTOR* pos);
 void frigup_lara();
+void CalculateObjectLightingLaraCutSeq();
 
 
 #define GetActorJointAbsPosition ((void(__cdecl*)(int, unsigned long, PHD_VECTOR*)) 0x004243A0 )

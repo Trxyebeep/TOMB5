@@ -2594,17 +2594,14 @@ void trigger_weapon_dynamics(int left_or_right)
 
 ITEM_INFO* find_a_fucking_item(int object_number)
 {
-	int i;
+	ITEM_INFO* item;
 
-	if (level_items > 0)
+	for (int i = 0; i < level_items; i++)
 	{
-		for (i = 0; i < level_items; i++)
-		{
-			if (items[i].object_number == object_number)
-			{
-				return &items[i];
-			}
-		}
+		item = &items[i];
+
+		if (item->object_number == object_number)
+			return item;
 	}
 
 	return 0;
@@ -3520,6 +3517,33 @@ void frigup_lara()
 	GLaraShadowframe = &frig_shadow_bbox[0];
 }
 
+void CalculateObjectLightingLaraCutSeq()
+{
+	PHD_VECTOR pos;
+	short room_num, room_num2;
+
+	pos.x = 0;
+	pos.y = 0;
+	pos.z = 0;
+	GetLaraJointPos(&pos, 8);
+	room_num = lara_item->room_number;
+	IsRoomOutsideNo = -1;
+	IsRoomOutside(pos.x, pos.y, pos.z);
+
+	if (IsRoomOutsideNo != -1)
+		room_num = IsRoomOutsideNo;
+
+	room_num2 = lara_item->room_number;
+	current_item = lara_item;
+	lara_item->il.item_pos.x = pos.x;
+	lara_item->il.item_pos.y = pos.y;
+	lara_item->il.item_pos.z = pos.z;
+	lara_item->room_number = room_num;
+	CalcAmbientLight(lara_item);
+	CreateLightList(lara_item);
+	lara_item->room_number = room_num2;
+}
+
 void inject_deltaPak()
 {
 	INJECT(0x00425390, andrea1_init);
@@ -3657,7 +3681,7 @@ void inject_deltaPak()
 	INJECT(0x00421880, InitPackNodes);
 	INJECT(0x00421D60, frigup_lara);
 	INJECT(0x00422010, finish_cutseq);
-//	INJECT(0x00422570, CalculateObjectLightingLaraCutSeq);
+	INJECT(0x00422570, CalculateObjectLightingLaraCutSeq);
 	INJECT(0x004226E0, cutseq_givelara_hk);
 	INJECT(0x00422700, cutseq_removelara_hk);
 	INJECT(0x00422740, cutseq_shoot_pistols);

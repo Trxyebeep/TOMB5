@@ -246,8 +246,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00422010	+	finish_cutseq
 0x00422030	+	DrawCutSeqActors
 0x004223C0	+	CalcActorLighting
-0x00422490		GetJointAbsPositionCutSeq
-0x00422570		CalculateObjectLightingLaraCutSeq
+0x00422490	+	GetJointAbsPositionCutSeq
+0x00422570	+	CalculateObjectLightingLaraCutSeq
 0x00422680	+	cutseq_givelara_pistols
 0x004226B0	+	cutseq_removelara_pistols
 0x004226E0	+	cutseq_givelara_hk
@@ -411,7 +411,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/spotcam.cpp
 
 0x0047A800		InitSpotCamSequences
-0x0047A890		Spline
+0x0047A890	+	Spline
 0x0047A9D0		InitialiseSpotCam
 0x0047B280		CalculateSpotCams
 
@@ -746,7 +746,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004354B0	+	DoGameflow
 0x00435C70	+	DoTitle
 0x00435F60		DoLevel
-0x004364B0		do_dels_cutseq_selector
+0x004364B0	+	do_dels_cutseq_selector
 
 
 		game/gladiatr.cpp
