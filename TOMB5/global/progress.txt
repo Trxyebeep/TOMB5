@@ -768,7 +768,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00438BE0		InitialiseHair
 0x00438C80		HairControl
 0x00439950		GetCorrectStashPoints
-0x00439A40		DrawHair
+0x00439A40	+	DrawHair
 
 
 		game/health.cpp
@@ -777,7 +777,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00439C50	+	DrawGameInfo
 0x00439E50	+	DrawHealthBar
 0x00439FC0	+	DrawAirBar
-0x0043A0A0		MakeAmmoString
+0x0043A0A0	+	MakeAmmoString
 0x0043A0E0	+	InitialisePickUpDisplay
 0x0043A130	+	DrawPickups
 0x0043A240	+	AddDisplayPickup
@@ -1013,7 +1013,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00498030	+	DrawLara
 0x00498100	+	DrawLara__1
-0x00498C70		DrawLara__4
+0x00498C70	+	DrawLara__4
 0x004995C0		DrawLara__5
 0x00499BA0		DrawLara__6
 0x0049A210		SetLaraUnderwaterNodes

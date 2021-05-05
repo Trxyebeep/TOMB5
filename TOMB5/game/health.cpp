@@ -135,6 +135,28 @@ void DrawAirBar(int flash_state)
 	}
 }
 
+void MakeAmmoString(char* string)
+{
+	char* s;
+
+	s = string;
+
+	if (*string)
+	{
+		do
+		{
+			if (*s != 32)
+			{
+				if (*s - 65 < 0)
+					*s -= 47;
+				else
+					*s -= 53;
+			}
+
+		} while (*++s);
+	}
+}
+
 void InitialisePickUpDisplay()
 {
 	for (int i = 7; i > -1; i--)
