@@ -18,10 +18,11 @@ void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, int skip);
 void gar_RotYXZsuperpack(short** pprot, int skip);
 void phd_PutPolygons_I(short* ptr, int clip);
 void aInterpolateMatrix();
+long DrawPhaseGame();
 
 #define InterpolateMatrix	( (void(__cdecl*)()) 0x0042C8F0 )
 #define	mRotBoundingBoxNoPersp	( (void(__cdecl*)(short*, short*)) 0x00402428 )
 #define GetFrames	( (long(__cdecl*)(ITEM_INFO*, short*[], int*)) 0x0042CEB0 )
-#define DrawPhaseGame	( (int(__cdecl*)()) 0x0042A400 )
+#define DrawRooms	( (void(__cdecl*)(short)) 0x0042A7A0 )
 #define SkyDrawPhase	( (void(__cdecl*)()) 0x0042A4A0 )
 #define CalculateObjectLightingLara	( (void(__cdecl*)()) 0x0042A1B0 )
