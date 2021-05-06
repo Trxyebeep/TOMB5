@@ -3392,7 +3392,7 @@ void DrawCutSeqActors()
 			obj = &objects[GLOBAL_cutme->actor_data[i].objslot];
 			bone = &bones[obj->bone_index];
 			mesh = &meshes[obj->mesh_index];
-			CalcActorLighting(&duff_item, obj, temp_rotation_buffer);
+			CalcActorLighting(&duff_item[i - 1], obj, temp_rotation_buffer);
 			phd_TranslateRel(temp_rotation_buffer[6], temp_rotation_buffer[7], temp_rotation_buffer[8]);
 			rot = &temp_rotation_buffer[9];
 			gar_RotYXZsuperpack(&rot, 0);

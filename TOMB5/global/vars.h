@@ -253,7 +253,6 @@
 #define oldLaraBusy	VAR_U_(0x00E59898, char)
 #define GLOBAL_numcutseq_frames	VAR_U_(0x00E7F020, int)
 #define camera_pnodes	VAR_U_(0x00E7EE9C, PACKNODE*)
-#define duff_item	VAR_U_(0x00E71300, ITEM_INFO)
 #define GLaraShadowframe	VAR_U_(0x00E86300, short*)
 #define malloc_buffer	VAR_U_(0x00E4B10C, char*)
 #define malloc_ptr	VAR_U_(0x00E4B0DC, char*)
@@ -331,11 +330,7 @@
 #define bLaraUnderWater	VAR_U_(0x0057A150, int)
 #define bLaraSkinBits	VAR_U_(0x0057A458, int)
 #define aMappedNormals	VAR_U_(0x0057A45C, LPD3DVECTOR)
-
-
-//GUESSED
-#define	lara1_look_fade	VAR_U_(0x00511A18, short)
-#define	lara4_look_fade	VAR_U_(0x00511A1A, short)
+#define skinMatrixPtr	VAR_U_(0x00E5B918, long*)
 
 
 
@@ -422,6 +417,7 @@
 #define LaraNodeUnderwater	ARRAY_(0x00E862F0, unsigned char, [15])
 #define lara_matrices	ARRAY_(0x00E86320, MATRIX3D, [15])
 #define aScratchNormals	ARRAY_(0x0057A158, D3DVECTOR, [64])
+#define duff_item	ARRAY_(0x00E71300, ITEM_INFO, [10])
 
 //defs
 #define NO_HEIGHT -32512

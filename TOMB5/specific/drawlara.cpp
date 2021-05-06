@@ -236,7 +236,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 			else
 				xRot = phd_atan(cos, sin);
 
-			phd_RotX(-xRot >> 1);
+			phd_RotX((short)(-xRot >> 1));
 			phd_PutPolygons(*meshpp, -1);
 			phd_PopMatrix();
 		}
@@ -486,7 +486,7 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 			else
 				xRot = phd_atan(cos, sin);
 
-			phd_RotX(-xRot >> 1);
+			phd_RotX((short)(-xRot >> 1));
 			aSetViewMatrix();
 			phd_PutPolygonsSpcEnvmap(*meshpp, -1);
 			phd_PopMatrix();
