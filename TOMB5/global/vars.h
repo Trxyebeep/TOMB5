@@ -253,7 +253,6 @@
 #define oldLaraBusy	VAR_U_(0x00E59898, char)
 #define GLOBAL_numcutseq_frames	VAR_U_(0x00E7F020, int)
 #define camera_pnodes	VAR_U_(0x00E7EE9C, PACKNODE*)
-#define duff_item	VAR_U_(0x00E71300, ITEM_INFO)
 #define GLaraShadowframe	VAR_U_(0x00E86300, short*)
 #define malloc_buffer	VAR_U_(0x00E4B10C, char*)
 #define malloc_ptr	VAR_U_(0x00E4B0DC, char*)
@@ -276,8 +275,11 @@
 #define GlobalSoftReset	VAR_U_(0x00E5C2F8, int)
 #define GlobalAlpha	VAR_U_(0x00506D3C, int)
 #define current_item	VAR_U_(0x009158A8, ITEM_INFO*)
-
-
+#define aGlobalSkinMesh	VAR_U_(0x00921680, int)
+#define phd_top	VAR_U_(0x0051D0A8, long)
+#define phd_bottom	VAR_U_(0x0055D204, long)
+#define phd_left	VAR_U_(0x0055D20C, long)
+#define phd_right	VAR_U_(0x0055DA3C, long)
 #define	phd_winxmax	VAR_U_(0x0055D218, short)
 #define	phd_winxmin	VAR_U_(0x0055D234, short)
 #define	phd_winymax	VAR_U_(0x0055D240, short)
@@ -324,11 +326,11 @@
 #define nRope VAR_U_(0x0051CA60, int)
 #define CurrentPendulum VAR_U_(0x00EEF020, PENDULUM)
 #define NullPendulum VAR_U_(0x0051CFD0, PENDULUM)
-
-
-//GUESSED
-#define	lara1_look_fade	VAR_U_(0x00511A18, short)
-#define	lara4_look_fade	VAR_U_(0x00511A1A, short)
+#define CamPos	VAR_U_(0x00E4B0D0, PHD_VECTOR)
+#define bLaraUnderWater	VAR_U_(0x0057A150, int)
+#define bLaraSkinBits	VAR_U_(0x0057A458, int)
+#define aMappedNormals	VAR_U_(0x0057A45C, LPD3DVECTOR)
+#define skinMatrixPtr	VAR_U_(0x00E5B918, long*)
 
 
 
@@ -411,6 +413,11 @@
 #define los_rooms ARRAY_(0x00EEEFC0, short, [20])
 #define static_objects ARRAY_(0x00874988, static_info, [70])
 #define RopeList ARRAY_(0x00E54CC0, ROPE_STRUCT, [8])
+#define lara_matricesF	ARRAY_(0x00E868E0, float, [180])
+#define LaraNodeUnderwater	ARRAY_(0x00E862F0, unsigned char, [15])
+#define lara_matrices	ARRAY_(0x00E86320, MATRIX3D, [15])
+#define aScratchNormals	ARRAY_(0x0057A158, D3DVECTOR, [64])
+#define duff_item	ARRAY_(0x00E71300, ITEM_INFO, [10])
 
 //defs
 #define NO_HEIGHT -32512

@@ -36,6 +36,7 @@
 #include "../specific/3dmath.h"
 #include "../game/rope.h"
 #include "../specific/LoadSave.h"
+#include "../specific/drawlara.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -89,6 +90,7 @@ void inject_all()
     inject_output();
 	inject_rope();
     inject_LoadSave();
+    inject_drawlara();
 }
 
 BOOL APIENTRY DllMain( HINSTANCE hModule,

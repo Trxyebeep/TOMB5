@@ -164,6 +164,8 @@
       <Filter>TOMB5\game</Filter>
     </ClCompile>
     <ClCompile Include="TOMB5\specific\LoadSave.cpp" />
+    <ClCompile Include="TOMB5\specific\drawlara.cpp" />
+    <ClCompile Include="TOMB5\specific\specificfx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -330,6 +332,8 @@
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\specific\LoadSave.h" />
+    <ClInclude Include="TOMB5\specific\drawlara.h" />
+    <ClInclude Include="TOMB5\specific\specificfx.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

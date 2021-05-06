@@ -2594,17 +2594,14 @@ void trigger_weapon_dynamics(int left_or_right)
 
 ITEM_INFO* find_a_fucking_item(int object_number)
 {
-	int i;
+	ITEM_INFO* item;
 
-	if (level_items > 0)
+	for (int i = 0; i < level_items; i++)
 	{
-		for (i = 0; i < level_items; i++)
-		{
-			if (items[i].object_number == object_number)
-			{
-				return &items[i];
-			}
-		}
+		item = &items[i];
+
+		if (item->object_number == object_number)
+			return item;
 	}
 
 	return 0;
@@ -3028,7 +3025,7 @@ void deal_with_actor_shooting(unsigned short* shootdata, int actornum, int noden
 {
 	int f;
 	unsigned short dat;
-	D3DMATRIX arse;
+	MATRIX3D arse;
 
 	dat = *shootdata++;
 	f = GLOBAL_cutseq_frame;
@@ -3118,7 +3115,7 @@ void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int num
 	return;
 }
 
-int GetTrackWord(unsigned long off, char* packed, unsigned char packmethod)
+short GetTrackWord(int off, char* packed, int packmethod)
 {
 	int ret;
 	long offset, offset2;
@@ -3136,9 +3133,9 @@ int GetTrackWord(unsigned long off, char* packed, unsigned char packmethod)
 	return ret;
 }
 
-int DecodeTrack(char* packed, RTDECODE* decode)
+short DecodeTrack(char* packed, RTDECODE* decode)
 {
-	int word;
+	short word;
 
 	if (!decode->decodetype)
 	{
@@ -3197,13 +3194,11 @@ int DecodeTrack(char* packed, RTDECODE* decode)
 	}
 }
 
-void DecodeAnim(PACKNODE* node, int num_nodes, int frame, unsigned short flags)
+void DecodeAnim(PACKNODE* node, int num_nodes, int frame, int flags)
 {
-	int i;
-
 	if (!frame)
 	{
-		for (i = num_nodes; i; i--, node++)
+		for (int i = num_nodes; i; i--, node++)
 		{
 			node->decode_x.off = 0;
 			node->decode_x.counter = 0;
@@ -3233,7 +3228,7 @@ void DecodeAnim(PACKNODE* node, int num_nodes, int frame, unsigned short flags)
 	node->zrot_run += DecodeTrack(node->zpacked, &node->decode_z);
 	node++;
 
-	for (i = 1; i < num_nodes; i++, node++)
+	for (int i = 1; i < num_nodes; i++, node++)
 	{
 		node->xrot_run += DecodeTrack(node->xpacked, &node->decode_x);
 		node->yrot_run += DecodeTrack(node->ypacked, &node->decode_y);
@@ -3381,8 +3376,7 @@ void DrawCutSeqActors()
 
 	if (GLOBAL_cutme->numactors <= 1)
 	{
-		phd_mxptr -= 12;
-		aMXPtr -= 12;
+		phd_PopMatrix();
 		return;
 	}
 
@@ -3398,7 +3392,7 @@ void DrawCutSeqActors()
 			obj = &objects[GLOBAL_cutme->actor_data[i].objslot];
 			bone = &bones[obj->bone_index];
 			mesh = &meshes[obj->mesh_index];
-			CalcActorLighting(&duff_item, obj, temp_rotation_buffer);
+			CalcActorLighting(&duff_item[i - 1], obj, temp_rotation_buffer);
 			phd_TranslateRel(temp_rotation_buffer[6], temp_rotation_buffer[7], temp_rotation_buffer[8]);
 			rot = &temp_rotation_buffer[9];
 			gar_RotYXZsuperpack(&rot, 0);
@@ -3423,10 +3417,7 @@ void DrawCutSeqActors()
 			for (int j = 0; j < obj->nmeshes - 1; j++, bone += 4, mesh += 2)
 			{
 				if (*bone & 1)
-				{
-					phd_mxptr -= 12;
-					aMXPtr -= 12;
-				}
+					phd_PopMatrix();
 
 				if (*bone & 2)
 					phd_PushMatrix();
@@ -3452,12 +3443,10 @@ void DrawCutSeqActors()
 			}
 		}
 
-		phd_mxptr -= 12;
-		aMXPtr -= 12;
+		phd_PopMatrix();
 	}
 
-	phd_mxptr -= 12;
-	aMXPtr -= 12;
+	phd_PopMatrix();
 }
 
 void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot)
@@ -3494,8 +3483,7 @@ void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PH
 	pos->x += item->pos.x_pos;
 	pos->y += item->pos.y_pos;
 	pos->z += item->pos.z_pos;
-	phd_mxptr -= 12;
-	aMXPtr -= 12;
+	phd_PopMatrix();
 }
 
 void frigup_lara()
@@ -3518,14 +3506,106 @@ void frigup_lara()
 	Rich_CalcLaraMatrices_Normal(frame, bone, 0);
 	phd_PushUnitMatrix();
 	Rich_CalcLaraMatrices_Normal(frame, bone, 1);
-	phd_mxptr -= 12;
-	aMXPtr -= 12;
+	phd_PopMatrix();
 	HairControl(0, 0, frame);
 
 	if ((gfLevelFlags & GF_LVOP_YOUNG_LARA))
 		HairControl(0, 1, frame);
 
 	GLaraShadowframe = &frig_shadow_bbox[0];
+}
+
+void CalculateObjectLightingLaraCutSeq()
+{
+	PHD_VECTOR pos;
+	short room_num, room_num2;
+
+	pos.x = 0;
+	pos.y = 0;
+	pos.z = 0;
+	GetLaraJointPos(&pos, 8);
+	room_num = lara_item->room_number;
+	IsRoomOutsideNo = -1;
+	IsRoomOutside(pos.x, pos.y, pos.z);
+
+	if (IsRoomOutsideNo != -1)
+		room_num = IsRoomOutsideNo;
+
+	room_num2 = lara_item->room_number;
+	current_item = lara_item;
+	lara_item->il.item_pos.x = pos.x;
+	lara_item->il.item_pos.y = pos.y;
+	lara_item->il.item_pos.z = pos.z;
+	lara_item->room_number = room_num;
+	CalcAmbientLight(lara_item);
+	CreateLightList(lara_item);
+	lara_item->room_number = room_num2;
+}
+
+void GrabActorMatrix(int actornum, unsigned long nodenum, MATRIX3D* matrixstash)
+{
+	OBJECT_INFO* obj;
+	short* rot;
+	long* bone;
+	long bit;
+
+	bit = 1;
+	nodenum = 1 << nodenum;
+	phd_PushMatrix();
+	updateAnimFrame(actor_pnodes[actornum], GLOBAL_cutme->actor_data[actornum].nodes + 1, temp_rotation_buffer);
+	obj = &objects[GLOBAL_cutme->actor_data[actornum].objslot];
+	phd_TranslateAbs(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz);
+	bone = &bones[obj->bone_index];
+	phd_TranslateRel(temp_rotation_buffer[6], temp_rotation_buffer[7], temp_rotation_buffer[8]);
+	rot = &temp_rotation_buffer[0] + 9;
+	gar_RotYXZsuperpack(&rot, 0);
+
+	if (nodenum == bit)
+	{
+		*((float*)matrixstash + 0) = *(aMXPtr + 0);
+		*((float*)matrixstash + 1) = *(aMXPtr + 1);
+		*((float*)matrixstash + 2) = *(aMXPtr + 2);
+		*((float*)matrixstash + 3) = *(aMXPtr + 3);
+		*((float*)matrixstash + 4) = *(aMXPtr + 4);
+		*((float*)matrixstash + 5) = *(aMXPtr + 5);
+		*((float*)matrixstash + 6) = *(aMXPtr + 6);
+		*((float*)matrixstash + 7) = *(aMXPtr + 7);
+		*((float*)matrixstash + 8) = *(aMXPtr + 8);
+		*((float*)matrixstash + 9) = *(aMXPtr + 9);
+		*((float*)matrixstash + 10) = *(aMXPtr + 10);
+		*((float*)matrixstash + 11) = *(aMXPtr + 11);
+	}
+
+	for (int i = 0; i < obj->nmeshes - 1; i++, bone += 4)
+	{
+		if (*bone & 1)
+			phd_PopMatrix();
+
+		if (*bone & 2)
+			phd_PushMatrix();
+
+		phd_TranslateRel(*(bone + 1), *(bone + 2), *(bone + 3));
+		gar_RotYXZsuperpack(&rot, 0);
+		bit <<= 1;
+
+		if (nodenum == bit)
+		{
+			*((float*)matrixstash + 0) = *(aMXPtr + 0);
+			*((float*)matrixstash + 1) = *(aMXPtr + 1);
+			*((float*)matrixstash + 2) = *(aMXPtr + 2);
+			*((float*)matrixstash + 3) = *(aMXPtr + 3);
+			*((float*)matrixstash + 4) = *(aMXPtr + 4);
+			*((float*)matrixstash + 5) = *(aMXPtr + 5);
+			*((float*)matrixstash + 6) = *(aMXPtr + 6);
+			*((float*)matrixstash + 7) = *(aMXPtr + 7);
+			*((float*)matrixstash + 8) = *(aMXPtr + 8);
+			*((float*)matrixstash + 9) = *(aMXPtr + 9);
+			*((float*)matrixstash + 10) = *(aMXPtr + 10);
+			*((float*)matrixstash + 11) = *(aMXPtr + 11);
+		}
+	}
+
+	phd_PopMatrix();
 }
 
 void inject_deltaPak()
@@ -3665,7 +3745,7 @@ void inject_deltaPak()
 	INJECT(0x00421880, InitPackNodes);
 	INJECT(0x00421D60, frigup_lara);
 	INJECT(0x00422010, finish_cutseq);
-//	INJECT(0x00422570, CalculateObjectLightingLaraCutSeq);
+	INJECT(0x00422570, CalculateObjectLightingLaraCutSeq);
 	INJECT(0x004226E0, cutseq_givelara_hk);
 	INJECT(0x00422700, cutseq_removelara_hk);
 	INJECT(0x00422740, cutseq_shoot_pistols);
@@ -3681,7 +3761,7 @@ void inject_deltaPak()
 	INJECT(0x00423330, trigger_item_in_room);
 	INJECT(0x004233D0, untrigger_item_in_room);
 	INJECT(0x00423FB0, deal_with_actor_shooting);
-//	INJECT(0x00424080, GrabActorMatrix);
+	INJECT(0x00424080, GrabActorMatrix);
 //	INJECT(0x004243A0, GetActorJointAbsPosition);
 	INJECT(0x00424570, TriggerActorBlood);
 	INJECT(0x004245C0, TriggerDelSmoke);

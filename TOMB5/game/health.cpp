@@ -135,6 +135,28 @@ void DrawAirBar(int flash_state)
 	}
 }
 
+void MakeAmmoString(char* string)
+{
+	char* s;
+
+	s = string;
+
+	if (*string)
+	{
+		do
+		{
+			if (*s != 32)
+			{
+				if (*s - 65 < 0)
+					*s -= 47;
+				else
+					*s -= 53;
+			}
+
+		} while (*++s);
+	}
+}
+
 void InitialisePickUpDisplay()
 {
 	for (int i = 7; i > -1; i--)
@@ -223,6 +245,7 @@ void inject_health()
 	INJECT(0x00439C50, DrawGameInfo);
 	INJECT(0x00439E50, DrawHealthBar);
 	INJECT(0x00439FC0, DrawAirBar);
+	INJECT(0x0043A0A0, MakeAmmoString);
 	INJECT(0x0043A0E0, InitialisePickUpDisplay);
 	INJECT(0x0043A130, DrawPickups);
 	INJECT(0x0043A240, AddDisplayPickup);

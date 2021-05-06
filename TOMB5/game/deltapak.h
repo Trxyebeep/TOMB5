@@ -156,20 +156,21 @@ void untrigger_item_in_room(short room_number, int object);
 void deal_with_actor_shooting(unsigned short* shootdata, int actornum, int nodenum, PHD_VECTOR* pos);
 void DelsHandyTeleportLara(int x, int y, int z, int yrot);
 void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int numnodes);
-int GetTrackWord(unsigned long off, char* packed, unsigned char packmethod);
-int DecodeTrack(char* packed, RTDECODE* decode);
-void DecodeAnim(PACKNODE* node, int num_nodes, int frame, unsigned short flags);
+short GetTrackWord(int off, char* packed, int packmethod);
+short DecodeTrack(char* packed, RTDECODE* decode);
+void DecodeAnim(PACKNODE* node, int num_nodes, int frame, int flags);
 void do_new_cutscene_camera();
 void updateAnimFrame(PACKNODE* node, int flags, short* frame);
 void DrawCutSeqActors();
 void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot);
-void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, __int16* rot, PHD_VECTOR* pos);
+void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PHD_VECTOR* pos);
 void frigup_lara();
+void CalculateObjectLightingLaraCutSeq();
+void GrabActorMatrix(int actornum, unsigned long nodenum, MATRIX3D* matrixstash);
 
 
 #define GetActorJointAbsPosition ((void(__cdecl*)(int, unsigned long, PHD_VECTOR*)) 0x004243A0 )
 #define	cutseq_kill_item	( (void(__cdecl*)(int)) 0x00422A20 )
 #define Load_and_Init_Cutseq	( (int(__cdecl*)(int)) 0x00422B90 )
 #define	cutseq_restore_item	( (ITEM_INFO*(__cdecl*)(int)) 0x00422AF0 )
-#define GrabActorMatrix	( (void(__cdecl*)(int, int, D3DMATRIX*)) 0x00424080 )
-#define trig_actor_gunflash	( (void(__cdecl*)(D3DMATRIX*, PHD_VECTOR*)) 0x00485EC0 )//somewhere in specific I think? only ever called in deal_with_actor_shooting anyway so keeping it here for now
+#define trig_actor_gunflash	( (void(__cdecl*)(MATRIX3D*, PHD_VECTOR*)) 0x00485EC0 )//somewhere in specific I think? only ever called in deal_with_actor_shooting anyway so keeping it here for now

@@ -35,6 +35,8 @@ typedef struct
 #define SQUARE(x) ((x)*(x))
 #endif // SQUARE
 
+#define phd_PopMatrix()		{phd_mxptr -= 12; aMXPtr -= 12;}
+
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
 #define RGBA(r, g, b, a) (RGBONLY(r, g, b) | ((a) << 24))
 #define ARGB(r, g, b, a) (RGBA(b, g, r, a))
@@ -1506,5 +1508,45 @@ struct MATRIX3D
 	long m00, m01, m02, m03;
 	long m10, m11, m12, m13;
 	long m20, m21, m22, m23;
+};
+
+struct PCSVECTOR
+{
+	long vx;
+	long vy;
+	long vz;
+};
+
+struct ACMESHVERTEX
+{
+	float	x;
+	float	y;
+	float	z;
+	float	nx;
+	float	ny;
+	float	nz;
+	int		prelight;
+	int		padd;
+};
+
+struct MESH_DATA
+{
+	short x;
+	short y;
+	short z;
+	short r;
+	short flags;
+	short nVerts;
+	short nNorms;
+	short ngt4;
+	short* gt4;
+	short ngt3;
+	short* gt3;
+	long* prelight;
+	LPDIRECT3DVERTEXBUFFER SourceVB;
+	D3DVECTOR* Normals;
+	int	aFlags;
+	ACMESHVERTEX* aVtx;
+	float bbox[6];
 };
 #pragma pack(pop)

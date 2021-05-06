@@ -164,7 +164,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00429B30	+	DoubleDoorCollision
 0x00429CF0	+	UnderwaterDoorCollision
 0x00429EC0	+	SequenceDoorControl
-0x0042A050	x	ProcessClosedDoors
+0x0042A050	+	ProcessClosedDoors
 
 
 		game/effects.cpp
@@ -246,8 +246,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00422010	+	finish_cutseq
 0x00422030	+	DrawCutSeqActors
 0x004223C0	+	CalcActorLighting
-0x00422490		GetJointAbsPositionCutSeq
-0x00422570		CalculateObjectLightingLaraCutSeq
+0x00422490	+	GetJointAbsPositionCutSeq
+0x00422570	+	CalculateObjectLightingLaraCutSeq
 0x00422680	+	cutseq_givelara_pistols
 0x004226B0	+	cutseq_removelara_pistols
 0x004226E0	+	cutseq_givelara_hk
@@ -294,7 +294,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00423CC0	+	stealth3_start
 0x00423DF0	+	stealth3_end
 0x00423FB0	+	deal_with_actor_shooting
-0x00424080		GrabActorMatrix
+0x00424080	+	GrabActorMatrix
 0x004243A0		GetActorJointAbsPosition
 0x00424570	+	TriggerActorBlood
 0x004245C0	+	TriggerDelSmoke
@@ -411,7 +411,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/spotcam.cpp
 
 0x0047A800		InitSpotCamSequences
-0x0047A890		Spline
+0x0047A890	+	Spline
 0x0047A9D0		InitialiseSpotCam
 0x0047B280		CalculateSpotCams
 
@@ -746,7 +746,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004354B0	+	DoGameflow
 0x00435C70	+	DoTitle
 0x00435F60		DoLevel
-0x004364B0		do_dels_cutseq_selector
+0x004364B0	+	do_dels_cutseq_selector
 
 
 		game/gladiatr.cpp
@@ -768,7 +768,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00438BE0		InitialiseHair
 0x00438C80		HairControl
 0x00439950		GetCorrectStashPoints
-0x00439A40		DrawHair
+0x00439A40	+	DrawHair
 
 
 		game/health.cpp
@@ -777,7 +777,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00439C50	+	DrawGameInfo
 0x00439E50	+	DrawHealthBar
 0x00439FC0	+	DrawAirBar
-0x0043A0A0		MakeAmmoString
+0x0043A0A0	+	MakeAmmoString
 0x0043A0E0	+	InitialisePickUpDisplay
 0x0043A130	+	DrawPickups
 0x0043A240	+	AddDisplayPickup
@@ -848,7 +848,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x0042A1B0		CalculateObjectLightingLara
 0x0042A310		UpdateSkyLightning
-0x0042A400		DrawPhaseGame
+0x0042A400	+	DrawPhaseGame
 0x0042A4A0		SkyDrawPhase
 0x0042A7A0		DrawRooms
 0x0042AF50		ClipRoom
@@ -885,6 +885,13 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042E500		SetupSkelebobMeshswaps
 0x0042E630		RestoreLaraMeshswaps
 
+
+		game/laraskin.cpp
+
+0x00456AE0		CreateSkinningData
+0x00457520		PushXYZ
+0x00457560		PopXYZ
+0x00457580		OptomiseSkinningData
 
 // ======================================
 // SPECIFIC
@@ -1007,3 +1014,13 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B1C00		SpecialFeaturesDisplayScreens
 0x004B1D90		DoSpecialFeaturesServer
 0x004B1E30		S_MemSet
+
+
+		specific/drawlara.cpp
+
+0x00498030	+	DrawLara
+0x00498100	+	DrawLara__1
+0x00498C70	+	DrawLara__4
+0x004995C0		DrawLara__5
+0x00499BA0		DrawLara__6
+0x0049A210		SetLaraUnderwaterNodes
