@@ -24,9 +24,6 @@
     <ClCompile Include="TOMB5\game\box.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\game\bubbles.cpp">
-      <Filter>TOMB5\game</Filter>
-    </ClCompile>
     <ClCompile Include="TOMB5\game\camera.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
@@ -166,15 +163,14 @@
     <ClCompile Include="TOMB5\specific\LoadSave.cpp" />
     <ClCompile Include="TOMB5\specific\drawlara.cpp" />
     <ClCompile Include="TOMB5\specific\specificfx.cpp" />
+    <ClCompile Include="TOMB5\game\spider.cpp" />
+    <ClCompile Include="TOMB5\game\rat.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\game\box.h">
-      <Filter>TOMB5\game</Filter>
-    </ClInclude>
-    <ClInclude Include="TOMB5\game\bubbles.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\game\camera.h">
@@ -334,6 +330,8 @@
     <ClInclude Include="TOMB5\specific\LoadSave.h" />
     <ClInclude Include="TOMB5\specific\drawlara.h" />
     <ClInclude Include="TOMB5\specific\specificfx.h" />
+    <ClInclude Include="TOMB5\game\spider.h" />
+    <ClInclude Include="TOMB5\game\rat.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

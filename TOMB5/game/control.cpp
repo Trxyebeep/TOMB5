@@ -16,8 +16,9 @@
 #include "../specific/3dmath.h"
 #include "sound.h"
 #include "hair.h"
-#include "bubbles.h"
 #include "bat.h"
+#include "spider.h"
+#include "rat.h"
 #include "objects.h"
 #include "../specific/init.h"//for Log
 #include "sphere.h"

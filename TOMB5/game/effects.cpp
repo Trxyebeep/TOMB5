@@ -7,7 +7,7 @@
 #include "tomb4fx.h"
 #include "items.h"
 #include "deltapak.h"
-#include "bat.h"//for spiders, fix
+#include "spider.h"
 #include "lot.h"
 #include "../specific/specific.h"
 #include "xatracks.h"

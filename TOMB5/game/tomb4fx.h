@@ -3,11 +3,12 @@
 
 void inject_tomb4fx();
 
-short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room_number);
+short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room_number);//not here!
 int GetFreeBlood();
 void UpdateBlood();
 void TriggerBlood(int x, int y, int z, int a4, int num);
 
+#define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define	TriggerRicochetSpark	( (void(__cdecl*)(GAME_VECTOR*, int, int, int)) 0x0042F060 )//pos, angle, size, unk
 #define TriggerLaraDrips	( (void(__cdecl*)()) 0x00483F00 )
 #define UpdateFadeClip	( (void(__cdecl*)()) 0x00483AC0 )
