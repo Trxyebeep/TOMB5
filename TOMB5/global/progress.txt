@@ -893,6 +893,88 @@ x for functions decompiled but not injected, for one reason or another.
 0x00457560		PopXYZ
 0x00457580		OptomiseSkinningData
 
+
+		game/bat.cpp
+
+0x00407D30		GetFreeBat
+0x00407DD0		TriggerBat
+0x00407EC0		InitialiseBatEmitter
+0x00407F50		ControlBatEmitter
+0x00407FD0		UpdateBats
+0x00408480		DrawBats
+
+
+		game/rat.cpp
+
+0x0046AA70		GetFreeRat
+0x0046AAE0		ClearRats
+0x0046AB30		TriggerRat
+0x0046AC70		UpdateRats
+0x0046B140		DrawRats
+
+		game/spider.cpp
+
+0x0047A140		GetFreeSpider
+0x0047A1B0		ClearSpiders
+0x0047A200		TriggerSpider
+0x0047A340		UpdateSpiders
+0x0047A730		DrawSpiders
+
+
+		game/tomb4fx.cpp
+
+0x004812B0		GetFreeFireSpark
+0x00481370		keep_those_fires_burning
+0x004813B0		UpdateFireSparks
+0x004816B0		TriggerGlobalFireSmoke
+0x00481840		TriggerGlobalFireFlame
+0x00481A00		TriggerGlobalStaticFlame
+0x00481B10		ClearFires
+0x00481B40		AddFire
+0x00481BB0		S_DrawFires
+0x00481D40		GetFreeSmokeSpark
+0x00481DD0		UpdateSmokeSparks
+0x004820A0		TriggerGunSmoke
+0x004823A0		TriggerShatterSmoke
+0x00482580	+	GetFreeBlood
+0x00482610	+	UpdateBlood
+0x004827E0	+	TriggerBlood
+0x004829A0		GetFreeGunshell
+0x00482A60		TriggerGunShell
+0x00482D80		UpdateGunShells
+0x00483090		DrawGunshells
+0x00483180		TriggerSmallSplash
+0x004832C0		GetFreeBubble
+0x00483350		CreateBubble
+0x00483470		LaraBubbles
+0x00483540		UpdateBubbles
+0x004837B0		SetGunFlash
+0x004838E0		DrawGunflashes
+0x00483A90		SetFadeClip
+0x00483AC0		UpdateFadeClip
+0x00483B30		SetScreenFadeOut
+0x00483BA0		SetScreenFadeIn
+0x00483BF0		Fade
+0x00483D00		GetFreeDrip
+0x00483D90		UpdateDrips
+0x00483F00		TriggerLaraDrips
+0x00484080		ExplodingDeath2
+0x00484640		GetFreeShockwave
+0x00484670		TriggerShockwave
+0x00484700		TriggerShockwaveHitEffect
+0x004849A0		UpdateShockwaves
+0x00484B30		TriggerLightning
+0x00484CB0		UpdateLightning
+0x00484D70		LSpline
+0x00484EB0		CalcLightningSpline
+0x004851B0		TriggerLightningGlow
+0x00485290		DrawLensFlares
+0x004852E0		DrawWeaponMissile
+0x00485380		ControlTeleporter
+0x00485AD0		ControlElectricFence
+0x00485D80		TriggerFenceSparks
+0x00485EC0		trig_actor_gunflash
+
 // ======================================
 // SPECIFIC
 // ======================================
