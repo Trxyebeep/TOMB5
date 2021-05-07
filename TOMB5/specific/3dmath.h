@@ -24,3 +24,5 @@ void AlterFOV(short fov);
 #define aSetViewMatrix	( (void(__cdecl*)()) 0x00490BE0 )
 #define aLookAt	( (void(__cdecl*)(tr5_vertex, tr5_vertex, int)) 0x00490C20 )
 #define phd_RotYXZpack	( (void(__cdecl*)(long)) 0x0048FEB0 )
+#define aTranslateRel	( (void(__cdecl*)(long, long, long)) 0x00490790 )
+#define aRotX	( (void(__cdecl*)(short)) 0x00490810 )

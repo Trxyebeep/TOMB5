@@ -28,6 +28,7 @@
 #include "draw.h"
 #include "joby.h"
 #include "../specific/LoadSave.h"
+#include "subsuit.h"
 
 
 long ControlPhase(long _nframes, int demo_mode)

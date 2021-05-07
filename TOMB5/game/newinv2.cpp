@@ -16,13 +16,13 @@
 #include "lara.h"
 #include "larafire.h"
 #include "lara_states.h"
-#include "effect2.h"
 #include "../specific/LoadSave.h"
 #include "../specific/input.h"
 #include "../specific/output.h"
 #include "health.h"
 #include "../specific/3dmath.h"
 #include "draw.h"
+#include "subsuit.h"
 
 short optmessages[11] =
 {

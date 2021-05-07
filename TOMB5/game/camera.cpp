@@ -342,28 +342,31 @@ void LaraTorch(PHD_VECTOR* Soffset, PHD_VECTOR* Eoffset, short yrot, long bright
 	long dz;
 	long radius;
 
-	s.x = dx = Soffset->x;
-	s.y = dy = Soffset->y;
-	s.z = dz = Soffset->z;
+	s.x = Soffset->x;
+	s.y = Soffset->y;
+	s.z = Soffset->z;
 	s.room_number = lara_item->room_number;
 	d.x = Eoffset->x;
 	d.y = Eoffset->y;
 	d.z = Eoffset->z;
-	TriggerDynamic(dx, dy, dz, 12, brightness, brightness, brightness >> 1);
+
+	TriggerDynamic(s.x, s.y, s.z, 12, brightness, brightness, brightness >> 1);
 
 	if (!LOS(&s, &d))
 	{
-		long tmp = (phd_sqrt((s.x - d.x) * (s.x - d.x) +
-			(s.y - d.y) * (s.y - d.y) +
-			(s.z - d.z) * (s.z - d.z)) >> 8) + 8;
-
-		radius = tmp + 8;
+		dx = (s.x - d.x);
+		dy = (s.y - d.y);
+		dz = (s.z - d.z);
+		dx = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+		radius = 8 + (dx >> 8);
 
 		if (radius > 31)
 			radius = 31;
 
-		if (brightness - tmp >= 0)
-			TriggerDynamic(d.x, d.y, d.z, radius, brightness - tmp, brightness - tmp, (brightness - tmp) >> 1);
+		brightness -= dx >> 8;
+
+		if (brightness >= 0)
+			TriggerDynamic(d.x, d.y, d.z, radius, brightness, brightness, brightness >> 1);
 	}
 }
 
