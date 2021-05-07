@@ -905,7 +905,7 @@ struct room_info
 	long maxceiling; // size=0, offset=36
 	short x_size; // size=0, offset=40
 	short y_size; // size=0, offset=42
-	CVECTOR ambient; // size=4, offset=44
+	long ambient; // size=4, offset=44
 	short num_lights; // size=0, offset=48
 	short num_meshes; // size=0, offset=50
 	unsigned char ReverbType; // size=0, offset=52

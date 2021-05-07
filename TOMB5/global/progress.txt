@@ -1114,6 +1114,6 @@ x for functions decompiled but not injected, for one reason or another.
 0x00498030	+	DrawLara
 0x00498100	+	DrawLara__1
 0x00498C70	+	DrawLara__4
-0x004995C0		DrawLara__5
-0x00499BA0		DrawLara__6
-0x0049A210		SetLaraUnderwaterNodes
+0x004995C0	+	DrawLara__5
+0x00499BA0	+	DrawLara__6
+0x0049A210	+	SetLaraUnderwaterNodes

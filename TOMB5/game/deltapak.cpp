@@ -28,6 +28,7 @@
 #include "../specific/3dmath.h"
 #include "../specific/output.h"
 #include "draw.h"
+#include "subsuit.h"
 
 short frig_shadow_bbox[6] =
 {

@@ -12,6 +12,7 @@ void S_DrawPickup(short object_number);
 #define phd_PutPolygonsPickup	( (void(__cdecl*)(short*, float, float, long)) 0x004B66B0 )
 #define phd_PutPolygons_train	( (void(__cdecl*)(short*, int)) 0x004B74A0 )
 #define phd_PutPolygonsSpcEnvmap	( (void(__cdecl*)(short*, int)) 0x004B5190 )
+#define phd_PutPolygonsSpcXLU	( (void(__cdecl*)(short*, int)) 0x004B4CA0 )
 #define SkinNormalsToScratch	( (void(__cdecl*)(long)) 0x004B2480 )
 #define S_AnimateTextures	( (void(__cdecl*)(int)) 0x004B8310 )
 #define S_OutputPolyList	( (void(__cdecl*)()) 0x004B79A0 )
