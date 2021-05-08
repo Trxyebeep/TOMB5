@@ -33,12 +33,18 @@
 
 long ControlPhase(long _nframes, int demo_mode)
 {
+	ITEM_INFO* item;
+	FX_INFO* fx;
+	MESH_INFO* mesh;
+	FLOOR_INFO* floor;
+	short item_num, nex, fx_num;
+
 	RegeneratePickups();
 
-	if (10 < _nframes)
+	if (_nframes > 10)
 		_nframes = 10;
 
-	if (bTrackCamInit != 0)
+	if (bTrackCamInit)
 		bUseSpotCam = 0;
 
 	SetDebounce = 1;
@@ -48,7 +54,7 @@ long ControlPhase(long _nframes, int demo_mode)
 		GlobalCounter++;
 		UpdateSky();
 
-		if (0 < cdtrack)
+		if (cdtrack > 0)
 			S_CDLoop();
 
 		if (S_UpdateInput() == -1)
@@ -56,23 +62,22 @@ long ControlPhase(long _nframes, int demo_mode)
 
 		if (bDisableLaraControl)
 		{
-			if (gfCurrentLevel != 0)
+			if (gfCurrentLevel != LVL5_TITLE)
 				dbinput = 0;
 
 			input &= IN_LOOK;
 		}
 
 #ifdef cutseq_skipper
-		if (cutseq_trig != 0)
+		if (cutseq_trig)
 		{
 			if (keymap[1] && !ScreenFading)//skip them with esc
 				cutseq_trig = 3;
 
-
 			input = 0;
 		}
 #else
-		if (cutseq_trig != 0)
+		if (cutseq_trig)
 			input = 0;
 #endif
 		SetDebounce = 0;
@@ -96,12 +101,16 @@ long ControlPhase(long _nframes, int demo_mode)
 
 		if (reset_flag || lara.death_count > 300 || (lara.death_count > 60 && input != IN_NONE))
 		{
-			reset_flag = 0;
-
 			if (Gameflow->DemoDisc && reset_flag)
+			{
+				reset_flag = 0;
 				return 4;
+			}
 			else
+			{
+				reset_flag = 0;
 				return 1;
+			}
 		}
 
 		if (demo_mode && input == IN_ALL)
@@ -127,95 +136,113 @@ long ControlPhase(long _nframes, int demo_mode)
 		if (thread_started)
 			return 4;
 
-		if (!(input & IN_LOOK)
-			|| SniperCamActive
-			|| bUseSpotCam
-			|| bTrackCamInit
-			||
-			((lara_item->current_anim_state != AS_STOP || lara_item->anim_number != ANIMATION_LARA_STAY_IDLE)
-				&& (!lara.IsDucked
-					|| input & IN_DUCK
-					|| lara_item->anim_number != ANIMATION_LARA_CROUCH_IDLE
-					|| lara_item->goal_anim_state != AS_DUCK)))
+		if ((input & IN_LOOK) && !SniperCamActive && !bUseSpotCam && !bTrackCamInit
+			&&
+			((lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIMATION_LARA_STAY_IDLE)
+				|| (lara.IsDucked && (input & IN_DUCK) == 0 && lara_item->anim_number == ANIMATION_LARA_CROUCH_IDLE && lara_item->goal_anim_state == AS_DUCK)))
 		{
 			if (!BinocularRange)
 			{
-				if (SniperCamActive
-					|| bUseSpotCam
-					|| bTrackCamInit)
-					input &= ~IN_LOOK;
-			}
-			else
-			{
-				if (!LaserSight)
-					input |= IN_LOOK;
-				else
+				switch (lara.gun_type)
 				{
-					BinocularRange = 0;
-					LaserSight = 0;
-					AlterFOV(0x38E0);
-					lara_item->mesh_bits = -1;
-					lara.Busy = 0;
-					camera.type = BinocularOldCamera;
-					lara.head_y_rot = 0;
-					lara.head_x_rot = 0;
-					lara.torso_y_rot = 0;
-					lara.torso_x_rot = 0;
-					camera.bounce = 0;
-					BinocularOn = -8;
-					input &= ~IN_LOOK;
+				case WEAPON_REVOLVER:
+
+					if ((lara.sixshooter_type_carried & WTYPE_LASERSIGHT) && lara.gun_status == LG_READY)
+					{
+						BinocularRange = 128;
+						BinocularOldCamera = camera.old_type;
+						LaserSight = 1;
+						lara.Busy = 1;
+					}
+
+					break;
+
+				case WEAPON_CROSSBOW:
+
+					if ((lara.crossbow_type_carried & WTYPE_LASERSIGHT) && lara.gun_status == LG_READY)
+					{
+						BinocularRange = 128;
+						BinocularOldCamera = camera.old_type;
+						LaserSight = 1;
+						lara.Busy = 1;
+					}
+
+					break;
+
+				case WEAPON_HK:
+
+					if (lara.gun_status == LG_READY)
+					{
+						BinocularRange = 128;
+						BinocularOldCamera = camera.old_type;
+						LaserSight = 1;
+						lara.Busy = 1;
+					}
+
+					break;
+
+				default:
+					break;
 				}
-
-				InfraRed = 0;
 			}
-		}
-		else if (!BinocularRange)
-		{
-			if (lara.gun_status == LG_READY
-				&& ((lara.gun_type == WEAPON_REVOLVER && lara.sixshooter_type_carried & WTYPE_LASERSIGHT)
-					|| (lara.gun_type == WEAPON_HK)
-					|| (lara.gun_type == WEAPON_CROSSBOW && lara.crossbow_type_carried & WTYPE_LASERSIGHT)))
+			else if (LaserSight && (lara.request_gun_type == WEAPON_PISTOLS || lara.request_gun_type == WEAPON_NONE))
 			{
-				BinocularRange = 128;
-				BinocularOldCamera = camera.old_type;
-				lara.Busy = 1;
-				LaserSight = 1;
-
-				if (!(gfLevelFlags & GF_LVOP_TRAIN))
-					InfraRed = 1;
-				else
-					InfraRed = 0;
+				BinocularRange = 0;
+				LaserSight = 0;
+				AlterFOV(14560);
+				lara_item->mesh_bits = -1;
+				lara.Busy = 0;
+				camera.type = BinocularOldCamera;
+				lara.torso_x_rot = 0;
+				lara.torso_y_rot = 0;
+				lara.head_x_rot = 0;
+				lara.head_y_rot = 0;
+				camera.bounce = 0;
+				BinocularOn = -8;
+				input &= ~IN_LOOK;
+			}
+		}
+		else if (BinocularRange)
+		{
+			if (LaserSight)
+			{
+				BinocularRange = 0;
+				LaserSight = 0;
+				AlterFOV(14560);
+				lara_item->mesh_bits = -1;
+				lara.Busy = 0;
+				camera.type = BinocularOldCamera;
+				lara.torso_x_rot = 0;
+				lara.torso_y_rot = 0;
+				lara.head_x_rot = 0;
+				lara.head_y_rot = 0;
+				camera.bounce = 0;
+				BinocularOn = -8;
+				input &= ~IN_LOOK;
 			}
 			else
-				InfraRed = 0;
+				input |= IN_LOOK;
 		}
+		else if (SniperCamActive || bUseSpotCam || bTrackCamInit)
+			input &= ~IN_LOOK;
 
-		if (LaserSight)
-		{
-			if (!(gfLevelFlags & GF_LVOP_TRAIN))
-				InfraRed = 1;
-			else
-				InfraRed = 0;
-		}
+		if (BinocularRange && (!LaserSight && (gfLevelFlags & GF_LVOP_TRAIN) && (inputBusy & IN_ACTION)))//VCI levels, headset + action
+			InfraRed = 1;
+		else if (BinocularRange && (LaserSight && !(gfLevelFlags & GF_LVOP_TRAIN)))//none vci levels, lasersight
+			InfraRed = 1;
 		else
-		{
-			if ((gfLevelFlags & GF_LVOP_TRAIN) && (inputBusy & IN_ACTION))
-				InfraRed = 1;
-			else
-				InfraRed = 0;
-		}
+			InfraRed = 0;
 
 		ClearDynamics();
 		ClearFires();
 		GotLaraSpheres = 0;
 		InItemControlLoop = 1;
-
-		short item_num = next_item_active;
+		item_num = next_item_active;
 
 		while (item_num != NO_ITEM)
 		{
-			ITEM_INFO* item = &items[item_num];
-			short nex = item->next_active;
+			item = &items[item_num];
+			nex = item->next_active;
 
 			if (item->after_death < 128)
 			{
@@ -231,13 +258,12 @@ long ControlPhase(long _nframes, int demo_mode)
 		InItemControlLoop = 0;
 		KillMoveItems();
 		InItemControlLoop = 1;
-
-		short fx_num = next_fx_active;
+		fx_num = next_fx_active;
 
 		while (fx_num != NO_ITEM)
 		{
-			FX_INFO* fx = &effects[fx_num];
-			short nex = fx->next_active;
+			fx = &effects[fx_num];
+			nex = fx->next_active;
 
 			if (objects[fx->object_number].control)
 				objects[fx->object_number].control(fx_num);
@@ -360,13 +386,13 @@ long ControlPhase(long _nframes, int demo_mode)
 
 		CamRot.vy = (mGetAngle(camera.pos.z, camera.pos.x, camera.target.z, camera.target.x) >> 4) & 0xFFF;
 		wibble = (wibble + 4) & 0xFC;
-		TriggerLaraDrips();
+		TriggerLaraDrips();	
 
 		while (SmashedMeshCount != 0)
 		{
 			SmashedMeshCount--;
-			MESH_INFO* mesh = SmashedMesh[SmashedMeshCount];
-			FLOOR_INFO* floor = GetFloor(mesh->x, mesh->y, mesh->z, &SmashedMeshRoom[SmashedMeshCount]);
+			mesh = SmashedMesh[SmashedMeshCount];
+			floor = GetFloor(mesh->x, mesh->y, mesh->z, &SmashedMeshRoom[SmashedMeshCount]);
 			GetHeight(floor, mesh->x, mesh->y, mesh->z);
 			TestTriggers(trigger_index, 1, 0);
 			floor->stopper = 0;

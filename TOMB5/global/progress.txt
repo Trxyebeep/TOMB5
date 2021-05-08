@@ -766,7 +766,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/hair.cpp
 
 0x00438BE0		InitialiseHair
-0x00438C80		HairControl
+0x00438C80	+	HairControl
 0x00439950		GetCorrectStashPoints
 0x00439A40	+	DrawHair
 

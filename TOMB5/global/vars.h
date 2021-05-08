@@ -332,6 +332,11 @@
 #define aMappedNormals	VAR_U_(0x0057A45C, LPD3DVECTOR)
 #define skinMatrixPtr	VAR_U_(0x00E5B918, long*)
 #define bLaraInWater	VAR_U_(0x0057A468, char)
+#define SmokeWindZ	VAR_U_(0x00E6C9E4, long)
+#define SmokeWindX	VAR_U_(0x00E6C9E0, long)
+#define hair_wind	VAR_U_(0x0051CEA4, int)
+#define hair_dwind_angle	VAR_U_(0x005084D4, int)
+#define hair_wind_angle	VAR_U_(0x005084D0, int)
 
 
 /*title shit*/
@@ -419,6 +424,7 @@
 #define aScratchNormals	ARRAY_(0x0057A158, D3DVECTOR, [64])
 #define duff_item	ARRAY_(0x00E71300, ITEM_INFO, [10])
 #define LaraNodeAmbient	ARRAY_(0x0057A460, long, [2])
+#define first_hair	ARRAY_(0x00E5BF60, int, [2])
 
 //defs
 #define NO_HEIGHT -32512
