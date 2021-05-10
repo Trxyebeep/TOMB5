@@ -151,10 +151,34 @@ void UpdateBlood()
 	}
 }
 
+long LSpline(long x, long* knots, int nk)
+{
+	int span;
+	long* k;
+	long c1, c2, c3, ret;
+
+	x *= nk - 3;
+	span = x >> 16;
+
+	if (span >= nk - 3)
+		span = nk - 4;
+
+	x -= 65536 * span;
+	k = &knots[3 * span];
+	c1 = k[3] + (k[3] >> 1) - (k[6] >> 1) - k[6] + (k[9] >> 1) + ((-k[0] - 1) >> 1);
+	ret = (long long) c1 * x >> 16;
+	c2 = ret + 2 * k[6] - 2 * k[3] - (k[3] >> 1) - (k[9] >> 1) + k[0];
+	ret = (long long) c2 * x >> 16;
+	c3 = ret + (k[6] >> 1) + ((-k[0] - 1) >> 1);
+	ret = (long long) c3 * x >> 16;
+	return ret + k[3];
+}
+
 void inject_tomb4fx()
 {
 	INJECT(0x00432760, DoBloodSplat);
 	INJECT(0x00482580, GetFreeBlood);
 	INJECT(0x004827E0, TriggerBlood);
 	INJECT(0x00482610, UpdateBlood);
+	INJECT(0x00484D70, LSpline);
 }
