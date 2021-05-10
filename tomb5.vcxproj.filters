@@ -165,6 +165,9 @@
     <ClCompile Include="TOMB5\specific\specificfx.cpp" />
     <ClCompile Include="TOMB5\game\spider.cpp" />
     <ClCompile Include="TOMB5\game\rat.cpp" />
+    <ClCompile Include="TOMB5\game\laraskin.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -332,6 +335,9 @@
     <ClInclude Include="TOMB5\specific\specificfx.h" />
     <ClInclude Include="TOMB5\game\spider.h" />
     <ClInclude Include="TOMB5\game\rat.h" />
+    <ClInclude Include="TOMB5\game\laraskin.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

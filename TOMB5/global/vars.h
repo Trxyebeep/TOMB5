@@ -418,6 +418,9 @@
 #define lara_matrices	ARRAY_(0x00E86320, MATRIX3D, [15])
 #define aScratchNormals	ARRAY_(0x0057A158, D3DVECTOR, [64])
 #define duff_item	ARRAY_(0x00E71300, ITEM_INFO, [10])
+#define SkinJoints ARRAY_(0x00508CB4, unsigned char, [14][4])
+#define ScratchVertNums ARRAY_(0x00E7F080, char, [40][12])
+#define PointsToCalc ARRAY_(0x00E5BAC0, unsigned char, [26][12])
 
 //defs
 #define NO_HEIGHT -32512
