@@ -138,8 +138,8 @@ long ControlPhase(long _nframes, int demo_mode)
 
 		if ((input & IN_LOOK) && !SniperCamActive && !bUseSpotCam && !bTrackCamInit
 			&&
-			((lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIMATION_LARA_STAY_IDLE)
-				|| (lara.IsDucked && (input & IN_DUCK) == 0 && lara_item->anim_number == ANIMATION_LARA_CROUCH_IDLE && lara_item->goal_anim_state == AS_DUCK)))
+			((lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH)
+				|| (lara.IsDucked && (input & IN_DUCK) == 0 && lara_item->anim_number == ANIM_DUCKBREATHE && lara_item->goal_anim_state == AS_DUCK)))
 		{
 			if (!BinocularRange)
 			{
@@ -277,16 +277,16 @@ long ControlPhase(long _nframes, int demo_mode)
 		if (KillEverythingFlag)
 			KillEverything();
 
-		if (SmokeCountL != 0)
+		if (SmokeCountL)
 			SmokeCountL--;
 
-		if (SmokeCountR != 0)
+		if (SmokeCountR)
 			SmokeCountR--;
 
-		if (SplashCount != 0)
+		if (SplashCount)
 			SplashCount--;
 
-		if (WeaponDelay != 0)
+		if (WeaponDelay)
 			WeaponDelay--;
 
 		if (lara.has_fired && !(wibble & 0x7F))
@@ -644,7 +644,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 					!BinocularRange &&
 					lara.gun_status == LG_NO_ARMS &&
 					lara_item->current_anim_state == AS_STOP &&
-					lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
+					lara_item->anim_number == ANIM_BREATH &&
 					GLOBAL_inventoryitemchosen == NO_ITEM &&
 					have_i_got_object(inv_item_stealth_frigggggs))
 				{
@@ -677,7 +677,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 						!BinocularRange &&
 						lara.gun_status == LG_NO_ARMS &&
 						lara_item->current_anim_state == AS_TREAD &&
-						lara_item->anim_number == ANIMATION_LARA_UNDERWATER_IDLE &&
+						lara_item->anim_number == ANIM_TREAD &&
 						GLOBAL_inventoryitemchosen == NO_ITEM &&
 						have_i_got_object(PUZZLE_ITEM2))
 						GLOBAL_enterinventory = PUZZLE_ITEM2;
@@ -694,7 +694,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 						!BinocularRange &&
 						lara.gun_status == LG_NO_ARMS &&
 						lara_item->current_anim_state == AS_STOP &&
-						lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
+						lara_item->anim_number == ANIM_BREATH &&
 						GLOBAL_inventoryitemchosen == NO_ITEM &&
 						have_i_got_object(PUZZLE_ITEM1))
 						GLOBAL_enterinventory = PUZZLE_ITEM1;
@@ -751,7 +751,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 						!BinocularRange &&
 						lara.gun_status == LG_NO_ARMS &&
 						lara_item->current_anim_state == AS_STOP &&
-						lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
+						lara_item->anim_number == ANIM_BREATH &&
 						GLOBAL_inventoryitemchosen == NO_ITEM &&
 						have_i_got_object(KEY_ITEM7))
 						GLOBAL_enterinventory = KEY_ITEM7;
@@ -768,7 +768,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 						!BinocularRange &&
 						lara.gun_status == LG_NO_ARMS &&
 						lara_item->current_anim_state == AS_STOP &&
-						lara_item->anim_number == ANIMATION_LARA_STAY_IDLE &&
+						lara_item->anim_number == ANIM_BREATH &&
 						GLOBAL_inventoryitemchosen == NO_ITEM &&
 						have_i_got_object(PUZZLE_ITEM2))
 						GLOBAL_enterinventory = PUZZLE_ITEM2;

@@ -28,7 +28,7 @@ void lara_as_climbstnc(ITEM_INFO* item, COLL_INFO* coll)
 	}
 	else if (input & IN_JUMP)
 	{
-		if (item->anim_number == ANIMATION_LARA_LADDER_IDLE)
+		if (item->anim_number == ANIM_CLIMBSTNC)
 		{
 			item->goal_anim_state = AS_BACKJUMP;
 			lara.gun_status = LG_NO_ARMS;
@@ -44,7 +44,7 @@ void lara_col_climbstnc(ITEM_INFO* item, COLL_INFO* coll)
 	if (LaraCheckForLetGo(item, coll))
 		return;
 
-	if (item->anim_number != ANIMATION_LARA_LADDER_IDLE)
+	if (item->anim_number != ANIM_CLIMBSTNC)
 		return;
 	
 	if (input & IN_FORWARD)
@@ -155,8 +155,8 @@ static long LaraCheckForLetGo(ITEM_INFO* item, COLL_INFO* coll)
 	lara.head_x_rot = 0;
 	item->goal_anim_state = AS_FORWARDJUMP;
 	item->current_anim_state = AS_FORWARDJUMP;
-	item->anim_number = ANIMATION_LARA_FREE_FALL_FORWARD;
-	item->frame_number = anims[ANIMATION_LARA_FREE_FALL_FORWARD].frame_base;
+	item->anim_number = ANIM_FALLDOWN;
+	item->frame_number = anims[ANIM_FALLDOWN].frame_base;
 	item->speed = 2;
 	item->gravity_status = 1;
 	item->fallspeed = 1;
@@ -182,9 +182,9 @@ void lara_col_climbing(ITEM_INFO* item, COLL_INFO* coll)
 	if (LaraCheckForLetGo(item, coll))
 		return;
 
-	if (item->anim_number == ANIMATION_LARA_LADDER_UP)
+	if (item->anim_number == ANIM_CLIMBING)
 	{
-		frame = item->frame_number - anims[ANIMATION_LARA_LADDER_UP].frame_base;
+		frame = item->frame_number - anims[ANIM_CLIMBING].frame_base;
 		
 		if (frame == 0)
 			yshift = 0;
@@ -310,10 +310,10 @@ void lara_col_climbdown(ITEM_INFO* item, COLL_INFO* coll)
 	int result_r, result_l;
 	int shift_r, shift_l;
 
-	if (LaraCheckForLetGo(item, coll) || item->anim_number != ANIMATION_LARA_LADDER_DOWN)
+	if (LaraCheckForLetGo(item, coll) || item->anim_number != ANIM_CLIMBDOWN)
 		return;
 
-	frame = item->frame_number - anims[ANIMATION_LARA_LADDER_DOWN].frame_base;
+	frame = item->frame_number - anims[ANIM_CLIMBDOWN].frame_base;
 
 	if (frame == 0)
 		yshift = 0;
@@ -349,8 +349,8 @@ void lara_col_climbdown(ITEM_INFO* item, COLL_INFO* coll)
 
 		if (result_r == -1 || result_l == -1)
 		{
-			item->anim_number = ANIMATION_LARA_LADDER_IDLE;
-			item->frame_number = anims[ANIMATION_LARA_LADDER_IDLE].frame_base;
+			item->anim_number = ANIM_CLIMBSTNC;
+			item->frame_number = anims[ANIM_CLIMBSTNC].frame_base;
 			item->current_anim_state = AS_CLIMBSTNC;
 			item->goal_anim_state = AS_HANG;
 			AnimateLara(item);

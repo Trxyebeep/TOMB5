@@ -370,19 +370,19 @@ void undraw_flare()
 
 	if (lara_item->goal_anim_state == AS_STOP)
 	{
-		if (lara_item->anim_number == ANIMATION_LARA_STAY_IDLE)
+		if (lara_item->anim_number == ANIM_BREATH)
 		{
-			lara_item->anim_number = ANIMATION_LARA_FLARE_THROW;
-			ani2 = ani + anims[ANIMATION_LARA_FLARE_THROW].frame_base;
+			lara_item->anim_number = ANIM_THROWFLARE;
+			ani2 = ani + anims[ANIM_THROWFLARE].frame_base;
 			lara.flare_frame = ani2;
 			lara_item->frame_number = ani2;
 		}
 
-		if (lara_item->anim_number == ANIMATION_LARA_FLARE_THROW)
+		if (lara_item->anim_number == ANIM_THROWFLARE)
 		{
 			lara.flare_control_left = 0;
 
-			if (ani2 >= anims[ANIMATION_LARA_FLARE_THROW].frame_base + 31)
+			if (ani2 >= anims[ANIM_THROWFLARE].frame_base + 31)
 			{
 				lara.request_gun_type = lara.last_gun_type;
 				lara.gun_type = lara.last_gun_type;
@@ -391,9 +391,9 @@ void undraw_flare()
 				lara.target = 0;
 				lara.right_arm.lock = 0;
 				lara.left_arm.lock = 0;
-				lara_item->anim_number = ANIMATION_LARA_STAY_SOLID;
-				lara_item->frame_number = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
-				lara.flare_frame = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
+				lara_item->anim_number = ANIM_STOP;
+				lara_item->frame_number = anims[ANIM_STOP].frame_base;
+				lara.flare_frame = anims[ANIM_STOP].frame_base;
 				lara_item->current_anim_state = AS_STOP;
 				lara_item->goal_anim_state = AS_STOP;
 			}
@@ -404,8 +404,8 @@ void undraw_flare()
 	}
 	else if (lara_item->current_anim_state == AS_STOP)
 	{
-		lara_item->anim_number = ANIMATION_LARA_STAY_SOLID;
-		lara_item->frame_number = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
+		lara_item->anim_number = ANIM_STOP;
+		lara_item->frame_number = anims[ANIM_STOP].frame_base;
 	}
 
 	if (!ani)

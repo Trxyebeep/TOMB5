@@ -22,16 +22,16 @@ int LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll)
 			item->goal_anim_state = AS_STEPRIGHT;
 		else
 		{
-			item->anim_number = ANIMATION_LARA_WADE;
-			item->frame_number = anims[ANIMATION_LARA_WADE].frame_base;
+			item->anim_number = ANIM_WADE;
+			item->frame_number = anims[ANIM_WADE].frame_base;
 			item->goal_anim_state = AS_WADE;
 			item->current_anim_state = AS_WADE;
 		}
 	}
 	else
 	{
-		item->anim_number = ANIMATION_LARA_ONWATER_TO_WADE_DEEP;
-		item->frame_number = anims[ANIMATION_LARA_ONWATER_TO_WADE_DEEP].frame_base;
+		item->anim_number = ANIM_SURF2WADE1;
+		item->frame_number = anims[ANIM_SURF2WADE1].frame_base;
 		item->current_anim_state = AS_WATEROUT;
 		item->goal_anim_state = AS_STOP;
 	}
@@ -99,18 +99,18 @@ int LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
 
 	if (hdif < -128)
 	{
-		item->anim_number = ANIMATION_LARA_CLIMB_OUT_OF_WATER;
-		item->frame_number = anims[ANIMATION_LARA_CLIMB_OUT_OF_WATER].frame_base;
+		item->anim_number = ANIM_SURFCLIMB;
+		item->frame_number = anims[ANIM_SURFCLIMB].frame_base;
 	}
 	else if (hdif < 128)
 	{
-		item->anim_number = ANIMATION_LARA_ONWATER_TO_LAND_LOW;
-		item->frame_number = anims[ANIMATION_LARA_ONWATER_TO_LAND_LOW].frame_base;
+		item->anim_number = ANIM_SURF2STND;
+		item->frame_number = anims[ANIM_SURF2STND].frame_base;
 	}
 	else
 	{
-		item->anim_number = ANIMATION_LARA_ONWATER_TO_WADE;
-		item->frame_number = anims[ANIMATION_LARA_ONWATER_TO_WADE].frame_base;
+		item->anim_number = ANIM_SURF2QSTND;
+		item->frame_number = anims[ANIM_SURF2QSTND].frame_base;
 	}
 
 	item->current_anim_state = AS_WATEROUT;
@@ -152,8 +152,8 @@ void LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll)
 	{
 		item->goal_anim_state = AS_SWIM;
 		item->current_anim_state = AS_DIVE;
-		item->anim_number = ANIMATION_LARA_FREE_FALL_TO_UNDERWATER_ALTERNATE;
-		item->frame_number = anims[ANIMATION_LARA_FREE_FALL_TO_UNDERWATER_ALTERNATE].frame_base;
+		item->anim_number = ANIM_SURFDIVE;
+		item->frame_number = anims[ANIM_SURFDIVE].frame_base;
 		item->pos.x_rot = -8190;
 		item->fallspeed = 80;
 		lara.water_status = LW_UNDERWATER;
@@ -379,9 +379,9 @@ void lara_col_surftread(ITEM_INFO* item, COLL_INFO* coll)
 	if (item->goal_anim_state == AS_SWIM)
 	{
 		item->current_anim_state = AS_DIVE;
-		item->anim_number = ANIMATION_LARA_FREE_FALL_TO_UNDERWATER_ALTERNATE;
+		item->anim_number = ANIM_SURFDIVE;
 		item->pos.x_rot = -8190;
-		item->frame_number = anims[ANIMATION_LARA_FREE_FALL_TO_UNDERWATER_ALTERNATE].frame_base;
+		item->frame_number = anims[ANIM_SURFDIVE].frame_base;
 		item->fallspeed = 80;
 		lara.water_status = LW_UNDERWATER;
 	}

@@ -1328,8 +1328,8 @@ void andy10_end()
 	lara_item->pos.x_rot = -5278;
 	lara_item->goal_anim_state = AS_TREAD;
 	lara_item->current_anim_state = AS_TREAD;
-	lara_item->frame_number = anims[ANIMATION_LARA_UNDERWATER_IDLE].frame_base;
-	lara_item->anim_number = ANIMATION_LARA_UNDERWATER_IDLE;
+	lara_item->frame_number = anims[ANIM_TREAD].frame_base;
+	lara_item->anim_number = ANIM_TREAD;
 	NailInvItem(PUZZLE_ITEM2);
 	disable_horizon = 0;
 }
@@ -1569,8 +1569,8 @@ void swampy_end()
 	lara_item->pos.x_rot = -5278;
 	lara_item->goal_anim_state = AS_TREAD;
 	lara_item->current_anim_state = AS_TREAD;
-	lara_item->frame_number = anims[ANIMATION_LARA_UNDERWATER_IDLE].frame_base;
-	lara_item->anim_number = ANIMATION_LARA_UNDERWATER_IDLE;
+	lara_item->frame_number = anims[ANIM_TREAD].frame_base;
+	lara_item->anim_number = ANIM_TREAD;
 	if (lara.air > 200)
 		lara.air = 200;
 }
@@ -1957,8 +1957,8 @@ void joby7_end()
 	lara_item->pos.x_rot = 1090;
 	lara_item->goal_anim_state = AS_TREAD;
 	lara_item->current_anim_state = AS_TREAD;
-	lara_item->frame_number = anims[ANIMATION_LARA_UNDERWATER_IDLE].frame_base;
-	lara_item->anim_number = ANIMATION_LARA_UNDERWATER_IDLE;
+	lara_item->frame_number = anims[ANIM_TREAD].frame_base;
+	lara_item->anim_number = ANIM_TREAD;
 	lara.Anxiety = 80;
 }
 
@@ -2427,8 +2427,8 @@ void handle_cutseq_triggering(int name)
 		lara.left_arm.lock = 0;
 		lara_item->goal_anim_state = AS_STOP;
 		lara_item->current_anim_state = AS_STOP;
-		lara_item->frame_number = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
-		lara_item->anim_number = ANIMATION_LARA_STAY_SOLID;
+		lara_item->frame_number = anims[ANIM_STOP].frame_base;
+		lara_item->anim_number = ANIM_STOP;
 		lara_item->speed = 0;
 		lara_item->fallspeed = 0;
 		lara_item->gravity_status = 0;
@@ -3070,8 +3070,8 @@ void DelsHandyTeleportLara(int x, int y, int z, int yrot)
 
 	lara_item->goal_anim_state = AS_STOP;
 	lara_item->current_anim_state = AS_STOP;
-	lara_item->frame_number = anims[ANIMATION_LARA_STAY_SOLID].frame_base;
-	lara_item->anim_number = ANIMATION_LARA_STAY_SOLID;
+	lara_item->frame_number = anims[ANIM_STOP].frame_base;
+	lara_item->anim_number = ANIM_STOP;
 	lara_item->speed = 0;
 	lara_item->fallspeed = 0;
 	lara_item->gravity_status = 0;

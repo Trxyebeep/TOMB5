@@ -30,8 +30,8 @@ void LaraTestWaterDepth(ITEM_INFO* item, COLL_INFO* coll)
 	}
 	else if (wd <= 512)
 	{
-		item->anim_number = ANIMATION_LARA_UNDERWATER_TO_WADE;
-		item->frame_number = anims[ANIMATION_LARA_UNDERWATER_TO_WADE].frame_base;
+		item->anim_number = ANIM_SWIM2QSTND;
+		item->frame_number = anims[ANIM_SWIM2QSTND].frame_base;
 		item->current_anim_state = AS_WATEROUT;
 		item->goal_anim_state = AS_STOP;
 		item->pos.z_rot = 0;
@@ -386,8 +386,8 @@ void lara_as_swim(ITEM_INFO* item, COLL_INFO* coll)
 		if (LaraDrawType != LARA_DIVESUIT)
 		{
 			item->current_anim_state = AS_WATERROLL;
-			item->anim_number = ANIMATION_LARA_UNDERWATER_ROLL_BEGIN;
-			item->frame_number = anims[ANIMATION_LARA_UNDERWATER_ROLL_BEGIN].frame_base;
+			item->anim_number = ANIM_WATERROLL;
+			item->frame_number = anims[ANIM_WATERROLL].frame_base;
 			return;
 		}
 	}
@@ -418,8 +418,8 @@ void lara_as_glide(ITEM_INFO* item, COLL_INFO* coll)
 		if (LaraDrawType != LARA_DIVESUIT)
 		{
 			item->current_anim_state = AS_WATERROLL;
-			item->anim_number = ANIMATION_LARA_UNDERWATER_ROLL_BEGIN;
-			item->frame_number = anims[ANIMATION_LARA_UNDERWATER_ROLL_BEGIN].frame_base;
+			item->anim_number = ANIM_WATERROLL;
+			item->frame_number = anims[ANIM_WATERROLL].frame_base;
 			return;
 		}
 	}
@@ -451,8 +451,8 @@ void lara_as_tread(ITEM_INFO* item, COLL_INFO* coll)
 	if (input & IN_ROLL && LaraDrawType != LARA_DIVESUIT)
 	{
 		item->current_anim_state = AS_WATERROLL;
-		item->anim_number = ANIMATION_LARA_UNDERWATER_ROLL_BEGIN;
-		item->frame_number = anims[ANIMATION_LARA_UNDERWATER_ROLL_BEGIN].frame_base;
+		item->anim_number = ANIM_WATERROLL;
+		item->frame_number = anims[ANIM_WATERROLL].frame_base;
 	}
 	else
 	{

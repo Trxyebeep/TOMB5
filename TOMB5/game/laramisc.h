@@ -9,10 +9,10 @@ void InitialiseLaraLoad(short item_num);
 void LaraCheat(ITEM_INFO* item, COLL_INFO* coll);
 void LaraInitialiseMeshes();
 void InitialiseLara(int restore);
-void LaraCheatyBits();
+void LaraCheatGetStuff();
+void AnimateLara(ITEM_INFO* item);
 #ifdef VER_JP
-void _cheats();
+void LaraCheatyBits();
 #endif
 
-#define AnimateLara ( (void(__cdecl*)(ITEM_INFO*)) 0x004563F0 )
 #define LaraControl	( (void(__cdecl*)(short)) 0x00455830 )

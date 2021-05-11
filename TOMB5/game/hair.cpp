@@ -69,7 +69,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	short* objptr;
 	short* frame;
 	long water, height, size, dist, x, y, z, dx, dy, dz;
-	short room_num, spaz;
+	short room_num, jerk;
 
 	obj = &objects[LARA];
 
@@ -82,34 +82,34 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			if (lara.hit_direction == 0)
 			{
 				if (lara.IsDucked)
-					spaz = ANIMATION_LARA_CROUCH_SMASH_BACKWARD;
+					jerk = ANIM_JERK_DUCKF;
 				else
-					spaz = ANIMATION_LARA_AH_FORWARD;
+					jerk = ANIM_JERK_FORWARD;
 			}
 			else if (lara.hit_direction == 1)
 			{
 				if (lara.IsDucked)
-					spaz = ANIMATION_LARA_CROUCH_SMASH_RIGHT;
+					jerk = ANIM_JERK_DUCKR;
 				else
-					spaz = ANIMATION_LARA_AH_LEFT;
+					jerk = ANIM_JERK_RIGHT;
 			}
 			else if (lara.hit_direction == 2)
 			{
 				if (lara.IsDucked)
-					spaz = ANIMATION_LARA_CROUCH_SMASH_FORWARD;
+					jerk = ANIM_JERK_DUCKB;
 				else
-					spaz = ANIMATION_LARA_AH_BACKWARD;
+					jerk = ANIM_JERK_BACK;
 			}
 			else
 			{
 				if (lara.IsDucked)
-					spaz = ANIMATION_LARA_CROUCH_SMASH_LEFT;
+					jerk = ANIM_JERK_DUCKL;
 				else
-					spaz = ANIMATION_LARA_AH_RIGHT;
+					jerk = ANIM_JERK_LEFT;
 			}
 
-			frame = anims[spaz].frame_ptr;
-			size = anims[spaz].interpolation >> 8;
+			frame = anims[jerk].frame_ptr;
+			size = anims[jerk].interpolation >> 8;
 			frame += lara.hit_frame * size;
 		}
 	}
