@@ -430,6 +430,7 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 				break;
 
 			StashSkinVertices(stash);
+			StashSkinNormals(stash);
 		}
 	}
 
