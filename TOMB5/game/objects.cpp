@@ -376,7 +376,7 @@ void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	item = &items[item_num];
 
 	if (input & IN_ACTION && lara.gun_status == LG_NO_ARMS &&
-		l->current_anim_state == AS_STOP && l->anim_number == ANIMATION_LARA_STAY_IDLE ||
+		l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH ||
 		lara.IsMoving && lara.GeneralPtr == (void*)item_num)
 	{
 		short roty = item->pos.y_rot;
@@ -387,8 +387,8 @@ void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 		{
 			if (MoveLaraPosition(&PolePos, item, l))
 			{
-				l->anim_number = ANIMATION_LARA_STAY_TO_POLE_GRAB;
-				l->frame_number = anims[ANIMATION_LARA_STAY_TO_POLE_GRAB].frame_base;
+				l->anim_number = ANIM_STAT2POLE;
+				l->frame_number = anims[ANIM_STAT2POLE].frame_base;
 				l->current_anim_state = AS_POLESTAT;
 				lara.IsMoving = 0;
 				lara.gun_status = LG_HANDS_BUSY;
@@ -422,15 +422,15 @@ void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 			{
 				PolePosR.y = l->pos.y_pos - item->pos.y_pos + 10;
 				AlignLaraPosition(&PolePosR, item, l);//4133C0
-				l->anim_number = ANIMATION_LARA_JUMP_FORWARD_TO_POLE_GRAB;
-				l->frame_number = anims[ANIMATION_LARA_JUMP_FORWARD_TO_POLE_GRAB].frame_base;
+				l->anim_number = ANIM_REACH2POLE;
+				l->frame_number = anims[ANIM_REACH2POLE].frame_base;
 			}
 			else
 			{
 				PolePosR.y = l->pos.y_pos - item->pos.y_pos + 60;
 				AlignLaraPosition(&PolePosR, item, l);
-				l->anim_number = ANIMATION_LARA_JUMP_UP_TO_POLE_GRAB;
-				l->frame_number = anims[ANIMATION_LARA_JUMP_UP_TO_POLE_GRAB].frame_base;
+				l->anim_number = ANIM_JUMP2POLE;
+				l->frame_number = anims[ANIM_JUMP2POLE].frame_base;
 			}
 
 			l->gravity_status = 0;
@@ -554,7 +554,7 @@ void TightRopeCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 
 	item = &items[item_num];
 
-	if (input & IN_ACTION && l->current_anim_state == AS_STOP && l->anim_number == ANIMATION_LARA_STAY_IDLE &&
+	if (input & IN_ACTION && l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH &&
 		!l->gravity_status && lara.gun_status == LG_NO_ARMS || lara.IsMoving && lara.GeneralPtr == (void*)item_num)
 	{
 		item->pos.y_rot += 32768;
@@ -564,8 +564,8 @@ void TightRopeCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 			if (MoveLaraPosition(&TightRopePos, item, l))
 			{
 				l->current_anim_state = AS_TROPEGETON;
-				l->anim_number = ANIMATION_LARA_TIGHTROPE_START;
-				l->frame_number = anims[ANIMATION_LARA_TIGHTROPE_START].frame_base;
+				l->anim_number = ANIM_TROPEGETON;
+				l->frame_number = anims[ANIM_TROPEGETON].frame_base;
 				lara.IsMoving = 0;
 				lara.head_x_rot = 0;
 				lara.head_y_rot = 0;
@@ -603,7 +603,7 @@ void ParallelBarsCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 
 	item = &items[item_num];
 
-	if (!(input & IN_ACTION) || l->current_anim_state != AS_REACH || l->anim_number != ANIMATION_LARA_TRY_HANG_SOLID)
+	if (!(input & IN_ACTION) || l->current_anim_state != AS_REACH || l->anim_number != ANIM_GRABLOOP)
 	{
 		if (l->current_anim_state == AS_PBSPIN)
 			return;
@@ -627,8 +627,8 @@ void ParallelBarsCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	}
 
 	l->current_anim_state = AS_CONTROLLED;
-	l->anim_number = ANIMATION_LARA_BARS_GRAB;
-	l->frame_number = anims[ANIMATION_LARA_BARS_GRAB].frame_base;
+	l->anim_number = ANIM_PB_GRAB;
+	l->frame_number = anims[ANIM_PB_GRAB].frame_base;
 	l->fallspeed = 0;
 	l->gravity_status = 0;
 	lara.head_y_rot = 0;

@@ -71,7 +71,7 @@ void LaraGun()
 			{
 				if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
 				{
-					if (lara_item->current_anim_state == AS_DUCK && lara_item->anim_number != ANIMATION_LARA_CROUCH_IDLE)
+					if (lara_item->current_anim_state == AS_DUCK && lara_item->anim_number != ANIM_DUCKBREATHE)
 						return;
 
 					if (lara.gun_type == WEAPON_FLARE)
@@ -137,7 +137,7 @@ void LaraGun()
 				lara.gun_status = LG_UNDRAW_GUNS;
 		}
 		else if (lara.gun_status == LG_HANDS_BUSY && (input & IN_FLARE) && lara_item->current_anim_state == AS_ALL4S
-			&& lara_item->anim_number == ANIMATION_LARA_CRAWL_IDLE)
+			&& lara_item->anim_number == ANIM_ALL4S)
 			lara.request_gun_type = WEAPON_FLARE;
 	}
 	switch (lara.gun_status)
