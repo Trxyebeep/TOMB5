@@ -448,8 +448,8 @@ void AnimateLara(ITEM_INFO* item)
 
 	if (!lara.IsMoving)
 	{
-		item->pos.x_pos += 3 * (phd_sin(lara.move_angle) * item->speed) >> 14;
-		item->pos.z_pos += 3 * (phd_cos(lara.move_angle) * item->speed) >> 14;
+		item->pos.x_pos += (phd_sin(lara.move_angle) * item->speed) >> 14;
+		item->pos.z_pos += (phd_cos(lara.move_angle) * item->speed) >> 14;
 		item->pos.x_pos += (phd_sin(lara.move_angle + 16384) * speed2) >> 14;
 		item->pos.z_pos += (phd_cos(lara.move_angle + 16384) * speed2) >> 14;
 	}
