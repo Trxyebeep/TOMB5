@@ -69,10 +69,11 @@
     <ClCompile Include="TOMB5\specific\drawlara.cpp" />
     <ClCompile Include="TOMB5\specific\DS.cpp" />
     <ClCompile Include="TOMB5\specific\file.cpp" />
+    <ClCompile Include="TOMB5\specific\function_table.cpp" />
     <ClCompile Include="TOMB5\specific\game.cpp" />
     <ClCompile Include="TOMB5\specific\init.cpp" />
     <ClCompile Include="TOMB5\specific\input.cpp" />
-    <ClCompile Include="TOMB5\specific\light.cpp" />
+    <ClCompile Include="TOMB5\specific\lighting.cpp" />
     <ClCompile Include="TOMB5\specific\LoadSave.cpp" />
     <ClCompile Include="TOMB5\specific\output.cpp" />
     <ClCompile Include="TOMB5\specific\specific.cpp" />
@@ -141,10 +142,11 @@
     <ClInclude Include="TOMB5\specific\drawlara.h" />
     <ClInclude Include="TOMB5\specific\DS.h" />
     <ClInclude Include="TOMB5\specific\file.h" />
+    <ClInclude Include="TOMB5\specific\function_table.h" />
     <ClInclude Include="TOMB5\specific\game.h" />
     <ClInclude Include="TOMB5\specific\init.h" />
     <ClInclude Include="TOMB5\specific\input.h" />
-    <ClInclude Include="TOMB5\specific\light.h" />
+    <ClInclude Include="TOMB5\specific\lighting.h" />
     <ClInclude Include="TOMB5\specific\LoadSave.h" />
     <ClInclude Include="TOMB5\specific\matrix_shit.h" />
     <ClInclude Include="TOMB5\specific\output.h" />

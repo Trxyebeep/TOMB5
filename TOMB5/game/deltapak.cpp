@@ -24,7 +24,7 @@
 #include "spotcam.h"
 #include <d3dtypes.h>
 #include "cutseq.h"
-#include "../specific/light.h"
+#include "../specific/lighting.h"
 #include "../specific/3dmath.h"
 #include "../specific/output.h"
 #include "draw.h"

@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <d3d.h>
 #include <d3dtypes.h>
+#define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
+#include <dsound.h>
 
 #pragma pack(push, 1)
 typedef struct 
@@ -1548,5 +1551,177 @@ struct MESH_DATA
 	int	aFlags;
 	ACMESHVERTEX* aVtx;
 	float bbox[6];
+};
+
+struct TEXTURESTRUCT
+{
+	unsigned short drawtype;
+	unsigned short tpage;
+	unsigned short flag;
+	float u1;
+	float v1;
+	float u2;
+	float v2;
+	float u3;
+	float v3;
+	float u4;
+	float v4;
+};
+
+typedef struct _ENVUV
+{
+	float	u, v;
+}ENVUV, *LPENVUV;
+
+struct AFRVECTOR
+{
+	float	vx;
+	float	vy;
+	float	vz;
+};
+
+struct DXDISPLAYMODE
+{
+	int w;
+	int h;
+	int bpp;
+	long RefreshRate;
+	int bPalette;
+	DDSURFACEDESC2	ddsd;
+	unsigned char	rbpp;
+	unsigned char	gbpp;
+	unsigned char	bbpp;
+	unsigned char	rshift;
+	unsigned char	gshift;
+	unsigned char	bshift;
+
+};
+
+struct DXTEXTUREINFO
+{
+	DDPIXELFORMAT ddpf;
+	unsigned long bpp;
+	int bPalette;
+	int bAlpha;
+	unsigned char rbpp;
+	unsigned char gbpp;
+	unsigned char bbpp;
+	unsigned char abpp;
+	unsigned char rshift;
+	unsigned char gshift;
+	unsigned char bshift;
+	unsigned char ashift;
+};
+
+struct DXZBUFFERINFO
+{
+	DDPIXELFORMAT ddpf;
+	unsigned long bpp;
+};
+
+struct DXD3DDEVICE
+{
+	char Name[30];
+	char About[80];
+	LPGUID lpGuid;
+	GUID Guid;
+	D3DDEVICEDESC DeviceDesc;
+	int bHardware;
+	int nDisplayModes;
+	DXDISPLAYMODE* DisplayModes;
+	int nTextureInfos;
+	DXTEXTUREINFO* TextureInfos;
+	int nZBufferInfos;
+	DXZBUFFERINFO* ZBufferInfos;
+};
+
+struct DXDIRECTDRAWINFO
+{
+	char Name[30];  
+	char About[80];
+	LPGUID lpGuid;
+	GUID Guid;
+	DDCAPS DDCaps;
+	DDDEVICEIDENTIFIER DDIdentifier;
+	int nDisplayModes;
+	DXDISPLAYMODE* DisplayModes;
+	int nD3DDevices;
+	DXD3DDEVICE* D3DDevices;
+};
+
+struct DXDIRECTSOUNDINFO
+{
+	char Name[30];
+	char About[80];
+	LPGUID lpGuid;
+	GUID Guid;
+};
+
+struct DXINFO
+{
+	int nDDInfo;
+	int nDSInfo;
+	DXDIRECTDRAWINFO* DDInfo;
+	DXDIRECTSOUNDINFO* DSInfo;
+	int nDD;
+	int nD3D;
+	int nDisplayMode;
+	int nTexture;
+	int nZBuffer;
+	int nDS;
+	bool bHardware;
+};
+
+struct DXPTR
+{
+	LPDIRECTDRAW4 lpDD;
+	LPDIRECT3D3 lpD3D;
+	LPDIRECT3DDEVICE3 lpD3DDevice;
+	LPDIRECT3DDEVICE3 _lpD3DDevice;
+	LPDIRECTDRAWSURFACE4 lpPrimaryBuffer;
+	LPDIRECTDRAWSURFACE4 lpBackBuffer;
+	LPDIRECTDRAWSURFACE4 lpZBuffer;
+	LPDIRECT3DVIEWPORT3 lpViewport;
+	LPDIRECTSOUND lpDS;
+	unsigned long dwRenderWidth;
+	unsigned long dwRenderHeight;
+	RECT rViewport;
+	RECT rScreen;
+	int Flags;
+	int WindowStyle;
+	long CoopLevel;
+	IDirectInput7* lpDirectInput;
+	IDirectInputDevice7* Keyboard;
+	IDirectInputDevice7* Joystick;
+	HWND hWnd;
+	volatile int InScene;
+	volatile int WaitAtBeginScene;
+	volatile int DoneBlit;
+};
+
+struct WINAPP
+{
+	HINSTANCE		hInstance;
+	HWND			hWnd;
+	WNDCLASS		WindowClass;
+	DXINFO			DXInfo;
+	DXPTR			dx;
+	HANDLE			mutex;
+	float			fps;
+	LPDIRECT3DMATERIAL3 GlobalMaterial;
+	D3DMATERIALHANDLE	GlobalMaterialHandle;
+	HACCEL			hAccel;
+	bool			SetupComplete;
+	bool			BumpMapping;
+	int				TextureSize;
+	int				BumpMapSize;
+	bool			mmx;
+	bool			Filtering;
+	bool			Volumetric;
+	bool			SoundDisabled;
+	long			StartFlags;
+	volatile bool	fmv;
+	long			Desktopbpp;
+	long			AutoTarget;
 };
 #pragma pack(pop)
