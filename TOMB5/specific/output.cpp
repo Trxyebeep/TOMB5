@@ -64,12 +64,12 @@ void phd_PutPolygons(short* objptr, int clipstatus)
 	else
 	{
 		if (p->prelight)
-			InitObjectLighting(current_item);
-		else
 		{
 			ClearObjectLighting();
 			InitDynamicLighting(current_item);
 		}
+		else
+			InitObjectLighting(current_item);
 
 		InitObjectFogBulbs();
 	}
@@ -149,29 +149,14 @@ void phd_PutPolygons(short* objptr, int clipstatus)
 				s3 = tv[f[2]].specular;
 				s4 = tv[f[3]].specular;
 
-				tv[f[0]].color = (tv[f[0]].color & 0xFF000000) | (((((tv[f[0]].color >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[0]].color >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[0]].color & 0xFF) * envmul) >> 8);
-
-				tv[f[1]].color = (tv[f[1]].color & 0xFF000000) | (((((tv[f[1]].color >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[1]].color >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[1]].color & 0xFF) * envmul) >> 8);
-
-				tv[f[2]].color = (tv[f[2]].color & 0xFF000000) | (((((tv[f[2]].color >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[2]].color >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[2]].color & 0xFF) * envmul) >> 8);
-
-				tv[f[3]].color = (tv[f[3]].color & 0xFF000000) | (((((tv[f[3]].color >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[3]].color >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[3]].color & 0xFF) * envmul) >> 8);
-
-				tv[f[0]].specular = (tv[f[0]].specular & 0xFF000000) | (((((tv[f[0]].specular >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[0]].specular >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[0]].specular & 0xFF) * envmul) >> 8);
-
-				tv[f[1]].specular = (tv[f[1]].specular & 0xFF000000) | (((((tv[f[1]].specular >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[1]].specular >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[1]].specular & 0xFF) * envmul) >> 8);
-
-				tv[f[2]].specular = (tv[f[2]].specular & 0xFF000000) | (((((tv[f[2]].specular >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[2]].specular >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[2]].specular & 0xFF) * envmul) >> 8);
-
-				tv[f[3]].specular = (tv[f[3]].specular & 0xFF000000) | (((((tv[f[3]].specular >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[3]].specular >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[3]].specular & 0xFF) * envmul) >> 8);
+				RGB_M(tv[f[0]].color, envmul);
+				RGB_M(tv[f[1]].color, envmul);
+				RGB_M(tv[f[2]].color, envmul);
+				RGB_M(tv[f[3]].color, envmul);
+				RGB_M(tv[f[0]].specular, envmul);
+				RGB_M(tv[f[1]].specular, envmul);
+				RGB_M(tv[f[2]].specular, envmul);
+				RGB_M(tv[f[3]].specular, envmul);
 
 				AddQuadSorted(tv, f[0], f[1], f[2], f[3], &EnvTex, 0);
 				tv[f[0]].color = c1;
@@ -242,23 +227,12 @@ void phd_PutPolygons(short* objptr, int clipstatus)
 				s2 = tv[f[1]].specular;
 				s3 = tv[f[2]].specular;
 
-				tv[f[0]].color = (tv[f[0]].color & 0xFF000000) | (((((tv[f[0]].color >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[0]].color >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[0]].color & 0xFF) * envmul) >> 8);
-
-				tv[f[1]].color = (tv[f[1]].color & 0xFF000000) | (((((tv[f[1]].color >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[1]].color >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[1]].color & 0xFF) * envmul) >> 8);
-
-				tv[f[2]].color = (tv[f[2]].color & 0xFF000000) | (((((tv[f[2]].color >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[2]].color >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[2]].color & 0xFF) * envmul) >> 8);
-
-				tv[f[0]].specular = (tv[f[0]].specular & 0xFF000000) | (((((tv[f[0]].specular >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[0]].specular >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[0]].specular & 0xFF) * envmul) >> 8);
-
-				tv[f[1]].specular = (tv[f[1]].specular & 0xFF000000) | (((((tv[f[1]].specular >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[1]].specular >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[1]].specular & 0xFF) * envmul) >> 8);
-
-				tv[f[2]].specular = (tv[f[2]].specular & 0xFF000000) | (((((tv[f[2]].specular >> 16) & 0xFF) * envmul) >> 8) << 16) |
-					(((((tv[f[2]].specular >> 8) & 0xFF) * envmul) >> 8) << 8) | (((tv[f[2]].specular & 0xFF) * envmul) >> 8);
+				RGB_M(tv[f[0]].color, envmul);
+				RGB_M(tv[f[1]].color, envmul);
+				RGB_M(tv[f[2]].color, envmul);
+				RGB_M(tv[f[0]].specular, envmul);
+				RGB_M(tv[f[1]].specular, envmul);
+				RGB_M(tv[f[2]].specular, envmul);
 
 				AddTriSorted(tv, f[0], f[1], f[2], &EnvTex, 0);
 				tv[f[0]].color = c1;
