@@ -47,6 +47,7 @@
     <ClCompile Include="TOMB5\game\larafire.cpp" />
     <ClCompile Include="TOMB5\game\laraflar.cpp" />
     <ClCompile Include="TOMB5\game\laramisc.cpp" />
+    <ClCompile Include="TOMB5\game\laraskin.cpp" />
     <ClCompile Include="TOMB5\game\larasurf.cpp" />
     <ClCompile Include="TOMB5\game\laraswim.cpp" />
     <ClCompile Include="TOMB5\game\lot.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="TOMB5\game\larafire.h" />
     <ClInclude Include="TOMB5\game\laraflar.h" />
     <ClInclude Include="TOMB5\game\laramisc.h" />
+    <ClInclude Include="TOMB5\game\laraskin.h" />
     <ClInclude Include="TOMB5\game\larasurf.h" />
     <ClInclude Include="TOMB5\game\laraswim.h" />
     <ClInclude Include="TOMB5\game\lara_states.h" />

@@ -4843,6 +4843,142 @@ void LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
 	TestTriggers(coll->trigger, 0, 0);
 }
 
+void FallFromRope(ITEM_INFO* item)
+{
+	long l;
+
+	l = ABS(CurrentPendulum.Velocity.x >> 16) + ABS(CurrentPendulum.Velocity.z >> 16);
+	item->speed = (short) (l >> 1);
+	item->pos.x_rot = 0;
+	item->pos.y_pos += 320;
+	item->anim_number = ANIMATION_LARA_FREE_FALL_FORWARD;
+	item->frame_number = anims[ANIMATION_LARA_FREE_FALL_FORWARD].frame_base;
+	item->current_anim_state = AS_FORWARDJUMP;
+	item->goal_anim_state = AS_FORWARDJUMP;
+	item->fallspeed = 0;
+	item->gravity_status = 1;
+	lara.gun_status = LG_NO_ARMS;
+	lara.RopePtr = -1;
+}
+
+void UpdateRopeSwing(ITEM_INFO* item)
+{
+	long temp;
+	static unsigned char LegsSwinging;
+
+	if (lara.RopeMaxXForward > 9000)
+		lara.RopeMaxXForward = 9000;
+
+	if (lara.RopeMaxXBackward > 9000)
+		lara.RopeMaxXBackward = 9000;
+
+	if (lara.RopeDirection)
+	{
+		if (item->pos.x_rot > 0 && item->pos.x_rot - lara.RopeLastX < -100)
+		{
+			lara.RopeArcFront = lara.RopeLastX;
+			lara.RopeDirection = 0;
+			lara.RopeMaxXBackward = 0;
+			temp = 256 * (15 * lara.RopeMaxXForward / 18000 + anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base + 47);
+
+			if (temp > lara.RopeDFrame)
+			{
+				lara.RopeDFrame = temp;
+				LegsSwinging = 1;
+			}
+			else
+				LegsSwinging = 0;
+
+			SoundEffect(SFX_LARA_ROPE_CREAK, &item->pos, 0);
+		}
+		else if (lara.RopeLastX < 0 && lara.RopeFrame == lara.RopeDFrame)
+		{
+			LegsSwinging = 0;
+			lara.RopeDFrame = 256 * (15 * lara.RopeMaxXBackward / 18000 + anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base + 47);
+			lara.RopeFrameRate = 15 * lara.RopeMaxXBackward / 9000 + 1;
+		}
+		else if (lara.RopeFrameRate < 512)
+			lara.RopeFrameRate += (LegsSwinging ? 31 : 7) * lara.RopeMaxXBackward / 9000 + 1;
+	}
+	else if (item->pos.x_rot < 0 && item->pos.x_rot - lara.RopeLastX > 100)
+	{
+		lara.RopeArcBack = lara.RopeLastX;
+		lara.RopeDirection = 1;
+		lara.RopeMaxXForward = 0;
+		temp = 256 * (anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base - 15 * lara.RopeMaxXBackward / 18000 + 17);
+
+		if (temp < lara.RopeDFrame)
+		{
+			lara.RopeDFrame = temp;
+			LegsSwinging = 1;
+		}
+		else
+			LegsSwinging = 0;
+
+		SoundEffect(SFX_LARA_ROPE_CREAK, &item->pos, 0);
+	}
+	else if (lara.RopeLastX > 0 && lara.RopeFrame == lara.RopeDFrame)
+	{
+		LegsSwinging = 0;
+		lara.RopeDFrame = 256 * (anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base - 15 * lara.RopeMaxXForward / 18000 + 17);
+		lara.RopeFrameRate = 15 * lara.RopeMaxXForward / 9000 + 1;
+	}
+	else if (lara.RopeFrameRate < 512)
+		lara.RopeFrameRate += (LegsSwinging ? 31 : 7) * lara.RopeMaxXForward / 9000 + 1;
+
+	lara.RopeLastX = item->pos.x_rot;
+
+	if (lara.RopeDirection)
+	{
+		if (item->pos.x_rot > lara.RopeMaxXForward)
+			lara.RopeMaxXForward = item->pos.x_rot;
+	}
+	else if (item->pos.x_rot < -lara.RopeMaxXBackward)
+		lara.RopeMaxXBackward = ABS(item->pos.x_rot);
+}
+
+void ApplyVelocityToRope(int node, unsigned short angle, unsigned short n)
+{
+	int xvel, zvel;
+
+	xvel = n * phd_sin(angle) >> 2;
+	zvel = n * phd_cos(angle) >> 2;
+	SetPendulumVelocity(xvel, 0, zvel);
+}
+
+void JumpOffRope(ITEM_INFO* item)
+{
+	if (lara.RopePtr != -1)
+	{
+		if (item->pos.x_rot >= 0)
+		{
+			item->fallspeed = -112;
+			item->speed = item->pos.x_rot / 128;
+		}
+		else
+		{
+			item->speed = 0;
+			item->fallspeed = -20;
+		}
+
+		item->pos.x_rot = 0;
+		item->gravity_status = 1;
+		lara.gun_status = LG_NO_ARMS;
+
+		if (item->frame_number - anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base > 42)
+			item->anim_number = ANIMATION_LARA_ROPE_SWING_TO_TRY_HANG_FRONT2;
+		else if (item->frame_number - anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base > 21)
+			item->anim_number = ANIMATION_LARA_ROPE_SWING_TO_TRY_HANG_MIDDLE;
+		else
+			item->anim_number = ANIMATION_LARA_ROPE_SWING_TO_TRY_HANG_BACK;
+
+		item->frame_number = anims[item->anim_number].frame_base;
+		item->current_anim_state = AS_REACH;
+		item->goal_anim_state = AS_REACH;
+		lara.RopePtr = -1;
+	}
+}
+
 void inject_lara()
 {
 	INJECT(0x00445AE0, LaraDeflectEdgeJump);
@@ -4999,5 +5135,9 @@ void inject_lara()
 	INJECT(0x0044D800, lara_as_trfall);
 	INJECT(0x0044DA40, lara_as_pbleapoff);
 	INJECT(0x00442E70, LaraAboveWater);
+	INJECT(0x004475C0, FallFromRope);
+	INJECT(0x00447820, UpdateRopeSwing);
+	INJECT(0x00447690, ApplyVelocityToRope);
+	INJECT(0x00447E60, JumpOffRope);
 }
 

@@ -568,15 +568,15 @@ x for functions decompiled but not injected, for one reason or another.
 0x004472F0	+	lara_as_poleright
 0x00447340	+	lara_col_poleup
 0x00447400	+	lara_col_poledown
-0x004475C0		FallFromRope
-0x00447690		ApplyVelocityToRope
+0x004475C0	+	FallFromRope
+0x00447690	+	ApplyVelocityToRope
 0x00447700	+	lara_as_rope
 0x00447740	+	lara_col_rope
-0x00447820		UpdateRopeSwing
+0x00447820	+	UpdateRopeSwing
 0x00447BE0	+	lara_as_ropel
 0x00447C20	+	lara_as_roper
 0x00447C60	+	lara_col_ropefwd
-0x00447E60		JumpOffRope
+0x00447E60	+	JumpOffRope
 0x00447F50	+	lara_as_climbrope
 0x00447FE0	+	lara_as_climbroped
 0x00448010	+	lara_as_stop
@@ -891,7 +891,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00456AE0		CreateSkinningData
 0x00457520		PushXYZ
 0x00457560		PopXYZ
-0x00457580		OptomiseSkinningData
+0x00457580	+	OptomiseSkinningData
 
 
 		game/bat.cpp
@@ -965,7 +965,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004849A0		UpdateShockwaves
 0x00484B30		TriggerLightning
 0x00484CB0		UpdateLightning
-0x00484D70		LSpline
+0x00484D70	+	LSpline
 0x00484EB0		CalcLightningSpline
 0x004851B0		TriggerLightningGlow
 0x00485290		DrawLensFlares

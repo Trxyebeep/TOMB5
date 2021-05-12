@@ -7,6 +7,7 @@ short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room
 int GetFreeBlood();
 void UpdateBlood();
 void TriggerBlood(int x, int y, int z, int a4, int num);
+long LSpline(long x, long* knots, int nk);
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define	TriggerRicochetSpark	( (void(__cdecl*)(GAME_VECTOR*, int, int, int)) 0x0042F060 )//pos, angle, size, unk

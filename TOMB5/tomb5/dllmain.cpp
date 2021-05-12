@@ -36,6 +36,7 @@
 #include "../game/rope.h"
 #include "../specific/LoadSave.h"
 #include "../specific/drawlara.h"
+#include "../game/laraskin.h"
 #include "../game/subsuit.h"
 #include "../specific/function_table.h"
 
@@ -91,8 +92,9 @@ void inject_all()
 	inject_3dmath();
 	inject_output();
 	inject_rope();
-	inject_LoadSave();
-	inject_drawlara();
+    inject_LoadSave();
+    inject_drawlara();
+	inject_laraskin();
 	inject_subsuit();
 	inject_functbl();
 }
