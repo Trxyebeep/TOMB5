@@ -22,7 +22,6 @@
 #include "newinv2.h"
 #include "xatracks.h"
 #include "spotcam.h"
-#include <d3dtypes.h>
 #include "cutseq.h"
 #include "../specific/lighting.h"
 #include "../specific/3dmath.h"

@@ -1,4 +1,5 @@
 #pragma once
+#include "../global/vars.h"
 
 #define SayNo	( (void(__cdecl*)()) 0x004790E0 )
 #define SoundEffect	( (long(__cdecl*)(short, PHD_3DPOS*, int)) 0x00478570 )

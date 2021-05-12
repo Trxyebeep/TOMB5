@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "pickup.h"
-#include "../global/types.h"
 #include "gameflow.h"
 #include "../specific/specific.h"
 #include "xatracks.h"

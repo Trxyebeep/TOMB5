@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "newinv2.h"
-#include "../global/types.h"
 #include "gameflow.h"
 #include "../specific/specific.h"
 #include "effects.h"

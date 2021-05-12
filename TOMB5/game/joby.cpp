@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "joby.h"
-#include "../global/types.h"
 #include "sound.h"
 #include "control.h"
 

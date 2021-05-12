@@ -1,4 +1,5 @@
 #pragma once
+#include "../global/vars.h"
 
 
 #define PistolHandler	( (void(__cdecl*)(int)) 0x0044FFC0 )

@@ -1,5 +1,4 @@
 #include "../tomb5/pch.h"
-#include "../global/types.h"
 #include "laraclmb.h"
 #include "lara.h"
 #include "lara_states.h"

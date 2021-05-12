@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "tomb4fx.h"
-#include "../global/types.h"
 #include "control.h"
 
 short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room_number)

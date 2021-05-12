@@ -1,4 +1,5 @@
 #pragma once
+#include "../global/vars.h"
 
 #define InitialiseCreature	( (void(__cdecl*)(short)) 0x00408550 )
 #define CreatureActive	( (int(__cdecl*)(short)) 0x00408630 )

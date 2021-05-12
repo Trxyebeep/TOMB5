@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "subsuit.h"
-#include "../global/types.h"
 #include "control.h"
 #include "effect2.h"
 #include "sound.h"

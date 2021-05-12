@@ -1,13 +1,4 @@
 #pragma once
-#include "stdint.h"
-#include "vars.h"
-#include "math_tbls.h"
-#include <stdio.h>
-#include <d3d.h>
-#include <d3dtypes.h>
-#define DIRECTINPUT_VERSION 0x0800
-#include <dinput.h>
-#include <dsound.h>
 
 #pragma pack(push, 1)
 typedef struct 

@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "larasurf.h"
-#include "../global/types.h"
 #include "lara_states.h"
 #include "collide.h"
 #include "lara.h"

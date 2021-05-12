@@ -1,5 +1,4 @@
 #include "../tomb5/pch.h"
-#include "../global/types.h"
 #include "delstuff.h"
 #include "lara1gun.h"
 #include "lara2gun.h"

@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "chef.h"
-#include "../global/types.h"
 #include "box.h"
 #include "objects.h"
 #include "people.h"

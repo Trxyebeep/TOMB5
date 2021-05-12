@@ -1,5 +1,6 @@
 #pragma once
 #include "types.h"
+#include "math_tbls.h"
 
 // Variable macros
 #define VAR_U_(address, type)			(*(type*)(address)) // uninitialized variable

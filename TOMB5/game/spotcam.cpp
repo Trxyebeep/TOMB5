@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "spotcam.h"
-#include "../global/types.h"
 
 long Spline(long x, long* knots, int nk)
 {

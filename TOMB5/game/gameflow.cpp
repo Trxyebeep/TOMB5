@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "gameflow.h"
-#include "../global/types.h"
 #include "../specific/game.h"
 #include "../specific/display.h"
 #include "../specific/specific.h"

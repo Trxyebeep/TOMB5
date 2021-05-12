@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "cutseq.h"
-#include "../global/types.h"
 #include "control.h"
 #include "deltapak.h"
 #include "objects.h"

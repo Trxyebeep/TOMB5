@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/types.h"
+#include "../global/vars.h"
 
 #define SuperResetLights	( (void(__cdecl*)()) 0x004AAF00 )
 #define CalcAmbientLight	( (void(__cdecl*)(ITEM_INFO*)) 0x004A9E60 )

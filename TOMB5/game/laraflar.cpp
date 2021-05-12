@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "laraflar.h"
-#include "../global/types.h"
 #include "gameflow.h"
 #include "delstuff.h"
 #include "control.h"

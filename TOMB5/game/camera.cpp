@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "camera.h"
-#include "../global/types.h"
 #include "gameflow.h"
 #include "../specific/DS.h"
 #include "effects.h"
