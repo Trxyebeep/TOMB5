@@ -1,10 +1,11 @@
 #include "../tomb5/pch.h"
 #include "function_table.h"
+#include "../global/types.h"
 
-void InitialiseFunctionTable()
+void InitialiseFunctionTable()//crashes lol
 {
-//	BeginScene = HWBeginScene;
-//	EndScene = HWEndScene;
+	BeginScene = HWBeginScene;
+	EndScene = HWEndScene;
 	IsVisible = _NVisible;
 
 	if (App.dx.lpZBuffer)
@@ -19,9 +20,13 @@ void InitialiseFunctionTable()
 		AddQuadZBuffer = AddQuadSubdivide;
 		AddTriZBuffer = AddTriSubdivide;
 		AddQuadSorted = AddQuadSubdivide;
-		AddTriSorted = AddTriSubdivide;
-		
+		AddTriSorted = AddTriSubdivide;		
 	}
 
 	AddLineSorted = AddLineClippedSorted;
+}
+
+void inject_functbl()
+{
+//	INJECT(0x004A7EE0, InitialiseFunctionTable);
 }

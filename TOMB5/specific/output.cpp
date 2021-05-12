@@ -183,14 +183,14 @@ void phd_PutPolygons(short* objptr, int clipstatus)
 				tv[f[2]].specular = s3;
 				tv[f[3]].specular = s4;
 			}
-			else
-			{
-				pTex->drawtype = 7;
-				AddQuadSorted(tv, f[0], f[1], f[2], f[3], pTex, 0);
-			}
-
-			pTex->drawtype = drawbak;
 		}
+		else
+		{
+			pTex->drawtype = 7;
+			AddQuadSorted(tv, f[0], f[1], f[2], f[3], pTex, 0);
+		}
+
+		pTex->drawtype = drawbak;
 	}
 
 	f = p->gt3;
