@@ -150,7 +150,7 @@
     <ClCompile Include="TOMB5\game\cutseq.cpp" />
     <ClCompile Include="TOMB5\game\chef.cpp" />
     <ClCompile Include="TOMB5\game\people.cpp" />
-    <ClCompile Include="TOMB5\specific\light.cpp" />
+    <ClCompile Include="TOMB5\specific\lighting.cpp" />
     <ClCompile Include="TOMB5\specific\init.cpp" />
     <ClCompile Include="TOMB5\specific\output.cpp" />
     <ClCompile Include="TOMB5\specific\file.cpp" />
@@ -166,6 +166,7 @@
     <ClCompile Include="TOMB5\game\spider.cpp" />
     <ClCompile Include="TOMB5\game\rat.cpp" />
     <ClCompile Include="TOMB5\game\subsuit.cpp" />
+    <ClCompile Include="TOMB5\specific\function_table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -318,7 +319,7 @@
     <ClInclude Include="TOMB5\game\cutseq.h" />
     <ClInclude Include="TOMB5\game\chef.h" />
     <ClInclude Include="TOMB5\game\people.h" />
-    <ClInclude Include="TOMB5\specific\light.h" />
+    <ClInclude Include="TOMB5\specific\lighting.h" />
     <ClInclude Include="TOMB5\specific\init.h" />
     <ClInclude Include="TOMB5\specific\output.h" />
     <ClInclude Include="TOMB5\specific\file.h" />
@@ -334,6 +335,7 @@
     <ClInclude Include="TOMB5\game\spider.h" />
     <ClInclude Include="TOMB5\game\rat.h" />
     <ClInclude Include="TOMB5\game\subsuit.h" />
+    <ClInclude Include="TOMB5\specific\function_table.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

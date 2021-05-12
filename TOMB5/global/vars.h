@@ -181,7 +181,7 @@
 #define number_sound_effects	VAR_U_(0x00E5C5F0, int)
 #define sound_active	VAR_U_(0x0051D004, int)
 #define sample_infos	VAR_U_(0x00E528A8, SAMPLE_INFO*)
-#define wf	VAR_U_(0x005078F0, long)
+#define _wf	VAR_U_(0x005078F0, long)
 #define sample_lut	VAR_U_(0x00E528A4, short*)
 #define examine_mode	VAR_U_(0x0051CF24, short)
 #define boxes	VAR_U_(0x00EEFB64, box_info*)
@@ -337,7 +337,23 @@
 #define hair_wind	VAR_U_(0x0051CEA4, int)
 #define hair_dwind_angle	VAR_U_(0x005084D4, int)
 #define hair_wind_angle	VAR_U_(0x005084D0, int)
-
+#define D3DMView	VAR_U_(0x00D9AD50, D3DMATRIX)
+#define clip_left	VAR_U_(0x007EE0CC, float)
+#define clip_right	VAR_U_(0x007ED698, float)
+#define clip_top	VAR_U_(0x007EE0B0, float)
+#define clip_bottom	VAR_U_(0x007E8EF0, float)
+#define f_left	VAR_U_(0x0055D250, float)
+#define f_right	VAR_U_(0x0051D160, float)
+#define f_top	VAR_U_(0x0055D664, float)
+#define f_bottom	VAR_U_(0x0055DA34, float)
+#define lGlobalMeshPos	VAR_U_(0x0091F3B8, AFRVECTOR)
+#define GlobalAmbient	VAR_U_(0x0092167C, long)
+#define App	VAR_U_(0x00D9AB38, WINAPP)
+#define aAmbientR	VAR_U_(0x0087AD0C, int)
+#define aAmbientG	VAR_U_(0x0087AD08, int)
+#define aAmbientB	VAR_U_(0x0087AD04, int)
+#define textinfo	VAR_U_(0x008751B0, TEXTURESTRUCT*)
+#define nTextures	VAR_U_(0x00D9A868, int)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -425,6 +441,8 @@
 #define duff_item	ARRAY_(0x00E71300, ITEM_INFO, [10])
 #define LaraNodeAmbient	ARRAY_(0x0057A460, long, [2])
 #define first_hair	ARRAY_(0x00E5BF60, int, [2])
+#define aMappedEnvUV	ARRAY_(0x00920E18, ENVUV, [256])
+#define aVertexBuffer	ARRAY_(0x007DFFE8, D3DTLVERTEX, [1024])
 
 //defs
 #define NO_HEIGHT -32512
