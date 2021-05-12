@@ -179,14 +179,14 @@ void RopeCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 		{
 			if (l->current_anim_state == AS_REACH)
 			{
-				l->anim_number = ANIMATION_LARA_ROPE_JUMP_TO_GRAB;
+				l->anim_number = 379;
 				l->current_anim_state = AS_ROPEFWD;
-				lara.RopeFrame = (anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base + 32) * 256;
-				lara.RopeDFrame = (anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base + 60) * 256;
+				lara.RopeFrame = (anims[ANIM_SWINGFWD].frame_base + 32) * 256;
+				lara.RopeDFrame = (anims[ANIM_SWINGFWD].frame_base + 60) * 256;
 			}
 			else
 			{
-				l->anim_number = ANIMATION_LARA_MONKEY_TO_ROPE_BEGIN;
+				l->anim_number = ANIM_UPJUMP2ROPE;
 				l->current_anim_state = AS_ROPE;
 			}
 
@@ -614,7 +614,7 @@ void LaraClimbRope(ITEM_INFO* item, COLL_INFO* coll)
 			return;
 		}
 
-		if (item->anim_number == ANIMATION_LARA_ROPE_DOWN && item->frame_number == anims[item->anim_number].frame_end)
+		if (item->anim_number == ANIM_ROPESLIDEL && item->frame_number == anims[item->anim_number].frame_end)
 		{
 			SoundEffect(SFX_LARA_ROPEDOWN_LOOP, &lara_item->pos, 0);
 			item->frame_number = anims[item->anim_number].frame_base;

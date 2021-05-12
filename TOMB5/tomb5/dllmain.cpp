@@ -1,4 +1,3 @@
-// dllmain.cpp : Defines the entry point for the DLL application.
 #include "../tomb5/pch.h"
 #include "../game/lara.h"
 #include "../game/collide.h"
@@ -38,6 +37,8 @@
 #include "../specific/LoadSave.h"
 #include "../specific/drawlara.h"
 #include "../game/laraskin.h"
+#include "../game/subsuit.h"
+#include "../specific/function_table.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -48,68 +49,69 @@ HINSTANCE hinstance = NULL;
 #endif
 
 DLL_EXPORT int dummyz();
+
 int dummyz()
 {
-    return 0;
+	return 0;
 }
 
 void inject_all()
 {
-    inject_lara();
-    inject_coll();
-    inject_deltaPak();
-    inject_control();
-    inject_tomb4fx();
-    inject_pickup();
-    inject_camera();
-    inject_laramisc();
-    inject_items();
-    inject_draw();
-    inject_gameflow();
-    inject_newinv2();
-    inject_objects();
-    inject_laraflar();
-    inject_effects();
-    inject_specific();
-    inject_larafire();
-    inject_lara1gun();
-    inject_hair();
-    inject_input();
-    inject_laraswim();
-    inject_larasurf();
-    inject_door();
-    inject_laraclmb();
-    inject_health();
-    inject_effect2();
-    inject_spotcam();
-    inject_cutseq();
-    inject_chef();
-    inject_people();
-    inject_init();
-    inject_joby();
-    inject_3dmath();
-    inject_output();
+	inject_lara();
+	inject_coll();
+	inject_deltaPak();
+	inject_control();
+	inject_tomb4fx();
+	inject_pickup();
+	inject_camera();
+	inject_laramisc();
+	inject_items();
+	inject_draw();
+	inject_gameflow();
+	inject_newinv2();
+	inject_objects();
+	inject_laraflar();
+	inject_effects();
+	inject_specific();
+	inject_larafire();
+	inject_lara1gun();
+	inject_hair();
+	inject_input();
+	inject_laraswim();
+	inject_larasurf();
+	inject_door();
+	inject_laraclmb();
+	inject_health();
+	inject_effect2();
+	inject_spotcam();
+	inject_cutseq();
+	inject_chef();
+	inject_people();
+	inject_init();
+	inject_joby();
+	inject_3dmath();
+	inject_output();
 	inject_rope();
     inject_LoadSave();
     inject_drawlara();
 	inject_laraskin();
+	inject_subsuit();
+	inject_functbl();
 }
 
-BOOL APIENTRY DllMain( HINSTANCE hModule,
-                       DWORD  ul_reason_for_call,
-                       LPVOID lpReserved
-                     )
+BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
 {
-    switch (ul_reason_for_call)
-    {
-    case DLL_PROCESS_ATTACH:
-        hinstance = hModule;
-        inject_all();
-    case DLL_THREAD_ATTACH:
-    case DLL_THREAD_DETACH:
-    case DLL_PROCESS_DETACH:
-        break;
-    }
-    return TRUE;
-}
+	switch (ul_reason_for_call)
+	{
+	case DLL_PROCESS_ATTACH:
+		hinstance = hmodule;
+		inject_all();
 
+	case DLL_THREAD_ATTACH:
+	case DLL_THREAD_DETACH:
+	case DLL_PROCESS_DETACH:
+		break;
+	}
+
+	return 1;
+}

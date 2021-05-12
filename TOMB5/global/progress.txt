@@ -733,7 +733,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004557B0	+	LaraCheatyBits
 0x00455830		LaraControl
 0x00456320	+	LaraCheat
-0x004563F0		AnimateLara
+0x004563F0	+	AnimateLara
 0x004568C0	+	InitialiseLaraLoad
 0x00456900	+	InitialiseLaraAnims
 0x004569C0	+	GetLaraDeadlyBounds
@@ -766,7 +766,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/hair.cpp
 
 0x00438BE0		InitialiseHair
-0x00438C80		HairControl
+0x00438C80	+	HairControl
 0x00439950		GetCorrectStashPoints
 0x00439A40	+	DrawHair
 
@@ -975,6 +975,17 @@ x for functions decompiled but not injected, for one reason or another.
 0x00485D80		TriggerFenceSparks
 0x00485EC0		trig_actor_gunflash
 
+
+		game/subsuit.cpp
+
+0x0047C4D0		TriggerAirBubbles
+0x0047C6D0	+	FireChaff
+0x0047C950	+	DoSubsuitStuff
+0x0047CB70		TriggerEngineEffects
+0x0047CD80		TriggerSubMist
+0x0047CF80		GetLaraJointPosRot
+0x0047D140		TriggerEngineEffects_CUT
+
 // ======================================
 // SPECIFIC
 // ======================================
@@ -1038,7 +1049,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B2800		aCheckMeshClip
 0x004B2BA0		aTransformLightClipMesh
 0x004B35F0		aTransformLightPrelightClipMesh
-0x004B3F00		phd_PutPolygons
+0x004B3F00	+	phd_PutPolygons
 0x004B4CA0		phd_PutPolygonsSpcXLU
 0x004B4F10		phd_PutPolygons_seethrough
 0x004B5190		phd_PutPolygonsSpcEnvmap
@@ -1103,6 +1114,6 @@ x for functions decompiled but not injected, for one reason or another.
 0x00498030	+	DrawLara
 0x00498100	+	DrawLara__1
 0x00498C70	+	DrawLara__4
-0x004995C0		DrawLara__5
-0x00499BA0		DrawLara__6
-0x0049A210		SetLaraUnderwaterNodes
+0x004995C0	+	DrawLara__5
+0x00499BA0	+	DrawLara__6
+0x0049A210	+	SetLaraUnderwaterNodes

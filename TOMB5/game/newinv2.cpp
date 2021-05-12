@@ -16,13 +16,13 @@
 #include "lara.h"
 #include "larafire.h"
 #include "lara_states.h"
-#include "effect2.h"
 #include "../specific/LoadSave.h"
 #include "../specific/input.h"
 #include "../specific/output.h"
 #include "health.h"
 #include "../specific/3dmath.h"
 #include "draw.h"
+#include "subsuit.h"
 
 short optmessages[11] =
 {
@@ -2129,7 +2129,7 @@ void use_current_item()
 		{
 		case INV_BINOCULARS_ITEM:
 
-			if ((lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIMATION_LARA_STAY_IDLE
+			if ((lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH
 				|| lara.IsDucked && !(input & IN_DUCK))
 				&& !SniperCamActive
 				&& !bUseSpotCam
