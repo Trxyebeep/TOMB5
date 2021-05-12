@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "drawlara.h"
-#include "../global/types.h"
 #include "3dmath.h"
 #include "specificfx.h"
 #include "output.h"

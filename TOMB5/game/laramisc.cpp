@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "laramisc.h"
-#include "../global/types.h"
 #include "lara_states.h"
 #include "gameflow.h"
 #include "newinv2.h"

@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "larafire.h"
-#include "../global/types.h"
 #include "flmtorch.h"
 #include "gameflow.h"
 #include "lara_states.h"

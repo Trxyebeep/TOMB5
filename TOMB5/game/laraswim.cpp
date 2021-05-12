@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "laraswim.h"
-#include "../global/types.h"
 #include "effect2.h"
 #include "lara_states.h"
 #include "lara.h"

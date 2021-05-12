@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "init.h"
-#include "../global/types.h"
 
 void* game_malloc(int size)
 {

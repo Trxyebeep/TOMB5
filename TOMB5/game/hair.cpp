@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "hair.h"
-#include "../global/types.h"
 #include "../specific/3dmath.h"
 #include "../specific/output.h"
 #include "gameflow.h"

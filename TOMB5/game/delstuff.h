@@ -1,4 +1,5 @@
 #pragma once
+#include "../global/vars.h"
 
 
 #define GetLaraJointPos	( (void(__cdecl*)(PHD_VECTOR*, long)) 0x0041E2A0 )

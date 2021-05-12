@@ -1,7 +1,6 @@
 #include "../tomb5/pch.h"
 #include "collide.h"
 #include "control.h"
-#include "../global/types.h"
 #include "tomb4fx.h"
 #include "delstuff.h"
 

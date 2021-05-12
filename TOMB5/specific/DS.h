@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/types.h"
+#include "../global/vars.h"
 
 #define CDDA_SetMasterVolume	( (void(__cdecl*)(int)) 0x004A7BB0 )
 #define S_SoundSampleIsPlaying	( (int(__cdecl*)(int)) 0x004A3B10 )

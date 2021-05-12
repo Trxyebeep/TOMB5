@@ -1,6 +1,5 @@
 #include "../tomb5/pch.h"
 #include "gameflow_helpers.h"
-#include "../global/types.h"
 #include "gameflow.h"
 
 int GetCampaignCheatValue()
