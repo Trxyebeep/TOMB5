@@ -164,6 +164,10 @@ void lara_as_trfall(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_parallelbars(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_pbleapoff(ITEM_INFO* item, COLL_INFO* coll);
 void LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
+void FallFromRope(ITEM_INFO* item);
+void UpdateRopeSwing(ITEM_INFO* item);
+void ApplyVelocityToRope(int node, unsigned short angle, unsigned short n);
+void JumpOffRope(ITEM_INFO* item);
 
 #define LaraTestClimbStance	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00445580 )
 #define LaraHangTest	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x004460F0 )
@@ -175,8 +179,4 @@ void LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
 #define TestMonkeyLeft	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446810 )
 #define TestMonkeyRight	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446960 )
 #define SetCornerAnim	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, short, short)) 0x0044A980 )
-#define FallFromRope	( (void(__cdecl*)(ITEM_INFO*)) 0x004475C0 )
-#define UpdateRopeSwing	( (void(__cdecl*)(ITEM_INFO*)) 0x00447820 )
-#define ApplyVelocityToRope	( (void(__cdecl*)(int, unsigned short, unsigned short)) 0x00447690 )
-#define JumpOffRope	( (void(__cdecl*)(ITEM_INFO*)) 0x00447E60 )
 #define GetTighRopeFallOff	( (void(__cdecl*)(long)) 0x0044D570 )
