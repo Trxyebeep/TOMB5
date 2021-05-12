@@ -4851,8 +4851,8 @@ void FallFromRope(ITEM_INFO* item)
 	item->speed = (short) (l >> 1);
 	item->pos.x_rot = 0;
 	item->pos.y_pos += 320;
-	item->anim_number = ANIMATION_LARA_FREE_FALL_FORWARD;
-	item->frame_number = anims[ANIMATION_LARA_FREE_FALL_FORWARD].frame_base;
+	item->anim_number = ANIM_FALLDOWN;
+	item->frame_number = anims[ANIM_FALLDOWN].frame_base;
 	item->current_anim_state = AS_FORWARDJUMP;
 	item->goal_anim_state = AS_FORWARDJUMP;
 	item->fallspeed = 0;
@@ -4879,7 +4879,7 @@ void UpdateRopeSwing(ITEM_INFO* item)
 			lara.RopeArcFront = lara.RopeLastX;
 			lara.RopeDirection = 0;
 			lara.RopeMaxXBackward = 0;
-			temp = 256 * (15 * lara.RopeMaxXForward / 18000 + anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base + 47);
+			temp = 256 * (15 * lara.RopeMaxXForward / 18000 + anims[ANIM_SWINGFWD].frame_base + 47);
 
 			if (temp > lara.RopeDFrame)
 			{
@@ -4894,7 +4894,7 @@ void UpdateRopeSwing(ITEM_INFO* item)
 		else if (lara.RopeLastX < 0 && lara.RopeFrame == lara.RopeDFrame)
 		{
 			LegsSwinging = 0;
-			lara.RopeDFrame = 256 * (15 * lara.RopeMaxXBackward / 18000 + anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base + 47);
+			lara.RopeDFrame = 256 * (15 * lara.RopeMaxXBackward / 18000 + anims[ANIM_SWINGFWD].frame_base + 47);
 			lara.RopeFrameRate = 15 * lara.RopeMaxXBackward / 9000 + 1;
 		}
 		else if (lara.RopeFrameRate < 512)
@@ -4905,7 +4905,7 @@ void UpdateRopeSwing(ITEM_INFO* item)
 		lara.RopeArcBack = lara.RopeLastX;
 		lara.RopeDirection = 1;
 		lara.RopeMaxXForward = 0;
-		temp = 256 * (anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base - 15 * lara.RopeMaxXBackward / 18000 + 17);
+		temp = 256 * (anims[ANIM_SWINGFWD].frame_base - 15 * lara.RopeMaxXBackward / 18000 + 17);
 
 		if (temp < lara.RopeDFrame)
 		{
@@ -4920,7 +4920,7 @@ void UpdateRopeSwing(ITEM_INFO* item)
 	else if (lara.RopeLastX > 0 && lara.RopeFrame == lara.RopeDFrame)
 	{
 		LegsSwinging = 0;
-		lara.RopeDFrame = 256 * (anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base - 15 * lara.RopeMaxXForward / 18000 + 17);
+		lara.RopeDFrame = 256 * (anims[ANIM_SWINGFWD].frame_base - 15 * lara.RopeMaxXForward / 18000 + 17);
 		lara.RopeFrameRate = 15 * lara.RopeMaxXForward / 9000 + 1;
 	}
 	else if (lara.RopeFrameRate < 512)
@@ -4965,12 +4965,12 @@ void JumpOffRope(ITEM_INFO* item)
 		item->gravity_status = 1;
 		lara.gun_status = LG_NO_ARMS;
 
-		if (item->frame_number - anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base > 42)
-			item->anim_number = ANIMATION_LARA_ROPE_SWING_TO_TRY_HANG_FRONT2;
-		else if (item->frame_number - anims[ANIMATION_LARA_ROPE_SWING_FORWARD_SEMIHARD].frame_base > 21)
-			item->anim_number = ANIMATION_LARA_ROPE_SWING_TO_TRY_HANG_MIDDLE;
+		if (item->frame_number - anims[ANIM_SWINGFWD].frame_base > 42)
+			item->anim_number = 406;
+		else if (item->frame_number - anims[ANIM_SWINGFWD].frame_base > 21)
+			item->anim_number = 407;
 		else
-			item->anim_number = ANIMATION_LARA_ROPE_SWING_TO_TRY_HANG_BACK;
+			item->anim_number = 386;
 
 		item->frame_number = anims[item->anim_number].frame_base;
 		item->current_anim_state = AS_REACH;
