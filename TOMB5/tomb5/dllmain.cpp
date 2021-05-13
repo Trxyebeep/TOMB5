@@ -92,8 +92,8 @@ void inject_all()
 	inject_3dmath();
 	inject_output();
 	inject_rope();
-    inject_LoadSave();
-    inject_drawlara();
+	inject_LoadSave();
+	inject_drawlara();
 	inject_laraskin();
 	inject_subsuit();
 	inject_functbl();

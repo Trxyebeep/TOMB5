@@ -255,13 +255,13 @@ x for functions decompiled but not injected, for one reason or another.
 0x00422740	+	cutseq_shoot_pistols
 0x00422780	+	trigger_weapon_dynamics
 0x00422840	+	deal_with_pistols
-0x00422A20		cutseq_kill_item
-0x00422AF0		cutseq_restore_item
-0x00422B90		Load_and_Init_Cutseq
-0x00422C30		init_cutseq_actors
-0x00422EF0		init_resident_cutseq
+0x00422A20	+	cutseq_kill_item
+0x00422AF0	+	cutseq_restore_item
+0x00422B90	+	Load_and_Init_Cutseq
+0x00422C30	+	init_cutseq_actors
+0x00422EF0	+	init_resident_cutseq
 0x00422F80	+	DelsHandyTeleportLara
-0x004230F0		nail_intelligent_object
+0x004230F0	+	nail_intelligent_object
 0x00423170	+	handle_lara_chatting
 0x00423210	+	handle_actor_chatting
 0x00423330	+	trigger_item_in_room
@@ -295,7 +295,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00423DF0	+	stealth3_end
 0x00423FB0	+	deal_with_actor_shooting
 0x00424080	+	GrabActorMatrix
-0x004243A0		GetActorJointAbsPosition
+0x004243A0	+	GetActorJointAbsPosition
 0x00424570	+	TriggerActorBlood
 0x004245C0	+	TriggerDelSmoke
 0x004247A0	+	joby2_init
@@ -382,7 +382,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00427750	+	andy8_init
 0x00427770	+	andy8_control
 0x00427810	+	andy8_end
-#########	+	do_chalk_meshswap
+##########	+	do_chalk_meshswap
 0x00427880	+	andy10_init
 0x004279C0	+	andy10_control
 0x00427B30	+	andy10_end
@@ -1032,7 +1032,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00491120		aOuterProduct
 0x00491170		aPerpVectors
 0x004912E0		aUnitMatrixByMat
-0x00491320		gte_sttr
+0x00491320	+	gte_sttr
 
 
 		specific/output.cpp

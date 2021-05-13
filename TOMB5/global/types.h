@@ -805,6 +805,20 @@ struct CAMERA_INFO
 	OBJECT_VECTOR* fixed; // size=16, offset=100
 	int mike_at_lara; // size=0, offset=104
 	PHD_VECTOR mike_pos; // size=12, offset=108
+
+	struct
+	{
+		float x;
+		float y;
+		float z;
+	} fpos;
+
+	struct
+	{
+		float x;
+		float y;
+		float z;
+	} ftgt;
 };
 
 struct OBJECT_INFO

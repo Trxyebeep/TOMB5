@@ -355,6 +355,8 @@
 #define aAmbientB	VAR_U_(0x0087AD04, int)
 #define textinfo	VAR_U_(0x008751B0, TEXTURESTRUCT*)
 #define nTextures	VAR_U_(0x00D9A868, int)
+#define GLOBAL_resident_depack_buffers	VAR_U_(0x00E7EFDC, char*)
+#define lastcamnum	VAR_U_(0x00E711A8, int)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -447,6 +449,9 @@
 #define first_hair	ARRAY_(0x00E5BF60, int, [2])
 #define aMappedEnvUV	ARRAY_(0x00920E18, ENVUV, [256])
 #define aVertexBuffer	ARRAY_(0x007DFFE8, D3DTLVERTEX, [1024])
+#define old_status_flags	ARRAY_(0x00E7F000, char, [32])
+#define old_status_flags2	ARRAY_(0x00E7F040, unsigned short, [32])
+#define cutseq_resident_addresses	ARRAY_(0x00E7EF20, char*, [47])
 
 //defs
 #define NO_HEIGHT -32512

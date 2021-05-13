@@ -93,8 +93,7 @@ void DrawHealthBar(int flash_state)
 				S_DrawHealthBar(0);
 		}
 	}
-
-	if (health_bar_timer > 0 || lara.gun_status == LG_READY && lara.gun_type != WEAPON_FLARE_2 || lara.poisoned >= 256)
+	else if (health_bar_timer > 0 || lara.gun_status == LG_READY && lara.gun_type != WEAPON_FLARE_2 || lara.poisoned >= 256)
 	{
 		if (BinocularRange || SniperOverlay)
 			S_DrawHealthBar2(hitpoints / 10);
