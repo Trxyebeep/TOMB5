@@ -372,8 +372,41 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	}
 }
 
+void InitialiseHair()
+{
+	OBJECT_INFO* obj;
+	HAIR_STRUCT* hptr;
+	long* bone;
+
+	for (int i = 0; i < 2; i++)
+	{
+		obj = &objects[HAIR];
+		bone = &bones[obj->bone_index];
+		bone += 4;
+		hptr = &hairs[i][0];
+		hptr->pos.y_rot = 0;
+		hptr->pos.x_rot = -16384;
+		first_hair[i] = 1;
+
+		for (int j = 1; j < 7; j++, bone += 4)
+		{
+			hptr->pos.x_pos = bone[1];
+			hptr->pos.y_pos = bone[2];
+			hptr->pos.z_pos = bone[3];
+			hptr->pos.x_rot = -16384;
+			hptr->pos.y_rot = 0;
+			hptr->pos.z_rot = 0;
+			hptr->vel.x = 0;
+			hptr->vel.y = 0;
+			hptr->vel.z = 0;
+			hptr++;
+		}
+	}
+}
+
 void inject_hair()
 {
 	INJECT(0x00439A40, DrawHair);
 	INJECT(0x00438C80, HairControl);
+	INJECT(0x00438BE0, InitialiseHair);
 }
