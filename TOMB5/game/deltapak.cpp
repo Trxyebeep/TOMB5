@@ -28,6 +28,7 @@
 #include "../specific/output.h"
 #include "draw.h"
 #include "subsuit.h"
+#include "../specific/init.h"
 
 short frig_shadow_bbox[6] =
 {
@@ -1252,7 +1253,7 @@ void andy9_end()
 	lara_item->mesh_bits = -1;
 }
 
-void andy10_init()// check the 2 item-items calls
+void andy10_init()
 {
 	ITEM_INFO* item;
 
@@ -3608,6 +3609,217 @@ void GrabActorMatrix(int actornum, unsigned long nodenum, MATRIX3D* matrixstash)
 	phd_PopMatrix();
 }
 
+int Load_and_Init_Cutseq(int num)
+{
+	char* packed;
+
+	SetCutPlayed(num);
+	packed = aFetchCutData(num);
+	GLOBAL_cutme = (NEW_CUTSCENE*)packed;
+
+	if (cutseq_num <= 4)
+	{
+		GLOBAL_cutme->orgx = (lara_item->pos.x_pos & -1024) + 512;
+		GLOBAL_cutme->orgy = lara_item->pos.y_pos;
+		GLOBAL_cutme->orgz = (lara_item->pos.z_pos & -1024) + 512;
+	}
+
+	init_cutseq_actors(packed, 0);
+	return 0;
+}
+
+void cutseq_kill_item(int num)
+{
+	ITEM_INFO* item;
+
+	for (int i = 0; i < level_items; i++)
+	{
+		item = &items[i];
+
+		if (item->object_number == num)
+		{
+			old_status_flags[numnailed] = item->status;	
+			old_status_flags2[numnailed] = item->flags;
+			item->status = 3;
+			item->flags = (item->flags & 0xC1FF) | 0x20;
+			numnailed++;
+		}
+	}
+}
+
+ITEM_INFO* cutseq_restore_item(int num)
+{
+	ITEM_INFO* item;
+
+	for (int i = 0; i < level_items; i++)
+	{
+		item = &items[i];
+
+		if (item->object_number == num)
+		{
+			item->status = old_status_flags[numnailed];
+			item->flags = old_status_flags2[numnailed];
+			numnailed++;
+			return item;
+		}
+	}
+
+	return 0;
+}
+
+void GetActorJointAbsPosition(int actornum, unsigned long nodenum, PHD_VECTOR* vec)
+{
+	ITEM_INFO* item;
+	long* bone;
+	short* frame;
+	short* rot;
+
+	item = &duff_item[0];
+	bone = &bones[objects[GLOBAL_cutme->actor_data[actornum].objslot].bone_index];
+	frame = temp_rotation_buffer;
+	phd_PushMatrix();
+	updateAnimFrame(actor_pnodes[actornum], GLOBAL_cutme->actor_data[actornum].nodes + 1, frame);
+	phd_PushUnitMatrix();
+	phd_SetTrans(0, 0, 0);
+	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+	phd_TranslateRel(frame[6], frame[7], frame[8]);
+	rot = frame + 9;
+	gar_RotYXZsuperpack(&rot, 0);
+
+	for (unsigned long i = 0; i < nodenum; i++, bone += 4)
+	{
+		if (*bone & 1)
+			phd_PopMatrix();
+
+		if (*bone & 2)
+			phd_PushMatrix();
+
+		phd_TranslateRel(bone[1], bone[2], bone[3]);
+		gar_RotYXZsuperpack(&rot, 0);
+	}
+
+	phd_TranslateRel(vec->x, vec->y, vec->z);
+	gte_sttr(vec);
+	vec->x += item->pos.x_pos;
+	vec->y += item->pos.y_pos;
+	vec->z += item->pos.z_pos;
+	phd_PopMatrix();
+	phd_PopMatrix();
+}
+
+void init_cutseq_actors(char* data, int resident)
+{
+	NODELOADHEADER* nlheader;
+	char* packed;
+	char* resident_addr;
+	int pda_nodes, offset;
+
+	resident_addr = GLOBAL_resident_depack_buffers;
+	lastcamnum = -1;
+	GLOBAL_playing_cutseq = 0;
+	GLOBAL_numcutseq_frames = GLOBAL_cutme->numframes;
+
+	for (int i = 0; i < GLOBAL_cutme->numactors; i++)
+	{
+		offset = GLOBAL_cutme->actor_data[i].offset;
+		packed = &data[offset];
+		nlheader = (NODELOADHEADER*)packed;
+		pda_nodes = GLOBAL_cutme->actor_data[i].nodes;
+
+		if (resident)
+		{
+			actor_pnodes[i] = (PACKNODE*)resident_addr;
+			resident_addr += sizeof(PACKNODE) * (pda_nodes + 1);
+		}
+		else
+			actor_pnodes[i] = (PACKNODE*)game_malloc(sizeof(PACKNODE) * (pda_nodes + 1));
+
+		if (i == 0)
+		{
+			if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
+				InitPackNodes(nlheader, actor_pnodes[i], packed, pda_nodes + 1);
+		}
+		else
+			InitPackNodes(nlheader, actor_pnodes[i], packed, pda_nodes + 1);
+
+		memset(&duff_item[i], 0, sizeof(ITEM_INFO));
+		duff_item[i].il.ambient = lara_item->il.ambient;
+		duff_item[i].il.fcnt = -1;
+		duff_item[i].il.room_number = -1;
+		duff_item[i].il.RoomChange = 0;
+		duff_item[i].il.nCurrentLights = 0;
+		duff_item[i].il.nPrevLights = 0;
+		duff_item[i].il.pCurrentLights = (void*)&duff_item[i].il.CurrentLights[0];
+		duff_item[i].il.pPrevLights = (void*)&duff_item[i].il.PrevLights[0];
+		duff_item[i].pos.x_pos = GLOBAL_cutme->orgx;
+		duff_item[i].pos.y_pos = GLOBAL_cutme->orgy;
+		duff_item[i].pos.z_pos = GLOBAL_cutme->orgz;
+		duff_item[i].pos.x_rot = 0;
+		duff_item[i].pos.y_rot = 0;
+		duff_item[i].pos.z_rot = 0;
+		duff_item[i].room_number = 0;
+	}
+
+	offset = GLOBAL_cutme->camera_offset;
+	packed = data + offset;
+	nlheader = (NODELOADHEADER*)packed;
+	pda_nodes = 1; 		
+
+	if (resident)
+	{
+		camera_pnodes = (PACKNODE*)resident_addr;
+		resident_addr += sizeof(PACKNODE) * (pda_nodes + 1);
+	}
+	else
+		camera_pnodes = (PACKNODE*)game_malloc(sizeof(PACKNODE) * (pda_nodes + 1));
+
+	InitPackNodes(nlheader, camera_pnodes, packed, pda_nodes + 1);
+	GLOBAL_playing_cutseq = 1;
+	GLOBAL_cutseq_frame = 0;
+	DelsHandyTeleportLara(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, 0);
+	camera.pos.x = lara_item->pos.x_pos;
+	camera.pos.y = lara_item->pos.y_pos;
+	camera.pos.z = lara_item->pos.z_pos;
+	camera.pos.room_number = lara_item->room_number;
+	camera.fpos.x = (float)camera.pos.x;
+	camera.fpos.y = (float)camera.pos.y;
+	camera.fpos.z = (float)camera.pos.z;
+	InitialiseHair();
+}
+
+void init_resident_cutseq(int num)
+{
+	char* packed;
+	packed = cutseq_resident_addresses[num];
+	GLOBAL_cutme = (NEW_CUTSCENE*)packed;
+
+	if (cutseq_num <= 4)
+	{
+		GLOBAL_cutme->orgx = (lara_item->pos.x_pos & -1024) + 512;
+		GLOBAL_cutme->orgy = lara_item->pos.y_pos;
+		GLOBAL_cutme->orgz = (lara_item->pos.z_pos & -1024) + 512;
+	}
+
+	init_cutseq_actors(packed, 1);
+}
+
+void nail_intelligent_object(short objnum)
+{
+	ITEM_INFO* item;
+
+	for (int i = 0; i < level_items; i++)
+	{
+		item = &items[i];
+
+		if (item->object_number == objnum)
+		{
+			item->status = 3;
+			RemoveActiveItem(i);
+			DisableBaddieAI(i);
+		}
+	}
+}
+
 void inject_deltaPak()
 {
 	INJECT(0x00425390, andrea1_init);
@@ -3751,10 +3963,10 @@ void inject_deltaPak()
 	INJECT(0x00422740, cutseq_shoot_pistols);
 	INJECT(0x00422780, trigger_weapon_dynamics);
 	INJECT(0x00422840, deal_with_pistols);
-//	INJECT(0x00422A20, cutseq_kill_item);
-//	INJECT(0x00422AF0, cutseq_restore_item);
-//	INJECT(0x00422B90, Load_and_Init_Cutseq);
-//	INJECT(0x00422C30, init_cutseq_actors);
+	INJECT(0x00422A20, cutseq_kill_item);
+	INJECT(0x00422AF0, cutseq_restore_item);
+	INJECT(0x00422B90, Load_and_Init_Cutseq);
+	INJECT(0x00422C30, init_cutseq_actors);
 	INJECT(0x00422F80, DelsHandyTeleportLara);
 	INJECT(0x00423170, handle_lara_chatting);
 	INJECT(0x00423210, handle_actor_chatting);
@@ -3762,7 +3974,7 @@ void inject_deltaPak()
 	INJECT(0x004233D0, untrigger_item_in_room);
 	INJECT(0x00423FB0, deal_with_actor_shooting);
 	INJECT(0x00424080, GrabActorMatrix);
-//	INJECT(0x004243A0, GetActorJointAbsPosition);
+	INJECT(0x004243A0, GetActorJointAbsPosition);
 	INJECT(0x00424570, TriggerActorBlood);
 	INJECT(0x004245C0, TriggerDelSmoke);
 	INJECT(0x004274B0, TriggerDelBrownSmoke);
@@ -3779,4 +3991,6 @@ void inject_deltaPak()
 	INJECT(0x00422030, DrawCutSeqActors);
 	INJECT(0x004223C0, CalcActorLighting);
 	INJECT(0x00422490, GetJointAbsPositionCutSeq);
+	INJECT(0x00422EF0, init_resident_cutseq);
+	INJECT(0x004230F0, nail_intelligent_object);
 }
