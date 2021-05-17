@@ -302,19 +302,16 @@ long ControlPhase(long _nframes, int demo_mode)
 		YSoff2 += 440;
 		ZSoff2 += 160;
 
-		if (lara.poisoned != 0 && !GLOBAL_playing_cutseq)
+		if (lara.poisoned && !GLOBAL_playing_cutseq)
 		{
-			if (lara.poisoned <= 4096)
-			{
-				if (lara.dpoisoned)
-					lara.dpoisoned++;
-				else
-					lara.poisoned = 4096;
-			}
+			if (lara.poisoned > 4096)
+				lara.poisoned = 4096;
+			else if (lara.dpoisoned)
+				lara.dpoisoned++;
 
 			if (gfLevelFlags & GF_LVOP_TRAIN && !lara.Gassed)
 			{
-				if (lara.dpoisoned != 0)
+				if (lara.dpoisoned)
 				{
 					lara.dpoisoned -= 8;
 
