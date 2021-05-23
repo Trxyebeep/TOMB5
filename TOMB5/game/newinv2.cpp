@@ -106,7 +106,7 @@ int S_CallInventory2()
 	rings[RING_INVENTORY] = &pcring1;
 	rings[RING_AMMO] = &pcring2;
 	CreateMonoScreen();
-	InventoryActive = 0;
+	InventoryActive = 1;
 	init_new_inventry();
 	camera.number_frames = 2;
 

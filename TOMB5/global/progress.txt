@@ -986,6 +986,25 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047CF80		GetLaraJointPosRot
 0x0047D140		TriggerEngineEffects_CUT
 
+
+		game/pickup.cpp
+
+0x004679D0		AnimatingPickUp
+0x00467AF0	+	RegeneratePickups
+0x00467C00		PickUpCollision
+0x00468770		FindPlinth
+0x00468930		KeyHoleCollision
+0x00468C00	+	PuzzleDoneCollision
+0x00468C70		PuzzleHoleCollision
+0x004693A0	+	PuzzleDone
+0x00469550	+	KeyTrigger
+0x004695E0	+	PickupTrigger
+0x00469660		SearchObjectControl
+0x004699A0		SearchObjectCollision
+0x00469C90		CollectCarriedItems
+0x00469D10		MonitorScreenCollision
+
+
 // ======================================
 // SPECIFIC
 // ======================================

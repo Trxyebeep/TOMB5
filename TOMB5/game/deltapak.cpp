@@ -407,8 +407,8 @@ void andrea1_control()
 	pos.z = 0;
 	deal_with_actor_shooting(larson_pistols_info1, 1, 14, &pos);
 	handle_lara_chatting(lara_chat_ranges_andrea1);
-	handle_actor_chatting(21, 8, 1, LARSON, larson_chat_ranges1);
-	handle_actor_chatting(23, 8, 2, ANIMATING2_MIP, pierre_chat_ranges1);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 8, 1, LARSON, larson_chat_ranges1);
+	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 8, 2, ANIMATING2_MIP, pierre_chat_ranges1);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -514,8 +514,8 @@ void andrea2_control()
 	}
 
 	handle_lara_chatting(lara_chat_ranges_andrea2);
-	handle_actor_chatting(21, 8, 1, LARSON, larson_chat_ranges2);
-	handle_actor_chatting(23, 8, 2, ANIMATING2_MIP, pierre_chat_ranges2);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 8, 1, LARSON, larson_chat_ranges2);
+	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 8, 2, ANIMATING2_MIP, pierre_chat_ranges2);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 	return;
 }
@@ -541,7 +541,7 @@ void andrea3_control()
 
 	deal_with_pistols(andrea3_pistols_info);
 	handle_lara_chatting(lara_chat_ranges_andrea3);
-	handle_actor_chatting(21, 8, 1, LARSON, larson_chat_ranges3);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 8, 1, LARSON, larson_chat_ranges3);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -610,7 +610,7 @@ void andrea3b_control()
 	}
 
 	handle_lara_chatting(lara_chat_ranges_andrea3b);
-	handle_actor_chatting(21, 8, 1, LARSON, larson_chat_ranges3b);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 8, 1, LARSON, larson_chat_ranges3b);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -653,7 +653,7 @@ void andrea4_control()
 		do_pierre_gun_meshswap();
 
 	handle_lara_chatting(lara_chat_ranges_andrea4);
-	handle_actor_chatting(23, 8, 1, PIERRE, pierre_chat_ranges4);
+	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 8, 1, PIERRE, pierre_chat_ranges4);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -817,9 +817,9 @@ void richcut2_control()
 	if (GLOBAL_cutseq_frame == 300)
 		cutseq_meshbits[5] &= 0x7FFFFFFF;
 
-	handle_actor_chatting(23, 11, 1, ANIMATING6, voncroy_chat_ranges_richcut2);
-	handle_actor_chatting(21, 18, 3, ANIMATING4, associate_chat_ranges_richcut2);
-	handle_actor_chatting(438, 14, 2, ANIMATING1, guard_chat_ranges_richcut2);
+	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 11, 1, ANIMATING6, voncroy_chat_ranges_richcut2);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 18, 3, ANIMATING4, associate_chat_ranges_richcut2);
+	handle_actor_chatting(ANIMATING12, 14, 2, ANIMATING1, guard_chat_ranges_richcut2);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -928,7 +928,7 @@ void andy1_control()
 	}
 
 	handle_lara_chatting(lara_chat_ranges_andy1);
-	handle_actor_chatting(23, 21, 1, SNIPER_MIP, hanged_man_chat_ranges_andy1);
+	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 21, 1, SNIPER_MIP, hanged_man_chat_ranges_andy1);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -953,7 +953,7 @@ void andy2_control()
 	TriggerDynamic(pos.x, pos.y, pos.z, 12 - (GetRandomControl() & 1), (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 96, 0);
 	DelTorchFlames(&pos);
 	handle_lara_chatting(lara_chat_ranges_andy2);
-	handle_actor_chatting(21, 2, 1, SAILOR_MIP, priest_chat_ranges_andy2);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 1, SAILOR_MIP, priest_chat_ranges_andy2);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -1151,7 +1151,7 @@ void andy6_control()
 	TriggerDynamic(pos.x, pos.y, pos.z, 12 - (GetRandomControl() & 1), (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 96, 0);
 	DelTorchFlames(&pos);
 	handle_lara_chatting(lara_chat_ranges_andy6);
-	handle_actor_chatting(21, 2, 1, SAILOR_MIP, priest_chat_ranges_andy6);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 1, SAILOR_MIP, priest_chat_ranges_andy6);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -1168,7 +1168,7 @@ void andy7_init()
 void andy7_control()
 {
 	handle_lara_chatting(lara_chat_ranges_andy7);
-	handle_actor_chatting(21, 2, 1, SAILOR_MIP, priest_chat_ranges_andy7);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 1, SAILOR_MIP, priest_chat_ranges_andy7);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -1242,8 +1242,8 @@ void andy9_control()
 		lara_item->mesh_bits = 0;
 
 	handle_lara_chatting(lara_chat_ranges_andy9);
-	handle_actor_chatting(21, 2, 4, SAILOR_MIP, priest_chat_ranges_andy9);
-	handle_actor_chatting(23, 15, 1, SWAT_MIP, knight_chat_ranges_andy9);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 4, SAILOR_MIP, priest_chat_ranges_andy9);
+	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 15, 1, SWAT_MIP, knight_chat_ranges_andy9);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -1372,8 +1372,8 @@ void andy11_control()
 		cutseq_meshbits[2] &= 0x7FFFFFFF;
 
 	handle_lara_chatting(lara_chat_ranges_andy11);
-	handle_actor_chatting(21, 2, 4, SAILOR_MIP, priest_chat_ranges_andy11);
-	handle_actor_chatting(23, 15, 1, SWAT_MIP, knight_chat_ranges_andy11);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 4, SAILOR_MIP, priest_chat_ranges_andy11);
+	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 15, 1, SWAT_MIP, knight_chat_ranges_andy11);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -1749,8 +1749,8 @@ void joby2_control()
 		break;
 	}
 
-	handle_actor_chatting(21, 2, 3, ANIMATING6_MIP, admiral_chat_ranges_joby2);
-	handle_actor_chatting(23, 3, 4, ANIMATING9_MIP, sergie_chat_ranges_joby2);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 3, ANIMATING6_MIP, admiral_chat_ranges_joby2);
+	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 3, 4, ANIMATING9_MIP, sergie_chat_ranges_joby2);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -1810,7 +1810,7 @@ void joby4_control()
 	}
 
 	handle_lara_chatting(lara_chat_ranges_joby4);
-	handle_actor_chatting(21, 2, 3, CRANE_GUY_MIP, admiral_chat_ranges_joby4);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 3, CRANE_GUY_MIP, admiral_chat_ranges_joby4);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -1847,8 +1847,8 @@ void joby5_control()
 	else if (f == 151 || f == 2330)
 		cutseq_meshbits[4] |= 0x80000000;
 
-	handle_actor_chatting(21, 2, 3, CRANE_GUY_MIP, admiral_chat_ranges_joby5);
-	handle_actor_chatting(23, 3, 4, LION_MIP, sergie_chat_ranges_joby5);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 3, CRANE_GUY_MIP, admiral_chat_ranges_joby5);
+	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 3, 4, LION_MIP, sergie_chat_ranges_joby5);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -1943,7 +1943,7 @@ void joby7_control()
 	GetActorJointAbsPosition(1, 7, &d);
 	LaraTorch(&s, &d, 0, 255);
 	TriggerEngineEffects_CUT();
-	handle_actor_chatting(17, 14, 1, CROW_MIP, lara_chat_ranges_joby7);
+	handle_actor_chatting(LARA_SPEECH_HEAD1, 14, 1, CROW_MIP, lara_chat_ranges_joby7);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -2103,7 +2103,7 @@ void joby8_control()
 	}
 
 	handle_lara_chatting(lara_chat_ranges_joby8);
-	handle_actor_chatting(23, 3, 1, LION_MIP, actor_chat_ranges_joby8);
+	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 3, 1, LION_MIP, actor_chat_ranges_joby8);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -2120,7 +2120,7 @@ void joby9_init()
 void joby9_control()
 {
 	handle_lara_chatting(lara_chat_ranges_joby9);
-	handle_actor_chatting(21, 2, 1, CRANE_GUY_MIP, admiral_chat_ranges_joby9);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 1, CRANE_GUY_MIP, admiral_chat_ranges_joby9);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -2146,7 +2146,7 @@ void joby10_control()
 	}
 
 	handle_lara_chatting(lara_chat_ranges_joby10);
-	handle_actor_chatting(21, 2, 1, CRANE_GUY_MIP, admiral_chat_ranges_joby10);
+	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 1, CRANE_GUY_MIP, admiral_chat_ranges_joby10);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
 
@@ -3640,7 +3640,7 @@ void cutseq_kill_item(int num)
 		{
 			old_status_flags[numnailed] = item->status;	
 			old_status_flags2[numnailed] = item->flags;
-			item->status = 3;
+			item->status = ITEM_INVISIBLE;
 			item->flags = (item->flags & 0xC1FF) | 0x20;
 			numnailed++;
 		}
@@ -3813,7 +3813,7 @@ void nail_intelligent_object(short objnum)
 
 		if (item->object_number == objnum)
 		{
-			item->status = 3;
+			item->status = ITEM_INVISIBLE;
 			RemoveActiveItem(i);
 			DisableBaddieAI(i);
 		}

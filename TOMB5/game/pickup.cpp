@@ -8,6 +8,7 @@
 #include "items.h"
 #include "control.h"
 #include "objects.h"
+#include "collide.h"
 
 //0x0043E260 is initialisepickup//the function that corrects the pickups' Y pos depending on their bounding box..
 
@@ -84,8 +85,52 @@ static void PuzzleDone(ITEM_INFO* item, short item_num)
 	}
 }
 
+int KeyTrigger(short item_num)
+{
+	ITEM_INFO* item;
+	int oldkey;
+
+	item = &items[item_num];
+
+	if ((item->status != ITEM_ACTIVE || lara.gun_status == LG_HANDS_BUSY) && (!KeyTriggerActive || lara.gun_status != LG_HANDS_BUSY))
+		return -1;
+
+	oldkey = KeyTriggerActive;
+
+	if (!KeyTriggerActive)
+		item->status = ITEM_DEACTIVATED;
+
+	KeyTriggerActive = 0;
+	return oldkey;
+}
+
+int PickupTrigger(short item_num)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_num];
+
+	if (item->flags & IFLAG_KILLED ||
+		item->status != ITEM_INVISIBLE ||
+		item->item_flags[3] != 1 ||
+		item->trigger_flags & 128)
+		return 0;
+
+	KillItem(item_num);
+	return 1;
+}
+
+void PuzzleDoneCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
+{
+	if (items[item_num].trigger_flags != 999 && items[item_num].trigger_flags != 998)
+		ObjectCollision(item_num, l, coll);
+}
+
 void inject_pickup()
 {
 	INJECT(0x00467AF0, RegeneratePickups);
 	INJECT(0x004693A0, PuzzleDone);
+	INJECT(0x00469550, KeyTrigger);
+	INJECT(0x004695E0, PickupTrigger);
+	INJECT(0x00468C00, PuzzleDoneCollision);
 }
