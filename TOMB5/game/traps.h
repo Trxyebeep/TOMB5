@@ -1,5 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
+void inject_traps();
 
-#define	LaraBurn	( (void(__cdecl*)()) 0x0048AD60 )
+void LaraBurn();
+void LavaBurn(ITEM_INFO* item);

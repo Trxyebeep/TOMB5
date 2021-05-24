@@ -39,6 +39,7 @@
 #include "../game/laraskin.h"
 #include "../game/subsuit.h"
 #include "../specific/function_table.h"
+#include "../game/traps.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -97,6 +98,7 @@ void inject_all()
 	inject_laraskin();
 	inject_subsuit();
 	inject_functbl();
+	inject_traps();
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
