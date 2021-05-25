@@ -995,7 +995,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00468770		FindPlinth
 0x00468930		KeyHoleCollision
 0x00468C00	+	PuzzleDoneCollision
-0x00468C70		PuzzleHoleCollision
+0x00468C70	+	PuzzleHoleCollision
 0x004693A0	+	PuzzleDone
 0x00469550	+	KeyTrigger
 0x004695E0	+	PickupTrigger
