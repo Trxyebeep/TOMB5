@@ -238,6 +238,7 @@ void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 
 				lara.GeneralPtr = (void*)item_num;
 				GLOBAL_inventoryitemchosen = -1;
+				return;
 			}
 
 			if (!lara.IsMoving)
