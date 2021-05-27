@@ -1,5 +1,5 @@
 #include "../tomb5/pch.h"
-#include "init.h"
+#include "function_stubs.h"
 
 void* game_malloc(int size)
 {
@@ -23,7 +23,7 @@ void* game_malloc(int size)
 	}
 }
 
-void inject_init()
+void inject_funcStubs()
 {
 	INJECT(0x004A7D00, game_malloc);
 }

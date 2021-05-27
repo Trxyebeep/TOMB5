@@ -66,9 +66,8 @@ void do_examine_mode();
 void do_stats_mode();
 void dels_give_lara_items_cheat();
 void dels_give_lara_guns_cheat();
-
-#define LoadGame	( (int(__cdecl*)()) 0x00464EF0 )
-#define SaveGame	( (int(__cdecl*)()) 0x00464F20 )
+int LoadGame();
+int SaveGame();
 
 enum ring_types
 {

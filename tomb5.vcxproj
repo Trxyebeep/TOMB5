@@ -38,6 +38,7 @@
     <ClCompile Include="TOMB5\game\gameflow_helpers.cpp" />
     <ClCompile Include="TOMB5\game\hair.cpp" />
     <ClCompile Include="TOMB5\game\health.cpp" />
+    <ClCompile Include="TOMB5\game\init.cpp" />
     <ClCompile Include="TOMB5\game\items.cpp" />
     <ClCompile Include="TOMB5\game\joby.cpp" />
     <ClCompile Include="TOMB5\game\lara.cpp" />
@@ -70,9 +71,9 @@
     <ClCompile Include="TOMB5\specific\drawlara.cpp" />
     <ClCompile Include="TOMB5\specific\DS.cpp" />
     <ClCompile Include="TOMB5\specific\file.cpp" />
+    <ClCompile Include="TOMB5\specific\function_stubs.cpp" />
     <ClCompile Include="TOMB5\specific\function_table.cpp" />
     <ClCompile Include="TOMB5\specific\game.cpp" />
-    <ClCompile Include="TOMB5\specific\init.cpp" />
     <ClCompile Include="TOMB5\specific\input.cpp" />
     <ClCompile Include="TOMB5\specific\lighting.cpp" />
     <ClCompile Include="TOMB5\specific\LoadSave.cpp" />
@@ -107,6 +108,7 @@
     <ClInclude Include="TOMB5\game\gameflow_helpers.h" />
     <ClInclude Include="TOMB5\game\hair.h" />
     <ClInclude Include="TOMB5\game\health.h" />
+    <ClInclude Include="TOMB5\game\init.h" />
     <ClInclude Include="TOMB5\game\items.h" />
     <ClInclude Include="TOMB5\game\joby.h" />
     <ClInclude Include="TOMB5\game\lara.h" />
@@ -144,9 +146,9 @@
     <ClInclude Include="TOMB5\specific\drawlara.h" />
     <ClInclude Include="TOMB5\specific\DS.h" />
     <ClInclude Include="TOMB5\specific\file.h" />
+    <ClInclude Include="TOMB5\specific\function_stubs.h" />
     <ClInclude Include="TOMB5\specific\function_table.h" />
     <ClInclude Include="TOMB5\specific\game.h" />
-    <ClInclude Include="TOMB5\specific\init.h" />
     <ClInclude Include="TOMB5\specific\input.h" />
     <ClInclude Include="TOMB5\specific\lighting.h" />
     <ClInclude Include="TOMB5\specific\LoadSave.h" />
