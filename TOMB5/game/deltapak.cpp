@@ -28,7 +28,7 @@
 #include "../specific/output.h"
 #include "draw.h"
 #include "subsuit.h"
-#include "../specific/init.h"
+#include "../specific/function_stubs.h"
 
 short frig_shadow_bbox[6] =
 {

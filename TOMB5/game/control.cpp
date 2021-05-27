@@ -20,7 +20,7 @@
 #include "spider.h"
 #include "rat.h"
 #include "objects.h"
-#include "../specific/init.h"//for Log
+#include "../specific/function_stubs.h"
 #include "sphere.h"
 #include "debris.h"
 #include "larafire.h"
