@@ -2927,6 +2927,18 @@ void dels_give_lara_guns_cheat()
 #endif
 }
 
+int LoadGame()
+{
+	return S_LoadSave(IN_LOAD, 1) < 0 ? -1 : 1;
+}
+
+int SaveGame()
+{
+	input = 0;
+	dbinput = 0;
+	return S_LoadSave(IN_SAVE, 1) < 0 ? -1 : 1;
+}
+
 void inject_newinv2()
 {
 	INJECT(0x0045F9D0, S_CallInventory2);
@@ -2992,4 +3004,6 @@ void inject_newinv2()
 	INJECT(0x00464BF0, do_stats_mode);
 	INJECT(0x00464C60, dels_give_lara_items_cheat);
 	INJECT(0x00464C80, dels_give_lara_guns_cheat);
+	INJECT(0x00464EF0, LoadGame);
+	INJECT(0x00464F20, SaveGame);
 }

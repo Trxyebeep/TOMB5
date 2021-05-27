@@ -490,8 +490,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00464C60	+	dels_give_lara_items_cheat
 0x00464C80	+	dels_give_lara_guns_cheat
 0x00464CA0		DelDrawSprite
-0x00464EF0		LoadGame
-0x00464F20		SaveGame
+0x00464EF0	+	LoadGame
+0x00464F20	+	SaveGame
 
 
 		game/people.cpp
