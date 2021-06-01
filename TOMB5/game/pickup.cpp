@@ -15,6 +15,7 @@
 #include "../specific/3dmath.h"
 #include "newinv2.h"
 #include "switch.h"
+#include "health.h"
 
 static short PuzzleBounds[12] = 
 {
@@ -213,7 +214,7 @@ void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 					{
 						cutseq_num = 34;
 						cutrot = 0;
-						//	AddPickupDisplay(172);
+						AddDisplayPickup(PUZZLE_ITEM1);
 					}
 				}
 				

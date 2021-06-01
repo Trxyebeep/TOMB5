@@ -363,9 +363,22 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			hair->pos.x_pos = phd_mxptr[3] >> 14;
 			hair->pos.y_pos = phd_mxptr[7] >> 14;
 			hair->pos.z_pos = phd_mxptr[11] >> 14;
-			hair->vel.x = hair->pos.x_pos - pos.x;
-			hair->vel.y = hair->pos.y_pos - pos.y;
-			hair->vel.z = hair->pos.z_pos - pos.z;
+
+#ifdef fix_cut_hair_jumps
+			if ((cutseq_num == 16 && ((GLOBAL_cutseq_frame >= 409 && GLOBAL_cutseq_frame < 411) || GLOBAL_cutseq_frame == 1873 || GLOBAL_cutseq_frame == 3049)))
+			{
+				hair->vel.x = 0;
+				hair->vel.y = 0;
+				hair->vel.z = 0;
+			}
+			else
+#endif
+			{
+				hair->vel.x = hair->pos.x_pos - pos.x;
+				hair->vel.y = hair->pos.y_pos - pos.y;
+				hair->vel.z = hair->pos.z_pos - pos.z;
+			}
+
 			phd_PopMatrix();
 			hair++;
 		}
