@@ -357,6 +357,14 @@
 #define nTextures	VAR_U_(0x00D9A868, int)
 #define GLOBAL_resident_depack_buffers	VAR_U_(0x00E7EFDC, char*)
 #define lastcamnum	VAR_U_(0x00E711A8, int)
+#define next_fire_spark	VAR_U_(0x0050A17C, int)
+#define next_smoke_spark	VAR_U_(0x0051D084, int)
+#define next_gunshell	VAR_U_(0x0051D08C, int)
+#define next_bubble	VAR_U_(0x0051D090, int)
+#define next_drip	VAR_U_(0x0051D094, int)
+#define next_debris	VAR_U_(0x0051CA8C, int)
+#define WB_room	VAR_U_(0x00EEF044, short)
+#define GlobalPulleyFrigItem	VAR_U_(0x00E5BF24, short)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -424,9 +432,9 @@
 #define SequenceUsed	ARRAY_(0x00E4EA78, unsigned char, [6])
 #define SequenceResults	ARRAY_(0x00E4EA80, unsigned char, [3][3][3])
 #define Sequences	ARRAY_(0x00E4EA9C, unsigned char, [3])
-#define ClosedDoors	ARRAY_(0x0051CAC0, ITEM_INFO*, [32])
+#define ClosedDoors	ARRAY_(0x0051CAC0, long, [32])
 #define flipmap	ARRAY_(0x00EEEBA0, int, [255])
-#define spark	ARRAY_(0x00E5F380, SPARKS, [128])
+#define spark	ARRAY_(0x00E5F380, SPARKS, [1024])
 #define pickups	ARRAY_(0x00E5BF40, DISPLAYPU, [8])
 #define ShatterSounds	ARRAY_(0x00506BAC, unsigned char, [18][10])
 #define twogun	ARRAY_(0x00EEEB00, TWOGUN_INFO, [3])
@@ -452,6 +460,15 @@
 #define old_status_flags	ARRAY_(0x00E7F000, char, [32])
 #define old_status_flags2	ARRAY_(0x00E7F040, unsigned short, [32])
 #define cutseq_resident_addresses	ARRAY_(0x00E7EF20, char*, [47])
+#define fire_spark	ARRAY_(0x00E4CE40, FIRE_SPARKS, [20])
+#define Gunshells	ARRAY_(0x00E4BEC0, GUNSHELL_STRUCT, [24])
+#define Gunflashes	ARRAY_(0x00E4D660, GUNFLASH_STRUCT, [4])
+#define debris	ARRAY_(0x00E8CAC0, DEBRIS_STRUCT, [32])
+#define splashes	ARRAY_(0x00E6CA00, SPLASH_STRUCT, [4])
+#define ripples	ARRAY_(0x00E5C600, RIPPLE_STRUCT, [32])
+#define Bubbles	ARRAY_(0x00E4D160, BUBBLE_STRUCT, [40])
+#define Drips	ARRAY_(0x00E4D740, DRIP_STRUCT, [32])
+#define ShockWaves	ARRAY_(0x00E4C1A0, SHOCKWAVE_STRUCT, [16])
 
 //defs
 #define NO_HEIGHT -32512
