@@ -348,8 +348,17 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			dy = (hair->pos.y_pos - (hair - 1)->pos.y_pos);
 			dz = (hair->pos.z_pos - (hair - 1)->pos.z_pos);
 			dist = phd_sqrt(SQUARE(dz) + SQUARE(dx));
+
+#ifdef fix_cut_hair_jumps
+			if (!(cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211) || (GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480))))
+			{
+				(hair - 1)->pos.y_rot = (short)phd_atan(dz, dx);
+				(hair - 1)->pos.x_rot = (short)-phd_atan(dist, dy);
+			}
+#else
 			(hair - 1)->pos.y_rot = (short)phd_atan(dz, dx);
 			(hair - 1)->pos.x_rot = (short)-phd_atan(dist, dy);
+#endif
 
 			phd_PushUnitMatrix();
 			phd_SetTrans((hair - 1)->pos.x_pos, (hair - 1)->pos.y_pos, (hair - 1)->pos.z_pos);
@@ -365,7 +374,8 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			hair->pos.z_pos = phd_mxptr[11] >> 14;
 
 #ifdef fix_cut_hair_jumps
-			if ((cutseq_num == 16 && ((GLOBAL_cutseq_frame >= 409 && GLOBAL_cutseq_frame < 411) || GLOBAL_cutseq_frame == 1873 || GLOBAL_cutseq_frame == 3049)))
+			if ((cutseq_num == 16 && ((GLOBAL_cutseq_frame >= 409 && GLOBAL_cutseq_frame < 411) || GLOBAL_cutseq_frame == 1873 || GLOBAL_cutseq_frame == 3049)) ||
+				(cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211)||(GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480))))
 			{
 				hair->vel.x = 0;
 				hair->vel.y = 0;
