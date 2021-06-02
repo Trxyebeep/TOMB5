@@ -24,7 +24,15 @@ void AlterFOV(short fov)
 	f_perspoznear = f_persp / f_znear;
 }
 
+void gte_sttr(PHD_VECTOR* vec)
+{
+	vec->x = phd_mxptr[3] >> 14;
+	vec->y = phd_mxptr[7] >> 14;
+	vec->z = phd_mxptr[11] >> 14;
+}
+
 void inject_3dmath()
 {
 	INJECT(0x0048EDC0, AlterFOV);
+	INJECT(0x00491320, gte_sttr);
 }

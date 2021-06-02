@@ -106,7 +106,7 @@ int S_CallInventory2()
 	rings[RING_INVENTORY] = &pcring1;
 	rings[RING_AMMO] = &pcring2;
 	CreateMonoScreen();
-	InventoryActive = 0;
+	InventoryActive = 1;
 	init_new_inventry();
 	camera.number_frames = 2;
 
@@ -2583,22 +2583,22 @@ void NailInvItem(short objnum)
 int have_i_got_object(short object_number)
 {
 	if (object_number >= PUZZLE_ITEM1_COMBO1 && object_number <= PUZZLE_ITEM8_COMBO2)
-		return (lara.puzzleitemscombo >> (object_number + 76)) & 1;
+		return (lara.puzzleitemscombo >> (object_number - PUZZLE_ITEM1_COMBO1)) & 1;
 
 	if (object_number >= PUZZLE_ITEM1 && object_number <= PUZZLE_ITEM8)
-		return *((char*)&lara.mesh_ptrs[6] + object_number);//what in the fuck
+		return lara.puzzleitems[object_number - PUZZLE_ITEM1];
 
 	if (object_number >= KEY_ITEM1_COMBO1 && object_number <= KEY_ITEM8_COMBO2)
-		return (lara.keyitemscombo >> (object_number + 52)) & 1;
+		return (lara.keyitemscombo >> (object_number - KEY_ITEM1_COMBO1)) & 1;
 
 	if (object_number >= KEY_ITEM1 && object_number <= KEY_ITEM8)
-		return (lara.keyitems >> (object_number + 60)) & 1;
+		return (lara.keyitems >> (object_number - KEY_ITEM1)) & 1;
 
 	if (object_number >= PICKUP_ITEM1_COMBO1 && object_number <= PICKUP_ITEM4_COMBO2)
-		return (lara.pickupitemscombo >> (object_number + 32)) & 1;
+		return (lara.pickupitemscombo >> (object_number - PICKUP_ITEM1_COMBO1)) & 1;
 
 	if (object_number >= PICKUP_ITEM1 && object_number <= PICKUP_ITEM4)
-		return (lara.pickupitems >> (object_number + 36)) & 1;
+		return (lara.pickupitems >> (object_number - PICKUP_ITEM1)) & 1;
 
 	if (object_number == CROWBAR_ITEM)
 		return lara.crowbar;
@@ -2927,6 +2927,18 @@ void dels_give_lara_guns_cheat()
 #endif
 }
 
+int LoadGame()
+{
+	return S_LoadSave(IN_LOAD, 1) < 0 ? -1 : 1;
+}
+
+int SaveGame()
+{
+	input = 0;
+	dbinput = 0;
+	return S_LoadSave(IN_SAVE, 1) < 0 ? -1 : 1;
+}
+
 void inject_newinv2()
 {
 	INJECT(0x0045F9D0, S_CallInventory2);
@@ -2992,4 +3004,6 @@ void inject_newinv2()
 	INJECT(0x00464BF0, do_stats_mode);
 	INJECT(0x00464C60, dels_give_lara_items_cheat);
 	INJECT(0x00464C80, dels_give_lara_guns_cheat);
+	INJECT(0x00464EF0, LoadGame);
+	INJECT(0x00464F20, SaveGame);
 }

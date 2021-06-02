@@ -167,10 +167,14 @@ void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PH
 void frigup_lara();
 void CalculateObjectLightingLaraCutSeq();
 void GrabActorMatrix(int actornum, unsigned long nodenum, MATRIX3D* matrixstash);
+int Load_and_Init_Cutseq(int num);
+void cutseq_kill_item(int num);
+ITEM_INFO* cutseq_restore_item(int num);
+void GetActorJointAbsPosition(int actornum, unsigned long nodenum, PHD_VECTOR* vec);
+void init_cutseq_actors(char* data, int resident);
+void init_resident_cutseq(int num);
+void nail_intelligent_object(short objnum);
 
-
-#define GetActorJointAbsPosition ((void(__cdecl*)(int, unsigned long, PHD_VECTOR*)) 0x004243A0 )
-#define	cutseq_kill_item	( (void(__cdecl*)(int)) 0x00422A20 )
-#define Load_and_Init_Cutseq	( (int(__cdecl*)(int)) 0x00422B90 )
-#define	cutseq_restore_item	( (ITEM_INFO*(__cdecl*)(int)) 0x00422AF0 )
 #define trig_actor_gunflash	( (void(__cdecl*)(MATRIX3D*, PHD_VECTOR*)) 0x00485EC0 )//somewhere in specific I think? only ever called in deal_with_actor_shooting anyway so keeping it here for now
+#define aFetchCutData	( (char*(__cdecl*)(int)) 0x00491F60 )
+

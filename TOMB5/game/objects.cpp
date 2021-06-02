@@ -261,7 +261,7 @@ void ControlAnimatingSlots(short item_number)
 		switch (item->trigger_flags)
 		{
 		case 2:
-			item->status = -1;
+			item->status = ITEM_INVISIBLE;
 			return;
 
 		case 333:

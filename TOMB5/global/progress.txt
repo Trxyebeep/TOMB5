@@ -255,13 +255,13 @@ x for functions decompiled but not injected, for one reason or another.
 0x00422740	+	cutseq_shoot_pistols
 0x00422780	+	trigger_weapon_dynamics
 0x00422840	+	deal_with_pistols
-0x00422A20		cutseq_kill_item
-0x00422AF0		cutseq_restore_item
-0x00422B90		Load_and_Init_Cutseq
-0x00422C30		init_cutseq_actors
-0x00422EF0		init_resident_cutseq
+0x00422A20	+	cutseq_kill_item
+0x00422AF0	+	cutseq_restore_item
+0x00422B90	+	Load_and_Init_Cutseq
+0x00422C30	+	init_cutseq_actors
+0x00422EF0	+	init_resident_cutseq
 0x00422F80	+	DelsHandyTeleportLara
-0x004230F0		nail_intelligent_object
+0x004230F0	+	nail_intelligent_object
 0x00423170	+	handle_lara_chatting
 0x00423210	+	handle_actor_chatting
 0x00423330	+	trigger_item_in_room
@@ -295,7 +295,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00423DF0	+	stealth3_end
 0x00423FB0	+	deal_with_actor_shooting
 0x00424080	+	GrabActorMatrix
-0x004243A0		GetActorJointAbsPosition
+0x004243A0	+	GetActorJointAbsPosition
 0x00424570	+	TriggerActorBlood
 0x004245C0	+	TriggerDelSmoke
 0x004247A0	+	joby2_init
@@ -382,7 +382,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00427750	+	andy8_init
 0x00427770	+	andy8_control
 0x00427810	+	andy8_end
-#########	+	do_chalk_meshswap
+##########	+	do_chalk_meshswap
 0x00427880	+	andy10_init
 0x004279C0	+	andy10_control
 0x00427B30	+	andy10_end
@@ -490,8 +490,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00464C60	+	dels_give_lara_items_cheat
 0x00464C80	+	dels_give_lara_guns_cheat
 0x00464CA0		DelDrawSprite
-0x00464EF0		LoadGame
-0x00464F20		SaveGame
+0x00464EF0	+	LoadGame
+0x00464F20	+	SaveGame
 
 
 		game/people.cpp
@@ -765,7 +765,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/hair.cpp
 
-0x00438BE0		InitialiseHair
+0x00438BE0	+	InitialiseHair
 0x00438C80	+	HairControl
 0x00439950		GetCorrectStashPoints
 0x00439A40	+	DrawHair
@@ -802,8 +802,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00442250		CookerFlameControl
 0x00442320		TriggerLaraSparks
 0x00442480		TriggerCableSparks
-0x00442610		ControlElectricalCables
-0x00442BE0		CheckCableBox
+0x00442610	+	ControlElectricalCables
+0x00442BE0	+	CheckCableBox
 0x00442C90	+	KlaxonTremor
 
 
@@ -986,6 +986,112 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047CF80		GetLaraJointPosRot
 0x0047D140		TriggerEngineEffects_CUT
 
+
+		game/pickup.cpp
+
+0x004679D0		AnimatingPickUp
+0x00467AF0	+	RegeneratePickups
+0x00467C00		PickUpCollision
+0x00468770		FindPlinth
+0x00468930		KeyHoleCollision
+0x00468C00	+	PuzzleDoneCollision
+0x00468C70	+	PuzzleHoleCollision
+0x004693A0	+	PuzzleDone
+0x00469550	+	KeyTrigger
+0x004695E0	+	PickupTrigger
+0x00469660		SearchObjectControl
+0x004699A0		SearchObjectCollision
+0x00469C90		CollectCarriedItems
+0x00469D10		MonitorScreenCollision
+
+
+		game/traps.cpp
+
+0x00488E30		CloseTrapDoor
+0x00488FA0		TrapDoorControl
+0x004890C0		OpenTrapDoor
+0x004891F0		FloorTrapDoorCollision
+0x00489450		CeilingTrapDoorCollision
+0x004896D0		TrapDoorCollision
+0x00489750		FallingBlockCollision
+0x00489820		FallingBlock
+0x00489910		FallingBlockFloor
+0x00489980		FallingBlockCeiling
+0x004899D0		FallingCeiling
+0x00489B30		DartEmitterControl
+0x00489D60		DartsControl
+0x00489F70		FlameEmitterControl
+0x0048A3B0		FlameEmitter2Control
+0x0048A570		FlameEmitter3Control
+0x0048AB80		FlameControl
+0x0048AD60	+	LaraBurn
+0x0048ADD0	+	LavaBurn
+0x0048AE60		ControlRollingBall
+0x0048B6D0		RollingBallCollision
+0x0048B7E0		DrawScaledSpike
+0x0048B9E0		TwoBlockPlatformFloor
+0x0048BA50		TwoBlockPlatformCeiling
+0x0048BAA0		OnTwoBlockPlatform
+0x0048BBB0		ControlTwoBlockPlatform
+0x0048BD90		TestBoundsCollideTeethSpikes
+0x0048BEF0		ControlScaledSpike
+0x0048C3D0		ControlRaisingBlock
+0x0048C6D0		ControlExplosion
+
+
+		game/init.cpp
+
+0x0043D2F0		InitialiseTrapDoor
+0x0043D330		InitialiseFallingBlock2
+0x0043D370		InitialiseFlameEmitter
+0x0043D4E0		InitialiseFlameEmitter2
+0x0043D5D0		InitialiseTwoBlockPlatform
+0x0043D610		InitialiseScaledSpike
+0x0043D730		InitialiseRaisingBlock
+0x0043D7F0		InitialiseSmashObject
+0x0043D8B0		InitialiseEffects
+0x0043D9D0		InitialiseSmokeEmitter
+0x0043DB60		InitialiseDoor
+0x0043E1F0		InitialisePulley
+0x0043E260	+	InitialisePickup
+0x0043E380		InitialiseClosedDoors
+0x0043E3B0		AddClosedDoor
+0x0043E3F0		SetupClosedDoorStuff
+0x0043E550		SCDS
+0x0043E6C0		InitialiseLasers
+0x0043E980		InitialiseSteamLasers
+0x0043EB50		InitialiseFloorLasers
+0x0043EC70		InitialiseFishtank
+0x0043ECB0		InitialiseRomeHammer
+0x0043ECF0		InitialiseCrowDoveSwitch
+0x0043ED30		InitialiseTightRope
+0x0043EDB0		InitialiseSearchObject
+0x0043EF20		InitialiseWreckingBall
+0x0043F000		InitialiseSecurityScreens
+0x0043F070		InitialiseExplosion
+0x0043F180		InitialiseSteelDoor
+0x0043F1D0		InitialiseMotionSensors
+0x0043F270		InitialiseGrapplingTarget
+0x0043F2B0		InitialiseSpiderGenerator
+0x0043F3D0		InitialisePropeller
+0x0043F420		InitialiseSas
+0x0043F770		InitialiseBurningRoots
+0x0043F7F0		InitialiseCookerFlame
+0x0043F8B0		InitialiseAutogun
+0x0043F900		InitialiseKeyhole
+0x0043F950		InitialiseCutsceneRope
+0x0043FA20		InitialiseXRayMachine
+0x0043FAA0		InitialisePortalDoor
+0x0043FBC0		InitialiseExplodingSwitch
+0x0043FC30		InitialiseRaisingPlinth
+0x0043FD70		InitialiseGasCloud
+0x00440070		InitialiseSwitch
+0x00440100		InitialiseAnimatingSlots
+0x004402E0		InitialiseGenSlot3
+0x00440320		InitialiseRaisingCog
+0x00440440		InitialiseArea51Laser
+0x00440510		InitialiseTeleporter
+
 // ======================================
 // SPECIFIC
 // ======================================
@@ -1032,7 +1138,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00491120		aOuterProduct
 0x00491170		aPerpVectors
 0x004912E0		aUnitMatrixByMat
-0x00491320		gte_sttr
+0x00491320	+	gte_sttr
 
 
 		specific/output.cpp

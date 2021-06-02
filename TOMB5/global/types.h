@@ -117,6 +117,7 @@ enum lara_water_status
 
 enum item_flags
 {
+	IFLAG_TRIGGERED = (1 << 5),  // 0x0020
 	IFLAG_UNK40 = (1 << 6),		 // 0x0040
 	IFLAG_CLEAR_BODY = (1 << 7), // 0x0080
 	IFLAG_INVISIBLE = (1 << 8),  // 0x0100
@@ -805,6 +806,20 @@ struct CAMERA_INFO
 	OBJECT_VECTOR* fixed; // size=16, offset=100
 	int mike_at_lara; // size=0, offset=104
 	PHD_VECTOR mike_pos; // size=12, offset=108
+
+	struct
+	{
+		float x;
+		float y;
+		float z;
+	} fpos;
+
+	struct
+	{
+		float x;
+		float y;
+		float z;
+	} ftgt;
 };
 
 struct OBJECT_INFO

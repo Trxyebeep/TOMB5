@@ -29,7 +29,7 @@
 #include "../game/cutseq.h"
 #include "../game/chef.h"
 #include "../game/people.h"
-#include "../specific/init.h"
+#include "../specific/function_stubs.h"
 #include "../game/joby.h"
 #include "../specific/output.h"
 #include "../specific/3dmath.h"
@@ -39,6 +39,8 @@
 #include "../game/laraskin.h"
 #include "../game/subsuit.h"
 #include "../specific/function_table.h"
+#include "../game/traps.h"
+#include "../game/init.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -87,16 +89,18 @@ void inject_all()
 	inject_cutseq();
 	inject_chef();
 	inject_people();
-	inject_init();
+	inject_funcStubs();
 	inject_joby();
 	inject_3dmath();
 	inject_output();
 	inject_rope();
-    inject_LoadSave();
-    inject_drawlara();
+	inject_LoadSave();
+	inject_drawlara();
 	inject_laraskin();
 	inject_subsuit();
 	inject_functbl();
+	inject_traps();
+	inject_init();
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

@@ -363,11 +363,56 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			hair->pos.x_pos = phd_mxptr[3] >> 14;
 			hair->pos.y_pos = phd_mxptr[7] >> 14;
 			hair->pos.z_pos = phd_mxptr[11] >> 14;
-			hair->vel.x = hair->pos.x_pos - pos.x;
-			hair->vel.y = hair->pos.y_pos - pos.y;
-			hair->vel.z = hair->pos.z_pos - pos.z;
+
+#ifdef fix_cut_hair_jumps
+			if ((cutseq_num == 16 && ((GLOBAL_cutseq_frame >= 409 && GLOBAL_cutseq_frame < 411) || GLOBAL_cutseq_frame == 1873 || GLOBAL_cutseq_frame == 3049)))
+			{
+				hair->vel.x = 0;
+				hair->vel.y = 0;
+				hair->vel.z = 0;
+			}
+			else
+#endif
+			{
+				hair->vel.x = hair->pos.x_pos - pos.x;
+				hair->vel.y = hair->pos.y_pos - pos.y;
+				hair->vel.z = hair->pos.z_pos - pos.z;
+			}
+
 			phd_PopMatrix();
 			hair++;
+		}
+	}
+}
+
+void InitialiseHair()
+{
+	OBJECT_INFO* obj;
+	HAIR_STRUCT* hptr;
+	long* bone;
+
+	for (int i = 0; i < 2; i++)
+	{
+		obj = &objects[HAIR];
+		bone = &bones[obj->bone_index];
+		bone += 4;
+		hptr = &hairs[i][0];
+		hptr->pos.y_rot = 0;
+		hptr->pos.x_rot = -16384;
+		first_hair[i] = 1;
+
+		for (int j = 1; j < 7; j++, bone += 4)
+		{
+			hptr->pos.x_pos = bone[1];
+			hptr->pos.y_pos = bone[2];
+			hptr->pos.z_pos = bone[3];
+			hptr->pos.x_rot = -16384;
+			hptr->pos.y_rot = 0;
+			hptr->pos.z_rot = 0;
+			hptr->vel.x = 0;
+			hptr->vel.y = 0;
+			hptr->vel.z = 0;
+			hptr++;
 		}
 	}
 }
@@ -376,4 +421,5 @@ void inject_hair()
 {
 	INJECT(0x00439A40, DrawHair);
 	INJECT(0x00438C80, HairControl);
+	INJECT(0x00438BE0, InitialiseHair);
 }
