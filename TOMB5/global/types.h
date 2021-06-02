@@ -1252,164 +1252,164 @@ struct COMBINELIST
 
 struct DOORPOS_DATA
 {
-	FLOOR_INFO* floor; // size=8, offset=0
-	FLOOR_INFO data; // size=8, offset=4
-	short block; // size=0, offset=12
+	FLOOR_INFO* floor;
+	FLOOR_INFO data;
+	short block;
 };
 
 struct DOOR_DATA
 {
-	DOORPOS_DATA d1; // size=16, offset=0
-	DOORPOS_DATA d1flip; // size=14, offset=14
-	DOORPOS_DATA d2; // size=14, offset=28
-	DOORPOS_DATA d2flip; // size=14, offset=42
-	short Opened; // size=0, offset=56
-	short* dptr1; // size=0, offset=58
-	short* dptr2; // size=0, offset=62
-	short* dptr3; // size=0, offset=66
-	short* dptr4; // size=0, offset=70
-	char dn1; // size=0, offset=74
-	char dn2; // size=0, offset=75
-	char dn3; // size=0, offset=76
-	char dn4; // size=0, offset=77
-	ITEM_INFO* item; // size=144, offset=78
+	DOORPOS_DATA d1;
+	DOORPOS_DATA d1flip;
+	DOORPOS_DATA d2;
+	DOORPOS_DATA d2flip;
+	short Opened;
+	short* dptr1;
+	short* dptr2;
+	short* dptr3;
+	short* dptr4;
+	char dn1;
+	char dn2;
+	char dn3;
+	char dn4;
+	ITEM_INFO* item;
 };
 
 struct box_info
 {
-	unsigned char left; // size=0, offset=0
-	unsigned char right; // size=0, offset=1
-	unsigned char top; // size=0, offset=2
-	unsigned char bottom; // size=0, offset=3
-	short height; // size=0, offset=4
-	short overlap_index; // size=0, offset=6
+	unsigned char left;
+	unsigned char right;
+	unsigned char top;
+	unsigned char bottom;
+	short height;
+	short overlap_index;
 };
 
 struct SPARKS
 {
-	long x; // size=0, offset=0
-	long y; // size=0, offset=4
-	long z; // size=0, offset=8
-	short Xvel; // size=0, offset=12
-	short Yvel; // size=0, offset=14
-	short Zvel; // size=0, offset=16
-	short Gravity; // size=0, offset=18
-	short RotAng; // size=0, offset=20
-	short Flags; // size=0, offset=22
-	unsigned char sSize; // size=0, offset=24
-	unsigned char dSize; // size=0, offset=25
-	unsigned char Size; // size=0, offset=26
-	unsigned char Friction; // size=0, offset=27
-	unsigned char Scalar; // size=0, offset=28
-	unsigned char Def; // size=0, offset=29
-	char RotAdd; // size=0, offset=30
-	char MaxYvel; // size=0, offset=31
-	unsigned char On; // size=0, offset=32
-	unsigned char sR; // size=0, offset=33
-	unsigned char sG; // size=0, offset=34
-	unsigned char sB; // size=0, offset=35
-	unsigned char dR; // size=0, offset=36
-	unsigned char dG; // size=0, offset=37
-	unsigned char dB; // size=0, offset=38
-	unsigned char R; // size=0, offset=39
-	unsigned char G; // size=0, offset=40
-	unsigned char B; // size=0, offset=41
-	unsigned char ColFadeSpeed; // size=0, offset=42
-	unsigned char FadeToBlack; // size=0, offset=43
-	unsigned char sLife; // size=0, offset=44
-	unsigned char Life; // size=0, offset=45
-	unsigned char TransType; // size=0, offset=46
-	unsigned char extras; // size=0, offset=47
-	char Dynamic; // size=0, offset=48
-	unsigned char FxObj; // size=0, offset=49
-	unsigned char RoomNumber; // size=0, offset=50
-	unsigned char NodeNumber; // size=0, offset=51
+	long x;
+	long y;
+	long z;
+	short Xvel;
+	short Yvel;
+	short Zvel;
+	short Gravity;
+	short RotAng;
+	short Flags;
+	unsigned char sSize;
+	unsigned char dSize;
+	unsigned char Size;
+	unsigned char Friction;
+	unsigned char Scalar;
+	unsigned char Def;
+	char RotAdd;
+	char MaxYvel;
+	unsigned char On;
+	unsigned char sR;
+	unsigned char sG;
+	unsigned char sB;
+	unsigned char dR;
+	unsigned char dG;
+	unsigned char dB;
+	unsigned char R;
+	unsigned char G;
+	unsigned char B;
+	unsigned char ColFadeSpeed;
+	unsigned char FadeToBlack;
+	unsigned char sLife;
+	unsigned char Life;
+	unsigned char TransType;
+	unsigned char extras;
+	char Dynamic;
+	unsigned char FxObj;
+	unsigned char RoomNumber;
+	unsigned char NodeNumber;
 };
 
 struct SHATTER_ITEM
 {
-	SPHERE Sphere; // size=16, offset=0
-	ITEM_LIGHT* il; // size=48, offset=16
-	short* meshp; // size=0, offset=20
-	long Bit; // size=0, offset=24
-	short YRot; // size=0, offset=28
-	short Flags; // size=0, offset=30
+	SPHERE Sphere;
+	ITEM_LIGHT* il;
+	short* meshp;
+	long Bit;
+	short YRot;
+	short Flags;
 };
 
 struct CUTSEQ_ROUTINES
 {
-	void(*init_func)(); // size=0, offset=0
-	void(*control_func)(); // size=0, offset=4
-	void(*end_func)(); // size=0, offset=8
+	void(*init_func)();
+	void(*control_func)();
+	void(*end_func)();
 };
 
 struct ACTORME
 {
-	int offset; // size=0, offset=0
-	short objslot; // size=0, offset=4
-	short nodes; // size=0, offset=6
+	int offset;
+	short objslot;
+	short nodes;
 };
 
 struct NEW_CUTSCENE
 {
-	short numactors; // size=0, offset=0
-	short numframes; // size=0, offset=2
-	int orgx; // size=0, offset=4
-	int orgy; // size=0, offset=8
-	int orgz; // size=0, offset=12
-	int audio_track; // size=0, offset=16
-	int camera_offset; // size=0, offset=20
-	ACTORME actor_data[10]; // size=80, offset=24
+	short numactors;
+	short numframes;
+	int orgx;
+	int orgy;
+	int orgz;
+	int audio_track;
+	int camera_offset;
+	ACTORME actor_data[10];
 };
 
 struct INVOBJ
 {
-	short object_number; // size=0, offset=0
-	short yoff; // size=0, offset=2
-	short scale1; // size=0, offset=4
-	short yrot; // size=0, offset=6
-	short xrot; // size=0, offset=8
-	short zrot; // size=0, offset=10
-	short flags; // size=0, offset=12
-	short objname; // size=0, offset=14
-	unsigned long meshbits; // size=0, offset=16
+	short object_number;
+	short yoff;
+	short scale1;
+	short yrot;
+	short xrot;
+	short zrot;
+	short flags;
+	short objname;
+	unsigned long meshbits;
 };
 
 struct BITE_INFO
 {
-	long x; // size=0, offset=0
-	long y; // size=0, offset=4
-	long z; // size=0, offset=8
-	long mesh_num; // size=0, offset=12
+	long x;
+	long y;
+	long z;
+	long mesh_num;
 };
 
 struct TWOGUN_INFO
 {
-	PHD_3DPOS pos; // size=20, offset=0
-	short life; // size=0, offset=20
-	short coil; // size=0, offset=22
-	short spin; // size=0, offset=24
-	short spinadd; // size=0, offset=26
-	short length; // size=0, offset=28
-	short dlength; // size=0, offset=30
-	short size; // size=0, offset=32
-	char r; // size=0, offset=34
-	char g; // size=0, offset=35
-	char b; // size=0, offset=36
-	char fadein; // size=0, offset=37
+	PHD_3DPOS pos;
+	short life;
+	short coil;
+	short spin;
+	short spinadd;
+	short length;
+	short dlength;
+	short size;
+	char r;
+	char g;
+	char b;
+	char fadein;
 };
 
 struct AMMOLIST
 {
-	short invitem; // size=0, offset=0
-	short amount; // size=0, offset=2
-	unsigned short yrot; // size=0, offset=4
+	short invitem;
+	short amount;
+	unsigned short yrot;
 };
 
 struct MENUTHANG
 {
-	int type; // size=0, offset=0
-	char* text; // size=0, offset=4
+	int type;
+	char* text;
 };
 
 struct VECTOR
@@ -1422,55 +1422,55 @@ struct VECTOR
 
 struct AI_info
 {
-	short zone_number; // size=0, offset=0
-	short enemy_zone; // size=0, offset=2
-	long distance; // size=0, offset=4
-	long ahead; // size=0, offset=8
-	long bite; // size=0, offset=12
-	short angle; // size=0, offset=16
-	short x_angle; // size=0, offset=18
-	short enemy_facing; // size=0, offset=20
+	short zone_number;
+	short enemy_zone;
+	long distance;
+	long ahead;
+	long bite;
+	short angle;
+	short x_angle;
+	short enemy_facing;
 };
 
 struct RTDECODE
 {
-	unsigned long length; // size=0, offset=0
-	unsigned long off; // size=0, offset=4
-	unsigned short counter; // size=0, offset=8
-	unsigned short data; // size=0, offset=10
-	unsigned char decodetype; // size=0, offset=12
-	unsigned char packmethod; // size=0, offset=13
-	unsigned short padfuck; // size=0, offset=14
+	unsigned long length;
+	unsigned long off;
+	unsigned short counter;
+	unsigned short data;
+	unsigned char decodetype;
+	unsigned char packmethod;
+	unsigned short padfuck;
 };
 
 struct PACKNODE
 {
-	short xrot_run; // size=0, offset=0
-	short yrot_run; // size=0, offset=2
-	short zrot_run; // size=0, offset=4
-	short xkey; // size=0, offset=6
-	short ykey; // size=0, offset=8
-	short zkey; // size=0, offset=10
-	RTDECODE decode_x; // size=16, offset=12
-	RTDECODE decode_y; // size=16, offset=28
-	RTDECODE decode_z; // size=16, offset=44
-	unsigned long xlength; // size=0, offset=60
-	unsigned long ylength; // size=0, offset=64
-	unsigned long zlength; // size=0, offset=68
-	char* xpacked; // size=0, offset=72
-	char* ypacked; // size=0, offset=76
-	char* zpacked; // size=0, offset=80
+	short xrot_run;
+	short yrot_run;
+	short zrot_run;
+	short xkey;
+	short ykey;
+	short zkey;
+	RTDECODE decode_x;
+	RTDECODE decode_y;
+	RTDECODE decode_z;
+	unsigned long xlength;
+	unsigned long ylength;
+	unsigned long zlength;
+	char* xpacked;
+	char* ypacked;
+	char* zpacked;
 };
 
 struct NODELOADHEADER
 {
-	short xkey; // size=0, offset=0
-	short ykey; // size=0, offset=2
-	short zkey; // size=0, offset=4
-	short packmethod; // size=0, offset=6
-	short xlength; // size=0, offset=8
-	short ylength; // size=0, offset=10
-	short zlength; // size=0, offset=12
+	short xkey;
+	short ykey;
+	short zkey;
+	short packmethod;
+	short xlength;
+	short ylength;
+	short zlength;
 };
 
 struct static_info
@@ -1729,5 +1729,205 @@ struct WINAPP
 	volatile bool	fmv;
 	long			Desktopbpp;
 	long			AutoTarget;
+};
+
+struct FIRE_LIST
+{
+	long x;
+	long y;
+	long z;
+	char on;
+	char size;
+	short room_number;
+};
+
+struct FIRE_SPARKS
+{
+	short x;
+	short y;
+	short z;
+	short Xvel;
+	short Yvel;
+	short Zvel;
+	short Gravity;
+	short RotAng;
+	short Flags;
+	unsigned char sSize;
+	unsigned char dSize;
+	unsigned char Size;
+	unsigned char Friction;
+	unsigned char Scalar;
+	unsigned char Def;
+	char RotAdd;
+	char MaxYvel;
+	unsigned char On;
+	unsigned char sR;
+	unsigned char sG;
+	unsigned char sB;
+	unsigned char dR;
+	unsigned char dG;
+	unsigned char dB;
+	unsigned char R;
+	unsigned char G;
+	unsigned char B;
+	unsigned char ColFadeSpeed;
+	unsigned char FadeToBlack;
+	unsigned char sLife;
+	unsigned char Life;
+};
+
+struct DEBRIS_STRUCT
+{
+	void* TextInfo;
+	long x;
+	long y; 
+	long z;
+	short XYZOffsets1[3];
+	short Dir;
+	short XYZOffsets2[3];
+	short Speed;
+	short XYZOffsets3[3];
+	short Yvel;
+	short Gravity;
+	short RoomNumber;
+	unsigned char On;
+	unsigned char XRot;
+	unsigned char YRot;
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+	unsigned char Pad[2];
+	long color1;
+	long color2;
+	long color3;
+	long ambient;
+	long flags;
+};
+
+struct GUNSHELL_STRUCT
+{
+	PHD_3DPOS pos;
+	short fallspeed;
+	short room_number;
+	short speed;
+	short counter;
+	short DirXrot;
+	short object_number;
+};
+
+struct BUBBLE_STRUCT 
+{
+	PHD_VECTOR pos;
+	short room_number;
+	short speed;
+	short size;
+	short dsize;
+	unsigned char shade;
+	unsigned char vel;
+	unsigned char y_rot;
+	char Flags;
+	short Xvel;
+	short Yvel;
+	short Zvel;
+	short Pad;
+};
+
+struct GUNFLASH_STRUCT
+{
+	MATRIX3D matrix;
+	short on;
+};
+
+struct DRIP_STRUCT
+{
+	long x;
+	long y;
+	long z;
+	int lnode;
+	int ox;
+	int oy;
+	int oz;
+	unsigned char On;
+	unsigned char R;
+	unsigned char G;
+	unsigned char B;
+	short Yvel;
+	unsigned char Gravity;
+	unsigned char Life;
+	short RoomNumber;
+	unsigned char Outside;
+	unsigned char Pad;
+};
+
+struct SHOCKWAVE_STRUCT
+{
+	long x;
+	long y;
+	long z;
+	short InnerRad;
+	short OuterRad;
+	short XRot;
+	short Flags;
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+	unsigned char life;
+	short Speed;
+	short Temp;
+};
+
+struct SPLASH_STRUCT
+{
+	long x;
+	long y;
+	long z;
+	short InnerRad;
+	short InnerSize;
+	short InnerRadVel;
+	short InnerYVel;
+	short InnerY;
+	short MiddleRad;
+	short MiddleSize;
+	short MiddleRadVel;
+	short MiddleYVel;
+	short MiddleY;
+	short OuterRad;
+	short OuterSize;
+	short OuterRadVel;
+	char flags;
+	unsigned char life;
+
+};
+
+struct SPLASH_SETUP
+{
+	long x;
+	long y;
+	long z;
+	short InnerRad;
+	short InnerSize;
+	short InnerRadVel;
+	short InnerYVel;
+	short pad1;
+	short MiddleRad;
+	short MiddleSize;
+	short MiddleRadVel;
+	short MiddleYVel;
+	short pad2;
+	short OuterRad;
+	short OuterSize;
+	short OuterRadVel;
+	short pad3;
+};
+
+struct RIPPLE_STRUCT
+{
+	long x;
+	long y;
+	long z;
+	char flags;
+	unsigned char life;
+	unsigned char size;
+	unsigned char init;
 };
 #pragma pack(pop)

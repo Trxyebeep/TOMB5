@@ -708,7 +708,7 @@ void ProcessClosedDoors()
 
 	for (int lp = 0; lp < 32; lp++)
 	{		
-		item = ClosedDoors[lp];
+		item = (ITEM_INFO*)(ClosedDoors[lp]);
 
 		if (!item)
 			return;

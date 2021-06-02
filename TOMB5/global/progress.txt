@@ -1041,21 +1041,21 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/init.cpp
 
-0x0043D2F0		InitialiseTrapDoor
-0x0043D330		InitialiseFallingBlock2
-0x0043D370		InitialiseFlameEmitter
-0x0043D4E0		InitialiseFlameEmitter2
-0x0043D5D0		InitialiseTwoBlockPlatform
-0x0043D610		InitialiseScaledSpike
-0x0043D730		InitialiseRaisingBlock
-0x0043D7F0		InitialiseSmashObject
-0x0043D8B0		InitialiseEffects
-0x0043D9D0		InitialiseSmokeEmitter
-0x0043DB60		InitialiseDoor
-0x0043E1F0		InitialisePulley
+0x0043D2F0	+	InitialiseTrapDoor
+0x0043D330	+	InitialiseFallingBlock2
+0x0043D370	+	InitialiseFlameEmitter
+0x0043D4E0	+	InitialiseFlameEmitter2
+0x0043D5D0	+	InitialiseTwoBlockPlatform
+0x0043D610	+	InitialiseScaledSpike
+0x0043D730	+	InitialiseRaisingBlock
+0x0043D7F0	+	InitialiseSmashObject
+0x0043D8B0	+	InitialiseEffects
+0x0043D9D0	+	InitialiseSmokeEmitter
+0x0043DB60	+	InitialiseDoor
+0x0043E1F0	+	InitialisePulley
 0x0043E260	+	InitialisePickup
-0x0043E380		InitialiseClosedDoors
-0x0043E3B0		AddClosedDoor
+0x0043E380	+	InitialiseClosedDoors
+0x0043E3B0	+	AddClosedDoor
 0x0043E3F0		SetupClosedDoorStuff
 0x0043E550		SCDS
 0x0043E6C0		InitialiseLasers

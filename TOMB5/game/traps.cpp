@@ -4,6 +4,10 @@
 #include "objects.h"
 #include "control.h"
 
+short SPxzoffs[8] = {0, 0, 0x200, 0, 0, 0, -0x200, 0};
+short SPyoffs[8] = {-0x400, 0, -0x200, 0, 0, 0, -0x200, 0};
+short SPDETyoffs[8] = {0x400, 0x200, 0x200, 0x200, 0, 0x200, 0x200, 0x200};
+
 void LaraBurn()
 {
 	short fire;
