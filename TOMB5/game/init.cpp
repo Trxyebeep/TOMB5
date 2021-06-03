@@ -488,6 +488,76 @@ void AddClosedDoor(ITEM_INFO* item)
 	}
 }
 
+void SetupClosedDoorStuff(DOOR_DATA* door, ITEM_INFO* item, short room2, int dx, int dy)
+{
+	room_info* r;
+	long ox, oz;
+
+	dx <<= 10;
+	dy <<= 10;
+	oz = item->pos.z_pos + dx;
+	ox = item->pos.x_pos + dy;
+	r = &room[item->room_number];
+	SCDS(r, &door->dptr1, &door->dn1, dx, dy, ox, oz);
+
+	if (r->flipped_room != -1)
+		SCDS(&room[r->flipped_room], &door->dptr2, &door->dn2, dx, dy, ox, oz);
+
+	r = &room[room2];
+	SCDS(r, &door->dptr3, &door->dn3, dx, dy, ox, oz);
+
+	if (r->flipped_room != -1)
+		SCDS(&room[r->flipped_room], &door->dptr4, &door->dn4, dx, dy, ox, oz);
+}
+
+void SCDS(room_info* r, short** dptr, char* dn, long dx, long dy, long ox, long oz)
+{
+	short* d;
+	long minx, maxx, minz, maxz, wx, wz;
+
+	d = r->door;
+
+	if (d)
+	{
+		for (int i = *d++; i > 0; i--, d += 15)
+		{
+			d++;
+			minx = r->x + (dy >> 1) + ((d[3] + 128) & 0xFFFFFF00);
+			maxx = r->x + (dy >> 1) + ((d[9] + 128) & 0xFFFFFF00);
+
+			if (minx > maxx)
+			{
+				wx = minx;
+				minx = maxx;
+				maxx = wx;
+			}
+
+			minz = r->z + (dx >> 1) + ((d[5] + 128) & 0xFFFFFF00);
+			maxz = r->z + (dx >> 1) + ((d[11] + 128) & 0xFFFFFF00);
+
+			if (minz > maxz)
+			{
+				wz = minz;
+				minz = maxz;
+				maxz = wz;
+			}
+
+			if (ox >= minx && ox <= maxx && oz >= minz && oz <= maxz)
+			{
+				*dptr = d;
+
+				if (*d)
+					*dn = (*d & 128) | 1;
+				else if (d[1])
+					*dn = (d[1] & 128) | 2;
+				else
+					*dn = (d[2] & 128) | 4;
+			}
+		}
+	}
+
+}
+
 void inject_init()
 {
 	INJECT(0x0043D2F0, InitialiseTrapDoor);
@@ -505,4 +575,6 @@ void inject_init()
 	INJECT(0x0043E260, InitialisePickup);
 	INJECT(0x0043E380, InitialiseClosedDoors);
 	INJECT(0x0043E3B0, AddClosedDoor);
+	INJECT(0x0043E3F0, SetupClosedDoorStuff);
+	INJECT(0x0043E550, SCDS);
 }
