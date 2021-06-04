@@ -18,5 +18,7 @@ void InitialisePulley(short item_number);
 void InitialisePickup(short item_number);
 void InitialiseClosedDoors();
 void AddClosedDoor(ITEM_INFO* item);
-void SetupClosedDoorStuff(DOOR_DATA* door, ITEM_INFO* item, short room2, int dx, int dy);
+//void SetupClosedDoorStuff(DOOR_DATA* door, ITEM_INFO* item, short room2, int dx, int dy);
+#define SetupClosedDoorStuff	( (void(__cdecl*)(DOOR_DATA*, ITEM_INFO*, short, int, int)) 0x0043E3F0 )
 void SCDS(room_info* r, short** dptr, char* dn, long dx, long dy, long ox, long oz);
+void InitialiseLasers(short item_number);

@@ -1056,9 +1056,9 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043E260	+	InitialisePickup
 0x0043E380	+	InitialiseClosedDoors
 0x0043E3B0	+	AddClosedDoor
-0x0043E3F0		SetupClosedDoorStuff
-0x0043E550		SCDS
-0x0043E6C0		InitialiseLasers
+0x0043E3F0	x	SetupClosedDoorStuff
+0x0043E550	+	SCDS
+0x0043E6C0	+	InitialiseLasers
 0x0043E980		InitialiseSteamLasers
 0x0043EB50		InitialiseFloorLasers
 0x0043EC70		InitialiseFishtank

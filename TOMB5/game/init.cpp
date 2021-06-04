@@ -488,7 +488,7 @@ void AddClosedDoor(ITEM_INFO* item)
 	}
 }
 
-void SetupClosedDoorStuff(DOOR_DATA* door, ITEM_INFO* item, short room2, int dx, int dy)
+void _SetupClosedDoorStuff(DOOR_DATA* door, ITEM_INFO* item, short room2, int dx, int dy)//crashing!
 {
 	room_info* r;
 	long ox, oz;
@@ -555,7 +555,63 @@ void SCDS(room_info* r, short** dptr, char* dn, long dx, long dy, long ox, long 
 			}
 		}
 	}
+}
 
+void InitialiseLasers(short item_number)
+{
+	ITEM_INFO* item;
+	FLOOR_INFO* floor;
+	LASER_STRUCT* ls;
+	long Xadd, Yadd, Zadd, width, height, Lh, Hadd;
+	short room_num;
+
+	item = &items[item_number];
+	item->data = (LASER_STRUCT*)game_malloc(sizeof(LASER_STRUCT));
+	width = (item->trigger_flags & 255) << 10;
+
+	if (!(item->trigger_flags & 1))
+	{
+		Xadd = (width / 2) - 512;
+		item->pos.z_pos += (Xadd * phd_cos(item->pos.y_rot + 32768)) >> 14;
+		item->pos.x_pos += (Xadd * phd_sin(item->pos.y_rot + 32768)) >> 14;
+	}
+
+	if ((item->trigger_flags & 255) == 1)
+		item->item_flags[1] = 1;
+
+	room_num = item->room_number;
+	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_num);
+	item->pos.y_pos = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	item->item_flags[0] = short(item->pos.y_pos - GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos));
+	height = item->item_flags[0];
+	item->trigger_flags >>= 8;
+	Yadd = height / 8;
+	Zadd = abs((width * phd_cos(item->pos.y_rot + 32768)) >> 15);
+	Xadd = abs((width * phd_sin(item->pos.y_rot + 32768)) >> 15);
+	ls = (LASER_STRUCT*)item->data;
+	Lh = Yadd >> 1;
+	height = -Yadd;
+
+	for (int i = 0; i < 3; i++)
+	{
+		Hadd = (Lh >> 1) * (i - 1);
+		ls->v1[i].vx = short(Xadd);
+		ls->v1[i].vy = short(height - Lh + Hadd);
+		ls->v1[i].vz = short(Zadd);
+		ls->v2[i].vx = short(-Xadd);
+		ls->v2[i].vy = short(height - Lh + Hadd);
+		ls->v2[i].vz = short(-Zadd);
+		ls->v3[i].vx = short(Xadd);
+		ls->v3[i].vy = short(height + Lh + Hadd);
+		ls->v3[i].vz = short(Zadd);
+		ls->v4[i].vx = short(-Xadd);
+		ls->v4[i].vy = short(height + Lh + Hadd);
+		ls->v4[i].vz = short(-Zadd);
+		height -= Yadd * 3;
+	}
+
+	for (int i = 0; i < 18; i++)
+		ls->Rand[i] = GetRandomControl() << 1;
 }
 
 void inject_init()
@@ -575,6 +631,7 @@ void inject_init()
 	INJECT(0x0043E260, InitialisePickup);
 	INJECT(0x0043E380, InitialiseClosedDoors);
 	INJECT(0x0043E3B0, AddClosedDoor);
-	INJECT(0x0043E3F0, SetupClosedDoorStuff);
+//	INJECT(0x0043E3F0, SetupClosedDoorStuff);
 	INJECT(0x0043E550, SCDS);
+	INJECT(0x0043E6C0, InitialiseLasers);
 }

@@ -1930,4 +1930,32 @@ struct RIPPLE_STRUCT
 	unsigned char size;
 	unsigned char init;
 };
+
+struct LASER_STRUCT
+{
+	SVECTOR v1[3];
+	SVECTOR v2[3];
+	SVECTOR v3[3];
+	SVECTOR v4[3];
+	short Rand[18];
+};
+
+struct STEAMLASER_STRUCT
+{
+	SVECTOR v1[2];
+	SVECTOR v2[2];
+	SVECTOR v3[2];
+	SVECTOR v4[2];
+	short Rand[27];
+};
+
+struct FLOORLASER_STRUCT
+{
+	SVECTOR v1;
+	SVECTOR v2;
+	SVECTOR v3;
+	SVECTOR v4;
+	short Rand[121];
+	short Pulse[121];
+};
 #pragma pack(pop)
