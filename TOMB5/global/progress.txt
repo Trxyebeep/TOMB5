@@ -22,8 +22,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00415DA0		GetWaterHeight
 0x00415FB0	+	GetHeight
 0x004165E0		RefreshCamera
-0x00416760		TestTriggers
-0x004167B0		_TestTriggers
+0x00416760	+	TestTriggers
+0x004167B0	+	_TestTriggers
 0x004175B0		TriggerActive
 0x00417640	+	GetCeiling
 0x00417C00	+	GetDoor
@@ -1056,12 +1056,12 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043E260	+	InitialisePickup
 0x0043E380	+	InitialiseClosedDoors
 0x0043E3B0	+	AddClosedDoor
-0x0043E3F0	x	SetupClosedDoorStuff
+0x0043E3F0	+	SetupClosedDoorStuff
 0x0043E550	+	SCDS
 0x0043E6C0	+	InitialiseLasers
-0x0043E980		InitialiseSteamLasers
-0x0043EB50		InitialiseFloorLasers
-0x0043EC70		InitialiseFishtank
+0x0043E980	+	InitialiseSteamLasers
+0x0043EB50	+	InitialiseFloorLasers
+0x0043EC70	+	InitialiseFishtank
 0x0043ECB0		InitialiseRomeHammer
 0x0043ECF0		InitialiseCrowDoveSwitch
 0x0043ED30		InitialiseTightRope

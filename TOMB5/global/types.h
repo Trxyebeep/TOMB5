@@ -274,6 +274,16 @@ enum cloth_type
 	CLOTH_WET = 2
 };
 
+enum trigger_types 
+{
+	TRIGGER, PAD, SWITCH, KEY, PICKUP, HEAVY, ANTIPAD, COMBAT, DUMMY, ANTITRIGGER, HEAVYSWITCH, HEAVYANTITRIGGER, MONKEY, SKELETON_T, TIGHTROPE_T, CRAWLDUCK_T, CLIMB_T
+};
+
+enum trigobj_types 
+{
+	TO_OBJECT, TO_CAMERA, TO_SINK, TO_FLIPMAP, TO_FLIPON, TO_FLIPOFF, TO_TARGET, TO_FINISH, TO_CD, TO_FLIPEFFECT, TO_SECRET, TO_BODYBAG, TO_FLYBY, TO_CUTSCENE
+};
+
 struct OBJECT_VECTOR
 {
 	long x; // size=0, offset=0
@@ -1957,5 +1967,24 @@ struct FLOORLASER_STRUCT
 	SVECTOR v4;
 	short Rand[121];
 	short Pulse[121];
+};
+
+struct SPOTCAM
+{
+	long x;
+	long y;
+	long z;
+	long tx;
+	long ty;
+	long tz;
+	unsigned char sequence;
+	unsigned char camera;
+	short fov;
+	short roll;
+	short timer;
+	short speed;
+	short flags;
+	short room_number;
+	short pad;
 };
 #pragma pack(pop)

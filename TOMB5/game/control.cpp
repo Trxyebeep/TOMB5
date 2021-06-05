@@ -29,6 +29,8 @@
 #include "joby.h"
 #include "../specific/LoadSave.h"
 #include "subsuit.h"
+#include "traps.h"
+#include "lot.h"
 
 
 long ControlPhase(long _nframes, int demo_mode)
@@ -2012,6 +2014,495 @@ int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MES
 	return ClosestItem;
 }
 
+void TestTriggers(short* data, int heavy, int HeavyFlags)
+{
+	globoncuttrig = 0;
+	_TestTriggers(data, heavy, HeavyFlags);
+
+	if (!globoncuttrig)
+	{
+		if (richcutfrigflag)
+			richcutfrigflag = 0;
+	}
+}
+
+void _TestTriggers(short* data, int heavy, int HeavyFlags)
+{
+	ITEM_INFO* item;
+	ITEM_INFO* camera_item;
+	int switch_off, flip, flip_available, neweffect, key, quad;
+	short camera_flags, camera_timer, type, trigger, value, flags, state, CamSeq;
+	char timer, SwitchOnOnly;
+	
+	switch_off = 0;
+	flip = -1;
+	flip_available = 0;
+	neweffect = -1;
+	key = 0;
+	HeavyTriggered = 0;
+
+	if (!heavy)
+	{
+		lara.CanMonkeySwing = 0;
+		lara.climb_status = 0;
+	}
+
+	if (!data)
+		return;
+
+	if ((*data & 0x1F) == LAVA_TYPE)
+	{
+		if (!heavy && (lara_item->pos.y_pos == lara_item->floor || lara.water_status != LW_ABOVE_WATER))
+			LavaBurn(lara_item);
+
+		if (*data & 0x8000)
+			return;
+
+		data++;
+	}
+
+	if ((*data & 0x1F) == CLIMB_TYPE)
+	{
+		if (!heavy)
+		{
+			quad = (unsigned short)(lara_item->pos.y_rot + 8192) >> 14;
+
+			if ((1 << (quad + 8)) & *data)
+				lara.climb_status = 1;
+		}
+
+		if (*data & 0x8000)
+			return;
+
+		data++;
+	}
+
+	if ((*data & 0x1F) == MONKEY_TYPE)
+	{
+		if (!heavy)
+			lara.CanMonkeySwing = 1;
+
+		if (*data & 0x8000)
+			return;
+
+		data++;
+	}
+
+	if ((*data & 0x1F) == TRIGTRIGGER_TYPE)
+	{
+		if (!(*data & 0x20) || *data & 0x8000)
+			return;
+
+		data++;
+	}
+
+	type = (*data++ >> 8) & 0x3F;
+	flags = *data++;
+	timer = flags & 0xff;
+
+	if (camera.type != HEAVY_CAMERA)
+		RefreshCamera(type, data);
+
+	SwitchOnOnly = 0;
+
+	if (heavy)
+	{
+		switch (type)
+		{
+		case HEAVY:
+		case HEAVYANTITRIGGER:
+			break;
+
+		case HEAVYSWITCH:
+			if (!HeavyFlags)
+				return;
+
+			if (HeavyFlags >= 0)
+			{
+				flags &= 0x3E00;
+
+				if (flags != HeavyFlags)
+					return;
+			}
+			else
+			{
+				flags |= 0x3E00;
+				flags += HeavyFlags;
+			}
+
+			break;
+
+		default:
+			return;
+		}
+	}
+	else
+	{
+		switch (type)
+		{
+		case PAD:
+		case ANTIPAD:
+
+			if (lara_item->pos.y_pos != lara_item->floor)
+				return;
+
+			break;
+
+		case SWITCH:
+			value = *data++ & 0x3FF;
+
+			if (flags & 0x100)
+				items[value].item_flags[0] = 1;
+
+			if (!SwitchTrigger(value, timer))
+				return;
+
+			if (items[value].object_number >= SWITCH_TYPE1 && items[value].object_number <= SWITCH_TYPE6 && items[value].trigger_flags == 5)
+				SwitchOnOnly = 1;
+
+			switch_off = (items[value].current_anim_state == 1);
+			break;
+
+		case KEY:
+			value = *(data++) & 0x3FF;
+			key = KeyTrigger(value);
+
+			if (key != -1)
+				break;
+
+			return;
+
+		case PICKUP:
+			value = *(data++) & 0x3FF;
+
+			if (PickupTrigger(value))
+				break;
+
+			return;
+
+		case HEAVY:
+		case DUMMY:
+		case HEAVYSWITCH:
+		case HEAVYANTITRIGGER:
+			return;
+
+		case COMBAT:
+
+			if (lara.gun_status == LG_READY)
+				break;
+
+			return;
+
+		case MONKEY:
+			state = lara_item->current_anim_state;
+
+			if (state >= AS_HANG2 && (state <= AS_MONKEY180 || state == AS_HANGTURNL || state == AS_HANGTURNR))
+				break;
+
+			return;
+
+		case SKELETON_T:
+			lara.skelebob = 2;
+			break;
+
+		case TIGHTROPE_T:
+			state = lara_item->current_anim_state;
+
+			if (state >= AS_TROPEPOSE && state <= AS_TROPEUNDOFALL && state != AS_CROWDOVE)
+				break;
+
+			return;
+
+		case CRAWLDUCK_T:
+			state = lara_item->current_anim_state;
+
+			if (state == AS_ALL4S || state == AS_CRAWL || state == AS_ALL4TURNL || state == AS_ALL4TURNR ||
+				state == AS_CRAWLBACK || state == AS_DUCK || state == AS_DUCKROLL || state == AS_DUCKROTL || state == AS_DUCKROTR)
+				break;
+
+			return;
+
+		case CLIMB_T:
+			state = lara_item->current_anim_state;
+
+			if (state == AS_HANG || state == AS_CLIMBSTNC || state == AS_CLIMBING || state == AS_CLIMBLEFT ||
+				state == AS_CLIMBEND || state == AS_CLIMBRIGHT || state == AS_CLIMBDOWN || state == AS_HANG2)
+				break;
+
+			return;
+		}
+	}
+
+	camera_item = 0;
+
+	do
+	{
+		trigger = *data++;
+		value = trigger & 0x3FF;
+
+		switch ((trigger & 0x3FFF) >> 10)
+		{
+		case TO_OBJECT:
+			item = &items[value];
+
+			if (key >= 2 || ((type == ANTIPAD || type == ANTITRIGGER || type == HEAVYANTITRIGGER) && item->flags & IFLAG_CLEAR_BODY) ||
+				(type == SWITCH && item->flags & IFLAG_UNK40) ||
+				(type != SWITCH && type != ANTIPAD && type != ANTITRIGGER && type != HEAVYANTITRIGGER && item->flags & IFLAG_INVISIBLE) ||
+				((type != ANTIPAD && type != ANTITRIGGER && type != HEAVYANTITRIGGER) && (item->object_number == DART_EMITTER && item->active)))
+				break;
+
+			item->timer = timer;
+
+			if (timer != 1)
+				item->timer *= 30;
+
+			if (type == SWITCH || type == HEAVYSWITCH)
+			{
+				if (HeavyFlags >= 0)
+				{
+					if (SwitchOnOnly)
+						item->flags |= flags & IFLAG_ACTIVATION_MASK;
+					else
+						item->flags ^= flags & IFLAG_ACTIVATION_MASK;
+
+					if (flags & 0x100)
+						item->flags |= IFLAG_UNK40;
+				}
+				else if (((item->flags ^ (flags & 0x3E00)) & IFLAG_ACTIVATION_MASK) == IFLAG_ACTIVATION_MASK)
+				{
+					item->flags ^= (flags & 0x3E00);
+
+					if (flags & 0x100)
+						item->flags |= IFLAG_UNK40;
+				}
+			}
+			else if (type == ANTIPAD || type == ANTITRIGGER || type == HEAVYANTITRIGGER)
+			{
+				if (item->object_number == EARTHQUAKE)
+				{
+					item->item_flags[0] = 0;
+					item->item_flags[1] = 100;
+				}
+
+				item->flags &= 0x81FF;
+
+				if (flags & 0x100)
+					item->flags |= IFLAG_CLEAR_BODY;
+
+				if (item->active && objects[item->object_number].intelligent)
+				{
+					item->hit_points = -16384;
+					DisableBaddieAI(value);
+					KillItem(value);
+				}
+
+			}
+			else if (flags & 0x3E00)
+				item->flags |= flags & IFLAG_ACTIVATION_MASK;
+
+			if ((item->flags & IFLAG_ACTIVATION_MASK) != IFLAG_ACTIVATION_MASK)
+				break;
+
+			item->flags |= IFLAG_TRIGGERED;
+
+			if (flags & 0x100)
+				item->flags |= IFLAG_INVISIBLE;
+
+			if (!item->active)
+			{
+				if (objects[item->object_number].intelligent)
+				{
+					if (item->status == ITEM_DEACTIVATED)
+					{
+						item->touch_bits = 0;
+						item->status = ITEM_ACTIVE;
+						AddActiveItem(value);
+						EnableBaddieAI(value, 1);
+					}
+					else if (item->status == ITEM_INVISIBLE)
+					{
+						item->touch_bits = 0;
+
+						if (EnableBaddieAI(value, 0))
+							item->status = ITEM_ACTIVE;
+						else
+							item->status = ITEM_INVISIBLE;
+
+						AddActiveItem(value);
+
+					}
+				}
+				else
+				{
+					item->touch_bits = 0;
+					AddActiveItem(value);
+					item->status = ITEM_ACTIVE;
+					HeavyTriggered = heavy;
+				}
+			}
+
+			break;
+
+		case TO_CAMERA:
+			trigger = *data++;
+			camera_flags = trigger;
+			camera_timer = trigger & 0xFF;
+
+			if (key == 1 || camera.fixed[value].flags & 0x100)
+				break;
+
+			camera.number = value;
+
+			if (type == COMBAT || ((camera.type == LOOK_CAMERA || camera.type == COMBAT_CAMERA) && !(camera.fixed[camera.number].flags & 3)) ||
+				(type == SWITCH && timer && switch_off))
+				break;
+
+			if (camera.number != camera.last || type == SWITCH)
+			{
+				camera.timer = camera_timer * 30;
+
+				if (camera_flags & 0x100)
+					camera.fixed[camera.number].flags |= 0x100;
+
+				camera.speed = ((camera_flags & 0x3E00) >> 6) + 1;
+
+				if (heavy)
+					camera.type = HEAVY_CAMERA;
+				else
+					camera.type = FIXED_CAMERA;
+			}
+
+			break;
+
+		case TO_SINK:
+			lara.current_active = value + 1;
+			break;
+
+		case TO_FLIPMAP:
+			flip_available = 1;
+
+			if (flipmap[value] & 0x100)
+				break;
+
+			if (type == SWITCH)
+				flipmap[value] ^= flags & 0x3E00;
+			else if (flags & 0x3E00)
+				flipmap[value] |= flags & 0x3E00;
+
+			if ((flipmap[value] & 0x3E00) == 0x3E00)
+			{
+				if (flags & 0x100)
+					flipmap[value] |= 0x100;
+
+				if (!flip_stats[value])
+					flip = value;
+			}
+			else if (flip_stats[value])
+				flip = value;
+
+			break;
+
+		case TO_FLIPON:
+			flip_available = 1;
+
+			flipmap[value] |= 0x3E00;
+
+			if (!flip_stats[value])
+				flip = value;
+
+			break;
+
+		case TO_FLIPOFF:
+			flip_available = 1;
+
+			flipmap[value] &= 0xC1FF;
+
+			if (flip_stats[value])
+				flip = value;
+
+			break;
+
+		case TO_TARGET:
+			camera_item = &items[value];
+			break;
+
+		case TO_FINISH:
+			gfLevelComplete = gfCurrentLevel + 1;
+			gfRequiredStartPos = 0;
+			break;
+
+		case TO_CD:
+			TriggerCDTrack(value, flags, type);
+			break;
+
+		case TO_FLIPEFFECT:
+			TriggerTimer = timer;
+			neweffect = value;
+			break;
+
+		case TO_BODYBAG:
+			ResetGuards();
+			break;
+
+		case TO_FLYBY:
+			trigger = *data++;
+			camera_flags = trigger;
+			camera_timer = trigger & 0xFF;
+
+			if (key == 1)
+				break;
+
+			if (type == ANTIPAD || type == ANTITRIGGER || type == HEAVYANTITRIGGER)
+			{
+				bUseSpotCam = 0;
+				break;
+			}
+
+			CamSeq = 0;
+
+			for (int i = 0; i < SpotRemap[value]; i++)
+				CamSeq += CameraCnt[i];
+
+			if (SpotCam[CamSeq].flags & 32768)
+				break;
+
+			if (camera_flags & 0x100)
+				SpotCam[CamSeq].flags |= 32768;
+
+			if (bUseSpotCam)
+				break;
+
+			bUseSpotCam = 1;
+
+			if (LastSequence != value)
+				bTrackCamInit = 0;
+
+			InitialiseSpotCam(value);
+			break;
+
+		case TO_CUTSCENE:
+			globoncuttrig = 1;
+			NeatAndTidyTriggerCutscene(value, timer);
+			break;
+
+		default: 
+			break;
+		}
+	} while (!(trigger & 0x8000));
+
+	if (camera_item && (camera.type == FIXED_CAMERA || camera.type == HEAVY_CAMERA))
+		camera.item = camera_item;
+
+	if (flip != -1)
+		FlipMap(flip);
+
+	if (neweffect != -1 && (flip || !flip_available))
+	{
+		flipeffect = neweffect;
+		fliptimer = 0;
+	}
+}
+
 void inject_control()
 {
 	INJECT(0x004147C0, ControlPhase);
@@ -2041,4 +2532,6 @@ void inject_control()
 	INJECT(0x00418620, ClipTarget);
 	INJECT(0x0041A170, GetTargetOnLOS);
 	INJECT(0x00419110, ObjectOnLOS2);
+	INJECT(0x00416760, TestTriggers);
+	INJECT(0x004167B0, _TestTriggers);
 }

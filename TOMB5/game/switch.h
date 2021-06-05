@@ -6,3 +6,4 @@
 #define ProcessExplodingSwitchType8	( (void(__cdecl*)(ITEM_INFO*)) 0x0047FF20 )
 #define GetSwitchTrigger	( (int(__cdecl*)(ITEM_INFO*, short*, long)) 0x0047D7B0 )
 #define GetKeyTrigger	( (int(__cdecl*)(ITEM_INFO*)) 0x0047D8C0 )
+#define SwitchTrigger	( (int(__cdecl*)(short, short)) 0x0047D670 )
