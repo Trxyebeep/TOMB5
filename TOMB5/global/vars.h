@@ -369,6 +369,8 @@
 #define HeavyTriggered	VAR_U_(0x00EEEA34, unsigned char)
 #define LastSequence	VAR_U_(0x00E51F2C, short)
 #define fliptimer	VAR_U_(0x0051CA68, int)
+#define FileData	VAR_U_(0x00874964, char*)
+#define textinfo	VAR_U_(0x008751B0, TEXTURESTRUCT*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

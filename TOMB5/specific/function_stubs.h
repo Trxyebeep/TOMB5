@@ -3,6 +3,6 @@
 
 void inject_funcStubs();
 
-void* game_malloc(int size);
+void* game_malloc(int size, int type);
 
-#define Log	( (void(__cdecl*)(char, const char*)) 0x004DEB10 )
+#define Log	( (void(__cdecl*)(unsigned long, const char*, ...)) 0x004DEB10 )

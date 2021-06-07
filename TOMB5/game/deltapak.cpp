@@ -3741,7 +3741,7 @@ void init_cutseq_actors(char* data, int resident)
 			resident_addr += sizeof(PACKNODE) * (pda_nodes + 1);
 		}
 		else
-			actor_pnodes[i] = (PACKNODE*)game_malloc(sizeof(PACKNODE) * (pda_nodes + 1));
+			actor_pnodes[i] = (PACKNODE*)game_malloc(sizeof(PACKNODE) * (pda_nodes + 1), 0);
 
 		if (i == 0)
 		{
@@ -3780,7 +3780,7 @@ void init_cutseq_actors(char* data, int resident)
 		resident_addr += sizeof(PACKNODE) * (pda_nodes + 1);
 	}
 	else
-		camera_pnodes = (PACKNODE*)game_malloc(sizeof(PACKNODE) * (pda_nodes + 1));
+		camera_pnodes = (PACKNODE*)game_malloc(sizeof(PACKNODE) * (pda_nodes + 1), 0);
 
 	InitPackNodes(nlheader, camera_pnodes, packed, pda_nodes + 1);
 	GLOBAL_playing_cutseq = 1;

@@ -268,7 +268,7 @@ void InitialiseDoor(short item_number)
 	if (item->object_number >= LIFT_DOORS1 && item->object_number <= LIFT_DOORS2)
 		item->item_flags[0] = 4096;
 
-	door = (DOOR_DATA*)game_malloc(sizeof(DOOR_DATA));
+	door = (DOOR_DATA*)game_malloc(sizeof(DOOR_DATA), 0);
 	item->data = door;
 	door->Opened = 0;
 	door->dptr1 = 0;
@@ -566,7 +566,7 @@ void InitialiseLasers(short item_number)
 	short room_num;
 
 	item = &items[item_number];
-	item->data = (LASER_STRUCT*)game_malloc(sizeof(LASER_STRUCT));
+	item->data = (LASER_STRUCT*)game_malloc(sizeof(LASER_STRUCT), 0);
 	width = (item->trigger_flags & 255) << 10;
 
 	if (!(item->trigger_flags & 1))
@@ -623,7 +623,7 @@ void InitialiseSteamLasers(short item_number)
 	short room_num;
 
 	item = &items[item_number];
-	item->data = (STEAMLASER_STRUCT*)game_malloc(sizeof(STEAMLASER_STRUCT));
+	item->data = (STEAMLASER_STRUCT*)game_malloc(sizeof(STEAMLASER_STRUCT), 0);
 	height = 1536;
 	width = 2048;
 	Xadd = (width / 2) - 512;
@@ -666,7 +666,7 @@ void InitialiseFloorLasers(short item_number)
 	long width, height;
 
 	item = &items[item_number];
-	item->data = (FLOORLASER_STRUCT*)game_malloc(sizeof(FLOORLASER_STRUCT));
+	item->data = (FLOORLASER_STRUCT*)game_malloc(sizeof(FLOORLASER_STRUCT), 0);
 	ls = (FLOORLASER_STRUCT*)item->data;
 	width = item->trigger_flags % 10;
 	height = item->trigger_flags / 10;
