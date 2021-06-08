@@ -22,8 +22,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00415DA0		GetWaterHeight
 0x00415FB0	+	GetHeight
 0x004165E0		RefreshCamera
-0x00416760		TestTriggers
-0x004167B0		_TestTriggers
+0x00416760	+	TestTriggers
+0x004167B0	+	_TestTriggers
 0x004175B0		TriggerActive
 0x00417640	+	GetCeiling
 0x00417C00	+	GetDoor
@@ -1056,12 +1056,12 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043E260	+	InitialisePickup
 0x0043E380	+	InitialiseClosedDoors
 0x0043E3B0	+	AddClosedDoor
-0x0043E3F0		SetupClosedDoorStuff
-0x0043E550		SCDS
-0x0043E6C0		InitialiseLasers
-0x0043E980		InitialiseSteamLasers
-0x0043EB50		InitialiseFloorLasers
-0x0043EC70		InitialiseFishtank
+0x0043E3F0	+	SetupClosedDoorStuff
+0x0043E550	+	SCDS
+0x0043E6C0	+	InitialiseLasers
+0x0043E980	+	InitialiseSteamLasers
+0x0043EB50	+	InitialiseFloorLasers
+0x0043EC70	+	InitialiseFishtank
 0x0043ECB0		InitialiseRomeHammer
 0x0043ECF0		InitialiseCrowDoveSwitch
 0x0043ED30		InitialiseTightRope
@@ -1223,3 +1223,34 @@ x for functions decompiled but not injected, for one reason or another.
 0x004995C0	+	DrawLara__5
 0x00499BA0	+	DrawLara__6
 0x0049A210	+	SetLaraUnderwaterNodes
+
+		specific/file.cpp
+
+0x004A3BC0		FindCDDrive
+0x004A3CD0		FileOpen
+0x004A3DA0		FileClose
+0x004A3DD0		FileSize
+0x004A3E10		LoadFile
+0x004A3EF0		Decompress
+0x004A3FC0		LoadTextures
+0x004A4DA0	+	LoadRooms
+0x004A4E60		LoadObjects
+0x004A5430		AdjustUV
+0x004A59D0		LoadSprites
+0x004A5CA0		LoadCameras
+0x004A5D90		LoadSoundEffects
+0x004A5E50		LoadBoxes
+0x004A6060		LoadAnimatedTextures
+0x004A60E0	+	LoadTextureInfos
+0x004A6380		LoadItems
+0x004A6760		LoadMapFile
+0x004A67D0		LoadCinematic
+0x004A67F0		LoadAIInfo
+0x004A684E		weirdo ##// library function?? only called in LoadAIInfo.
+0x004A6880		LoadSamples
+0x004A6AB0		S_GetUVRotateTextures
+0x004A6B30		LoadLevel
+0x004A7020		DoMonitorScreen
+0x004A7130		FreeLevel
+0x004A7210		S_LoadLevel
+0x004A72B0		S_LoadLevelFile

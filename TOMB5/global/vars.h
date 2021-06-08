@@ -365,6 +365,15 @@
 #define next_debris	VAR_U_(0x0051CA8C, int)
 #define WB_room	VAR_U_(0x00EEF044, short)
 #define GlobalPulleyFrigItem	VAR_U_(0x00E5BF24, short)
+#define globoncuttrig	VAR_U_(0x00EEEFA0, char)
+#define HeavyTriggered	VAR_U_(0x00EEEA34, unsigned char)
+#define LastSequence	VAR_U_(0x00E51F2C, short)
+#define fliptimer	VAR_U_(0x0051CA68, int)
+#define FileData	VAR_U_(0x00874964, char*)
+#define textinfo	VAR_U_(0x008751B0, TEXTURESTRUCT*)
+#define MaxRoomLights	VAR_U_(0x0087B0EC, int)
+#define LevelFogBulbCnt	VAR_U_(0x007E7FE8, int)
+#define number_rooms	VAR_U_(0x0087514C, short)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -469,6 +478,9 @@
 #define Bubbles	ARRAY_(0x00E4D160, BUBBLE_STRUCT, [40])
 #define Drips	ARRAY_(0x00E4D740, DRIP_STRUCT, [32])
 #define ShockWaves	ARRAY_(0x00E4C1A0, SHOCKWAVE_STRUCT, [16])
+#define SpotCam	ARRAY_(0x00E4F6C0, SPOTCAM, [256])
+#define CameraCnt	ARRAY_(0x00E51F10, unsigned char, [16])
+#define SpotRemap	ARRAY_(0x00E4F4F0, unsigned char, [16])
 
 //defs
 #define NO_HEIGHT -32512

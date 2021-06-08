@@ -58,6 +58,7 @@
     <ClCompile Include="TOMB5\game\pickup.cpp" />
     <ClCompile Include="TOMB5\game\rat.cpp" />
     <ClCompile Include="TOMB5\game\rope.cpp" />
+    <ClCompile Include="TOMB5\game\setup.cpp" />
     <ClCompile Include="TOMB5\game\sound.cpp" />
     <ClCompile Include="TOMB5\game\sphere.cpp" />
     <ClCompile Include="TOMB5\game\spider.cpp" />
@@ -77,6 +78,7 @@
     <ClCompile Include="TOMB5\specific\input.cpp" />
     <ClCompile Include="TOMB5\specific\lighting.cpp" />
     <ClCompile Include="TOMB5\specific\LoadSave.cpp" />
+    <ClCompile Include="TOMB5\specific\others.cpp" />
     <ClCompile Include="TOMB5\specific\output.cpp" />
     <ClCompile Include="TOMB5\specific\specific.cpp" />
     <ClCompile Include="TOMB5\specific\specificfx.cpp" />
@@ -129,6 +131,7 @@
     <ClInclude Include="TOMB5\game\pickup.h" />
     <ClInclude Include="TOMB5\game\rat.h" />
     <ClInclude Include="TOMB5\game\rope.h" />
+    <ClInclude Include="TOMB5\game\setup.h" />
     <ClInclude Include="TOMB5\game\sound.h" />
     <ClInclude Include="TOMB5\game\sphere.h" />
     <ClInclude Include="TOMB5\game\spider.h" />
@@ -153,6 +156,7 @@
     <ClInclude Include="TOMB5\specific\lighting.h" />
     <ClInclude Include="TOMB5\specific\LoadSave.h" />
     <ClInclude Include="TOMB5\specific\matrix_shit.h" />
+    <ClInclude Include="TOMB5\specific\others.h" />
     <ClInclude Include="TOMB5\specific\output.h" />
     <ClInclude Include="TOMB5\specific\specific.h" />
     <ClInclude Include="TOMB5\specific\specificfx.h" />
@@ -237,7 +241,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;VER_JP;cutseq_skipper;cutseq_selector;fix_backguns_drawing;fix_cut_hair_jumps;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;VER_JP;cutseq_skipper;cutseq_selector;fix_backguns_drawing;better_cutseqs;fix_that_ugly_nose;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
@@ -258,7 +262,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;VER_JP;cutseq_skipper;cutseq_selector;fix_backguns_drawing;fix_cut_hair_jumps;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;VER_JP;cutseq_skipper;cutseq_selector;fix_backguns_drawing;better_cutseqs;fix_that_ugly_nose;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>

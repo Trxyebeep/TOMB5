@@ -274,6 +274,16 @@ enum cloth_type
 	CLOTH_WET = 2
 };
 
+enum trigger_types 
+{
+	TRIGGER, PAD, SWITCH, KEY, PICKUP, HEAVY, ANTIPAD, COMBAT, DUMMY, ANTITRIGGER, HEAVYSWITCH, HEAVYANTITRIGGER, MONKEY, SKELETON_T, TIGHTROPE_T, CRAWLDUCK_T, CLIMB_T
+};
+
+enum trigobj_types 
+{
+	TO_OBJECT, TO_CAMERA, TO_SINK, TO_FLIPMAP, TO_FLIPON, TO_FLIPOFF, TO_TARGET, TO_FINISH, TO_CD, TO_FLIPEFFECT, TO_SECRET, TO_BODYBAG, TO_FLYBY, TO_CUTSCENE
+};
+
 struct OBJECT_VECTOR
 {
 	long x; // size=0, offset=0
@@ -1574,6 +1584,26 @@ struct TEXTURESTRUCT
 	float v4;
 };
 
+struct PHDTEXTURESTRUCT
+{
+	unsigned short drawtype;
+	unsigned short tpage;
+	unsigned short flag;
+	unsigned short u1;
+	unsigned short v1;
+	unsigned short u2;
+	unsigned short v2;
+	unsigned short u3;
+	unsigned short v3;
+	unsigned short u4;
+	unsigned short v4;
+	unsigned short padd;
+	unsigned long xoff;
+	unsigned long yoff;
+	unsigned long width;
+	unsigned long height;
+};
+
 typedef struct _ENVUV
 {
 	float	u, v;
@@ -1929,5 +1959,52 @@ struct RIPPLE_STRUCT
 	unsigned char life;
 	unsigned char size;
 	unsigned char init;
+};
+
+struct LASER_STRUCT
+{
+	SVECTOR v1[3];
+	SVECTOR v2[3];
+	SVECTOR v3[3];
+	SVECTOR v4[3];
+	short Rand[18];
+};
+
+struct STEAMLASER_STRUCT
+{
+	SVECTOR v1[2];
+	SVECTOR v2[2];
+	SVECTOR v3[2];
+	SVECTOR v4[2];
+	short Rand[27];
+};
+
+struct FLOORLASER_STRUCT
+{
+	SVECTOR v1;
+	SVECTOR v2;
+	SVECTOR v3;
+	SVECTOR v4;
+	short Rand[121];
+	short Pulse[121];
+};
+
+struct SPOTCAM
+{
+	long x;
+	long y;
+	long z;
+	long tx;
+	long ty;
+	long tz;
+	unsigned char sequence;
+	unsigned char camera;
+	short fov;
+	short roll;
+	short timer;
+	short speed;
+	short flags;
+	short room_number;
+	short pad;
 };
 #pragma pack(pop)
