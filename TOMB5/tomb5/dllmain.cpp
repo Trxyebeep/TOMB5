@@ -42,6 +42,7 @@
 #include "../game/traps.h"
 #include "../game/init.h"
 #include "../specific/file.h"
+#include "../specific/others.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -103,6 +104,7 @@ void inject_all()
 	inject_traps();
 	inject_init();
 	inject_file();
+	inject_others();
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

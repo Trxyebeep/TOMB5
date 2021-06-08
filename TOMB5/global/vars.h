@@ -371,6 +371,9 @@
 #define fliptimer	VAR_U_(0x0051CA68, int)
 #define FileData	VAR_U_(0x00874964, char*)
 #define textinfo	VAR_U_(0x008751B0, TEXTURESTRUCT*)
+#define MaxRoomLights	VAR_U_(0x0087B0EC, int)
+#define LevelFogBulbCnt	VAR_U_(0x007E7FE8, int)
+#define number_rooms	VAR_U_(0x0087514C, short)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

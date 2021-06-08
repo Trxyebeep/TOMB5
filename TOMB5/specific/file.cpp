@@ -2,6 +2,8 @@
 #include "file.h"
 #include "function_stubs.h"
 #include "../game/gameflow.h"
+#include "../game/setup.h"
+#include "others.h"
 
 bool LoadTextureInfos()
 {
@@ -66,7 +68,27 @@ bool LoadTextureInfos()
 	return 1;
 }
 
+bool LoadRooms()
+{
+	long size;
+
+	Log(2, "LoadRooms");
+	wibble = 0;
+	MaxRoomLights = 0;
+	LevelFogBulbCnt = 0;
+	aLoadRoomStream();
+	BuildOutsideTable();
+	size = *(long*)FileData;
+	FileData += sizeof(long);
+	floor_data = (short*)game_malloc(size * sizeof(short), 0);
+	memcpy(floor_data, FileData, sizeof(short) * size);
+	FileData += sizeof(short) * size;
+	Log(0, "Floor Data Size %d @ %x", size, floor_data);
+	return 1;
+}
+
 void inject_file()
 {
 	INJECT(0x004A60E0, LoadTextureInfos);
+	INJECT(0x004A4DA0, LoadRooms);
 }
