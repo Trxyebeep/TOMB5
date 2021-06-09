@@ -374,6 +374,7 @@
 #define MaxRoomLights	VAR_U_(0x0087B0EC, int)
 #define LevelFogBulbCnt	VAR_U_(0x007E7FE8, int)
 #define number_rooms	VAR_U_(0x0087514C, short)
+#define cd_drive	VAR_U_(0x00874960, char)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

@@ -87,8 +87,35 @@ bool LoadRooms()
 	return 1;
 }
 
+FILE* FileOpen(const char* Filename)
+{
+	FILE* fp;
+	char cdFilename[80];
+
+	memset(cdFilename, 0, 80);
+#ifndef NO_CD
+	cdFilename[0] = cd_drive;
+	cdFilename[1] = ':';//original code
+	cdFilename[2] = '\\';
+#else
+	cdFilename[0] = 0;
+	cdFilename[1] = 0;
+	cdFilename[2] = 0;
+#endif
+
+	strcat(cdFilename, Filename);
+	Log(5, "FileOpen - %s", cdFilename);
+	fp = fopen(cdFilename, "rb");
+
+	if (!fp)
+		Log(1, "Unable To Open %s", cdFilename);
+
+	return fp;
+}
+
 void inject_file()
 {
 	INJECT(0x004A60E0, LoadTextureInfos);
 	INJECT(0x004A4DA0, LoadRooms);
+	INJECT(0x004A3CD0, FileOpen);
 }
