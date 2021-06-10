@@ -5,6 +5,8 @@
 #include "../game/setup.h"
 #include "others.h"
 
+//when every part that uses the c library funcs is decompiled, remove the stupid defines
+
 bool LoadTextureInfos()
 {
 	int val;
@@ -151,10 +153,33 @@ bool FindCDDrive()
 	return 0;
 }
 
+void FileClose(FILE* fp)
+{
+	Log(2, "FileClose");
+#define what_the_f	( (int(__cdecl*)(FILE*)) 0x004E20D0 )
+	what_the_f(fp);//fclose(fp);
+#undef what_the_f
+}
+
+int FileSize(FILE* fp)
+{
+	int size;
+#define cunt1	( (int(__cdecl*)(FILE*, long, int)) 0x004E1F30 )
+#define cunt2	( (int(__cdecl*)(FILE*)) 0x004E4700 )
+	cunt1(fp, 0, SEEK_END);//fseek(fp, 0, SEEK_END);
+	size = cunt2(fp);//ftell(fp);
+	cunt1(fp, 0, SEEK_SET);//fseek(fp, 0, SEEK_SET);
+	return size;
+#undef cunt1
+#undef cunt2
+}
+
 void inject_file()
 {
 	INJECT(0x004A60E0, LoadTextureInfos);
 	INJECT(0x004A4DA0, LoadRooms);
 	INJECT(0x004A3CD0, FileOpen);
 	INJECT(0x004A3BC0, FindCDDrive);
+	INJECT(0x004A3DA0, FileClose);
+	INJECT(0x004A3DD0, FileSize);
 }
