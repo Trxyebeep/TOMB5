@@ -111,9 +111,50 @@ FILE* FileOpen(const char* Filename)
 	return fp;
 }
 
+bool FindCDDrive()
+{
+	unsigned long drives;
+	unsigned long type;
+	char root[5];
+	char file_check[14];
+	HANDLE file;
+
+	strcpy(file_check, "c:\\script.dat");
+	drives = GetLogicalDrives();
+	cd_drive = 'A';
+	lstrcpyA(root, "A:\\");
+
+	while (drives)
+	{
+		if (drives & 1)
+		{
+			root[0] = cd_drive;
+			type = GetDriveTypeA(root);
+
+			if (type == DRIVE_CDROM)
+			{
+				file_check[0] = cd_drive;
+				file = CreateFileA(file_check, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+				if (file != INVALID_HANDLE_VALUE)
+				{
+					CloseHandle(file);
+					return 1;
+				}
+			}
+		}
+
+		cd_drive++;
+		drives >>= 1;
+	}
+
+	return 0;
+}
+
 void inject_file()
 {
 	INJECT(0x004A60E0, LoadTextureInfos);
 	INJECT(0x004A4DA0, LoadRooms);
 	INJECT(0x004A3CD0, FileOpen);
+	INJECT(0x004A3BC0, FindCDDrive);
 }
