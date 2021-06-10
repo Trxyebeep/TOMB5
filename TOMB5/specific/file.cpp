@@ -101,7 +101,9 @@ FILE* FileOpen(const char* Filename)
 
 	strcat(cdFilename, Filename);
 	Log(5, "FileOpen - %s", cdFilename);
-	fp = fopen(cdFilename, "rb");
+#define what_the_f	( (FILE*(__cdecl*)(const char*, const char*)) 0x004E46E0 )//temporary until we solve the fopen mystery :)
+	fp = what_the_f(cdFilename, "rb");//fp = fopen(cdFilename, "rb");
+#undef what_the_f
 
 	if (!fp)
 		Log(1, "Unable To Open %s", cdFilename);
