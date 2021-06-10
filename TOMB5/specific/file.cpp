@@ -97,10 +97,6 @@ FILE* FileOpen(const char* Filename)
 	cdFilename[0] = cd_drive;
 	cdFilename[1] = ':';//original code
 	cdFilename[2] = '\\';
-#else
-	cdFilename[0] = 0;
-	cdFilename[1] = 0;
-	cdFilename[2] = 0;
 #endif
 
 	strcat(cdFilename, Filename);
