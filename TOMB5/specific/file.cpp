@@ -124,19 +124,19 @@ bool FindCDDrive()
 	strcpy(file_check, "c:\\script.dat");
 	drives = GetLogicalDrives();
 	cd_drive = 'A';
-	lstrcpyA(root, "A:\\");
+	lstrcpy(root, "A:\\");
 
 	while (drives)
 	{
 		if (drives & 1)
 		{
 			root[0] = cd_drive;
-			type = GetDriveTypeA(root);
+			type = GetDriveType(root);
 
 			if (type == DRIVE_CDROM)
 			{
 				file_check[0] = cd_drive;
-				file = CreateFileA(file_check, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+				file = CreateFile(file_check, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
 				if (file != INVALID_HANDLE_VALUE)
 				{
