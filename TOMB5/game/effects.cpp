@@ -15,15 +15,15 @@
 #include "objects.h"
 #include "sphere.h"
 
-int flare_table[56] =
+#define rgb(a,b,c) a<<16 | b<<8 | c
+long FogTableColor[] =
 {
-	0x0, 0x0, 0xC83C, 0x00F5, 0xC470, 0x0078, 0xCCE6, 0x00CA, 0x4000, 0x0080, 0x4040, 0x0040, 0xE8EC, 0x00F3, 0x40C0,
-	0x0, 0x8000,
-	0x0, 0xAC9D, 0x0096, 0x8080, 0x0080, 0xA37B, 0x00CC, 0xA28C, 0x00B1, 0xDFBF,
-	0x0, 0xFFDF, 0x006F, 0xD898, 0x00F4, 0xC03C, 0x00F8, 
-	0x0, 0x00FC, 0x5F57, 0x00C6, 0x9776, 0x00E2, 0xEBCE, 0x00F8, 0x1E10, 
-	0x0, 0xDEA7, 0x00FA, 0xAF75, 0x00DA, 0xBF4A, 0x00E1, 0x8C8D, 0x004D, 0xB59A, 0x0004, 0xAE00, 0x00FF
+	0, rgb(245,200,60), rgb(120,196,112),	rgb(202,204,230),	rgb(128,64,0), rgb(64,64,64), rgb(243,232,236), rgb(0,64,192),
+	rgb(0,128,0), rgb(150,172,157), rgb(128,128,128), rgb(204,163,123),	 rgb(177,162,140),	rgb(0,223,191), rgb(111,255,223),
+	rgb(244,216,152), rgb(248,192,60), rgb(252,0,0), rgb(198,95,87), rgb(226,151,118), rgb(248,235,206), rgb(0,30,16),
+	rgb(250,222,167), rgb(218,175,117), rgb(225,191,78), rgb(77,140,141), rgb(4,181,154), rgb(255,174,0)
 };
+#undef rgb
 
 static char footsounds[14] = 
 {
@@ -270,12 +270,11 @@ void reset_hair(ITEM_INFO* item)
 
 void SetFog(ITEM_INFO* item)
 {
-	unsigned short color_index;
-	int color;
-	unsigned char r, g, b;
+	unsigned short rgb;
+	int r, g, b;
 
 	GlobalFogOff = 0;
-	color_index = TriggerTimer;
+	rgb = TriggerTimer;
 
 	if (!IsVolumetric())
 	{
@@ -290,13 +289,10 @@ void SetFog(ITEM_INFO* item)
 		return;
 	}
 
-	color = flare_table[color_index];
-	r = (char)color >> 16;
-	g = (color >> 8) & 0xFF;
-	b = color & 0xFF;
+	r = (FogTableColor[rgb] >> 16) & 0xFF;
+	g = (FogTableColor[rgb] >> 8) & 0xFF;
+	b = FogTableColor[rgb] & 0xFF;
 	SetFogColor(r, g, b);
-	g = color;
-	b = color & 0xFF;
 	gfFog.r = r;
 	gfFog.g = g;
 	gfFog.b = b;

@@ -1669,16 +1669,17 @@ void lara_col_wade(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_as_dash(ITEM_INFO* item, COLL_INFO* coll)
 {
-	if (item->hit_points <= 0 || !DashTimer || (!(input & IN_SPRINT) || lara.water_status == LW_WADE))
+	if (item->hit_points <= 0 || !DashTimer || !(input & IN_SPRINT) || lara.water_status == LW_WADE)
 	{
-		item->goal_anim_state = 1;
+		item->goal_anim_state = AS_RUN;
 		return;
 	}
 
 	DashTimer--;
 
 	if (input & IN_DUCK &&
-		(lara.gun_type == WEAPON_NONE ||
+		(lara.gun_status == LG_NO_ARMS ||
+			lara.gun_type == WEAPON_NONE ||
 			lara.gun_type == WEAPON_PISTOLS ||
 			lara.gun_type == WEAPON_REVOLVER ||
 			lara.gun_type == WEAPON_UZI ||
@@ -1722,7 +1723,7 @@ void lara_as_dash(ITEM_INFO* item, COLL_INFO* coll)
 			else
 				item->goal_anim_state = AS_DASH;
 		}
-		else if (!(input & IN_LEFT) && !(input & IN_RIGHT))
+		else if (!(input & (IN_LEFT | IN_RIGHT)))
 			item->goal_anim_state = AS_STOP;
 	}
 	else
@@ -3208,7 +3209,7 @@ void lara_as_duck(ITEM_INFO* item, COLL_INFO* coll)
 	{
 		if (((input & IN_DUCK) || lara.keep_ducked && lara.water_status != LW_WADE) && lara.gun_status == LG_NO_ARMS)
 		{
-			if (!(room[room_num].flags & RF_FILL_WATER))
+			if (!(room[room_num].flags & ROOM_UNDERWATER))
 			{
 				if (lara_item->anim_number == ANIM_DUCKBREATHE || lara_item->anim_number == 245)
 				{

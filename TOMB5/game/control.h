@@ -30,13 +30,14 @@ int zLOS(GAME_VECTOR* start, GAME_VECTOR* target);
 int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target);
 int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firing);
 int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MESH_INFO** StaticMesh);
+void TestTriggers(short* data, int heavy, int HeavyFlags);
+void _TestTriggers(short* data, int heavy, int HeavyFlags);
 
 #define UpdateSky	( (void(__cdecl*)()) 0x00414720 )
 #define ClearDynamics	( (void(__cdecl*)()) 0x00431530 )
 #define ClearFires	( (void(__cdecl*)()) 0x00481B10 )
 #define KillMoveEffects	( (void(__cdecl*)()) 0x004146A0 )
 #define KillMoveItems	( (void(__cdecl*)()) 0x00414620 )
-#define TestTriggers	( (void(__cdecl*)(short*, int, int)) 0x00416760 )
 #define UpdatePulseColour	( (void(__cdecl*)()) 0x00480830 )
 #define	CheckNoColFloorTriangle	( (long(__cdecl*)(FLOOR_INFO*, long, long)) 0x00418C80 )
 #define AnimateItem	( (void(__cdecl*)(ITEM_INFO*)) 0x00415300 )
@@ -46,3 +47,6 @@ int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MES
 #define CheckNoColCeilingTriangle	( (long(__cdecl*)(FLOOR_INFO*, long, long)) 0x00418D60 )
 #define FireCrossBowFromLaserSight	( (void(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*)) 0x0041A0B0 )
 #define DoRayBox	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, short*, PHD_3DPOS*, PHD_VECTOR*, short)) 0x004193C0 )
+#define RefreshCamera	( (void(__cdecl*)(short, short*)) 0x004165E0 )
+#define TriggerCDTrack	( (void(__cdecl*)(short, short, short)) 0x00418B90 )
+#define ResetGuards	( (void(__cdecl*)()) 0x0041AF10 )

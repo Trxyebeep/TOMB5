@@ -42,7 +42,7 @@ void FlareControl(short item_number)
 	flare->pos.x_pos += xv;
 	flare->pos.z_pos += zv;
 
-	if (room[flare->room_number].flags & RF_FILL_WATER)
+	if (room[flare->room_number].flags & ROOM_UNDERWATER)
 	{
 		flare->fallspeed += (5 - flare->fallspeed) / 2;
 		flare->speed += (5 - flare->speed) / 2;
@@ -337,7 +337,7 @@ void draw_flare()
 		{
 			if (ani == 72)
 			{
-				if (room[lara_item->room_number].flags & RF_FILL_WATER)
+				if (room[lara_item->room_number].flags & ROOM_UNDERWATER)
 					SoundEffect(SFX_RAVESTICK, &lara_item->pos, SFX_WATER);
 				else
 					SoundEffect(SFX_RAVESTICK, &lara_item->pos, SFX_DEFAULT);

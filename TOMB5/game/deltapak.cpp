@@ -3504,6 +3504,15 @@ void frigup_lara()
 	object = &objects[lara_item->object_number];
 	bone = &bones[object->bone_index];
 	updateAnimFrame(actor_pnodes[0], 16, frame);
+
+#ifdef better_cutseqs
+	if (cutseq_num == 8 && (GLOBAL_cutseq_frame >= 696 && GLOBAL_cutseq_frame <= 841))//Larson shoot out weird lara gliding
+	{
+		frame[6] = -69;
+		frame[8] = 267;
+	}
+#endif
+
 	Rich_CalcLaraMatrices_Normal(frame, bone, 0);
 	phd_PushUnitMatrix();
 	Rich_CalcLaraMatrices_Normal(frame, bone, 1);
@@ -3732,7 +3741,7 @@ void init_cutseq_actors(char* data, int resident)
 			resident_addr += sizeof(PACKNODE) * (pda_nodes + 1);
 		}
 		else
-			actor_pnodes[i] = (PACKNODE*)game_malloc(sizeof(PACKNODE) * (pda_nodes + 1));
+			actor_pnodes[i] = (PACKNODE*)game_malloc(sizeof(PACKNODE) * (pda_nodes + 1), 0);
 
 		if (i == 0)
 		{
@@ -3771,7 +3780,7 @@ void init_cutseq_actors(char* data, int resident)
 		resident_addr += sizeof(PACKNODE) * (pda_nodes + 1);
 	}
 	else
-		camera_pnodes = (PACKNODE*)game_malloc(sizeof(PACKNODE) * (pda_nodes + 1));
+		camera_pnodes = (PACKNODE*)game_malloc(sizeof(PACKNODE) * (pda_nodes + 1), 0);
 
 	InitPackNodes(nlheader, camera_pnodes, packed, pda_nodes + 1);
 	GLOBAL_playing_cutseq = 1;

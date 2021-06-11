@@ -626,7 +626,7 @@ void DoGrenadeDamageOnBaddie(ITEM_INFO* baddie, ITEM_INFO* item)
 		{
 			lara_item->hit_points -= 50;
 
-			if (!(room[item->room_number].flags & RF_FILL_WATER) && baddie->hit_points < 51)
+			if (!(room[item->room_number].flags & ROOM_UNDERWATER) && baddie->hit_points < 51)
 				LaraBurn();
 		}
 		else

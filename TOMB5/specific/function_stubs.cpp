@@ -1,7 +1,7 @@
 #include "../tomb5/pch.h"
 #include "function_stubs.h"
 
-void* game_malloc(int size)
+void* game_malloc(int size, int type)
 {
 	char* ptr;
 
