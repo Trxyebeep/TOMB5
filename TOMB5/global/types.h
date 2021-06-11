@@ -128,19 +128,14 @@ enum item_flags
 
 enum room_flags
 {
-	RF_FILL_WATER = (1 << 0),			    // 0x0001
-	RF_ALWAYS_SFX = (1 << 1),				// 0x0002
-	RF_PITCH_SHIFT = (1 << 2),				// 0x0004
-	RF_SKYBOX_VISIBLE = (1 << 3),		    // 0x0008   speeds up rendering if no rendered room has this
-	RF_DYNAMIC_LIT = (1 << 4),				// 0x0010
-	RF_WIND_BLOWS_PONYTAIL = (1 << 5),	    // 0x0020   also some particles
-	RF_INSIDE = (1 << 6),	    		    // 0x0040   used in official levels, no apparent effects
-	RF_HIDE_GLOBAL_LENS_FLARE = (1 << 7),   // 0x0080   TRLE "NL"
-	RF_CAUSTICS_EFFECT = (1 << 8),		    // 0x0100   TRLE "M"
-	RF_WATER_REFLECTIVITY = (1 << 9),	    // 0x0200   TRLE "R"
-	RF_UNKNOWN_10 = (1 << 10),			    // 0x0400   NGLE uses it for snow
-	RF_TRLE_D = (1 << 11),					// 0x0800   NGLE uses it for rain
-	RF_TRLE_P = (1 << 12)					// 0x1000   NGLE uses it for cold rooms
+	ROOM_UNDERWATER = 1,
+	ROOM_SFX_ALWAYS = 2,
+	ROOM_PITCH_SHIFT = 4,
+	ROOM_OUTSIDE = 8,
+	ROOM_DYNAMIC_LIT = 16,
+	ROOM_NOT_INSIDE = 32,
+	ROOM_INSIDE = 64,
+	ROOM_NO_LENSFLARE = 128
 };
 
 enum collision_types

@@ -243,7 +243,7 @@ void InitialiseSmokeEmitter(short item_number)
 				item->trigger_flags |= 4;
 			}
 		}
-		else if (room[item->room_number].flags & RF_FILL_WATER && item->trigger_flags == 1)
+		else if (room[item->room_number].flags & ROOM_UNDERWATER && item->trigger_flags == 1)
 		{
 			item->item_flags[0] = 20;
 			item->item_flags[1] = 1;

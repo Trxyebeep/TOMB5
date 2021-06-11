@@ -832,7 +832,7 @@ void SetLaraUnderwaterNodes()
 	pos.z = lara_item->pos.z_pos;
 	room_num = lara_item->room_number;
 	GetFloor(pos.x, pos.y, pos.z, &room_num);
-	bLaraInWater = room[room_num].flags & RF_FILL_WATER ? 1 : 0;
+	bLaraInWater = room[room_num].flags & ROOM_UNDERWATER ? 1 : 0;
 	bit = 0;
 
 	for (int i = 14; i >= 0; i--)
@@ -850,9 +850,9 @@ void SetLaraUnderwaterNodes()
 
 		room_num = lara_item->room_number;
 		GetFloor(pos.x, pos.y, pos.z, &room_num);
-		LaraNodeUnderwater[i] = room[room_num].flags & RF_FILL_WATER;
+		LaraNodeUnderwater[i] = room[room_num].flags & ROOM_UNDERWATER;
 
-		if (room[room_num].flags & RF_FILL_WATER)
+		if (room[room_num].flags & ROOM_UNDERWATER)
 		{
 			lara.wet[i] = 252;
 

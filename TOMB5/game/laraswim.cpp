@@ -45,16 +45,10 @@ void LaraTestWaterDepth(ITEM_INFO* item, COLL_INFO* coll)
 
 void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 {
+	COLL_INFO coll2, coll3;
+	long ox, oy, oz, pitch;
 	int height;
-	short oxr;
-	short oyr;
-	short hit;
-	long ox;
-	long oy;
-	long oz;
-	struct COLL_INFO coll2;
-	struct COLL_INFO coll3;
-	long pitch;
+	short oxr, oyr, hit;
 
 	hit = 0;
 	ox = item->pos.x_pos;
@@ -76,17 +70,20 @@ void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 
 	height = 762 * phd_sin(item->pos.x_rot) >> 14;
 
-	if (height < ((LaraDrawType == LARA_DIVESUIT) * 64) + 200)
-		height = ((LaraDrawType == LARA_DIVESUIT) * 64) + 200;
+	if (height < 0)
+		height = -height;
+
+	if (height < 200 + ((LaraDrawType == LARA_DIVESUIT) << 6))
+		height = 200 + ((LaraDrawType == LARA_DIVESUIT) << 6);
 
 	coll->bad_neg = -64;
-	memcpy((char*)&coll2, (char*)coll, sizeof(struct COLL_INFO));
-	memcpy((char*)&coll3, (char*)coll, sizeof(struct COLL_INFO) - 2);
-	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos + (height / 2), item->pos.z_pos, item->room_number, height);
+	memcpy((void*)&coll2, (void*)coll, sizeof(COLL_INFO));
+	memcpy((void*)&coll3, (void*)coll, sizeof(COLL_INFO));
+	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos + height / 2, item->pos.z_pos, item->room_number, height);
 	coll2.facing += 8192;
-	GetCollisionInfo(&coll2, item->pos.x_pos, item->pos.y_pos + (height / 2), item->pos.z_pos, item->room_number, height);
+	GetCollisionInfo(&coll2, item->pos.x_pos, item->pos.y_pos + height / 2, item->pos.z_pos, item->room_number, height);
 	coll3.facing -= 8192;
-	GetCollisionInfo(&coll3, item->pos.x_pos, item->pos.y_pos + (height / 2), item->pos.z_pos, item->room_number, height);
+	GetCollisionInfo(&coll3, item->pos.x_pos, item->pos.y_pos + height / 2, item->pos.z_pos, item->room_number, height);
 	ShiftItem(item, coll);
 
 	switch (coll->coll_type)
@@ -171,23 +168,14 @@ void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 		item->pos.y_pos += coll->mid_floor;
 	}
 
-	if (ox != item->pos.x_pos &&
-		oy != item->pos.y_pos &&
-		oz != item->pos.z_pos &&
-		oxr != item->pos.x_rot &&
-		oyr != item->pos.y_rot ||
-		SubHitCount ||
-		hit != 1)
+	if ((ox != item->pos.x_pos || oy != item->pos.y_pos || oz != item->pos.z_pos || oxr != item->pos.x_rot || oyr != item->pos.y_rot) &&
+		SubHitCount == 0 && hit == 1 && item->fallspeed > 100)
 	{
-		if (hit == 2)
-			return;
-	}
-	else if (item->fallspeed > 100)
-	{
+
 		if (LaraDrawType == LARA_DIVESUIT)
 		{
-			pitch = ((2 * GetRandomControl() + 0x8000) << 8) | SFX_ALWAYS | SFX_SETPITCH;
-			SoundEffect(SFX_SWIMSUIT_METAL_CLASH, &lara_item->pos, pitch);
+			pitch = 0x8000 + (GetRandomControl() << 1);
+			SoundEffect(SFX_SWIMSUIT_METAL_CLASH, &lara_item->pos, SFX_ALWAYS | SFX_SETPITCH | (pitch << 8));
 		}
 
 		SubHitCount = 30;
@@ -195,6 +183,9 @@ void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 		if (lara.Anxiety < 96)
 			lara.Anxiety += 16;
 	}
+
+	if (hit == 2)
+		return;
 
 	if (lara.water_status != LW_FLYCHEAT)
 		LaraTestWaterDepth(item, coll);
