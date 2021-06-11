@@ -14,5 +14,4 @@ void AnimateLara(ITEM_INFO* item);
 #ifdef VER_JP
 void LaraCheatyBits();
 #endif
-
-#define LaraControl	( (void(__cdecl*)(short)) 0x00455830 )
+void LaraControl(short item_number);

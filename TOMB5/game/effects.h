@@ -45,3 +45,6 @@ void TL_9(ITEM_INFO* item);
 void TL_10(ITEM_INFO* item);
 void TL_11(ITEM_INFO* item);
 void TL_12(ITEM_INFO* item);
+
+#define WadeSplash	( (void(__cdecl*)(ITEM_INFO*, int, int)) 0x00432A30 )
+#define Splash	( (void(__cdecl*)(ITEM_INFO*)) 0x00432900 )

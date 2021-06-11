@@ -6,7 +6,7 @@ short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room
 {
 	GetFloor(x, y, z, &room_number);
 
-	if (room[room_number].flags & RF_FILL_WATER)
+	if (room[room_number].flags & ROOM_UNDERWATER)
 		TriggerUnderwaterBlood(x, y, z, random);
 	else
 		TriggerBlood(x, y, z, y_rot >> 4, random);

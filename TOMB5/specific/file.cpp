@@ -5,6 +5,8 @@
 #include "../game/setup.h"
 #include "others.h"
 
+//when every part that uses the c library funcs is decompiled, remove the stupid defines
+
 bool LoadTextureInfos()
 {
 	int val;
@@ -87,8 +89,97 @@ bool LoadRooms()
 	return 1;
 }
 
+FILE* FileOpen(const char* Filename)
+{
+	FILE* fp;
+	char cdFilename[80];
+
+	memset(cdFilename, 0, 80);
+#ifndef NO_CD
+	cdFilename[0] = cd_drive;
+	cdFilename[1] = ':';//original code
+	cdFilename[2] = '\\';
+#endif
+
+	strcat(cdFilename, Filename);
+	Log(5, "FileOpen - %s", cdFilename);
+#define what_the_f	( (FILE*(__cdecl*)(const char*, const char*)) 0x004E46E0 )//temporary until we solve the fopen mystery :)
+	fp = what_the_f(cdFilename, "rb");//fp = fopen(cdFilename, "rb");
+#undef what_the_f
+
+	if (!fp)
+		Log(1, "Unable To Open %s", cdFilename);
+
+	return fp;
+}
+
+bool FindCDDrive()
+{
+	unsigned long drives;
+	unsigned long type;
+	char root[5];
+	char file_check[14];
+	HANDLE file;
+
+	strcpy(file_check, "c:\\script.dat");
+	drives = GetLogicalDrives();
+	cd_drive = 'A';
+	lstrcpy(root, "A:\\");
+
+	while (drives)
+	{
+		if (drives & 1)
+		{
+			root[0] = cd_drive;
+			type = GetDriveType(root);
+
+			if (type == DRIVE_CDROM)
+			{
+				file_check[0] = cd_drive;
+				file = CreateFile(file_check, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+				if (file != INVALID_HANDLE_VALUE)
+				{
+					CloseHandle(file);
+					return 1;
+				}
+			}
+		}
+
+		cd_drive++;
+		drives >>= 1;
+	}
+
+	return 0;
+}
+
+void FileClose(FILE* fp)
+{
+	Log(2, "FileClose");
+#define what_the_f	( (int(__cdecl*)(FILE*)) 0x004E20D0 )
+	what_the_f(fp);//fclose(fp);
+#undef what_the_f
+}
+
+int FileSize(FILE* fp)
+{
+	int size;
+#define cunt1	( (int(__cdecl*)(FILE*, long, int)) 0x004E1F30 )
+#define cunt2	( (int(__cdecl*)(FILE*)) 0x004E4700 )
+	cunt1(fp, 0, SEEK_END);//fseek(fp, 0, SEEK_END);
+	size = cunt2(fp);//ftell(fp);
+	cunt1(fp, 0, SEEK_SET);//fseek(fp, 0, SEEK_SET);
+	return size;
+#undef cunt1
+#undef cunt2
+}
+
 void inject_file()
 {
 	INJECT(0x004A60E0, LoadTextureInfos);
 	INJECT(0x004A4DA0, LoadRooms);
+	INJECT(0x004A3CD0, FileOpen);
+	INJECT(0x004A3BC0, FindCDDrive);
+	INJECT(0x004A3DA0, FileClose);
+	INJECT(0x004A3DD0, FileSize);
 }

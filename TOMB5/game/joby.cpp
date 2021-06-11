@@ -150,7 +150,7 @@ void ControlElectricalCables(short item_number)
 		room_num = item->room_number;
 		GetFloor(pos.x, pos.y, pos.z, &room_num);
 
-		if (room[room_num].flags & RF_FILL_WATER)
+		if (room[room_num].flags & ROOM_UNDERWATER)
 		{
 			if (ripple == i)
 				SetupRipple(pos.x, room[room_num].maxceiling, pos.z, 32 + (GetRandomControl() & 7), 16);

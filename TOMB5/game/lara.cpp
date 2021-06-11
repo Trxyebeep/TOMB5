@@ -3209,7 +3209,7 @@ void lara_as_duck(ITEM_INFO* item, COLL_INFO* coll)
 	{
 		if (((input & IN_DUCK) || lara.keep_ducked && lara.water_status != LW_WADE) && lara.gun_status == LG_NO_ARMS)
 		{
-			if (!(room[room_num].flags & RF_FILL_WATER))
+			if (!(room[room_num].flags & ROOM_UNDERWATER))
 			{
 				if (lara_item->anim_number == ANIM_DUCKBREATHE || lara_item->anim_number == 245)
 				{

@@ -1226,10 +1226,10 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/file.cpp
 
-0x004A3BC0		FindCDDrive
-0x004A3CD0		FileOpen
-0x004A3DA0		FileClose
-0x004A3DD0		FileSize
+0x004A3BC0	+	FindCDDrive
+0x004A3CD0	+	FileOpen
+0x004A3DA0	+	FileClose
+0x004A3DD0	+	FileSize
 0x004A3E10		LoadFile
 0x004A3EF0		Decompress
 0x004A3FC0		LoadTextures
@@ -1246,7 +1246,6 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A6760		LoadMapFile
 0x004A67D0		LoadCinematic
 0x004A67F0		LoadAIInfo
-0x004A684E		weirdo ##// library function?? only called in LoadAIInfo.
 0x004A6880		LoadSamples
 0x004A6AB0		S_GetUVRotateTextures
 0x004A6B30		LoadLevel

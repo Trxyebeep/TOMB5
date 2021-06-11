@@ -17,6 +17,7 @@
 #include "../specific/output.h"
 #include "draw.h"
 #include "../specific/LoadSave.h"
+#include "../specific/others.h"
 
 unsigned char dels_cutseq_selector_cursorpos = 0;
 

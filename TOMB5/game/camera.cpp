@@ -95,7 +95,7 @@ void CalculateCamera()
 
 	if (gfCurrentLevel != LVL5_DEEPSEA_DIVE)
 	{
-		if (room[camera.pos.room_number].flags & RF_FILL_WATER)
+		if (room[camera.pos.room_number].flags & ROOM_UNDERWATER)
 		{
 			SoundEffect(SFX_UNDERWATER, 0, SFX_ALWAYS);
 			if (camera.underwater == 0)

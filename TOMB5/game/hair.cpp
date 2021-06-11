@@ -291,7 +291,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			hair->pos.y_pos += 3 * hair->vel.y / 4;
 			hair->pos.z_pos += 3 * hair->vel.z / 4;
 
-			if (lara.water_status == LW_ABOVE_WATER && room[room_num].flags & RF_WIND_BLOWS_PONYTAIL)
+			if (lara.water_status == LW_ABOVE_WATER && room[room_num].flags & ROOM_NOT_INSIDE)
 			{
 				hair->pos.x_pos += SmokeWindX;
 				hair->pos.z_pos += SmokeWindZ;
