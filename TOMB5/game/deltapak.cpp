@@ -2841,7 +2841,7 @@ void CutLaraBubbles()
 		pos.x = (GetRandomControl() & 0x3F) + offset.x - 32;
 		pos.y = (GetRandomControl() & 0x3F) + offset.y - 32;
 		pos.z = (GetRandomControl() & 0x3F) + offset.z - 32;
-		CreateBubble(&pos, roomnum, 7, 8, 0, 0, -96, 0);
+		CreateBubble((PHD_3DPOS*)&pos, roomnum, 7, 8, 0, 0, -96, 0);
 	}
 }
 

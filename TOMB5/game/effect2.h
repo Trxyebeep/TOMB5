@@ -3,8 +3,7 @@
 
 void inject_effect2();
 
-void SoundEffects();
-
+void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv);
 
 #define TriggerDynamic	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431240 )
 #define TriggerDynamic_MIRROR	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431420 )

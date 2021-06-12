@@ -14,6 +14,7 @@
 #include "effect2.h"
 #include "objects.h"
 #include "sphere.h"
+#include "../specific/DS.h"
 
 #define rgb(a,b,c) a<<16 | b<<8 | c
 long FogTableColor[] =
@@ -93,27 +94,27 @@ void(*effect_routines[59])(ITEM_INFO* item) =
 	TL_12,
 };
 
-void WaterFall(short item_number)//FIXME idek man
+void WaterFall(short item_number)
 {
 	ITEM_INFO* item;
-	int x;
-	int z;
-
-	int a, b, c;
+	long x, z, ang;
 
 	item = &items[item_number];
-	c = ((item->pos.y_rot + 0x8000) >> 3) & 0x1FFE;
-	a = item->pos.x_pos - (rcossin_tbl[c] << 11 >> 14);
-	b = item->pos.z_pos - (rcossin_tbl[c + 1] << 11 >> 14);
-	if (item->pos.y_rot == -32768)
+	ang = item->pos.y_rot + 0x8000;
+	x = item->pos.x_pos - (phd_sin(ang) * 512 >> 14);
+	z = item->pos.z_pos - (phd_cos(ang) * 512 >> 14);
+
+	switch (ang)
 	{
-		x = a + ((_wf * 4 * rcossin_tbl[2048]) >> 14);
-		z = b + ((_wf * 4 * rcossin_tbl[2049]) >> 14);
-	}
-	else
-	{
-		x = a + (_wf * (phd_sin(item->pos.y_rot + 0x4000) >> 14));
-		z = b + (_wf * (phd_cos(item->pos.y_rot + 0x4000) >> 14));
+	case 0:
+		x += (phd_sin(ang + 0x4000) * _wf >> 14);
+		z += (phd_cos(ang + 0x4000) * _wf >> 14);
+		break;
+
+	default:
+		x += (phd_sin(ang - 0x4000) * _wf >> 14);
+		z += (phd_cos(ang - 0x4000) * _wf >> 14);
+		break;
 	}
 
 	TriggerWaterfallMist(x, item->pos.y_pos, z, item->pos.y_rot + 0x8000);
@@ -142,21 +143,21 @@ void floor_shake_effect(ITEM_INFO* item)
 
 	if ((ABS(x) < 16384) && (ABS(y) < 16384) && (ABS(z) < 16384))
 	{
-		dist = (x * x + y * y + z * z) / 256;
-		camera.bounce = ((1048576 - dist) * 100) / (1048576);
+		dist = (SQUARE(x) + SQUARE(y) + SQUARE(z)) / 256;
+		camera.bounce = ((SQUARE(1024) - dist) * 100) / SQUARE(1024);
 	}
 }
 
 void PoseidonSFX(ITEM_INFO* item)
 {
-	SoundEffect(SFX_J_GRAB_OPEN, NULL, SFX_DEFAULT);
+	SoundEffect(SFX_J_GRAB_OPEN, 0, SFX_DEFAULT);
 	flipeffect = -1;
 }
 
 void LaraBubbles(ITEM_INFO* item)
 {
 	PHD_VECTOR pos;
-	int num;
+	int i;
 
 	SoundEffect(SFX_LARA_BUBBLES, &item->pos, SFX_WATER);
 	pos.x = 0;
@@ -174,10 +175,10 @@ void LaraBubbles(ITEM_INFO* item)
 		GetLaraJointPos(&pos, 8);
 	}
 
-	num = (GetRandomControl() & 1) + 2;
+	i = (GetRandomControl() & 1) + 2;
 
-	for (int i = 0; i < num; i++)
-		CreateBubble(&pos, item->room_number, 8, 7, 0, 0, 0, 0);
+	for (; i > 0; i--)
+		CreateBubble((PHD_3DPOS*)&pos, item->room_number, 8, 7, 0, 0, 0, 0);
 }
 
 void finish_level_effect(ITEM_INFO* item)
@@ -221,18 +222,19 @@ void SwapCrowbar(ITEM_INFO* item)
 
 	if (lara.mesh_ptrs[LM_RHAND] == tmp)
 		lara.mesh_ptrs[LM_RHAND] = meshes[objects[CROWBAR_ANIM].mesh_index + (2 * LM_RHAND)];
-	else lara.mesh_ptrs[LM_RHAND] = tmp;
+	else
+		lara.mesh_ptrs[LM_RHAND] = tmp;
 }
 
 void SoundFlipEffect(ITEM_INFO* item)
 {
-	SoundEffect(TriggerTimer, NULL, SFX_DEFAULT);
+	SoundEffect(TriggerTimer, 0, SFX_DEFAULT);
 	flipeffect = -1;
 }
 
 void ExplosionFX(ITEM_INFO* item)
 {
-	SoundEffect(SFX_EXPLOSION1, NULL, SFX_DEFAULT);
+	SoundEffect(SFX_EXPLOSION1, 0, SFX_DEFAULT);
 	camera.bounce = -75;
 	flipeffect = -1;
 }
@@ -241,7 +243,6 @@ void lara_hands_free(ITEM_INFO* item)
 {
 	lara.gun_status = LG_NO_ARMS;
 }
-
 
 void shoot_right_gun(ITEM_INFO* item)
 {
@@ -335,7 +336,7 @@ void AddFootprint(ITEM_INFO* item)
 	floor = GetFloor(pos.x, pos.y, pos.z, &room_num);
 
 	if (floor->fx != 6 && floor->fx != 5 && floor->fx != 11)
-		SoundEffect(footsounds[floor->fx] + 0x120, &lara_item->pos, 0);
+		SoundEffect(footsounds[floor->fx] + 288, &lara_item->pos, 0);
 
 	if (floor->fx < 3 && !OnObject)
 	{
@@ -351,67 +352,34 @@ void AddFootprint(ITEM_INFO* item)
 
 void ResetTest(ITEM_INFO* item)
 {
-	short room_num, item_num;
 	ITEM_INFO* target_item;
+	short room_num, item_num;
 
-	item_num = next_item_active;
-
-	if (item_num == NO_ITEM)
-	{
-		flipeffect = -1;
-		return;
-	}
-
-	do
+	for (item_num = next_item_active; item_num != NO_ITEM; item_num = target_item->next_active)
 	{
 		target_item = &items[item_num];
 
 		if (objects[target_item->object_number].intelligent)
 		{
-			target_item->status |= ITEM_INVISIBLE;
+			target_item->status = ITEM_INVISIBLE;
 			RemoveActiveItem(item_num);
 			DisableBaddieAI(item_num);
-			room_num = (target_item->item_flags[2] & 0xFF) * 208;
-			target_item->pos.y_pos = room[room_num].minfloor + target_item->item_flags[2];
-			target_item->pos.x_pos = room[room_num].x + 512 + target_item->item_flags[1] * 4;
-			target_item->pos.z_pos = room[room_num].z + 512 + (target_item->item_flags[1] << 10);
+			room_num = target_item->item_flags[2] & 0xFF;
+			target_item->pos.y_pos = target_item->item_flags[2] + room[room_num].minfloor;
+			target_item->pos.x_pos = ((target_item->item_flags[1] << 2) + room[room_num].x + 512);
+			target_item->pos.z_pos = (((target_item->item_flags[1] & 0xFF) << 10) + room[room_num].z + 512);
 			target_item->pos.y_rot = target_item->TOSSPAD;
 			target_item->item_flags[3] = target_item->item_flags[0] & 0xFF;
-			target_item->active = 0;
-			target_item->collidable = 0;
-			target_item->looked_at = 0;
-			//v4->_bf15ea |= (((target_item->item_flags[0] >> 8) & 0x1F) << 9);
+			target_item->ai_bits = target_item->item_flags[0] >> 8;
 
 			if (target_item->object_number == CHEF)
-				target_item->anim_number = objects[CHEF].anim_index;
+				target_item->anim_number = objects[CHEF].anim_index + 0;
+			else if (target_item->object_number == TWOGUN)
+				target_item->anim_number = objects[TWOGUN].anim_index + 6;
+			else if (objects[SWAT].loaded)
+				target_item->anim_number = objects[SWAT].anim_index + 0;
 			else
-			{
-				if (target_item->object_number == TWOGUN)
-					target_item->anim_number = objects[TWOGUN].anim_index + 6;
-				else
-				{
-					if (objects[SWAT].loaded)
-						target_item->anim_number = objects[SWAT].anim_index;
-
-					target_item->current_anim_state = 1;
-					target_item->goal_anim_state = 1;
-					target_item->frame_number = anims[target_item->anim_number].frame_base;
-
-					if (target_item->room_number != room_num)
-						ItemNewRoom(item_num, room_num);
-
-					item_num = target_item->next_active;
-
-					if (item_num == NO_ITEM)
-					{
-						flipeffect = -1;
-						return;
-					}
-
-				}
-
-				target_item->anim_number = objects[BLUE_GUARD].anim_index;
-			}
+				target_item->anim_number = objects[BLUE_GUARD].anim_index + 0;
 
 			target_item->current_anim_state = 1;
 			target_item->goal_anim_state = 1;
@@ -421,15 +389,9 @@ void ResetTest(ITEM_INFO* item)
 				ItemNewRoom(item_num, room_num);
 		}
 
-		item_num = target_item->next_active;
+	}
 
-		if (item_num == NO_ITEM)
-		{
-			flipeffect = -1;
-			return;
-		}
-
-	} while (true);
+	flipeffect = -1;
 }
 
 void LaraLocationPad(ITEM_INFO* item)
@@ -444,29 +406,21 @@ void KillActiveBaddies(ITEM_INFO* item)
 	ITEM_INFO* target_item;
 	short item_num;
 
-	if (next_item_active != NO_ITEM)
+	for (item_num = next_item_active; item_num != NO_ITEM; item_num = target_item->next_active)
 	{
-		item_num = next_item_active;
+		target_item = &items[item_num];
 
-		do
+		if (objects[target_item->object_number].intelligent)
 		{
-			target_item = &items[item_num];
+			target_item->status = ITEM_INVISIBLE;
 
-			if (objects[target_item->object_number].intelligent)
+			if (item != ((void*)0xABCDEF))
 			{
-				target_item->status = ITEM_INVISIBLE;
-
-				if (*(int*)&item != 0xABCDEF)
-				{
-					RemoveActiveItem(item_num);
-					DisableBaddieAI(item_num);
-					target_item->flags |= IFLAG_INVISIBLE;
-				}
+				RemoveActiveItem(item_num);
+				DisableBaddieAI(item_num);
+				target_item->flags |= IFLAG_INVISIBLE;
 			}
-
-			item_num = target_item->next_active;
-
-		} while (item_num != -1);
+		}
 	}
 
 	flipeffect = -1;
@@ -604,8 +558,76 @@ void TL_12(ITEM_INFO* item)
 	}
 }
 
+void SoundEffects()
+{
+	OBJECT_VECTOR* sound;
+	sound = &sound_effects[0];
+
+	for (int i = number_sound_effects; i > 0; --i, sound++)
+	{
+		if (flip_stats[((sound->flags & 1)
+			+ (sound->flags & 2)
+			+ 3 * (((sound->flags & 0x1F) >> 2) & 1)
+			+ 5 * (((sound->flags & 0x1F) >> 4) & 1)
+			+ 4 * (((sound->flags & 0x1F) >> 3) & 1))])
+		{
+			if (sound->flags & 0x40)
+			{
+				SoundEffect(sound->data, (PHD_3DPOS*)sound, 0);
+				continue;
+			}
+		}
+		else if (sound->flags & 0x80)
+		{
+			SoundEffect(sound->data, (PHD_3DPOS*)sound, 0);
+			continue;
+		}
+	}
+
+	if (flipeffect != -1)
+		effect_routines[flipeffect](0);
+
+	if (!sound_active)
+		return;
+
+	SoundSlot* slot;
+	int j;
+
+	for (j = 0, slot = &LaSlot[j]; j < 32; j++, slot++)
+	{
+		if (slot->nSampleInfo >= 0)
+		{
+			if ((sample_infos[slot->nSampleInfo].flags & 3) != 3)
+			{
+				if (S_SoundSampleIsPlaying(j) == 0)
+					slot->nSampleInfo = -1;
+				else
+				{
+					GetPanVolume(slot);
+					S_SoundSetPanAndVolume(j, slot->nPan, slot->nVolume);
+				}
+			}
+			else
+			{
+				if (!slot->nVolume)
+				{
+					S_SoundStopSample(j);
+					slot->nSampleInfo = -1;
+				}
+				else
+				{
+					S_SoundSetPanAndVolume(j, slot->nPan, slot->nVolume);
+					S_SoundSetPitch(j, slot->nPitch);
+					slot->nVolume = 0;
+				}
+			}
+		}
+	}
+}
+
 void inject_effects()
 {
+	INJECT(0x00432640, SoundEffects);
 	INJECT(0x00432CA0, WaterFall);
 	INJECT(0x00432DD0, void_effect);
 	INJECT(0x00432E10, turn180_effect);

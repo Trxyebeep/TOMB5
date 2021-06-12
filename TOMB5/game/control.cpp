@@ -31,6 +31,7 @@
 #include "subsuit.h"
 #include "traps.h"
 #include "lot.h"
+#include "effects.h"
 
 
 long ControlPhase(long _nframes, int demo_mode)

@@ -6,7 +6,6 @@
 #include "effects.h"
 #include "sound.h"
 #include "control.h"
-#include "effect2.h"
 #include "draw.h"
 #include "delstuff.h"
 #include "items.h"
