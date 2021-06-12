@@ -447,7 +447,7 @@ void InitialisePickup(short item_number)
 		return;
 
 	bounds = GetBoundsAccurate(item);
-	if (ocb == 6)
+	if (ocb == 5)
 	{
 		item->item_flags[0] = (short)(item->pos.y_pos - bounds[3]);
 		item->status = ITEM_INVISIBLE;
@@ -712,7 +712,7 @@ void inject_init()
 	INJECT(0x0043D9D0, InitialiseSmokeEmitter);
 	INJECT(0x0043DB60, InitialiseDoor);
 	INJECT(0x0043E1F0, InitialisePulley);
-	INJECT(0x0043E260, InitialisePickup);
+//	INJECT(0x0043E260, InitialisePickup);
 	INJECT(0x0043E380, InitialiseClosedDoors);
 	INJECT(0x0043E3B0, AddClosedDoor);
 	INJECT(0x0043E3F0, SetupClosedDoorStuff);
