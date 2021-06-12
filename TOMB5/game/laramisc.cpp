@@ -260,6 +260,52 @@ void LaraCheatGetStuff()
 	if (objects[CROWBAR_ITEM].loaded)
 		lara.crowbar = 1;
 
+#ifdef BETTER_CHEATS
+	if (objects[FLARE_INV_ITEM].loaded)
+		lara.num_flares = -1;
+
+	if (objects[SMALLMEDI_ITEM].loaded)
+		lara.num_small_medipack = -1;
+
+	if (objects[BIGMEDI_ITEM].loaded)
+		lara.num_large_medipack = -1;
+
+	if (objects[LASERSIGHT_ITEM].loaded)
+		lara.lasersight = 1;
+
+	if (objects[UZI_ITEM].loaded)
+	{
+		lara.uzis_type_carried = 9;
+		lara.num_uzi_ammo = -1;
+	}
+
+	if (objects[SHOTGUN_ITEM].loaded)
+	{
+		lara.shotgun_type_carried = 9;
+		lara.num_shotgun_ammo1 = -1;
+		lara.num_shotgun_ammo2 = -1;
+	}
+
+	if (objects[REVOLVER_ITEM].loaded)
+	{
+		lara.sixshooter_type_carried = 9;
+		lara.num_revolver_ammo = -1;
+	}
+	
+	if (objects[HK_ITEM].loaded)
+	{
+		lara.silencer = 1;
+		lara.hk_type_carried = 1;
+		lara.num_hk_ammo1 = -1;
+	}
+
+	if (objects[CROSSBOW_ITEM].loaded)
+	{
+		lara.crossbow_type_carried = 1;
+		lara.num_crossbow_ammo1 = -1;
+		lara.num_crossbow_ammo2 = 0;
+	}
+#else
 	lara.num_flares = -1;
 	lara.num_small_medipack = -1;
 	lara.num_large_medipack = -1;
@@ -270,6 +316,7 @@ void LaraCheatGetStuff()
 	lara.num_uzi_ammo = -1;
 	lara.num_revolver_ammo = -1;
 	lara.num_shotgun_ammo1 = -1;
+#endif
 }
 
 #ifdef VER_JP
