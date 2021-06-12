@@ -169,6 +169,13 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/effects.cpp
 
+0x00432580		ItemNearLara
+0x00432640	+	SoundEffects
+0x00432710		Richochet
+0x00432760		DoBloodSplat
+0x00432800		DoLotsOfBlood
+0x00432900		Splash
+0x00432A30		WadeSplash
 0x00432CA0	+	WaterFall
 0x00432DD0	+	void_effect
 0x00432DF0	+	finish_level_effect

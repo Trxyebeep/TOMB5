@@ -3,7 +3,7 @@
 
 void inject_effect2();
 
-void SoundEffects();
+
 
 
 #define TriggerDynamic	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431240 )
