@@ -175,6 +175,5 @@ void init_cutseq_actors(char* data, int resident);
 void init_resident_cutseq(int num);
 void nail_intelligent_object(short objnum);
 
-#define trig_actor_gunflash	( (void(__cdecl*)(MATRIX3D*, PHD_VECTOR*)) 0x00485EC0 )//somewhere in specific I think? only ever called in deal_with_actor_shooting anyway so keeping it here for now
 #define aFetchCutData	( (char*(__cdecl*)(int)) 0x00491F60 )
 

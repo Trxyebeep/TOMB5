@@ -199,7 +199,7 @@ void _special3_control()
 	{
 		pos2.x = 0;
 		pos2.y = 0;
-		pos2.z = -1024;
+		pos2.z = 0;
 		GetActorJointAbsPosition(1, 0, &pos2);
 
 		TriggerDynamic(pos2.x, pos2.y, pos2.z, (GetRandomControl() & 3) + 8, 0,
