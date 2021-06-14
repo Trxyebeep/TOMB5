@@ -369,9 +369,30 @@ void LaraTorch(PHD_VECTOR* Soffset, PHD_VECTOR* Eoffset, short yrot, long bright
 	}
 }
 
+void ScreenShake(ITEM_INFO* item, short MaxVal, short MaxDist)
+{
+	long dx, dy, dz;
+
+	dx = item->pos.x_pos - camera.pos.x;
+	dy = item->pos.y_pos - camera.pos.y;
+	dz = item->pos.z_pos - camera.pos.z;
+	dy = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+
+	if (dy < MaxDist)
+	{
+		if (MaxDist == -1)
+			camera.bounce = MaxVal;
+		else
+			camera.bounce = -(MaxVal * (MaxDist - dy) / MaxDist);
+	}
+	else if (MaxDist == -1)
+		camera.bounce = MaxVal;
+}
+
 void inject_camera()
 {
 	INJECT(0x0040C690, InitialiseCamera);
 	INJECT(0x0040ED30, CalculateCamera);
 	INJECT(0x00410550, LaraTorch);
+	INJECT(0x004108D0, ScreenShake);
 }

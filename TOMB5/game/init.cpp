@@ -8,6 +8,7 @@
 #include "items.h"
 #include "../specific/function_stubs.h"
 #include "door.h"
+#include "deltapak.h"
 
 void InitialiseTrapDoor(short item_number)
 {
@@ -698,6 +699,25 @@ void InitialiseFishtank(short item_number)
 	items[item_number].item_flags[1] = 4096;
 }
 
+void InitialiseWreckingBall(short item_number)
+{
+	ITEM_INFO* item;
+	ITEM_INFO* item2;
+	FLOOR_INFO* floor;
+	short room_number;
+
+	item = &items[item_number];
+	item2 = find_a_fucking_item(ANIMATING16);
+	item->item_flags[3] = item2 - items;
+	room_number = item->room_number;
+	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+	item->pos.y_pos = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos) + 1644;
+	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+
+	if (room_number != item->room_number)
+		ItemNewRoom(item_number, room_number);
+}
+
 void inject_init()
 {
 	INJECT(0x0043D2F0, InitialiseTrapDoor);
@@ -721,4 +741,5 @@ void inject_init()
 	INJECT(0x0043E980, InitialiseSteamLasers);
 	INJECT(0x0043EB50, InitialiseFloorLasers);
 	INJECT(0x0043EC70, InitialiseFishtank);
+	INJECT(0x0043EF20, InitialiseWreckingBall);
 }

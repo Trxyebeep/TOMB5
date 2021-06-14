@@ -134,7 +134,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00410550	+	LaraTorch
 0x00410680		ConfirmCameraTargetPos
 0x004107C0		UpdateCameraElevation
-0x004108D0		ScreenShake
+0x004108D0	+	ScreenShake
 
 
 		game/debris.cpp
@@ -795,8 +795,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/joby.cpp
 
-0x00441410		ControlWreckingBall
-0x00441D50		WreckingBallCollision
+0x00441410	+	ControlWreckingBall
+0x00441D50	+	WreckingBallCollision
 0x00441F50		DrawWreckingBall
 0x004421C0		ControlSecurityScreens
 0x00442250		CookerFlameControl
@@ -1066,7 +1066,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043ECF0		InitialiseCrowDoveSwitch
 0x0043ED30		InitialiseTightRope
 0x0043EDB0		InitialiseSearchObject
-0x0043EF20		InitialiseWreckingBall
+0x0043EF20	+	InitialiseWreckingBall
 0x0043F000		InitialiseSecurityScreens
 0x0043F070		InitialiseExplosion
 0x0043F180		InitialiseSteelDoor
