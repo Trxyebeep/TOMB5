@@ -6,6 +6,7 @@ void inject_effects();
 
 extern void(*effect_routines[])(ITEM_INFO* item);
 
+void SoundEffects();
 void WaterFall(short item_number);
 void void_effect(ITEM_INFO* item);
 void turn180_effect(ITEM_INFO* item);

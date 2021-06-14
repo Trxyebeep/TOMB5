@@ -1,83 +1,51 @@
 #include "../tomb5/pch.h"
 #include "effect2.h"
-#include "effects.h"
-#include "sound.h"
-#include "../specific/DS.h"
-#include "../specific/specific.h"
 #include "control.h"
-#include "delstuff.h"
-#include "camera.h"
-#include "objects.h"
-#include "items.h"
+#include "tomb4fx.h"
 
-void SoundEffects()
+void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv)
 {
-	OBJECT_VECTOR* sound;
-	sound = &sound_effects[0];
+	SPARKS* sptr;
+	long dx, dz, rand;
 
-	for (int i = number_sound_effects; i > 0; --i, sound++)
+	dx = lara_item->pos.x_pos - x;
+	dz = lara_item->pos.z_pos - z;
+
+	if (dx >= -0x4000 && dx <= 0x4000 && dz >= -0x4000 && dz <= 0x4000)
 	{
-		if (flip_stats[((sound->flags & 1)
-			+ (sound->flags & 2)
-			+ 3 * (((sound->flags & 0x1F) >> 2) & 1)
-			+ 5 * (((sound->flags & 0x1F) >> 4) & 1)
-			+ 4 * (((sound->flags & 0x1F) >> 3) & 1))])
-		{
-			if (sound->flags & 0x40)
-			{
-				SoundEffect(sound->data, (PHD_3DPOS*)sound, 0);
-				continue;
-			}
-		}
-		else if (sound->flags & 0x80)
-		{
-			SoundEffect(sound->data, (PHD_3DPOS*)sound, 0);
-			continue;
-		}
+		rand = GetRandomDraw();
+		sptr = &spark[GetFreeSpark()];
+		sptr->sR = -1;
+		sptr->sG = -1;
+		sptr->sB = -1;
+		sptr->dR = -1;
+		sptr->dG = (rand & 127) + 64;
+		sptr->dB = 192 - sptr->dG;
+		sptr->On = 1;
+		sptr->ColFadeSpeed = 3;
+		sptr->FadeToBlack = 5;
+		sptr->Life = 10;
+		sptr->sLife = 10;
+		sptr->TransType = 2;
+		sptr->Friction = 34;
+		sptr->Scalar = 1;
+		sptr->x = (rand & 7) + x - 3;
+		sptr->y = ((rand >> 3) & 7) + y - 3;
+		sptr->z = ((rand >> 6) & 7) + z - 3;
+		sptr->Xvel = (short)(((rand >> 2) & 0xFF) + xv - 128);
+		sptr->Yvel = (short)(((rand >> 4) & 0xFF) + yv - 128);
+		sptr->Zvel = (short)(((rand >> 6) & 0xFF) + zv - 128);
+		sptr->Flags = 2;
+		sptr->Size = ((rand >> 9) & 3) + 4;
+		sptr->sSize = ((rand >> 9) & 3) + 4;
+		sptr->dSize = ((rand >> 12) & 1) + 1;
+		sptr->MaxYvel = 0;
+		sptr->Gravity = 0;
 	}
 
-	if (flipeffect != -1)
-		effect_routines[flipeffect](0);
-
-	if (!sound_active)
-		return;
-
-	SoundSlot* slot;
-	int j;
-
-	for (j = 0, slot = &LaSlot[j]; j < 32; j++, slot++)
-	{
-		if (slot->nSampleInfo >= 0)
-		{
-			if ((sample_infos[slot->nSampleInfo].flags & 3) != 3)
-			{
-				if (S_SoundSampleIsPlaying(j) == 0)
-					slot->nSampleInfo = -1;
-				else
-				{
-					GetPanVolume(slot);
-					S_SoundSetPanAndVolume(j, slot->nPan, slot->nVolume);
-				}
-			}
-			else
-			{
-				if (!slot->nVolume)
-				{
-					S_SoundStopSample(j);
-					slot->nSampleInfo = -1;
-				}
-				else
-				{
-					S_SoundSetPanAndVolume(j, slot->nPan, slot->nVolume);
-					S_SoundSetPitch(j, slot->nPitch);
-					slot->nVolume = 0;
-				}
-			}
-		}
-	}
 }
 
 void inject_effect2()
 {
-	INJECT(0x00432640, SoundEffects);
+	INJECT(0x0042F460, TriggerFlareSparks);
 }

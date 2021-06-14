@@ -24,7 +24,7 @@ long LSpline(long x, long* knots, int nk);
 #define	SetFadeClip	( (void(__cdecl*)(short, short)) 0x00483A90 )
 #define	SetScreenFadeOut	( (void(__cdecl*)(long, long)) 0x00483B30 )
 #define	SetScreenFadeIn	( (void(__cdecl*)(long)) 0x00483BA0 )
-#define	CreateBubble	( (void(__cdecl*)(PHD_VECTOR*, short, int, int, int, int, int , int)) 0x00483350 )
+#define	CreateBubble	( (void(__cdecl*)(PHD_3DPOS*, short, int, int, int, int, int , int)) 0x00483350 )
 #define	TriggerGunShell	( (void(__cdecl*)(short, short, int)) 0x482A60 )
 #define GetFreeSmokeSpark	( (int(__cdecl*)()) 0x00481D40 )
 #define TriggerExplosionBubble	( (void(__cdecl*)(int, int, int, short)) 0x00431070 )
@@ -34,3 +34,4 @@ long LSpline(long x, long* knots, int nk);
 #define TriggerLightningGlow	( (void(__cdecl*)(long, long, long, long)) 0x004851B0 )
 #define ExplodingDeath2	( (void(__cdecl*)(short, long, short)) 0x00484080 )
 #define Richochet	( (void(__cdecl*)(GAME_VECTOR*)) 0x00432710 )
+#define trig_actor_gunflash	( (void(__cdecl*)(MATRIX3D*, PHD_VECTOR*)) 0x00485EC0 )

@@ -169,6 +169,13 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/effects.cpp
 
+0x00432580		ItemNearLara
+0x00432640	+	SoundEffects
+0x00432710		Richochet
+0x00432760		DoBloodSplat
+0x00432800		DoLotsOfBlood
+0x00432900		Splash
+0x00432A30		WadeSplash
 0x00432CA0	+	WaterFall
 0x00432DD0	+	void_effect
 0x00432DF0	+	finish_level_effect
@@ -207,6 +214,33 @@ x for functions decompiled but not injected, for one reason or another.
 0x00433910	+	TL_11
 0x00433950	+	TL_12
 
+		
+		game/effect2.cpp
+
+0x0042E6A0		DetatchSpark
+0x0042E790		GetFreeSpark
+0x0042E8B0		UpdateSparks
+0x0042F060		TriggerRicochetSpark
+0x0042F460	+	TriggerFlareSparks
+0x0042F610		TriggerExplosionSparks
+0x0042FA10		TriggerExplosionSmokeEnd
+0x0042FC20		TriggerExplosionSmoke
+0x0042FE20		TriggerFireFlame
+0x00430350		TriggerSuperJetFlame
+0x00430620		SetupSplash
+0x00430710		UpdateSplashes
+0x00430910		SetupRipple
+0x004309B0		TriggerUnderwaterBlood
+0x00430A40		TriggerWaterfallMist
+0x00430D90		TriggerDartSmoke
+0x00431030		KillAllCurrentItems
+0x00431050		KillEverything
+0x00431070		TriggerExplosionBubble
+0x00431240		TriggerDynamic	.text
+0x00431420		TriggerDynamic_MIRROR
+0x00431530		ClearDynamics
+0x00431560		ControlSmokeEmitter
+0x00431E70		ControlEnemyMissile
 
 		game/objects.cpp
 

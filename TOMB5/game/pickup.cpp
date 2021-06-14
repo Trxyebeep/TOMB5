@@ -53,8 +53,6 @@ void RegeneratePickups()
 
 static void PuzzleDone(ITEM_INFO* item, short item_num)
 {
-	int lp;
-
 	if (item->object_number == PUZZLE_HOLE1 && gfCurrentLevel == LVL5_GALLOWS_TREE)
 	{
 		IsAtmospherePlaying = 0;
@@ -72,18 +70,16 @@ static void PuzzleDone(ITEM_INFO* item, short item_num)
 	item->flags |= IFLAG_ACTIVATION_MASK;
 	item->status = ITEM_ACTIVE;
 
-	if (item->trigger_flags == 998 && level_items > 0)
+	if (item->trigger_flags == 998)
 	{
-		for (lp = 0; lp < level_items; lp++)
+		for (int i = 0; i < level_items; i++)
 		{
-			if (items[lp].object_number == AIRLOCK_SWITCH
-				&& items[lp].pos.x_pos == item->pos.x_pos
-				&& items[lp].pos.z_pos == item->pos.z_pos)
+			if (items[i].object_number == AIRLOCK_SWITCH && items[i].pos.x_pos == item->pos.x_pos && items[i].pos.z_pos == item->pos.z_pos)
 			{
-				FlipMap(items[lp].trigger_flags - 7);
-				flipmap[items[lp].trigger_flags - 7] ^= IFLAG_ACTIVATION_MASK;
-				items[lp].status = ITEM_INACTIVE;
-				items[lp].flags |= 0x20;
+				FlipMap(items[i].trigger_flags - 7);
+				flipmap[items[i].trigger_flags - 7] ^= IFLAG_ACTIVATION_MASK;
+				items[i].status = ITEM_INACTIVE;
+				items[i].flags |= IFLAG_TRIGGERED;
 			}
 		}
 	}
