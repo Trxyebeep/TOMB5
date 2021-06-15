@@ -54,6 +54,7 @@
     <ClCompile Include="TOMB5\game\lot.cpp" />
     <ClCompile Include="TOMB5\game\newinv2.cpp" />
     <ClCompile Include="TOMB5\game\objects.cpp" />
+    <ClCompile Include="TOMB5\game\objlight.cpp" />
     <ClCompile Include="TOMB5\game\people.cpp" />
     <ClCompile Include="TOMB5\game\pickup.cpp" />
     <ClCompile Include="TOMB5\game\rat.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="TOMB5\game\lot.h" />
     <ClInclude Include="TOMB5\game\newinv2.h" />
     <ClInclude Include="TOMB5\game\objects.h" />
+    <ClInclude Include="TOMB5\game\objlight.h" />
     <ClInclude Include="TOMB5\game\people.h" />
     <ClInclude Include="TOMB5\game\pickup.h" />
     <ClInclude Include="TOMB5\game\rat.h" />

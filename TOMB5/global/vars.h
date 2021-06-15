@@ -380,6 +380,9 @@
 #define number_rooms	VAR_U_(0x0087514C, short)
 #define cd_drive	VAR_U_(0x00874960, char)
 #define SubsuitAir	VAR_U_(0x0051CEE0, short)
+#define WB_item VAR_U_(0x00EEEACC, ITEM_INFO*)
+#define wbx VAR_U_(0x0051CEBC, short)
+#define wbz VAR_U_(0x0051CEBE, short)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

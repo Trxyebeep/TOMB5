@@ -1422,7 +1422,6 @@ struct VECTOR
 	long vx;
 	long vy;
 	long vz;
-	long pad;
 };
 
 struct AI_info

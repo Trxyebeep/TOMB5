@@ -43,6 +43,7 @@
 #include "../game/init.h"
 #include "../specific/file.h"
 #include "../specific/others.h"
+#include "../game/objlight.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -105,6 +106,7 @@ void inject_all()
 	inject_init();
 	inject_file();
 	inject_others();
+	inject_objlight();
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

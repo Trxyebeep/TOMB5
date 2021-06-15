@@ -173,6 +173,9 @@
     <ClCompile Include="TOMB5\specific\function_stubs.cpp" />
     <ClCompile Include="TOMB5\specific\others.cpp" />
     <ClCompile Include="TOMB5\game\setup.cpp" />
+    <ClCompile Include="TOMB5\game\objlight.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -348,6 +351,9 @@
     <ClInclude Include="TOMB5\specific\function_stubs.h" />
     <ClInclude Include="TOMB5\specific\others.h" />
     <ClInclude Include="TOMB5\game\setup.h" />
+    <ClInclude Include="TOMB5\game\objlight.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />
