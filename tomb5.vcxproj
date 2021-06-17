@@ -172,7 +172,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{56FC1B73-20AA-4279-9453-A5045903E2FC}</ProjectGuid>
-    <RootNamespace>tr4m</RootNamespace>
+    <RootNamespace>tr5m</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>tomb5</ProjectName>
   </PropertyGroup>
