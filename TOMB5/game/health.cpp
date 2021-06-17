@@ -44,13 +44,13 @@ void DrawGameInfo(int timed)
 			int seconds = savegame.Level.Timer / 30;
 
 			sprintf(&buf[0], "%.2d", seconds / 60);
-			PrintString(0x28, 0x18, 0, &buf[0], FF_NONE);
-			PrintString(0x3C, 0x18, 0, ":", FF_NONE);
+			PrintString(0x28, 0x18, 0, &buf[0], 0);
+			PrintString(0x3C, 0x18, 0, ":", 0);
 			sprintf(&buf[0], "%.2d", seconds % 60);
-			PrintString(0x42, 0x18, 0, &buf[0], FF_NONE);
-			PrintString(0x56, 0x18, 0, ":", FF_NONE);
+			PrintString(0x42, 0x18, 0, &buf[0], 0);
+			PrintString(0x56, 0x18, 0, ":", 0);
 			sprintf(&buf[0], "%.2d", (338 * (savegame.Level.Timer % 30)) / 100);
-			PrintString(0x5C, 0x18, 0, &buf[0], FF_NONE);
+			PrintString(0x5C, 0x18, 0, &buf[0], 0);
 		}
 	}
 }
@@ -93,7 +93,7 @@ void DrawHealthBar(int flash_state)
 				S_DrawHealthBar(0);
 		}
 	}
-	else if (health_bar_timer > 0 || lara.gun_status == LG_READY && lara.gun_type != WEAPON_FLARE_2 || lara.poisoned >= 256)
+	else if (health_bar_timer > 0 || lara.gun_status == LG_READY && lara.gun_type != WEAPON_TORCH || lara.poisoned >= 256)
 	{
 		if (BinocularRange || SniperOverlay)
 			S_DrawHealthBar2(hitpoints / 10);

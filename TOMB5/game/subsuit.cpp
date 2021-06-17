@@ -7,6 +7,7 @@
 #include "camera.h"
 #include "items.h"
 #include "objects.h"
+#include "tomb4fx.h"
 
 char BVols[8] =
 {
@@ -134,15 +135,15 @@ void FireChaff()
 			AddActiveItem(item_number);
 			lara.ChaffTimer = -116;
 
-			for (int i = 8, b = 63, c = 127; i; --i)
+			for (int i = 0; i < 8; i++)
 			{
 				pos.x = 0;
 				pos.y = (GetRandomControl() & 0x1F) - 128;
 				pos.z = -112;
 				GetLaraJointPos(&pos, 7);
 				pos2.x = (GetRandomControl() & 0xFF) - 128;
-				pos2.y = c & GetRandomControl();
-				pos2.z = -112 - (b & GetRandomControl());
+				pos2.y = GetRandomControl() & (((i + 1) << 7) - 1);
+				pos2.z = -112 - (GetRandomControl() & (((i + 1) << 6) - 1));
 				GetLaraJointPos(&pos2, 7);
 				TriggerTorpedoSteam(&pos, &pos2, 1);
 			}
@@ -150,8 +151,57 @@ void FireChaff()
 	}
 }
 
+void TriggerAirBubbles()
+{
+	SPARKS* sptr;
+	PHD_VECTOR pos1;
+	PHD_VECTOR pos2;
+	long size;
+
+	pos1.x = 0;
+	pos1.y = -192;
+	pos1.z = -160;
+	GetLaraJointPos(&pos1, 7);
+	pos2.x = 0;
+	pos2.y = -192;
+	pos2.z = -512 - (GetRandomControl() & 0x7F);
+	GetLaraJointPos(&pos2, 7);
+	sptr = &spark[GetFreeSpark()];
+	sptr->sR = 32;
+	sptr->sG = 32;
+	sptr->sB = 32;
+	sptr->On = 1;
+	sptr->dR = -96;
+	sptr->dG = -96;
+	sptr->dB = -96;
+	sptr->ColFadeSpeed = 2;
+	sptr->FadeToBlack = 6;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 7) + 16;
+	sptr->sLife = sptr->Life;
+	sptr->x = (GetRandomControl() & 0x1F) + pos1.x - 16;
+	sptr->y = (GetRandomControl() & 0x1F) + pos1.y - 16;
+	sptr->z = (GetRandomControl() & 0x1F) + pos1.z - 16;
+	sptr->Xvel = (short)(pos2.x - pos1.x + ((GetRandomControl() & 127) - 64));
+	sptr->Yvel = (short)(pos2.y - pos1.y + ((GetRandomControl() & 127) - 64));
+	sptr->Zvel = (short)(pos2.z - pos1.z + ((GetRandomControl() & 127) - 64));
+	sptr->Friction = 0; 
+	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 17;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = -4 - (GetRandomControl() & 3);
+	sptr->Scalar = 1;
+	sptr->Flags = 26;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0xF) - 8;
+	size = 16 + (GetRandomControl() & 15);
+	sptr->Size = (unsigned char)size;
+	sptr->sSize = (unsigned char)size;
+	sptr->dSize = (unsigned char)(size << 1);
+}
+
 void inject_subsuit()
 {
 	INJECT(0x0047C6D0, FireChaff);
 	INJECT(0x0047C950, DoSubsuitStuff);
+	INJECT(0x0047C4D0, TriggerAirBubbles);
 }
