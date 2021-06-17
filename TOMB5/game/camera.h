@@ -6,6 +6,7 @@ void inject_camera();
 void InitialiseCamera();
 void CalculateCamera();
 void LaraTorch(PHD_VECTOR* Soffset, PHD_VECTOR* Eoffset, short yrot, long brightness);
+void ScreenShake(ITEM_INFO* item, short MaxVal, short MaxDist);
 
 #define BinocularCamera	( (void(__cdecl*)(ITEM_INFO*)) 0x0040FC20 )
 #define ConfirmCameraTargetPos	( (void(__cdecl*)()) 0x00410680 )

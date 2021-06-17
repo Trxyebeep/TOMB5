@@ -2313,7 +2313,7 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 			{
 				if (objects[item->object_number].intelligent)
 				{
-					if (item->status == ITEM_DEACTIVATED)
+					if (item->status == ITEM_INACTIVE)
 					{
 						item->touch_bits = 0;
 						item->status = ITEM_ACTIVE;
