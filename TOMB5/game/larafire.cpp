@@ -23,7 +23,7 @@ GAME_VECTOR bum_vsrc;
 ITEM_INFO* TargetList[8];
 ITEM_INFO* LastTargets[8];
 
-static short HoldStates[18] =
+static short HoldStates[] =
 {
 	AS_WALK,
 	AS_RUN,
@@ -37,7 +37,8 @@ static short HoldStates[18] =
 	AS_STEPRIGHT,
 	AS_WADE,
 	AS_PICKUP,
-	AS_SWITCHON, AS_SWITCHOFF,
+	AS_SWITCHON,
+	AS_SWITCHOFF,
 	AS_DUCK,
 	AS_DUCKROTL,
 	AS_DUCKROTR,
@@ -52,7 +53,7 @@ void LaraGun()
 	if (lara.right_arm.flash_gun > 0)
 		lara.right_arm.flash_gun--;
 
-	if (lara.gun_type == WEAPON_FLARE_2)
+	if (lara.gun_type == WEAPON_TORCH)
 	{
 		DoFlameTorch();
 		return;
@@ -60,85 +61,81 @@ void LaraGun()
 
 	if (lara_item->hit_points <= 0)
 		lara.gun_status = LG_NO_ARMS;
-	else
+	else if (lara.gun_status == LG_NO_ARMS)
 	{
-		if (lara.gun_status == LG_NO_ARMS)
+		if (input & IN_DRAW)
+			lara.request_gun_type = lara.last_gun_type;
+		else if (input & IN_FLARE)
 		{
-			if (input & IN_DRAW)
-				lara.request_gun_type = lara.last_gun_type;
-			else if (input & IN_FLARE)
+			if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
 			{
-				if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+				if (lara_item->current_anim_state == AS_DUCK && lara_item->anim_number != ANIM_DUCKBREATHE)
+					return;
+
+				if (lara.gun_type == WEAPON_FLARE)
 				{
-					if (lara_item->current_anim_state == AS_DUCK && lara_item->anim_number != ANIM_DUCKBREATHE)
-						return;
+					if (!lara.left_arm.frame_number)
+						lara.gun_status = LG_UNDRAW_GUNS;
+				}
+				else if (lara.num_flares)
+				{
+					if (lara.num_flares != -1)
+						lara.num_flares--;
 
-					if (lara.gun_type == WEAPON_FLARE)
-					{
-						if (!lara.left_arm.frame_number)
-							lara.gun_status = LG_UNDRAW_GUNS;
-					}
-					else if (lara.num_flares)
-					{
-						if (lara.num_flares != -1)
-							lara.num_flares -= 1;
-						lara.request_gun_type = WEAPON_FLARE;
-					}
-
+					lara.request_gun_type = WEAPON_FLARE;
 				}
 			}
+		}
 
-			if ((input & IN_DRAW) || lara.request_gun_type != lara.gun_type)
+		if ((input & IN_DRAW) || lara.request_gun_type != lara.gun_type)
+		{
+			if ((lara_item->current_anim_state == AS_DUCK ||
+				lara_item->current_anim_state == AS_DUCKROTL ||
+				lara_item->current_anim_state == AS_DUCKROTR) &&
+				(lara.request_gun_type == WEAPON_SHOTGUN || lara.request_gun_type == WEAPON_HK || lara.request_gun_type == WEAPON_CROSSBOW))
 			{
-				if ((lara_item->current_anim_state == AS_DUCK ||
-					lara_item->current_anim_state == AS_DUCKROTL ||
-					lara_item->current_anim_state == AS_DUCKROTR) &&
-					(lara.request_gun_type == WEAPON_SHOTGUN || lara.request_gun_type == WEAPON_HK || lara.request_gun_type == WEAPON_CROSSBOW))
+				if (lara.gun_type == WEAPON_FLARE)
+					lara.request_gun_type = WEAPON_FLARE;
+			}
+			else if (lara.request_gun_type == WEAPON_FLARE || lara.water_status == LW_ABOVE_WATER || lara.water_status == LW_WADE
+				&& lara.water_surface_dist > -weapons[lara.gun_type].gun_height)
+			{
+				if (lara.gun_type == WEAPON_FLARE)
 				{
-					if (lara.gun_type == WEAPON_FLARE)
-						lara.request_gun_type = WEAPON_FLARE;
+					CreateFlare(FLARE_ITEM, 0);
+					undraw_flare_meshes();
+					lara.flare_control_left = 0;
+					lara.flare_age = 0;
 				}
-				else if (lara.request_gun_type == WEAPON_FLARE || lara.water_status == LW_ABOVE_WATER || lara.water_status == LW_WADE
-					&& lara.water_surface_dist > -weapons[lara.gun_type].gun_height)
-				{
-					if (lara.gun_type == WEAPON_FLARE)
-					{
-						CreateFlare(FLARE_ITEM, 0);
-						undraw_flare_meshes();
-						lara.flare_control_left = 0;
-						lara.flare_age = 0;
-					}
 
-					lara.gun_type = lara.request_gun_type;
-					InitialiseNewWeapon();
-					lara.gun_status = LG_DRAW_GUNS;
-					lara.right_arm.frame_number = 0;
-					lara.left_arm.frame_number = 0;
-				}
+				lara.gun_type = lara.request_gun_type;
+				InitialiseNewWeapon();
+				lara.gun_status = LG_DRAW_GUNS;
+				lara.right_arm.frame_number = 0;
+				lara.left_arm.frame_number = 0;
+			}
+			else
+			{
+				lara.last_gun_type = lara.request_gun_type;
+
+				if (lara.gun_type == WEAPON_FLARE)
+					lara.request_gun_type = WEAPON_FLARE;
 				else
-				{
-					lara.last_gun_type = lara.request_gun_type;
-
-					if (lara.gun_type == WEAPON_FLARE)
-						lara.request_gun_type = WEAPON_FLARE;
-					else
-						lara.gun_type = lara.request_gun_type;
-				}
+					lara.gun_type = lara.request_gun_type;
 			}
 		}
-		else if (lara.gun_status == LG_READY)
-		{
-			if (input & IN_DRAW || lara.request_gun_type != lara.gun_type)
-				lara.gun_status = LG_UNDRAW_GUNS;
-
-			if (lara.water_status != LW_ABOVE_WATER && lara.water_status != LW_WADE ||
-				lara.water_surface_dist < -weapons[lara.gun_type].gun_height)
-				lara.gun_status = LG_UNDRAW_GUNS;
-		}
-		else if (lara.gun_status == LG_HANDS_BUSY && (input & IN_FLARE) && lara_item->current_anim_state == AS_ALL4S
-			&& lara_item->anim_number == ANIM_ALL4S)
-			lara.request_gun_type = WEAPON_FLARE;
 	}
+	else if (lara.gun_status == LG_READY)
+	{
+		if (input & IN_DRAW || lara.request_gun_type != lara.gun_type)
+			lara.gun_status = LG_UNDRAW_GUNS;
+		else if (lara.water_status != LW_ABOVE_WATER &&
+			(lara.water_status != LW_WADE || lara.water_surface_dist < -weapons[lara.gun_type].gun_height))
+			lara.gun_status = LG_UNDRAW_GUNS;
+	}
+	else if (lara.gun_status == LG_HANDS_BUSY && input & IN_FLARE && lara_item->current_anim_state == AS_ALL4S && lara_item->anim_number == ANIM_ALL4S)
+		lara.request_gun_type = WEAPON_FLARE;
+
 	switch (lara.gun_status)
 	{
 	case LG_NO_ARMS:
@@ -153,7 +150,7 @@ void LaraGun()
 				}
 				else
 				{
-					if (lara.left_arm.frame_number != 0)
+					if (lara.left_arm.frame_number)
 					{
 						lara.left_arm.frame_number++;
 
@@ -177,8 +174,7 @@ void LaraGun()
 		{
 			if (lara.mesh_ptrs[LM_LHAND] == meshes[objects[FLARE_ANIM].mesh_index + (2 * LM_LHAND)])
 			{
-				lara.flare_control_left = 0;
-				lara.flare_control_left |= CheckForHoldingState(lara_item->current_anim_state) & 1;
+				lara.flare_control_left = CheckForHoldingState(lara_item->current_anim_state);
 				DoFlareInHand(lara.flare_age);
 				set_flare_arm(lara.left_arm.frame_number);
 			}
@@ -195,16 +191,20 @@ void LaraGun()
 		case WEAPON_PISTOLS:
 		case WEAPON_REVOLVER:
 		case WEAPON_UZI:
+
 			if (camera.type != CINEMATIC_CAMERA && camera.type != LOOK_CAMERA && camera.type != HEAVY_CAMERA)
 				camera.type = COMBAT_CAMERA;
+
 			draw_pistols(lara.gun_type);
 			break;
 
 		case WEAPON_SHOTGUN:
 		case WEAPON_HK:
 		case WEAPON_CROSSBOW:
+
 			if (camera.type != CINEMATIC_CAMERA && camera.type != LOOK_CAMERA && camera.type != HEAVY_CAMERA)
 				camera.type = COMBAT_CAMERA;
+
 			draw_shotgun(lara.gun_type);
 			break;
 
@@ -253,7 +253,7 @@ void LaraGun()
 		if (camera.type != CINEMATIC_CAMERA && camera.type != LOOK_CAMERA && camera.type != HEAVY_CAMERA)
 			camera.type = COMBAT_CAMERA;
 
-		if (input & IN_ACTION && *get_current_ammo_pointer(lara.gun_type) == 0)
+		if (input & IN_ACTION && !*get_current_ammo_pointer(lara.gun_type))
 		{
 			if (objects[PISTOLS_ITEM].loaded)
 				lara.request_gun_type = WEAPON_PISTOLS;
@@ -268,6 +268,7 @@ void LaraGun()
 			case WEAPON_UZI:
 				PistolHandler(lara.gun_type);
 				break;
+
 			case WEAPON_REVOLVER:
 			case WEAPON_SHOTGUN:
 			case WEAPON_HK:
@@ -281,15 +282,15 @@ void LaraGun()
 
 	case LG_FLARE:
 		draw_flare();
-
-	default:
 		break;
 	}
 }
 
 static int CheckForHoldingState(int state)
 {
-	short* holds = HoldStates;
+	short* holds;
+
+	holds = HoldStates;
 
 	while (*holds >= 0)
 	{
@@ -511,14 +512,14 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
 				break;
 		}
 
-		if (savegame.AutoTarget || input & IN_UNK31)
+		if (savegame.AutoTarget || input & IN_TARGET)
 		{
 			if (!lara.target)
 			{
 				lara.target = bestitem;
 				LastTargets[0] = 0;
 			}
-			else if (input & IN_UNK31)
+			else if (input & IN_TARGET)
 			{
 				lara.target = 0;
 
@@ -810,25 +811,32 @@ int WeaponObjectMesh(int weapon_type)
 void DoProperDetection(short item_number, long x, long y, long z, long xv, long yv, long zv)
 {
 	ITEM_INFO* item;
+	FLOOR_INFO* floor;
 	short room_number;
-	long ceiling, height, oldonobj, oldheight;
-	long bs, yang, xs;
+	long ceiling, height, oldtype, oldonobj, oldheight, bs, yang, xs;
 
 	item = &items[item_number];
 	room_number = item->room_number;
-	oldheight = GetHeight(GetFloor(x, y, z, &room_number), x, y, z);
+	floor = GetFloor(x, y, z, &room_number);
+	oldheight = GetHeight(floor, x, y, z);
+	oldonobj = OnObject;
+	oldtype = height_type;
 	room_number = item->room_number;
-	height = GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number), item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+	height = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 
 	if (item->pos.y_pos < height)
 	{
 		if (yv >= 0)
 		{
 			room_number = item->room_number;
-			oldheight = GetHeight(GetFloor(item->pos.x_pos, y, item->pos.z_pos, &room_number), item->pos.x_pos, y, item->pos.z_pos);
+			floor = GetFloor(item->pos.x_pos, y, item->pos.z_pos, &room_number);
+			oldheight = GetHeight(floor, item->pos.x_pos, y, item->pos.z_pos);
 			oldonobj = OnObject;
 			room_number = item->room_number;
-			GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number), item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+			floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+			GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+
 			if (item->pos.y_pos >= oldheight && oldonobj)
 			{
 				if (item->fallspeed > 0)
@@ -837,34 +845,39 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 					{
 						item->speed -= 3;
 						item->fallspeed = 0;
+
 						if (item->speed < 0)
 							item->speed = 0;
 					}
 					else
 					{
 						item->fallspeed = -(item->fallspeed >> 2);
+
 						if (item->fallspeed < -100)
 							item->fallspeed = -100;
 					}
 				}
+
 				item->pos.y_pos = oldheight;
 			}
 		}
 
 		room_number = item->room_number;
-		ceiling = GetCeiling(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number), item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+		floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+		ceiling = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 
 		if (ceiling > item->pos.y_pos)
 		{
-			if (y < ceiling &&
-				(
-					(((x ^ item->pos.x_pos) & 0xFFFFFC00) != 0) ||
-					(((item->pos.z_pos ^ z) & 0xFFFFFC00) != 0)
-					)
-				)
+			if (y < ceiling && ((x >> 10 != item->pos.x_pos >> 10) || (z >> 10 != item->pos.z_pos >> 10)))
 			{
-				if (((x ^ item->pos.x_pos) & 0xFFFFFC00) == 0)
-					item->pos.y_rot = -32768 - item->pos.y_rot;
+				if ((x & ~1023) != (item->pos.x_pos & ~1023))
+				{
+
+					if (xv > 0)
+						item->pos.y_rot = 49152 + (16384 - item->pos.y_rot);
+					else
+						item->pos.y_rot = 16384 + (49152 - item->pos.y_rot);
+				}
 				else
 					item->pos.y_rot = -item->pos.y_rot;
 
@@ -890,63 +903,53 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 
 			if (tiltyoff < 0)
 			{
-				if (0x7FFF < yang)
+				if (yang >= 32768)
 					bs = 1;
 			}
 			else
 			{
-				if ((0 < tiltyoff) && (yang < 0x8001))
+				if (tiltyoff > 0 && yang <= 32768)
 					bs = 1;
 			}
 
 			if (tiltxoff < 0)
 			{
-				if ((0x3FFF < yang) && (yang < 0xC001))
+				if (yang >= 16384 && yang <= 49152)
 					bs = 1;
 			}
 			else
 			{
-				if ((0 < tiltxoff) && ((yang < 0x4001) || (0xBFFF < yang)))
+				if (tiltxoff > 0 && (yang <= 16384 || yang >= 49152))
 					bs = 1;
 			}
 		}
 
-		if ((height + 0x20 < y) && !bs)
+		if (y > height + 32 && !bs && ((x >> 10) != (item->pos.x_pos >> 10) || (z >> 10) != (item->pos.z_pos >> 10)))
 		{
-			if (
-				(((item->pos.x_pos ^ x) & 0xFFFFFC00) != 0) ||
-				(((item->pos.z_pos ^ z) & 0xFFFFFC00) != 0)
-				)
+			if ((x & ~1023) != (item->pos.x_pos & ~1023) && (z & ~1023) != (item->pos.z_pos & ~1023))
 			{
-				if (
-					(((item->pos.x_pos ^ x) & 0xFFFFFC00) == 0) ||
-					(((item->pos.z_pos ^ z) & 0xFFFFFC00) == 0)
-					)
+				if (ABS(x - item->pos.x_pos) < ABS(z - item->pos.z_pos))
 					xs = 1;
 				else
-				{
-					if (
-						ABS(x - item->pos.x_pos)
-						<
-						ABS(z - item->pos.z_pos)
-						)
-						xs = 1;
-					else
-						xs = 0;
-				}
-				if (
-					(((item->pos.x_pos ^ x) & 0xFFFFFC00) == 0) ||
-					xs == 0
-					)
-					item->pos.y_rot = -32768 - item->pos.y_rot;
-				else
-						item->pos.y_rot = -item->pos.y_rot;
-
-				item->pos.x_pos = x;
-				item->pos.y_pos = y;
-				item->pos.z_pos = z;
-				item->speed >>= 1;
+					xs = 0;
 			}
+			else
+				xs = 1;
+
+			if ((x & ~1023) != (item->pos.x_pos & ~1023) && xs)
+			{
+				if (xv <= 0)
+					item->pos.y_rot = 16384 + (49152 - item->pos.y_rot);
+				else
+					item->pos.y_rot = 49152 + (16384 - item->pos.y_rot);
+			}
+			else
+				item->pos.y_rot = -item->pos.y_rot;
+
+			item->pos.x_pos = x;
+			item->pos.y_pos = y;
+			item->pos.z_pos = z;
+			item->speed >>= 1;
 		}
 		else if (height_type != BIG_SLOPE && height_type != DIAGONAL)
 		{
@@ -956,12 +959,14 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					item->speed -= 3;
 					item->fallspeed = 0;
+
 					if (item->speed < 0)
 						item->speed = 0;
 				}
 				else
 				{
 					item->fallspeed = -(item->fallspeed >> 2);
+
 					if (item->fallspeed < -100)
 						item->fallspeed = -100;
 				}
@@ -971,13 +976,14 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 		}
 		else
 		{
-			item->speed -= (item->speed >> 2);
+			item->speed -= item->speed >> 2;
 
 			if (tiltyoff < 0 && ((ABS(tiltyoff)) - (ABS(tiltxoff)) > 1))
 			{
-				if (32768 < (unsigned short)item->pos.y_rot)
+				if ((unsigned short)item->pos.y_rot > 32768)
 				{
-					item->pos.y_rot = -1 - item->pos.y_rot;
+					item->pos.y_rot = 16384 + (49152 - (unsigned short)item->pos.y_rot - 1);
+
 					if (0 < item->fallspeed)
 						item->fallspeed = -(item->fallspeed >> 1);
 				}
@@ -986,25 +992,23 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 					if (item->speed < 32)
 					{
 						item->speed -= tiltyoff << 1;
-						if (
-							(unsigned short)item->pos.y_rot < 0x4001 ||
-							0xBFFF < (unsigned short)item->pos.y_rot
-							)
-						{
-							if ((unsigned short)item->pos.y_rot < 0x4000)
-							{
-								item->pos.y_rot += 4096;
-								if ((unsigned short)item->pos.y_rot > 16384)
-									item->pos.y_rot = 16384;
-							}
-						}
-						else
+
+						if ((unsigned short)item->pos.y_rot > 16384 && (unsigned short)item->pos.y_rot < 49152)
 						{
 							item->pos.y_rot -= 4096;
+
 							if ((unsigned short)item->pos.y_rot < 16384)
 								item->pos.y_rot = 16384;
 						}
+						else if ((unsigned short)item->pos.y_rot < 16384)
+						{
+							item->pos.y_rot += 4096;
+
+							if ((unsigned short)item->pos.y_rot > 16384)
+								item->pos.y_rot = 16384;
+						}
 					}
+
 					if (item->fallspeed > 0)
 						item->fallspeed = -(item->fallspeed >> 1);
 					else
@@ -1013,88 +1017,47 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 			}
 			else if (tiltyoff > 0 && ABS(tiltyoff) - ABS(tiltxoff) > 1)
 			{
-				if (tiltyoff > 0 && ABS(tiltyoff) - ABS(tiltxoff) > 1)
+				if ((unsigned short)item->pos.y_rot < 32768)
 				{
-					if ((unsigned short)item->pos.y_rot < 32768)
+					item->pos.y_rot = 49152 + (16384 - (unsigned short)item->pos.y_rot - 1);
+
+					if (0 < item->fallspeed)
+						item->fallspeed = -(item->fallspeed >> 1);
+				}
+				else
+				{
+					if (item->speed < 32)
 					{
-						item->pos.y_rot = -1 - item->pos.y_rot;
-						if (0 < item->fallspeed)
-							item->fallspeed = -(item->fallspeed >> 1);
-					}
-					else
-					{
-						if (item->speed < 32)
+						item->speed += tiltyoff << 1;
+
+						if ((unsigned short)item->pos.y_rot > 49152 || (unsigned short)item->pos.y_rot < 16384)
 						{
-							item->speed += tiltyoff << 1;
-							if ((unsigned short)item->pos.y_rot > 49152 || (unsigned short)item->pos.y_rot < 16384)
-							{
-								item->pos.y_rot -= 4096;
+							item->pos.y_rot -= 4096;
 
-								if ((unsigned short)item->pos.y_rot < 49152)
-									item->pos.y_rot = -16384;
-							}
-							else if ((unsigned short)item->pos.y_rot < 49152)
-							{
-								item->pos.y_rot += 4096;
-
-								if ((unsigned short)item->pos.y_rot > 49152)
-									item->pos.y_rot = -16384;
-							}
+							if ((unsigned short)item->pos.y_rot < 49152)
+								item->pos.y_rot = -16384;
 						}
+						else if ((unsigned short)item->pos.y_rot < 49152)
+						{
+							item->pos.y_rot += 4096;
 
-						if (item->fallspeed > 0)
-							item->fallspeed = -(item->fallspeed >> 1);
-						else
-							item->fallspeed = 0;
+							if ((unsigned short)item->pos.y_rot > 49152)
+								item->pos.y_rot = -16384;
+						}
 					}
+
+					if (item->fallspeed > 0)
+						item->fallspeed = -(item->fallspeed >> 1);
+					else
+						item->fallspeed = 0;
 				}
 			}
-			else if ((tiltxoff < 0) && ((ABS(tiltxoff)) - (ABS(tiltyoff)) > 1))
-			{
-				if ((tiltxoff < 0) && ((ABS(tiltxoff)) - (ABS(tiltyoff)) > 1))
-				{
-					if ((unsigned short)item->pos.y_rot > 16384 && (unsigned short)item->pos.y_rot < 49152)
-					{
-						item->pos.y_rot = 0x7FFF - item->pos.y_rot;
-
-						if (item->fallspeed > 0)
-							item->fallspeed = -(item->fallspeed >> 1);
-					}
-					else
-					{
-						if (item->speed < 32)
-						{
-							item->speed -= 2 * tiltxoff;
-
-							if ((unsigned short)item->pos.y_rot > 0x7FFF)
-							{
-								item->pos.y_rot += 0x1000;
-
-								if ((unsigned short)item->pos.y_rot < 0x1000)
-									item->pos.y_rot = 0;
-							}
-							else
-							{
-								item->pos.y_rot -= 0x1000;
-
-								if ((unsigned short)item->pos.y_rot > 0xF000)
-									item->pos.y_rot = 0;
-							}
-						}
-
-						if (item->fallspeed > 0)
-							item->fallspeed = -(item->fallspeed >> 1);
-						else
-							item->fallspeed = 0;
-					}
-				}
-			}
-			else if (tiltxoff > 0 && ((ABS(tiltxoff) - ABS(tiltyoff)) > 1))
+			else if (tiltxoff < 0 && ((ABS(tiltxoff)) - (ABS(tiltyoff)) > 1))
 			{
 
-				if ((unsigned short)item->pos.y_rot > 49152 || (unsigned short)item->pos.y_rot < 16384)
+				if ((unsigned short)item->pos.y_rot > 16384 && (unsigned short)item->pos.y_rot < 49152)
 				{
-					item->pos.y_rot = 0x7FFF - item->pos.y_rot;
+					item->pos.y_rot = 32767 - item->pos.y_rot;
 
 					if (item->fallspeed > 0)
 						item->fallspeed = -(item->fallspeed >> 1);
@@ -1103,18 +1066,56 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed += 2 * tiltxoff;
+						item->speed -= tiltxoff << 1;
+
+						if ((unsigned short)item->pos.y_rot < 32768)
+						{
+							item->pos.y_rot -= 4096;
+
+							if ((unsigned short)item->pos.y_rot > 61440)
+								item->pos.y_rot = 0;
+						}
+						else if ((unsigned short)item->pos.y_rot >= 32768)
+						{
+							item->pos.y_rot += 4096;
+
+							if ((unsigned short)item->pos.y_rot < 4096)
+								item->pos.y_rot = 0;
+						}
+					}
+
+					if (item->fallspeed > 0)
+						item->fallspeed = -(item->fallspeed >> 1);
+					else
+						item->fallspeed = 0;
+				}
+			}
+			else if (tiltxoff > 0 && ((ABS(tiltxoff) - ABS(tiltyoff)) > 1))
+			{
+
+				if ((unsigned short)item->pos.y_rot > 49152 || (unsigned short)item->pos.y_rot < 16384)
+				{
+					item->pos.y_rot = 32767 - item->pos.y_rot;
+
+					if (item->fallspeed > 0)
+						item->fallspeed = -(item->fallspeed >> 1);
+				}
+				else
+				{
+					if (item->speed < 32)
+					{
+						item->speed += tiltxoff << 1;
 
 						if ((unsigned short)item->pos.y_rot > 32768)
 						{
-							item->pos.y_rot -= 0x1000;
+							item->pos.y_rot -= 4096;
 
 							if ((unsigned short)item->pos.y_rot < 32768)
 								item->pos.y_rot = -32768;
 						}
 						else if ((unsigned short)item->pos.y_rot < 32768)
 						{
-							item->pos.y_rot += 0x1000;
+							item->pos.y_rot += 4096;
 
 							if ((unsigned short)item->pos.y_rot > 32768)
 								item->pos.y_rot = -32768;
@@ -1129,9 +1130,9 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 			}
 			else if (tiltyoff < 0 && tiltxoff < 0)
 			{
-				if ((unsigned short)item->pos.y_rot > 24576 && (unsigned short)item->pos.y_rot < 57344)
+				if ((unsigned short)item->pos.y_rot > 24576 && (unsigned short)item->pos.y_rot < -8192)
 				{
-					item->pos.y_rot = -0x4001 - item->pos.y_rot;
+					item->pos.y_rot = 8192 + (-24576 - (unsigned short)item->pos.y_rot - 1);
 
 					if (item->fallspeed > 0)
 						item->fallspeed = -(item->fallspeed >> 1);
@@ -1140,18 +1141,18 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed = item->speed - tiltxoff - tiltyoff;
+						item->speed += (-tiltyoff) + (-tiltxoff);
 
-						if ((unsigned short)item->pos.y_rot > 8192 && (unsigned short)item->pos.y_rot < 40960)
+						if ((unsigned short)item->pos.y_rot > 8192 && (unsigned short)item->pos.y_rot < -24576)
 						{
-							item->pos.y_rot -= 0x1000;
+							item->pos.y_rot -= 4096;
 
 							if ((unsigned short)item->pos.y_rot < 8192)
 								item->pos.y_rot = 8192;
 						}
-						else if (item->pos.y_rot != 8192)
+						else if ((unsigned short)item->pos.y_rot != 8192)
 						{
-							item->pos.y_rot += 0x1000;
+							item->pos.y_rot += 4096;
 
 							if ((unsigned short)item->pos.y_rot > 8192)
 								item->pos.y_rot = 8192;
@@ -1168,9 +1169,9 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 			else if (tiltyoff < 0 && tiltxoff > 0)
 			{
 
-				if ((unsigned short)item->pos.y_rot > 40960 || (unsigned short)item->pos.y_rot < 8192)
+				if ((unsigned short)item->pos.y_rot > -24576 || (unsigned short)item->pos.y_rot < 8192)
 				{
-					item->pos.y_rot = 0x3FFF - item->pos.y_rot;
+					item->pos.y_rot = 24576 + (-8192 - (unsigned short)item->pos.y_rot - 1);
 
 					if (item->fallspeed > 0)
 						item->fallspeed = -(item->fallspeed >> 1);
@@ -1179,18 +1180,18 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed = tiltxoff + item->speed - tiltyoff;
+						item->speed += (-tiltyoff) + tiltxoff;
 
-						if ((unsigned short)item->pos.y_rot < 57344 && (unsigned short)item->pos.y_rot > 24576)
+						if ((unsigned short)item->pos.y_rot < -8192 && (unsigned short)item->pos.y_rot > 24576)
 						{
-							item->pos.y_rot -= 0x1000;
+							item->pos.y_rot -= 4096;
 
 							if ((unsigned short)item->pos.y_rot < 24576)
 								item->pos.y_rot = 24576;
 						}
-						else if (item->pos.y_rot != 24576)
+						else if ((unsigned short)item->pos.y_rot != 24576)
 						{
-							item->pos.y_rot += 0x1000;
+							item->pos.y_rot += 4096;
 
 							if ((unsigned short)item->pos.y_rot > 24576)
 								item->pos.y_rot = 24576;
@@ -1206,9 +1207,9 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 			else if (tiltyoff > 0 && tiltxoff > 0)
 			{
 
-				if ((unsigned short)item->pos.y_rot > 57344 || (unsigned short)item->pos.y_rot < 24576)
+				if ((unsigned short)item->pos.y_rot > -8192 || (unsigned short)item->pos.y_rot < 24576)
 				{
-					item->pos.y_rot = -0x4001 - item->pos.y_rot;
+					item->pos.y_rot = -24576 + (8192 - (unsigned short)item->pos.y_rot - 1);
 
 					if (item->fallspeed > 0)
 						item->fallspeed = -(item->fallspeed >> 1);
@@ -1217,20 +1218,20 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed = tiltyoff + tiltxoff + item->speed;
+						item->speed += tiltyoff + tiltxoff;
 
-						if ((unsigned short)item->pos.y_rot < 8192 || (unsigned short)item->pos.y_rot > 40960)
+						if ((unsigned short)item->pos.y_rot < 8192 || (unsigned short)item->pos.y_rot > -24576)
 						{
-							item->pos.y_rot -= 0x1000;
+							item->pos.y_rot -= 4096;
 
-							if ((unsigned short)item->pos.y_rot < 40960)
+							if ((unsigned short)item->pos.y_rot < -24576)
 								item->pos.y_rot = -24576;
 						}
-						else if (item->pos.y_rot != -24576)
+						else if ((unsigned short)item->pos.y_rot != -24576)
 						{
-							item->pos.y_rot += 0x1000;
+							item->pos.y_rot += 4096;
 
-							if ((unsigned short)item->pos.y_rot > 40960)
+							if ((unsigned short)item->pos.y_rot > -24576)
 								item->pos.y_rot = -24576;
 						}
 					}
@@ -1243,9 +1244,9 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 			}
 			else if (tiltyoff > 0 && tiltxoff < 0)
 			{
-				if ((unsigned short)item->pos.y_rot > 8192 && (unsigned short)item->pos.y_rot < 40960)
+				if ((unsigned short)item->pos.y_rot > 8192 && (unsigned short)item->pos.y_rot < -24576)
 				{
-					item->pos.y_rot = 0x3FFF - item->pos.y_rot;
+					item->pos.y_rot = -8192 + (24576 - (unsigned short)item->pos.y_rot - 1);
 
 					if (item->fallspeed > 0)
 						item->fallspeed = -(item->fallspeed >> 1);
@@ -1254,20 +1255,20 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed = tiltyoff + item->speed - tiltxoff;
+						item->speed += tiltyoff + (-tiltxoff);
 
-						if ((unsigned short)item->pos.y_rot < 24576 || (unsigned short)item->pos.y_rot > 57344)
+						if ((unsigned short)item->pos.y_rot < 24576 || (unsigned short)item->pos.y_rot > -8192)
 						{
-							item->pos.y_rot -= 0x1000;
+							item->pos.y_rot -= 4096;
 
-							if ((unsigned short)item->pos.y_rot < 57344)
+							if ((unsigned short)item->pos.y_rot < -8192)
 								item->pos.y_rot = -8192;
 						}
-						else if (item->pos.y_rot != -8192)
+						else if ((unsigned short)item->pos.y_rot != -8192)
 						{
-							item->pos.y_rot += 0x1000;
+							item->pos.y_rot += 4096;
 
-							if ((unsigned short)item->pos.y_rot > 57344)
+							if ((unsigned short)item->pos.y_rot > -8192)
 								item->pos.y_rot = -8192;
 						}
 					}
