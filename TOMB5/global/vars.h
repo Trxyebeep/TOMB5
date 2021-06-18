@@ -383,6 +383,7 @@
 #define WB_item VAR_U_(0x00EEEACC, ITEM_INFO*)
 #define wbx VAR_U_(0x0051CEBC, short)
 #define wbz VAR_U_(0x0051CEBE, short)
+#define ItemNewRoomNo	VAR_U_(0x0051CA54, short)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -490,6 +491,7 @@
 #define SpotCam	ARRAY_(0x00E4F6C0, SPOTCAM, [256])
 #define CameraCnt	ARRAY_(0x00E51F10, unsigned char, [16])
 #define SpotRemap	ARRAY_(0x00E4F4F0, unsigned char, [16])
+#define ItemNewRooms	ARRAY_(0x00EEF4C0, short, [256][2])
 
 //defs
 #define NO_HEIGHT -32512
