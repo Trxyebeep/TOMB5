@@ -176,6 +176,10 @@
     <ClCompile Include="TOMB5\game\objlight.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\game\andy.cpp" />
+    <ClCompile Include="TOMB5\game\twogun.cpp" />
+    <ClCompile Include="TOMB5\game\skeleton.cpp" />
+    <ClCompile Include="TOMB5\game\tower.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -354,6 +358,10 @@
     <ClInclude Include="TOMB5\game\objlight.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
+    <ClInclude Include="TOMB5\game\andy.h" />
+    <ClInclude Include="TOMB5\game\twogun.h" />
+    <ClInclude Include="TOMB5\game\skeleton.h" />
+    <ClInclude Include="TOMB5\game\tower.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

@@ -849,6 +849,26 @@ x for functions decompiled but not injected, for one reason or another.
 0x00407350		TriggerCoinGlow
 
 
+		game/tower.cpp
+
+0x0047FFE0		CheckForRichesIllegalDiagonalWalls
+0x00480200		TestBoundsCollideCamera
+0x00480310		ItemPushCamera
+0x00486050		ControlIris
+0x00486450		ControlArea51Laser
+0x004868B0		ControlFishtank
+0x00486A70		TriggerFishtankSpray
+0x00486BE0		ControlSteelDoor
+0x004870B0		TriggerWeldingEffects
+0x004877E0		TriggerSteelDoorSmoke
+0x00487A90		DrawSprite2
+0x00487AB0		DrawSteelDoorLensFlare
+0x00487AD0		SteelDoorCollision
+0x00487B60		TriggerLiftBrakeSparks
+0x00487FF0		ControlGunship
+0x00488710		ControlGasCloud
+
+
 		game/rope.cpp
 
 0x0046D130	+	GetRopePos
@@ -1125,6 +1145,46 @@ x for functions decompiled but not injected, for one reason or another.
 0x00440320		InitialiseRaisingCog
 0x00440440		InitialiseArea51Laser
 0x00440510		InitialiseTeleporter
+
+
+		game/sphere.cpp
+
+0x00479170		TestCollision
+0x00479380		GetSpheres
+0x00479780		GetJointAbsPosition
+0x00479BB0		InitInterpolate2
+0x00479C20		GetJointAbsPositionMatrix
+
+
+		game/switch.cpp
+
+0x0047D670		SwitchTrigger
+0x0047D7B0		GetSwitchTrigger
+0x0047D8C0		GetKeyTrigger
+0x0047D9D0		TestTriggersAtXYZ
+0x0047DA40		SwitchControl
+0x0047DC70		SwitchCollision
+0x0047E0C0		SwitchCollision2
+0x0047E220		UnderwaterSwitchCollision
+0x0047E450		PulleyCollision
+0x0047E650		TurnSwitchControl
+0x0047E950		TurnSwitchCollision
+0x0047EE00		RailSwitchCollision
+0x0047F050		JumpSwitchCollision
+0x0047F190		CrowbarSwitchCollision
+0x0047F520		FullBlockSwitchControl
+0x0047F610		FullBlockSwitchCollision
+0x0047F810		CogSwitchControl
+0x0047F990		CogSwitchCollision
+0x0047FC80		CrowDoveSwitchControl
+0x0047FD20		CrowDoveSwitchCollision
+0x0047FF20		ProcessExplodingSwitchType8
+
+		
+		game/swampy.cpp
+
+0x0047D2D0		InitialiseSwampy
+0x0047D360		SwampyControl
 
 // ======================================
 // SPECIFIC
