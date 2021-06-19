@@ -303,6 +303,7 @@
 #define phd_centery	VAR_U_(0x0055D1B4, int)
 #define	phd_centerx	VAR_U_(0x0055D1B0, int)
 #define font_height	VAR_U_(0x00E4DEA8, int)
+#define	tqFontHeight	VAR_U_(0x00E4DEAC, int)
 #define	CurrentFov	VAR_U_(0x00E4F504, short)
 #define	phd_winheight	VAR_U_(0x0055D164, int)
 #define	phd_winwidth	VAR_U_(0x0055D29C, int)
@@ -384,6 +385,7 @@
 #define wbx VAR_U_(0x0051CEBC, short)
 #define wbz VAR_U_(0x0051CEBE, short)
 #define ItemNewRoomNo	VAR_U_(0x0051CA54, short)
+#define cSaveGameSelect	VAR_U_(0x008FBDA0, int)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -492,6 +494,7 @@
 #define CameraCnt	ARRAY_(0x00E51F10, unsigned char, [16])
 #define SpotRemap	ARRAY_(0x00E4F4F0, unsigned char, [16])
 #define ItemNewRooms	ARRAY_(0x00EEF4C0, short, [256][2])
+#define SaveGames	ARRAY_(0x0087B828, SAVEGAMES, [15])
 
 //defs
 #define NO_HEIGHT -32512

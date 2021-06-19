@@ -11,12 +11,12 @@ void S_DrawAirBar(int pos);
 void S_DrawHealthBar(int pos);
 void S_DrawHealthBar2(int pos);
 void S_DrawDashBar(int pos);
+int DoLoadSave(int LoadSave);
 
 #define CreateMonoScreen	( (void(__cdecl*)()) 0x004AC430 )
 #define S_DisplayMonoScreen	( (void(__cdecl*)()) 0x004AD010 )
 #define FreeMonoScreen	( (void(__cdecl*)()) 0x004AC460 )
 #define GetSaveLoadFiles	( (void(__cdecl*)()) 0x004AD290 )
-#define DoLoadSave	( (int(__cdecl*)(int)) 0x004AD460 )
 #define DoOptions	( (void(__cdecl*)()) 0x004ADF90 )
 #define S_PauseMenu	( (int(__cdecl*)()) 0x004B1030 )
 #define S_LoadSave	( (int(__cdecl*)(int, int)) 0x004B1120 )

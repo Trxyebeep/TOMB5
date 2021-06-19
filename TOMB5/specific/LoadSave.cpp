@@ -2,6 +2,7 @@
 #include "LoadSave.h"
 #include "display.h"
 #include "../game/gameflow.h"
+#include "../game/sound.h"
 
 void CheckKeyConflicts()
 {
@@ -105,6 +106,82 @@ void S_DrawDashBar(int pos)
 		DoBar(490 - (font_height >> 2), (font_height >> 2) + 32, 150, 12, pos, 0xA0A000, 0x00A000);//yellow rgb 160, 160, 0 / green rgb 0, 160, 0
 }
 
+int DoLoadSave(int LoadSave)
+{
+	int String, color, n;
+	char SaveInfo[80];
+	char string[41];
+
+	if (LoadSave & IN_SAVE)
+		String = gfStringOffset_bis[STR_SAVE_GAME_BIS_BIS];
+	else
+		String = gfStringOffset_bis[STR_LOAD_GAME_BIS];
+
+	PrintString(phd_centerx, font_height, 6, &gfStringWad[String], FF_CENTER);
+
+	for (int i = 0; i < 15; i++)
+	{
+		color = 2;
+
+		if (i == cSaveGameSelect)
+			color = 1;
+
+		memset(string, 32, 40);
+		n = strlen(SaveGames[i].SaveName);
+
+		if (n > 40)
+			n = 40;
+
+		strncpy(string, SaveGames[i].SaveName, n);
+		string[40] = 0;
+		tqFontHeight = 1;
+
+		if (SaveGames[i].bValid)
+		{
+			wsprintf(SaveInfo, "%03d", SaveGames[i].Count);
+			PrintString(phd_centerx - int((310.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, SaveInfo, 0);
+			PrintString(phd_centerx - int((270.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, string, 0);
+			wsprintf(SaveInfo, "%d %s %02d:%02d:%02d", SaveGames[i].Day, &gfStringWad[gfStringOffset_bis[STR_DAYS]], SaveGames[i].Hour, SaveGames[i].Min, SaveGames[i].Sec);
+			PrintString(phd_centerx + int((135.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, SaveInfo, 0);
+		}
+		else
+		{
+			wsprintf(SaveInfo, "%s", SaveGames[i].SaveName);
+			PrintString(phd_centerx, font_height + ((i + 2) * font_height), color, SaveInfo, FF_CENTER);
+		}
+
+		tqFontHeight = 0;
+	}
+
+	if (dbinput & IN_FORWARD)
+	{
+		cSaveGameSelect--;
+		SoundEffect(SFX_MENU_CHOOSE, 0, 0);
+	}
+
+	if (dbinput & IN_BACK)
+	{
+		cSaveGameSelect++;
+		SoundEffect(SFX_MENU_CHOOSE, 0, 0);
+	}
+
+	if (cSaveGameSelect < 0)
+		cSaveGameSelect = 0;
+
+	if (cSaveGameSelect > 14)
+		cSaveGameSelect = 14;
+
+	if (dbinput & IN_SELECT)
+	{
+		if (SaveGames[cSaveGameSelect].bValid || LoadSave == IN_SAVE)
+			return cSaveGameSelect;
+		else
+			SoundEffect(SFX_LARA_NO, 0, 0);
+	}
+
+	return -1;
+}
+
 void inject_LoadSave()
 {
 	INJECT(0x004ADF40, CheckKeyConflicts);
@@ -114,4 +191,5 @@ void inject_LoadSave()
 	INJECT(0x004B1950, S_DrawHealthBar);
 	INJECT(0x004B19C0, S_DrawHealthBar2);
 	INJECT(0x004B1890, S_DrawDashBar);
+	INJECT(0x004AD460, DoLoadSave);
 }
