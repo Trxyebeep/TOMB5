@@ -1236,10 +1236,10 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B1030		S_PauseMenu
 0x004B1120		S_LoadSave
 0x004B1250		DoBar
-0x004B1890		S_DrawDashBar
-0x004B18E0		S_DrawAirBar
-0x004B1950		S_DrawHealthBar
-0x004B19C0		S_DrawHealthBar2
+0x004B1890	+	S_DrawDashBar
+0x004B18E0	+	S_DrawAirBar
+0x004B1950	+	S_DrawHealthBar
+0x004B19C0	+	S_DrawHealthBar2
 0x004B1A40		S_InitLoadBar
 0x004B1A80		S_UpdateLoadBar
 0x004B1AB0		S_DrawLoadBar

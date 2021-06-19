@@ -63,9 +63,55 @@ void DisplayStatsUCunt()
 	DoStatScreen();
 }
 
+void S_DrawAirBar(int pos)
+{
+	if (gfCurrentLevel != LVL5_TITLE)
+		DoBar(490 - (font_height >> 2), (font_height >> 1) + (font_height >> 2) + 32, 150, 12, pos, 0x0000A0, 0x0050A0);//blue rgb 0, 0, 160/lighter blue rgb 0, 80, 160
+}
+
+void S_DrawHealthBar(int pos)
+{
+	long color;
+
+	if (gfCurrentLevel != LVL5_TITLE)
+	{
+		if (lara.poisoned || lara.Gassed)
+			color = 0xA0A000;//yellowish poison, rgb 160, 160, 0
+		else
+			color = 0x00A000;//green, rgb 0, 160, 0
+
+		DoBar(font_height >> 2, (font_height >> 2) + 32, 150, 12, pos, 0xA00000, color);//red rgb 160, 0, 0/color
+	}
+}
+
+void S_DrawHealthBar2(int pos)//same as above just different screen position
+{
+	long color;
+
+	if (gfCurrentLevel != LVL5_TITLE)
+	{
+		if (lara.poisoned || lara.Gassed)
+			color = 0xA0A000;
+		else
+			color = 0xA000;
+
+		DoBar(245, (font_height >> 1) + 32, 150, 12, pos, 0xA00000, color);
+	}
+}
+
+void S_DrawDashBar(int pos)
+{
+	if (gfCurrentLevel != LVL5_TITLE)
+		DoBar(490 - (font_height >> 2), (font_height >> 2) + 32, 150, 12, pos, 0xA0A000, 0x00A000);//yellow rgb 160, 160, 0 / green rgb 0, 160, 0
+}
+
 void inject_LoadSave()
 {
 	INJECT(0x004ADF40, CheckKeyConflicts);
 	INJECT(0x004B0910, DoStatScreen);
 	INJECT(0x004B1E70, DisplayStatsUCunt);//actually in some other file
+	INJECT(0x004B18E0, S_DrawAirBar);
+	INJECT(0x004B1950, S_DrawHealthBar);
+	INJECT(0x004B19C0, S_DrawHealthBar2);
+	INJECT(0x004B1890, S_DrawDashBar);
 }
