@@ -24,28 +24,36 @@ static short PuzzleBounds[12] =
 
 void RegeneratePickups()
 {
+	ITEM_INFO* item;
+	short* ammo;
+
 	for (int lp = 0; lp < NumRPickups; lp++)
 	{
-		ITEM_INFO* item = &items[RPickups[lp]];
+		item = &items[RPickups[lp]];
 
 		if (item->status == ITEM_INVISIBLE)
 		{
-			short* ammo = NULL;
+			ammo = 0;
 
 			if (item->object_number == CROSSBOW_AMMO1_ITEM)
 				ammo = &lara.num_crossbow_ammo1;
+
 			if (item->object_number == CROSSBOW_AMMO2_ITEM)
 				ammo = &lara.num_crossbow_ammo2;
+
 			if (item->object_number == HK_AMMO_ITEM)
 				ammo = &lara.num_hk_ammo1;
+
 			if (item->object_number == REVOLVER_AMMO_ITEM)
 				ammo = &lara.num_revolver_ammo;
+
 			if (item->object_number == SHOTGUN_AMMO1_ITEM)
 				ammo = &lara.num_shotgun_ammo1;
+
 			if (item->object_number == SHOTGUN_AMMO1_ITEM)
 				ammo = &lara.num_shotgun_ammo2;
 
-			if (ammo && *ammo == 0)
+			if (ammo && !*ammo)
 				item->status = ITEM_INACTIVE;
 		}
 	}
