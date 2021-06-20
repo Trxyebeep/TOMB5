@@ -25,3 +25,5 @@ void InitialiseSteamLasers(short item_number);
 void InitialiseFloorLasers(short item_number);
 void InitialiseFishtank(short item_number);
 void InitialiseWreckingBall(short item_number);
+void InitialiseSearchObject(short item_number);
+void InitialiseExplosion(short item_number);
