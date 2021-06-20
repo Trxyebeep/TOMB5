@@ -1183,8 +1183,8 @@ x for functions decompiled but not injected, for one reason or another.
 		
 		game/swampy.cpp
 
-0x0047D2D0		InitialiseSwampy
-0x0047D360		SwampyControl
+0x0047D2D0	+	InitialiseSwampy
+0x0047D360	+	SwampyControl
 
 // ======================================
 // SPECIFIC

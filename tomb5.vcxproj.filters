@@ -180,6 +180,7 @@
     <ClCompile Include="TOMB5\game\twogun.cpp" />
     <ClCompile Include="TOMB5\game\skeleton.cpp" />
     <ClCompile Include="TOMB5\game\tower.cpp" />
+    <ClCompile Include="TOMB5\game\swampy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -362,6 +363,7 @@
     <ClInclude Include="TOMB5\game\twogun.h" />
     <ClInclude Include="TOMB5\game\skeleton.h" />
     <ClInclude Include="TOMB5\game\tower.h" />
+    <ClInclude Include="TOMB5\game\swampy.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

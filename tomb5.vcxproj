@@ -67,6 +67,7 @@
     <ClCompile Include="TOMB5\game\spider.cpp" />
     <ClCompile Include="TOMB5\game\spotcam.cpp" />
     <ClCompile Include="TOMB5\game\subsuit.cpp" />
+    <ClCompile Include="TOMB5\game\swampy.cpp" />
     <ClCompile Include="TOMB5\game\switch.cpp" />
     <ClCompile Include="TOMB5\game\tomb4fx.cpp" />
     <ClCompile Include="TOMB5\game\tower.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="TOMB5\game\spider.h" />
     <ClInclude Include="TOMB5\game\spotcam.h" />
     <ClInclude Include="TOMB5\game\subsuit.h" />
+    <ClInclude Include="TOMB5\game\swampy.h" />
     <ClInclude Include="TOMB5\game\switch.h" />
     <ClInclude Include="TOMB5\game\tomb4fx.h" />
     <ClInclude Include="TOMB5\game\tower.h" />
