@@ -16,7 +16,6 @@
 #include "delstuff.h"
 #include "effects.h"
 #include "../specific/display.h"
-#include "sphere.h"
 #include "health.h"
 #include "objects.h"
 #include "newinv2.h"

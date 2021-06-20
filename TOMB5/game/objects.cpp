@@ -13,6 +13,9 @@
 #include "lara_states.h"
 #include "delstuff.h"
 #include "tomb4fx.h"
+#include "twogun.h"
+#include "skeleton.h"
+#include "tower.h"
 
 static short ParallelBarsBounds[12] =
 {
@@ -498,27 +501,36 @@ void ControlTriggerTriggerer(short item_number)
 
 void AnimateWaterfalls()
 {
-	waterfallY = ((char)waterfallY - 7) & 0x3F;
-	float speed = (float)(waterfallY * 0.00390625);
+	TEXTURESTRUCT* Twaterfall;
+	OBJECT_INFO* obj;
+	float offset, vo;
+
+	AnimatingWaterfallsVOffset -= 7;
+	AnimatingWaterfallsVOffset &= 63;
+	offset = AnimatingWaterfallsVOffset * (1.0f / 256.0f);
+	vo = 63.0f / 256.0f;
+
 	for (int i = 0; i < 6; i++)
 	{
-		OBJECT_INFO* obj = &objects[WATERFALL1 + i];
+		obj = &objects[WATERFALL1 + i];
+
 		if (gfCurrentLevel != LVL5_RED_ALERT || obj != &objects[WATERFALL2])
 		{
-			if (obj->nmeshes & 1)
+			if (obj->loaded & 1)
 			{
-				OBJECT_TEXTURE* Twaterfall = AnimatingWaterfalls[i];
-				Twaterfall->vertices[0].y = (float)(speed + AnimatingWaterfallsV[i]);
-				Twaterfall->vertices[1].y = (float)(speed + AnimatingWaterfallsV[i]);
-				Twaterfall->vertices[2].y = (float)(speed + AnimatingWaterfallsV[i] + 0.24609375);
-				Twaterfall->vertices[3].y = (float)(speed + AnimatingWaterfallsV[i] + 0.24609375);
+				Twaterfall = AnimatingWaterfalls[i];
+				Twaterfall->v1 = offset + AnimatingWaterfallsV[i];
+				Twaterfall->v2 = offset + AnimatingWaterfallsV[i];
+				Twaterfall->v3 = offset + AnimatingWaterfallsV[i] + vo;
+				Twaterfall->v4 = offset + AnimatingWaterfallsV[i] + vo;
+
 				if (i < 4)
 				{
-					OBJECT_TEXTURE* Twaterfall1 = Twaterfall + 1;
-					Twaterfall1->vertices[0].y = (float)(speed + AnimatingWaterfallsV[i]);
-					Twaterfall1->vertices[1].y = (float)(speed + AnimatingWaterfallsV[i]);
-					Twaterfall1->vertices[2].y = (float)(speed + AnimatingWaterfallsV[i] + 0.24609375);
-					Twaterfall1->vertices[3].y = (float)(speed + AnimatingWaterfallsV[i] + 0.24609375);
+					Twaterfall++;
+					Twaterfall->v1 = offset + AnimatingWaterfallsV[i];
+					Twaterfall->v2 = offset + AnimatingWaterfallsV[i];
+					Twaterfall->v3 = offset + AnimatingWaterfallsV[i] + vo;
+					Twaterfall->v4 = offset + AnimatingWaterfallsV[i] + vo;
 				}
 			}
 		}

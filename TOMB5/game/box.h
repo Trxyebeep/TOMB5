@@ -17,3 +17,4 @@ typedef short(__cdecl* generate)(long, long, long, short, short, short);
 typedef short(__cdecl* generate2)(long, long, long, short, int, int);
 #define CreatureEffectT	( (short(__cdecl*)(ITEM_INFO*, BITE_INFO*, short, short, generate)) 0x0040B550 )
 #define CreatureEffect	( (short(__cdecl*)(ITEM_INFO*, BITE_INFO*, generate2)) 0x0040B4D0 )
+#define	CreatureUnderwater	( (void(__cdecl*)(ITEM_INFO*, long)) 0x0040B400 )

@@ -1095,7 +1095,7 @@ void draw_current_object_list(int ringnum)
 				else
 					objmeup = (int)((phd_winymax + 1) * 0.0625 * 3.0 + phd_centery);
 
-				PrintString(phd_centerx, objmeup, 8, textbufme, 0x8000);
+				PrintString(phd_centerx, objmeup, 8, textbufme, FF_CENTER);
 			}
 
 			if (!i && !rings[ringnum]->objlistmovement)
@@ -2688,17 +2688,18 @@ void do_keypad_mode()
 		objme->meshbits = val & ~(1 << (((keypadx + 3 * keypady) + 1) & 0x1F)) | 1 << (((keypadx + 3 * keypady) + 13) & 0x1F);
 
 	DrawThreeDeeObject2D((int)(phd_centerx * 0.00390625 * 256.0 + inventry_xpos), (int)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2), INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
-	PrintString(0x100, (unsigned short)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, &gfStringWad[gfStringOffset_bis[STR_ENTER_COMBINATION]], 0x8000);
+	PrintString(0x100, (unsigned short)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, &gfStringWad[gfStringOffset_bis[STR_ENTER_COMBINATION]], FF_CENTER);
 	buf[0] = 45;
 	buf[1] = 45;
 	buf[2] = 45;
 	buf[3] = 45;
+	buf[5] = 45;
 
 	if (keypadnuminputs)
 		for (n = 0; n < keypadnuminputs; n++)
 			buf[n] = keypadinputs[n] + 48;
 
-	PrintString(0x100, (unsigned short)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 + 64), 1, buf, 0x8000);
+	PrintString(0x100, (unsigned short)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 + 64), 1, buf, FF_CENTER);
 
 	if (keypadpause)
 	{

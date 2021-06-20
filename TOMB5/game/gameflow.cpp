@@ -362,24 +362,24 @@ int TitleOptions()
 			Chris_Menu = 0;
 
 			if (selected_option & 1)
-				PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, &gfStringWad[gfStringOffset_bis[STR_SAVE_GAME_BIS]], 0x8000);
+				PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, &gfStringWad[gfStringOffset_bis[STR_SAVE_GAME_BIS]], FF_CENTER);
 			else
-				PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, &gfStringWad[gfStringOffset_bis[STR_SAVE_GAME_BIS]], 0x8000);
+				PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, &gfStringWad[gfStringOffset_bis[STR_SAVE_GAME_BIS]], FF_CENTER);
 
 			if (selected_option & 2)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, &gfStringWad[gfStringOffset_bis[STR_LOAD_GAME_BIS]], 0x8000);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, &gfStringWad[gfStringOffset_bis[STR_LOAD_GAME_BIS]], FF_CENTER);
 			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, &gfStringWad[gfStringOffset_bis[STR_LOAD_GAME_BIS]], 0x8000);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, &gfStringWad[gfStringOffset_bis[STR_LOAD_GAME_BIS]], FF_CENTER);
 
 			if (selected_option & 4)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, &gfStringWad[gfStringOffset_bis[STR_OPTIONS]], 0x8000);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, &gfStringWad[gfStringOffset_bis[STR_OPTIONS]], FF_CENTER);
 			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, &gfStringWad[gfStringOffset_bis[STR_OPTIONS]], 0x8000);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, &gfStringWad[gfStringOffset_bis[STR_OPTIONS]], FF_CENTER);
 
 			if (selected_option & 8)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, &gfStringWad[gfStringOffset_bis[STR_EXIT]], 0x8000);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, &gfStringWad[gfStringOffset_bis[STR_EXIT]], FF_CENTER);
 			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, &gfStringWad[gfStringOffset_bis[STR_EXIT]], 0x8000);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, &gfStringWad[gfStringOffset_bis[STR_EXIT]], FF_CENTER);
 
 			flag = 8;
 
@@ -387,7 +387,7 @@ int TitleOptions()
 
 		case 1://select level menu
 
-			PrintString(phd_centerx, font_height + phd_winymin, 6, &gfStringWad[gfStringOffset_bis[STR_SELECT_LEVEL]], 0x8000);
+			PrintString(phd_centerx, font_height + phd_winymin, 6, &gfStringWad[gfStringOffset_bis[STR_SELECT_LEVEL]], FF_CENTER);
 
 			if (Gameflow->nLevels >= 10)
 			{
@@ -435,9 +435,9 @@ int TitleOptions()
 					height += font_height;
 
 					if (selected_option & (1i64 << n))
-						PrintString(phd_centerx, height, 1, &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], 0x8000);
+						PrintString(phd_centerx, height, 1, &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], FF_CENTER);
 					else
-						PrintString(phd_centerx, height, 3 - (*((char*)&nframes + i + 3) != 0), &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], 0x8000);
+						PrintString(phd_centerx, height, 3 - (*((char*)&nframes + i + 3) != 0), &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], FF_CENTER);
 
 					if (selected_option & (1i64 << n))
 						selected_level = n;
@@ -457,7 +457,7 @@ int TitleOptions()
 
 			if (Gameflow->LoadSaveEnabled)
 			{
-				load = DoLoadSave(0x800000);
+				load = DoLoadSave(IN_LOAD);
 
 				if (load >= 0)
 				{
@@ -473,24 +473,24 @@ int TitleOptions()
 				Chris_Menu = 0;
 
 				if (selected_option & 1)
-					PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, &gfStringWad[gfStringOffset_bis[STR_SAVE_GAME_BIS]], 0x8000);
+					PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, &gfStringWad[gfStringOffset_bis[STR_SAVE_GAME_BIS]], FF_CENTER);
 				else
-					PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, &gfStringWad[gfStringOffset_bis[STR_SAVE_GAME_BIS]], 0x8000);
+					PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, &gfStringWad[gfStringOffset_bis[STR_SAVE_GAME_BIS]], FF_CENTER);
 
 				if (selected_option & 2)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, &gfStringWad[gfStringOffset_bis[STR_LOAD_GAME_BIS]], 0x8000);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, &gfStringWad[gfStringOffset_bis[STR_LOAD_GAME_BIS]], FF_CENTER);
 				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, &gfStringWad[gfStringOffset_bis[STR_LOAD_GAME_BIS]], 0x8000);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, &gfStringWad[gfStringOffset_bis[STR_LOAD_GAME_BIS]], FF_CENTER);
 
 				if (selected_option & 4)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, &gfStringWad[gfStringOffset_bis[STR_OPTIONS]], 0x8000);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, &gfStringWad[gfStringOffset_bis[STR_OPTIONS]], FF_CENTER);
 				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, &gfStringWad[gfStringOffset_bis[STR_OPTIONS]], 0x8000);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, &gfStringWad[gfStringOffset_bis[STR_OPTIONS]], FF_CENTER);
 
 				if (selected_option & 8)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, &gfStringWad[gfStringOffset_bis[STR_EXIT]], 0x8000);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, &gfStringWad[gfStringOffset_bis[STR_EXIT]], FF_CENTER);
 				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, &gfStringWad[gfStringOffset_bis[STR_EXIT]], 0x8000);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, &gfStringWad[gfStringOffset_bis[STR_EXIT]], FF_CENTER);
 
 				flag = 8;
 			}
@@ -729,7 +729,7 @@ void do_dels_cutseq_selector()
 	int num;
 	short* name;
 
-	PrintString(256, 102, 6, &gfStringWad[gfStringOffset_bis[STR_SELECT_CUTSCENE]], 0x8000);
+	PrintString(256, 102, 6, &gfStringWad[gfStringOffset_bis[STR_SELECT_CUTSCENE]], FF_CENTER);
 	num = dels_cutseq_selector_cursorpos - 4;
 
 	if (num < 0)
@@ -744,7 +744,7 @@ void do_dels_cutseq_selector()
 	for (int i = 0; num < 36 && i < 5; i++)
 	{
 		name = &cutseq_selector_data[num + 1].string;
-		PrintString((short)phd_centerx, i * font_height + 136, (-(dels_cutseq_selector_cursorpos != num) & 4) + 1, &gfStringWad[gfStringOffset_bis[*name]], 0x8000);
+		PrintString((short)phd_centerx, i * font_height + 136, (-(dels_cutseq_selector_cursorpos != num) & 4) + 1, &gfStringWad[gfStringOffset_bis[*name]], FF_CENTER);
 		num++;
 	}
 

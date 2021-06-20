@@ -82,7 +82,7 @@
 #define CamOldPos	VAR_U_(0x00EEFB00, PHD_VECTOR)
 #define savegame	VAR_U_(0x00E52EB3, savegame_info)
 #define NumRPickups	VAR_U_(0x00E5970C, unsigned char)
-#define waterfallY	VAR_U_(0x0051CF54, int)
+#define AnimatingWaterfallsVOffset	VAR_U_(0x0051CF54, int)
 #define next_blood	VAR_U_(0x0051D088, long)
 #define floor_data	VAR_U_(0x00875168, short*)
 #define rand_1	VAR_U_(0x00516A38, long)
@@ -303,6 +303,7 @@
 #define phd_centery	VAR_U_(0x0055D1B4, int)
 #define	phd_centerx	VAR_U_(0x0055D1B0, int)
 #define font_height	VAR_U_(0x00E4DEA8, int)
+#define	tqFontHeight	VAR_U_(0x00E4DEAC, int)
 #define	CurrentFov	VAR_U_(0x00E4F504, short)
 #define	phd_winheight	VAR_U_(0x0055D164, int)
 #define	phd_winwidth	VAR_U_(0x0055D29C, int)
@@ -383,6 +384,8 @@
 #define WB_item VAR_U_(0x00EEEACC, ITEM_INFO*)
 #define wbx VAR_U_(0x0051CEBC, short)
 #define wbz VAR_U_(0x0051CEBE, short)
+#define ItemNewRoomNo	VAR_U_(0x0051CA54, short)
+#define cSaveGameSelect	VAR_U_(0x008FBDA0, int)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -415,7 +418,7 @@
 #define SmashedMeshRoom	ARRAY_(0x00EEF480, short, [16])
 #define blood	ARRAY_(0x00E4C9C0, BLOOD_STRUCT, [32])
 #define RPickups	ARRAY_(0x00E596E0, unsigned char, [16])
-#define AnimatingWaterfalls	ARRAY_(0x00E59720, OBJECT_TEXTURE*, [6])
+#define AnimatingWaterfalls	ARRAY_(0x00E59720, TEXTURESTRUCT*, [6])
 #define AnimatingWaterfallsV	ARRAY_(0x00E59760, float, [6])
 #define interpolated_bounds	ARRAY_(0x00E6E4D0, short, [6])
 #define LM	ARRAY_(0x00506B94, char, [15])
@@ -490,6 +493,8 @@
 #define SpotCam	ARRAY_(0x00E4F6C0, SPOTCAM, [256])
 #define CameraCnt	ARRAY_(0x00E51F10, unsigned char, [16])
 #define SpotRemap	ARRAY_(0x00E4F4F0, unsigned char, [16])
+#define ItemNewRooms	ARRAY_(0x00EEF4C0, short, [256][2])
+#define SaveGames	ARRAY_(0x0087B828, SAVEGAMES, [15])
 
 //defs
 #define NO_HEIGHT -32512
