@@ -42,27 +42,27 @@ bool LoadTextureInfos()
 			(gfCurrentLevel == LVL5_RED_ALERT && (i == 133 || i == 137))
 			)
 		{
-			textinfo[i].u1 = (tex.u1 >> 8) * 0.00390625f;
-			textinfo[i].v1 = (tex.v1 >> 8) * 0.00390625f;
+			textinfo[i].u1 = (tex.u1 >> 8) * (1.0f / 256.0f);
+			textinfo[i].v1 = (tex.v1 >> 8) * (1.0f / 256.0f);
 
 			textinfo[i].u2 = (tex.u2 >> 8) * 0.00393690f;
 			textinfo[i].v2 = (tex.v2 >> 8) * 0.00393690f;
 			textinfo[i].u3 = (tex.u3 >> 8) * 0.00393690f;
 			textinfo[i].v3 = (tex.v3 >> 8) * 0.00393690f;
 
-			textinfo[i].u4 = (tex.u4 >> 8) * 0.00390625f;
-			textinfo[i].v4 = (tex.v4 >> 8) * 0.00390625f;
+			textinfo[i].u4 = (tex.u4 >> 8) * (1.0f / 256.0f);
+			textinfo[i].v4 = (tex.v4 >> 8) * (1.0f / 256.0f);
 			continue;
 		}
 #endif
-		textinfo[i].u1 = (tex.u1 >> 8) * 0.00390625f;
-		textinfo[i].v1 = (tex.v1 >> 8) * 0.00390625f;
-		textinfo[i].u2 = (tex.u2 >> 8) * 0.00390625f;
-		textinfo[i].v2 = (tex.v2 >> 8) * 0.00390625f;
-		textinfo[i].u3 = (tex.u3 >> 8) * 0.00390625f;
-		textinfo[i].v3 = (tex.v3 >> 8) * 0.00390625f;
-		textinfo[i].u4 = (tex.u4 >> 8) * 0.00390625f;
-		textinfo[i].v4 = (tex.v4 >> 8) * 0.00390625f;
+		textinfo[i].u1 = (tex.u1 >> 8) * (1.0f / 256.0f);
+		textinfo[i].v1 = (tex.v1 >> 8) * (1.0f / 256.0f);
+		textinfo[i].u2 = (tex.u2 >> 8) * (1.0f / 256.0f);
+		textinfo[i].v2 = (tex.v2 >> 8) * (1.0f / 256.0f);
+		textinfo[i].u3 = (tex.u3 >> 8) * (1.0f / 256.0f);
+		textinfo[i].v3 = (tex.v3 >> 8) * (1.0f / 256.0f);
+		textinfo[i].u4 = (tex.u4 >> 8) * (1.0f / 256.0f);
+		textinfo[i].v4 = (tex.v4 >> 8) * (1.0f / 256.0f);
 	}
 
 	AdjustUV(val);

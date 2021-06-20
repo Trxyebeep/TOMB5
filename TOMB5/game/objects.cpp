@@ -13,6 +13,9 @@
 #include "lara_states.h"
 #include "delstuff.h"
 #include "tomb4fx.h"
+#include "twogun.h"
+#include "skeleton.h"
+#include "tower.h"
 
 static short ParallelBarsBounds[12] =
 {
