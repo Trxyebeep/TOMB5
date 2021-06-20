@@ -9,3 +9,7 @@ int KeyTrigger(short item_num);
 int PickupTrigger(short item_num);
 void PuzzleDoneCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
 void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
+void SearchObjectControl(short item_number);
+void SearchObjectCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
+#define	PickupCollision	( (void(__cdecl*)(short, ITEM_INFO*, COLL_INFO*)) 0x00402BD0 ) // This address is in jump table
+#define	CollectCarriedItems	( (void(__cdecl*)(ITEM_INFO*)) 0x00469C90 )

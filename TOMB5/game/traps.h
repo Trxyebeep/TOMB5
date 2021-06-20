@@ -8,5 +8,6 @@ void inject_traps();
 
 void LaraBurn();
 void LavaBurn(ITEM_INFO* item);
+void ControlExplosion(short item_number);
 
 #define CloseTrapDoor	( (void(__cdecl*)(ITEM_INFO*)) 0x00488E30 )

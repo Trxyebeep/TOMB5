@@ -22,6 +22,31 @@ static short PuzzleBounds[12] =
 	0, 0, -0x100, 0x100, 0, 0, -0x71C, 0x71C, -0x1554, 0x1554, -0x71C, 0x71C
 };
 
+static short SearchCollectFrames[4] =
+{
+	0xB4, 0x64, 0x99, 0x53
+};
+
+static short SOBounds[12] =
+{
+	0, 0, 0, 0, 0, 0, -0x71C, 0x71C, -0x1554, 0x1554, -0x71C, 0x71C
+};
+
+static PHD_VECTOR SOPos =
+{
+	0, 0, 0
+};
+
+static short SearchOffsets[4] =
+{
+	0xA0, 0x60, 0xA0, 0x70
+};
+
+static short SearchAnims[4] =
+{
+	0x1D0, 0x1D1, 0x1D2, 0x1D8
+};
+
 void RegeneratePickups()
 {
 	for (int lp = 0; lp < NumRPickups; lp++)
@@ -319,6 +344,167 @@ void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	}
 }
 
+void SearchObjectControl(short item_number)
+{
+	ITEM_INFO* item;
+	short ObjNum, frame, flip;
+
+	item = &items[item_number];
+	ObjNum = 3 - ((SEARCH_OBJECT4 - item->object_number) >> 1);
+
+	if (ObjNum != 3 || item->item_flags[0] == 1)
+		AnimateItem(item);
+
+	frame = item->frame_number - anims[item->anim_number].frame_base;
+
+	if (ObjNum == 1)
+	{
+		if (frame == 18)
+			item->mesh_bits = 1;
+		else if (frame == 172)
+			item->mesh_bits = 2;
+	}
+	else if (!ObjNum)
+	{
+		if (frame > 0)
+		{
+			item->meshswap_meshbits = 0;
+			item->mesh_bits = -1;
+		}
+		else
+		{
+			item->meshswap_meshbits = -1;
+			item->mesh_bits = 7;
+		}
+	}
+	else if (ObjNum == 3)
+	{
+		flip = flip_stats[0];
+		item->mesh_bits = flip ? 48 : 9;
+
+		if (frame >= 45 && frame <= 131)
+			item->mesh_bits |= flip ? 4 : 2;
+
+		if (item->item_flags[1] != -1 && objects[items[item->item_flags[1]].object_number].collision == PickupCollision)
+			items[item->item_flags[1]].status = flip ? ITEM_INACTIVE : ITEM_INVISIBLE;
+	}
+
+	if (frame == SearchCollectFrames[ObjNum])
+	{
+		if (ObjNum == 3)
+		{
+			if (item->item_flags[1] != -1)
+			{
+				if (objects[items[item->item_flags[1]].object_number].collision == PickupCollision)
+				{
+					AddDisplayPickup(items[item->item_flags[1]].object_number);
+					KillItem(item->item_flags[1]);
+				}
+				else
+				{
+					AddActiveItem(item->item_flags[1]);
+					items[item->item_flags[1]].flags |= IFLAG_ACTIVATION_MASK;
+					items[item->item_flags[1]].status = ITEM_ACTIVE;
+					lara_item->hit_points = 640;
+				}
+
+				item->item_flags[1] = -1;
+			}
+		}
+		else
+		{
+			CollectCarriedItems(item);
+		}
+	}
+
+	if (item->status == ITEM_DEACTIVATED)
+	{
+		if (ObjNum == 3)
+		{
+			item->item_flags[0] = 0;
+			item->status = ITEM_ACTIVE;
+		}
+		else
+		{
+			RemoveActiveItem(item_number);
+			item->status = ITEM_INACTIVE;
+		}
+	}
+}
+
+void SearchObjectCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+	short ObjNum;
+	short* bounds;
+
+	item = &items[item_num];
+	ObjNum = 3 - ((SEARCH_OBJECT4 - item->object_number) >> 1);
+
+	if (input & IN_ACTION && l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH && lara.gun_status == LG_NO_ARMS && (item->status == ITEM_INACTIVE && ObjNum != 3 || !item->item_flags[0]) || lara.IsMoving && lara.GeneralPtr == (void *) item_num)
+	{
+		bounds = GetBoundsAccurate(item);
+
+		if (ObjNum)
+		{
+			SOBounds[0] = bounds[0] - 128;
+			SOBounds[1] = bounds[1] + 128;
+		}
+		else
+		{
+			SOBounds[0] = bounds[0] + 64;
+			SOBounds[1] = bounds[1] - 64;
+		}
+
+		SOBounds[4] = bounds[4] - 200;
+		SOBounds[5] = bounds[5] + 200;
+		SOPos.z = bounds[4] - SearchOffsets[ObjNum];
+
+		if (TestLaraPosition(SOBounds, item, l))
+		{
+			if (MoveLaraPosition(&SOPos, item, l))
+			{
+				l->current_anim_state = AS_CONTROLLED;
+				l->anim_number = SearchAnims[ObjNum];
+				l->frame_number = anims[l->anim_number].frame_base;
+				lara.IsMoving = false;
+				lara.head_y_rot = 0;
+				lara.head_x_rot = 0;
+				lara.torso_y_rot = 0;
+				lara.torso_x_rot = 0;
+				lara.gun_status = LG_HANDS_BUSY;
+
+				if (ObjNum == 3)
+				{
+					item->item_flags[0] = 1;
+				}
+				else
+				{
+					AddActiveItem(item_num);
+					item->status = ITEM_ACTIVE;
+				}
+
+				item->anim_number = objects[item->object_number].anim_index + 1;
+				item->frame_number = anims[item->anim_number].frame_base;
+				AnimateItem(item);
+			}
+			else
+			{
+				lara.GeneralPtr = (void *) item_num;
+			}
+		}
+		else if (lara.IsMoving && lara.GeneralPtr == (void *) item_num)
+		{
+			lara.IsMoving = false;
+			lara.gun_status = LG_NO_ARMS;
+		}
+	}
+	else if (l->current_anim_state != AS_CONTROLLED)
+	{
+		ObjectCollision(item_num, l, coll);
+	}
+}
+
 void inject_pickup()
 {
 	INJECT(0x00467AF0, RegeneratePickups);
@@ -327,4 +513,6 @@ void inject_pickup()
 	INJECT(0x004695E0, PickupTrigger);
 	INJECT(0x00468C00, PuzzleDoneCollision);
 	INJECT(0x00468C70, PuzzleHoleCollision);
+	INJECT(0x00469660, SearchObjectControl);
+	INJECT(0x004699A0, SearchObjectCollision);
 }
