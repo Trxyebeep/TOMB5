@@ -50,3 +50,4 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags);
 #define RefreshCamera	( (void(__cdecl*)(short, short*)) 0x004165E0 )
 #define TriggerCDTrack	( (void(__cdecl*)(short, short, short)) 0x00418B90 )
 #define ResetGuards	( (void(__cdecl*)()) 0x0041AF10 )
+#define IsRoomOutside	( (int(__cdecl*)(long, long, long)) 0x00418E90 )

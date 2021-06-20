@@ -1953,4 +1953,15 @@ struct SPOTCAM
 	short room_number;
 	short pad;
 };
+
+struct SAVEGAMES
+{
+	char SaveName[75];
+	char bValid;
+	short Hour;
+	short Min;
+	short Sec;
+	short Day;
+	long Count;
+};
 #pragma pack(pop)

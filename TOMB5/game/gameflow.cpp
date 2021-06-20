@@ -457,7 +457,7 @@ int TitleOptions()
 
 			if (Gameflow->LoadSaveEnabled)
 			{
-				load = DoLoadSave(0x800000);
+				load = DoLoadSave(IN_LOAD);
 
 				if (load >= 0)
 				{

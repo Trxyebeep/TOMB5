@@ -25,9 +25,8 @@ void ControlXRayMachine(short item_number);
 void CutsceneRopeControl(short item_number);
 void HybridCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll);
 
-#define TriggerSkeletonFire	( (void(__cdecl*)(ITEM_INFO*)) 0x00477D50 )
-#define ControlGunTestStation	( (void(__cdecl*)(ITEM_INFO*)) 0x0048D940 )
-#define TriggerLiftBrakeSparks	( (void(__cdecl*)(PHD_VECTOR*, short)) 0x00487B60 )
+
+
 
 enum object_types {
 	LARA, PISTOLS_ANIM, UZI_ANIM, SHOTGUN_ANIM, CROSSBOW_ANIM, HK_ANIM, REVOLVER_ANIM, FLARE_ANIM,
