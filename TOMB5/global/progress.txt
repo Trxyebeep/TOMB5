@@ -1186,6 +1186,27 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047D2D0	+	InitialiseSwampy
 0x0047D360	+	SwampyControl
 
+
+		game/dog.cpp
+
+0x00428940		InitialiseDog
+0x00428A10		DogControl
+
+
+		game/huskie.cpp
+
+0x0043B670		InitialiseHuskie
+0x0043B730		HuskieControl
+
+
+		game/hydra.cpp
+
+0x0043BEA0		InitialiseHydra
+0x0043BF70		HydraControl
+0x0043C6C0		TriggerHydraMissile
+0x0043C790		TriggerHydraMissileFlame
+0x0043C910		TriggerHydraPowerupFlames
+
 // ======================================
 // SPECIFIC
 // ======================================
