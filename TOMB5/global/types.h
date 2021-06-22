@@ -1964,4 +1964,28 @@ struct SAVEGAMES
 	short Day;
 	long Count;
 };
+
+typedef struct
+{
+	unsigned short tpage;
+	unsigned short offset;
+	unsigned short width;
+	unsigned short height;
+	short x1;
+	short y1;
+	short x2;
+	short y2;
+}PHDSPRITESTRUCT;
+
+typedef struct
+{
+	unsigned short tpage;
+	unsigned short offset;
+	unsigned short width;
+	unsigned short height;
+	float	x1;
+	float	y1;
+	float	x2;
+	float	y2;
+}SPRITESTRUCT;
 #pragma pack(pop)

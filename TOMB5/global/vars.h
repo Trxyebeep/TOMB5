@@ -386,6 +386,8 @@
 #define wbz VAR_U_(0x0051CEBE, short)
 #define ItemNewRoomNo	VAR_U_(0x0051CA54, short)
 #define cSaveGameSelect	VAR_U_(0x008FBDA0, int)
+#define spriteinfo	VAR_U_(0x008751B4, SPRITESTRUCT*)
+#define clipflags	VAR_U_(0x00D9AB34, short*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

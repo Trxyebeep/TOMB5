@@ -236,7 +236,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00431030		KillAllCurrentItems
 0x00431050		KillEverything
 0x00431070		TriggerExplosionBubble
-0x00431240		TriggerDynamic	.text
+0x00431240		TriggerDynamic
 0x00431420		TriggerDynamic_MIRROR
 0x00431530		ClearDynamics
 0x00431560		ControlSmokeEmitter
@@ -523,7 +523,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00464BF0	+	do_stats_mode
 0x00464C60	+	dels_give_lara_items_cheat
 0x00464C80	+	dels_give_lara_guns_cheat
-0x00464CA0		DelDrawSprite
+0x00464CA0	+	DelDrawSprite
 0x00464EF0	+	LoadGame
 0x00464F20	+	SaveGame
 

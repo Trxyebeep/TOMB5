@@ -22,6 +22,8 @@
 #include "../specific/3dmath.h"
 #include "draw.h"
 #include "subsuit.h"
+#include "../specific/specificfx.h"
+#include "../specific/polyinsert.h"
 
 short optmessages[11] =
 {
@@ -2938,6 +2940,52 @@ int SaveGame()
 	input = 0;
 	dbinput = 0;
 	return S_LoadSave(IN_SAVE, 1) < 0 ? -1 : 1;
+}
+
+void DelDrawSprite(int x, int y, int def, int z)
+{
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT Tex;
+	long x1, y1, x2, y2, x3, y3, x4, y4;
+	float u1, u2, v1, v2;
+
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + def];
+
+	if (z >= 200)
+		z = (int)(f_zfar - 20.0);
+	else
+		z = (int)(f_mznear + 20.0);
+
+	x1 = x4 = (long)((float)x * (float)phd_centerx * (1.0f / 256.0f));
+	x2 = x3 = (long)(((float)((sprite->width >> 8) + x + 1)) * (float)phd_centerx * (1.0f / 256.0f));
+	y1 = y2 = (long)((float)y * (float)phd_centery * (1.0f / 120.0f));
+	y3 = y4 = (long)(((float)((sprite->height >> 8) + y + 1)) * (float)phd_centery * (1.0f / 120.0f));
+	setXY4(v, x1, y1, x2, y2, x3, y3, x4, y4, z, clipflags);
+	v[0].specular = 0xFF000000;
+	v[1].specular = 0xFF000000;
+	v[2].specular = 0xFF000000;
+	v[3].specular = 0xFF000000;
+	v[0].color = 0xFFFFFFFF;
+	v[1].color = 0xFFFFFFFF;
+	v[2].color = 0xFFFFFFFF;
+	v[3].color = 0xFFFFFFFF;
+	u1 = sprite->x1;
+	v1 = sprite->y1;
+	u2 = sprite->x2;
+	v2 = sprite->y2;
+	Tex.drawtype = 1;
+	Tex.flag = 0;
+	Tex.tpage = sprite->tpage;
+	Tex.u1 = u1;
+	Tex.v1 = v1;
+	Tex.u2 = u2;
+	Tex.v2 = v1;
+	Tex.u3 = u2;
+	Tex.v3 = v2;
+	Tex.u4 = u1;
+	Tex.v4 = v2;
+	AddQuadClippedSorted(v, 0, 1, 2, 3, &Tex, 0);
 }
 
 void inject_newinv2()
