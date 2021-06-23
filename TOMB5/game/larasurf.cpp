@@ -177,7 +177,7 @@ void LaraSurface(ITEM_INFO* item, COLL_INFO* coll)
 	coll->trigger = 0;
 
 	if (input & IN_LOOK && lara.look)
-		LookUpDown();
+		LookLeftRight();
 	else
 		ResetLook();
 
