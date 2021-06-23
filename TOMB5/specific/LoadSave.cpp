@@ -182,6 +182,11 @@ int DoLoadSave(int LoadSave)
 	return -1;
 }
 
+void S_MemSet(void* p, int val, size_t sz)
+{
+	memset(p, val, sz);
+}
+
 void inject_LoadSave()
 {
 	INJECT(0x004ADF40, CheckKeyConflicts);
@@ -192,4 +197,5 @@ void inject_LoadSave()
 	INJECT(0x004B19C0, S_DrawHealthBar2);
 	INJECT(0x004B1890, S_DrawDashBar);
 	INJECT(0x004AD460, DoLoadSave);
+	INJECT(0x004B1E30, S_MemSet);
 }

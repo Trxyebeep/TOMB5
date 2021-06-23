@@ -10,7 +10,6 @@ void phd_PutPolygons(short* objptr, int clipstatus);
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
 #define StashSkinNormals	( (void(__cdecl*)(long)) 0x004B2410 )
 #define SkinVerticesToScratch	( (void(__cdecl*)(long)) 0x004B2340 )
-//#define phd_PutPolygons	( (void(__cdecl*)(short*, int)) 0x004B3F00 )
 #define phd_PutPolygons_seethrough	( (void(__cdecl*)(short*, int)) 0x004B4F10 )
 #define phd_PutPolygonsPickup	( (void(__cdecl*)(short*, float, float, long)) 0x004B66B0 )
 #define phd_PutPolygons_train	( (void(__cdecl*)(short*, int)) 0x004B74A0 )

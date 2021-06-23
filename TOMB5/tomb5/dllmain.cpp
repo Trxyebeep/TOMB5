@@ -45,6 +45,7 @@
 #include "../specific/others.h"
 #include "../game/objlight.h"
 #include "../game/swampy.h"
+#include "../game/rat.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -109,6 +110,7 @@ void inject_all()
 	inject_others();
 	inject_objlight();
 	inject_swampy();
+	inject_rat();
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

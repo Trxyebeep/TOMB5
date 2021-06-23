@@ -1988,4 +1988,14 @@ typedef struct
 	float	x2;
 	float	y2;
 }SPRITESTRUCT;
+
+struct RAT_STRUCT
+{
+	PHD_3DPOS pos;
+	short room_number;
+	short speed;
+	short fallspeed;
+	unsigned char On;
+	unsigned char flags;
+};
 #pragma pack(pop)

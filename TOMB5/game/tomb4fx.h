@@ -35,3 +35,4 @@ long LSpline(long x, long* knots, int nk);
 #define ExplodingDeath2	( (void(__cdecl*)(short, long, short)) 0x00484080 )
 #define Richochet	( (void(__cdecl*)(GAME_VECTOR*)) 0x00432710 )
 #define trig_actor_gunflash	( (void(__cdecl*)(MATRIX3D*, PHD_VECTOR*)) 0x00485EC0 )
+#define TriggerSmallSplash	( (void(__cdecl*)(long, long, long, long)) 0x00483180 )
