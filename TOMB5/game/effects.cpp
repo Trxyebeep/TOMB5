@@ -15,6 +15,7 @@
 #include "objects.h"
 #include "sphere.h"
 #include "../specific/DS.h"
+#include "footprnt.h"
 
 #define rgb(a,b,c) a<<16 | b<<8 | c
 long FogTableColor[] =
@@ -25,11 +26,6 @@ long FogTableColor[] =
 	rgb(250,222,167), rgb(218,175,117), rgb(225,191,78), rgb(77,140,141), rgb(4,181,154), rgb(255,174,0)
 };
 #undef rgb
-
-static char footsounds[14] = 
-{
-	0, 5, 3, 2, 1, 9, 9, 4, 6, 5, 3, 9, 4, 6
-};
 
 void(*effect_routines[59])(ITEM_INFO* item) =
 {
@@ -314,40 +310,6 @@ void LaraLocation(ITEM_INFO* item)
 void ClearSpidersPatch(ITEM_INFO* item)
 {
 	ClearSpiders();
-}
-
-void AddFootprint(ITEM_INFO* item)
-{
-	FOOTPRINT* print;
-	PHD_VECTOR pos;
-	short room_num;
-	FLOOR_INFO* floor;
-
-	pos.x = 0;
-	pos.y = 0;
-	pos.z = 0;
-
-	if (FXType == SFX_LANDONLY)
-		GetLaraJointPos(&pos, LM_LFOOT);
-	else
-		GetLaraJointPos(&pos, LM_RFOOT);
-
-	room_num = item->room_number;
-	floor = GetFloor(pos.x, pos.y, pos.z, &room_num);
-
-	if (floor->fx != 6 && floor->fx != 5 && floor->fx != 11)
-		SoundEffect(footsounds[floor->fx] + 288, &lara_item->pos, 0);
-
-	if (floor->fx < 3 && !OnObject)
-	{
-		print = &FootPrint[FootPrintNum];
-		print->x = pos.x;
-		print->y = GetHeight(floor, pos.x, pos.y, pos.z);
-		print->z = pos.z;
-		print->YRot = item->pos.y_rot;
-		print->Active = 512;
-		FootPrintNum = FootPrintNum + 1 & 0x1F;
-	}
 }
 
 void ResetTest(ITEM_INFO* item)
@@ -650,7 +612,6 @@ void inject_effects()
 	INJECT(0x004334A0, SetFog);
 	INJECT(0x004330C0, LaraLocation);
 	INJECT(0x00433670, ClearSpidersPatch);
-	INJECT(0x004346A0, AddFootprint);
 	INJECT(0x00433130, ResetTest);
 	INJECT(0x00433100, LaraLocationPad);
 	INJECT(0x00433360, KillActiveBaddies);

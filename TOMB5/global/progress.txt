@@ -765,7 +765,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00455680	+	LaraInitialiseMeshes
 0x004557B0	+	LaraCheatyBits
-0x00455830		LaraControl
+0x00455830	+	LaraControl
 0x00456320	+	LaraCheat
 0x004563F0	+	AnimateLara
 0x004568C0	+	InitialiseLaraLoad

@@ -36,6 +36,7 @@
     <ClCompile Include="TOMB5\game\effect2.cpp" />
     <ClCompile Include="TOMB5\game\effects.cpp" />
     <ClCompile Include="TOMB5\game\flmtorch.cpp" />
+    <ClCompile Include="TOMB5\game\footprnt.cpp" />
     <ClCompile Include="TOMB5\game\gameflow.cpp" />
     <ClCompile Include="TOMB5\game\gameflow_helpers.cpp" />
     <ClCompile Include="TOMB5\game\hair.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="TOMB5\game\effect2.h" />
     <ClInclude Include="TOMB5\game\effects.h" />
     <ClInclude Include="TOMB5\game\flmtorch.h" />
+    <ClInclude Include="TOMB5\game\footprnt.h" />
     <ClInclude Include="TOMB5\game\gameflow.h" />
     <ClInclude Include="TOMB5\game\gameflow_helpers.h" />
     <ClInclude Include="TOMB5\game\hair.h" />

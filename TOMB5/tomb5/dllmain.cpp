@@ -47,6 +47,7 @@
 #include "../game/swampy.h"
 #include "../game/rat.h"
 #include "../game/deathsld.h"
+#include "../game/footprnt.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -113,6 +114,7 @@ void inject_all()
 	inject_swampy();
 	inject_rat();
 	inject_deathslide();
+	inject_footprnt();
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

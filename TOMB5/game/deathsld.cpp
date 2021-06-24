@@ -3,8 +3,10 @@
 #include "../specific/function_stubs.h"
 #include "../game/lara_states.h"
 #include "collide.h"
-#include "laramisc.cpp"
+#include "laramisc.h"
 #include "items.h"
+#include "control.h"
+#include "sound.h"
 
 static short DeathSlideBounds[] = {-256, 256, -100, 100, 256, 512, 0, 0, -4550, 4550, 0, 0};
 static PHD_VECTOR DeathSlidePosition = {0, 0, 371};
