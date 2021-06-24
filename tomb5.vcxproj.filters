@@ -182,6 +182,7 @@
     <ClCompile Include="TOMB5\game\tower.cpp" />
     <ClCompile Include="TOMB5\game\swampy.cpp" />
     <ClCompile Include="TOMB5\specific\polyinsert.cpp" />
+    <ClCompile Include="TOMB5\game\deathsld.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -366,6 +367,7 @@
     <ClInclude Include="TOMB5\game\tower.h" />
     <ClInclude Include="TOMB5\game\swampy.h" />
     <ClInclude Include="TOMB5\specific\polyinsert.h" />
+    <ClInclude Include="TOMB5\game\deathsld.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

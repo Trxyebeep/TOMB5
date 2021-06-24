@@ -80,11 +80,11 @@ x for functions decompiled but not injected, for one reason or another.
 0x0041CB10	+	FireTwoGunTitleWeapon
 
 		
-		game/deathslide.cpp
+		game/deathsld.cpp
 
-0x0041CC70		InitialiseDeathSlide
-0x0041CCE0		DeathSlideCollision
-0x0041CE00		ControlDeathSlide
+0x0041CC70	+	InitialiseDeathSlide
+0x0041CCE0	+	DeathSlideCollision
+0x0041CE00	+	ControlDeathSlide
 
 
 		game/chef.cpp

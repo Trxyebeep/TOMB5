@@ -27,6 +27,7 @@
     <ClCompile Include="TOMB5\game\collide.cpp" />
     <ClCompile Include="TOMB5\game\control.cpp" />
     <ClCompile Include="TOMB5\game\cutseq.cpp" />
+    <ClCompile Include="TOMB5\game\deathsld.cpp" />
     <ClCompile Include="TOMB5\game\debris.cpp" />
     <ClCompile Include="TOMB5\game\delstuff.cpp" />
     <ClCompile Include="TOMB5\game\deltapak.cpp" />
@@ -106,6 +107,7 @@
     <ClInclude Include="TOMB5\game\collide.h" />
     <ClInclude Include="TOMB5\game\control.h" />
     <ClInclude Include="TOMB5\game\cutseq.h" />
+    <ClInclude Include="TOMB5\game\deathsld.h" />
     <ClInclude Include="TOMB5\game\debris.h" />
     <ClInclude Include="TOMB5\game\delstuff.h" />
     <ClInclude Include="TOMB5\game\deltapak.h" />
