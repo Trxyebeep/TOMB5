@@ -950,12 +950,12 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/bat.cpp
 
-0x00407D30		GetFreeBat
-0x00407DD0		TriggerBat
-0x00407EC0		InitialiseBatEmitter
-0x00407F50		ControlBatEmitter
-0x00407FD0		UpdateBats
-0x00408480		DrawBats
+0x00407D30	+	GetFreeBat
+0x00407DD0	+	TriggerBat
+0x00407EC0	+	InitialiseBatEmitter
+0x00407F50	+	ControlBatEmitter
+0x00407FD0	+	UpdateBats
+0x00408480	+	DrawBats
 
 
 		game/rat.cpp
@@ -1410,7 +1410,7 @@ x for functions decompiled but not injected, for one reason or another.
 +		CHEF
 		IMP
 		GUNSHIP
-		BAT
++		BAT
 +		RAT
 		SPIDER
 		SPIDER_GENERATOR

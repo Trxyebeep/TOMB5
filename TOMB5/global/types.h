@@ -1998,4 +1998,17 @@ struct RAT_STRUCT
 	unsigned char On;
 	unsigned char flags;
 };
+
+struct BAT_STRUCT
+{
+	PHD_3DPOS pos;
+	short room_number;
+	short speed;
+	short Counter;
+	short LaraTarget;
+	char XTarget;
+	char ZTarget;
+	unsigned char On;
+	unsigned char flags;
+};
 #pragma pack(pop)
