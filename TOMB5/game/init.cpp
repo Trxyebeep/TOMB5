@@ -744,8 +744,9 @@ void InitialiseTightRope(short item_number)
 		item->pos.x_pos += 256;
 	else if (item->pos.y_rot == -32768)
 		item->pos.z_pos += 256;
-  
-  void InitialiseSearchObject(short item_number)
+}
+
+void InitialiseSearchObject(short item_number)
 {
 	ITEM_INFO* item;
 	short ObjNum;
@@ -855,6 +856,6 @@ void inject_init()
 	INJECT(0x0043ECB0, InitialiseRomeHammer);
 	INJECT(0x0043ECF0, InitialiseCrowDoveSwitch);
 	INJECT(0x0043ED30, InitialiseTightRope);
-  INJECT(0x0043EDB0, InitialiseSearchObject);
+	INJECT(0x0043EDB0, InitialiseSearchObject);
 	INJECT(0x0043F070, InitialiseExplosion);
 }
