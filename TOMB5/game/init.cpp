@@ -718,6 +718,33 @@ void InitialiseWreckingBall(short item_number)
 		ItemNewRoom(item_number, room_number);
 }
 
+void InitialiseRomeHammer(short item_number)
+{
+	*(long*)&items[item_number].item_flags[0] = 2;
+	items[item_number].item_flags[3] = 250;
+}
+
+void InitialiseCrowDoveSwitch(short item_number)
+{
+	items[item_number].mesh_bits = 3;
+}
+
+void InitialiseTightRope(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (!item->pos.y_rot)
+		item->pos.z_pos -= 256;
+	else if (item->pos.y_rot == 16384)
+		item->pos.x_pos -= 256;
+	else if (item->pos.y_rot == -16384)
+		item->pos.x_pos += 256;
+	else if (item->pos.y_rot == -32768)
+		item->pos.z_pos += 256;
+}
+
 void inject_init()
 {
 	INJECT(0x0043D2F0, InitialiseTrapDoor);
@@ -732,7 +759,7 @@ void inject_init()
 	INJECT(0x0043D9D0, InitialiseSmokeEmitter);
 	INJECT(0x0043DB60, InitialiseDoor);
 	INJECT(0x0043E1F0, InitialisePulley);
-//	INJECT(0x0043E260, InitialisePickup);
+	INJECT(0x0043E260, InitialisePickup);
 	INJECT(0x0043E380, InitialiseClosedDoors);
 	INJECT(0x0043E3B0, AddClosedDoor);
 	INJECT(0x0043E3F0, SetupClosedDoorStuff);
@@ -742,4 +769,7 @@ void inject_init()
 	INJECT(0x0043EB50, InitialiseFloorLasers);
 	INJECT(0x0043EC70, InitialiseFishtank);
 	INJECT(0x0043EF20, InitialiseWreckingBall);
+	INJECT(0x0043ECB0, InitialiseRomeHammer);
+	INJECT(0x0043ECF0, InitialiseCrowDoveSwitch);
+	INJECT(0x0043ED30, InitialiseTightRope);
 }
