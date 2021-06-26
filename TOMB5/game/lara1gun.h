@@ -17,3 +17,5 @@ void undraw_shotgun(int weapon_type);
 void AnimateShotgun(int weapon_type);
 void DoGrenadeDamageOnBaddie(ITEM_INFO* baddie, ITEM_INFO* item);
 void TriggerGrapplingEffect(long x, long y, long z);
+
+#define CrossbowHitSwitchType78	( (void(__cdecl*)(ITEM_INFO*, ITEM_INFO*, int)) 0x0044E5E0 )

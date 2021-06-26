@@ -9,6 +9,7 @@
 #include "../specific/function_stubs.h"
 #include "door.h"
 #include "deltapak.h"
+#include "pickup.h"
 
 void InitialiseTrapDoor(short item_number)
 {
@@ -743,6 +744,88 @@ void InitialiseTightRope(short item_number)
 		item->pos.x_pos += 256;
 	else if (item->pos.y_rot == -32768)
 		item->pos.z_pos += 256;
+  
+  void InitialiseSearchObject(short item_number)
+{
+	ITEM_INFO* item;
+	short ObjNum;
+	int i;
+
+	item = &items[item_number];
+	ObjNum = 3 - ((SEARCH_OBJECT4 - item->object_number) >> 1);
+
+	if (ObjNum == 1)
+	{
+		item->mesh_bits = 2;
+	}
+	else if (!ObjNum)
+	{
+		item->meshswap_meshbits = -1;
+		item->mesh_bits = 7;
+	}
+	else if (ObjNum == 3)
+	{
+		item->item_flags[1] = -1;
+		item->mesh_bits = 9;
+
+		for (i = 0; i < level_items; ++i)
+		{
+			if (items[i].object_number == EXPLOSION)
+			{
+				if (item->pos.x_pos == items[i].pos.x_pos && item->pos.y_pos == items[i].pos.y_pos && item->pos.z_pos == items[i].pos.z_pos)
+				{
+					item->item_flags[1] = i;
+					break;
+				}
+			}
+			else if (objects[items[i].object_number].collision == PickupCollision && item->pos.x_pos == items[i].pos.x_pos && item->pos.y_pos == items[i].pos.y_pos && item->pos.z_pos == items[i].pos.z_pos)
+			{
+				item->item_flags[1] = i;
+				break;
+			}
+
+		}
+
+		AddActiveItem(item_number);
+		item->flags |= IFLAG_ACTIVATION_MASK;
+		item->status = ITEM_ACTIVE;
+	}
+}
+
+void InitialiseExplosion(short item_number)
+{
+	ITEM_INFO* item;
+	short size, blastwave;
+
+	item = &items[item_number];
+
+	if (item->trigger_flags >= 30000)
+	{
+		item->item_flags[1] = 3;
+		item->trigger_flags -= 30000;
+	}
+
+	if (item->trigger_flags >= 20000)
+	{
+		item->item_flags[1] = 2;
+		item->trigger_flags -= 20000;
+	}
+	else if (item->trigger_flags >= 10000)
+	{
+		item->item_flags[1] = 1;
+		item->trigger_flags -= 10000;
+	}
+
+	if (item->trigger_flags >= 1000)
+	{
+		item->item_flags[3] = 1;
+		item->trigger_flags -= 1000;
+	}
+
+	size = item->trigger_flags / 100;
+	item->item_flags[2] = size;
+	blastwave = 7 * (item->trigger_flags - 100 * size);
+	item->trigger_flags = blastwave;
 }
 
 void inject_init()
@@ -772,4 +855,6 @@ void inject_init()
 	INJECT(0x0043ECB0, InitialiseRomeHammer);
 	INJECT(0x0043ECF0, InitialiseCrowDoveSwitch);
 	INJECT(0x0043ED30, InitialiseTightRope);
+  INJECT(0x0043EDB0, InitialiseSearchObject);
+	INJECT(0x0043F070, InitialiseExplosion);
 }

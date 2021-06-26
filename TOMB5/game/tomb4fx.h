@@ -36,3 +36,4 @@ long LSpline(long x, long* knots, int nk);
 #define Richochet	( (void(__cdecl*)(GAME_VECTOR*)) 0x00432710 )
 #define trig_actor_gunflash	( (void(__cdecl*)(MATRIX3D*, PHD_VECTOR*)) 0x00485EC0 )
 #define TriggerSmallSplash	( (void(__cdecl*)(long, long, long, long)) 0x00483180 )
+#define TriggerShockwave	( (void(__cdecl*)(PHD_VECTOR*, long, long, long, long)) 0x00484670 )

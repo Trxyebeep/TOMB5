@@ -1054,8 +1054,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x004693A0	+	PuzzleDone
 0x00469550	+	KeyTrigger
 0x004695E0	+	PickupTrigger
-0x00469660		SearchObjectControl
-0x004699A0		SearchObjectCollision
+0x00469660	+	SearchObjectControl
+0x004699A0	+	SearchObjectCollision
 0x00469C90		CollectCarriedItems
 0x00469D10		MonitorScreenCollision
 
@@ -1091,7 +1091,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048BD90		TestBoundsCollideTeethSpikes
 0x0048BEF0		ControlScaledSpike
 0x0048C3D0		ControlRaisingBlock
-0x0048C6D0		ControlExplosion
+0x0048C6D0	+	ControlExplosion
 
 
 		game/init.cpp
@@ -1120,10 +1120,10 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043ECB0	+	InitialiseRomeHammer
 0x0043ECF0	+	InitialiseCrowDoveSwitch
 0x0043ED30	+	InitialiseTightRope
-0x0043EDB0		InitialiseSearchObject
+0x0043EDB0	+	InitialiseSearchObject
 0x0043EF20	+	InitialiseWreckingBall
 0x0043F000		InitialiseSecurityScreens
-0x0043F070		InitialiseExplosion
+0x0043F070	+	InitialiseExplosion
 0x0043F180		InitialiseSteelDoor
 0x0043F1D0		InitialiseMotionSensors
 0x0043F270		InitialiseGrapplingTarget

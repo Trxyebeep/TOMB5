@@ -28,3 +28,5 @@ void InitialiseWreckingBall(short item_number);
 void InitialiseRomeHammer(short item_number);
 void InitialiseCrowDoveSwitch(short item_number);
 void InitialiseTightRope(short item_number);
+void InitialiseSearchObject(short item_number);
+void InitialiseExplosion(short item_number);
