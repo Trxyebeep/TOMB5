@@ -27,6 +27,7 @@
     <ClCompile Include="TOMB5\game\collide.cpp" />
     <ClCompile Include="TOMB5\game\control.cpp" />
     <ClCompile Include="TOMB5\game\cutseq.cpp" />
+    <ClCompile Include="TOMB5\game\deathsld.cpp" />
     <ClCompile Include="TOMB5\game\debris.cpp" />
     <ClCompile Include="TOMB5\game\delstuff.cpp" />
     <ClCompile Include="TOMB5\game\deltapak.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="TOMB5\game\effect2.cpp" />
     <ClCompile Include="TOMB5\game\effects.cpp" />
     <ClCompile Include="TOMB5\game\flmtorch.cpp" />
+    <ClCompile Include="TOMB5\game\footprnt.cpp" />
     <ClCompile Include="TOMB5\game\gameflow.cpp" />
     <ClCompile Include="TOMB5\game\gameflow_helpers.cpp" />
     <ClCompile Include="TOMB5\game\hair.cpp" />
@@ -86,6 +88,7 @@
     <ClCompile Include="TOMB5\specific\LoadSave.cpp" />
     <ClCompile Include="TOMB5\specific\others.cpp" />
     <ClCompile Include="TOMB5\specific\output.cpp" />
+    <ClCompile Include="TOMB5\specific\polyinsert.cpp" />
     <ClCompile Include="TOMB5\specific\specific.cpp" />
     <ClCompile Include="TOMB5\specific\specificfx.cpp" />
     <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
@@ -105,6 +108,7 @@
     <ClInclude Include="TOMB5\game\collide.h" />
     <ClInclude Include="TOMB5\game\control.h" />
     <ClInclude Include="TOMB5\game\cutseq.h" />
+    <ClInclude Include="TOMB5\game\deathsld.h" />
     <ClInclude Include="TOMB5\game\debris.h" />
     <ClInclude Include="TOMB5\game\delstuff.h" />
     <ClInclude Include="TOMB5\game\deltapak.h" />
@@ -113,6 +117,7 @@
     <ClInclude Include="TOMB5\game\effect2.h" />
     <ClInclude Include="TOMB5\game\effects.h" />
     <ClInclude Include="TOMB5\game\flmtorch.h" />
+    <ClInclude Include="TOMB5\game\footprnt.h" />
     <ClInclude Include="TOMB5\game\gameflow.h" />
     <ClInclude Include="TOMB5\game\gameflow_helpers.h" />
     <ClInclude Include="TOMB5\game\hair.h" />
@@ -170,6 +175,7 @@
     <ClInclude Include="TOMB5\specific\matrix_shit.h" />
     <ClInclude Include="TOMB5\specific\others.h" />
     <ClInclude Include="TOMB5\specific\output.h" />
+    <ClInclude Include="TOMB5\specific\polyinsert.h" />
     <ClInclude Include="TOMB5\specific\specific.h" />
     <ClInclude Include="TOMB5\specific\specificfx.h" />
     <ClInclude Include="TOMB5\tomb5\framework.h" />

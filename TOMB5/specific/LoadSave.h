@@ -12,6 +12,7 @@ void S_DrawHealthBar(int pos);
 void S_DrawHealthBar2(int pos);
 void S_DrawDashBar(int pos);
 int DoLoadSave(int LoadSave);
+void S_MemSet(void* p, int val, size_t sz);
 
 #define CreateMonoScreen	( (void(__cdecl*)()) 0x004AC430 )
 #define S_DisplayMonoScreen	( (void(__cdecl*)()) 0x004AD010 )

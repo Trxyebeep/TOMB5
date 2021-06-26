@@ -1964,4 +1964,51 @@ struct SAVEGAMES
 	short Day;
 	long Count;
 };
+
+typedef struct
+{
+	unsigned short tpage;
+	unsigned short offset;
+	unsigned short width;
+	unsigned short height;
+	short x1;
+	short y1;
+	short x2;
+	short y2;
+}PHDSPRITESTRUCT;
+
+typedef struct
+{
+	unsigned short tpage;
+	unsigned short offset;
+	unsigned short width;
+	unsigned short height;
+	float	x1;
+	float	y1;
+	float	x2;
+	float	y2;
+}SPRITESTRUCT;
+
+struct RAT_STRUCT
+{
+	PHD_3DPOS pos;
+	short room_number;
+	short speed;
+	short fallspeed;
+	unsigned char On;
+	unsigned char flags;
+};
+
+struct BAT_STRUCT
+{
+	PHD_3DPOS pos;
+	short room_number;
+	short speed;
+	short Counter;
+	short LaraTarget;
+	char XTarget;
+	char ZTarget;
+	unsigned char On;
+	unsigned char flags;
+};
 #pragma pack(pop)

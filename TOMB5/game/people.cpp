@@ -62,12 +62,12 @@ int Targetable(ITEM_INFO* item, AI_info* info)
 	return LOS(&start, &target);
 }
 
-short GunShot(long x, long y, long z, short speed, int yrot, int room_number)
+short GunShot(long x, long y, long z, short speed, short yrot, short room_number)
 {
 	return -1;
 }
 
-short GunHit(long x, long y, long z, short speed, int yrot, int room_number)
+short GunHit(long x, long y, long z, short speed, short yrot, short room_number)
 {
 	PHD_VECTOR pos;
 
@@ -80,7 +80,7 @@ short GunHit(long x, long y, long z, short speed, int yrot, int room_number)
 	return GunShot(x, y, z, speed, yrot, room_number);
 }
 
-short GunMiss(long x, long y, long z, short speed, int yrot, int room_number)
+short GunMiss(long x, long y, long z, short speed, short yrot, short room_number)
 {
 	GAME_VECTOR pos;
 

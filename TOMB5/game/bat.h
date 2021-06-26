@@ -1,4 +1,11 @@
 #pragma once
 #include "../global/vars.h"
 
-#define UpdateBats	( (void(__cdecl*)()) 0x00407FD0 )
+void inject_bats();
+
+long GetFreeBat();
+void TriggerBat(ITEM_INFO* item);
+void InitialiseBatEmitter(short item_number);
+void ControlBatEmitter(short item_number);
+void UpdateBats();
+void DrawBats();

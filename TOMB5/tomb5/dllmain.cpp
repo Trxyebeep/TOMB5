@@ -45,6 +45,10 @@
 #include "../specific/others.h"
 #include "../game/objlight.h"
 #include "../game/swampy.h"
+#include "../game/rat.h"
+#include "../game/deathsld.h"
+#include "../game/footprnt.h"
+#include "../game/bat.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -109,6 +113,10 @@ void inject_all()
 	inject_others();
 	inject_objlight();
 	inject_swampy();
+	inject_rat();
+	inject_deathslide();
+	inject_footprnt();
+	inject_bats();
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

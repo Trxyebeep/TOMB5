@@ -29,7 +29,6 @@ void reset_hair(ITEM_INFO* item);
 void SetFog(ITEM_INFO* item);
 void LaraLocation(ITEM_INFO* item);
 void ClearSpidersPatch(ITEM_INFO* item);
-void AddFootprint(ITEM_INFO* item);
 void ResetTest(ITEM_INFO* item);
 void LaraLocationPad(ITEM_INFO* item);
 void KillActiveBaddies(ITEM_INFO* item);

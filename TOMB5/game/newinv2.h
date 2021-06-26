@@ -68,6 +68,7 @@ void dels_give_lara_items_cheat();
 void dels_give_lara_guns_cheat();
 int LoadGame();
 int SaveGame();
+void DelDrawSprite(int x, int y, int def, int z);
 
 enum ring_types
 {

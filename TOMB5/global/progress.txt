@@ -80,11 +80,11 @@ x for functions decompiled but not injected, for one reason or another.
 0x0041CB10	+	FireTwoGunTitleWeapon
 
 		
-		game/deathslide.cpp
+		game/deathsld.cpp
 
-0x0041CC70		InitialiseDeathSlide
-0x0041CCE0		DeathSlideCollision
-0x0041CE00		ControlDeathSlide
+0x0041CC70	+	InitialiseDeathSlide
+0x0041CCE0	+	DeathSlideCollision
+0x0041CE00	+	ControlDeathSlide
 
 
 		game/chef.cpp
@@ -236,7 +236,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00431030		KillAllCurrentItems
 0x00431050		KillEverything
 0x00431070		TriggerExplosionBubble
-0x00431240		TriggerDynamic	.text
+0x00431240		TriggerDynamic
 0x00431420		TriggerDynamic_MIRROR
 0x00431530		ClearDynamics
 0x00431560		ControlSmokeEmitter
@@ -523,7 +523,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00464BF0	+	do_stats_mode
 0x00464C60	+	dels_give_lara_items_cheat
 0x00464C80	+	dels_give_lara_guns_cheat
-0x00464CA0		DelDrawSprite
+0x00464CA0	+	DelDrawSprite
 0x00464EF0	+	LoadGame
 0x00464F20	+	SaveGame
 
@@ -765,7 +765,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00455680	+	LaraInitialiseMeshes
 0x004557B0	+	LaraCheatyBits
-0x00455830		LaraControl
+0x00455830	+	LaraControl
 0x00456320	+	LaraCheat
 0x004563F0	+	AnimateLara
 0x004568C0	+	InitialiseLaraLoad
@@ -950,21 +950,22 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/bat.cpp
 
-0x00407D30		GetFreeBat
-0x00407DD0		TriggerBat
-0x00407EC0		InitialiseBatEmitter
-0x00407F50		ControlBatEmitter
-0x00407FD0		UpdateBats
-0x00408480		DrawBats
+0x00407D30	+	GetFreeBat
+0x00407DD0	+	TriggerBat
+0x00407EC0	+	InitialiseBatEmitter
+0x00407F50	+	ControlBatEmitter
+0x00407FD0	+	UpdateBats
+0x00408480	+	DrawBats
 
 
 		game/rat.cpp
 
-0x0046AA70		GetFreeRat
-0x0046AAE0		ClearRats
-0x0046AB30		TriggerRat
-0x0046AC70		UpdateRats
-0x0046B140		DrawRats
+0x0046AA70	+	GetFreeRat
+0x0046AAE0	+	ClearRats
+0x0046AB30	+	TriggerRat
+0x0046AC70	x	UpdateRats
+0x0046B140	+	DrawRats
+0x0046B220	+	InitialiseRatGenerator
 
 		game/spider.cpp
 
@@ -1116,9 +1117,9 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043E980	+	InitialiseSteamLasers
 0x0043EB50	+	InitialiseFloorLasers
 0x0043EC70	+	InitialiseFishtank
-0x0043ECB0		InitialiseRomeHammer
-0x0043ECF0		InitialiseCrowDoveSwitch
-0x0043ED30		InitialiseTightRope
+0x0043ECB0	+	InitialiseRomeHammer
+0x0043ECF0	+	InitialiseCrowDoveSwitch
+0x0043ED30	+	InitialiseTightRope
 0x0043EDB0	+	InitialiseSearchObject
 0x0043EF20	+	InitialiseWreckingBall
 0x0043F000		InitialiseSecurityScreens
@@ -1185,6 +1186,27 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x0047D2D0	+	InitialiseSwampy
 0x0047D360	+	SwampyControl
+
+
+		game/dog.cpp
+
+0x00428940		InitialiseDog
+0x00428A10		DogControl
+
+
+		game/huskie.cpp
+
+0x0043B670		InitialiseHuskie
+0x0043B730		HuskieControl
+
+
+		game/hydra.cpp
+
+0x0043BEA0		InitialiseHydra
+0x0043BF70		HydraControl
+0x0043C6C0		TriggerHydraMissile
+0x0043C790		TriggerHydraMissileFlame
+0x0043C910		TriggerHydraPowerupFlames
 
 // ======================================
 // SPECIFIC
@@ -1306,7 +1328,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B1BE0		S_LoadBar
 0x004B1C00		SpecialFeaturesDisplayScreens
 0x004B1D90		DoSpecialFeaturesServer
-0x004B1E30		S_MemSet
+0x004B1E30	+	S_MemSet
 
 
 		specific/drawlara.cpp
@@ -1388,8 +1410,8 @@ x for functions decompiled but not injected, for one reason or another.
 +		CHEF
 		IMP
 		GUNSHIP
-		BAT
-		RAT
++		BAT
++		RAT
 		SPIDER
 		SPIDER_GENERATOR
 		AUTOGUN
@@ -1454,7 +1476,7 @@ x for functions decompiled but not injected, for one reason or another.
 		JUMP_SWITCH,
 		CROWBAR_SWITCH,
 		PULLEY,
-		CROWDOVE_SWITCH,
+-		CROWDOVE_SWITCH,
 		DOOR_TYPES
 		CLOSED_DOORS
 		LIFT_DOORSS
