@@ -10,6 +10,8 @@
 #include "door.h"
 #include "deltapak.h"
 #include "pickup.h"
+#include "effects.h"
+#include "spider.h"
 
 void InitialiseTrapDoor(short item_number)
 {
@@ -829,6 +831,71 @@ void InitialiseExplosion(short item_number)
 	item->trigger_flags = blastwave;
 }
 
+void InitialiseSecurityScreens(short item_number)
+{
+	ITEM_INFO* item;
+	short mb1;
+
+	item = &items[item_number];
+	mb1 = item->trigger_flags;
+	item->item_flags[1] = mb1;
+	item->item_flags[0] = (mb1 & 3) << 6;
+	item->mesh_bits = (2 << mb1) + (32 << mb1);
+}
+
+void InitialiseSteelDoor(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+	item->mesh_bits = 1;
+	item->pos.y_pos -= 1024;
+}
+
+void InitialiseMotionSensors(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+	item->pos.z_pos -= (360 * phd_cos(item->pos.y_rot)) >> 14;
+	item->pos.x_pos -= (360 * phd_sin(item->pos.y_rot)) >> 14;
+	item->pos.y_pos -= 88;
+	item->item_flags[3] = item->pos.y_rot - 10240;
+}
+
+void InitialiseGrapplingTarget(short item_number)
+{
+	items[item_number].mesh_bits = 1;
+}
+
+void InitialiseSpiderGenerator(short item_number)
+{
+	ITEM_INFO* item;
+	short tf;
+
+	item = &items[item_number];
+	tf = item->trigger_flags / 1000;
+	item->item_flags[0] = tf & 1;
+	item->item_flags[1] = tf & 2;
+	item->item_flags[2] = tf & 4;
+	item->pos.x_rot = 8192;
+	item->trigger_flags %= 1000;
+
+	if (!item->item_flags[0])
+	{
+		if (item->pos.y_rot > 4096 && item->pos.y_rot < 28672)
+			item->pos.x_pos -= 512;
+		else if (item->pos.y_rot < -4096 && item->pos.y_rot > -28672)
+			item->pos.x_pos += 512;
+		if (item->pos.y_rot > -8192 && item->pos.y_rot < 8192)
+			item->pos.z_pos -= 512;
+		else if (item->pos.y_rot < -20480 || item->pos.y_rot > 20480)
+			item->pos.z_pos += 512;
+	}
+
+	ClearSpiders();
+}
+
 void inject_init()
 {
 	INJECT(0x0043D2F0, InitialiseTrapDoor);
@@ -858,4 +925,9 @@ void inject_init()
 	INJECT(0x0043ED30, InitialiseTightRope);
 	INJECT(0x0043EDB0, InitialiseSearchObject);
 	INJECT(0x0043F070, InitialiseExplosion);
+	INJECT(0x0043F000, InitialiseSecurityScreens);
+	INJECT(0x0043F180, InitialiseSteelDoor);
+	INJECT(0x0043F1D0, InitialiseMotionSensors);
+	INJECT(0x0043F270, InitialiseGrapplingTarget);
+	INJECT(0x0043F2B0, InitialiseSpiderGenerator);
 }

@@ -1122,12 +1122,12 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043ED30	+	InitialiseTightRope
 0x0043EDB0	+	InitialiseSearchObject
 0x0043EF20	+	InitialiseWreckingBall
-0x0043F000		InitialiseSecurityScreens
+0x0043F000	+	InitialiseSecurityScreens
 0x0043F070	+	InitialiseExplosion
-0x0043F180		InitialiseSteelDoor
-0x0043F1D0		InitialiseMotionSensors
-0x0043F270		InitialiseGrapplingTarget
-0x0043F2B0		InitialiseSpiderGenerator
+0x0043F180	+	InitialiseSteelDoor
+0x0043F1D0	+	InitialiseMotionSensors
+0x0043F270	+	InitialiseGrapplingTarget
+0x0043F2B0	+	InitialiseSpiderGenerator
 0x0043F3D0		InitialisePropeller
 0x0043F420		InitialiseSas
 0x0043F770		InitialiseBurningRoots
