@@ -30,3 +30,8 @@ void InitialiseCrowDoveSwitch(short item_number);
 void InitialiseTightRope(short item_number);
 void InitialiseSearchObject(short item_number);
 void InitialiseExplosion(short item_number);
+void InitialiseSecurityScreens(short item_number);
+void InitialiseSteelDoor(short item_number);
+void InitialiseMotionSensors(short item_number);
+void InitialiseGrapplingTarget(short item_number);
+void InitialiseSpiderGenerator(short item_number);

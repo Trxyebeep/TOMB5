@@ -2011,4 +2011,10 @@ struct BAT_STRUCT
 	unsigned char On;
 	unsigned char flags;
 };
+
+struct QUAKE_CAM
+{
+	GAME_VECTOR spos;
+	GAME_VECTOR epos;
+};
 #pragma pack(pop)
