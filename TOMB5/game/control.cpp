@@ -2464,11 +2464,11 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 			for (int i = 0; i < SpotRemap[value]; i++)
 				CamSeq += CameraCnt[i];
 
-			if (SpotCam[CamSeq].flags & 32768)
+			if (SpotCam[CamSeq].flags & SP_FLYBYONESHOT)
 				break;
 
 			if (camera_flags & 0x100)
-				SpotCam[CamSeq].flags |= 32768;
+				SpotCam[CamSeq].flags |= SP_FLYBYONESHOT;
 
 			if (bUseSpotCam)
 				break;
