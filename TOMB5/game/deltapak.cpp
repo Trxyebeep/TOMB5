@@ -3242,8 +3242,6 @@ void DecodeAnim(PACKNODE* node, int num_nodes, int frame, int flags)
 void do_new_cutscene_camera()
 {
 	PACKNODE* nodes;
-	tr5_vertex cam_pos;
-	tr5_vertex cam_target;
 
 	if (cutseq_control_routines[cutseq_num].control_func)
 		cutseq_control_routines[cutseq_num].control_func();
@@ -3297,13 +3295,7 @@ void do_new_cutscene_camera()
 		camera.pos.room_number = IsRoomOutsideNo;
 
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-	cam_pos.x = (float)camera.pos.x;
-	cam_pos.y = (float)camera.pos.y;
-	cam_pos.z = (float)camera.pos.z;
-	cam_target.x = (float)camera.target.x;
-	cam_target.y = (float)camera.target.y;
-	cam_target.z = (float)camera.target.z;
-	aLookAt(cam_pos, cam_target, 0);
+	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
 
 	if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
 		DecodeAnim(actor_pnodes[0], 16, GLOBAL_cutseq_frame, 1023);
