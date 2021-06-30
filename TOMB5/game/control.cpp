@@ -33,6 +33,27 @@
 #include "lot.h"
 #include "effects.h"
 
+unsigned char ShatterSounds[18][10] =
+{
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_WOOD, SFX_SMASH_WOOD, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_METAL, SFX_SMASH_METAL, SFX_SMASH_METAL, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_METAL, SFX_SMASH_METAL, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_METAL, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_METAL, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
+{SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS}
+};
 
 long ControlPhase(long _nframes, int demo_mode)
 {
@@ -139,10 +160,9 @@ long ControlPhase(long _nframes, int demo_mode)
 		if (thread_started)
 			return 4;
 
-		if ((input & IN_LOOK) && !SniperCamActive && !bUseSpotCam && !bTrackCamInit
-			&&
-			((lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH)
-				|| (lara.IsDucked && (input & IN_DUCK) == 0 && lara_item->anim_number == ANIM_DUCKBREATHE && lara_item->goal_anim_state == AS_DUCK)))
+		if ((input & IN_LOOK) && !SniperCamActive && !bUseSpotCam && !bTrackCamInit &&
+			((lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH) ||
+			 (lara.IsDucked && (input & IN_DUCK) == 0 && lara_item->anim_number == ANIM_DUCKBREATHE && lara_item->goal_anim_state == AS_DUCK)))
 		{
 			if (!BinocularRange)
 			{
@@ -229,9 +249,9 @@ long ControlPhase(long _nframes, int demo_mode)
 		else if (SniperCamActive || bUseSpotCam || bTrackCamInit)
 			input &= ~IN_LOOK;
 
-		if (BinocularRange && (!LaserSight && (gfLevelFlags & GF_LVOP_TRAIN) && (inputBusy & IN_ACTION)))//VCI levels, headset + action
+		if (BinocularRange && (!LaserSight && (gfLevelFlags & GF_OFFICE) && (inputBusy & IN_ACTION)))//VCI levels, headset + action
 			InfraRed = 1;
-		else if (BinocularRange && (LaserSight && !(gfLevelFlags & GF_LVOP_TRAIN)))//none vci levels, lasersight
+		else if (BinocularRange && (LaserSight && !(gfLevelFlags & GF_OFFICE)))//none vci levels, lasersight
 			InfraRed = 1;
 		else
 			InfraRed = 0;
@@ -312,7 +332,7 @@ long ControlPhase(long _nframes, int demo_mode)
 			else if (lara.dpoisoned)
 				lara.dpoisoned++;
 
-			if (gfLevelFlags & GF_LVOP_TRAIN && !lara.Gassed)
+			if (gfLevelFlags & GF_OFFICE && !lara.Gassed)
 			{
 				if (lara.dpoisoned)
 				{
@@ -345,7 +365,7 @@ long ControlPhase(long _nframes, int demo_mode)
 		InItemControlLoop = 0;
 		KillMoveItems();
 
-		if (gfLevelFlags & GF_LVOP_TRAIN && !bUseSpotCam)
+		if (gfLevelFlags & GF_OFFICE && !bUseSpotCam)
 		{
 			if (room[lara_item->room_number].FlipNumber > 10)
 			{
@@ -371,7 +391,7 @@ long ControlPhase(long _nframes, int demo_mode)
 			{
 				HairControl(0, 0, 0);
 
-				if (gfLevelFlags & GF_LVOP_YOUNG_LARA)
+				if (gfLevelFlags & GF_YOUNGLARA)
 					HairControl(0, 1, 0);
 			}
 
@@ -1239,18 +1259,18 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 		{
 			data = &floor_data[f->index];
 			type = *data;
-			++data;
+			data++;
 			ended = 0;
 
 			if ((type & 0x1F) == TILT_TYPE || (type & 0x1F) == SPLIT1 || (type & 0x1F) == SPLIT2 || (type & 0x1F) == NOCOLF1T || (type & 0x1F) == NOCOLF1B || (type & 0x1F) == NOCOLF2T || (type & 0x1F) == NOCOLF2B)
 			{
-				++data;
+				data++;
 
 				if (type & 0x8000)
 					ended = 1;
 
 				type = *data;
-				++data;
+				data++;
 			}
 
 			if (!ended)
@@ -1357,7 +1377,7 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 			do
 			{
 				type = *data;
-				++data;
+				data++;
 
 				switch (type & 0x1F)
 				{
@@ -1376,23 +1396,23 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 				case NOCOLC1B:
 				case NOCOLC2T:
 				case NOCOLC2B:
-					++data;
+					data++;
 					break;
 
 				case TRIGGER_TYPE:
-					++data;
+					data++;
 
 					do
 					{
 						trigger = *data;
-						++data;
+						data++;
 
 						if (trigger & 0x3C00)
 						{
 							if ((trigger & 0x3C00) == 1024 || (trigger & 0x3C00) == 12288)
 							{
 								trigger = *data;
-								++data;
+								data++;
 							}
 						}
 						else
@@ -1477,7 +1497,7 @@ int xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 			{
 				last_room = room_number;
 				los_rooms[number_los_rooms] = room_number;
-				++number_los_rooms;
+				number_los_rooms++;
 			}
 
 			if (y > GetHeight(floor, x, y, z) || y < GetCeiling(floor, x, y, z))
@@ -1495,7 +1515,7 @@ int xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 			{
 				last_room = room_number;
 				los_rooms[number_los_rooms] = room_number;
-				++number_los_rooms;
+				number_los_rooms++;
 			}
 
 			if (y > GetHeight(floor, x - 1, y, z) || y < GetCeiling(floor, x - 1, y, z))
@@ -1526,7 +1546,7 @@ int xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 			{
 				last_room = room_number;
 				los_rooms[number_los_rooms] = room_number;
-				++number_los_rooms;
+				number_los_rooms++;
 			}
 
 			if (y > GetHeight(floor, x, y, z) || y < GetCeiling(floor, x, y, z))
@@ -1544,7 +1564,7 @@ int xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 			{
 				last_room = room_number;
 				los_rooms[number_los_rooms] = room_number;
-				++number_los_rooms;
+				number_los_rooms++;
 			}
 
 			if (y > GetHeight(floor, x + 1, y, z) || y < GetCeiling(floor, x + 1, y, z))
@@ -1598,7 +1618,7 @@ int zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 			{
 				last_room = room_number;
 				los_rooms[number_los_rooms] = room_number;
-				++number_los_rooms;
+				number_los_rooms++;
 			}
 
 			if (y > GetHeight(floor, x, y, z) || y < GetCeiling(floor, x, y, z))
@@ -1616,7 +1636,7 @@ int zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 			{
 				last_room = room_number;
 				los_rooms[number_los_rooms] = room_number;
-				++number_los_rooms;
+				number_los_rooms++;
 			}
 
 			if (y > GetHeight(floor, x, y, z - 1) || y < GetCeiling(floor, x, y, z - 1))
@@ -1647,7 +1667,7 @@ int zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 			{
 				last_room = room_number;
 				los_rooms[number_los_rooms] = room_number;
-				++number_los_rooms;
+				number_los_rooms++;
 			}
 
 			if (y > GetHeight(floor, x, y, z) || y < GetCeiling(floor, x, y, z))
@@ -1665,7 +1685,7 @@ int zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 			{
 				last_room = room_number;
 				los_rooms[number_los_rooms] = room_number;
-				++number_los_rooms;
+				number_los_rooms++;
 			}
 
 			if (y > GetHeight(floor, x, y, z + 1) || y < GetCeiling(floor, x, y, z + 1))
@@ -1701,7 +1721,7 @@ int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target)
 		src.y = (7 * (target->y - start->y) >> 3) + start->y;
 		src.z = (7 * (target->z - start->z) >> 3) + start->z;
 
-		for (lp = 3; lp > 0; --lp)
+		for (lp = 3; lp > 0; lp--)
 		{
 			dx = ((target->x - src.x) * lp >> 2) + src.x;
 			dy = ((target->y - src.y) * lp >> 2) + src.y;
@@ -1726,7 +1746,7 @@ int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target)
 		src.y = (7 * (target->y - start->y) >> 3) + start->y;
 		src.z = (7 * (target->z - start->z) >> 3) + start->z;
 
-		for (lp = 3; lp > 0; --lp)
+		for (lp = 3; lp > 0; lp--)
 		{
 			dx = ((target->x - src.x) * lp >> 2) + src.x;
 			dy = ((target->y - src.y) * lp >> 2) + src.y;
@@ -1795,9 +1815,9 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 						ShatterObject(NULL, Mesh, 128, target.room_number, 0);
 						SmashedMeshRoom[SmashedMeshCount] = target.room_number;
 						SmashedMesh[SmashedMeshCount] = Mesh;
-						++SmashedMeshCount;
+						SmashedMeshCount++;
 						Mesh->Flags &= ~0x1;
-						SoundEffect(ShatterSounds[gfCurrentLevel - 5][Mesh->static_number], (PHD_3DPOS *) Mesh, 0);
+						SoundEffect(ShatterSounds[gfCurrentLevel - 5][Mesh->static_number], (PHD_3DPOS*)Mesh, 0);
 						//to reach the block Mesh->static_number has to be bigger than 50, and the range for ShatterSounds[][here] is 10.
 						//this is an original game bug. fixing static_number back to range with -50 removes errors, but messes up the
 						//sounds of shattering ingame.
@@ -1880,7 +1900,7 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 								{
 									NumTrigs = GetSwitchTrigger(shotitem, TriggerItems, 1);
 
-									for (i = NumTrigs - 1; i >= 0; --i)
+									for (i = NumTrigs - 1; i >= 0; i--)
 									{
 										AddActiveItem(TriggerItems[i]);
 										items[TriggerItems[i]].status = ITEM_ACTIVE;
@@ -1907,8 +1927,8 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 
 				if (shotitem->object_number == GRAPPLING_TARGET && shotitem->mesh_bits & 1)
 				{
-					LaserSightCol = gfLevelFlags & GF_LVOP_TRAIN;
-					if (gfLevelFlags & GF_LVOP_TRAIN)
+					LaserSightCol = gfLevelFlags & GF_OFFICE;
+					if (gfLevelFlags & GF_OFFICE)
 					{
 						target.x = shotitem->pos.x_pos;
 						target.y = shotitem->pos.y_pos;
@@ -1923,7 +1943,7 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 			shotitem = &items[item_no];
 
 			if (shotitem->object_number == GRAPPLING_TARGET && lara.gun_type == WEAPON_CROSSBOW && shotitem->mesh_bits & 1)
-				LaserSightCol = gfLevelFlags & GF_LVOP_TRAIN;
+				LaserSightCol = gfLevelFlags & GF_OFFICE;
 		}
 
 		hit = 1;
@@ -1937,7 +1957,7 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 		if (firing && !ricochet)
 			TriggerRicochetSpark(&target, lara_item->pos.y_rot, 8, 0);
 	}
-	else if (firing && LaserSight && LaserSightCol == (gfLevelFlags & GF_LVOP_TRAIN))
+	else if (firing && LaserSight && LaserSightCol == (gfLevelFlags & GF_OFFICE))
 		FireCrossBowFromLaserSight(src, &target);
 
 	if (DrawTarget && (hit || !ricochet))
@@ -1968,7 +1988,7 @@ int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MES
 	dz = target->z - start->z;
 	ClosestDist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
 
-	for (i = 0; i < number_los_rooms; ++i)
+	for (i = 0; i < number_los_rooms; i++)
 	{
 		r = &room[los_rooms[i]];
 
@@ -1989,7 +2009,7 @@ int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MES
 			}
 		}
 
-		for (lp = 0; lp < r->num_meshes; ++lp)
+		for (lp = 0; lp < r->num_meshes; lp++)
 		{
 			mesh = &r->mesh[lp];
 

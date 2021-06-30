@@ -587,7 +587,7 @@ void construct_combine_object_list()
 	for (int i = 0; i < 100; i++)
 		rings[RING_AMMO]->current_object_list[i].invitem = -1;
 
-	if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
 		if (lara.sixshooter_type_carried & WTYPE_PRESENT)
 		{
@@ -665,7 +665,7 @@ void construct_object_list()
 	CurrentGrenadeGunAmmoType = 0;
 	CurrentCrossBowAmmoType = 0;
 
-	if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
 		if (lara.pistols_type_carried & WTYPE_PRESENT)
 			insert_object_into_list(INV_PISTOLS_ITEM);
@@ -2880,7 +2880,7 @@ void dels_give_lara_guns_cheat()
 	lara.num_small_medipack = -1;
 	lara.num_large_medipack = -1;
 
-	if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
 		if (objects[SHOTGUN_ITEM].loaded)
 		{

@@ -67,7 +67,7 @@ void LaraGun()
 			lara.request_gun_type = lara.last_gun_type;
 		else if (input & IN_FLARE)
 		{
-			if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+			if (!(gfLevelFlags & GF_YOUNGLARA))
 			{
 				if (lara_item->current_anim_state == AS_DUCK && lara_item->anim_number != ANIM_DUCKBREATHE)
 					return;

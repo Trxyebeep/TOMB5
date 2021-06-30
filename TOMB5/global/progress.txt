@@ -129,7 +129,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0040E890		FixedCamera
 0x0040ED30	+	CalculateCamera
 0x0040F5C0		CameraCollisionBounds
-0x0040FA70		mgLOS
+0x0040FA70	+	mgLOS
 0x0040FC20		BinocularCamera
 0x00410550	+	LaraTorch
 0x00410680		ConfirmCameraTargetPos

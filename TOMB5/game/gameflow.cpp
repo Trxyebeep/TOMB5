@@ -85,14 +85,14 @@ void DoGameflow()
 	{
 		switch (n = *gf++)
 		{
-		case GF_FMV:
+		case CMD_FMV:
 			fmv_to_play[num_fmvs++] = *gf++;
 			break;
 
-		case GF_LEVEL:
+		case CMD_LEVEL:
 			gfLevelFlags = gf[1] | (gf[2] << 8);
 
-			if (!(gfLevelFlags & GF_LVOP_NO_LEVEL))
+			if (!(gfLevelFlags & GF_NOLEVEL))
 				DoLevel(gf[3], gf[4]);
 			else
 			{
@@ -145,7 +145,7 @@ void DoGameflow()
 			gf = &gfScriptWad[gfScriptOffset[gfCurrentLevel]];
 			break;
 
-		case GF_TITLE_LEVEL:
+		case CMD_TITLE:
 			gfLevelFlags = gf[0] | (gf[1] << 8);
 			DoTitle(gf[2], gf[3]);
 			gfMirrorRoom = -1;
@@ -175,30 +175,30 @@ void DoGameflow()
 
 			break;
 
-		case GF_LEVEL_DATA_END:
+		case CMD_ENDSEQ:
 			break;
 
-		case GF_CUT:
+		case CMD_PLAYCUT:
 			gfCutNumber = *gf++;
 			break;
 
-		case GF_RESIDENTCUT1:
+		case CMD_CUT1:
 			gfResidentCut[0] = *gf++;
 			break;
 
-		case GF_RESIDENTCUT2:
+		case CMD_CUT2:
 			gfResidentCut[1] = *gf++;
 			break;
 
-		case GF_RESIDENTCUT3:
+		case CMD_CUT3:
 			gfResidentCut[2] = *gf++;
 			break;
 
-		case GF_RESIDENTCUT4:
+		case CMD_CUT4:
 			gfResidentCut[3] = *gf++;
 			break;
 
-		case GF_LAYER1:
+		case CMD_LAYER1:
 			LightningRGB[0] = *gf;
 			LightningRGBs[0] = *gf;
 			gfLayer1Col.r = *gf++;
@@ -211,7 +211,7 @@ void DoGameflow()
 			gfLayer1Vel = *gf++;
 			break;
 
-		case GF_LAYER2:
+		case CMD_LAYER2:
 			LightningRGB[0] = *gf;
 			LightningRGBs[0] = *gf;
 			gfLayer2Col.r = *gf++;
@@ -224,11 +224,11 @@ void DoGameflow()
 			gfLayer2Vel = *gf++;
 			break;
 
-		case GF_UV_ROTATE:
+		case CMD_UVROT:
 			gfUVRotate = *gf++;
 			break;
 
-		case GF_LEGEND:
+		case CMD_LEGEND:
 			gfLegend = *gf++;
 
 			if (gfGameMode != 4)
@@ -236,7 +236,7 @@ void DoGameflow()
 
 			break;
 
-		case GF_LENS_FLARE:
+		case CMD_LENSFLARE:
 			gfLensFlare.x = ((gf[1] << 8) | gf[0]) << 8;
 			gfLensFlare.y = ((gf[3] << 8) | gf[2]) << 8;
 			gfLensFlare.z = ((gf[5] << 8) | gf[4]) << 8;
@@ -246,51 +246,51 @@ void DoGameflow()
 			gf += 9;
 			break;
 
-		case GF_MIRROR:
+		case CMD_MIRROR:
 			gfMirrorRoom = *gf;
 			gfMirrorZPlane = (gf[4] << 24) | (gf[3] << 16) | (gf[2] << 8) | gf[1];
 			gf += 5;
 			break;
 
-		case GF_FOG:
+		case CMD_FOG:
 			gfFog.r = *gf++;
 			gfFog.g = *gf++;
 			gfFog.b = *gf++;
 			break;
 
-		case GF_ANIMATING_MIP:
+		case CMD_ANIMATINGMIP:
 			gfMips[gfNumMips++] = *gf++;
 			break;
 
-		case GF_RESET_HUB:
+		case CMD_RESETHUB:
 			gfResetHubDest = *gf++;
 			break;
 
-		case GF_GIVE_ITEM_AT_STARTUP:
+		case CMD_GIVEOBJ:
 			gfPickups[gfNumPickups++] = *gf;
 			gf += 2;
 			break;
 
-		case GF_LOSE_ITEM_AT_STARTUP:
+		case CMD_TAKEOBJ:
 			gfTakeaways[gfNumTakeaways++] = *gf;
 			gf += 2;
 			break;
 
 		default:
 
-			if (n >= GF_KEY_ITEM1 && n <= GF_KEY_ITEM8)
+			if (n >= CMD_KEY1 && n <= CMD_KEY8)
 				n -= 93;
-			else if (n >= GF_PUZZLE_ITEM1 && n <= GF_PUZZLE_ITEM8)
+			else if (n >= CMD_PUZZLE1 && n <= CMD_PUZZLE8)
 				n += 127;
-			else if (n >= GF_PICKUP_ITEM1 && n <= GF_PICKUP_ITEM4)
+			else if (n >= CMD_PICKUP1 && n <= CMD_PICKUP4)
 				n -= 93;
-			else if (n >= GF_EXAMINE1 && n <= GF_EXAMINE3)
+			else if (n >= CMD_EXAMINE1 && n <= CMD_EXAMINE3)
 				n -= 83;
-			else if (n >= GF_KEY_ITEM1 && n <= GF_KEY_ITEM8_COMBO2)
+			else if (n >= CMD_KEYCOMBO1_1 && n <= CMD_KEYCOMBO8_2)
 				n -= 116;
-			else if (n >= GF_PUZZLE_ITEM1_COMBO1 && n <= GF_PUZZLE_ITEM8_COMBO2)
+			else if (n >= CMD_PUZZLECOMBO1_1 && n <= CMD_PUZZLECOMBO8_2)
 				n += 100;
-			else if (n >= GF_PICKUP_ITEM1_COMBO1 && n <= GF_PICKUP_ITEM4_COMBO2)
+			else if (n >= CMD_PICKUPCOMBO1_1 && n <= CMD_PICKUPCOMBO4_2)
 				n -= 128;
 
 			inventry_objects_list[n].objname = gf[0] | (gf[1] << 8);

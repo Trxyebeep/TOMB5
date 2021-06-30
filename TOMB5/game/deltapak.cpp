@@ -2404,7 +2404,7 @@ void handle_cutseq_triggering(int name)
 	lara.flare_control_left = 0;
 	lara.flare_age = 0;
 
-	if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
 		lara.gun_type = WEAPON_NONE;
 		lara.request_gun_type = WEAPON_NONE;
@@ -2414,7 +2414,7 @@ void handle_cutseq_triggering(int name)
 		if (!objects[PISTOLS_ITEM].loaded || lara.pistols_type_carried == WTYPE_MISSING)
 			lara.last_gun_type = WEAPON_NONE;
 
-		if (gfLevelFlags & GF_LVOP_TRAIN && objects[HK_ITEM].loaded && lara.hk_type_carried & WTYPE_PRESENT)
+		if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & WTYPE_PRESENT)
 			lara.last_gun_type = WEAPON_HK;
 
 		lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + (2 * LM_LHAND)];
@@ -3518,7 +3518,7 @@ void frigup_lara()
 	phd_PopMatrix();
 	HairControl(0, 0, frame);
 
-	if ((gfLevelFlags & GF_LVOP_YOUNG_LARA))
+	if ((gfLevelFlags & GF_YOUNGLARA))
 		HairControl(0, 1, frame);
 
 	GLaraShadowframe = &frig_shadow_bbox[0];

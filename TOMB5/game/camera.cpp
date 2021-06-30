@@ -44,13 +44,11 @@ void InitialiseCamera()
 void CalculateCamera()
 {
 	ITEM_INFO* item;
+	OBJECT_VECTOR* fixed;
+	PHD_VECTOR v;
 	short* bounds;
-	short tilt;
-	short change;
-	long shift;
-	long fixed_camera;
-	long y;
-	long gotit;
+	long shift, fixed_camera, y, gotit;
+	short change, tilt;
 
 	CamOldPos.x = camera.pos.x;
 	CamOldPos.y = camera.pos.y;
@@ -122,6 +120,7 @@ void CalculateCamera()
 	}
 
 	item = camera.item;
+
 	if (camera.item && (camera.type == FIXED_CAMERA || camera.type == HEAVY_CAMERA))
 		fixed_camera = 1;
 	else
@@ -137,7 +136,6 @@ void CalculateCamera()
 	{
 		if (!fixed_camera)
 		{
-
 			shift = phd_sqrt(SQUARE(camera.item->pos.z_pos - item->pos.z_pos) + SQUARE(camera.item->pos.x_pos - item->pos.x_pos));
 			gotit = phd_atan(camera.item->pos.z_pos - item->pos.z_pos, camera.item->pos.x_pos - item->pos.x_pos) - item->pos.y_rot;
 			gotit >>= 1;
@@ -174,7 +172,6 @@ void CalculateCamera()
 				lara.torso_x_rot = lara.head_x_rot;
 				camera.type = LOOK_CAMERA;
 				camera.item->looked_at = 1;
-
 			}
 		}
 	}
@@ -190,13 +187,10 @@ void CalculateCamera()
 			last_target.room_number = camera.target.room_number;
 			camera.target.room_number = item->room_number;
 			camera.target.y = y;
-			bool flag = false;
+			gotit = 0;
 
 			if (camera.type != CHASE_CAMERA && camera.flags != 3)
 			{
-				OBJECT_VECTOR* fixed;
-				PHD_VECTOR v;
-
 				fixed = &camera.fixed[camera.number];
 				SniperCamActive = fixed->flags & 3;
 
@@ -210,21 +204,21 @@ void CalculateCamera()
 					camera.target.y = v.y;
 					y = v.y;
 					camera.target.z = v.z;
-					flag = true;
+					gotit = 1;
 				}
 			}
 
-			if (!flag)
+			if (!gotit)
 			{
-					shift = (bounds[0] + bounds[1] + bounds[4] + bounds[5]) >> 2;
-					camera.target.x = ((phd_sin(item->pos.y_rot) * shift) >> 12) + item->pos.x_pos;
-					camera.target.z = ((phd_cos(item->pos.y_rot) * shift) >> 12) + item->pos.z_pos;
+				shift = (bounds[0] + bounds[1] + bounds[4] + bounds[5]) >> 2;
+				camera.target.x = ((phd_sin(item->pos.y_rot) * shift) >> 12) + item->pos.x_pos;
+				camera.target.z = ((phd_cos(item->pos.y_rot) * shift) >> 12) + item->pos.z_pos;
 
-					if (item->object_number == LARA)
-					{
-						ConfirmCameraTargetPos();
-						y = camera.target.y;
-					}
+				if (item->object_number == LARA)
+				{
+					ConfirmCameraTargetPos();
+					y = camera.target.y;
+				}
 			}		
 
 			if (fixed_camera == camera.fixed_camera)
@@ -334,12 +328,8 @@ void CalculateCamera()
 
 void LaraTorch(PHD_VECTOR* Soffset, PHD_VECTOR* Eoffset, short yrot, long brightness)
 {
-	GAME_VECTOR s;
-	GAME_VECTOR d;
-	long dx;
-	long dy;
-	long dz;
-	long radius;
+	GAME_VECTOR s, d;
+	long dx, dy, dz, radius;
 
 	s.x = Soffset->x;
 	s.y = Soffset->y;
@@ -389,10 +379,97 @@ void ScreenShake(ITEM_INFO* item, short MaxVal, short MaxDist)
 		camera.bounce = MaxVal;
 }
 
+long mgLOS(GAME_VECTOR* start, GAME_VECTOR* target, long push)
+{
+	FLOOR_INFO* floor;
+	long x, y, z, h, c, cdiff, hdiff, dx, dy, dz, clipped, nc, i;
+	short room_number, room_number2;
+
+	dx = (target->x - start->x) >> 3;
+	dy = (target->y - start->y) >> 3;
+	dz = (target->z - start->z) >> 3;
+	x = start->x;
+	y = start->y;
+	z = start->z;
+	room_number = start->room_number; 
+	room_number2 = room_number;
+	nc = 0;
+	clipped = 0;
+
+	for (i = 0; i < 8; i++)
+	{
+		room_number = room_number2;
+		floor = GetFloor(x, y, z, &room_number2);
+		h = GetHeight(floor, x, y, z);
+		c = GetCeiling(floor, x, y, z);
+
+		if (h == NO_HEIGHT || c == NO_HEIGHT || c >= h)
+		{
+			if (!nc)
+			{
+				x += dx;
+				y += dy;
+				z += dz;
+				continue;
+			}
+
+			clipped = 1;
+			break;
+		}
+
+		if (y > h)
+		{
+			hdiff = y - h;
+
+			if (hdiff < push)
+				y = h;
+			else
+			{
+				clipped = 1;
+				break;
+			}
+		}
+
+		if (y < c)
+		{
+			cdiff = c - y;
+
+			if (cdiff < push)
+				y = c;
+			else
+			{
+				clipped = 1;
+				break;
+			}
+		}
+
+		nc = 1;
+
+		x += dx;
+		y += dy;
+		z += dz;
+	}
+
+	if (i)
+	{
+		x -= dx;
+		y -= dy;
+		z -= dz;
+	}
+
+	target->x = x;
+	target->y = y;
+	target->z = z;
+	GetFloor(x, y, z, &room_number);
+	target->room_number = room_number;
+	return (!clipped);
+}
+
 void inject_camera()
 {
 	INJECT(0x0040C690, InitialiseCamera);
 	INJECT(0x0040ED30, CalculateCamera);
 	INJECT(0x00410550, LaraTorch);
 	INJECT(0x004108D0, ScreenShake);
+	INJECT(0x0040FA70, mgLOS);
 }

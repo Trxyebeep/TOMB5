@@ -68,7 +68,7 @@ void FlareControl(short item_number)
 
 	if (DoFlareLight((PHD_VECTOR*)&flare->pos, flare_age))
 	{
-		if (gfLevelFlags & GF_LVOP_MIRROR_USED)
+		if (gfLevelFlags & GF_MIRROR)
 		{
 			if (flare->room_number == gfMirrorRoom)
 			{
@@ -223,7 +223,7 @@ void DoFlareInHand(int flare_age)
 	GetLaraJointPos(&pos, 0xE);
 	DoFlareLight(&pos, flare_age);
 
-	if (gfLevelFlags & GF_LVOP_MIRROR_USED && lara_item->room_number == gfMirrorRoom)
+	if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
 	{
 		pos.z = 2 * gfMirrorZPlane - pos.z;
 		DoFlareLight(&pos, flare_age);
@@ -459,7 +459,7 @@ void DrawFlareInAir(ITEM_INFO* item)
 	phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
 	phd_PopMatrix();
 
-	if (gfLevelFlags & GF_LVOP_MIRROR_USED)
+	if (gfLevelFlags & GF_MIRROR)
 	{
 		if (item->room_number == gfMirrorRoom)
 		{

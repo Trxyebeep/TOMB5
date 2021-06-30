@@ -4835,7 +4835,7 @@ void LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
 	lara_collision_routines[item->current_anim_state](item, coll);
 	UpdateLaraRoom(item, -381);
 
-	if (lara.gun_type == WEAPON_CROSSBOW && !LaserSight && gfLevelFlags & GF_LVOP_TRAIN)
+	if (lara.gun_type == WEAPON_CROSSBOW && !LaserSight && gfLevelFlags & GF_OFFICE)
 		input &= ~IN_ACTION;
 
 	LaraGun();

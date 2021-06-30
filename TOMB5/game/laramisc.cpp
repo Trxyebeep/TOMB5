@@ -175,12 +175,12 @@ void InitialiseLara(int restore)
 
 	gfNumPickups = 0;
 
-	if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA) && (objects[PISTOLS_ITEM].loaded))
+	if (!(gfLevelFlags & GF_YOUNGLARA) && (objects[PISTOLS_ITEM].loaded))
 		gun = WEAPON_PISTOLS;
 	else
 		gun = WEAPON_NONE;
 
-	if ((gfLevelFlags & GF_LVOP_TRAIN) && (objects[HK_ITEM].loaded) && (lara.hk_type_carried & WTYPE_PRESENT))
+	if ((gfLevelFlags & GF_OFFICE) && (objects[HK_ITEM].loaded) && (lara.hk_type_carried & WTYPE_PRESENT))
 		gun = WEAPON_HK;
 
 	lara.gun_status = LG_NO_ARMS;

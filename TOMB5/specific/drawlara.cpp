@@ -249,7 +249,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 	bLaraSkinBits = 0;
 	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;
 
-	if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
 		obj = &objects[lara.holster];
 		meshpp = &meshes[obj->mesh_index];
@@ -501,7 +501,7 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 	aGlobalSkinMesh = 0;
 	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;
 
-	if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA) && lara.back_gun)
+	if (!(gfLevelFlags & GF_YOUNGLARA) && lara.back_gun)
 	{
 		phd_PushMatrix();
 		aMXPtr[0] = lara_matricesF[84 + 0];
