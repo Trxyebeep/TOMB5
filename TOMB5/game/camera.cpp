@@ -11,6 +11,7 @@
 #include "objects.h"
 #include "delstuff.h"
 #include "../specific/3dmath.h"
+#include "sphere.h"
 
 void InitialiseCamera()
 {
@@ -465,6 +466,159 @@ long mgLOS(GAME_VECTOR* start, GAME_VECTOR* target, long push)
 	return (!clipped);
 }
 
+long CameraCollisionBounds(GAME_VECTOR* ideal, long push, long yfirst)
+{
+	FLOOR_INFO* floor;
+	long wx, wy, wz, h, c;
+	short room_number;
+
+	wx = ideal->x;
+	wy = ideal->y;
+	wz = ideal->z;
+
+	if (yfirst)
+	{
+		room_number = ideal->room_number;
+		floor = GetFloor(wx, wy, wz, &room_number);
+		h = GetHeight(floor, wx, wy, wz);
+		c = GetCeiling(floor, wx, wy, wz);
+
+		if (c > wy - 255 && h < wy + 255 && c < h && c != NO_HEIGHT && h != NO_HEIGHT)
+			wy = (h + c) >> 1;
+		else if (h < wy + 255 && c < h && c != NO_HEIGHT && h != NO_HEIGHT)
+			wy = h - 255;
+		else if (c > wy - 255 && c < h && c != NO_HEIGHT && h != NO_HEIGHT)
+			wy = c + 255;
+	}
+
+	room_number = ideal->room_number;
+	floor = GetFloor(wx - push, wy, wz, &room_number);
+	h = GetHeight(floor, wx - push, wy, wz);
+	c = GetCeiling(floor, wx - push, wy, wz);
+
+	if (h < wy || h == NO_HEIGHT || c == NO_HEIGHT || c >= h || wy < c)
+		wx = (wx & ~1023) + push;
+
+	room_number = ideal->room_number;
+	floor = GetFloor(wx, wy, wz - push, &room_number);
+	h = GetHeight(floor, wx, wy, wz - push);
+	c = GetCeiling(floor, wx, wy, wz - push);
+
+	if (h < wy || h == NO_HEIGHT || c == NO_HEIGHT || c >= h || wy < c)
+		wz = (wz & ~1023) + push;
+
+	room_number = ideal->room_number;
+	floor = GetFloor(wx + push, wy, wz, &room_number);
+	h = GetHeight(floor, wx + push, wy, wz);
+	c = GetCeiling(floor, wx + push, wy, wz);
+
+	if (h < wy || h == NO_HEIGHT || c == NO_HEIGHT || c >= h || wy < c)
+		wx = (wx | 1023) - push;
+
+	room_number = ideal->room_number;
+	floor = GetFloor(wx, wy, wz + push, &room_number);
+	h = GetHeight(floor, wx, wy, wz + push);
+	c = GetCeiling(floor, wx, wy, wz + push);
+
+	if (h < wy || h == NO_HEIGHT || c == NO_HEIGHT || c >= h || wy < c)
+		wz = (wz | 1023) - push;
+
+	if (!yfirst)
+	{
+		room_number = ideal->room_number;
+		floor = GetFloor(wx, wy, wz, &room_number);
+		h = GetHeight(floor, wx, wy, wz);
+		c = GetCeiling(floor, wx, wy, wz);
+
+		if (c > wy - 255 && h < wy + 255 && c < h && c != NO_HEIGHT && h != NO_HEIGHT)
+			wy = (h + c) >> 1;
+		else if (h < wy + 255 && c < h && c != NO_HEIGHT && h != NO_HEIGHT)
+			wy = h - 255;
+		else if (c > wy - 255 && c < h && c != NO_HEIGHT && h != NO_HEIGHT)
+			wy = c + 255;
+	}
+
+	room_number = ideal->room_number;
+	floor = GetFloor(wx, wy, wz, &room_number);
+	h = GetHeight(floor, wx, wy, wz);
+	c = GetCeiling(floor, wx, wy, wz);
+
+	if (h < wy || wy < c || h == NO_HEIGHT || c == NO_HEIGHT || c >= h)
+		return 1;
+
+	GetFloor(wx, wy, wz, &ideal->room_number);
+	ideal->x = wx;
+	ideal->y = wy;
+	ideal->z = wz;
+	return 0;
+}
+
+void UpdateCameraElevation()
+{
+	PHD_VECTOR pos;
+	PHD_VECTOR pos1;
+
+	if (camera.lara_node != -1)
+	{
+		pos.x = 0;
+		pos.y = 0;
+		pos.z = 0;
+		GetLaraJointPos(&pos, camera.lara_node);
+		pos1.x = 0;
+		pos1.y = -256;
+		pos1.z = 2048;
+		GetLaraJointPos(&pos1, camera.lara_node);
+		pos.z = pos1.z - pos.z;
+		pos.x = pos1.x - pos.x;
+		camera.actual_angle = (short)(camera.target_angle + phd_atan(pos.z, pos.x));
+	}
+	else
+		camera.actual_angle = lara_item->pos.y_rot + camera.target_angle;
+
+	camera.actual_elevation += (camera.target_elevation - camera.actual_elevation) >> 3;
+}
+
+void ConfirmCameraTargetPos()
+{
+	FLOOR_INFO* floor;
+	PHD_VECTOR pos;
+	long wx, wy, wz, c, h;
+	short room_number;
+
+	pos.z = 0;
+	pos.y = 0;
+	pos.x = 0;
+	GetJointAbsPosition(lara_item, &pos, 14);
+
+	if (camera.lara_node != -1)
+	{
+		camera.target.x = pos.x;
+		camera.target.y = pos.y;
+		camera.target.z = pos.z;
+	}
+	else
+	{
+		camera.target.x = lara_item->pos.x_pos;
+		camera.target.y = (camera.target.y + pos.y) >> 1;
+		camera.target.z = lara_item->pos.z_pos;
+	}
+
+	wx = camera.target.x;
+	wy = camera.target.y;
+	wz = camera.target.z;
+	room_number = camera.target.room_number;
+	floor = GetFloor(wx, wy, wz, &room_number);
+	h = GetHeight(floor, wx, wy, wz);
+	c = GetCeiling(floor, wx, wy, wz);
+
+	if (wy < c || h < wy || h <= c || h == NO_HEIGHT || c == NO_HEIGHT)
+	{
+		camera.target.x = pos.x;
+		camera.target.y = pos.y;
+		camera.target.z = pos.z;
+	}
+}
+
 void inject_camera()
 {
 	INJECT(0x0040C690, InitialiseCamera);
@@ -472,4 +626,7 @@ void inject_camera()
 	INJECT(0x00410550, LaraTorch);
 	INJECT(0x004108D0, ScreenShake);
 	INJECT(0x0040FA70, mgLOS);
+	INJECT(0x0040F5C0, CameraCollisionBounds);
+	INJECT(0x004107C0, UpdateCameraElevation);
+	INJECT(0x00410680, ConfirmCameraTargetPos);
 }
