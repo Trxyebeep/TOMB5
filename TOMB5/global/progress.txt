@@ -1277,7 +1277,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B5190		phd_PutPolygonsSpcEnvmap
 0x004B66B0		phd_PutPolygonsPickup
 0x004B74A0		phd_PutPolygons_train
-0x004B74D0		phd_PutPolygonSkyMesh
+0x004B74D0	+	phd_PutPolygonSkyMesh
 0x004B78B0		S_InsertRoom
 0x004B78D0	+	S_DrawPickup
 0x004B79A0		S_OutputPolyList

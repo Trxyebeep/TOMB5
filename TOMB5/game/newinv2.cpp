@@ -2953,7 +2953,7 @@ void DelDrawSprite(int x, int y, int def, int z)
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + def];
 
 	if (z >= 200)
-		z = (int)(f_zfar - 20.0);
+		z = (int)(f_mzfar - 20.0);
 	else
 		z = (int)(f_mznear + 20.0);
 

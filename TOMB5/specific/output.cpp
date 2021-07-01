@@ -5,6 +5,7 @@
 #include "../specific/matrix_shit.h"
 #include "lighting.h"
 #include "function_table.h"
+#include "../game/gameflow.h"
 
 void S_DrawPickup(short object_number)
 {
@@ -253,9 +254,86 @@ void phd_PutPolygons(short* objptr, int clipstatus)
 	}
 }
 
+void phd_PutPolygonSkyMesh(short* objptr, int clipstatus)
+{
+	TEXTURESTRUCT* pTex;
+	D3DTLVERTEX* tv;
+	MESH_DATA* p;
+	short* f;
+	unsigned short flag;
+
+	p = (MESH_DATA*)objptr;
+	aSetViewMatrix();
+	SuperResetLights();
+	ClearDynamicLighting();
+	ClearObjectLighting();
+	aAmbientR = 128;
+	aAmbientG = 128;
+	aAmbientB = 128;
+	clip_top = f_top;
+	clip_bottom = f_bottom;
+	clip_left = f_left;
+	clip_right = f_right;
+	aTransformLightClipMesh(p);
+	tv = aVertexBuffer;
+	f = p->gt4;
+	
+	for (int i = 0; i < p->ngt4; i++, f += 6)
+	{
+		pTex = &textinfo[f[4] & 0x7FFF];
+		flag = pTex->drawtype;
+
+		if (f[5] & 1)
+		{
+			if (gfLevelFlags & GF_HORIZONCOLADD)
+				pTex->drawtype = 2;
+			else
+			{
+				if (App.dx.lpZBuffer)
+				{
+					tv[f[0]].color = 0;
+					tv[f[1]].color = 0;
+					tv[f[2]].color = 0xFF000000;
+					tv[f[3]].color = 0xFF000000;
+					pTex->drawtype = 3;
+				}
+				else
+				{
+					tv[f[0]].color = 0;
+					tv[f[1]].color = 0;
+					tv[f[2]].color = 0;
+					tv[f[3]].color = 0;
+					pTex->drawtype = 0;
+				}
+			}
+		}
+		else
+			pTex->drawtype = 4;
+
+		tv[f[0]].rhw = (f_mpersp / f_mzfar) * f_moneopersp;
+		tv[f[1]].rhw = (f_mpersp / f_mzfar) * f_moneopersp;
+		tv[f[2]].rhw = (f_mpersp / f_mzfar) * f_moneopersp;
+		tv[f[3]].rhw = (f_mpersp / f_mzfar) * f_moneopersp;
+		AddQuadSorted(tv, f[0], f[1], f[2], f[3], pTex, 0);
+		pTex->drawtype = flag;
+	}
+
+	f = p->gt3;
+
+	for (int i = 0; i < p->ngt3; i++, f += 5)
+	{
+		pTex = &textinfo[f[3] & 0x7FFF];
+		flag = pTex->drawtype;
+		pTex->drawtype = 4;
+		AddTriSorted(tv, f[0], f[1], f[2], pTex, 0);
+		pTex->drawtype = flag;
+	}
+}
+
 void inject_output()
 {
 	INJECT(0x004B78D0, S_DrawPickup);
 	INJECT(0x004B3F00, phd_PutPolygons);
+	INJECT(0x004B74D0, phd_PutPolygonSkyMesh);
 }
 
