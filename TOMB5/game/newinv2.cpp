@@ -438,7 +438,7 @@ void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, 
 	item.pos.z_rot = zrot + objme->zrot;
 	item.object_number = objme->object_number;
 	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
-	aLookAt({0, 1024, 0}, {100, 0, 200}, 0);
+	aLookAt(0, 1024, 0, 100, 0, 200, 0);
 
 	if (!bright)
 		pcbright = 0x007F7F7F;
@@ -587,7 +587,7 @@ void construct_combine_object_list()
 	for (int i = 0; i < 100; i++)
 		rings[RING_AMMO]->current_object_list[i].invitem = -1;
 
-	if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
 		if (lara.sixshooter_type_carried & WTYPE_PRESENT)
 		{
@@ -665,7 +665,7 @@ void construct_object_list()
 	CurrentGrenadeGunAmmoType = 0;
 	CurrentCrossBowAmmoType = 0;
 
-	if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
 		if (lara.pistols_type_carried & WTYPE_PRESENT)
 			insert_object_into_list(INV_PISTOLS_ITEM);
@@ -2880,7 +2880,7 @@ void dels_give_lara_guns_cheat()
 	lara.num_small_medipack = -1;
 	lara.num_large_medipack = -1;
 
-	if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
 		if (objects[SHOTGUN_ITEM].loaded)
 		{
@@ -2953,7 +2953,7 @@ void DelDrawSprite(int x, int y, int def, int z)
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + def];
 
 	if (z >= 200)
-		z = (int)(f_zfar - 20.0);
+		z = (int)(f_mzfar - 20.0);
 	else
 		z = (int)(f_mznear + 20.0);
 

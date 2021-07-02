@@ -38,7 +38,7 @@ void DrawGameInfo(int timed)
 		if (DashTimer < 120)
 			S_DrawDashBar(100 * DashTimer / 120);
 
-		if (gfLevelFlags & GF_LVOP_TIMER && savegame.Level.Timer != 0 && savegame.Level.Timer < 0x1A5E0)
+		if (gfLevelFlags & GF_TIMER && savegame.Level.Timer != 0 && savegame.Level.Timer < 0x1A5E0)
 		{
 			char buf[80];
 			int seconds = savegame.Level.Timer / 30;

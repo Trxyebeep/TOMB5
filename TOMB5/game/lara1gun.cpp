@@ -86,7 +86,7 @@ void RifleHandler(int weapon_type)
 	{
 		if (weapon_type == WEAPON_SHOTGUN || weapon_type == WEAPON_HK)
 		{
-			if (gfLevelFlags & GF_LVOP_MIRROR_USED && lara_item->room_number == gfMirrorRoom)
+			if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
 			{
 					TriggerDynamic_MIRROR((GetRandomControl() & 0xFF) + (phd_sin(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos,
 						((GetRandomControl() & 0x7F) - 0x23F) + lara_item->pos.y_pos,
@@ -110,7 +110,7 @@ void RifleHandler(int weapon_type)
 			pos.z = (GetRandomControl() & 0xFF) - 128;
 			GetLaraJointPos(&pos, 11);
 
-			if (gfLevelFlags & GF_LVOP_MIRROR_USED && lara_item->room_number == gfMirrorRoom)
+			if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
 				TriggerDynamic_MIRROR(pos.x, pos.y, pos.z, 12, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 0x3F);
 			else
 				TriggerDynamic(pos.x, pos.y, pos.z, 12, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 0x3F);
@@ -309,7 +309,7 @@ void ControlCrossbow(short item_number)
 	{
 		target = *itemslist;
 
-		while (!(gfLevelFlags & GF_LVOP_TRAIN) || target->object_number != GRAPPLING_TARGET)
+		while (!(gfLevelFlags & GF_OFFICE) || target->object_number != GRAPPLING_TARGET)
 		{
 			++itemslist;
 			target = *itemslist;

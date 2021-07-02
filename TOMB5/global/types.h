@@ -281,20 +281,6 @@ struct bounding_box_f
 	float maxX, maxY, maxZ;
 };
 
-struct tr5_vertex
-{
-	float x;
-	float y;
-	float z;
-};
-
-struct tr5_room_vertex
-{
-	tr5_vertex Vertex;
-	tr5_vertex Normal;
-	uint32_t Colour;
-};
-
 struct SUBSUIT_INFO
 {
 	short XRot;

@@ -51,7 +51,7 @@ void DrawHair()
 			phd_PutPolygons(*meshpp, -1);
 		}
 
-		if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+		if (!(gfLevelFlags & GF_YOUNGLARA))
 			break;
 	}
 }
@@ -145,7 +145,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	sphere[1].z = phd_mxptr[11] >> 14;
 	sphere[1].r = objptr[3];
 
-	if (gfLevelFlags & GF_LVOP_YOUNG_LARA)
+	if (gfLevelFlags & GF_YOUNGLARA)
 		sphere[1].r -= (sphere[1].r >> 2) + (sphere[1].r >> 3);
 
 	phd_PopMatrix();
@@ -184,7 +184,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	sphere[2].r = objptr[3];
 	phd_PopMatrix();
 	
-	if (gfLevelFlags & GF_LVOP_YOUNG_LARA)
+	if (gfLevelFlags & GF_YOUNGLARA)
 	{
 		sphere[1].x = (sphere[1].x + sphere[2].x) >> 1;
 		sphere[1].y = (sphere[1].y + sphere[2].y) >> 1;
@@ -196,7 +196,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 		phd_TranslateRel(44, -48, -50);
 	else
 	{
-		if (gfLevelFlags & GF_LVOP_YOUNG_LARA)
+		if (gfLevelFlags & GF_YOUNGLARA)
 			phd_TranslateRel(-52, -48, -50);
 		else
 			phd_TranslateRel(-4, -4, -48);

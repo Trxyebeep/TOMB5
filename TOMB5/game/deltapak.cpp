@@ -2404,7 +2404,7 @@ void handle_cutseq_triggering(int name)
 	lara.flare_control_left = 0;
 	lara.flare_age = 0;
 
-	if (!(gfLevelFlags & GF_LVOP_YOUNG_LARA))
+	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
 		lara.gun_type = WEAPON_NONE;
 		lara.request_gun_type = WEAPON_NONE;
@@ -2414,7 +2414,7 @@ void handle_cutseq_triggering(int name)
 		if (!objects[PISTOLS_ITEM].loaded || lara.pistols_type_carried == WTYPE_MISSING)
 			lara.last_gun_type = WEAPON_NONE;
 
-		if (gfLevelFlags & GF_LVOP_TRAIN && objects[HK_ITEM].loaded && lara.hk_type_carried & WTYPE_PRESENT)
+		if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & WTYPE_PRESENT)
 			lara.last_gun_type = WEAPON_HK;
 
 		lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + (2 * LM_LHAND)];
@@ -3242,8 +3242,6 @@ void DecodeAnim(PACKNODE* node, int num_nodes, int frame, int flags)
 void do_new_cutscene_camera()
 {
 	PACKNODE* nodes;
-	tr5_vertex cam_pos;
-	tr5_vertex cam_target;
 
 	if (cutseq_control_routines[cutseq_num].control_func)
 		cutseq_control_routines[cutseq_num].control_func();
@@ -3297,13 +3295,7 @@ void do_new_cutscene_camera()
 		camera.pos.room_number = IsRoomOutsideNo;
 
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-	cam_pos.x = (float)camera.pos.x;
-	cam_pos.y = (float)camera.pos.y;
-	cam_pos.z = (float)camera.pos.z;
-	cam_target.x = (float)camera.target.x;
-	cam_target.y = (float)camera.target.y;
-	cam_target.z = (float)camera.target.z;
-	aLookAt(cam_pos, cam_target, 0);
+	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
 
 	if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
 		DecodeAnim(actor_pnodes[0], 16, GLOBAL_cutseq_frame, 1023);
@@ -3518,7 +3510,7 @@ void frigup_lara()
 	phd_PopMatrix();
 	HairControl(0, 0, frame);
 
-	if ((gfLevelFlags & GF_LVOP_YOUNG_LARA))
+	if ((gfLevelFlags & GF_YOUNGLARA))
 		HairControl(0, 1, frame);
 
 	GLaraShadowframe = &frig_shadow_bbox[0];

@@ -5,6 +5,7 @@ void inject_output();
 
 void S_DrawPickup(short object_number);
 void phd_PutPolygons(short* objptr, int clipstatus);
+void phd_PutPolygonSkyMesh(short* objptr, int clipstatus);
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
