@@ -6,7 +6,6 @@
 #include "deltapak.h"
 #include "../specific/drawlara.h"
 #include "health.h"
-#include "../specific/display.h"
 
 short* GetBoundsAccurate(ITEM_INFO* item)
 {

@@ -24,6 +24,7 @@
 #include "subsuit.h"
 #include "../specific/specificfx.h"
 #include "../specific/polyinsert.h"
+#include "text.h"
 
 short optmessages[11] =
 {

@@ -15,7 +15,7 @@
 #include "hair.h"
 #include "delstuff.h"
 #include "effects.h"
-#include "../specific/display.h"
+#include "text.h"
 #include "health.h"
 #include "objects.h"
 #include "newinv2.h"

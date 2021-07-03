@@ -1,7 +1,6 @@
 #include "../tomb5/pch.h"
 #include "gameflow.h"
 #include "../specific/game.h"
-#include "../specific/display.h"
 #include "../specific/specific.h"
 #include "../specific/file.h"
 #include "sound.h"
@@ -18,6 +17,7 @@
 #include "draw.h"
 #include "../specific/LoadSave.h"
 #include "../specific/others.h"
+#include "text.h"
 
 unsigned char dels_cutseq_selector_cursorpos = 0;
 

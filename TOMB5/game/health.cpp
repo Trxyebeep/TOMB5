@@ -1,12 +1,16 @@
 #include "../tomb5/pch.h"
 #include "health.h"
-#include "../specific/display.h"
 #include "gameflow.h"
 #include "../specific/specific.h"
 #include "newinv2.h"
 #include "objects.h"
 #include "../specific/output.h"
 #include "../specific/LoadSave.h"
+#include "text.h"
+#ifdef AMMO_COUNTER
+#include "larafire.h"
+#endif
+
 
 int FlashIt()
 {
@@ -26,7 +30,8 @@ int FlashIt()
 
 void DrawGameInfo(int timed)
 {
-	int flash_state;
+	int flash_state, seconds;
+	char buf[80];
 
 	if (!GLOBAL_playing_cutseq && !bDisableLaraControl && gfGameMode != 1)
 	{
@@ -40,9 +45,7 @@ void DrawGameInfo(int timed)
 
 		if (gfLevelFlags & GF_TIMER && savegame.Level.Timer != 0 && savegame.Level.Timer < 0x1A5E0)
 		{
-			char buf[80];
-			int seconds = savegame.Level.Timer / 30;
-
+			seconds = savegame.Level.Timer / 30;
 			sprintf(&buf[0], "%.2d", seconds / 60);
 			PrintString(0x28, 0x18, 0, &buf[0], 0);
 			PrintString(0x3C, 0x18, 0, ":", 0);
@@ -52,6 +55,22 @@ void DrawGameInfo(int timed)
 			sprintf(&buf[0], "%.2d", (338 * (savegame.Level.Timer % 30)) / 100);
 			PrintString(0x5C, 0x18, 0, &buf[0], 0);
 		}
+
+#ifdef AMMO_COUNTER
+		if (lara.gun_status == LG_READY)
+		{
+			short ammo, btm;
+			
+			ammo = *get_current_ammo_pointer(lara.gun_type);
+
+			if (ammo == -1)
+				return;
+
+			sprintf(&buf[0], "%i", ammo);
+			GetStringLength(buf, 0, &btm);
+			PrintString(phd_winxmax - GetStringLength(buf, 0, 0) - 80, phd_winymax - btm - 70, 0, &buf[0], 0);
+		}
+#endif
 	}
 }
 
