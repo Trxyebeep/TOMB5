@@ -15,4 +15,4 @@ void ResetCutItem(int item_num);
 void resetwindowsmash(int item_num);
 void triggerwindowsmash(int item_num);
 void FlamingHell(PHD_VECTOR* pos);
-void FireTwoGunTitleWeapon(PHD_VECTOR* pos, PHD_VECTOR* pos2);
+void FireTwoGunTitleWeapon(PHD_VECTOR* pos1, PHD_VECTOR* pos2);

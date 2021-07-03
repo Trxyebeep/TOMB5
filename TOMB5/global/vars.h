@@ -503,7 +503,7 @@
 #define flipmap	ARRAY_(0x00EEEBA0, int, [255])
 #define spark	ARRAY_(0x00E5F380, SPARKS, [1024])
 #define pickups	ARRAY_(0x00E5BF40, DISPLAYPU, [8])
-#define twogun	ARRAY_(0x00EEEB00, TWOGUN_INFO, [3])
+#define twogun	ARRAY_(0x00EEEB00, TWOGUN_INFO, [4])
 #define ammo_object_list	ARRAY_(0x00E598E0, AMMOLIST, [3])
 #define current_options	ARRAY_(0x00E598C0, MENUTHANG, [3])
 #define actor_pnodes	ARRAY_(0x00E71180, PACKNODE*, [10])
@@ -537,6 +537,7 @@
 #define ShockWaves	ARRAY_(0x00E4C1A0, SHOCKWAVE_STRUCT, [16])
 #define ItemNewRooms	ARRAY_(0x00EEF4C0, short, [256][2])
 #define SaveGames	ARRAY_(0x0087B828, SAVEGAMES, [15])
+#define Lightning	ARRAY_(0x00E4C360, LIGHTNING_STRUCT, [16])
 
 //defs
 #define NO_HEIGHT -32512

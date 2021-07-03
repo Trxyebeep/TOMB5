@@ -173,6 +173,54 @@ long LSpline(long x, long* knots, int nk)
 	return ret + k[3];
 }
 
+LIGHTNING_STRUCT* TriggerLightning(PHD_VECTOR* s, PHD_VECTOR* d, char variation, long rgb, unsigned char flags, unsigned char size, unsigned char segments)
+{
+	LIGHTNING_STRUCT* lptr;
+	char* vptr;
+
+	for (int i = 0; i < 16; i++)
+	{
+		lptr = &Lightning[i];
+
+		if (!lptr->Life)
+		{
+			lptr->Point[0].x = s->x;
+			lptr->Point[0].y = s->y;
+			lptr->Point[0].z = s->z;
+			lptr->Point[1].x = ((s->x * 3) + d->x) >> 2;
+			lptr->Point[1].y = ((s->y * 3) + d->y) >> 2;
+			lptr->Point[1].z = ((s->z * 3) + d->z) >> 2;
+			lptr->Point[2].x = ((d->x * 3) + s->x) >> 2;
+			lptr->Point[2].y = ((d->y * 3) + s->y) >> 2;
+			lptr->Point[2].z = ((d->z * 3) + s->z) >> 2;
+			lptr->Point[3].x = d->x;
+			lptr->Point[3].y = d->y;
+			lptr->Point[3].z = d->z;
+			vptr = &lptr->Xvel1;
+
+			for (int j = 0; j < 6; j++)
+				*vptr++ = (GetRandomControl() % variation) - (variation >> 1);
+
+			for (int j = 0; j < 3; j++)
+			{
+				if (flags & 2)
+					*vptr++ = (GetRandomControl() % variation) - (variation >> 1);
+				else
+					*vptr++ = 0;
+			}
+
+			lptr->Flags = flags;
+			*(long*)&lptr->r = rgb;
+			lptr->Segments = segments;
+			lptr->Rand = variation;
+			lptr->Size = size;
+			return lptr;
+		}
+	}
+
+	return 0;
+}
+
 void inject_tomb4fx()
 {
 	INJECT(0x00432760, DoBloodSplat);
@@ -180,4 +228,5 @@ void inject_tomb4fx()
 	INJECT(0x004827E0, TriggerBlood);
 	INJECT(0x00482610, UpdateBlood);
 	INJECT(0x00484D70, LSpline);
+	INJECT(0x00484B30, TriggerLightning);
 }
