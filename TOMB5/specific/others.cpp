@@ -6,7 +6,7 @@
 
 void aLoadRoomStream()
 {
-	room_info* room_data;
+	ROOM_INFO* room_data;
 	int length, num_rooms, size;
 	char* data;
 
@@ -14,7 +14,7 @@ void aLoadRoomStream()
 	FileData += sizeof(long);
 	num_rooms = *(long*)FileData;
 	FileData += sizeof(long);
-	room = (room_info*)game_malloc(num_rooms * sizeof(room_info), 0);
+	room = (ROOM_INFO*)game_malloc(num_rooms * sizeof(ROOM_INFO), 0);
 	room_data = room;
 
 	for (int i = 0; i < num_rooms; i++)

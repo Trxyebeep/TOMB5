@@ -130,7 +130,7 @@ void EarthQuake(short item_number)
 void SmashObject(short item_number)
 {
 	ITEM_INFO* item;
-	room_info* r;
+	ROOM_INFO* r;
 	int sector;
 	box_info* box;
 
@@ -752,7 +752,7 @@ void ControlXRayMachine(short item_number)
 
 	case 333:
 	{
-		room_info* r = &room[item->room_number];
+		ROOM_INFO* r = &room[item->room_number];
 		MESH_INFO* mesh = r->mesh;
 		int j;
 

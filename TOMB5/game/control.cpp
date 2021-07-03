@@ -33,7 +33,7 @@
 #include "lot.h"
 #include "effects.h"
 
-unsigned char ShatterSounds[18][10] =
+uchar ShatterSounds[18][10] =
 {
 {SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
 {SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS},
@@ -847,10 +847,10 @@ int check_xray_machine_trigger()
 long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 {
 	long height;
-	room_info* r;
+	ROOM_INFO* r;
 	short* data;
 	short type, dx, dz;
-	unsigned short trigger;
+	ushort trigger;
 	ITEM_INFO* item;
 	short xoff, yoff;
 	short tilt, wat;
@@ -1066,7 +1066,7 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 
 FLOOR_INFO* GetFloor(int x, int y, int z, short* room_number)
 {
-	room_info* r;
+	ROOM_INFO* r;
 	FLOOR_INFO* floor;
 	long x_floor, y_floor;
 	short door;
@@ -1233,7 +1233,7 @@ short GetDoor(FLOOR_INFO* floor)
 long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 {
 	long xoff, yoff, height, h1, h2;
-	room_info* r;
+	ROOM_INFO* r;
 	ITEM_INFO* item;
 	FLOOR_INFO* f;
 	short* data, type, trigger, dx, dz, t0, t1, t2, t3, hadj, ended;
@@ -1976,7 +1976,7 @@ int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MES
 {
 	ITEM_INFO* item;
 	MESH_INFO* mesh;
-	room_info* r;
+	ROOM_INFO* r;
 	PHD_3DPOS ItemPos;
 	long dx, dy, dz;
 	short item_number, i, lp;
@@ -2086,7 +2086,7 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 	{
 		if (!heavy)
 		{
-			quad = (unsigned short)(lara_item->pos.y_rot + 8192) >> 14;
+			quad = (ushort)(lara_item->pos.y_rot + 8192) >> 14;
 
 			if ((1 << (quad + 8)) & *data)
 				lara.climb_status = 1;

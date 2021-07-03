@@ -33,7 +33,7 @@ int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MES
 void TestTriggers(short* data, int heavy, int HeavyFlags);
 void _TestTriggers(short* data, int heavy, int HeavyFlags);
 
-extern unsigned char ShatterSounds[18][10];
+extern uchar ShatterSounds[18][10];
 
 #define UpdateSky	( (void(__cdecl*)()) 0x00414720 )
 #define ClearDynamics	( (void(__cdecl*)()) 0x00431530 )

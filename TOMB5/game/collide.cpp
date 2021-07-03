@@ -35,7 +35,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	int x, z;
 	long height;
 	long ceiling;
-	unsigned short tilt_type;
+	ushort tilt_type;
 
 	if (objheight < 0)
 	{
@@ -53,7 +53,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	coll->shift.x = 0;
 	coll->shift.y = 0;
 	coll->shift.z = 0;
-	coll->quadrant = (unsigned short)(coll->facing + 8192) / 16384;
+	coll->quadrant = (ushort)(coll->facing + 8192) / 16384;
 
 	room_num = room_number;
 	FLOOR_INFO* floor = GetFloor(xpos, yT, zpos, &room_num);
@@ -81,7 +81,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	switch (coll->quadrant)
 	{
 	case NORTH:
-		xfront = (phd_sin((unsigned short)(coll->facing) * coll->radius)) >> 14;
+		xfront = (phd_sin((ushort)(coll->facing) * coll->radius)) >> 14;
 		zfront = coll->radius;
 		xright = coll->radius; 
 		zright = coll->radius; 
@@ -90,14 +90,14 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		break;
 	case EAST:
 		xfront = coll->radius;
-		zfront = (phd_cos((unsigned short)(coll->facing) * coll->radius)) >> 14;
+		zfront = (phd_cos((ushort)(coll->facing) * coll->radius)) >> 14;
 		xright = coll->radius;
 		zright = -coll->radius;
 		zleft = coll->radius;
 		xleft = coll->radius;
 		break;
 	case SOUTH:
-		xfront = (phd_sin((unsigned short)coll->facing) * coll->radius) >> 14;
+		xfront = (phd_sin((ushort)coll->facing) * coll->radius) >> 14;
 		zfront = -coll->radius;
 		xright = -coll->radius;
 		zright = -coll->radius;
@@ -106,7 +106,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		break;
 	case WEST:
 		xfront = -coll->radius;
-		zfront = (phd_cos((unsigned short)coll->facing) * coll->radius) >> 14;
+		zfront = (phd_cos((ushort)coll->facing) * coll->radius) >> 14;
 		xright = -coll->radius;
 		zright = coll->radius;
 		zleft = -coll->radius;
@@ -401,7 +401,7 @@ void ShiftItem(ITEM_INFO* item, COLL_INFO* coll)
 
 short GetTiltType(FLOOR_INFO* floor, long x, long y, long z)
 {
-	room_info* Room;
+	ROOM_INFO* Room;
 	short* floordata;
 	short type;
 	short t0, t1, t2, t3;

@@ -19,7 +19,7 @@ void InitialisePickup(short item_number);
 void InitialiseClosedDoors();
 void AddClosedDoor(ITEM_INFO* item);
 void SetupClosedDoorStuff(DOOR_DATA* door, ITEM_INFO* item, short room2, int dx, int dy);
-void SCDS(room_info* r, short** dptr, char* dn, long dx, long dy, long ox, long oz);
+void SCDS(ROOM_INFO* r, short** dptr, char* dn, long dx, long dy, long ox, long oz);
 void InitialiseLasers(short item_number);
 void InitialiseSteamLasers(short item_number);
 void InitialiseFloorLasers(short item_number);

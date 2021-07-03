@@ -115,8 +115,8 @@ FILE* FileOpen(const char* Filename)
 
 bool FindCDDrive()
 {
-	unsigned long drives;
-	unsigned long type;
+	ulong drives;
+	ulong type;
 	char root[5];
 	char file_check[14];
 	HANDLE file;

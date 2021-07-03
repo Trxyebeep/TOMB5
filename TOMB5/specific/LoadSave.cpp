@@ -27,7 +27,7 @@ void CheckKeyConflicts()
 
 void DoStatScreen()
 {
-	unsigned short ypos;
+	ushort ypos;
 	short Days, Hours, Min, Sec;
 	char buffer[40];
 	int seconds;

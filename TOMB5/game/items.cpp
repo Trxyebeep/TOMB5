@@ -4,7 +4,7 @@
 void ItemNewRoom(short item_num, short room_number)
 {
 	ITEM_INFO* item;
-	room_info* r;
+	ROOM_INFO* r;
 	short linknum;
 
 	if (InItemControlLoop)

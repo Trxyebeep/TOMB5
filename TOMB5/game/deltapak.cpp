@@ -34,7 +34,7 @@ short frig_shadow_bbox[6] =
 	-165, 150, -777, 1, -87, 78
 };
 
-unsigned short larson_pistols_info1[2] =
+ushort larson_pistols_info1[2] =
 {
 	0x0390, 0xFFFF
 };
@@ -78,7 +78,7 @@ short lara_chat_ranges_andrea2[32] =
 	-1, -1
 };
 
-unsigned short andrea3_pistols_info[5] =
+ushort andrea3_pistols_info[5] =
 {
 	0x454B, 0x854E, 0x8557, 0x4557, 0xFFFF
 };
@@ -122,13 +122,13 @@ short pierre_chat_ranges4[48] =
 	0x0D3E, 0x0D62, 0x0E3A, 0x0E53, 0x0F16, 0x0F1C, -1, -1
 };
 
-unsigned short crane_pistols_info[11] =
+ushort crane_pistols_info[11] =
 {
 	0x8035, 0x803D, 0x81C5, 0x81CF, 0x81EA, 0x4031, 0x403A, 0x41C9, 0x41DE, 0x41EE,
 	0xFFFF
 };
 
-unsigned short craneguard_pistols_info[7] =
+ushort craneguard_pistols_info[7] =
 {
 	0x006A, 0x0075, 0x00F0, 0x00F7, 0x0104, 0x0112, 0xFFFF
 };
@@ -2569,7 +2569,7 @@ void cutseq_givelara_hk()
 	draw_shotgun_meshes(WEAPON_HK);
 }
 
-void TriggerActorBlood(int actornum, unsigned long nodenum, PHD_VECTOR* pos, int direction, int speed)
+void TriggerActorBlood(int actornum, ulong nodenum, PHD_VECTOR* pos, int direction, int speed)
 {
 	GetActorJointAbsPosition(actornum, nodenum, pos);
 	TriggerBlood(pos->x, pos->y, pos->z, direction >> 4, speed);
@@ -2644,9 +2644,9 @@ void TriggerDelSmoke(long x, long y, long z, int sizeme)
 		sptr->Gravity = -3 - (GetRandomControl() & 3);
 		sptr->MaxYvel = -4 - (GetRandomControl() & 3);
 		size = sizeme + (GetRandomControl() & 0x1F);
-		sptr->dSize = (unsigned char)size;
-		sptr->sSize = (unsigned char)(size >> 2);
-		sptr->Size = (unsigned char)(size >> 2);
+		sptr->dSize = (uchar)size;
+		sptr->sSize = (uchar)(size >> 2);
+		sptr->Size = (uchar)(size >> 2);
 	}
 }
 
@@ -2682,9 +2682,9 @@ void TriggerDelBrownSmoke(long x, long y, long z)
 	sptr->Gravity = -3 - (GetRandomControl() & 3);
 	sptr->MaxYvel = -4 - (GetRandomControl() & 3);
 	size = (GetRandomControl() & 0x1F) + 40;
-	sptr->dSize = (unsigned char)size;
-	sptr->sSize = (unsigned char)(size >> 2);
-	sptr->Size = (unsigned char)(size >> 2);
+	sptr->dSize = (uchar)size;
+	sptr->sSize = (uchar)(size >> 2);
+	sptr->Size = (uchar)(size >> 2);
 }
 
 void DelTorchFlames(PHD_VECTOR* pos)
@@ -2722,9 +2722,9 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->RotAdd = (GetRandomControl() & 0x1F) - 16;
 	sptr->Scalar = 2;
 	size = (GetRandomControl() & 0xF) + 16;
-	sptr->sSize = (unsigned char)size;
-	sptr->Size = (unsigned char)size;
-	sptr->dSize = (unsigned char)(size >> 4);
+	sptr->sSize = (uchar)size;
+	sptr->Size = (uchar)size;
+	sptr->dSize = (uchar)(size >> 4);
 
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
@@ -2751,9 +2751,9 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->Yvel = -22;
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	size = (GetRandomControl() & 0xF) + 16;
-	sptr->dSize = (unsigned char)size;
-	sptr->sSize = (unsigned char)(size >> 1);
-	sptr->Size = (unsigned char)(size >> 1);
+	sptr->dSize = (uchar)size;
+	sptr->sSize = (uchar)(size >> 1);
+	sptr->Size = (uchar)(size >> 1);
 	sptr->dSize += sptr->dSize >> 2;
 }
 
@@ -2844,7 +2844,7 @@ void CutLaraBubbles()
 	}
 }
 
-void deal_with_pistols(unsigned short* shootdata)
+void deal_with_pistols(ushort* shootdata)
 {
 	PHD_VECTOR pos;
 	int f;
@@ -3021,10 +3021,10 @@ void untrigger_item_in_room(short room_number, int object)
 	}
 }
 
-void deal_with_actor_shooting(unsigned short* shootdata, int actornum, int nodenum, PHD_VECTOR* pos)
+void deal_with_actor_shooting(ushort* shootdata, int actornum, int nodenum, PHD_VECTOR* pos)
 {
 	int f;
-	unsigned short dat;
+	ushort dat;
 	MATRIX3D arse;
 
 	dat = *shootdata++;
@@ -3091,9 +3091,9 @@ void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int num
 	{
 		for (int i = 0; i < numnodes; i++)
 		{
-			pnode->xkey = (unsigned short)lnode->xkey;
-			pnode->ykey = (unsigned short)lnode->ykey;
-			pnode->zkey = (unsigned short)lnode->zkey;
+			pnode->xkey = (ushort)lnode->xkey;
+			pnode->ykey = (ushort)lnode->ykey;
+			pnode->zkey = (ushort)lnode->zkey;
 			pnode->decode_x.packmethod = (lnode->packmethod >> 10) & 0xF;
 			pnode->decode_y.packmethod = (lnode->packmethod >> 5) & 0xF;
 			pnode->decode_z.packmethod = (lnode->packmethod) & 0xF;
@@ -3123,9 +3123,9 @@ short GetTrackWord(int off, char* packed, int packmethod)
 	offset = packmethod * off;
 	offset2 = offset >> 3;
 
-	ret = ((1 << packmethod) - 1) & ((unsigned int)(*(unsigned char*)(packed + offset2) |
-		((*(unsigned char*)(packed + offset2 + 1) |
-			(*(unsigned short*)(packed + offset2 + 2) << 8)) << 8)) >> (offset & 7));
+	ret = ((1 << packmethod) - 1) & ((unsigned int)(*(uchar*)(packed + offset2) |
+		((*(uchar*)(packed + offset2 + 1) |
+			(*(ushort*)(packed + offset2 + 2) << 8)) << 8)) >> (offset & 7));
 
 	if (((1 << (packmethod - 1)) & ret) != 0)
 		return (unsigned int)(ret | ~((1 << packmethod) - 1));
@@ -3543,7 +3543,7 @@ void CalculateObjectLightingLaraCutSeq()
 	lara_item->room_number = room_num2;
 }
 
-void GrabActorMatrix(int actornum, unsigned long nodenum, MATRIX3D* matrixstash)
+void GrabActorMatrix(int actornum, ulong nodenum, MATRIX3D* matrixstash)
 {
 	OBJECT_INFO* obj;
 	short* rot;
@@ -3667,7 +3667,7 @@ ITEM_INFO* cutseq_restore_item(int num)
 	return 0;
 }
 
-void GetActorJointAbsPosition(int actornum, unsigned long nodenum, PHD_VECTOR* vec)
+void GetActorJointAbsPosition(int actornum, ulong nodenum, PHD_VECTOR* vec)
 {
 	ITEM_INFO* item;
 	long* bone;
@@ -3686,7 +3686,7 @@ void GetActorJointAbsPosition(int actornum, unsigned long nodenum, PHD_VECTOR* v
 	rot = frame + 9;
 	gar_RotYXZsuperpack(&rot, 0);
 
-	for (unsigned long i = 0; i < nodenum; i++, bone += 4)
+	for (ulong i = 0; i < nodenum; i++, bone += 4)
 	{
 		if (*bone & 1)
 			phd_PopMatrix();

@@ -260,7 +260,7 @@ void phd_PutPolygonSkyMesh(short* objptr, int clipstatus)
 	D3DTLVERTEX* tv;
 	MESH_DATA* p;
 	short* f;
-	unsigned short flag;
+	ushort flag;
 
 	p = (MESH_DATA*)objptr;
 	aSetViewMatrix();

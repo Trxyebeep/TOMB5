@@ -22,7 +22,7 @@ long Spline(long x, long* knots, int nk)
 
 void InitSpotCamSequences()
 {
-	unsigned char s, cc, ce;	//int in original code according to symbols but unisgned char avoids errors and
+	uchar s, cc, ce;	//int in original code according to symbols but unisgned char avoids errors and
 								//works fine since CameraCnt, SpotRemap, and Spotcam->sequence are unsigned chars
 
 	bTrackCamInit = 0;

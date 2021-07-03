@@ -166,7 +166,7 @@ void lara_as_pbleapoff(ITEM_INFO* item, COLL_INFO* coll);
 void LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
 void FallFromRope(ITEM_INFO* item);
 void UpdateRopeSwing(ITEM_INFO* item);
-void ApplyVelocityToRope(int node, unsigned short angle, unsigned short n);
+void ApplyVelocityToRope(int node, ushort angle, ushort n);
 void JumpOffRope(ITEM_INFO* item);
 int LaraHangTest(ITEM_INFO* item, COLL_INFO* coll);
 

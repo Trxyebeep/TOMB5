@@ -59,7 +59,7 @@ void DoSubsuitStuff()
 			if (anx < 0)
 				anx = 0;
 
-			lara.Anxiety = (unsigned char)anx;
+			lara.Anxiety = (uchar)anx;
 			BreathDelay = 0;
 		}
 		else if (BreathDelay < 16)
@@ -194,9 +194,9 @@ void TriggerAirBubbles()
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0xF) - 8;
 	size = 16 + (GetRandomControl() & 15);
-	sptr->Size = (unsigned char)size;
-	sptr->sSize = (unsigned char)size;
-	sptr->dSize = (unsigned char)(size << 1);
+	sptr->Size = (uchar)size;
+	sptr->sSize = (uchar)size;
+	sptr->dSize = (uchar)(size << 1);
 }
 
 void inject_subsuit()

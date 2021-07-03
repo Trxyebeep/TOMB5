@@ -173,7 +173,7 @@ long LSpline(long x, long* knots, int nk)
 	return ret + k[3];
 }
 
-LIGHTNING_STRUCT* TriggerLightning(PHD_VECTOR* s, PHD_VECTOR* d, char variation, long rgb, unsigned char flags, unsigned char size, unsigned char segments)
+LIGHTNING_STRUCT* TriggerLightning(PHD_VECTOR* s, PHD_VECTOR* d, char variation, long rgb, uchar flags, uchar size, uchar segments)
 {
 	LIGHTNING_STRUCT* lptr;
 	char* vptr;

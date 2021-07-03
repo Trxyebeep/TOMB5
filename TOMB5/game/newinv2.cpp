@@ -31,12 +31,12 @@ short optmessages[11] =
 	STR_USE, STR_CHOOSE_AMMO, STR_COMBINE, STR_SEPARATE, STR_EQUIP, STR_COMBINE_WITH, STR_LOAD_GAME, STR_SAVE_GAME, STR_EXAMINE, STR_STATISTICS, STR_CHOOSE_WEAPON_MODE
 };
 
-unsigned char wanky_secrets_table[18] =
+uchar wanky_secrets_table[18] =
 {
 	0, 3, 3, 3, 3, 3, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
 };
 
-unsigned short options_table[99] =
+ushort options_table[99] =
 {
 	0x020A, 0x040A, 0x004A, 0x080A, 0x0812, 0x008A, 0x0092, 0x010A, 0x0112, 0x0004,
 	0x0004, 0x0004, 0x0004, 0x0004, 0x0004, 0x0004, 0x0004, 0x0004, 0x0004, 0x0004,
@@ -484,7 +484,7 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 	short** meshpp;
 	short* frmptr;
 	long i, poppush;
-	unsigned long bit;
+	ulong bit;
 	int unk_bak;////
 
 	frmptr = anims[item->anim_number].frame_ptr;
@@ -1705,10 +1705,10 @@ void draw_ammo_selector()
 	}
 }
 
-void spinback(unsigned short* cock)
+void spinback(ushort* cock)
 {
-	unsigned short val;
-	unsigned short val2;
+	ushort val;
+	ushort val2;
 
 	val = *cock;
 
@@ -2691,7 +2691,7 @@ void do_keypad_mode()
 		objme->meshbits = val & ~(1 << (((keypadx + 3 * keypady) + 1) & 0x1F)) | 1 << (((keypadx + 3 * keypady) + 13) & 0x1F);
 
 	DrawThreeDeeObject2D((int)(phd_centerx * 0.00390625 * 256.0 + inventry_xpos), (int)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2), INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
-	PrintString(0x100, (unsigned short)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, &gfStringWad[gfStringOffset_bis[STR_ENTER_COMBINATION]], FF_CENTER);
+	PrintString(0x100, (ushort)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, &gfStringWad[gfStringOffset_bis[STR_ENTER_COMBINATION]], FF_CENTER);
 	buf[0] = 45;
 	buf[1] = 45;
 	buf[2] = 45;
@@ -2702,7 +2702,7 @@ void do_keypad_mode()
 		for (n = 0; n < keypadnuminputs; n++)
 			buf[n] = keypadinputs[n] + 48;
 
-	PrintString(0x100, (unsigned short)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 + 64), 1, buf, FF_CENTER);
+	PrintString(0x100, (ushort)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 + 64), 1, buf, FF_CENTER);
 
 	if (keypadpause)
 	{
@@ -2718,7 +2718,7 @@ void do_keypad_mode()
 
 	if (go_select)
 	{
-		unsigned char va = keypady * 3 + keypadx + 1;
+		uchar va = keypady * 3 + keypadx + 1;
 		unsigned int va2 = (unsigned int)(va);
 
 		switch (va)
