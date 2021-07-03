@@ -267,7 +267,7 @@ void reset_hair(ITEM_INFO* item)
 
 void SetFog(ITEM_INFO* item)
 {
-	unsigned short rgb;
+	ushort rgb;
 	int r, g, b;
 
 	GlobalFogOff = 0;

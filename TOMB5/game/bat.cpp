@@ -183,15 +183,15 @@ void UpdateBats()
 			{
 				max_turn = fx->speed << 7;
 
-				oy = (unsigned short)angles[0] - (unsigned short)fx->pos.y_rot;
+				oy = (ushort)angles[0] - (ushort)fx->pos.y_rot;
 
 				if (abs(oy) > 32768)
-					oy = (unsigned short)fx->pos.y_rot - (unsigned short)angles[0];
+					oy = (ushort)fx->pos.y_rot - (ushort)angles[0];
 
-				ox = (unsigned short)angles[1] - (unsigned short)fx->pos.x_rot;
+				ox = (ushort)angles[1] - (ushort)fx->pos.x_rot;
 
 				if (ABS(ox) > 32768)
-					ox = (unsigned short)fx->pos.x_rot - (unsigned short)angles[0];
+					ox = (ushort)fx->pos.x_rot - (ushort)angles[0];
 
 				ox >>= 3;
 				oy >>= 3;

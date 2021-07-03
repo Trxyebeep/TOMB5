@@ -8,6 +8,7 @@ int GetFreeBlood();
 void UpdateBlood();
 void TriggerBlood(int x, int y, int z, int a4, int num);
 long LSpline(long x, long* knots, int nk);
+LIGHTNING_STRUCT* TriggerLightning(PHD_VECTOR* s, PHD_VECTOR* d, char variation, long rgb, uchar flags, uchar size, uchar segments);
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define	TriggerRicochetSpark	( (void(__cdecl*)(GAME_VECTOR*, int, int, int)) 0x0042F060 )//pos, angle, size, unk
@@ -30,7 +31,6 @@ long LSpline(long x, long* knots, int nk);
 #define TriggerExplosionBubble	( (void(__cdecl*)(int, int, int, short)) 0x00431070 )
 #define TriggerExplosionSparks	( (void(__cdecl*)(int, int, int, int, int, int, short)) 0x0042F610 )
 #define GetFreeSpark	( (int(__cdecl*)()) 0x0042E790 )
-#define TriggerLightning	( (void(__cdecl*)(PHD_VECTOR*, PHD_VECTOR*, char, int, char, char, char)) 0x00484B30 )
 #define TriggerLightningGlow	( (void(__cdecl*)(long, long, long, long)) 0x004851B0 )
 #define ExplodingDeath2	( (void(__cdecl*)(short, long, short)) 0x00484080 )
 #define Richochet	( (void(__cdecl*)(GAME_VECTOR*)) 0x00432710 )

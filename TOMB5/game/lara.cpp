@@ -1118,7 +1118,7 @@ int TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
 
 	item->pos.y_rot = angle;
 	ShiftItem(item, coll);
-	angle = (unsigned short)((item->pos.y_rot + 8192) >> 14);
+	angle = (ushort)((item->pos.y_rot + 8192) >> 14);
 
 	switch (angle)
 	{
@@ -1862,7 +1862,7 @@ int TestWall(ITEM_INFO* item, long front, long right, long down)
 	z = item->pos.z_pos;
 	angle = item->pos.y_rot + 8192;
 
-	switch ((unsigned short)(angle >> 14))
+	switch ((ushort)(angle >> 14))
 	{
 	case NORTH:
 		x -= right;
@@ -1883,7 +1883,7 @@ int TestWall(ITEM_INFO* item, long front, long right, long down)
 
 	GetFloor(x, y, z, &room_num);
 
-	switch ((unsigned short)angle >> 14)
+	switch ((ushort)angle >> 14)
 	{
 	case NORTH:
 		z += front;
@@ -2326,7 +2326,7 @@ int CanLaraHangSideways(ITEM_INFO* item,COLL_INFO* coll, short angle)
 	z = item->pos.z_pos;
 	lara.move_angle = angle + item->pos.y_rot;
 
-	switch ((unsigned short)(lara.move_angle + 8192) >> 14)
+	switch ((ushort)(lara.move_angle + 8192) >> 14)
 	{
 	case NORTH:
 		z += 16;
@@ -2454,7 +2454,7 @@ void lara_col_reach(ITEM_INFO* item, COLL_INFO* coll)
 		{
 			item->pos.y_pos += coll->front_floor - bounds[2];
 
-			switch ((unsigned short)(item->pos.y_rot + 8192) >> 14)
+			switch ((ushort)(item->pos.y_rot + 8192) >> 14)
 			{
 			case NORTH:
 				item->pos.z_pos = (item->pos.z_pos | 1023) - 100;
@@ -3700,7 +3700,7 @@ void lara_col_all4s(ITEM_INFO* item, COLL_INFO* coll)
 
 									if (!collided)
 									{
-										switch ((unsigned short)(item->pos.y_rot + 8192) >> 14)
+										switch ((ushort)(item->pos.y_rot + 8192) >> 14)
 										{
 										case NORTH:
 											item->pos.y_rot = 0;
@@ -4559,7 +4559,7 @@ void lara_col_ropefwd(ITEM_INFO* item, COLL_INFO* coll)
 			else
 				Vel = 0;
 
-			ApplyVelocityToRope(lara.RopeSegment - 2, item->pos.y_rot + (!lara.RopeDirection ? 32760 : 0), (unsigned short)(Vel >> 5));
+			ApplyVelocityToRope(lara.RopeSegment - 2, item->pos.y_rot + (!lara.RopeDirection ? 32760 : 0), (ushort)(Vel >> 5));
 		}
 
 		if (lara.RopeFrame > lara.RopeDFrame)
@@ -4863,7 +4863,7 @@ void FallFromRope(ITEM_INFO* item)
 void UpdateRopeSwing(ITEM_INFO* item)
 {
 	long temp;
-	static unsigned char LegsSwinging;
+	static uchar LegsSwinging;
 
 	if (lara.RopeMaxXForward > 9000)
 		lara.RopeMaxXForward = 9000;
@@ -4936,7 +4936,7 @@ void UpdateRopeSwing(ITEM_INFO* item)
 		lara.RopeMaxXBackward = ABS(item->pos.x_rot);
 }
 
-void ApplyVelocityToRope(int node, unsigned short angle, unsigned short n)
+void ApplyVelocityToRope(int node, ushort angle, ushort n)
 {
 	int xvel, zvel;
 
@@ -5000,7 +5000,7 @@ int LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
 		flag = 1;
 
 	ceiling = LaraCeilingFront(item, angle, 100, 0);
-	dir = (unsigned short) (item->pos.y_rot + 8192) >> 14;
+	dir = (ushort) (item->pos.y_rot + 8192) >> 14;
 
 	switch (dir)
 	{

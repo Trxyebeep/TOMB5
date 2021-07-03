@@ -607,7 +607,7 @@ void LaraClimbRope(ITEM_INFO* item, COLL_INFO* coll)
 		else if (!lara.RopeFlag)
 		{
 			lara.RopeOffset = 0;
-			lara.RopeDownVel = (unsigned long) (RopeList[lara.RopePtr].MeshSegment[lara.RopeSegment + 1].y - RopeList[lara.RopePtr].MeshSegment[lara.RopeSegment].y) >> 17;
+			lara.RopeDownVel = (ulong) (RopeList[lara.RopePtr].MeshSegment[lara.RopeSegment + 1].y - RopeList[lara.RopePtr].MeshSegment[lara.RopeSegment].y) >> 17;
 			lara.RopeCount = 0;
 			lara.RopeOffset += lara.RopeDownVel;
 			lara.RopeFlag = 1;

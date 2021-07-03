@@ -57,7 +57,7 @@ char NodesToStashFromScratch[15][4] =
 	{26, -1, 0, 0}
 };
 
-unsigned char SkinUseMatrix[14][2] =
+uchar SkinUseMatrix[14][2] =
 {
 	{255, 255},
 	{1, 2},
@@ -179,7 +179,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 
 		for (int j = 0; j < 4; j++)
 		{
-			stash = (unsigned char)NodesToStashFromScratch[i][j];
+			stash = (uchar)NodesToStashFromScratch[i][j];
 
 			if (stash == 255)
 				break;
@@ -423,7 +423,7 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 
 		for (int j = 0; j < 4; j++)
 		{
-			stash = (unsigned char)NodesToStashFromScratch[i][j];
+			stash = (uchar)NodesToStashFromScratch[i][j];
 
 			if (stash == 255)
 				break;
@@ -715,7 +715,7 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 
 		for (int j = 0; j < 4; j++)
 		{
-			stash = (unsigned char)NodesToStashFromScratch[i][j];
+			stash = (uchar)NodesToStashFromScratch[i][j];
 
 			if (stash == 255)
 				break;

@@ -9,7 +9,7 @@ void OptomiseSkinningData()
 	int lp, lp1, numvertsj, numvertstocalc, padval, numtris, numquads;
 	short** meshpp;
 	short* JointMesh, *MeshJ, *MeshNormals, *Src, *Dest;
-	unsigned char RemapTable[32];
+	uchar RemapTable[32];
 	short VertTable[128];
 	short NormalTable[128];
 
@@ -24,7 +24,7 @@ void OptomiseSkinningData()
 		numvertstocalc = JointMesh[5] & 0xFF;
 
 		if (!numvertstocalc)
-			numvertstocalc = (unsigned short) JointMesh[5] >> 8;
+			numvertstocalc = (ushort) JointMesh[5] >> 8;
 
 		lp = 0;
 		

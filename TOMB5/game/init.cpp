@@ -165,7 +165,7 @@ void InitialiseRaisingBlock(short item_number)
 void InitialiseSmashObject(short item_number)
 {
 	ITEM_INFO* item;
-	room_info* rinfo;
+	ROOM_INFO* rinfo;
 	FLOOR_INFO* floor;
 
 	item = &items[item_number];
@@ -258,8 +258,8 @@ void InitialiseSmokeEmitter(short item_number)
 void InitialiseDoor(short item_number)
 {
 	ITEM_INFO* item;
-	room_info* r;
-	room_info* b;
+	ROOM_INFO* r;
+	ROOM_INFO* b;
 	DOOR_DATA* door;
 	int dx, dy;
 	short two_room, box_number, room_number;
@@ -462,7 +462,7 @@ void InitialisePickup(short item_number)
 			item->pos.y_pos -= bounds[3];
 
 		if (item->trigger_flags & 128)
-			RPickups[NumRPickups++] = (unsigned char)item_number;
+			RPickups[NumRPickups++] = (uchar)item_number;
 
 		if (item->trigger_flags & 256)
 			item->mesh_bits = 0;
@@ -494,7 +494,7 @@ void AddClosedDoor(ITEM_INFO* item)
 
 void SetupClosedDoorStuff(DOOR_DATA* door, ITEM_INFO* item, short room2, int dx, int dy)
 {
-	room_info* r;
+	ROOM_INFO* r;
 	long ox, oz;
 
 	dx <<= 10;
@@ -514,7 +514,7 @@ void SetupClosedDoorStuff(DOOR_DATA* door, ITEM_INFO* item, short room2, int dx,
 		SCDS(&room[r->flipped_room], &door->dptr4, &door->dn4, dx, dy, ox, oz);
 }
 
-void SCDS(room_info* r, short** dptr, char* dn, long dx, long dy, long ox, long oz)
+void SCDS(ROOM_INFO* r, short** dptr, char* dn, long dx, long dy, long ox, long oz)
 {
 	short* d;
 	long minx, maxx, minz, maxz, wx, wz;

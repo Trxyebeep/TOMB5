@@ -6,7 +6,6 @@
 #include "deltapak.h"
 #include "../specific/drawlara.h"
 #include "health.h"
-#include "../specific/display.h"
 
 short* GetBoundsAccurate(ITEM_INFO* item)
 {
@@ -174,12 +173,12 @@ void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, int skip)
 
 void gar_RotYXZsuperpack(short** pprot, int skip)
 {
-	unsigned short* prot;
+	ushort* prot;
 //	long packed;
 
 	while (skip)
 	{
-		prot = (unsigned short*)*pprot;
+		prot = (ushort*)*pprot;
 
 		if (*prot & (49152))
 			*pprot += 1;
@@ -189,7 +188,7 @@ void gar_RotYXZsuperpack(short** pprot, int skip)
 		skip--;
 	}
 
-	prot = (unsigned short*)*pprot;
+	prot = (ushort*)*pprot;
 
 	if ((*prot >> 14))
 	{
@@ -202,7 +201,7 @@ void gar_RotYXZsuperpack(short** pprot, int skip)
 	}
 	else
 	{
-		phd_RotYXZpack(((unsigned short)**pprot << 16) + (unsigned short)(*pprot)[1]);
+		phd_RotYXZpack(((ushort)**pprot << 16) + (ushort)(*pprot)[1]);
 		*pprot += 2;
 		return;
 	}

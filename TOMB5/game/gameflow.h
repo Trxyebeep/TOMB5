@@ -6,10 +6,10 @@ void inject_gameflow();
 
 void DoGameflow();
 int TitleOptions();
-void DoTitle(unsigned char name, unsigned char audio);
+void DoTitle(uchar name, uchar audio);
 void do_dels_cutseq_selector();
 
-#define DoLevel	( (void(__cdecl*)(unsigned char, unsigned char)) 0x00435F60 )
+#define DoLevel	( (void(__cdecl*)(uchar, uchar)) 0x00435F60 )
 
 enum gf_languages
 {

@@ -1,7 +1,6 @@
 #include "../tomb5/pch.h"
 #include "gameflow.h"
 #include "../specific/game.h"
-#include "../specific/display.h"
 #include "../specific/specific.h"
 #include "../specific/file.h"
 #include "sound.h"
@@ -18,8 +17,9 @@
 #include "draw.h"
 #include "../specific/LoadSave.h"
 #include "../specific/others.h"
+#include "text.h"
 
-unsigned char dels_cutseq_selector_cursorpos = 0;
+uchar dels_cutseq_selector_cursorpos = 0;
 
 struct cutseq_selector_item
 {
@@ -71,8 +71,8 @@ cutseq_selector_item cutseq_selector_data[] =
 
 void DoGameflow()
 {
-	unsigned char* gf;
-	unsigned char n;
+	uchar* gf;
+	uchar n;
 
 	do_boot_screen(Gameflow->Language);
 	num_fmvs = 0;
@@ -632,7 +632,7 @@ int TitleOptions()
 	return ret;
 }
 
-void DoTitle(unsigned char name, unsigned char audio)
+void DoTitle(uchar name, uchar audio)
 {
 	CreditsDone = 0;
 	DoFrontEndOneShotStuff();

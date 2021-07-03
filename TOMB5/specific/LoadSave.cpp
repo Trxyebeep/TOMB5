@@ -1,6 +1,6 @@
 #include "../tomb5/pch.h"
 #include "LoadSave.h"
-#include "display.h"
+#include "../game/text.h"
 #include "../game/gameflow.h"
 #include "../game/sound.h"
 
@@ -27,7 +27,7 @@ void CheckKeyConflicts()
 
 void DoStatScreen()
 {
-	unsigned short ypos;
+	ushort ypos;
 	short Days, Hours, Min, Sec;
 	char buffer[40];
 	int seconds;

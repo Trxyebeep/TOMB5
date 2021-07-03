@@ -71,6 +71,7 @@
     <ClCompile Include="TOMB5\game\subsuit.cpp" />
     <ClCompile Include="TOMB5\game\swampy.cpp" />
     <ClCompile Include="TOMB5\game\switch.cpp" />
+    <ClCompile Include="TOMB5\game\text.cpp" />
     <ClCompile Include="TOMB5\game\tomb4fx.cpp" />
     <ClCompile Include="TOMB5\game\tower.cpp" />
     <ClCompile Include="TOMB5\game\traps.cpp" />
@@ -153,6 +154,7 @@
     <ClInclude Include="TOMB5\game\subsuit.h" />
     <ClInclude Include="TOMB5\game\swampy.h" />
     <ClInclude Include="TOMB5\game\switch.h" />
+    <ClInclude Include="TOMB5\game\text.h" />
     <ClInclude Include="TOMB5\game\tomb4fx.h" />
     <ClInclude Include="TOMB5\game\tower.h" />
     <ClInclude Include="TOMB5\game\traps.h" />
@@ -280,7 +282,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;VER_JP;cutseq_skipper;cutseq_selector;fix_backguns_drawing;better_cutseqs;fix_that_ugly_nose;NO_CD;BETTER_CHEATS;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;VER_JP;cutseq_skipper;cutseq_selector;fix_backguns_drawing;better_cutseqs;fix_that_ugly_nose;NO_CD;BETTER_CHEATS;AMMO_COUNTER;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>

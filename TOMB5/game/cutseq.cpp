@@ -10,13 +10,13 @@
 
 char iswappedit;//original one is on 0051CA84.
 
-unsigned short special2_pistols_info[13] =
+ushort special2_pistols_info[13] =
 {
 	0x00C4, 0x00CC, 0x00D4, 0x00DC, 0x00E4, 0x00EC, 0x00F4, 0x00FC, 0x0104, 0x010C,
 	0x0114, 0x0121, 0xFFFF
 };
 
-unsigned short special3_pistols_info[] =
+ushort special3_pistols_info[] =
 {
 	0x0102, 0x010A, 0x0114, 0xFFFF, 0, 0, 0, 0, 0x00FF, 0x0100, 0x0114, 0xFF9C, 0x0064, 0x0100, 0x0200
 };
@@ -213,7 +213,7 @@ void _special3_control()
 		sptr->sR = sptr->sB - (sptr->sB >> 2);
 		sptr->sG = sptr->sB - (sptr->sB >> 2);
 		sptr->dB = (16 * ((GetRandomControl() & 0x7F) + 32)) >> 4;
-		sptr->dG = (unsigned char)sptr->dB >> 2;
+		sptr->dG = (uchar)sptr->dB >> 2;
 		sptr->FadeToBlack = 8;
 		sptr->ColFadeSpeed = (GetRandomControl() & 3) + 8;
 		sptr->TransType = 2;
@@ -346,35 +346,24 @@ void FlamingHell(PHD_VECTOR* pos)
 	sptr->dSize += sptr->dSize >> 2;
 }
 
-void FireTwoGunTitleWeapon(PHD_VECTOR* pos, PHD_VECTOR* pos2)
+void FireTwoGunTitleWeapon(PHD_VECTOR* pos1, PHD_VECTOR* pos2)
 {
 	TWOGUN_INFO* gun;
 	short angles[2];
-	int i;
 
-	phd_GetVectorAngles(pos2->x - pos->x, pos2->y - pos->y, pos2->z - pos->z, &angles[0]);
-	gun = &twogun[0];
+	phd_GetVectorAngles(pos2->x - pos1->x, pos2->y - pos1->y, pos2->z - pos1->z, &angles[0]);
 
-	i = 0;
-
-	if (gun->life != 0)
+	for (int i = 0; i < 4; i++)
 	{
-		gun++;
+		gun = &twogun[i];
 
-		do
-		{
-			if (++i < 4)
-			{
-				if (gun->life == 0)
-					break;
-			}
-
-		} while (i++ != 3);
+		if (!gun->life || i == 3)
+			break;
 	}
 
-	gun->pos.x_pos = pos->x;
-	gun->pos.y_pos = pos->y;
-	gun->pos.z_pos = pos->z;
+	gun->pos.x_pos = pos1->x;
+	gun->pos.y_pos = pos1->y;
+	gun->pos.z_pos = pos1->z;
 	gun->pos.y_rot = angles[0];
 	gun->pos.x_rot = angles[1];
 	gun->pos.z_rot = 0;
@@ -382,11 +371,11 @@ void FireTwoGunTitleWeapon(PHD_VECTOR* pos, PHD_VECTOR* pos2)
 	gun->spin = (short)(GetRandomControl() << 11);
 	gun->dlength = 4096;
 	gun->r = 0;
-	gun->b = -1;
 	gun->g = 96;
+	gun->b = -1;
 	gun->fadein = 8;
-	TriggerLightningGlow(gun->pos.x_pos, gun->pos.y_pos, gun->pos.z_pos, ((gun->b >> 1) << 16) | ((gun->g & 0xFFFFFFFE) << 7) | (((GetRandomControl() & 0x3) + 64) << 24));
-	TriggerLightning(pos, pos2, (GetRandomControl() & 7) + 8, (gun->b & 0xFF) | (((gun->b & 0xFF) | 0x160000) >> 8), 12, 80, 5);
+	TriggerLightningGlow(gun->pos.x_pos, gun->pos.y_pos, gun->pos.z_pos, ((GetRandomControl() & 3) + 64) << 24 | ((uchar)gun->g << 7) | ((uchar)gun->b >> 1));
+	TriggerLightning(pos1, pos2, (GetRandomControl() & 7) + 8, ((uchar)gun->g | 0x160000) << 8 | (uchar)gun->b, 12, 80, 5);
 }
 
 void inject_cutseq()
