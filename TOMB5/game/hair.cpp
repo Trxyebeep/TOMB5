@@ -248,9 +248,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			water = NO_HEIGHT;
 		else
 		{
-			x = (lara_item->pos.x_pos + (frame[0] + frame[1])) >> 1;
-			y = (lara_item->pos.y_pos + (frame[2] + frame[3])) >> 1;
-			z = (lara_item->pos.z_pos + (frame[4] + frame[5])) >> 1;
+			x = lara_item->pos.x_pos + (frame[0] + frame[1]) / 2;;
+			y = lara_item->pos.y_pos + (frame[2] + frame[3]) / 2;
+			z = lara_item->pos.z_pos + (frame[4] + frame[5]) / 2;
 			water = GetWaterHeight(x, y, z, room_num);
 		}
 
