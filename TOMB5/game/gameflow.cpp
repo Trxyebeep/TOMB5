@@ -539,7 +539,7 @@ int TitleOptions()
 				ret = 3;
 			}
 
-#ifdef cutseq_selector
+#ifdef GENERAL_FIXES	//enable the cutscene selector
 			if (keymap[33] && keymap[22] && keymap[46] && keymap[37])//F U C K because this is fucking shit.
 				dels_cutseq_selector_flag = 1;
 #endif

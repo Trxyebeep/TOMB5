@@ -1178,7 +1178,7 @@ void draw_current_object_list(int ringnum)
 				{
 					if (!rings[ringnum]->objlistmovement)
 					{
-						SoundEffect(SFX_MENU_ROTATE, 0, SFX_DEFAULT);
+						SoundEffect(SFX_MENU_ROTATE, 0, SFX_ALWAYS);
 						rings[ringnum]->objlistmovement -= 8192;
 
 						if (ammo_selector_flag)

@@ -7,7 +7,7 @@
 #include "../specific/output.h"
 #include "../specific/LoadSave.h"
 #include "text.h"
-#ifdef AMMO_COUNTER
+#ifdef GENERAL_FIXES
 #include "larafire.h"
 #endif
 
@@ -56,7 +56,7 @@ void DrawGameInfo(int timed)
 			PrintString(0x5C, 0x18, 0, &buf[0], 0);
 		}
 
-#ifdef AMMO_COUNTER
+#ifdef GENERAL_FIXES	//adds an ammo counter
 		if (lara.gun_status == LG_READY)
 		{
 			short ammo, btm;
@@ -66,9 +66,12 @@ void DrawGameInfo(int timed)
 			if (ammo == -1)
 				return;
 
+			if (lara.gun_type == WEAPON_SHOTGUN)
+				ammo /= 6;
+			
 			sprintf(&buf[0], "%i", ammo);
 			GetStringLength(buf, 0, &btm);
-			PrintString(phd_winxmax - GetStringLength(buf, 0, 0) - 80, phd_winymax - btm - 70, 0, &buf[0], 0);
+			PrintString(LaserSight ? phd_centerx + 30 : (phd_winxmax - GetStringLength(buf, 0, 0) - 80), phd_winymax - btm - 70, 0, &buf[0], 0);
 		}
 #endif
 	}

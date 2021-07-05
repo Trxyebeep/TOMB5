@@ -170,6 +170,11 @@ void ApplyVelocityToRope(int node, ushort angle, ushort n);
 void JumpOffRope(ITEM_INFO* item);
 int LaraHangTest(ITEM_INFO* item, COLL_INFO* coll);
 
+#ifndef GENERAL_FIXES
+void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll);
+void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll);
+#endif
+
 #define LaraTestClimbStance	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00445580 )
 #define LaraHangLeftCornerTest	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x0044A2B0 )
 #define LaraHangRightCornerTest	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00449CC0 )

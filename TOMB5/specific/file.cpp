@@ -27,7 +27,7 @@ bool LoadTextureInfos()
 		textinfo[i].tpage = tex.tpage & 0x7FFF;
 		textinfo[i].flag = tex.tpage ^ (tex.tpage ^ tex.flag) & 0x7FFF;
 
-#ifdef fix_that_ugly_nose
+#ifdef GENERAL_FIXES
 		if (
 			(gfCurrentLevel == LVL5_STREETS_OF_ROME && (i == 200 || i == 204)) ||
 			(gfCurrentLevel == LVL5_TRAJAN_MARKETS && (i == 225 || i == 229)) ||

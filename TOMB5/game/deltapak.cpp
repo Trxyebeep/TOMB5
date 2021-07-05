@@ -3496,8 +3496,8 @@ void frigup_lara()
 	bone = &bones[object->bone_index];
 	updateAnimFrame(actor_pnodes[0], 16, frame);
 
-#ifdef better_cutseqs
-	if (cutseq_num == 8 && (GLOBAL_cutseq_frame >= 696 && GLOBAL_cutseq_frame <= 841))//Larson shoot out weird lara gliding
+#ifdef GENERAL_FIXES	//fixes lara gliding in the larson shootout
+	if (cutseq_num == 8 && (GLOBAL_cutseq_frame >= 696 && GLOBAL_cutseq_frame <= 841))
 	{
 		frame[6] = -69;
 		frame[8] = 267;

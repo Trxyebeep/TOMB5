@@ -286,7 +286,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 		{
 			phd_PushMatrix();
 
-#ifdef fix_backguns_drawing//fixes the original bug where Lara's back weapon wouldn't draw.
+#ifdef GENERAL_FIXES//fixes the original bug where Lara's back weapon wouldn't draw.
 			aMXPtr[0] = lara_matricesF[84 + 0];
 			aMXPtr[1] = lara_matricesF[84 + 1];
 			aMXPtr[2] = lara_matricesF[84 + 2];
@@ -299,20 +299,20 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 			aMXPtr[9] = lara_matricesF[84 + 9];
 			aMXPtr[10] = lara_matricesF[84 + 10];
 			aMXPtr[11] = lara_matricesF[84 + 11];
-#else //fix_backguns_drawing
-			* (aMXPtr + 0) = *((float*)(&lara_matrices[84]) + 0);
-			*(aMXPtr + 1) = *((float*)(&lara_matrices[84]) + 1);
-			*(aMXPtr + 2) = *((float*)(&lara_matrices[84]) + 2);
-			*(aMXPtr + 3) = *((float*)(&lara_matrices[84]) + 3);
-			*(aMXPtr + 4) = *((float*)(&lara_matrices[84]) + 4);
-			*(aMXPtr + 5) = *((float*)(&lara_matrices[84]) + 5);
-			*(aMXPtr + 6) = *((float*)(&lara_matrices[84]) + 6);
-			*(aMXPtr + 7) = *((float*)(&lara_matrices[84]) + 7);
-			*(aMXPtr + 8) = *((float*)(&lara_matrices[84]) + 8);
-			*(aMXPtr + 9) = *((float*)(&lara_matrices[84]) + 9);
-			*(aMXPtr + 10) = *((float*)(&lara_matrices[84]) + 10);
-			*(aMXPtr + 11) = *((float*)(&lara_matrices[84]) + 11);
-#endif //fix_backguns_drawing
+#else
+			aMXPtr[0] = *((float*)(&lara_matrices[84]) + 0);
+			aMXPtr[1] = *((float*)(&lara_matrices[84]) + 1);
+			aMXPtr[2] = *((float*)(&lara_matrices[84]) + 2);
+			aMXPtr[3] = *((float*)(&lara_matrices[84]) + 3);
+			aMXPtr[4] = *((float*)(&lara_matrices[84]) + 4);
+			aMXPtr[5] = *((float*)(&lara_matrices[84]) + 5);
+			aMXPtr[6] = *((float*)(&lara_matrices[84]) + 6);
+			aMXPtr[7] = *((float*)(&lara_matrices[84]) + 7);
+			aMXPtr[8] = *((float*)(&lara_matrices[84]) + 8);
+			aMXPtr[9] = *((float*)(&lara_matrices[84]) + 9);
+			aMXPtr[10] = *((float*)(&lara_matrices[84]) + 10);
+			aMXPtr[11] = *((float*)(&lara_matrices[84]) + 11);
+#endif
 
 			phd_TranslateRel(*((bones + objects[lara.back_gun].bone_index) + 53),
 				*((bones + objects[lara.back_gun].bone_index) + 54),
@@ -321,9 +321,9 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 			rot = objects[lara.back_gun].frame_base + 9;
 			gar_RotYXZsuperpack(&rot, 14);
 
-#ifdef fix_backguns_drawing
+#ifdef GENERAL_FIXES
 			aSetViewMatrix();
-#endif //fix_backguns_drawing
+#endif
 
 			phd_PutPolygons(meshes[objects[lara.back_gun].mesh_index + 28], -1);
 			phd_PopMatrix();
@@ -783,7 +783,7 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 		meshpp += 2;
 	}
 
-#ifdef fix_backguns_drawing
+#ifdef GENERAL_FIXES	//draws the gun on lara's back
 	if (lara.back_gun)
 	{
 		phd_PushMatrix();

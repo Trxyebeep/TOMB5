@@ -248,9 +248,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			water = NO_HEIGHT;
 		else
 		{
-			x = (lara_item->pos.x_pos + (frame[0] + frame[1])) >> 1;
-			y = (lara_item->pos.y_pos + (frame[2] + frame[3])) >> 1;
-			z = (lara_item->pos.z_pos + (frame[4] + frame[5])) >> 1;
+			x = lara_item->pos.x_pos + (frame[0] + frame[1]) / 2;;
+			y = lara_item->pos.y_pos + (frame[2] + frame[3]) / 2;
+			z = lara_item->pos.z_pos + (frame[4] + frame[5]) / 2;
 			water = GetWaterHeight(x, y, z, room_num);
 		}
 
@@ -349,7 +349,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			dz = (hair->pos.z_pos - (hair - 1)->pos.z_pos);
 			dist = phd_sqrt(SQUARE(dz) + SQUARE(dx));
 
-#ifdef better_cutseqs
+#ifdef GENERAL_FIXES	//fixes hair jumps for cuts
 			if ((!(cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211) || (GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480)))) ||
 				(!(cutseq_num == 8 && (GLOBAL_cutseq_frame >= 840 && GLOBAL_cutseq_frame <= 846))))
 			{
@@ -374,7 +374,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			hair->pos.y_pos = phd_mxptr[7] >> 14;
 			hair->pos.z_pos = phd_mxptr[11] >> 14;
 
-#ifdef better_cutseqs
+#ifdef GENERAL_FIXES	//fixes hair jumps for cuts
 			if ((cutseq_num == 16 && ((GLOBAL_cutseq_frame >= 409 && GLOBAL_cutseq_frame < 411) || GLOBAL_cutseq_frame == 1873 || GLOBAL_cutseq_frame == 3049)) ||
 				(cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211)||(GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480))) ||
 				(cutseq_num == 8 && (GLOBAL_cutseq_frame >= 840 && GLOBAL_cutseq_frame <= 846)))
