@@ -92,7 +92,7 @@ long ControlPhase(long _nframes, int demo_mode)
 			input &= IN_LOOK;
 		}
 
-#ifdef cutseq_skipper
+#ifdef GENERAL_FIXES	//cutscene skipper
 		if (cutseq_trig)
 		{
 			if (keymap[1] && !ScreenFading)//skip them with esc

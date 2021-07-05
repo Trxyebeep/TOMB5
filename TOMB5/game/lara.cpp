@@ -93,7 +93,11 @@ void(*lara_control_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* co
 	lara_void_func,
 	lara_as_deathslide,
 	lara_as_duck,
+#ifndef GENERAL_FIXES
+	lara_as_duckroll,
+#else
 	lara_as_duck,
+#endif
 	lara_as_dash,
 	lara_as_dashdive,
 	lara_as_hang2,
@@ -236,7 +240,11 @@ void(*lara_collision_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* 
 	lara_void_func,
 	lara_void_func,
 	lara_col_duck,
+#ifndef GENERAL_FIXES
+	lara_col_duckroll,
+#else
 	lara_col_duck,
+#endif
 	lara_col_dash,
 	lara_col_dashdive,
 	lara_col_hang2,
@@ -3204,9 +3212,9 @@ void lara_as_duck(ITEM_INFO* item, COLL_INFO* coll)
 	room_num = lara_item->room_number;
 	GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_num);
 
-	if ((input & IN_FORWARD || input & IN_BACK))
+	if (input & IN_FORWARD || input & IN_BACK)
 	{
-		if (((input & IN_DUCK) || lara.keep_ducked && lara.water_status != LW_WADE) && lara.gun_status == LG_NO_ARMS)
+		if ((input & IN_DUCK || lara.keep_ducked && lara.water_status != LW_WADE) && lara.gun_status == LG_NO_ARMS)
 		{
 			if (!(room[room_num].flags & ROOM_UNDERWATER))
 			{
@@ -3225,6 +3233,31 @@ void lara_as_duck(ITEM_INFO* item, COLL_INFO* coll)
 			}
 		}
 	}
+
+#ifndef GENERAL_FIXES
+	if (input & IN_SPRINT)
+	{
+		if ((input & IN_DUCK || lara.keep_ducked && lara.water_status != LW_WADE) && lara.gun_status == LG_NO_ARMS)
+		{
+			if (lara_item->anim_number == ANIM_DUCKBREATHE || lara_item->anim_number == 245)
+			{
+				if (!(input & (IN_B | IN_DRAW)))
+				{
+					if (lara.gun_type != WEAPON_FLARE || lara.flare_age < 900 && lara.flare_age)
+					{
+						lara.torso_y_rot = 0;
+						lara.torso_x_rot = 0;
+						item->current_anim_state = AS_DUCKROLL;
+						item->goal_anim_state = AS_DUCKROLL;
+						item->anim_number = 218;
+						item->frame_number = anims[218].frame_base;
+					}
+				}
+			}
+		}
+	}
+#endif
+
 }
 
 void lara_col_duck(ITEM_INFO* item, COLL_INFO* coll)
@@ -5159,6 +5192,36 @@ int LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
 
 	return 0;
 }
+
+#ifndef GENERAL_FIXES//still buggy
+void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll)
+{
+	camera.target_elevation = -3640;
+	item->goal_anim_state = AS_DUCK;
+}
+
+void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll)
+{
+	item->gravity_status = 0;
+	item->fallspeed = 0;
+	lara.move_angle = item->pos.y_rot;
+	coll->bad_pos = 384;
+	coll->bad_neg = -384;
+	coll->bad_ceiling = 0;
+	coll->slopes_are_walls = 1;
+	GetLaraCollisionInfo(item, coll);
+	ShiftItem(item, coll);
+	TestLaraSlide(item, coll);
+
+	if (!LaraHitCeiling(item, coll) && !LaraFallen(item, coll))
+	{
+		if (coll->mid_floor != NO_HEIGHT)
+			item->pos.y_pos += coll->mid_floor;
+		else
+			item->speed = 0;
+	}
+}
+#endif
 
 void inject_lara()
 {

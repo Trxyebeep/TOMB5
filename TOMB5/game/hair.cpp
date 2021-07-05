@@ -349,7 +349,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			dz = (hair->pos.z_pos - (hair - 1)->pos.z_pos);
 			dist = phd_sqrt(SQUARE(dz) + SQUARE(dx));
 
-#ifdef better_cutseqs
+#ifdef GENERAL_FIXES	//fixes hair jumps for cuts
 			if ((!(cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211) || (GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480)))) ||
 				(!(cutseq_num == 8 && (GLOBAL_cutseq_frame >= 840 && GLOBAL_cutseq_frame <= 846))))
 			{
@@ -374,7 +374,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			hair->pos.y_pos = phd_mxptr[7] >> 14;
 			hair->pos.z_pos = phd_mxptr[11] >> 14;
 
-#ifdef better_cutseqs
+#ifdef GENERAL_FIXES	//fixes hair jumps for cuts
 			if ((cutseq_num == 16 && ((GLOBAL_cutseq_frame >= 409 && GLOBAL_cutseq_frame < 411) || GLOBAL_cutseq_frame == 1873 || GLOBAL_cutseq_frame == 3049)) ||
 				(cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211)||(GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480))) ||
 				(cutseq_num == 8 && (GLOBAL_cutseq_frame >= 840 && GLOBAL_cutseq_frame <= 846)))

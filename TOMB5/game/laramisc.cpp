@@ -260,7 +260,7 @@ void LaraCheatGetStuff()
 	if (objects[CROWBAR_ITEM].loaded)
 		lara.crowbar = 1;
 
-#ifdef BETTER_CHEATS
+#ifdef GENERAL_FIXES	//fix errors with cheats
 	if (objects[FLARE_INV_ITEM].loaded)
 		lara.num_flares = -1;
 
@@ -322,7 +322,7 @@ void LaraCheatGetStuff()
 #ifdef VER_JP
 void LaraCheatyBits()
 {
-#ifndef BETTER_CHEATS
+#ifndef GENERAL_FIXES	//make cheats available
 	if (!Gameflow->CheatEnabled)
 		return;
 
@@ -335,7 +335,7 @@ void LaraCheatyBits()
 		lara_item->hit_points = 1000;
 	}
 
-#ifndef BETTER_CHEATS
+#ifndef GENERAL_FIXES
 	if (input & IN_CHEAT)
 #else
 	if (keymap[60])//F2
@@ -364,7 +364,7 @@ void LaraCheatyBits()
 		}
 	}
 
-#ifdef BETTER_CHEATS
+#ifdef GENERAL_FIXES
 	if (keymap[61])//F3
 		gfLevelComplete = gfCurrentLevel + 1;
 #endif
