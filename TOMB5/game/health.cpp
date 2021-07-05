@@ -66,9 +66,12 @@ void DrawGameInfo(int timed)
 			if (ammo == -1)
 				return;
 
+			if (lara.gun_type == WEAPON_SHOTGUN)
+				ammo /= 6;
+			
 			sprintf(&buf[0], "%i", ammo);
 			GetStringLength(buf, 0, &btm);
-			PrintString(phd_winxmax - GetStringLength(buf, 0, 0) - 80, phd_winymax - btm - 70, 0, &buf[0], 0);
+			PrintString(LaserSight ? phd_centerx + 30 : (phd_winxmax - GetStringLength(buf, 0, 0) - 80), phd_winymax - btm - 70, 0, &buf[0], 0);
 		}
 #endif
 	}
