@@ -79,6 +79,7 @@
     <ClCompile Include="TOMB5\specific\3dmath.cpp" />
     <ClCompile Include="TOMB5\specific\display.cpp" />
     <ClCompile Include="TOMB5\specific\drawlara.cpp" />
+    <ClCompile Include="TOMB5\specific\drawroom.cpp" />
     <ClCompile Include="TOMB5\specific\DS.cpp" />
     <ClCompile Include="TOMB5\specific\file.cpp" />
     <ClCompile Include="TOMB5\specific\function_stubs.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="TOMB5\specific\3dmath.h" />
     <ClInclude Include="TOMB5\specific\display.h" />
     <ClInclude Include="TOMB5\specific\drawlara.h" />
+    <ClInclude Include="TOMB5\specific\drawroom.h" />
     <ClInclude Include="TOMB5\specific\DS.h" />
     <ClInclude Include="TOMB5\specific\file.h" />
     <ClInclude Include="TOMB5\specific\function_stubs.h" />

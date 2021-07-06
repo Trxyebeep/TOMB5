@@ -6,6 +6,13 @@
 #include "deltapak.h"
 #include "../specific/drawlara.h"
 #include "health.h"
+#include "objects.h"
+#include "gameflow.h"
+#include "control.h"
+#include "sound.h"
+#include "../specific/specificfx.h"
+#include "../specific/drawroom.h"
+#include "../specific/polyinsert.h"
 
 short* GetBoundsAccurate(ITEM_INFO* item)
 {
@@ -326,6 +333,85 @@ long DrawPhaseGame()
 	return camera.number_frames;
 }
 
+void SkyDrawPhase()
+{
+	if (outside)
+	{
+		if (!objects[HORIZON].loaded)
+		{
+			outside = -1;
+			return;
+		}
+
+		if (BinocularRange)
+			AlterFOV(14560 - (short)BinocularRange);
+
+		phd_PushMatrix();
+		phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
+
+		if (gfLevelFlags & GF_LIGHTNING)
+		{
+			if (!LightningCount && !LightningRand)
+			{
+				if (!(GetRandomDraw() & 127))
+				{
+					LightningCount = (GetRandomDraw() & 0x1F) + 16;
+					dLightningRand = (GetRandomDraw() & 0xFF) + 256;
+					LightningSFXDelay = (GetRandomDraw() & 3) + 12;
+				}
+			}
+			else
+			{
+				UpdateSkyLightning();
+
+				if (LightningSFXDelay > -1)
+					LightningSFXDelay--;
+
+				if (!LightningSFXDelay)
+					SoundEffect(SFX_THUNDER_RUMBLE, 0, 0);
+			}
+		}
+
+		nPolyType = 6;
+		DrawBuckets();
+		DrawSortList();
+		phd_PushMatrix();
+
+		if (gfLevelFlags & GF_LAYER1)
+		{
+		//	phd_RotY(32760);
+
+			if (gfLevelFlags & GF_LIGHTNING)
+				DrawFlatSky(RGBONLY(LightningRGBs[0], LightningRGBs[1], LightningRGBs[2]), SkyPos, -1536, 4);
+			else
+				DrawFlatSky(*(ulong*)&gfLayer1Col, SkyPos, -1536, 4);
+		}
+
+		if (gfLevelFlags & GF_LAYER2)
+			DrawFlatSky(0xFF000000 | *(ulong*)&gfLayer2Col, SkyPos2, -1536, 2);
+
+		if (gfLevelFlags & GF_LAYER1 || gfLevelFlags & GF_LAYER2)
+			OutputSky();
+
+		phd_PopMatrix();
+
+		if (gfLevelFlags & GF_HORIZON)
+		{
+			if (gfCurrentLevel == LVL5_TITLE && jobyfrigger)
+				phd_PutPolygonSkyMesh(meshes[objects[CHEF_MIP].mesh_index], -1);
+			else
+				phd_PutPolygonSkyMesh(meshes[objects[HORIZON].mesh_index], -1);
+
+			OutputSky();
+		}
+
+		phd_PopMatrix();
+
+		if (BinocularRange)
+			AlterFOV(2080 - ((short)BinocularRange * 7));
+	}
+}
+
 void inject_draw()
 {
 	INJECT(0x0042CF80, GetBoundsAccurate);
@@ -344,4 +430,5 @@ void inject_draw()
 	INJECT(0x0042C3F0, phd_PutPolygons_I);
 	INJECT(0x0042C440, aInterpolateMatrix);
 	INJECT(0x0042A400, DrawPhaseGame);
+	INJECT(0x0042A4A0, SkyDrawPhase);
 }

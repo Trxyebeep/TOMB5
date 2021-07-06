@@ -396,6 +396,14 @@
 #define Bats	VAR_U_(0x00EEEFE8, BAT_STRUCT*)
 #define next_rat	VAR_U_(0x0051CF94, long)
 #define next_bat	VAR_U_(0x0051CA18, long)
+#define outside	VAR_U_(0x00E6CAF8, long)
+#define LightningCount	VAR_U_(0x00E6D74C, short)
+#define LightningRand	VAR_U_(0x00E6D73C, short)
+#define dLightningRand	VAR_U_(0x00E6E4DC, short)
+#define LightningSFXDelay	VAR_U_(0x0051CC5C, short)
+#define nPolyType	VAR_U_(0x00E4B100, long)
+#define SkyPos	VAR_U_(0x00E6E4B0, short)
+#define SkyPos2	VAR_U_(0x00E6D73E, short)
 /***********************/
 //Spotcams
 #define number_spotcams	VAR_U_(0x00E4F428, short)
