@@ -147,7 +147,7 @@ void InitialiseLara(int restore)
 	}
 	else
 	{
-		lara_info backup;
+		LARA_INFO backup;
 		memcpy(&backup, &lara, sizeof(lara));
 		memset(&lara, 0, sizeof(lara));
 		memcpy(&lara.pistols_type_carried, &backup.pistols_type_carried, 0x38u);

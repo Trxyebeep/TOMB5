@@ -24,15 +24,15 @@ void InitialiseSwampy(short item_number)
 void SwampyControl(short item_number)
 {
 	ITEM_INFO* item;
-	creature_info* swampy;
-	AI_info info;
+	CREATURE_INFO* swampy;
+	AI_INFO info;
 	short angle, torso_y, torso_x, head;
 
 	if (!CreatureActive(item_number))
 		return;
 
 	item = &items[item_number];
-	swampy = (creature_info*)item->data;
+	swampy = (CREATURE_INFO*)item->data;
 	torso_x = 0;
 	torso_y = 0;
 	head = 0;

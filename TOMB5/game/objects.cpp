@@ -8,7 +8,6 @@
 #include "collide.h"
 #include "../specific/3dmath.h"
 #include "switch.h"
-#include "effect2.h"
 #include "debris.h"
 #include "lara_states.h"
 #include "delstuff.h"
@@ -132,7 +131,7 @@ void SmashObject(short item_number)
 	ITEM_INFO* item;
 	ROOM_INFO* r;
 	int sector;
-	box_info* box;
+	BOX_INFO* box;
 
 	item = &items[item_number];
 	r = &room[item->room_number];
@@ -238,7 +237,7 @@ void BridgeTilt2Ceiling(ITEM_INFO* item, long x, long y, long z, long* height)
 void ControlAnimatingSlots(short item_number)
 {
 	ITEM_INFO* item;
-	creature_info* c;
+	CREATURE_INFO* c;
 	int f;
 
 	item = &items[item_number];
@@ -314,7 +313,7 @@ void ControlAnimatingSlots(short item_number)
 			else
 				SoundEffect(SFX_HELICOPTER_LOOP, &item->pos, ((2 * fe) << 8) | SFX_SETVOL);
 
-			c = (creature_info*)item->data;
+			c = (CREATURE_INFO*)item->data;
 			c->joint_rotation[0] += 7343;
 			c->joint_rotation[1] += 7343;
 

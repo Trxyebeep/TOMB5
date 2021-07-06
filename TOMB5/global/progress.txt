@@ -1208,6 +1208,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043C790		TriggerHydraMissileFlame
 0x0043C910		TriggerHydraPowerupFlames
 
+
 		game/text.cpp
 
 0x004805D0		DrawChar
@@ -1216,6 +1217,14 @@ x for functions decompiled but not injected, for one reason or another.
 0x00480AE0		GetStringDimensions
 0x00480BC0		PrintString
 0x00480F00		InitFont
+
+		
+		game/skeleton.cpp
+
+0x00477A20	+	InitialiseSkeleton
+0x00477AB0	+	SkeletonControl
+0x00477D50		TriggerSkeletonFire
+0x00477ED0		TriggerFontFire
 
 // ======================================
 // SPECIFIC

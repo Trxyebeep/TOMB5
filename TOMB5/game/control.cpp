@@ -524,7 +524,7 @@ int CheckGuardOnTrigger()
 {
 	int slot;
 	short room_number;
-	creature_info* cinfo;
+	CREATURE_INFO* cinfo;
 	ITEM_INFO* item;
 
 	room_number = lara_item->room_number;

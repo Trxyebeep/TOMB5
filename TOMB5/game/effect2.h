@@ -15,5 +15,4 @@ void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv);
 #define TriggerWaterfallMist	( (void(__cdecl*)(long, long, long, long)) 0x00430A40 )
 #define TriggerTorpedoSteam	( (void(__cdecl*)(PHD_VECTOR*, PHD_VECTOR*, int)) 0x0045C5E0 )
 #define TriggerFireFlame	( (void(__cdecl*)(int, int, int, int, signed int)) 0x0042FE20 )
-#define TriggerFontFire	( (void(__cdecl*)(ITEM_INFO*, int, int)) 0x00477ED0 )
 #define SetupRipple	( (void(__cdecl*)(long, long, long, long, long)) 0x00430910 )
