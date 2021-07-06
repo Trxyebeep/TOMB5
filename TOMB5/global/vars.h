@@ -323,6 +323,10 @@
 #define f_right	VAR_U_(0x0051D160, float)
 #define f_top	VAR_U_(0x0055D664, float)
 #define f_bottom	VAR_U_(0x0055DA34, float)
+#define f_centerx	VAR_U_(0x0055D22C, float)
+#define f_centery	VAR_U_(0x0055D230, float)
+#define f_a	VAR_U_(0x0051D150, float)
+#define f_boo	VAR_U_(0x0055D220, float)
 /*************************************************/
 #define IsRoomOutsideNo	VAR_U_(0x00EEF902, short)
 #define _CutSceneTriggered1	VAR_U_(0x00EEF004, ulong)
