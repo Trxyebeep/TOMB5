@@ -368,7 +368,7 @@ void SkyDrawPhase()
 					LightningSFXDelay--;
 
 				if (!LightningSFXDelay)
-					SoundEffect(SFX_THUNDER_RUMBLE, 0, 0);
+					SoundEffect(SFX_THUNDER_RUMBLE, 0, SFX_DEFAULT);
 			}
 		}
 
@@ -379,7 +379,7 @@ void SkyDrawPhase()
 
 		if (gfLevelFlags & GF_LAYER1)
 		{
-		//	phd_RotY(32760);
+			phd_RotY(32760);
 
 			if (gfLevelFlags & GF_LIGHTNING)
 				DrawFlatSky(RGBONLY(LightningRGBs[0], LightningRGBs[1], LightningRGBs[2]), SkyPos, -1536, 4);
