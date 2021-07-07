@@ -93,6 +93,7 @@
     <ClCompile Include="TOMB5\specific\polyinsert.cpp" />
     <ClCompile Include="TOMB5\specific\specific.cpp" />
     <ClCompile Include="TOMB5\specific\specificfx.cpp" />
+    <ClCompile Include="TOMB5\specific\texture.cpp" />
     <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
     <ClCompile Include="TOMB5\tomb5\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -182,6 +183,7 @@
     <ClInclude Include="TOMB5\specific\polyinsert.h" />
     <ClInclude Include="TOMB5\specific\specific.h" />
     <ClInclude Include="TOMB5\specific\specificfx.h" />
+    <ClInclude Include="TOMB5\specific\texture.h" />
     <ClInclude Include="TOMB5\tomb5\framework.h" />
     <ClInclude Include="TOMB5\tomb5\pch.h" />
   </ItemGroup>

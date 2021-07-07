@@ -13,6 +13,9 @@
 #include "../specific/specificfx.h"
 #include "../specific/drawroom.h"
 #include "../specific/polyinsert.h"
+#ifdef DEBUG_FEATURES
+#include "../specific/texture.h"
+#endif
 
 short* GetBoundsAccurate(ITEM_INFO* item)
 {
@@ -324,6 +327,11 @@ long DrawPhaseGame()
 	if (GLOBAL_playing_cutseq)
 		frigup_lara();
 
+#ifdef DEBUG_FEATURES
+	if (input & IN_SPRINT)
+		ShowTextures();
+#endif
+
 	SetLaraUnderwaterNodes();
 	DrawRooms(camera.pos.room_number);
 	DrawGameInfo(1);
@@ -412,6 +420,40 @@ void SkyDrawPhase()
 	}
 }
 
+void UpdateSkyLightning()
+{
+	if (LightningCount <= 0)
+	{
+		if (LightningRand < 4)
+			LightningRand = 0;
+		else
+			LightningRand -= LightningRand >> 2;
+	}
+	else
+	{
+		LightningCount--;
+
+		if (LightningCount)
+		{
+			dLightningRand = GetRandomDraw() & 0x1FF;
+			LightningRand += (dLightningRand - LightningRand) >> 1;
+		}
+		else
+		{
+			dLightningRand = 0;
+			LightningRand = (GetRandomDraw() & 0x7F) + 400;
+		}
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		LightningRGB[i] += ((LightningRand * LightningRGBs[i]) >> 8);
+
+		if (LightningRGB[i] > 255)
+			LightningRGB[i] = 255;
+	}
+}
+
 void inject_draw()
 {
 	INJECT(0x0042CF80, GetBoundsAccurate);
@@ -431,4 +473,5 @@ void inject_draw()
 	INJECT(0x0042C440, aInterpolateMatrix);
 	INJECT(0x0042A400, DrawPhaseGame);
 	INJECT(0x0042A4A0, SkyDrawPhase);
+	INJECT(0x0042A310, UpdateSkyLightning);
 }

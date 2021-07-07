@@ -901,7 +901,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/draw.cpp
 
 0x0042A1B0		CalculateObjectLightingLara
-0x0042A310		UpdateSkyLightning
+0x0042A310	+	UpdateSkyLightning
 0x0042A400	+	DrawPhaseGame
 0x0042A4A0		SkyDrawPhase
 0x0042A7A0		DrawRooms
@@ -1388,6 +1388,20 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A7210		S_LoadLevel
 0x004A72B0		S_LoadLevelFile
 
+
+		specific/texture.cpp
+
+0x004D01D0		AdjustTextInfo
+0x004D03A0		FindHighestBit
+0x004D03D0		RGBMDarkMap
+0x004D0400		RGBMLightMap
+0x004D0450		CreateTexturePage
+0x004D0980		aGenerateMipMaps
+0x004D0B90		FreeTextures
+0x004D0CC0		ShowTextures
+0x004D15B0		aBumpTextureCallback
+0x004D1600		aCheckBumpMappingSupport
+0x004D1710		aCreateBumpPage
 
 // ======================================
 // Objects checklist
