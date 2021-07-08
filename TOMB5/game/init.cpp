@@ -296,7 +296,7 @@ void InitialiseDoor(short item_number)
 	door->d1.floor = &r->floor[(((item->pos.z_pos - r->z) >> 10) + dx) + (((item->pos.x_pos - r->x) >> 10) + dy) * r->x_size];
 	room_number = GetDoor(door->d1.floor);
 
-	if (room_number == 255)
+	if (room_number == NO_ROOM)
 		box_number = door->d1.floor->box;
 	else
 	{
@@ -315,7 +315,7 @@ void InitialiseDoor(short item_number)
 		door->d1flip.floor = &r->floor[(((item->pos.z_pos - r->z) >> 10) + dx) + (((item->pos.x_pos - r->x) >> 10) + dy) * r->x_size];
 		room_number = GetDoor(door->d1flip.floor);
 
-		if (room_number == 255)
+		if (room_number == NO_ROOM)
 			box_number = door->d1flip.floor->box;
 		else
 		{
@@ -331,7 +331,7 @@ void InitialiseDoor(short item_number)
 	ShutThatDoor(&door->d1, door);
 	ShutThatDoor(&door->d1flip, door);
 
-	if (two_room == 255)
+	if (two_room == NO_ROOM)
 	{
 		door->d2.floor = 0;
 		door->d2flip.floor = 0;
@@ -342,7 +342,7 @@ void InitialiseDoor(short item_number)
 		door->d2.floor = &r->floor[((item->pos.z_pos - r->z) >> 10) + ((item->pos.x_pos - r->x) >> 10) * r->x_size];
 		room_number = GetDoor(door->d2.floor);
 
-		if (room_number == 255)
+		if (room_number == NO_ROOM)
 			box_number = door->d2.floor->box;
 		else
 		{
@@ -361,7 +361,7 @@ void InitialiseDoor(short item_number)
 			door->d2flip.floor = &r->floor[((item->pos.z_pos - r->z) >> 10) + ((item->pos.x_pos - r->x) >> 10) * r->x_size];
 			room_number = GetDoor(door->d2flip.floor);
 
-			if (room_number == 255)
+			if (room_number == NO_ROOM)
 				box_number = door->d2flip.floor->box;
 			else
 			{

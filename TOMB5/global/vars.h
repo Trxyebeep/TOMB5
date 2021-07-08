@@ -554,7 +554,7 @@
 //defs
 #define NO_HEIGHT -32512
 #define	NO_ITEM	-1
-
+#define NO_ROOM	255
 
 //unknowns
 #define	dword_50A440	VAR_U_(0x0050A440, float)//AlterFOV

@@ -861,7 +861,7 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 	OnObject = 0;
 	height_type = WALL;
 
-	while (floor->pit_room != 0xFF)
+	while (floor->pit_room != NO_ROOM)
 	{
 		if (CheckNoColFloorTriangle(floor, x, z) == 1)
 			break;
@@ -1104,17 +1104,17 @@ FLOOR_INFO* GetFloor(int x, int y, int z, short* room_number)
 		floor = &r->floor[x_floor + (y_floor * r->x_size)];
 		door = GetDoor(floor);
 
-		if (door == 0xFF)
+		if (door == NO_ROOM)
 			break;
 
 		*room_number = door;
 		r = &room[door];
 
-	} while (door != 0xFF);
+	} while (door != NO_ROOM);
 
 	if (y < floor->floor << 8)
 	{
-		if (y < floor->ceiling << 8 && floor->sky_room != 0xFF)
+		if (y < floor->ceiling << 8 && floor->sky_room != NO_ROOM)
 		{
 			do
 			{
@@ -1128,10 +1128,10 @@ FLOOR_INFO* GetFloor(int x, int y, int z, short* room_number)
 				if (y >= floor->ceiling << 8)
 					break;
 
-			} while (floor->sky_room != 0xFF);
+			} while (floor->sky_room != NO_ROOM);
 		}
 	}
-	else if (floor->pit_room != 0xFF)
+	else if (floor->pit_room != NO_ROOM)
 	{
 		while (1)
 		{
@@ -1146,7 +1146,7 @@ FLOOR_INFO* GetFloor(int x, int y, int z, short* room_number)
 			if (y < floor->floor << 8)
 				break;
 
-			if (floor->pit_room == 0xFF)
+			if (floor->pit_room == NO_ROOM)
 				return floor;
 		}
 	}
@@ -1189,7 +1189,7 @@ short GetDoor(FLOOR_INFO* floor)
 	short type;
 
 	if (!floor->index)
-		return 255;
+		return NO_ROOM;
 
 	data = &floor_data[floor->index];
 	type = *data++;
@@ -1203,7 +1203,7 @@ short GetDoor(FLOOR_INFO* floor)
 		|| (type & 0x1F) == NOCOLF2T)
 	{
 		if (type < 0)
-			return 255;
+			return NO_ROOM;
 	
 		data++;
 		type = *data++;
@@ -1218,7 +1218,7 @@ short GetDoor(FLOOR_INFO* floor)
 		|| (type & 0x1F) == NOCOLC2T)
 	{
 		if (type < 0)
-			return 255;
+			return NO_ROOM;
 
 		data++;
 		type = *data++;
@@ -1227,7 +1227,7 @@ short GetDoor(FLOOR_INFO* floor)
 	if ((type & 0x1F) == DOOR_TYPE)
 		return *data;
 
-	return 255;
+	return NO_ROOM;
 }
 
 long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
@@ -1240,7 +1240,7 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 
 	f = floor;
 
-	while (f->sky_room != 0xFF)
+	while (f->sky_room != NO_ROOM)
 	{
 		if (CheckNoColCeilingTriangle(floor, x, z) == 1)
 			break;
@@ -1359,7 +1359,7 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 			}
 		}
 
-		while (floor->pit_room != 0xFF)
+		while (floor->pit_room != NO_ROOM)
 		{
 			if (CheckNoColFloorTriangle(floor, x, z) == 1)
 				break;

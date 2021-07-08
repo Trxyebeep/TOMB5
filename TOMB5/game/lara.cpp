@@ -5193,7 +5193,7 @@ int LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
 	return 0;
 }
 
-#ifndef GENERAL_FIXES//still buggy
+#ifndef GENERAL_FIXES//not buggy anymore, but still disabling it is better
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 {
 	camera.target_elevation = -3640;
@@ -5202,23 +5202,42 @@ void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 {
+
 	item->gravity_status = 0;
 	item->fallspeed = 0;
 	lara.move_angle = item->pos.y_rot;
 	coll->bad_pos = 384;
+	coll->facing = item->pos.y_rot;
 	coll->bad_neg = -384;
 	coll->bad_ceiling = 0;
 	coll->slopes_are_walls = 1;
-	GetLaraCollisionInfo(item, coll);
-	ShiftItem(item, coll);
-	TestLaraSlide(item, coll);
+	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 400);
 
-	if (!LaraHitCeiling(item, coll) && !LaraFallen(item, coll))
+	if (LaraFallen(item, coll))
+		lara.gun_status = LG_NO_ARMS;
+	else if (!TestLaraSlide(item, coll))
 	{
-		if (coll->mid_floor != NO_HEIGHT)
-			item->pos.y_pos += coll->mid_floor;
+		if (coll->mid_ceiling >= -362)
+			lara.keep_ducked = 1;
 		else
-			item->speed = 0;
+			lara.keep_ducked = 0;
+
+		if (coll->mid_floor < coll->bad_neg)
+		{
+			AnimateLara(item);
+			AnimateLara(item);
+			AnimateLara(item);
+			AnimateLara(item);
+			item->pos.x_pos = coll->old.x;
+			item->pos.y_pos = coll->old.y;
+			item->pos.z_pos = coll->old.z;
+			return;
+		}
+
+		ShiftItem(item, coll);
+
+		if (!LaraHitCeiling(item, coll))
+			item->pos.y_pos += coll->mid_floor;
 	}
 }
 #endif
