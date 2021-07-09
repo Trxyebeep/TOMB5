@@ -80,7 +80,7 @@
 #define Gameflow	VAR_U_(0x00E5C2BC, GAMEFLOW*)
 #define camera	VAR_U_(0x00EEF940, CAMERA_INFO)
 #define CamOldPos	VAR_U_(0x00EEFB00, PHD_VECTOR)
-#define savegame	VAR_U_(0x00E52EB3, savegame_info)
+#define savegame	VAR_U_(0x00E52EB3, SAVEGAME_INFO)
 #define NumRPickups	VAR_U_(0x00E5970C, uchar)
 #define AnimatingWaterfallsVOffset	VAR_U_(0x0051CF54, int)
 #define next_blood	VAR_U_(0x0051D088, long)
@@ -149,7 +149,7 @@
 #define	number_dynamics	VAR_U_(0x00E6D82C, int)
 #define	tiltyoff	VAR_U_(0x00EEEADC, int)
 #define	tiltxoff	VAR_U_(0x00EEEAD4, int)
-#define	baddie_slots	VAR_U_(0x00E5B834, creature_info*)
+#define	baddie_slots	VAR_U_(0x00E5B834, CREATURE_INFO*)
 #define stats_mode	VAR_U_(0x0051CF26, short)
 #define go_select	VAR_U_(0x00E59E2A, uchar)
 #define	go_deselect	VAR_U_(0x00E5992C, uchar)
@@ -185,7 +185,7 @@
 #define _wf	VAR_U_(0x005078F0, long)
 #define sample_lut	VAR_U_(0x00E528A4, short*)
 #define examine_mode	VAR_U_(0x0051CF24, short)
-#define boxes	VAR_U_(0x00EEFB64, box_info*)
+#define boxes	VAR_U_(0x00EEFB64, BOX_INFO*)
 #define SubHitCount	VAR_U_(0x0051CEE4, char)
 #define subsuit	VAR_U_(0x00E5B850, SUBSUIT_INFO)
 #define OldPickupPos	VAR_U_(0x00E59700, PHD_VECTOR)
@@ -323,6 +323,10 @@
 #define f_right	VAR_U_(0x0051D160, float)
 #define f_top	VAR_U_(0x0055D664, float)
 #define f_bottom	VAR_U_(0x0055DA34, float)
+#define f_centerx	VAR_U_(0x0055D22C, float)
+#define f_centery	VAR_U_(0x0055D230, float)
+#define f_a	VAR_U_(0x0051D150, float)
+#define f_boo	VAR_U_(0x0055D220, float)
 /*************************************************/
 #define IsRoomOutsideNo	VAR_U_(0x00EEF902, short)
 #define _CutSceneTriggered1	VAR_U_(0x00EEF004, ulong)
@@ -392,6 +396,14 @@
 #define Bats	VAR_U_(0x00EEEFE8, BAT_STRUCT*)
 #define next_rat	VAR_U_(0x0051CF94, long)
 #define next_bat	VAR_U_(0x0051CA18, long)
+#define outside	VAR_U_(0x00E6CAF8, long)
+#define LightningCount	VAR_U_(0x00E6D74C, short)
+#define LightningRand	VAR_U_(0x00E6D73C, short)
+#define dLightningRand	VAR_U_(0x00E6E4DC, short)
+#define LightningSFXDelay	VAR_U_(0x0051CC5C, short)
+#define nPolyType	VAR_U_(0x00E4B100, long)
+#define SkyPos	VAR_U_(0x00E6E4B0, short)
+#define SkyPos2	VAR_U_(0x00E6D73E, short)
 /***********************/
 //Spotcams
 #define number_spotcams	VAR_U_(0x00E4F428, short)
@@ -509,7 +521,7 @@
 #define actor_pnodes	ARRAY_(0x00E71180, PACKNODE*, [10])
 #define temp_rotation_buffer	ARRAY_(0x00E711C0, short, [160])
 #define los_rooms ARRAY_(0x00EEEFC0, short, [20])
-#define static_objects ARRAY_(0x00874988, static_info, [70])
+#define static_objects ARRAY_(0x00874988, STATIC_INFO, [70])
 #define RopeList ARRAY_(0x00E54CC0, ROPE_STRUCT, [8])
 #define lara_matricesF	ARRAY_(0x00E868E0, float, [180])
 #define LaraNodeUnderwater	ARRAY_(0x00E862F0, uchar, [15])
@@ -542,7 +554,7 @@
 //defs
 #define NO_HEIGHT -32512
 #define	NO_ITEM	-1
-
+#define NO_ROOM	255
 
 //unknowns
 #define	dword_50A440	VAR_U_(0x0050A440, float)//AlterFOV

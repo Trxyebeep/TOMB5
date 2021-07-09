@@ -9,7 +9,7 @@ void InitialiseNewWeapon();
 void LaraTargetInfo(WEAPON_INFO* winfo);
 void LaraGetNewTarget(WEAPON_INFO* winfo);
 void find_target_point(ITEM_INFO* item, GAME_VECTOR* target);
-void AimWeapon(WEAPON_INFO* winfo, lara_arm* arm);
+void AimWeapon(WEAPON_INFO* winfo, LARA_ARM* arm);
 int FireWeapon(int weapon_type, ITEM_INFO* target, ITEM_INFO* src, short* angles);
 int WeaponObject(int weapon_type);
 int WeaponObjectMesh(int weapon_type);

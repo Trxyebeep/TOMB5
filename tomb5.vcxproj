@@ -79,6 +79,7 @@
     <ClCompile Include="TOMB5\specific\3dmath.cpp" />
     <ClCompile Include="TOMB5\specific\display.cpp" />
     <ClCompile Include="TOMB5\specific\drawlara.cpp" />
+    <ClCompile Include="TOMB5\specific\drawroom.cpp" />
     <ClCompile Include="TOMB5\specific\DS.cpp" />
     <ClCompile Include="TOMB5\specific\file.cpp" />
     <ClCompile Include="TOMB5\specific\function_stubs.cpp" />
@@ -92,6 +93,7 @@
     <ClCompile Include="TOMB5\specific\polyinsert.cpp" />
     <ClCompile Include="TOMB5\specific\specific.cpp" />
     <ClCompile Include="TOMB5\specific\specificfx.cpp" />
+    <ClCompile Include="TOMB5\specific\texture.cpp" />
     <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
     <ClCompile Include="TOMB5\tomb5\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -166,6 +168,7 @@
     <ClInclude Include="TOMB5\specific\3dmath.h" />
     <ClInclude Include="TOMB5\specific\display.h" />
     <ClInclude Include="TOMB5\specific\drawlara.h" />
+    <ClInclude Include="TOMB5\specific\drawroom.h" />
     <ClInclude Include="TOMB5\specific\DS.h" />
     <ClInclude Include="TOMB5\specific\file.h" />
     <ClInclude Include="TOMB5\specific\function_stubs.h" />
@@ -180,6 +183,7 @@
     <ClInclude Include="TOMB5\specific\polyinsert.h" />
     <ClInclude Include="TOMB5\specific\specific.h" />
     <ClInclude Include="TOMB5\specific\specificfx.h" />
+    <ClInclude Include="TOMB5\specific\texture.h" />
     <ClInclude Include="TOMB5\tomb5\framework.h" />
     <ClInclude Include="TOMB5\tomb5\pch.h" />
   </ItemGroup>

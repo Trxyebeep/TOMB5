@@ -49,6 +49,8 @@
 #include "../game/deathsld.h"
 #include "../game/footprnt.h"
 #include "../game/bat.h"
+#include "../specific/specificfx.h"
+#include "../game/skeleton.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -117,6 +119,8 @@ void inject_all()
 	inject_deathslide();
 	inject_footprnt();
 	inject_bats();
+	inject_specificfx();
+	inject_skelly();
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

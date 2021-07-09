@@ -618,7 +618,7 @@ struct ITEM_INFO
 	short TOSSPAD;
 };
 
-struct lara_arm
+struct LARA_ARM
 {
 	short* frame_base;
 	short frame_number;
@@ -646,7 +646,7 @@ struct FX_INFO
 	short flag2;
 };
 
-struct lot_info
+struct LOT_INFO
 {
 	box_node* node;
 	short head;
@@ -677,7 +677,7 @@ struct FOOTPRINT
 	short Active;
 };
 
-struct creature_info
+struct CREATURE_INFO
 {
 	short joint_rotation[4];
 	short maximum_turn;
@@ -696,7 +696,7 @@ struct creature_info
 	short pad;
 	short item_num;
 	PHD_VECTOR target;
-	lot_info LOT;
+	LOT_INFO LOT;
 };
 
 struct COLL_INFO
@@ -971,7 +971,7 @@ struct BLOOD_STRUCT
 	char Pad;
 };
 
-typedef struct lara_info
+struct LARA_INFO
 {
 	short item_number;
 	short gun_status;
@@ -1032,10 +1032,10 @@ typedef struct lara_info
 	short torso_y_rot;
 	short torso_x_rot;
 	short torso_z_rot;
-	lara_arm left_arm;
-	lara_arm right_arm;
+	LARA_ARM left_arm;
+	LARA_ARM right_arm;
 	ushort holster;
-	creature_info* creature;
+	CREATURE_INFO* creature;
 	long CornerX;
 	long CornerZ;
 	char RopeSegment;
@@ -1096,9 +1096,9 @@ typedef struct lara_info
 	uchar TightRopeOff;
 	uchar TightRopeFall;
 	uchar ChaffTimer;
-} LARA_INFO;
+};
 
-struct savegame_info//size=7656
+struct SAVEGAME_INFO//size=7656
 {
 	short Checksum;
 	char things_to_figure_out[13];
@@ -1223,7 +1223,7 @@ struct DOOR_DATA
 	ITEM_INFO* item;
 };
 
-struct box_info
+struct BOX_INFO
 {
 	uchar left;
 	uchar right;
@@ -1367,7 +1367,7 @@ struct VECTOR
 	long vz;
 };
 
-struct AI_info
+struct AI_INFO
 {
 	short zone_number;
 	short enemy_zone;
@@ -1420,7 +1420,7 @@ struct NODELOADHEADER
 	short zlength;
 };
 
-struct static_info
+struct STATIC_INFO
 {
 	short mesh_number;
 	short flags;
@@ -1955,7 +1955,7 @@ struct SAVEGAMES
 	long Count;
 };
 
-typedef struct
+struct PHDSPRITESTRUCT
 {
 	ushort tpage;
 	ushort offset;
@@ -1965,9 +1965,9 @@ typedef struct
 	short y1;
 	short x2;
 	short y2;
-}PHDSPRITESTRUCT;
+};
 
-typedef struct
+struct SPRITESTRUCT
 {
 	ushort tpage;
 	ushort offset;
@@ -1977,7 +1977,7 @@ typedef struct
 	float	y1;
 	float	x2;
 	float	y2;
-}SPRITESTRUCT;
+};
 
 struct RAT_STRUCT
 {

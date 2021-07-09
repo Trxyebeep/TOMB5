@@ -6,6 +6,16 @@
 #include "deltapak.h"
 #include "../specific/drawlara.h"
 #include "health.h"
+#include "objects.h"
+#include "gameflow.h"
+#include "control.h"
+#include "sound.h"
+#include "../specific/specificfx.h"
+#include "../specific/drawroom.h"
+#include "../specific/polyinsert.h"
+#ifdef DEBUG_FEATURES
+#include "../specific/texture.h"
+#endif
 
 short* GetBoundsAccurate(ITEM_INFO* item)
 {
@@ -317,6 +327,11 @@ long DrawPhaseGame()
 	if (GLOBAL_playing_cutseq)
 		frigup_lara();
 
+#ifdef DEBUG_FEATURES
+	if (input & IN_SPRINT)
+		ShowTextures();
+#endif
+
 	SetLaraUnderwaterNodes();
 	DrawRooms(camera.pos.room_number);
 	DrawGameInfo(1);
@@ -324,6 +339,119 @@ long DrawPhaseGame()
 	camera.number_frames = S_DumpScreen();
 	S_AnimateTextures(camera.number_frames);
 	return camera.number_frames;
+}
+
+void SkyDrawPhase()
+{
+	if (outside)
+	{
+		if (!objects[HORIZON].loaded)
+		{
+			outside = -1;
+			return;
+		}
+
+		if (BinocularRange)
+			AlterFOV(14560 - (short)BinocularRange);
+
+		phd_PushMatrix();
+		phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
+
+		if (gfLevelFlags & GF_LIGHTNING)
+		{
+			if (!LightningCount && !LightningRand)
+			{
+				if (!(GetRandomDraw() & 127))
+				{
+					LightningCount = (GetRandomDraw() & 0x1F) + 16;
+					dLightningRand = (GetRandomDraw() & 0xFF) + 256;
+					LightningSFXDelay = (GetRandomDraw() & 3) + 12;
+				}
+			}
+			else
+			{
+				UpdateSkyLightning();
+
+				if (LightningSFXDelay > -1)
+					LightningSFXDelay--;
+
+				if (!LightningSFXDelay)
+					SoundEffect(SFX_THUNDER_RUMBLE, 0, SFX_DEFAULT);
+			}
+		}
+
+		nPolyType = 6;
+		DrawBuckets();
+		DrawSortList();
+		phd_PushMatrix();
+
+		if (gfLevelFlags & GF_LAYER1)
+		{
+			phd_RotY(32760);
+
+			if (gfLevelFlags & GF_LIGHTNING)
+				DrawFlatSky(RGBONLY(LightningRGBs[0], LightningRGBs[1], LightningRGBs[2]), SkyPos, -1536, 4);
+			else
+				DrawFlatSky(*(ulong*)&gfLayer1Col, SkyPos, -1536, 4);
+		}
+
+		if (gfLevelFlags & GF_LAYER2)
+			DrawFlatSky(0xFF000000 | *(ulong*)&gfLayer2Col, SkyPos2, -1536, 2);
+
+		if (gfLevelFlags & GF_LAYER1 || gfLevelFlags & GF_LAYER2)
+			OutputSky();
+
+		phd_PopMatrix();
+
+		if (gfLevelFlags & GF_HORIZON)
+		{
+			if (gfCurrentLevel == LVL5_TITLE && jobyfrigger)
+				phd_PutPolygonSkyMesh(meshes[objects[CHEF_MIP].mesh_index], -1);
+			else
+				phd_PutPolygonSkyMesh(meshes[objects[HORIZON].mesh_index], -1);
+
+			OutputSky();
+		}
+
+		phd_PopMatrix();
+
+		if (BinocularRange)
+			AlterFOV(2080 - ((short)BinocularRange * 7));
+	}
+}
+
+void UpdateSkyLightning()
+{
+	if (LightningCount <= 0)
+	{
+		if (LightningRand < 4)
+			LightningRand = 0;
+		else
+			LightningRand -= LightningRand >> 2;
+	}
+	else
+	{
+		LightningCount--;
+
+		if (LightningCount)
+		{
+			dLightningRand = GetRandomDraw() & 0x1FF;
+			LightningRand += (dLightningRand - LightningRand) >> 1;
+		}
+		else
+		{
+			dLightningRand = 0;
+			LightningRand = (GetRandomDraw() & 0x7F) + 400;
+		}
+	}
+
+	for (int i = 0; i < 3; i++)
+	{
+		LightningRGB[i] += ((LightningRand * LightningRGBs[i]) >> 8);
+
+		if (LightningRGB[i] > 255)
+			LightningRGB[i] = 255;
+	}
 }
 
 void inject_draw()
@@ -344,4 +472,6 @@ void inject_draw()
 	INJECT(0x0042C3F0, phd_PutPolygons_I);
 	INJECT(0x0042C440, aInterpolateMatrix);
 	INJECT(0x0042A400, DrawPhaseGame);
+	INJECT(0x0042A4A0, SkyDrawPhase);
+	INJECT(0x0042A310, UpdateSkyLightning);
 }

@@ -185,6 +185,8 @@
     <ClCompile Include="TOMB5\game\deathsld.cpp" />
     <ClCompile Include="TOMB5\game\footprnt.cpp" />
     <ClCompile Include="TOMB5\game\text.cpp" />
+    <ClCompile Include="TOMB5\specific\drawroom.cpp" />
+    <ClCompile Include="TOMB5\specific\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -372,6 +374,8 @@
     <ClInclude Include="TOMB5\game\deathsld.h" />
     <ClInclude Include="TOMB5\game\footprnt.h" />
     <ClInclude Include="TOMB5\game\text.h" />
+    <ClInclude Include="TOMB5\specific\drawroom.h" />
+    <ClInclude Include="TOMB5\specific\texture.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

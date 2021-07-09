@@ -432,7 +432,7 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
 	short ang[2];
 	short bestyrot;
 	GAME_VECTOR src, target;
-	creature_info* creature;
+	CREATURE_INFO* creature;
 	int x, y, z, slot, dist, maxdist, maxdist2, bestdist;
 	short targets, match;
 
@@ -586,7 +586,7 @@ void find_target_point(ITEM_INFO* item, GAME_VECTOR* target)
 	target->room_number = item->room_number;
 }
 
-void AimWeapon(WEAPON_INFO* winfo, lara_arm* arm)
+void AimWeapon(WEAPON_INFO* winfo, LARA_ARM* arm)
 {
 	short curr, speed, destx, desty;
 
