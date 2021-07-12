@@ -18,4 +18,4 @@ typedef short(__cdecl* generate)(long, long, long, short, short, short);
 #define CreatureEffect	( (short(__cdecl*)(ITEM_INFO*, BITE_INFO*, generate)) 0x0040B4D0 )
 #define	CreatureUnderwater	( (void(__cdecl*)(ITEM_INFO*, long)) 0x0040B400 )
 #define AlertAllGuards	( (void(__cdecl*)(short)) 0x0040BA70 )
-#define AIGuard	( (short(__cdecl*)(creature_info*)) 0x0040BBE0 )
+#define AIGuard	( (short(__cdecl*)(CREATURE_INFO*)) 0x0040BBE0 )

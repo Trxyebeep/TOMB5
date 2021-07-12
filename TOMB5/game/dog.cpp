@@ -34,8 +34,8 @@ void InitialiseDog(short item_number)
 void DogControl(short item_number)
 {
 	ITEM_INFO* item;
-	creature_info* dog;
-	AI_info info;
+	CREATURE_INFO* dog;
+	AI_INFO info;
 	short angle, head, head_x, torso_y, tilt, random;
 
 	if (CreatureActive(item_number))
@@ -46,7 +46,7 @@ void DogControl(short item_number)
 		head = 0;
 		torso_y = 0;
 		item = &items[item_number];
-		dog = (creature_info*) item->data;
+		dog = (CREATURE_INFO*) item->data;
 
 		if (item->hit_points <= 0)
 		{

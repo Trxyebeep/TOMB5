@@ -35,8 +35,8 @@ void InitialiseHuskie(short item_number)
 void HuskieControl(short item_number)
 {
 	ITEM_INFO* item;
-	creature_info* huskie;
-	AI_info info, lara_info;
+	CREATURE_INFO* huskie;
+	AI_INFO info, lara_info;
 	long lara_dx, lara_dz;
 	short angle, head, tilt, head_x, torso_y, random, frame;
 
@@ -48,7 +48,7 @@ void HuskieControl(short item_number)
 		head = 0;
 		torso_y = 0;
 		item = &items[item_number];
-		huskie = (creature_info*) item->data;
+		huskie = (CREATURE_INFO*) item->data;
 
 		if (item->hit_points <= 0)
 		{
