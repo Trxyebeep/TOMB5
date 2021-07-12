@@ -26,9 +26,9 @@ void InitialiseChef(short item_number)
 void ChefControl(short item_number)
 {
 	ITEM_INFO* chef;
-	creature_info* creature;
-	AI_info ai;
-	AI_info laraAI;
+	CREATURE_INFO* creature;
+	AI_INFO ai;
+	AI_INFO laraAI;
 	int dx, dz;
 	short angle;
 	short joints[3] = {0, 0, 0};
@@ -37,7 +37,7 @@ void ChefControl(short item_number)
 		return;
 
 	chef = &items[item_number];
-	creature = (creature_info*)chef->data;
+	creature = (CREATURE_INFO*)chef->data;
 
 	if (chef->ai_bits)
 		GetAITarget(creature);

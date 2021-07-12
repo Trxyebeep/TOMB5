@@ -191,6 +191,8 @@
     <ClCompile Include="TOMB5\game\huskie.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\specific\drawroom.cpp" />
+    <ClCompile Include="TOMB5\specific\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -384,6 +386,8 @@
     <ClInclude Include="TOMB5\game\huskie.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
+    <ClInclude Include="TOMB5\specific\drawroom.h" />
+    <ClInclude Include="TOMB5\specific\texture.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

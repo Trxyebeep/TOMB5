@@ -9,15 +9,15 @@
 #include "box.h"
 #include "debris.h"
 
-int TargetVisible(ITEM_INFO* item, AI_info* info)
+int TargetVisible(ITEM_INFO* item, AI_INFO* info)
 {
 	GAME_VECTOR start;
 	GAME_VECTOR target;
-	creature_info* creature;
+	CREATURE_INFO* creature;
 	ITEM_INFO* enemy;
 	short* bounds;
 
-	creature = (creature_info*)item->data;
+	creature = (CREATURE_INFO*)item->data;
 	enemy = creature->enemy;
 
 	if (!enemy || enemy->hit_points <= 0 || !enemy->data || (info->angle - creature->joint_rotation[2]) <= -8192 ||
@@ -35,12 +35,16 @@ int TargetVisible(ITEM_INFO* item, AI_info* info)
 	return LOS(&start, &target);
 }
 
-int Targetable(ITEM_INFO* item, AI_info* info)
+int Targetable(ITEM_INFO* item, AI_INFO* info)
 {
+	ITEM_INFO* enemy;
+	CREATURE_INFO* creature;
 	short* bounds;
-	GAME_VECTOR start, target;
-	creature_info* creature = (creature_info*)item->data;
-	ITEM_INFO* enemy = creature->enemy;
+	GAME_VECTOR start;
+	GAME_VECTOR target;
+
+	creature = (CREATURE_INFO*)item->data;
+	enemy = creature->enemy;
 
 	if (!enemy || enemy->hit_points <= 0 || !enemy->data || !info->ahead || info->distance >= 0x4000000)
 		return 0;
@@ -92,18 +96,18 @@ short GunMiss(long x, long y, long z, short speed, short yrot, short room_number
 	return GunShot(x, y, z, speed, yrot, room_number);
 }
 
-int ShotLara(ITEM_INFO* item, AI_info* info, BITE_INFO* gun, short extra_rotation, int damage)
+int ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotation, int damage)
 {
 	int hit, targetable, random, distance;
 	GAME_VECTOR start;
 	GAME_VECTOR target;
 	PHD_VECTOR pos;
-	creature_info* creature;
+	CREATURE_INFO* creature;
 	ITEM_INFO* enemy;
 	PHD_VECTOR v;
 	MESH_INFO* StaticMesh;
 
-	creature = (creature_info*)item->data;
+	creature = (CREATURE_INFO*)item->data;
 	enemy = creature->enemy;
 
 	if (info->distance <= 0x4000000 && Targetable(item, info))

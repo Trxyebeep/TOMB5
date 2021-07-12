@@ -17,7 +17,7 @@ void ItemNewRoom(short item_num, short room_number)
 
 	item = &items[item_num];
 
-	if (item->room_number != 255)
+	if (item->room_number != NO_ROOM)
 	{
 		r = &room[item->room_number];
 		linknum = r->item_number;

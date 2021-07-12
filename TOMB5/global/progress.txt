@@ -901,7 +901,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/draw.cpp
 
 0x0042A1B0		CalculateObjectLightingLara
-0x0042A310		UpdateSkyLightning
+0x0042A310	+	UpdateSkyLightning
 0x0042A400	+	DrawPhaseGame
 0x0042A4A0		SkyDrawPhase
 0x0042A7A0		DrawRooms
@@ -1208,6 +1208,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043C790		TriggerHydraMissileFlame
 0x0043C910		TriggerHydraPowerupFlames
 
+
 		game/text.cpp
 
 0x004805D0		DrawChar
@@ -1216,6 +1217,14 @@ x for functions decompiled but not injected, for one reason or another.
 0x00480AE0		GetStringDimensions
 0x00480BC0		PrintString
 0x00480F00		InitFont
+
+		
+		game/skeleton.cpp
+
+0x00477A20	+	InitialiseSkeleton
+0x00477AB0	+	SkeletonControl
+0x00477D50		TriggerSkeletonFire
+0x00477ED0		TriggerFontFire
 
 // ======================================
 // SPECIFIC
@@ -1379,6 +1388,20 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A7210		S_LoadLevel
 0x004A72B0		S_LoadLevelFile
 
+
+		specific/texture.cpp
+
+0x004D01D0		AdjustTextInfo
+0x004D03A0		FindHighestBit
+0x004D03D0		RGBMDarkMap
+0x004D0400		RGBMLightMap
+0x004D0450		CreateTexturePage
+0x004D0980		aGenerateMipMaps
+0x004D0B90		FreeTextures
+0x004D0CC0		ShowTextures
+0x004D15B0		aBumpTextureCallback
+0x004D1600		aCheckBumpMappingSupport
+0x004D1710		aCreateBumpPage
 
 // ======================================
 // Objects checklist
