@@ -31,6 +31,7 @@
     <ClCompile Include="TOMB5\game\debris.cpp" />
     <ClCompile Include="TOMB5\game\delstuff.cpp" />
     <ClCompile Include="TOMB5\game\deltapak.cpp" />
+    <ClCompile Include="TOMB5\game\dog.cpp" />
     <ClCompile Include="TOMB5\game\door.cpp" />
     <ClCompile Include="TOMB5\game\draw.cpp" />
     <ClCompile Include="TOMB5\game\effect2.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="TOMB5\game\gameflow_helpers.cpp" />
     <ClCompile Include="TOMB5\game\hair.cpp" />
     <ClCompile Include="TOMB5\game\health.cpp" />
+    <ClCompile Include="TOMB5\game\huskie.cpp" />
     <ClCompile Include="TOMB5\game\init.cpp" />
     <ClCompile Include="TOMB5\game\items.cpp" />
     <ClCompile Include="TOMB5\game\joby.cpp" />
@@ -115,6 +117,7 @@
     <ClInclude Include="TOMB5\game\debris.h" />
     <ClInclude Include="TOMB5\game\delstuff.h" />
     <ClInclude Include="TOMB5\game\deltapak.h" />
+    <ClInclude Include="TOMB5\game\dog.h" />
     <ClInclude Include="TOMB5\game\door.h" />
     <ClInclude Include="TOMB5\game\draw.h" />
     <ClInclude Include="TOMB5\game\effect2.h" />
@@ -125,6 +128,7 @@
     <ClInclude Include="TOMB5\game\gameflow_helpers.h" />
     <ClInclude Include="TOMB5\game\hair.h" />
     <ClInclude Include="TOMB5\game\health.h" />
+    <ClInclude Include="TOMB5\game\huskie.h" />
     <ClInclude Include="TOMB5\game\init.h" />
     <ClInclude Include="TOMB5\game\items.h" />
     <ClInclude Include="TOMB5\game\joby.h" />
