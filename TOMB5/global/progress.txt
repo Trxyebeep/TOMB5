@@ -1226,6 +1226,14 @@ x for functions decompiled but not injected, for one reason or another.
 0x00477D50		TriggerSkeletonFire
 0x00477ED0		TriggerFontFire
 
+		
+		game/willwisp.cpp
+
+0x0048E500		InitialiseWillOWisp
+0x0048E580		WillOWispControl
+0x0048E8E0		InitialiseMazeMonster
+0x0048E960		MazeMonsterControl
+
 // ======================================
 // SPECIFIC
 // ======================================
