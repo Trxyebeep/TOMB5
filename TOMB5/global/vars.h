@@ -444,6 +444,8 @@
 #define camera_fov	ARRAY_(0x00E4F380, long, [18])
 #define camera_speed	ARRAY_(0x00E4F660, long, [18])
 /***********************/
+#define next_spider VAR_U_(0x0051D008, long)
+#define Spiders VAR_U_(0x00EEF45C, SPIDER_STRUCT*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

@@ -2030,4 +2030,15 @@ struct LIGHTNING_STRUCT
 	uchar Segments;
 	uchar Pad[3];
 };
+
+struct SPIDER_STRUCT
+{
+	PHD_3DPOS pos;
+	short room_number;
+	short speed;
+	short fallspeed;
+	uchar On;
+	uchar flags;
+};
+
 #pragma pack(pop)
