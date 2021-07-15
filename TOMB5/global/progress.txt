@@ -1202,8 +1202,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/hydra.cpp
 
-0x0043BEA0		InitialiseHydra
-0x0043BF70		HydraControl
+0x0043BEA0	+	InitialiseHydra
+0x0043BF70	+	HydraControl
 0x0043C6C0		TriggerHydraMissile
 0x0043C790		TriggerHydraMissileFlame
 0x0043C910		TriggerHydraPowerupFlames
