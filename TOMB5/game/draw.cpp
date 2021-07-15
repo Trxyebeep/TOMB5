@@ -416,7 +416,7 @@ void SkyDrawPhase()
 		phd_PopMatrix();
 
 		if (BinocularRange)
-			AlterFOV(2080 - ((short)BinocularRange * 7));
+			AlterFOV(7 * (2080 - (short)BinocularRange));
 	}
 }
 

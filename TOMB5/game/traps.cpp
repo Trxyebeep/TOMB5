@@ -72,7 +72,7 @@ void ControlExplosion(short item_number)
 			item->item_flags[0]++;
 		else if (item->item_flags[0] == item->trigger_flags)
 		{
-			item->item_flags[0];
+			item->item_flags[0]++;
 
 			if (room[item->room_number].flags & ROOM_UNDERWATER)
 				uw = 1;

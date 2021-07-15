@@ -1202,8 +1202,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/hydra.cpp
 
-0x0043BEA0		InitialiseHydra
-0x0043BF70		HydraControl
+0x0043BEA0	+	InitialiseHydra
+0x0043BF70	+	HydraControl
 0x0043C6C0		TriggerHydraMissile
 0x0043C790		TriggerHydraMissileFlame
 0x0043C910		TriggerHydraPowerupFlames
@@ -1225,6 +1225,14 @@ x for functions decompiled but not injected, for one reason or another.
 0x00477AB0	+	SkeletonControl
 0x00477D50		TriggerSkeletonFire
 0x00477ED0		TriggerFontFire
+
+		
+		game/willwisp.cpp
+
+0x0048E500		InitialiseWillOWisp
+0x0048E580		WillOWispControl
+0x0048E8E0		InitialiseMazeMonster
+0x0048E960		MazeMonsterControl
 
 // ======================================
 // SPECIFIC
