@@ -7,6 +7,7 @@
 #include "../specific/3dmath.h"
 #include "tomb4fx.h"
 #include "sphere.h"
+#include "items.h"
 
 static BITE_INFO hydra_hit = {0, 0, 0, 11};
 
@@ -250,8 +251,125 @@ void HydraControl(short item_number)
 	CreatureAnimation(item_number, 0, 0);
 }
 
+void TriggerHydraMissile(PHD_3DPOS* pos, short room_number, short num)
+{
+	FX_INFO* fx;
+	short fx_number;
+
+	fx_number = CreateEffect(room_number);
+
+	if (fx_number != NO_ITEM)
+	{
+		fx = &effects[fx_number];
+		fx->pos.x_pos = pos->x_pos;
+		fx->pos.y_pos = pos->y_pos - (GetRandomControl() & 0x3F) - 32;
+		fx->pos.z_pos = pos->z_pos;
+		fx->pos.x_rot = pos->x_rot;
+		fx->pos.y_rot = pos->y_rot;
+		fx->pos.z_rot = 0;
+		fx->room_number = room_number;
+		fx->counter = (num << 4) + 15;
+		fx->speed = (GetRandomControl() & 0x1F) + 64;
+		fx->flag1 = 0;
+		fx->object_number = BUBBLES;
+		fx->frame_number = objects[BUBBLES].mesh_index + 16;
+	}
+}
+
+void TriggerHydraMissileFlame(PHD_VECTOR* pos, long xv, long yv, long zv)
+{
+	SPARKS* sptr;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = (GetRandomControl() & 0x3F) - 96;
+	sptr->sG = sptr->sR >> 1;
+	sptr->sB = 0;
+	sptr->dR = (GetRandomControl() & 0x3F) - 96;
+	sptr->dG = sptr->dR >> 1;
+	sptr->dB = 0;
+	sptr->FadeToBlack = 8;
+	sptr->ColFadeSpeed = (GetRandomControl() & 3) + 8;
+	sptr->TransType = 2;
+	sptr->Dynamic = -1;
+	sptr->Life = (GetRandomControl() & 3) + 20;
+	sptr->sLife = sptr->Life;
+	sptr->x = (GetRandomControl() & 0xF) - 8;
+	sptr->y = 0;
+	sptr->z = (GetRandomControl() & 0xF) - 8;
+	sptr->x += pos->x;
+	sptr->y += pos->y;
+	sptr->z += pos->z;
+	sptr->Xvel = (short)xv;
+	sptr->Yvel = (short)yv;
+	sptr->Zvel = (short)zv;
+	sptr->Friction = 68;
+	sptr->Flags = 538;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+
+	if (GetRandomControl() & 1)
+		sptr->RotAdd = -32 - (GetRandomControl() & 0x1F);
+	else
+		sptr->RotAdd = (GetRandomControl() & 0x1F) + 32;
+
+	sptr->Gravity = 0;
+	sptr->MaxYvel = 0;
+	sptr->Scalar = 1;
+	sptr->sSize = (GetRandomControl() & 0xF) + 96;
+	sptr->Size = sptr->sSize;
+	sptr->dSize = sptr->Size >> 2;
+}
+
+void TriggerHydraPowerupFlames(short item_number, long shade)
+{
+	SPARKS* sptr;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sB = 0;
+	sptr->sR = (GetRandomControl() & 0x3F) - 96;
+	sptr->dR = (GetRandomControl() & 0x3F) - 96;
+	sptr->dB = 0;
+
+	if (shade < 16)
+	{
+		sptr->sR = (uchar)((shade * sptr->sR) >> 4);
+		sptr->dR = (uchar)((shade * sptr->dR) >> 4);
+	}
+
+	sptr->sG = sptr->sR >> 1;
+	sptr->dG = sptr->dR >> 1;
+	sptr->FadeToBlack = 4;
+	sptr->ColFadeSpeed = (GetRandomControl() & 3) + 8;
+	sptr->TransType = 2;
+	sptr->Dynamic = -1;
+	sptr->Life = (GetRandomControl() & 3) + 32;
+	sptr->sLife = sptr->Life;
+	sptr->x = (GetRandomControl() & 0xF) - 8;
+	sptr->y = 0;
+	sptr->z = (GetRandomControl() & 0xF) - 8;
+	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Yvel = 0;
+	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Friction = 4;
+	sptr->Flags = 4762;
+	sptr->FxObj = (uchar)item_number;
+	sptr->NodeNumber = 5;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = -8 - (GetRandomControl() & 7);
+	sptr->Scalar = 0;
+	sptr->dSize = 4;
+	sptr->sSize = (uchar)((shade * ((GetRandomControl() & 0xF) + 16)) >> 4);
+	sptr->Size = sptr->sSize;
+}
+
 void inject_hydra()
 {
 	INJECT(0x0043BEA0, InitialiseHydra);
 	INJECT(0x0043BF70, HydraControl);
+	INJECT(0x0043C6C0, TriggerHydraMissile);
+	INJECT(0x0043C790, TriggerHydraMissileFlame);
+	INJECT(0x0043C910, TriggerHydraPowerupFlames);
 }
