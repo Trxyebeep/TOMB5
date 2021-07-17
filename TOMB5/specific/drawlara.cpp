@@ -175,16 +175,19 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 		else
 			bLaraUnderWater = -1;
 
-		phd_PutPolygons(lara.mesh_ptrs[lara_mesh_sweetness_table[i]], -1);
-
-		for (int j = 0; j < 4; j++)
+		if (lara_item->mesh_bits >> 0x10 & 1 << (15 - i))
 		{
-			stash = (uchar)NodesToStashFromScratch[i][j];
+			phd_PutPolygons(lara.mesh_ptrs[lara_mesh_sweetness_table[i]], -1);
 
-			if (stash == 255)
-				break;
+			for (int j = 0; j < 4; j++)
+			{
+				stash = (uchar)NodesToStashFromScratch[i][j];
 
-			StashSkinVertices(stash);
+				if (stash == 255)
+					break;
+
+				StashSkinVertices(stash);
+			}
 		}
 	}
 
@@ -206,40 +209,43 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 		else
 			bLaraUnderWater = -1;
 
-		if (SkinUseMatrix[i][0] >= 255)
-			phd_PutPolygons(*meshpp, -1);
-		else
+		if (lara_item->mesh_bits & 1 << (14 - i))
 		{
-			phd_PushMatrix();
-			aMXPtr[0] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 0];
-			aMXPtr[1] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 1];
-			aMXPtr[2] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 2];
-			aMXPtr[3] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 3];
-			aMXPtr[4] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 4];
-			aMXPtr[5] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 5];
-			aMXPtr[6] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 6];
-			aMXPtr[7] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 7];
-			aMXPtr[8] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 8];
-			aMXPtr[9] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 9];
-			aMXPtr[10] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 10];
-			aMXPtr[11] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 11];
-			v0.vx = lara_matrices[SkinUseMatrix[i][0]].m01;
-			v0.vy = lara_matrices[SkinUseMatrix[i][0]].m11;
-			v0.vz = lara_matrices[SkinUseMatrix[i][0]].m21;
-			v1.vx = lara_matrices[SkinUseMatrix[i][1]].m01;
-			v1.vy = lara_matrices[SkinUseMatrix[i][1]].m11;
-			v1.vz = lara_matrices[SkinUseMatrix[i][1]].m21;
-			cos = ((v0.vx * v1.vx) + (v0.vy * v1.vy) + (v0.vz * v1.vz)) >> 14;
-			sin = phd_sqrt(16777216 - SQUARE(cos));
-
-			if (i == 1 || i == 4)
-				xRot = -phd_atan(cos, sin);
+			if (SkinUseMatrix[i][0] >= 255)
+				phd_PutPolygons(*meshpp, -1);
 			else
-				xRot = phd_atan(cos, sin);
+			{
+				phd_PushMatrix();
+				aMXPtr[0] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 0];
+				aMXPtr[1] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 1];
+				aMXPtr[2] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 2];
+				aMXPtr[3] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 3];
+				aMXPtr[4] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 4];
+				aMXPtr[5] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 5];
+				aMXPtr[6] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 6];
+				aMXPtr[7] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 7];
+				aMXPtr[8] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 8];
+				aMXPtr[9] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 9];
+				aMXPtr[10] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 10];
+				aMXPtr[11] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 11];
+				v0.vx = lara_matrices[SkinUseMatrix[i][0]].m01;
+				v0.vy = lara_matrices[SkinUseMatrix[i][0]].m11;
+				v0.vz = lara_matrices[SkinUseMatrix[i][0]].m21;
+				v1.vx = lara_matrices[SkinUseMatrix[i][1]].m01;
+				v1.vy = lara_matrices[SkinUseMatrix[i][1]].m11;
+				v1.vz = lara_matrices[SkinUseMatrix[i][1]].m21;
+				cos = ((v0.vx * v1.vx) + (v0.vy * v1.vy) + (v0.vz * v1.vz)) >> 14;
+				sin = phd_sqrt(16777216 - SQUARE(cos));
 
-			phd_RotX((short)(-xRot >> 1));
-			phd_PutPolygons(*meshpp, -1);
-			phd_PopMatrix();
+				if (i == 1 || i == 4)
+					xRot = -phd_atan(cos, sin);
+				else
+					xRot = phd_atan(cos, sin);
+
+				phd_RotX((short)(-xRot >> 1));
+				phd_PutPolygons(*meshpp, -1);
+				phd_PopMatrix();
+			}
 		}
 
 		meshpp += 2;

@@ -834,7 +834,7 @@ void LaraControl(short item_number)
 				lara.air = 1800;
 		}
 
-		LaraAboveWater(item, &lara_coll);
+		LaraAboveWater(item, lara_coll);
 		break;
 
 	case LW_UNDERWATER:
@@ -867,7 +867,7 @@ void LaraControl(short item_number)
 			}
 		}
 
-		LaraUnderWater(item, &lara_coll);
+		LaraUnderWater(item, lara_coll);
 		break;
 
 	case LW_SURFACE:
@@ -880,11 +880,11 @@ void LaraControl(short item_number)
 				lara.air = 1800;
 		}
 
-		LaraSurface(item, &lara_coll);
+		LaraSurface(item, lara_coll);
 		break;
 
 	case LW_FLYCHEAT:
-		LaraCheat(item, &lara_coll);
+		LaraCheat(item, lara_coll);
 		break;
 	}
 

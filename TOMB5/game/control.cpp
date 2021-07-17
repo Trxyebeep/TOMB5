@@ -1422,16 +1422,14 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 							if (objects[item->object_number].ceiling && !(item->flags & 0x8000))
 								objects[item->object_number].ceiling(item, x, y, z, &height);
 						}
-					}
-					while (!(trigger & 0x8000));
+					} while (!(trigger & 0x8000));
 					break;
 
 				default:
 					Log(0, "**** GetCeiling(): Unknown type ****");
 					break;
 				}
-			}
-			while (!(type & 0x8000));
+			} while (!(type & 0x8000));
 		}
 	}
 

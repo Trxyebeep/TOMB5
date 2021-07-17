@@ -227,6 +227,7 @@ void CloseTrapDoor(ITEM_INFO* item)
 		x = (item->pos.z_pos - r->z) >> 10;
 		z = (item->pos.x_pos - r->x) >> 10;
 		floor = &r->floor[x + (z * r->x_size)];
+		pitsky <<= 8;
 		pitsky |= floor->pit_room;
 		floor->pit_room = NO_ROOM;
 		item->item_flags[2] = 1;

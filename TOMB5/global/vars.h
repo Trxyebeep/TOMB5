@@ -10,7 +10,7 @@
 //vars
 #define input VAR_U_(0x00878D98, int)
 #define dbinput   VAR_U_(0x00878DAC, int)
-#define lara_coll   VAR_U_(0x00508778, COLL_INFO)
+#define lara_coll   VAR_U_(0x00508778, COLL_INFO*)
 #define lara    VAR_U_(0x00E5BD60, LARA_INFO)
 #define lara_item    VAR_U_(0x00E5BF08, ITEM_INFO*)
 #define DashTimer VAR_U_(0x00E5BF04, ushort)
