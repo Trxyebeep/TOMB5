@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_3dmath();
+void inject_3dmath(bool replace);
 
 void AlterFOV(short fov);
 void gte_sttr(PHD_VECTOR* vec);

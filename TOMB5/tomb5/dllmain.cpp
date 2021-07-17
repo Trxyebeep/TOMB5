@@ -53,6 +53,7 @@
 #include "../game/huskie.h"
 #include "../specific/specificfx.h"
 #include "../game/skeleton.h"
+#include "../game/spider.h"
 #include "../game/hydra.h"
 #include "../game/imp.h"
 
@@ -71,64 +72,65 @@ int dummyz()
 	return 0;
 }
 
-void inject_all()
+void inject_all(bool replace)
 {
-	inject_lara();
-	inject_coll();
-	inject_deltaPak();
-	inject_control();
-	inject_tomb4fx();
-	inject_pickup();
-	inject_camera();
-	inject_laramisc();
-	inject_items();
-	inject_draw();
-	inject_gameflow();
-	inject_newinv2();
-	inject_objects();
-	inject_laraflar();
-	inject_effects();
-	inject_specific();
-	inject_larafire();
-	inject_lara1gun();
-	inject_hair();
-	inject_input();
-	inject_laraswim();
-	inject_larasurf();
-	inject_door();
-	inject_laraclmb();
-	inject_health();
-	inject_effect2();
-	inject_spotcam();
-	inject_cutseq();
-	inject_chef();
-	inject_people();
-	inject_funcStubs();
-	inject_joby();
-	inject_3dmath();
-	inject_output();
-	inject_rope();
-	inject_LoadSave();
-	inject_drawlara();
-	inject_laraskin();
-	inject_subsuit();
-	inject_functbl();
-	inject_traps();
-	inject_init();
-	inject_file();
-	inject_others();
-	inject_objlight();
-	inject_swampy();
-	inject_rat();
-	inject_deathslide();
-	inject_footprnt();
-	inject_bats();
-	inject_dog();
-	inject_huskie();
-	inject_specificfx();
-	inject_skelly();
-	inject_hydra();
-	inject_imp();
+	inject_lara(replace);
+	inject_coll(replace);
+	inject_deltaPak(replace);
+	inject_control(replace);
+	inject_tomb4fx(replace);
+	inject_pickup(replace);
+	inject_camera(replace);
+	inject_laramisc(replace);
+	inject_items(replace);
+	inject_draw(replace);
+	inject_gameflow(replace);
+	inject_newinv2(replace);
+	inject_objects(replace);
+	inject_laraflar(replace);
+	inject_effects(replace);
+	inject_specific(replace);
+	inject_larafire(replace);
+	inject_lara1gun(replace);
+	inject_hair(replace);
+	inject_input(replace);
+	inject_laraswim(replace);
+	inject_larasurf(replace);
+	inject_door(replace);
+	inject_laraclmb(replace);
+	inject_health(replace);
+	inject_effect2(replace);
+	inject_spotcam(replace);
+	inject_cutseq(replace);
+	inject_chef(replace);
+	inject_people(replace);
+	inject_funcStubs(replace);
+	inject_joby(replace);
+	inject_3dmath(replace);
+	inject_output(replace);
+	inject_rope(replace);
+	inject_LoadSave(replace);
+	inject_drawlara(replace);
+	inject_laraskin(replace);
+	inject_subsuit(replace);
+	inject_functbl(replace);
+	inject_traps(replace);
+	inject_init(replace);
+	inject_file(replace);
+	inject_others(replace);
+	inject_objlight(replace);
+	inject_swampy(replace);
+	inject_rat(replace);
+	inject_deathslide(replace);
+	inject_footprnt(replace);
+	inject_bats(replace);
+	inject_dog(replace);
+	inject_huskie(replace);
+	inject_specificfx(replace);
+	inject_skelly(replace);
+	inject_spider(replace);
+	inject_hydra(replace);
+	inject_imp(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
@@ -137,7 +139,7 @@ BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lprese
 	{
 	case DLL_PROCESS_ATTACH:
 		hinstance = hmodule;
-		inject_all();
+		inject_all(true);
 
 	case DLL_THREAD_ATTACH:
 	case DLL_THREAD_DETACH:

@@ -2,7 +2,7 @@
 #include "../global/vars.h"
 
 
-void inject_specific();
+void inject_specific(bool replace);
 
 #define S_LoadGame	( (int(__cdecl*)(int)) 0x004A8E10 )
 #define S_SoundStopAllSamples	( (void(__cdecl*)()) 0x004A39D0 )

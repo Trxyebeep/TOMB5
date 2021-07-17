@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_joby();
+void inject_joby(bool replace);
 
 void KlaxonTremor();
 static int CheckCableBox(PHD_VECTOR* pos, short size);

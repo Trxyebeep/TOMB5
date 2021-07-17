@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_camera();
+void inject_camera(bool replace);
 
 void InitialiseCamera();
 void CalculateCamera();

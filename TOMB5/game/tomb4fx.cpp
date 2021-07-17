@@ -221,12 +221,12 @@ LIGHTNING_STRUCT* TriggerLightning(PHD_VECTOR* s, PHD_VECTOR* d, char variation,
 	return 0;
 }
 
-void inject_tomb4fx()
+void inject_tomb4fx(bool replace)
 {
-	INJECT(0x00432760, DoBloodSplat);
-	INJECT(0x00482580, GetFreeBlood);
-	INJECT(0x004827E0, TriggerBlood);
-	INJECT(0x00482610, UpdateBlood);
-	INJECT(0x00484D70, LSpline);
-	INJECT(0x00484B30, TriggerLightning);
+	INJECT(0x00432760, DoBloodSplat, replace);
+	INJECT(0x00482580, GetFreeBlood, replace);
+	INJECT(0x004827E0, TriggerBlood, replace);
+	INJECT(0x00482610, UpdateBlood, replace);
+	INJECT(0x00484D70, LSpline, replace);
+	INJECT(0x00484B30, TriggerLightning, replace);
 }

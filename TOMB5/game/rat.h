@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_rat();
+void inject_rat(bool replace);
 
 long GetFreeRat();
 void ClearRats();

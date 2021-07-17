@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_laraflar();
+void inject_laraflar(bool replace);
 
 void FlareControl(short item_number);
 void undraw_flare_meshes();

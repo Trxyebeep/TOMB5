@@ -268,8 +268,8 @@ void HuskieControl(short item_number)
 	}
 }
 
-void inject_huskie()
+void inject_huskie(bool replace)
 {
-	INJECT(0x0043B670, InitialiseHuskie);
-	INJECT(0x0043B730, HuskieControl);
+	INJECT(0x0043B670, InitialiseHuskie, replace);
+	INJECT(0x0043B730, HuskieControl, replace);
 }

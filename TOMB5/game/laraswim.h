@@ -2,7 +2,7 @@
 #include "../global/vars.h"
 
 
-void inject_laraswim();
+void inject_laraswim(bool replace);
 
 
 void LaraTestWaterDepth(ITEM_INFO* item, COLL_INFO* coll);

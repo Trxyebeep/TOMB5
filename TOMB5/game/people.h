@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_people();
+void inject_people(bool replace);
 
 int TargetVisible(ITEM_INFO* item, AI_INFO* info);
 int Targetable(ITEM_INFO* item, AI_INFO* info);

@@ -471,11 +471,11 @@ short GetTiltType(FLOOR_INFO* floor, long x, long y, long z)
 	return 0;
 }
 
-void inject_coll()
+void inject_coll(bool replace)
 {
-	INJECT(0x00414370, TriggerLaraBlood);
-	INJECT(0x00411100, GetCollisionInfo);
-	INJECT(0x00411D70, FindGridShift);
-	INJECT(0x004120A0, ShiftItem);
-	INJECT(0x00410EF0, GetTiltType);
+	INJECT(0x00414370, TriggerLaraBlood, replace);
+	INJECT(0x00411100, GetCollisionInfo, replace);
+	INJECT(0x00411D70, FindGridShift, replace);
+	INJECT(0x004120A0, ShiftItem, replace);
+	INJECT(0x00410EF0, GetTiltType, replace);
 }

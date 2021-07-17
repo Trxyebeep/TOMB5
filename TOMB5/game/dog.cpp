@@ -218,8 +218,8 @@ void DogControl(short item_number)
 	}
 }
 
-void inject_dog()
+void inject_dog(bool replace)
 {
-	INJECT(0x00428940, InitialiseDog);
-	INJECT(0x00428A10, DogControl);
+	INJECT(0x00428940, InitialiseDog, replace);
+	INJECT(0x00428A10, DogControl, replace);
 }

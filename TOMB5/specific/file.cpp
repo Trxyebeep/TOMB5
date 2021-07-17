@@ -174,12 +174,12 @@ int FileSize(FILE* fp)
 #undef cunt2
 }
 
-void inject_file()
+void inject_file(bool replace)
 {
-	INJECT(0x004A60E0, LoadTextureInfos);
-	INJECT(0x004A4DA0, LoadRooms);
-	INJECT(0x004A3CD0, FileOpen);
-	INJECT(0x004A3BC0, FindCDDrive);
-	INJECT(0x004A3DA0, FileClose);
-	INJECT(0x004A3DD0, FileSize);
+	INJECT(0x004A60E0, LoadTextureInfos, replace);
+	INJECT(0x004A4DA0, LoadRooms, replace);
+	INJECT(0x004A3CD0, FileOpen, replace);
+	INJECT(0x004A3BC0, FindCDDrive, replace);
+	INJECT(0x004A3DA0, FileClose, replace);
+	INJECT(0x004A3DD0, FileSize, replace);
 }

@@ -124,8 +124,8 @@ void SwampyControl(short item_number)
 	CreatureUnderwater(item, 341);
 }
 
-void inject_swampy()
+void inject_swampy(bool replace)
 {
-	INJECT(0x0047D2D0, InitialiseSwampy);
-	INJECT(0x0047D360, SwampyControl);
+	INJECT(0x0047D2D0, InitialiseSwampy, replace);
+	INJECT(0x0047D360, SwampyControl, replace);
 }

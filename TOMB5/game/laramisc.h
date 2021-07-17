@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_laramisc();
+void inject_laramisc(bool replace);
 
 void GetLaraDeadlyBounds();
 void InitialiseLaraAnims(ITEM_INFO* item);

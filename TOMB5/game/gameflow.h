@@ -2,7 +2,7 @@
 #include "../global/vars.h"
 
 
-void inject_gameflow();
+void inject_gameflow(bool replace);
 
 void DoGameflow();
 int TitleOptions();

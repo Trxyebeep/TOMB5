@@ -454,24 +454,24 @@ void UpdateSkyLightning()
 	}
 }
 
-void inject_draw()
+void inject_draw(bool replace)
 {
-	INJECT(0x0042CF80, GetBoundsAccurate);
-	INJECT(0x0042D020, GetBestFrame);
-	INJECT(0x0042BE90, InitInterpolate);
-	INJECT(0x0042BF00, phd_PopMatrix_I);
-	INJECT(0x0042BF50, phd_PushMatrix_I);
-	INJECT(0x0042BFC0, phd_RotY_I);
-	INJECT(0x0042C030, phd_RotX_I);
-	INJECT(0x0042C0A0, phd_RotZ_I);
-	INJECT(0x0042C110, phd_TranslateRel_I);
-	INJECT(0x0042C190, phd_TranslateRel_ID);
-	INJECT(0x0042C210, phd_RotYXZ_I);
-	INJECT(0x0042C290, gar_RotYXZsuperpack_I);
-	INJECT(0x0042C310, gar_RotYXZsuperpack);
-	INJECT(0x0042C3F0, phd_PutPolygons_I);
-	INJECT(0x0042C440, aInterpolateMatrix);
-	INJECT(0x0042A400, DrawPhaseGame);
-	INJECT(0x0042A4A0, SkyDrawPhase);
-	INJECT(0x0042A310, UpdateSkyLightning);
+	INJECT(0x0042CF80, GetBoundsAccurate, replace);
+	INJECT(0x0042D020, GetBestFrame, replace);
+	INJECT(0x0042BE90, InitInterpolate, replace);
+	INJECT(0x0042BF00, phd_PopMatrix_I, replace);
+	INJECT(0x0042BF50, phd_PushMatrix_I, replace);
+	INJECT(0x0042BFC0, phd_RotY_I, replace);
+	INJECT(0x0042C030, phd_RotX_I, replace);
+	INJECT(0x0042C0A0, phd_RotZ_I, replace);
+	INJECT(0x0042C110, phd_TranslateRel_I, replace);
+	INJECT(0x0042C190, phd_TranslateRel_ID, replace);
+	INJECT(0x0042C210, phd_RotYXZ_I, replace);
+	INJECT(0x0042C290, gar_RotYXZsuperpack_I, replace);
+	INJECT(0x0042C310, gar_RotYXZsuperpack, replace);
+	INJECT(0x0042C3F0, phd_PutPolygons_I, replace);
+	INJECT(0x0042C440, aInterpolateMatrix, replace);
+	INJECT(0x0042A400, DrawPhaseGame, replace);
+	INJECT(0x0042A4A0, SkyDrawPhase, replace);
+	INJECT(0x0042A310, UpdateSkyLightning, replace);
 }

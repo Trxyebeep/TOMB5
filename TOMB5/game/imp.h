@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_imp();
+void inject_imp(bool replace);
 
 void TriggerImpMissile(ITEM_INFO* item);
 void InitialiseImp(short item_number);

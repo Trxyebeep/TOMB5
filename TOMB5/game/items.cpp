@@ -43,7 +43,7 @@ void ItemNewRoom(short item_num, short room_number)
 	r->item_number = item_num;
 }
 
-void inject_items()
+void inject_items(bool replace)
 {
-	INJECT(0x00440DA0, ItemNewRoom);
+	INJECT(0x00440DA0, ItemNewRoom, replace);
 }

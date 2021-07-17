@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_gf_helpers();
+void inject_gf_helpers(bool replace);
 
 int GetCampaignCheatValue();
 

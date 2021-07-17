@@ -187,15 +187,15 @@ void S_MemSet(void* p, int val, size_t sz)
 	memset(p, val, sz);
 }
 
-void inject_LoadSave()
+void inject_LoadSave(bool replace)
 {
-	INJECT(0x004ADF40, CheckKeyConflicts);
-	INJECT(0x004B0910, DoStatScreen);
-	INJECT(0x004B1E70, DisplayStatsUCunt);//actually in some other file
-	INJECT(0x004B18E0, S_DrawAirBar);
-	INJECT(0x004B1950, S_DrawHealthBar);
-	INJECT(0x004B19C0, S_DrawHealthBar2);
-	INJECT(0x004B1890, S_DrawDashBar);
-	INJECT(0x004AD460, DoLoadSave);
-	INJECT(0x004B1E30, S_MemSet);
+	INJECT(0x004ADF40, CheckKeyConflicts, replace);
+	INJECT(0x004B0910, DoStatScreen, replace);
+	INJECT(0x004B1E70, DisplayStatsUCunt, replace);//actually in some other file
+	INJECT(0x004B18E0, S_DrawAirBar, replace);
+	INJECT(0x004B1950, S_DrawHealthBar, replace);
+	INJECT(0x004B19C0, S_DrawHealthBar2, replace);
+	INJECT(0x004B1890, S_DrawDashBar, replace);
+	INJECT(0x004AD460, DoLoadSave, replace);
+	INJECT(0x004B1E30, S_MemSet, replace);
 }

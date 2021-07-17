@@ -969,11 +969,11 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/spider.cpp
 
-0x0047A140		GetFreeSpider
-0x0047A1B0		ClearSpiders
-0x0047A200		TriggerSpider
-0x0047A340		UpdateSpiders
-0x0047A730		DrawSpiders
+0x0047A140	+	GetFreeSpider
+0x0047A1B0	+	ClearSpiders
+0x0047A200	+	TriggerSpider
+0x0047A340	+	UpdateSpiders
+0x0047A730	+	DrawSpiders
 
 
 		game/tomb4fx.cpp
@@ -1190,14 +1190,14 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/dog.cpp
 
-0x00428940		InitialiseDog
-0x00428A10		DogControl
+0x00428940	+	InitialiseDog
+0x00428A10	+	DogControl
 
 
 		game/huskie.cpp
 
-0x0043B670		InitialiseHuskie
-0x0043B730		HuskieControl
+0x0043B670	+	InitialiseHuskie
+0x0043B730	+	HuskieControl
 
 
 		game/hydra.cpp

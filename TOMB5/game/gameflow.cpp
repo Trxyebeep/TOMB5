@@ -762,10 +762,10 @@ void do_dels_cutseq_selector()
 		dels_cutseq_selector_flag = 0;
 }
 
-void inject_gameflow()
+void inject_gameflow(bool replace)
 {
-	INJECT(0x00434B60, TitleOptions);
-	INJECT(0x004354B0, DoGameflow);
-	INJECT(0x00435C70, DoTitle);
-	INJECT(0x004364B0, do_dels_cutseq_selector);
+	INJECT(0x00434B60, TitleOptions, replace);
+	INJECT(0x004354B0, DoGameflow, replace);
+	INJECT(0x00435C70, DoTitle, replace);
+	INJECT(0x004364B0, do_dels_cutseq_selector, replace);
 }

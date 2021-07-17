@@ -826,26 +826,26 @@ void HybridCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll)
 			ObjectCollision(item_num, laraitem, coll);
 }
 
-void inject_objects()
+void inject_objects(bool replace)
 {
-	INJECT(0x00464F60, EarthQuake);
-	INJECT(0x00465200, SmashObject);
-	INJECT(0x00465330, SmashObjectControl);
-	INJECT(0x00465350, BridgeFlatFloor);
-	INJECT(0x00465390, BridgeFlatCeiling);
-	INJECT(0x004653C0, GetOffset);
-	INJECT(0x00465410, BridgeTilt1Floor);
-	INJECT(0x00465480, BridgeTilt1Ceiling);
-	INJECT(0x004654D0, BridgeTilt2Floor);
-	INJECT(0x00465540, BridgeTilt2Ceiling);
-	INJECT(0x00465590, ControlAnimatingSlots);
-	INJECT(0x00465A30, PoleCollision);
-	INJECT(0x00465D00, ControlTriggerTriggerer);
-	INJECT(0x00465DF0, AnimateWaterfalls);
-	INJECT(0x00465F10, ControlWaterfall);
-	INJECT(0x00465FE0, TightRopeCollision);
-	INJECT(0x004661C0, ParallelBarsCollision);
-	INJECT(0x00466420, ControlXRayMachine);
-	INJECT(0x00466720, CutsceneRopeControl);
-	INJECT(0x00466AA0, HybridCollision);
+	INJECT(0x00464F60, EarthQuake, replace);
+	INJECT(0x00465200, SmashObject, replace);
+	INJECT(0x00465330, SmashObjectControl, replace);
+	INJECT(0x00465350, BridgeFlatFloor, replace);
+	INJECT(0x00465390, BridgeFlatCeiling, replace);
+	INJECT(0x004653C0, GetOffset, replace);
+	INJECT(0x00465410, BridgeTilt1Floor, replace);
+	INJECT(0x00465480, BridgeTilt1Ceiling, replace);
+	INJECT(0x004654D0, BridgeTilt2Floor, replace);
+	INJECT(0x00465540, BridgeTilt2Ceiling, replace);
+	INJECT(0x00465590, ControlAnimatingSlots, replace);
+	INJECT(0x00465A30, PoleCollision, replace);
+	INJECT(0x00465D00, ControlTriggerTriggerer, replace);
+	INJECT(0x00465DF0, AnimateWaterfalls, replace);
+	INJECT(0x00465F10, ControlWaterfall, replace);
+	INJECT(0x00465FE0, TightRopeCollision, replace);
+	INJECT(0x004661C0, ParallelBarsCollision, replace);
+	INJECT(0x00466420, ControlXRayMachine, replace);
+	INJECT(0x00466720, CutsceneRopeControl, replace);
+	INJECT(0x00466AA0, HybridCollision, replace);
 }

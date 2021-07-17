@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_draw();
+void inject_draw(bool replace);
 
 
 short* GetBoundsAccurate(ITEM_INFO* item);

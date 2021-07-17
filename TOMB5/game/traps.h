@@ -4,7 +4,7 @@
 extern short SPxzoffs[8];
 extern short SPyoffs[8];
 
-void inject_traps();
+void inject_traps(bool replace);
 
 void LaraBurn();
 void LavaBurn(ITEM_INFO* item);

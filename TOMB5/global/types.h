@@ -7,11 +7,21 @@ typedef struct
 	DWORD offset;	// jump offset
 } JMP;
 
-#define INJECT(from,to) \
+#define INJECT(from,to,replace) \
+do \
+{ \
+	if (replace) \
+		INJECT_JMP(from,to); \
+	else \
+		INJECT_JMP(to,from); \
+} while (false)
+
+#define INJECT_JMP(from,to) \
+do \
 { \
 	((JMP*)(from))->opCode = 0xE9; \
 	((JMP*)(from))->offset = (DWORD)(to) - ((DWORD)(from) + sizeof(JMP)); \
-}
+} while (false)
 
 #ifndef ABS
 #define ABS(x) (((x)<0) ? (-(x)) : (x))
@@ -2029,6 +2039,16 @@ struct LIGHTNING_STRUCT
 	uchar Rand;
 	uchar Segments;
 	uchar Pad[3];
+};
+
+struct SPIDER_STRUCT
+{
+	PHD_3DPOS pos;
+	short room_number;
+	short speed;
+	short fallspeed;
+	uchar On;
+	uchar flags;
 };
 
 struct SNOWFLAKE

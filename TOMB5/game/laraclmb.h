@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_laraclmb();
+void inject_laraclmb(bool replace);
 
 void lara_as_climbstnc(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_climbstnc(ITEM_INFO* item, COLL_INFO* coll);

@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_others();
+void inject_others(bool replace);
 
 void aLoadRoomStream();
 

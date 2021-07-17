@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_hydra();
+void inject_hydra(bool replace);
 
 void InitialiseHydra(short item_number);
 void HydraControl(short item_number);

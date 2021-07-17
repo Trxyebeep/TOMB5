@@ -330,10 +330,10 @@ void phd_PutPolygonSkyMesh(short* objptr, int clipstatus)
 	}
 }
 
-void inject_output()
+void inject_output(bool replace)
 {
-	INJECT(0x004B78D0, S_DrawPickup);
-	INJECT(0x004B3F00, phd_PutPolygons);
-	INJECT(0x004B74D0, phd_PutPolygonSkyMesh);
+	INJECT(0x004B78D0, S_DrawPickup, replace);
+	INJECT(0x004B3F00, phd_PutPolygons, replace);
+	INJECT(0x004B74D0, phd_PutPolygonSkyMesh, replace);
 }
 

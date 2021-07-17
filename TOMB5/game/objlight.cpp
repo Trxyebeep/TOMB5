@@ -23,7 +23,7 @@ void TriggerAlertLight(long x, long y, long z, long r, long g, long b, long angl
 		TriggerDynamic(target.x, target.y, target.z, falloff, r, g, b);
 }
 
-void inject_objlight()
+void inject_objlight(bool replace)
 {
-	INJECT(0x00466B20, TriggerAlertLight);
+	INJECT(0x00466B20, TriggerAlertLight, replace);
 }

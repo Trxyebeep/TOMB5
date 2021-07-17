@@ -378,19 +378,19 @@ void FireTwoGunTitleWeapon(PHD_VECTOR* pos1, PHD_VECTOR* pos2)
 	TriggerLightning(pos1, pos2, (GetRandomControl() & 7) + 8, ((uchar)gun->g | 0x160000) << 8 | (uchar)gun->b, 12, 80, 5);
 }
 
-void inject_cutseq()
+void inject_cutseq(bool replace)
 {
-	INJECT(0x0041BCF0, _special1_control);
-	INJECT(0x0041BD40, _special1_end);
-	INJECT(0x0041BE90, _special2_control);
-	INJECT(0x0041C0F0, _special2_end);
-	INJECT(0x0041C160, _special3_control);
-	INJECT(0x0041C610, _special3_end);
-	INJECT(0x0041C690, _special4_control);
-	INJECT(0x0041C860, _special4_end);
-	INJECT(0x0041C8B0, ResetCutItem);
-	INJECT(0x0041C920, resetwindowsmash);
-	INJECT(0x0041C8E0, triggerwindowsmash);
-	INJECT(0x0041C950, FlamingHell);
-	INJECT(0x0041CB10, FireTwoGunTitleWeapon);
+	INJECT(0x0041BCF0, _special1_control, replace);
+	INJECT(0x0041BD40, _special1_end, replace);
+	INJECT(0x0041BE90, _special2_control, replace);
+	INJECT(0x0041C0F0, _special2_end, replace);
+	INJECT(0x0041C160, _special3_control, replace);
+	INJECT(0x0041C610, _special3_end, replace);
+	INJECT(0x0041C690, _special4_control, replace);
+	INJECT(0x0041C860, _special4_end, replace);
+	INJECT(0x0041C8B0, ResetCutItem, replace);
+	INJECT(0x0041C920, resetwindowsmash, replace);
+	INJECT(0x0041C8E0, triggerwindowsmash, replace);
+	INJECT(0x0041C950, FlamingHell, replace);
+	INJECT(0x0041CB10, FireTwoGunTitleWeapon, replace);
 }

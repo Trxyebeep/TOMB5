@@ -1422,16 +1422,14 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 							if (objects[item->object_number].ceiling && !(item->flags & 0x8000))
 								objects[item->object_number].ceiling(item, x, y, z, &height);
 						}
-					}
-					while (!(trigger & 0x8000));
+					} while (!(trigger & 0x8000));
 					break;
 
 				default:
 					Log(0, "**** GetCeiling(): Unknown type ****");
 					break;
 				}
-			}
-			while (!(type & 0x8000));
+			} while (!(type & 0x8000));
 		}
 	}
 
@@ -2524,35 +2522,35 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 	}
 }
 
-void inject_control()
+void inject_control(bool replace)
 {
-	INJECT(0x004147C0, ControlPhase);
-	INJECT(0x004A7C10, GetRandomControl);
-	INJECT(0x004A7C70, SeedRandomControl);
-	INJECT(0x004A7C40, GetRandomDraw);
-	INJECT(0x004A7C90, SeedRandomDraw);
-	INJECT(0x00415890, GetChange);
-	INJECT(0x0041AD60, CheckGuardOnTrigger);
-	INJECT(0x0041AEA0, InterpolateAngle);
-	INJECT(0x00415960, TranslateItem);
-	INJECT(0x0041B180, InitCutPlayed);
-	INJECT(0x0041B1A0, SetCutPlayed);
-	INJECT(0x0041B1F0, SetCutNotPlayed);
-	INJECT(0x0041B240, CheckCutPlayed);
-	INJECT(0x0041B280, NeatAndTidyTriggerCutscene);
-	INJECT(0x0041B8B0, is_object_in_room);
-	INJECT(0x0041B930, check_xray_machine_trigger);
-	INJECT(0x00415FB0, GetHeight);
-	INJECT(0x00415B20, GetFloor);
-	INJECT(0x0041ABF0, ExplodeItemNode);
-	INJECT(0x00417C00, GetDoor);
-	INJECT(0x00417640, GetCeiling);
-	INJECT(0x00417CF0, LOS);
-	INJECT(0x00417DC0, zLOS);
-	INJECT(0x004181F0, xLOS);
-	INJECT(0x00418620, ClipTarget);
-	INJECT(0x0041A170, GetTargetOnLOS);
-	INJECT(0x00419110, ObjectOnLOS2);
-	INJECT(0x00416760, TestTriggers);
-	INJECT(0x004167B0, _TestTriggers);
+	INJECT(0x004147C0, ControlPhase, replace);
+	INJECT(0x004A7C10, GetRandomControl, replace);
+	INJECT(0x004A7C70, SeedRandomControl, replace);
+	INJECT(0x004A7C40, GetRandomDraw, replace);
+	INJECT(0x004A7C90, SeedRandomDraw, replace);
+	INJECT(0x00415890, GetChange, replace);
+	INJECT(0x0041AD60, CheckGuardOnTrigger, replace);
+	INJECT(0x0041AEA0, InterpolateAngle, replace);
+	INJECT(0x00415960, TranslateItem, replace);
+	INJECT(0x0041B180, InitCutPlayed, replace);
+	INJECT(0x0041B1A0, SetCutPlayed, replace);
+	INJECT(0x0041B1F0, SetCutNotPlayed, replace);
+	INJECT(0x0041B240, CheckCutPlayed, replace);
+	INJECT(0x0041B280, NeatAndTidyTriggerCutscene, replace);
+	INJECT(0x0041B8B0, is_object_in_room, replace);
+	INJECT(0x0041B930, check_xray_machine_trigger, replace);
+	INJECT(0x00415FB0, GetHeight, replace);
+	INJECT(0x00415B20, GetFloor, replace);
+	INJECT(0x0041ABF0, ExplodeItemNode, replace);
+	INJECT(0x00417C00, GetDoor, replace);
+	INJECT(0x00417640, GetCeiling, replace);
+	INJECT(0x00417CF0, LOS, replace);
+	INJECT(0x00417DC0, zLOS, replace);
+	INJECT(0x004181F0, xLOS, replace);
+	INJECT(0x00418620, ClipTarget, replace);
+	INJECT(0x0041A170, GetTargetOnLOS, replace);
+	INJECT(0x00419110, ObjectOnLOS2, replace);
+	INJECT(0x00416760, TestTriggers, replace);
+	INJECT(0x004167B0, _TestTriggers, replace);
 }

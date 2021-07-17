@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_funcStubs();
+void inject_funcStubs(bool replace);
 
 void* game_malloc(int size, int type);
 

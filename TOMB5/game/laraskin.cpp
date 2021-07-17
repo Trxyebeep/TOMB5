@@ -134,7 +134,7 @@ void OptomiseSkinningData()
 	}
 }
 
-void inject_laraskin()
+void inject_laraskin(bool replace)
 {
-	INJECT(0x00457580, OptomiseSkinningData);
+	INJECT(0x00457580, OptomiseSkinningData, replace);
 }

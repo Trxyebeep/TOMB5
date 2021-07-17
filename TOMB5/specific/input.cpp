@@ -56,7 +56,7 @@ int Key(int number)
 }
 
 
-void inject_input()
+void inject_input(bool replace)
 {
-	INJECT(0x004A9110, Key);
+	INJECT(0x004A9110, Key, replace);
 }

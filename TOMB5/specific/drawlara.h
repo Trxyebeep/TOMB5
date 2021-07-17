@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_drawlara();
+void inject_drawlara(bool replace);
 
 void DrawLara(ITEM_INFO* item, int mirror);
 void DrawLara__1(ITEM_INFO* item, int mirror);

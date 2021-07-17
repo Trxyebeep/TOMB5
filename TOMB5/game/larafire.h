@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_larafire();
+void inject_larafire(bool replace);
 
 void LaraGun();
 static int CheckForHoldingState(int state);

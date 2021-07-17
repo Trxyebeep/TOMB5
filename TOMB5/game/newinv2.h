@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_newinv2();
+void inject_newinv2(bool replace);
 
 int S_CallInventory2();
 void init_new_inventry();

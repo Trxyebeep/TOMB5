@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_input();
+void inject_input(bool replace);
 
 int Key(int number);
 

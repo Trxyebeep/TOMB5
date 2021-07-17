@@ -2,7 +2,7 @@
 #include "../global/vars.h"
 
 
-void inject_objects();
+void inject_objects(bool replace);
 
 void EarthQuake(short item_number);
 void SmashObject(short item_number);

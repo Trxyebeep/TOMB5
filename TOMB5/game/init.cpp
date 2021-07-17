@@ -896,38 +896,38 @@ void InitialiseSpiderGenerator(short item_number)
 	ClearSpiders();
 }
 
-void inject_init()
+void inject_init(bool replace)
 {
-	INJECT(0x0043D2F0, InitialiseTrapDoor);
-	INJECT(0x0043D330, InitialiseFallingBlock2);
-	INJECT(0x0043D370, InitialiseFlameEmitter);
-	INJECT(0x0043D4E0, InitialiseFlameEmitter2);
-	INJECT(0x0043D5D0, InitialiseTwoBlockPlatform);
-	INJECT(0x0043D610, InitialiseScaledSpike);
-	INJECT(0x0043D730, InitialiseRaisingBlock);
-	INJECT(0x0043D7F0, InitialiseSmashObject);
-	INJECT(0x0043D8B0, InitialiseEffects);
-	INJECT(0x0043D9D0, InitialiseSmokeEmitter);
-	INJECT(0x0043DB60, InitialiseDoor);
-	INJECT(0x0043E1F0, InitialisePulley);
-	INJECT(0x0043E260, InitialisePickup);
-	INJECT(0x0043E380, InitialiseClosedDoors);
-	INJECT(0x0043E3B0, AddClosedDoor);
-	INJECT(0x0043E3F0, SetupClosedDoorStuff);
-	INJECT(0x0043E550, SCDS);
-	INJECT(0x0043E6C0, InitialiseLasers);
-	INJECT(0x0043E980, InitialiseSteamLasers);
-	INJECT(0x0043EB50, InitialiseFloorLasers);
-	INJECT(0x0043EC70, InitialiseFishtank);
-	INJECT(0x0043EF20, InitialiseWreckingBall);
-	INJECT(0x0043ECB0, InitialiseRomeHammer);
-	INJECT(0x0043ECF0, InitialiseCrowDoveSwitch);
-	INJECT(0x0043ED30, InitialiseTightRope);
-	INJECT(0x0043EDB0, InitialiseSearchObject);
-	INJECT(0x0043F070, InitialiseExplosion);
-	INJECT(0x0043F000, InitialiseSecurityScreens);
-	INJECT(0x0043F180, InitialiseSteelDoor);
-	INJECT(0x0043F1D0, InitialiseMotionSensors);
-	INJECT(0x0043F270, InitialiseGrapplingTarget);
-	INJECT(0x0043F2B0, InitialiseSpiderGenerator);
+	INJECT(0x0043D2F0, InitialiseTrapDoor, replace);
+	INJECT(0x0043D330, InitialiseFallingBlock2, replace);
+	INJECT(0x0043D370, InitialiseFlameEmitter, replace);
+	INJECT(0x0043D4E0, InitialiseFlameEmitter2, replace);
+	INJECT(0x0043D5D0, InitialiseTwoBlockPlatform, replace);
+	INJECT(0x0043D610, InitialiseScaledSpike, replace);
+	INJECT(0x0043D730, InitialiseRaisingBlock, replace);
+	INJECT(0x0043D7F0, InitialiseSmashObject, replace);
+	INJECT(0x0043D8B0, InitialiseEffects, replace);
+	INJECT(0x0043D9D0, InitialiseSmokeEmitter, replace);
+	INJECT(0x0043DB60, InitialiseDoor, replace);
+	INJECT(0x0043E1F0, InitialisePulley, replace);
+	INJECT(0x0043E260, InitialisePickup, replace);
+	INJECT(0x0043E380, InitialiseClosedDoors, replace);
+	INJECT(0x0043E3B0, AddClosedDoor, replace);
+	INJECT(0x0043E3F0, SetupClosedDoorStuff, replace);
+	INJECT(0x0043E550, SCDS, replace);
+	INJECT(0x0043E6C0, InitialiseLasers, replace);
+	INJECT(0x0043E980, InitialiseSteamLasers, replace);
+	INJECT(0x0043EB50, InitialiseFloorLasers, replace);
+	INJECT(0x0043EC70, InitialiseFishtank, replace);
+	INJECT(0x0043EF20, InitialiseWreckingBall, replace);
+	INJECT(0x0043ECB0, InitialiseRomeHammer, replace);
+	INJECT(0x0043ECF0, InitialiseCrowDoveSwitch, replace);
+	INJECT(0x0043ED30, InitialiseTightRope, replace);
+	INJECT(0x0043EDB0, InitialiseSearchObject, replace);
+	INJECT(0x0043F070, InitialiseExplosion, replace);
+	INJECT(0x0043F000, InitialiseSecurityScreens, replace);
+	INJECT(0x0043F180, InitialiseSteelDoor, replace);
+	INJECT(0x0043F1D0, InitialiseMotionSensors, replace);
+	INJECT(0x0043F270, InitialiseGrapplingTarget, replace);
+	INJECT(0x0043F2B0, InitialiseSpiderGenerator, replace);
 }

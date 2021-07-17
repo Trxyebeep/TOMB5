@@ -500,11 +500,11 @@ void ControlWreckingBall(short item_number)
 	WB_room = room_number;
 }
 
-void inject_joby()
+void inject_joby(bool replace)
 {
-	INJECT(0x00442C90, KlaxonTremor);
-	INJECT(0x00442BE0, CheckCableBox);
-	INJECT(0x00442610, ControlElectricalCables);
-	INJECT(0x00441D50, WreckingBallCollision);
-	INJECT(0x00441410, ControlWreckingBall);
+	INJECT(0x00442C90, KlaxonTremor, replace);
+	INJECT(0x00442BE0, CheckCableBox, replace);
+	INJECT(0x00442610, ControlElectricalCables, replace);
+	INJECT(0x00441D50, WreckingBallCollision, replace);
+	INJECT(0x00441410, ControlWreckingBall, replace);
 }

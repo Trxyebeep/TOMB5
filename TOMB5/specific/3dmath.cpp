@@ -30,8 +30,8 @@ void gte_sttr(PHD_VECTOR* vec)
 	vec->z = phd_mxptr[11] >> 14;
 }
 
-void inject_3dmath()
+void inject_3dmath(bool replace)
 {
-	INJECT(0x0048EDC0, AlterFOV);
-	INJECT(0x00491320, gte_sttr);
+	INJECT(0x0048EDC0, AlterFOV, replace);
+	INJECT(0x00491320, gte_sttr, replace);
 }

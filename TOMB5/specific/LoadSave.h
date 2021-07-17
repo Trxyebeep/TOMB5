@@ -2,7 +2,7 @@
 #include "../global/vars.h"
 
 
-void inject_LoadSave();
+void inject_LoadSave(bool replace);
 
 void CheckKeyConflicts();
 void DoStatScreen();

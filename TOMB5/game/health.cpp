@@ -259,14 +259,14 @@ void AddDisplayPickup(short object_number)
 }
 
 
-void inject_health()
+void inject_health(bool replace)
 {
-	INJECT(0x00439C10, FlashIt);
-	INJECT(0x00439C50, DrawGameInfo);
-	INJECT(0x00439E50, DrawHealthBar);
-	INJECT(0x00439FC0, DrawAirBar);
-	INJECT(0x0043A0A0, MakeAmmoString);
-	INJECT(0x0043A0E0, InitialisePickUpDisplay);
-	INJECT(0x0043A130, DrawPickups);
-	INJECT(0x0043A240, AddDisplayPickup);
+	INJECT(0x00439C10, FlashIt, replace);
+	INJECT(0x00439C50, DrawGameInfo, replace);
+	INJECT(0x00439E50, DrawHealthBar, replace);
+	INJECT(0x00439FC0, DrawAirBar, replace);
+	INJECT(0x0043A0A0, MakeAmmoString, replace);
+	INJECT(0x0043A0E0, InitialisePickUpDisplay, replace);
+	INJECT(0x0043A130, DrawPickups, replace);
+	INJECT(0x0043A240, AddDisplayPickup, replace);
 }

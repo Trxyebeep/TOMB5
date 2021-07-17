@@ -287,12 +287,12 @@ void InitialiseRatGenerator(short item_number)
 	ClearRats();
 }
 
-void inject_rat()
+void inject_rat(bool replace)
 {
-	INJECT(0x0046AA70, GetFreeRat);
-	INJECT(0x0046AAE0, ClearRats);
-	INJECT(0x0046AB30, TriggerRat);
-//	INJECT(0x0046AC70, UpdateRats);
-	INJECT(0x0046B140, DrawRats);
-	INJECT(0x0046B220, InitialiseRatGenerator);
+	INJECT(0x0046AA70, GetFreeRat, replace);
+	INJECT(0x0046AAE0, ClearRats, replace);
+	INJECT(0x0046AB30, TriggerRat, replace);
+//	INJECT(0x0046AC70, UpdateRats, replace);
+	INJECT(0x0046B140, DrawRats, replace);
+	INJECT(0x0046B220, InitialiseRatGenerator, replace);
 }

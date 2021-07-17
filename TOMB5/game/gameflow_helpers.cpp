@@ -82,7 +82,7 @@ int GetCampaignCheatValue()
 	return jump;
 }
 
-void inject_gf_helpers()
+void inject_gf_helpers(bool replace)
 {
-	INJECT(0x004B1F00, GetCampaignCheatValue);
+	INJECT(0x004B1F00, GetCampaignCheatValue, replace);
 }
