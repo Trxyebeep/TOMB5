@@ -193,6 +193,8 @@
     </ClCompile>
     <ClCompile Include="TOMB5\specific\drawroom.cpp" />
     <ClCompile Include="TOMB5\specific\texture.cpp" />
+    <ClCompile Include="TOMB5\game\hydra.cpp" />
+    <ClCompile Include="TOMB5\game\imp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -388,6 +390,8 @@
     </ClInclude>
     <ClInclude Include="TOMB5\specific\drawroom.h" />
     <ClInclude Include="TOMB5\specific\texture.h" />
+    <ClInclude Include="TOMB5\game\hydra.h" />
+    <ClInclude Include="TOMB5\game\imp.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

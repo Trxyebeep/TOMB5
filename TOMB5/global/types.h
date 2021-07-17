@@ -2041,4 +2041,16 @@ struct SPIDER_STRUCT
 	uchar flags;
 };
 
+struct SNOWFLAKE
+{
+	long x;
+	long y;
+	long z;
+	char xv;
+	uchar yv;
+	char zv;
+	uchar life;
+	short stopped;
+	short room_number;
+};
 #pragma pack(pop)

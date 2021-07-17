@@ -404,6 +404,7 @@
 #define nPolyType	VAR_U_(0x00E4B100, long)
 #define SkyPos	VAR_U_(0x00E6E4B0, short)
 #define SkyPos2	VAR_U_(0x00E6D73E, short)
+#define torchroom	VAR_U_(0x00507AB0, short)
 /***********************/
 //Spotcams
 #define number_spotcams	VAR_U_(0x00E4F428, short)

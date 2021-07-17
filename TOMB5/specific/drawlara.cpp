@@ -668,7 +668,9 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 	OBJECT_INFO* obj;
 	PCSVECTOR v0, v1;
 	short** meshpp;
+#ifdef GENERAL_FIXES
 	short* rot;
+#endif
 	int top, bottom, left, right, stash;
 	long cos, sin, xRot;
 
