@@ -1234,6 +1234,13 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048E8E0		InitialiseMazeMonster
 0x0048E960		MazeMonsterControl
 
+
+		game/imp.cpp
+
+0x0043CAC0	+	TriggerImpMissile
+0x0043CCA0	+	InitialiseImp
+0x0043CD80	+	ImpControl
+
 // ======================================
 // SPECIFIC
 // ======================================

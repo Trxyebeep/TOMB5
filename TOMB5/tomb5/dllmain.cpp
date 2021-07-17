@@ -54,6 +54,7 @@
 #include "../specific/specificfx.h"
 #include "../game/skeleton.h"
 #include "../game/hydra.h"
+#include "../game/imp.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -127,6 +128,7 @@ void inject_all()
 	inject_specificfx();
 	inject_skelly();
 	inject_hydra();
+	inject_imp();
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
