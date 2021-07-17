@@ -365,11 +365,11 @@ void TriggerHydraPowerupFlames(short item_number, long shade)
 	sptr->Size = sptr->sSize;
 }
 
-void inject_hydra()
+void inject_hydra(bool replace)
 {
-	INJECT(0x0043BEA0, InitialiseHydra);
-	INJECT(0x0043BF70, HydraControl);
-	INJECT(0x0043C6C0, TriggerHydraMissile);
-	INJECT(0x0043C790, TriggerHydraMissileFlame);
-	INJECT(0x0043C910, TriggerHydraPowerupFlames);
+	INJECT(0x0043BEA0, InitialiseHydra, replace);
+	INJECT(0x0043BF70, HydraControl, replace);
+	INJECT(0x0043C6C0, TriggerHydraMissile, replace);
+	INJECT(0x0043C790, TriggerHydraMissileFlame, replace);
+	INJECT(0x0043C910, TriggerHydraPowerupFlames, replace);
 }

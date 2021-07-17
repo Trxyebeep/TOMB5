@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_larasurf();
+void inject_larasurf(bool replace);
 
 int LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll);
 int LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll);

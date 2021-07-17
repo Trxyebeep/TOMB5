@@ -32,7 +32,7 @@ void aLoadRoomStream()
 	number_rooms = num_rooms;
 }
 
-void inject_others()
+void inject_others(bool replace)
 {
-	INJECT(0x004916C0, aLoadRoomStream);
+	INJECT(0x004916C0, aLoadRoomStream, replace);
 }

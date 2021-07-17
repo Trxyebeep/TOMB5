@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_subsuit();
+void inject_subsuit(bool replace);
 
 void DoSubsuitStuff();
 void FireChaff();

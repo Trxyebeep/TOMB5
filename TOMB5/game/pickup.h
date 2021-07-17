@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_pickup();
+void inject_pickup(bool replace);
 
 static void PuzzleDone(ITEM_INFO* item, short item_num);
 void RegeneratePickups();

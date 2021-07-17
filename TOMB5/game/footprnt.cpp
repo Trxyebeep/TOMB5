@@ -43,7 +43,7 @@ void AddFootprint(ITEM_INFO* item)
 	}
 }
 
-void inject_footprnt()
+void inject_footprnt(bool replace)
 {
-	INJECT(0x004346A0, AddFootprint);
+	INJECT(0x004346A0, AddFootprint, replace);
 }

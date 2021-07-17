@@ -629,27 +629,27 @@ void LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
 	TestTriggers(coll->trigger, 0, 0);
 }
 
-void inject_laraswim()
+void inject_laraswim(bool replace)
 {
-	INJECT(0x00459470, LaraTestWaterDepth);
-	INJECT(0x00458FF0, LaraSwimCollision);
-	INJECT(0x00458BC0, SwimTurn);
-	INJECT(0x00458C80, SwimTurnSubsuit);
-	INJECT(0x004584C0, UpdateSubsuitAngles);
-	INJECT(0x004586F0, LaraUnderWater);
-	INJECT(0x004589F0, lara_as_swimcheat);
-	INJECT(0x00458B20, lara_as_swim);
-	INJECT(0x00458D60, lara_as_glide);
-	INJECT(0x00458E20, lara_as_tread);
-	INJECT(0x00458EF0, lara_as_dive);
-	INJECT(0x00458F20, lara_as_uwdeath);
-	INJECT(0x00458FA0, lara_as_waterroll);
-	INJECT(0x00458FC0, lara_col_swim);
-	INJECT(0x00459590, lara_col_glide);
-	INJECT(0x004595C0, lara_col_tread);
-	INJECT(0x004595F0, lara_col_dive);
-	INJECT(0x00459620, lara_col_uwdeath);
-	INJECT(0x004596A0, lara_col_waterroll);
+	INJECT(0x00459470, LaraTestWaterDepth, replace);
+	INJECT(0x00458FF0, LaraSwimCollision, replace);
+	INJECT(0x00458BC0, SwimTurn, replace);
+	INJECT(0x00458C80, SwimTurnSubsuit, replace);
+	INJECT(0x004584C0, UpdateSubsuitAngles, replace);
+	INJECT(0x004586F0, LaraUnderWater, replace);
+	INJECT(0x004589F0, lara_as_swimcheat, replace);
+	INJECT(0x00458B20, lara_as_swim, replace);
+	INJECT(0x00458D60, lara_as_glide, replace);
+	INJECT(0x00458E20, lara_as_tread, replace);
+	INJECT(0x00458EF0, lara_as_dive, replace);
+	INJECT(0x00458F20, lara_as_uwdeath, replace);
+	INJECT(0x00458FA0, lara_as_waterroll, replace);
+	INJECT(0x00458FC0, lara_col_swim, replace);
+	INJECT(0x00459590, lara_col_glide, replace);
+	INJECT(0x004595C0, lara_col_tread, replace);
+	INJECT(0x004595F0, lara_col_dive, replace);
+	INJECT(0x00459620, lara_col_uwdeath, replace);
+	INJECT(0x004596A0, lara_col_waterroll, replace);
 	//GetWaterDepth
 	//LaraWaterCurrent
 }

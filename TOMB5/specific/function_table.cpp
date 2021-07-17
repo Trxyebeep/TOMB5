@@ -25,7 +25,7 @@ void InitialiseFunctionTable()//crashes lol
 	AddLineSorted = AddLineClippedSorted;
 }
 
-void inject_functbl()
+void inject_functbl(bool replace)
 {
-//	INJECT(0x004A7EE0, InitialiseFunctionTable);
+//	INJECT(0x004A7EE0, InitialiseFunctionTable, replace);
 }

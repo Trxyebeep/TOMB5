@@ -429,9 +429,9 @@ void InitialiseHair()
 	}
 }
 
-void inject_hair()
+void inject_hair(bool replace)
 {
-	INJECT(0x00439A40, DrawHair);
-	INJECT(0x00438C80, HairControl);
-	INJECT(0x00438BE0, InitialiseHair);
+	INJECT(0x00439A40, DrawHair, replace);
+	INJECT(0x00438C80, HairControl, replace);
+	INJECT(0x00438BE0, InitialiseHair, replace);
 }

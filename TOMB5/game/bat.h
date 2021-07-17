@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_bats();
+void inject_bats(bool replace);
 
 long GetFreeBat();
 void TriggerBat(ITEM_INFO* item);

@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_effects();
+void inject_effects(bool replace);
 
 
 extern void(*effect_routines[])(ITEM_INFO* item);

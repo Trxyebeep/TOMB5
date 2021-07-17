@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_spider();
+void inject_spider(bool replace);
 
 long GetFreeSpider();
 void ClearSpiders();

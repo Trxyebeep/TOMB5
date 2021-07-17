@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_spotcam();
+void inject_spotcam(bool replace);
 
 long Spline(long x, long* knots, int nk);
 void InitSpotCamSequences();

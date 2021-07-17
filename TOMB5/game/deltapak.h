@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_deltaPak();
+void inject_deltaPak(bool replace);
 
 void andrea1_init();
 void andrea1_control();

@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_control();
+void inject_control(bool replace);
 
 long ControlPhase(long _nframes, int demo_mode);
 int GetRandomControl();

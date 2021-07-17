@@ -23,7 +23,7 @@ void* game_malloc(int size, int type)
 	}
 }
 
-void inject_funcStubs()
+void inject_funcStubs(bool replace)
 {
-	INJECT(0x004A7D00, game_malloc);
+	INJECT(0x004A7D00, game_malloc, replace);
 }

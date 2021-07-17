@@ -2,7 +2,7 @@
 #include "../global/vars.h"
 
 
-void inject_health();
+void inject_health(bool replace);
 
 
 int FlashIt();

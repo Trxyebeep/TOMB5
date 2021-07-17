@@ -892,15 +892,15 @@ void LaraControl(short item_number)
 	return;
 }
 
-void inject_laramisc()
+void inject_laramisc(bool replace)
 {
-	INJECT(0x004569C0, GetLaraDeadlyBounds);
-	INJECT(0x00456900, InitialiseLaraAnims);
-	INJECT(0x004568C0, InitialiseLaraLoad);
-	INJECT(0x00456320, LaraCheat);
-	INJECT(0x00455680, LaraInitialiseMeshes);
-	INJECT(0x00473210, InitialiseLara);
-	INJECT(0x004557B0, LaraCheatGetStuff);
-	INJECT(0x004563F0, AnimateLara);
-	INJECT(0x00455830, LaraControl);
+	INJECT(0x004569C0, GetLaraDeadlyBounds, replace);
+	INJECT(0x00456900, InitialiseLaraAnims, replace);
+	INJECT(0x004568C0, InitialiseLaraLoad, replace);
+	INJECT(0x00456320, LaraCheat, replace);
+	INJECT(0x00455680, LaraInitialiseMeshes, replace);
+	INJECT(0x00473210, InitialiseLara, replace);
+	INJECT(0x004557B0, LaraCheatGetStuff, replace);
+	INJECT(0x004563F0, AnimateLara, replace);
+	INJECT(0x00455830, LaraControl, replace);
 }

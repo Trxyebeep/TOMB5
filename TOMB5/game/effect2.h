@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_effect2();
+void inject_effect2(bool replace);
 
 void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv);
 

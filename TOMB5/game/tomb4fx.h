@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_tomb4fx();
+void inject_tomb4fx(bool replace);
 
 short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room_number);//not here!
 int GetFreeBlood();

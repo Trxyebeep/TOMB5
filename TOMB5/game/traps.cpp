@@ -239,10 +239,10 @@ void CloseTrapDoor(ITEM_INFO* item)
 	}
 }
 
-void inject_traps()
+void inject_traps(bool replace)
 {
-	INJECT(0x0048AD60, LaraBurn);
-	INJECT(0x0048ADD0, LavaBurn);
-	INJECT(0x0048C6D0, ControlExplosion);
-	INJECT(0x00488E30, CloseTrapDoor);
+	INJECT(0x0048AD60, LaraBurn, replace);
+	INJECT(0x0048ADD0, LavaBurn, replace);
+	INJECT(0x0048C6D0, ControlExplosion, replace);
+	INJECT(0x00488E30, CloseTrapDoor, replace);
 }

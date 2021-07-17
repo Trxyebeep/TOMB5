@@ -196,12 +196,12 @@ int ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotatio
 	return targetable;
 }
 
-void inject_people()
+void inject_people(bool replace)
 {
-	INJECT(0x004671E0, TargetVisible);
-	INJECT(0x004672F0, Targetable);
-	INJECT(0x00467420, GunShot);
-	INJECT(0x00467440, GunHit);
-	INJECT(0x00467530, GunMiss);
-	INJECT(0x00467610, ShotLara);
+	INJECT(0x004671E0, TargetVisible, replace);
+	INJECT(0x004672F0, Targetable, replace);
+	INJECT(0x00467420, GunShot, replace);
+	INJECT(0x00467440, GunHit, replace);
+	INJECT(0x00467530, GunMiss, replace);
+	INJECT(0x00467610, ShotLara, replace);
 }

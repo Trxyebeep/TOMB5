@@ -114,8 +114,8 @@ void SkeletonControl(short item_number)
 	CreatureAnimation(item_number, angle, 0);
 }
 
-void inject_skelly()
+void inject_skelly(bool replace)
 {
-	INJECT(0x00477A20, InitialiseSkeleton);
-	INJECT(0x00477AB0, SkeletonControl);
+	INJECT(0x00477A20, InitialiseSkeleton, replace);
+	INJECT(0x00477AB0, SkeletonControl, replace);
 }

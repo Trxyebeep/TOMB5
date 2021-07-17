@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_file();
+void inject_file(bool replace);
 
 bool LoadTextureInfos();
 bool LoadRooms();

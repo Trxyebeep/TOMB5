@@ -199,9 +199,9 @@ void TriggerAirBubbles()
 	sptr->dSize = (uchar)(size << 1);
 }
 
-void inject_subsuit()
+void inject_subsuit(bool replace)
 {
-	INJECT(0x0047C6D0, FireChaff);
-	INJECT(0x0047C950, DoSubsuitStuff);
-	INJECT(0x0047C4D0, TriggerAirBubbles);
+	INJECT(0x0047C6D0, FireChaff, replace);
+	INJECT(0x0047C950, DoSubsuitStuff, replace);
+	INJECT(0x0047C4D0, TriggerAirBubbles, replace);
 }

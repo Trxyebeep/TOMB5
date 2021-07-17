@@ -513,14 +513,14 @@ void SearchObjectCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	}
 }
 
-void inject_pickup()
+void inject_pickup(bool replace)
 {
-	INJECT(0x00467AF0, RegeneratePickups);
-	INJECT(0x004693A0, PuzzleDone);
-	INJECT(0x00469550, KeyTrigger);
-	INJECT(0x004695E0, PickupTrigger);
-	INJECT(0x00468C00, PuzzleDoneCollision);
-	INJECT(0x00468C70, PuzzleHoleCollision);
-	INJECT(0x00469660, SearchObjectControl);
-	INJECT(0x004699A0, SearchObjectCollision);
+	INJECT(0x00467AF0, RegeneratePickups, replace);
+	INJECT(0x004693A0, PuzzleDone, replace);
+	INJECT(0x00469550, KeyTrigger, replace);
+	INJECT(0x004695E0, PickupTrigger, replace);
+	INJECT(0x00468C00, PuzzleDoneCollision, replace);
+	INJECT(0x00468C70, PuzzleHoleCollision, replace);
+	INJECT(0x00469660, SearchObjectControl, replace);
+	INJECT(0x004699A0, SearchObjectCollision, replace);
 }

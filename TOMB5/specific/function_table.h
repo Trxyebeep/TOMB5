@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_functbl();
+void inject_functbl(bool replace);
 
 void InitialiseFunctionTable();
 

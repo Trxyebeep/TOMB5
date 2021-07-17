@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_items();
+void inject_items(bool replace);
 
 void ItemNewRoom(short item_num, short room_number);
 

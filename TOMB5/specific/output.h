@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_output();
+void inject_output(bool replace);
 
 void S_DrawPickup(short object_number);
 void phd_PutPolygons(short* objptr, int clipstatus);

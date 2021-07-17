@@ -168,7 +168,7 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown)
 	}
 }
 
-void inject_specificfx()
+void inject_specificfx(bool replace)
 {
-	INJECT(0x004C2F10, S_PrintShadow);
+	INJECT(0x004C2F10, S_PrintShadow, replace);
 }

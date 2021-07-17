@@ -628,24 +628,24 @@ void LaraClimbRope(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-void inject_rope()
+void inject_rope(bool replace)
 {
-	INJECT(0x0046D130, GetRopePos);
-	INJECT(0x0046D200, RopeNodeCollision);
-	INJECT(0x0046D310, vMul);
-	INJECT(0x0046D360, mDotProduct);
-	INJECT(0x0046D3A0, mCrossProduct);
-	INJECT(0x0046D420, phd_GetMatrixAngles);
-	INJECT(0x0046D510, AlignLaraToRope);
-	INJECT(0x0046DAE0, RopeCollision);
-	INJECT(0x0046DD40, RopeControl);
-	INJECT(0x0046DE10, Normalise);
-	INJECT(0x0046DF00, ModelRigid);
-	INJECT(0x0046E080, ModelRigidRope);
-	INJECT(0x0046E1C0, SetPendulumPoint);
-	INJECT(0x0046E280, SetPendulumVelocity);
-	INJECT(0x0046E370, CalculateRope);
-	INJECT(0x0046EE80, CreateRope);
-	INJECT(0x0046F060, InitialiseRope);
-	INJECT(0x0046F240, LaraClimbRope);
+	INJECT(0x0046D130, GetRopePos, replace);
+	INJECT(0x0046D200, RopeNodeCollision, replace);
+	INJECT(0x0046D310, vMul, replace);
+	INJECT(0x0046D360, mDotProduct, replace);
+	INJECT(0x0046D3A0, mCrossProduct, replace);
+	INJECT(0x0046D420, phd_GetMatrixAngles, replace);
+	INJECT(0x0046D510, AlignLaraToRope, replace);
+	INJECT(0x0046DAE0, RopeCollision, replace);
+	INJECT(0x0046DD40, RopeControl, replace);
+	INJECT(0x0046DE10, Normalise, replace);
+	INJECT(0x0046DF00, ModelRigid, replace);
+	INJECT(0x0046E080, ModelRigidRope, replace);
+	INJECT(0x0046E1C0, SetPendulumPoint, replace);
+	INJECT(0x0046E280, SetPendulumVelocity, replace);
+	INJECT(0x0046E370, CalculateRope, replace);
+	INJECT(0x0046EE80, CreateRope, replace);
+	INJECT(0x0046F060, InitialiseRope, replace);
+	INJECT(0x0046F240, LaraClimbRope, replace);
 }

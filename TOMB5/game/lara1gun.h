@@ -2,7 +2,7 @@
 #include "../global/vars.h"
 
 
-void inject_lara1gun();
+void inject_lara1gun(bool replace);
 
 void draw_shotgun_meshes(int weapon_type);
 void undraw_shotgun_meshes(int weapon_type);

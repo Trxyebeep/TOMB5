@@ -264,12 +264,12 @@ void DrawBats()
 	}
 }
 
-void inject_bats()
+void inject_bats(bool replace)
 {
-	INJECT(0x00407D30, GetFreeBat);
-	INJECT(0x00407DD0, TriggerBat);
-	INJECT(0x00407EC0, InitialiseBatEmitter);
-	INJECT(0x00407F50, ControlBatEmitter);
-	INJECT(0x00407FD0, UpdateBats);
-	INJECT(0x00408480, DrawBats);
+	INJECT(0x00407D30, GetFreeBat, replace);
+	INJECT(0x00407DD0, TriggerBat, replace);
+	INJECT(0x00407EC0, InitialiseBatEmitter, replace);
+	INJECT(0x00407F50, ControlBatEmitter, replace);
+	INJECT(0x00407FD0, UpdateBats, replace);
+	INJECT(0x00408480, DrawBats, replace);
 }

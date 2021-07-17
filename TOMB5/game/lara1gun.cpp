@@ -700,20 +700,20 @@ void TriggerGrapplingEffect(long x, long y, long z)
 	}
 }
 
-void inject_lara1gun()
+void inject_lara1gun(bool replace)
 {
-	INJECT(0x0044DBB0, draw_shotgun_meshes);
-	INJECT(0x0044DBF0, undraw_shotgun_meshes);
-	INJECT(0x0044DC30, ready_shotgun);
-	INJECT(0x0044DCC0, RifleHandler);
-	INJECT(0x0044E110, FireShotgun);
-	INJECT(0x0044E380, FireHK);
-	INJECT(0x0044E4B0, FireCrossbow);
-//	INJECT(0x0044E5E0, CrossbowHitSwitchType78);
-	INJECT(0x0044E8B0, ControlCrossbow);
-	INJECT(0x0044EAC0, draw_shotgun);
-	INJECT(0x0044ECA0, undraw_shotgun)
-	INJECT(0x0044EE00, AnimateShotgun);
-	INJECT(0x0044F690, DoGrenadeDamageOnBaddie);
-	INJECT(0x0044F7C0, TriggerGrapplingEffect);
+	INJECT(0x0044DBB0, draw_shotgun_meshes, replace);
+	INJECT(0x0044DBF0, undraw_shotgun_meshes, replace);
+	INJECT(0x0044DC30, ready_shotgun, replace);
+	INJECT(0x0044DCC0, RifleHandler, replace);
+	INJECT(0x0044E110, FireShotgun, replace);
+	INJECT(0x0044E380, FireHK, replace);
+	INJECT(0x0044E4B0, FireCrossbow, replace);
+//	INJECT(0x0044E5E0, CrossbowHitSwitchType78, replace);
+	INJECT(0x0044E8B0, ControlCrossbow, replace);
+	INJECT(0x0044EAC0, draw_shotgun, replace);
+	INJECT(0x0044ECA0, undraw_shotgun, replace);
+	INJECT(0x0044EE00, AnimateShotgun, replace);
+	INJECT(0x0044F690, DoGrenadeDamageOnBaddie, replace);
+	INJECT(0x0044F7C0, TriggerGrapplingEffect, replace);
 }

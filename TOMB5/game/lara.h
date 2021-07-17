@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_lara();
+void inject_lara(bool replace);
 
 extern void (*lara_control_routines[])(ITEM_INFO* item, COLL_INFO* coll);
 extern void (*lara_collision_routines[])(ITEM_INFO* item, COLL_INFO* coll);

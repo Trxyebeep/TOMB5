@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_door();
+void inject_door(bool replace);
 
 
 void ShutThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd);

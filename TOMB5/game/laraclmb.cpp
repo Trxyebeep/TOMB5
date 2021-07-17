@@ -369,19 +369,19 @@ void lara_col_climbdown(ITEM_INFO* item, COLL_INFO* coll)
 		AnimateLara(item);
 }
 
-void inject_laraclmb()
+void inject_laraclmb(bool replace)
 {
-	INJECT(0x00450D40, lara_as_climbstnc);
-	INJECT(0x00450E20, lara_col_climbstnc);
-	INJECT(0x004510E0, LaraCheckForLetGo);
-	INJECT(0x00451ED0, lara_as_climbing);
-	INJECT(0x00451F00, lara_col_climbing);
-	INJECT(0x004514D0, lara_as_climbleft);
-	INJECT(0x00451520, lara_col_climbleft);
-	INJECT(0x00451E00, lara_as_climbright);
-	INJECT(0x00451E50, lara_col_climbright);
-	INJECT(0x00452340, lara_as_climbend);
-	INJECT(0x00452380, lara_col_climbend);
-	INJECT(0x004520E0, lara_as_climbdown);
-	INJECT(0x00452110, lara_col_climbdown);
+	INJECT(0x00450D40, lara_as_climbstnc, replace);
+	INJECT(0x00450E20, lara_col_climbstnc, replace);
+	INJECT(0x004510E0, LaraCheckForLetGo, replace);
+	INJECT(0x00451ED0, lara_as_climbing, replace);
+	INJECT(0x00451F00, lara_col_climbing, replace);
+	INJECT(0x004514D0, lara_as_climbleft, replace);
+	INJECT(0x00451520, lara_col_climbleft, replace);
+	INJECT(0x00451E00, lara_as_climbright, replace);
+	INJECT(0x00451E50, lara_col_climbright, replace);
+	INJECT(0x00452340, lara_as_climbend, replace);
+	INJECT(0x00452380, lara_col_climbend, replace);
+	INJECT(0x004520E0, lara_as_climbdown, replace);
+	INJECT(0x00452110, lara_col_climbdown, replace);
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-void inject_cutseq();
+void inject_cutseq(bool replace);
 
 void _special1_control();
 void _special1_end();
