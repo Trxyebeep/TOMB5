@@ -12,6 +12,7 @@
 #include "lara1gun.h"
 #include "switch.h"
 #include "collide.h"
+#include "effect2.h"
 
 short SPxzoffs[8] = {0, 0, 0x200, 0, 0, 0, -0x200, 0};
 short SPyoffs[8] = {-0x400, 0, -0x200, 0, 0, 0, -0x200, 0};
@@ -240,10 +241,132 @@ void CloseTrapDoor(ITEM_INFO* item)
 	}
 }
 
+void DartEmitterControl(short item_number)
+{
+	ITEM_INFO* item;
+	ITEM_INFO* dart;
+	long x, z, xLimit, zLimit, xv, zv, rand;
+	short num;
+
+	item = &items[item_number];
+
+	if (item->active)
+	{
+		if (item->timer > 0)
+		{
+			item->timer--;
+			return;
+		}
+
+		item->timer = 24;
+	}
+
+	num = CreateItem();
+
+	if (num != NO_ITEM)
+	{
+		x = 0;
+		z = 0;
+		dart = &items[num];
+		dart->object_number = DARTS;
+		dart->room_number = item->room_number;
+
+		if (item->pos.y_rot == 0)
+			z = 512;
+		else if (item->pos.y_rot == 16384)
+			x = 512;
+		else if (item->pos.y_rot == -16384)
+			x = -512;
+		else if (item->pos.y_rot == -32768)
+			z = -512;
+
+		dart->pos.x_pos = x + item->pos.x_pos;
+		dart->pos.y_pos = item->pos.y_pos - 512;
+		dart->pos.z_pos = z + item->pos.z_pos;
+		InitialiseItem(num);
+		dart->pos.x_rot = 0;
+		dart->pos.y_rot += 32768;
+		dart->speed = 256;
+		xLimit = 0;
+		zLimit = 0;
+
+		if (x)
+			xLimit = ABS(x << 1) - 1;
+		else
+			zLimit = ABS(z << 1) - 1;
+
+		for (int i = 0; i < 5; i++)
+		{
+			rand = -GetRandomControl();
+
+			if (z >= 0)
+				zv = zLimit & rand;
+			else
+				zv = -(zLimit & rand);
+
+			if (x >= 0)
+				xv = xLimit & rand;
+			else
+				xv = -(xLimit & rand);
+
+			TriggerDartSmoke(dart->pos.x_pos, dart->pos.y_pos, dart->pos.z_pos, xv, zv, 0);
+		}
+
+		AddActiveItem(num);
+		dart->status = ITEM_ACTIVE;
+		SoundEffect(SFX_LIFT_DOORS, &dart->pos, 0);
+	}
+}
+
+void DartsControl(short item_number)
+{
+	ITEM_INFO* item;
+	FLOOR_INFO* floor;
+	long x, z, speed;
+	short room_num;
+
+	item = &items[item_number];
+
+	if (item->touch_bits)
+	{
+		lara_item->hit_points -= 25;
+		lara_item->hit_status = 1;
+		lara.poisoned += 160;
+		DoBloodSplat(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, (GetRandomControl() & 3) + 4, lara_item->pos.y_rot, lara_item->room_number);
+		KillItem(item_number);
+	}
+	else
+	{
+		x = item->pos.x_pos;
+		z = item->pos.z_pos;
+		speed = (item->speed * phd_cos(item->pos.x_rot)) >> 14;
+		item->pos.z_pos += (speed * phd_cos(item->pos.y_rot)) >> 14;
+		item->pos.x_pos += (speed * phd_sin(item->pos.y_rot)) >> 14;
+		item->pos.y_pos -= (item->speed * phd_sin(item->pos.x_rot)) >> 14;
+		room_num = item->room_number;
+		floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_num);
+
+		if (item->room_number != room_num)
+			ItemNewRoom(item_number, room_num);
+
+		item->floor = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+
+		if (item->pos.y_pos >= item->floor)
+		{
+			for (int i = 0; i < 4; i++)
+				TriggerDartSmoke(x, item->pos.y_pos, z, 0, 0, 1);
+
+			KillItem(item_number);
+		}
+	}
+}
+
 void inject_traps(bool replace)
 {
 	INJECT(0x0048AD60, LaraBurn, replace);
 	INJECT(0x0048ADD0, LavaBurn, replace);
 	INJECT(0x0048C6D0, ControlExplosion, replace);
 	INJECT(0x00488E30, CloseTrapDoor, replace);
+	INJECT(0x00489B30, DartEmitterControl, replace);
+	INJECT(0x00489D60, DartsControl, replace);
 }

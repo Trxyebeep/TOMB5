@@ -232,7 +232,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00430910		SetupRipple
 0x004309B0		TriggerUnderwaterBlood
 0x00430A40		TriggerWaterfallMist
-0x00430D90		TriggerDartSmoke
+0x00430D90	+	TriggerDartSmoke
 0x00431030		KillAllCurrentItems
 0x00431050		KillEverything
 0x00431070		TriggerExplosionBubble
@@ -1073,8 +1073,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00489910		FallingBlockFloor
 0x00489980		FallingBlockCeiling
 0x004899D0		FallingCeiling
-0x00489B30		DartEmitterControl
-0x00489D60		DartsControl
+0x00489B30	+	DartEmitterControl
+0x00489D60	+	DartsControl
 0x00489F70		FlameEmitterControl
 0x0048A3B0		FlameEmitter2Control
 0x0048A570		FlameEmitter3Control
