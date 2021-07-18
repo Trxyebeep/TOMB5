@@ -1241,6 +1241,32 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043CCA0	+	InitialiseImp
 0x0043CD80	+	ImpControl
 
+
+		game/lion.cpp
+
+0045AD00		LionControl
+0045AC80		InitialiseLion
+
+
+		game/minisub.cpp
+
+0045C5E0		TriggerTorpedoSteam
+0045C760		TriggerMinisubLight
+0045C830		FireTorpedo
+0045C9F0		TorpedoControl
+0045CFB0		ChaffControl
+0045D1D0		TriggerMiniSubMist
+0045D360		InitialiseMinisub
+0045D3F0		MinisubControl
+0045DA70		InitialiseJelly
+0045DAF0		JellyControl
+
+
+		game/sniper.cpp
+
+00478250		SniperControl
+00478180		InitialiseSniper
+
 // ======================================
 // SPECIFIC
 // ======================================
