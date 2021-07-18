@@ -1244,28 +1244,40 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/lion.cpp
 
-0045AD00		LionControl
-0045AC80		InitialiseLion
+0x0045AD00		LionControl
+0x0045AC80		InitialiseLion
 
 
 		game/minisub.cpp
 
-0045C5E0		TriggerTorpedoSteam
-0045C760		TriggerMinisubLight
-0045C830		FireTorpedo
-0045C9F0		TorpedoControl
-0045CFB0		ChaffControl
-0045D1D0		TriggerMiniSubMist
-0045D360		InitialiseMinisub
-0045D3F0		MinisubControl
-0045DA70		InitialiseJelly
-0045DAF0		JellyControl
+0x0045C5E0		TriggerTorpedoSteam
+0x0045C760		TriggerMinisubLight
+0x0045C830		FireTorpedo
+0x0045C9F0		TorpedoControl
+0x0045CFB0		ChaffControl
+0x0045D1D0		TriggerMiniSubMist
+0x0045D360		InitialiseMinisub
+0x0045D3F0		MinisubControl
+0x0045DA70		InitialiseJelly
+0x0045DAF0		JellyControl
 
 
 		game/sniper.cpp
 
-00478250		SniperControl
-00478180		InitialiseSniper
+0x00478250		SniperControl
+0x00478180		InitialiseSniper
+
+
+		game/twogun.cpp
+
+0x0048CD40		InitialiseTwogun
+0x0048CDD0		TwogunControl
+0x0048D7D0		UpdateTwogunLasers
+0x0048D900		DrawTwogunLasers
+0x0048D940		ControlGunTestStation
+0x0048DD80		TriggerTwogunPlasma
+0x0048DF60		FireTwogunWeapon
+0x0048E3C0		ControlZipController
 
 // ======================================
 // SPECIFIC
