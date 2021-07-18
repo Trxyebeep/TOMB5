@@ -232,7 +232,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00430910		SetupRipple
 0x004309B0		TriggerUnderwaterBlood
 0x00430A40		TriggerWaterfallMist
-0x00430D90		TriggerDartSmoke
+0x00430D90	+	TriggerDartSmoke
 0x00431030		KillAllCurrentItems
 0x00431050		KillEverything
 0x00431070		TriggerExplosionBubble
@@ -1073,8 +1073,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00489910		FallingBlockFloor
 0x00489980		FallingBlockCeiling
 0x004899D0		FallingCeiling
-0x00489B30		DartEmitterControl
-0x00489D60		DartsControl
+0x00489B30	+	DartEmitterControl
+0x00489D60	+	DartsControl
 0x00489F70		FlameEmitterControl
 0x0048A3B0		FlameEmitter2Control
 0x0048A570		FlameEmitter3Control
@@ -1240,6 +1240,44 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043CAC0	+	TriggerImpMissile
 0x0043CCA0	+	InitialiseImp
 0x0043CD80	+	ImpControl
+
+
+		game/lion.cpp
+
+0x0045AD00		LionControl
+0x0045AC80		InitialiseLion
+
+
+		game/minisub.cpp
+
+0x0045C5E0		TriggerTorpedoSteam
+0x0045C760		TriggerMinisubLight
+0x0045C830		FireTorpedo
+0x0045C9F0		TorpedoControl
+0x0045CFB0		ChaffControl
+0x0045D1D0		TriggerMiniSubMist
+0x0045D360		InitialiseMinisub
+0x0045D3F0		MinisubControl
+0x0045DA70		InitialiseJelly
+0x0045DAF0		JellyControl
+
+
+		game/sniper.cpp
+
+0x00478250		SniperControl
+0x00478180		InitialiseSniper
+
+
+		game/twogun.cpp
+
+0x0048CD40		InitialiseTwogun
+0x0048CDD0		TwogunControl
+0x0048D7D0		UpdateTwogunLasers
+0x0048D900		DrawTwogunLasers
+0x0048D940		ControlGunTestStation
+0x0048DD80		TriggerTwogunPlasma
+0x0048DF60		FireTwogunWeapon
+0x0048E3C0		ControlZipController
 
 // ======================================
 // SPECIFIC
@@ -1442,29 +1480,29 @@ x for functions decompiled but not injected, for one reason or another.
 		LION
 		GLADIATOR
 		ROMAN_GOD
-		HYDRA
++		HYDRA
 		GUARDIAN
 		HITMAN
 		SCIENTIST
-		WILLOWISP
-		SKELETON
++		WILLOWISP
++		SKELETON
 		REAPER
 		MAZE_MONSTER
 +		GREEN_TEETH
 		ATTACK_SUB
 		SNIPER
-		HUSKIE
++		HUSKIE
 +		CHEF
-		IMP
++		IMP
 		GUNSHIP
 +		BAT
 +		RAT
-		SPIDER
++		SPIDER
 		SPIDER_GENERATOR
 		AUTOGUN
-		ELECTRICAL_CABLES,
-		DARTS
-		DART_EMITTER
++		ELECTRICAL_CABLES,
++		DARTS
++		DART_EMITTER
 		HOMING_DART_EMITTER
 		FALLING_CEILING
 		FALLING_BLOCKS
@@ -1481,7 +1519,7 @@ x for functions decompiled but not injected, for one reason or another.
 		FLAME_EMITTER3
 		COOKER_FLAME
 		BURNING_ROOTS
-		ROPE
++		ROPE
 		POLEROPE
 		PROPELLERS
 		GRAPPLING_TARGET
@@ -1489,7 +1527,7 @@ x for functions decompiled but not injected, for one reason or another.
 		RAISING_BLOCKS
 		EXPANDING_PLATFORM
 		PUSHABLE_OBJECTS
--		WRECKING_BALL
++		WRECKING_BALL
 		DEATH_SLIDE
 		TORPEDO
 		CHAFF
@@ -1499,10 +1537,10 @@ x for functions decompiled but not injected, for one reason or another.
 		MONITOR_SCREEN
 		SECURITY_SCREENS
 		MOTION_SENSORS
--		TIGHT_ROPE
++		TIGHT_ROPE
 +		PARALLEL_BARS
--		XRAY_CONTROLLER
--		CUTSCENE_ROPE
++		XRAY_CONTROLLER
++		CUTSCENE_ROPE
 		PORTAL
 		GEN_SLOT1
 		GEN_SLOT2
@@ -1536,7 +1574,7 @@ x for functions decompiled but not injected, for one reason or another.
 		STEEL_DOOR
 -		WEAPONS
 -		SMOKE/STEAM_EMITTERS
--		EARTHQUAKE
++		EARTHQUAKE
 -		BUBBLES
 -		WATERFALLMIST
 		COLOURED_LIGHT

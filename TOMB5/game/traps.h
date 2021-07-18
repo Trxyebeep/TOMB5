@@ -10,3 +10,5 @@ void LaraBurn();
 void LavaBurn(ITEM_INFO* item);
 void ControlExplosion(short item_number);
 void CloseTrapDoor(ITEM_INFO* item);
+void DartEmitterControl(short item_number);
+void DartsControl(short item_number);

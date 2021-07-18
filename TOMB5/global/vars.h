@@ -544,7 +544,7 @@
 #define fire_spark	ARRAY_(0x00E4CE40, FIRE_SPARKS, [20])
 #define Gunshells	ARRAY_(0x00E4BEC0, GUNSHELL_STRUCT, [24])
 #define Gunflashes	ARRAY_(0x00E4D660, GUNFLASH_STRUCT, [4])
-#define debris	ARRAY_(0x00E8CAC0, DEBRIS_STRUCT, [32])
+#define debris	ARRAY_(0x00E8CAC0, DEBRIS_STRUCT, [256])
 #define splashes	ARRAY_(0x00E6CA00, SPLASH_STRUCT, [4])
 #define ripples	ARRAY_(0x00E5C600, RIPPLE_STRUCT, [32])
 #define Bubbles	ARRAY_(0x00E4D160, BUBBLE_STRUCT, [40])

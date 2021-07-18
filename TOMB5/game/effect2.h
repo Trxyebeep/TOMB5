@@ -4,6 +4,7 @@
 void inject_effect2(bool replace);
 
 void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv);
+void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit);
 
 #define TriggerDynamic	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431240 )
 #define TriggerDynamic_MIRROR	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431420 )
