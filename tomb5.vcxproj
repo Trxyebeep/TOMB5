@@ -80,6 +80,7 @@
     <ClCompile Include="TOMB5\game\tower.cpp" />
     <ClCompile Include="TOMB5\game\traps.cpp" />
     <ClCompile Include="TOMB5\game\twogun.cpp" />
+    <ClCompile Include="TOMB5\game\willwisp.cpp" />
     <ClCompile Include="TOMB5\specific\3dmath.cpp" />
     <ClCompile Include="TOMB5\specific\display.cpp" />
     <ClCompile Include="TOMB5\specific\drawlara.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="TOMB5\game\tower.h" />
     <ClInclude Include="TOMB5\game\traps.h" />
     <ClInclude Include="TOMB5\game\twogun.h" />
+    <ClInclude Include="TOMB5\game\willwisp.h" />
     <ClInclude Include="TOMB5\game\xatracks.h" />
     <ClInclude Include="TOMB5\global\math_tbls.h" />
     <ClInclude Include="TOMB5\global\types.h" />
