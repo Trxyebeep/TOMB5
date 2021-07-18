@@ -185,7 +185,7 @@ void InitialiseEffects()
 	memset(smoke_spark, 0, sizeof(SMOKE_SPARKS) * 32);
 	memset(Gunshells, 0, sizeof(GUNSHELL_STRUCT) * 24);
 	memset(Gunflashes, 0, sizeof(GUNFLASH_STRUCT) * 4);
-	memset(debris, 0, sizeof(DEBRIS_STRUCT) * 32);
+	memset(debris, 0, sizeof(DEBRIS_STRUCT) * 256);
 	memset(blood, 0, sizeof(BLOOD_STRUCT) * 32);
 	memset(splashes, 0, sizeof(SPLASH_STRUCT) * 4);
 	memset(ripples, 0, sizeof(RIPPLE_STRUCT) * 32);

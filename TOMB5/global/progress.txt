@@ -1480,29 +1480,29 @@ x for functions decompiled but not injected, for one reason or another.
 		LION
 		GLADIATOR
 		ROMAN_GOD
-		HYDRA
++		HYDRA
 		GUARDIAN
 		HITMAN
 		SCIENTIST
-		WILLOWISP
-		SKELETON
++		WILLOWISP
++		SKELETON
 		REAPER
 		MAZE_MONSTER
 +		GREEN_TEETH
 		ATTACK_SUB
 		SNIPER
-		HUSKIE
++		HUSKIE
 +		CHEF
-		IMP
++		IMP
 		GUNSHIP
 +		BAT
 +		RAT
-		SPIDER
++		SPIDER
 		SPIDER_GENERATOR
 		AUTOGUN
-		ELECTRICAL_CABLES,
-		DARTS
-		DART_EMITTER
++		ELECTRICAL_CABLES,
++		DARTS
++		DART_EMITTER
 		HOMING_DART_EMITTER
 		FALLING_CEILING
 		FALLING_BLOCKS
@@ -1519,7 +1519,7 @@ x for functions decompiled but not injected, for one reason or another.
 		FLAME_EMITTER3
 		COOKER_FLAME
 		BURNING_ROOTS
-		ROPE
++		ROPE
 		POLEROPE
 		PROPELLERS
 		GRAPPLING_TARGET
@@ -1527,7 +1527,7 @@ x for functions decompiled but not injected, for one reason or another.
 		RAISING_BLOCKS
 		EXPANDING_PLATFORM
 		PUSHABLE_OBJECTS
--		WRECKING_BALL
++		WRECKING_BALL
 		DEATH_SLIDE
 		TORPEDO
 		CHAFF
@@ -1537,10 +1537,10 @@ x for functions decompiled but not injected, for one reason or another.
 		MONITOR_SCREEN
 		SECURITY_SCREENS
 		MOTION_SENSORS
--		TIGHT_ROPE
++		TIGHT_ROPE
 +		PARALLEL_BARS
--		XRAY_CONTROLLER
--		CUTSCENE_ROPE
++		XRAY_CONTROLLER
++		CUTSCENE_ROPE
 		PORTAL
 		GEN_SLOT1
 		GEN_SLOT2
@@ -1574,7 +1574,7 @@ x for functions decompiled but not injected, for one reason or another.
 		STEEL_DOOR
 -		WEAPONS
 -		SMOKE/STEAM_EMITTERS
--		EARTHQUAKE
++		EARTHQUAKE
 -		BUBBLES
 -		WATERFALLMIST
 		COLOURED_LIGHT
