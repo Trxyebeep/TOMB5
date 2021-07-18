@@ -831,7 +831,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00441410	+	ControlWreckingBall
 0x00441D50	+	WreckingBallCollision
-0x00441F50		DrawWreckingBall
+0x00441F50	+	DrawWreckingBall
 0x004421C0		ControlSecurityScreens
 0x00442250		CookerFlameControl
 0x00442320		TriggerLaraSparks
