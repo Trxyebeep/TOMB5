@@ -318,7 +318,6 @@ void ChaffControl(short item_number)
 	yv = flare->fallspeed;
 	flare->pos.y_pos += yv;
 	DoProperDetection(item_number, x, y, z, xv, yv, zv);
-
 	z = GlobalCounter & 1 ? 48 : -48;
 	pos.x = 0;
 	pos.y = 0;
@@ -344,6 +343,44 @@ void ChaffControl(short item_number)
 		flare->item_flags[0]++;
 }
 
+void TriggerMiniSubMist(PHD_VECTOR* pos1, PHD_VECTOR* pos2, long chaff)
+{
+	SPARKS* sptr;
+	uchar size;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 32;
+	sptr->sG = 32;
+	sptr->sB = 32;
+	sptr->dR = 80;
+	sptr->dG = 80;
+	sptr->dB = 80;
+	sptr->ColFadeSpeed = 2;
+	sptr->FadeToBlack = 8;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 7) + 16;
+	sptr->sLife = sptr->Life;
+	sptr->x = (GetRandomControl() & 0x1F) + pos1->x - 16;
+	sptr->y = (GetRandomControl() & 0x1F) + pos1->y - 16;
+	sptr->z = (GetRandomControl() & 0x1F) + pos1->z - 16;
+	sptr->Xvel = (short)(pos2->x + (GetRandomControl() & 0x7F) - pos1->x - 64);
+	sptr->Yvel = (short)(pos2->y + (GetRandomControl() & 0x7F) - pos1->y - 64);
+	sptr->Zvel = (short)(pos2->z + (GetRandomControl() & 0x7F) - pos1->z - 64);
+	sptr->Friction = 0;
+	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 17;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = -4 - (GetRandomControl() & 3);
+	sptr->Scalar = 1;
+	sptr->Flags = 26;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+	size = (GetRandomControl() & 0xF) + 32;
+	sptr->dSize = size << 1;
+	sptr->sSize = size >> chaff;
+	sptr->Size = sptr->sSize;
+}
+
 void inject_minisub(bool replace)
 {
 	INJECT(0x0045C5E0, TriggerTorpedoSteam, replace);
@@ -351,4 +388,5 @@ void inject_minisub(bool replace)
 	INJECT(0x0045C830, FireTorpedo, replace);
 	INJECT(0x0045C9F0, TorpedoControl, replace);
 	INJECT(0x0045CFB0, ChaffControl, replace);
+	INJECT(0x0045D1D0, TriggerMiniSubMist, replace);
 }
