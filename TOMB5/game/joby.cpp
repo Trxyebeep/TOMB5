@@ -528,6 +528,7 @@ void DrawWreckingBall(ITEM_INFO* item)//actually only draws the shadow it seems?
 	phd_PushMatrix();
 	phd_TranslateAbs(item->pos.x_pos, height, item->pos.z_pos);
 	aDrawWreckingBall(item, shade);
+
 	if (item->pos.y_pos - baseitem->pos.y_pos != 1664)
 	{
 		phd_right = phd_winwidth;

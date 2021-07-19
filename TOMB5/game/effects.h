@@ -48,3 +48,4 @@ void TL_12(ITEM_INFO* item);
 
 #define WadeSplash	( (void(__cdecl*)(ITEM_INFO*, int, int)) 0x00432A30 )
 #define Splash	( (void(__cdecl*)(ITEM_INFO*)) 0x00432900 )
+#define ItemNearLara	( (int(__cdecl*)(PHD_3DPOS*, long)) 0x00432580 )
