@@ -10,7 +10,7 @@ void InitialiseFunctionTable();
 #define AddTriZBuffer	( *(void(__cdecl**)(D3DTLVERTEX*, short, short, short, TEXTURESTRUCT*, int)) 0x00876C10 )
 #define AddTriSorted	( *(void(__cdecl**)(D3DTLVERTEX*, short, short, short, TEXTURESTRUCT*, int)) 0x00876BFC )
 #define AddLineSorted	( *(void(__cdecl**)(D3DTLVERTEX*, D3DTLVERTEX*, int)) 0x00876C00 )
-#define IsVisible	( *(bool(__cdecl**)(D3DTLVERTEX, D3DTLVERTEX, D3DTLVERTEX)) 0x00876C00 )
+#define IsVisible	( *(bool(__cdecl**)(D3DTLVERTEX, D3DTLVERTEX, D3DTLVERTEX)) 0x00876C14 )
 #define BeginScene	( *(HRESULT(__cdecl**)()) 0x00876C18 )
 #define EndScene	( *(HRESULT(__cdecl**)()) 0x00876C0C )
 

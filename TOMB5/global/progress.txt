@@ -963,7 +963,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0046AA70	+	GetFreeRat
 0x0046AAE0	+	ClearRats
 0x0046AB30	+	TriggerRat
-0x0046AC70	x	UpdateRats
+0x0046AC70	+	UpdateRats
 0x0046B140	+	DrawRats
 0x0046B220	+	InitialiseRatGenerator
 
