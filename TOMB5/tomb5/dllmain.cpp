@@ -57,6 +57,7 @@
 #include "../game/hydra.h"
 #include "../game/imp.h"
 #include "../game/willwisp.h"
+#include "../game/sniper.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -133,6 +134,7 @@ void inject_all(bool replace)
 	inject_hydra(replace);
 	inject_imp(replace);
 	inject_wisp(replace);
+	inject_sniper(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

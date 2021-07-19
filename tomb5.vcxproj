@@ -68,6 +68,7 @@
     <ClCompile Include="TOMB5\game\rope.cpp" />
     <ClCompile Include="TOMB5\game\setup.cpp" />
     <ClCompile Include="TOMB5\game\skeleton.cpp" />
+    <ClCompile Include="TOMB5\game\sniper.cpp" />
     <ClCompile Include="TOMB5\game\sound.cpp" />
     <ClCompile Include="TOMB5\game\sphere.cpp" />
     <ClCompile Include="TOMB5\game\spider.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="TOMB5\game\rope.h" />
     <ClInclude Include="TOMB5\game\setup.h" />
     <ClInclude Include="TOMB5\game\skeleton.h" />
+    <ClInclude Include="TOMB5\game\sniper.h" />
     <ClInclude Include="TOMB5\game\sound.h" />
     <ClInclude Include="TOMB5\game\sphere.h" />
     <ClInclude Include="TOMB5\game\spider.h" />
