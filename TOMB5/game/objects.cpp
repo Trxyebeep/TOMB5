@@ -117,7 +117,7 @@ void EarthQuake(short item_number)
 						AddActiveItem(earth_item);
 						item->status = ITEM_ACTIVE;
 						item->timer = 0;
-						item->flags |= IFLAG_ACTIVATION_MASK;
+						item->flags |= IFL_CODEBITS;
 						break;
 					}
 				}
@@ -145,7 +145,7 @@ void SmashObject(short item_number)
 	item->collidable = 0;
 	item->mesh_bits = 0xFFFE;
 	ExplodingDeath2(item_number, -1, 257);
-	item->flags |= IFLAG_INVISIBLE;
+	item->flags |= IFL_INVISIBLE;
 	if (item->status == ITEM_ACTIVE)
 		RemoveActiveItem(item_number);
 	item->status = ITEM_DEACTIVATED;
@@ -267,11 +267,11 @@ void ControlAnimatingSlots(short item_number)
 			return;
 
 		case 333:
-			item->flags |= IFLAG_ACTIVATION_MASK;
+			item->flags |= IFL_CODEBITS;
 			break;
 
 		case 555:
-			item->flags |= IFLAG_ACTIVATION_MASK;
+			item->flags |= IFL_CODEBITS;
 
 			if (item->anim_number == objects[item->object_number].anim_index + 1)
 				return;
@@ -713,7 +713,7 @@ void ControlXRayMachine(short item_number)
 			{
 				TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
 				RemoveActiveItem(item_number);
-				item->flags |= IFLAG_INVISIBLE;
+				item->flags |= IFL_INVISIBLE;
 			}
 
 			return;
@@ -729,7 +729,7 @@ void ControlXRayMachine(short item_number)
 		{
 			TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
 			RemoveActiveItem(item_number);
-			item->flags |= IFLAG_INVISIBLE;
+			item->flags |= IFL_INVISIBLE;
 			return;
 		}
 
@@ -771,7 +771,7 @@ void ControlXRayMachine(short item_number)
 		}
 
 		RemoveActiveItem(item_number);
-		item->flags |= IFLAG_INVISIBLE;
+		item->flags |= IFL_INVISIBLE;
 		break;
 	}
 

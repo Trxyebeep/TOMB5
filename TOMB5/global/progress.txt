@@ -831,7 +831,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00441410	+	ControlWreckingBall
 0x00441D50	+	WreckingBallCollision
-0x00441F50		DrawWreckingBall
+0x00441F50	+	DrawWreckingBall
 0x004421C0		ControlSecurityScreens
 0x00442250		CookerFlameControl
 0x00442320		TriggerLaraSparks
@@ -1250,12 +1250,12 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/minisub.cpp
 
-0x0045C5E0		TriggerTorpedoSteam
-0x0045C760		TriggerMinisubLight
-0x0045C830		FireTorpedo
-0x0045C9F0		TorpedoControl
-0x0045CFB0		ChaffControl
-0x0045D1D0		TriggerMiniSubMist
+0x0045C5E0	+	TriggerTorpedoSteam
+0x0045C760	+	TriggerMinisubLight
+0x0045C830	+	FireTorpedo
+0x0045C9F0	+	TorpedoControl
+0x0045CFB0	+	ChaffControl
+0x0045D1D0	+	TriggerMiniSubMist
 0x0045D360		InitialiseMinisub
 0x0045D3F0		MinisubControl
 0x0045DA70		InitialiseJelly
@@ -1278,6 +1278,33 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048DD80		TriggerTwogunPlasma
 0x0048DF60		FireTwogunWeapon
 0x0048E3C0		ControlZipController
+
+		
+		game/autogun.cpp
+
+0x00407510		ControlMotionSensors
+0x00407780		TriggerAutoGunSmoke
+0x004078A0		AutogunControl
+
+
+		game/moveblok.cpp
+
+0x0045E720		InitialiseMovingBlock
+0x0045E770		ClearMovableBlockSplitters
+0x0045EA30		MovableBlock
+0x0045F010		TestBlockPush
+0x0045F1E0		TestBlockPull
+0x0045F570		MovableBlockCollision
+
+
+		game/objlight.cpp
+
+0x00466B20		TriggerAlertLight
+0x00466C00		ControlStrobeLight
+0x00466D20		ControlPulseLight
+0x00466E10		ControlColouredLight
+0x00466EA0		ControlElectricalLight
+0x004670D0		ControlBlinker
 
 // ======================================
 // SPECIFIC

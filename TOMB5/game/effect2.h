@@ -14,6 +14,5 @@ void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit);
 #define UpdateSparks	( (void(__cdecl*)()) 0x0042E8B0 )
 #define UpdateSplashes	( (void(__cdecl*)()) 0x00430710 )
 #define TriggerWaterfallMist	( (void(__cdecl*)(long, long, long, long)) 0x00430A40 )
-#define TriggerTorpedoSteam	( (void(__cdecl*)(PHD_VECTOR*, PHD_VECTOR*, int)) 0x0045C5E0 )
 #define TriggerFireFlame	( (void(__cdecl*)(int, int, int, int, signed int)) 0x0042FE20 )
 #define SetupRipple	( (void(__cdecl*)(long, long, long, long, long)) 0x00430910 )

@@ -1,7 +1,7 @@
 #include "../tomb5/pch.h"
 #include "subsuit.h"
 #include "control.h"
-#include "effect2.h"
+#include "minisub.h"
 #include "sound.h"
 #include "delstuff.h"
 #include "camera.h"

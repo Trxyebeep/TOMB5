@@ -28,4 +28,4 @@ void UpdateSkyLightning();
 #define GetFrames	( (long(__cdecl*)(ITEM_INFO*, short*[], int*)) 0x0042CEB0 )
 #define DrawRooms	( (void(__cdecl*)(short)) 0x0042A7A0 )
 #define CalculateObjectLightingLara	( (void(__cdecl*)()) 0x0042A1B0 )
-//#define UpdateSkyLightning	( (void(__cdecl*)()) 0x0042A310 )
+#define CalculateObjectLighting	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042CD50 )

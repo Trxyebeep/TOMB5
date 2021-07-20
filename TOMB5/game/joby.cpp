@@ -12,6 +12,11 @@
 #include "items.h"
 #include "objlight.h"
 #include "camera.h"
+#include "../specific/3dmath.h"
+#include "draw.h"
+#include "objects.h"
+#include "../specific/output.h"
+#include "../specific/specificfx.h"
 
 void KlaxonTremor()
 {
@@ -500,6 +505,56 @@ void ControlWreckingBall(short item_number)
 	WB_room = room_number;
 }
 
+void DrawWreckingBall(ITEM_INFO* item)//actually only draws the shadow it seems?
+{
+	ITEM_INFO* baseitem;
+	FLOOR_INFO* floor;
+	VECTOR v;
+	short** meshpp;
+	short* frmptr[2];
+	int height, ceiling, shade, y;
+	short room_num;
+
+	baseitem = &items[item->item_flags[3]];
+	room_num = item->room_number;
+	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_num);
+	height = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	ceiling = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	shade = 192 - (ABS(height - item->pos.y_pos) >> 5);
+
+	if (shade < 64)
+		shade = 64;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, height, item->pos.z_pos);
+	aDrawWreckingBall(item, shade);
+
+	if (item->pos.y_pos - baseitem->pos.y_pos != 1664)
+	{
+		phd_right = phd_winwidth;
+		phd_left = 0;
+		phd_top = 0;
+		phd_bottom = phd_winheight;
+		GetFrames(item, frmptr, &ceiling);
+		phd_PushMatrix();
+		phd_TranslateAbs(baseitem->pos.x_pos, baseitem->pos.y_pos + 512, baseitem->pos.z_pos);
+		phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+		meshpp = &meshes[objects[ANIMATING16_MIP].mesh_index];
+		y = item->pos.y_pos - baseitem->pos.y_pos - 1664;
+		v.vz = 16384;
+		v.vy = 4 * (y + ((21846 * y) >> 16));
+		v.vx = 16384;
+		ScaleCurrentMatrix(&v);
+		CalculateObjectLighting(item, *frmptr);
+		phd_PutPolygons(*meshpp, -1);
+		phd_bottom = phd_winheight;
+		phd_right = phd_winwidth;
+		phd_left = 0;
+		phd_top = 0;
+		phd_PopMatrix();
+	}
+}
+
 void inject_joby(bool replace)
 {
 	INJECT(0x00442C90, KlaxonTremor, replace);
@@ -507,4 +562,5 @@ void inject_joby(bool replace)
 	INJECT(0x00442610, ControlElectricalCables, replace);
 	INJECT(0x00441D50, WreckingBallCollision, replace);
 	INJECT(0x00441410, ControlWreckingBall, replace);
+	INJECT(0x00441F50, DrawWreckingBall, replace);
 }

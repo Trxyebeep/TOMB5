@@ -382,7 +382,7 @@ void DoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 				l->frame_number = anims[403].frame_base;
 				item->pos.y_rot ^= 32768;
 				AddActiveItem(item_num);
-				item->flags |= IFLAG_ACTIVATION_MASK;
+				item->flags |= IFL_CODEBITS;
 				item->status = ITEM_ACTIVE;
 				item->goal_anim_state = 1;
 				lara.IsMoving = 0;

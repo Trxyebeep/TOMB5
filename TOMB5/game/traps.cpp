@@ -67,7 +67,7 @@ void ControlExplosion(short item_number)
 
 	if (TriggerActive(item))
 	{
-		item->flags |= IFLAG_INVISIBLE;
+		item->flags |= IFL_INVISIBLE;
 
 		if (item->item_flags[0] < item->trigger_flags)
 			item->item_flags[0]++;
