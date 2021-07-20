@@ -374,7 +374,6 @@ enum sound_effect_names
 	SFX_D_MOTOR_WHIRR,
 	SFX_LARA_NO_FRENCH,
 	SFX_LARA_NO_JAPANESE,
-	// at least good to here
 	SFX_LARA_CROW_WRENCH,
 	SFX_LARA_ROPE_CREAK,
 	SFX_LARA_TROPE_FALL,

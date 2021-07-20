@@ -202,7 +202,7 @@ void RubbleFX(ITEM_INFO* item)
 	{
 		AddActiveItem(eq - items);
 		eq->status = ITEM_ACTIVE;
-		eq->flags |= IFLAG_ACTIVATION_MASK;
+		eq->flags |= IFL_CODEBITS;
 	}
 	else
 		camera.bounce = -150;
@@ -380,7 +380,7 @@ void KillActiveBaddies(ITEM_INFO* item)
 			{
 				RemoveActiveItem(item_num);
 				DisableBaddieAI(item_num);
-				target_item->flags |= IFLAG_INVISIBLE;
+				target_item->flags |= IFL_INVISIBLE;
 			}
 		}
 	}

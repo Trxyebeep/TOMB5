@@ -113,15 +113,15 @@ enum lara_water_status
 	LW_WADE = 4
 };
 
-enum item_flags
+enum ITEM_FLAGS
 {
-	IFLAG_TRIGGERED = (1 << 5),  // 0x0020
-	IFLAG_UNK40 = (1 << 6),		 // 0x0040
-	IFLAG_CLEAR_BODY = (1 << 7), // 0x0080
-	IFLAG_INVISIBLE = (1 << 8),  // 0x0100
-	IFLAG_REVERSE = (1 << 14),	 // 0x4000
-	IFLAG_KILLED = (1 << 15),    // 0x8000
-	IFLAG_ACTIVATION_MASK = 0x3E00 // bits 9-13
+	IFL_TRIGGERED =				0x20,
+	IFL_SWITCH_ONESHOT =		0x40,	//oneshot for switch items
+	IFL_ANTITRIGGER_ONESHOT =	0x80,	//oneshot for antitriggers
+	IFL_INVISIBLE =				0x100,	//also used as oneshot for everything else
+	IFL_CODEBITS =				0x3E00,
+	IFL_REVERSE =				0x4000,	
+	IFL_CLEARBODY =				0x8000
 };
 
 enum room_flags

@@ -56,6 +56,7 @@
 #include "../game/spider.h"
 #include "../game/hydra.h"
 #include "../game/imp.h"
+#include "../game/minisub.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -131,6 +132,7 @@ void inject_all(bool replace)
 	inject_spider(replace);
 	inject_hydra(replace);
 	inject_imp(replace);
+	inject_minisub(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

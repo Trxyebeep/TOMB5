@@ -100,7 +100,7 @@ static void PuzzleDone(ITEM_INFO* item, short item_num)
 	item->goal_anim_state = item->anim_number;
 	item->current_anim_state = item->anim_number;
 	AddActiveItem(item_num);
-	item->flags |= IFLAG_ACTIVATION_MASK;
+	item->flags |= IFL_CODEBITS;
 	item->status = ITEM_ACTIVE;
 
 	if (item->trigger_flags == 998)
@@ -110,9 +110,9 @@ static void PuzzleDone(ITEM_INFO* item, short item_num)
 			if (items[i].object_number == AIRLOCK_SWITCH && items[i].pos.x_pos == item->pos.x_pos && items[i].pos.z_pos == item->pos.z_pos)
 			{
 				FlipMap(items[i].trigger_flags - 7);
-				flipmap[items[i].trigger_flags - 7] ^= IFLAG_ACTIVATION_MASK;
+				flipmap[items[i].trigger_flags - 7] ^= IFL_CODEBITS;
 				items[i].status = ITEM_INACTIVE;
-				items[i].flags |= IFLAG_TRIGGERED;
+				items[i].flags |= IFL_TRIGGERED;
 			}
 		}
 	}
@@ -149,7 +149,7 @@ int PickupTrigger(short item_num)
 
 	item = &items[item_num];
 
-	if (item->flags & IFLAG_KILLED ||
+	if (item->flags & IFL_CLEARBODY ||
 		item->status != ITEM_INVISIBLE ||
 		item->item_flags[3] != 1 ||
 		item->trigger_flags & 128)
@@ -319,7 +319,7 @@ void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 				lara.torso_y_rot = 0;
 				lara.torso_x_rot = 0;
 				lara.gun_status = LG_HANDS_BUSY;
-				item->flags |= IFLAG_TRIGGERED;
+				item->flags |= IFL_TRIGGERED;
 			}
 
 			lara.GeneralPtr = (void*)item_num;
@@ -411,7 +411,7 @@ void SearchObjectControl(short item_number)
 				else
 				{
 					AddActiveItem(item->item_flags[1]);
-					items[item->item_flags[1]].flags |= IFLAG_ACTIVATION_MASK;
+					items[item->item_flags[1]].flags |= IFL_CODEBITS;
 					items[item->item_flags[1]].status = ITEM_ACTIVE;
 					lara_item->hit_points = 640;
 				}

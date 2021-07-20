@@ -831,7 +831,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00441410	+	ControlWreckingBall
 0x00441D50	+	WreckingBallCollision
-0x00441F50		DrawWreckingBall
+0x00441F50	+	DrawWreckingBall
 0x004421C0		ControlSecurityScreens
 0x00442250		CookerFlameControl
 0x00442320		TriggerLaraSparks
@@ -1250,12 +1250,12 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/minisub.cpp
 
-0x0045C5E0		TriggerTorpedoSteam
-0x0045C760		TriggerMinisubLight
-0x0045C830		FireTorpedo
-0x0045C9F0		TorpedoControl
-0x0045CFB0		ChaffControl
-0x0045D1D0		TriggerMiniSubMist
+0x0045C5E0	+	TriggerTorpedoSteam
+0x0045C760	+	TriggerMinisubLight
+0x0045C830	+	FireTorpedo
+0x0045C9F0	+	TorpedoControl
+0x0045CFB0	+	ChaffControl
+0x0045D1D0	+	TriggerMiniSubMist
 0x0045D360		InitialiseMinisub
 0x0045D3F0		MinisubControl
 0x0045DA70		InitialiseJelly
