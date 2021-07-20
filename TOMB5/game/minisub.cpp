@@ -10,6 +10,9 @@
 #include "lara1gun.h"
 #include "effects.h"
 #include "larafire.h"
+#include "box.h"
+#include "people.h"
+#include "effect2.h"
 
 void TriggerTorpedoSteam(PHD_VECTOR* pos1, PHD_VECTOR* pos2, long chaff)
 {
@@ -381,6 +384,218 @@ void TriggerMiniSubMist(PHD_VECTOR* pos1, PHD_VECTOR* pos2, long chaff)
 	sptr->Size = sptr->sSize;
 }
 
+void InitialiseMinisub(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+	InitialiseCreature(item_number);
+	item->anim_number = objects[ATTACK_SUB].anim_index;
+	item->frame_number = anims[item->anim_number].frame_base;
+	item->goal_anim_state = 0;
+	item->current_anim_state = 0;
+
+	if (!item->trigger_flags)
+		item->trigger_flags = 120;
+}
+
+void MinisubControl(short item_number)
+{
+	ITEM_INFO* item;
+	ITEM_INFO* enemy;
+	CREATURE_INFO* minisub;
+	PHD_VECTOR pos1;
+	PHD_VECTOR pos2;
+	AI_INFO info;
+	AI_INFO lara_info;
+	GAME_VECTOR s;
+	GAME_VECTOR d;
+	long lara_dx, lara_dz, dx, dy, dz;
+	short angle, motor, tilt;
+	
+	if (!CreatureActive(item_number))
+		return;
+
+	item = &items[item_number];
+	minisub = (CREATURE_INFO*)item->data;
+
+	if (item->ai_bits)
+		GetAITarget(minisub);
+	else
+		minisub->enemy = lara_item;
+
+	CreatureAIInfo(item, &info);
+	GetCreatureMood(item, &info, 1);
+	CreatureMood(item, &info, 1);
+	angle = CreatureTurn(item, minisub->maximum_turn);
+
+	if (minisub->enemy == lara_item)
+	{
+		lara_info.angle = info.angle;
+		lara_info.distance = info.distance;
+	}
+	else
+	{
+		lara_dz = lara_item->pos.z_pos - item->pos.z_pos;
+		lara_dx = lara_item->pos.x_pos - item->pos.x_pos;
+		lara_info.angle = (short)(phd_atan(lara_dz, lara_dx) - item->pos.y_rot);
+		lara_info.distance = SQUARE(lara_dx) + SQUARE(lara_dz);
+		lara_info.ahead = 1;
+	}
+
+	tilt = item->item_flags[0] + (angle >> 1);
+
+	if (tilt > 2048)
+		tilt = 2048;
+	else if (tilt < -2048)
+		tilt = -2048;
+
+	item->item_flags[0] = tilt;
+
+	if (ABS(item->item_flags[0]) < 64)
+		item->item_flags[0] = 0;
+	else
+	{
+		if (item->item_flags[0] < 0)
+			item->item_flags[0] += 64;
+		else
+			item->item_flags[0] -= 64;
+	}
+
+	motor = info.x_angle - 8192;
+	minisub->maximum_turn = 364;
+
+	if (minisub->flags < item->trigger_flags)
+		minisub->flags++;
+
+	enemy = minisub->enemy;
+	minisub->enemy = lara_item;
+
+	if (Targetable(item, &lara_info))
+	{
+		if (minisub->flags >= item->trigger_flags && lara_info.angle > -16384 && lara_info.angle < 16384)
+		{
+			FireTorpedo(item);
+			minisub->flags = 0;
+		}
+
+		if (lara_info.distance >= 9437184)
+		{
+			item->goal_anim_state = 1;
+			SoundEffect(SFX_MINI_SUB_LOOP, &item->pos, SFX_ALWAYS);
+		}
+		else
+			item->goal_anim_state = 0;
+
+		if (info.distance < 1048576)
+		{
+			minisub->maximum_turn = 0;
+
+			if (ABS(lara_info.angle) >= 364)
+			{
+				if (lara_info.angle >= 0)
+					item->pos.y_rot += 364;
+				else
+					item->pos.y_rot -= 364;
+			}
+			else
+				item->pos.y_rot += lara_info.angle;
+		}
+	}
+	else
+		item->goal_anim_state = 1;
+
+	minisub->enemy = enemy;
+	CreatureTilt(item, tilt);
+	CreatureJoint(item, 0, motor);
+	CreatureJoint(item, 1, motor);
+
+	if (GlobalCounter & 1)
+	{
+		pos1.x = 200;
+		pos1.y = 320;
+		pos1.z = 90;
+		GetJointAbsPosition(item, &pos1, 1);
+		pos2.x = 200;
+		pos2.y = 1280;
+		pos2.z = 90;
+		GetJointAbsPosition(item, &pos2, 1);
+		TriggerMiniSubMist(&pos1, &pos2, 0);
+		pos1.x = 200;
+		pos1.y = 320;
+		pos1.z = -100;
+		GetJointAbsPosition(item, &pos1, 1);
+		pos2.x = 200;
+		pos2.y = 1280;
+		pos2.z = -100;
+		GetJointAbsPosition(item, &pos2, 1);
+		TriggerMiniSubMist(&pos1, &pos2, 0);
+	}
+
+	if (!(GlobalCounter & 1))
+	{
+		pos1.x = -200;
+		pos1.y = 320;
+		pos1.z = 90;
+		GetJointAbsPosition(item, &pos1, 2);
+		pos2.x = -200;
+		pos2.y = 1280;
+		pos2.z = 90;
+		GetJointAbsPosition(item, &pos2, 2);
+		TriggerMiniSubMist(&pos1, &pos2, 0);
+		pos1.x = -200;
+		pos1.y = 320;
+		pos1.z = -100;
+		GetJointAbsPosition(item, &pos1, 2);
+		pos2.x = -200;
+		pos2.y = 1280;
+		pos2.z = -100;
+		GetJointAbsPosition(item, &pos2, 2);
+		TriggerMiniSubMist(&pos1, &pos2, 0);
+	}
+	
+	TriggerMinisubLight(item_number);
+	s.x = 0;
+	s.y = -600;
+	s.z = -40;
+	s.room_number = item->room_number;
+	GetJointAbsPosition(item, (PHD_VECTOR*)&s, 0);
+	d.x = 0;
+	d.y = -15784;
+	d.z = -40;
+	GetJointAbsPosition(item, (PHD_VECTOR*)&d, 0);
+
+	if (!LOS(&s, &d))
+	{
+		dx = d.x - s.x;
+		dy = d.y - s.y;
+		dz = d.z - s.z;
+		dz = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+
+		if (dz < 16384)
+		{
+			dx = (GetRandomControl() & 0xF) + ((16384 - dz) >> 7) + 64;
+			TriggerDynamic(d.x, d.y, d.z, (GetRandomControl() & 1) + ((16384 - dz) >> 11) + 12, dx >> 1, dx, dx >> 1);
+		}
+	}
+
+	if (minisub->reached_goal)
+	{
+		if (minisub->enemy)
+		{
+			if (minisub->enemy->flags & 2)
+				item->item_flags[3] = (item->TOSSPAD & 0xFF) - 1;
+
+			item->item_flags[3]++;
+			minisub->reached_goal = 0;
+			minisub->enemy = 0;
+		}
+	}
+
+	CreatureAnimation(item_number, angle, tilt);
+	CreatureUnderwater(item, -14080);
+}
+
 void inject_minisub(bool replace)
 {
 	INJECT(0x0045C5E0, TriggerTorpedoSteam, replace);
@@ -389,4 +604,7 @@ void inject_minisub(bool replace)
 	INJECT(0x0045C9F0, TorpedoControl, replace);
 	INJECT(0x0045CFB0, ChaffControl, replace);
 	INJECT(0x0045D1D0, TriggerMiniSubMist, replace);
+	INJECT(0x0045D360, InitialiseMinisub, replace);
+	INJECT(0x0045D3F0, MinisubControl, 0);//bugged. lara_info.ahead is never set to 1, so Targetable always fails resulting in the minisub moving towards lara and
+	//never firing. minisub->enemy seems to always equal lara_item. we need it to NOT be lara_item at least once so lara_info.ahead is set to 1 so Targetable doesn't fail.
 }
