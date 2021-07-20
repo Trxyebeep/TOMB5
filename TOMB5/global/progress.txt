@@ -1279,6 +1279,33 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048DF60		FireTwogunWeapon
 0x0048E3C0		ControlZipController
 
+		
+		game/autogun.cpp
+
+0x00407510		ControlMotionSensors
+0x00407780		TriggerAutoGunSmoke
+0x004078A0		AutogunControl
+
+
+		game/moveblok.cpp
+
+0x0045E720		InitialiseMovingBlock
+0x0045E770		ClearMovableBlockSplitters
+0x0045EA30		MovableBlock
+0x0045F010		TestBlockPush
+0x0045F1E0		TestBlockPull
+0x0045F570		MovableBlockCollision
+
+
+		game/objlight.cpp
+
+0x00466B20		TriggerAlertLight
+0x00466C00		ControlStrobeLight
+0x00466D20		ControlPulseLight
+0x00466E10		ControlColouredLight
+0x00466EA0		ControlElectricalLight
+0x004670D0		ControlBlinker
+
 // ======================================
 // SPECIFIC
 // ======================================
