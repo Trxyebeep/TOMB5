@@ -1881,18 +1881,18 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 					{
 						if (ShatterItem.Bit == 1 << (objects[shotitem->object_number].nmeshes - 1))
 						{
-							if (!(shotitem->flags & IFLAG_UNK40))
+							if (!(shotitem->flags & IFL_SWITCH_ONESHOT))
 							{
 								if (shotitem->object_number == SWITCH_TYPE7)
 									ExplodeItemNode(shotitem, objects[shotitem->object_number].nmeshes - 1, 0, 64);
 
 								if (shotitem->trigger_flags == 444 && shotitem->object_number == SWITCH_TYPE8)
 									ProcessExplodingSwitchType8(shotitem);
-								else if (shotitem->flags & IFLAG_ACTIVATION_MASK && (shotitem->flags & IFLAG_ACTIVATION_MASK) != IFLAG_ACTIVATION_MASK)
+								else if (shotitem->flags & IFL_CODEBITS && (shotitem->flags & IFL_CODEBITS) != IFL_CODEBITS)
 								{
 									room_number = shotitem->room_number;
 									GetHeight(GetFloor(shotitem->pos.x_pos, shotitem->pos.y_pos - 256, shotitem->pos.z_pos, &room_number), shotitem->pos.x_pos, shotitem->pos.y_pos - 256, shotitem->pos.z_pos);
-									TestTriggers(trigger_index, 1, shotitem->flags & IFLAG_ACTIVATION_MASK);
+									TestTriggers(trigger_index, 1, shotitem->flags & IFL_CODEBITS);
 								}
 								else
 								{
@@ -1902,7 +1902,7 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 									{
 										AddActiveItem(TriggerItems[i]);
 										items[TriggerItems[i]].status = ITEM_ACTIVE;
-										items[TriggerItems[i]].flags |= IFLAG_ACTIVATION_MASK;
+										items[TriggerItems[i]].flags |= IFL_CODEBITS;
 									}
 								}
 							}
@@ -1911,7 +1911,7 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 							{
 								AddActiveItem(item_no);
 								shotitem->status = ITEM_ACTIVE;
-								shotitem->flags |= IFLAG_UNK40 | IFLAG_ACTIVATION_MASK;
+								shotitem->flags |= IFL_SWITCH_ONESHOT | IFL_CODEBITS;
 							}
 						}
 
@@ -2138,14 +2138,14 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 
 			if (HeavyFlags >= 0)
 			{
-				flags &= 0x3E00;
+				flags &= IFL_CODEBITS;
 
 				if (flags != HeavyFlags)
 					return;
 			}
 			else
 			{
-				flags |= 0x3E00;
+				flags |= IFL_CODEBITS;
 				flags += HeavyFlags;
 			}
 
@@ -2170,7 +2170,7 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 		case SWITCH:
 			value = *data++ & 0x3FF;
 
-			if (flags & 0x100)
+			if (flags & IFL_INVISIBLE)
 				items[value].item_flags[0] = 1;
 
 			if (!SwitchTrigger(value, timer))
@@ -2264,9 +2264,9 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 		case TO_OBJECT:
 			item = &items[value];
 
-			if (key >= 2 || ((type == ANTIPAD || type == ANTITRIGGER || type == HEAVYANTITRIGGER) && item->flags & IFLAG_CLEAR_BODY) ||
-				(type == SWITCH && item->flags & IFLAG_UNK40) ||
-				(type != SWITCH && type != ANTIPAD && type != ANTITRIGGER && type != HEAVYANTITRIGGER && item->flags & IFLAG_INVISIBLE) ||
+			if (key >= 2 || ((type == ANTIPAD || type == ANTITRIGGER || type == HEAVYANTITRIGGER) && item->flags & IFL_ANTITRIGGER_ONESHOT) ||
+				(type == SWITCH && item->flags & IFL_SWITCH_ONESHOT) ||
+				(type != SWITCH && type != ANTIPAD && type != ANTITRIGGER && type != HEAVYANTITRIGGER && item->flags & IFL_INVISIBLE) ||
 				((type != ANTIPAD && type != ANTITRIGGER && type != HEAVYANTITRIGGER) && (item->object_number == DART_EMITTER && item->active)))
 				break;
 
@@ -2280,19 +2280,19 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 				if (HeavyFlags >= 0)
 				{
 					if (SwitchOnOnly)
-						item->flags |= flags & IFLAG_ACTIVATION_MASK;
+						item->flags |= flags & IFL_CODEBITS;
 					else
-						item->flags ^= flags & IFLAG_ACTIVATION_MASK;
+						item->flags ^= flags & IFL_CODEBITS;
 
-					if (flags & 0x100)
-						item->flags |= IFLAG_UNK40;
+					if (flags & IFL_INVISIBLE)
+						item->flags |= IFL_SWITCH_ONESHOT;
 				}
-				else if (((item->flags ^ (flags & 0x3E00)) & IFLAG_ACTIVATION_MASK) == IFLAG_ACTIVATION_MASK)
+				else if (((item->flags ^ (flags & IFL_CODEBITS)) & IFL_CODEBITS) == IFL_CODEBITS)
 				{
-					item->flags ^= (flags & 0x3E00);
+					item->flags ^= (flags & IFL_CODEBITS);
 
-					if (flags & 0x100)
-						item->flags |= IFLAG_UNK40;
+					if (flags & IFL_INVISIBLE)
+						item->flags |= IFL_SWITCH_ONESHOT;
 				}
 			}
 			else if (type == ANTIPAD || type == ANTITRIGGER || type == HEAVYANTITRIGGER)
@@ -2303,10 +2303,10 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 					item->item_flags[1] = 100;
 				}
 
-				item->flags &= 0x81FF;
+				item->flags &= ~(IFL_CODEBITS | IFL_REVERSE);
 
-				if (flags & 0x100)
-					item->flags |= IFLAG_CLEAR_BODY;
+				if (flags & IFL_INVISIBLE)
+					item->flags |= IFL_ANTITRIGGER_ONESHOT;
 
 				if (item->active && objects[item->object_number].intelligent)
 				{
@@ -2316,16 +2316,16 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 				}
 
 			}
-			else if (flags & 0x3E00)
-				item->flags |= flags & IFLAG_ACTIVATION_MASK;
+			else if (flags & IFL_CODEBITS)
+				item->flags |= flags & IFL_CODEBITS;
 
-			if ((item->flags & IFLAG_ACTIVATION_MASK) != IFLAG_ACTIVATION_MASK)
+			if ((item->flags & IFL_CODEBITS) != IFL_CODEBITS)
 				break;
 
-			item->flags |= IFLAG_TRIGGERED;
+			item->flags |= IFL_TRIGGERED;
 
-			if (flags & 0x100)
-				item->flags |= IFLAG_INVISIBLE;
+			if (flags & IFL_INVISIBLE)
+				item->flags |= IFL_INVISIBLE;
 
 			if (!item->active)
 			{
@@ -2367,7 +2367,7 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 			camera_flags = trigger;
 			camera_timer = trigger & 0xFF;
 
-			if (key == 1 || camera.fixed[value].flags & 0x100)
+			if (key == 1 || camera.fixed[value].flags & IFL_INVISIBLE)
 				break;
 
 			camera.number = value;
@@ -2380,10 +2380,10 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 			{
 				camera.timer = camera_timer * 30;
 
-				if (camera_flags & 0x100)
-					camera.fixed[camera.number].flags |= 0x100;
+				if (camera_flags & IFL_INVISIBLE)
+					camera.fixed[camera.number].flags |= IFL_INVISIBLE;
 
-				camera.speed = ((camera_flags & 0x3E00) >> 6) + 1;
+				camera.speed = ((camera_flags & IFL_CODEBITS) >> 6) + 1;
 
 				if (heavy)
 					camera.type = HEAVY_CAMERA;
@@ -2400,18 +2400,18 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 		case TO_FLIPMAP:
 			flip_available = 1;
 
-			if (flipmap[value] & 0x100)
+			if (flipmap[value] & IFL_INVISIBLE)
 				break;
 
 			if (type == SWITCH)
-				flipmap[value] ^= flags & 0x3E00;
-			else if (flags & 0x3E00)
-				flipmap[value] |= flags & 0x3E00;
+				flipmap[value] ^= flags & IFL_CODEBITS;
+			else if (flags & IFL_CODEBITS)
+				flipmap[value] |= flags & IFL_CODEBITS;
 
-			if ((flipmap[value] & 0x3E00) == 0x3E00)
+			if ((flipmap[value] & IFL_CODEBITS) == IFL_CODEBITS)
 			{
-				if (flags & 0x100)
-					flipmap[value] |= 0x100;
+				if (flags & IFL_INVISIBLE)
+					flipmap[value] |= IFL_INVISIBLE;
 
 				if (!flip_stats[value])
 					flip = value;
@@ -2485,7 +2485,7 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 			if (SpotCam[CamSeq].flags & SP_FLYBYONESHOT)
 				break;
 
-			if (camera_flags & 0x100)
+			if (camera_flags & IFL_INVISIBLE)
 				SpotCam[CamSeq].flags |= SP_FLYBYONESHOT;
 
 			if (bUseSpotCam)

@@ -1255,7 +1255,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0045C830	+	FireTorpedo
 0x0045C9F0	+	TorpedoControl
 0x0045CFB0	+	ChaffControl
-0x0045D1D0		TriggerMiniSubMist
+0x0045D1D0	+	TriggerMiniSubMist
 0x0045D360		InitialiseMinisub
 0x0045D3F0		MinisubControl
 0x0045DA70		InitialiseJelly

@@ -552,7 +552,7 @@ void andrea3_end()
 
 	item = find_a_fucking_item(LARSON);
 	item->anim_number = objects[LARSON].anim_index;
-	item->flags |= IFLAG_INVISIBLE;
+	item->flags |= IFL_INVISIBLE;
 	item->frame_number = anims[objects[LARSON].anim_index].frame_base;
 	item->status = ITEM_ACTIVE;
 	AddActiveItem(item - items);
@@ -572,7 +572,7 @@ void andrea3b_init()
 	item->status = ITEM_INVISIBLE;
 	RemoveActiveItem(item - items);
 	DisableBaddieAI(item - items);
-	item->flags |= IFLAG_INVISIBLE;
+	item->flags |= IFL_INVISIBLE;
 	disable_horizon = 1;
 }
 
@@ -625,7 +625,7 @@ void andrea3b_end()
 			if (item->object_number == HYDRA)
 			{
 				item->status = ITEM_ACTIVE;
-				item->flags |= IFLAG_INVISIBLE;
+				item->flags |= IFL_INVISIBLE;
 				AddActiveItem(item - items);
 				EnableBaddieAI(item - items, 1);
 			}
@@ -731,7 +731,7 @@ void cranecut_end()
 	
 	item = cutseq_restore_item(ANIMATING5);
 	RemoveActiveItem(item - items);
-	item->flags &= ~IFLAG_ACTIVATION_MASK;
+	item->flags &= ~IFL_CODEBITS;
 	cutseq_restore_item(ANIMATING16);
 	cutseq_restore_item(WRECKING_BALL);
 	DelsHandyTeleportLara(58543, -4096, 34972, 49152);
@@ -756,7 +756,7 @@ void richcut1_init()
 				item->status = ITEM_INVISIBLE;
 				RemoveActiveItem(item - items);
 				DisableBaddieAI(item - items);
-				item->flags |= IFLAG_INVISIBLE;
+				item->flags |= IFL_INVISIBLE;
 			}
 
 			item_num = nex;
@@ -792,7 +792,7 @@ void richcut1_control()
 		item = find_a_fucking_item(CLOSED_DOOR2);
 		AddActiveItem(item - items);
 		item->status = ITEM_INVISIBLE;
-		item->flags |= IFLAG_ACTIVATION_MASK;
+		item->flags |= IFL_CODEBITS;
 		break;
 	}
 }
@@ -1269,7 +1269,7 @@ void andy10_init()
 	item->status = ITEM_INVISIBLE;
 	RemoveActiveItem(item - items);
 	DisableBaddieAI(item - items);
-	item->flags |= IFLAG_INVISIBLE;
+	item->flags |= IFL_INVISIBLE;
 	lara.water_status = LW_UNDERWATER;
 	FlipMap(7);
 	disable_horizon = 1;
@@ -1548,7 +1548,7 @@ void swampy_init()
 		item->status = ITEM_INVISIBLE;
 		RemoveActiveItem(item - items);
 		DisableBaddieAI(item - items);
-		item->flags |= IFLAG_INVISIBLE;
+		item->flags |= IFL_INVISIBLE;
 	}
 	lara.water_status = LW_UNDERWATER;
 }
@@ -1580,7 +1580,7 @@ void hamgate_init()
 	
 	item = find_a_fucking_item(DOOR_TYPE1);
 	AddActiveItem(item - items);
-	item->flags |= IFLAG_ACTIVATION_MASK;
+	item->flags |= IFL_CODEBITS;
 	item->mesh_bits = 3;
 	item->status = ITEM_INVISIBLE;
 	cutseq_meshbits[2] &= 0xFFFFFFFD;
@@ -1637,7 +1637,7 @@ void stealth3_start()
 				item->status = ITEM_INVISIBLE;
 				RemoveActiveItem(i);
 				DisableBaddieAI(i);
-				item->flags |= IFLAG_INVISIBLE;
+				item->flags |= IFL_INVISIBLE;
 			}
 		}
 	}
@@ -2539,7 +2539,7 @@ ITEM_INFO* ResetCutanimate(int objnum)
 	item->frame_number = anims[item->anim_number].frame_base;
 	RemoveActiveItem(item - items);
 	item->status = ITEM_INACTIVE;
-	item->flags &= ~IFLAG_ACTIVATION_MASK;
+	item->flags &= ~IFL_CODEBITS;
 	return item;
 }
 
@@ -2552,7 +2552,7 @@ void Cutanimate(int objnum)
 	item->frame_number = anims[item->anim_number].frame_base;
 	AddActiveItem(item - items);
 	item->status = ITEM_ACTIVE;
-	item->flags |= IFLAG_ACTIVATION_MASK;
+	item->flags |= IFL_CODEBITS;
 }
 
 void cutseq_removelara_hk()
@@ -2991,7 +2991,7 @@ void trigger_item_in_room(short room_number, int object)
 		{
 			AddActiveItem(num);
 			item->status = ITEM_ACTIVE;
-			item->flags |= IFLAG_ACTIVATION_MASK;
+			item->flags |= IFL_CODEBITS;
 		}
 
 		num = nex;
@@ -3014,7 +3014,7 @@ void untrigger_item_in_room(short room_number, int object)
 		{
 			RemoveActiveItem(num);
 			item->status = ITEM_DEACTIVATED;
-			item->flags |= ~IFLAG_ACTIVATION_MASK;
+			item->flags |= ~IFL_CODEBITS;
 		}
 
 		num = nex;

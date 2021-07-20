@@ -156,7 +156,7 @@ void InitialiseRaisingBlock(short item_number)
 
 	if (item->trigger_flags < 0)
 	{
-		item->flags |= IFLAG_ACTIVATION_MASK;
+		item->flags |= IFL_CODEBITS;
 		AddActiveItem(item_number);
 		item->status = ITEM_ACTIVE;
 	}
@@ -468,7 +468,7 @@ void InitialisePickup(short item_number)
 			item->mesh_bits = 0;
 
 		if (item->status == ITEM_INVISIBLE)
-			item->flags |= IFLAG_TRIGGERED;
+			item->flags |= IFL_TRIGGERED;
 	}
 }
 
@@ -790,7 +790,7 @@ void InitialiseSearchObject(short item_number)
 		}
 
 		AddActiveItem(item_number);
-		item->flags |= IFLAG_ACTIVATION_MASK;
+		item->flags |= IFL_CODEBITS;
 		item->status = ITEM_ACTIVE;
 	}
 }
