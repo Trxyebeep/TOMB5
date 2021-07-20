@@ -708,7 +708,7 @@ void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, int MustHitLast
 	short TriggerItems[8];
 	short NumTrigs, room_number;
 
-	if (!(target->flags & IFLAG_UNK40))
+	if (!(target->flags & IFL_SWITCH_ONESHOT))
 	{
 		if (!MustHitLastNode)
 		{
@@ -741,11 +741,11 @@ void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, int MustHitLast
 
 		if (cs == num1 - 1)
 		{
-			if (target->flags & IFLAG_ACTIVATION_MASK && (target->flags & IFLAG_ACTIVATION_MASK) != IFLAG_ACTIVATION_MASK)
+			if (target->flags & IFL_CODEBITS && (target->flags & IFL_CODEBITS) != IFL_CODEBITS)
 			{
 				room_number = target->room_number;
 				GetHeight(GetFloor(target->pos.x_pos, target->pos.y_pos - 256, target->pos.z_pos, &room_number), target->pos.x_pos, target->pos.y_pos - 256, target->pos.z_pos);
-				TestTriggers(trigger_index, 1, target->flags & IFLAG_ACTIVATION_MASK);
+				TestTriggers(trigger_index, 1, target->flags & IFL_CODEBITS);
 			}
 			else
 			{
@@ -755,7 +755,7 @@ void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, int MustHitLast
 				{
 					AddActiveItem(TriggerItems[i]);
 					items[TriggerItems[i]].status = ITEM_ACTIVE;
-					items[TriggerItems[i]].flags |= IFLAG_ACTIVATION_MASK;
+					items[TriggerItems[i]].flags |= IFL_CODEBITS;
 				}
 			}
 
@@ -763,7 +763,7 @@ void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, int MustHitLast
 				ExplodeItemNode(target, objects[SWITCH_TYPE7].nmeshes - 1, 0, 64);
 
 			AddActiveItem(target - items);
-			target->flags |= IFLAG_ACTIVATION_MASK | IFLAG_UNK40;
+			target->flags |= IFL_CODEBITS | IFL_SWITCH_ONESHOT;
 			target->status = ITEM_ACTIVE;
 		}
 	}
