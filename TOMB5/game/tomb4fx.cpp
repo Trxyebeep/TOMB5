@@ -1,18 +1,8 @@
 #include "../tomb5/pch.h"
 #include "tomb4fx.h"
 #include "control.h"
-
-short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room_number)
-{
-	GetFloor(x, y, z, &room_number);
-
-	if (room[room_number].flags & ROOM_UNDERWATER)
-		TriggerUnderwaterBlood(x, y, z, random);
-	else
-		TriggerBlood(x, y, z, y_rot >> 4, random);
-
-	return -1;
-}
+#include "sound.h"
+#include "delstuff.h"
 
 int GetFreeBlood()
 {
@@ -221,12 +211,39 @@ LIGHTNING_STRUCT* TriggerLightning(PHD_VECTOR* s, PHD_VECTOR* d, char variation,
 	return 0;
 }
 
+void LaraBubbles(ITEM_INFO* item)
+{
+	PHD_VECTOR pos;
+	int i;
+
+	SoundEffect(SFX_LARA_BUBBLES, &item->pos, SFX_WATER);
+	pos.x = 0;
+
+	if (LaraDrawType == LARA_DIVESUIT)
+	{
+		pos.y = -192;
+		pos.z = -160;
+		GetLaraJointPos(&pos, 7);
+	}
+	else
+	{
+		pos.y = -4;
+		pos.z = 64;
+		GetLaraJointPos(&pos, 8);
+	}
+
+	i = (GetRandomControl() & 1) + 2;
+
+	for (; i > 0; i--)
+		CreateBubble((PHD_3DPOS*)&pos, item->room_number, 8, 7, 0, 0, 0, 0);
+}
+
 void inject_tomb4fx(bool replace)
 {
-	INJECT(0x00432760, DoBloodSplat, replace);
 	INJECT(0x00482580, GetFreeBlood, replace);
 	INJECT(0x004827E0, TriggerBlood, replace);
 	INJECT(0x00482610, UpdateBlood, replace);
 	INJECT(0x00484D70, LSpline, replace);
 	INJECT(0x00484B30, TriggerLightning, replace);
+	INJECT(0x00483470, LaraBubbles, replace);
 }

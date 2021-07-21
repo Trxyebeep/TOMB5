@@ -8,7 +8,7 @@
 #include "objects.h"
 #include "box.h"
 #include "lara_states.h"
-#include "tomb4fx.h"
+#include "effects.h"
 
 static BITE_INFO imp_hit = {0, 100, 0, 9};
 

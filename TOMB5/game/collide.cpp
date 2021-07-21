@@ -1,8 +1,8 @@
 #include "../tomb5/pch.h"
 #include "collide.h"
 #include "control.h"
-#include "tomb4fx.h"
 #include "delstuff.h"
+#include "effects.h"
 
 void TriggerLaraBlood()
 {

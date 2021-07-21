@@ -596,6 +596,62 @@ void MinisubControl(short item_number)
 	CreatureUnderwater(item, -14080);
 }
 
+void InitialiseJelly(short item_number)
+{
+	ITEM_INFO* item;
+
+	InitialiseCreature(item_number);
+	item = &items[item_number];
+	item->anim_number = objects[REAPER].anim_index + 1;
+	item->frame_number = anims[item->anim_number].frame_base;
+	item->goal_anim_state = 2;
+	item->current_anim_state = 2;
+}
+
+void JellyControl(short item_number)
+{
+	ITEM_INFO* item;
+	CREATURE_INFO* jelly;
+	AI_INFO info;
+	short angle;
+
+	if (!CreatureActive(item_number))
+		return;
+
+	item = &items[item_number];
+	jelly = (CREATURE_INFO*)item->data;
+
+	if (item->ai_bits)
+		GetAITarget(jelly);
+	else
+		jelly->enemy = lara_item;
+
+	CreatureAIInfo(item, &info);
+	GetCreatureMood(item, &info, 0);
+	CreatureMood(item, &info, 0);
+	angle = CreatureTurn(item, 364);
+
+	if (item->current_anim_state == 2 && !(GetRandomControl() & 0x3F))
+		item->goal_anim_state = 1;
+
+	if (jelly->reached_goal)
+	{
+		if (jelly->enemy)
+		{
+			if (jelly->enemy->flags & 2)
+				item->item_flags[3] = (item->TOSSPAD & 0xFF) - 1;
+
+			item->item_flags[3]++;
+			jelly->reached_goal = 0;
+			jelly->enemy = 0;
+		}
+	}
+
+	item->pos.x_rot = -12288;
+	CreatureAnimation(item_number, angle, 0);
+	CreatureUnderwater(item, 1024);
+}
+
 void inject_minisub(bool replace)
 {
 	INJECT(0x0045C5E0, TriggerTorpedoSteam, replace);
@@ -607,4 +663,6 @@ void inject_minisub(bool replace)
 	INJECT(0x0045D360, InitialiseMinisub, replace);
 	INJECT(0x0045D3F0, MinisubControl, 0);//bugged. lara_info.ahead is never set to 1, so Targetable always fails resulting in the minisub moving towards lara and
 	//never firing. minisub->enemy seems to always equal lara_item. we need it to NOT be lara_item at least once so lara_info.ahead is set to 1 so Targetable doesn't fail.
+	INJECT(0x0045DA70, InitialiseJelly, replace);
+	INJECT(0x0045DAF0, JellyControl, replace);
 }

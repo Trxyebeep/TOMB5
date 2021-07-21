@@ -4,7 +4,7 @@
 #include "objects.h"
 #include "control.h"
 #include "sound.h"
-#include "tomb4fx.h"
+#include "effects.h"
 #include "../specific/3dmath.h"
 
 static BITE_INFO skeleton_hit = {0, 0, 0, 17};

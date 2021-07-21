@@ -2,8 +2,8 @@
 #include "dog.h"
 #include "box.h"
 #include "control.h"
-#include "tomb4fx.h"
 #include "objects.h"
+#include "effects.h"
 
 static BITE_INFO dog_bite =
 {

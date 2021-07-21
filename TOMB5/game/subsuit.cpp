@@ -7,7 +7,7 @@
 #include "camera.h"
 #include "items.h"
 #include "objects.h"
-#include "tomb4fx.h"
+#include "effect2.h"
 
 char BVols[8] =
 {

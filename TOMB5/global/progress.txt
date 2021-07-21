@@ -263,7 +263,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004661C0	+	ParallelBarsCollision
 0x00466420	+	ControlXRayMachine
 0x00466720	+	CutsceneRopeControl
-0x00466880	+	DrawBaddieGunFlash
+0x00466880		DrawBaddieGunFlash
 0x00466AA0	+	HybridCollision
 
 
@@ -448,14 +448,6 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047A890	+	Spline
 0x0047A9D0	x	InitialiseSpotCam
 0x0047B280		CalculateSpotCams
-
-
-		game/bubbles.cpp
-
-0x004832C0		GetFreeBubble
-0x00483350		CreateBubble
-0x00483470		LaraBubbles
-0x00483540		UpdateBubbles
 
 
 		game/newinv2.cpp
@@ -764,7 +756,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/laramisc.cpp
 
 0x00455680	+	LaraInitialiseMeshes
-0x004557B0	+	LaraCheatyBits
+0x004557B0	+	LaraCheatGetStuff
 0x00455830	+	LaraControl
 0x00456320	+	LaraCheat
 0x004563F0	+	AnimateLara
@@ -1258,8 +1250,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x0045D1D0	+	TriggerMiniSubMist
 0x0045D360	+	InitialiseMinisub
 0x0045D3F0	-	MinisubControl
-0x0045DA70		InitialiseJelly
-0x0045DAF0		JellyControl
+0x0045DA70	+	InitialiseJelly
+0x0045DAF0	+	JellyControl
 
 
 		game/sniper.cpp

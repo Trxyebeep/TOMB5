@@ -5,7 +5,7 @@
 #include "people.h"
 #include "../specific/3dmath.h"
 #include "sound.h"
-#include "tomb4fx.h"
+#include "effects.h"
 
 BITE_INFO knife = {0, 200, 0, 13};
 
