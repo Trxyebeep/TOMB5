@@ -7,10 +7,9 @@
 #include "../specific/output.h"
 #include "../specific/LoadSave.h"
 #include "text.h"
-#ifdef GENERAL_FIXES
+#ifdef AMMO_COUNTER
 #include "larafire.h"
 #endif
-
 
 int FlashIt()
 {
@@ -56,7 +55,7 @@ void DrawGameInfo(int timed)
 			PrintString(0x5C, 0x18, 0, &buf[0], 0);
 		}
 
-#ifdef GENERAL_FIXES	//adds an ammo counter
+#ifdef AMMO_COUNTER
 		if (lara.gun_status == LG_READY)
 		{
 			short ammo, btm;

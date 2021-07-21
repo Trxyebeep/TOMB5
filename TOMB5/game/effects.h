@@ -12,7 +12,6 @@ void void_effect(ITEM_INFO* item);
 void turn180_effect(ITEM_INFO* item);
 void floor_shake_effect(ITEM_INFO* item);
 void PoseidonSFX(ITEM_INFO* item);
-void LaraBubbles(ITEM_INFO* item);
 void finish_level_effect(ITEM_INFO* item);
 void ActivateCamera(ITEM_INFO* item);
 void ActivateKey(ITEM_INFO* item);
@@ -45,6 +44,8 @@ void TL_9(ITEM_INFO* item);
 void TL_10(ITEM_INFO* item);
 void TL_11(ITEM_INFO* item);
 void TL_12(ITEM_INFO* item);
+short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room_number);
+#define Richochet	( (void(__cdecl*)(GAME_VECTOR*)) 0x00432710 );
 
 #define WadeSplash	( (void(__cdecl*)(ITEM_INFO*, int, int)) 0x00432A30 )
 #define Splash	( (void(__cdecl*)(ITEM_INFO*)) 0x00432900 )

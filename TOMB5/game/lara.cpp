@@ -93,7 +93,7 @@ void(*lara_control_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* co
 	lara_void_func,
 	lara_as_deathslide,
 	lara_as_duck,
-#ifndef GENERAL_FIXES
+#ifdef DUCKROLL
 	lara_as_duckroll,
 #else
 	lara_as_duck,
@@ -240,7 +240,7 @@ void(*lara_collision_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* 
 	lara_void_func,
 	lara_void_func,
 	lara_col_duck,
-#ifndef GENERAL_FIXES
+#ifdef DUCKROLL
 	lara_col_duckroll,
 #else
 	lara_col_duck,
@@ -3234,7 +3234,7 @@ void lara_as_duck(ITEM_INFO* item, COLL_INFO* coll)
 		}
 	}
 
-#ifndef GENERAL_FIXES
+#ifdef DUCKROLL
 	if (input & IN_SPRINT)
 	{
 		if ((input & IN_DUCK || lara.keep_ducked && lara.water_status != LW_WADE) && lara.gun_status == LG_NO_ARMS)
@@ -5193,7 +5193,7 @@ int LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
 	return 0;
 }
 
-#ifndef GENERAL_FIXES//not buggy anymore, but still disabling it is better
+#ifdef DUCKROLL
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 {
 	camera.target_elevation = -3640;
@@ -5224,10 +5224,6 @@ void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 
 		if (coll->mid_floor < coll->bad_neg)
 		{
-			AnimateLara(item);
-			AnimateLara(item);
-			AnimateLara(item);
-			AnimateLara(item);
 			item->pos.x_pos = coll->old.x;
 			item->pos.y_pos = coll->old.y;
 			item->pos.z_pos = coll->old.z;
@@ -5403,5 +5399,9 @@ void inject_lara(bool replace)
 	INJECT(0x00447690, ApplyVelocityToRope, replace);
 	INJECT(0x00447E60, JumpOffRope, replace);
 	INJECT(0x004460F0, LaraHangTest, replace);
+	INJECT(0x0044D220, ResetLook, replace);
+	INJECT(0x0044B950, lara_as_controlled, replace);
+	INJECT(0x0044B9C0, lara_as_controlledl, replace);
+	INJECT(0x0044DA10, lara_as_parallelbars, replace);
 }
 

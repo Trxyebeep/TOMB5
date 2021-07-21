@@ -150,33 +150,6 @@ void PoseidonSFX(ITEM_INFO* item)
 	flipeffect = -1;
 }
 
-void LaraBubbles(ITEM_INFO* item)
-{
-	PHD_VECTOR pos;
-	int i;
-
-	SoundEffect(SFX_LARA_BUBBLES, &item->pos, SFX_WATER);
-	pos.x = 0;
-
-	if (LaraDrawType == LARA_DIVESUIT)
-	{
-		pos.y = -192;
-		pos.z = -160;
-		GetLaraJointPos(&pos, 7);
-	}
-	else
-	{
-		pos.y = -4;
-		pos.z = 64;
-		GetLaraJointPos(&pos, 8);
-	}
-
-	i = (GetRandomControl() & 1) + 2;
-
-	for (; i > 0; i--)
-		CreateBubble((PHD_3DPOS*)&pos, item->room_number, 8, 7, 0, 0, 0, 0);
-}
-
 void finish_level_effect(ITEM_INFO* item)
 {
 	gfLevelComplete = gfCurrentLevel + 1;
@@ -587,6 +560,18 @@ void SoundEffects()
 	}
 }
 
+short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room_number)
+{
+	GetFloor(x, y, z, &room_number);
+
+	if (room[room_number].flags & ROOM_UNDERWATER)
+		TriggerUnderwaterBlood(x, y, z, random);
+	else
+		TriggerBlood(x, y, z, y_rot >> 4, random);
+
+	return -1;
+}
+
 void inject_effects(bool replace)
 {
 	INJECT(0x00432640, SoundEffects, replace);
@@ -595,7 +580,6 @@ void inject_effects(bool replace)
 	INJECT(0x00432E10, turn180_effect, replace);
 	INJECT(0x00432E40, floor_shake_effect, replace);
 	INJECT(0x00432FD0, PoseidonSFX, replace);
-	INJECT(0x00483470, LaraBubbles, replace);
 	INJECT(0x00432DF0, finish_level_effect, replace);
 	INJECT(0x00433000, ActivateCamera, replace);
 	INJECT(0x00433020, ActivateKey, replace);
@@ -628,4 +612,5 @@ void inject_effects(bool replace)
 	INJECT(0x004338D0, TL_10, replace);
 	INJECT(0x00433910, TL_11, replace);
 	INJECT(0x00433950, TL_12, replace);
+	INJECT(0x00432760, DoBloodSplat, replace);
 }

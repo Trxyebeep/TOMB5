@@ -196,6 +196,7 @@
     <ClCompile Include="TOMB5\game\hydra.cpp" />
     <ClCompile Include="TOMB5\game\imp.cpp" />
     <ClCompile Include="TOMB5\game\minisub.cpp" />
+    <ClCompile Include="TOMB5\game\autogun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -394,6 +395,7 @@
     <ClInclude Include="TOMB5\game\hydra.h" />
     <ClInclude Include="TOMB5\game\imp.h" />
     <ClInclude Include="TOMB5\game\minisub.h" />
+    <ClInclude Include="TOMB5\game\autogun.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />
