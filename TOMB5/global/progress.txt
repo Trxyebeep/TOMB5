@@ -92,6 +92,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00410990	+	InitialiseChef
 0x00410A60	+	ChefControl
 
+
 		game/collide.cpp
 
 0x00410EF0	+	GetTiltType
@@ -172,7 +173,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00432580		ItemNearLara
 0x00432640	+	SoundEffects
 0x00432710		Richochet
-0x00432760		DoBloodSplat
+0x00432760	+	DoBloodSplat
 0x00432800		DoLotsOfBlood
 0x00432900		Splash
 0x00432A30		WadeSplash
@@ -993,7 +994,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00483180		TriggerSmallSplash
 0x004832C0		GetFreeBubble
 0x00483350		CreateBubble
-0x00483470		LaraBubbles
+0x00483470	+	LaraBubbles
 0x00483540		UpdateBubbles
 0x004837B0		SetGunFlash
 0x004838E0		DrawGunflashes
@@ -1010,7 +1011,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00484670		TriggerShockwave
 0x00484700		TriggerShockwaveHitEffect
 0x004849A0		UpdateShockwaves
-0x00484B30		TriggerLightning
+0x00484B30	+	TriggerLightning
 0x00484CB0		UpdateLightning
 0x00484D70	+	LSpline
 0x00484EB0		CalcLightningSpline
@@ -1025,7 +1026,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/subsuit.cpp
 
-0x0047C4D0		TriggerAirBubbles
+0x0047C4D0	+	TriggerAirBubbles
 0x0047C6D0	+	FireChaff
 0x0047C950	+	DoSubsuitStuff
 0x0047CB70		TriggerEngineEffects
@@ -1054,7 +1055,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/traps.cpp
 
-0x00488E30		CloseTrapDoor
+0x00488E30	+	CloseTrapDoor
 0x00488FA0		TrapDoorControl
 0x004890C0		OpenTrapDoor
 0x004891F0		FloorTrapDoorCollision
@@ -1249,7 +1250,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0045CFB0	+	ChaffControl
 0x0045D1D0	+	TriggerMiniSubMist
 0x0045D360	+	InitialiseMinisub
-0x0045D3F0	-	MinisubControl
+0x0045D3F0	x	MinisubControl
 0x0045DA70	+	InitialiseJelly
 0x0045DAF0	+	JellyControl
 
@@ -1291,12 +1292,79 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/objlight.cpp
 
-0x00466B20		TriggerAlertLight
+0x00466B20	+	TriggerAlertLight
 0x00466C00		ControlStrobeLight
 0x00466D20		ControlPulseLight
 0x00466E10		ControlColouredLight
 0x00466EA0		ControlElectricalLight
 0x004670D0		ControlBlinker
+
+
+		game/footprnt.cpp
+
+0x004346A0	+	AddFootprint
+
+
+		game/items.cpp
+
+0x00440590		InitialiseItemArray
+0x00440620		KillItem
+0x00440840		CreateItem
+0x004408B0		InitialiseItem
+0x00440B60		RemoveActiveItem
+0x00440C40		RemoveDrawnItem
+0x00440D10		AddActiveItem
+0x00440DA0	+	ItemNewRoom
+0x00440F00		SpawnItem
+0x00440FC0		GlobalItemReplace
+0x00441080		InitialiseFXArray
+0x004410F0		CreateEffect
+0x00441180		KillEffect
+0x004412F0		EffectNewRoom
+
+
+		game/laraflar.cpp
+
+0x00454750	+	DoFlareLight
+0x004549B0	+	DoFlareInHand
+0x00454A90	+	DrawFlareInAir
+0x00454BC0	+	CreateFlare
+0x00454EE0	+	set_flare_arm
+0x00454F50	+	draw_flare
+0x004550C0	+	undraw_flare
+0x004553B0	+	draw_flare_meshes
+0x004553E0	+	undraw_flare_meshes
+0x00455410	+	ready_flare
+0x00455460	+	FlareControl
+
+
+		game/sound.cpp
+
+0x00478570		SoundEffect
+0x00478D30		GetPanVolume
+0x00478FE0		StopSoundEffect
+0x00479060		SOUND_Stop
+0x004790A0		SOUND_Init
+0x004790E0		SayNo
+0x00479130		SoundEffectCS
+
+
+		game/larafire.cpp
+
+0x00452430	+	LaraGun
+0x00452AF0	+	CheckForHoldingState
+0x00452B30	+	InitialiseNewWeapon
+0x00452CC0	+	LaraTargetInfo
+0x00452ED0	+	LaraGetNewTarget
+0x004533A0	+	find_target_point
+0x00453490	+	AimWeapon
+0x00453580	+	FireWeapon
+0x00453930	+	HitTarget
+0x00453A90	+	SmashObject
+0x00453AE0	+	WeaponObject
+0x00453B50	+	WeaponObjectMesh
+0x00453BE0	+	DoProperDetection
+0x004546C0	+	get_current_ammo_pointer
 
 // ======================================
 // SPECIFIC

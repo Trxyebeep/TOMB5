@@ -754,6 +754,12 @@ void HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, int damage, int grenade)
 	item->hit_points -= damage;
 }
 
+void SmashItem(short item_number, long weapon_type)
+{
+	if (items[item_number].object_number >= SMASH_OBJECT1 && items[item_number].object_number <= SMASH_OBJECT8)
+		SmashObject(item_number);
+}
+
 int WeaponObject(int weapon_type)
 {
 	switch (weapon_type)
@@ -1346,6 +1352,7 @@ void inject_larafire(bool replace)
 	INJECT(0x00453490, AimWeapon, replace);
 	INJECT(0x00453580, FireWeapon, replace);
 	INJECT(0x00453930, HitTarget, replace);
+	INJECT(0x00453A90, SmashObject, replace);
 	INJECT(0x00453AE0, WeaponObject, replace);
 	INJECT(0x00453B50, WeaponObjectMesh, replace);
 	INJECT(0x00453BE0, DoProperDetection, replace);
