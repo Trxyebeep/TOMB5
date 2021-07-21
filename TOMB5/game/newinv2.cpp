@@ -3056,4 +3056,5 @@ void inject_newinv2(bool replace)
 	INJECT(0x00464C80, dels_give_lara_guns_cheat, replace);
 	INJECT(0x00464EF0, LoadGame, replace);
 	INJECT(0x00464F20, SaveGame, replace);
+	INJECT(0x00464CA0, DelDrawSprite, replace);
 }

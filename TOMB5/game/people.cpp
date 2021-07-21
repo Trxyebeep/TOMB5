@@ -8,6 +8,7 @@
 #include "sphere.h"
 #include "box.h"
 #include "debris.h"
+#include "effects.h"
 
 int TargetVisible(ITEM_INFO* item, AI_INFO* info)
 {

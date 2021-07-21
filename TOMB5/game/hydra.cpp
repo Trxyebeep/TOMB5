@@ -5,9 +5,10 @@
 #include "control.h"
 #include "sound.h"
 #include "../specific/3dmath.h"
-#include "tomb4fx.h"
+#include "effects.h"
 #include "sphere.h"
 #include "items.h"
+#include "effect2.h"
 
 static BITE_INFO hydra_hit = {0, 0, 0, 11};
 

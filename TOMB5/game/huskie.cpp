@@ -2,7 +2,7 @@
 #include "huskie.h"
 #include "box.h"
 #include "control.h"
-#include "tomb4fx.h"
+#include "effects.h"
 #include "../specific/3dmath.h"
 
 static BITE_INFO huskie_bite =

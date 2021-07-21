@@ -24,7 +24,7 @@ void SkyDrawPhase();
 void UpdateSkyLightning();
 
 #define InterpolateMatrix	( (void(__cdecl*)()) 0x0042C8F0 )
-#define	mRotBoundingBoxNoPersp	( (void(__cdecl*)(short*, short*)) 0x00402428 )
+#define	mRotBoundingBoxNoPersp	( (void(__cdecl*)(short*, short*)) 0x0042E240 )
 #define GetFrames	( (long(__cdecl*)(ITEM_INFO*, short*[], int*)) 0x0042CEB0 )
 #define DrawRooms	( (void(__cdecl*)(short)) 0x0042A7A0 )
 #define CalculateObjectLightingLara	( (void(__cdecl*)()) 0x0042A1B0 )

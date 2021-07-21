@@ -4,7 +4,7 @@
 #include "objects.h"
 #include "newinv2.h"
 #include "../specific/3dmath.h"
-#include "tomb4fx.h"
+#include "effects.h"
 
 static BITE_INFO swampy_hitright = {0, 0, 0, 7};
 
