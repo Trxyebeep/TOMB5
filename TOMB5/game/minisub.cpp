@@ -433,6 +433,9 @@ void MinisubControl(short item_number)
 	{
 		lara_info.angle = info.angle;
 		lara_info.distance = info.distance;
+#ifdef GENERAL_FIXES//fixes dumb bug of the minisub not shooting that depends on luck and a little bit of idiocy from whoever wrote this function
+		lara_info.ahead = 1;
+#endif
 	}
 	else
 	{
@@ -661,8 +664,7 @@ void inject_minisub(bool replace)
 	INJECT(0x0045CFB0, ChaffControl, replace);
 	INJECT(0x0045D1D0, TriggerMiniSubMist, replace);
 	INJECT(0x0045D360, InitialiseMinisub, replace);
-	INJECT(0x0045D3F0, MinisubControl, 0);//bugged. lara_info.ahead is never set to 1, so Targetable always fails resulting in the minisub moving towards lara and
-	//never firing. minisub->enemy seems to always equal lara_item. we need it to NOT be lara_item at least once so lara_info.ahead is set to 1 so Targetable doesn't fail.
+	INJECT(0x0045D3F0, MinisubControl, replace);
 	INJECT(0x0045DA70, InitialiseJelly, replace);
 	INJECT(0x0045DAF0, JellyControl, replace);
 }

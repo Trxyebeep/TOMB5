@@ -5,8 +5,7 @@ void inject_spotcam(bool replace);
 
 long Spline(long x, long* knots, int nk);
 void InitSpotCamSequences();
-//void InitialiseSpotCam(short Sequence);
-#define InitialiseSpotCam	( (void(__cdecl*)(short)) 0x0047A9D0 )
+void InitialiseSpotCam(short Sequence);
 #define CalculateSpotCams	( (void(__cdecl*)()) 0x0047B280 )
 
 enum spotcam_flags
@@ -19,7 +18,7 @@ enum spotcam_flags
 	SP_TARGETLARA =			(1 << 5),	//overrides the camera target to lara's position
 	SP_SNAPBACK =			(1 << 6),	//?
 	SP_JUMPTO =				(1 << 7),	//cuts to another camera in the same sequence
-	SP_HOLD =				(1 << 8),	//spots moving, or, "holds" the camera for a given time, the "timer" field
+	SP_HOLD =				(1 << 8),	//stops moving, or, "holds" the camera for a given time, the "timer" field
 	SP_NOBREAK =			(1 << 9),	//don't allow breaking the sequence with the look button
 	SP_NOLARACONTROL =		(1 << 10),	//disable lara control
 	SP_ENABLELARACONTROL =	(1 << 11),	//enable lara control
