@@ -5,6 +5,7 @@
 #define SoundEffect	( (long(__cdecl*)(short, PHD_3DPOS*, int)) 0x00478570 )
 #define StopSoundEffect	( (void(__cdecl*)(short)) 0x00478FE0 )
 #define SOUND_Stop	( (void(__cdecl*)()) 0x00479060 )
+#define GetPanVolume	( (void(__cdecl*)(SoundSlot*)) 0x00478D30 )
 
 enum sfx_types
 {

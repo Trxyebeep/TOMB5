@@ -896,7 +896,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042A1B0		CalculateObjectLightingLara
 0x0042A310	+	UpdateSkyLightning
 0x0042A400	+	DrawPhaseGame
-0x0042A4A0		SkyDrawPhase
+0x0042A4A0	+	SkyDrawPhase
 0x0042A7A0		DrawRooms
 0x0042AF50		ClipRoom
 0x0042B340		DrawEffect
@@ -1250,7 +1250,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0045CFB0	+	ChaffControl
 0x0045D1D0	+	TriggerMiniSubMist
 0x0045D360	+	InitialiseMinisub
-0x0045D3F0	x	MinisubControl
+0x0045D3F0	+	MinisubControl
 0x0045DA70	+	InitialiseJelly
 0x0045DAF0	+	JellyControl
 
