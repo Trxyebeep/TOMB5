@@ -32,7 +32,7 @@
 #include "traps.h"
 #include "lot.h"
 #include "effects.h"
-#include "autogun.h"
+#include "twogun.h"
 #include "text.h"
 
 uchar ShatterSounds[18][10] =

@@ -5399,5 +5399,9 @@ void inject_lara(bool replace)
 	INJECT(0x00447690, ApplyVelocityToRope, replace);
 	INJECT(0x00447E60, JumpOffRope, replace);
 	INJECT(0x004460F0, LaraHangTest, replace);
+	INJECT(0x0044D220, ResetLook, replace);
+	INJECT(0x0044B950, lara_as_controlled, replace);
+	INJECT(0x0044B9C0, lara_as_controlledl, replace);
+	INJECT(0x0044DA10, lara_as_parallelbars, replace);
 }
 
