@@ -2205,7 +2205,16 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 		case DUMMY:
 		case HEAVYSWITCH:
 		case HEAVYANTITRIGGER:
-			return;
+#ifdef GENERAL_FIXES
+			if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS && lara_item->pos.x_pos > 37979 && lara_item->pos.x_pos < 38911 &&
+				lara_item->pos.z_pos > 67685 && lara_item->pos.z_pos < 68600 && lara_item->pos.y_pos == -24064)
+			{
+				timer = 3;
+				break;
+			}
+			else
+#endif
+				return;
 
 		case COMBAT:
 

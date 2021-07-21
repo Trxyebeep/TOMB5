@@ -447,7 +447,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x0047A800	+	InitSpotCamSequences
 0x0047A890	+	Spline
-0x0047A9D0	x	InitialiseSpotCam
+0x0047A9D0	+	InitialiseSpotCam
 0x0047B280		CalculateSpotCams
 
 
@@ -896,7 +896,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042A1B0		CalculateObjectLightingLara
 0x0042A310	+	UpdateSkyLightning
 0x0042A400	+	DrawPhaseGame
-0x0042A4A0		SkyDrawPhase
+0x0042A4A0	+	SkyDrawPhase
 0x0042A7A0		DrawRooms
 0x0042AF50		ClipRoom
 0x0042B340		DrawEffect
@@ -1250,7 +1250,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0045CFB0	+	ChaffControl
 0x0045D1D0	+	TriggerMiniSubMist
 0x0045D360	+	InitialiseMinisub
-0x0045D3F0	x	MinisubControl
+0x0045D3F0	+	MinisubControl
 0x0045DA70	+	InitialiseJelly
 0x0045DAF0	+	JellyControl
 
@@ -1365,6 +1365,63 @@ x for functions decompiled but not injected, for one reason or another.
 0x00453B50	+	WeaponObjectMesh
 0x00453BE0	+	DoProperDetection
 0x004546C0	+	get_current_ammo_pointer
+
+
+		game/box.cpp
+
+0x00408550		InitialiseCreature
+0x00408630		CreatureActive
+0x004086C0		CreatureAIInfo
+0x00408B00		UpdateLOT
+0x00408BA0		SearchLOT
+0x00408E20		TargetBox
+0x00408EF0		EscapeBox
+0x00408FD0		ValidBox
+0x004090A0		GetCreatureMood
+0x00409370		CreatureMood
+0x00409770		StalkBox
+0x004098B0		CalculateTarget
+0x00409E20		CreatureCreature
+0x00409FB0		BadFloor
+0x0040A090		CreatureDie
+0x0040A1D0		CreatureAnimation
+0x0040AE90		CreatureTurn
+0x0040B1B0		CreatureTilt
+0x0040B240		CreatureJoint
+0x0040B2C0		CreatureFloat
+0x0040B400		CreatureUnderwater
+0x0040B4D0		CreatureEffect
+0x0040B550		CreatureEffectT
+0x0040B5D0		CreatureVault
+0x0040B820		CreatureKill
+0x0040BA70		AlertAllGuards
+0x0040BB10		AlertNearbyGuards
+0x0040BBE0		AIGuard
+0x0040BCC0		GetAITarget
+0x0040C070		FindAITargetObject
+0x0040C2D0		SameZone
+0x0040C410		CreatureYRot
+0x0040C460		MoveCreature3DPos
+0x0040C5A0		DropBaddyPickups
+
+
+		game/flmtorch.cpp
+
+0x00433990		TriggerTorchFlame
+0x00433B40		FireCollision
+0x00433EA0		DoFlameTorch
+0x004342D0		GetFlameTorch
+0x00434390		FlameTorchControl
+
+
+		game/lot.cpp
+
+0x0045B0C0		InitialiseLOTarray
+0x0045B150		DisableBaddieAI
+0x0045B1A0		EnableBaddieAI
+0x0045B3D0		InitialiseSlot
+0x0045B5E0		CreateZone
+0x0045B740		ClearLOT
 
 // ======================================
 // SPECIFIC

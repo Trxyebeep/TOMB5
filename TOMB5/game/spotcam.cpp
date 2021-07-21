@@ -52,7 +52,7 @@ void InitSpotCamSequences()
 	}
 }
 
-void _InitialiseSpotCam(short Sequence)//something wrong with some sequences, like the one at the start of The Base, the rotation is wrong..
+void InitialiseSpotCam(short Sequence)
 {
 	SPOTCAM* s;
 	long next_spline_camera;
@@ -86,8 +86,8 @@ void _InitialiseSpotCam(short Sequence)//something wrong with some sequences, li
 	InitialCameraPosition.y = camera.pos.y;
 	InitialCameraPosition.z = camera.pos.z;
 	InitialCameraTarget.x = camera.target.x;
-	InitialCameraTarget.x = camera.target.y;
-	InitialCameraTarget.x = camera.target.z;
+	InitialCameraTarget.y = camera.target.y;
+	InitialCameraTarget.z = camera.target.z;
 	InitialCameraRoom = camera.pos.room_number;
 	LaraFixedPosition.x = lara_item->pos.x_pos;
 	LaraFixedPosition.y = lara_item->pos.y_pos;
@@ -270,5 +270,5 @@ void inject_spotcam(bool replace)
 {
 	INJECT(0x0047A890, Spline, replace);
 	INJECT(0x0047A800, InitSpotCamSequences, replace);
-//	INJECT(0x0047A9D0, InitialiseSpotCam, replace);
+	INJECT(0x0047A9D0, InitialiseSpotCam, replace);
 }
