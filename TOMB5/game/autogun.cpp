@@ -1,7 +1,7 @@
 #include "../tomb5/pch.h"
 #include "autogun.h"
 #include "sound.h"
-#include "tomb4fx.h"
+#include "effect2.h"
 #include "items.h"
 #include "control.h"
 #include "lara_states.h"
