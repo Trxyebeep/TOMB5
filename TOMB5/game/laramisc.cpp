@@ -626,7 +626,11 @@ void LaraControl(short item_number)
 	case LW_WADE:
 		camera.target_elevation = -4004;
 
+#ifndef GENERAL_FIXES
+		if (hfw > 256)
+#else
 		if (hfw >= 256)
+#endif
 		{
 			if (hfw > 730)
 			{
