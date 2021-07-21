@@ -832,7 +832,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00441410	+	ControlWreckingBall
 0x00441D50	+	WreckingBallCollision
 0x00441F50	+	DrawWreckingBall
-0x004421C0		ControlSecurityScreens
+0x004421C0	+	ControlSecurityScreens
 0x00442250		CookerFlameControl
 0x00442320		TriggerLaraSparks
 0x00442480		TriggerCableSparks
@@ -1057,7 +1057,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00469660	+	SearchObjectControl
 0x004699A0	+	SearchObjectCollision
 0x00469C90		CollectCarriedItems
-0x00469D10		MonitorScreenCollision
+0x00469D10	+	MonitorScreenCollision
 
 
 		game/traps.cpp
@@ -1282,7 +1282,7 @@ x for functions decompiled but not injected, for one reason or another.
 		
 		game/autogun.cpp
 
-0x00407510		ControlMotionSensors
+0x00407510	+	ControlMotionSensors
 0x00407780		TriggerAutoGunSmoke
 0x004078A0		AutogunControl
 
@@ -1559,11 +1559,11 @@ x for functions decompiled but not injected, for one reason or another.
 		TORPEDO
 		CHAFF
 		ELECTRIC_FENCE
-		EXPLOSION
++		EXPLOSION
 		IRIS_LIGHTNING
-		MONITOR_SCREEN
-		SECURITY_SCREENS
-		MOTION_SENSORS
++		MONITOR_SCREEN
++		SECURITY_SCREENS
++		MOTION_SENSORS
 +		TIGHT_ROPE
 +		PARALLEL_BARS
 +		XRAY_CONTROLLER
@@ -1573,7 +1573,7 @@ x for functions decompiled but not injected, for one reason or another.
 		GEN_SLOT2
 -		GEN_SLOT3
 		GEN_SLOT4
-		SEARCH_OBJECTS
++		SEARCH_OBJECTS
 -		PICKUPS
 +		PUZZLE_HOLES
 +		PUZZLE_DONE

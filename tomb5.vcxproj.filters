@@ -202,6 +202,9 @@
       <Filter>TOMB5\game</Filter>
     </ClCompile>
     <ClCompile Include="TOMB5\game\minisub.cpp" />
+    <ClCompile Include="TOMB5\game\autogun.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -406,6 +409,9 @@
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\game\minisub.h" />
+    <ClInclude Include="TOMB5\game\autogun.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />

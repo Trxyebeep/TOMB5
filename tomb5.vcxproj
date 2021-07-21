@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TOMB5\game\andy.cpp" />
+    <ClCompile Include="TOMB5\game\autogun.cpp" />
     <ClCompile Include="TOMB5\game\bat.cpp" />
     <ClCompile Include="TOMB5\game\box.cpp" />
     <ClCompile Include="TOMB5\game\camera.cpp" />
@@ -111,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\andy.h" />
+    <ClInclude Include="TOMB5\game\autogun.h" />
     <ClInclude Include="TOMB5\game\bat.h" />
     <ClInclude Include="TOMB5\game\box.h" />
     <ClInclude Include="TOMB5\game\camera.h" />
