@@ -350,8 +350,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			dist = phd_sqrt(SQUARE(dz) + SQUARE(dx));
 
 #ifdef GENERAL_FIXES	//fixes hair jumps for cuts
-			if ((!(cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211) || (GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480)))) ||
-				(!(cutseq_num == 8 && (GLOBAL_cutseq_frame >= 840 && GLOBAL_cutseq_frame <= 846))))
+			if (!((cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211) || (GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480))) ||
+				(cutseq_num == 8 && (GLOBAL_cutseq_frame >= 840 && GLOBAL_cutseq_frame <= 846)) ||
+				(cutseq_num == 27 && (GLOBAL_cutseq_frame >= 928 && GLOBAL_cutseq_frame <= 934))))
 			{
 				(hair - 1)->pos.y_rot = (short)phd_atan(dz, dx);
 				(hair - 1)->pos.x_rot = (short)-phd_atan(dist, dy);
@@ -376,8 +377,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 
 #ifdef GENERAL_FIXES	//fixes hair jumps for cuts
 			if ((cutseq_num == 16 && ((GLOBAL_cutseq_frame >= 409 && GLOBAL_cutseq_frame < 411) || GLOBAL_cutseq_frame == 1873 || GLOBAL_cutseq_frame == 3049)) ||
-				(cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211)||(GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480))) ||
-				(cutseq_num == 8 && (GLOBAL_cutseq_frame >= 840 && GLOBAL_cutseq_frame <= 846)))
+				(cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211) || (GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480))) ||
+				(cutseq_num == 8 && (GLOBAL_cutseq_frame >= 840 && GLOBAL_cutseq_frame <= 846)) ||
+				(cutseq_num == 27 && (GLOBAL_cutseq_frame >= 928 && GLOBAL_cutseq_frame <= 934)))
 			{
 				hair->vel.x = 0;
 				hair->vel.y = 0;

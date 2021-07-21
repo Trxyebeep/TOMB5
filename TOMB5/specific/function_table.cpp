@@ -1,7 +1,7 @@
 #include "../tomb5/pch.h"
 #include "function_table.h"
 
-void InitialiseFunctionTable()//crashes lol
+void InitialiseFunctionTable()
 {
 	BeginScene = HWBeginScene;
 	EndScene = HWEndScene;
@@ -27,5 +27,5 @@ void InitialiseFunctionTable()//crashes lol
 
 void inject_functbl(bool replace)
 {
-//	INJECT(0x004A7EE0, InitialiseFunctionTable, replace);
+	INJECT(0x004A7EE0, InitialiseFunctionTable, replace);
 }

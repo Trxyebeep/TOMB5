@@ -96,7 +96,7 @@ void TriggerRat(short item_number)
 	}
 }
 
-void _UpdateRats()//rats don't disappear after their time runs out
+void UpdateRats()
 {
 	RAT_STRUCT* fx;
 	FLOOR_INFO* floor;
@@ -111,7 +111,7 @@ void _UpdateRats()//rats don't disappear after their time runs out
 		fx = &Rats[i];
 
 		if (!fx->On)
-			return;
+			continue;
 
 		oldx = fx->pos.x_pos;
 		oldy = fx->pos.y_pos;
@@ -292,7 +292,7 @@ void inject_rat(bool replace)
 	INJECT(0x0046AA70, GetFreeRat, replace);
 	INJECT(0x0046AAE0, ClearRats, replace);
 	INJECT(0x0046AB30, TriggerRat, replace);
-//	INJECT(0x0046AC70, UpdateRats, replace);
+	INJECT(0x0046AC70, UpdateRats, replace);
 	INJECT(0x0046B140, DrawRats, replace);
 	INJECT(0x0046B220, InitialiseRatGenerator, replace);
 }

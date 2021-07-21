@@ -47,6 +47,16 @@ static short SearchAnims[4] =
 	0x1D0, 0x1D1, 0x1D2, 0x1D8
 };
 
+static short MSBounds[12] =
+{
+	0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
+};
+
+static PHD_VECTOR MSPos =
+{
+	0, 0, 0
+};
+
 void RegeneratePickups()
 {
 	ITEM_INFO* item;
@@ -513,6 +523,54 @@ void SearchObjectCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	}
 }
 
+void MonitorScreenCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+	short* bounds;
+
+	item = &items[item_num];
+
+	if (l->anim_number == ANIM_ONEHANDPUSHSW && l->frame_number == anims[l->anim_number].frame_base + 24)
+		TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
+
+	if (input & IN_ACTION && l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH && lara.gun_status == LG_NO_ARMS && item->status == ITEM_INACTIVE || lara.IsMoving && lara.GeneralPtr == (void*) item_num)
+	{
+		bounds = GetBoundsAccurate(item);
+		MSBounds[0] = bounds[0] - 256;
+		MSBounds[1] = bounds[1] + 256;
+		MSBounds[4] = bounds[4] - 512;
+		MSBounds[5] = bounds[5] + 512;
+		MSPos.z = bounds[4] - 256;
+
+		if (TestLaraPosition(MSBounds, item, l))
+		{
+			if (MoveLaraPosition(&MSPos, item, l))
+			{
+				l->current_anim_state = AS_SWITCHON;
+				l->anim_number = ANIM_ONEHANDPUSHSW;
+				l->frame_number = anims[l->anim_number].frame_base;
+				lara.IsMoving = 0;
+				lara.head_y_rot = 0;
+				lara.head_x_rot = 0;
+				lara.torso_y_rot = 0;
+				lara.torso_x_rot = 0;
+				lara.gun_status = LG_HANDS_BUSY;
+				item->status = ITEM_ACTIVE;
+				item->flags |= IFL_TRIGGERED;
+			}
+			else
+				lara.GeneralPtr = (void*) item_num;
+		}
+		else if (lara.IsMoving && lara.GeneralPtr == (void*) item_num)
+		{
+			lara.IsMoving = 0;
+			lara.gun_status = LG_NO_ARMS;
+		}
+	}
+	else
+		ObjectCollision(item_num, l, coll);
+}
+
 void inject_pickup(bool replace)
 {
 	INJECT(0x00467AF0, RegeneratePickups, replace);
@@ -523,4 +581,5 @@ void inject_pickup(bool replace)
 	INJECT(0x00468C70, PuzzleHoleCollision, replace);
 	INJECT(0x00469660, SearchObjectControl, replace);
 	INJECT(0x004699A0, SearchObjectCollision, replace);
+	INJECT(0x00469D10, MonitorScreenCollision, replace);
 }
