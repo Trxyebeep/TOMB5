@@ -555,6 +555,26 @@ void DrawWreckingBall(ITEM_INFO* item)//actually only draws the shadow it seems?
 	}
 }
 
+void ControlSecurityScreens(short item_number)
+{
+	ITEM_INFO* item;
+	short mb1;
+
+	item = &items[item_number];
+
+	if (TriggerActive(item) && item->trigger_flags != -1)
+	{
+		item->item_flags[0] = (item->item_flags[0] + 1) & 0xFF;
+
+		if (!item->item_flags[0])
+		{
+			mb1 = (item->item_flags[1] + 1) & 3;
+			item->item_flags[1] = mb1;
+			item->mesh_bits = (32 << mb1) + (2 << mb1);
+		}
+	}
+}
+
 void inject_joby(bool replace)
 {
 	INJECT(0x00442C90, KlaxonTremor, replace);
@@ -563,4 +583,5 @@ void inject_joby(bool replace)
 	INJECT(0x00441D50, WreckingBallCollision, replace);
 	INJECT(0x00441410, ControlWreckingBall, replace);
 	INJECT(0x00441F50, DrawWreckingBall, replace);
+	INJECT(0x004421C0, ControlSecurityScreens, replace);
 }

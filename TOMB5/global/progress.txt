@@ -825,7 +825,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00441410	+	ControlWreckingBall
 0x00441D50	+	WreckingBallCollision
 0x00441F50	+	DrawWreckingBall
-0x004421C0		ControlSecurityScreens
+0x004421C0	+	ControlSecurityScreens
 0x00442250		CookerFlameControl
 0x00442320		TriggerLaraSparks
 0x00442480		TriggerCableSparks
@@ -956,7 +956,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0046AA70	+	GetFreeRat
 0x0046AAE0	+	ClearRats
 0x0046AB30	+	TriggerRat
-0x0046AC70	x	UpdateRats
+0x0046AC70	+	UpdateRats
 0x0046B140	+	DrawRats
 0x0046B220	+	InitialiseRatGenerator
 
@@ -1050,7 +1050,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00469660	+	SearchObjectControl
 0x004699A0	+	SearchObjectCollision
 0x00469C90		CollectCarriedItems
-0x00469D10		MonitorScreenCollision
+0x00469D10	+	MonitorScreenCollision
 
 
 		game/traps.cpp
@@ -1222,8 +1222,8 @@ x for functions decompiled but not injected, for one reason or another.
 		
 		game/willwisp.cpp
 
-0x0048E500		InitialiseWillOWisp
-0x0048E580		WillOWispControl
+0x0048E500	+	InitialiseWillOWisp
+0x0048E580	+	WillOWispControl
 0x0048E8E0		InitialiseMazeMonster
 0x0048E960		MazeMonsterControl
 
@@ -1257,8 +1257,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/sniper.cpp
 
-0x00478250		SniperControl
-0x00478180		InitialiseSniper
+0x00478250	+	SniperControl
+0x00478180	+	InitialiseSniper
 
 
 		game/twogun.cpp
@@ -1275,7 +1275,7 @@ x for functions decompiled but not injected, for one reason or another.
 		
 		game/autogun.cpp
 
-0x00407510		ControlMotionSensors
+0x00407510	+	ControlMotionSensors
 0x00407780		TriggerAutoGunSmoke
 0x004078A0		AutogunControl
 
@@ -1556,7 +1556,7 @@ x for functions decompiled but not injected, for one reason or another.
 		SWAT_PLUS
 		BLUE_GUARD
 		TWOGUN
-		DOG
++		DOG
 		CROW
 		LARSON
 		PIERRE
@@ -1577,7 +1577,7 @@ x for functions decompiled but not injected, for one reason or another.
 		MAZE_MONSTER
 +		GREEN_TEETH
 		ATTACK_SUB
-		SNIPER
++		SNIPER
 +		HUSKIE
 +		CHEF
 +		IMP
@@ -1619,11 +1619,11 @@ x for functions decompiled but not injected, for one reason or another.
 		TORPEDO
 		CHAFF
 		ELECTRIC_FENCE
-		EXPLOSION
++		EXPLOSION
 		IRIS_LIGHTNING
-		MONITOR_SCREEN
-		SECURITY_SCREENS
-		MOTION_SENSORS
++		MONITOR_SCREEN
++		SECURITY_SCREENS
++		MOTION_SENSORS
 +		TIGHT_ROPE
 +		PARALLEL_BARS
 +		XRAY_CONTROLLER
@@ -1633,7 +1633,7 @@ x for functions decompiled but not injected, for one reason or another.
 		GEN_SLOT2
 -		GEN_SLOT3
 		GEN_SLOT4
-		SEARCH_OBJECTS
++		SEARCH_OBJECTS
 -		PICKUPS
 +		PUZZLE_HOLES
 +		PUZZLE_DONE

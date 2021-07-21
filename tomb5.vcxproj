@@ -70,6 +70,7 @@
     <ClCompile Include="TOMB5\game\rope.cpp" />
     <ClCompile Include="TOMB5\game\setup.cpp" />
     <ClCompile Include="TOMB5\game\skeleton.cpp" />
+    <ClCompile Include="TOMB5\game\sniper.cpp" />
     <ClCompile Include="TOMB5\game\sound.cpp" />
     <ClCompile Include="TOMB5\game\sphere.cpp" />
     <ClCompile Include="TOMB5\game\spider.cpp" />
@@ -82,6 +83,7 @@
     <ClCompile Include="TOMB5\game\tower.cpp" />
     <ClCompile Include="TOMB5\game\traps.cpp" />
     <ClCompile Include="TOMB5\game\twogun.cpp" />
+    <ClCompile Include="TOMB5\game\willwisp.cpp" />
     <ClCompile Include="TOMB5\specific\3dmath.cpp" />
     <ClCompile Include="TOMB5\specific\display.cpp" />
     <ClCompile Include="TOMB5\specific\drawlara.cpp" />
@@ -161,6 +163,7 @@
     <ClInclude Include="TOMB5\game\rope.h" />
     <ClInclude Include="TOMB5\game\setup.h" />
     <ClInclude Include="TOMB5\game\skeleton.h" />
+    <ClInclude Include="TOMB5\game\sniper.h" />
     <ClInclude Include="TOMB5\game\sound.h" />
     <ClInclude Include="TOMB5\game\sphere.h" />
     <ClInclude Include="TOMB5\game\spider.h" />
@@ -173,6 +176,7 @@
     <ClInclude Include="TOMB5\game\tower.h" />
     <ClInclude Include="TOMB5\game\traps.h" />
     <ClInclude Include="TOMB5\game\twogun.h" />
+    <ClInclude Include="TOMB5\game\willwisp.h" />
     <ClInclude Include="TOMB5\game\xatracks.h" />
     <ClInclude Include="TOMB5\global\math_tbls.h" />
     <ClInclude Include="TOMB5\global\types.h" />

@@ -700,6 +700,75 @@ void TriggerGrapplingEffect(long x, long y, long z)
 	}
 }
 
+void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, int MustHitLastNode)
+{
+	SPHERE* ptr1;
+	long dx, dy, dz, num1, cs, cd;
+	//long i;
+	short TriggerItems[8];
+	short NumTrigs, room_number;
+
+	if (!(target->flags & IFL_SWITCH_ONESHOT))
+	{
+		if (!MustHitLastNode)
+		{
+			num1 = objects[target->object_number].nmeshes;
+			cs = num1 - 1;
+		}
+		else
+		{
+			num1 = GetSpheres(target, Slist, 1);
+			cs = -1;
+			cd = 0x7FFFFFFF;
+			ptr1 = Slist;
+
+			for (int i = 0; i < num1; i++)
+			{
+				dx = ptr1->x - item->pos.x_pos;
+				dy = ptr1->y - item->pos.y_pos;
+				dz = ptr1->z - item->pos.z_pos;
+				dy = SQUARE(dx) + SQUARE(dy) + SQUARE(dz) - SQUARE(ptr1->r);
+
+				if (dy < cd)
+				{
+					cd = dy;
+					cs = i;
+				}
+
+				ptr1++;
+			}
+		}
+
+		if (cs == num1 - 1)
+		{
+			if (target->flags & IFL_CODEBITS && (target->flags & IFL_CODEBITS) != IFL_CODEBITS)
+			{
+				room_number = target->room_number;
+				GetHeight(GetFloor(target->pos.x_pos, target->pos.y_pos - 256, target->pos.z_pos, &room_number), target->pos.x_pos, target->pos.y_pos - 256, target->pos.z_pos);
+				TestTriggers(trigger_index, 1, target->flags & IFL_CODEBITS);
+			}
+			else
+			{
+				NumTrigs = GetSwitchTrigger(target, TriggerItems, 1);
+
+				for (int i = 0; i < NumTrigs; i++)
+				{
+					AddActiveItem(TriggerItems[i]);
+					items[TriggerItems[i]].status = ITEM_ACTIVE;
+					items[TriggerItems[i]].flags |= IFL_CODEBITS;
+				}
+			}
+
+			if (target->object_number == SWITCH_TYPE7)
+				ExplodeItemNode(target, objects[SWITCH_TYPE7].nmeshes - 1, 0, 64);
+
+			AddActiveItem(target - items);
+			target->flags |= IFL_CODEBITS | IFL_SWITCH_ONESHOT;
+			target->status = ITEM_ACTIVE;
+		}
+	}
+}
+
 void inject_lara1gun(bool replace)
 {
 	INJECT(0x0044DBB0, draw_shotgun_meshes, replace);
@@ -709,7 +778,7 @@ void inject_lara1gun(bool replace)
 	INJECT(0x0044E110, FireShotgun, replace);
 	INJECT(0x0044E380, FireHK, replace);
 	INJECT(0x0044E4B0, FireCrossbow, replace);
-//	INJECT(0x0044E5E0, CrossbowHitSwitchType78, replace);
+	INJECT(0x0044E5E0, CrossbowHitSwitchType78, replace);
 	INJECT(0x0044E8B0, ControlCrossbow, replace);
 	INJECT(0x0044EAC0, draw_shotgun, replace);
 	INJECT(0x0044ECA0, undraw_shotgun, replace);
