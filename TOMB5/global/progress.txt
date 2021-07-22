@@ -836,10 +836,10 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/andy.cpp
 
-0x00406C10		TriggerRopeFlame
-0x00406E10		ControlBurningRoots
-0x004070D0		ControlLavaEffect
-0x00407350		TriggerCoinGlow
+0x00406C10	+	TriggerRopeFlame
+0x00406E10	+	ControlBurningRoots
+0x004070D0	+	ControlLavaEffect
+0x00407350	x	TriggerCoinGlow
 
 
 		game/tower.cpp

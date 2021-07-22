@@ -60,6 +60,7 @@
 #include "../game/sniper.h"
 #include "../game/minisub.h"
 #include "../game/autogun.h"
+#include "../game/andy.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -139,6 +140,7 @@ void inject_all(bool replace)
 	inject_sniper(replace);
 	inject_minisub(replace);
 	inject_autogun(replace);
+	inject_andy(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
