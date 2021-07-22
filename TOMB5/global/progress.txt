@@ -1019,7 +1019,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00485290		DrawLensFlares
 0x004852E0		DrawWeaponMissile
 0x00485380		ControlTeleporter
-0x00485AD0		ControlElectricFence
+0x00485AD0	+	ControlElectricFence
 0x00485D80		TriggerFenceSparks
 0x00485EC0		trig_actor_gunflash
 
@@ -1270,7 +1270,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048D940		ControlGunTestStation
 0x0048DD80		TriggerTwogunPlasma
 0x0048DF60		FireTwogunWeapon
-0x0048E3C0		ControlZipController
+0x0048E3C0	+	ControlZipController
 
 		
 		game/autogun.cpp
@@ -1669,13 +1669,13 @@ x for functions decompiled but not injected, for one reason or another.
 		GRAPPLING_TARGET
 		TWOBLOCK_PLATFORM
 		RAISING_BLOCKS
-		EXPANDING_PLATFORM
++		EXPANDING_PLATFORM
 		PUSHABLE_OBJECTS
 +		WRECKING_BALL
 		DEATH_SLIDE
 		TORPEDO
 		CHAFF
-		ELECTRIC_FENCE
++		ELECTRIC_FENCE
 +		EXPLOSION
 		IRIS_LIGHTNING
 +		MONITOR_SCREEN

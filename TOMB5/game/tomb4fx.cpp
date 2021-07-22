@@ -238,6 +238,111 @@ void LaraBubbles(ITEM_INFO* item)
 		CreateBubble((PHD_3DPOS*)&pos, item->room_number, 8, 7, 0, 0, 0, 0);
 }
 
+void ControlElectricFence(short item_number)
+{
+	ITEM_INFO* item;
+	long tx, ty, tz, xand, zand, cnt;
+	//long x, lp;
+
+	item = &items[item_number];
+
+	if (TriggerActive(item))
+	{
+		if (item->trigger_flags == -1)
+		{
+			ty = item->pos.y_pos - 128;
+			tx = item->pos.x_pos + (GetRandomControl() & 0xFFF) + (GetRandomControl() & 0x1FFF);
+			tz = item->pos.z_pos + (GetRandomControl() & 0x3FFF);
+			xand = 255;
+			zand = 255;
+		}
+		else
+		{
+			ty = 0;
+
+			if (item->pos.y_rot <= 0)
+			{
+				if (item->pos.y_rot)
+				{
+					if (item->pos.y_rot != -32768)
+					{
+						if (item->pos.y_rot == -16384)
+						{
+							tx = item->pos.x_pos - 256;
+							tz = item->pos.z_pos - 256;
+							zand = 2047;
+						}
+						else
+						{
+							tx = 0;
+							tz = 0;
+							zand = 0;
+						}
+
+						xand = 0;
+					}
+					else
+					{
+						tx = item->pos.x_pos - 1504;
+						tz = item->pos.z_pos - 256;
+						xand = 2047;
+						zand = 0;
+					}
+				}
+				else
+				{
+					tx = item->pos.x_pos - 480;
+					tz = item->pos.z_pos + 256;
+					xand = 2047;
+					zand = 0;
+				}
+			}
+			else
+			{
+				if (item->pos.y_rot != 16384)
+				{
+					tx = 0;
+					tz = 0;
+					zand = 0;
+				}
+				else
+				{
+					tx = item->pos.x_pos + 256;
+					tz = item->pos.z_pos - 1504;
+					zand = 2047;
+				}
+
+				xand = 0;
+			}
+		}
+
+		if (!(GetRandomControl() & 0x3F))
+		{
+			cnt = (GetRandomControl() & 3) + 3;
+
+			if (item->trigger_flags != -1)
+				ty = item->pos.y_pos - (GetRandomControl() & 0x7FF) - (GetRandomControl() & 0x3FF);
+
+			for (int i = 0; i < cnt; i++)
+			{
+				if (item->trigger_flags == -1)
+					TriggerFenceSparks(tx + (GetRandomControl() & xand) - (xand >> 1), ty, tz + (GetRandomControl() & zand) - (zand >> 1), 0, 1);
+				else
+				{
+					if (xand)
+						tx += (GetRandomControl() & xand & 7) - 4;
+					else
+						tz += (GetRandomControl() & zand & 7) - 4;
+
+					ty += (GetRandomControl() & 7) - 4;
+
+					TriggerFenceSparks(tx, ty, tz, 0, 0);
+				}
+			}
+		}
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -246,4 +351,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00484D70, LSpline, replace);
 	INJECT(0x00484B30, TriggerLightning, replace);
 	INJECT(0x00483470, LaraBubbles, replace);
+	INJECT(0x00485AD0, ControlElectricFence, replace);
 }
