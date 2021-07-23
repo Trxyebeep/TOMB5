@@ -1352,7 +1352,7 @@ void inject_larafire(bool replace)
 	INJECT(0x00453490, AimWeapon, replace);
 	INJECT(0x00453580, FireWeapon, replace);
 	INJECT(0x00453930, HitTarget, replace);
-	INJECT(0x00453A90, SmashObject, replace);
+	INJECT(0x00453A90, SmashItem, replace);
 	INJECT(0x00453AE0, WeaponObject, replace);
 	INJECT(0x00453B50, WeaponObjectMesh, replace);
 	INJECT(0x00453BE0, DoProperDetection, replace);

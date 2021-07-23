@@ -81,6 +81,7 @@
     <ClCompile Include="TOMB5\game\text.cpp" />
     <ClCompile Include="TOMB5\game\tomb4fx.cpp" />
     <ClCompile Include="TOMB5\game\tower1.cpp" />
+    <ClCompile Include="TOMB5\game\tower2.cpp" />
     <ClCompile Include="TOMB5\game\traps.cpp" />
     <ClCompile Include="TOMB5\game\twogun.cpp" />
     <ClCompile Include="TOMB5\game\willwisp.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="TOMB5\game\text.h" />
     <ClInclude Include="TOMB5\game\tomb4fx.h" />
     <ClInclude Include="TOMB5\game\tower1.h" />
+    <ClInclude Include="TOMB5\game\tower2.h" />
     <ClInclude Include="TOMB5\game\traps.h" />
     <ClInclude Include="TOMB5\game\twogun.h" />
     <ClInclude Include="TOMB5\game\willwisp.h" />

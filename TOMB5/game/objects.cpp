@@ -14,7 +14,7 @@
 #include "tomb4fx.h"
 #include "twogun.h"
 #include "skeleton.h"
-#include "tower1.h"
+#include "tower2.h"
 
 static short ParallelBarsBounds[12] =
 {

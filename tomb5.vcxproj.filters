@@ -273,6 +273,9 @@
     <ClCompile Include="TOMB5\game\twogun.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\game\tower2.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -546,6 +549,9 @@
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\game\twogun.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\game\tower2.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
   </ItemGroup>

@@ -959,7 +959,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00453490	+	AimWeapon
 0x00453580	+	FireWeapon
 0x00453930	+	HitTarget
-0x00453A90	+	SmashObject
+0x00453A90	+	SmashItem
 0x00453AE0	+	WeaponObject
 0x00453B50	+	WeaponObjectMesh
 0x00453BE0	+	DoProperDetection
@@ -1330,7 +1330,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/setup.cpp
 
-0x00473210		InitialiseLara
+0x00473210	+	InitialiseLara
 0x00473600		InitialiseObjects
 0x004737C0		BaddyObjects
 0x00475D40		TrapObjects
