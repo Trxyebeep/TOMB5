@@ -28,8 +28,8 @@
 #define old_lara_holster VAR_U_(0x00E7EFE0, ushort)
 #define actor_chat_cnt VAR_U_(0x0051CAB6, char)
 #define lara_chat_cnt	VAR_U_(0x0051CAB5, char)
-#define gfCurrentLevel VAR_U_(0x00E5C2D0, int)
-#define gfLevelComplete VAR_U_(0x00E5C2F0, int)
+#define gfCurrentLevel VAR_U_(0x00E5C2D0, uchar)
+#define gfLevelComplete VAR_U_(0x00E5C2F0, uchar)
 #define gfLevelFlags	VAR_U_(0x00E5C2A0, short)
 #define gfGameMode	VAR_U_(0x005082C0, uchar)
 #define cutseq_num	VAR_U_(0x0051CAA8, int)
@@ -172,7 +172,7 @@
 #define joy_fire	VAR_U_(0x00878D9C, int)
 #define joy_x	VAR_U_(0x00878DA0, int)
 #define joy_y	VAR_U_(0x00878DA4, int)
-#define XATrack	VAR_U_(0x00510B14, short)
+#define XATrack	VAR_U_(0x00510B14, long)
 #define MusicVolume	VAR_U_(0x00E4B0EC, int)
 #define TargetSnaps	VAR_U_(0x0051CA2D, char)
 #define SniperCount	VAR_U_(0x0051CA1C, char)
@@ -447,6 +447,7 @@
 /***********************/
 #define next_spider VAR_U_(0x0051D008, long)
 #define Spiders VAR_U_(0x00EEF45C, SPIDER_STRUCT*)
+#define NotHitLaraCount VAR_U_(0x0051D0A4, char)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

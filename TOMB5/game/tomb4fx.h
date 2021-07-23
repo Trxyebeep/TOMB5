@@ -9,6 +9,7 @@ void TriggerBlood(int x, int y, int z, int a4, int num);
 long LSpline(long x, long* knots, int nk);
 LIGHTNING_STRUCT* TriggerLightning(PHD_VECTOR* s, PHD_VECTOR* d, char variation, long rgb, uchar flags, uchar size, uchar segments);
 void LaraBubbles(ITEM_INFO* item);
+void ControlElectricFence(short item_number);
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define	TriggerRicochetSpark	( (void(__cdecl*)(GAME_VECTOR*, int, int, int)) 0x0042F060 )//pos, angle, size, unk
@@ -33,3 +34,4 @@ void LaraBubbles(ITEM_INFO* item);
 #define TriggerShockwave	( (void(__cdecl*)(PHD_VECTOR*, long, long, long, long)) 0x00484670 )
 #define TriggerGunSmoke	( (void(__cdecl*)(long, long, long, long, long, long, int, int, int)) 0x004820A0 )
 #define ClearFires	( (void(__cdecl*)()) 0x00481B10 )
+#define TriggerFenceSparks	( (void(__cdecl*)(long, long, long, long, long)) 0x00485D80 )
