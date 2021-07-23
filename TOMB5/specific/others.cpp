@@ -32,7 +32,57 @@ void aLoadRoomStream()
 	number_rooms = num_rooms;
 }
 
+// Modifies s in place, then memcpy to r
+void aFixUpRoom(ROOM_INFO* r, char* s)
+{
+	ROOM_INFO* pR;
+	ROOMLET* pRm;
+	float* pVtx;
+	int* pPre;
+	short* pFac;
+	long offset;
+
+	pR = (ROOM_INFO*)s;
+	offset = (long)(s + sizeof(ROOM_INFO));
+	pR->fogbulb = (FOGBULB*)((char*)pR->fogbulb + offset);
+	pR->pclight = (PCLIGHT_INFO*)((char*)pR->pclight + offset);
+	pR->floor = (FLOOR_INFO*)((char*)pR->floor + offset);
+	pR->door = (short*)((char*)pR->door + offset);
+	pR->mesh = (MESH_INFO*)((char*)pR->mesh + offset);
+	pR->pRoomlets = (ROOMLET*)((char*)pR->pRoomlets + offset);
+	pR->pRmFace = (short*)((char*)pR->pRmFace + offset);
+	pR->pRmPrelight = (int*)((char*)pR->pRmPrelight + offset);
+	pR->pRmVtx = (float*)((char*)pR->pRmVtx + offset);
+
+	if ((uchar)pR->door & 1)
+	{
+		Log(0, "%X", pR->door);
+		pR->door = 0;
+	}
+
+	pFac = pR->pRmFace;
+	pPre = pR->pRmPrelight;
+	pVtx = pR->pRmVtx;
+	pRm = pR->pRoomlets;
+
+	for (int i = 0; i < pR->nRoomlets; i++)
+	{
+		pRm[i].pFac = (short*)pFac;
+		pRm[i].pPrelight = pPre;
+		pRm[i].pSVtx = (float*)pVtx;
+		pFac += 5 * pRm[i].nTri + 2 * 3 * pRm[i].nQuad;;
+		pPre += pRm[i].nVtx;
+		pVtx += 7 * pRm[i].nVtx;
+	}
+
+	memcpy(r, s, sizeof(ROOM_INFO));
+
+	if (r->num_lights > MaxRoomLights)
+		MaxRoomLights = r->num_lights;
+}
+
 void inject_others(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
+	INJECT(0x004917D0, aFixUpRoom, replace);
 }

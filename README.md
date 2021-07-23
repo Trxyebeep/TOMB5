@@ -15,6 +15,8 @@ Troye: Main programmer, project leader.
 
 ChocolateFan: programmer, contributor.
 
+thatguyfrombb: additional decompiling, bug fixing.
+
 Stohrendorf: Symdump tool creator.
 
 ### License:
