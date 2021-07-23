@@ -13,5 +13,5 @@ void PushPullKickDoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
 void DoubleDoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
 void UnderwaterDoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
 void SequenceDoorControl(short item_number);
-//void ProcessClosedDoors();//no
+void ProcessClosedDoors();
 

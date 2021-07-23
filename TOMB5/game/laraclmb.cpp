@@ -236,7 +236,7 @@ void lara_col_climbing(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-void lara_as_climbleft(ITEM_INFO* item, COLL_INFO* coll)//
+void lara_as_climbleft(ITEM_INFO* item, COLL_INFO* coll)
 {
 	coll->enable_baddie_push = 0;
 	coll->enable_spaz = 0;

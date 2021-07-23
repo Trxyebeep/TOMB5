@@ -54,7 +54,7 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 	pR->pRmPrelight = (int*)((char*)pR->pRmPrelight + offset);
 	pR->pRmVtx = (float*)((char*)pR->pRmVtx + offset);
 
-	if ((uchar)pR->door & 1)
+	if ((long)pR->door & 1)
 	{
 		Log(0, "%X", pR->door);
 		pR->door = 0;

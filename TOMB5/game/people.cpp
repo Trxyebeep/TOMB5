@@ -12,10 +12,10 @@
 
 int TargetVisible(ITEM_INFO* item, AI_INFO* info)
 {
+	ITEM_INFO* enemy;
+	CREATURE_INFO* creature;
 	GAME_VECTOR start;
 	GAME_VECTOR target;
-	CREATURE_INFO* creature;
-	ITEM_INFO* enemy;
 	short* bounds;
 
 	creature = (CREATURE_INFO*)item->data;
@@ -40,9 +40,9 @@ int Targetable(ITEM_INFO* item, AI_INFO* info)
 {
 	ITEM_INFO* enemy;
 	CREATURE_INFO* creature;
-	short* bounds;
 	GAME_VECTOR start;
 	GAME_VECTOR target;
+	short* bounds;
 
 	creature = (CREATURE_INFO*)item->data;
 	enemy = creature->enemy;
@@ -99,14 +99,14 @@ short GunMiss(long x, long y, long z, short speed, short yrot, short room_number
 
 int ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotation, int damage)
 {
-	int hit, targetable, random, distance;
+	ITEM_INFO* enemy;
+	CREATURE_INFO* creature;
+	MESH_INFO* StaticMesh;
 	GAME_VECTOR start;
 	GAME_VECTOR target;
 	PHD_VECTOR pos;
-	CREATURE_INFO* creature;
-	ITEM_INFO* enemy;
 	PHD_VECTOR v;
-	MESH_INFO* StaticMesh;
+	long hit, targetable, random, distance;
 
 	creature = (CREATURE_INFO*)item->data;
 	enemy = creature->enemy;
@@ -190,7 +190,7 @@ int ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotatio
 			v.z = StaticMesh->z;
 			SoundEffect(ShatterSounds[gfCurrentLevel - 5][StaticMesh->static_number], (PHD_3DPOS*)&v, SFX_DEFAULT);
 			TriggerRicochetSpark(&target, item->pos.y_rot, 3, 0);
-			StaticMesh->Flags &= 0x00FE;//check
+			StaticMesh->Flags &= ~1;
 		}
 	}
 

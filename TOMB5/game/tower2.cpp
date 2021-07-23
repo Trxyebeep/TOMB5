@@ -1,5 +1,5 @@
 #include "../tomb5/pch.h"
-#include "tower.h"
+#include "tower2.h"
 #include "control.h"
 #include "sound.h"
 #include "delstuff.h"
@@ -28,24 +28,24 @@ void ControlGunship(short item_number)
 		pos.x = (GetRandomControl() & 0x1FF) - 255;
 		pos.y = (GetRandomControl() & 0x1FF) - 255;
 		pos.z = (GetRandomControl() & 0x1FF) - 255;
-		GetLaraJointPos((PHD_VECTOR*) &pos, LM_TORSO);
+		GetLaraJointPos((PHD_VECTOR*)&pos, LM_TORSO);
 		pos1.x = pos.x;
 		pos1.y = pos.y;
 		pos1.z = pos.z;
 
 		if (!item->item_flags[0] && !item->item_flags[1] && !item->item_flags[2])
 		{
-			item->item_flags[0] = (short) (pos.x >> 4);
-			item->item_flags[1] = (short) (pos.y >> 4);
-			item->item_flags[2] = (short) (pos.z >> 4);
+			item->item_flags[0] = (short)(pos.x >> 4);
+			item->item_flags[1] = (short)(pos.y >> 4);
+			item->item_flags[2] = (short)(pos.z >> 4);
 		}
 
 		pos.x = (pos.x + 80 * item->item_flags[0]) / 6;
 		pos.y = (pos.y + 80 * item->item_flags[1]) / 6;
 		pos.z = (pos.z + 80 * item->item_flags[2]) / 6;
-		item->item_flags[0] = (short) (pos.x >> 4);
-		item->item_flags[1] = (short) (pos.y >> 4);
-		item->item_flags[2] = (short) (pos.z >> 4);
+		item->item_flags[0] = (short)(pos.x >> 4);
+		item->item_flags[1] = (short)(pos.y >> 4);
+		item->item_flags[2] = (short)(pos.z >> 4);
 
 		if (item->trigger_flags == 1)
 			item->pos.z_pos += (pos1.z - item->pos.z_pos) >> 5;
@@ -89,8 +89,8 @@ void ControlGunship(short item_number)
 				else if (items[Target].object_number >= SMASH_OBJECT1 && items[Target].object_number <= SMASH_OBJECT8)
 				{
 					ExplodeItemNode(&items[Target], 0, 0, 0x80);
-					SmashObject((short) Target);
-					KillItem((short) Target);
+					SmashObject((short)Target);
+					KillItem((short)Target);
 				}
 			}
 			else if (NotHitLaraCount < 15)
@@ -110,11 +110,11 @@ void ControlGunship(short item_number)
 						ShatterObject(NULL, StaticMesh, 64, pos1.room_number, 0);
 						StaticMesh->Flags &= ~0x1;
 						TestTriggersAtXYZ(StaticMesh->x, StaticMesh->y, StaticMesh->z, pos1.room_number, 1, 0);
-						SoundEffect(ShatterSounds[gfCurrentLevel - 5][StaticMesh->static_number], (PHD_3DPOS*) StaticMesh, 0);
+						SoundEffect(ShatterSounds[gfCurrentLevel - 5][StaticMesh->static_number], (PHD_3DPOS*)StaticMesh, 0);
 					}
 
-					TriggerRicochetSpark((GAME_VECTOR*) &v, 2 * GetRandomControl(), 3, 0);
-					TriggerRicochetSpark((GAME_VECTOR*) &v, 2 * GetRandomControl(), 3, 0);
+					TriggerRicochetSpark((GAME_VECTOR*)&v, 2 * GetRandomControl(), 3, 0);
+					TriggerRicochetSpark((GAME_VECTOR*)&v, 2 * GetRandomControl(), 3, 0);
 				}
 			}
 
@@ -141,9 +141,9 @@ void ControlGunship(short item_number)
 				sptr->x = pos2.x;
 				sptr->y = pos2.y;
 				sptr->z = pos2.z;
-				sptr->Xvel = (short) (4 * (pos1.x - pos2.x));
-				sptr->Yvel = (short) (4 * (pos1.y - pos2.y));
-				sptr->Zvel = (short) (4 * (pos1.z - pos2.z));
+				sptr->Xvel = (short)(4 * (pos1.x - pos2.x));
+				sptr->Yvel = (short)(4 * (pos1.y - pos2.y));
+				sptr->Zvel = (short)(4 * (pos1.z - pos2.z));
 				sptr->Friction = 0;
 				sptr->MaxYvel = 0;
 				sptr->Gravity = 0;
@@ -155,7 +155,7 @@ void ControlGunship(short item_number)
 	}
 }
 
-void inject_tower(bool replace)
+void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
 }
