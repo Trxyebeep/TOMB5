@@ -35,3 +35,5 @@ void InitialiseSteelDoor(short item_number);
 void InitialiseMotionSensors(short item_number);
 void InitialiseGrapplingTarget(short item_number);
 void InitialiseSpiderGenerator(short item_number);
+void InitialisePropeller(short item_number);
+void InitialiseSas(short item_number);

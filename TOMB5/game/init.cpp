@@ -12,6 +12,7 @@
 #include "pickup.h"
 #include "effects.h"
 #include "spider.h"
+#include "box.h"
 
 void InitialiseTrapDoor(short item_number)
 {
@@ -896,6 +897,112 @@ void InitialiseSpiderGenerator(short item_number)
 	ClearSpiders();
 }
 
+void InitialisePropeller(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+	item->item_flags[0] = item->trigger_flags << 10;
+
+	if (item->item_flags[0] < 2048)
+		item->item_flags[0] = 3072;
+}
+
+void InitialiseSas(short item_number)
+{
+	ITEM_INFO* item;
+	ITEM_INFO* target;
+	FLOOR_INFO* floor;
+	short anim_index, room_num;
+
+	item = &items[item_number];
+	InitialiseCreature(item_number);
+	anim_index = objects[SAS].anim_index;
+
+	if (!objects[SAS].loaded)
+		anim_index = objects[BLUE_GUARD].anim_index;
+
+	switch (item->trigger_flags)
+	{
+	case 0:
+	case 10:
+		item->anim_number = anim_index;
+		item->goal_anim_state = 1;
+		break;
+
+	case 1:
+		item->goal_anim_state = 11;
+		item->anim_number = anim_index + 23;
+		break;
+
+	case 2:
+		item->goal_anim_state = 13;
+		item->anim_number = anim_index + 25;
+		item->status -= ITEM_INVISIBLE;
+		break;
+
+	case 3:
+		item->anim_number = anim_index + 28;
+		item->goal_anim_state = 15;
+		item->meshswap_meshbits = 9216;
+
+		for (int i = room[item->room_number].item_number; i != NO_ITEM; i = target->next_item)
+		{
+			target = &items[i];
+
+			if (target->object_number >= ANIMATING1 && target->object_number <= ANIMATING15 && 
+				target->room_number == item->room_number && target->trigger_flags == 3)
+			{
+				target->mesh_bits = -5;
+				break;
+			}
+		}
+
+		break;
+
+	case 4:
+		item->goal_anim_state = 17;
+		item->meshswap_meshbits = 8192;
+		item->anim_number = anim_index + 30;
+		break;
+
+	case 5:
+		item->anim_number = item_number + 26;
+		item->goal_anim_state = 14;
+		room_num = item->room_number;
+		floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_num);
+		GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+		item->pos.y_pos = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos) - 2048;
+		break;
+
+	case 6:
+		item->goal_anim_state = 19;
+		item->anim_number = anim_index + 32;
+		break;
+
+	case 7:
+	case 9:
+		item->goal_anim_state = 38;
+		item->anim_number = anim_index + 59;
+		item->pos.x_pos -= 128 * phd_sin(item->pos.y_rot) >> 14;
+		item->pos.z_pos -= 128 * phd_cos(item->pos.y_rot) >> 14;
+		break;
+
+	case 8:
+		item->goal_anim_state = 31;
+		item->anim_number = anim_index + 46;
+		break;
+
+	case 11:
+		item->goal_anim_state = 7;
+		item->anim_number = anim_index + 12;
+		break;
+	}
+
+	item->frame_number = anims[item->anim_number].frame_base;
+	item->current_anim_state = item->goal_anim_state;
+}
+
 void inject_init(bool replace)
 {
 	INJECT(0x0043D2F0, InitialiseTrapDoor, replace);
@@ -930,4 +1037,6 @@ void inject_init(bool replace)
 	INJECT(0x0043F1D0, InitialiseMotionSensors, replace);
 	INJECT(0x0043F270, InitialiseGrapplingTarget, replace);
 	INJECT(0x0043F2B0, InitialiseSpiderGenerator, replace);
+	INJECT(0x0043F3D0, InitialisePropeller, replace);
+	INJECT(0x0043F420, InitialiseSas, replace);
 }

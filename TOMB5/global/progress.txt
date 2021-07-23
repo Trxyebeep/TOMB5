@@ -839,7 +839,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00406C10	+	TriggerRopeFlame
 0x00406E10	+	ControlBurningRoots
 0x004070D0	+	ControlLavaEffect
-0x00407350	x	TriggerCoinGlow
+0x00407350	+	TriggerCoinGlow
 
 
 		game/tower.cpp
@@ -1121,8 +1121,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043F1D0	+	InitialiseMotionSensors
 0x0043F270	+	InitialiseGrapplingTarget
 0x0043F2B0	+	InitialiseSpiderGenerator
-0x0043F3D0		InitialisePropeller
-0x0043F420		InitialiseSas
+0x0043F3D0	+	InitialisePropeller
+0x0043F420	+	InitialiseSas
 0x0043F770		InitialiseBurningRoots
 0x0043F7F0		InitialiseCookerFlame
 0x0043F8B0		InitialiseAutogun
@@ -1669,7 +1669,7 @@ x for functions decompiled but not injected, for one reason or another.
 		FLAME_EMITTER2
 		FLAME_EMITTER3
 		COOKER_FLAME
-		BURNING_ROOTS
+-		BURNING_ROOTS
 +		ROPE
 		POLEROPE
 		PROPELLERS
