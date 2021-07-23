@@ -14,7 +14,7 @@
 #include "tomb4fx.h"
 #include "twogun.h"
 #include "skeleton.h"
-#include "tower.h"
+#include "tower1.h"
 
 static short ParallelBarsBounds[12] =
 {
@@ -36,8 +36,6 @@ static short TightRopeBounds[12] =
 {
 	-256, 256, 0, 0, -256, 256, -1820, 1820, -5460, 5460, -1820, 1820
 };
-
-//0x0046A080 is LarsonControl
 
 void EarthQuake(short item_number)
 {
@@ -423,7 +421,7 @@ void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 			if (l->current_anim_state == AS_REACH)
 			{
 				PolePosR.y = l->pos.y_pos - item->pos.y_pos + 10;
-				AlignLaraPosition(&PolePosR, item, l);//4133C0
+				AlignLaraPosition(&PolePosR, item, l);
 				l->anim_number = ANIM_REACH2POLE;
 				l->frame_number = anims[ANIM_REACH2POLE].frame_base;
 			}

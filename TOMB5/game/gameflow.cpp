@@ -659,9 +659,7 @@ void DoTitle(uchar name, uchar audio)
 	InitialiseFXArray(1);
 	InitialiseLOTarray(1);
 	SetFogColor(gfFog.r, gfFog.g, gfFog.b);
-	ClearFXFogBulbs();
 	InitialisePickUpDisplay();
-	S_InitialiseScreen();
 	SOUND_Stop();
 	IsAtmospherePlaying = 0;
 	S_SetReverbType(1);

@@ -267,7 +267,7 @@
     <ClCompile Include="TOMB5\specific\texture.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\game\tower.cpp">
+    <ClCompile Include="TOMB5\game\tower1.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
     <ClCompile Include="TOMB5\game\twogun.cpp">
@@ -542,7 +542,7 @@
     <ClInclude Include="TOMB5\specific\texture.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\game\tower.h">
+    <ClInclude Include="TOMB5\game\tower1.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\game\twogun.h">

@@ -190,7 +190,7 @@ int ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotatio
 			v.z = StaticMesh->z;
 			SoundEffect(ShatterSounds[gfCurrentLevel - 5][StaticMesh->static_number], (PHD_3DPOS*)&v, SFX_DEFAULT);
 			TriggerRicochetSpark(&target, item->pos.y_rot, 3, 0);
-			StaticMesh->Flags &= 0x00FE;//check
+			StaticMesh->Flags &= 0x00FE;
 		}
 	}
 

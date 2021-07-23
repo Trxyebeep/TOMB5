@@ -662,7 +662,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 
 				if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
 					lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH &&
-					GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object(inv_item_stealth_frigggggs))
+					GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object((short)inv_item_stealth_frigggggs))
 				{
 					if (CheckGuardOnTrigger())
 						GLOBAL_enterinventory = inv_item_stealth_frigggggs;
