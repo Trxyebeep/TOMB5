@@ -60,6 +60,8 @@
 #include "../game/sniper.h"
 #include "../game/minisub.h"
 #include "../game/autogun.h"
+#include "../game/twogun.h"
+#include "../game/tower2.h"
 #include "../game/andy.h"
 #include "../game/setup.h"
 
@@ -141,6 +143,8 @@ void inject_all(bool replace)
 	inject_sniper(replace);
 	inject_minisub(replace);
 	inject_autogun(replace);
+	inject_twogun(replace);
+	inject_tower2(replace);
 	inject_andy(replace);
 	inject_setup(replace);
 }

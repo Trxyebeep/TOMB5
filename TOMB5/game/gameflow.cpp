@@ -751,7 +751,7 @@ void do_dels_cutseq_selector()
 		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
 		dels_cutseq_selector_flag = 0;
 		cutrot = 0;
-		gfLevelComplete = cutseq_selector_data[dels_cutseq_selector_cursorpos + 1].lvl;
+		gfLevelComplete = (uchar) cutseq_selector_data[dels_cutseq_selector_cursorpos + 1].lvl;
 		dels_cutseq_player = cutseq_selector_data[dels_cutseq_selector_cursorpos + 1].num;
 		dels_cutseq_selector_cursorpos = 0;
 	}

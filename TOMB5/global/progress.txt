@@ -1504,7 +1504,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00485290		DrawLensFlares
 0x004852E0		DrawWeaponMissile
 0x00485380		ControlTeleporter
-0x00485AD0		ControlElectricFence
+0x00485AD0	+	ControlElectricFence
 0x00485D80		TriggerFenceSparks
 0x00485EC0		trig_actor_gunflash
 
@@ -1520,7 +1520,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004877E0		TriggerSteelDoorSmoke
 0x00487AD0		SteelDoorCollision
 0x00487B60		TriggerLiftBrakeSparks
-0x00487FF0		ControlGunship
+0x00487FF0	+	ControlGunship
 0x00488710		ControlGasCloud
 
 
@@ -1567,7 +1567,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048D940		ControlGunTestStation
 0x0048DD80		TriggerTwogunPlasma
 0x0048DF60		FireTwogunWeapon
-0x0048E3C0		ControlZipController
+0x0048E3C0	+	ControlZipController
 
 
 		game/willwisp.cpp
@@ -1799,7 +1799,7 @@ x for functions decompiled but not injected, for one reason or another.
 +		HUSKIE
 +		CHEF
 +		IMP
-		GUNSHIP
++		GUNSHIP
 +		BAT
 +		RAT
 +		SPIDER
@@ -1830,13 +1830,13 @@ x for functions decompiled but not injected, for one reason or another.
 		GRAPPLING_TARGET
 		TWOBLOCK_PLATFORM
 		RAISING_BLOCKS
-		EXPANDING_PLATFORM
++		EXPANDING_PLATFORM
 		PUSHABLE_OBJECTS
 +		WRECKING_BALL
 		DEATH_SLIDE
 		TORPEDO
 		CHAFF
-		ELECTRIC_FENCE
++		ELECTRIC_FENCE
 +		EXPLOSION
 		IRIS_LIGHTNING
 +		MONITOR_SCREEN
