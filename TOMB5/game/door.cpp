@@ -22,8 +22,11 @@ static PHD_VECTOR PushDoorPos = { 201, 0, -702 };
 static PHD_VECTOR KickDoorPos = { 0, 0, -917 };
 
 static PHD_VECTOR UnderwaterDoorPos = { -251, -540, -46 };
-
+#ifdef CROWBAR_DOOR_POS_FIX //Avoids Lara embedding into the Crowbar Door
+static PHD_VECTOR CrowbarDoorPos = { -412, 0, 96 };
+#else
 static PHD_VECTOR CrowbarDoorPos = { -412, 0, 256 };
+#endif
 
 static short PushPullKickDoorBounds[12] =
 {
