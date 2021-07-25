@@ -3,6 +3,7 @@
 #include "control.h"
 #include "delstuff.h"
 #include "effects.h"
+#include "sphere.h"
 
 void TriggerLaraBlood()
 {
@@ -471,6 +472,68 @@ short GetTiltType(FLOOR_INFO* floor, long x, long y, long z)
 	return 0;
 }
 
+void GenericSphereBoxCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+	SPHERE* sptr;
+	long TouchBits, DeadlyBits, dx, dy, dz;
+
+	item = &items[item_num];
+
+	if (item->status != ITEM_INVISIBLE && TestBoundsCollide(item, laraitem, coll->radius))
+	{
+		TouchBits = TestCollision(item, laraitem);
+
+		if (TouchBits)
+		{
+			dy = item->pos.y_rot;
+			item->pos.y_rot = 0;
+			GetSpheres(item, Slist, 1);
+			item->pos.y_rot = dy;
+			sptr = Slist;
+			DeadlyBits = *(long*) &item->item_flags[0];
+
+			do
+			{
+				if (TouchBits & 1)
+				{
+					GlobalCollisionBounds[0] = sptr->x - sptr->r - item->pos.x_pos;
+					GlobalCollisionBounds[2] = sptr->y - sptr->r - item->pos.y_pos;
+					GlobalCollisionBounds[4] = sptr->z - sptr->r - item->pos.z_pos;
+					GlobalCollisionBounds[1] = sptr->x + sptr->r - item->pos.x_pos;
+					GlobalCollisionBounds[3] = sptr->y + sptr->r - item->pos.y_pos;
+					GlobalCollisionBounds[5] = sptr->z + sptr->r - item->pos.z_pos;
+					dx = laraitem->pos.x_pos;
+					dy = laraitem->pos.y_pos;
+					dz = laraitem->pos.z_pos;
+
+					if (ItemPushLara(item, laraitem, coll, coll->enable_spaz & TouchBits, 3) && DeadlyBits & 1)
+					{
+						laraitem->hit_points -= item->item_flags[3];
+						dx -= laraitem->pos.x_pos;
+						dy -= laraitem->pos.y_pos;
+						dz -= laraitem->pos.z_pos;
+
+						if (!coll->enable_baddie_push)
+						{
+							laraitem->pos.x_pos += dx;
+							laraitem->pos.y_pos += dy;
+							laraitem->pos.z_pos += dz;
+						}
+
+						if ((dx || dy || dz) && TriggerActive(item))
+							TriggerLaraBlood();
+					}
+				}
+
+				TouchBits >>= 1;
+				sptr++;
+				DeadlyBits >>= 1;
+			} while (TouchBits);
+		}
+	}
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -478,4 +541,5 @@ void inject_coll(bool replace)
 	INJECT(0x00411D70, FindGridShift, replace);
 	INJECT(0x004120A0, ShiftItem, replace);
 	INJECT(0x00410EF0, GetTiltType, replace);
+	INJECT(0x00413A90, GenericSphereBoxCollision, replace);
 }
