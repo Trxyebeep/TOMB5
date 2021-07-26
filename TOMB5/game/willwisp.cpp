@@ -10,6 +10,7 @@
 #include "tomb4fx.h"
 #include "lot.h"
 #include "items.h"
+#include "../specific/function_stubs.h"
 
 void InitialiseWillOWisp(short item_number)
 {

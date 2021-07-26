@@ -1,9 +1,9 @@
 #include "../tomb5/pch.h"
 #include "huskie.h"
 #include "box.h"
-#include "control.h"
 #include "effects.h"
 #include "../specific/3dmath.h"
+#include "../specific/function_stubs.h"
 
 static BITE_INFO huskie_bite =
 {

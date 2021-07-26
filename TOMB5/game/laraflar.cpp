@@ -13,6 +13,7 @@
 #include "../specific/output.h"
 #include "objects.h"
 #include "../specific/3dmath.h"
+#include "../specific/function_stubs.h"
 
 void FlareControl(short item_number)
 {

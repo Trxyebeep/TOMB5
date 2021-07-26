@@ -9,6 +9,7 @@
 #include "items.h"
 #include "spotcam.h"
 #include "sound.h"
+#include "../specific/function_stubs.h"
 
 void ControlPropeller(short item_number)
 {

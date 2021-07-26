@@ -3,12 +3,12 @@
 #include "sphere.h"
 #include "delstuff.h"
 #include "../specific/3dmath.h"
-#include "control.h"
 #include "items.h"
 #include "objects.h"
 #include "box.h"
 #include "lara_states.h"
 #include "effects.h"
+#include "../specific/function_stubs.h"
 
 static BITE_INFO imp_hit = {0, 100, 0, 9};
 

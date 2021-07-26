@@ -8,6 +8,7 @@
 #include "items.h"
 #include "objects.h"
 #include "effect2.h"
+#include "../specific/function_stubs.h"
 
 char BVols[8] =
 {

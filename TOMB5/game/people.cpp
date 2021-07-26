@@ -9,6 +9,7 @@
 #include "box.h"
 #include "debris.h"
 #include "effects.h"
+#include "../specific/function_stubs.h"
 
 int TargetVisible(ITEM_INFO* item, AI_INFO* info)
 {

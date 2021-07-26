@@ -5,7 +5,7 @@
 #include "sphere.h"
 #include "effect2.h"
 #include "people.h"
-#include "control.h"
+#include "../specific/function_stubs.h"
 
 static BITE_INFO sniper_gun =
 {

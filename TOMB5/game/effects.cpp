@@ -16,6 +16,7 @@
 #include "sphere.h"
 #include "../specific/DS.h"
 #include "footprnt.h"
+#include "../specific/function_stubs.h"
 
 #define rgb(a,b,c) a<<16 | b<<8 | c
 long FogTableColor[] =

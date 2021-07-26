@@ -15,6 +15,7 @@
 #include "twogun.h"
 #include "skeleton.h"
 #include "tower2.h"
+#include "../specific/function_stubs.h"
 
 static short ParallelBarsBounds[12] =
 {

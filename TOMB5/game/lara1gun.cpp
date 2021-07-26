@@ -17,6 +17,7 @@
 #include "switch.h"
 #include "sphere.h"
 #include "objects.h"
+#include "../specific/function_stubs.h"
 
 void draw_shotgun_meshes(int weapon_type)
 {

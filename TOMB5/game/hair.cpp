@@ -7,6 +7,7 @@
 #include "draw.h"
 #include "lara_states.h"
 #include "control.h"
+#include "../specific/function_stubs.h"
 
 void DrawHair()
 {
