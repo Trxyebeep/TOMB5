@@ -8,4 +8,4 @@
 #define draw_pistol_meshes	( (void(__cdecl*)(int)) 0x0044FE60 )
 #define undraw_pistol_mesh_left	( (void(__cdecl*)(int)) 0x0044FED0 )
 #define undraw_pistol_mesh_right	( (void(__cdecl*)(int)) 0x0044FF40 )
-#define AnimatePistols	( (void(__cdecl*)(int)) 0x004502b0 )
+#define AnimatePistols	( (void(__cdecl*)(int)) 0x004502B0 )
