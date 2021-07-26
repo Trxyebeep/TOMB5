@@ -759,9 +759,7 @@ void InitialiseSearchObject(short item_number)
 	ObjNum = 3 - ((SEARCH_OBJECT4 - item->object_number) >> 1);
 
 	if (ObjNum == 1)
-	{
 		item->mesh_bits = 2;
-	}
 	else if (!ObjNum)
 	{
 		item->meshswap_meshbits = -1;
@@ -774,15 +772,11 @@ void InitialiseSearchObject(short item_number)
 
 		for (i = 0; i < level_items; ++i)
 		{
-			if (items[i].object_number == EXPLOSION)
-			{
-				if (item->pos.x_pos == items[i].pos.x_pos && item->pos.y_pos == items[i].pos.y_pos && item->pos.z_pos == items[i].pos.z_pos)
-				{
-					item->item_flags[1] = i;
-					break;
-				}
-			}
-			else if (objects[items[i].object_number].collision == PickupCollision && item->pos.x_pos == items[i].pos.x_pos && item->pos.y_pos == items[i].pos.y_pos && item->pos.z_pos == items[i].pos.z_pos)
+			if ((items[i].object_number == EXPLOSION ||
+				objects[items[i].object_number].collision == PickupCollision) &&
+				item->pos.x_pos == items[i].pos.x_pos &&
+				item->pos.y_pos == items[i].pos.y_pos &&
+				item->pos.z_pos == items[i].pos.z_pos)
 			{
 				item->item_flags[1] = i;
 				break;

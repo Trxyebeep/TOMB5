@@ -430,9 +430,7 @@ void SearchObjectControl(short item_number)
 			}
 		}
 		else
-		{
 			CollectCarriedItems(item);
-		}
 	}
 
 	if (item->status == ITEM_DEACTIVATED)
@@ -493,9 +491,7 @@ void SearchObjectCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 				lara.gun_status = LG_HANDS_BUSY;
 
 				if (ObjNum == 3)
-				{
 					item->item_flags[0] = 1;
-				}
 				else
 				{
 					AddActiveItem(item_num);
@@ -507,9 +503,7 @@ void SearchObjectCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 				AnimateItem(item);
 			}
 			else
-			{
 				lara.GeneralPtr = (void *) item_num;
-			}
 		}
 		else if (lara.IsMoving && lara.GeneralPtr == (void *) item_num)
 		{
@@ -518,9 +512,7 @@ void SearchObjectCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 		}
 	}
 	else if (l->current_anim_state != AS_CONTROLLED)
-	{
 		ObjectCollision(item_num, l, coll);
-	}
 }
 
 void MonitorScreenCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)

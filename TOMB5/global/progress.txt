@@ -126,7 +126,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004133C0		AlignLaraPosition
 0x004134E0		Move3DPosTo3DPos
 0x00413840		MoveLaraPosition
-0x00413A90		GenericSphereBoxCollision
+0x00413A90	+	GenericSphereBoxCollision
 0x00413CF0		GetCollidedObjects
 0x00414370	+	TriggerLaraBlood
 0x00414450		TestForObjectOnLedge
@@ -1432,8 +1432,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047F610		FullBlockSwitchCollision
 0x0047F810		CogSwitchControl
 0x0047F990		CogSwitchCollision
-0x0047FC80		CrowDoveSwitchControl
-0x0047FD20		CrowDoveSwitchCollision
+0x0047FC80	+	CrowDoveSwitchControl
+0x0047FD20	+	CrowDoveSwitchCollision
 0x0047FF20		ProcessExplodingSwitchType8
 
 
@@ -1817,7 +1817,7 @@ x for functions decompiled but not injected, for one reason or another.
 -		CEILING_TRAPDOORS
 		ROLLINGBALL
 -		TEETH_SPIKES
--		ROME_HAMMER
++		ROME_HAMMER
 		FLAME
 		FLAME_EMITTER
 		FLAME_EMITTER2
@@ -1866,7 +1866,7 @@ x for functions decompiled but not injected, for one reason or another.
 		JUMP_SWITCH,
 		CROWBAR_SWITCH,
 		PULLEY,
--		CROWDOVE_SWITCH,
++		CROWDOVE_SWITCH,
 		DOOR_TYPES
 		CLOSED_DOORS
 		LIFT_DOORSS
