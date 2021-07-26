@@ -25,7 +25,7 @@ void ControlElectricFence(short item_number);
 #define	SetScreenFadeOut	( (void(__cdecl*)(long, long)) 0x00483B30 )
 #define	SetScreenFadeIn	( (void(__cdecl*)(long)) 0x00483BA0 )
 #define	CreateBubble	( (void(__cdecl*)(PHD_3DPOS*, short, int, int, int, int, int , int)) 0x00483350 )
-#define	TriggerGunShell	( (void(__cdecl*)(short, short, int)) 0x482A60 )
+#define	TriggerGunShell	( (void(__cdecl*)(short, short, int)) 0x00482A60 )
 #define GetFreeSmokeSpark	( (int(__cdecl*)()) 0x00481D40 )
 #define TriggerLightningGlow	( (void(__cdecl*)(long, long, long, long)) 0x004851B0 )
 #define ExplodingDeath2	( (void(__cdecl*)(short, long, short)) 0x00484080 )

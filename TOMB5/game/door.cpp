@@ -23,7 +23,11 @@ static PHD_VECTOR KickDoorPos = { 0, 0, -917 };
 
 static PHD_VECTOR UnderwaterDoorPos = { -251, -540, -46 };
 
+#ifdef GENERAL_FIXES
+static PHD_VECTOR CrowbarDoorPos = { -412, 0, 140 };
+#else
 static PHD_VECTOR CrowbarDoorPos = { -412, 0, 256 };
+#endif
 
 static short PushPullKickDoorBounds[12] =
 {
