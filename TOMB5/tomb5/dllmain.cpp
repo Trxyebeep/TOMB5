@@ -65,6 +65,7 @@
 #include "../game/andy.h"
 #include "../game/setup.h"
 #include "../game/switch.h"
+#include "../game/andrea.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -149,6 +150,7 @@ void inject_all(bool replace)
 	inject_andy(replace);
 	inject_setup(replace);
 	inject_switch(replace);
+	inject_andrea(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

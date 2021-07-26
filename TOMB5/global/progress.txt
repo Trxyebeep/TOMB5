@@ -10,10 +10,10 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/andrea.cpp
 
-0x00405610		ControlPropeller
-0x00405C00		TriggerFanEffects
-0x00406040		ControlRaisingCog
-0x004062B0		ControlPortalDoor
+0x00405610	+	ControlPropeller
+0x00405C00	+	TriggerFanEffects
+0x00406040	+	ControlRaisingCog
+0x004062B0	+	ControlPortalDoor
 0x00406580		ControlGenSlot1
 0x004067E0		ControlRaisingPlinth
 
@@ -1846,7 +1846,7 @@ x for functions decompiled but not injected, for one reason or another.
 +		PARALLEL_BARS
 +		XRAY_CONTROLLER
 +		CUTSCENE_ROPE
-		PORTAL
+-		PORTAL
 		GEN_SLOT1
 		GEN_SLOT2
 -		GEN_SLOT3
