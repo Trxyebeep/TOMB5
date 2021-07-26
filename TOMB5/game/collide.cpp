@@ -489,7 +489,7 @@ void GenericSphereBoxCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* c
 			dy = item->pos.y_rot;
 			item->pos.y_rot = 0;
 			GetSpheres(item, Slist, 1);
-			item->pos.y_rot = dy;
+			item->pos.y_rot = (short) dy;
 			sptr = Slist;
 			DeadlyBits = *(long*) &item->item_flags[0];
 
@@ -497,12 +497,12 @@ void GenericSphereBoxCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* c
 			{
 				if (TouchBits & 1)
 				{
-					GlobalCollisionBounds[0] = sptr->x - sptr->r - item->pos.x_pos;
-					GlobalCollisionBounds[2] = sptr->y - sptr->r - item->pos.y_pos;
-					GlobalCollisionBounds[4] = sptr->z - sptr->r - item->pos.z_pos;
-					GlobalCollisionBounds[1] = sptr->x + sptr->r - item->pos.x_pos;
-					GlobalCollisionBounds[3] = sptr->y + sptr->r - item->pos.y_pos;
-					GlobalCollisionBounds[5] = sptr->z + sptr->r - item->pos.z_pos;
+					GlobalCollisionBounds[0] = (short) (sptr->x - sptr->r - item->pos.x_pos);
+					GlobalCollisionBounds[2] = (short) (sptr->y - sptr->r - item->pos.y_pos);
+					GlobalCollisionBounds[4] = (short) (sptr->z - sptr->r - item->pos.z_pos);
+					GlobalCollisionBounds[1] = (short) (sptr->x + sptr->r - item->pos.x_pos);
+					GlobalCollisionBounds[3] = (short) (sptr->y + sptr->r - item->pos.y_pos);
+					GlobalCollisionBounds[5] = (short) (sptr->z + sptr->r - item->pos.z_pos);
 					dx = laraitem->pos.x_pos;
 					dy = laraitem->pos.y_pos;
 					dz = laraitem->pos.z_pos;
