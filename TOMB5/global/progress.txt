@@ -1625,6 +1625,365 @@ x for functions decompiled but not injected, for one reason or another.
 0x004912E0		aUnitMatrixByMat
 0x00491320	+	gte_sttr
 
+	
+		specific/alexstuff.pp
+
+0x00491360		aInit
+0x00491380		aWinString
+0x004913B0		aTransform_D3DV
+0x004914C0		aTransformClip_D3DV
+0x004916C0		aLoadRoomStream
+0x004917D0		aFixUpRoom
+0x00491950		aInitWater
+0x00491980		aProcessWater
+0x00491BE0		aUpdate
+0x00491CC0		aReadCutData
+0x00491D30		aCalcDepackBufferSz
+0x00491DA0		aMakeCutsceneResident
+0x00491F60		aFetchCutData
+0x00491FE0		DrawBigChar
+0x004922A0		_0x004922A0
+0x004922E0		GetBigStringLength
+0x004924B0		PrintBigString
+0x004927C0		DoCredits
+
+
+		specific/audio.cpp
+
+0x00492990		S_CDPlay
+0x004929E0		S_CDStop
+0x00492AA0		S_CDFade
+0x00492AC0		S_StartSyncedAudio
+0x00492AF0		ACMSetVolume
+0x00492B60		ACMEnumCallback
+0x00492C20		ACMSetupNotifications
+0x00492DA0		ACMInit
+0x004931A0		ACMClose
+0x00493350		OpenStreamFile
+0x00493490		FillADPCMBuffer
+0x004936A0		GetADPCMData
+0x00493760		ACMEmulateCDPlay
+0x00493990		ACMHandleNotifications
+
+
+		specific/clipping.cpp
+
+0x00493B90		ZClipper
+0x00494090		XYUVGClipper
+0x00495AF0		visible_zclip
+
+
+		specific/cmdline.cpp
+
+0x00495B70		CLSetup
+0x00495BA0		CLNoFMV
+0x00495BD0		DXSetupDialog
+0x00495C40		InitDSDevice
+0x00495D50		InitTFormats
+0x00496000		InitResolution
+0x00496530		InitD3DDevice
+0x00496620		InitDDDevice
+0x00496750		LoadToISO
+0x00496810		DXSetupDlgProc
+
+
+		specific/d3dmatrix.cpp
+
+0x00497280		SaveD3DCameraMatrix
+0x00497320		SetD3DViewMatrix
+0x00497460		SetD3DMatrix
+0x00497550		SetD3DMatrixF
+0x004975D0		S_InitD3DMatrix
+0x00497650		D3DNormalise
+0x004976F0		D3DVSubtract
+0x00497730		D3DVAdd
+0x00497770		D3DCrossProduct
+0x004977C0		D3DDotProduct
+0x004977F0		D3DSetTranslate
+0x00497820		D3DSetRotateX
+0x00497860		D3DSetRotateY
+0x004978A0		D3DSetRotateZ
+0x004978E0		D3DSetScale
+0x00497910		D3DIdentityMatrix
+0x00497960		D3DZeroMatrix
+0x004979B0		D3DViewMatrix
+0x00497AE0		D3DProjectionMatrix
+0x00497B80		D3DTransform
+0x00497C10		D3DTranspose
+0x00497CA0		D3DMultMatrix
+		
+
+		specific/drawlara.cpp
+
+0x00498030	+	DrawLara
+0x00498100	+	DrawLara__1
+0x00498C70	+	DrawLara__4
+0x004995C0	+	DrawLara__5
+0x00499BA0	+	DrawLara__6
+0x0049A210	+	SetLaraUnderwaterNodes
+
+
+		specific/drawroom.cpp
+
+0x0049A3D0		ProcessMeshData
+0x0049A9D0		InsertRoom
+0x0049ABF0		InsertRoomlet
+0x0049AD70		aResetFogBulbList
+0x0049AD90		aRoomInit
+0x0049AEF0		TriggerFogBulbFX
+0x0049AFB0		aBuildFogBulbList
+0x0049B1C0		aBuildFXFogBulbList
+0x0049B390		aBuildRoomletLights
+0x0049B7B0		aRoomletTransformLight
+0x0049C6B0		CheckBoundsClip
+0x0049C9F0		DrawBoundsRectangle
+0x0049CC20		DrawBoundsRectangleII
+0x0049CE40		DrawClipRectangle
+0x0049CEB0		DrawRoomletBounds
+0x0049D0E0		PrelightVertsMMXByRoomlet
+0x0049D130		PrelightVertsNonMMXByRoomlet
+0x0049D220		InitBuckets
+0x0049D250		FindBucket
+0x0049D3B0		aSetBumpComponent
+0x0049D420		aResetBumpComponent
+0x0049D460		DrawBucket
+0x0049D750		DrawBuckets
+0x0049DB10		CalcTriFaceNormal
+0x0049DBA0		CreateVertexNormals
+
+
+		specific/dxerror.cpp
+
+0x0049E050		DXGetErrorString
+0x0049EFA0		DIGetErrorString
+
+
+		specific/dxshell.cpp
+
+0x0049F1C0		DXAttempt
+0x0049F200		DIAttempt
+0x0049F240		DXGetInfo
+0x0049F2C0		DXEnumDirectSound
+0x0049F390		DXFreeInfo
+0x0049F4C0		AddStruct
+0x0049F530		DXDDCreate
+0x0049F620		DXD3DCreate
+0x0049F6A0		DXEnumDirectDraw
+0x0049F9C0		DXBitMask2ShiftCnt
+0x0049FA10		DXEnumDisplayModes
+0x0049FB80		BPPToDDBD
+0x0049FC40		DXEnumDirect3D
+0x004A0270		DXEnumTextureFormats
+0x004A0490		DXEnumZBufferFormats
+0x004A0520		DXCreateSurface
+0x004A0590		DXSetVideoMode
+0x004A0600		DXSetCooperativeLevel
+0x004A0C30		DXCreateD3DDevice
+0x004A0CB0		DXFindDevice
+0x004A0EB0		DXCreate
+0x004A1990		DXChangeVideoMode
+0x004A1A20		DXToggleFullScreen
+0x004A1C40		CloseDirectX
+0x004A1F50		DXCreateViewport
+0x004A2080		DXShowFrame
+0x004A21B0		DXMove
+0x004A2220		DXSize
+0x004A2290		DXFindTextureFormat
+0x004A23A0		DXSaveScreen
+0x004A27A0		FlashLEDs
+0x004A2880		DXReadKeyboard
+0x004A28F0		DXGetKey
+0x004A2970		DXInitInput
+0x004A2C40		EnumJoysticksCallback
+0x004A2C80		EnumAxesCallback
+0x004A2D00		DXUpdateJoystick
+0x004A2DF0		DXJoyAcquisition
+
+
+		specific/dxsound.cpp
+
+0x004A2F10		DSChangeVolume
+0x004A2F40		DSAdjustPitch
+0x004A2FB0		DSAdjustPan
+0x004A3030		DXSetOutputFormat
+0x004A3100		DXDSCreate
+0x004A3190		DXCreateSample
+0x004A3300		InitSampleDecompress
+0x004A3470		FreeSampleDecompress
+0x004A3510		DXCreateSampleADPCM
+0x004A3720		DXStopSample
+0x004A3790		DSIsChannelPlaying
+0x004A3800		DSGetFreeChannel
+0x004A3830		DXStartSample
+0x004A3950		CalcVolume
+0x004A39D0		S_SoundStopAllSamples
+0x004A3A00		S_SoundStopSample
+0x004A3A20		S_SoundPlaySample
+0x004A3A60		S_SoundPlaySampleLooped
+0x004A3AA0		DXFreeSounds
+0x004A3B10		S_SoundSampleIsPlaying
+0x004A3B40		S_SoundSetPanAndVolume
+0x004A3B90		S_SoundSetPitch
+
+
+		specific/file.cpp
+
+0x004A3BC0	+	FindCDDrive
+0x004A3CD0	+	FileOpen
+0x004A3DA0	+	FileClose
+0x004A3DD0	+	FileSize
+0x004A3E10		LoadFile
+0x004A3EF0		Decompress
+0x004A3FC0		LoadTextures
+0x004A4DA0	+	LoadRooms
+0x004A4E60		LoadObjects
+0x004A5430		AdjustUV
+0x004A59D0		LoadSprites
+0x004A5CA0		LoadCameras
+0x004A5D90		LoadSoundEffects
+0x004A5E50		LoadBoxes
+0x004A6060		LoadAnimatedTextures
+0x004A60E0	+	LoadTextureInfos
+0x004A6380		LoadItems
+0x004A6760		LoadMapFile
+0x004A67D0		LoadCinematic
+0x004A67F0		LoadAIInfo
+0x004A6880		LoadSamples
+0x004A6AB0		S_GetUVRotateTextures
+0x004A6B30		LoadLevel
+0x004A7020		DoMonitorScreen
+0x004A7130		FreeLevel
+0x004A7210		S_LoadLevel
+0x004A72B0		S_LoadLevelFile
+
+
+		specific/fmv.cpp
+
+0x004A74E0		ShowBinkFrame
+0x004A75A0		PlayFMV
+0x004A79A0		PlayFmvNow
+
+
+		specific/function_stubs.cpp
+
+0x004A7A70		DBG_Print
+0x004A7AC0		exit_message
+0x004A7AE0		S_ExitSystem
+0x004A7B10		S_InitialiseScreen
+0x004A7B30		S_SoundSetMasterVolume
+0x004A7B50		S_CalculateStaticLight
+0x004A7B70		S_CalculateLight
+0x004A7B90		S_SetReverbType
+0x004A7BB0		S_CDVolume
+0x004A7BD0		S_CDLoop
+0x004A7BF0		PrintDbug
+0x004A7C10		GetRandomControl
+0x004A7C40		GetRandomDraw
+0x004A7C70		SeedRandomControl
+0x004A7C90		SeedRandomDraw
+0x004A7CB0		init_game_malloc
+0x004A7D00		game_malloc
+0x004A7D90		game_free
+
+
+		specific/function_table.cpp
+
+0x004A7E00		_NVisible
+0x004A7E50		_Visible
+0x004A7EA0		SetCullCW
+0x004A7EC0		SetCullCCW
+0x004A7EE0		InitialiseFunctionTable
+0x004A7FA0		HWBeginScene
+0x004A8010		HWEndScene
+0x004A8040		HWInitialise
+0x004A84A0		SetFogColor
+
+
+		specific/gamemain.cpp
+
+0x004A84F0		GameMain
+0x004A8610		GameInitialise
+0x004A8790		GameClose
+0x004A8880		init_water_table
+0x004A8B70		GetRandom
+0x004A8BC0		S_SaveGame
+0x004A8E10		S_LoadGame
+
+
+		specific/input.cpp
+
+0x004A8F00		IncreaseScreenSize
+0x004A8F90		DecreaseScreenSize
+0x004A9110		Key
+0x004A9280		ReadJoystick
+0x004A92D0		S_UpdateInput
+
+
+		specific/lighting.cpp
+
+0x004A9C10		MallocD3DLights
+0x004A9C90		CreateD3DLights
+0x004A9CB0		FreeD3DLights
+0x004A9CD0		ApplyMatrix
+0x004A9D60		ApplyTransposeMatrix
+0x004A9DF0		S_CalculateStaticMeshLight
+0x004A9E60		CalcAmbientLight
+0x004A9FE0		FadeLightList
+0x004AA0C0		ShowOmni
+0x004AA5A0		CreateLightList
+0x004AAAC0		SetupLight
+0x004AAF00		SuperResetLights
+0x004AAFE0		SuperSetupLight
+0x004AB3A0		SuperSetupDynamicLight
+0x004AB580		InitObjectFogBulbs
+0x004AB7A0		InitObjectLighting
+0x004AB910		ClearObjectLighting
+0x004AB930		InitDynamicLighting		//void, no params, empty anyway
+0x004AB950		InitDynamicLighting		//void, ITEM_INFO* i
+0x004AB9D0		ClearDynamicLighting
+
+
+		specific/LoadSave.cpp
+
+0x004AB9F0		CalculateNumSpecialFeatures
+0x004ABA60		FindSFCursor
+0x004ABAE0		MemBltSurf
+0x004AC010		RGBM_Mono
+0x004AC050		ConvertSurfaceToTextures
+0x004AC430		CreateMonoScreen
+0x004AC460		FreeMonoScreen
+0x004AC810		LoadScreen
+0x004ACA30		ReleaseScreen
+0x004ACAB0		DrawLoadingScreen
+0x004ACC70		S_DrawTile
+0x004AD010		S_DisplayMonoScreen
+0x004AD290		GetSaveLoadFiles
+0x004AD460	+	DoLoadSave
+0x004AD820		DoSlider
+0x004ADF40	+	CheckKeyConflicts
+0x004ADF90		DoOptions
+0x004B0910	+	DoStatScreen
+0x004B0D60		S_DisplayPauseMenu
+0x004B1030		S_PauseMenu
+0x004B1120		S_LoadSave
+0x004B1250		DoBar
+0x004B1890	+	S_DrawDashBar
+0x004B18E0	+	S_DrawAirBar
+0x004B1950	+	S_DrawHealthBar
+0x004B19C0	+	S_DrawHealthBar2
+0x004B1A40		S_InitLoadBar
+0x004B1A80		S_UpdateLoadBar
+0x004B1AB0		S_DrawLoadBar
+0x004B1BE0		S_LoadBar
+0x004B1C00		SpecialFeaturesDisplayScreens
+0x004B1D90		DoSpecialFeaturesServer
+0x004B1E30	+	S_MemSet
+0x004B1E70		DisplayStatsUCunt
+0x004B1E90		IsHardware
+0x004B1EB0		IsSuperLowRes
+0x004B1F00		GetCampaignCheatValue
+0x004B2090		DoFrontEndOneShotStuff
+
 
 		specific/output.cpp
 
@@ -1663,82 +2022,79 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B8C50		aCalcColorSplit
 
 
-		specific/LoadSave.cpp
+		specific/polyinsert.cpp
 
-0x004AB9F0		CalculateNumSpecialFeatures
-0x004ABA60		FindSFCursor
-0x004ABAE0		MemBltSurf
-0x004AC010		RGBM_Mono
-0x004AC050		ConvertSurfaceToTextures
-0x004AC430		CreateMonoScreen
-0x004AC460		FreeMonoScreen
-0x004AC810		LoadScreen
-0x004ACA30		ReleaseScreen
-0x004ACAB0		DrawLoadingScreen
-0x004ACC70		S_DrawTile
-0x004AD010		S_DisplayMonoScreen
-0x004AD290		GetSaveLoadFiles
-0x004AD460	+	DoLoadSave
-0x004AD820		DoSlider
-0x004ADF40	+	CheckKeyConflicts
-0x004ADF90		DoOptions
-0x004B0910	+	DoStatScreen
-0x004B0D60		S_DisplayPauseMenu
-0x004B1030		S_PauseMenu
-0x004B1120		S_LoadSave
-0x004B1250		DoBar
-0x004B1890	+	S_DrawDashBar
-0x004B18E0	+	S_DrawAirBar
-0x004B1950	+	S_DrawHealthBar
-0x004B19C0	+	S_DrawHealthBar2
-0x004B1A40		S_InitLoadBar
-0x004B1A80		S_UpdateLoadBar
-0x004B1AB0		S_DrawLoadBar
-0x004B1BE0		S_LoadBar
-0x004B1C00		SpecialFeaturesDisplayScreens
-0x004B1D90		DoSpecialFeaturesServer
-0x004B1E30	+	S_MemSet
+0x004B8DB0		DrawSortList
+0x004B98E0		HWR_DrawSortList
+0x004B9FB0		DoSort
+0x004BA090		SortPolyList
+0x004BA100		InitialiseSortList
+0x004BA130		ClearFXFogBulbs
+0x004BA150		ControlFXBulb
+0x004BA170		CreateFXBulbs
+0x004BA190		TriggerFXFogBulb
+0x004BA1B0		IsVolumetric
+0x004BA1D0		mD3DTransform
+0x004BA260		CreateFogPos
+0x004BA280		DistCompare
+0x004BA2A0		InitialiseFogBulbs	
+0x004BA2C0		OmniEffect
+0x004BA2E0		OmniFog
+0x004BA300		AddQuadClippedZBuffer
+0x004BA960		AddTriClippedZBuffer
+0x004BAF20		AddClippedPoly
+0x004BB0D0		SubdivideEdge
+0x004BB390		SubdivideTri
+0x004BB7D0		SubdivideQuad
+0x004BBE40		AddTriSubdivide
+0x004BBFA0		AddQuadSubdivide
+0x004BC120		AddTriClippedSorted
+0x004BC7F0		AddQuadClippedSorted
+0x004BCE20		AddLineClippedSorted
+0x004BCF30		CalcColorSplitMMX	//asm(maybe), D3DCOLOR s, D3DCOLOR* color
+0x004BCFD0		AddPrelitMMX		//asm(maybe), long p, D3DCOLOR *color
+0x004BD070		AddPrelitMMX		//asm(maybe), MESH_DATA* r, int nv, D3DCOLOR *color
+0x004BD150		CalcColorSplit
+0x004BD270		S_DrawLine
+0x004BD300		S_DrawTriFan
 
 
-		specific/drawlara.cpp
+		specific/profiler.cpp
 
-0x00498030	+	DrawLara
-0x00498100	+	DrawLara__1
-0x00498C70	+	DrawLara__4
-0x004995C0	+	DrawLara__5
-0x00499BA0	+	DrawLara__6
-0x0049A210	+	SetLaraUnderwaterNodes
+0x004BD3C0		mResetTime
+0x004BD3E0		mInitTimer
+0x004BD430		mGetTime
+0x004BD470		mSync
+0x004BD590		mAddProfilerEvent
+0x004BD5B0		mDrawProfiler
+0x004BD6A0		mInitDrawProfiler
 
-		specific/file.cpp
 
-0x004A3BC0	+	FindCDDrive
-0x004A3CD0	+	FileOpen
-0x004A3DA0	+	FileClose
-0x004A3DD0	+	FileSize
-0x004A3E10		LoadFile
-0x004A3EF0		Decompress
-0x004A3FC0		LoadTextures
-0x004A4DA0	+	LoadRooms
-0x004A4E60		LoadObjects
-0x004A5430		AdjustUV
-0x004A59D0		LoadSprites
-0x004A5CA0		LoadCameras
-0x004A5D90		LoadSoundEffects
-0x004A5E50		LoadBoxes
-0x004A6060		LoadAnimatedTextures
-0x004A60E0	+	LoadTextureInfos
-0x004A6380		LoadItems
-0x004A6760		LoadMapFile
-0x004A67D0		LoadCinematic
-0x004A67F0		LoadAIInfo
-0x004A6880		LoadSamples
-0x004A6AB0		S_GetUVRotateTextures
-0x004A6B30		LoadLevel
-0x004A7020		DoMonitorScreen
-0x004A7130		FreeLevel
-0x004A7210		S_LoadLevel
-0x004A72B0		S_LoadLevelFile
+		specific/registry.cpp
 
+0x004BD860		REG_OpenKey
+0x004BD8A0		REG_KeyWasCreated
+0x004BD8C0		REG_CloseKey
+0x004BD8E0		REG_WriteValue		//char* szName, ulong dwValue
+0x004BD910		REG_WriteValue		//char* szName, bool tValue
+0x004BD950		REG_WriteValue		//char* szName, double dValue
+0x004BD990		REG_WriteValue		//char* szName, void* pData, int nSize
+0x004BD9E0		REG_WriteValue		//char* szName, char* szString, int nLength
+0x004BDA50		REG_DeleteValue
+0x004BDA80		REG_ReadValue		//char* szName, ulong &rdwValue, ulong dwDefault
+0x004BDB00		REG_ReadValue		//char* szName, bool &rtBool, bool tDefault
+0x004BDBA0		REG_ReadValue		//char* szName, double &rdDouble, double dDefault
+0x004BDC20		REG_ReadValue		//char* szName, void* pData,int nSize, void* pDefaultData
+0x004BDCC0		REG_ReadValue		//char* szName, char* szString, int nMax, char* szDefault
+0x004BDD90		OpenRegistry
+0x004BDE00		CloseRegistry
+0x004BDE20		LoadSettings
+0x004BE4E0		SaveSetup
+0x004BE7E0		SaveSettings
+
+
+		specific/specificfx.cpp
+no.
 
 		specific/texture.cpp
 
@@ -1755,11 +2111,36 @@ x for functions decompiled but not injected, for one reason or another.
 0x004D1710		aCreateBumpPage
 
 
-		specific/others.cpp
+		specific/time.cpp
 
-0x004916C0	+	aLoadRoomStream
-0x004917D0	+	aFixUpRoom
-0x004A79A0		PlayFmvNow
+0x004D19B0		TIME_Reset
+0x004D19D0		TIME_Init
+0x004D1A40		Sync
+
+		specific/winmain.cpp	
+
+0x004D1AD0		ClearSurfaces
+0x004D1C00		WinMain
+0x004D22D0		CheckMMXTechnology
+0x004D23E0		WinClose
+0x004D2450		WinGetLastError
+0x004D24C0		WinProcMsg
+0x004D2560		WinProcessCommands
+0x004D2AB0		WinMainWndProc
+0x004D2DD0		WinRunCheck
+0x004D2E50		WinProcessCommandLine
+0x004D2FD0		WinFrameRate
+0x004D3070		WinDisplayString
+0x004D30E0		MungeFPCW
+0x004D3150		RestoreFPCW
+
+// ======================================
+// SOFTWARE RENDERER
+// ======================================
+
+//software renderer, not looked into yet (possibly not ever)
+//what is known though is that "fake D3D" stuff start at 0x004D3191 and end at 0x004D3D56
+//then comes the MMX shit from 0x004D3D70 to 0x004DD4DA, half of it was probably written in asm, meh
 
 // ======================================
 // Objects checklist
