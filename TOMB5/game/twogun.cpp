@@ -2,7 +2,7 @@
 #include "twogun.h"
 #include "lara_states.h"
 #include "items.h"
-#include "../specific/specific.h"
+#include "../specific/audio.h"
 
 void ControlZipController(short item_number)
 {

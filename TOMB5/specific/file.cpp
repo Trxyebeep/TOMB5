@@ -3,7 +3,7 @@
 #include "function_stubs.h"
 #include "../game/gameflow.h"
 #include "../game/setup.h"
-#include "others.h"
+#include "alexstuff.h"
 
 //when every part that uses the c library funcs is decompiled, remove the stupid defines
 

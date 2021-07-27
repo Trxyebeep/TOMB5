@@ -9,14 +9,16 @@
 #include "deltapak.h"
 #include "spider.h"
 #include "lot.h"
-#include "../specific/specific.h"
 #include "xatracks.h"
 #include "effect2.h"
 #include "objects.h"
 #include "sphere.h"
-#include "../specific/DS.h"
+#include "../specific/dxsound.h"
 #include "footprnt.h"
 #include "../specific/function_stubs.h"
+#include "../specific/audio.h"
+#include "../specific/function_table.h"
+#include "../specific/polyinsert.h"
 
 #define rgb(a,b,c) a<<16 | b<<8 | c
 long FogTableColor[] =

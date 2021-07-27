@@ -1,5 +1,6 @@
 #include "../tomb5/pch.h"
 #include "function_table.h"
+#include "polyinsert.h"
 
 void InitialiseFunctionTable()
 {

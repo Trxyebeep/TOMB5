@@ -13,6 +13,7 @@ void S_DrawHealthBar2(int pos);
 void S_DrawDashBar(int pos);
 int DoLoadSave(int LoadSave);
 void S_MemSet(void* p, int val, size_t sz);
+int GetCampaignCheatValue();
 
 #define CreateMonoScreen	( (void(__cdecl*)()) 0x004AC430 )
 #define S_DisplayMonoScreen	( (void(__cdecl*)()) 0x004AD010 )
@@ -23,3 +24,6 @@ void S_MemSet(void* p, int val, size_t sz);
 #define S_LoadSave	( (int(__cdecl*)(int, int)) 0x004B1120 )
 #define DoSpecialFeaturesServer	( (void(__cdecl*)()) 0x004B1D90 )
 #define DoBar	( (void(__cdecl*)(int, int, int, int, int, long, long)) 0x004B1250 )
+#define DoFrontEndOneShotStuff	( (void(__cdecl*)()) 0x004B2090 )
+#define IsHardware	( (int(__cdecl*)()) 0x004B1E90 )
+#define IsSuperLowRes	( (int(__cdecl*)()) 0x004B1EB0 )

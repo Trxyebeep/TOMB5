@@ -1,7 +1,6 @@
 #include "../tomb5/pch.h"
 #include "pickup.h"
 #include "gameflow.h"
-#include "../specific/specific.h"
 #include "xatracks.h"
 #include "effects.h"
 #include "sound.h"
@@ -16,6 +15,7 @@
 #include "newinv2.h"
 #include "switch.h"
 #include "health.h"
+#include "../specific/audio.h"
 
 static short PuzzleBounds[12] = 
 {

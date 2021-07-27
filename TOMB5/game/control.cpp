@@ -1,7 +1,6 @@
 #include "../tomb5/pch.h"
 #include "control.h"
 #include "pickup.h"
-#include "../specific/specific.h"
 #include "../specific/input.h"
 #include "newinv2.h"
 #include "lara_states.h"
@@ -34,6 +33,7 @@
 #include "effects.h"
 #include "twogun.h"
 #include "text.h"
+#include "../specific/dxsound.h"
 
 uchar ShatterSounds[18][10] =
 {

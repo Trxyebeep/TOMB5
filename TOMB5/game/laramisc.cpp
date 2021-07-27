@@ -14,9 +14,10 @@
 #include "laraswim.h"
 #include "objects.h"
 #include "rope.h"
-#include "../specific/specific.h"
 #include "lara.h"
 #include "larasurf.h"
+#include "../specific/function_stubs.h"
+#include "../specific/audio.h"
 
 void GetLaraDeadlyBounds()
 {
