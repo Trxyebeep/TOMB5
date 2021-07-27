@@ -13,3 +13,4 @@ void SeedRandomDraw(long seed);
 #define S_CDVolume	( (void(__cdecl*)(int)) 0x004A7BB0 )
 #define S_CDLoop	( (void(__cdecl*)()) 0x004A7BD0 )
 #define S_SetReverbType	( (void(__cdecl*)(int)) 0x004A7B90 )
+#define S_ExitSystem	( (void(__cdecl*)(const char*)) 0x004A7AE0 )

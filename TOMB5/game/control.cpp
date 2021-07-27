@@ -1005,8 +1005,7 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			break;
 
 		default:
-		//	Error("GetHeight(): Unknown type");
-			Log(0, "**** GetHeight(): Unknown type ****");
+			S_ExitSystem("GetHeight(): Unknown type");
 			break;
 		}
 
@@ -1377,7 +1376,7 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 					break;
 
 				default:
-					Log(0, "**** GetCeiling(): Unknown type ****");
+					S_ExitSystem("GetCeiling(): Unknown type");
 					break;
 				}
 			} while (!(type & 0x8000));
