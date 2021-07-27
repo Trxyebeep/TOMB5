@@ -10,6 +10,10 @@
 #include "spotcam.h"
 #include "sound.h"
 #include "../specific/function_stubs.h"
+#include "laramisc.h"
+#include "sphere.h"
+#include "delstuff.h"
+#include "effects.h"
 
 void ControlPropeller(short item_number)
 {
@@ -452,10 +456,66 @@ void ControlPortalDoor(short item_number)
 	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
 }
 
+void ControlGenSlot1(short item_number)
+{
+	ITEM_INFO* item;
+	PHD_VECTOR pos;
+	long hit;
+	short frame;
+
+	item = &items[item_number];
+
+	if (!TriggerActive(item) || !item->trigger_flags)
+		return;
+
+	frame = item->frame_number - anims[item->anim_number].frame_base;
+
+	if (frame == 10 || frame == 11)
+	{
+		GetLaraDeadlyBounds();
+		DeadlyBounds[0] -= 350;
+		DeadlyBounds[1] += 350;
+		DeadlyBounds[4] -= 350;
+		DeadlyBounds[5] += 350;
+		hit = 0;
+
+		for (int i = 1; i < 7; i++)
+		{
+			pos.x = 0;
+			pos.y = -350;
+			pos.z = 0;
+			GetJointAbsPosition(item, &pos, i);
+
+			if (pos.x > DeadlyBounds[0] && pos.x < DeadlyBounds[1] && pos.y > DeadlyBounds[2] &&
+				pos.y < DeadlyBounds[3] && pos.z > DeadlyBounds[4] && pos.z < DeadlyBounds[5])
+				hit = 1;
+		}
+
+		if (hit)
+		{
+			for (int i = 7; i < 15; i++)
+			{
+				pos.x = 0;
+				pos.y = 0;
+				pos.z = 0;
+				GetLaraJointPos(&pos, i);
+
+				for (int j = 0; j < 5; j++)
+					DoBloodSplat(GetRandomControl() + pos.x - 128, (GetRandomControl() & 0xFF) + pos.y - 128, (GetRandomControl() & 0xFF) + pos.z - 128, 1, -1, lara_item->room_number);
+			}
+
+			lara_item->hit_points = 0;
+		}
+	}
+
+	AnimateItem(item);
+}
+
 void inject_andrea(bool replace)
 {
 	INJECT(0x00405610, ControlPropeller, replace);
 	INJECT(0x00405C00, TriggerFanEffects, replace);
 	INJECT(0x00406040, ControlRaisingCog, replace);
 	INJECT(0x004062B0, ControlPortalDoor, replace);
+	INJECT(0x00406580, ControlGenSlot1, replace);
 }
