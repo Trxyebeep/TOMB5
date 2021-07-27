@@ -4174,7 +4174,7 @@ void lara_as_waterout(ITEM_INFO* item, COLL_INFO* coll)
 	coll->enable_baddie_push = 0;
 	coll->enable_spaz = 0;
 	camera.flags = 1;
-#ifdef WATER_OUT_CAM_FIX 
+#ifdef GENERAL_FIXES 
 	// when lara_node is -1 by default, it takes Lara's game position and (i think) the average of her bounding box (ChaseCamera()). the average of bbox however is partly underground in this animation.
 	// So set Camera's follow-node to Lara's hips instead - it is less jerky than head and torso but moves smoothly!
 	camera.lara_node = LM_HIPS;
