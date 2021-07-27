@@ -1,7 +1,7 @@
 #include "../tomb5/pch.h"
 #include "effect2.h"
-#include "control.h"
 #include "tomb4fx.h"
+#include "../specific/function_stubs.h"
 
 void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv)
 {

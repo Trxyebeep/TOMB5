@@ -9,6 +9,7 @@
 #include "collide.h"
 #include "laramisc.h"
 #include "larafire.h"
+#include "../specific/function_stubs.h"
 
 void LaraTestWaterDepth(ITEM_INFO* item, COLL_INFO* coll)
 {

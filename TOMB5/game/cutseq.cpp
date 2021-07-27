@@ -7,6 +7,7 @@
 #include "tomb4fx.h"
 #include "delstuff.h"
 #include "../specific/3dmath.h"
+#include "../specific/function_stubs.h"
 
 char iswappedit;//original one is on 0051CA84.
 

@@ -1,8 +1,6 @@
 #include "../tomb5/pch.h"
-#include "others.h"
+#include "alexstuff.h"
 #include "function_stubs.h"
-
-/*the home of all the functions that I don't where else to go with :)*/
 
 void aLoadRoomStream()
 {
@@ -32,7 +30,6 @@ void aLoadRoomStream()
 	number_rooms = num_rooms;
 }
 
-// Modifies s in place, then memcpy to r
 void aFixUpRoom(ROOM_INFO* r, char* s)
 {
 	ROOM_INFO* pR;
@@ -81,7 +78,7 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 		MaxRoomLights = r->num_lights;
 }
 
-void inject_others(bool replace)
+void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
 	INJECT(0x004917D0, aFixUpRoom, replace);

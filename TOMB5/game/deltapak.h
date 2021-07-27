@@ -174,6 +174,3 @@ void GetActorJointAbsPosition(int actornum, ulong nodenum, PHD_VECTOR* vec);
 void init_cutseq_actors(char* data, int resident);
 void init_resident_cutseq(int num);
 void nail_intelligent_object(short objnum);
-
-#define aFetchCutData	( (char*(__cdecl*)(int)) 0x00491F60 )//this doesn't belong in here.
-

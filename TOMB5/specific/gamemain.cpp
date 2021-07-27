@@ -1,4 +1,4 @@
 #include "../tomb5/pch.h"
-#include "game.h"
+#include "gamemain.h"
 
 //tingz

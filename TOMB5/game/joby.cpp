@@ -17,6 +17,7 @@
 #include "objects.h"
 #include "../specific/output.h"
 #include "../specific/specificfx.h"
+#include "../specific/function_stubs.h"
 
 void KlaxonTremor()
 {

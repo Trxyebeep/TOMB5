@@ -18,6 +18,7 @@
 #include "laraclmb.h"
 #include "../specific/3dmath.h"
 #include "rope.h"
+#include "../specific/function_stubs.h"
 
 void(*lara_control_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* coll) =
 {

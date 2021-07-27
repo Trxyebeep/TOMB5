@@ -4,6 +4,7 @@
 #include "delstuff.h"
 #include "effects.h"
 #include "sphere.h"
+#include "../specific/function_stubs.h"
 
 void TriggerLaraBlood()
 {

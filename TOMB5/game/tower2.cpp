@@ -10,6 +10,7 @@
 #include "tomb4fx.h"
 #include "debris.h"
 #include "switch.h"
+#include "../specific/function_stubs.h"
 
 void ControlGunship(short item_number)
 {

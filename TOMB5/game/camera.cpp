@@ -1,7 +1,7 @@
 #include "../tomb5/pch.h"
 #include "camera.h"
 #include "gameflow.h"
-#include "../specific/DS.h"
+#include "../specific/function_stubs.h"
 #include "effects.h"
 #include "draw.h"
 #include "sound.h"
@@ -87,7 +87,7 @@ void CalculateCamera()
 	else
 	{
 		if (camera.underwater && MusicVolume != 0)
-			CDDA_SetMasterVolume(25 * MusicVolume + 5);
+			S_CDVolume(25 * MusicVolume + 5);
 
 		TLFlag = 1;
 	}
@@ -100,7 +100,7 @@ void CalculateCamera()
 			if (camera.underwater == 0)
 			{
 				if (!GLOBAL_playing_cutseq && !TLFlag)
-					CDDA_SetMasterVolume(0);
+					S_CDVolume(0);
 
 				camera.underwater = 1;
 			}
@@ -108,7 +108,7 @@ void CalculateCamera()
 		else if (camera.underwater)
 		{
 			if (MusicVolume)
-				CDDA_SetMasterVolume(25 * MusicVolume + 5);
+				S_CDVolume(25 * MusicVolume + 5);
 
 			camera.underwater = 0;
 		}

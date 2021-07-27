@@ -14,7 +14,6 @@
 #include "../game/objects.h"
 #include "../game/laraflar.h"
 #include "../game/effects.h"
-#include "../specific/specific.h"
 #include "../game/larafire.h"
 #include "../game/effect2.h"
 #include "../game/lara1gun.h"
@@ -42,7 +41,7 @@
 #include "../game/traps.h"
 #include "../game/init.h"
 #include "../specific/file.h"
-#include "../specific/others.h"
+#include "../specific/alexstuff.h"
 #include "../game/objlight.h"
 #include "../game/swampy.h"
 #include "../game/rat.h"
@@ -99,7 +98,6 @@ void inject_all(bool replace)
 	inject_objects(replace);
 	inject_laraflar(replace);
 	inject_effects(replace);
-	inject_specific(replace);
 	inject_larafire(replace);
 	inject_lara1gun(replace);
 	inject_hair(replace);
@@ -127,7 +125,7 @@ void inject_all(bool replace)
 	inject_traps(replace);
 	inject_init(replace);
 	inject_file(replace);
-	inject_others(replace);
+	inject_alexstuff(replace);
 	inject_objlight(replace);
 	inject_swampy(replace);
 	inject_rat(replace);

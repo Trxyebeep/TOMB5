@@ -1,7 +1,6 @@
 #include "../tomb5/pch.h"
 #include "control.h"
 #include "pickup.h"
-#include "../specific/specific.h"
 #include "../specific/input.h"
 #include "newinv2.h"
 #include "lara_states.h"
@@ -34,6 +33,7 @@
 #include "effects.h"
 #include "twogun.h"
 #include "text.h"
+#include "../specific/dxsound.h"
 
 uchar ShatterSounds[18][10] =
 {
@@ -460,28 +460,6 @@ long ControlPhase(long _nframes, int demo_mode)
 	}
 
 	return 0;
-}
-
-int GetRandomControl()
-{
-	rand_1 = 1103515245 * rand_1 + 12345;
-	return (rand_1 >> 10) & 0x7FFF;
-}
-
-void SeedRandomControl(long seed)
-{
-	rand_1 = seed;
-}
-
-int GetRandomDraw()
-{
-	rand_2 = 1103515245 * rand_2 + 12345;
-	return (rand_2 >> 10) & 0x7FFF;
-}
-
-void SeedRandomDraw(long seed)
-{
-	rand_2 = seed;
 }
 
 int GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
@@ -1027,8 +1005,7 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			break;
 
 		default:
-		//	Error("GetHeight(): Unknown type");
-			Log(0, "**** GetHeight(): Unknown type ****");
+			S_ExitSystem("GetHeight(): Unknown type");
 			break;
 		}
 
@@ -1399,7 +1376,7 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 					break;
 
 				default:
-					Log(0, "**** GetCeiling(): Unknown type ****");
+					S_ExitSystem("GetCeiling(): Unknown type");
 					break;
 				}
 			} while (!(type & 0x8000));
@@ -2507,10 +2484,6 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
-	INJECT(0x004A7C10, GetRandomControl, replace);
-	INJECT(0x004A7C70, SeedRandomControl, replace);
-	INJECT(0x004A7C40, GetRandomDraw, replace);
-	INJECT(0x004A7C90, SeedRandomDraw, replace);
 	INJECT(0x00415890, GetChange, replace);
 	INJECT(0x0041AD60, CheckGuardOnTrigger, replace);
 	INJECT(0x0041AEA0, InterpolateAngle, replace);

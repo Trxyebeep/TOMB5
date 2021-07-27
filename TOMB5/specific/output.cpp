@@ -2,7 +2,7 @@
 #include "output.h"
 #include "../specific/3dmath.h"
 #include "../game/newinv2.h"
-#include "../specific/matrix_shit.h"
+#include "../specific/d3dmatrix.h"
 #include "lighting.h"
 #include "function_table.h"
 #include "../game/gameflow.h"

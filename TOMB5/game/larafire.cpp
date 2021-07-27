@@ -16,6 +16,7 @@
 #include "../specific/3dmath.h"
 #include "sphere.h"
 #include "objects.h"
+#include "../specific/function_stubs.h"
 
 PHD_3DPOS bum_view;
 GAME_VECTOR bum_vdest;

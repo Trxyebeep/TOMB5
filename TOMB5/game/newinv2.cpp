@@ -1,11 +1,9 @@
 #include "../tomb5/pch.h"
 #include "newinv2.h"
 #include "gameflow.h"
-#include "../specific/specific.h"
 #include "effects.h"
-#include "../specific/matrix_shit.h"
+#include "../specific/d3dmatrix.h"
 #include "sound.h"
-#include "../specific/display.h"
 #include "objects.h"
 #include "lara1gun.h"
 #include "lara2gun.h"
@@ -25,6 +23,7 @@
 #include "../specific/specificfx.h"
 #include "../specific/polyinsert.h"
 #include "text.h"
+#include "../specific/audio.h"
 
 short optmessages[11] =
 {

@@ -2,10 +2,10 @@
 #include "skeleton.h"
 #include "box.h"
 #include "objects.h"
-#include "control.h"
 #include "sound.h"
 #include "effects.h"
 #include "../specific/3dmath.h"
+#include "../specific/function_stubs.h"
 
 static BITE_INFO skeleton_hit = {0, 0, 0, 17};
 

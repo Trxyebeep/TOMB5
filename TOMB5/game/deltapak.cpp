@@ -9,7 +9,6 @@
 #include "control.h"
 #include "lot.h"
 #include "tomb4fx.h"
-#include "../specific/specific.h"
 #include "camera.h"
 #include "gameflow.h"
 #include "hair.h"
@@ -28,6 +27,8 @@
 #include "draw.h"
 #include "subsuit.h"
 #include "../specific/function_stubs.h"
+#include "../specific/audio.h"
+#include "../specific/alexstuff.h"
 
 short frig_shadow_bbox[6] =
 {

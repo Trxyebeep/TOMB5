@@ -8,6 +8,7 @@
 #include "tomb4fx.h"
 #include "sound.h"
 #include "../specific/output.h"
+#include "../specific/function_stubs.h"
 
 long GetFreeRat()
 {

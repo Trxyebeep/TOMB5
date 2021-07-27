@@ -4,10 +4,6 @@
 void inject_control(bool replace);
 
 long ControlPhase(long _nframes, int demo_mode);
-int GetRandomControl();
-void SeedRandomControl(long seed);
-int GetRandomDraw();
-void SeedRandomDraw(long seed);
 int GetChange(ITEM_INFO* item, ANIM_STRUCT* anim);
 int CheckGuardOnTrigger();
 void InterpolateAngle(short dest, short* src, short* diff, short speed);

@@ -5,6 +5,7 @@
 #include "items.h"
 #include "sphere.h"
 #include "objects.h"
+#include "../specific/function_stubs.h"
 
 void TriggerRopeFlame(PHD_VECTOR* pos, long size)
 {

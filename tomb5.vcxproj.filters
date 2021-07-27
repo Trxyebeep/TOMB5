@@ -126,19 +126,13 @@
     <ClCompile Include="TOMB5\game\traps.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\specific\display.cpp">
+    <ClCompile Include="TOMB5\specific\dxsound.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\specific\DS.cpp">
-      <Filter>TOMB5\specific</Filter>
-    </ClCompile>
-    <ClCompile Include="TOMB5\specific\game.cpp">
+    <ClCompile Include="TOMB5\specific\gamemain.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
     <ClCompile Include="TOMB5\specific\input.cpp">
-      <Filter>TOMB5\specific</Filter>
-    </ClCompile>
-    <ClCompile Include="TOMB5\specific\specific.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
     <ClCompile Include="TOMB5\tomb5\dllmain.cpp">
@@ -204,9 +198,6 @@
     <ClCompile Include="TOMB5\specific\function_table.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\game\gameflow_helpers.cpp">
-      <Filter>TOMB5\game</Filter>
-    </ClCompile>
     <ClCompile Include="TOMB5\game\hydra.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
@@ -227,9 +218,6 @@
     </ClCompile>
     <ClCompile Include="TOMB5\game\minisub.cpp">
       <Filter>TOMB5\game</Filter>
-    </ClCompile>
-    <ClCompile Include="TOMB5\specific\others.cpp">
-      <Filter>TOMB5\specific</Filter>
     </ClCompile>
     <ClCompile Include="TOMB5\specific\output.cpp">
       <Filter>TOMB5\specific</Filter>
@@ -278,6 +266,21 @@
     </ClCompile>
     <ClCompile Include="TOMB5\game\andrea.cpp">
       <Filter>TOMB5\game</Filter>
+    </ClCompile>
+    <ClCompile Include="TOMB5\specific\alexstuff.cpp">
+      <Filter>TOMB5\specific</Filter>
+    </ClCompile>
+    <ClCompile Include="TOMB5\specific\audio.cpp">
+      <Filter>TOMB5\specific</Filter>
+    </ClCompile>
+    <ClCompile Include="TOMB5\specific\d3dmatrix.cpp">
+      <Filter>TOMB5\specific</Filter>
+    </ClCompile>
+    <ClCompile Include="TOMB5\specific\dxshell.cpp">
+      <Filter>TOMB5\specific</Filter>
+    </ClCompile>
+    <ClCompile Include="TOMB5\specific\fmv.cpp">
+      <Filter>TOMB5\specific</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -404,22 +407,16 @@
     <ClInclude Include="TOMB5\global\vars.h">
       <Filter>TOMB5\global</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\specific\display.h">
+    <ClInclude Include="TOMB5\specific\dxsound.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\specific\DS.h">
-      <Filter>TOMB5\specific</Filter>
-    </ClInclude>
-    <ClInclude Include="TOMB5\specific\game.h">
+    <ClInclude Include="TOMB5\specific\gamemain.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\specific\input.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\specific\matrix_shit.h">
-      <Filter>TOMB5\specific</Filter>
-    </ClInclude>
-    <ClInclude Include="TOMB5\specific\specific.h">
+    <ClInclude Include="TOMB5\specific\d3dmatrix.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\tomb5\framework.h">
@@ -485,9 +482,6 @@
     <ClInclude Include="TOMB5\specific\function_table.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\game\gameflow_helpers.h">
-      <Filter>TOMB5\game</Filter>
-    </ClInclude>
     <ClInclude Include="TOMB5\game\hydra.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
@@ -508,9 +502,6 @@
     </ClInclude>
     <ClInclude Include="TOMB5\game\minisub.h">
       <Filter>TOMB5\game</Filter>
-    </ClInclude>
-    <ClInclude Include="TOMB5\specific\others.h">
-      <Filter>TOMB5\specific</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\specific\output.h">
       <Filter>TOMB5\specific</Filter>
@@ -559,6 +550,18 @@
     </ClInclude>
     <ClInclude Include="TOMB5\game\andrea.h">
       <Filter>TOMB5\game</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\specific\alexstuff.h">
+      <Filter>TOMB5\specific</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\specific\audio.h">
+      <Filter>TOMB5\specific</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\specific\dxshell.h">
+      <Filter>TOMB5\specific</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\specific\fmv.h">
+      <Filter>TOMB5\specific</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

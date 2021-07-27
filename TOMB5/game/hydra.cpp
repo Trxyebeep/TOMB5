@@ -9,6 +9,7 @@
 #include "sphere.h"
 #include "items.h"
 #include "effect2.h"
+#include "../specific/function_stubs.h"
 
 static BITE_INFO hydra_hit = {0, 0, 0, 11};
 

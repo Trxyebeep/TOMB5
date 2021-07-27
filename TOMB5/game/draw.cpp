@@ -8,11 +8,11 @@
 #include "health.h"
 #include "objects.h"
 #include "gameflow.h"
-#include "control.h"
 #include "sound.h"
 #include "../specific/specificfx.h"
 #include "../specific/drawroom.h"
 #include "../specific/polyinsert.h"
+#include "../specific/function_stubs.h"
 #ifdef DEBUG_FEATURES
 #include "../specific/texture.h"
 #endif

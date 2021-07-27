@@ -7,6 +7,7 @@
 #include "../specific/output.h"
 #include "tomb4fx.h"
 #include "sound.h"
+#include "../specific/function_stubs.h"
 
 long GetFreeSpider()
 {
