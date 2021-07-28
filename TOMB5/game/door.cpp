@@ -61,7 +61,7 @@ void ShutThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 
 		if (d->block != 2047)
 		{
-			boxes[d->block].overlap_index |= 0x40;
+			boxes[d->block].overlap_index |= 0x4000;
 			for (short slot = 0; slot < 5; slot++)
 				baddie_slots[slot].LOT.target_box = 2047;
 		}
