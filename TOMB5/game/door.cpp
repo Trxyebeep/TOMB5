@@ -108,7 +108,7 @@ void OpenThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 		if (d->block != 2047)
 		{
 			if (!LiftDoor)
-				boxes[d->block].overlap_index &= 0xBF;
+				boxes[d->block].overlap_index &= 0xBFFF;
 
 			for (short slot = 0; slot < 5; slot++)
 				baddie_slots[slot].LOT.target_box = 2047;
