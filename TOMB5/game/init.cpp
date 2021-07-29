@@ -911,9 +911,9 @@ void InitialiseSas(short item_number)
 
 	item = &items[item_number];
 	InitialiseCreature(item_number);
-	anim_index = objects[SAS].anim_index;
+	anim_index = objects[SWAT].anim_index;
 
-	if (!objects[SAS].loaded)
+	if (!objects[SWAT].loaded)
 		anim_index = objects[BLUE_GUARD].anim_index;
 
 	switch (item->trigger_flags)
