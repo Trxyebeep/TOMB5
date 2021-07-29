@@ -961,7 +961,7 @@ void InitialiseSas(short item_number)
 		break;
 
 	case 5:
-		item->anim_number = item_number + 26;
+		item->anim_number = anim_index + 26;
 		item->goal_anim_state = 14;
 		room_num = item->room_number;
 		floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_num);
