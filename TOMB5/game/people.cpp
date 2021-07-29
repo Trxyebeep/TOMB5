@@ -185,6 +185,7 @@ int ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotatio
 		{
 			ShatterObject(0, StaticMesh, 128, start.room_number, 0);
 			SmashedMesh[SmashedMeshCount] = StaticMesh;
+			SmashedMeshRoom[SmashedMeshCount] = start.room_number;
 			SmashedMeshCount++;
 			v.x = StaticMesh->x;
 			v.y = StaticMesh->y;
