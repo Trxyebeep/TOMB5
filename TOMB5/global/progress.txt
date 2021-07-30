@@ -1079,8 +1079,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/mafia2.cpp
 
-0x0045B7B0		InitialiseMafia
-0x0045B840		MafiaControl
+0x0045B7B0	+	InitialiseMafia
+0x0045B840	+	MafiaControl
 
 
 		game/minisub.cpp
