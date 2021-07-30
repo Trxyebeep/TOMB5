@@ -2718,7 +2718,7 @@ void do_keypad_mode()
 		else
 		{
 			if (keypadpause == 30 || keypadpause == 25 || keypadpause == 20 || keypadpause == 15 || keypadpause == 10 || keypadpause == 5)
-				SoundEffect(SFX_KEYPAD_ENTRY_NO, 0, SFX_ALWAYS);
+				SoundEffect(SFX_KEYPAD_ENTRY_NO, 0, SFX_ALWAYS | 0x1000 | SFX_SETVOL);
 		}
 #endif
 
