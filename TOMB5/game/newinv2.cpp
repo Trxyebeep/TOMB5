@@ -2695,7 +2695,7 @@ void do_keypad_mode()
 	buf[1] = 45;
 	buf[2] = 45;
 	buf[3] = 45;
-	buf[5] = 45;
+	buf[4] = 0;
 
 	if (keypadnuminputs)
 		for (n = 0; n < keypadnuminputs; n++)
@@ -2705,6 +2705,23 @@ void do_keypad_mode()
 
 	if (keypadpause)
 	{
+#ifdef KEYPAD_SOUNDS
+		long combination;
+
+		combination = keypadinputs[3] + 10 * (keypadinputs[2] + 10 * (keypadinputs[1] + 10 * keypadinputs[0]));
+
+		if (GLOBAL_invkeypadcombination == combination)
+		{
+			if (keypadpause == 30 || keypadpause == 20 || keypadpause == 10)
+				SoundEffect(SFX_KEYPAD_ENTRY_YES, 0, SFX_ALWAYS);
+		}
+		else
+		{
+			if (keypadpause == 30 || keypadpause == 25 || keypadpause == 20 || keypadpause == 15 || keypadpause == 10 || keypadpause == 5)
+				SoundEffect(SFX_KEYPAD_ENTRY_NO, 0, SFX_ALWAYS);
+		}
+#endif
+
 		keypadpause--;
 
 		if (keypadpause <= 0)
