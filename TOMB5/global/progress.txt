@@ -1063,8 +1063,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/lion.cpp
 
-0x0045AD00		LionControl
-0x0045AC80		InitialiseLion
+0x0045AC80	+	InitialiseLion
+0x0045AD00	+	LionControl
 
 
 		game/lot.cpp
