@@ -2193,7 +2193,7 @@ void special2_init()
 	resetwindowsmash(60);
 	ResetCutanimate(ANIMATING16);
 	ResetCutanimate(ANIMATING5);
-	dword_00E916F0 = 2;
+	UNK_00E916F0 = 2;
 }
 
 void special2_control()
@@ -2211,7 +2211,7 @@ void special3_init()
 	cutrot = 0;
 	lara_item->mesh_bits = -1;
 	Chris_Menu = 0;
-	dword_00E916F0 = 3;
+	UNK_00E916F0 = 3;
 }
 
 void special3_control()
@@ -2229,7 +2229,7 @@ void special4_init()
 	lara_item->mesh_bits = -1;
 	Chris_Menu = 0;
 	cutrot = 1;
-	dword_00E916F0 = 4;
+	UNK_00E916F0 = 4;
 }
 
 void special4_control()

@@ -4,6 +4,7 @@
 void inject_specificfx(bool replace);
 
 void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown);
+void DrawLaserSightSprite();
 
 #define setXY4	( (void(__cdecl*)(D3DTLVERTEX*, int, int, int, int, int, int, int, int, int, short*)) 0x004C05B0 )
 #define setXYZ3	( (void(__cdecl*)(D3DTLVERTEX*, long, long, long, long, long, long, long, long, long, short*)) 0x004C0F30 )

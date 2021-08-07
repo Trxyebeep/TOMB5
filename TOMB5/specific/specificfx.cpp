@@ -4,6 +4,7 @@
 #include "../game/delstuff.h"
 #include "../game/control.h"
 #include "../specific/function_table.h"
+#include "../game/objects.h"
 
 long ShadowTable[] =
 {4, 1, 5, 5, 1, 6, 6, 1, 2, 6, 2, 7, 8, 4, 9, 9, 4, 5, 9, 5, 10, 10, 5, 6, 10, 6, 11, 11, 6, 7, 13, 8, 9, 13, 9, 14, 14, 9, 10, 14, 10, 11};
@@ -168,7 +169,65 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown)
 	}
 }
 
+void DrawLaserSightSprite()
+{
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT Tex;
+	long* TempIDK;
+	short* TempDist;
+	short* TempXY;
+	float zv, u1, u2, v1, v2;
+	long results[3];
+
+	phd_PushMatrix();
+	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+	TempDist = (short*)&UNK_EffectDistance;
+	TempXY = (short*)&UNK_EffectXY;
+	TempIDK = (long*)&UNK_00E913E0;
+	TempDist[0] = (short)(LaserSightX - lara_item->pos.x_pos);
+	TempDist[1] = (short)(LaserSightY - lara_item->pos.y_pos);
+	TempDist[2] = (short)(LaserSightZ - lara_item->pos.z_pos);
+	results[0] = phd_mxptr[0] * TempDist[0] + phd_mxptr[1] * TempDist[1] + phd_mxptr[2] * TempDist[2] + phd_mxptr[3];
+	results[1] = phd_mxptr[4] * TempDist[0] + phd_mxptr[5] * TempDist[1] + phd_mxptr[6] * TempDist[2] + phd_mxptr[7];
+	results[2] = phd_mxptr[8] * TempDist[0] + phd_mxptr[9] * TempDist[1] + phd_mxptr[10] * TempDist[2] + phd_mxptr[11];
+	zv = f_persp / (float)results[2];
+	TempXY[0] = short(float(results[0] * zv + f_centerx));
+	TempXY[1] = short(float(results[1] * zv + f_centery));
+	TempIDK[0] = results[2] >> 14;//?????????????????????? why lmao
+	phd_PopMatrix();
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
+	setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2, TempXY[0] + 2, TempXY[1] + 2, (int)f_mznear, clipflags);
+	v[0].color = LaserSightCol ? 0x0000FF00 : 0x00FF0000;//if LaserSightCol is on, it turns green
+	v[1].color = v[0].color;
+	v[2].color = v[0].color;
+	v[3].color = v[0].color;
+	v[0].specular = 0xFF000000;
+	v[1].specular = 0xFF000000;
+	v[2].specular = 0xFF000000;
+	v[3].specular = 0xFF000000;
+	u1 = sprite->x2;
+	u2 = sprite->x1;
+	v1 = sprite->y2;
+	v2 = sprite->y1;
+	Tex.drawtype = 2;
+	Tex.flag = 0;
+	Tex.tpage = sprite->tpage;
+	Tex.u1 = u1;
+	Tex.v1 = v1;
+	Tex.u2 = u2;
+	Tex.v2 = v1;
+	Tex.u3 = u2;
+	Tex.v3 = v2;
+	Tex.u4 = u1;
+	Tex.v4 = v2;
+	AddQuadSorted(v, 0, 1, 2, 3, &Tex, 0);
+	LaserSightCol = 0;
+	LaserSightActive = 0;
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
+	INJECT(0x004C7320, DrawLaserSightSprite, replace);
 }
