@@ -5,13 +5,24 @@
 #include "../game/control.h"
 #include "../specific/function_table.h"
 #include "../game/objects.h"
+#ifdef DEBUG_FEATURES
+#include "dxshell.h"
+#endif
 
-long ShadowTable[] =//shadow is split in 3 parts. top, middle, bottom, each part made of triangles it seems. first 4 tris are the top part,
-					//the following 6 are the middle part, and the last 4 are the bottom part.
+#define LINE_POINTS	4	//number of points in each grid line
+#define GRID_POINTS	(LINE_POINTS * LINE_POINTS)	//number of points in the whole grid
+#define NUM_TRIS	14	//number of triangles needed to create the shadow (this depends on what shape you're doing)
+#define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
+
+long ShadowTable[NUM_TRIS * 3] =	//num of triangles * 3 points
 {
+	//shadow is split in 3 parts. top, middle, bottom, each part made of triangles. first 4 tris are the top part,
+	//the following 6 are the middle part, and the last 4 are the bottom part.
+
 	//tris for each part go left to right. i.e the first line for the top part is the leftmost tri, 4th one is the rightmost, and so on
+	//but this isn't a hard rule at all, it's just how Core did it
 /*
-	the shadow grid is 4 x 4 points
+	the default shadow grid is 4 x 4 points
 	0	1	2	3
 
 	4	5	6	7
@@ -22,7 +33,7 @@ long ShadowTable[] =//shadow is split in 3 parts. top, middle, bottom, each part
 
 	the values here are which grid points the tri points are at.
 	for example, the first tri, 4, 1, 5. connect the dots. 4 -> 1 -> 5
-	which makes the top tri.
+	which makes the top left tri.
 	and so on.
 */
 	4, 1, 5,
@@ -53,25 +64,26 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown)
 	long* phxz;
 	long* h;
 	long* mptr;
-	float mxz[48];
+	float mxz[GRID_POINTS * 3];//x y z for each point, for drawing
 	float fx, fy, fz;
-	long hxz[32], height [16];
+	long hxz[GRID_POINTS * 2];//x z for each point, for calculating shadow coords/height
+	long height[GRID_POINTS];//height for each point
 	long x1, y1, z1, x2, y2, z2, x3, y3, z3;
 	long x, y, z, sx, sz, xextent, zextent, sxstep, szstep, color, a, b, c;
 	short room_number;
-	
+
 	xextent = size * (box[1] - box[0]) / 192;
 	zextent = size * (box[5] - box[4]) / 192;
 	pmxz = mxz;
 	phxz = hxz;
-	sxstep = xextent / 4;
-	szstep = zextent / 4;
+	sxstep = xextent / LINE_POINTS;
+	szstep = zextent / LINE_POINTS;
 	sx = -sxstep - (sxstep >> 1);
 	sz = szstep + (szstep >> 1);
 
-	for (int i = 0; i < 4; i++, sz -= szstep)
+	for (int i = 0; i < LINE_POINTS; i++, sz -= szstep)
 	{
-		for (int j = 0; j < 4; j++, pmxz += 3, phxz += 2, sx += sxstep)
+		for (int j = 0; j < LINE_POINTS; j++, pmxz += 3, phxz += 2, sx += sxstep)
 		{
 			pmxz[0] = (float)sx;
 			pmxz[2] = (float)sz;
@@ -109,7 +121,7 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown)
 	mptr = phd_mxptr;
 	phxz = hxz;
 
-	for (int i = 0; i < 16; i++, phxz += 2)
+	for (int i = 0; i < GRID_POINTS; i++, phxz += 2)
 	{
 		x = phxz[0];
 		z = phxz[1];
@@ -121,13 +133,13 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown)
 	phxz = hxz;
 	h = height;
 
-	for (int i = 0; i < 16; i++, phxz += 2, h++)
+	for (int i = 0; i < GRID_POINTS; i++, phxz += 2, h++)
 	{
 		room_number = item->room_number;
 		floor = GetFloor(phxz[0], item->floor, phxz[1], &room_number);
 		*h = GetHeight(floor, phxz[0], item->floor, phxz[1]);
 
-		if (ABS(*h - item->floor) > 196)
+		if (ABS(*h - item->floor) > POINT_HEIGHT_CORRECTION)
 			*h = item->floor;
 	}
 
@@ -138,7 +150,7 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown)
 	pmxz = mxz;
 	h = height;
 
-	for (int i = 0; i < 16; i++, pmxz += 3, h++)
+	for (int i = 0; i < GRID_POINTS; i++, pmxz += 3, h++)
 	{
 		fx = pmxz[0];
 		fy = (float)(*h - item->floor);
@@ -152,7 +164,29 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown)
 	pmxz = mxz;
 	color = 0x4F000000;
 
-	for (int i = 0; i < 14; i++)
+#ifdef DEBUG_FEATURES
+	//drawing the grid
+	D3DTLVERTEX vertex;
+	float px, py, pz, pzv;
+
+	for (int i = 0; i < GRID_POINTS; i++)
+	{
+		px = pmxz[(i * 3) + 0];
+		py = pmxz[(i * 3) + 1];
+		pz = pmxz[(i * 3) + 2];
+		pzv = f_mpersp / pz;
+		vertex.sx = px * pzv + f_centerx;
+		vertex.sy = py * pzv + f_centery;
+		vertex.rhw = pzv * f_moneopersp;
+		vertex.sz = f_a - f_boo * vertex.rhw;
+		vertex.color = 0xFFFFFFFF;		//opaque white
+		vertex.specular = 0xFF000000;
+		App.dx.lpD3DDevice->SetTexture(0, 0);
+		DXAttempt(App.dx.lpD3DDevice->DrawPrimitive(D3DPT_POINTLIST, D3DFVF_TLVERTEX, &vertex, 1, 1));
+	}
+#endif
+
+	for (int i = 0; i < NUM_TRIS; i++)
 	{
 		a = ShadowTable[(i * 3) + 0] * 3;
 		b = ShadowTable[(i * 3) + 1] * 3;

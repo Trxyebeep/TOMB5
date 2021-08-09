@@ -3718,6 +3718,12 @@ void init_cutseq_actors(char* data, int resident)
 	resident_addr = GLOBAL_resident_depack_buffers;
 	lastcamnum = -1;
 	GLOBAL_playing_cutseq = 0;
+
+#ifdef GENERAL_FIXES	//restores the ending for the Security Breach cut
+	if (cutseq_num == 26) 
+		GLOBAL_cutme->numframes = 1978;//original is 1700 or something
+#endif
+
 	GLOBAL_numcutseq_frames = GLOBAL_cutme->numframes;
 
 	for (int i = 0; i < GLOBAL_cutme->numactors; i++)
