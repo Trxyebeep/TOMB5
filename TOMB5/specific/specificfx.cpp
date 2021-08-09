@@ -6,8 +6,42 @@
 #include "../specific/function_table.h"
 #include "../game/objects.h"
 
-long ShadowTable[] =
-{4, 1, 5, 5, 1, 6, 6, 1, 2, 6, 2, 7, 8, 4, 9, 9, 4, 5, 9, 5, 10, 10, 5, 6, 10, 6, 11, 11, 6, 7, 13, 8, 9, 13, 9, 14, 14, 9, 10, 14, 10, 11};
+long ShadowTable[] =//shadow is split in 3 parts. top, middle, bottom, each part made of triangles it seems. first 4 tris are the top part,
+					//the following 6 are the middle part, and the last 4 are the bottom part.
+{
+	//tris for each part go left to right. i.e the first line for the top part is the leftmost tri, 4th one is the rightmost, and so on
+/*
+	the shadow grid is 4 x 4 points
+	0	1	2	3
+
+	4	5	6	7
+
+	8	9	10	11
+
+	12	13	14	15
+
+	the values here are which grid points the tri points are at.
+	for example, the first tri, 4, 1, 5. connect the dots. 4 -> 1 -> 5
+	which makes the top tri.
+	and so on.
+*/
+	4, 1, 5,
+	5, 1, 6,	//top part
+	6, 1, 2,
+	6, 2, 7,
+	//
+	8, 4, 9,
+	9, 4, 5,
+	9, 5, 10,	//middle part
+	10, 5, 6,
+	10, 6, 11,
+	11, 6, 7,
+	//
+	13, 8, 9,
+	13, 9, 14,	//bottom part
+	14, 9, 10,
+	14, 10, 11
+};
 
 void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown)
 {
