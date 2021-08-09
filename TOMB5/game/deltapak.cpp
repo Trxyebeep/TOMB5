@@ -2193,7 +2193,7 @@ void special2_init()
 	resetwindowsmash(60);
 	ResetCutanimate(ANIMATING16);
 	ResetCutanimate(ANIMATING5);
-	dword_00E916F0 = 2;
+	UNK_00E916F0 = 2;
 }
 
 void special2_control()
@@ -2211,7 +2211,7 @@ void special3_init()
 	cutrot = 0;
 	lara_item->mesh_bits = -1;
 	Chris_Menu = 0;
-	dword_00E916F0 = 3;
+	UNK_00E916F0 = 3;
 }
 
 void special3_control()
@@ -2229,7 +2229,7 @@ void special4_init()
 	lara_item->mesh_bits = -1;
 	Chris_Menu = 0;
 	cutrot = 1;
-	dword_00E916F0 = 4;
+	UNK_00E916F0 = 4;
 }
 
 void special4_control()
@@ -3718,6 +3718,12 @@ void init_cutseq_actors(char* data, int resident)
 	resident_addr = GLOBAL_resident_depack_buffers;
 	lastcamnum = -1;
 	GLOBAL_playing_cutseq = 0;
+
+#ifdef GENERAL_FIXES	//restores the ending for the Security Breach cut
+	if (cutseq_num == 26) 
+		GLOBAL_cutme->numframes = 1978;//original is 1700 or something
+#endif
+
 	GLOBAL_numcutseq_frames = GLOBAL_cutme->numframes;
 
 	for (int i = 0; i < GLOBAL_cutme->numactors; i++)

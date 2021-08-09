@@ -59,7 +59,9 @@
     <ClCompile Include="TOMB5\game\laraskin.cpp" />
     <ClCompile Include="TOMB5\game\larasurf.cpp" />
     <ClCompile Include="TOMB5\game\laraswim.cpp" />
+    <ClCompile Include="TOMB5\game\lion.cpp" />
     <ClCompile Include="TOMB5\game\lot.cpp" />
+    <ClCompile Include="TOMB5\game\mafia2.cpp" />
     <ClCompile Include="TOMB5\game\minisub.cpp" />
     <ClCompile Include="TOMB5\game\newinv2.cpp" />
     <ClCompile Include="TOMB5\game\objects.cpp" />
@@ -155,7 +157,9 @@
     <ClInclude Include="TOMB5\game\larasurf.h" />
     <ClInclude Include="TOMB5\game\laraswim.h" />
     <ClInclude Include="TOMB5\game\lara_states.h" />
+    <ClInclude Include="TOMB5\game\lion.h" />
     <ClInclude Include="TOMB5\game\lot.h" />
+    <ClInclude Include="TOMB5\game\mafia2.h" />
     <ClInclude Include="TOMB5\game\minisub.h" />
     <ClInclude Include="TOMB5\game\newinv2.h" />
     <ClInclude Include="TOMB5\game\objects.h" />
