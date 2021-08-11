@@ -511,6 +511,151 @@ void ControlGenSlot1(short item_number)
 	AnimateItem(item);
 }
 
+void ControlRaisingPlinth(short item_number)
+{
+	ITEM_INFO* item;
+	ITEM_INFO* item2;
+	short item_number2, vol;
+
+	item = &items[item_number];
+
+	if (!TriggerActive(item))
+	{
+		if (item->item_flags[0] == 4)
+		{
+			// Timer running
+			item->item_flags[1]--;
+
+			if (item->item_flags[1] == 0)
+			{
+				// Timer done
+				item2 = &items[item->item_flags[3] & 0xFF];
+				item2->flags = (item2->flags & ~IFL_CODEBITS) | IFL_TRIGGERED;
+				item->item_flags[0] = 6;
+				item->item_flags[1] = 768;
+				TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
+			}
+		}
+
+		else if (item->item_flags[0] == 6)
+		{
+			// Lower the plinth
+			item->item_flags[1] -= 8;
+			vol = item->item_flags[1];
+
+			if (item->item_flags[1] >= 0)
+			{
+				if (item->item_flags[1] < 256)
+				{
+					vol = vol >> 3;
+				}
+				else
+				{
+					if (item->item_flags[1] < 513)
+					{
+						vol = 31;
+					}
+					else
+					{
+						vol = (768 - vol) >> 3;
+					}
+				}
+
+				SoundEffect(SFX_BLK_PLAT_RAISE_LOW, &item->pos, (vol << 8) | SFX_SETVOL);
+				item->pos.y_pos += 8;
+				item2 = &items[item->item_flags[3] >> 8];
+				item2->flags |= IFL_TRIGGERED;
+				item2->pos.y_pos = item->pos.y_pos - 560;
+			}
+
+			else if (item->item_flags[1] < -60)
+			{
+				// Plinth lowering done
+				item2 = &items[item->item_flags[2] & 0xFF];
+				item2->item_flags[1] = 0;
+				item2->flags |= IFL_TRIGGERED;
+				item->item_flags[0] = 0;
+				item->item_flags[1] = 0;
+				RemoveActiveItem(item_number);
+				item->flags &= ~IFL_CODEBITS;
+				item->status = 0;
+			}
+		}
+	}
+
+	else if (item->item_flags[0] < 3)
+	{
+		// Raise the plinth, chain pulled
+		vol = item->item_flags[1];
+
+		if (vol < 256)
+		{
+			if (vol > 30)
+			{
+				if (vol < 225)
+				{
+					vol = 31;
+				}
+				else
+				{
+					vol = 255 - vol;
+				}
+			}
+
+			SoundEffect(SFX_BLK_PLAT_RAISE_LOW, &item->pos, (vol << 8) | SFX_SETVOL);
+			item->item_flags[1] += 16;
+			item->pos.y_pos -= 16;
+			item2 = &items[item->item_flags[3] >> 8];
+			item2->flags |= IFL_TRIGGERED;
+			item2->pos.y_pos = item->pos.y_pos - 560;
+			return;
+		}
+		else
+		{
+			item->item_flags[1] = 0;
+			item->item_flags[0]++;
+
+			if (item->item_flags[0] == 3)
+			{
+				// Third raise of the plinth, must enable timer
+				item->item_flags[1] = item->trigger_flags * 0x1E;
+				item->item_flags[0] = 4;
+				item_number2 = item->item_flags[3] & 0xFF;
+				item2 = &items[item_number2];
+				AddActiveItem(item_number2);
+				item2->flags |= (IFL_CODEBITS | IFL_TRIGGERED);
+				item2->status = 1;
+				item2 = &items[item->item_flags[2] & 0xFF];
+				item2->item_flags[1] = 1;
+				item2->flags |= IFL_TRIGGERED;
+				item->flags &= ~IFL_CODEBITS;
+			}
+			else
+			{
+				// First two raises of the plinth
+				RemoveActiveItem(item_number);
+				item->flags &= ~IFL_CODEBITS;
+				item->status = 0;
+			}
+		}
+	}
+
+	else if (item->item_flags[0] == 4)
+	{
+		// Touched trigger to disable timer, plinth won't lower
+		item->item_flags[0] = 5;
+		item->item_flags[1] = 0;
+	}
+
+	else if (((item->item_flags[0] == 5) && (item->item_flags[1] == 0)) && ((items[item->item_flags[3] >> 8].flags & IFL_CLEARBODY) != 0))
+	{
+		// Grabbed item on top of plinth. Plinth disabled.
+		FlipMap(3);
+		flipmap[3] ^= 0x3E00;
+		item->item_flags[1] = 1;
+	}
+}
+
 void inject_andrea(bool replace)
 {
 	INJECT(0x00405610, ControlPropeller, replace);
@@ -518,4 +663,5 @@ void inject_andrea(bool replace)
 	INJECT(0x00406040, ControlRaisingCog, replace);
 	INJECT(0x004062B0, ControlPortalDoor, replace);
 	INJECT(0x00406580, ControlGenSlot1, replace);
+	INJECT(0x004067E0, ControlRaisingPlinth, replace);
 }
