@@ -4,7 +4,7 @@
 
 void InitialiseCreature(short item_number)
 {
-	ITEM_INFO* item; // Comes from PSX symbols
+	ITEM_INFO* item;
 
 	item = &items[item_number];
 	item->collidable = 1;
@@ -18,7 +18,7 @@ void InitialiseCreature(short item_number)
 
 int CreatureActive(short item_number)
 {
-	ITEM_INFO* item; // Comes from PSX symbols
+	ITEM_INFO* item;
 
 	item = &items[item_number];
 
@@ -27,12 +27,10 @@ int CreatureActive(short item_number)
 
 	if (item->status == 3)
 	{
-
 		if (!EnableBaddieAI(item_number, 0))
 			return 0;
 
 		item->status = 1;
-
 	}
 
 	return 1;
