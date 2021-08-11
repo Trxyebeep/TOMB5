@@ -9,9 +9,14 @@
 #include "dxshell.h"
 #endif
 
+#ifdef cunt
+#define LINE_POINTS	8	//number of points in each grid line
+#define NUM_TRIS	82	//number of triangles needed to create the shadow (this depends on what shape you're doing)
+#else
 #define LINE_POINTS	4	//number of points in each grid line
-#define GRID_POINTS	(LINE_POINTS * LINE_POINTS)	//number of points in the whole grid
 #define NUM_TRIS	14	//number of triangles needed to create the shadow (this depends on what shape you're doing)
+#endif
+#define GRID_POINTS	(LINE_POINTS * LINE_POINTS)	//number of points in the whole grid
 #define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
 
 long ShadowTable[NUM_TRIS * 3] =	//num of triangles * 3 points
@@ -36,22 +41,107 @@ long ShadowTable[NUM_TRIS * 3] =	//num of triangles * 3 points
 	which makes the top left tri.
 	and so on.
 */
-	4, 1, 5,
-	5, 1, 6,	//top part
-	6, 1, 2,
-	6, 2, 7,
-	//
-	8, 4, 9,
-	9, 4, 5,
-	9, 5, 10,	//middle part
-	10, 5, 6,
-	10, 6, 11,
-	11, 6, 7,
-	//
-	13, 8, 9,
-	13, 9, 14,	//bottom part
-	14, 9, 10,
-	14, 10, 11
+#ifdef cunt
+	16, 9, 17,
+	9, 2, 10,
+	9, 10, 17,
+	17, 10, 18,
+	2, 10, 3,
+	10, 3, 11,
+	10, 11, 18,
+	18, 11, 19,
+	3, 4, 11,
+	11, 4, 12,
+	11, 12, 19,
+	19, 12, 20,
+	4, 5, 12,
+	12, 5, 13,
+	20, 12, 13,
+	20, 13, 21,
+	5, 13, 14,
+	13, 21, 14,
+	21, 14, 22,
+	14, 22, 23,
+	16, 17, 24,
+	24, 17, 25,
+	17, 18, 25,
+	25, 18, 26,
+	18, 19, 26,
+	26, 19, 27,
+	19, 20, 27,
+	27, 20, 28,
+	20, 21, 28,
+	28, 21, 29,
+	21, 22, 29,
+	29, 22, 30,
+	22, 23, 30,
+	30, 23, 31,
+	24, 25, 32,
+	32, 25, 33,
+	25, 26, 33,
+	33, 26, 34,
+	26, 27, 34,
+	34, 27, 35,
+	27, 28, 35,
+	35, 28, 36,
+	28, 29, 36,
+	36, 29, 37,
+	29, 30, 37,
+	37, 30, 38,
+	30, 31, 38,
+	38, 31, 39,
+	32, 33, 40,
+	40, 33, 41,
+	33, 34, 41,
+	41, 34, 42,
+	34, 35, 42,
+	42, 35, 43,
+	35, 36, 43,
+	43, 36, 44,
+	36, 37, 44,
+	44, 37, 45,
+	37, 38, 45,
+	45, 38, 46,
+	38, 39, 46,
+	46, 39, 47,
+	40, 49, 41,
+	41, 42, 49,
+	49, 42, 50,
+	42, 43, 50,
+	50, 43, 51,
+	43, 44, 51,
+	51, 44, 52,
+	44, 45, 52,
+	52, 45, 53,
+	45, 46, 53,
+	53, 46, 54,
+	46, 47, 54,
+	49, 50, 58,
+	50, 51, 58,
+	58, 51, 59,
+	51, 52, 59,
+	59, 52, 60,
+	52, 53, 60,
+	60, 53, 61,
+	53, 54, 61
+#else
+4, 1, 5,
+5, 1, 6,	//top part
+6, 1, 2,
+6, 2, 7,
+//
+8, 4, 9,
+9, 4, 5,
+9, 5, 10,	//middle part
+10, 5, 6,
+10, 6, 11,
+11, 6, 7,
+//
+13, 8, 9,
+13, 9, 14,	//bottom part
+14, 9, 10,
+14, 10, 11
+#endif
 };
 
 void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown)
@@ -98,9 +188,15 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown)
 
 	if (item == lara_item)
 	{
+#ifdef cunt
+		vector.x = -60;
+		vector.y = 0;
+		vector.z = 30;
+#else
 		vector.x = 0;
 		vector.y = 0;
 		vector.z = 0;
+#endif
 		GetLaraJointPos(&vector, 7);
 		room_number = lara_item->room_number;
 		floor = GetFloor(vector.x, vector.y, vector.z, &room_number);
