@@ -526,7 +526,7 @@ void ControlRaisingPlinth(short item_number)
 			// Timer running
 			item->item_flags[1]--;
 
-			if (item->item_flags[1] == 0)
+			if (!item->item_flags[1])
 			{
 				// Timer done
 				item2 = &items[item->item_flags[3] & 0xFF];
@@ -536,7 +536,6 @@ void ControlRaisingPlinth(short item_number)
 				TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
 			}
 		}
-
 		else if (item->item_flags[0] == 6)
 		{
 			// Lower the plinth
@@ -546,19 +545,13 @@ void ControlRaisingPlinth(short item_number)
 			if (item->item_flags[1] >= 0)
 			{
 				if (item->item_flags[1] < 256)
-				{
 					vol = vol >> 3;
-				}
 				else
 				{
 					if (item->item_flags[1] < 513)
-					{
 						vol = 31;
-					}
 					else
-					{
 						vol = (768 - vol) >> 3;
-					}
 				}
 
 				SoundEffect(SFX_BLK_PLAT_RAISE_LOW, &item->pos, (vol << 8) | SFX_SETVOL);
@@ -567,7 +560,6 @@ void ControlRaisingPlinth(short item_number)
 				item2->flags |= IFL_TRIGGERED;
 				item2->pos.y_pos = item->pos.y_pos - 560;
 			}
-
 			else if (item->item_flags[1] < -60)
 			{
 				// Plinth lowering done
@@ -582,7 +574,6 @@ void ControlRaisingPlinth(short item_number)
 			}
 		}
 	}
-
 	else if (item->item_flags[0] < 3)
 	{
 		// Raise the plinth, chain pulled
@@ -593,13 +584,9 @@ void ControlRaisingPlinth(short item_number)
 			if (vol > 30)
 			{
 				if (vol < 225)
-				{
 					vol = 31;
-				}
 				else
-				{
 					vol = 255 - vol;
-				}
 			}
 
 			SoundEffect(SFX_BLK_PLAT_RAISE_LOW, &item->pos, (vol << 8) | SFX_SETVOL);
@@ -608,7 +595,6 @@ void ControlRaisingPlinth(short item_number)
 			item2 = &items[item->item_flags[3] >> 8];
 			item2->flags |= IFL_TRIGGERED;
 			item2->pos.y_pos = item->pos.y_pos - 560;
-			return;
 		}
 		else
 		{
@@ -639,19 +625,17 @@ void ControlRaisingPlinth(short item_number)
 			}
 		}
 	}
-
 	else if (item->item_flags[0] == 4)
 	{
 		// Touched trigger to disable timer, plinth won't lower
 		item->item_flags[0] = 5;
 		item->item_flags[1] = 0;
 	}
-
-	else if (((item->item_flags[0] == 5) && (item->item_flags[1] == 0)) && ((items[item->item_flags[3] >> 8].flags & IFL_CLEARBODY) != 0))
+	else if (item->item_flags[0] == 5 && !item->item_flags[1] && (items[item->item_flags[3] >> 8].flags & IFL_CLEARBODY) != 0)
 	{
 		// Grabbed item on top of plinth. Plinth disabled.
 		FlipMap(3);
-		flipmap[3] ^= 0x3E00;
+		flipmap[3] ^= IFL_CODEBITS;
 		item->item_flags[1] = 1;
 	}
 }
