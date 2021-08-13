@@ -44,10 +44,9 @@ static short CrowbarDoorBounds[12] =
 	-512, 512, -1024, 0, 0, 512, -14560, 14560, -14560, 14560, -14560, 14560
 };
 
-
-
 void ShutThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 {
+	CREATURE_INFO* cinfo;
 	short* dptr;
 
 	if (d->floor)
@@ -56,14 +55,18 @@ void ShutThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 		d->floor->ceiling = -127;
 		d->floor->floor = -127;
 		d->floor->index = 0;
-		d->floor->pit_room = -1;
-		d->floor->sky_room = -1;
+		d->floor->pit_room = NO_ROOM;
+		d->floor->sky_room = NO_ROOM;
 
 		if (d->block != 2047)
 		{
 			boxes[d->block].overlap_index |= 0x4000;
+
 			for (short slot = 0; slot < 5; slot++)
-				baddie_slots[slot].LOT.target_box = 2047;
+			{
+				cinfo = &baddie_slots[slot];
+				cinfo->LOT.target_box = 2047;
+			}
 		}
 	}
 
@@ -99,11 +102,15 @@ void ShutThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 
 void OpenThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 {
+	CREATURE_INFO* cinfo;
 	short* dptr;
+	short v;
 
 	if (d->floor)
 	{
-		memcpy(d->floor, &d->data, sizeof(FLOOR_INFO));
+	//	memcpy(d->floor, &d->data, sizeof(FLOOR_INFO));
+		*d->floor = d->data;//this is a S_MemCpy call on PSX, and probably in original PC too but the compiler was smart.
+		//anyway, matching PC assmbly for now :)
 
 		if (d->block != 2047)
 		{
@@ -111,8 +118,10 @@ void OpenThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 				boxes[d->block].overlap_index &= 0xBFFF;
 
 			for (short slot = 0; slot < 5; slot++)
-				baddie_slots[slot].LOT.target_box = 2047;
-
+			{
+				cinfo = &baddie_slots[slot];
+				cinfo->LOT.target_box = 2047;
+			}
 		}
 	}
 
@@ -120,8 +129,6 @@ void OpenThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 
 	if (dptr)
 	{
-		short v;
-
 		v = dd->dn1 < 0 ? -1 : 1;
 
 		if (dd->dn1 & 1)
@@ -163,7 +170,6 @@ void OpenThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 			else
 				dd->dptr4[2] = v;
 		}
-
 	}
 }
 
@@ -171,19 +177,23 @@ void DoorControl(short item_number)
 {
 	ITEM_INFO* item;
 	DOOR_DATA* door;
+	short bound;//not in symbols
 
-	door = (DOOR_DATA*)items[item_number].data;
 	item = &items[item_number];
+	door = (DOOR_DATA*)item->data;
 
 	if (item->trigger_flags == 1)//doors that open with cogwheels
 	{
 		if (item->item_flags[0])
 		{
-			--item->item_flags[0];
+			item->item_flags[0]--;
 			item->pos.y_pos -= 12;
-			if (item->pos.y_pos < GetBoundsAccurate(item)[2] + item->item_flags[2] - 256)
+			bound = GetBoundsAccurate(item)[2] + *(long*)&item->item_flags[2] - 256;//'bound' isn't in the symbols but,
+			//GetBoundsAccurate is only called once in the asm, but is used twice
+
+			if (item->pos.y_pos < bound)
 			{
-				item->pos.y_pos = GetBoundsAccurate(item)[2] + item->item_flags[2] - 256;
+				item->pos.y_pos = bound;
 				item->item_flags[0] = 0;
 			}
 
@@ -204,6 +214,7 @@ void DoorControl(short item_number)
 			if (item->pos.y_pos >= item->item_flags[2])
 			{
 				item->pos.y_pos = item->item_flags[2];
+
 				if (door->Opened)
 				{
 					ShutThatDoor(&door->d1, door);
@@ -214,133 +225,111 @@ void DoorControl(short item_number)
 				}
 			}
 		}
-
-		return;
-	}
-
-	if (item->object_number < LIFT_DOORS1 || item->object_number > LIFT_DOORS2)
-	{
-		if (TriggerActive(item))
-		{
-			if (item->current_anim_state == 0)
-			{
-				item->goal_anim_state = 1;
-				AnimateItem(item);
-				return;
-			}
-
-			if (!door->Opened)
-			{
-				OpenThatDoor(&door->d1, door);
-				OpenThatDoor(&door->d2, door);
-				OpenThatDoor(&door->d1flip, door);
-				OpenThatDoor(&door->d2flip, door);
-				door->Opened = 1;
-			}
-
-			if (item->frame_number == anims[item->anim_number].frame_end)
-			{
-				if (gfCurrentLevel == LVL5_THIRTEENTH_FLOOR)
-				{
-					if (item->object_number != CLOSED_DOOR2 && item->object_number != CLOSED_DOOR3)
-					{
-						AnimateItem(item);
-						return;
-					}
-
-					item->status = ITEM_INVISIBLE;
-					AnimateItem(item);
-					return;
-				}
-				if (gfCurrentLevel >= LVL5_ESCAPE_WITH_THE_IRIS && gfCurrentLevel <= LVL5_RED_ALERT && item->object_number == CLOSED_DOOR1)
-				{
-					item->status = ITEM_INVISIBLE;
-					AnimateItem(item);
-					return;
-				}
-			}
-		}
-		else
-		{
-			item->status = ITEM_ACTIVE;
-
-			if (item->current_anim_state == 1)
-			{
-				item->goal_anim_state = 0;
-				AnimateItem(item);
-				return;
-			}
-
-			if (door->Opened)
-			{
-				ShutThatDoor(&door->d1, door);
-				ShutThatDoor(&door->d2, door);
-				ShutThatDoor(&door->d1flip, door);
-				ShutThatDoor(&door->d2flip, door);
-				door->Opened = 0;
-			}
-		}
-
-		AnimateItem(item);
-		return;
-	}
-
-	if (!TriggerActive(item))
-	{
-		if (item->item_flags[0] >= 4096)
-		{
-			if (door->Opened)
-			{
-				ShutThatDoor(&door->d1, door);
-				ShutThatDoor(&door->d2, door);
-				ShutThatDoor(&door->d1flip, door);
-				ShutThatDoor(&door->d2flip, door);
-				door->Opened = 0;
-			}
-		}
-		else
-		{
-			if (!item->item_flags[0])
-				SoundEffect(SFX_LIFT_DOORS, &item->pos, SFX_DEFAULT);
-
-			item->item_flags[0] += 256;
-		}
 	}
 	else
 	{
-		if (item->item_flags[0] > 0)
+		if (item->object_number < LIFT_DOORS1 || item->object_number > LIFT_DOORS2)
 		{
-			if (item->item_flags[0] == 4096)
-				SoundEffect(SFX_LIFT_DOORS, &item->pos, SFX_DEFAULT);
+			if (TriggerActive(item))
+			{
+				if (item->current_anim_state == 0)
+					item->goal_anim_state = 1;
+				else
+				{
+					if (!door->Opened)
+					{
+						OpenThatDoor(&door->d1, door);
+						OpenThatDoor(&door->d2, door);
+						OpenThatDoor(&door->d1flip, door);
+						OpenThatDoor(&door->d2flip, door);
+						door->Opened = 1;
+					}
 
-			item->item_flags[0] -= 256;
+					if (item->frame_number == anims[item->anim_number].frame_end)
+					{
+						if ((gfCurrentLevel == LVL5_THIRTEENTH_FLOOR && (item->object_number == CLOSED_DOOR2 || item->object_number == CLOSED_DOOR3)) ||
+							(gfCurrentLevel >= LVL5_ESCAPE_WITH_THE_IRIS && gfCurrentLevel <= LVL5_RED_ALERT && item->object_number == CLOSED_DOOR1))
+							item->status = ITEM_INVISIBLE;
+					}
+				}
+			}
+			else
+			{
+				item->status = ITEM_ACTIVE;
+
+				if (item->current_anim_state == 1)
+					item->goal_anim_state = 0;
+
+				if (door->Opened)
+				{
+					ShutThatDoor(&door->d1, door);
+					ShutThatDoor(&door->d2, door);
+					ShutThatDoor(&door->d1flip, door);
+					ShutThatDoor(&door->d2flip, door);
+					door->Opened = 0;
+				}
+			}
+
+			AnimateItem(item);
 		}
-
-		if (!door->Opened)
+		else
 		{
-			LiftDoor = 1;
-			OpenThatDoor(&door->d1, door);
-			OpenThatDoor(&door->d2, door);
-			OpenThatDoor(&door->d1flip, door);
-			OpenThatDoor(&door->d2flip, door);
-			LiftDoor = 0;
-			door->Opened = 1;
+			if (!TriggerActive(item))
+			{
+				if (item->item_flags[0] >= 4096)
+				{
+					if (door->Opened)
+					{
+						ShutThatDoor(&door->d1, door);
+						ShutThatDoor(&door->d2, door);
+						ShutThatDoor(&door->d1flip, door);
+						ShutThatDoor(&door->d2flip, door);
+						door->Opened = 0;
+					}
+				}
+				else
+				{
+					if (!item->item_flags[0])
+						SoundEffect(SFX_LIFT_DOORS, &item->pos, SFX_DEFAULT);
+
+					item->item_flags[0] += 256;
+				}
+			}
+			else
+			{
+				if (item->item_flags[0] > 0)
+				{
+					if (item->item_flags[0] == 4096)
+						SoundEffect(SFX_LIFT_DOORS, &item->pos, SFX_DEFAULT);
+
+					item->item_flags[0] -= 256;
+				}
+
+				if (!door->Opened)
+				{
+					LiftDoor = 1;
+					OpenThatDoor(&door->d1, door);
+					OpenThatDoor(&door->d2, door);
+					OpenThatDoor(&door->d1flip, door);
+					OpenThatDoor(&door->d2flip, door);
+					LiftDoor = 0;
+					door->Opened = 1;
+				}
+			}
 		}
 	}
 }
 
 void DoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 {
-	ITEM_INFO* item = &items[item_num];
+	ITEM_INFO* item;
 
-	if (item->trigger_flags == 2
-		&& !(item->status && item->gravity_status)
-		&& ((input & IN_ACTION || GLOBAL_inventoryitemchosen == CROWBAR_ITEM)
-			&& l->current_anim_state == AS_STOP
-			&& l->anim_number == ANIM_BREATH
-			&& !l->hit_status
-			&& lara.gun_status == LG_NO_ARMS
-			|| lara.IsMoving && lara.GeneralPtr == (void*)item_num))
+	item = &items[item_num];
+
+	if (item->trigger_flags == 2 && !(item->status && item->gravity_status) &&
+		((input & IN_ACTION || GLOBAL_inventoryitemchosen == CROWBAR_ITEM) &&
+			l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH && !l->hit_status && lara.gun_status == LG_NO_ARMS ||
+			lara.IsMoving && lara.GeneralPtr == (void*)item_num))
 	{
 		item->pos.y_rot ^= 32768;
 
@@ -351,10 +340,7 @@ void DoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 				if (GLOBAL_inventoryitemchosen == -1)
 				{
 					if (have_i_got_object(CROWBAR_ITEM))
-					{
 						GLOBAL_enterinventory = CROWBAR_ITEM;
-						item->pos.y_rot ^= 32768;
-					}
 					else
 					{
 						if (OldPickupPos.x != l->pos.x_pos || OldPickupPos.y != l->pos.y_pos || OldPickupPos.z != l->pos.z_pos)
@@ -364,9 +350,9 @@ void DoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 							OldPickupPos.z = l->pos.z_pos;
 							SayNo();
 						}
-
-						item->pos.y_rot ^= 32768;
 					}
+
+					item->pos.y_rot ^= 32768;
 					return;
 				}
 
@@ -381,9 +367,9 @@ void DoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 
 			if (MoveLaraPosition(&CrowbarDoorPos, item, l))
 			{
-				l->anim_number = 403;
+				l->anim_number = ANIM_CROWBARDOOR;
 				l->current_anim_state = AS_CONTROLLED;
-				l->frame_number = anims[403].frame_base;
+				l->frame_number = anims[ANIM_CROWBARDOOR].frame_base;
 				item->pos.y_rot ^= 32768;
 				AddActiveItem(item_num);
 				item->flags |= IFL_CODEBITS;
@@ -441,18 +427,14 @@ void PushPullKickDoorControl(short item_number)
 void PushPullKickDoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 {
 	ITEM_INFO* item;
+	long flag;//, pull;//idk where to use it
 
 	item = &items[item_num];
 
-	if (input & IN_ACTION &&
-		l->current_anim_state == AS_STOP &&
-		l->anim_number == ANIM_BREATH &&
-		item->status != ITEM_ACTIVE &&
-		!l->gravity_status &&
-		lara.gun_status == LG_NO_ARMS ||
-		lara.IsMoving && lara.GeneralPtr == (void*)item_num)
+	if (input & IN_ACTION && l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH && item->status != ITEM_ACTIVE &&
+		!l->gravity_status && lara.gun_status == LG_NO_ARMS || lara.IsMoving && lara.GeneralPtr == (void*)item_num)
 	{
-		int flag = 0;
+		flag = 0;
 
 		if (l->room_number == item->room_number)
 		{
@@ -467,8 +449,10 @@ void PushPullKickDoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 				lara.IsMoving = 0;
 				lara.gun_status = LG_NO_ARMS;
 			}
+
 			if (flag)
 				item->pos.y_rot ^= 32768;
+
 			return;
 		}
 
@@ -554,13 +538,8 @@ void DoubleDoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 
 	item = &items[item_num];
 
-	if (input & IN_ACTION &&
-		l->current_anim_state == AS_STOP &&
-		l->anim_number == ANIM_BREATH &&
-		item->status != ITEM_ACTIVE &&
-		!l->gravity_status &&
-		lara.gun_status == LG_NO_ARMS ||
-		lara.IsMoving && lara.GeneralPtr == (void*)item_num)
+	if (input & IN_ACTION && l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH && item->status != ITEM_ACTIVE &&
+		!l->gravity_status && lara.gun_status == LG_NO_ARMS || lara.IsMoving && lara.GeneralPtr == (void*)item_num)
 	{
 		item->pos.y_rot ^= 32768;
 
@@ -604,12 +583,8 @@ void UnderwaterDoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 
 	item = &items[item_num];
 
-	if (input & IN_ACTION &&
-		item->status != ITEM_ACTIVE &&
-		l->current_anim_state == AS_TREAD &&
-		lara.water_status == LW_UNDERWATER &&
-		lara.gun_status == LG_NO_ARMS ||
-		lara.IsMoving && lara.GeneralPtr == (void*)item_num)
+	if (input & IN_ACTION && item->status != ITEM_ACTIVE && l->current_anim_state == AS_TREAD && lara.water_status == LW_UNDERWATER &&
+		lara.gun_status == LG_NO_ARMS || lara.IsMoving && lara.GeneralPtr == (void*)item_num)
 	{
 		l->pos.y_rot ^= 32768;
 
@@ -666,7 +641,6 @@ void SequenceDoorControl(short item_number)
 				item->goal_anim_state = 0;
 
 			TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
-
 		}
 
 		CurrentSequence = 4;
@@ -683,9 +657,7 @@ void SequenceDoorControl(short item_number)
 				OpenThatDoor(&door->d1flip, door);
 				OpenThatDoor(&door->d2flip, door);
 				door->Opened = 1;
-				item->flags |= 0x3E;
-				AnimateItem(item);
-				return;
+				item->flags |= IFL_CODEBITS;
 			}
 		}
 		else
@@ -697,7 +669,7 @@ void SequenceDoorControl(short item_number)
 				ShutThatDoor(&door->d1flip, door);
 				ShutThatDoor(&door->d2flip, door);
 				door->Opened = 0;
-				item->flags &= 0xC1;
+				item->flags &= ~IFL_CODEBITS;
 			}
 		}
 	}
@@ -710,9 +682,9 @@ void ProcessClosedDoors()
 	ITEM_INFO* item;
 	short room_number;
 
-	for (int lp = 0; lp < 32; lp++)
+	for (int i = 0; i < 32; i++)
 	{		
-		item = (ITEM_INFO*)(ClosedDoors[lp]);
+		item = (ITEM_INFO*)(ClosedDoors[i]);
 
 		if (!item)
 			return;
