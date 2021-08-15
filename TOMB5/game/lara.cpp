@@ -1127,7 +1127,7 @@ int TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
 
 	item->pos.y_rot = angle;
 	ShiftItem(item, coll);
-	angle = (ushort)((item->pos.y_rot + 8192) >> 14);
+	angle = (ushort)(item->pos.y_rot + 8192) >> 14;
 
 	switch (angle)
 	{
