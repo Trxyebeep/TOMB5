@@ -448,6 +448,7 @@
 #define next_spider VAR_U_(0x0051D008, long)
 #define Spiders VAR_U_(0x00EEF45C, SPIDER_STRUCT*)
 #define NotHitLaraCount VAR_U_(0x0051D0A4, char)
+#define gt VAR_U_(0x0051CE70, GUARDIAN_TARGET)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

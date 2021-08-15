@@ -67,6 +67,7 @@
 #include "../game/andrea.h"
 #include "../game/mafia2.h"
 #include "../game/lion.h"
+#include "../game/guardian.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -153,6 +154,7 @@ void inject_all(bool replace)
 	inject_andrea(replace);
 	inject_mafia(replace);
 	inject_lion(replace);
+	inject_guardian(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
