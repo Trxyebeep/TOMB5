@@ -2063,4 +2063,15 @@ struct SNOWFLAKE
 	short stopped;
 	short room_number;
 };
+
+struct PORTAL_STRUCT
+{
+	SVECTOR v1;
+	SVECTOR v2;
+	SVECTOR v3;
+	SVECTOR v4;
+	short Rand[64];
+	CVECTOR orgb[64];
+	CVECTOR rgb[64];
+};
 #pragma pack(pop)

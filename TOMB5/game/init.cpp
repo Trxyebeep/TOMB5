@@ -997,6 +997,135 @@ void InitialiseSas(short item_number)
 	item->current_anim_state = item->goal_anim_state;
 }
 
+void InitialiseBurningRoots(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+	item->meshswap_meshbits = 0;
+	item->item_flags[1] = NO_ITEM;
+
+	for (int i = 0; i < level_items; i++)
+	{
+		if (items[i].object_number == PUZZLE_ITEM1)
+		{
+			item->item_flags[1] = i;
+			return;
+		}
+	}
+}
+
+void InitialiseCookerFlame(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	switch (item->trigger_flags)
+	{
+	case 0:
+		item->pos.x_pos -= 256;
+		item->pos.z_pos -= 256;
+		break;
+
+	case 1:
+		item->pos.x_pos -= 256;
+		item->pos.z_pos += 256;
+		break;
+
+	case 2:
+		item->pos.x_pos += 256;
+		item->pos.z_pos += 256;
+		break;
+
+	case 3:
+		item->pos.x_pos += 256;
+		item->pos.z_pos -= 256;
+		break;
+	}
+}
+
+void InitialiseAutogun(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+	item->mesh_bits = 1024;
+	item->data = game_malloc(5702, 0);//? what is this
+}
+
+void InitialiseKeyhole(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->object_number == KEY_HOLE8 && item->trigger_flags == 1)
+		item->mesh_bits = 1;
+}
+
+void InitialiseCutsceneRope(short item_number)//not used
+{
+	ITEM_INFO* rope;
+
+	rope = &items[item_number];
+	rope->item_flags[2] = find_a_fucking_item(ANIMATING4) - items;
+	rope->item_flags[3] = find_a_fucking_item(ANIMATING16_MIP) - items;
+	rope->flags |= IFL_CODEBITS;
+	AddActiveItem(item_number);
+	rope->status = ITEM_ACTIVE;
+}
+
+void InitialiseXRayMachine(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->trigger_flags == 222)
+		item->item_flags[0] = find_a_fucking_item(PUZZLE_HOLE1) - items;
+}
+
+void InitialisePortalDoor(short item_number)
+{
+	ITEM_INFO* item;
+	PORTAL_STRUCT* portal;
+
+	item = &items[item_number];
+	portal = (PORTAL_STRUCT*)game_malloc(sizeof(PORTAL_STRUCT), 0);
+	item->pos.x_pos -= 512;
+	item->data = portal;
+	portal->v4.vx = 0;
+	portal->v3.vx = 0;
+	portal->v2.vx = 0;
+	portal->v1.vx = 0;
+	portal->v4.vy = 0;
+	portal->v3.vy = 0;
+	portal->v2.vy = -1024;
+	portal->v1.vy = -1024;
+	portal->v3.vz = -512;
+	portal->v1.vz = -512;
+	portal->v4.vz = 512;
+	portal->v2.vz = 512;
+
+	for (int i = 0; i < 64; i++)
+	{
+		portal->Rand[i] = (GetRandomControl() & 0x7F) - 64;
+		portal->rgb[i].r = (GetRandomControl() & 0x7F) + 64;
+		portal->orgb[i].r = portal->rgb[i].r;
+		portal->rgb[i].g = (GetRandomControl() & 0x7F) + 64;
+		portal->orgb[i].g = portal->rgb[i].g;
+		portal->rgb[i].b = (GetRandomControl() & 0x7F) + 64;
+		portal->orgb[i].b = portal->rgb[i].b;
+	}
+}
+
+void InitialiseExplodingSwitch(short item_number)
+{
+	if (items[item_number].trigger_flags == 444)
+		items[item_number].mesh_bits &= ~(1 << (objects[items[item_number].object_number].nmeshes - 2));
+}
+
 void inject_init(bool replace)
 {
 	INJECT(0x0043D2F0, InitialiseTrapDoor, replace);
@@ -1033,4 +1162,12 @@ void inject_init(bool replace)
 	INJECT(0x0043F2B0, InitialiseSpiderGenerator, replace);
 	INJECT(0x0043F3D0, InitialisePropeller, replace);
 	INJECT(0x0043F420, InitialiseSas, replace);
+	INJECT(0x0043F770, InitialiseBurningRoots, replace);
+	INJECT(0x0043F7F0, InitialiseCookerFlame, replace);
+	INJECT(0x0043F8B0, InitialiseAutogun, replace);
+	INJECT(0x0043F900, InitialiseKeyhole, replace);
+	INJECT(0x0043F950, InitialiseCutsceneRope, replace);
+	INJECT(0x0043FA20, InitialiseXRayMachine, replace);
+	INJECT(0x0043FAA0, InitialisePortalDoor, replace);
+	INJECT(0x0043FBC0, InitialiseExplodingSwitch, replace);
 }

@@ -177,7 +177,7 @@ void DoorControl(short item_number)
 {
 	ITEM_INFO* item;
 	DOOR_DATA* door;
-	short bound;//not in symbols
+	long bound;//not in symbols
 
 	item = &items[item_number];
 	door = (DOOR_DATA*)item->data;
