@@ -1126,6 +1126,62 @@ void InitialiseExplodingSwitch(short item_number)
 		items[item_number].mesh_bits &= ~(1 << (objects[items[item_number].object_number].nmeshes - 2));
 }
 
+void InitialiseRaisingPlinth(short item_number)
+{
+	ITEM_INFO* item;//actual plinth
+	ITEM_INFO* item2;//other items
+	long x, y, z;
+
+	x = 0;
+	y = 0;
+	z = 0;
+
+	item = &items[item_number];
+
+	for (int i = 0; i < level_items; i++)
+	{
+		item2 = &items[i];
+
+		if (item2->object_number == TRIGGER_TRIGGERER)
+		{
+			if (item2->trigger_flags == 111)
+				item->item_flags[3] |= i & 255;
+			else if (item2->trigger_flags == 112)
+			{
+				x = item2->pos.x_pos;
+				y = item2->pos.y_pos;
+				z = item2->pos.z_pos;
+			}
+		}
+		else if (item2->object_number == PUZZLE_ITEM4_COMBO2)
+		{
+			item->item_flags[3] |= (i & 255) << 8;
+			item2->pos.y_pos = item->pos.y_pos - 512;
+		}
+	}
+
+	for (int i = 0; i < level_items; i++)
+	{
+		item2 = &items[i];
+
+		if (item2->object_number == PULLEY && item2->pos.x_pos == x && item2->pos.y_pos == y && item2->pos.z_pos == z)
+		{
+			item->item_flags[2] |= i & 255;
+			return;
+		}
+	}
+}
+
+void InitialiseTeleporter(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->trigger_flags == 512)
+		item->item_flags[1] = find_a_fucking_item(PUZZLE_HOLE2) - items;
+}
+
 void inject_init(bool replace)
 {
 	INJECT(0x0043D2F0, InitialiseTrapDoor, replace);
@@ -1170,4 +1226,6 @@ void inject_init(bool replace)
 	INJECT(0x0043FA20, InitialiseXRayMachine, replace);
 	INJECT(0x0043FAA0, InitialisePortalDoor, replace);
 	INJECT(0x0043FBC0, InitialiseExplodingSwitch, replace);
+	INJECT(0x0043FC30, InitialiseRaisingPlinth, replace);
+	INJECT(0x00440510, InitialiseTeleporter, replace);
 }

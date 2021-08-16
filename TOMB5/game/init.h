@@ -45,3 +45,5 @@ void InitialiseCutsceneRope(short item_number);
 void InitialiseXRayMachine(short item_number);
 void InitialisePortalDoor(short item_number);
 void InitialiseExplodingSwitch(short item_number);
+void InitialiseRaisingPlinth(short item_number);
+void InitialiseTeleporter(short item_number);
