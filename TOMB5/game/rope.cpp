@@ -6,6 +6,8 @@
 #include "draw.h"
 #include "sound.h"
 #include "lara.h"
+#include "../specific/specificfx.h"
+#include "savegame.h"
 
 void InitialiseRope(short item_number)
 {
@@ -628,6 +630,116 @@ void LaraClimbRope(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
+void DrawRopeList()
+{
+	int n;
+
+	for (n = 0; n < nRope; n++)
+	{
+		if (RopeList[n].Active)
+			DrawRope(&RopeList[n]);
+	}
+}
+
+void ProjectRopePoints(ROPE_STRUCT* Rope)
+{
+	//PHD_VECTOR* s;
+	D3DVECTOR Output;
+	PHD_VECTOR t;
+	float zv;
+	long sw, sh;
+	int n;
+
+	sw = phd_winwidth >> 1;
+	sh = phd_winheight >> 1;
+	phd_PushMatrix();
+	phd_TranslateAbs(Rope->Position.x, Rope->Position.y, Rope->Position.z);
+
+	for (n = 0; n < 24; n++)
+	{
+		t.x = Rope->MeshSegment[n].x >> 16;
+		t.y = Rope->MeshSegment[n].y >> 16;
+		t.z = Rope->MeshSegment[n].z >> 16;
+		Output.x = (D3DVALUE) (t.x * phd_mxptr[0] + t.y * phd_mxptr[1] + t.z * phd_mxptr[2] + phd_mxptr[3]);
+		Output.y = (D3DVALUE) (t.x * phd_mxptr[4] + t.y * phd_mxptr[5] + t.z * phd_mxptr[6] + phd_mxptr[7]);
+		Output.z = (D3DVALUE) (t.x * phd_mxptr[8] + t.y * phd_mxptr[9] + t.z * phd_mxptr[10] + phd_mxptr[11]);
+		zv = phd_persp / Output.z;
+		Rope->Coords[n][0] = (long) (Output.x * zv + sw);
+		Rope->Coords[n][1] = (long) (Output.y * zv + sh);
+		Rope->Coords[n][2] = (long) Output.z;
+	}
+
+	phd_PopMatrix();
+}
+
+void init_all_ropes()
+{
+	int i;
+
+	for (i = 0; i < 8; i++)
+		RopeList[i].Active = 0;
+
+	nRope = 0;
+}
+
+void SaveRope()
+{
+	WriteSG(&RopeList[lara.RopePtr], 1460);
+	CurrentPendulum.Rope = (ROPE_STRUCT*) ((char*) CurrentPendulum.Rope - (char*) RopeList);
+	WriteSG(&CurrentPendulum, 32);
+	CurrentPendulum.Rope = (ROPE_STRUCT*) ((char*) CurrentPendulum.Rope + (long) RopeList);
+}
+
+void LoadRope()
+{
+	ReadSG(&RopeList[lara.RopePtr], 1460);
+	ReadSG(&CurrentPendulum, 32);
+	CurrentPendulum.Rope = (ROPE_STRUCT*) ((char*) CurrentPendulum.Rope + (long) RopeList);
+}
+
+void StraightenRope(ITEM_INFO* item)
+{
+	FLOOR_INFO* floor;
+	PHD_VECTOR RopePos, RopeDir;
+	int height;
+	short room_number;
+
+	room_number = item->room_number;
+	RopePos.x = item->pos.x_pos;
+	RopePos.y = item->pos.y_pos;
+	RopePos.z = item->pos.z_pos;
+	floor = GetFloor(RopePos.x, RopePos.y, RopePos.z, &room_number);
+	height = GetCeiling(floor, RopePos.x, RopePos.y, RopePos.z);
+	RopePos.y = height;
+	RopeDir.x = 0;
+	RopeDir.y = 16384;
+	RopeDir.z = 0;
+	_Straighten(&RopeList[nRope], &RopePos, &RopeDir, 128);
+}
+
+void _Straighten(ROPE_STRUCT* rope, PHD_VECTOR* pos, PHD_VECTOR* dir, long slength)
+{
+	int n;
+
+	rope->Position = *pos;
+	rope->SegmentLength = 65536 * slength;
+	dir->x *= 65536;
+	dir->y *= 65536;
+	dir->z *= 65536;
+	Normalise(dir);
+	rope->Coiled = 0;
+
+	for (n = 0; n < 24; n++)
+	{
+		rope->Segment[n].x = (long long) (rope->SegmentLength * n) * dir->x >> 16;
+		rope->Segment[n].y = (long long) (rope->SegmentLength * n) * dir->y >> 16;
+		rope->Segment[n].z = (long long) (rope->SegmentLength * n) * dir->z >> 16;
+		rope->Velocity[n].x = 0;
+		rope->Velocity[n].y = 0;
+		rope->Velocity[n].z = 0;
+	}
+}
+
 void inject_rope(bool replace)
 {
 	INJECT(0x0046D130, GetRopePos, replace);
@@ -648,4 +760,11 @@ void inject_rope(bool replace)
 	INJECT(0x0046EE80, CreateRope, replace);
 	INJECT(0x0046F060, InitialiseRope, replace);
 	INJECT(0x0046F240, LaraClimbRope, replace);
+	INJECT(0x0046DDC0, DrawRopeList, replace);
+	INJECT(0x0046EC70, ProjectRopePoints, replace);
+	INJECT(0x0046EE40, init_all_ropes, replace);
+	INJECT(0x0046F170, SaveRope, replace);
+	INJECT(0x0046F1F0, LoadRope, replace);
+	INJECT(0x0046F3C0, StraightenRope, replace);
+	INJECT(0x0046F480, _Straighten, replace);
 }

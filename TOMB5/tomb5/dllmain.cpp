@@ -67,6 +67,7 @@
 #include "../game/andrea.h"
 #include "../game/mafia2.h"
 #include "../game/lion.h"
+#include "../game/guardian.h"
 #include "../game/box.h"
 
 HINSTANCE hinstance = NULL;
@@ -154,6 +155,7 @@ void inject_all(bool replace)
 	inject_andrea(replace);
 	inject_mafia(replace);
 	inject_lion(replace);
+	inject_guardian(replace);
 	inject_box(replace);
 }
 
