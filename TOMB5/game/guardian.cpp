@@ -485,9 +485,9 @@ void GuardianControl(short item_number)
 									x = d.x;
 									y = d.y;
 									z = d.z;
-									pos3.x = gt.elptr[i]->Point[2].x - d.x;
-									pos3.y = gt.elptr[i]->Point[2].y - d.y;
-									pos3.z = gt.elptr[i]->Point[2].z - d.z;
+									pos3.x = gt.elptr[i]->Point[3].x - d.x;
+									pos3.y = gt.elptr[i]->Point[3].y - d.y;
+									pos3.z = gt.elptr[i]->Point[3].z - d.z;
 
 									for (lp1 = 0; lp1 < 32; lp1++)
 									{
@@ -550,16 +550,19 @@ void GuardianControl(short item_number)
 			item->current_anim_state++;
 		}
 
-		for (int i = 0; i < item->current_anim_state; i++)
+		if (item->current_anim_state > 0)
 		{
-			arm_item = aptr[i + 1];
-			item2 = &items[arm_item];
-
-			if (item2->anim_number == objects[item2->object_number].anim_index + 1 && item2->frame_number == anims[item2->anim_number].frame_end && item2->mesh_bits & 1)
+			for (int i = 0; i < 8; i++)
 			{
-				SoundEffect(SFX_SMASH_ROCK, &item2->pos, 0);
-				ExplodeItemNode(item2, 0, 0, 128);
-				KillItem(arm_item);
+				arm_item = aptr[i + 1];
+				item2 = &items[arm_item];
+
+				if (item2->anim_number == objects[item2->object_number].anim_index + 1 && item2->frame_number == anims[item2->anim_number].frame_end && item2->mesh_bits & 1)
+				{
+					SoundEffect(SFX_SMASH_ROCK, &item2->pos, 0);
+					ExplodeItemNode(item2, 0, 0, 128);
+					KillItem(arm_item);
+				}
 			}
 		}
 

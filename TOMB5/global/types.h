@@ -2066,15 +2066,15 @@ struct SNOWFLAKE
 
 struct GUARDIAN_TARGET
 {
-/*70*/	long x;
-/*74*/	long y;
-/*78*/	long z;
-/*7C*/	LIGHTNING_STRUCT* elptr[2];
-/*84*/	LIGHTNING_STRUCT* blptr[4];
-/*94*/	char ricochet[2];
-/*96*/	char TrackSpeed;
-/*97*/	char TrackLara;
-/*98*/	short Xdiff;
-/*9A*/	short Ydiff;
+	long x;
+	long y;
+	long z;
+	LIGHTNING_STRUCT* elptr[2];
+	LIGHTNING_STRUCT* blptr[4];
+	char ricochet[2];
+	char TrackSpeed;
+	char TrackLara;
+	short Xdiff;
+	short Ydiff;
 };
 #pragma pack(pop)
