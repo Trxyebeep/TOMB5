@@ -15,7 +15,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00406040	+	ControlRaisingCog
 0x004062B0	+	ControlPortalDoor
 0x00406580	+	ControlGenSlot1
-0x004067E0		ControlRaisingPlinth
+0x004067E0	+	ControlRaisingPlinth
 
 
 		game/andy.cpp
@@ -45,8 +45,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/box.cpp
 
-0x00408550		InitialiseCreature
-0x00408630		CreatureActive
+0x00408550	+	InitialiseCreature
+0x00408630	+	CreatureActive
 0x004086C0		CreatureAIInfo
 0x00408B00		UpdateLOT
 0x00408BA0		SearchLOT

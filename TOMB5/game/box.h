@@ -1,8 +1,11 @@
 #pragma once
 #include "../global/vars.h"
 
-#define InitialiseCreature	( (void(__cdecl*)(short)) 0x00408550 )
-#define CreatureActive	( (int(__cdecl*)(short)) 0x00408630 )
+void inject_box(bool replace);
+
+void InitialiseCreature(short item_number);
+int CreatureActive(short item_number);
+
 #define AlertNearbyGuards	( (void(__cdecl*)(ITEM_INFO*)) 0x0040BB10 )
 #define CreatureDie	( (void(__cdecl*)(short, int)) 0x0040A090 )
 #define CreatureAIInfo	( (void(__cdecl*)(ITEM_INFO*, AI_INFO*)) 0x004086C0 )
