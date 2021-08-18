@@ -2074,4 +2074,33 @@ struct PORTAL_STRUCT
 	CVECTOR orgb[64];
 	CVECTOR rgb[64];
 };
+
+struct GAS_CLOUD
+{
+	SVECTOR v1;
+	SVECTOR v2;
+	SVECTOR v3;
+	SVECTOR v4;
+	SVECTOR t;
+	short Rand[36];
+	short Pulse[36];
+	long mTime;
+	long sTime;
+	long num;
+	float yo;
+	float fxrad;
+};
+
+struct AIOBJECT
+{
+	short object_number;
+	short room_number;
+	long x;
+	long y;
+	long z;
+	short trigger_flags;
+	short flags;
+	short y_rot;
+	short box_number;
+};
 #pragma pack(pop)

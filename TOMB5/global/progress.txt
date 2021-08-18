@@ -671,12 +671,12 @@ x for functions decompiled but not injected, for one reason or another.
 0x0043FAA0	+	InitialisePortalDoor
 0x0043FBC0	+	InitialiseExplodingSwitch
 0x0043FC30	+	InitialiseRaisingPlinth
-0x0043FD70		InitialiseGasCloud
-0x00440070		InitialiseSwitch
-0x00440100		InitialiseAnimatingSlots
-0x004402E0		InitialiseGenSlot3
-0x00440320		InitialiseRaisingCog
-0x00440440		InitialiseArea51Laser
+0x0043FD70	+	InitialiseGasCloud
+0x00440070	+	InitialiseSwitch
+0x00440100	+	InitialiseAnimatingSlots
+0x004402E0	+	InitialiseGenSlot3
+0x00440320	+	InitialiseRaisingCog
+0x00440440	+	InitialiseArea51Laser
 0x00440510	+	InitialiseTeleporter
 
 
