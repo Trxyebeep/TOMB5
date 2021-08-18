@@ -13,6 +13,7 @@
 #include "effects.h"
 #include "spider.h"
 #include "box.h"
+#include "switch.h"
 
 void InitialiseTrapDoor(short item_number)
 {
@@ -997,6 +998,401 @@ void InitialiseSas(short item_number)
 	item->current_anim_state = item->goal_anim_state;
 }
 
+void InitialiseBurningRoots(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+	item->meshswap_meshbits = 0;
+	item->item_flags[1] = NO_ITEM;
+
+	for (int i = 0; i < level_items; i++)
+	{
+		if (items[i].object_number == PUZZLE_ITEM1)
+		{
+			item->item_flags[1] = i;
+			return;
+		}
+	}
+}
+
+void InitialiseCookerFlame(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	switch (item->trigger_flags)
+	{
+	case 0:
+		item->pos.x_pos -= 256;
+		item->pos.z_pos -= 256;
+		break;
+
+	case 1:
+		item->pos.x_pos -= 256;
+		item->pos.z_pos += 256;
+		break;
+
+	case 2:
+		item->pos.x_pos += 256;
+		item->pos.z_pos += 256;
+		break;
+
+	case 3:
+		item->pos.x_pos += 256;
+		item->pos.z_pos -= 256;
+		break;
+	}
+}
+
+void InitialiseAutogun(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+	item->mesh_bits = 1024;
+	item->data = game_malloc(5702, 0);//? what is this
+}
+
+void InitialiseKeyhole(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->object_number == KEY_HOLE8 && item->trigger_flags == 1)
+		item->mesh_bits = 1;
+}
+
+void InitialiseCutsceneRope(short item_number)//not used
+{
+	ITEM_INFO* rope;
+
+	rope = &items[item_number];
+	rope->item_flags[2] = find_a_fucking_item(ANIMATING4) - items;
+	rope->item_flags[3] = find_a_fucking_item(ANIMATING16_MIP) - items;
+	rope->flags |= IFL_CODEBITS;
+	AddActiveItem(item_number);
+	rope->status = ITEM_ACTIVE;
+}
+
+void InitialiseXRayMachine(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->trigger_flags == 222)
+		item->item_flags[0] = find_a_fucking_item(PUZZLE_HOLE1) - items;
+}
+
+void InitialisePortalDoor(short item_number)
+{
+	ITEM_INFO* item;
+	PORTAL_STRUCT* portal;
+
+	item = &items[item_number];
+	portal = (PORTAL_STRUCT*)game_malloc(sizeof(PORTAL_STRUCT), 0);
+	item->pos.x_pos -= 512;
+	item->data = portal;
+	portal->v4.vx = 0;
+	portal->v3.vx = 0;
+	portal->v2.vx = 0;
+	portal->v1.vx = 0;
+	portal->v4.vy = 0;
+	portal->v3.vy = 0;
+	portal->v2.vy = -1024;
+	portal->v1.vy = -1024;
+	portal->v3.vz = -512;
+	portal->v1.vz = -512;
+	portal->v4.vz = 512;
+	portal->v2.vz = 512;
+
+	for (int i = 0; i < 64; i++)
+	{
+		portal->Rand[i] = (GetRandomControl() & 0x7F) - 64;
+		portal->rgb[i].r = (GetRandomControl() & 0x7F) + 64;
+		portal->orgb[i].r = portal->rgb[i].r;
+		portal->rgb[i].g = (GetRandomControl() & 0x7F) + 64;
+		portal->orgb[i].g = portal->rgb[i].g;
+		portal->rgb[i].b = (GetRandomControl() & 0x7F) + 64;
+		portal->orgb[i].b = portal->rgb[i].b;
+	}
+}
+
+void InitialiseExplodingSwitch(short item_number)
+{
+	if (items[item_number].trigger_flags == 444)
+		items[item_number].mesh_bits &= ~(1 << (objects[items[item_number].object_number].nmeshes - 2));
+}
+
+void InitialiseRaisingPlinth(short item_number)
+{
+	ITEM_INFO* item;//actual plinth
+	ITEM_INFO* item2;//other items
+	long x, y, z;
+
+	x = 0;
+	y = 0;
+	z = 0;
+
+	item = &items[item_number];
+
+	for (int i = 0; i < level_items; i++)
+	{
+		item2 = &items[i];
+
+		if (item2->object_number == TRIGGER_TRIGGERER)
+		{
+			if (item2->trigger_flags == 111)
+				item->item_flags[3] |= i & 255;
+			else if (item2->trigger_flags == 112)
+			{
+				x = item2->pos.x_pos;
+				y = item2->pos.y_pos;
+				z = item2->pos.z_pos;
+			}
+		}
+		else if (item2->object_number == PUZZLE_ITEM4_COMBO2)
+		{
+			item->item_flags[3] |= (i & 255) << 8;
+			item2->pos.y_pos = item->pos.y_pos - 512;
+		}
+	}
+
+	for (int i = 0; i < level_items; i++)
+	{
+		item2 = &items[i];
+
+		if (item2->object_number == PULLEY && item2->pos.x_pos == x && item2->pos.y_pos == y && item2->pos.z_pos == z)
+		{
+			item->item_flags[2] |= i & 255;
+			return;
+		}
+	}
+}
+
+void InitialiseTeleporter(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->trigger_flags == 512)
+		item->item_flags[1] = find_a_fucking_item(PUZZLE_HOLE2) - items;
+}
+
+void InitialiseGasCloud(short item_number)
+{
+	ITEM_INFO* item;
+	GAS_CLOUD* cloud;
+	AIOBJECT* ai;//why the fuck are they ai objects, core.
+	short clouds[8];
+
+	item = &items[item_number];
+
+	if (item->trigger_flags > 1)
+	{
+		if (item->trigger_flags == 3 || item->trigger_flags == 4)
+			item->pos.y_pos -= 256;
+		else if (item->trigger_flags == 2)
+		{
+			if (item->pos.y_rot == 0)
+				item->pos.z_pos += 512;
+			else if (item->pos.y_rot == 16384)
+				item->pos.x_pos += 512;
+			else if (item->pos.y_rot == -32768)
+				item->pos.z_pos -= 512;
+			else if (item->pos.y_rot == -16384)
+				item->pos.x_pos -= 512;
+		}
+	}
+	else
+	{
+		cloud = (GAS_CLOUD*)game_malloc(1632, 0);//well, size of GAS_CLOUD is 204. 1632 = 204 * 8, so max gas clouds is 8? idk
+		item->data = cloud;
+		memset(clouds, NO_ITEM, sizeof(clouds));
+
+		for (int i = 0, j = 1; i < nAIObjects; i++)
+		{
+			ai = &AIObjects[i];
+
+			if (ai->room_number == item->room_number)
+			{
+				clouds[j] = i;
+				j++;
+
+				if (j > 7)
+					break;
+			}
+		}
+
+		for (int i = 0; i < 8; i++)
+		{
+			if (!i)
+			{
+				cloud->t.vx = 0;
+				cloud->t.vy = 0;
+				cloud->t.vz = 0;
+			}
+			else if (clouds[i] == NO_ITEM)
+			{
+				cloud->t.vx = short(AIObjects[clouds[i]].x - item->pos.x_pos);
+				cloud->t.vy = short(AIObjects[clouds[i]].y - item->pos.y_pos);
+				cloud->t.vz = short(AIObjects[clouds[i]].z - item->pos.z_pos);
+			}
+			else
+			{
+				cloud->t.vx = -1;
+				break;
+			}
+
+			cloud->v1.vx = -512;
+			cloud->v1.vy = 0;
+			cloud->v1.vz = -512;
+			cloud->v2.vx = -512;
+			cloud->v2.vy = 0;
+			cloud->v2.vz = 512;
+			cloud->v3.vx = 512;
+			cloud->v3.vy = 0;
+			cloud->v3.vz = -512;
+			cloud->v4.vx = 512;
+			cloud->v4.vy = 0;
+			cloud->v4.vz = 512;
+
+			for (int j = 0; j < 36; j++)
+				cloud->Rand[j] = GetRandomControl() << 1;
+
+			cloud->mTime = 0;
+			cloud->sTime = 0;
+			cloud->num = 0;
+			cloud++;
+		}
+
+		item->item_flags[1] = (short)(item->pos.x_pos >> 1);
+		item->item_flags[2] = (short)(item->pos.y_pos >> 1);
+		item->item_flags[3] = (short)(item->pos.z_pos >> 1);
+		item->current_anim_state = GetRandomControl() << 1;
+		item->goal_anim_state = GetRandomControl() << 1;
+		item->required_anim_state = GetRandomControl() << 1;
+	}
+}
+
+void InitialiseSwitch(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->trigger_flags >= 1000)
+	{
+		item->mesh_bits = 0xAAAAB;
+		item->item_flags[3] = ((item->trigger_flags - 1000) % 10) | (((item->trigger_flags - 1000) / 10) << 4);
+		item->trigger_flags = 6;
+	}
+}
+
+void InitialiseAnimatingSlots(short item_number)
+{
+	ITEM_INFO* item;
+	CREATURE_INFO* c;
+
+	item = &items[item_number];
+
+	if (item->trigger_flags == 666 || item->trigger_flags == 667)
+	{
+		c = (CREATURE_INFO*)game_malloc(sizeof(CREATURE_INFO), 0);
+		item->data = c;
+		c->joint_rotation[0] = 0;
+		c->joint_rotation[1] = 0;
+
+		if (item->trigger_flags == 667)
+		{
+			item->anim_number = objects[item->object_number].anim_index + 1;
+			item->frame_number = anims[item->anim_number].frame_base;
+		}
+	}
+	else if (item->trigger_flags > 900)
+	{
+		switch (item->trigger_flags)
+		{
+		case 901:
+			item->current_anim_state = 1;
+			item->goal_anim_state = 1;
+			item->anim_number = objects[item->object_number].anim_index;
+			item->frame_number = anims[item->anim_number].frame_base;
+			break;
+
+		case 902:
+			item->current_anim_state = 1;
+			item->goal_anim_state = 1;
+			item->anim_number = objects[item->object_number].anim_index + 2;
+			item->frame_number = anims[item->anim_number].frame_base + 60;
+			break;
+
+		case 903:
+			item->current_anim_state = 0;
+			item->goal_anim_state = 1;
+			item->anim_number = objects[item->object_number].anim_index;
+			item->frame_number = anims[item->anim_number].frame_base;
+			break;
+
+		case 904:
+			item->current_anim_state = 1;
+			item->goal_anim_state = 1;
+			item->anim_number = objects[item->object_number].anim_index + 2;
+			item->frame_number = anims[item->anim_number].frame_base;
+			break;
+		}
+	}
+}
+
+void InitialiseGenSlot3(short item_number)
+{
+	if (gfCurrentLevel != LVL5_SINKING_SUBMARINE)
+		items[item_number].mesh_bits = items[item_number].trigger_flags;
+}
+
+void InitialiseRaisingCog(short item_number)
+{
+	ITEM_INFO* item;
+	ITEM_INFO* item2;
+	short TriggerItems[4];
+	short NumTrigs;
+
+	item = &items[item_number];
+	NumTrigs = GetSwitchTrigger(item, TriggerItems, 1);
+
+	for (int i = NumTrigs; i > 0; i--)
+	{
+		item2 = &items[TriggerItems[i - 1]];
+
+		if (item2->object_number == TRIGGER_TRIGGERER)
+			item->item_flags[1] = item2->room_number;
+		else if (item2->object_number == PULLEY && item2->room_number == item->item_flags[1])
+		{
+			item2->item_flags[1] = 1;
+			GlobalPulleyFrigItem = TriggerItems[i - 1];
+		}
+	}
+}
+
+void InitialiseArea51Laser(short item_number)
+{
+	ITEM_INFO* item;
+	long x, z;
+
+	item = &items[item_number];
+	x = item->pos.x_pos + (2560 * phd_sin(item->pos.y_rot) >> 14);
+	z = item->pos.z_pos + (2560 * phd_cos(item->pos.y_rot) >> 14);
+	item->item_flags[0] = ((item->pos.x_pos >> 9) & 0xFF) | ((item->pos.z_pos >> 9) & 0xFF) << 8;
+	item->item_flags[1] = ((x >> 9) & 0xFF) | ((z >> 9) & 0xFF) << 8;
+	item->item_flags[2] = 1;
+	item->item_flags[3] = 0;
+	item->trigger_flags = 0;
+}
+
 void inject_init(bool replace)
 {
 	INJECT(0x0043D2F0, InitialiseTrapDoor, replace);
@@ -1033,4 +1429,20 @@ void inject_init(bool replace)
 	INJECT(0x0043F2B0, InitialiseSpiderGenerator, replace);
 	INJECT(0x0043F3D0, InitialisePropeller, replace);
 	INJECT(0x0043F420, InitialiseSas, replace);
+	INJECT(0x0043F770, InitialiseBurningRoots, replace);
+	INJECT(0x0043F7F0, InitialiseCookerFlame, replace);
+	INJECT(0x0043F8B0, InitialiseAutogun, replace);
+	INJECT(0x0043F900, InitialiseKeyhole, replace);
+	INJECT(0x0043F950, InitialiseCutsceneRope, replace);
+	INJECT(0x0043FA20, InitialiseXRayMachine, replace);
+	INJECT(0x0043FAA0, InitialisePortalDoor, replace);
+	INJECT(0x0043FBC0, InitialiseExplodingSwitch, replace);
+	INJECT(0x0043FC30, InitialiseRaisingPlinth, replace);
+	INJECT(0x00440510, InitialiseTeleporter, replace);
+	INJECT(0x0043FD70, InitialiseGasCloud, replace);
+	INJECT(0x00440070, InitialiseSwitch, replace);
+	INJECT(0x00440100, InitialiseAnimatingSlots, replace);
+	INJECT(0x004402E0, InitialiseGenSlot3, replace);
+	INJECT(0x00440320, InitialiseRaisingCog, replace);
+	INJECT(0x00440440, InitialiseArea51Laser, replace);
 }
