@@ -2102,6 +2102,7 @@ struct AIOBJECT
 	short flags;
 	short y_rot;
 	short box_number;
+};
 
 struct GUARDIAN_TARGET
 {
