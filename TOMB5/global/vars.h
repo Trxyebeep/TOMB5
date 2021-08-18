@@ -450,6 +450,7 @@
 #define NotHitLaraCount VAR_U_(0x0051D0A4, char)
 #define nAIObjects	VAR_U_(0x00E5B842, short)
 #define AIObjects	VAR_U_(0x00E5B844, AIOBJECT*)
+#define gt VAR_U_(0x0051CE70, GUARDIAN_TARGET)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

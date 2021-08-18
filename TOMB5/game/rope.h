@@ -21,3 +21,10 @@ void ModelRigidRope(PHD_VECTOR* pa, PHD_VECTOR* pb, PHD_VECTOR* va, PHD_VECTOR* 
 void ModelRigid(PHD_VECTOR* pa, PHD_VECTOR* pb, PHD_VECTOR* va, PHD_VECTOR* vb, long rlength);
 void AlignLaraToRope(ITEM_INFO* l);
 void LaraClimbRope(ITEM_INFO* item, COLL_INFO* coll);
+void DrawRopeList();
+void ProjectRopePoints(ROPE_STRUCT* Rope);
+void init_all_ropes();
+void SaveRope();
+void LoadRope();
+void StraightenRope(ITEM_INFO* item);
+void _Straighten(ROPE_STRUCT* rope, PHD_VECTOR* pos, PHD_VECTOR* dir, long slength);

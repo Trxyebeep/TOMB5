@@ -2102,5 +2102,18 @@ struct AIOBJECT
 	short flags;
 	short y_rot;
 	short box_number;
+
+struct GUARDIAN_TARGET
+{
+	long x;
+	long y;
+	long z;
+	LIGHTNING_STRUCT* elptr[2];
+	LIGHTNING_STRUCT* blptr[4];
+	char ricochet[2];
+	char TrackSpeed;
+	char TrackLara;
+	short Xdiff;
+	short Ydiff;
 };
 #pragma pack(pop)
