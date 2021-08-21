@@ -91,43 +91,43 @@ void LaraCheat(ITEM_INFO* item, COLL_INFO* coll)
 void LaraInitialiseMeshes()
 {
 	for (int i = 0; i < 15; i++)
-		lara.mesh_ptrs[i] = meshes[objects[LARA].mesh_index + (2 * i)] = meshes[objects[LARA_SKIN].mesh_index + (2 * i)];
+	{
+		meshes[objects[LARA].mesh_index + (2 * i)] = meshes[objects[LARA_SKIN].mesh_index + (2 * i)];
+		lara.mesh_ptrs[i] = meshes[objects[LARA].mesh_index + (2 * i)];
+	}
 
 	if (gfCurrentLevel >= LVL5_GALLOWS_TREE && gfCurrentLevel <= LVL5_OLD_MILL)
 		lara.mesh_ptrs[LM_TORSO] = meshes[objects[ANIMATING6_MIP].mesh_index + (2 * LM_TORSO)];
 
-	if (lara.gun_type != WEAPON_HK)
+	if (lara.gun_type == WEAPON_HK)
 	{
-		if (lara.shotgun_type_carried)
-		{
-			lara.gun_status = LG_NO_ARMS;
-			lara.back_gun = WEAPON_UZI;
-			lara.target = 0;
-			lara.left_arm.frame_number = 0;
-			lara.left_arm.lock = 0;
-			lara.right_arm.frame_number = 0;
-			lara.right_arm.lock = 0;
-			return;
-		}
-		if (!lara.hk_type_carried)
-		{
-			lara.gun_status = LG_NO_ARMS;
-			lara.target = 0;
-			lara.left_arm.frame_number = 0;
-			lara.left_arm.lock = 0;
-			lara.right_arm.frame_number = 0;
-			lara.right_arm.lock = 0;
-			return;
-		}
+		lara.gun_status = LG_NO_ARMS;
+		lara.back_gun = WEAPON_HK;
+		lara.target = 0;
+		lara.left_arm.frame_number = 0;
+		lara.left_arm.lock = 0;
+		lara.right_arm.frame_number = 0;
+		lara.right_arm.lock = 0;
 	}
-
-	lara.gun_status = LG_NO_ARMS;
-	lara.back_gun = WEAPON_HK;
-	lara.target = 0;
-	lara.left_arm.frame_number = 0;
-	lara.left_arm.lock = 0;
-	lara.right_arm.frame_number = 0;
-	lara.right_arm.lock = 0;
+	else if (lara.shotgun_type_carried)
+	{
+		lara.gun_status = LG_NO_ARMS;
+		lara.back_gun = WEAPON_UZI;
+		lara.target = 0;
+		lara.left_arm.frame_number = 0;
+		lara.left_arm.lock = 0;
+		lara.right_arm.frame_number = 0;
+		lara.right_arm.lock = 0;
+	}
+	else if (!lara.hk_type_carried)
+	{
+		lara.gun_status = LG_NO_ARMS;
+		lara.target = 0;
+		lara.left_arm.frame_number = 0;
+		lara.left_arm.lock = 0;
+		lara.right_arm.frame_number = 0;
+		lara.right_arm.lock = 0;
+	}
 }
 
 void LaraCheatGetStuff()
@@ -150,33 +150,33 @@ void LaraCheatGetStuff()
 
 	if (objects[UZI_ITEM].loaded)
 	{
-		lara.uzis_type_carried = 9;
+		lara.uzis_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
 		lara.num_uzi_ammo = -1;
 	}
 
 	if (objects[SHOTGUN_ITEM].loaded)
 	{
-		lara.shotgun_type_carried = 9;
+		lara.shotgun_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
 		lara.num_shotgun_ammo1 = -1;
 		lara.num_shotgun_ammo2 = -1;
 	}
 
 	if (objects[REVOLVER_ITEM].loaded)
 	{
-		lara.sixshooter_type_carried = 9;
+		lara.sixshooter_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
 		lara.num_revolver_ammo = -1;
 	}
 	
 	if (objects[HK_ITEM].loaded)
 	{
 		lara.silencer = 1;
-		lara.hk_type_carried = 1;
+		lara.hk_type_carried = WTYPE_PRESENT;
 		lara.num_hk_ammo1 = -1;
 	}
 
 	if (objects[CROSSBOW_ITEM].loaded)
 	{
-		lara.crossbow_type_carried = 1;
+		lara.crossbow_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1 | WTYPE_LASERSIGHT;
 		lara.num_crossbow_ammo1 = -1;
 		lara.num_crossbow_ammo2 = 0;
 	}
@@ -203,7 +203,7 @@ void LaraCheatyBits()
 
 	if (input & IN_D)
 #else
-	if (keymap[59])//F1
+	if (keymap[DIK_F1])
 #endif
 	{
 		LaraCheatGetStuff();
@@ -213,7 +213,7 @@ void LaraCheatyBits()
 #ifndef GENERAL_FIXES
 	if (input & IN_CHEAT)
 #else
-	if (keymap[60])//F2
+	if (keymap[DIK_F2])
 #endif
 	{
 		dels_give_lara_items_cheat();
@@ -240,7 +240,7 @@ void LaraCheatyBits()
 	}
 
 #ifdef GENERAL_FIXES
-	if (keymap[61])//F3
+	if (keymap[DIK_F3])
 		gfLevelComplete = gfCurrentLevel + 1;
 #endif
 
@@ -501,7 +501,7 @@ void LaraControl(short item_number)
 	case LW_WADE:
 		camera.target_elevation = -4004;
 
-#ifndef GENERAL_FIXES
+#ifdef GENERAL_FIXES
 		if (hfw > 256)
 #else
 		if (hfw >= 256)
