@@ -183,8 +183,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/crow.cpp
 
-0x0041B980		InitialiseCrow
-0x0041BA00		CrowControl
+0x0041B980	+	InitialiseCrow
+0x0041BA00	+	CrowControl
 
 
 		game/cutseq.cpp

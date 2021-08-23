@@ -28,6 +28,7 @@
     <ClCompile Include="TOMB5\game\chef.cpp" />
     <ClCompile Include="TOMB5\game\collide.cpp" />
     <ClCompile Include="TOMB5\game\control.cpp" />
+    <ClCompile Include="TOMB5\game\crow.cpp" />
     <ClCompile Include="TOMB5\game\cutseq.cpp" />
     <ClCompile Include="TOMB5\game\deathsld.cpp" />
     <ClCompile Include="TOMB5\game\debris.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="TOMB5\game\chef.h" />
     <ClInclude Include="TOMB5\game\collide.h" />
     <ClInclude Include="TOMB5\game\control.h" />
+    <ClInclude Include="TOMB5\game\crow.h" />
     <ClInclude Include="TOMB5\game\cutseq.h" />
     <ClInclude Include="TOMB5\game\deathsld.h" />
     <ClInclude Include="TOMB5\game\debris.h" />
