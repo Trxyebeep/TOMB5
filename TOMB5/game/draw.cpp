@@ -19,9 +19,9 @@
 
 short* GetBoundsAccurate(ITEM_INFO* item)
 {
-	int rate, frac;
-	short* frmptr[2];
 	short* bptr;
+	short* frmptr[2];
+	long rate, frac;
 	
 	frac = GetFrames(item, frmptr, &rate);
 
@@ -31,7 +31,7 @@ short* GetBoundsAccurate(ITEM_INFO* item)
 	bptr = interpolated_bounds;
 
 	for (int i = 0; i < 6; i++, bptr++, frmptr[0]++, frmptr[1]++)
-		*bptr = *frmptr[0] + (*frmptr[1] - *frmptr[0]) * frac / rate;
+		*bptr = (short)(*frmptr[0] + (*frmptr[1] - *frmptr[0]) * frac / rate);
 
 	return interpolated_bounds;
 }
@@ -39,8 +39,7 @@ short* GetBoundsAccurate(ITEM_INFO* item)
 short* GetBestFrame(ITEM_INFO* item)
 {
 	short* frm[2];
-	int rate;
-	int ret;
+	long rate, ret;
 	
 	ret = GetFrames(item, frm, &rate);
 

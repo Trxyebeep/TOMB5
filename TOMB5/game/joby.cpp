@@ -513,7 +513,7 @@ void DrawWreckingBall(ITEM_INFO* item)//actually only draws the shadow it seems?
 	VECTOR v;
 	short** meshpp;
 	short* frmptr[2];
-	int height, ceiling, shade, y;
+	long height, ceiling, shade, y;
 	short room_num;
 
 	baseitem = &items[item->item_flags[3]];
