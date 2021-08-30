@@ -29,3 +29,5 @@ void UpdateSkyLightning();
 #define DrawRooms	( (void(__cdecl*)(short)) 0x0042A7A0 )
 #define CalculateObjectLightingLara	( (void(__cdecl*)()) 0x0042A1B0 )
 #define CalculateObjectLighting	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042CD50 )
+#define InterpolateArmMatrix	( (void(__cdecl*)(long*)) 0x0042CC10 )
+#define aInterpolateArmMatrix	( (void(__cdecl*)(float*)) 0x0042C790 )
