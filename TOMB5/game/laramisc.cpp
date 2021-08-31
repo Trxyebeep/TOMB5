@@ -169,8 +169,7 @@ void LaraCheatGetStuff()
 	
 	if (objects[HK_ITEM].loaded)
 	{
-		lara.silencer = 1;
-		lara.hk_type_carried = WTYPE_PRESENT;
+		lara.hk_type_carried = WTYPE_PRESENT | WTYPE_AMMO_3;
 		lara.num_hk_ammo1 = -1;
 	}
 

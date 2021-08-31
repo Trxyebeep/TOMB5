@@ -63,7 +63,11 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	HAIR_STRUCT* hair;
 	FLOOR_INFO* floor;
 	PHD_VECTOR pos;
+#ifdef GENERAL_FIXES
+	SPHERE sphere[6];
+#else
 	SPHERE sphere[5];
+#endif
 	long* bone;
 	short* rot;
 	short* objptr;
@@ -191,6 +195,13 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 		sphere[1].y = (sphere[1].y + sphere[2].y) >> 1;
 		sphere[1].z = (sphere[1].z + sphere[2].z) >> 1;
 	}
+
+#ifdef GENERAL_FIXES//copy head sphere but move it down to simulate a neck sphere because I can't be arsed getting the actual neck sphere lol
+	sphere[5].x = sphere[2].x;
+	sphere[5].y = sphere[2].y + 10;
+	sphere[5].z = sphere[2].z;
+	sphere[5].r = 3 * sphere[2].r / 2;
+#endif
 	//end of fucking shit spheres
 
 	if (pigtail)
@@ -325,7 +336,11 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 				break;
 			}
 
+#ifdef GENERAL_FIXES
+			for (int j = 0; j < 6; j++)//6 extra neck sphere
+#else
 			for (int j = 0; j < 5; j++)//5 because we GOT FIVE FUCKING SPHERESSSSSSSSSSSSSSSSSSSS TO TEST AGAINST AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+#endif
 			{
 				x = hair->pos.x_pos - sphere[j].x;
 				y = hair->pos.y_pos - sphere[j].y;

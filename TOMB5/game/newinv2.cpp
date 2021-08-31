@@ -99,6 +99,10 @@ int S_CallInventory2()
 	else
 		inventry_objects_list[INV_BINOCULARS_ITEM].objname = STR_BINOCULARS;
 
+#ifdef GENERAL_FIXES//restore HK tip
+	inventry_objects_list[INV_HK_ITEM1].meshbits = -1;
+#endif
+
 	friggrimmer = 0;
 	oldLaraBusy = lara.Busy != 0;
 
@@ -597,8 +601,10 @@ void construct_combine_object_list()
 				insert_object_into_list_v2(INV_REVOLVER_ITEM1);
 		}
 
+#ifndef GENERAL_FIXES//stop HK from appearing in combine list
 		if (lara.hk_type_carried & WTYPE_PRESENT)
 			insert_object_into_list_v2(INV_HK_ITEM1);
+#endif
 
 		if (lara.crossbow_type_carried & WTYPE_PRESENT && (gfCurrentLevel < LVL5_THIRTEENTH_FLOOR || gfCurrentLevel > LVL5_RED_ALERT))
 		{
