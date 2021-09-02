@@ -168,7 +168,10 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 	phd_TranslateRel(bone[25], bone[26], bone[27]);
 
 #ifdef GENERAL_FIXES//rotate her head and torso when she's HK'ing
-	if (lara.weapon_item != NO_ITEM && lara.gun_type == WEAPON_HK)
+	if (lara.weapon_item != NO_ITEM && lara.gun_type == WEAPON_HK &&
+		(items[lara.weapon_item].current_anim_state == 0 || items[lara.weapon_item].current_anim_state == 1 ||
+			items[lara.weapon_item].current_anim_state == 2 || items[lara.weapon_item].current_anim_state == 3 ||
+			items[lara.weapon_item].current_anim_state == 4))
 	{
 		rot = &lara.right_arm.frame_base[lara.right_arm.frame_number * (anims[lara.right_arm.anim_number].interpolation >> 8) + 9];
 		gar_RotYXZsuperpack(&rot, 7);
@@ -638,7 +641,10 @@ void Rich_CalcLaraMatrices_Interpolated(short* frame1, short* frame2, long frac,
 	phd_TranslateRel_I(bone[25], bone[26], bone[27]);
 
 #ifdef GENERAL_FIXES//rotate her head and torso when she's HK'ing
-	if (lara.weapon_item != NO_ITEM && lara.gun_type == WEAPON_HK)
+	if (lara.weapon_item != NO_ITEM && lara.gun_type == WEAPON_HK &&
+		(items[lara.weapon_item].current_anim_state == 0 || items[lara.weapon_item].current_anim_state == 1 ||
+			items[lara.weapon_item].current_anim_state == 2 || items[lara.weapon_item].current_anim_state == 3 ||
+			items[lara.weapon_item].current_anim_state == 4))
 	{
 		rot = &lara.right_arm.frame_base[lara.right_arm.frame_number * (anims[lara.right_arm.anim_number].interpolation >> 8) + 9];
 		rot2 = rot;
