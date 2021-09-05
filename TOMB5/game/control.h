@@ -28,6 +28,9 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MESH_INFO** StaticMesh);
 void TestTriggers(short* data, int heavy, int HeavyFlags);
 void _TestTriggers(short* data, int heavy, int HeavyFlags);
+void FlipMap(long FlipNumber);
+void RemoveRoomFlipItems(ROOM_INFO* r);
+void AddRoomFlipItems(ROOM_INFO* r);
 
 extern uchar ShatterSounds[18][10];
 
@@ -38,7 +41,6 @@ extern uchar ShatterSounds[18][10];
 #define AnimateItem	( (void(__cdecl*)(ITEM_INFO*)) 0x00415300 )
 #define	GetWaterHeight	( (long(__cdecl*)(long, long, long, short)) 0x00415DA0 )
 #define TriggerActive	( (int(__cdecl*)(ITEM_INFO*)) 0x004175B0 )
-#define	FlipMap	( (void(__cdecl*)(int)) 0x00418910 )
 #define CheckNoColCeilingTriangle	( (long(__cdecl*)(FLOOR_INFO*, long, long)) 0x00418D60 )
 #define FireCrossBowFromLaserSight	( (void(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*)) 0x0041A0B0 )
 #define DoRayBox	( (int(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, short*, PHD_3DPOS*, PHD_VECTOR*, short)) 0x004193C0 )
@@ -46,3 +48,4 @@ extern uchar ShatterSounds[18][10];
 #define TriggerCDTrack	( (void(__cdecl*)(short, short, short)) 0x00418B90 )
 #define ResetGuards	( (void(__cdecl*)()) 0x0041AF10 )
 #define IsRoomOutside	( (int(__cdecl*)(long, long, long)) 0x00418E90 )
+#define AlterFloorHeight	( (void(__cdecl*)(ITEM_INFO*, long)) 0x004159F0 )

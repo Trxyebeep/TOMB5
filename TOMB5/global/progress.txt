@@ -155,9 +155,9 @@ x for functions decompiled but not injected, for one reason or another.
 0x00417DC0	+	zLOS
 0x004181F0	+	xLOS
 0x00418620	+	ClipTarget
-0x00418910		FlipMap
-0x00418A50		RemoveRoomFlipItems
-0x00418AF0		AddRoomFlipItems
+0x00418910	+	FlipMap
+0x00418A50	+	RemoveRoomFlipItems
+0x00418AF0	+	AddRoomFlipItems
 0x00418B90		TriggerCDTrack
 0x00418BC0		TriggerNormalCDTrack
 0x00418C80		CheckNoColFloorTriangle
