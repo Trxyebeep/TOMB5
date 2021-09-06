@@ -22,7 +22,7 @@ int CreatureActive(short item_number)
 
 	item = &items[item_number];
 
-	if (item->flags & 0x8000)
+	if (item->flags & IFL_CLEARBODY)
 		return 0;
 
 	if (item->status == 3)

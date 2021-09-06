@@ -9,11 +9,8 @@
 void TriggerLaraBlood()
 {
 	PHD_VECTOR vec;
-	int node;
 
-	node = 1;
-
-	for (int i = 0; i < 15; i++)
+	for (int i = 0, node = 1; i < 15; i++, node <<= 1)
 	{
 		if (node & lara_item->touch_bits)
 		{
@@ -23,21 +20,15 @@ void TriggerLaraBlood()
 			GetLaraJointPos(&vec, LM[i]);
 			DoBloodSplat(vec.x, vec.y, vec.z, (GetRandomControl() & 7) + 8, 2 * GetRandomControl(), lara_item->room_number);
 		}
-
-		node <<= 1;
 	}
 }
 
 void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short room_number, long objheight)
 {
-	bool reset_room;
-	int y, yT;
-	short fspeed, room_num, room_num2;
-	int xright, xleft, zright, zleft;
-	int x, z;
-	long height;
-	long ceiling;
+	FLOOR_INFO* floor;
+	long x, y, yT, z, xright, xleft, zright, zleft, height, ceiling, reset_room;
 	ushort tilt_type;
+	short fspeed, room_num, room_num2;
 
 	if (objheight < 0)
 	{
@@ -49,23 +40,21 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 
 	y = ypos - objheight;
 	yT = y - 160;
-	fspeed = yT - lara_item->fallspeed;
-
+	fspeed = (short)(yT - lara_item->fallspeed);
 	coll->coll_type = CT_NONE;
 	coll->shift.x = 0;
 	coll->shift.y = 0;
 	coll->shift.z = 0;
 	coll->quadrant = (ushort)(coll->facing + 8192) / 16384;
-
 	room_num = room_number;
-	FLOOR_INFO* floor = GetFloor(xpos, yT, zpos, &room_num);
+	floor = GetFloor(xpos, yT, zpos, &room_num);
 	height = GetHeight(floor, xpos, yT, zpos);
 
 	if (height != NO_HEIGHT)
 		height -= ypos;
 
-	
 	ceiling = GetCeiling(floor, xpos, fspeed, zpos);
+
 	if (ceiling != NO_HEIGHT)
 		ceiling -= y;
 
@@ -73,12 +62,9 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	coll->mid_ceiling = ceiling;
 	coll->mid_type = height_type;
 	coll->trigger = trigger_index;
-
 	tilt_type = GetTiltType(floor, xpos, lara_item->pos.y_pos, zpos);
 	coll->tilt_x = (char)tilt_type;
 	coll->tilt_z = tilt_type >> 8;
-
-	
 
 	switch (coll->quadrant)
 	{
@@ -90,6 +76,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		zleft = coll->radius;
 		xleft = -coll->radius;
 		break;
+
 	case EAST:
 		xfront = coll->radius;
 		zfront = (phd_cos((ushort)(coll->facing) * coll->radius)) >> 14;
@@ -98,6 +85,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		zleft = coll->radius;
 		xleft = coll->radius;
 		break;
+
 	case SOUTH:
 		xfront = (phd_sin((ushort)coll->facing) * coll->radius) >> 14;
 		zfront = -coll->radius;
@@ -106,6 +94,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		zleft = -coll->radius;
 		xleft = coll->radius;
 		break;
+
 	case WEST:
 		xfront = -coll->radius;
 		zfront = (phd_cos((ushort)coll->facing) * coll->radius) >> 14;
@@ -114,10 +103,14 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		zleft = -coll->radius;
 		xleft = -coll->radius;
 		break;
+
 	default:
-		xfront = zfront = 0;
-		xright = zright = 0;
-		zleft = xleft = 0;
+		xfront = 0;
+		zfront = 0;
+		xright = 0;
+		zright = 0;
+		zleft = 0;
+		xleft = 0;
 	}
 
 	if (reset_room)
@@ -125,7 +118,6 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 
 	x = xfront + xpos;
 	z = zfront + zpos;
-
 	floor = GetFloor(x, yT, z, &room_num);
 	height = GetHeight(floor, x, yT, z);
 
@@ -140,7 +132,6 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	coll->front_ceiling = ceiling;
 	coll->front_floor = height;
 	coll->front_type = height_type;
-
 	floor = GetFloor(x + xfront, yT, z + zfront, &room_num);
 	height = GetHeight(floor, x + xfront, yT, z + zfront);
 
@@ -148,32 +139,25 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		height -= ypos;
 
 
-	if (coll->slopes_are_walls &&
-		((coll->front_type == BIG_SLOPE) || (coll->front_type == DIAGONAL)) &&
-		coll->front_floor < coll->mid_floor &&
-		height < coll->front_floor &&
-		coll->front_floor < 0)
+	if (coll->slopes_are_walls && (coll->front_type == BIG_SLOPE || coll->front_type == DIAGONAL) &&
+		coll->front_floor < coll->mid_floor && height < coll->front_floor && coll->front_floor < 0)
 		coll->front_floor = -32767;
-	else if (coll->slopes_are_pits && 
-		((coll->front_type == BIG_SLOPE) || (coll->front_type == DIAGONAL)) &&
-		coll->mid_floor < coll->front_floor)
+	else if (coll->slopes_are_pits && (coll->front_type == BIG_SLOPE || coll->front_type == DIAGONAL) && coll->mid_floor < coll->front_floor)
 		coll->front_floor = 512;
-	else if (coll->lava_is_pit && coll->front_floor > 0 && trigger_index != NULL)
-	{
-		if ((trigger_index[0] & 0x1F) == LAVA_TYPE)
-			coll->front_floor = 512;
-	}
+	else if (coll->lava_is_pit && coll->front_floor > 0 && trigger_index && (trigger_index[0] & 0x1F) == LAVA_TYPE)
+		coll->front_floor = 512;
 
 	room_num2 = room_number;
 	x = xpos + xleft;
 	z = zpos + zleft;
-
 	floor = GetFloor(x, yT, z, &room_num2);
 	height = GetHeight(floor, x, yT, z);
+
 	if (height != NO_HEIGHT)
 		height -= ypos;
 
 	ceiling = GetCeiling(floor, x, fspeed, z);
+
 	if (ceiling != NO_HEIGHT)
 		ceiling -= y;
 
@@ -185,17 +169,19 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		coll->left_floor = -32767;
 	else if (coll->slopes_are_pits && (coll->left_type == BIG_SLOPE || coll->left_type == DIAGONAL) && coll->left_floor > 0)
 		coll->left_floor = 512;
-	else if (coll->lava_is_pit && coll->left_floor > 0 && trigger_index != NULL && ( (*(trigger_index) & 0x1F) == LAVA_TYPE) )
+	else if (coll->lava_is_pit && coll->left_floor > 0 && trigger_index && (trigger_index[0] & 0x1F) == LAVA_TYPE)
 		coll->left_floor = 512;
 
 	x = xpos + xleft;
 	z = zpos + zleft;
 	floor = GetFloor(x, yT, z, &room_num);
 	height = GetHeight(floor, x, yT, z);
+
 	if (height != NO_HEIGHT)
 		height -= ypos;
 
 	ceiling = GetCeiling(floor, x, fspeed, z);
+
 	if (ceiling != NO_HEIGHT)
 		ceiling -= y;
 
@@ -207,20 +193,20 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		coll->left_floor2 = -32767;
 	else if (coll->slopes_are_pits && (coll->left_type2 == BIG_SLOPE || coll->left_type2 == DIAGONAL) && coll->left_floor2 > 0)
 		coll->left_floor2 = 512;
-	else if (coll->lava_is_pit && coll->left_floor2 > 0 && trigger_index != NULL && ((*(trigger_index) & 0x1F) == LAVA_TYPE))
+	else if (coll->lava_is_pit && coll->left_floor2 > 0 && trigger_index && (trigger_index[0] & 0x1F) == LAVA_TYPE)
 		coll->left_floor2 = 512;
-
 
 	x = xpos + xright;
 	z = zpos + zright;
 	room_num2 = room_number;
-
 	floor = GetFloor(x, yT, z, &room_num2);
 	height = GetHeight(floor, x, yT, z);
+
 	if (height != NO_HEIGHT)
 		height -= ypos;
 
 	ceiling = GetCeiling(floor, x, fspeed, z);
+
 	if (ceiling != NO_HEIGHT)
 		ceiling -= y;
 
@@ -232,19 +218,19 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		coll->right_floor = -32767;
 	else if (coll->slopes_are_pits && (coll->right_type == BIG_SLOPE || coll->right_type == DIAGONAL) && coll->right_floor > 0)
 		coll->right_floor = 512;
-	else if (coll->lava_is_pit && coll->right_floor > 0 && trigger_index != NULL && ((*(trigger_index) & 0x1F) == LAVA_TYPE))
+	else if (coll->lava_is_pit && coll->right_floor > 0 && trigger_index && (trigger_index[0] & 0x1F) == LAVA_TYPE)
 		coll->right_floor = 512;
-
 
 	x = xpos + xright;
 	z = zpos + zright;
-
 	floor = GetFloor(x, yT, z, &room_num);
 	height = GetHeight(floor, x, yT, z);
+
 	if (height != NO_HEIGHT)
 		height -= ypos;
 
 	ceiling = GetCeiling(floor, x, fspeed, z);
+
 	if (ceiling != NO_HEIGHT)
 		ceiling -= y;
 
@@ -256,7 +242,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		coll->right_floor2 = -32767;
 	else if (coll->slopes_are_pits && (coll->right_type2 == BIG_SLOPE || coll->right_type2 == DIAGONAL) && coll->right_floor2 > 0)
 		coll->right_floor2 = 512;
-	else if (coll->lava_is_pit && coll->right_floor2 > 0 && trigger_index != NULL && ((*(trigger_index) & 0x1F) == LAVA_TYPE))
+	else if (coll->lava_is_pit && coll->right_floor2 > 0 && trigger_index && (trigger_index[0] & 0x1F) == LAVA_TYPE)
 		coll->right_floor2 = 512;
 
 	CollideStaticObjects(coll, xpos, ypos, zpos, room_number, objheight);
@@ -269,7 +255,8 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		coll->shift.z = coll->old.z - zpos;
 		return;
 	}
-	if ((coll->mid_floor == coll->mid_ceiling) || (coll->mid_floor - coll->mid_ceiling < 0))
+
+	if (coll->mid_floor == coll->mid_ceiling || coll->mid_floor - coll->mid_ceiling < 0)
 	{
 		coll->coll_type = CT_CLAMP;
 		coll->shift.x = coll->old.x - xpos;
@@ -278,15 +265,14 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		return;
 	}
 
-	if (-1 < coll->mid_ceiling)
+	if (coll->mid_ceiling > -1)
 	{
 		coll->shift.y = coll->mid_ceiling;
 		coll->coll_type = CT_TOP;
-		coll->hit_ceiling = true;
+		coll->hit_ceiling = 1;
 	}
 
-	if (coll->bad_pos < coll->front_floor || coll->front_floor < coll->bad_neg ||
-		coll->bad_ceiling < coll->front_ceiling)
+	if (coll->bad_pos < coll->front_floor || coll->front_floor < coll->bad_neg || coll->bad_ceiling < coll->front_ceiling)
 	{
 		if (coll->front_type == DIAGONAL || coll->coll_type == SPLIT_TRI)
 		{
@@ -302,6 +288,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 				coll->shift.x = coll->old.x - xpos;
 				coll->shift.z = FindGridShift(zpos + zfront, zpos);
 				break;
+
 			case EAST:
 			case WEST:
 				coll->shift.x = FindGridShift(xpos + xfront, xpos);
@@ -309,6 +296,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 				break;
 			}
 		}
+
 		coll->coll_type = CT_FRONT;
 		return;
 	}
@@ -322,8 +310,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		return;
 	}
 
-	if (coll->bad_pos < coll->left_floor || coll->left_floor < coll->bad_neg ||
-		coll->bad_ceiling < coll->left_ceiling)
+	if (coll->bad_pos < coll->left_floor || coll->left_floor < coll->bad_neg || coll->bad_ceiling < coll->left_ceiling)
 	{
 		if (coll->left_type == SPLIT_TRI)
 		{
@@ -338,18 +325,19 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 			case SOUTH:
 				coll->shift.x = FindGridShift(xpos + xleft, xpos + xfront);
 				break;
+
 			case EAST:
 			case WEST:
 				coll->shift.z = FindGridShift(zpos + zleft, zpos + zfront);
 				break;
 			}
 		}
+
 		coll->coll_type = CT_LEFT;
 		return;
 	}
 
-	if (coll->bad_pos < coll->right_floor || coll->right_floor < coll->bad_neg ||
-		coll->bad_ceiling < coll->right_ceiling)
+	if (coll->bad_pos < coll->right_floor || coll->right_floor < coll->bad_neg || coll->bad_ceiling < coll->right_ceiling)
 	{
 		if (coll->right_type == SPLIT_TRI)
 		{
@@ -364,12 +352,14 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 			case SOUTH:
 				coll->shift.x = FindGridShift(xpos + xright, xpos + xfront);
 				break;
+
 			case EAST:
 			case WEST:
 				coll->shift.z = FindGridShift(zpos + zright, zpos + zfront);
 				break;
 			}
 		}
+
 		coll->coll_type = CT_RIGHT;
 		return;
 	}
@@ -383,14 +373,14 @@ int FindGridShift(int src, int dst)
 	dstw = dst >> 10;
 
 	if (srcw == dstw)
-		return (0);
+		return 0;
 
-	src &= 1024 - 1;
+	src &= 1023;
 
 	if (dstw > srcw)
-		return (1024 - (src - 1));
+		return 1025 - src;
 	else
-		return (-(src + 1));
+		return -1 - src;
 }
 
 void ShiftItem(ITEM_INFO* item, COLL_INFO* coll)
@@ -405,9 +395,7 @@ short GetTiltType(FLOOR_INFO* floor, long x, long y, long z)
 {
 	ROOM_INFO* Room;
 	short* floordata;
-	short type;
-	short t0, t1, t2, t3;
-	short tilt, x2, z2, x3, y2;
+	short type, t0, t1, t2, t3, tilt, x2, z2, x3, y2;
 
 	while (floor->pit_room != NO_ROOM)
 	{
@@ -429,7 +417,7 @@ short GetTiltType(FLOOR_INFO* floor, long x, long y, long z)
 		if (type == TILT_TYPE)
 			return floordata[1];
 
-		if (((((type == SPLIT1) || (type == SPLIT2)) || (type == NOCOLF1T)) || ((type == NOCOLF2T || (type == NOCOLF1B)))) || (type == NOCOLF2B))
+		if ((((type == SPLIT1 || type == SPLIT2) || type == NOCOLF1T) || ((type == NOCOLF2T || type == NOCOLF1B))) || type == NOCOLF2B)
 		{
 			tilt = floordata[1];
 			t0 = tilt & 0xF;
@@ -530,6 +518,7 @@ void GenericSphereBoxCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* c
 				TouchBits >>= 1;
 				sptr++;
 				DeadlyBits >>= 1;
+
 			} while (TouchBits);
 		}
 	}

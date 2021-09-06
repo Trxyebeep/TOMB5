@@ -75,7 +75,9 @@ void TriggerBat(ITEM_INFO* item)
 
 void InitialiseBatEmitter(short item_number)
 {
-	ITEM_INFO* item = &items[item_number];
+	ITEM_INFO* item;
+	
+	item = &items[item_number];
 
 	if (!item->pos.y_rot)
 		item->pos.z_pos += 512;

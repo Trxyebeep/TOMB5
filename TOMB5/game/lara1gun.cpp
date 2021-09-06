@@ -47,12 +47,12 @@ void ready_shotgun(int weapon_type)
 	lara.target = 0;
 	lara.right_arm.frame_base = objects[WeaponObject(weapon_type)].frame_base;
 	lara.left_arm.frame_base = objects[WeaponObject(weapon_type)].frame_base;
-	return;
 }
 
 void RifleHandler(int weapon_type)
 {
 	WEAPON_INFO* winfo;
+	PHD_VECTOR pos;
 	
 	winfo = &weapons[weapon_type];
 
@@ -104,8 +104,6 @@ void RifleHandler(int weapon_type)
 		}
 		else if(weapon_type == WEAPON_REVOLVER)
 		{
-			PHD_VECTOR pos;
-
 			pos.x = (GetRandomControl() & 0xFF) - 128;
 			pos.y = (GetRandomControl() & 0x7F) - 63;
 			pos.z = (GetRandomControl() & 0xFF) - 128;
@@ -117,23 +115,14 @@ void RifleHandler(int weapon_type)
 				TriggerDynamic(pos.x, pos.y, pos.z, 12, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 0x3F);
 		}
 	}
-
-	return;
 }
 
 void FireShotgun()
 {
-	struct PHD_VECTOR pos;
+	PHD_VECTOR pos;
+	long r, fired, x, y, z, scatter;
 	short angles[2];
 	short dangles[2];
-	int i;
-	int r;
-	int fired;
-	int x;
-	int y;
-	int z;
-	int lp;
-	int scatter;
 
 	angles[1] = lara.left_arm.x_rot;
 	angles[0] = lara.left_arm.y_rot + lara_item->pos.y_rot;
@@ -151,7 +140,7 @@ void FireShotgun()
 	else
 		scatter = 5460;
 
-	for (i = 0; i < 6; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		r = (GetRandomControl() - 16384) * scatter;
 
@@ -187,7 +176,7 @@ void FireShotgun()
 		SmokeWeapon = WEAPON_SHOTGUN;
 
 		if (lara_item->mesh_bits != 0)
-			for (lp = 0; lp < 7; lp++)
+			for (int i = 0; i < 7; i++)
 				TriggerGunSmoke(x, y, z, pos.x - x, pos.y - y, pos.z - z, 1, SmokeWeapon, 32);
 
 		lara.right_arm.flash_gun = weapons[WEAPON_SHOTGUN].flash_time;
@@ -244,8 +233,8 @@ void FireHK(int running)
 
 void FireCrossbow(PHD_3DPOS* Start)
 {
-	short* ammo;
 	ITEM_INFO* item;
+	short* ammo;
 	short item_number;
 
 	ammo = get_current_ammo_pointer(WEAPON_CROSSBOW);
@@ -283,13 +272,12 @@ void FireCrossbow(PHD_3DPOS* Start)
 
 void ControlCrossbow(short item_number)
 {
-	ITEM_INFO* item;
-	ITEM_INFO* target;
 	ITEM_INFO** itemslist;
 	MESH_INFO** staticslist;
-	//char* cptr;
-	short room_number;
+	ITEM_INFO* item;
+	ITEM_INFO* target;
 	long speed;
+	short room_number;
 
 	item = &items[item_number];
 	speed = item->speed;
@@ -312,8 +300,9 @@ void ControlCrossbow(short item_number)
 
 		while (!(gfLevelFlags & GF_OFFICE) || target->object_number != GRAPPLING_TARGET)
 		{
-			++itemslist;
+			itemslist++;
 			target = *itemslist;
+
 			if (!target)
 				return;
 		}
@@ -350,8 +339,7 @@ void draw_shotgun(int weapon_type)
 
 	AnimateItem(item);
 
-	if (item->current_anim_state != 0 &&
-		item->current_anim_state != 6)
+	if (item->current_anim_state != 0 && item->current_anim_state != 6)
 	{
 		if (item->frame_number - anims[item->anim_number].frame_base == weapons[weapon_type].draw_frame)
 			draw_shotgun_meshes(weapon_type);
@@ -367,7 +355,6 @@ void draw_shotgun(int weapon_type)
 	lara.right_arm.frame_number = item->frame_number - anims[item->anim_number].frame_base;
 	lara.left_arm.anim_number = item->anim_number; 
 	lara.right_arm.anim_number = item->anim_number;
-	return;
 }
 
 void undraw_shotgun(int weapon_type)
@@ -391,8 +378,8 @@ void undraw_shotgun(int weapon_type)
 	}
 	else if (item->current_anim_state == 3)
 	{	
-			if (anims[item->anim_number].frame_base == item->frame_number - 21)
-				undraw_shotgun_meshes(weapon_type);
+		if (anims[item->anim_number].frame_base == item->frame_number - 21)
+			undraw_shotgun_meshes(weapon_type);
 	}
 
 	lara.right_arm.frame_base = anims[item->anim_number].frame_ptr;
@@ -401,14 +388,14 @@ void undraw_shotgun(int weapon_type)
 	lara.left_arm.frame_number = item->frame_number - anims[item->anim_number].frame_base;
 	lara.right_arm.anim_number = item->anim_number;
 	lara.left_arm.anim_number = item->anim_number;
-	return;
 }
 
 void AnimateShotgun(int weapon_type)
 {
-	static int m16_firing;
-	int running;
 	ITEM_INFO* item;
+	PHD_VECTOR pos;
+	static long m16_firing;
+	long running;
 
 	if (HKTimer)
 	{
@@ -418,8 +405,6 @@ void AnimateShotgun(int weapon_type)
 
 	if (SmokeCountL)
 	{
-		PHD_VECTOR pos;
-
 		if (SmokeWeapon == WEAPON_HK)
 		{
 			pos.x = 0;
@@ -463,6 +448,7 @@ void AnimateShotgun(int weapon_type)
 		break;
 
 	case 2:
+
 		if (item->frame_number == anims[item->anim_number].frame_base)
 		{
 			item->goal_anim_state = 4;
@@ -554,9 +540,11 @@ void AnimateShotgun(int weapon_type)
 		break;
 
 	case 8:
+
 		if (item->frame_number == anims[item->anim_number].frame_base)
 		{
 			item->goal_anim_state = 7;
+
 			if (running)
 			{
 				if (input & IN_ACTION)
@@ -604,9 +592,6 @@ void AnimateShotgun(int weapon_type)
 		}
 
 		break;
-
-	default:
-		break;
 	}
 
 	AnimateItem(item);
@@ -616,7 +601,6 @@ void AnimateShotgun(int weapon_type)
 	lara.right_arm.frame_number = item->frame_number - anims[item->anim_number].frame_base;
 	lara.left_arm.anim_number = item->anim_number; 
 	lara.right_arm.anim_number = item->anim_number;
-	return;
 }
 
 void DoGrenadeDamageOnBaddie(ITEM_INFO* baddie, ITEM_INFO* item)
@@ -639,6 +623,7 @@ void DoGrenadeDamageOnBaddie(ITEM_INFO* baddie, ITEM_INFO* item)
 				if (!objects[baddie->object_number].undead)
 				{
 					HitTarget(baddie, NULL, 30, 1);
+
 					if (baddie != lara_item)
 					{
 						savegame.Game.AmmoHits++;
@@ -646,7 +631,7 @@ void DoGrenadeDamageOnBaddie(ITEM_INFO* baddie, ITEM_INFO* item)
 						if (baddie->hit_points <= 0)
 						{
 							savegame.Level.Kills++;
-							CreatureDie((baddie - items) / sizeof(ITEM_INFO), 1);
+							CreatureDie(baddie - items, 1);
 						}
 					}
 				}
@@ -657,11 +642,10 @@ void DoGrenadeDamageOnBaddie(ITEM_INFO* baddie, ITEM_INFO* item)
 
 void TriggerGrapplingEffect(long x, long y, long z)
 {
-	long size;
-	long lp;
 	SMOKE_SPARKS* sptr;
+	long size;
 
-	for (lp = 0; lp < 24; lp++)
+	for (int i = 0; i < 24; i++)
 	{
 		sptr = &smoke_spark[GetFreeSmokeSpark()];
 		sptr->On = 1;
@@ -677,7 +661,7 @@ void TriggerGrapplingEffect(long x, long y, long z)
 		sptr->Xvel = ((GetRandomControl() & 0x1FF) - 256) << 1;
 		sptr->Zvel = ((GetRandomControl() & 0x1FF) - 256) << 1;
 
-		if (lp < 12)
+		if (i < 12)
 		{
 			sptr->Yvel = (GetRandomControl() & 0x1F);
 			sptr->Friction = 64;
@@ -705,7 +689,6 @@ void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, int MustHitLast
 {
 	SPHERE* ptr1;
 	long dx, dy, dz, num1, cs, cd;
-	//long i;
 	short TriggerItems[8];
 	short NumTrigs, room_number;
 

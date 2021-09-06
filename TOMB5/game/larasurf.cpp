@@ -48,21 +48,11 @@ int LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll)
 
 int LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
 {
-	int hdif;
+	long hdif;
 	short angle;
 
-	if (coll->coll_type != CT_FRONT || !(input & IN_ACTION))
-		return 0;
-
-	if (ABS(coll->left_floor2 - coll->right_floor2) >= 60 || 
-		lara.gun_status != LG_NO_ARMS && 
-		(lara.gun_status != LG_READY || lara.gun_type != WEAPON_FLARE))
-		return 0;
-
-	if (coll->front_ceiling > 0)
-		return 0;
-
-	if (coll->mid_ceiling > 0)
+	if (coll->coll_type != CT_FRONT || !(input & IN_ACTION) || ABS(coll->left_floor2 - coll->right_floor2) >= 60 || lara.gun_status != LG_NO_ARMS &&
+		(lara.gun_status != LG_READY || lara.gun_type != WEAPON_FLARE) || coll->front_ceiling > 0 || coll->mid_ceiling > 0)
 		return 0;
 
 	hdif = coll->front_floor + 700;
@@ -131,8 +121,7 @@ void LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll)
 	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos + 700, item->pos.z_pos, item->room_number, 800);
 	ShiftItem(item, coll);
 
-	if (coll->coll_type & (CT_CLAMP | CT_TOP_FRONT | CT_TOP | CT_FRONT) ||
-		coll->mid_floor < 0 &&
+	if (coll->coll_type & (CT_CLAMP | CT_TOP_FRONT | CT_TOP | CT_FRONT) || coll->mid_floor < 0 &&
 		(coll->mid_type == BIG_SLOPE || coll->mid_type == DIAGONAL))
 	{
 		item->fallspeed = 0;
@@ -226,6 +215,7 @@ void lara_as_surfswim(ITEM_INFO* item, COLL_INFO* coll)
 		item->goal_anim_state = AS_SURFTREAD;
 
 	item->fallspeed += 8;
+
 	if (item->fallspeed > 60)
 		item->fallspeed = 60;
 }
@@ -326,7 +316,6 @@ void lara_as_surftread(ITEM_INFO* item, COLL_INFO* coll)
 	else if (input & IN_RIGHT)
 		item->pos.y_rot += 728;
 	
-
 	if (input & IN_FORWARD)
 		item->goal_anim_state = AS_SURFSWIM;
 	else if (input & IN_BACK)
@@ -340,6 +329,7 @@ void lara_as_surftread(ITEM_INFO* item, COLL_INFO* coll)
 	if (input & IN_JUMP)
 	{
 		lara.dive_count++;
+
 		if (lara.dive_count == 10)
 			item->goal_anim_state = AS_SWIM;
 	}

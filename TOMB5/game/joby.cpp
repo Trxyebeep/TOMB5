@@ -44,16 +44,16 @@ void KlaxonTremor()
 		if ((signed int)InGameCnt >= ABS(timer))
 		{
 			camera.bounce = -(GetRandomControl() % ABS(timer));
-			++timer;
+			timer++;
 		}
 		else
 			camera.bounce = -(GetRandomControl() % ++InGameCnt);
 	}
 }
 
-static int CheckCableBox(PHD_VECTOR* pos, short size)
+static long CheckCableBox(PHD_VECTOR* pos, short size)
 {
-	int ret;
+	long ret;
 	
 	ret = 0;
 
@@ -75,8 +75,7 @@ void ControlElectricalCables(short item_number)
 	PHD_VECTOR pos;
 	PHD_VECTOR pos2;
 	long rand, in_water, ripple;
-	short room_num, room2_num, wr, flip;
-	short ns, ffar;
+	short room_num, room2_num, wr, flip, ns, ffar;
 
 	item = &items[item_number];
 	ns = 0;
@@ -174,14 +173,12 @@ void ControlElectricalCables(short item_number)
 	if (!ns && !lara.burn && in_water)
 	{
 		flip = room[wr].FlipNumber;
-
 		pos.x = 0;
 		pos.y = 0;
 		pos.z = 0;
 		GetLaraJointPos(&pos, 3);
 		room_num = lara_item->room_number;
 		GetFloor(pos.x, pos.y, pos.z, &room_num);
-
 		pos2.x = 0;
 		pos2.y = 0;
 		pos2.z = 0;
@@ -213,8 +210,7 @@ void ControlElectricalCables(short item_number)
 void WreckingBallCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll)
 {
 	ITEM_INFO* item;
-	long dx, dy, dz;
-	long middle, damage, lp;
+	long dx, dy, dz, middle, damage;
 
 	item = &items[item_num];
 
@@ -239,7 +235,7 @@ void WreckingBallCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll)
 
 			if (damage)
 			{
-				for (lp = 14 + (GetRandomControl() & 3); lp > 0; --lp)
+				for (int i = 14 + (GetRandomControl() & 3); i > 0; i--)
 					TriggerBlood(laraitem->pos.x_pos + (GetRandomControl() & 63) - 32, laraitem->pos.y_pos - (GetRandomControl() & 511) - 256, laraitem->pos.z_pos + (GetRandomControl() & 63) - 32, -1, 1);
 			}
 
@@ -258,8 +254,8 @@ void ControlWreckingBall(short item_number)
 	ITEM_INFO* item;
 	ITEM_INFO* baseitem;
 	FLOOR_INFO* floor;
-	short room_number, Xdiff, Zdiff, speed, xoff, zoff, c;
 	long Tx, Tz, TLara, ox, oz;
+	short room_number, Xdiff, Zdiff, speed, xoff, zoff, c;
 
 	item = &items[item_number];
 	TLara = 1;
@@ -293,7 +289,7 @@ void ControlWreckingBall(short item_number)
 	}
 
 	if (item->item_flags[2] < 900)
-		++item->item_flags[2];
+		item->item_flags[2]++;
 
 	if (GLOBAL_playing_cutseq || CheckCutPlayed(27))
 	{
@@ -351,17 +347,11 @@ void ControlWreckingBall(short item_number)
 				speed = 32;
 
 			if (Xdiff > 0)
-			{
 				item->pos.x_pos += speed;
-			}
 			else if (Xdiff < 0)
-			{
 				item->pos.x_pos -= speed;
-			}
 			else
-			{
 				item->item_flags[0] = 0;
-			}
 		}
 
 		if (item->item_flags[0] == 2)
@@ -373,17 +363,11 @@ void ControlWreckingBall(short item_number)
 				speed = 32;
 
 			if (Zdiff > 0)
-			{
 				item->pos.z_pos += speed;
-			}
 			else if (Zdiff < 0)
-			{
 				item->pos.z_pos -= speed;
-			}
 			else
-			{
 				item->item_flags[0] = 0;
-			}
 		}
 
 		if (item->item_flags[1] == -1 && (ox != item->pos.x_pos || oz != item->pos.z_pos))
@@ -410,17 +394,13 @@ void ControlWreckingBall(short item_number)
 	else if (item->item_flags[1] == 1)
 	{
 		if (!item->trigger_flags)
-		{
-			--item->trigger_flags;
-		}
+			item->trigger_flags--;
 		else if (!item->current_anim_state)
-		{
 			item->goal_anim_state = 1;
-		}
 		else if (item->frame_number == anims[item->anim_number].frame_end)
 		{
 			SoundEffect(SFX_J_GRAB_DROP, &item->pos, 0);
-			++item->item_flags[1];
+			item->item_flags[1]++;
 			item->fallspeed = 6;
 			item->pos.y_pos += item->fallspeed;
 		}
@@ -444,14 +424,12 @@ void ControlWreckingBall(short item_number)
 			}
 			else
 			{
-				++item->item_flags[1];
+				item->item_flags[1]++;
 				item->fallspeed = 0;
 			}
 		}
 		else if (c - item->pos.y_pos < 1536 && item->current_anim_state)
-		{
 			item->goal_anim_state = 0;
-		}
 	}
 	else if (item->item_flags[1] == 3)
 	{
@@ -478,9 +456,7 @@ void ControlWreckingBall(short item_number)
 			}
 		}
 		else if (!item->item_flags[0])
-		{
 			SoundEffect(SFX_J_GRAB_WINCH_UP_LP, &item->pos, 0);
-		}
 	}
 
 	baseitem->pos.x_pos = item->pos.x_pos;

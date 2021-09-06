@@ -38,7 +38,7 @@ void lara_as_climbstnc(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_col_climbstnc(ITEM_INFO* item, COLL_INFO* coll)
 {
-	int result_r, result_l, shift_r, shift_l, ledge_r, ledge_l;
+	long result_r, result_l, shift_r, shift_l, ledge_r, ledge_l;
 
 	if (LaraCheckForLetGo(item, coll))
 		return;
@@ -130,8 +130,6 @@ void lara_col_climbstnc(ITEM_INFO* item, COLL_INFO* coll)
 			item->pos.y_pos += shift_l;
 		}
 	}
-
-	return;
 }
 
 static long LaraCheckForLetGo(ITEM_INFO* item, COLL_INFO* coll)
@@ -141,8 +139,7 @@ static long LaraCheckForLetGo(ITEM_INFO* item, COLL_INFO* coll)
 	item->gravity_status = 0;
 	item->fallspeed = 0;
 	room_number = item->room_number;
-	GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number),
-		item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number), item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 	coll->trigger = trigger_index;
 
 	if (input & IN_ACTION && item->hit_points > 0)
@@ -172,11 +169,7 @@ void lara_as_climbing(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_col_climbing(ITEM_INFO* item, COLL_INFO* coll)
 {
-	int frame;
-	int yshift;
-	int result_r, result_l;
-	int shift_r, shift_l;
-	int ledge_r, ledge_l;
+	long frame, yshift, result_r, result_l, shift_r, shift_l, ledge_r, ledge_l;
 
 	if (LaraCheckForLetGo(item, coll))
 		return;
@@ -249,7 +242,7 @@ void lara_as_climbleft(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_col_climbleft(ITEM_INFO* item, COLL_INFO* coll)
 {
-	int shift, res;
+	long shift, res;
 
 	if (!LaraCheckForLetGo(item, coll))
 	{
@@ -272,7 +265,7 @@ void lara_as_climbright(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_col_climbright(ITEM_INFO* item, COLL_INFO* coll)
 {
-	int shift, res;
+	long shift, res;
 
 	if (!LaraCheckForLetGo(item, coll))
 	{
@@ -304,10 +297,7 @@ void lara_as_climbdown(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_col_climbdown(ITEM_INFO* item, COLL_INFO* coll)
 {
-	int frame;
-	int yshift;
-	int result_r, result_l;
-	int shift_r, shift_l;
+	long frame, yshift, result_r, result_l, shift_r, shift_l;
 
 	if (LaraCheckForLetGo(item, coll) || item->anim_number != ANIM_CLIMBDOWN)
 		return;
@@ -328,9 +318,7 @@ void lara_col_climbdown(ITEM_INFO* item, COLL_INFO* coll)
 	result_l = LaraTestClimbPos(item, coll->radius, -(coll->radius + 120), -512, 512, &shift_l);
 	item->pos.y_pos -= 256;
 
-	if (result_r != 0 && result_l != 0 &&
-		result_r != -2 && result_l != -2 &&
-		input & IN_BACK)
+	if (result_r != 0 && result_l != 0 && result_r != -2 && result_l != -2 && input & IN_BACK)
 	{
 		if (shift_r && shift_l)
 		{

@@ -40,9 +40,9 @@ static short TightRopeBounds[12] =
 
 void EarthQuake(short item_number)
 {
-	short earth_item;
-	int pitch;
 	ITEM_INFO* item;
+	long pitch;
+	short earth_item;
 
 	item = &items[item_number];
 
@@ -54,6 +54,7 @@ void EarthQuake(short item_number)
 		camera.bounce = -64 - (GetRandomControl() & 0x1F);
 		SoundEffect(SFX_EARTHQUAKE_LOOP, 0, SFX_DEFAULT);
 		item->item_flags[3]++;
+
 		if (item->item_flags[3] > 150)
 		{
 			SoundEffect(SFX_J_GRAB_IMPACT, 0, SFX_DEFAULT);
@@ -109,6 +110,7 @@ void EarthQuake(short item_number)
 			for (earth_item = room[item->room_number].item_number; earth_item != NO_ITEM; earth_item = item->next_item)
 			{
 				item = &items[earth_item];
+
 				if (item->object_number == FLAME_EMITTER)//what
 				{
 					if (item->status != ITEM_ACTIVE && item->status != ITEM_DEACTIVATED)
@@ -129,8 +131,8 @@ void SmashObject(short item_number)
 {
 	ITEM_INFO* item;
 	ROOM_INFO* r;
-	int sector;
 	BOX_INFO* box;
+	long sector;
 
 	item = &items[item_number];
 	r = &room[item->room_number];
@@ -145,8 +147,10 @@ void SmashObject(short item_number)
 	item->mesh_bits = 0xFFFE;
 	ExplodingDeath2(item_number, -1, 257);
 	item->flags |= IFL_INVISIBLE;
+
 	if (item->status == ITEM_ACTIVE)
 		RemoveActiveItem(item_number);
+
 	item->status = ITEM_DEACTIVATED;
 }
 
@@ -174,13 +178,13 @@ void BridgeFlatCeiling(ITEM_INFO* item, long x, long y, long z, long* height)
 long GetOffset(ITEM_INFO* item, long x, long z)
 {
 	if (item->pos.y_rot == 0)
-		return (-x) & 0x3FF;
+		return -x & 0x3FF;
 	else if (item->pos.y_rot == -0x8000)
 		return x & 0x3FF;
 	else if (item->pos.y_rot == 0x4000)
 		return z & 0x3FF;
 	else
-		return (-z) & 0x3FF;
+		return -z & 0x3FF;
 }
 
 void BridgeTilt1Floor(ITEM_INFO* item, long x, long y, long z, long* height)
@@ -237,15 +241,14 @@ void ControlAnimatingSlots(short item_number)
 {
 	ITEM_INFO* item;
 	CREATURE_INFO* c;
-	int f;
+	PHD_VECTOR pos;
+	long f, fe;
+	short roomnum;
 
 	item = &items[item_number];
 
 	if (gfCurrentLevel == LVL5_THIRTEENTH_FLOOR && item->object_number == ANIMATING8)
 	{
-		PHD_VECTOR pos;
-		short roomnum;
-
 		pos.x = 0;
 		pos.y = 0;
 		pos.z = 0;
@@ -277,9 +280,6 @@ void ControlAnimatingSlots(short item_number)
 
 			item->anim_number = objects[item->object_number].anim_index + 1;
 			break;
-
-		default:
-			break;
 		}
 
 		item->frame_number = anims[item->anim_number].frame_base;
@@ -295,7 +295,6 @@ void ControlAnimatingSlots(short item_number)
 		ControlGunTestStation(item);
 	else if (item->object_number != SWITCH_TYPE8 || item->trigger_flags == 444)
 	{
-		int fe;
 		switch (item->trigger_flags)
 		{
 		case 666:
@@ -318,6 +317,7 @@ void ControlAnimatingSlots(short item_number)
 
 			if (item->frame_number == anims[item->anim_number].frame_end)
 				KillItem(item_number);
+
 			break;
 
 		case 668:
@@ -325,10 +325,9 @@ void ControlAnimatingSlots(short item_number)
 			break;
 
 		case 777:
+
 			if (item->frame_number >= anims[item->anim_number].frame_base + 27)
 			{
-				PHD_VECTOR pos;
-
 				pos.x = 1668;
 				pos.y= (GetRandomControl() & 0x3F) + 400;
 				pos.z = 496;
@@ -340,6 +339,7 @@ void ControlAnimatingSlots(short item_number)
 				GetJointAbsPosition(item, &pos, 0);
 				TriggerLiftBrakeSparks(&pos, item->pos.y_rot - 16384);
 			}
+
 			break;
 
 		case 888:
@@ -357,6 +357,7 @@ void ControlAnimatingSlots(short item_number)
 				item->mesh_bits = 3;
 			else
 				item->mesh_bits = 7;
+
 			break;
 		}
 	}
@@ -373,14 +374,14 @@ void ControlAnimatingSlots(short item_number)
 void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 {
 	ITEM_INFO* item;
+	short roty;
 	
 	item = &items[item_num];
 
-	if (input & IN_ACTION && lara.gun_status == LG_NO_ARMS &&
-		l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH ||
+	if (input & IN_ACTION && lara.gun_status == LG_NO_ARMS && l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH ||
 		lara.IsMoving && lara.GeneralPtr == (void*)item_num)
 	{
-		short roty = item->pos.y_rot;
+		roty = item->pos.y_rot;
 
 		item->pos.y_rot = l->pos.y_rot;
 
@@ -415,8 +416,7 @@ void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	{
 		if (TestBoundsCollide(item, l, 100) && TestCollision(item, l))
 		{
-			short roty = item->pos.y_rot;
-
+			roty = item->pos.y_rot;
 			item->pos.y_rot = l->pos.y_rot;
 
 			if (l->current_anim_state == AS_REACH)
@@ -443,8 +443,7 @@ void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	}
 	else
 	{
-		if ((l->current_anim_state < AS_POLESTAT || l->current_anim_state > AS_POLERIGHT) &&
-			l->current_anim_state != AS_BACKJUMP)
+		if ((l->current_anim_state < AS_POLESTAT || l->current_anim_state > AS_POLERIGHT) && l->current_anim_state != AS_BACKJUMP)
 			ObjectCollision(item_num, l, coll);
 	}
 }
@@ -455,9 +454,7 @@ void ControlTriggerTriggerer(short item_number)
 	short* data;
 
 	item = &items[item_number];
-
 	GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &item->room_number), item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
-
 	data = trigger_index;
 
 	if (data)
@@ -467,7 +464,7 @@ void ControlTriggerTriggerer(short item_number)
 			if (*data & 0x8000)
 				return;
 
-			++data;
+			data++;
 		}
 
 		if ((*data & 0x1F) == 6)
@@ -475,7 +472,7 @@ void ControlTriggerTriggerer(short item_number)
 			if (*data & 0x8000)
 				return;
 
-			++data;
+			data++;
 		}
 
 		if ((*data & 0x1F) == 19)
@@ -483,7 +480,7 @@ void ControlTriggerTriggerer(short item_number)
 			if (*data & 0x8000)
 				return;
 
-			++data;
+			data++;
 		}
 
 		if ((*data & 0x1F) == 20)
@@ -560,7 +557,6 @@ void ControlWaterfall(short item_number)
 void TightRopeCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 {
 	ITEM_INFO* item;
-//	long dx, dy;
 
 	item = &items[item_num];
 
@@ -655,7 +651,6 @@ void ParallelBarsCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	pos.y = -128;
 	pos.z = 512;
 	GetLaraJointPos(&pos, 14);
-
 	pos2.x = 0;
 	pos2.y = -128;
 	pos2.z = 512;
@@ -673,6 +668,9 @@ void ParallelBarsCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 void ControlXRayMachine(short item_number)
 {
 	ITEM_INFO* item;
+	ROOM_INFO* r;
+	MESH_INFO* mesh;
+	long num;
 
 	item = &items[item_number];
 
@@ -682,6 +680,7 @@ void ControlXRayMachine(short item_number)
 	switch (item->trigger_flags)
 	{
 	case 0:
+
 		if (item->item_flags[0] == 666)
 		{
 			if (item->item_flags[1])
@@ -701,9 +700,11 @@ void ControlXRayMachine(short item_number)
 				item->item_flags[0] = 666;
 			}
 		}
+
 		return;
 
 	case 111:
+
 		if (item->item_flags[0])
 		{
 			item->item_flags[0]--;
@@ -724,6 +725,7 @@ void ControlXRayMachine(short item_number)
 		break;
 
 	case 222:
+
 		if (item->item_flags[1] >= 144)
 		{
 			TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
@@ -734,9 +736,7 @@ void ControlXRayMachine(short item_number)
 
 		if (item->item_flags[1] < 128)
 		{
-			long num;
-
-			if (item->item_flags[1] == 0)
+			if (!item->item_flags[1])
 				num = 16;
 			else
 				num = 1;
@@ -745,22 +745,19 @@ void ControlXRayMachine(short item_number)
 			TriggerFontFire(&items[item->item_flags[0]], item->item_flags[1], num);
 		}
 
-		++item->item_flags[1];
+		item->item_flags[1]++;
 		break;
 
 	case 333:
 	{
-		ROOM_INFO* r = &room[item->room_number];
-		MESH_INFO* mesh = r->mesh;
-		int j;
+		r = &room[item->room_number];
+		mesh = r->mesh;
 
-		for (j = 0; j < r->num_meshes; j++, mesh++)
+		for (int i = 0; i < r->num_meshes; i++, mesh++)
 		{
 			if (mesh->Flags & 1)
 			{
-				if (item->pos.x_pos == mesh->x &&
-					item->pos.y_pos == mesh->y &&
-					item->pos.z_pos == mesh->z)
+				if (item->pos.x_pos == mesh->x && item->pos.y_pos == mesh->y && item->pos.z_pos == mesh->z)
 				{
 					ShatterObject(0, mesh, 128, item->room_number, 0);
 					mesh->Flags &= ~1;
@@ -786,30 +783,23 @@ void CutsceneRopeControl(short item_number)
 	ITEM_INFO* item;
 	PHD_VECTOR pos1;
 	PHD_VECTOR pos2;
-	long dx;
-	long dy;
-	long dz;
+	long dx, dy, dz;
 
 	item = &items[item_number];
-
 	pos1.x = -128;
 	pos1.y = -72;
 	pos1.z = -16;
 	GetJointAbsPosition(&items[item->item_flags[2]], &pos1, 0);
-
 	pos2.x = 830;
 	pos2.z = -12;
 	pos2.y = 0;
 	GetJointAbsPosition(&items[item->item_flags[3]], &pos2, 0);
-
 	item->pos.x_pos = pos2.x;
 	item->pos.y_pos = pos2.y;
 	item->pos.z_pos = pos2.z;
-
 	dx = (pos2.x - pos1.x) * (pos2.x - pos1.x);
 	dy = (pos2.y - pos1.y) * (pos2.y - pos1.y);
 	dz = (pos2.z - pos1.z) * (pos2.z - pos1.z);
-
 	item->item_flags[1] = (short)(((phd_sqrt(dx + dy + dz) << 1) + phd_sqrt(dx + dy + dz)) << 1);
 	item->pos.x_rot = -4869;
 }
@@ -820,9 +810,8 @@ void HybridCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll)
 
 	item = &items[item_num];
 
-	if (gfCurrentLevel == LVL5_SINKING_SUBMARINE)
-		if (item->frame_number < anims[item->anim_number].frame_end)
-			ObjectCollision(item_num, laraitem, coll);
+	if (gfCurrentLevel == LVL5_SINKING_SUBMARINE && item->frame_number < anims[item->anim_number].frame_end)
+		ObjectCollision(item_num, laraitem, coll);
 }
 
 void inject_objects(bool replace)

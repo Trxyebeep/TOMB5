@@ -18,9 +18,7 @@
 void FlareControl(short item_number)
 {
 	ITEM_INFO* flare;
-	long x, y, z;
-	long flare_age;
-	long xv, yv, zv;
+	long x, y, z, xv, yv, zv, flare_age;
 
 	flare = &items[item_number];
 
@@ -87,19 +85,17 @@ void FlareControl(short item_number)
 
 void CreateFlare(short object, int thrown)
 {
-	short flare_item;
+	ITEM_INFO* flare;
+	FLOOR_INFO* floor;
+	PHD_VECTOR pos;
+	long collision, collided;
+	short flare_item, room_number;
 
 	flare_item = CreateItem();
 
 	if (flare_item != NO_ITEM)
 	{
-		PHD_VECTOR pos;
-		bool collided = false;
-		ITEM_INFO* flare;
-		FLOOR_INFO* floor;
-		short room_number;
-		int collision;
-
+		collided = 0;
 		flare = &items[flare_item];
 		flare->object_number = object;
 		flare->room_number = lara_item->room_number;
@@ -113,6 +109,7 @@ void CreateFlare(short object, int thrown)
 		room_number = lara_item->room_number;
 		floor = GetFloor(pos.x, pos.y, pos.z, &room_number);
 		collision = GetCollidedObjects(flare, 0, 1, itemlist, meshlist, 0);
+
 		if (!collision && pos.y <= GetHeight(floor, pos.x, pos.y, pos.z))
 		{
 			if (!thrown)
@@ -166,9 +163,7 @@ void CreateFlare(short object, int thrown)
 
 		AddActiveItem(flare_item);
 		flare->status = ITEM_ACTIVE;
-		return;
 	}
-	return;
 }
 
 void ready_flare()
@@ -197,7 +192,7 @@ void draw_flare_meshes()
 
 void set_flare_arm(int frame)
 {
-	int anim_base;
+	long anim_base;
 	
 	anim_base = objects[FLARE_ANIM].anim_index;
 
@@ -210,7 +205,7 @@ void set_flare_arm(int frame)
 	else if (frame >= 1)
 		anim_base += 1;
 
-	lara.left_arm.anim_number = anim_base;
+	lara.left_arm.anim_number = (short)anim_base;
 	lara.left_arm.frame_base = anims[anim_base].frame_ptr;
 }
 
@@ -241,12 +236,9 @@ void DoFlareInHand(int flare_age)
 
 int DoFlareLight(PHD_VECTOR* pos, int flare_age)
 {
-	int x, y, z;
-	int r, g, b;
-	int random, random2;
-	int falloff;
+	long x, y, z, r, g, b, random, random2, falloff;
 
-	if (flare_age >= 900 || flare_age == 0)
+	if (flare_age >= 900 || !flare_age)
 		return 0;
 
 	random = GetRandomControl();
@@ -413,12 +405,14 @@ void undraw_flare()
 	else if (ani >= 72 && ani < 95)
 	{
 		ani++;
+
 		if (ani == 94)
 			ani = 1;
 	}
 	else if (ani >= 1 && ani < 33)
 	{
 		ani++;
+
 		if (ani == 21)
 		{
 			CreateFlare(FLARE_ITEM, 1);
@@ -441,6 +435,7 @@ void undraw_flare()
 	else if (ani >= 95 && ani < 110)
 	{
 		ani++;
+
 		if (ani == 110)
 			ani = 1;
 	}

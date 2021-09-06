@@ -13,7 +13,7 @@ void DrawHair()
 {
 	HAIR_STRUCT* hair;
 	short** meshpp;
-	int ii;
+	long ii;
 
 	for (int i = 0; i < 2; i++)
 	{

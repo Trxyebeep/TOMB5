@@ -377,8 +377,8 @@ void andrea1_init()
 
 void andrea1_control()
 {
-	PHD_VECTOR pos;
 	ITEM_INFO* item;
+	PHD_VECTOR pos;
 
 	switch (GLOBAL_cutseq_frame)
 	{
@@ -387,16 +387,20 @@ void andrea1_control()
 		item->flags |= 0x20;
 		item->mesh_bits = item->mesh_bits & 0xFFFFFFFD | 4;
 		break;
+
 	case 452:
 		cutseq_givelara_pistols();
 		break;
+
 	case 580:
 		undraw_pistol_mesh_left(1);
 		break;
+
 	case 603:
 		undraw_pistol_mesh_right(1);
 		lara.holster = old_lara_holster;
 		break;
+
 	case 705:
 		lara_item->mesh_bits = 0;
 		break;
@@ -416,21 +420,18 @@ void andrea1_end()
 {
 	lara_item->mesh_bits = -1;
 	lara.pickupitems &= 0xFFFE;
-	
-	return;
 }
 
 void andrea2_init()
 {
 	cutseq_meshbits[1] &= 0x7FFFFFFF;
-	return;
 }
 
 void andrea2_control()
 {
-	int frame;
 	ITEM_INFO* item;
 	PHD_VECTOR pos;
+	long frame;
 
 	frame = GLOBAL_cutseq_frame;
 
@@ -493,7 +494,7 @@ void andrea2_control()
 			}
 		}
 
-		if ((frame > 2933) && (frame < 2981))
+		if (frame > 2933 && frame < 2981)
 		{
 			pos.x = 0;
 			pos.y = 0;
@@ -517,19 +518,16 @@ void andrea2_control()
 	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 8, 1, LARSON, larson_chat_ranges2);
 	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 8, 2, ANIMATING2_MIP, pierre_chat_ranges2);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
-	return;
 }
 
 void andrea2_end()
 {
 	lara.pickupitems &= 0xFFFD;
-	return;
 }
 
 void andrea3_init()
 {
 	cutseq_givelara_pistols();
-	return;
 }
 
 void andrea3_control()
@@ -550,7 +548,6 @@ void andrea3_end()
 	ITEM_INFO* item;
 
 	cutseq_removelara_pistols();
-
 	item = find_a_fucking_item(LARSON);
 	item->anim_number = objects[LARSON].anim_index;
 	item->flags |= IFL_INVISIBLE;
@@ -563,13 +560,14 @@ void andrea3_end()
 
 void andrea3b_init()
 {
+	ITEM_INFO* item;
+
 	cutseq_givelara_pistols();
 	cutseq_kill_item(ANIMATING10);
 	cutseq_meshbits[2] = 0x80000F00;
 	cutseq_meshbits[3] = 0x80000F00;
 	cutseq_meshbits[4] = 0x80000F00;
-
-	ITEM_INFO* item = find_a_fucking_item(LARSON);
+	item = find_a_fucking_item(LARSON);
 	item->status = ITEM_INVISIBLE;
 	RemoveActiveItem(item - items);
 	DisableBaddieAI(item - items);
@@ -579,7 +577,7 @@ void andrea3b_init()
 
 void andrea3b_control()
 {
-	int f;
+	long f;
 	
 	f = GLOBAL_cutseq_frame;
 
@@ -616,13 +614,17 @@ void andrea3b_control()
 
 void andrea3b_end()
 {
+	ITEM_INFO* item;
+
 	disable_horizon = 0;
 	cutseq_removelara_pistols();
+
 	if (level_items > 0)
 	{
 		for (int i = 0; i < level_items; i++)
 		{
-			ITEM_INFO* item = &items[i];
+			item = &items[i];
+
 			if (item->object_number == HYDRA)
 			{
 				item->status = ITEM_ACTIVE;
@@ -632,6 +634,7 @@ void andrea3b_end()
 			}
 		}
 	}
+
 	DelsHandyTeleportLara(56846, 0, 26986, 50176);
 }
 
@@ -676,7 +679,7 @@ void cranecut_init()
 void cranecut_control()
 {
 	PHD_VECTOR pos;
-	int f;
+	long f;
 
 	f = GLOBAL_cutseq_frame;
 
@@ -685,25 +688,31 @@ void cranecut_control()
 	case 74:
 		lara_item->mesh_bits = 0;
 		break;
+
 	case 124:
 		lara_item->mesh_bits = 0xFFFFFFFF;
 		break;
+
 	case 801:
 		cutseq_meshbits[1] &= 0x7FFFFFFF;
 		break;
+
 	case 850:
 		cutseq_removelara_pistols();
 		break;
+
 	case 1301:
 		cutseq_meshbits[5] |= 0x80000000;
 		FlipMap(1);
 		break;
 	}
+
 	deal_with_pistols(crane_pistols_info);
 	pos.x = 12;
 	pos.y = 200;
 	pos.z = 60;
 	deal_with_actor_shooting(craneguard_pistols_info, 1, 13, &pos);
+
 	if (f >= 456 && f <= 462)
 	{
 		pos.x = 0;
@@ -715,14 +724,16 @@ void cranecut_control()
 		pos.z = 0;
 		TriggerActorBlood(1, 5, &pos, 0, 1);
 	}
+
 	if (f >= 1455 && f <= 1495)
 	{
 		pos.x = 1400;
 		pos.y = 900;
 		pos.z = 512;
 		GetActorJointAbsPosition(5, 0, &pos);
-		for (int n = 0; n < 2800; n += 175)
-			TriggerDelSmoke(pos.x, pos.y, n + pos.z, f - 1367);
+
+		for (int i = 0; i < 2800; i += 175)
+			TriggerDelSmoke(pos.x, pos.y, i + pos.z, f - 1367);
 	}
 }
 
@@ -740,8 +751,8 @@ void cranecut_end()
 
 void richcut1_init()
 {
-	short item_num, nex;
 	ITEM_INFO* item;
+	short item_num, nex;
 
 	item_num = room[lara_item->room_number].item_number;
 
@@ -761,6 +772,7 @@ void richcut1_init()
 			}
 
 			item_num = nex;
+
 		} while (nex != NO_ITEM);
 	}
 
@@ -809,7 +821,6 @@ void richcut2_init()
 {
 	cutrot = 1;
 	lara_item->mesh_bits = 0;
-	return;
 }
 
 void richcut2_control()
@@ -874,7 +885,7 @@ void richcut4_init()
 void richcut4_control()
 {
 	ITEM_INFO* item;
-	int f; 
+	long f; 
 	
 	f = GLOBAL_cutseq_frame;
 
@@ -886,21 +897,18 @@ void richcut4_control()
 			item->mesh_bits &= ~(1 << (8 - ((f - 300) >> 1)));
 	}
 
-	if (f != 308)
-	{
-		if (f == 534)
-		{
-			cutseq_meshswapbits[1] &= 0xFFFFFEFF;
-			cutseq_meshbits[2] &= 0xFFFFFFDF;
-		}
-		else if (f == 557)
-		{
-			cutseq_meshswapbits[1] &= 0xFFFFFFDF;
-			cutseq_meshbits[2] &= 0xFFFFFFFB;
-		}
-	}
-	else
+	if (f == 308)
 		cutseq_meshbits[2] |= 4;
+	else if (f == 534)
+	{
+		cutseq_meshswapbits[1] &= 0xFFFFFEFF;
+		cutseq_meshbits[2] &= 0xFFFFFFDF;
+	}
+	else if (f == 557)
+	{
+		cutseq_meshswapbits[1] &= 0xFFFFFFDF;
+		cutseq_meshbits[2] &= 0xFFFFFFFB;
+	}
 }
 
 void richcut4_end()
@@ -995,11 +1003,10 @@ void andy4_init()
 void andy4_control()
 {
 	PHD_VECTOR pos;
-	int n;
 
 	if (GLOBAL_cutseq_frame == 733)
 	{
-		for (n = 0; n < 8; n++)
+		for (int i = 0; i < 8; i++)
 		{
 			pos.x = 0;
 			pos.y = 0;
@@ -1040,8 +1047,7 @@ void andy4b_init()
 void andy4b_control()
 {
 	PHD_VECTOR pos;
-	int actor;
-	int f;
+	long f, actor;
 
 	f = GLOBAL_cutseq_frame;
 
@@ -1050,12 +1056,16 @@ void andy4b_control()
 
 	if (f == 697 || f == 708 || f == 723 || f == 735)
 	{
-		if (f == 708) actor = 2;
-		else if (f == 697) actor = 3;
-		else if (f == 735) actor = 4;
-		else actor = 1;
+		if (f == 708)
+			actor = 2;
+		else if (f == 697)
+			actor = 3;
+		else if (f == 735)
+			actor = 4;
+		else
+			actor = 1;
 
-		for (int n = 0; n < 16; n++)
+		for (int i = 0; i < 16; i++)
 		{
 			pos.z = 0;
 			pos.y = 0;
@@ -1080,7 +1090,7 @@ void andy5_init()
 void andy5_control()
 {
 	PHD_VECTOR pos;
-	int f; 
+	long f; 
 	
 	if (GLOBAL_cutseq_frame >= 310)
 	{
@@ -1116,6 +1126,7 @@ void andy5_control()
 	{
 		if (!cut_seethrough)
 			return;
+
 		f = cut_seethrough + (GetRandomControl() & 0x1F);
 	}
 	else
@@ -1186,7 +1197,7 @@ void andy8_control()
 {
 	ITEM_INFO* item = find_a_fucking_item(ANIMATING16);
 
-	item->flags |= 0x20;
+	item->flags |= IFL_TRIGGERED;
 
 	switch (GLOBAL_cutseq_frame)
 	{
@@ -1231,11 +1242,11 @@ void andy9_init()
 
 void andy9_control()
 {
-	int f;
+	long f;
 	
 	f = GLOBAL_cutseq_frame;
 
-	if (GLOBAL_cutseq_frame == 151 || GLOBAL_cutseq_frame == 1033 || GLOBAL_cutseq_frame == 3868)
+	if (f == 151 || f == 1033 || f == 3868)
 		lara_item->mesh_bits = -1;
 
 	if (f == 192 || f == 1099 || f == 3974)
@@ -1344,31 +1355,19 @@ void andy11_init()
 
 void andy11_control()
 {
-	if (GLOBAL_cutseq_frame == 2112 ||
-		GLOBAL_cutseq_frame == 2660 ||
-		GLOBAL_cutseq_frame == 3082 ||
-		GLOBAL_cutseq_frame == 3626 ||
-		GLOBAL_cutseq_frame == 4002 ||
-		GLOBAL_cutseq_frame == 4064 ||
-		GLOBAL_cutseq_frame == 4118 ||
-		GLOBAL_cutseq_frame == 4366 ||
-		GLOBAL_cutseq_frame == 4789 ||
-		GLOBAL_cutseq_frame == 5390)
+	long f;
+
+	f = GLOBAL_cutseq_frame;
+
+	if (f == 2112 || f == 2660 || f == 3082 || f == 3626 || f == 4002 || f == 4064 || f == 4118 || f == 4366 || f == 4789 || f == 5390)
 		lara_item->mesh_bits = -1;
 
-	if (GLOBAL_cutseq_frame == 2164 ||
-		GLOBAL_cutseq_frame == 2863 ||
-		GLOBAL_cutseq_frame == 3534 ||
-		GLOBAL_cutseq_frame == 3915 ||
-		GLOBAL_cutseq_frame == 4064 ||
-		GLOBAL_cutseq_frame == 4158 ||
-		GLOBAL_cutseq_frame == 4569 ||
-		GLOBAL_cutseq_frame == 5076)
+	if (f == 2164 || f == 2863 || f == 3534 || f == 3915 || f == 4064 || f == 4158 || f == 4569 || f == 5076)
 		lara_item->mesh_bits = 0;
 
-	if (GLOBAL_cutseq_frame == 3082)
+	if (f == 3082)
 		cutseq_meshbits[5] |= 0x80000000;
-	else if (GLOBAL_cutseq_frame == 2660)
+	else if (f == 2660)
 		cutseq_meshbits[2] &= 0x7FFFFFFF;
 
 	handle_lara_chatting(lara_chat_ranges_andy11);
@@ -1406,15 +1405,11 @@ void cossack_init()
 void cossack_control()
 {
 	PHD_VECTOR pos;
-	int n;
-	int f;
+	long f;
 	
 	f = GLOBAL_cutseq_frame;
 
-	if (f == 98
-		|| f == 344
-		|| f == 743
-		|| f == 1263)
+	if (f == 98 || f == 344 || f == 743 || f == 1263)
 		lara_item->mesh_bits = 0;
 
 	if (f == 281 || f == 468 || f == 901 || f == 1339)
@@ -1426,7 +1421,8 @@ void cossack_control()
 		pos.y = 120;
 		pos.z = 0;
 		GetActorJointAbsPosition(1, 17, &pos);
-		for (n = 0; n < 7; n++)
+
+		for (int i = 0; i < 7; i++)
 			TriggerDelBrownSmoke(pos.x, pos.y, pos.z);
 	}
 	else if (f == 157)
@@ -1435,7 +1431,8 @@ void cossack_control()
 		pos.y = 120;
 		pos.z = 0;
 		GetActorJointAbsPosition(1, 13, &pos);
-		for (n = 0; n < 7; n++)
+
+		for (int i = 0; i < 7; i++)
 			TriggerDelBrownSmoke(pos.x, pos.y, pos.z);
 	}
 	else
@@ -1487,18 +1484,18 @@ void monk2_init()
 void monk2_control()
 {
 	PHD_VECTOR pos;
-	int f;
+	long f;
 
 	if (GLOBAL_cutseq_frame == 70)
 		lara_item->mesh_bits = 0;
 	else
 	{
-
 		if (GLOBAL_cutseq_frame < 630 || GLOBAL_cutseq_frame >= 720)
 			f = cut_seethrough;
 		else
 		{
 			f = cut_seethrough;
+
 			if (cut_seethrough > 32)
 			{
 				f = cut_seethrough - 4;
@@ -1513,6 +1510,7 @@ void monk2_control()
 			if (f > 0)
 			{
 				cut_seethrough = f - 4;
+
 				if (f - 4 < 0)
 					cut_seethrough = 0;
 			}
@@ -1528,9 +1526,7 @@ void monk2_control()
 	pos.y = 0;
 	pos.z = 0;
 	GetActorJointAbsPosition(1, 0, &pos);
-
-	TriggerDynamic(pos.x, pos.y, pos.z, 10,
-		GetRandomControl() & 0xF, (GetRandomControl() & 0x1F) + 16, (GetRandomControl() & 0x3F) + 128);
+	TriggerDynamic(pos.x, pos.y, pos.z, 10, GetRandomControl() & 0xF, (GetRandomControl() & 0x1F) + 16, (GetRandomControl() & 0x3F) + 128);
 }
 
 void monk2_end()
@@ -1544,6 +1540,7 @@ void swampy_init()
 	
 	item = find_a_fucking_item(GREEN_TEETH);
 	cutrot = 0;
+
 	if (item)
 	{
 		item->status = ITEM_INVISIBLE;
@@ -1551,6 +1548,7 @@ void swampy_init()
 		DisableBaddieAI(item - items);
 		item->flags |= IFL_INVISIBLE;
 	}
+
 	lara.water_status = LW_UNDERWATER;
 }
 
@@ -1571,6 +1569,7 @@ void swampy_end()
 	lara_item->current_anim_state = AS_TREAD;
 	lara_item->frame_number = anims[ANIM_TREAD].frame_base;
 	lara_item->anim_number = ANIM_TREAD;
+
 	if (lara.air > 200)
 		lara.air = 200;
 }
@@ -1590,7 +1589,7 @@ void hamgate_init()
 
 void hamgate_control()
 {
-	int f;
+	long f;
 	
 	f = GLOBAL_cutseq_frame;
 
@@ -1615,20 +1614,14 @@ void hamgate_end()
 
 void stealth3_start()
 {
-	int i;
 	ITEM_INFO* item;
 	
-	
-	item = &items[0];
-
-	for (i = 0; i < level_items; i++, item++)
+	for (int i = 0; i < level_items; i++, item++)
 	{
-		if (item->object_number == CHEF ||
-			item->object_number == SAS ||
-			item->object_number == BLUE_GUARD ||
-			item->object_number == SWAT_PLUS ||
-			item->object_number == SWAT ||
-			item->object_number == TWOGUN)
+		item = &items[i];
+
+		if (item->object_number == CHEF || item->object_number == SAS || item->object_number == BLUE_GUARD ||
+			item->object_number == SWAT_PLUS || item->object_number == SWAT || item->object_number == TWOGUN)
 		{
 			if (ABS(item->pos.x_pos - lara_item->pos.x_pos) < 1024 &&
 				ABS(item->pos.z_pos - lara_item->pos.z_pos) < 1024 &&
@@ -1658,12 +1651,8 @@ void stealth3_end()
 		if (cutseq_num == 3)
 			continue;
 
-		if (item->object_number == CHEF ||
-			item->object_number == SAS ||
-			item->object_number == BLUE_GUARD ||
-			item->object_number == SWAT_PLUS ||
-			item->object_number == SWAT ||
-			item->object_number == TWOGUN)
+		if (item->object_number == CHEF || item->object_number == SAS || item->object_number == BLUE_GUARD ||
+			item->object_number == SWAT_PLUS || item->object_number == SWAT || item->object_number == TWOGUN)
 		{
 			if (ABS(item->pos.x_pos - lara_item->pos.x_pos) < 1024 &&
 				ABS(item->pos.z_pos - lara_item->pos.z_pos) < 1024 &&
@@ -1721,6 +1710,7 @@ void joby2_control()
 		cutseq_meshbits[3] |= 0x80000000;
 		cutseq_meshbits[4] |= 0x80000000;
 		break;
+
 	case 1622:
 		lara_item->mesh_bits = -1;
 		cutseq_meshbits[1] &= 0x7FFFFFFF;
@@ -1731,6 +1721,7 @@ void joby2_control()
 		cutseq_meshbits[6] &= 0x7FFFFFFF;
 		disable_horizon = 1;
 		break;
+
 	case 1822:
 		lara_item->mesh_bits = 0;
 		disable_horizon = 0;
@@ -1739,9 +1730,11 @@ void joby2_control()
 		cutseq_meshbits[3] |= 0x80000000;
 		cutseq_meshbits[4] |= 0x80000000;
 		break;
+
 	case 254:
 		disable_horizon = 0;
 		break;
+
 	case 1485:
 		cutseq_meshbits[1] |= 0x80000000;
 		cutseq_meshbits[2] |= 0x80000000;
@@ -1792,7 +1785,7 @@ void joby4_init()
 
 void joby4_control()
 {
-	int f;
+	long f;
 	
 	f = GLOBAL_cutseq_frame;
 
@@ -1832,7 +1825,7 @@ void joby5_init()
 
 void joby5_control()
 {
-	int f;
+	long f;
 	
 	f = GLOBAL_cutseq_frame;
 
@@ -1896,8 +1889,9 @@ void joby7_init()
 
 void joby7_control()
 {
-	PHD_VECTOR s, d;
-	int f, brightme, b;
+	PHD_VECTOR s;
+	PHD_VECTOR d;
+	long f, brightme, b;
 	short room_no;
 
 	f = GLOBAL_cutseq_frame;
@@ -1910,7 +1904,6 @@ void joby7_control()
 		s.y = -100;
 		s.z = 0;
 		GetActorJointAbsPosition(6, 0, &s);
-
 		b = f - 650 > 220 ? 220 : f - 650;
 		brightme = ((f - 650) >> 5) + 8;
 		TriggerDynamic(s.x, s.y, s.z, brightme, 0, 0, b + 16);
@@ -1969,7 +1962,6 @@ void joby8_init()
 	cutseq_kill_item(DOOR_TYPE4);
 	cutseq_kill_item(ANIMATING16);
 	lara_item->mesh_bits = 0x81FF01FF;
-
 	room_number = lara_item->room_number;
 	GetHeight(GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number), lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
 	TestTriggers(trigger_index, 1, 0);
@@ -1982,6 +1974,10 @@ void joby8_init()
 
 void joby8_control()
 {
+	SPARKS* sptr;
+	PHD_VECTOR s;
+	PHD_VECTOR d;
+	long r, g, b, scale;
 	short room_num;
 
 	switch (GLOBAL_cutseq_frame)
@@ -1991,9 +1987,11 @@ void joby8_control()
 		cutseq_meshbits[3] |= 0x80000000;
 		cutseq_meshbits[4] |= 0x80000000;
 		break;
+
 	case 2440:
 		cutseq_meshbits[8] &= 0x7FFFFFFF;
 		break;
+
 	case 2681:
 		cutseq_meshbits[1] &= 0x7FFFFFFF;
 		cutseq_meshbits[2] &= 0x7FFFFFFF;
@@ -2001,12 +1999,15 @@ void joby8_control()
 		cutseq_meshbits[4] &= 0x7FFFFFFF;
 		cutseq_meshbits[5] &= 0x7FFFFFFF;
 		break;
+
 	case 440:
 		lara_item->mesh_bits = -1;
 		break;
+
 	case 2103:
 		cutseq_meshswapbits[7] = 9216;
 		break;
+
 	case 2724:
 		room_num = lara_item->room_number;
 		GetHeight(GetFloor(lara_item->pos.x_pos + 1024, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_num), lara_item->pos.x_pos + 1024, lara_item->pos.y_pos, lara_item->pos.z_pos);
@@ -2016,77 +2017,51 @@ void joby8_control()
 
 	if (GLOBAL_cutseq_frame >= 2440 && GLOBAL_cutseq_frame <= 2659)
 	{
-		int r, g, b;
-		int i;
-		SPARKS* sptr;
-		PHD_VECTOR s;
-		int scale;
-		PHD_VECTOR d;
-
 		r = (GetRandomControl() & 0x3F) + 96;
 		g = GetRandomControl() % r;
 		b = GetRandomControl() & 0xF;
 
-		for (i = 0; i < 3; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			s.x = 0;
 			s.y = 0;
 			s.z = 0;
-
 			GetActorJointAbsPosition(1, GetRandomControl() % 20, &s);
-
 			sptr = &spark[GetFreeSpark()];
-
 			sptr->On = 1;
-
-			sptr->dR = r;
-			sptr->dG = g;
-			sptr->dB = b;
-
+			sptr->dR = (uchar)r;
+			sptr->dG = (uchar)g;
+			sptr->dB = (uchar)b;
 			scale = (GetRandomControl() & 0x3F) - 64;
-			sptr->sR = scale;
-			sptr->sB = scale;
-			sptr->sG = scale;
-
+			sptr->sR = (uchar)scale;
+			sptr->sB = (uchar)scale;
+			sptr->sG = (uchar)scale;
 			sptr->ColFadeSpeed = 8;
 			sptr->TransType = 2;
 			sptr->FadeToBlack = 4;
-
 			sptr->Life = 12;
 			sptr->sLife = 12;
-
 			sptr->x = s.x;
 			sptr->y = s.y;
 			sptr->z = s.z;
-
 			sptr->Xvel = 2 * (GetRandomControl() & 0x1FF) - 512;
 			sptr->Yvel = 2 * (GetRandomControl() & 0x1FF) - 512;
 			sptr->Zvel = 2 * (GetRandomControl() & 0x1FF) - 512;
-
 			sptr->Friction = 51;
 			sptr->MaxYvel = 0;
 			sptr->Gravity = 0;
-
 			sptr->Flags = 0;
-
 			TriggerFireFlame(s.x, s.y, s.z, -1, 254);
 		}
 
 		d.x = s.x + (phd_sin(2 * (GetRandomControl() & 0x7FFF)) >> 3);
 		d.y = s.y;
 		d.z = s.z + (phd_cos(2 * (GetRandomControl() & 0x7FFF)) >> 3);
-
 		TriggerLightning(&s, &d, (GetRandomControl() & 0xF) + 30, RGBA(r, g, b, 16), 15, 40, 5);
 		TriggerDynamic(s.x, s.y, s.z, 10, (GetRandomControl() & 0x7F) + 128, g, b);
 	}
 	else if (GLOBAL_cutseq_frame >= 2681 && GLOBAL_cutseq_frame <= 2724)
 	{
-		PHD_VECTOR s;
-		int scale;
-		int r;
-		int g;
-		int b;
-
 		s.x = 512;
 		s.y = 0;
 		s.z = 0;
@@ -2390,13 +2365,9 @@ void handle_cutseq_triggering(int name)
 
 	if (--cutseq_busy_timeout > 0)
 	{
-		if (lara.gun_status != LG_HANDS_BUSY
-			&& (lara.gun_status != LG_NO_ARMS || lara.flare_control_left)
-			&& lara_item->current_anim_state != AS_ALL4S
-			&& lara_item->current_anim_state != AS_CRAWL
-			&& lara_item->current_anim_state != AS_ALL4TURNL
-			&& lara_item->current_anim_state != AS_ALL4TURNR
-			&& lara_item->current_anim_state != AS_CRAWLBACK)
+		if (lara.gun_status != LG_HANDS_BUSY && (lara.gun_status != LG_NO_ARMS || lara.flare_control_left) &&
+			lara_item->current_anim_state != AS_ALL4S && lara_item->current_anim_state != AS_CRAWL && lara_item->current_anim_state != AS_ALL4TURNL &&
+			lara_item->current_anim_state != AS_ALL4TURNR && lara_item->current_anim_state != AS_CRAWLBACK)
 			return;
 	}
 	else
@@ -2485,21 +2456,27 @@ void do_pierre_gun_meshswap()
 
 void do_catapult_meshswap()
 {
-	short* temp = lara.mesh_ptrs[LM_LHAND];
+	short* temp;
+	
+	temp = lara.mesh_ptrs[LM_LHAND];
 	lara.mesh_ptrs[LM_LHAND] = meshes[objects[CROW_MIP].mesh_index + (2 * LM_LHAND)];
 	meshes[objects[CROW_MIP].mesh_index + (2 * LM_LHAND)] = temp;
 }
 
 void do_clanger_meshswap()
 {
-	short* temp = lara.mesh_ptrs[LM_RHAND];
+	short* temp;
+	
+	temp = lara.mesh_ptrs[LM_RHAND];
 	lara.mesh_ptrs[LM_RHAND] = meshes[objects[MESHSWAP2].mesh_index + (2 * LM_RHAND)];
 	meshes[objects[MESHSWAP2].mesh_index + (2 * LM_RHAND)] = temp;
 }
 
 void do_hammer_meshswap()
 {
-	short* temp = lara.mesh_ptrs[LM_RHAND];
+	short* temp;
+	
+	temp = lara.mesh_ptrs[LM_RHAND];
 	lara.mesh_ptrs[LM_RHAND] = meshes[objects[MESHSWAP3].mesh_index + (2 * LM_RHAND)];
 	meshes[objects[MESHSWAP3].mesh_index + (2 * LM_RHAND)] = temp;
 }
@@ -2512,7 +2489,9 @@ void setup_preist_meshswap()
 
 void do_chalk_meshswap()//optimized out
 {
-	short* temp = lara.mesh_ptrs[LM_RHAND];
+	short* temp;
+	
+	temp = lara.mesh_ptrs[LM_RHAND];
 	lara.mesh_ptrs[LM_RHAND] = meshes[objects[MAFIA_MIP].mesh_index + 2 * LM_RHAND];
 	meshes[objects[MAFIA_MIP].mesh_index + 2 * LM_RHAND] = temp;
 }
@@ -2610,8 +2589,8 @@ ITEM_INFO* find_a_fucking_item(int object_number)
 
 void TriggerDelSmoke(long x, long y, long z, int sizeme)
 {
-	long size, dx, dz;
 	SPARKS* sptr;
+	long size, dx, dz;
 
 	dx = lara_item->pos.x_pos - x;
 	dz = lara_item->pos.z_pos - z;
@@ -2653,8 +2632,8 @@ void TriggerDelSmoke(long x, long y, long z, int sizeme)
 
 void TriggerDelBrownSmoke(long x, long y, long z)
 {
-	long size;
 	SPARKS* sptr;
+	long size;
 
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
@@ -2690,9 +2669,9 @@ void TriggerDelBrownSmoke(long x, long y, long z)
 
 void DelTorchFlames(PHD_VECTOR* pos)
 {
-	long x, y, z, size;
 	SPARKS* sptr;
-
+	long x, y, z, size;
+	
 	x = pos->x;
 	y = pos->y;
 	z = pos->z;
@@ -2726,7 +2705,6 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->sSize = (uchar)size;
 	sptr->Size = (uchar)size;
 	sptr->dSize = (uchar)(size >> 4);
-
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
 	sptr->sR = (GetRandomControl() & 0x3F) - 64;
@@ -2848,7 +2826,7 @@ void CutLaraBubbles()
 void deal_with_pistols(ushort* shootdata)
 {
 	PHD_VECTOR pos;
-	int f;
+	long f;
 
 	f = GLOBAL_cutseq_frame;
 
@@ -2894,7 +2872,7 @@ void deal_with_pistols(ushort* shootdata)
 		}
 	}
 	else
-		lara.mesh_ptrs[14] = meshes[objects[0].mesh_index + (14 * 2)];
+		lara.mesh_ptrs[14] = meshes[objects[LARA].mesh_index + (14 * 2)];
 
 	if (lara.left_arm.flash_gun)
 	{
@@ -2910,8 +2888,8 @@ void deal_with_pistols(ushort* shootdata)
 
 void handle_lara_chatting(short* _ranges)//short* ranges//until the anim ranges array is moved into the dll.
 {
-	int r1, r2, f, rndme;
 	short* poo;
+	int r1, r2, f, rndme;
 
 	f = GLOBAL_cutseq_frame;
 	lara_chat_cnt = (lara_chat_cnt - 1) & 1;
@@ -2943,7 +2921,7 @@ void handle_lara_chatting(short* _ranges)//short* ranges//until the anim ranges 
 
 void handle_actor_chatting(int speechslot, int node, int slot, int objslot, short* _ranges)//short* ranges//until the anim ranges array is moved into the dll.
 {
-	int r1, r2, f, rnd;
+	long r1, r2, f, rnd;
 
 	f = GLOBAL_cutseq_frame;
 	rnd = GetRandomControl() & 1;
@@ -2978,8 +2956,8 @@ void handle_actor_chatting(int speechslot, int node, int slot, int objslot, shor
 
 void trigger_item_in_room(short room_number, int object)
 {
-	short num, nex;
 	ITEM_INFO* item;
+	short num, nex;
 
 	num = room[room_number].item_number;
 
@@ -3001,8 +2979,8 @@ void trigger_item_in_room(short room_number, int object)
 
 void untrigger_item_in_room(short room_number, int object)
 {
-	short num, nex;
 	ITEM_INFO* item;
+	short num, nex;
 
 	num = room[room_number].item_number;
 
@@ -3024,9 +3002,9 @@ void untrigger_item_in_room(short room_number, int object)
 
 void deal_with_actor_shooting(ushort* shootdata, int actornum, int nodenum, PHD_VECTOR* pos)
 {
-	int f;
-	ushort dat;
 	MATRIX3D arse;
+	long f;
+	ushort dat;
 
 	dat = *shootdata++;
 	f = GLOBAL_cutseq_frame;
@@ -3081,10 +3059,7 @@ void DelsHandyTeleportLara(int x, int y, int z, int yrot)
 
 void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int numnodes)
 {
-	int offset;
-	int xoff;
-	int yoff;
-	int zoff;
+	long offset, xoff, yoff, zoff;
 
 	offset = ((numnodes << 3) - numnodes) << 1;
 
@@ -3112,14 +3087,12 @@ void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int num
 			offset += xoff + yoff + zoff;
 		}
 	}
-
-	return;
 }
 
 short GetTrackWord(int off, char* packed, int packmethod)
 {
-	int ret;
 	long offset, offset2;
+	short ret;
 
 	offset = packmethod * off;
 	offset2 = offset >> 3;
@@ -3301,8 +3274,8 @@ void do_new_cutscene_camera()
 	if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
 		DecodeAnim(actor_pnodes[0], 16, GLOBAL_cutseq_frame, 1023);
 
-	for (int n = 1; n < GLOBAL_cutme->numactors; n++)
-		DecodeAnim(actor_pnodes[n], GLOBAL_cutme->actor_data[n].nodes + 1, GLOBAL_cutseq_frame, 1023);
+	for (int i = 1; i < GLOBAL_cutme->numactors; i++)
+		DecodeAnim(actor_pnodes[i], GLOBAL_cutme->actor_data[i].nodes + 1, GLOBAL_cutseq_frame, 1023);
 
 	GLOBAL_cutseq_frame++;
 
@@ -3315,8 +3288,8 @@ void do_new_cutscene_camera()
 
 void updateAnimFrame(PACKNODE* node, int flags, short* frame)
 {
-	short y;
 	short* nex;
+	short y;
 
 	frame[7] = 3 * node->yrot_run;
 
@@ -3547,8 +3520,8 @@ void CalculateObjectLightingLaraCutSeq()
 void GrabActorMatrix(int actornum, ulong nodenum, MATRIX3D* matrixstash)
 {
 	OBJECT_INFO* obj;
-	short* rot;
 	long* bone;
+	short* rot;
 	long bit;
 
 	bit = 1;
@@ -3713,7 +3686,7 @@ void init_cutseq_actors(char* data, int resident)
 	NODELOADHEADER* nlheader;
 	char* packed;
 	char* resident_addr;
-	int pda_nodes, offset;
+	long pda_nodes, offset;
 
 	resident_addr = GLOBAL_resident_depack_buffers;
 	lastcamnum = -1;
@@ -3797,6 +3770,7 @@ void init_cutseq_actors(char* data, int resident)
 void init_resident_cutseq(int num)
 {
 	char* packed;
+
 	packed = cutseq_resident_addresses[num];
 	GLOBAL_cutme = (NEW_CUTSCENE*)packed;
 

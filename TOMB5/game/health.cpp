@@ -12,8 +12,8 @@
 
 int FlashIt()
 {
-	static int flash_state;
-	static int flash_count;
+	static long flash_state;
+	static long flash_count;
 
 	if (flash_count)
 		flash_count--;
@@ -28,8 +28,11 @@ int FlashIt()
 
 void DrawGameInfo(int timed)
 {
-	int flash_state, seconds;
+	long flash_state, seconds;
 	char buf[80];
+#ifdef AMMO_COUNTER
+	short ammo, btm;
+#endif
 
 	if (!GLOBAL_playing_cutseq && !bDisableLaraControl && gfGameMode != 1)
 	{
@@ -57,8 +60,6 @@ void DrawGameInfo(int timed)
 #ifdef AMMO_COUNTER
 		if (lara.gun_status == LG_READY)
 		{
-			short ammo, btm;
-			
 			ammo = *get_current_ammo_pointer(lara.gun_type);
 
 			if (ammo == -1)
@@ -77,8 +78,8 @@ void DrawGameInfo(int timed)
 
 void DrawHealthBar(int flash_state)
 {
-	int hitpoints;
-	static int old_hitpoints;
+	static long old_hitpoints;
+	long hitpoints;
 
 	hitpoints = lara_item->hit_points;
 
@@ -127,7 +128,7 @@ void DrawHealthBar(int flash_state)
 
 void DrawAirBar(int flash_state)
 {
-	int air;
+	long air;
 
 	if (lara.air == 1800 || lara_item->hit_points <= 0)
 		return;
@@ -237,14 +238,14 @@ void AddDisplayPickup(short object_number)
 {
 	DISPLAYPU* pu; 
 
-	pu = &pickups[0];
-
 	if (gfCurrentLevel == LVL5_SUBMARINE && object_number == PUZZLE_ITEM1 ||
 		gfCurrentLevel == LVL5_OLD_MILL && object_number == PUZZLE_ITEM3)
 		object_number = CROWBAR_ITEM;
 
-	for (long lp = 0; lp < 8; lp++, pu++)
+	for (int i = 0; i < 8; i++)
 	{
+		pu = &pickups[i];
+
 		if (pu->life < 0)
 		{
 			pu->life = 45;

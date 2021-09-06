@@ -13,8 +13,8 @@
 
 void LaraTestWaterDepth(ITEM_INFO* item, COLL_INFO* coll)
 {
-	int wd;
 	FLOOR_INFO* floor;
+	long wd;
 	short room_number;
 
 	room_number = item->room_number;
@@ -47,8 +47,7 @@ void LaraTestWaterDepth(ITEM_INFO* item, COLL_INFO* coll)
 void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 {
 	COLL_INFO coll2, coll3;
-	long ox, oy, oz, pitch;
-	int height;
+	long ox, oy, oz, pitch, height;
 	short oxr, oyr, hit;
 
 	hit = 0;
@@ -78,8 +77,8 @@ void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 		height = 200 + ((LaraDrawType == LARA_DIVESUIT) << 6);
 
 	coll->bad_neg = -64;
-	memcpy((void*)&coll2, (void*)coll, sizeof(COLL_INFO));
-	memcpy((void*)&coll3, (void*)coll, sizeof(COLL_INFO));
+	memcpy(&coll2, coll, sizeof(COLL_INFO));
+	memcpy(&coll3, coll, sizeof(COLL_INFO));
 	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos + height / 2, item->pos.z_pos, item->room_number, height);
 	coll2.facing += 8192;
 	GetCollisionInfo(&coll2, item->pos.x_pos, item->pos.y_pos + height / 2, item->pos.z_pos, item->room_number, height);
@@ -90,6 +89,7 @@ void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 	switch (coll->coll_type)
 	{
 	case CT_FRONT:
+
 		if (item->pos.x_rot <= 4550)
 		{
 			if (item->pos.x_rot >= -4550)
@@ -128,14 +128,17 @@ void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 			item->pos.y_rot += 364;
 		else if (coll3.coll_type == CT_RIGHT)
 			item->pos.y_rot -= 364;
+
 		break;
 
 	case CT_TOP:
+
 		if (item->pos.x_rot >= -8190)
 		{
 			hit = 1;
 			item->pos.x_rot -= 182;
 		}
+
 		break;
 
 	case CT_TOP_FRONT:
@@ -170,7 +173,7 @@ void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 	}
 
 	if ((ox != item->pos.x_pos || oy != item->pos.y_pos || oz != item->pos.z_pos || oxr != item->pos.x_rot || oyr != item->pos.y_rot) &&
-		SubHitCount == 0 && hit == 1 && item->fallspeed > 100)
+		!SubHitCount && hit == 1 && item->fallspeed > 100)
 	{
 
 		if (LaraDrawType == LARA_DIVESUIT)
@@ -249,7 +252,7 @@ void SwimTurnSubsuit(ITEM_INFO* item)
 
 void UpdateSubsuitAngles()
 {
-	short vel;
+	short vel, vol;
 
 	if (subsuit.YVel)
 	{
@@ -310,14 +313,13 @@ void UpdateSubsuitAngles()
 
 	if (subsuit.Vel[0] || subsuit.Vel[1])
 	{
-		short vol = (subsuit.Vel[0] + subsuit.Vel[1]) >> 6;
+		vol = (subsuit.Vel[0] + subsuit.Vel[1]) >> 6;
 
 		if (vol > 31)
 			vol = 31;
 
 		SoundEffect(SFX_LARA_UNDERWATER_ENGINE, &lara_item->pos, (vol << 8) | SFX_SETVOL | SFX_ALWAYS);
 	}
-
 }
 
 void lara_as_swimcheat(ITEM_INFO* item, COLL_INFO* coll)
@@ -520,7 +522,7 @@ void lara_col_dive(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_col_uwdeath(ITEM_INFO* item, COLL_INFO* coll)
 {
-	int wh;
+	long wh;
 
 	item->hit_points = -1;
 	lara.air = -1;

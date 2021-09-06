@@ -107,7 +107,7 @@ void DoGameflow()
 			gfLegendTime = 0;
 			LaserSight = 0;
 			BinocularRange = 0;
-			*(int*)gfResidentCut = 0;
+			*(long*)gfResidentCut = 0;
 			gfUVRotate = 0;
 			gfNumMips = 0;
 			gfNumPickups = 0;
@@ -312,11 +312,10 @@ void DoGameflow()
 
 int TitleOptions()
 {
-	int ret, ret2, i, n, n2, load, cheat_jump, colorFlag, flag;
-
-	static int load_or_new;
-	static int always0 = 0;//leftover debug thing? if it's ever 1, the menu and logo don't show.
-	static int gfLevelComplete_bak;
+	long ret, ret2, i, n, n2, load, cheat_jump, colorFlag, flag, height;
+	static long load_or_new;
+	static long always0 = 0;//leftover debug thing? if it's ever 1, the menu and logo don't show.
+	static long gfLevelComplete_bak;
 	static __int64 selected_option_bak = 0;
 
 	ret = 0;
@@ -327,7 +326,7 @@ int TitleOptions()
 
 		if (DoFade == 2)
 		{
-			gfLevelComplete = gfLevelComplete_bak;
+			gfLevelComplete = (uchar)gfLevelComplete_bak;
 			gfLevelComplete_bak = 0;
 			load_or_new = 0;
 			always0 = 0;
@@ -390,15 +389,14 @@ int TitleOptions()
 			break;
 
 		case 1://select level menu
-
 			PrintString(phd_centerx, font_height + phd_winymin, 6, &gfStringWad[gfStringOffset_bis[STR_SELECT_LEVEL]], FF_CENTER);
 
 			if (Gameflow->nLevels >= 10)
 			{
-				i = (int)selected_option;
+				i = (long)selected_option;
 				n = 0;
 
-				for (colorFlag = 10; i; ++n)
+				for (colorFlag = 10; i; n++)
 					i >>= 1;
 
 				n2 = n - 9;
@@ -432,16 +430,16 @@ int TitleOptions()
 			{
 				n = n2 - 1;
 
-				int height = font_height + font_height + phd_winymin;
+				height = font_height + font_height + phd_winymin;
 
 				while (1)
 				{
 					height += font_height;
 
 					if (selected_option & (1i64 << n))
-						PrintString(phd_centerx, height, 1, &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], FF_CENTER);
+						PrintString(phd_centerx, (ushort)height, 1, &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], FF_CENTER);
 					else
-						PrintString(phd_centerx, height, 3 - (*((char*)&nframes + i + 3) != 0), &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], FF_CENTER);
+						PrintString(phd_centerx, (ushort)height, 3 - (*((char*)&nframes + i + 3) != 0), &gfStringWad[gfStringOffset_bis[gfLevelNames[n + 1]]], FF_CENTER);
 
 					if (selected_option & (1i64 << n))
 						selected_level = n;
@@ -539,12 +537,12 @@ int TitleOptions()
 
 			if (cheat_jump)
 			{
-				gfLevelComplete = cheat_jump;
+				gfLevelComplete = (uchar)cheat_jump;
 				ret = 3;
 			}
 
-#ifdef GENERAL_FIXES	//enable the cutscene selector
-			if (keymap[33] && keymap[22] && keymap[46] && keymap[37])//F U C K because this is fucking shit.
+#ifdef CUTSCENE_SELECTOR	//enable the cutscene selector
+			if (keymap[DIK_F] && keymap[DIK_U] && keymap[DIK_C] && keymap[DIK_K])//F U C K because this is fucking shit.
 				dels_cutseq_selector_flag = 1;
 #endif
 		}
@@ -560,7 +558,7 @@ int TitleOptions()
 					gfLevelComplete = 0;
 
 					n = 0;
-					n2 = (int)selected_option;
+					n2 = (long)selected_option;
 
 					if (n2)
 					{
@@ -571,7 +569,7 @@ int TitleOptions()
 
 						} while (n2);
 
-						gfLevelComplete = n;
+						gfLevelComplete = (uchar)n;
 					}
 
 					ret = 3;
@@ -582,6 +580,7 @@ int TitleOptions()
 				switch (selected_option)
 				{
 				case 1:
+
 					if (Gameflow->PlayAnyLevel)
 					{
 						selected_option_bak = selected_option;
@@ -605,7 +604,6 @@ int TitleOptions()
 				case 5:
 				case 6:
 				case 7:
-
 					break;
 
 				case 4:
@@ -728,8 +726,8 @@ void DoTitle(uchar name, uchar audio)
 
 void do_dels_cutseq_selector()
 {
-	int num;
 	short* name;
+	long num;
 
 	PrintString(256, 102, 6, &gfStringWad[gfStringOffset_bis[STR_SELECT_CUTSCENE]], FF_CENTER);
 	num = dels_cutseq_selector_cursorpos - 4;

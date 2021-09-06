@@ -5,8 +5,8 @@
 
 void TriggerAlertLight(long x, long y, long z, long r, long g, long b, long angle, int room_no, int falloff)
 {
-	long sin, cos;
 	GAME_VECTOR src, target;
+	long sin, cos;
 
 	src.x = x;
 	src.y = y;

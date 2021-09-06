@@ -53,8 +53,8 @@ void _special1_end()
 
 void _special2_control()
 {
-	PHD_VECTOR pos;
 	ITEM_INFO* item;
+	PHD_VECTOR pos;
 
 	pos.x = 12;
 	pos.y = 200;
@@ -67,51 +67,65 @@ void _special2_control()
 		item = find_a_fucking_item(ANIMATING1_MIP);
 		ExplodeItemNode(item, 0, 0, 64);
 		break;
+
 	case 200:
 		item = find_a_fucking_item(ANIMATING2_MIP);
 		ExplodeItemNode(item, 0, 0, 64);
 		break;
+
 	case 201:
 		triggerwindowsmash(50);
 		break;
+
 	case 207:
 		item = find_a_fucking_item(ANIMATING3_MIP);
 		ExplodeItemNode(item, 0, 0, 64);
 		break;
+
 	case 209:
 		triggerwindowsmash(52);
 		break;
+
 	case 221:
 		item = find_a_fucking_item(ANIMATING4_MIP);
 		ExplodeItemNode(item, 0, 0, 64);
 		break;
+
 	case 224:
 		triggerwindowsmash(54);
 		break;
+
 	case 229:
 		Cutanimate(446);
 		break;
+
 	case 245:
 		triggerwindowsmash(56);
 		break;
+
 	case 261:
 		item = find_a_fucking_item(ANIMATING5_MIP);
 		ExplodeItemNode(item, 0, 0, 64);
 		break;
+
 	case 269:
 		triggerwindowsmash(58);
 		break;
+
 	case 280:
 		item = find_a_fucking_item(ANIMATING6_MIP);
 		ExplodeItemNode(item, 0, 0, 64);
 		break;
+
 	case 282:
 		item = find_a_fucking_item(ANIMATING7_MIP);
 		ExplodeItemNode(item, 0, 0, 64);
 		break;
+
 	case 284:
 		Cutanimate(ANIMATING5);
 		break;
+
 	case 291:
 		triggerwindowsmash(60);
 		break;
@@ -132,8 +146,9 @@ void _special2_end()
 
 void _special3_control()
 {
-	PHD_VECTOR pos, pos2;
 	SPARKS* sptr;
+	PHD_VECTOR pos;
+	PHD_VECTOR pos2;
 
 	pos.x = 12;
 	pos.y = 200;
@@ -178,7 +193,6 @@ void _special3_control()
 		GetActorJointAbsPosition(2, 8, &pos2);
 
 		FireTwoGunTitleWeapon(&pos, &pos2);
-
 	}
 
 	if (GLOBAL_cutseq_frame == 610)
@@ -258,7 +272,6 @@ void _special4_control()
 	pos.x = 85834;
 	pos.z = 72300;
 	pos.y = -3138;
-
 	TriggerFireFlame(85834, -3010, 72300, -1, 1);
 	TriggerFireFlame(85834, -3010, 72044, -1, 1);
 	TriggerFireFlame(85834, -3010, 72556, -1, 1);
@@ -301,7 +314,9 @@ void resetwindowsmash(int item_num)
 
 void triggerwindowsmash(int item_num)
 {
-	ITEM_INFO* item = find_a_fucking_item(item_num);
+	ITEM_INFO* item;
+	
+	item = find_a_fucking_item(item_num);
 	ExplodeItemNode(item, 0, 0, 64);
 	item->mesh_bits = 2;
 }
