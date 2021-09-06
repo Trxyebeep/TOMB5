@@ -62,9 +62,9 @@ void RegeneratePickups()
 	ITEM_INFO* item;
 	short* ammo;
 
-	for (int lp = 0; lp < NumRPickups; lp++)
+	for (int i = 0; i < NumRPickups; i++)
 	{
-		item = &items[RPickups[lp]];
+		item = &items[RPickups[i]];
 
 		if (item->status == ITEM_INVISIBLE)
 		{
@@ -159,10 +159,7 @@ int PickupTrigger(short item_num)
 
 	item = &items[item_num];
 
-	if (item->flags & IFL_CLEARBODY ||
-		item->status != ITEM_INVISIBLE ||
-		item->item_flags[3] != 1 ||
-		item->trigger_flags & 128)
+	if (item->flags & IFL_CLEARBODY || item->status != ITEM_INVISIBLE || item->item_flags[3] != 1 || item->trigger_flags & 128)
 		return 0;
 
 	KillItem(item_num);
@@ -181,8 +178,7 @@ void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	PHD_VECTOR pos;
 	PHD_VECTOR pos2;
 	short* bounds;
-	long angle;
-	int PuzzleType, hole, puzzle;
+	long angle, PuzzleType, hole, puzzle;
 	short yrot;
 
 	PuzzleType = 0;
@@ -208,7 +204,6 @@ void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	{
 		bounds = GetBoundsAccurate(item);
 		yrot = item->pos.y_rot;
-
 		PuzzleBounds[0] = bounds[0] - 256;
 		PuzzleBounds[1] = bounds[1] + 256;
 		PuzzleBounds[4] = bounds[4] - 256;
@@ -285,7 +280,7 @@ void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 			{		
 				if (GLOBAL_inventoryitemchosen == -1)
 				{
-					if (have_i_got_object(hole + PUZZLE_ITEM1))
+					if (have_i_got_object((short)(hole + PUZZLE_ITEM1)))
 						GLOBAL_enterinventory = hole + PUZZLE_ITEM1;
 
 					item->pos.y_rot = yrot;
@@ -302,7 +297,7 @@ void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 
 			if ((PuzzleType == 2 && item->trigger_flags != 1036) || MoveLaraPosition(&pos, item, l))
 			{
-				remove_inventory_item(hole + PUZZLE_ITEM1);
+				remove_inventory_item((short)(hole + PUZZLE_ITEM1));
 
 				if (PuzzleType == 1)
 				{
@@ -345,7 +340,8 @@ void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	}
 	else
 	{
-		if (lara.GeneralPtr == (void*)item_num && l->current_anim_state == AS_USEPUZZLE && l->frame_number == anims[134].frame_base + 80 && item->item_flags[0])
+		if (lara.GeneralPtr == (void*)item_num && l->current_anim_state == AS_USEPUZZLE &&
+			l->frame_number == anims[134].frame_base + 80 && item->item_flags[0])
 		{
 			if (PuzzleType == 3)
 				l->item_flags[0] = item->trigger_flags;
@@ -397,7 +393,7 @@ void SearchObjectControl(short item_number)
 	}
 	else if (ObjNum == 3)
 	{
-		flip = flip_stats[0];
+		flip = (short)flip_stats[0];
 		item->mesh_bits = flip ? 48 : 9;
 
 		if (frame >= 45 && frame <= 131)
@@ -451,8 +447,8 @@ void SearchObjectControl(short item_number)
 void SearchObjectCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 {
 	ITEM_INFO* item;
-	short ObjNum;
 	short* bounds;
+	short ObjNum;
 
 	item = &items[item_num];
 	ObjNum = 3 - ((SEARCH_OBJECT4 - item->object_number) >> 1);

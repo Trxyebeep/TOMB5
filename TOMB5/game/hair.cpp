@@ -13,7 +13,7 @@ void DrawHair()
 {
 	HAIR_STRUCT* hair;
 	short** meshpp;
-	int ii;
+	long ii;
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -63,7 +63,11 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	HAIR_STRUCT* hair;
 	FLOOR_INFO* floor;
 	PHD_VECTOR pos;
+#ifdef GENERAL_FIXES
+	SPHERE sphere[6];
+#else
 	SPHERE sphere[5];
+#endif
 	long* bone;
 	short* rot;
 	short* objptr;
@@ -126,7 +130,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	gar_RotYXZsuperpack(&rot, 0);
 
 	phd_PushMatrix();
-	objptr = lara.mesh_ptrs[0];//butt
+	objptr = lara.mesh_ptrs[LM_HIPS];
 	phd_TranslateRel(*objptr, objptr[1], objptr[2]);
 	sphere[0].x = phd_mxptr[3] >> 14;
 	sphere[0].y = phd_mxptr[7] >> 14;
@@ -139,7 +143,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	phd_RotYXZ(lara.torso_y_rot, lara.torso_x_rot, lara.torso_z_rot);
 
 	phd_PushMatrix();
-	objptr = lara.mesh_ptrs[7];//torso
+	objptr = lara.mesh_ptrs[LM_TORSO];
 	phd_TranslateRel(*objptr, objptr[1], objptr[2]);
 	sphere[1].x = phd_mxptr[3] >> 14;
 	sphere[1].y = phd_mxptr[7] >> 14;
@@ -154,30 +158,38 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	phd_PushMatrix();
 	phd_TranslateRel(bone[29], bone[30], bone[31]);
 	gar_RotYXZsuperpack(&rot, 0);
-	objptr = lara.mesh_ptrs[8];//right arm
+	objptr = lara.mesh_ptrs[LM_RINARM];
 	phd_TranslateRel(*objptr, objptr[1], objptr[2]);
 	sphere[3].x = phd_mxptr[3] >> 14;
 	sphere[3].y = phd_mxptr[7] >> 14;
 	sphere[3].z = phd_mxptr[11] >> 14;
+#ifdef GENERAL_FIXES
+	sphere[3].r = 4 * objptr[3] / 3;
+#else
 	sphere[3].r = 3 * objptr[3] / 2;
+#endif
 	phd_PopMatrix();
 
 	phd_PushMatrix();
 	phd_TranslateRel(bone[41], bone[42], bone[43]);
 	gar_RotYXZsuperpack(&rot, 2);
-	objptr = lara.mesh_ptrs[11];//left arm
+	objptr = lara.mesh_ptrs[LM_LINARM];
 	phd_TranslateRel(*objptr, objptr[1], objptr[2]);
 	sphere[4].x = phd_mxptr[3] >> 14;
 	sphere[4].y = phd_mxptr[7] >> 14;
 	sphere[4].z = phd_mxptr[11] >> 14;
+#ifdef GENERAL_FIXES
+	sphere[4].r = 4 * objptr[3] / 3;
+#else
 	sphere[4].r = 3 * objptr[3] / 2;
+#endif
 	phd_PopMatrix();
 	phd_TranslateRel(bone[53], bone[54], bone[55]);
 	gar_RotYXZsuperpack(&rot, 2);
 	phd_RotYXZ(lara.head_y_rot, lara.head_x_rot, lara.head_z_rot);
 
 	phd_PushMatrix();
-	objptr = lara.mesh_ptrs[14];//head
+	objptr = lara.mesh_ptrs[LM_HEAD];
 	phd_TranslateRel(*objptr, objptr[1], objptr[2]);
 	sphere[2].x = phd_mxptr[3] >> 14;
 	sphere[2].y = phd_mxptr[7] >> 14;
@@ -191,6 +203,13 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 		sphere[1].y = (sphere[1].y + sphere[2].y) >> 1;
 		sphere[1].z = (sphere[1].z + sphere[2].z) >> 1;
 	}
+
+#ifdef GENERAL_FIXES	//make little sphere between head and torso, little closer to the head though :>
+	sphere[5].x = (2 * sphere[2].x + sphere[1].x) / 3;
+	sphere[5].y = (2 * sphere[2].y + sphere[1].y) / 3;
+	sphere[5].z = (2 * sphere[2].z + sphere[1].z) / 3;
+	sphere[5].r = gfLevelFlags & GF_YOUNGLARA ? 0 : 5 * sphere[2].r / 4;//whore
+#endif
 	//end of fucking shit spheres
 
 	if (pigtail)
@@ -325,7 +344,11 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 				break;
 			}
 
+#ifdef GENERAL_FIXES	//New neck sphere.
+			for (int j = 0; j < 6; j++)
+#else
 			for (int j = 0; j < 5; j++)//5 because we GOT FIVE FUCKING SPHERESSSSSSSSSSSSSSSSSSSS TO TEST AGAINST AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+#endif
 			{
 				x = hair->pos.x_pos - sphere[j].x;
 				y = hair->pos.y_pos - sphere[j].y;
@@ -337,7 +360,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 					dist = phd_sqrt(dist);
 
 					if (!dist)
-						dist = 1;//what why
+						dist = 1;
 
 					hair->pos.x_pos = sphere[j].x + x * sphere[j].r / dist;
 					hair->pos.y_pos = sphere[j].y + y * sphere[j].r / dist;

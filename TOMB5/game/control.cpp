@@ -83,7 +83,7 @@ long ControlPhase(long _nframes, int demo_mode)
 		if (cdtrack > 0)
 			S_CDLoop();
 
-		if (S_UpdateInput() == -1)
+		if (S_UpdateInput() == IN_ALL)
 			return 0;
 
 		if (bDisableLaraControl)
@@ -94,23 +94,20 @@ long ControlPhase(long _nframes, int demo_mode)
 			input &= IN_LOOK;
 		}
 
-#ifdef GENERAL_FIXES	//cutscene skipper
 		if (cutseq_trig)
 		{
-			if (keymap[1] && !ScreenFading)//skip them with esc
+#ifdef CUTSCENE_SKIPPER
+			if (keymap[DIK_ESCAPE] && !ScreenFading)//skip them with esc
 				cutseq_trig = 3;
-
+#endif
 			input = 0;
 		}
-#else
-		if (cutseq_trig)
-			input = 0;
-#endif
+
 		SetDebounce = 0;
 
 		if (gfCurrentLevel != LVL5_TITLE)
 		{
-			if ((dbinput & IN_OPTION || GLOBAL_enterinventory != -1) && !cutseq_trig && lara_item->hit_points > 0)
+			if ((dbinput & IN_OPTION || GLOBAL_enterinventory != NO_ITEM) && !cutseq_trig && lara_item->hit_points > 0)
 			{
 				S_SoundStopAllSamples();
 
@@ -164,7 +161,7 @@ long ControlPhase(long _nframes, int demo_mode)
 
 		if ((input & IN_LOOK) && !SniperCamActive && !bUseSpotCam && !bTrackCamInit &&
 			((lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH) ||
-			 (lara.IsDucked && (input & IN_DUCK) == 0 && lara_item->anim_number == ANIM_DUCKBREATHE && lara_item->goal_anim_state == AS_DUCK)))
+			 (lara.IsDucked && !(input & IN_DUCK)&& lara_item->anim_number == ANIM_DUCKBREATHE && lara_item->goal_anim_state == AS_DUCK)))
 		{
 			if (!BinocularRange)
 			{
@@ -204,9 +201,6 @@ long ControlPhase(long _nframes, int demo_mode)
 						lara.Busy = 1;
 					}
 
-					break;
-
-				default:
 					break;
 				}
 			}
@@ -376,10 +370,10 @@ long ControlPhase(long _nframes, int demo_mode)
 			}
 		}
 
-		if (GLOBAL_inventoryitemchosen != -1)
+		if (GLOBAL_inventoryitemchosen != NO_ITEM)
 		{
 			SayNo();
-			GLOBAL_inventoryitemchosen = -1;
+			GLOBAL_inventoryitemchosen = NO_ITEM;
 		}
 
 		if (GLOBAL_playing_cutseq)
@@ -410,7 +404,7 @@ long ControlPhase(long _nframes, int demo_mode)
 		wibble = (wibble + 4) & 0xFC;
 		TriggerLaraDrips();	
 
-		while (SmashedMeshCount != 0)
+		while (SmashedMeshCount)
 		{
 			SmashedMeshCount--;
 			mesh = SmashedMesh[SmashedMeshCount];
@@ -467,31 +461,24 @@ int GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
 	CHANGE_STRUCT* change;
 	RANGE_STRUCT* range;
 
-	if (item->current_anim_state == item->goal_anim_state)
+	if (item->current_anim_state == item->goal_anim_state || anim->number_changes <= 0)
 		return 0;
-
-	if (anim->number_changes <= 0)
-		return 0;
-
 
 	change = &changes[anim->change_index];
 
 	for (int i = 0; i < anim->number_changes; i++, change++)
 	{
-		if (change->goal_anim_state == item->goal_anim_state)
+		if (change->goal_anim_state == item->goal_anim_state && change->number_ranges > 0)
 		{
-			if (change->number_ranges > 0)
-			{
-				range = &ranges[change->range_index];
+			range = &ranges[change->range_index];
 
-				for (int j = 0; j < change->number_ranges; j++, range++)
+			for (int j = 0; j < change->number_ranges; j++, range++)
+			{
+				if (item->frame_number >= range->start_frame && item->frame_number <= range->end_frame)
 				{
-					if (item->frame_number >= range->start_frame && item->frame_number <= range->end_frame)
-					{
-						item->anim_number = range->link_anim_num;
-						item->frame_number = range->link_frame_num;
-						return (1);
-					}
+					item->anim_number = range->link_anim_num;
+					item->frame_number = range->link_frame_num;
+					return 1;
 				}
 			}
 		}
@@ -502,17 +489,16 @@ int GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
 
 int CheckGuardOnTrigger()
 {
-	int slot;
-	short room_number;
-	CREATURE_INFO* cinfo;
 	ITEM_INFO* item;
-
+	CREATURE_INFO* cinfo;
+	short room_number;
+	
 	room_number = lara_item->room_number;
 	GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number);
 
-	for (slot = 0; slot < 5; slot++)
+	for (int i = 0; i < 5; i++)
 	{
-		cinfo = &baddie_slots[slot];
+		cinfo = &baddie_slots[i];
 
 		if (cinfo->item_num != -1 && !cinfo->alerted)
 		{
@@ -550,12 +536,10 @@ void InterpolateAngle(short dest, short* src, short* diff, short speed)
 
 void TranslateItem(ITEM_INFO* item, short x, short y, short z)
 {
-	short sin;
-	short cos;
+	short sin, cos;
 
 	cos = phd_cos(item->pos.y_rot);
 	sin = phd_sin(item->pos.y_rot);
-
 	item->pos.x_pos += ((cos * x) + (sin * z)) >> 14;
 	item->pos.y_pos += y;
 	item->pos.z_pos += ((-sin * x) + (cos * z)) >> 14;
@@ -588,14 +572,10 @@ void SetCutNotPlayed(int num)
 
 int CheckCutPlayed(int num)
 {
-	int ret;
-
 	if (num < 32)
-		ret = _CutSceneTriggered1 & (1 << num);
+		return _CutSceneTriggered1 & (1 << num);
 	else
-		ret = _CutSceneTriggered2 & (1 << (num - 32));
-
-	return ret;
+		return _CutSceneTriggered2 & (1 << (num - 32));
 }
 
 void NeatAndTidyTriggerCutscene(int value, int timer)
@@ -654,7 +634,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 				if (inv_item_stealth_frigggggs == WET_CLOTH)
 					lara.wetcloth = 1;
 
-				GLOBAL_inventoryitemchosen = -1;
+				GLOBAL_inventoryitemchosen = NO_ITEM;
 			}
 			else
 			{
@@ -768,14 +748,11 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 
 int is_object_in_room(int roomnumber, int objnumber)
 {
-	short item_num, nex;
 	ITEM_INFO* item;
 
-	item_num = room[roomnumber].item_number;
-
-	for (nex = item_num; nex != -1; nex = item->next_item)
+	for (int i = room[roomnumber].item_number; i != NO_ITEM; i = item->next_item)
 	{
-		item = &items[nex];
+		item = &items[i];
 
 		if (item->object_number == objnumber)
 			return 1;
@@ -787,9 +764,7 @@ int is_object_in_room(int roomnumber, int objnumber)
 int check_xray_machine_trigger()
 {
 	for (int i = 0; i < level_items; i++)
-		if (items[i].object_number == XRAY_CONTROLLER &&
-			items[i].trigger_flags == 0 &&
-			items[i].item_flags[0] == 666)
+		if (items[i].object_number == XRAY_CONTROLLER && items[i].trigger_flags == 0 && items[i].item_flags[0] == 666)
 			return 1;
 
 	return 0;
@@ -797,15 +772,12 @@ int check_xray_machine_trigger()
 
 long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 {
-	long height;
+	ITEM_INFO* item;
 	ROOM_INFO* r;
 	short* data;
-	short type, dx, dz;
+	long height;
 	ushort trigger;
-	ITEM_INFO* item;
-	short xoff, yoff;
-	short tilt, wat;
-	short tilt0, tilt1, tilt2, tilt3;
+	short type, dx, dz, xoff, yoff, tilt, hadj, tilt0, tilt1, tilt2, tilt3;
 
 	tiltxoff = 0;
 	tiltyoff = 0;
@@ -855,7 +827,6 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			yoff = *(char*)(data);
 			tiltxoff = xoff;
 			tiltyoff = yoff;
-
 
 			if ((ABS(xoff)) > 2 || (ABS(yoff)) > 2)
 				height_type = BIG_SLOPE;
@@ -923,7 +894,6 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 		case NOCOLF1B:
 		case NOCOLF2T:
 		case NOCOLF2B:
-
 			tilt = *data;
 			tilt0 = tilt & 0xF;
 			tilt1 = (tilt >> 4) & 0xF;
@@ -937,23 +907,23 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			{
 				if (dx > (1024 - dz))
 				{
-					wat = (type >> 5) & 0x1F;
+					hadj = (type >> 5) & 0x1F;
 
 					if ((type >> 5) & 0x10)
-						wat |= 0xFFF0;
+						hadj |= 0xFFF0;
 
-					height += wat << 8;
+					height += hadj << 8;
 					xoff = tilt3 - tilt0;
 					yoff = tilt3 - tilt2;
 				}
 				else
 				{
-					wat = (type >> 10) & 0x1F;
+					hadj = (type >> 10) & 0x1F;
 
 					if ((type >> 10) & 0x10)
-						wat |= 0xFFF0;
+						hadj |= 0xFFF0;
 
-					height += wat << 8;
+					height += hadj << 8;
 					xoff = tilt2 - tilt1;
 					yoff = tilt0 - tilt1;
 				}
@@ -962,24 +932,24 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			{
 				if (dx > dz)
 				{
-					wat = (type >> 5) & 0x1F;
+					hadj = (type >> 5) & 0x1F;
 
 					if ((type >> 5) & 0x10)
-						wat |= 0xFFF0;
+						hadj |= 0xFFF0;
 
-					height += wat << 8;
+					height += hadj << 8;
 					xoff = tilt3 - tilt0;
 					yoff = tilt0 - tilt1;
 				}
 				else
 				{
 					
-					wat = (type >> 10) & 0x1F;
+					hadj = (type >> 10) & 0x1F;
 
 					if ((type >> 10) & 0x10)
-						wat |= 0xFFF0;
+						hadj |= 0xFFF0;
 
-					height += wat << 8;
+					height += hadj << 8;
 					xoff = tilt2 - tilt1;
 					yoff = tilt3 - tilt2;
 				}
@@ -988,7 +958,7 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			tiltxoff = xoff;
 			tiltyoff = yoff;
 
-			if ((ABS(xoff)) > 2 || (ABS(yoff)) > 2)
+			if (ABS(xoff) > 2 || ABS(yoff) > 2)
 				height_type = DIAGONAL;
 
 			if (xoff >= 0)
@@ -1144,17 +1114,12 @@ short GetDoor(FLOOR_INFO* floor)
 	data = &floor_data[floor->index];
 	type = *data++;
 
-	if ((type & 0x1F) == TILT_TYPE
-		|| (type & 0x1F) == SPLIT1
-		|| (type & 0x1F) == SPLIT2
-		|| (type & 0x1F) == NOCOLF1B
-		|| (type & 0x1F) == NOCOLF1T
-		|| (type & 0x1F) == NOCOLF2B
-		|| (type & 0x1F) == NOCOLF2T)
+	if ((type & 0x1F) == TILT_TYPE || (type & 0x1F) == SPLIT1 || (type & 0x1F) == SPLIT2 || (type & 0x1F) == NOCOLF1B ||
+		(type & 0x1F) == NOCOLF1T || (type & 0x1F) == NOCOLF2B || (type & 0x1F) == NOCOLF2T)
 	{
 		if (type < 0)
 			return NO_ROOM;
-	
+
 		data++;
 		type = *data++;
 	}
@@ -1182,10 +1147,10 @@ short GetDoor(FLOOR_INFO* floor)
 
 long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 {
-	long xoff, yoff, height, h1, h2;
-	ROOM_INFO* r;
 	ITEM_INFO* item;
+	ROOM_INFO* r;
 	FLOOR_INFO* f;
+	long xoff, yoff, height, h1, h2;
 	short* data, type, trigger, dx, dz, t0, t1, t2, t3, hadj, ended;
 
 	f = floor;
@@ -1410,14 +1375,15 @@ int LOS(GAME_VECTOR* start, GAME_VECTOR* target)
 		if (ClipTarget(start, target) && los1 == 1 && los2 == 1)
 			return 1;
 	}
+
 	return 0;
 }
 
 int xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 {
+	FLOOR_INFO* floor;
 	long dx, dy, dz, x, y, z;
 	short room_number, last_room;
-	FLOOR_INFO* floor;
 
 	dx = target->x - start->x;
 
@@ -1536,9 +1502,9 @@ int xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 
 int zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 {
+	FLOOR_INFO* floor;
 	long dx, dy, dz, x, y, z;
 	short room_number, last_room;
-	FLOOR_INFO* floor;
 
 	dz = target->z - start->z;
 
@@ -1657,9 +1623,9 @@ int zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 
 int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target)
 {
-	long dx, dy, dz, lp;
-	short room_no;
 	GAME_VECTOR src;
+	long dx, dy, dz;
+	short room_no;
 
 	room_no = target->room_number;
 
@@ -1669,11 +1635,11 @@ int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target)
 		src.y = (7 * (target->y - start->y) >> 3) + start->y;
 		src.z = (7 * (target->z - start->z) >> 3) + start->z;
 
-		for (lp = 3; lp > 0; lp--)
+		for (int i = 3; i > 0; i--)
 		{
-			dx = ((target->x - src.x) * lp >> 2) + src.x;
-			dy = ((target->y - src.y) * lp >> 2) + src.y;
-			dz = ((target->z - src.z) * lp >> 2) + src.z;
+			dx = ((target->x - src.x) * i >> 2) + src.x;
+			dy = ((target->y - src.y) * i >> 2) + src.y;
+			dz = ((target->z - src.z) * i >> 2) + src.z;
 
 			if (dy < GetHeight(GetFloor(dx, dy, dz, &room_no), dx, dy, dz))
 				break;
@@ -1694,11 +1660,11 @@ int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target)
 		src.y = (7 * (target->y - start->y) >> 3) + start->y;
 		src.z = (7 * (target->z - start->z) >> 3) + start->z;
 
-		for (lp = 3; lp > 0; lp--)
+		for (int i = 3; i > 0; i--)
 		{
-			dx = ((target->x - src.x) * lp >> 2) + src.x;
-			dy = ((target->y - src.y) * lp >> 2) + src.y;
-			dz = ((target->z - src.z) * lp >> 2) + src.z;
+			dx = ((target->x - src.x) * i >> 2) + src.x;
+			dy = ((target->y - src.y) * i >> 2) + src.y;
+			dz = ((target->z - src.z) * i >> 2) + src.z;
 
 			if (dy > GetCeiling(GetFloor(dx, dy, dz, &room_no), dx, dy, dz))
 				break;
@@ -1716,13 +1682,11 @@ int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target)
 
 int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firing)
 {
+	ITEM_INFO* shotitem;
+	MESH_INFO* Mesh;
 	GAME_VECTOR target;
 	PHD_VECTOR v;
-//	MESH_INFO* StaticMesh, *Mesh;//StaticMesh: unreferenced local variable
-	MESH_INFO* Mesh;
 	short item_no, hit, ricochet, room_number, TriggerItems[8], NumTrigs;
-	int i;
-	ITEM_INFO* shotitem;
 
 	target.x = dest->x;
 	target.y = dest->y;
@@ -1848,7 +1812,7 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 								{
 									NumTrigs = GetSwitchTrigger(shotitem, TriggerItems, 1);
 
-									for (i = NumTrigs - 1; i >= 0; i--)
+									for (int i = NumTrigs - 1; i >= 0; i--)
 									{
 										AddActiveItem(TriggerItems[i]);
 										items[TriggerItems[i]].status = ITEM_ACTIVE;
@@ -1876,12 +1840,14 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 				if (shotitem->object_number == GRAPPLING_TARGET && shotitem->mesh_bits & 1)
 				{
 					LaserSightCol = gfLevelFlags & GF_OFFICE;
+
 					if (gfLevelFlags & GF_OFFICE)
 					{
 						target.x = shotitem->pos.x_pos;
 						target.y = shotitem->pos.y_pos;
 						target.z = shotitem->pos.z_pos;
 					}
+
 					FireCrossBowFromLaserSight(src, &target);
 				}
 			}
@@ -1926,9 +1892,9 @@ int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MES
 	MESH_INFO* mesh;
 	ROOM_INFO* r;
 	PHD_3DPOS ItemPos;
-	long dx, dy, dz;
-	short item_number, i, lp;
 	short* bounds;
+	long dx, dy, dz;
+	short item_number;
 
 	ClosestItem = 999;
 	dx = target->x - start->x;
@@ -1936,7 +1902,7 @@ int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MES
 	dz = target->z - start->z;
 	ClosestDist = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
 
-	for (i = 0; i < number_los_rooms; i++)
+	for (int i = 0; i < number_los_rooms; i++)
 	{
 		r = &room[los_rooms[i]];
 
@@ -1957,9 +1923,9 @@ int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MES
 			}
 		}
 
-		for (lp = 0; lp < r->num_meshes; lp++)
+		for (int j = 0; j < r->num_meshes; j++)
 		{
-			mesh = &r->mesh[lp];
+			mesh = &r->mesh[j];
 
 			if (mesh->Flags & 1)
 			{
@@ -1999,7 +1965,7 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 {
 	ITEM_INFO* item;
 	ITEM_INFO* camera_item;
-	int switch_off, flip, flip_available, neweffect, key, quad;
+	long switch_off, flip, flip_available, neweffect, key, quad;
 	short camera_flags, camera_timer, type, trigger, value, flags, state, CamSeq;
 	char timer, SwitchOnOnly;
 	
@@ -2153,7 +2119,7 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 		case DUMMY:
 		case HEAVYSWITCH:
 		case HEAVYANTITRIGGER:
-#ifdef GENERAL_FIXES
+#ifdef GENERAL_FIXES//trash
 			if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS && lara_item->pos.x_pos > 37979 && lara_item->pos.x_pos < 38911 &&
 				lara_item->pos.z_pos > 67685 && lara_item->pos.z_pos < 68600 && lara_item->pos.y_pos == -24064)
 			{
@@ -2481,6 +2447,74 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 	}
 }
 
+void FlipMap(long FlipNumber)
+{
+	ROOM_INFO* r;
+	ROOM_INFO* flipped;
+	CREATURE_INFO* cinfo;
+	ROOM_INFO temp;
+
+	for (int i = 0; i < number_rooms; i++)
+	{
+		r = &room[i];
+
+		if (r->flipped_room >= 0 && r->FlipNumber == FlipNumber)
+		{
+			RemoveRoomFlipItems(r);
+			flipped = &room[r->flipped_room];
+			memcpy(&temp, r, sizeof(temp));
+			memcpy(r, flipped, sizeof(ROOM_INFO));
+			memcpy(flipped, &temp, sizeof(ROOM_INFO));
+			r->flipped_room = flipped->flipped_room;
+			flipped->flipped_room = -1;
+			r->item_number = flipped->item_number;
+			r->fx_number = flipped->fx_number;
+			AddRoomFlipItems(r);
+		}
+	}
+
+	flip_stats[FlipNumber] = flip_stats[FlipNumber] == 0;
+	flip_status = flip_stats[FlipNumber];
+
+	for (short slot = 0; slot < 5; slot++)
+	{
+		cinfo = &baddie_slots[slot];
+		cinfo->LOT.target_box = 0x7FF;
+	}
+}
+
+void RemoveRoomFlipItems(ROOM_INFO* r)
+{
+	ITEM_INFO* item;
+
+	for (short item_num = 0; item_num != NO_ITEM; item_num = items[item_num].next_item)
+	{
+		item = &items[item_num];
+
+		if (item->flags & IFL_INVISIBLE && objects[item->object_number].intelligent)
+		{
+			if (item->hit_points <= 0 && item->hit_points != -16384)//wat
+				KillItem(item_num);
+		}
+	}
+}
+
+void AddRoomFlipItems(ROOM_INFO* r)
+{
+	ITEM_INFO* item;
+
+	for (short item_num = r->item_number; item_num != -1; item_num = items[item_num].next_item)
+	{
+		item = &items[item_num];
+
+		if (items[item_num].object_number == 134 && item->item_flags[1])
+			AlterFloorHeight(item, -1024);
+
+		if (item->object_number == 135 && item->item_flags[1])
+			AlterFloorHeight(item, -2048);
+	}
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -2508,4 +2542,7 @@ void inject_control(bool replace)
 	INJECT(0x00419110, ObjectOnLOS2, replace);
 	INJECT(0x00416760, TestTriggers, replace);
 	INJECT(0x004167B0, _TestTriggers, replace);
+	INJECT(0x00418910, FlipMap, replace);
+	INJECT(0x00418A50, RemoveRoomFlipItems, replace);
+	INJECT(0x00418AF0, AddRoomFlipItems, replace);
 }

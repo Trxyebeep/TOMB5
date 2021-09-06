@@ -16,7 +16,7 @@ void lara_as_climbend(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_climbend(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_climbdown(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_climbdown(ITEM_INFO* item, COLL_INFO* coll);
-#define	LaraDoClimbLeftRight	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, int, int)) 0x004515A0 )
-#define LaraTestClimbPos	( (int(__cdecl*)(ITEM_INFO*, int, int, int, int, int*)) 0x00450970 )
-#define	LaraTestClimbUpPos	( (int(__cdecl*)(ITEM_INFO*, int, int, int*, int*)) 0x00451200 )
+#define	LaraDoClimbLeftRight	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, long, long)) 0x004515A0 )
+#define LaraTestClimbPos	( (int(__cdecl*)(ITEM_INFO*, long, long, long, long, long*)) 0x00450970 )
+#define	LaraTestClimbUpPos	( (int(__cdecl*)(ITEM_INFO*, long, long, long*, long*)) 0x00451200 )
 #define	GetClimbTrigger	( (short(__cdecl*)(long, long, long, short)) 0x004523A0 )

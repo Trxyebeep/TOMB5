@@ -30,14 +30,16 @@ void ChefControl(short item_number)
 	AI_INFO ai;
 	AI_INFO laraAI;
 	int dx, dz;
-	short angle;
-	short joints[3] = {0, 0, 0};
+	short angle, head, torso_y, torso_x;
 
 	if (!CreatureActive(item_number))
 		return;
 
 	chef = &items[item_number];
 	creature = (CREATURE_INFO*)chef->data;
+	head = 0;
+	torso_y = 0;
+	torso_x = 0;
 
 	if (chef->ai_bits)
 		GetAITarget(creature);
@@ -71,9 +73,9 @@ void ChefControl(short item_number)
 
 	if (ai.ahead)
 	{
-		joints[0] = ai.angle >> 1;
-		joints[2] = ai.angle >> 1;
-		joints[1] = ai.x_angle;
+		torso_y = ai.angle >> 1;
+		head = ai.angle >> 1;
+		torso_x = ai.x_angle;
 	}
 
 	creature->maximum_turn = 0;
@@ -154,9 +156,9 @@ void ChefControl(short item_number)
 	}
 
 	CreatureTilt(chef, 0);
-	CreatureJoint(chef, 0, joints[0]);
-	CreatureJoint(chef, 1, joints[1]);
-	CreatureJoint(chef, 2, joints[2]);
+	CreatureJoint(chef, 0, torso_y);
+	CreatureJoint(chef, 1, torso_x);
+	CreatureJoint(chef, 2, head);
 	CreatureAnimation(item_number, angle, 0);
 }
 

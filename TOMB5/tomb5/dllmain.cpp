@@ -69,6 +69,8 @@
 #include "../game/lion.h"
 #include "../game/guardian.h"
 #include "../game/box.h"
+#include "../game/crow.h"
+#include "../game/delstuff.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -157,6 +159,8 @@ void inject_all(bool replace)
 	inject_lion(replace);
 	inject_guardian(replace);
 	inject_box(replace);
+	inject_crow(replace);
+	inject_delshit(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

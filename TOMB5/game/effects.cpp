@@ -134,7 +134,7 @@ void turn180_effect(ITEM_INFO* item)
 
 void floor_shake_effect(ITEM_INFO* item)
 {
-	int x, y, z, dist;
+	long x, y, z, dist;
 
 	x = item->pos.x_pos - camera.pos.x;
 	y = item->pos.y_pos - camera.pos.y;
@@ -244,7 +244,7 @@ void reset_hair(ITEM_INFO* item)
 void SetFog(ITEM_INFO* item)
 {
 	ushort rgb;
-	int r, g, b;
+	char r, g, b;
 
 	GlobalFogOff = 0;
 	rgb = TriggerTimer;
@@ -326,7 +326,6 @@ void ResetTest(ITEM_INFO* item)
 			if (target_item->room_number != room_num)
 				ItemNewRoom(item_num, room_num);
 		}
-
 	}
 
 	flipeffect = -1;
@@ -499,12 +498,13 @@ void TL_12(ITEM_INFO* item)
 void SoundEffects()
 {
 	OBJECT_VECTOR* sound;
-	sound = &sound_effects[0];
-
-	for (int i = number_sound_effects; i > 0; --i, sound++)
+	SoundSlot* slot;
+	
+	for (int i = 0; i < number_sound_effects; i++)
 	{
-		if (flip_stats[((sound->flags & 1)
-			+ (sound->flags & 2)
+		sound = &sound_effects[i];
+
+		if (flip_stats[((sound->flags & 1) + (sound->flags & 2)
 			+ 3 * (((sound->flags & 0x1F) >> 2) & 1)
 			+ 5 * (((sound->flags & 0x1F) >> 4) & 1)
 			+ 4 * (((sound->flags & 0x1F) >> 3) & 1))])
@@ -528,34 +528,33 @@ void SoundEffects()
 	if (!sound_active)
 		return;
 
-	SoundSlot* slot;
-	int j;
-
-	for (j = 0, slot = &LaSlot[j]; j < 32; j++, slot++)
+	for (int i = 0; i < 32; i++)
 	{
+		slot = &LaSlot[i];
+
 		if (slot->nSampleInfo >= 0)
 		{
 			if ((sample_infos[slot->nSampleInfo].flags & 3) != 3)
 			{
-				if (S_SoundSampleIsPlaying(j) == 0)
+				if (!S_SoundSampleIsPlaying(i))
 					slot->nSampleInfo = -1;
 				else
 				{
 					GetPanVolume(slot);
-					S_SoundSetPanAndVolume(j, slot->nPan, slot->nVolume);
+					S_SoundSetPanAndVolume(i, slot->nPan, slot->nVolume);
 				}
 			}
 			else
 			{
 				if (!slot->nVolume)
 				{
-					S_SoundStopSample(j);
+					S_SoundStopSample(i);
 					slot->nSampleInfo = -1;
 				}
 				else
 				{
-					S_SoundSetPanAndVolume(j, slot->nPan, slot->nVolume);
-					S_SoundSetPitch(j, slot->nPitch);
+					S_SoundSetPanAndVolume(i, slot->nPan, slot->nVolume);
+					S_SoundSetPitch(i, slot->nPitch);
 					slot->nVolume = 0;
 				}
 			}

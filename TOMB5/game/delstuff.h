@@ -1,7 +1,9 @@
 #pragma once
 #include "../global/vars.h"
 
+void inject_delshit(bool replace);
 
-#define GetLaraJointPos	( (void(__cdecl*)(PHD_VECTOR*, long)) 0x0041E2A0 )
-#define Rich_CalcLaraMatrices_Normal	( (void(__cdecl*)(short*, long*, int)) 0x0041E460 )
-#define CalcLaraMatrices	( (void(__cdecl*)(int)) 0x0041E120 )
+void GetLaraJointPos(PHD_VECTOR* pos, long node);
+void CalcLaraMatrices(long flag);
+void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag);
+void Rich_CalcLaraMatrices_Interpolated(short* frame1, short* frame2, long frac, long rate, long* bone, long flag);

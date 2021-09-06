@@ -294,6 +294,9 @@
     <ClCompile Include="TOMB5\game\savegame.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\game\crow.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -585,6 +588,9 @@
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\game\savegame.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\game\crow.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
   </ItemGroup>

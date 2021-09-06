@@ -13,7 +13,8 @@
 #include "draw.h"
 #include "traps.h"
 
-BITE_INFO Base[5] = {
+BITE_INFO Base[5] = 
+{
 	{0, -640, 0, 0},
 	{-188, -832, 440, 0},
 	{188, -832, -440, 0},
@@ -21,7 +22,8 @@ BITE_INFO Base[5] = {
 	{-440, -832, -188, 0}
 };
 
-BITE_INFO Eye[2] = {
+BITE_INFO Eye[2] = 
+{
 	{0, 0, 0, 1},
 	{0, 0, 0, 2}
 };

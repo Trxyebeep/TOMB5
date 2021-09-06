@@ -97,6 +97,7 @@ void CalculateCamera()
 		if (room[camera.pos.room_number].flags & ROOM_UNDERWATER)
 		{
 			SoundEffect(SFX_UNDERWATER, 0, SFX_ALWAYS);
+
 			if (camera.underwater == 0)
 			{
 				if (!GLOBAL_playing_cutseq && !TLFlag)
@@ -463,7 +464,7 @@ long mgLOS(GAME_VECTOR* start, GAME_VECTOR* target, long push)
 	target->z = z;
 	GetFloor(x, y, z, &room_number);
 	target->room_number = room_number;
-	return (!clipped);
+	return !clipped;
 }
 
 long CameraCollisionBounds(GAME_VECTOR* ideal, long push, long yfirst)

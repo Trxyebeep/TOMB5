@@ -12,9 +12,9 @@ static char footsounds[14] =
 void AddFootprint(ITEM_INFO* item)
 {
 	FOOTPRINT* print;
+	FLOOR_INFO* floor;
 	PHD_VECTOR pos;
 	short room_num;
-	FLOOR_INFO* floor;
 
 	pos.x = 0;
 	pos.y = 0;
