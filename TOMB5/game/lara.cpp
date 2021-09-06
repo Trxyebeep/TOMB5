@@ -3177,20 +3177,23 @@ void lara_as_duck(ITEM_INFO* item, COLL_INFO* coll)
 #ifdef DUCKROLL
 	if (input & IN_SPRINT)
 	{
-		if ((input & IN_DUCK || lara.keep_ducked && lara.water_status != LW_WADE) && lara.gun_status == LG_NO_ARMS)
+		if (LaraFloorFront(item, item->pos.y_rot, 512) < 384 && LaraFloorFront(item, item->pos.y_rot, 256) >= -384)
 		{
-			if (lara_item->anim_number == ANIM_DUCKBREATHE || lara_item->anim_number == 245)
+			if ((input & IN_DUCK || lara.keep_ducked && lara.water_status != LW_WADE) && lara.gun_status == LG_NO_ARMS)
 			{
-				if (!(input & (IN_B | IN_DRAW)))
+				if (lara_item->anim_number == ANIM_DUCKBREATHE || lara_item->anim_number == 245)
 				{
-					if (lara.gun_type != WEAPON_FLARE || lara.flare_age < 900 && lara.flare_age)
+					if (!(input & (IN_B | IN_DRAW)))
 					{
-						lara.torso_y_rot = 0;
-						lara.torso_x_rot = 0;
-						item->current_anim_state = AS_DUCKROLL;
-						item->goal_anim_state = AS_DUCKROLL;
-						item->anim_number = 218;
-						item->frame_number = anims[218].frame_base;
+						if (lara.gun_type != WEAPON_FLARE || lara.flare_age < 900 && lara.flare_age)
+						{
+							lara.torso_y_rot = 0;
+							lara.torso_x_rot = 0;
+							item->current_anim_state = AS_DUCKROLL;
+							item->goal_anim_state = AS_DUCKROLL;
+							item->anim_number = 218;
+							item->frame_number = anims[218].frame_base;
+						}
 					}
 				}
 			}
@@ -5124,7 +5127,7 @@ void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 		else
 			lara.keep_ducked = 0;
 
-		if (coll->mid_floor < coll->bad_neg)
+		if (coll->mid_floor < coll->bad_neg || coll->front_floor > coll->bad_pos)
 		{
 			item->pos.x_pos = coll->old.x;
 			item->pos.y_pos = coll->old.y;
