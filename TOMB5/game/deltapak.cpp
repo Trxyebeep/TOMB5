@@ -3692,9 +3692,12 @@ void init_cutseq_actors(char* data, int resident)
 	lastcamnum = -1;
 	GLOBAL_playing_cutseq = 0;
 
-#ifdef GENERAL_FIXES	//restores the ending for the Security Breach cut
-	if (cutseq_num == 26) 
+#ifdef GENERAL_FIXES
+	if (cutseq_num == 26) //restores the ending for the Security Breach cut
 		GLOBAL_cutme->numframes = 1978;//original is 1700 or something
+
+	if (cutseq_num == 4)//fixes the wrong audio for this cutscene (see 13th floor twogun chloroform cut)
+		GLOBAL_cutme->audio_track = 19;//original (wrong one) is 40
 #endif
 
 	GLOBAL_numcutseq_frames = GLOBAL_cutme->numframes;
