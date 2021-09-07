@@ -1255,8 +1255,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/pierre.cpp
 
-0x00469F70		InitialisePierre
-0x0046A080		PierreControl
+0x00469F70	+	InitialisePierre
+0x0046A080	+	PierreControl
 
 
 		game/rat.cpp
