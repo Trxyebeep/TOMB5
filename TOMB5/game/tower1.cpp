@@ -13,8 +13,8 @@ long TestBoundsCollideCamera(short* bounds, PHD_3DPOS* pos, long radius)
 		dz = camera.pos.z - pos->z_pos;
 		sin = phd_sin(pos->y_rot);
 		cos = phd_cos(pos->y_rot);
-		x = (cos * (camera.pos.x - pos->x_pos) - sin * dz) >> 14;
-		z = (cos * dz + sin * (camera.pos.x - pos->x_pos)) >> 14;
+		x = (cos * dx - sin * dz) >> 14;
+		z = (cos * dz + sin * dx) >> 14;
 
 		if (x >= bounds[0] - radius && x <= radius + bounds[1] && z >= bounds[4] - radius && z <= radius + bounds[5])
 			return 1;
