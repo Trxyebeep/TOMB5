@@ -1512,7 +1512,13 @@ void lara_col_back(ITEM_INFO* item, COLL_INFO* coll)
 	coll->slopes_are_walls = 1;
 	GetLaraCollisionInfo(item, coll);
 
-	if (LaraHitCeiling(item, coll) || LaraDeflectEdge(item, coll) || LaraFallen(item, coll))
+	if (LaraHitCeiling(item, coll))
+		return;
+
+	if (LaraDeflectEdge(item, coll))
+		LaraCollideStop(item, coll);
+
+	if (LaraFallen(item, coll))
 		return;
 
 	if (coll->mid_floor > 128 && coll->mid_floor < 384)
