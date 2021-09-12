@@ -1218,11 +1218,11 @@ x for functions decompiled but not injected, for one reason or another.
 		game/objlight.cpp
 
 0x00466B20	+	TriggerAlertLight
-0x00466C00		ControlStrobeLight
-0x00466D20		ControlPulseLight
-0x00466E10		ControlColouredLight
-0x00466EA0		ControlElectricalLight
-0x004670D0		ControlBlinker
+0x00466C00	+	ControlStrobeLight
+0x00466D20	+	ControlPulseLight
+0x00466E10	+	ControlColouredLight
+0x00466EA0	+	ControlElectricalLight
+0x004670D0	+	ControlBlinker
 
 
 		game/people.cpp
