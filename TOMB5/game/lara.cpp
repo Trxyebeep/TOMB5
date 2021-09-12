@@ -404,7 +404,7 @@ int TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll)
 	static short old_ang = 1;
 	short ang_diff, ang;
 
-	if ((ABS(coll->tilt_x)) <= 2 && (ABS(coll->tilt_z)) <= 2)
+	if (ABS(coll->tilt_x) <= 2 && ABS(coll->tilt_z) <= 2)
 		return 0;
 
 	ang = 0;
@@ -416,7 +416,7 @@ int TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll)
 
 	if (coll->tilt_z > 2 && coll->tilt_z > ABS(coll->tilt_x))
 		ang = -32768;
-	else if ((coll->tilt_z < -2) && (-coll->tilt_z > ABS(coll->tilt_x)))
+	else if (coll->tilt_z < -2 && (-coll->tilt_z > ABS(coll->tilt_x)))
 		ang = 0;
 
 	ang_diff = ang - item->pos.y_rot;
@@ -983,9 +983,7 @@ void lara_col_walk(ITEM_INFO* item, COLL_INFO* coll)
 
 			if (coll->mid_floor >= -384 && coll->mid_floor < -128)
 			{
-				if (coll->front_floor == NO_HEIGHT ||
-					coll->front_floor < -384 ||
-					coll->front_floor >= -128)
+				if (coll->front_floor == NO_HEIGHT || coll->front_floor < -384 || coll->front_floor >= -128)
 					coll->mid_floor = 0;
 				else
 				{
@@ -1047,7 +1045,7 @@ int TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
 		return 0;
 
 	hdif = coll->front_floor;
-	slope = (ABS(coll->left_floor2 - coll->right_floor2) >= 60);
+	slope = ABS(coll->left_floor2 - coll->right_floor2) >= 60;
 
 	if (hdif >= -640 && hdif <= -384)
 	{
@@ -1473,7 +1471,7 @@ void lara_as_back(ITEM_INFO* item, COLL_INFO* coll)
 
 	if (!lara.IsMoving)
 	{
-		if ((input & IN_BACK) && ((input & IN_WALK) || lara.water_status == LW_WADE))
+		if (input & IN_BACK && (input & IN_WALK || lara.water_status == LW_WADE))
 			item->goal_anim_state = AS_BACK;
 		else
 			item->goal_anim_state = AS_STOP;
@@ -1601,7 +1599,7 @@ void lara_col_wade(ITEM_INFO* item, COLL_INFO* coll)
 	{
 		item->pos.z_rot = 0;
 
-		if ((coll->front_type == CT_NONE || coll->front_type == CT_RIGHT) && coll->front_floor < -640)
+		if ((coll->front_type == WALL || coll->front_type == SPLIT_TRI) && coll->front_floor < -640)
 		{
 			item->current_anim_state = AS_SPLAT;
 
@@ -2012,6 +2010,7 @@ void lara_as_turn_l(ITEM_INFO* item, COLL_INFO* coll)
 	{
 		if (!(input & IN_LEFT))
 			item->goal_anim_state = AS_STOP;
+
 		return;
 	}
 
@@ -2213,10 +2212,8 @@ void lara_col_hang(ITEM_INFO* item, COLL_INFO* coll)
 		{
 			if (coll->front_floor > -850)
 			{
-				if (coll->front_floor < -650 &&
-					coll->front_floor >= coll->front_ceiling &&
-					coll->front_floor >= coll->left_ceiling2 &&
-					coll->front_floor >= coll->right_ceiling2)
+				if (coll->front_floor < -650 && coll->front_floor >= coll->front_ceiling &&
+					coll->front_floor >= coll->left_ceiling2 && coll->front_floor >= coll->right_ceiling2)
 				{
 					if (ABS(coll->left_floor2 - coll->right_floor2) < 60 && !coll->hit_static)
 					{
@@ -2246,7 +2243,7 @@ void lara_col_hang(ITEM_INFO* item, COLL_INFO* coll)
 				}
 			}
 
-			if (lara.climb_status != 0 && coll->mid_ceiling <= -256 && ABS(coll->left_ceiling2 - coll->right_ceiling2) < 60)
+			if (lara.climb_status && coll->mid_ceiling <= -256 && ABS(coll->left_ceiling2 - coll->right_ceiling2) < 60)
 			{
 				if (LaraTestClimbStance(item, coll))
 					item->goal_anim_state = AS_CLIMBSTNC;
@@ -2262,7 +2259,7 @@ void lara_col_hang(ITEM_INFO* item, COLL_INFO* coll)
 			return;
 		}
 
-		if (input & IN_BACK && lara.climb_status != 0 && coll->mid_floor > 344)
+		if (input & IN_BACK && lara.climb_status && coll->mid_floor > 344)
 		{
 			if (LaraTestClimbStance(item, coll))
 				item->goal_anim_state = AS_CLIMBSTNC;
@@ -3152,7 +3149,7 @@ void lara_as_duck(ITEM_INFO* item, COLL_INFO* coll)
 		return;
 	}
 
-	if ((input & IN_LOOK))
+	if (input & IN_LOOK)
 		LookUpDown();
 
 	room_num = lara_item->room_number;
@@ -3206,7 +3203,6 @@ void lara_as_duck(ITEM_INFO* item, COLL_INFO* coll)
 		}
 	}
 #endif
-
 }
 
 void lara_col_duck(ITEM_INFO* item, COLL_INFO* coll)
@@ -3276,7 +3272,10 @@ void lara_as_hang2(ITEM_INFO* item, COLL_INFO* coll)
 	if (lara.CanMonkeySwing)
 	{
 		if (!(input & IN_ACTION) || item->hit_points <= 0)
+		{
 			MonkeySwingFall(item);
+			return;
+		}
 
 		camera.target_angle = 0;
 		camera.target_elevation = -8190;
@@ -3528,7 +3527,8 @@ void lara_col_monkey180(ITEM_INFO* item, COLL_INFO* coll)
 void lara_as_all4s(ITEM_INFO* item, COLL_INFO* coll)
 {
 	MESH_INFO* StaticMesh;
-	GAME_VECTOR s, d;
+	GAME_VECTOR s;
+	GAME_VECTOR d;
 	PHD_VECTOR v;
 
 	if (item->hit_points <= 0)
@@ -3657,7 +3657,7 @@ void lara_col_all4s(ITEM_INFO* item, COLL_INFO* coll)
 									x = item->pos.x_pos;
 									z = item->pos.z_pos;
 									item->pos.x_pos -= 100 * phd_sin(coll->facing) >> 14;
-									item->pos.z_pos -= 100 * phd_sin(coll->facing) >> 14;
+									item->pos.z_pos -= 100 * phd_cos(coll->facing) >> 14;
 									collided = GetCollidedObjects(item, 100, 1, itemlist, meshlist, 0);
 									item->pos.x_pos = x;
 									item->pos.z_pos = z;
@@ -4150,7 +4150,7 @@ void lara_as_poleleft(ITEM_INFO* item, COLL_INFO* coll)
 	coll->enable_baddie_push = 0;
 	coll->enable_spaz = 0;
 
-	if (!(input & IN_LEFT) || !(input & IN_ACTION) || (input & (IN_FORWARD | IN_BACK)) || item->hit_points <= 0)
+	if (!(input & IN_LEFT) || !(input & IN_ACTION) || input & (IN_FORWARD | IN_BACK) || item->hit_points <= 0)
 		item->goal_anim_state = AS_POLESTAT;
 	else
 		item->pos.y_rot += 256;
@@ -4161,7 +4161,7 @@ void lara_as_poleright(ITEM_INFO* item, COLL_INFO* coll)
 	coll->enable_baddie_push = 0;
 	coll->enable_spaz = 0;
 
-	if (!(input & IN_RIGHT) || !(input & IN_ACTION) || (input & (IN_FORWARD | IN_BACK)) || item->hit_points <= 0)
+	if (!(input & IN_RIGHT) || !(input & IN_ACTION) || input & (IN_FORWARD | IN_BACK) || item->hit_points <= 0)
 		item->goal_anim_state = AS_POLESTAT;
 	else
 		item->pos.y_rot -= 256;
@@ -4276,7 +4276,6 @@ void lara_col_poledown(ITEM_INFO* item, COLL_INFO* coll)
 	if (coll->mid_floor < 0)
 	{
 		room_number = item->room_number;
-
 		item->floor = GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number),
 			item->pos.x_pos, item->pos.y_pos - 762, item->pos.z_pos);
 		item->goal_anim_state = AS_POLESTAT;
@@ -4633,7 +4632,7 @@ void lara_as_trwalk(ITEM_INFO* item, COLL_INFO* coll)
 			LookUpDown();
 
 		if (item->goal_anim_state != AS_TROPEGETOFF &&
-			(lara.TightRopeFall || (input & IN_BACK || input & IN_ROLL || !(input & IN_FORWARD)) && !lara.TightRopeOnCount && !lara.TightRopeOff))
+			(lara.TightRopeFall || (input & (IN_BACK | IN_ROLL) || !(input & IN_FORWARD)) && !lara.TightRopeOnCount && !lara.TightRopeOff))
 			item->goal_anim_state = AS_TROPEPOSE;
 	}
 }
@@ -4650,7 +4649,7 @@ void lara_as_trfall(ITEM_INFO* item, COLL_INFO* coll)
 			pos.x = 0;
 			pos.y = 0;
 			pos.z = 0;
-			GetLaraJointPos(&pos, 6);
+			GetLaraJointPos(&pos, LM_RFOOT);
 			item->pos.x_pos = pos.x;
 			item->pos.y_pos = pos.y + 75;
 			item->pos.z_pos = pos.z;
@@ -4660,6 +4659,9 @@ void lara_as_trfall(ITEM_INFO* item, COLL_INFO* coll)
 			item->frame_number = anims[ANIM_FASTFALL].frame_base;
 			item->fallspeed = 81;
 			camera.targetspeed = 16;
+#ifdef GENERAL_FIXES
+			lara.gun_status = LG_NO_ARMS;
+#endif
 		}
 	}
 	else
@@ -4793,7 +4795,7 @@ void FallFromRope(ITEM_INFO* item)
 	long l;
 
 	l = ABS(CurrentPendulum.Velocity.x >> 16) + ABS(CurrentPendulum.Velocity.z >> 16);
-	item->speed = (short) (l >> 1);
+	item->speed = (short)(l >> 1);
 	item->pos.x_rot = 0;
 	item->pos.y_pos += 320;
 	item->anim_number = ANIM_FALLDOWN;
