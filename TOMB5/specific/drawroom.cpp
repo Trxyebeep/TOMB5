@@ -72,14 +72,14 @@ void DrawBoundsRectangleII(float left, float top, float right, float bottom, int
 	v[2].sy = bottom;
 	v[3].sx = left;
 	v[3].sy = bottom;
-	v[4].sx = left + 2.0;
-	v[4].sy = top + 2.0;
-	v[5].sx = right + 2.0;
-	v[5].sy = top + 2.0;
-	v[6].sx = right + 2.0;
-	v[6].sy = bottom + 2.0;
-	v[7].sx = left + 2.0;
-	v[7].sy = bottom + 2.0;
+	v[4].sx = left + 2;
+	v[4].sy = top + 2;
+	v[5].sx = right + 2;
+	v[5].sy = top + 2;
+	v[6].sx = right + 2;
+	v[6].sy = bottom + 2;
+	v[7].sx = left + 2;
+	v[7].sy = bottom + 2;
 
 	for (int i = 0; i < 8; i++)
 		v[i].rhw = f_mpersp / f_mznear * f_moneopersp;
