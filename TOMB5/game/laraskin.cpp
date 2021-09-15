@@ -1,6 +1,7 @@
 #include "../tomb5/pch.h"
 #include "laraskin.h"
 #include "objects.h"
+#include "gameflow.h"
 
 void OptomiseSkinningData()//idc
 {
@@ -134,7 +135,303 @@ void OptomiseSkinningData()//idc
 	}
 }
 
+void PushXYZ()
+{
+	SkinXYZ* ptr;
+
+	ptr = SkinXYZPtr++;
+	SkinXYZPtr->x = ptr->x;
+	SkinXYZPtr->y = ptr->y;
+	SkinXYZPtr->z = ptr->z;
+}
+
+void PopXYZ()
+{
+	SkinXYZPtr--;
+}
+
+void CreateSkinningData()
+{
+	MESH_DATA* aboveMesh;
+	MESH_DATA* belowMesh;
+	MESH_DATA* jointMesh;
+	MESH_DATA* hairMesh;
+	OBJECT_INFO* obj;
+	short** meshpp;
+	long* bone;
+	short* joint;
+	short* LaraMesh;
+	long vertCount, aboveVerts, belowVerts, jointVerts, laraVerts, laraX, laraY, laraZ, jointX, jointY, jointZ, calcPointsCounter;
+	short aboveMeshNum, belowMeshNum, jointMeshNum;
+	uchar vertBuf[128];
+
+	for (int i = 0; i < 14; i++)
+	{
+		SkinXYZPtr = XYZList;
+		SkinXYZPtr->x = 0;
+		SkinXYZPtr->y = 0;
+		SkinXYZPtr->z = 0;
+		obj = &objects[LARA_SKIN];
+		meshpp = &meshes[obj->mesh_index];
+		bone = &bones[obj->bone_index];
+		aboveMeshNum = SkinJoints[i][0];
+		belowMeshNum = SkinJoints[i][1];
+		aboveMesh = (MESH_DATA*)*meshpp;
+		belowMesh = (MESH_DATA*)*meshpp;
+		jointMesh = (MESH_DATA*)*meshpp;
+
+		if (aboveMeshNum)
+		{
+			meshpp++;
+
+			for (int j = 1; j < obj->nmeshes; j++, bone += 4, meshpp++)
+			{
+				if (bone[0] & 1)
+					PopXYZ();
+
+				if (bone[0] & 2)
+					PushXYZ();
+
+				SkinXYZPtr->x += bone[1];
+				SkinXYZPtr->y += bone[2];
+				SkinXYZPtr->z += bone[3];
+
+				if (aboveMeshNum == j)
+				{
+					aboveMesh = (MESH_DATA*)*meshpp;
+					AboveMeshXYZ.x = SkinXYZPtr->x;
+					AboveMeshXYZ.y = SkinXYZPtr->y;
+					AboveMeshXYZ.z = SkinXYZPtr->z;
+					break;
+				}
+			}
+		}
+		else
+		{
+			aboveMesh = (MESH_DATA*)*meshpp;
+			AboveMeshXYZ.x = 0;
+			AboveMeshXYZ.y = 0;
+			AboveMeshXYZ.z = 0;
+		}
+
+		SkinXYZPtr = XYZList;
+		SkinXYZPtr->x = 0;
+		SkinXYZPtr->y = 0;
+		SkinXYZPtr->z = 0;
+		meshpp = &meshes[obj->mesh_index];
+		bone = &bones[obj->bone_index];
+
+		if (belowMeshNum)
+		{
+			meshpp++;
+
+			for (int j = 1; j < obj->nmeshes; j++, bone += 4, meshpp++)
+			{
+				if (bone[0] & 1)
+					PopXYZ();
+
+				if (bone[0] & 2)
+					PushXYZ();
+
+				SkinXYZPtr->x += bone[1];
+				SkinXYZPtr->y += bone[2];
+				SkinXYZPtr->z += bone[3];
+
+				if (belowMeshNum == j)
+				{
+					belowMesh = (MESH_DATA*)*meshpp;
+					BelowMeshXYZ.x = SkinXYZPtr->x;
+					BelowMeshXYZ.y = SkinXYZPtr->y;
+					BelowMeshXYZ.z = SkinXYZPtr->z;
+					break;
+				}
+			}
+		}
+		else
+		{
+			belowMesh = (MESH_DATA*)*meshpp;
+			BelowMeshXYZ.x = 0;
+			BelowMeshXYZ.y = 0;
+			BelowMeshXYZ.z = 0;
+		}
+
+		SkinXYZPtr = XYZList;
+		SkinXYZPtr->x = 0;
+		SkinXYZPtr->y = 0;
+		SkinXYZPtr->z = 0;
+		obj = &objects[LARA_SKIN_JOINTS];
+		meshpp = &meshes[obj->mesh_index + 1];
+		bone = &bones[obj->bone_index];
+		jointMeshNum = i + 1;
+
+		for (int j = 1; j < obj->nmeshes; j++, bone += 4, meshpp++)
+		{
+			if (*bone & 1)
+				PopXYZ();
+
+			if (*bone & 2)
+				PushXYZ();
+
+			SkinXYZPtr->x += bone[1];
+			SkinXYZPtr->y += bone[2];
+			SkinXYZPtr->z += bone[3];
+
+			if (jointMeshNum == j)
+			{
+				jointMesh = (MESH_DATA*)*meshpp;
+				JointMeshXYZ.x = SkinXYZPtr->x;
+				JointMeshXYZ.y = SkinXYZPtr->y;
+				JointMeshXYZ.z = SkinXYZPtr->z;
+				break;
+			}
+		}
+
+		vertCount = 0;
+		aboveVerts = 0;
+		jointVerts = jointMesh->nVerts & 0xFF;
+		laraVerts = aboveMesh->nVerts & 0xFF;
+
+		if (jointVerts)
+			memset(vertBuf, 0, jointVerts);
+
+		joint = &jointMesh->nNorms;
+
+		for (int j = 0; j < jointVerts; j++)
+		{
+			jointX = JointMeshXYZ.x + joint[0];
+			jointY = JointMeshXYZ.y + joint[1];
+			jointZ = JointMeshXYZ.z + joint[2];
+			joint += 3;
+			LaraMesh = &aboveMesh->nNorms;
+
+			for (int ii = 0; ii < laraVerts; ii++)
+			{
+				laraX = AboveMeshXYZ.x + LaraMesh[0];
+				laraY = AboveMeshXYZ.y + LaraMesh[1];
+				laraZ = AboveMeshXYZ.z + LaraMesh[2];
+				LaraMesh += 3;
+
+				if (ABS(laraX - jointX) <= 1 && ABS(laraY - jointY) <= 1 && ABS(laraZ - jointZ) <= 1)
+				{
+					vertCount++;
+					vertBuf[j] = 1;
+					SkinVertNums[SkinJoints[i][2]][aboveVerts] = ii;
+					ScratchVertNums[SkinJoints[i][2]][aboveVerts] = j;
+					aboveVerts++;
+				}
+			}
+		}
+
+		SkinVertNums[SkinJoints[i][2]][aboveVerts] = -1;
+		ScratchVertNums[SkinJoints[i][2]][aboveVerts] = -1;
+		belowVerts = 0;
+		laraVerts = belowMesh->nVerts & 0xFF;
+		joint = &jointMesh->nNorms;
+
+		for (int j = 0; j < jointVerts; j++)
+		{
+			jointX = JointMeshXYZ.x + joint[0];
+			jointY = JointMeshXYZ.y + joint[1];
+			jointZ = JointMeshXYZ.z + joint[2];
+			joint += 3;
+			LaraMesh = &belowMesh->nNorms;
+
+			for (int ii = 0; ii < laraVerts; ii++)
+			{
+				laraY = BelowMeshXYZ.y + LaraMesh[1];
+				laraX = BelowMeshXYZ.x + LaraMesh[0];
+				laraZ = BelowMeshXYZ.z + LaraMesh[2];
+				LaraMesh += 3;
+
+				if (ABS(laraX - jointX) <= 1 && ABS(laraY - jointY) <= 1 && ABS(laraZ - jointZ) <= 1)
+				{
+					vertCount++;
+					vertBuf[j] = 1;
+					SkinVertNums[SkinJoints[i][3]][belowVerts] = ii;
+					ScratchVertNums[SkinJoints[i][3]][belowVerts] = j;
+					belowVerts++;
+				}
+			}
+		}
+
+		SkinVertNums[SkinJoints[i][3]][belowVerts] = -1;
+		ScratchVertNums[SkinJoints[i][3]][belowVerts] = -1;
+		calcPointsCounter = 0;
+
+		if (vertCount == jointVerts)
+			jointMesh->nVerts &= 0xFF00;
+		else
+		{
+			for (int j = 0; j < jointVerts; j++)
+			{
+				if (!vertBuf[j])
+				{
+					PointsToCalc[jointMeshNum - 1][calcPointsCounter] = j;
+					calcPointsCounter++;
+				}
+			}
+		}
+
+		PointsToCalc[jointMeshNum - 1][calcPointsCounter] = 0xFF;
+	}
+
+	for (int i = 0; HairSkinVertNums[0][i] != -1; i++)
+	{
+		if (gfLevelFlags & GF_YOUNGLARA)
+		{
+			SkinVertNums[28][i] = HairSkinVertNums[1][i];
+			SkinVertNums[34][i] = HairSkinVertNums[2][i];
+		}
+		else if (gfCurrentLevel >= LVL5_BASE && gfCurrentLevel <= LVL5_SINKING_SUBMARINE)
+		{
+			SkinVertNums[28][i] = HairSkinVertNums[5][i];
+			SkinVertNums[34][i] = HairSkinVertNums[5][i];
+		}
+		else
+		{
+			SkinVertNums[28][i] = HairSkinVertNums[0][i];
+			SkinVertNums[34][i] = HairSkinVertNums[0][i];
+		}
+
+		ScratchVertNums[28][i] = HairScratchVertNums[0][i];
+		ScratchVertNums[34][i] = HairScratchVertNums[1][i];
+		SkinVertNums[29][i] = HairSkinVertNums[3][i];
+		ScratchVertNums[29][i] = HairScratchVertNums[2][i];
+		SkinVertNums[35][i] = HairSkinVertNums[3][i];
+		ScratchVertNums[35][i] = HairScratchVertNums[2][i];
+	}
+
+	for (int i = 0; i < 4; i += 2)
+	{
+		for (int j = 0; HairSkinVertNums[2][j] != -1; j++)
+		{
+			SkinVertNums[i + 30][j] = HairSkinVertNums[4][j];
+			SkinVertNums[i + 31][j] = HairSkinVertNums[3][j];
+			ScratchVertNums[i + 30][j] = HairScratchVertNums[3][j];
+			ScratchVertNums[i + 31][j] = HairScratchVertNums[2][j];
+			ScratchVertNums[i + 36][j] = HairScratchVertNums[3][j];
+			ScratchVertNums[i + 37][j] = HairScratchVertNums[2][j];
+			SkinVertNums[i + 36][j] = HairSkinVertNums[4][j];
+			SkinVertNums[i + 37][j] = HairSkinVertNums[3][j];
+		}
+	}
+
+	obj = &objects[HAIR];
+	meshpp = &meshes[obj->mesh_index];
+
+	for (int i = 0; i < 3; i++, meshpp += 2)
+	{
+		hairMesh = (MESH_DATA*)*meshpp;
+		hairMesh->nVerts &= 0xFF00;
+	}
+
+	OptomiseSkinningData();
+}
+
 void inject_laraskin(bool replace)
 {
 	INJECT(0x00457580, OptomiseSkinningData, replace);
+	INJECT(0x00457520, PushXYZ, replace);
+	INJECT(0x00457560, PopXYZ, replace);
+	INJECT(0x00456AE0, CreateSkinningData, 0);//crash!
 }
