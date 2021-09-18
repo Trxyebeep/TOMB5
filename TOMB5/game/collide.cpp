@@ -18,7 +18,7 @@ void TriggerLaraBlood()
 			vec.y = (GetRandomControl() & 0x1F) - 16;
 			vec.z = (GetRandomControl() & 0x1F) - 16;
 			GetLaraJointPos(&vec, LM[i]);
-			DoBloodSplat(vec.x, vec.y, vec.z, (GetRandomControl() & 7) + 8, 2 * GetRandomControl(), lara_item->room_number);
+			DoBloodSplat(vec.x, vec.y, vec.z, (GetRandomControl() & 7) + 8, GetRandomControl() << 1, lara_item->room_number);
 		}
 	}
 }
@@ -33,10 +33,10 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	if (objheight < 0)
 	{
 		objheight = -objheight;
-		reset_room = true;
+		reset_room = 1;
 	}
 	else
-		reset_room = false;
+		reset_room = 0;
 
 	y = ypos - objheight;
 	yT = y - 160;
@@ -69,7 +69,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	switch (coll->quadrant)
 	{
 	case NORTH:
-		xfront = (phd_sin((ushort)(coll->facing) * coll->radius)) >> 14;
+		xfront = (phd_sin(coll->facing) * coll->radius) >> 14;
 		zfront = coll->radius;
 		xright = coll->radius; 
 		zright = coll->radius; 
@@ -79,7 +79,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 
 	case EAST:
 		xfront = coll->radius;
-		zfront = (phd_cos((ushort)(coll->facing) * coll->radius)) >> 14;
+		zfront = (phd_cos(coll->facing) * coll->radius) >> 14;
 		xright = coll->radius;
 		zright = -coll->radius;
 		zleft = coll->radius;
@@ -87,7 +87,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		break;
 
 	case SOUTH:
-		xfront = (phd_sin((ushort)coll->facing) * coll->radius) >> 14;
+		xfront = (phd_sin(coll->facing) * coll->radius) >> 14;
 		zfront = -coll->radius;
 		xright = -coll->radius;
 		zright = -coll->radius;
@@ -97,7 +97,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 
 	case WEST:
 		xfront = -coll->radius;
-		zfront = (phd_cos((ushort)coll->facing) * coll->radius) >> 14;
+		zfront = (phd_cos(coll->facing) * coll->radius) >> 14;
 		xright = -coll->radius;
 		zright = coll->radius;
 		zleft = -coll->radius;
@@ -137,7 +137,6 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 
 	if (height != NO_HEIGHT)
 		height -= ypos;
-
 
 	if (coll->slopes_are_walls && (coll->front_type == BIG_SLOPE || coll->front_type == DIAGONAL) &&
 		coll->front_floor < coll->mid_floor && height < coll->front_floor && coll->front_floor < 0)
@@ -388,7 +387,9 @@ void ShiftItem(ITEM_INFO* item, COLL_INFO* coll)
 	item->pos.x_pos += coll->shift.x;
 	item->pos.y_pos += coll->shift.y;
 	item->pos.z_pos += coll->shift.z;
-	coll->shift.x = coll->shift.y = coll->shift.z = 0;
+	coll->shift.x = 0;
+	coll->shift.y = 0;
+	coll->shift.z = 0;
 }
 
 short GetTiltType(FLOOR_INFO* floor, long x, long y, long z)
@@ -409,7 +410,7 @@ short GetTiltType(FLOOR_INFO* floor, long x, long y, long z)
 	if (y + 512 < ((long)floor->floor << 8))
 		return 0;
 
-	if (floor->index != 0)
+	if (floor->index)
 	{
 		floordata = &floor_data[floor->index];
 		type = (floordata[0] & 0x1F);
