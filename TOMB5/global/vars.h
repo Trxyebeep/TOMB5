@@ -571,6 +571,7 @@
 #define SaveGames	ARRAY_(0x0087B828, SAVEGAMES, [15])
 #define Lightning	ARRAY_(0x00E4C360, LIGHTNING_STRUCT, [16])
 #define GlobalCollisionBounds ARRAY_(0x00EEF910, short, [6])
+#define HairRotScratchVertNums	ARRAY_(0x00506D40, char, [5][12])
 
 //defs
 #define NO_HEIGHT -32512

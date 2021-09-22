@@ -144,7 +144,11 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 
 	phd_PushMatrix();
 	objptr = lara.mesh_ptrs[LM_TORSO];
+#ifdef GENERAL_FIXES //reposition sphere to avoid floaty hair
+	phd_TranslateRel(*objptr - 9, objptr[1], objptr[2] + 25);
+#else
 	phd_TranslateRel(*objptr, objptr[1], objptr[2]);
+#endif
 	sphere[1].x = phd_mxptr[3] >> 14;
 	sphere[1].y = phd_mxptr[7] >> 14;
 	sphere[1].z = phd_mxptr[11] >> 14;
@@ -163,7 +167,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	sphere[3].x = phd_mxptr[3] >> 14;
 	sphere[3].y = phd_mxptr[7] >> 14;
 	sphere[3].z = phd_mxptr[11] >> 14;
-#ifdef GENERAL_FIXES
+#ifdef GENERAL_FIXES //limit rad to avoid floaty hair when crawling with the new neck sphere!
 	sphere[3].r = 4 * objptr[3] / 3;
 #else
 	sphere[3].r = 3 * objptr[3] / 2;
@@ -178,7 +182,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	sphere[4].x = phd_mxptr[3] >> 14;
 	sphere[4].y = phd_mxptr[7] >> 14;
 	sphere[4].z = phd_mxptr[11] >> 14;
-#ifdef GENERAL_FIXES
+#ifdef GENERAL_FIXES //limit rad to avoid floaty hair when crawling with the new neck sphere!
 	sphere[4].r = 4 * objptr[3] / 3;
 #else
 	sphere[4].r = 3 * objptr[3] / 2;
@@ -190,7 +194,11 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 
 	phd_PushMatrix();
 	objptr = lara.mesh_ptrs[LM_HEAD];
+#ifdef GENERAL_FIXES //reposition sphere to avoid floaty hair
+	phd_TranslateRel(*objptr - 2, objptr[1], objptr[2]);
+#else
 	phd_TranslateRel(*objptr, objptr[1], objptr[2]);
+#endif
 	sphere[2].x = phd_mxptr[3] >> 14;
 	sphere[2].y = phd_mxptr[7] >> 14;
 	sphere[2].z = phd_mxptr[11] >> 14;
@@ -455,9 +463,35 @@ void InitialiseHair()
 	}
 }
 
+void GetCorrectStashPoints(long pigtail, long hair_node, long skin_node)//something about how skin parts connect to each other
+{
+	HAIR_STRUCT* hair;
+	ushort num, rot1, rot2;
+
+	num = 0;
+	hair = &hairs[pigtail][hair_node - 1];
+
+	if (hair_node)
+		rot1 = hair->pos.y_rot;
+	else
+		rot1 = (ushort)(32768 - (CamRot.vy << 4));
+
+	rot2 = hair[2].pos.y_rot;
+
+	while (ABS(rot1 - rot2) > 8192 && ABS(rot1 - rot2) < 57344)
+	{
+		rot1 += 16384;
+		num++;
+	}
+
+	for (int i = 0; i < 5; i++)
+		ScratchVertNums[skin_node][i] = HairRotScratchVertNums[num][i];
+}
+
 void inject_hair(bool replace)
 {
 	INJECT(0x00439A40, DrawHair, replace);
 	INJECT(0x00438C80, HairControl, replace);
 	INJECT(0x00438BE0, InitialiseHair, replace);
+	INJECT(0x00439950, GetCorrectStashPoints, replace);
 }
