@@ -85,10 +85,10 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x0040C690	+	InitialiseCamera
 0x0040C7A0		MoveCamera
-0x0040D150		ChaseCamera
-0x0040D640		CombatCamera
+0x0040D150	+	ChaseCamera
+0x0040D640	+	CombatCamera
 0x0040DC10		LookCamera
-0x0040E890		FixedCamera
+0x0040E890	+	FixedCamera
 0x0040ED30	+	CalculateCamera
 0x0040F5C0	+	CameraCollisionBounds
 0x0040FA70	+	mgLOS
@@ -995,9 +995,9 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/laraskin.cpp
 
-0x00456AE0		CreateSkinningData
-0x00457520		PushXYZ
-0x00457560		PopXYZ
+0x00456AE0	x	CreateSkinningData
+0x00457520	+	PushXYZ
+0x00457560	+	PopXYZ
 0x00457580	+	OptomiseSkinningData
 
 
@@ -1218,11 +1218,11 @@ x for functions decompiled but not injected, for one reason or another.
 		game/objlight.cpp
 
 0x00466B20	+	TriggerAlertLight
-0x00466C00		ControlStrobeLight
-0x00466D20		ControlPulseLight
-0x00466E10		ControlColouredLight
-0x00466EA0		ControlElectricalLight
-0x004670D0		ControlBlinker
+0x00466C00	+	ControlStrobeLight
+0x00466D20	+	ControlPulseLight
+0x00466E10	+	ControlColouredLight
+0x00466EA0	+	ControlElectricalLight
+0x004670D0	+	ControlBlinker
 
 
 		game/people.cpp
@@ -1255,8 +1255,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/pierre.cpp
 
-0x00469F70		InitialisePierre
-0x0046A080		PierreControl
+0x00469F70	+	InitialisePierre
+0x0046A080	+	PierreControl
 
 
 		game/rat.cpp
@@ -1439,9 +1439,9 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/tower1.cpp
 
-0x0047FFE0		CheckForRichesIllegalDiagonalWalls
-0x00480200		TestBoundsCollideCamera
-0x00480310		ItemPushCamera
+0x0047FFE0	+	CheckForRichesIllegalDiagonalWalls
+0x00480200	+	TestBoundsCollideCamera
+0x00480310	+	ItemPushCamera
 
 
 		game/text.cpp
@@ -1736,9 +1736,9 @@ x for functions decompiled but not injected, for one reason or another.
 0x0049B390		aBuildRoomletLights
 0x0049B7B0		aRoomletTransformLight
 0x0049C6B0		CheckBoundsClip
-0x0049C9F0		DrawBoundsRectangle
-0x0049CC20		DrawBoundsRectangleII
-0x0049CE40		DrawClipRectangle
+0x0049C9F0	+	DrawBoundsRectangle
+0x0049CC20	+	DrawBoundsRectangleII
+0x0049CE40	+	DrawClipRectangle
 0x0049CEB0		DrawRoomletBounds
 0x0049D0E0		PrelightVertsMMXByRoomlet
 0x0049D130		PrelightVertsNonMMXByRoomlet

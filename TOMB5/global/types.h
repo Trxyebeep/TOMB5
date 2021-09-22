@@ -2117,4 +2117,11 @@ struct GUARDIAN_TARGET
 	short Xdiff;
 	short Ydiff;
 };
+
+struct SkinXYZ
+{
+	long x;
+	long y;
+	long z;
+};
 #pragma pack(pop)

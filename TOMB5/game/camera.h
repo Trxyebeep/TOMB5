@@ -11,9 +11,10 @@ long mgLOS(GAME_VECTOR* start, GAME_VECTOR* target, long push);
 long CameraCollisionBounds(GAME_VECTOR* ideal, long push, long yfirst);
 void UpdateCameraElevation();
 void ConfirmCameraTargetPos();
+void FixedCamera();
+void ChaseCamera(ITEM_INFO* item);
+void CombatCamera(ITEM_INFO* item);
 
 #define BinocularCamera	( (void(__cdecl*)(ITEM_INFO*)) 0x0040FC20 )
-#define FixedCamera	( (void(__cdecl*)()) 0x0040E890 )
-#define ChaseCamera	( (void(__cdecl*)(ITEM_INFO*)) 0x0040D150 )
 #define	LookCamera	( (void(__cdecl*)(ITEM_INFO*)) 0x0040DC10 )
-#define CombatCamera	( (void(__cdecl*)(ITEM_INFO*)) 0x0040D640 )
+#define MoveCamera	( (void(__cdecl*)(GAME_VECTOR*, long)) 0x0040C7A0 )

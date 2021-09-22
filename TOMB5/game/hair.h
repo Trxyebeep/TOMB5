@@ -6,5 +6,4 @@ void inject_hair(bool replace);
 void DrawHair();
 void HairControl(int in_cutscene, int pigtail, short* cutscenething);
 void InitialiseHair();
-
-#define GetCorrectStashPoints	( (void(__cdecl*)(int, int, int)) 0x00439950 )
+void GetCorrectStashPoints(long pigtail, long hair_nose, long skin_node);

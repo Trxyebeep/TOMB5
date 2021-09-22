@@ -349,7 +349,6 @@
 #define bLaraUnderWater	VAR_U_(0x0057A150, int)
 #define bLaraSkinBits	VAR_U_(0x0057A458, int)
 #define aMappedNormals	VAR_U_(0x0057A45C, LPD3DVECTOR)
-#define skinMatrixPtr	VAR_U_(0x00E5B918, long*)
 #define bLaraInWater	VAR_U_(0x0057A468, char)
 #define SmokeWindZ	VAR_U_(0x00E6C9E4, long)
 #define SmokeWindX	VAR_U_(0x00E6C9E0, long)
@@ -405,6 +404,7 @@
 #define SkyPos	VAR_U_(0x00E6E4B0, short)
 #define SkyPos2	VAR_U_(0x00E6D73E, short)
 #define torchroom	VAR_U_(0x00507AB0, short)
+#define ForcedFixedCamera	VAR_U_(0x00EEFA20, GAME_VECTOR)
 /***********************/
 //Spotcams
 #define number_spotcams	VAR_U_(0x00E4F428, short)
@@ -477,6 +477,19 @@
 #define JustLoaded	VAR_U_(0x0051D001, char)
 /*title shit*/
 
+/*Skin things*/
+#define SkinXYZPtr	VAR_U_(0x00E5B918, SkinXYZ*)
+#define BelowMeshXYZ	VAR_U_(0x00E5B930, SkinXYZ)
+#define JointMeshXYZ	VAR_U_(0x00E5B920, SkinXYZ)
+#define AboveMeshXYZ	VAR_U_(0x00E5B870, SkinXYZ)
+#define XYZList	ARRAY_(0x00E5B940, SkinXYZ, [32])
+#define SkinVertNums	ARRAY_(0x00E86100, char, [40][12])
+#define HairSkinVertNums	ARRAY_(0x00508CEC, char, [6][12])
+#define HairScratchVertNums	ARRAY_(0x00508D34, char, [4][12])
+#define SkinJoints ARRAY_(0x00508CB4, uchar, [14][4])
+#define ScratchVertNums ARRAY_(0x00E7F080, char, [40][12])
+#define PointsToCalc ARRAY_(0x00E5BAC0, uchar, [26][12])
+
 //arrays
 #define cutseq_meshbits	ARRAY_(0x00E7EEA0, ulong, [10])
 #define objects	ARRAY_(0x0086CF50, OBJECT_INFO, [460])
@@ -538,9 +551,6 @@
 #define lara_joint_matrices	ARRAY_(0x00E86BC0, MATRIX3D, [15])
 #define aScratchNormals	ARRAY_(0x0057A158, D3DVECTOR, [64])
 #define duff_item	ARRAY_(0x00E71300, ITEM_INFO, [10])
-#define SkinJoints ARRAY_(0x00508CB4, uchar, [14][4])
-#define ScratchVertNums ARRAY_(0x00E7F080, char, [40][12])
-#define PointsToCalc ARRAY_(0x00E5BAC0, uchar, [26][12])
 #define LaraNodeAmbient	ARRAY_(0x0057A460, long, [2])
 #define first_hair	ARRAY_(0x00E5BF60, int, [2])
 #define aMappedEnvUV	ARRAY_(0x00920E18, ENVUV, [256])
@@ -561,6 +571,7 @@
 #define SaveGames	ARRAY_(0x0087B828, SAVEGAMES, [15])
 #define Lightning	ARRAY_(0x00E4C360, LIGHTNING_STRUCT, [16])
 #define GlobalCollisionBounds ARRAY_(0x00EEF910, short, [6])
+#define HairRotScratchVertNums	ARRAY_(0x00506D40, char, [5][12])
 
 //defs
 #define NO_HEIGHT -32512
