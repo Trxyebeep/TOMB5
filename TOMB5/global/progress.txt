@@ -85,10 +85,10 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x0040C690	+	InitialiseCamera
 0x0040C7A0		MoveCamera
-0x0040D150		ChaseCamera
-0x0040D640		CombatCamera
+0x0040D150	+	ChaseCamera
+0x0040D640	+	CombatCamera
 0x0040DC10		LookCamera
-0x0040E890		FixedCamera
+0x0040E890	+	FixedCamera
 0x0040ED30	+	CalculateCamera
 0x0040F5C0	+	CameraCollisionBounds
 0x0040FA70	+	mgLOS
