@@ -101,8 +101,23 @@ int S_CallInventory2()
 	else
 		inventry_objects_list[INV_BINOCULARS_ITEM].objname = STR_BINOCULARS;
 
-#ifdef GENERAL_FIXES//restore HK tip
+#ifdef GENERAL_FIXES//restore HK tip, and properly align HK in iris
 	inventry_objects_list[INV_HK_ITEM1].meshbits = -1;
+
+	if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
+	{//fucked up inv HK in this level why core
+		inventry_objects_list[INV_HK_ITEM1].xrot = 8448;
+		inventry_objects_list[INV_HK_ITEM1].zrot = 16384;
+		inventry_objects_list[INV_HK_ITEM1].flags = 8;
+		inventry_objects_list[INV_HK_ITEM1].yoff = -40;
+	}
+	else//original values, for 13th floor and Red Alert
+	{
+		inventry_objects_list[INV_HK_ITEM1].xrot = 0;
+		inventry_objects_list[INV_HK_ITEM1].zrot = 0;
+		inventry_objects_list[INV_HK_ITEM1].flags = 2;
+		inventry_objects_list[INV_HK_ITEM1].yoff = 0;
+	}
 #endif
 
 	friggrimmer = 0;
