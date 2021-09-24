@@ -14,6 +14,8 @@
 #include "sphere.h"
 #include "debris.h"
 #include "tomb4fx.h"
+#include "tower1.h"
+#include "larafire.h"
 
 void InitialiseCamera()
 {
@@ -1012,6 +1014,481 @@ void CombatCamera(ITEM_INFO* item)
 	MoveCamera(&ideal, camera.speed);
 }
 
+void MoveCamera(GAME_VECTOR* ideal, long speed)
+{
+	FLOOR_INFO* floor;
+//	GAME_VECTOR tcp;//unused
+	GAME_VECTOR temp1;
+	GAME_VECTOR temp2;
+	long height, ceiling, shake, rndval, wx, wy, wz, dx, dy, dz;
+	short room_number;
+
+	if (BinocularOn < 0)
+	{
+		speed = 1;
+		BinocularOn++;
+	}
+
+	if (old_cam.pos.x_rot == lara_item->pos.x_rot && old_cam.pos.y_rot == lara_item->pos.y_rot && old_cam.pos.z_rot == lara_item->pos.z_rot &&
+		old_cam.pos2.x_rot == lara.head_x_rot && old_cam.pos2.y_rot == lara.head_y_rot && old_cam.pos2.x_pos == lara.torso_x_rot &&
+		old_cam.pos2.y_pos == lara.torso_y_rot && old_cam.pos.x_pos == lara_item->pos.x_pos && old_cam.pos.y_pos == lara_item->pos.y_pos &&
+		old_cam.pos.z_pos == lara_item->pos.z_pos && old_cam.current_anim_state == lara_item->current_anim_state &&
+		old_cam.goal_anim_state == lara_item->goal_anim_state && old_cam.target_distance == camera.target_distance &&
+		old_cam.target_elevation == camera.target_elevation && old_cam.actual_elevation == camera.actual_elevation &&
+		old_cam.target_angle == camera.actual_angle && old_cam.t.x == camera.target.x && old_cam.t.y == camera.target.y &&
+		old_cam.t.z == camera.target.z && camera.old_type == camera.type && !SniperOverlay && BinocularOn >= 0)
+	{
+		ideal->x = last_ideal.x;
+		ideal->y = last_ideal.y;
+		ideal->z = last_ideal.z;
+		ideal->room_number = last_ideal.room_number;
+	}
+	else
+	{
+		old_cam.pos.x_rot = lara_item->pos.x_rot;
+		old_cam.pos.y_rot = lara_item->pos.y_rot;
+		old_cam.pos.z_rot = lara_item->pos.z_rot;
+		old_cam.pos2.x_rot = lara.head_x_rot;
+		old_cam.pos2.y_rot = lara.head_y_rot;
+		old_cam.pos2.x_pos = lara.torso_x_rot;
+		old_cam.pos2.y_pos = lara.torso_y_rot;
+		old_cam.pos.x_pos = lara_item->pos.x_pos;
+		old_cam.pos.y_pos = lara_item->pos.y_pos;
+		old_cam.pos.z_pos = lara_item->pos.z_pos;
+		old_cam.current_anim_state = lara_item->current_anim_state;
+		old_cam.goal_anim_state = lara_item->goal_anim_state;
+		old_cam.target_distance = camera.target_distance;
+		old_cam.target_elevation = camera.target_elevation;
+		old_cam.actual_elevation = camera.actual_elevation;
+		old_cam.target_angle = camera.actual_angle;
+		old_cam.t.x = camera.target.x;
+		old_cam.t.y = camera.target.y;
+		old_cam.t.z = camera.target.z;
+		last_ideal.x = ideal->x;
+		last_ideal.y = ideal->y;
+		last_ideal.z = ideal->z;
+		last_ideal.room_number = ideal->room_number;
+	}
+
+	camera.pos.x += (ideal->x - camera.pos.x) / speed;
+	camera.pos.y += (ideal->y - camera.pos.y) / speed;
+	camera.pos.z += (ideal->z - camera.pos.z) / speed;
+	camera.pos.room_number = ideal->room_number;
+	camera.fpos.x += ((float)ideal->x - camera.fpos.x) / (float)speed;
+	camera.fpos.y += ((float)ideal->y - camera.fpos.y) / (float)speed;
+	camera.fpos.z += ((float)ideal->z - camera.fpos.z) / (float)speed;
+
+	if (camera.bounce)
+	{
+		if (camera.bounce <= 0)
+		{
+			rndval = -camera.bounce;
+			shake = rndval >> 1;
+			camera.target.x += GetRandomControl() % rndval - shake;
+			camera.target.y += GetRandomControl() % rndval - shake;
+			camera.target.z += GetRandomControl() % rndval - shake;
+			camera.bounce += 5;
+		}
+		else
+		{
+			camera.pos.y += camera.bounce;
+			camera.target.y += camera.bounce;
+			camera.bounce = 0;
+		}
+	}
+
+	wz = camera.pos.z;
+	wy = camera.pos.y;
+	wx = camera.pos.x;
+	room_number = camera.pos.room_number;
+	floor = GetFloor(wx, wy, wz, &room_number);
+	height = GetHeight(floor, wx, wy, wz);
+	ceiling = GetCeiling(floor, wx, wy, wz);
+
+	if (wy < ceiling || wy > height)
+	{
+		mgLOS(&camera.target, &camera.pos, 0);
+		dx = ABS(camera.pos.x - ideal->x);
+		dy = ABS(camera.pos.y - ideal->y);
+		dz = ABS(camera.pos.z - ideal->z);
+
+		if (dx < 768 && dy < 768 && dz < 768)
+		{
+			temp1.x = camera.pos.x;
+			temp1.y = camera.pos.y;
+			temp1.z = camera.pos.z;
+			temp1.room_number = camera.pos.room_number;
+			temp2.x = ideal->x;
+			temp2.y = ideal->y;
+			temp2.z = ideal->z;
+			temp2.room_number = ideal->room_number;
+
+			if (!(mgLOS(&temp2, &temp1, 0)))
+			{
+				camerasnaps++;
+
+				if (camerasnaps >= 8)
+				{
+					camera.pos.x = ideal->x;
+					camera.pos.y = ideal->y;
+					camera.pos.z = ideal->z;
+					camera.pos.room_number = ideal->room_number;
+					camerasnaps = 0;
+				}
+			}
+		}
+	}
+
+	wz = camera.pos.z;
+	wy = camera.pos.y;
+	wx = camera.pos.x;
+	room_number = camera.pos.room_number;
+	floor = GetFloor(wx, wy, wz, &room_number);
+	height = GetHeight(floor, wx, wy, wz);
+	ceiling = GetCeiling(floor, wx, wy, wz);
+
+	if (wy - 255 < ceiling && height < wy + 255 && ceiling < height && ceiling != NO_HEIGHT && height != NO_HEIGHT)
+		camera.pos.y = (height + ceiling) >> 1;
+	else if (height < wy + 255 && ceiling < height && ceiling != NO_HEIGHT && height != NO_HEIGHT)
+		camera.pos.y = height - 255;
+	else if (wy - 255 < ceiling && ceiling < height && ceiling != NO_HEIGHT && height != NO_HEIGHT)
+		camera.pos.y = ceiling + 255;
+	else if (ceiling >= height || height == NO_HEIGHT || ceiling == NO_HEIGHT)
+	{
+		camera.pos.x = ideal->x;
+		camera.pos.y = ideal->y;
+		camera.pos.z = ideal->z;
+		camera.pos.room_number = ideal->room_number;
+		camera.fpos.x = (float)ideal->x;
+		camera.fpos.y = (float)ideal->y;
+		camera.fpos.z = (float)ideal->z;
+	}
+
+	if (gfCurrentLevel == LVL5_THIRTEENTH_FLOOR || gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
+		CheckForRichesIllegalDiagonalWalls();
+
+	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
+	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
+
+	if (camera.mike_at_lara)
+	{
+		camera.mike_pos.x = lara_item->pos.x_pos;
+		camera.mike_pos.y = lara_item->pos.y_pos;
+		camera.mike_pos.z = lara_item->pos.z_pos;
+	}
+	else
+	{
+		dx = camera.target.x - camera.pos.x;
+		dz = camera.target.z - camera.pos.z;
+		dx = phd_atan(dz, dx);
+		camera.mike_pos.x = (phd_sin(dx) * phd_persp >> 14) + camera.pos.x;
+		camera.mike_pos.y = camera.pos.y;
+		camera.mike_pos.z = (phd_cos(dx) * phd_persp >> 14) + camera.pos.z;
+	}
+
+	camera.old_type = camera.type;
+}
+
+#define LSHKTimer	VAR_U_(0x0051CA46, char)
+#define LSHKShotsFired	VAR_U_(0x0051CA45, char)
+#define ExittingBinos	VAR_U_(0x0051CA20, long)
+#define bLaraTorch	VAR_U_(0x0087B0F8, long)
+
+void BinocularCamera(ITEM_INFO* item)
+{
+	PHD_VECTOR pos1;
+	PHD_VECTOR pos3;
+	PHD_VECTOR Soffset;
+	PHD_VECTOR Eoffset;
+	short* ammo;
+	long shake, speed, c, BinocStep, pit, rndval;
+	short room_number, hxrot, hyrot;
+	char Fire;
+
+	if (LSHKTimer)
+		LSHKTimer--;
+
+	if (!LaserSight)
+	{
+		if (inputBusy & IN_DRAW)
+			ExittingBinos = 1;
+		else if (ExittingBinos)
+		{
+			ExittingBinos = 0;
+			BinocularRange = 0;
+			AlterFOV(14560);
+			lara_item->mesh_bits = -1;
+			lara.Busy = 0;
+			lara.head_y_rot = 0;
+			lara.head_x_rot = 0;
+			lara.torso_y_rot = 0;
+			lara.torso_x_rot = 0;
+			bLaraTorch = 0;
+			camera.type = BinocularOldCamera;
+			return;
+		}
+	}
+
+	lara_item->mesh_bits = 0;
+	AlterFOV((short)(7 * (2080 - BinocularRange)));
+	hxrot = lara.head_x_rot << 1;
+	hyrot = lara.head_y_rot;
+
+	if (hxrot > 13650)
+		hxrot = 13650;
+	else if (hxrot < -13650)
+		hxrot = -13650;
+
+	if (hyrot > 14560)
+		hyrot = 14560;
+	else if (hyrot < -14560)
+		hyrot = -14560;
+
+	hyrot += lara_item->pos.y_rot;
+	pos1.x = lara_item->pos.x_pos;
+	pos1.y = lara_item->pos.y_pos - 512;
+	pos1.z = lara_item->pos.z_pos;
+	room_number = lara_item->room_number;
+	c = GetCeiling(GetFloor(pos1.x, pos1.y, pos1.z, &room_number), pos1.x, pos1.y, pos1.z);
+
+	if (c <= pos1.y - 256)
+		pos1.y -= 256;
+	else
+		pos1.y += 64;
+
+	speed = (20736 * phd_cos(hxrot)) >> 14;
+	pos3.x = pos1.x + (phd_sin(hyrot) * speed >> 14);
+	pos3.y = pos1.y - (phd_sin(hxrot) * 20736 >> 14);
+	pos3.z = pos1.z + (phd_cos(hyrot) * speed >> 14);
+	camera.pos.x = pos1.x;
+	camera.pos.y = pos1.y;
+	camera.pos.z = pos1.z;
+	camera.pos.room_number = room_number;
+
+	if (camera.old_type == FIXED_CAMERA)
+	{
+		camera.target.x = pos3.x;
+		camera.target.y = pos3.y;
+		camera.target.z = pos3.z;
+		camera.target.room_number = lara_item->room_number;
+	}
+	else
+	{
+		camera.target.x += (pos3.x - camera.target.x) >> 2;
+		camera.target.y += (pos3.y - camera.target.y) >> 2;
+		camera.target.z += (pos3.z - camera.target.z) >> 2;
+		camera.target.room_number = lara_item->room_number;
+	}
+
+	if (camera.bounce && camera.type == camera.old_type)
+	{
+		if (camera.bounce <= 0)
+		{
+			rndval = -camera.bounce;
+			shake = rndval >> 1;
+			camera.target.x += (GetRandomControl() % rndval - shake) << 4;
+			camera.target.y += (GetRandomControl() % rndval - shake) << 4;
+			camera.target.z += (GetRandomControl() % rndval - shake) << 4;
+			camera.bounce += 5;
+		}
+		else
+		{
+			camera.bounce = 0;
+			camera.target.y += camera.bounce;
+		}
+	}
+
+	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
+	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
+
+	if (camera.mike_at_lara)
+	{
+		camera.mike_pos.x = lara_item->pos.x_pos;
+		camera.mike_pos.y = lara_item->pos.y_pos;
+		camera.mike_pos.z = lara_item->pos.z_pos;
+	}
+	else
+	{
+		c = phd_atan(camera.target.z - camera.pos.z, camera.target.x - camera.pos.x);
+		camera.mike_pos.x = (phd_sin(c) * phd_persp >> 14) + camera.pos.x;
+		camera.mike_pos.y = camera.pos.y;
+		camera.mike_pos.z = (phd_cos(c) * phd_persp >> 14) + camera.pos.z;
+	}
+
+	camera.old_type = camera.type;
+
+	if (!(inputBusy & IN_WALK))
+	{
+		BinocStep = 64;
+		pit = 0x10000;
+	}
+	else
+	{
+		BinocStep = 32;
+		pit = 0x8000;
+	}
+
+	if (inputBusy & IN_SPRINT)
+	{
+		BinocularRange -= BinocStep;
+
+		if (BinocularRange < 128)
+			BinocularRange = 128;
+		else
+			SoundEffect(SFX_ZOOM_VIEW_WHIRR, 0, (pit << 8) | SFX_ALWAYS | SFX_SETPITCH);
+	}
+	else if (inputBusy & IN_DUCK)
+	{
+		BinocularRange += BinocStep;
+
+		if (BinocularRange > 1536)
+			BinocularRange = 1536;
+		else
+			SoundEffect(SFX_ZOOM_VIEW_WHIRR, 0, (pit << 8) | SFX_ALWAYS | SFX_SETPITCH);
+	}
+
+	Soffset.x = camera.pos.x;
+	Soffset.y = camera.pos.y;
+	Soffset.z = camera.pos.z;
+	Eoffset.x = camera.target.x;
+	Eoffset.y = camera.target.y;
+	Eoffset.z = camera.target.z;
+
+	if (LaserSight)
+	{
+		Fire = 0;
+		ammo = get_current_ammo_pointer(lara.gun_type);
+
+		if (!(inputBusy & IN_ACTION) || WeaponDelay || !ammo[0])
+		{
+			if (!(inputBusy & IN_ACTION))
+			{
+				if (lara.gun_type != WEAPON_CROSSBOW)
+					WeaponDelay = 0;
+
+				LSHKShotsFired = 0;
+				camera.bounce = 0;
+			}
+		}
+		else
+		{
+			if (lara.gun_type == WEAPON_REVOLVER)
+			{
+				Fire = 1;
+				WeaponDelay = 16;
+				savegame.Game.AmmoUsed++;
+
+				if (ammo[0] != -1)
+					ammo[0]--;
+			}
+			else if (lara.gun_type == WEAPON_CROSSBOW)
+			{
+				Fire = 1;
+				WeaponDelay = 32;
+			}
+			else
+			{
+				if (lara.hk_type_carried & WTYPE_AMMO_1)//sniper mode!
+				{
+					WeaponDelay = 12;
+					Fire = 1;
+
+					if (lara.hk_type_carried & WTYPE_SILENCER)
+						SoundEffect(14, 0, 0);
+					else
+					{
+						SoundEffect(105, 0, 83888140);
+						SoundEffect(68, 0, 0);
+					}
+
+					if (ammo[0] != -1)
+						ammo[0]--;
+				}
+				else if (lara.hk_type_carried & WTYPE_AMMO_2)//burst mode!
+				{
+					if (LSHKTimer)
+					{
+						camera.bounce = -16 - (GetRandomControl() & 0x1F);
+
+						if (lara.hk_type_carried & WTYPE_SILENCER)
+							SoundEffect(14, 0, 0);
+						else
+						{
+							SoundEffect(105, 0, 83888140);
+							SoundEffect(68, 0, 0);
+						}
+					}
+					else
+					{
+						LSHKShotsFired++;
+
+						if (LSHKShotsFired == 5)
+						{
+							LSHKShotsFired = 0;
+							WeaponDelay = 12;
+						}
+
+						LSHKTimer = 4;
+						Fire = 1;
+
+						if (lara.hk_type_carried & WTYPE_SILENCER)
+							SoundEffect(14, 0, 0);
+						else
+						{
+							SoundEffect(105, 0, 83888140);
+							SoundEffect(68, 0, 0);
+						}
+					}
+				}
+				else//rapid mode!
+				{
+					if (LSHKTimer)
+					{
+						if (lara.hk_type_carried & WTYPE_SILENCER)
+							SoundEffect(14, 0, 0);
+						else
+						{
+							SoundEffect(105, 0, 83888140);
+							SoundEffect(68, 0, 0);
+						}
+					}
+					else
+					{
+						LSHKTimer = 4;
+						Fire = 1;
+
+						if (lara.hk_type_carried & WTYPE_SILENCER)
+							SoundEffect(14, 0, 0);
+						else
+						{
+							SoundEffect(105, 0, 83888140);
+							SoundEffect(68, 0, 0);
+						}
+
+						if (ammo[0] != -1)
+							ammo[0]--;
+					}
+
+					camera.bounce = -16 - (GetRandomControl() & 0x1F);
+				}
+			}
+		}
+
+		GetTargetOnLOS(&camera.pos, &camera.target, 1, Fire);
+	}
+	else
+	{
+		GetTargetOnLOS(&camera.pos, &camera.target, 0, 0);
+
+		if (!(inputBusy & IN_ACTION) || InfraRed)
+			bLaraTorch = 0;
+		else
+			LaraTorch(&Soffset, &Eoffset, lara.head_y_rot, 192);
+	}
+}
+
 void inject_camera(bool replace)
 {
 	INJECT(0x0040C690, InitialiseCamera, replace);
@@ -1025,4 +1502,6 @@ void inject_camera(bool replace)
 	INJECT(0x0040E890, FixedCamera, replace);
 	INJECT(0x0040D150, ChaseCamera, replace);
 	INJECT(0x0040D640, CombatCamera, replace);
+	INJECT(0x0040C7A0, MoveCamera, replace);
+	INJECT(0x0040FC20, BinocularCamera, replace);
 }

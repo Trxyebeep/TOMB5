@@ -108,12 +108,12 @@ int S_CallInventory2()
 	{//fucked up inv HK in this level why core
 		inventry_objects_list[INV_HK_ITEM1].xrot = 8448;
 		inventry_objects_list[INV_HK_ITEM1].zrot = 16384;
-		inventry_objects_list[INV_HK_ITEM1].flags = 8;
+		inventry_objects_list[INV_HK_ITEM1].flags = 10;
 		inventry_objects_list[INV_HK_ITEM1].yoff = -40;
 	}
 	else//original values, for 13th floor and Red Alert
 	{
-		inventry_objects_list[INV_HK_ITEM1].xrot = 0;
+		inventry_objects_list[INV_HK_ITEM1].xrot = 49152;
 		inventry_objects_list[INV_HK_ITEM1].zrot = 0;
 		inventry_objects_list[INV_HK_ITEM1].flags = 2;
 		inventry_objects_list[INV_HK_ITEM1].yoff = 0;

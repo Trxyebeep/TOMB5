@@ -405,6 +405,8 @@
 #define SkyPos2	VAR_U_(0x00E6D73E, short)
 #define torchroom	VAR_U_(0x00507AB0, short)
 #define ForcedFixedCamera	VAR_U_(0x00EEFA20, GAME_VECTOR)
+#define old_cam	VAR_U_(0x00EEFA60, OLD_CAMERA)
+#define camerasnaps	VAR_U_(0x0051CA2C, uchar)
 /***********************/
 //Spotcams
 #define number_spotcams	VAR_U_(0x00E4F428, short)

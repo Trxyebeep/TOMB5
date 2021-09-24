@@ -14,7 +14,7 @@ void ConfirmCameraTargetPos();
 void FixedCamera();
 void ChaseCamera(ITEM_INFO* item);
 void CombatCamera(ITEM_INFO* item);
+void MoveCamera(GAME_VECTOR* ideal, long speed);
+void BinocularCamera(ITEM_INFO* item);
 
-#define BinocularCamera	( (void(__cdecl*)(ITEM_INFO*)) 0x0040FC20 )
 #define	LookCamera	( (void(__cdecl*)(ITEM_INFO*)) 0x0040DC10 )
-#define MoveCamera	( (void(__cdecl*)(GAME_VECTOR*, long)) 0x0040C7A0 )
