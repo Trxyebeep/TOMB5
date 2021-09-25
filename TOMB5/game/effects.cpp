@@ -541,7 +541,7 @@ void SoundEffects()
 				else
 				{
 					GetPanVolume(slot);
-					S_SoundSetPanAndVolume(i, slot->nPan, slot->nVolume);
+					S_SoundSetPanAndVolume(i, (short)slot->nPan, (ushort)slot->nVolume);
 				}
 			}
 			else
@@ -553,7 +553,7 @@ void SoundEffects()
 				}
 				else
 				{
-					S_SoundSetPanAndVolume(i, slot->nPan, slot->nVolume);
+					S_SoundSetPanAndVolume(i, (short)slot->nPan, (ushort)slot->nVolume);
 					S_SoundSetPitch(i, slot->nPitch);
 					slot->nVolume = 0;
 				}

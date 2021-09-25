@@ -7,22 +7,22 @@
 void GetLaraJointPos(PHD_VECTOR* pos, long node)
 {
 	phd_PushMatrix();
-	phd_mxptr[0] = lara_joint_matrices[node].m00;
-	phd_mxptr[1] = lara_joint_matrices[node].m01;
-	phd_mxptr[2] = lara_joint_matrices[node].m02;
-	phd_mxptr[3] = lara_joint_matrices[node].m03;
-	phd_mxptr[4] = lara_joint_matrices[node].m10;
-	phd_mxptr[5] = lara_joint_matrices[node].m11;
-	phd_mxptr[6] = lara_joint_matrices[node].m12;
-	phd_mxptr[7] = lara_joint_matrices[node].m13;
-	phd_mxptr[8] = lara_joint_matrices[node].m20;
-	phd_mxptr[9] = lara_joint_matrices[node].m21;
-	phd_mxptr[10] = lara_joint_matrices[node].m22;
-	phd_mxptr[11] = lara_joint_matrices[node].m23;
+	phd_mxptr[M00] = lara_joint_matrices[node].m00;
+	phd_mxptr[M01] = lara_joint_matrices[node].m01;
+	phd_mxptr[M02] = lara_joint_matrices[node].m02;
+	phd_mxptr[M03] = lara_joint_matrices[node].m03;
+	phd_mxptr[M10] = lara_joint_matrices[node].m10;
+	phd_mxptr[M11] = lara_joint_matrices[node].m11;
+	phd_mxptr[M12] = lara_joint_matrices[node].m12;
+	phd_mxptr[M13] = lara_joint_matrices[node].m13;
+	phd_mxptr[M20] = lara_joint_matrices[node].m20;
+	phd_mxptr[M21] = lara_joint_matrices[node].m21;
+	phd_mxptr[M22] = lara_joint_matrices[node].m22;
+	phd_mxptr[M23] = lara_joint_matrices[node].m23;
 	phd_TranslateRel(pos->x, pos->y, pos->z);
-	pos->x = phd_mxptr[3] >> 14;
-	pos->y = phd_mxptr[7] >> 14;
-	pos->z = phd_mxptr[11] >> 14;
+	pos->x = phd_mxptr[M03] >> 14;
+	pos->y = phd_mxptr[M13] >> 14;
+	pos->z = phd_mxptr[M23] >> 14;
 	pos->x += lara_item->pos.x_pos;
 	pos->y += lara_item->pos.y_pos;
 	pos->z += lara_item->pos.z_pos;
@@ -268,25 +268,25 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 		phd_PushMatrix();
 		phd_TranslateRel(bone[29], bone[30], bone[31]);
 
-		phd_mxptr[0] = *(phd_mxptr - 24);
-		phd_mxptr[1] = *(phd_mxptr - 23);
-		phd_mxptr[2] = *(phd_mxptr - 22);
-		phd_mxptr[4] = *(phd_mxptr - 20);
-		phd_mxptr[5] = *(phd_mxptr - 19);//wat
-		phd_mxptr[6] = *(phd_mxptr - 18);
-		phd_mxptr[8] = *(phd_mxptr - 16);
-		phd_mxptr[9] = *(phd_mxptr - 15);
-		phd_mxptr[10] = *(phd_mxptr - 14);
+		phd_mxptr[M00] = phd_mxptr[-2 * indices_count + M00];//going back 2 matrices
+		phd_mxptr[M01] = phd_mxptr[-2 * indices_count + M01];
+		phd_mxptr[M02] = phd_mxptr[-2 * indices_count + M02];
+		phd_mxptr[M10] = phd_mxptr[-2 * indices_count + M10];
+		phd_mxptr[M11] = phd_mxptr[-2 * indices_count + M11];
+		phd_mxptr[M12] = phd_mxptr[-2 * indices_count + M12];
+		phd_mxptr[M20] = phd_mxptr[-2 * indices_count + M20];
+		phd_mxptr[M21] = phd_mxptr[-2 * indices_count + M21];
+		phd_mxptr[M22] = phd_mxptr[-2 * indices_count + M22];
 
-		aMXPtr[0] = *(aMXPtr - 24);
-		aMXPtr[1] = *(aMXPtr - 23);
-		aMXPtr[2] = *(aMXPtr - 22);
-		aMXPtr[4] = *(aMXPtr - 20);
-		aMXPtr[5] = *(aMXPtr - 19);//wat but in floats
-		aMXPtr[6] = *(aMXPtr - 18);
-		aMXPtr[8] = *(aMXPtr - 16);
-		aMXPtr[9] = *(aMXPtr - 15);
-		aMXPtr[10] = *(aMXPtr - 14);
+		aMXPtr[M00] = aMXPtr[-2 * indices_count + M00];
+		aMXPtr[M01] = aMXPtr[-2 * indices_count + M01];
+		aMXPtr[M02] = aMXPtr[-2 * indices_count + M02];
+		aMXPtr[M10] = aMXPtr[-2 * indices_count + M10];
+		aMXPtr[M11] = aMXPtr[-2 * indices_count + M11];
+		aMXPtr[M12] = aMXPtr[-2 * indices_count + M12];
+		aMXPtr[M20] = aMXPtr[-2 * indices_count + M20];
+		aMXPtr[M21] = aMXPtr[-2 * indices_count + M21];
+		aMXPtr[M22] = aMXPtr[-2 * indices_count + M22];
 
 		phd_RotYXZ(lara.right_arm.y_rot, lara.right_arm.x_rot, lara.right_arm.z_rot);
 		rot = &lara.right_arm.frame_base[(anims[lara.right_arm.anim_number].interpolation >> 8) * 
@@ -315,25 +315,25 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 		phd_PushMatrix();
 		phd_TranslateRel(bone[41], bone[42], bone[43]);
 
-		phd_mxptr[0] = *(phd_mxptr - 24);
-		phd_mxptr[1] = *(phd_mxptr - 23);
-		phd_mxptr[2] = *(phd_mxptr - 22);
-		phd_mxptr[4] = *(phd_mxptr - 20);//bro
-		phd_mxptr[5] = *(phd_mxptr - 19);
-		phd_mxptr[6] = *(phd_mxptr - 18);
-		phd_mxptr[8] = *(phd_mxptr - 16);
-		phd_mxptr[9] = *(phd_mxptr - 15);
-		phd_mxptr[10] = *(phd_mxptr - 14);
+		phd_mxptr[M00] = phd_mxptr[-2 * indices_count + M00];
+		phd_mxptr[M01] = phd_mxptr[-2 * indices_count + M01];
+		phd_mxptr[M02] = phd_mxptr[-2 * indices_count + M02];
+		phd_mxptr[M10] = phd_mxptr[-2 * indices_count + M10];
+		phd_mxptr[M11] = phd_mxptr[-2 * indices_count + M11];
+		phd_mxptr[M12] = phd_mxptr[-2 * indices_count + M12];
+		phd_mxptr[M20] = phd_mxptr[-2 * indices_count + M20];
+		phd_mxptr[M21] = phd_mxptr[-2 * indices_count + M21];
+		phd_mxptr[M22] = phd_mxptr[-2 * indices_count + M22];
 
-		aMXPtr[0] = *(aMXPtr - 24);
-		aMXPtr[1] = *(aMXPtr - 23);
-		aMXPtr[2] = *(aMXPtr - 22);
-		aMXPtr[4] = *(aMXPtr - 20);
-		aMXPtr[5] = *(aMXPtr - 19);
-		aMXPtr[6] = *(aMXPtr - 18);
-		aMXPtr[8] = *(aMXPtr - 16);
-		aMXPtr[9] = *(aMXPtr - 15);
-		aMXPtr[10] = *(aMXPtr - 14);
+		aMXPtr[M00] = aMXPtr[-2 * indices_count + M00];
+		aMXPtr[M01] = aMXPtr[-2 * indices_count + M01];
+		aMXPtr[M02] = aMXPtr[-2 * indices_count + M02];
+		aMXPtr[M10] = aMXPtr[-2 * indices_count + M10];
+		aMXPtr[M11] = aMXPtr[-2 * indices_count + M11];
+		aMXPtr[M12] = aMXPtr[-2 * indices_count + M12];
+		aMXPtr[M20] = aMXPtr[-2 * indices_count + M20];
+		aMXPtr[M21] = aMXPtr[-2 * indices_count + M21];
+		aMXPtr[M22] = aMXPtr[-2 * indices_count + M22];
 
 		phd_RotYXZ(lara.left_arm.y_rot, lara.left_arm.x_rot, lara.left_arm.z_rot);
 		rot = &lara.left_arm.frame_base[(anims[lara.left_arm.anim_number].interpolation >> 8) * 
@@ -363,25 +363,25 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 		phd_PushMatrix();
 		phd_TranslateRel(bone[29], bone[30], bone[31]);
 
-		phd_mxptr[0] = *(phd_mxptr - 24);
-		phd_mxptr[1] = *(phd_mxptr - 23);
-		phd_mxptr[2] = *(phd_mxptr - 22);
-		phd_mxptr[4] = *(phd_mxptr - 20);
-		phd_mxptr[5] = *(phd_mxptr - 19);
-		phd_mxptr[6] = *(phd_mxptr - 18);
-		phd_mxptr[8] = *(phd_mxptr - 16);
-		phd_mxptr[9] = *(phd_mxptr - 15);
-		phd_mxptr[10] = *(phd_mxptr - 14);
+		phd_mxptr[M00] = phd_mxptr[-2 * indices_count + M00];
+		phd_mxptr[M01] = phd_mxptr[-2 * indices_count + M01];
+		phd_mxptr[M02] = phd_mxptr[-2 * indices_count + M02];
+		phd_mxptr[M10] = phd_mxptr[-2 * indices_count + M10];
+		phd_mxptr[M11] = phd_mxptr[-2 * indices_count + M11];
+		phd_mxptr[M12] = phd_mxptr[-2 * indices_count + M12];
+		phd_mxptr[M20] = phd_mxptr[-2 * indices_count + M20];
+		phd_mxptr[M21] = phd_mxptr[-2 * indices_count + M21];
+		phd_mxptr[M22] = phd_mxptr[-2 * indices_count + M22];
 
-		aMXPtr[0] = *(aMXPtr - 24);
-		aMXPtr[1] = *(aMXPtr - 23);
-		aMXPtr[2] = *(aMXPtr - 22);
-		aMXPtr[4] = *(aMXPtr - 20);
-		aMXPtr[5] = *(aMXPtr - 19);
-		aMXPtr[6] = *(aMXPtr - 18);
-		aMXPtr[8] = *(aMXPtr - 16);
-		aMXPtr[9] = *(aMXPtr - 15);
-		aMXPtr[10] = *(aMXPtr - 14);
+		aMXPtr[M00] = aMXPtr[-2 * indices_count + M00];
+		aMXPtr[M01] = aMXPtr[-2 * indices_count + M01];
+		aMXPtr[M02] = aMXPtr[-2 * indices_count + M02];
+		aMXPtr[M10] = aMXPtr[-2 * indices_count + M10];
+		aMXPtr[M11] = aMXPtr[-2 * indices_count + M11];
+		aMXPtr[M12] = aMXPtr[-2 * indices_count + M12];
+		aMXPtr[M20] = aMXPtr[-2 * indices_count + M20];
+		aMXPtr[M21] = aMXPtr[-2 * indices_count + M21];
+		aMXPtr[M22] = aMXPtr[-2 * indices_count + M22];
 
 		phd_RotYXZ(lara.torso_y_rot, lara.torso_x_rot, lara.torso_z_rot);
 		rot = &lara.right_arm.frame_base[(anims[lara.right_arm.anim_number].interpolation >> 8) * 
@@ -410,25 +410,25 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 		phd_PushMatrix();
 		phd_TranslateRel(bone[41], bone[42], bone[43]);
 
-		phd_mxptr[0] = *(phd_mxptr - 24);
-		phd_mxptr[1] = *(phd_mxptr - 23);
-		phd_mxptr[2] = *(phd_mxptr - 22);
-		phd_mxptr[4] = *(phd_mxptr - 20);
-		phd_mxptr[5] = *(phd_mxptr - 19);
-		phd_mxptr[6] = *(phd_mxptr - 18);
-		phd_mxptr[8] = *(phd_mxptr - 16);
-		phd_mxptr[9] = *(phd_mxptr - 15);
-		phd_mxptr[10] = *(phd_mxptr - 14);
+		phd_mxptr[M00] = phd_mxptr[-2 * indices_count + M00];
+		phd_mxptr[M01] = phd_mxptr[-2 * indices_count + M01];
+		phd_mxptr[M02] = phd_mxptr[-2 * indices_count + M02];
+		phd_mxptr[M10] = phd_mxptr[-2 * indices_count + M10];
+		phd_mxptr[M11] = phd_mxptr[-2 * indices_count + M11];
+		phd_mxptr[M12] = phd_mxptr[-2 * indices_count + M12];
+		phd_mxptr[M20] = phd_mxptr[-2 * indices_count + M20];
+		phd_mxptr[M21] = phd_mxptr[-2 * indices_count + M21];
+		phd_mxptr[M22] = phd_mxptr[-2 * indices_count + M22];
 
-		aMXPtr[0] = *(aMXPtr - 24);
-		aMXPtr[1] = *(aMXPtr - 23);
-		aMXPtr[2] = *(aMXPtr - 22);
-		aMXPtr[4] = *(aMXPtr - 20);
-		aMXPtr[5] = *(aMXPtr - 19);
-		aMXPtr[6] = *(aMXPtr - 18);
-		aMXPtr[8] = *(aMXPtr - 16);
-		aMXPtr[9] = *(aMXPtr - 15);
-		aMXPtr[10] = *(aMXPtr - 14);
+		aMXPtr[M00] = aMXPtr[-2 * indices_count + M00];
+		aMXPtr[M01] = aMXPtr[-2 * indices_count + M01];
+		aMXPtr[M02] = aMXPtr[-2 * indices_count + M02];
+		aMXPtr[M10] = aMXPtr[-2 * indices_count + M10];
+		aMXPtr[M11] = aMXPtr[-2 * indices_count + M11];
+		aMXPtr[M12] = aMXPtr[-2 * indices_count + M12];
+		aMXPtr[M20] = aMXPtr[-2 * indices_count + M20];
+		aMXPtr[M21] = aMXPtr[-2 * indices_count + M21];
+		aMXPtr[M22] = aMXPtr[-2 * indices_count + M22];
 
 		phd_RotYXZ(lara.torso_y_rot, lara.torso_x_rot, lara.torso_z_rot);
 		rot = &lara.left_arm.frame_base[(anims[lara.left_arm.anim_number].interpolation >> 8) * 

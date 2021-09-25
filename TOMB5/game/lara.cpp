@@ -538,22 +538,22 @@ void GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_as_fastback(ITEM_INFO* item, COLL_INFO* coll)
 {
-    item->goal_anim_state = AS_STOP;
+	item->goal_anim_state = AS_STOP;
 
-    if (input & IN_LEFT)
-    {
-        lara.turn_rate -= 409;
+	if (input & IN_LEFT)
+	{
+		lara.turn_rate -= 409;
 
-        if (lara.turn_rate < -1092)
-            lara.turn_rate = -1092;
-    }
-    else if (input & IN_RIGHT)
-    {
-        lara.turn_rate += 409;
+		if (lara.turn_rate < -1092)
+			lara.turn_rate = -1092;
+	}
+	else if (input & IN_RIGHT)
+	{
+		lara.turn_rate += 409;
 
-        if (lara.turn_rate > 1092)
-            lara.turn_rate = 1092;
-    }
+		if (lara.turn_rate > 1092)
+			lara.turn_rate = 1092;
+	}
 }
 
 void lara_col_fastback(ITEM_INFO* item, COLL_INFO* coll)

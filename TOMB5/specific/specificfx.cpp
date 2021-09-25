@@ -251,9 +251,9 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item, short unknown)
 		fx = pmxz[0];
 		fy = (float)(*h - item->floor);
 		fz = pmxz[2];
-		pmxz[0] = aMXPtr[0] * fx + aMXPtr[1] * fy + aMXPtr[2] * fz + aMXPtr[3];
-		pmxz[1] = aMXPtr[4] * fx + aMXPtr[5] * fy + aMXPtr[6] * fz + aMXPtr[7];
-		pmxz[2] = aMXPtr[8] * fx + aMXPtr[9] * fy + aMXPtr[10] * fz + aMXPtr[11];
+		pmxz[0] = aMXPtr[M00] * fx + aMXPtr[M01] * fy + aMXPtr[M02] * fz + aMXPtr[M03];
+		pmxz[1] = aMXPtr[M10] * fx + aMXPtr[M11] * fy + aMXPtr[M12] * fz + aMXPtr[M13];
+		pmxz[2] = aMXPtr[M20] * fx + aMXPtr[M21] * fy + aMXPtr[M22] * fz + aMXPtr[M23];
 	}
 
 	phd_PopMatrix();
@@ -352,9 +352,9 @@ void DrawLaserSightSprite()
 	TempDist[0] = (short)(LaserSightX - lara_item->pos.x_pos);
 	TempDist[1] = (short)(LaserSightY - lara_item->pos.y_pos);
 	TempDist[2] = (short)(LaserSightZ - lara_item->pos.z_pos);
-	results[0] = phd_mxptr[0] * TempDist[0] + phd_mxptr[1] * TempDist[1] + phd_mxptr[2] * TempDist[2] + phd_mxptr[3];
-	results[1] = phd_mxptr[4] * TempDist[0] + phd_mxptr[5] * TempDist[1] + phd_mxptr[6] * TempDist[2] + phd_mxptr[7];
-	results[2] = phd_mxptr[8] * TempDist[0] + phd_mxptr[9] * TempDist[1] + phd_mxptr[10] * TempDist[2] + phd_mxptr[11];
+	results[0] = phd_mxptr[M00] * TempDist[0] + phd_mxptr[M01] * TempDist[1] + phd_mxptr[M02] * TempDist[2] + phd_mxptr[M03];
+	results[1] = phd_mxptr[M10] * TempDist[0] + phd_mxptr[M11] * TempDist[1] + phd_mxptr[M12] * TempDist[2] + phd_mxptr[M13];
+	results[2] = phd_mxptr[M20] * TempDist[0] + phd_mxptr[M21] * TempDist[1] + phd_mxptr[M22] * TempDist[2] + phd_mxptr[M23];
 	zv = f_persp / (float)results[2];
 	TempXY[0] = short(float(results[0] * zv + f_centerx));
 	TempXY[1] = short(float(results[1] * zv + f_centery));

@@ -3443,9 +3443,9 @@ void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PH
 	phd_TranslateRel(rot[6], rot[7], rot[8]);
 	rotation1 = rot + 9;
 	gar_RotYXZsuperpack(&rotation1, 0);
-	pos->x = phd_mxptr[3] >> 14;
-	pos->y = phd_mxptr[7] >> 14;
-	pos->z = phd_mxptr[11] >> 14;
+	pos->x = phd_mxptr[M03] >> 14;
+	pos->y = phd_mxptr[M13] >> 14;
+	pos->z = phd_mxptr[M23] >> 14;
 	pos->x += item->pos.x_pos;
 	pos->y += item->pos.y_pos;
 	pos->z += item->pos.z_pos;
@@ -3537,18 +3537,18 @@ void GrabActorMatrix(int actornum, ulong nodenum, MATRIX3D* matrixstash)
 
 	if (nodenum == bit)
 	{
-		*((float*)matrixstash + 0) = *(aMXPtr + 0);
-		*((float*)matrixstash + 1) = *(aMXPtr + 1);
-		*((float*)matrixstash + 2) = *(aMXPtr + 2);
-		*((float*)matrixstash + 3) = *(aMXPtr + 3);
-		*((float*)matrixstash + 4) = *(aMXPtr + 4);
-		*((float*)matrixstash + 5) = *(aMXPtr + 5);
-		*((float*)matrixstash + 6) = *(aMXPtr + 6);
-		*((float*)matrixstash + 7) = *(aMXPtr + 7);
-		*((float*)matrixstash + 8) = *(aMXPtr + 8);
-		*((float*)matrixstash + 9) = *(aMXPtr + 9);
-		*((float*)matrixstash + 10) = *(aMXPtr + 10);
-		*((float*)matrixstash + 11) = *(aMXPtr + 11);
+		*(float*)&matrixstash->m00 = aMXPtr[M00];
+		*(float*)&matrixstash->m01 = aMXPtr[M01];
+		*(float*)&matrixstash->m02 = aMXPtr[M02];
+		*(float*)&matrixstash->m03 = aMXPtr[M03];
+		*(float*)&matrixstash->m10 = aMXPtr[M10];
+		*(float*)&matrixstash->m11 = aMXPtr[M11];
+		*(float*)&matrixstash->m12 = aMXPtr[M12];
+		*(float*)&matrixstash->m13 = aMXPtr[M13];
+		*(float*)&matrixstash->m20 = aMXPtr[M20];
+		*(float*)&matrixstash->m21 = aMXPtr[M21];
+		*(float*)&matrixstash->m22 = aMXPtr[M22];
+		*(float*)&matrixstash->m23 = aMXPtr[M23];
 	}
 
 	for (int i = 0; i < obj->nmeshes - 1; i++, bone += 4)
@@ -3565,18 +3565,18 @@ void GrabActorMatrix(int actornum, ulong nodenum, MATRIX3D* matrixstash)
 
 		if (nodenum == bit)
 		{
-			*((float*)matrixstash + 0) = *(aMXPtr + 0);
-			*((float*)matrixstash + 1) = *(aMXPtr + 1);
-			*((float*)matrixstash + 2) = *(aMXPtr + 2);
-			*((float*)matrixstash + 3) = *(aMXPtr + 3);
-			*((float*)matrixstash + 4) = *(aMXPtr + 4);
-			*((float*)matrixstash + 5) = *(aMXPtr + 5);
-			*((float*)matrixstash + 6) = *(aMXPtr + 6);
-			*((float*)matrixstash + 7) = *(aMXPtr + 7);
-			*((float*)matrixstash + 8) = *(aMXPtr + 8);
-			*((float*)matrixstash + 9) = *(aMXPtr + 9);
-			*((float*)matrixstash + 10) = *(aMXPtr + 10);
-			*((float*)matrixstash + 11) = *(aMXPtr + 11);
+			*(float*)&matrixstash->m00 = aMXPtr[M00];
+			*(float*)&matrixstash->m01 = aMXPtr[M01];
+			*(float*)&matrixstash->m02 = aMXPtr[M02];
+			*(float*)&matrixstash->m03 = aMXPtr[M03];
+			*(float*)&matrixstash->m10 = aMXPtr[M10];
+			*(float*)&matrixstash->m11 = aMXPtr[M11];
+			*(float*)&matrixstash->m12 = aMXPtr[M12];
+			*(float*)&matrixstash->m13 = aMXPtr[M13];
+			*(float*)&matrixstash->m20 = aMXPtr[M20];
+			*(float*)&matrixstash->m21 = aMXPtr[M21];
+			*(float*)&matrixstash->m22 = aMXPtr[M22];
+			*(float*)&matrixstash->m23 = aMXPtr[M23];
 		}
 	}
 

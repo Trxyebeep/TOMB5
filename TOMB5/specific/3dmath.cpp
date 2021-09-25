@@ -25,9 +25,9 @@ void AlterFOV(short fov)
 
 void gte_sttr(PHD_VECTOR* vec)
 {
-	vec->x = phd_mxptr[3] >> 14;
-	vec->y = phd_mxptr[7] >> 14;
-	vec->z = phd_mxptr[11] >> 14;
+	vec->x = phd_mxptr[M03] >> 14;
+	vec->y = phd_mxptr[M13] >> 14;
+	vec->z = phd_mxptr[M23] >> 14;
 }
 
 void inject_3dmath(bool replace)

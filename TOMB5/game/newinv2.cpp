@@ -113,7 +113,7 @@ int S_CallInventory2()
 	}
 	else//original values, for 13th floor and Red Alert
 	{
-		inventry_objects_list[INV_HK_ITEM1].xrot = 49152;
+		inventry_objects_list[INV_HK_ITEM1].xrot = -16384;
 		inventry_objects_list[INV_HK_ITEM1].zrot = 0;
 		inventry_objects_list[INV_HK_ITEM1].flags = 2;
 		inventry_objects_list[INV_HK_ITEM1].yoff = 0;
@@ -1744,7 +1744,7 @@ void update_laras_weapons_status()
 {
 	if (lara.shotgun_type_carried & WTYPE_PRESENT)
 	{
-		lara.shotgun_type_carried &= ~WTYPE_MASK_AMMO;
+		lara.shotgun_type_carried &= ~(WTYPE_AMMO_1 | WTYPE_AMMO_2 | WTYPE_AMMO_3);
 
 		if (CurrentShotGunAmmoType)
 			lara.shotgun_type_carried |= WTYPE_AMMO_2;
@@ -1754,7 +1754,7 @@ void update_laras_weapons_status()
 
 	if (lara.hk_type_carried & WTYPE_PRESENT)
 	{
-		lara.hk_type_carried &= ~WTYPE_MASK_AMMO;
+		lara.hk_type_carried &= ~(WTYPE_AMMO_1 | WTYPE_AMMO_2 | WTYPE_AMMO_3);
 
 		if (CurrentGrenadeGunAmmoType == 0)
 			lara.hk_type_carried |= WTYPE_AMMO_1;
@@ -1766,7 +1766,7 @@ void update_laras_weapons_status()
 
 	if (lara.crossbow_type_carried & WTYPE_PRESENT)
 	{
-		lara.crossbow_type_carried &= ~WTYPE_MASK_AMMO;
+		lara.crossbow_type_carried &= ~(WTYPE_AMMO_1 | WTYPE_AMMO_2 | WTYPE_AMMO_3);
 
 		if (CurrentCrossBowAmmoType)
 			lara.crossbow_type_carried |= WTYPE_AMMO_2;
@@ -1846,7 +1846,7 @@ void seperate_object(short obj)
 	setup_objectlist_startposition(dels_handy_combine_table[n].item1);
 }
 
-void combine_HK_SILENCER(int flag)
+void combine_HK_SILENCER(long flag)
 {
 	if (flag)
 	{
@@ -1861,7 +1861,7 @@ void combine_HK_SILENCER(int flag)
 	}
 }
 
-void combine_revolver_lasersight(int flag)
+void combine_revolver_lasersight(long flag)
 {
 	if (flag)
 	{
@@ -1881,7 +1881,7 @@ void combine_revolver_lasersight(int flag)
 	}
 }
 
-void combine_crossbow_lasersight(int flag)
+void combine_crossbow_lasersight(long flag)
 {
 	if (flag)
 	{
@@ -1901,127 +1901,127 @@ void combine_crossbow_lasersight(int flag)
 	}
 }
 
-void combine_PuzzleItem1(int flag)
+void combine_PuzzleItem1(long flag)
 {
 	lara.puzzleitemscombo &= 0xFFFC;
 	lara.puzzleitems[0] = 1;
 }
 
-void combine_PuzzleItem2(int flag)
+void combine_PuzzleItem2(long flag)
 {
 	lara.puzzleitemscombo &= 0xFFF3;
 	lara.puzzleitems[1] = 1;
 }
 
-void combine_PuzzleItem3(int flag)
+void combine_PuzzleItem3(long flag)
 {
 	lara.puzzleitemscombo &= 0xFFCF;
 	lara.puzzleitems[2] = 1;
 }
 
-void combine_PuzzleItem4(int flag)
+void combine_PuzzleItem4(long flag)
 {
 	lara.puzzleitemscombo &= 0xFF3F;
 	lara.puzzleitems[3] = 1;
 }
 
-void combine_PuzzleItem5(int flag)
+void combine_PuzzleItem5(long flag)
 {
 	lara.puzzleitemscombo &= 0xFCFF;
 	lara.puzzleitems[4] = 1;
 }
 
-void combine_PuzzleItem6(int flag)
+void combine_PuzzleItem6(long flag)
 {
 	lara.puzzleitemscombo &= 0xF3FF;
 	lara.puzzleitems[5] = 1;
 }
 
-void combine_PuzzleItem7(int flag)
+void combine_PuzzleItem7(long flag)
 {
 	lara.puzzleitemscombo &= 0xCFFF;
 	lara.puzzleitems[6] = 1;
 }
 
-void combine_PuzzleItem8(int flag)
+void combine_PuzzleItem8(long flag)
 {
 	lara.puzzleitemscombo &= 0x3FFF;
 	lara.puzzleitems[7] = 1;
 }
 
-void combine_KeyItem1(int flag)
+void combine_KeyItem1(long flag)
 {
 	lara.keyitems |= 1;
 	lara.keyitemscombo &= 0xFFFC;
 }
 
-void combine_KeyItem2(int flag)
+void combine_KeyItem2(long flag)
 {
 	lara.keyitems |= 2;
 	lara.keyitemscombo &= 0xFFF3;
 }
 
-void combine_KeyItem3(int flag)
+void combine_KeyItem3(long flag)
 {
 	lara.keyitems |= 4;
 	lara.keyitemscombo &= 0xFFCF;
 }
 
-void combine_KeyItem4(int flag)
+void combine_KeyItem4(long flag)
 {
 	lara.keyitems |= 8;
 	lara.keyitemscombo &= 0xFF3F;
 }
 
-void combine_KeyItem5(int flag)
+void combine_KeyItem5(long flag)
 {
 	lara.keyitems |= 16;
 	lara.keyitemscombo &= 0xFCFF;
 }
 
-void combine_KeyItem6(int flag)
+void combine_KeyItem6(long flag)
 {
 	lara.keyitems |= 32;
 	lara.keyitemscombo &= 0xF3FF;
 }
 
-void combine_KeyItem7(int flag)
+void combine_KeyItem7(long flag)
 {
 	lara.keyitems |= 64;
 	lara.keyitemscombo &= 0xCFFF;
 }
 
-void combine_KeyItem8(int flag)
+void combine_KeyItem8(long flag)
 {
 	lara.keyitems |= 128;
 	lara.keyitemscombo &= 0x3FFF;
 }
 
-void combine_PickupItem1(int flag)
+void combine_PickupItem1(long flag)
 {
 	lara.pickupitems |= 1;
 	lara.pickupitemscombo &= 0xFFFC;
 }
 
-void combine_PickupItem2(int flag)
+void combine_PickupItem2(long flag)
 {
 	lara.pickupitems |= 2;
 	lara.pickupitemscombo &= 0xFFF3;
 }
 
-void combine_PickupItem3(int flag)
+void combine_PickupItem3(long flag)
 {
 	lara.pickupitems |= 4;
 	lara.pickupitemscombo &= 0xFFCF;
 }
 
-void combine_PickupItem4(int flag)
+void combine_PickupItem4(long flag)
 {
 	lara.pickupitems |= 8;
 	lara.pickupitemscombo &= 0xFF3F;
 }
 
-void combine_clothbottle(int flag)
+void combine_clothbottle(long flag)
 {
 	lara.wetcloth = CLOTH_WET;
 	lara.bottle--;

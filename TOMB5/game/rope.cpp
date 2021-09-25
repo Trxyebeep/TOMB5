@@ -660,9 +660,9 @@ void ProjectRopePoints(ROPE_STRUCT* Rope)
 		t.x = Rope->MeshSegment[n].x >> 16;
 		t.y = Rope->MeshSegment[n].y >> 16;
 		t.z = Rope->MeshSegment[n].z >> 16;
-		Output.x = (D3DVALUE) (t.x * phd_mxptr[0] + t.y * phd_mxptr[1] + t.z * phd_mxptr[2] + phd_mxptr[3]);
-		Output.y = (D3DVALUE) (t.x * phd_mxptr[4] + t.y * phd_mxptr[5] + t.z * phd_mxptr[6] + phd_mxptr[7]);
-		Output.z = (D3DVALUE) (t.x * phd_mxptr[8] + t.y * phd_mxptr[9] + t.z * phd_mxptr[10] + phd_mxptr[11]);
+		Output.x = (D3DVALUE) (t.x * phd_mxptr[M00] + t.y * phd_mxptr[M01] + t.z * phd_mxptr[M02] + phd_mxptr[M03]);
+		Output.y = (D3DVALUE) (t.x * phd_mxptr[M10] + t.y * phd_mxptr[M11] + t.z * phd_mxptr[M12] + phd_mxptr[M13]);
+		Output.z = (D3DVALUE) (t.x * phd_mxptr[M20] + t.y * phd_mxptr[M21] + t.z * phd_mxptr[M22] + phd_mxptr[M23]);
 		zv = phd_persp / Output.z;
 		Rope->Coords[n][0] = (long) (Output.x * zv + sw);
 		Rope->Coords[n][1] = (long) (Output.y * zv + sh);

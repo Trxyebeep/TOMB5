@@ -157,18 +157,18 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 
 	for (int i = 0; i < 15; i++)//skin
 	{
-		aMXPtr[0] = lara_matricesF[i * 12 + 0];
-		aMXPtr[1] = lara_matricesF[i * 12 + 1];
-		aMXPtr[2] = lara_matricesF[i * 12 + 2];
-		aMXPtr[3] = lara_matricesF[i * 12 + 3];
-		aMXPtr[4] = lara_matricesF[i * 12 + 4];
-		aMXPtr[5] = lara_matricesF[i * 12 + 5];
-		aMXPtr[6] = lara_matricesF[i * 12 + 6];
-		aMXPtr[7] = lara_matricesF[i * 12 + 7];
-		aMXPtr[8] = lara_matricesF[i * 12 + 8];
-		aMXPtr[9] = lara_matricesF[i * 12 + 9];
-		aMXPtr[10] = lara_matricesF[i * 12 + 10];
-		aMXPtr[11] = lara_matricesF[i * 12 + 11];
+		aMXPtr[M00] = lara_matricesF[i * 12 + M00];
+		aMXPtr[M01] = lara_matricesF[i * 12 + M01];
+		aMXPtr[M02] = lara_matricesF[i * 12 + M02];
+		aMXPtr[M03] = lara_matricesF[i * 12 + M03];
+		aMXPtr[M10] = lara_matricesF[i * 12 + M10];
+		aMXPtr[M11] = lara_matricesF[i * 12 + M11];
+		aMXPtr[M12] = lara_matricesF[i * 12 + M12];
+		aMXPtr[M13] = lara_matricesF[i * 12 + M13];
+		aMXPtr[M20] = lara_matricesF[i * 12 + M20];
+		aMXPtr[M21] = lara_matricesF[i * 12 + M21];
+		aMXPtr[M22] = lara_matricesF[i * 12 + M22];
+		aMXPtr[M23] = lara_matricesF[i * 12 + M23];
 
 		if (LaraNodeUnderwater[i])
 			bLaraUnderWater = i;
@@ -216,18 +216,18 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 			else
 			{
 				phd_PushMatrix();
-				aMXPtr[0] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 0];
-				aMXPtr[1] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 1];
-				aMXPtr[2] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 2];
-				aMXPtr[3] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 3];
-				aMXPtr[4] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 4];
-				aMXPtr[5] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 5];
-				aMXPtr[6] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 6];
-				aMXPtr[7] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 7];
-				aMXPtr[8] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 8];
-				aMXPtr[9] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 9];
-				aMXPtr[10] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 10];
-				aMXPtr[11] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 11];
+				aMXPtr[M00] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M00];
+				aMXPtr[M01] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M01];
+				aMXPtr[M02] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M02];
+				aMXPtr[M03] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M03];
+				aMXPtr[M10] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M10];
+				aMXPtr[M11] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M11];
+				aMXPtr[M12] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M12];
+				aMXPtr[M13] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M13];
+				aMXPtr[M20] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M20];
+				aMXPtr[M21] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M21];
+				aMXPtr[M22] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M22];
+				aMXPtr[M23] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M23];
 				v0.vx = lara_matrices[SkinUseMatrix[i][0]].m01;
 				v0.vy = lara_matrices[SkinUseMatrix[i][0]].m11;
 				v0.vz = lara_matrices[SkinUseMatrix[i][0]].m21;
@@ -260,32 +260,32 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 		obj = &objects[lara.holster];
 		meshpp = &meshes[obj->mesh_index];
 		meshpp += 8;
-		aMXPtr[0] = lara_matricesF[1 * 12 + 0];//holsters
-		aMXPtr[1] = lara_matricesF[1 * 12 + 1];
-		aMXPtr[2] = lara_matricesF[1 * 12 + 2];
-		aMXPtr[3] = lara_matricesF[1 * 12 + 3];
-		aMXPtr[4] = lara_matricesF[1 * 12 + 4];
-		aMXPtr[5] = lara_matricesF[1 * 12 + 5];
-		aMXPtr[6] = lara_matricesF[1 * 12 + 6];
-		aMXPtr[7] = lara_matricesF[1 * 12 + 7];
-		aMXPtr[8] = lara_matricesF[1 * 12 + 8];
-		aMXPtr[9] = lara_matricesF[1 * 12 + 9];
-		aMXPtr[10] = lara_matricesF[1 * 12 + 10];
-		aMXPtr[11] = lara_matricesF[1 * 12 + 11];
+		aMXPtr[M00] = lara_matricesF[1 * 12 + M00];//holsters
+		aMXPtr[M01] = lara_matricesF[1 * 12 + M01];
+		aMXPtr[M02] = lara_matricesF[1 * 12 + M02];
+		aMXPtr[M03] = lara_matricesF[1 * 12 + M03];
+		aMXPtr[M10] = lara_matricesF[1 * 12 + M10];
+		aMXPtr[M11] = lara_matricesF[1 * 12 + M11];
+		aMXPtr[M12] = lara_matricesF[1 * 12 + M12];
+		aMXPtr[M13] = lara_matricesF[1 * 12 + M13];
+		aMXPtr[M20] = lara_matricesF[1 * 12 + M20];
+		aMXPtr[M21] = lara_matricesF[1 * 12 + M21];
+		aMXPtr[M22] = lara_matricesF[1 * 12 + M22];
+		aMXPtr[M23] = lara_matricesF[1 * 12 + M23];
 		phd_PutPolygons(*meshpp, -1);
 		meshpp += 8;
-		aMXPtr[0] = lara_matricesF[4 * 12 + 0];//other side of holsters. (cba check which block is which)
-		aMXPtr[1] = lara_matricesF[4 * 12 + 1];
-		aMXPtr[2] = lara_matricesF[4 * 12 + 2];
-		aMXPtr[3] = lara_matricesF[4 * 12 + 3];
-		aMXPtr[4] = lara_matricesF[4 * 12 + 4];
-		aMXPtr[5] = lara_matricesF[4 * 12 + 5];
-		aMXPtr[6] = lara_matricesF[4 * 12 + 6];
-		aMXPtr[7] = lara_matricesF[4 * 12 + 7];
-		aMXPtr[8] = lara_matricesF[4 * 12 + 8];
-		aMXPtr[9] = lara_matricesF[4 * 12 + 9];
-		aMXPtr[10] = lara_matricesF[4 * 12 + 10];
-		aMXPtr[11] = lara_matricesF[4 * 12 + 11];
+		aMXPtr[M00] = lara_matricesF[4 * 12 + M00];//other side of holsters. (cba check which block is which)
+		aMXPtr[M01] = lara_matricesF[4 * 12 + M01];
+		aMXPtr[M02] = lara_matricesF[4 * 12 + M02];
+		aMXPtr[M03] = lara_matricesF[4 * 12 + M03];
+		aMXPtr[M10] = lara_matricesF[4 * 12 + M10];
+		aMXPtr[M11] = lara_matricesF[4 * 12 + M11];
+		aMXPtr[M12] = lara_matricesF[4 * 12 + M12];
+		aMXPtr[M13] = lara_matricesF[4 * 12 + M13];
+		aMXPtr[M20] = lara_matricesF[4 * 12 + M20];
+		aMXPtr[M21] = lara_matricesF[4 * 12 + M21];
+		aMXPtr[M22] = lara_matricesF[4 * 12 + M22];
+		aMXPtr[M23] = lara_matricesF[4 * 12 + M23];
 		phd_PutPolygons(*meshpp, -1);
 		
 		if (lara.back_gun)//back gun
@@ -293,18 +293,18 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 			phd_PushMatrix();
 
 #ifdef GENERAL_FIXES//fixes the original bug where Lara's back weapon wouldn't draw.
-			aMXPtr[0] = lara_matricesF[84 + 0];
-			aMXPtr[1] = lara_matricesF[84 + 1];
-			aMXPtr[2] = lara_matricesF[84 + 2];
-			aMXPtr[3] = lara_matricesF[84 + 3];
-			aMXPtr[4] = lara_matricesF[84 + 4];
-			aMXPtr[5] = lara_matricesF[84 + 5];
-			aMXPtr[6] = lara_matricesF[84 + 6];
-			aMXPtr[7] = lara_matricesF[84 + 7];
-			aMXPtr[8] = lara_matricesF[84 + 8];
-			aMXPtr[9] = lara_matricesF[84 + 9];
-			aMXPtr[10] = lara_matricesF[84 + 10];
-			aMXPtr[11] = lara_matricesF[84 + 11];
+			aMXPtr[M00] = lara_matricesF[84 + M00];
+			aMXPtr[M01] = lara_matricesF[84 + M01];
+			aMXPtr[M02] = lara_matricesF[84 + M02];
+			aMXPtr[M03] = lara_matricesF[84 + M03];
+			aMXPtr[M10] = lara_matricesF[84 + M10];
+			aMXPtr[M11] = lara_matricesF[84 + M11];
+			aMXPtr[M12] = lara_matricesF[84 + M12];
+			aMXPtr[M13] = lara_matricesF[84 + M13];
+			aMXPtr[M20] = lara_matricesF[84 + M20];
+			aMXPtr[M21] = lara_matricesF[84 + M21];
+			aMXPtr[M22] = lara_matricesF[84 + M22];
+			aMXPtr[M23] = lara_matricesF[84 + M23];
 #else
 			aMXPtr[0] = *((float*)(&lara_matrices[84]) + 0);
 			aMXPtr[1] = *((float*)(&lara_matrices[84]) + 1);
@@ -405,18 +405,18 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 
 	for (int i = 0; i < 15; i++)//skin
 	{
-		aMXPtr[0] = lara_matricesF[i * 12 + 0];
-		aMXPtr[1] = lara_matricesF[i * 12 + 1];
-		aMXPtr[2] = lara_matricesF[i * 12 + 2];
-		aMXPtr[3] = lara_matricesF[i * 12 + 3];
-		aMXPtr[4] = lara_matricesF[i * 12 + 4];
-		aMXPtr[5] = lara_matricesF[i * 12 + 5];
-		aMXPtr[6] = lara_matricesF[i * 12 + 6];
-		aMXPtr[7] = lara_matricesF[i * 12 + 7];
-		aMXPtr[8] = lara_matricesF[i * 12 + 8];
-		aMXPtr[9] = lara_matricesF[i * 12 + 9];
-		aMXPtr[10] = lara_matricesF[i * 12 + 10];
-		aMXPtr[11] = lara_matricesF[i * 12 + 11];
+		aMXPtr[M00] = lara_matricesF[i * 12 + M00];
+		aMXPtr[M01] = lara_matricesF[i * 12 + M01];
+		aMXPtr[M02] = lara_matricesF[i * 12 + M02];
+		aMXPtr[M03] = lara_matricesF[i * 12 + M03];
+		aMXPtr[M10] = lara_matricesF[i * 12 + M10];
+		aMXPtr[M11] = lara_matricesF[i * 12 + M11];
+		aMXPtr[M12] = lara_matricesF[i * 12 + M12];
+		aMXPtr[M13] = lara_matricesF[i * 12 + M13];
+		aMXPtr[M20] = lara_matricesF[i * 12 + M20];
+		aMXPtr[M21] = lara_matricesF[i * 12 + M21];
+		aMXPtr[M22] = lara_matricesF[i * 12 + M22];
+		aMXPtr[M23] = lara_matricesF[i * 12 + M23];
 
 		if (LaraNodeUnderwater[i])
 			bLaraUnderWater = i;
@@ -468,18 +468,18 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 		else
 		{
 			phd_PushMatrix();
-			aMXPtr[0] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 0];
-			aMXPtr[1] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 1];
-			aMXPtr[2] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 2];
-			aMXPtr[3] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 3];
-			aMXPtr[4] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 4];
-			aMXPtr[5] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 5];
-			aMXPtr[6] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 6];
-			aMXPtr[7] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 7];
-			aMXPtr[8] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 8];
-			aMXPtr[9] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 9];
-			aMXPtr[10] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 10];
-			aMXPtr[11] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 11];
+			aMXPtr[M00] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M00];
+			aMXPtr[M01] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M01];
+			aMXPtr[M02] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M02];
+			aMXPtr[M03] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M03];
+			aMXPtr[M10] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M10];
+			aMXPtr[M11] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M11];
+			aMXPtr[M12] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M12];
+			aMXPtr[M13] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M13];
+			aMXPtr[M20] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M20];
+			aMXPtr[M21] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M21];
+			aMXPtr[M22] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M22];
+			aMXPtr[M23] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M23];
 			v0.vx = lara_matrices[SkinUseMatrix[i][0]].m01;
 			v0.vy = lara_matrices[SkinUseMatrix[i][0]].m11;
 			v0.vz = lara_matrices[SkinUseMatrix[i][0]].m21;
@@ -510,18 +510,18 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 	if (!(gfLevelFlags & GF_YOUNGLARA) && lara.back_gun)
 	{
 		phd_PushMatrix();
-		aMXPtr[0] = lara_matricesF[84 + 0];
-		aMXPtr[1] = lara_matricesF[84 + 1];
-		aMXPtr[2] = lara_matricesF[84 + 2];
-		aMXPtr[3] = lara_matricesF[84 + 3];
-		aMXPtr[4] = lara_matricesF[84 + 4];
-		aMXPtr[5] = lara_matricesF[84 + 5];
-		aMXPtr[6] = lara_matricesF[84 + 6];
-		aMXPtr[7] = lara_matricesF[84 + 7];
-		aMXPtr[8] = lara_matricesF[84 + 8];
-		aMXPtr[9] = lara_matricesF[84 + 9];
-		aMXPtr[10] = lara_matricesF[84 + 10];
-		aMXPtr[11] = lara_matricesF[84 + 11];
+		aMXPtr[M00] = lara_matricesF[84 + M00];
+		aMXPtr[M01] = lara_matricesF[84 + M01];
+		aMXPtr[M02] = lara_matricesF[84 + M02];
+		aMXPtr[M03] = lara_matricesF[84 + M03];
+		aMXPtr[M10] = lara_matricesF[84 + M10];
+		aMXPtr[M11] = lara_matricesF[84 + M11];
+		aMXPtr[M12] = lara_matricesF[84 + M12];
+		aMXPtr[M13] = lara_matricesF[84 + M13];
+		aMXPtr[M20] = lara_matricesF[84 + M20];
+		aMXPtr[M21] = lara_matricesF[84 + M21];
+		aMXPtr[M22] = lara_matricesF[84 + M22];
+		aMXPtr[M23] = lara_matricesF[84 + M23];
 		phd_TranslateRel(*((bones + objects[lara.back_gun].bone_index) + 53),
 			*((bones + objects[lara.back_gun].bone_index) + 54),
 			*((bones + objects[lara.back_gun].bone_index) + 55));
@@ -595,18 +595,18 @@ void DrawLara__5(ITEM_INFO* item, int mirror)
 
 	for (int i = 0; i < 15; i++)//skin
 	{
-		aMXPtr[0] = lara_matricesF[i * 12 + 0];
-		aMXPtr[1] = lara_matricesF[i * 12 + 1];
-		aMXPtr[2] = lara_matricesF[i * 12 + 2];
-		aMXPtr[3] = lara_matricesF[i * 12 + 3];
-		aMXPtr[4] = lara_matricesF[i * 12 + 4];
-		aMXPtr[5] = lara_matricesF[i * 12 + 5];
-		aMXPtr[6] = lara_matricesF[i * 12 + 6];
-		aMXPtr[7] = lara_matricesF[i * 12 + 7];
-		aMXPtr[8] = lara_matricesF[i * 12 + 8];
-		aMXPtr[9] = lara_matricesF[i * 12 + 9];
-		aMXPtr[10] = lara_matricesF[i * 12 + 10];
-		aMXPtr[11] = lara_matricesF[i * 12 + 11];
+		aMXPtr[M00] = lara_matricesF[i * 12 + M00];
+		aMXPtr[M01] = lara_matricesF[i * 12 + M01];
+		aMXPtr[M02] = lara_matricesF[i * 12 + M02];
+		aMXPtr[M03] = lara_matricesF[i * 12 + M03];
+		aMXPtr[M10] = lara_matricesF[i * 12 + M10];
+		aMXPtr[M11] = lara_matricesF[i * 12 + M11];
+		aMXPtr[M12] = lara_matricesF[i * 12 + M12];
+		aMXPtr[M13] = lara_matricesF[i * 12 + M13];
+		aMXPtr[M20] = lara_matricesF[i * 12 + M20];
+		aMXPtr[M21] = lara_matricesF[i * 12 + M21];
+		aMXPtr[M22] = lara_matricesF[i * 12 + M22];
+		aMXPtr[M23] = lara_matricesF[i * 12 + M23];
 
 		if (LaraNodeUnderwater[i])
 			bLaraUnderWater = i;
@@ -631,36 +631,36 @@ void DrawLara__5(ITEM_INFO* item, int mirror)
 	meshpp = &meshes[obj->mesh_index];
 
 	phd_PushMatrix();
-	aMXPtr[0] = lara_matricesF[84 + 0];
-	aMXPtr[1] = lara_matricesF[84 + 1];
-	aMXPtr[2] = lara_matricesF[84 + 2];
-	aMXPtr[3] = lara_matricesF[84 + 3];
-	aMXPtr[4] = lara_matricesF[84 + 4];
-	aMXPtr[5] = lara_matricesF[84 + 5];
-	aMXPtr[6] = lara_matricesF[84 + 6];
-	aMXPtr[7] = lara_matricesF[84 + 7];
-	aMXPtr[8] = lara_matricesF[84 + 8];
-	aMXPtr[9] = lara_matricesF[84 + 9];
-	aMXPtr[10] = lara_matricesF[84 + 10];
-	aMXPtr[11] = lara_matricesF[84 + 11];
+	aMXPtr[M00] = lara_matricesF[84 + M00];
+	aMXPtr[M01] = lara_matricesF[84 + M01];
+	aMXPtr[M02] = lara_matricesF[84 + M02];
+	aMXPtr[M03] = lara_matricesF[84 + M03];
+	aMXPtr[M10] = lara_matricesF[84 + M10];
+	aMXPtr[M11] = lara_matricesF[84 + M11];
+	aMXPtr[M12] = lara_matricesF[84 + M12];
+	aMXPtr[M13] = lara_matricesF[84 + M13];
+	aMXPtr[M20] = lara_matricesF[84 + M20];
+	aMXPtr[M21] = lara_matricesF[84 + M21];
+	aMXPtr[M22] = lara_matricesF[84 + M22];
+	aMXPtr[M23] = lara_matricesF[84 + M23];
 	aTranslateRel(-80, -192, -160);
 	aRotX(subsuit.XRot);
 	phd_PutPolygons(*meshpp, -1);
 	phd_PopMatrix();
 
 	phd_PushMatrix();
-	aMXPtr[0] = lara_matricesF[84 + 0];
-	aMXPtr[1] = lara_matricesF[84 + 1];
-	aMXPtr[2] = lara_matricesF[84 + 2];
-	aMXPtr[3] = lara_matricesF[84 + 3];
-	aMXPtr[4] = lara_matricesF[84 + 4];
-	aMXPtr[5] = lara_matricesF[84 + 5];
-	aMXPtr[6] = lara_matricesF[84 + 6];
-	aMXPtr[7] = lara_matricesF[84 + 7];
-	aMXPtr[8] = lara_matricesF[84 + 8];
-	aMXPtr[9] = lara_matricesF[84 + 9];
-	aMXPtr[10] = lara_matricesF[84 + 10];
-	aMXPtr[11] = lara_matricesF[84 + 11];
+	aMXPtr[M00] = lara_matricesF[84 + M00];
+	aMXPtr[M01] = lara_matricesF[84 + M01];
+	aMXPtr[M02] = lara_matricesF[84 + M02];
+	aMXPtr[M03] = lara_matricesF[84 + M03];
+	aMXPtr[M10] = lara_matricesF[84 + M10];
+	aMXPtr[M11] = lara_matricesF[84 + M11];
+	aMXPtr[M12] = lara_matricesF[84 + M12];
+	aMXPtr[M13] = lara_matricesF[84 + M13];
+	aMXPtr[M20] = lara_matricesF[84 + M20];
+	aMXPtr[M21] = lara_matricesF[84 + M21];
+	aMXPtr[M22] = lara_matricesF[84 + M22];
+	aMXPtr[M23] = lara_matricesF[84 + M23];
 	aTranslateRel(80, -192, -160);
 	aRotX(subsuit.XRot);
 	phd_PutPolygons(*meshpp, -1);
@@ -701,18 +701,18 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 
 	for (int i = 0; i < 15; i++)
 	{
-		aMXPtr[0] = lara_matricesF[i * 12 + 0];
-		aMXPtr[1] = lara_matricesF[i * 12 + 1];
-		aMXPtr[2] = lara_matricesF[i * 12 + 2];
-		aMXPtr[3] = lara_matricesF[i * 12 + 3];
-		aMXPtr[4] = lara_matricesF[i * 12 + 4];
-		aMXPtr[5] = lara_matricesF[i * 12 + 5];
-		aMXPtr[6] = lara_matricesF[i * 12 + 6];
-		aMXPtr[7] = lara_matricesF[i * 12 + 7];
-		aMXPtr[8] = lara_matricesF[i * 12 + 8];
-		aMXPtr[9] = lara_matricesF[i * 12 + 9];
-		aMXPtr[10] = lara_matricesF[i * 12 + 10];
-		aMXPtr[11] = lara_matricesF[i * 12 + 11];
+		aMXPtr[M00] = lara_matricesF[i * 12 + M00];
+		aMXPtr[M01] = lara_matricesF[i * 12 + M01];
+		aMXPtr[M02] = lara_matricesF[i * 12 + M02];
+		aMXPtr[M03] = lara_matricesF[i * 12 + M03];
+		aMXPtr[M10] = lara_matricesF[i * 12 + M10];
+		aMXPtr[M11] = lara_matricesF[i * 12 + M11];
+		aMXPtr[M12] = lara_matricesF[i * 12 + M12];
+		aMXPtr[M13] = lara_matricesF[i * 12 + M13];
+		aMXPtr[M20] = lara_matricesF[i * 12 + M20];
+		aMXPtr[M21] = lara_matricesF[i * 12 + M21];
+		aMXPtr[M22] = lara_matricesF[i * 12 + M22];
+		aMXPtr[M23] = lara_matricesF[i * 12 + M23];
 
 		if (LaraNodeUnderwater[i])
 			bLaraUnderWater = i;
@@ -757,18 +757,18 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 		else
 		{
 			phd_PushMatrix();
-			aMXPtr[0] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 0];
-			aMXPtr[1] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 1];
-			aMXPtr[2] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 2];
-			aMXPtr[3] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 3];
-			aMXPtr[4] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 4];
-			aMXPtr[5] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 5];
-			aMXPtr[6] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 6];
-			aMXPtr[7] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 7];
-			aMXPtr[8] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 8];
-			aMXPtr[9] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 9];
-			aMXPtr[10] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 10];
-			aMXPtr[11] = lara_matricesF[SkinUseMatrix[i][1] * 12 + 11];
+			aMXPtr[M00] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M00];
+			aMXPtr[M01] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M01];
+			aMXPtr[M02] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M02];
+			aMXPtr[M03] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M03];
+			aMXPtr[M10] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M10];
+			aMXPtr[M11] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M11];
+			aMXPtr[M12] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M12];
+			aMXPtr[M13] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M13];
+			aMXPtr[M20] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M20];
+			aMXPtr[M21] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M21];
+			aMXPtr[M22] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M22];
+			aMXPtr[M23] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M23];
 			v0.vx = lara_matrices[SkinUseMatrix[i][0]].m01;
 			v0.vy = lara_matrices[SkinUseMatrix[i][0]].m11;
 			v0.vz = lara_matrices[SkinUseMatrix[i][0]].m21;
@@ -795,18 +795,18 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 	if (lara.back_gun)
 	{
 		phd_PushMatrix();
-		aMXPtr[0] = lara_matricesF[84 + 0];
-		aMXPtr[1] = lara_matricesF[84 + 1];
-		aMXPtr[2] = lara_matricesF[84 + 2];
-		aMXPtr[3] = lara_matricesF[84 + 3];
-		aMXPtr[4] = lara_matricesF[84 + 4];
-		aMXPtr[5] = lara_matricesF[84 + 5];
-		aMXPtr[6] = lara_matricesF[84 + 6];
-		aMXPtr[7] = lara_matricesF[84 + 7];
-		aMXPtr[8] = lara_matricesF[84 + 8];
-		aMXPtr[9] = lara_matricesF[84 + 9];
-		aMXPtr[10] = lara_matricesF[84 + 10];
-		aMXPtr[11] = lara_matricesF[84 + 11];
+		aMXPtr[M00] = lara_matricesF[84 + M00];
+		aMXPtr[M01] = lara_matricesF[84 + M01];
+		aMXPtr[M02] = lara_matricesF[84 + M02];
+		aMXPtr[M03] = lara_matricesF[84 + M03];
+		aMXPtr[M10] = lara_matricesF[84 + M10];
+		aMXPtr[M11] = lara_matricesF[84 + M11];
+		aMXPtr[M12] = lara_matricesF[84 + M12];
+		aMXPtr[M13] = lara_matricesF[84 + M13];
+		aMXPtr[M20] = lara_matricesF[84 + M20];
+		aMXPtr[M21] = lara_matricesF[84 + M21];
+		aMXPtr[M22] = lara_matricesF[84 + M22];
+		aMXPtr[M23] = lara_matricesF[84 + M23];
 		phd_TranslateRel(*((bones + objects[lara.back_gun].bone_index) + 53),
 			*((bones + objects[lara.back_gun].bone_index) + 54),
 			*((bones + objects[lara.back_gun].bone_index) + 55));
