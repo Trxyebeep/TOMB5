@@ -761,7 +761,7 @@ void ControlXRayMachine(short item_number)
 				{
 					ShatterObject(0, mesh, 128, item->room_number, 0);
 					mesh->Flags &= ~1;
-					SoundEffect(ShatterSounds[gfCurrentLevel - 5][mesh->static_number], (PHD_3DPOS*)&mesh->x, SFX_DEFAULT);
+					SoundEffect(ShatterSounds[gfCurrentLevel][mesh->static_number - 50], (PHD_3DPOS*)&mesh->x, SFX_DEFAULT);
 				}
 			}
 		}

@@ -1729,10 +1729,7 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 						SmashedMesh[SmashedMeshCount] = Mesh;
 						SmashedMeshCount++;
 						Mesh->Flags &= ~0x1;
-						SoundEffect(ShatterSounds[gfCurrentLevel - 5][Mesh->static_number], (PHD_3DPOS*)Mesh, 0);
-						//to reach the block Mesh->static_number has to be bigger than 50, and the range for ShatterSounds[][here] is 10.
-						//this is an original game bug. fixing static_number back to range with -50 removes errors, but messes up the
-						//sounds of shattering ingame.
+						SoundEffect(ShatterSounds[gfCurrentLevel][Mesh->static_number - 50], (PHD_3DPOS*)Mesh, 0);
 					}
 
 					TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);

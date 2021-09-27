@@ -688,8 +688,7 @@ void FixedCamera()
 								SmashedMesh[SmashedMeshCount] = StaticMesh;
 								SmashedMeshCount++;
 								StaticMesh->Flags &= -2;
-								SoundEffect(ShatterSounds[gfCurrentLevel - 5][StaticMesh->static_number], (PHD_3DPOS*)&StaticMesh->x, 0);
-								//blah blah warning blah but it works fine thank you core.
+								SoundEffect(ShatterSounds[gfCurrentLevel][StaticMesh->static_number - 50], (PHD_3DPOS*)&StaticMesh->x, 0);
 							}
 
 							TriggerRicochetSpark((GAME_VECTOR*)&v, GetRandomControl() << 1, 3, 0);
@@ -1489,6 +1488,273 @@ void BinocularCamera(ITEM_INFO* item)
 	}
 }
 
+void LookCamera(ITEM_INFO* item)
+{
+	GAME_VECTOR ideal;
+	PHD_VECTOR pos1;
+	PHD_VECTOR pos2;
+	PHD_VECTOR pos3;
+	FLOOR_INFO* floor;
+	long shake, dx, dy, dz, wx, wy, wz, clipped, h, c, hxrot, txrot, hyrot, tyrot, rndval, lp;
+	short room_number, room_number2;
+
+	hxrot = lara.head_x_rot;
+	hyrot = lara.head_y_rot;
+	txrot = lara.torso_x_rot;
+	tyrot = lara.torso_y_rot;
+	lara.torso_x_rot = 0;
+	lara.torso_y_rot = 0;
+	lara.head_x_rot <<= 1;
+	lara.head_y_rot <<= 1;
+
+	if (lara.head_x_rot > 10010)
+		lara.head_x_rot = 10010;
+	else if (lara.head_x_rot < -13650)
+		lara.head_x_rot = -13650;
+
+	if (lara.head_y_rot < -14560)
+		lara.head_y_rot = -14560;
+	else if (lara.head_y_rot > 14560)
+		lara.head_y_rot = 14560;
+
+	if (ABS(lara.head_x_rot - old_cam.pos.x_rot) >= 16)
+		old_cam.pos.x_rot = (lara.head_x_rot + old_cam.pos.x_rot) >> 1;
+	else
+		old_cam.pos.x_rot = lara.head_x_rot;
+
+	if (ABS(lara.head_y_rot - old_cam.pos.y_rot) >= 16)
+		old_cam.pos.y_rot = (lara.head_y_rot + old_cam.pos.y_rot) >> 1;
+	else
+		old_cam.pos.y_rot = lara.head_y_rot;
+
+	pos1.x = 0;
+	pos1.y = 16;
+	pos1.z = 64;
+	GetLaraJointPos(&pos1, 8);
+	room_number = lara_item->room_number;
+	floor = GetFloor(pos1.x, pos1.y, pos1.z, &room_number);
+	h = GetHeight(floor, pos1.x, pos1.y, pos1.z);
+	c = GetCeiling(floor, pos1.x, pos1.y, pos1.z);
+
+	if (h == NO_HEIGHT || c == NO_HEIGHT || c >= h || pos1.y > h || pos1.y < c)
+	{
+		pos1.x = 0;
+		pos1.y = 16;
+		pos1.z = 0;
+		GetLaraJointPos(&pos1, 8);
+		floor = GetFloor(pos1.x, pos1.y, pos1.z, &room_number);
+		h = GetHeight(floor, pos1.x, pos1.y, pos1.z);
+		c = GetCeiling(floor, pos1.x, pos1.y, pos1.z);
+
+		if (h == NO_HEIGHT || c == NO_HEIGHT || c >= h || pos1.y > h || pos1.y < c)
+		{
+			pos1.x = 0;
+			pos1.y = 16;
+			pos1.z = -64;
+			GetLaraJointPos(&pos1, 8);
+		}
+	}
+
+	pos2.x = 0;
+	pos2.y = 0;
+	pos2.z = -1024;
+	GetLaraJointPos(&pos2, 8);
+	pos3.x = 0;
+	pos3.y = 0;
+	pos3.z = 2048;
+	GetLaraJointPos(&pos3, 8);
+	wy = pos1.y;
+	wx = pos1.x;
+	wz = pos1.z;
+	dx = (pos2.x - pos1.x) >> 3;
+	dy = (pos2.y - pos1.y) >> 3;
+	dz = (pos2.z - pos1.z) >> 3;
+	room_number2 = lara_item->room_number;
+
+	for (lp = 0; lp < 8; lp++)
+	{
+		room_number = room_number2;
+		floor = GetFloor(wx, wy, wz, &room_number2);
+		h = GetHeight(floor, wx, wy, wz);
+		c = GetCeiling(floor, wx, wy, wz);
+
+		if (h != NO_HEIGHT && c != NO_HEIGHT && c < h && wy <= h && wy >= c)
+		{
+			wz += dz;
+			wx += dx;
+			wy += dy;
+		}
+	}
+
+	if (lp)
+	{
+		wx -= dx;
+		wy -= dy;
+		wz -= dz;
+	}
+
+	ideal.x = wx;
+	ideal.y = wy;
+	ideal.z = wz;
+	ideal.room_number = room_number;
+
+	if (old_cam.pos.x_rot == lara.head_x_rot && old_cam.pos.y_rot == lara.head_y_rot && old_cam.pos.x_pos == lara_item->pos.x_pos &&
+		old_cam.pos.y_pos == lara_item->pos.y_pos && old_cam.pos.z_pos == lara_item->pos.z_pos && 
+		old_cam.current_anim_state == lara_item->current_anim_state && old_cam.goal_anim_state == lara_item->goal_anim_state
+		&& camera.old_type == LOOK_CAMERA)
+	{
+		ideal.x = static_lookcamp.x;
+		ideal.y = static_lookcamp.y;
+		ideal.z = static_lookcamp.z;
+		ideal.room_number = static_lookcamp.room_number;
+		pos3.x = static_lookcamt.x;
+		pos3.y = static_lookcamt.y;
+		pos3.z = static_lookcamt.z;
+	}
+	else
+	{
+		old_cam.pos.x_pos = lara_item->pos.x_pos;
+		old_cam.pos.y_pos = lara_item->pos.y_pos;
+		old_cam.pos.z_pos = lara_item->pos.z_pos;
+		old_cam.current_anim_state = lara_item->current_anim_state;
+		old_cam.goal_anim_state = lara_item->goal_anim_state;
+		static_lookcamp.x = wx;
+		static_lookcamp.y = wy;
+		static_lookcamp.z = wz;
+		static_lookcamp.room_number = ideal.room_number;
+		static_lookcamt.x = pos3.x;
+		static_lookcamt.y = pos3.y;
+		static_lookcamt.z = pos3.z;
+	}
+
+	CameraCollisionBounds(&ideal, 224, 1);
+
+	if (camera.old_type == FIXED_CAMERA)
+	{
+		camera.pos.x = ideal.x;
+		camera.pos.y = ideal.y;
+		camera.pos.z = ideal.z;
+		camera.target.x = pos3.x;
+		camera.target.y = pos3.y;
+		camera.target.z = pos3.z;
+		camera.fpos.x = (float)ideal.x;
+		camera.fpos.y = (float)ideal.y;
+		camera.fpos.z = (float)ideal.z;
+	}
+	else
+	{
+		dx = ideal.x - camera.pos.x;
+		dy = ideal.y - camera.pos.y;
+		dz = ideal.z - camera.pos.z;
+		camera.pos.x += dx >> 2;
+		camera.pos.y += dy >> 2;
+		camera.pos.z += dz >> 2;
+		camera.fpos.x += (float)(dx >> 2);
+		camera.fpos.y += (float)(dy >> 2);
+		camera.fpos.z += (float)(dz >> 2);
+		dx = pos3.x - camera.target.x;
+		dy = pos3.y - camera.target.y;
+		dz = pos3.z - camera.target.z;
+		camera.target.x += dx >> 2;
+		camera.target.y += dy >> 2;
+		camera.target.z += dz >> 2;
+	}
+
+	camera.target.room_number = lara_item->room_number;
+
+	if (camera.bounce && camera.type == camera.old_type)
+	{
+		if (camera.bounce <= 0)
+		{
+			rndval = -camera.bounce;
+			shake = -camera.bounce >> 1;
+			camera.target.x += GetRandomControl() % rndval - shake;
+			camera.target.y += GetRandomControl() % rndval - shake;
+			camera.target.z += GetRandomControl() % rndval - shake;
+			camera.bounce += 5;
+		}
+		else
+		{
+			camera.pos.y += camera.bounce;
+			camera.target.y += camera.bounce;
+			camera.bounce = 0;
+		}
+	}
+
+	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
+
+	wx = camera.pos.x;
+	wy = camera.pos.y;
+	wz = camera.pos.z;
+	room_number = camera.pos.room_number;
+	floor = GetFloor(wx, wy, wz, &room_number);
+	h = GetHeight(floor, wx, wy, wz);
+	c = GetCeiling(floor, wx, wy, wz);
+
+	if (c > wy - 255 && h<wy + 255 && h > c && c != NO_HEIGHT && h != NO_HEIGHT)
+		camera.pos.y = (h + c) >> 1;
+	else if (h < wy + 255 && h > c && c != NO_HEIGHT && h != NO_HEIGHT)
+		camera.pos.y = h - 255;
+	else if (c > wy - 255 && h > c && c != NO_HEIGHT && h != NO_HEIGHT)
+		camera.pos.y = c + 255;
+
+	wx = camera.pos.x;
+	wy = camera.pos.y;
+	wz = camera.pos.z;
+	room_number = camera.pos.room_number;
+	floor = GetFloor(wx, wy, wz, &room_number);
+	h = GetHeight(floor, wx, wy, wz);
+	c = GetCeiling(floor, wx, wy, wz);
+
+	if (wy < c || wy > h || c >= h || h == NO_HEIGHT || c == NO_HEIGHT)
+		mgLOS(&camera.target, &camera.pos, 0);
+
+	wx = camera.pos.x;
+	wy = camera.pos.y;
+	wz = camera.pos.z;
+	room_number = camera.pos.room_number;
+	floor = GetFloor(wx, wy, wz, &room_number);
+	h = GetHeight(floor, wx, wy, wz);
+	c = GetCeiling(floor, wx, wy, wz);
+
+	if (wy < c || wy > h || c >= h || h == NO_HEIGHT || c == NO_HEIGHT)
+	{
+		camera.pos.x = pos1.x;
+		camera.pos.y = pos1.y;
+		camera.pos.z = pos1.z;
+		camera.pos.room_number = lara_item->room_number;
+	}
+
+	if (gfCurrentLevel == LVL5_THIRTEENTH_FLOOR || gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
+		CheckForRichesIllegalDiagonalWalls();
+
+	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
+	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
+
+	if (camera.mike_at_lara)
+	{
+		camera.mike_pos.x = lara_item->pos.x_pos;
+		camera.mike_pos.y = lara_item->pos.y_pos;
+		camera.mike_pos.z = lara_item->pos.z_pos;
+	}
+	else
+	{
+		dx = camera.target.x - camera.pos.x;
+		dz = camera.target.z - camera.pos.z;
+		clipped = phd_atan(dz, dx);
+		camera.mike_pos.x = ((phd_persp * phd_sin(clipped)) >> 14) + camera.pos.x;
+		camera.mike_pos.y = camera.pos.y;
+		camera.mike_pos.z = ((phd_persp * phd_cos(clipped)) >> 14)+ camera.pos.z;
+	}
+
+	camera.old_type = camera.type;
+	lara.head_x_rot = (short)hxrot;
+	lara.head_y_rot = (short)hyrot;
+	lara.torso_x_rot = (short)txrot;
+	lara.torso_y_rot = (short)tyrot;
+}
+
 void inject_camera(bool replace)
 {
 	INJECT(0x0040C690, InitialiseCamera, replace);
@@ -1504,4 +1770,5 @@ void inject_camera(bool replace)
 	INJECT(0x0040D640, CombatCamera, replace);
 	INJECT(0x0040C7A0, MoveCamera, replace);
 	INJECT(0x0040FC20, BinocularCamera, replace);
+	INJECT(0x0040DC10, LookCamera, replace);
 }

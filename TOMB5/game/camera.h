@@ -16,5 +16,4 @@ void ChaseCamera(ITEM_INFO* item);
 void CombatCamera(ITEM_INFO* item);
 void MoveCamera(GAME_VECTOR* ideal, long speed);
 void BinocularCamera(ITEM_INFO* item);
-
-#define	LookCamera	( (void(__cdecl*)(ITEM_INFO*)) 0x0040DC10 )
+void LookCamera(ITEM_INFO* item);

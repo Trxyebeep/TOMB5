@@ -111,7 +111,7 @@ void ControlGunship(short item_number)
 						ShatterObject(NULL, StaticMesh, 64, pos1.room_number, 0);
 						StaticMesh->Flags &= ~0x1;
 						TestTriggersAtXYZ(StaticMesh->x, StaticMesh->y, StaticMesh->z, pos1.room_number, 1, 0);
-						SoundEffect(ShatterSounds[gfCurrentLevel - 5][StaticMesh->static_number], (PHD_3DPOS*)StaticMesh, 0);
+						SoundEffect(ShatterSounds[gfCurrentLevel][StaticMesh->static_number - 50], (PHD_3DPOS*)StaticMesh, 0);
 					}
 
 					TriggerRicochetSpark((GAME_VECTOR*)&v, 2 * GetRandomControl(), 3, 0);
