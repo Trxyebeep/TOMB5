@@ -1418,8 +1418,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047D7B0		GetSwitchTrigger
 0x0047D8C0		GetKeyTrigger
 0x0047D9D0		TestTriggersAtXYZ
-0x0047DA40		SwitchControl
-0x0047DC70		SwitchCollision
+0x0047DA40	+	SwitchControl
+0x0047DC70	+	SwitchCollision
 0x0047E0C0		SwitchCollision2
 0x0047E220		UnderwaterSwitchCollision
 0x0047E450		PulleyCollision
