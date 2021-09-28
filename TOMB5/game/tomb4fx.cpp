@@ -5,143 +5,146 @@
 #include "delstuff.h"
 #include "../specific/function_stubs.h"
 
-int GetFreeBlood()
+long GetFreeBlood()
 {
-	int count = 0;
-	int min_life = 0;
-	int min_life_num = 0;
+	BLOOD_STRUCT* Blood;
+	long min_life, min_life_num;
 
-	BLOOD_STRUCT* Blood = &blood[next_blood];
-	int blood_num = next_blood;
+	Blood = &blood[next_blood];
+	min_life = 4095;
+	min_life_num = 0;
 
-	while (Blood->On)
+	for (int free = next_blood, i = 0; i < 32; i++)
 	{
-		if (Blood->Life < min_life)
+		if (Blood->On)
 		{
-			min_life_num = blood_num;
-			min_life = Blood->Life;
-		}
+			if (Blood->Life < min_life)
+			{
+				min_life_num = free;
+				min_life = Blood->Life;
+			}
 
-		if (blood_num == 31)
-		{
-			Blood = &blood[0];
-			blood_num = 0;
+			if (free == 31)
+			{
+				Blood = &blood[0];
+				free = 0;
+			}
+			else
+			{
+				Blood++;
+				free++;
+			}
 		}
 		else
 		{
-			Blood++;
-			blood_num++;
-		}
-
-		if (++count >= 32)
-		{
-			next_blood = (min_life_num + 1) & 31;
-			return min_life_num;
+			next_blood = (free + 1) & 31;
+			return free;
 		}
 	}
-	next_blood = (blood_num + 1) & 31;
-	return blood_num;
+
+	next_blood = (min_life_num + 1) & 31;
+	return min_life_num;
 }
 
-void TriggerBlood(int x, int y, int z, int a4, int num)
+void TriggerBlood(long x, long y, long z, long angle, long num)
 {
-	int i;
-	struct BLOOD_STRUCT* bptr;
-	int a;
-	int b;
-	int size;
+	BLOOD_STRUCT* Blood;
+	long ang, speed;
+	uchar size;
 
-	for (i = 0; i < num; i++)
+	for (int i = 0; i < num; i++)
 	{
-		bptr = &blood[GetFreeBlood()];
-		bptr->On = 1;
-		bptr->sShade = 0;
-		bptr->ColFadeSpeed = 4;
-		bptr->FadeToBlack = 8;
-		bptr->dShade = (GetRandomControl() & 0x3F) + 48;
-		bptr->Life = bptr->sLife = (GetRandomControl() & 7) + 24;
-		bptr->x = (GetRandomControl() & 0x1F) + x - 16;
-		bptr->y = (GetRandomControl() & 0x1F) + y - 16;
-		bptr->z = (GetRandomControl() & 0x1F) + z - 16;
-		a = (a4 == -1
-			? GetRandomControl() & 0xFFFF
-			: (GetRandomControl() & 0x1F) + a4 - 16) & 0xFFF;
-		b = GetRandomControl() & 0xF;
-		bptr->Zvel = b * rcossin_tbl[2 * a + 1] >> 7;
-		bptr->Xvel = -(b * rcossin_tbl[2 * a]) >> 7;
-		bptr->Friction = 4;
-		bptr->Yvel = -((GetRandomControl() & 0xFF) + 128);
-		bptr->RotAng = GetRandomControl() & 0xFFF;
-		bptr->RotAdd = (GetRandomControl() & 0x3F) + 64;
+		Blood = &blood[GetFreeBlood()];
+		Blood->On = 1;
+		Blood->sShade = 0;
+		Blood->ColFadeSpeed = 4;
+		Blood->FadeToBlack = 8;
+		Blood->dShade = (GetRandomControl() & 0x3F) + 48;
+		Blood->Life = (GetRandomControl() & 7) + 24;
+		Blood->sLife = Blood->Life;
+		Blood->x = (GetRandomControl() & 0x1F) + x - 16;
+		Blood->y = (GetRandomControl() & 0x1F) + y - 16;
+		Blood->z = (GetRandomControl() & 0x1F) + z - 16;
+
+		if (angle == -1)
+			ang = GetRandomControl();
+		else
+			ang = (GetRandomControl() & 0x1F) + angle - 16;
+
+		ang &= 0xFFF;
+		speed = GetRandomControl() & 0xF;
+		Blood->Xvel = (short)(-(speed * rcossin_tbl[ang << 1]) >> 7);//sin
+		Blood->Zvel = (short)(speed * rcossin_tbl[(ang << 1) + 1] >> 7);//cos
+		Blood->Friction = 4;
+		Blood->Yvel = -128 - (GetRandomControl() & 0xFF);
+		Blood->RotAng = GetRandomControl() & 0xFFF;
+		Blood->RotAdd = (GetRandomControl() & 0x3F) + 64;
+
 		if (GetRandomControl() & 1)
-			bptr->RotAdd = -bptr->RotAdd;
-		bptr->Gravity = (GetRandomControl() & 0x1F) + 31;
-		size = (GetRandomControl() & 7) + 8;
-		bptr->sSize = bptr->Size = size;
-		bptr->dSize = size >> 2;
+			Blood->RotAdd = -Blood->RotAdd;
+
+		Blood->Gravity = (GetRandomControl() & 0x1F) + 31;
+		size = (uchar)((GetRandomControl() & 7) + 8);
+		Blood->sSize = size;
+		Blood->Size = size;
+		Blood->dSize = size >> 2;
 	}
 }
 
 void UpdateBlood()
 {
+	BLOOD_STRUCT* Blood;
+
 	for (int i = 0; i < 32; i++)
 	{
-		BLOOD_STRUCT* Blood = &blood[i];
+		Blood = &blood[i];
 
 		if (Blood->On)
 		{
-			Blood->Life -= 1;
+			Blood->Life--;
 
-			if (Blood->Life < 0)
+			if (Blood->Life <= 0)
 			{
 				Blood->On = 0;
 				continue;
 			}
+
+			if (Blood->sLife - Blood->Life < Blood->ColFadeSpeed)
+				Blood->Shade += (((Blood->dShade - Blood->sShade) * (((Blood->sLife - Blood->Life) << 16) / Blood->ColFadeSpeed)) >> 16);
 			else
 			{
-				if (Blood->sLife - Blood->Life < Blood->ColFadeSpeed)
-					Blood->Shade = (((Blood->sLife - Blood->Life) << 16) / Blood->ColFadeSpeed * (Blood->dShade - Blood->sShade) >> 16) + Blood->sShade;
-				else
+				if (Blood->Life < Blood->FadeToBlack)
 				{
-					if (Blood->Life < Blood->FadeToBlack)
+					Blood->Shade = (Blood->dShade * (((Blood->Life - Blood->FadeToBlack) << 16) / Blood->FadeToBlack + 0x10000)) >> 16;
+
+					if (Blood->Shade < 8)
 					{
-						Blood->Shade = (((Blood->Life - Blood->FadeToBlack) << 16) / Blood->FadeToBlack + 0x10000) * Blood->dShade >> 16;
-
-						if (Blood->Shade < 8)
-						{
-							Blood->On = 0;
-							continue;
-						}
-
+						Blood->On = 0;
+						continue;
 					}
-					else
-						Blood->Shade = Blood->dShade;
-
 				}
+				else
+					Blood->Shade = Blood->dShade;
 			}
-
 
 			Blood->RotAng = Blood->RotAdd + Blood->RotAng & 0xFFF;
 			Blood->Yvel += Blood->Gravity;
 
 			if (Blood->Friction & 0xF)
 			{
-				Blood->Xvel = Blood->Xvel - ((Blood->Xvel) >> (Blood->Friction & 0xF));
-				Blood->Zvel = Blood->Zvel - ((Blood->Zvel) >> (Blood->Friction & 0xF));
+				Blood->Xvel -= Blood->Xvel >> (Blood->Friction & 0xF);
+				Blood->Zvel -= Blood->Zvel >> (Blood->Friction & 0xF);
 			}
 
-
-			Blood->x += (Blood->Xvel >> 5);
-			Blood->y += (Blood->Yvel >> 5);
-			Blood->z += (Blood->Zvel >> 5);
-
-			Blood->Size = (((Blood->dSize - Blood->sSize) * (((Blood->sLife - Blood->Life) << 16) / Blood->sLife)) >> 16) + Blood->sSize;
-
+			Blood->x += Blood->Xvel >> 5;
+			Blood->y += Blood->Yvel >> 5;
+			Blood->z += Blood->Zvel >> 5;
+			Blood->Size = Blood->sSize + (((Blood->dSize - Blood->sSize) * (((Blood->sLife - Blood->Life) << 16) / Blood->sLife)) >> 16);
 		}
 	}
 }
 
-long LSpline(long x, long* knots, int nk)
+long LSpline(long x, long* knots, long nk)
 {
 	int span;
 	long* k;
