@@ -456,6 +456,7 @@
 #define flip_status	VAR_U_(0x00EEEAE0, long)
 #define static_lookcamp	VAR_U_(0x00EEFAB0, GAME_VECTOR)
 #define static_lookcamt	VAR_U_(0x00EEFAA0, GAME_VECTOR)
+#define credits_timer	VAR_U_(0x0051064C, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

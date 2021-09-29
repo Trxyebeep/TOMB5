@@ -709,7 +709,7 @@ void FixedCamera()
 #ifdef SMOOTH_FIXED_CAM
 	fixed = &camera.fixed[camera.number];
 
-	if (!(fixed->flags & 2))//not the stupid sniper
+	if (UseForcedFixedCamera || !(fixed->flags & 2))//trapdoor fixed cams and not the stupid sniper :)
 		MoveCamera(&ideal, 30);
 	else
 #endif

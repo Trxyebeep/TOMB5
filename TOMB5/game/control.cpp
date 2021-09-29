@@ -98,7 +98,12 @@ long ControlPhase(long _nframes, int demo_mode)
 		{
 #ifdef CUTSCENE_SKIPPER
 			if (keymap[DIK_ESCAPE] && !ScreenFading)//skip them with esc
-				cutseq_trig = 3;
+			{
+				if (!bDoCredits)
+					cutseq_trig = 3;
+				else
+					credits_timer = 4283;
+			}
 #endif
 			input = 0;
 		}
