@@ -457,6 +457,10 @@
 #define static_lookcamp	VAR_U_(0x00EEFAB0, GAME_VECTOR)
 #define static_lookcamt	VAR_U_(0x00EEFAA0, GAME_VECTOR)
 #define credits_timer	VAR_U_(0x0051064C, long)
+#define LSHKTimer	VAR_U_(0x0051CA46, char)
+#define LSHKShotsFired	VAR_U_(0x0051CA45, char)
+#define ExittingBinos	VAR_U_(0x0051CA20, long)
+#define bLaraTorch	VAR_U_(0x0087B0F8, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

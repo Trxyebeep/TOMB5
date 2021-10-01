@@ -1189,11 +1189,6 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 	camera.old_type = camera.type;
 }
 
-#define LSHKTimer	VAR_U_(0x0051CA46, char)
-#define LSHKShotsFired	VAR_U_(0x0051CA45, char)
-#define ExittingBinos	VAR_U_(0x0051CA20, long)
-#define bLaraTorch	VAR_U_(0x0087B0F8, long)
-
 void BinocularCamera(ITEM_INFO* item)
 {
 	PHD_VECTOR pos1;
