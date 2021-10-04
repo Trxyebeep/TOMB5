@@ -178,133 +178,112 @@ void CalculateCamera()
 		}
 	}
 
-	if (camera.type != LOOK_CAMERA)
+	if (camera.type != LOOK_CAMERA && camera.type != COMBAT_CAMERA)
 	{
 		last_target.x = camera.target.x;
-
-		if (camera.type != COMBAT_CAMERA)
-		{
-			last_target.y = camera.target.y;
-			last_target.z = camera.target.z;
-			last_target.room_number = camera.target.room_number;
-			camera.target.room_number = item->room_number;
-			camera.target.y = y;
-			gotit = 0;
-
-			if (camera.type != CHASE_CAMERA && camera.flags != 3)
-			{
-				fixed = &camera.fixed[camera.number];
-				SniperCamActive = fixed->flags & 3;
-
-				if (fixed->flags & 2)
-				{
-					v.x = 0;
-					v.y = 0;
-					v.z = 0;
-					GetLaraJointPos(&v, LM_TORSO);
-					camera.target.x = v.x;
-					camera.target.y = v.y;
-					camera.target.z = v.z;
-					y = v.y;
-					gotit = 1;
-				}
-			}
-
-			if (!gotit)
-			{
-				shift = (bounds[0] + bounds[1] + bounds[4] + bounds[5]) >> 2;
-				camera.target.x = ((phd_sin(item->pos.y_rot) * shift) >> 12) + item->pos.x_pos;
-				camera.target.z = ((phd_cos(item->pos.y_rot) * shift) >> 12) + item->pos.z_pos;
-
-				if (item->object_number == LARA)
-				{
-					ConfirmCameraTargetPos();
-					y = camera.target.y;
-				}
-			}		
-
-			if (fixed_camera == camera.fixed_camera)
-			{
-				camera.fixed_camera = 0;
-
-				if (camera.speed != 1 && camera.old_type != LOOK_CAMERA && BinocularOn >= 0)
-				{
-					if (TargetSnaps <= 8)
-					{
-						camera.target.x = last_target.x + ((camera.target.x - last_target.x) >> 2);
-						camera.target.y = last_target.y + ((camera.target.y - last_target.y) >> 2);
-						camera.target.z = last_target.z + ((camera.target.z - last_target.z) >> 2);
-						y = camera.target.y;
-					}
-					else
-						TargetSnaps = 0;
-				}
-			}
-			else
-			{
-				SniperCount = 30;
-				camera.fixed_camera = 1;
-				camera.speed = 1;
-			}
-
-			GetFloor(camera.target.x, camera.target.y, camera.target.z, &camera.target.room_number);
-
-			if (ABS(last_target.x - camera.target.x) < 4 && ABS(last_target.y - camera.target.y) < 4 && ABS(last_target.z - camera.target.z) < 4)
-			{
-				camera.target.x = last_target.x;
-				camera.target.y = last_target.y;
-				camera.target.z = last_target.z;
-			}
-
-			if (camera.type != CHASE_CAMERA && camera.flags != 3)
-				FixedCamera();
-			else
-				ChaseCamera(item);
-
-			camera.fixed_camera = fixed_camera;
-			camera.last = camera.number;
-
-			if (camera.type != HEAVY_CAMERA || camera.timer == -1)
-			{
-				camera.type = CHASE_CAMERA;
-				camera.speed = 10;
-				camera.number = -1;
-				camera.last_item = camera.item;
-				camera.item = 0;
-				camera.target_elevation = 0;
-				camera.target_angle = 0;
-				camera.target_distance = 1536;
-				camera.flags = 0;
-				camera.lara_node = -1;
-			}
-
-			return;
-		}
-
 		last_target.y = camera.target.y;
 		last_target.z = camera.target.z;
 		last_target.room_number = camera.target.room_number;
-	}
-
-	camera.target.room_number = item->room_number;
-
-	if (camera.fixed_camera || BinocularOn < 0)
-	{
+		camera.target.room_number = item->room_number;
 		camera.target.y = y;
-		camera.speed = 1;
+		gotit = 0;
+
+		if (camera.type != CHASE_CAMERA && camera.flags != 3)
+		{
+			fixed = &camera.fixed[camera.number];
+			SniperCamActive = fixed->flags & 3;
+
+			if (fixed->flags & 2)
+			{
+				v.x = 0;
+				v.y = 0;
+				v.z = 0;
+				GetLaraJointPos(&v, LM_TORSO);
+				camera.target.x = v.x;
+				camera.target.y = v.y;
+				camera.target.z = v.z;
+				gotit = 1;
+			}
+		}
+
+		if (!gotit)
+		{
+			shift = (bounds[0] + bounds[1] + bounds[4] + bounds[5]) >> 2;
+			camera.target.x = ((phd_sin(item->pos.y_rot) * shift) >> 14) + item->pos.x_pos;
+			camera.target.z = ((phd_cos(item->pos.y_rot) * shift) >> 14) + item->pos.z_pos;
+
+			if (item->object_number == LARA)
+				ConfirmCameraTargetPos();
+		}
+
+		if (fixed_camera != camera.fixed_camera)
+		{
+			SniperCount = 30;
+			camera.fixed_camera = 1;
+			camera.speed = 1;
+		}
+		else
+		{
+			camera.fixed_camera = 0;
+
+			if (camera.speed != 1 && camera.old_type != LOOK_CAMERA && BinocularOn >= 0)
+			{
+				if (TargetSnaps <= 8)
+				{
+					camera.target.x = last_target.x + ((camera.target.x - last_target.x) >> 2);
+					camera.target.y = last_target.y + ((camera.target.y - last_target.y) >> 2);
+					camera.target.z = last_target.z + ((camera.target.z - last_target.z) >> 2);
+					y = camera.target.y;
+				}
+				else
+					TargetSnaps = 0;
+			}
+		}
+
+		GetFloor(camera.target.x, camera.target.y, camera.target.z, &camera.target.room_number);
+
+		if (ABS(last_target.x - camera.target.x) < 4 && ABS(last_target.y - camera.target.y) < 4 && ABS(last_target.z - camera.target.z) < 4)
+		{
+			camera.target.x = last_target.x;
+			camera.target.y = last_target.y;
+			camera.target.z = last_target.z;
+		}
+
+		if (camera.type != CHASE_CAMERA && camera.flags != 3)
+			FixedCamera();
+		else
+			ChaseCamera(item);
 	}
 	else
 	{
-		camera.target.y += (y - camera.target.y) >> 2;
-		camera.speed = camera.type != LOOK_CAMERA ? 8 : 4;
+		if (camera.type == COMBAT_CAMERA)
+		{
+			last_target.x = camera.target.x;
+			last_target.y = camera.target.y;
+			last_target.z = camera.target.z;
+			last_target.room_number = camera.target.room_number;
+		}
+
+		camera.target.room_number = item->room_number;
+
+		if (camera.fixed_camera || BinocularOn < 0)
+		{
+			camera.target.y = y;
+			camera.speed = 1;
+		}
+		else
+		{
+			camera.target.y += (y - camera.target.y) >> 2;
+			camera.speed = camera.type != LOOK_CAMERA ? 8 : 4;
+		}
+
+		camera.fixed_camera = 0;
+
+		if (camera.type == LOOK_CAMERA)
+			LookCamera(item);
+		else
+			CombatCamera(item);
 	}
-
-	camera.fixed_camera = 0;
-
-	if (camera.type == LOOK_CAMERA)
-		LookCamera(item);
-	else
-		CombatCamera(item);
 
 	camera.fixed_camera = fixed_camera;
 	camera.last = camera.number;
