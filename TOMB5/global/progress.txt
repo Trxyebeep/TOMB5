@@ -1423,15 +1423,15 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047E0C0	+	SwitchCollision2
 0x0047E220	+	UnderwaterSwitchCollision
 0x0047E450	+	PulleyCollision
-0x0047E650		TurnSwitchControl
-0x0047E950		TurnSwitchCollision
-0x0047EE00		RailSwitchCollision
-0x0047F050		JumpSwitchCollision
-0x0047F190		CrowbarSwitchCollision
-0x0047F520		FullBlockSwitchControl
-0x0047F610		FullBlockSwitchCollision
-0x0047F810		CogSwitchControl
-0x0047F990		CogSwitchCollision
+0x0047E650	+	TurnSwitchControl
+0x0047E950	+	TurnSwitchCollision
+0x0047EE00	+	RailSwitchCollision
+0x0047F050	+	JumpSwitchCollision
+0x0047F190	+	CrowbarSwitchCollision
+0x0047F520	+	FullBlockSwitchControl
+0x0047F610	+	FullBlockSwitchCollision
+0x0047F810	+	CogSwitchControl
+0x0047F990	+	CogSwitchCollision
 0x0047FC80	+	CrowDoveSwitchControl
 0x0047FD20	+	CrowDoveSwitchCollision
 0x0047FF20		ProcessExplodingSwitchType8
