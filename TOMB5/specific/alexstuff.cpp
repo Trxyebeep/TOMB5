@@ -35,7 +35,7 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 	ROOM_INFO* pR;
 	ROOMLET* pRm;
 	float* pVtx;
-	int* pPre;
+	long* pPre;
 	short* pFac;
 	long offset;
 
@@ -48,7 +48,7 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 	pR->mesh = (MESH_INFO*)((char*)pR->mesh + offset);
 	pR->pRoomlets = (ROOMLET*)((char*)pR->pRoomlets + offset);
 	pR->pRmFace = (short*)((char*)pR->pRmFace + offset);
-	pR->pRmPrelight = (int*)((char*)pR->pRmPrelight + offset);
+	pR->pRmPrelight = (long*)((char*)pR->pRmPrelight + offset);
 	pR->pRmVtx = (float*)((char*)pR->pRmVtx + offset);
 
 	if ((long)pR->door & 1)

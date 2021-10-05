@@ -538,22 +538,22 @@ void GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_as_fastback(ITEM_INFO* item, COLL_INFO* coll)
 {
-    item->goal_anim_state = AS_STOP;
+	item->goal_anim_state = AS_STOP;
 
-    if (input & IN_LEFT)
-    {
-        lara.turn_rate -= 409;
+	if (input & IN_LEFT)
+	{
+		lara.turn_rate -= 409;
 
-        if (lara.turn_rate < -1092)
-            lara.turn_rate = -1092;
-    }
-    else if (input & IN_RIGHT)
-    {
-        lara.turn_rate += 409;
+		if (lara.turn_rate < -1092)
+			lara.turn_rate = -1092;
+	}
+	else if (input & IN_RIGHT)
+	{
+		lara.turn_rate += 409;
 
-        if (lara.turn_rate > 1092)
-            lara.turn_rate = 1092;
-    }
+		if (lara.turn_rate > 1092)
+			lara.turn_rate = 1092;
+	}
 }
 
 void lara_col_fastback(ITEM_INFO* item, COLL_INFO* coll)
@@ -2157,7 +2157,11 @@ void lara_col_hang(ITEM_INFO* item, COLL_INFO* coll)
 	item->fallspeed = 0;
 	item->gravity_status = 0;
 
+#ifdef GENERAL_FIXES //remove frame number restriction
+	if (item->anim_number == ANIM_GRABLEDGE)
+#else
 	if (item->anim_number == ANIM_GRABLEDGE && item->frame_number == anims[ANIM_GRABLEDGE].frame_base + 21)
+#endif
 	{
 		if (input & IN_LEFT || input & IN_LSTEP)
 		{
@@ -2205,7 +2209,11 @@ void lara_col_hang(ITEM_INFO* item, COLL_INFO* coll)
 	lara.move_angle = item->pos.y_rot;
 	LaraHangTest(item, coll);
 
+#ifdef GENERAL_FIXES //remove frame number restriction
+	if (item->anim_number == ANIM_GRABLEDGE)
+#else
 	if (item->anim_number == ANIM_GRABLEDGE && item->frame_number == anims[ANIM_GRABLEDGE].frame_base + 21)
+#endif
 	{
 		TestForObjectOnLedge(item, coll);
 		if (input & IN_FORWARD)
@@ -3552,7 +3560,11 @@ void lara_as_all4s(ITEM_INFO* item, COLL_INFO* coll)
 
 			if (LOS(&s, &d))
 			{
+#ifdef GENERAL_FIXES //restrict roll out to anims 263 and 264 otherwise lara's gun_status bugs out
+				if (ObjectOnLOS2(&s, &d, &v, &StaticMesh) == 999 && lara_item->anim_number == 263 || lara_item->anim_number == 264)
+#else
 				if (ObjectOnLOS2(&s, &d, &v, &StaticMesh) == 999)
+#endif
 				{
 					item->anim_number = ANIM_CRAWLJUMP;
 					item->frame_number = anims[ANIM_CRAWLJUMP].frame_base;

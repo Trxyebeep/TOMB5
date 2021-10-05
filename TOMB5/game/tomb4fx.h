@@ -3,10 +3,10 @@
 
 void inject_tomb4fx(bool replace);
 
-int GetFreeBlood();
+long GetFreeBlood();
 void UpdateBlood();
-void TriggerBlood(int x, int y, int z, int a4, int num);
-long LSpline(long x, long* knots, int nk);
+void TriggerBlood(long x, long y, long z, long angle, long num);
+long LSpline(long x, long* knots, long nk);
 LIGHTNING_STRUCT* TriggerLightning(PHD_VECTOR* s, PHD_VECTOR* d, char variation, long rgb, uchar flags, uchar size, uchar segments);
 void LaraBubbles(ITEM_INFO* item);
 void ControlElectricFence(short item_number);

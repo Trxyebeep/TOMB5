@@ -1,11 +1,12 @@
 #pragma once
 
 #pragma pack(push, 1)
-typedef struct 
+/*Injection macro, originally by Arsunt, modified by ChocolateFan to allow deinjection*/
+struct JMP
 {
 	BYTE opCode;	// must be 0xE9;
 	DWORD offset;	// jump offset
-} JMP;
+};
 
 #define INJECT(from,to,replace) \
 do \
@@ -23,37 +24,40 @@ do \
 	((JMP*)(from))->offset = (DWORD)(to) - ((DWORD)(from) + sizeof(JMP)); \
 } while (false)
 
-#ifndef ABS
+/*macros*/
 #define ABS(x) (((x)<0) ? (-(x)) : (x))
-#endif // ABS
-
-#ifndef phd_sin
-#define phd_sin(x) (4 * rcossin_tbl[((int)(x) >> 3) & 0x1FFE])
-#endif // phd_sin
-
-#ifndef phd_cos
-#define phd_cos(x) (4 * rcossin_tbl[(((int)(x) >> 3) & 0x1FFE) + 1])
-#endif // phd_cos
-
-#ifndef SQUARE
+#define phd_sin(x) (4 * rcossin_tbl[((long)(x) >> 3) & 0x1FFE])
+#define phd_cos(x) (4 * rcossin_tbl[(((long)(x) >> 3) & 0x1FFE) + 1])
 #define SQUARE(x) ((x)*(x))
-#endif // SQUARE
-
 #define phd_PopMatrix()		{phd_mxptr -= 12; aMXPtr -= 12;}
-
-typedef unsigned char uchar;
-typedef unsigned short ushort;
-typedef unsigned long ulong;
-
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
 #define RGBA(r, g, b, a) (RGBONLY(r, g, b) | ((a) << 24))
 #define ARGB(r, g, b, a) (RGBA(b, g, r, a))
 #define RGB_M(clr, m) (clr = (clr & 0xFF000000) | (((((clr >> 16) & 0xFF) * m) >> 8) << 16) | (((((clr >> 8) & 0xFF)* m) >> 8) << 8) | (((clr & 0xFF) * m) >> 8))
-//font flags for PrintString
-#define FF_SMALL	0x1000
-#define FF_BLINK	0x2000
-#define FF_RJUSTIFY	0x4000
-#define FF_CENTER	0x8000
+
+/*typedefs*/
+typedef unsigned char uchar;
+typedef unsigned short ushort;
+typedef unsigned long ulong;
+
+/*enums*/
+
+enum matrix_indices
+{
+	M00, M01, M02, M03,
+	M10, M11, M12, M13,
+	M20, M21, M22, M23,
+
+	indices_count
+};
+
+enum font_flags
+{
+	FF_SMALL = 0x1000,
+	FF_BLINK = 0x2000,
+	FF_RJUSTIFY = 0x4000,
+	FF_CENTER = 0x8000
+};
 
 enum lara_draw_type
 {
@@ -62,7 +66,6 @@ enum lara_draw_type
 	LARA_BUNHEAD = 3,
 	LARA_CATSUIT = 4,
 	LARA_DIVESUIT = 5,
-	LARA_INVISIBLE = 7
 };
 
 enum lara_mesh
@@ -96,21 +99,21 @@ enum item_status
 
 enum lara_gun_status
 {
-	LG_NO_ARMS = 0,
-	LG_HANDS_BUSY = 1,
-	LG_DRAW_GUNS = 2,
-	LG_UNDRAW_GUNS = 3,
-	LG_READY = 4,
-	LG_FLARE = 5,
+	LG_NO_ARMS,
+	LG_HANDS_BUSY,
+	LG_DRAW_GUNS,
+	LG_UNDRAW_GUNS,
+	LG_READY,
+	LG_FLARE,
 };
 
 enum lara_water_status
 {
-	LW_ABOVE_WATER = 0,
-	LW_UNDERWATER = 1,
-	LW_SURFACE = 2,
-	LW_FLYCHEAT = 3,
-	LW_WADE = 4
+	LW_ABOVE_WATER,
+	LW_UNDERWATER,
+	LW_SURFACE,
+	LW_FLYCHEAT,
+	LW_WADE
 };
 
 enum ITEM_FLAGS
@@ -126,64 +129,63 @@ enum ITEM_FLAGS
 
 enum room_flags
 {
-	ROOM_UNDERWATER = 1,
-	ROOM_SFX_ALWAYS = 2,
-	ROOM_PITCH_SHIFT = 4,
-	ROOM_OUTSIDE = 8,
-	ROOM_DYNAMIC_LIT = 16,
-	ROOM_NOT_INSIDE = 32,
-	ROOM_INSIDE = 64,
-	ROOM_NO_LENSFLARE = 128
+	ROOM_UNDERWATER =		0x1,
+	ROOM_SFX_ALWAYS =		0x2,
+	ROOM_PITCH_SHIFT =		0x4,
+	ROOM_OUTSIDE =			0x8,
+	ROOM_DYNAMIC_LIT =		0x10,
+	ROOM_NOT_INSIDE =		0x20,
+	ROOM_INSIDE =			0x40,
+	ROOM_NO_LENSFLARE =		0x80
 };
 
 enum collision_types
 {
-	CT_NONE = 0,
-	CT_FRONT = (1 << 0),
-	CT_LEFT = (1 << 1),
-	CT_RIGHT = (1 << 2),
-	CT_TOP = (1 << 3),
-	CT_TOP_FRONT = (1 << 4),
-	CT_CLAMP = (1 << 5)
+	CT_NONE,
+	CT_FRONT =			0x1,
+	CT_LEFT =			0x2,
+	CT_RIGHT =			0x4,
+	CT_TOP =			0x8,
+	CT_TOP_FRONT =		0x10,
+	CT_CLAMP =			0x20
 };
 
 enum input_buttons
 {
-	IN_NONE = 0,								// 0x00000000
-	IN_FORWARD = (1 << 0),						// 0x00000001
-	IN_BACK = (1 << 1),							// 0x00000002
-	IN_LEFT = (1 << 2),							// 0x00000004
-	IN_RIGHT = (1 << 3),						// 0x00000008
-	IN_JUMP = (1 << 4),							// 0x00000010
-	IN_DRAW = (1 << 5),							// 0x00000020
-	IN_ACTION = (1 << 6),						// 0x00000040
-	IN_WALK = (1 << 7),							// 0x00000080
-	IN_OPTION = (1 << 8),						// 0x00000100
-	IN_LOOK = (1 << 9),							// 0x00000200
-	IN_LSTEP = (1 << 10),						// 0x00000400
-	IN_RSTEP = (1 << 11),						// 0x00000800
-	IN_ROLL = (1 << 12),						// 0x00001000
-	IN_PAUSE = (1 << 13),						// 0x00002000
-	IN_A = (1 << 14),							// 0x00004000
-	IN_B = (1 << 15),							// 0x00008000
-	IN_CHEAT = (1 << 16),						// 0x00010000
-	IN_D = (1 << 17),							// 0x00020000
-	IN_E = (1 << 18),							// 0x00040000
-	IN_FLARE = (1 << 19),						// 0x00080000
-	IN_SELECT = (1 << 20),						// 0x00100000
-	IN_DESELECT = (1 << 21),					// 0x00200000
-	IN_SAVE = (1 << 22), // F5					// 0x00400000
-	IN_LOAD = (1 << 23),  // F6					// 0x00800000
-	IN_STEPSHIFT = (1 << 24),					// 0x01000000
-	IN_LOOKLEFT = (1 << 25),					// 0x02000000
-	IN_LOOKRIGHT = (1 << 26),					// 0x04000000
-	IN_LOOKFORWARD = (1 << 27),					// 0x08000000
-	IN_LOOKBACK = (1 << 28),					// 0x10000000
-	IN_DUCK = (1 << 29),						// 0x20000000
-	IN_SPRINT = (1 << 30),						// 0x40000000
-	IN_TARGET = (1 << 31),						// 0x80000000
-
-	IN_ALL = ~0,								// 0xFFFFFFFF (-1)
+	IN_NONE,
+	IN_FORWARD =		0x1,
+	IN_BACK =			0x2,
+	IN_LEFT =			0x4,
+	IN_RIGHT =			0x8,
+	IN_JUMP =			0x10,
+	IN_DRAW =			0x20,
+	IN_ACTION =			0x40,
+	IN_WALK =			0x80,
+	IN_OPTION =			0x100,
+	IN_LOOK =			0x200,
+	IN_LSTEP =			0x400,
+	IN_RSTEP =			0x800,
+	IN_ROLL =			0x1000,
+	IN_PAUSE =			0x2000,
+	IN_A =				0x4000,
+	IN_B =				0x8000,
+	IN_CHEAT =			0x10000,
+	IN_D =				0x20000,
+	IN_E =				0x40000,
+	IN_FLARE =			0x80000,
+	IN_SELECT =			0x100000,
+	IN_DESELECT =		0x200000,
+	IN_SAVE =			0x400000,
+	IN_LOAD =			0x800000,
+	IN_STEPSHIFT =		0x1000000,
+	IN_LOOKLEFT =		0x2000000,
+	IN_LOOKRIGHT =		0x4000000,
+	IN_LOOKFORWARD =	0x8000000,
+	IN_LOOKBACK =		0x10000000,
+	IN_DUCK =			0x20000000,
+	IN_SPRINT =			0x40000000,
+	IN_TARGET =			0x80000000,
+	IN_ALL =			0xFFFFFFFF,
 };
 
 enum height_types
@@ -197,62 +199,79 @@ enum height_types
 
 enum floor_types 
 {
-	FLOOR_TYPE, DOOR_TYPE, TILT_TYPE, ROOF_TYPE, TRIGGER_TYPE, LAVA_TYPE, CLIMB_TYPE, SPLIT1, SPLIT2, SPLIT3, SPLIT4,
-	NOCOLF1T, NOCOLF1B, NOCOLF2T, NOCOLF2B, NOCOLC1T, NOCOLC1B, NOCOLC2T, NOCOLC2B,
-	MONKEY_TYPE, TRIGTRIGGER_TYPE, MINER_TYPE
+	FLOOR_TYPE, 
+	DOOR_TYPE, 
+	TILT_TYPE, 
+	ROOF_TYPE, 
+	TRIGGER_TYPE, 
+	LAVA_TYPE, 
+	CLIMB_TYPE, 
+	SPLIT1, 
+	SPLIT2, 
+	SPLIT3,
+	SPLIT4,
+	NOCOLF1T, 
+	NOCOLF1B,
+	NOCOLF2T, 
+	NOCOLF2B, 
+	NOCOLC1T,
+	NOCOLC1B, 
+	NOCOLC2T, 
+	NOCOLC2B,
+	MONKEY_TYPE, 
+	TRIGTRIGGER_TYPE, 
+	MINER_TYPE
 };
 
 enum weapon_type_carried 
 {
-	WTYPE_MISSING = 0,
-	WTYPE_PRESENT = 1,
-	WTYPE_SILENCER = 2,
-	WTYPE_LASERSIGHT = 4,
-	WTYPE_AMMO_1 = 8,
-	WTYPE_AMMO_2 = 16,
-	WTYPE_AMMO_3 = 32,
-
-	WTYPE_MASK_AMMO = WTYPE_AMMO_1 | WTYPE_AMMO_2 | WTYPE_AMMO_3
+	WTYPE_MISSING,
+	WTYPE_PRESENT =			0x1,
+	WTYPE_SILENCER =		0x2,
+	WTYPE_LASERSIGHT =		0x4,
+	WTYPE_AMMO_1 =			0x8,
+	WTYPE_AMMO_2 =			0x10,
+	WTYPE_AMMO_3 =			0x20,
 };
 
 enum zone_type
 {
-	SKELLY_ZONE = 0,
-	BASIC_ZONE = 1,
-	CROC_ZONE = 2,
-	HUMAN_ZONE = 3,
-	FLYER_ZONE = 4,
+	SKELLY_ZONE,
+	BASIC_ZONE,
+	CROC_ZONE,
+	HUMAN_ZONE,
+	FLYER_ZONE,
 };
 
 enum camera_type
 {
-	CHASE_CAMERA = 0,
-	FIXED_CAMERA = 1,
-	LOOK_CAMERA = 2,
-	COMBAT_CAMERA = 3,
-	CINEMATIC_CAMERA = 4,
-	HEAVY_CAMERA = 5,
+	CHASE_CAMERA,
+	FIXED_CAMERA,
+	LOOK_CAMERA,
+	COMBAT_CAMERA,
+	CINEMATIC_CAMERA,
+	HEAVY_CAMERA,
 };
 
 enum mood_type
 {
-	BORED_MOOD = 0,
-	ATTACK_MOOD = 1,
-	ESCAPE_MOOD = 2,
-	STALK_MOOD = 3,
+	BORED_MOOD,
+	ATTACK_MOOD,
+	ESCAPE_MOOD,
+	STALK_MOOD,
 };
 
 enum weapon_types 
 {
-	WEAPON_NONE = 0,
-	WEAPON_PISTOLS = 1,
-	WEAPON_REVOLVER = 2,
-	WEAPON_UZI = 3,
-	WEAPON_SHOTGUN = 4,
-	WEAPON_HK = 5,
-	WEAPON_CROSSBOW = 6,
-	WEAPON_FLARE = 7,
-	WEAPON_TORCH = 8
+	WEAPON_NONE,
+	WEAPON_PISTOLS,
+	WEAPON_REVOLVER,
+	WEAPON_UZI,
+	WEAPON_SHOTGUN,
+	WEAPON_HK,
+	WEAPON_CROSSBOW,
+	WEAPON_FLARE,
+	WEAPON_TORCH
 };
 
 enum quadrant_names
@@ -265,21 +284,51 @@ enum quadrant_names
 
 enum cloth_type
 {
-	CLOTH_MISSING = 0,
-	CLOTH_DRY = 1,
-	CLOTH_WET = 2
+	CLOTH_MISSING,
+	CLOTH_DRY,
+	CLOTH_WET
 };
 
 enum trigger_types 
 {
-	TRIGGER, PAD, SWITCH, KEY, PICKUP, HEAVY, ANTIPAD, COMBAT, DUMMY, ANTITRIGGER, HEAVYSWITCH, HEAVYANTITRIGGER, MONKEY, SKELETON_T, TIGHTROPE_T, CRAWLDUCK_T, CLIMB_T
+	TRIGGER, 
+	PAD, 
+	SWITCH, 
+	KEY, 
+	PICKUP, 
+	HEAVY, 
+	ANTIPAD, 
+	COMBAT,
+	DUMMY, 
+	ANTITRIGGER, 
+	HEAVYSWITCH, 
+	HEAVYANTITRIGGER, 
+	MONKEY, 
+	SKELETON_T, 
+	TIGHTROPE_T, 
+	CRAWLDUCK_T, 
+	CLIMB_T
 };
 
 enum trigobj_types 
 {
-	TO_OBJECT, TO_CAMERA, TO_SINK, TO_FLIPMAP, TO_FLIPON, TO_FLIPOFF, TO_TARGET, TO_FINISH, TO_CD, TO_FLIPEFFECT, TO_SECRET, TO_BODYBAG, TO_FLYBY, TO_CUTSCENE
+	TO_OBJECT, 
+	TO_CAMERA,
+	TO_SINK, 
+	TO_FLIPMAP, 
+	TO_FLIPON, 
+	TO_FLIPOFF, 
+	TO_TARGET, 
+	TO_FINISH, 
+	TO_CD, 
+	TO_FLIPEFFECT, 
+	TO_SECRET,
+	TO_BODYBAG, 
+	TO_FLYBY, 
+	TO_CUTSCENE
 };
 
+/*structs*/
 struct OBJECT_VECTOR
 {
 	long x;
@@ -287,12 +336,6 @@ struct OBJECT_VECTOR
 	long z;
 	short data;
 	short flags;
-};
-
-struct bounding_box_f
-{
-	float minX, minY, minZ;
-	float maxX, maxY, maxZ;
 };
 
 struct SUBSUIT_INFO
@@ -318,7 +361,7 @@ struct ROOMLET
 	LPDIRECT3DVERTEXBUFFER	pVtx;
 	float* pSVtx;
 	short* pFac;
-	int* pPrelight;
+	long* pPrelight;
 };
 
 struct SPHERE
@@ -328,7 +371,6 @@ struct SPHERE
 	long z;
 	long r;
 };
-
 
 struct GAME_VECTOR
 {
@@ -420,14 +462,14 @@ struct WEAPON_INFO
 
 struct GAMEFLOW
 {
-	unsigned int CheatEnabled : 1;
-		unsigned int LoadSaveEnabled : 1;
-		unsigned int TitleEnabled : 1;
-		unsigned int PlayAnyLevel : 1;
-		unsigned int Language : 3;
-		unsigned int DemoDisc : 1;
-		unsigned int Unused : 24;
-	unsigned int InputTimeout;
+	ulong CheatEnabled : 1;
+	ulong LoadSaveEnabled : 1;
+	ulong TitleEnabled : 1;
+	ulong PlayAnyLevel : 1;
+	ulong Language : 3;
+	ulong DemoDisc : 1;
+	ulong Unused : 24;
+	ulong InputTimeout;
 	uchar SecurityTag;
 	uchar nLevels;
 	uchar nFileNames;
@@ -440,8 +482,8 @@ struct FLOOR_INFO
 {
 	ushort index;
 	ushort fx : 4;
-		ushort box : 11;
-		ushort stopper : 1;
+	ushort box : 11;
+	ushort stopper : 1;
 	uchar pit_room;
 	char floor;
 	uchar sky_room;
@@ -515,10 +557,10 @@ struct ITEM_LIGHT
 	long fcnt;
 	PCLIGHT	CurrentLights[21];
 	PCLIGHT	PrevLights[21];
-	int nCurrentLights;
-	int nPrevLights;
-	int	room_number;
-	int RoomChange;
+	long nCurrentLights;
+	long nPrevLights;
+	long	room_number;
+	long RoomChange;
 	PHD_VECTOR item_pos;
 	void* pCurrentLights;
 	void* pPrevLights;
@@ -536,11 +578,11 @@ struct SAMPLE_INFO
 
 struct SoundSlot
 {
-	int OrigVolume;
-	int nVolume;
-	int nPan;
-	int nPitch;
-	int nSampleInfo;
+	long OrigVolume;
+	long nVolume;
+	long nPan;
+	long nPitch;
+	long nSampleInfo;
 	ulong distance;
 	PHD_VECTOR pos;
 };
@@ -781,7 +823,7 @@ struct CAMERA_INFO
 	ITEM_INFO* item;
 	ITEM_INFO* last_item;
 	OBJECT_VECTOR* fixed;
-	int mike_at_lara;
+	long mike_at_lara;
 	PHD_VECTOR mike_pos;
 
 	struct
@@ -910,9 +952,9 @@ struct ROOM_INFO
 	short fx_number;
 	short flipped_room;
 	ushort flags;
-	int nVerts;
-	int nWaterVerts;
-	int nShoreVerts;
+	long nVerts;
+	long nWaterVerts;
+	long nShoreVerts;
 	LPDIRECT3DVERTEXBUFFER SourceVB;
 	short* FaceData;
 	float posx;
@@ -922,22 +964,22 @@ struct ROOM_INFO
 	D3DVECTOR* fnormals;
 	long* prelight;
 	long* prelightwater;
-	int	watercalc;
+	long	watercalc;
 	D3DVECTOR* verts;
-	int gt3cnt;
-	int gt4cnt;
+	long gt3cnt;
+	long gt4cnt;
 	PCLIGHT_INFO* pclight;
 	FOGBULB* fogbulb;
-	int nPCLight;
-	int nFogBulbs;
+	long nPCLight;
+	long nFogBulbs;
 	float cy0;
 	float cy1;
-	int nRoomlets;
+	long nRoomlets;
 	ROOMLET* pRoomlets;
 	float* pRmVtx;
 	short* pRmFace;
-	int* pRmPrelight;
-	int	vDumpSz;
+	long* pRmPrelight;
+	long	vDumpSz;
 	float fLeft;
 	float fRight;
 	float fTop;
@@ -1030,7 +1072,7 @@ struct LARA_INFO
 	long water_surface_dist;
 	PHD_VECTOR last_pos;
 	FX_INFO* spaz_effect;
-	int mesh_effects;
+	long mesh_effects;
 	short* mesh_ptrs[15];
 	ITEM_INFO* target;
 	short target_angles[2];
@@ -1061,11 +1103,11 @@ struct LARA_INFO
 	ushort RopeY;
 	long RopePtr;
 	void* GeneralPtr;
-	int RopeOffset;
+	long RopeOffset;
 	ulong RopeDownVel;
 	char RopeFlag;
 	char MoveCount;
-	int RopeCount;
+	long RopeCount;
 	char skelebob;
 	char pistols_type_carried;
 	char uzis_type_carried;
@@ -1194,15 +1236,15 @@ struct OBJLIST
 struct RINGME
 {
 	OBJLIST current_object_list[100];
-	int ringactive;
-	int objlistmovement;
-	int curobjinlist;
-	int numobjectsinlist;
+	long ringactive;
+	long objlistmovement;
+	long curobjinlist;
+	long numobjectsinlist;
 };
 
 struct COMBINELIST
 {
-	void(*combine_routine)(int flag);
+	void(*combine_routine)(long flag);
 	short item1;
 	short item2;
 	short combined_item;
@@ -1303,7 +1345,7 @@ struct CUTSEQ_ROUTINES
 
 struct ACTORME
 {
-	int offset;
+	long offset;
 	short objslot;
 	short nodes;
 };
@@ -1312,11 +1354,11 @@ struct NEW_CUTSCENE
 {
 	short numactors;
 	short numframes;
-	int orgx;
-	int orgy;
-	int orgz;
-	int audio_track;
-	int camera_offset;
+	long orgx;
+	long orgy;
+	long orgz;
+	long audio_track;
+	long camera_offset;
 	ACTORME actor_data[10];
 };
 
@@ -1366,7 +1408,7 @@ struct AMMOLIST
 
 struct MENUTHANG
 {
-	int type;
+	long type;
 	char* text;
 };
 
@@ -1465,7 +1507,7 @@ struct PENDULUM
 {
 	PHD_VECTOR Position;
 	PHD_VECTOR Velocity;
-	int node;
+	long node;
 	ROPE_STRUCT* Rope;
 };
 
@@ -1485,14 +1527,14 @@ struct PCSVECTOR
 
 struct ACMESHVERTEX
 {
-	float	x;
-	float	y;
-	float	z;
-	float	nx;
-	float	ny;
-	float	nz;
-	int		prelight;
-	int		padd;
+	float x;
+	float y;
+	float z;
+	float nx;
+	float ny;
+	float nz;
+	long prelight;
+	long padd;
 };
 
 struct MESH_DATA
@@ -1511,7 +1553,7 @@ struct MESH_DATA
 	long* prelight;
 	LPDIRECT3DVERTEXBUFFER SourceVB;
 	D3DVECTOR* Normals;
-	int	aFlags;
+	long aFlags;
 	ACMESHVERTEX* aVtx;
 	float bbox[6];
 };
@@ -1553,30 +1595,31 @@ struct PHDTEXTURESTRUCT
 
 typedef struct _ENVUV
 {
-	float	u, v;
+	float u;
+	float v;
 }ENVUV, *LPENVUV;
 
 struct AFRVECTOR
 {
-	float	vx;
-	float	vy;
-	float	vz;
+	float vx;
+	float vy;
+	float vz;
 };
 
 struct DXDISPLAYMODE
 {
-	int w;
-	int h;
-	int bpp;
+	long w;
+	long h;
+	long bpp;
 	long RefreshRate;
-	int bPalette;
-	DDSURFACEDESC2	ddsd;
-	uchar	rbpp;
-	uchar	gbpp;
-	uchar	bbpp;
-	uchar	rshift;
-	uchar	gshift;
-	uchar	bshift;
+	long bPalette;
+	DDSURFACEDESC2 ddsd;
+	uchar rbpp;
+	uchar gbpp;
+	uchar bbpp;
+	uchar rshift;
+	uchar gshift;
+	uchar bshift;
 
 };
 
@@ -1584,8 +1627,8 @@ struct DXTEXTUREINFO
 {
 	DDPIXELFORMAT ddpf;
 	ulong bpp;
-	int bPalette;
-	int bAlpha;
+	long bPalette;
+	long bAlpha;
 	uchar rbpp;
 	uchar gbpp;
 	uchar bbpp;
@@ -1609,12 +1652,12 @@ struct DXD3DDEVICE
 	LPGUID lpGuid;
 	GUID Guid;
 	D3DDEVICEDESC DeviceDesc;
-	int bHardware;
-	int nDisplayModes;
+	long bHardware;
+	long nDisplayModes;
 	DXDISPLAYMODE* DisplayModes;
-	int nTextureInfos;
+	long nTextureInfos;
 	DXTEXTUREINFO* TextureInfos;
-	int nZBufferInfos;
+	long nZBufferInfos;
 	DXZBUFFERINFO* ZBufferInfos;
 };
 
@@ -1626,9 +1669,9 @@ struct DXDIRECTDRAWINFO
 	GUID Guid;
 	DDCAPS DDCaps;
 	DDDEVICEIDENTIFIER DDIdentifier;
-	int nDisplayModes;
+	long nDisplayModes;
 	DXDISPLAYMODE* DisplayModes;
-	int nD3DDevices;
+	long nD3DDevices;
 	DXD3DDEVICE* D3DDevices;
 };
 
@@ -1642,16 +1685,16 @@ struct DXDIRECTSOUNDINFO
 
 struct DXINFO
 {
-	int nDDInfo;
-	int nDSInfo;
+	long nDDInfo;
+	long nDSInfo;
 	DXDIRECTDRAWINFO* DDInfo;
 	DXDIRECTSOUNDINFO* DSInfo;
-	int nDD;
-	int nD3D;
-	int nDisplayMode;
-	int nTexture;
-	int nZBuffer;
-	int nDS;
+	long nDD;
+	long nD3D;
+	long nDisplayMode;
+	long nTexture;
+	long nZBuffer;
+	long nDS;
 	bool bHardware;
 };
 
@@ -1670,16 +1713,16 @@ struct DXPTR
 	ulong dwRenderHeight;
 	RECT rViewport;
 	RECT rScreen;
-	int Flags;
-	int WindowStyle;
+	long Flags;
+	long WindowStyle;
 	long CoopLevel;
 	IDirectInput7* lpDirectInput;
 	IDirectInputDevice7* Keyboard;
 	IDirectInputDevice7* Joystick;
 	HWND hWnd;
-	volatile int InScene;
-	volatile int WaitAtBeginScene;
-	volatile int DoneBlit;
+	volatile long InScene;
+	volatile long WaitAtBeginScene;
+	volatile long DoneBlit;
 };
 
 struct WINAPP
@@ -1696,8 +1739,8 @@ struct WINAPP
 	HACCEL hAccel;
 	bool SetupComplete;
 	bool BumpMapping;
-	int TextureSize;
-	int BumpMapSize;
+	long TextureSize;
+	long BumpMapSize;
 	bool mmx;
 	bool Filtering;
 	bool Volumetric;
@@ -1820,10 +1863,10 @@ struct DRIP_STRUCT
 	long x;
 	long y;
 	long z;
-	int lnode;
-	int ox;
-	int oy;
-	int oz;
+	long lnode;
+	long ox;
+	long oy;
+	long oz;
 	uchar On;
 	uchar R;
 	uchar G;
@@ -1983,10 +2026,10 @@ struct SPRITESTRUCT
 	ushort offset;
 	ushort width;
 	ushort height;
-	float	x1;
-	float	y1;
-	float	x2;
-	float	y2;
+	float x1;
+	float y1;
+	float x2;
+	float y2;
 };
 
 struct RAT_STRUCT
@@ -2123,5 +2166,18 @@ struct SkinXYZ
 	long x;
 	long y;
 	long z;
+};
+
+struct OLD_CAMERA
+{
+	short current_anim_state;
+	short goal_anim_state;
+	long target_distance;
+	short target_angle;
+	short target_elevation;
+	short actual_elevation;
+	PHD_3DPOS pos;
+	PHD_3DPOS pos2;
+	PHD_VECTOR t;
 };
 #pragma pack(pop)

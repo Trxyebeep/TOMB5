@@ -44,17 +44,17 @@ void DrawGameInfo(int timed)
 		if (DashTimer < 120)
 			S_DrawDashBar(100 * DashTimer / 120);
 
-		if (gfLevelFlags & GF_TIMER && savegame.Level.Timer != 0 && savegame.Level.Timer < 0x1A5E0)
+		if (gfLevelFlags & GF_TIMER && savegame.Level.Timer && savegame.Level.Timer < 108000)
 		{
 			seconds = savegame.Level.Timer / 30;
-			sprintf(&buf[0], "%.2d", seconds / 60);
-			PrintString(0x28, 0x18, 0, &buf[0], 0);
-			PrintString(0x3C, 0x18, 0, ":", 0);
-			sprintf(&buf[0], "%.2d", seconds % 60);
-			PrintString(0x42, 0x18, 0, &buf[0], 0);
-			PrintString(0x56, 0x18, 0, ":", 0);
-			sprintf(&buf[0], "%.2d", (338 * (savegame.Level.Timer % 30)) / 100);
-			PrintString(0x5C, 0x18, 0, &buf[0], 0);
+			sprintf(buf, "%.2d", seconds / 60);
+			PrintString(40, 24, 0, buf, 0);
+			PrintString(60, 24, 0, ":", 0);
+			sprintf(buf, "%.2d", seconds % 60);
+			PrintString(66, 24, 0, buf, 0);
+			PrintString(86, 24, 0, ":", 0);
+			sprintf(buf, "%.2d", (334 * (savegame.Level.Timer % 30)) / 100);
+			PrintString(92, 24, 0, buf, 0);
 		}
 
 #ifdef AMMO_COUNTER
@@ -206,7 +206,10 @@ void DrawPickups(int timed)
 		if (PickupX < 128)
 		{
 			if (PickupVel < 16)
-				PickupX += ++PickupVel;
+			{
+				PickupVel++;
+				PickupX += PickupVel;
+			}
 		}
 		else
 		{
