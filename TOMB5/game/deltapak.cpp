@@ -338,7 +338,7 @@ CUTSEQ_ROUTINES cutseq_control_routines[45] =
 	{ joby10_init, joby10_control, joby10_end },
 	{ joby9_init, joby9_control, joby9_end },
 	{ andy3_init, andy3_control, andy3_end },
-	{ joby5_init, joby5_control, joby5_end },
+	{ joby5_init, joby5_control, joby5_end },//15
 	{ andrea2_init, andrea2_control, andrea2_end },
 	{ andrea1_init, andrea1_control, andrea1_end },
 	{ joby4_init, joby4_control, joby4_end },
@@ -384,7 +384,7 @@ void andrea1_control()
 	{
 	case 330:
 		item = find_a_fucking_item(ANIMATING10);
-		item->flags |= 0x20;
+		item->flags |= IFL_TRIGGERED;
 		item->mesh_bits = item->mesh_bits & 0xFFFFFFFD | 4;
 		break;
 
@@ -453,7 +453,7 @@ void andrea2_control()
 	else if (GLOBAL_cutseq_frame == 2522)
 	{
 		item = find_a_fucking_item(ANIMATING10);
-		item->flags |= 0x20;
+		item->flags |= IFL_TRIGGERED;
 		item->mesh_bits = item->mesh_bits & 0xFFFFFFF7 | 16;
 	}
 	else
@@ -867,7 +867,7 @@ void richcut3_end()
 	if (item)
 	{
 		item->status = ITEM_ACTIVE;
-		item->flags |= 0x20;
+		item->flags |= IFL_TRIGGERED;
 	}
 }
 
@@ -1195,8 +1195,9 @@ void andy8_init()
 
 void andy8_control()
 {
-	ITEM_INFO* item = find_a_fucking_item(ANIMATING16);
+	ITEM_INFO* item;
 
+	item = find_a_fucking_item(ANIMATING16);
 	item->flags |= IFL_TRIGGERED;
 
 	switch (GLOBAL_cutseq_frame)
@@ -3615,7 +3616,7 @@ void cutseq_kill_item(int num)
 			old_status_flags[numnailed] = item->status;	
 			old_status_flags2[numnailed] = item->flags;
 			item->status = ITEM_INVISIBLE;
-			item->flags = (item->flags & 0xC1FF) | 0x20;
+			item->flags = (item->flags & 0xC1FF) | IFL_TRIGGERED;
 			numnailed++;
 		}
 	}
@@ -3803,6 +3804,120 @@ void nail_intelligent_object(short objnum)
 		}
 	}
 }
+
+#ifdef CUTSCENE_SKIPPER
+
+void do_cutseq_skipper_shit()
+{
+	ITEM_INFO* item;
+	short room_num;
+
+	//a bunch of hardcoded bullshit to avoid softlocking..
+
+	switch (cutseq_num)
+	{
+	case 14:
+
+		if (GLOBAL_cutseq_frame < 240)
+			do_catapult_meshswap();
+
+		break;
+
+	case 17:
+		
+		if (GLOBAL_cutseq_frame < 330)
+		{
+			item = find_a_fucking_item(ANIMATING10);
+			item->flags |= IFL_TRIGGERED;
+			item->mesh_bits = item->mesh_bits & 0xFFFFFFFD | 4;
+		}
+
+		if (GLOBAL_cutseq_frame < 603 && GLOBAL_cutseq_frame > 452)
+			lara.holster = old_lara_holster;
+
+		break;
+
+	case 20:
+
+		if (GLOBAL_cutseq_frame > 14 && GLOBAL_cutseq_frame < 269)
+			do_hammer_meshswap();
+
+		break;
+
+	case 21:
+
+		if (GLOBAL_cutseq_frame < 3750)
+			cutseq_restore_item(ANIMATING2);
+
+		break;
+
+	case 23:
+
+		if (GLOBAL_cutseq_frame < 320)
+		{
+			cutseq_removelara_hk();
+			lara.back_gun = WEAPON_NONE;
+			lara.hk_type_carried = WTYPE_MISSING;
+			lara.last_gun_type = WEAPON_NONE;
+		}
+
+		break;
+
+	case 24:
+
+		if (GLOBAL_cutseq_frame < 840)
+		{
+			item = find_a_fucking_item(CLOSED_DOOR2);
+			AddActiveItem(item - items);
+			item->status = ITEM_INVISIBLE;
+			item->flags |= IFL_CODEBITS;
+		}
+
+		break;
+
+	case 27:
+
+		if (GLOBAL_cutseq_frame < 850)
+			cutseq_removelara_pistols();
+
+		if (GLOBAL_cutseq_frame < 1301)
+			FlipMap(1);
+
+		break;
+
+	case 32:
+
+		if (GLOBAL_cutseq_frame < 2724)
+		{
+			room_num = lara_item->room_number;
+			GetHeight(GetFloor(lara_item->pos.x_pos + 1024, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_num), lara_item->pos.x_pos + 1024, lara_item->pos.y_pos, lara_item->pos.z_pos);
+			TestTriggers(trigger_index, 1, 0);
+		}
+
+		break;
+
+	case 38:
+
+		if (GLOBAL_cutseq_frame < 145)
+			do_chalk_meshswap();
+
+		if (GLOBAL_cutseq_frame < 831)
+		{
+			item = find_a_fucking_item(ANIMATING16);
+			item->mesh_bits = 8;
+		}
+
+		break;
+
+	default:
+		break;
+	}
+
+	lara_item->mesh_bits = -1;	//for good fucking measure
+	cutseq_trig = 3;	//end it
+}
+
+#endif
 
 void inject_deltaPak(bool replace)
 {

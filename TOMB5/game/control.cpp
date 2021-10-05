@@ -34,6 +34,9 @@
 #include "twogun.h"
 #include "text.h"
 #include "../specific/dxsound.h"
+#ifdef CUTSCENE_SKIPPER
+#include "deltapak.h"
+#endif
 
 uchar ShatterSounds[18][10] =
 {
@@ -98,12 +101,7 @@ long ControlPhase(long _nframes, int demo_mode)
 		{
 #ifdef CUTSCENE_SKIPPER
 			if (keymap[DIK_ESCAPE] && !ScreenFading)//skip them with esc
-			{
-				if (!bDoCredits)
-					cutseq_trig = 3;
-				else
-					credits_timer = 4283;
-			}
+				do_cutseq_skipper_shit();
 #endif
 			input = 0;
 		}
