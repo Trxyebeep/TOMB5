@@ -3909,6 +3909,11 @@ void do_cutseq_skipper_shit()
 
 		break;
 
+	case 40:
+
+		if (GLOBAL_cutseq_frame < 3134)
+			cutseq_givelara_pistols();
+
 	default:
 		break;
 	}
