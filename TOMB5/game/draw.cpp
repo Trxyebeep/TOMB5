@@ -13,6 +13,7 @@
 #include "../specific/drawroom.h"
 #include "../specific/polyinsert.h"
 #include "../specific/function_stubs.h"
+#include "../specific/lighting.h"
 #ifdef DEBUG_FEATURES
 #include "../specific/texture.h"
 #endif
@@ -453,6 +454,31 @@ void UpdateSkyLightning()
 	}
 }
 
+void CalculateObjectLighting(ITEM_INFO* item, short* frame)
+{
+	long x, y, z;
+
+	if (item->shade >= 0)
+		S_CalculateStaticMeshLight(item->pos.x_pos,item->pos.y_pos,item->pos.z_pos, item->shade & 0x7FFF, &room[item->room_number]);
+	else
+	{
+		phd_PushUnitMatrix();
+		phd_SetTrans(0, 0, 0);
+		phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+		phd_TranslateRel((frame[0] + frame[1]) >> 1, (frame[2] + frame[3]) >> 1, (frame[4] + frame[5]) >> 1);
+		x = item->pos.x_pos + (phd_mxptr[3] >> 14);
+		y = item->pos.y_pos + (phd_mxptr[7] >> 14);
+		z = item->pos.z_pos + (phd_mxptr[11] >> 14);
+		phd_PopMatrix();
+		current_item = item;
+		item->il.item_pos.x = x;
+		item->il.item_pos.y = y;
+		item->il.item_pos.z = z;
+		CalcAmbientLight(item);
+		CreateLightList(item);
+	}
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -473,4 +499,5 @@ void inject_draw(bool replace)
 	INJECT(0x0042A400, DrawPhaseGame, replace);
 	INJECT(0x0042A4A0, SkyDrawPhase, replace);
 	INJECT(0x0042A310, UpdateSkyLightning, replace);
+	INJECT(0x0042CD50, CalculateObjectLighting, replace);
 }
