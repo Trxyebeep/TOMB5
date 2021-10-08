@@ -391,9 +391,6 @@ void DrawLaserSightSprite()
 	LaserSightActive = 0;
 }
 
-#define FogEnd	VAR_U_(0x0050A43C, float)
-#define f_zfar	VAR_U_(0x0055D228, float)
-
 void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 {
 	PHD_VECTOR vec[4];

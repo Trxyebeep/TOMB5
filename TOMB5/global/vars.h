@@ -461,6 +461,8 @@
 #define LSHKShotsFired	VAR_U_(0x0051CA45, char)
 #define ExittingBinos	VAR_U_(0x0051CA20, long)
 #define bLaraTorch	VAR_U_(0x0087B0F8, long)
+#define FogEnd	VAR_U_(0x0050A43C, float)
+#define f_zfar	VAR_U_(0x0055D228, float)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
