@@ -16,3 +16,5 @@ void FlameEmitterControl(short item_number);
 void FlameEmitter2Control(short item_number);
 void FlameEmitter3Control(short item_number);
 void FlameControl(short fx_number);
+void RollingBallCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll);
+void ControlRollingBall(short item_number);

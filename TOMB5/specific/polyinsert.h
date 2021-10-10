@@ -11,3 +11,4 @@
 #define AddTriClippedZBuffer	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, TEXTURESTRUCT*, int)) 0x004BA960 )
 #define AddQuadClippedZBuffer	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, int)) 0x004BA300 )
 #define AddLineClippedSorted	( (void(__cdecl*)(D3DTLVERTEX*, D3DTLVERTEX*, int)) 0x004BCE20 )
+#define CalcColorSplit	( (void(__cdecl*)(ulong, D3DCOLOR*)) 0x004BD150 )

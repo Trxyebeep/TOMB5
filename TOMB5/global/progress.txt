@@ -115,7 +115,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004120F0		UpdateLaraRoom
 0x00412170		LaraBaddieCollision
 0x004124E0		CreatureCollision
-0x004126E0		ObjectCollision
+0x004126E0	+	ObjectCollision
 0x00412770		AIPickupCollision
 0x004127C0		TrapCollision
 0x00412860		ItemPushLara
@@ -449,7 +449,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042C790		aInterpolateArmMatrix
 0x0042C8F0		InterpolateMatrix
 0x0042CC10		InterpolateArmMatrix
-0x0042CD50		CalculateObjectLighting
+0x0042CD50	+	CalculateObjectLighting
 0x0042CEB0		GetFrames
 0x0042CF80	+	GetBoundsAccurate
 0x0042D020	+	GetBestFrame
@@ -542,9 +542,9 @@ x for functions decompiled but not injected, for one reason or another.
 		
 		game/flmtorch.cpp
 
-0x00433990		TriggerTorchFlame
+0x00433990	+	TriggerTorchFlame
 0x00433B40	+	FireCollision
-0x00433EA0		DoFlameTorch
+0x00433EA0	+	DoFlameTorch
 0x004342D0		GetFlameTorch
 0x00434390		FlameTorchControl
 
@@ -1545,8 +1545,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048AB80	+	FlameControl
 0x0048AD60	+	LaraBurn
 0x0048ADD0	+	LavaBurn
-0x0048AE60		ControlRollingBall
-0x0048B6D0		RollingBallCollision
+0x0048AE60	x	ControlRollingBall
+0x0048B6D0	+	RollingBallCollision
 0x0048B7E0		DrawScaledSpike
 0x0048B9E0		TwoBlockPlatformFloor
 0x0048BA50		TwoBlockPlatformCeiling
@@ -2094,7 +2094,68 @@ x for functions decompiled but not injected, for one reason or another.
 
 
 		specific/specificfx.cpp
-no.
+
+0x004BEB50		aInitFX
+0x004BEBD0		DoSnow
+0x004BF3C0		DoRain
+0x004BFD70		ClearFX
+0x004BFDA0		AddPolyLine
+0x004C0060		DrawStarField
+0x004C0580		DoWeather
+0x004C05B0		setXY4
+0x004C0810		setXY3
+0x004C09E0		setXYZ4
+0x004C0F30		setXYZ3
+0x004C1340		DrawBubbles
+0x004C1790		S_DrawSplashes
+0x004C23C0		S_DrawFireSparks
+0x004C2980		S_DrawSmokeSparks
+0x004C2F10	+	S_PrintShadow
+0x004C34F0		InitTarget
+0x004C35D0		InitBinoculars
+0x004C36B0		DrawBinoculars
+0x004C3EB0		aSetXY4
+0x004C4130		S_DrawDrawSparks
+0x004C4790		S_DrawDrawSparksNEW
+0x004C4C60		S_DrawSparks
+0x004C54F0		_0x004C54F0
+0x004C5590		_0x004C5590
+0x004C5B10		ClipLine
+0x004C5EA0	+	DrawFlatSky
+0x004C6BA0		sub_4C6BA0
+0x004C6D10		OutputSky
+0x004C6E00		DrawRope
+0x004C7320	+	DrawLaserSightSprite
+0x004C7620		DrawDebris
+0x004C7CB0		DrawBlood
+0x004C8110		DrawDrips
+0x004C8650		DoUwEffect
+0x004C8CB0		DrawWraithTrail
+0x004C9190		SuperShowLogo
+0x004C95C0		DrawTrainFloorStrip
+0x004C9C20		DrawTrainStrips
+0x004C9D90		DrawSprite
+0x004C9F70		SetUpLensFlare
+0x004CA720		SetFade
+0x004CA770		DoScreenFade
+0x004CA7F0		DrawPsxTile
+0x004CAA60		_0x004CAA60
+0x004CAC90		DrawFlash
+0x004CADA0		DrawBikeSpeedo
+0x004CB280		DrawShockwaves
+0x004CBB10		S_DrawDarts
+0x004CBE50		Draw2DSprite
+0x004CC0B0		DrawLightning
+0x004CCBA0		OldDrawLightning
+0x004CD750		aTransformPerspSV
+0x004CD960		DrawLasers
+0x004CE610		DrawSteamLasers
+0x004CF191		_0x004CF191
+0x004CF1B0		aDrawWreckingBall
+0x004CF2F0		DrawMoon
+0x004CF550		DrawTwogunLaser
+0x004CFD20		SuperDrawBox
+0x004CFF80		DrawGasCloud
 
 		specific/texture.cpp
 

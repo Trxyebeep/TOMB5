@@ -5,6 +5,7 @@
 #include "../game/control.h"
 #include "../specific/function_table.h"
 #include "../game/objects.h"
+#include "polyinsert.h"
 #ifdef DEBUG_FEATURES
 #include "dxshell.h"
 #endif
@@ -390,8 +391,726 @@ void DrawLaserSightSprite()
 	LaserSightActive = 0;
 }
 
+#ifdef USE_SKY_SPRITE
+void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
+{
+	SPRITESTRUCT* sprite;
+	PHD_VECTOR vec[4];
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT Tex;
+	short* clip;
+	float perspz, u1, v1, u2, v2;
+	short clipdistance;
+	long x, y, z;
+
+	phd_PushMatrix();
+
+	if (gfCurrentLevel)
+		phd_TranslateRel(zpos, ypos, 0);
+	else
+		phd_TranslateRel(0, ypos, 0);
+
+	switch (def)
+	{
+	case 0:
+		vec[0].x = -4864;
+		vec[0].y = 0;
+		vec[0].z = 0;
+		vec[1].x = 0;
+		vec[1].y = 0;
+		vec[1].z = 0;
+		vec[2].x = 0;
+		vec[2].y = 0;
+		vec[2].z = -4864;
+		vec[3].x = -4864;
+		vec[3].y = 0;
+		vec[3].z = -4864;
+		break;
+
+	case 1:
+		vec[0].x = 0;
+		vec[0].y = 0;
+		vec[0].z = 0;
+		vec[1].x = 4864;
+		vec[1].y = 0;
+		vec[1].z = 0;
+		vec[2].x = 4864;
+		vec[2].y = 0;
+		vec[2].z = -4864;
+		vec[3].x = 0;
+		vec[3].y = 0;
+		vec[3].z = -4864;
+		break;
+
+	case 2:
+		vec[0].x = 0;
+		vec[0].y = 0;
+		vec[0].z = 4864;
+		vec[1].x = 4864;
+		vec[1].y = 0;
+		vec[1].z = 4864;
+		vec[2].x = 4864;
+		vec[2].y = 0;
+		vec[2].z = 0;
+		vec[3].x = 0;
+		vec[3].y = 0;
+		vec[3].z = 0;
+		break;
+
+	case 3:
+		vec[0].x = -4864;
+		vec[0].y = 0;
+		vec[0].z = 4864;
+		vec[1].x = 0;
+		vec[1].y = 0;
+		vec[1].z = 4864;
+		vec[2].x = 0;
+		vec[2].y = 0;
+		vec[2].z = 0;
+		vec[3].x = -4864;
+		vec[3].y = 0;
+		vec[3].z = 0;
+		break;
+
+	default:
+		return;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		x = vec[i].x;
+		y = vec[i].y;
+		z = vec[i].z;
+		vec[i].x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z + phd_mxptr[M03]) >> 14;
+		vec[i].y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z + phd_mxptr[M13]) >> 14;
+		vec[i].z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z + phd_mxptr[M23]) >> 14;
+		v[i].color = color | 0xFF000000;
+		v[i].specular = 0xFF000000;
+		CalcColorSplit(color, &v[i].color);
+	}
+
+	clip = clipflags;
+	v[0].tu = (float)vec[0].x;
+	v[0].tv = (float)vec[0].y;
+	v[0].sz = (float)vec[0].z;
+	clipdistance = 0;
+
+	if (v[0].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[0].sz;
+
+		if (v[0].sz > FogEnd)
+		{
+			v[0].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[0].sx = perspz * v[0].tu + f_centerx;
+		v[0].sy = perspz * v[0].tv + f_centery;
+		v[0].rhw = perspz * f_moneopersp;
+
+		if (v[0].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[0].sx)
+			clipdistance += 2;
+
+		if (v[0].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[0].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	v[1].tu = (float)vec[1].x;
+	v[1].tv = (float)vec[1].y;
+	v[1].sz = (float)vec[1].z;
+	clipdistance = 0;
+
+	if (v[1].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[1].sz;
+
+		if (v[1].sz > FogEnd)
+		{
+			v[1].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[1].sx = perspz * v[1].tu + f_centerx;
+		v[1].sy = perspz * v[1].tv + f_centery;
+		v[1].rhw = perspz * f_moneopersp;
+
+		if (v[1].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[1].sx)
+			clipdistance += 2;
+
+		if (v[1].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[1].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	v[2].tu = (float)vec[2].x;
+	v[2].tv = (float)vec[2].y;
+	v[2].sz = (float)vec[2].z;
+	clipdistance = 0;
+
+	if (v[2].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[2].sz;
+
+		if (v[2].sz > FogEnd)
+		{
+			v[2].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[2].sx = perspz * v[2].tu + f_centerx;
+		v[2].sy = perspz * v[2].tv + f_centery;
+		v[2].rhw = perspz * f_moneopersp;
+
+		if (v[2].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[2].sx)
+			clipdistance += 2;
+
+		if (v[2].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[2].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	_0x004C6BA0(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);
+	sprite = &spriteinfo[objects[SKY_GRAPHICS].mesh_index + def];
+	Tex.drawtype = (ushort)drawtype;
+	Tex.flag = 0;
+	Tex.tpage = sprite->tpage;
+	u1 = sprite->x2;
+	u2 = sprite->x1;
+	v1 = sprite->y2;
+	v2 = sprite->y1;
+	Tex.u1 = u1;
+	Tex.v1 = v1;
+	Tex.u2 = u2;
+	Tex.v2 = v1;
+	Tex.u3 = u2;
+	Tex.v3 = v2;
+	Tex.u4 = u1;
+	Tex.v4 = v2;
+	AddQuadSorted(v, 3, 2, 1, 0, &Tex, 1);
+	phd_TranslateRel(-9728, 0, 0);
+
+	switch (def)
+	{
+	case 0:
+		vec[0].x = -4864;
+		vec[0].y = 0;
+		vec[0].z = 0;
+		vec[1].x = 0;
+		vec[1].y = 0;
+		vec[1].z = 0;
+		vec[2].x = 0;
+		vec[2].y = 0;
+		vec[2].z = -4864;
+		vec[3].x = -4864;
+		vec[3].y = 0;
+		vec[3].z = -4864;
+		break;
+
+	case 1:
+		vec[0].x = 0;
+		vec[0].y = 0;
+		vec[0].z = 0;
+		vec[1].x = 4864;
+		vec[1].y = 0;
+		vec[1].z = 0;
+		vec[2].x = 4864;
+		vec[2].y = 0;
+		vec[2].z = -4864;
+		vec[3].x = 0;
+		vec[3].y = 0;
+		vec[3].z = -4864;
+		break;
+
+	case 2:
+		vec[0].x = 0;
+		vec[0].y = 0;
+		vec[0].z = 4864;
+		vec[1].x = 4864;
+		vec[1].y = 0;
+		vec[1].z = 4864;
+		vec[2].x = 4864;
+		vec[2].y = 0;
+		vec[2].z = 0;
+		vec[3].x = 0;
+		vec[3].y = 0;
+		vec[3].z = 0;
+		break;
+
+	case 3:
+		vec[0].x = -4864;
+		vec[0].y = 0;
+		vec[0].z = 4864;
+		vec[1].x = 0;
+		vec[1].y = 0;
+		vec[1].z = 4864;
+		vec[2].x = 0;
+		vec[2].y = 0;
+		vec[2].z = 0;
+		vec[3].x = -4864;
+		vec[3].y = 0;
+		vec[3].z = 0;
+		break;
+
+	default:
+		return;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		x = vec[i].x;
+		y = vec[i].y;
+		z = vec[i].z;
+		vec[i].x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z + phd_mxptr[M03]) >> 14;
+		vec[i].y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z + phd_mxptr[M13]) >> 14;
+		vec[i].z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z + phd_mxptr[M23]) >> 14;
+		v[i].color |= 0xFF000000;
+		v[i].specular = 0xFF000000;
+		CalcColorSplit(color, &v[i].color);
+	}
+
+	clip = clipflags;
+	v[0].tu = (float)vec[0].x;
+	v[0].tv = (float)vec[0].y;
+	v[0].sz = (float)vec[0].z;
+	clipdistance = 0;
+
+	if (v[0].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[0].sz;
+
+		if (v[0].sz > FogEnd)
+		{
+			v[0].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[0].sx = perspz * v[0].tu + f_centerx;
+		v[0].sy = perspz * v[0].tv + f_centery;
+		v[0].rhw = perspz * f_moneopersp;
+
+		if (v[0].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[0].sx)
+			clipdistance += 2;
+
+		if (v[0].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[0].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	v[1].tu = (float)vec[1].x;
+	v[1].tv = (float)vec[1].y;
+	v[1].sz = (float)vec[1].z;
+	clipdistance = 0;
+
+	if (v[1].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[1].sz;
+
+		if (v[1].sz > FogEnd)
+		{
+			v[1].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[1].sx = perspz * v[1].tu + f_centerx;
+		v[1].sy = perspz * v[1].tv + f_centery;
+		v[1].rhw = perspz * f_moneopersp;
+
+		if (v[1].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[1].sx)
+			clipdistance += 2;
+
+		if (v[1].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[1].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	v[2].tu = (float)vec[2].x;
+	v[2].tv = (float)vec[2].y;
+	v[2].sz = (float)vec[2].z;
+	clipdistance = 0;
+
+	if (v[2].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[2].sz;
+
+		if (v[2].sz > FogEnd)
+		{
+			v[2].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[2].sx = perspz * v[2].tu + f_centerx;
+		v[2].sy = perspz * v[2].tv + f_centery;
+		v[2].rhw = perspz * f_moneopersp;
+
+		if (v[2].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[2].sx)
+			clipdistance += 2;
+
+		if (v[2].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[2].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	_0x004C6BA0(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);
+
+	if (gfCurrentLevel != 0)
+		AddQuadSorted(v, 3, 2, 1, 0, &Tex, 1);
+
+	phd_PopMatrix();
+}
+
+void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
+{
+	DrawSkySegment(color, (char)drawtype, 0, zpos, ypos);
+	DrawSkySegment(color, (char)drawtype, 1, zpos, ypos);
+	DrawSkySegment(color, (char)drawtype, 2, zpos, ypos);
+	DrawSkySegment(color, (char)drawtype, 3, zpos, ypos);
+}
+#else
+void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
+{
+	PHD_VECTOR vec[4];
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT Tex;
+	short* clip;
+	float perspz;
+	long x, y, z;
+	short clipdistance;
+
+	phd_PushMatrix();
+
+	if (gfCurrentLevel)
+		phd_TranslateRel(zpos, ypos, 0);
+	else
+		phd_TranslateRel(0, ypos, 0);
+
+	vec[0].x = -4864;
+	vec[0].y = 0;
+	vec[0].z = 4864;
+	vec[1].x = 4864;
+	vec[1].y = 0;
+	vec[1].z = 4864;
+	vec[2].x = 4864;
+	vec[2].y = 0;
+	vec[2].z = -4864;
+	vec[3].x = -4864;
+	vec[3].y = 0;
+	vec[3].z = -4864;
+
+	for (int i = 0; i < 4; i++)
+	{
+		x = vec[i].x;
+		y = vec[i].y;
+		z = vec[i].z;
+		vec[i].x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z + phd_mxptr[M03]) >> 14;
+		vec[i].y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z + phd_mxptr[M13]) >> 14;
+		vec[i].z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z + phd_mxptr[M23]) >> 14;
+		v[i].color = color | 0xFF000000;
+		v[i].specular = 0xFF000000;
+		CalcColorSplit(color, &v[i].color);
+	}
+
+	clip = clipflags;
+	v[0].tu = (float)vec[0].x;
+	v[0].tv = (float)vec[0].y;
+	v[0].sz = (float)vec[0].z;
+	clipdistance = 0;
+
+	if (v[0].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[0].sz;
+
+		if (v[0].sz > FogEnd)
+		{
+			v[0].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[0].sx = perspz * v[0].tu + f_centerx;
+		v[0].sy = perspz * v[0].tv + f_centery;
+		v[0].rhw = perspz * f_moneopersp;
+
+		if (v[0].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[0].sx)
+			clipdistance += 2;
+
+		if (v[0].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[0].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	v[1].tu = (float)vec[1].x;
+	v[1].tv = (float)vec[1].y;
+	v[1].sz = (float)vec[1].z;
+	clipdistance = 0;
+
+	if (v[1].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[1].sz;
+
+		if (v[1].sz > FogEnd)
+		{
+			v[1].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[1].sx = perspz * v[1].tu + f_centerx;
+		v[1].sy = perspz * v[1].tv + f_centery;
+		v[1].rhw = perspz * f_moneopersp;
+
+		if (v[1].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[1].sx)
+			clipdistance += 2;
+
+		if (v[1].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[1].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	v[2].tu = (float)vec[2].x;
+	v[2].tv = (float)vec[2].y;
+	v[2].sz = (float)vec[2].z;
+	clipdistance = 0;
+
+	if (v[2].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[2].sz;
+
+		if (v[2].sz > FogEnd)
+		{
+			v[2].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[2].sx = perspz * v[2].tu + f_centerx;
+		v[2].sy = perspz * v[2].tv + f_centery;
+		v[2].rhw = perspz * f_moneopersp;
+
+		if (v[2].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[2].sx)
+			clipdistance += 2;
+
+		if (v[2].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[2].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	_0x004C6BA0(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);
+	Tex.drawtype = (ushort)drawtype;
+	Tex.flag = 0;
+	Tex.tpage = nTextures - 1;
+	Tex.u1 = 0.0;
+	Tex.v1 = 0.0;
+	Tex.u2 = 1.0;
+	Tex.v2 = 0.0;
+	Tex.u3 = 1.0;
+	Tex.v3 = 1.0;
+	Tex.u4 = 0.0;
+	Tex.v4 = 1.0;
+	AddQuadSorted(v, 3, 2, 1, 0, &Tex, 1);
+	phd_TranslateRel(-9728, 0, 0);
+	vec[0].x = -4864;
+	vec[0].y = 0;
+	vec[0].z = 4864;
+	vec[1].x = 4864;
+	vec[1].y = 0;
+	vec[1].z = 4864;
+	vec[2].x = 4864;
+	vec[2].y = 0;
+	vec[2].z = -4864;
+	vec[3].x = -4864;
+	vec[3].y = 0;
+	vec[3].z = -4864;
+
+	for (int i = 0; i < 4; i++)
+	{
+		x = vec[i].x;
+		y = vec[i].y;
+		z = vec[i].z;
+		vec[i].x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z + phd_mxptr[M03]) >> 14;
+		vec[i].y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z + phd_mxptr[M13]) >> 14;
+		vec[i].z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z + phd_mxptr[M23]) >> 14;
+		v[i].color |= 0xFF000000;
+		v[i].specular = 0xFF000000;
+		CalcColorSplit(color, &v[i].color);
+	}
+
+	clip = clipflags;
+	v[0].tu = (float)vec[0].x;
+	v[0].tv = (float)vec[0].y;
+	v[0].sz = (float)vec[0].z;
+	clipdistance = 0;
+
+	if (v[0].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[0].sz;
+
+		if (v[0].sz > FogEnd)
+		{
+			v[0].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[0].sx = perspz * v[0].tu + f_centerx;
+		v[0].sy = perspz * v[0].tv + f_centery;
+		v[0].rhw = perspz * f_moneopersp;
+
+		if (v[0].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[0].sx)
+			clipdistance += 2;
+
+		if (v[0].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[0].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	v[1].tu = (float)vec[1].x;
+	v[1].tv = (float)vec[1].y;
+	v[1].sz = (float)vec[1].z;
+	clipdistance = 0;
+
+	if (v[1].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[1].sz;
+
+		if (v[1].sz > FogEnd)
+		{
+			v[1].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[1].sx = perspz * v[1].tu + f_centerx;
+		v[1].sy = perspz * v[1].tv + f_centery;
+		v[1].rhw = perspz * f_moneopersp;
+
+		if (v[1].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[1].sx)
+			clipdistance += 2;
+
+		if (v[1].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[1].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	v[2].tu = (float)vec[2].x;
+	v[2].tv = (float)vec[2].y;
+	v[2].sz = (float)vec[2].z;
+	clipdistance = 0;
+
+	if (v[2].sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v[2].sz;
+
+		if (v[2].sz > FogEnd)
+		{
+			v[2].sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v[2].sx = perspz * v[2].tu + f_centerx;
+		v[2].sy = perspz * v[2].tv + f_centery;
+		v[2].rhw = perspz * f_moneopersp;
+
+		if (v[2].sx > phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v[2].sx)
+			clipdistance += 2;
+
+		if (v[2].sy < phd_winymin)
+			clipdistance += 4;
+		else if (v[2].sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+	clip++;
+	_0x004C6BA0(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);
+
+	if (gfCurrentLevel != 0)
+		AddQuadSorted(v, 3, 2, 1, 0, &Tex, 1);
+
+	phd_PopMatrix();
+}
+#endif
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
 	INJECT(0x004C7320, DrawLaserSightSprite, replace);
+	INJECT(0x004C5EA0, DrawFlatSky, replace);
 }

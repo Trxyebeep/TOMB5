@@ -525,6 +525,16 @@ void GenericSphereBoxCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* c
 	}
 }
 
+void ObjectCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (TestBoundsCollide(item, l, coll->radius) && TestCollision(item, l) && coll->enable_baddie_push)
+		ItemPushLara(item, l, coll, 0, 1);
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -533,4 +543,5 @@ void inject_coll(bool replace)
 	INJECT(0x004120A0, ShiftItem, replace);
 	INJECT(0x00410EF0, GetTiltType, replace);
 	INJECT(0x00413A90, GenericSphereBoxCollision, replace);
+	INJECT(0x004126E0, ObjectCollision, replace);
 }
