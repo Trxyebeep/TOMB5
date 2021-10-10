@@ -1545,8 +1545,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048AB80		FlameControl
 0x0048AD60	+	LaraBurn
 0x0048ADD0	+	LavaBurn
-0x0048AE60		ControlRollingBall
-0x0048B6D0		RollingBallCollision
+0x0048AE60	x	ControlRollingBall
+0x0048B6D0	+	RollingBallCollision
 0x0048B7E0		DrawScaledSpike
 0x0048B9E0		TwoBlockPlatformFloor
 0x0048BA50		TwoBlockPlatformCeiling

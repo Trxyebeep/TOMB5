@@ -155,11 +155,10 @@ void CalculateCamera()
 
 				if (change > 728)
 					lara.head_y_rot += 728;
-				else if (change > -728)
+				else if (change < -728)
 					lara.head_y_rot -= 728;
 				else
-					lara.head_y_rot += change;//oh christ, IDA shows lara.head_y_rot = (short)gotit, but it makes no sense
-				//it's just this. which is lara.head_y_rot + gotit - lara.head_y_rot which just becomes = gotit. this just makes more sense!
+					lara.head_y_rot = (short)gotit;
 
 				lara.torso_y_rot = lara.head_y_rot;
 				change = tilt - lara.head_x_rot;
@@ -169,7 +168,7 @@ void CalculateCamera()
 				else if (change < -728)
 					lara.head_x_rot -= 728;
 				else
-					lara.head_x_rot += change;//same as y_rot above
+					lara.head_x_rot = tilt;
 
 				lara.torso_x_rot = lara.head_x_rot;
 				camera.type = LOOK_CAMERA;
