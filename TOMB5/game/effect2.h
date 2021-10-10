@@ -19,3 +19,4 @@ void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit);
 #define TriggerExplosionSparks	( (void(__cdecl*)(int, int, int, int, int, int, short)) 0x0042F610 )
 #define TriggerExplosionBubble	( (void(__cdecl*)(int, int, int, short)) 0x00431070 )
 #define GetFreeSpark	( (int(__cdecl*)()) 0x0042E790 )
+#define TriggerSuperJetFlame	( (void(__cdecl*)(ITEM_INFO*, long, long)) 0x00430350 )

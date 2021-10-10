@@ -543,7 +543,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/flmtorch.cpp
 
 0x00433990	+	TriggerTorchFlame
-0x00433B40		FireCollision
+0x00433B40	+	FireCollision
 0x00433EA0	+	DoFlameTorch
 0x004342D0		GetFlameTorch
 0x00434390		FlameTorchControl
@@ -704,7 +704,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00441D50	+	WreckingBallCollision
 0x00441F50	+	DrawWreckingBall
 0x004421C0	+	ControlSecurityScreens
-0x00442250		CookerFlameControl
+0x00442250	+	CookerFlameControl
 0x00442320		TriggerLaraSparks
 0x00442480		TriggerCableSparks
 0x00442610	+	ControlElectricalCables
@@ -1539,10 +1539,10 @@ x for functions decompiled but not injected, for one reason or another.
 0x004899D0		FallingCeiling
 0x00489B30	+	DartEmitterControl
 0x00489D60	+	DartsControl
-0x00489F70		FlameEmitterControl
-0x0048A3B0		FlameEmitter2Control
-0x0048A570		FlameEmitter3Control
-0x0048AB80		FlameControl
+0x00489F70	+	FlameEmitterControl
+0x0048A3B0	+	FlameEmitter2Control
+0x0048A570	+	FlameEmitter3Control
+0x0048AB80	+	FlameControl
 0x0048AD60	+	LaraBurn
 0x0048ADD0	+	LavaBurn
 0x0048AE60	x	ControlRollingBall
@@ -2260,11 +2260,11 @@ x for functions decompiled but not injected, for one reason or another.
 		ROLLINGBALL
 -		TEETH_SPIKES
 +		ROME_HAMMER
-		FLAME
-		FLAME_EMITTER
-		FLAME_EMITTER2
-		FLAME_EMITTER3
-		COOKER_FLAME
++		FLAME
++		FLAME_EMITTER
++		FLAME_EMITTER2
++		FLAME_EMITTER3
++		COOKER_FLAME
 -		BURNING_ROOTS
 +		ROPE
 		POLEROPE
