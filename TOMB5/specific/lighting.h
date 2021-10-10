@@ -9,3 +9,5 @@
 #define InitObjectLighting	( (void(__cdecl*)(ITEM_INFO*)) 0x004AB7A0 )
 #define InitDynamicLighting	( (void(__cdecl*)(ITEM_INFO*)) 0x004AB950 )
 #define InitObjectFogBulbs	( (void(__cdecl*)()) 0x004AB580 )
+#define S_CalculateStaticMeshLight	( (void(__cdecl*)(long, long, long, long, ROOM_INFO*)) 0x004A9DF0 )
+#define ShowOmni	( (void(__cdecl*)(long, long, long, long)) 0x004AA0C0 )

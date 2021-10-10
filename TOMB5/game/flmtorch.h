@@ -1,4 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-#define DoFlameTorch	( (void(__cdecl*)()) 0x00433EA0 )
+void inject_flmtorch(bool replace);
+
+void DoFlameTorch();
+void TriggerTorchFlame(short item_number, long node);
