@@ -35,3 +35,4 @@ void ControlElectricFence(short item_number);
 #define TriggerGunSmoke	( (void(__cdecl*)(long, long, long, long, long, long, int, int, int)) 0x004820A0 )
 #define ClearFires	( (void(__cdecl*)()) 0x00481B10 )
 #define TriggerFenceSparks	( (void(__cdecl*)(long, long, long, long, long)) 0x00485D80 )
+#define AddFire	( (void(__cdecl*)(long, long, long, long, short, short)) 0x00481B40 )

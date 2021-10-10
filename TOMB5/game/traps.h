@@ -12,3 +12,7 @@ void ControlExplosion(short item_number);
 void CloseTrapDoor(ITEM_INFO* item);
 void DartEmitterControl(short item_number);
 void DartsControl(short item_number);
+void FlameEmitterControl(short item_number);
+void FlameEmitter2Control(short item_number);
+void FlameEmitter3Control(short item_number);
+void FlameControl(short fx_number);

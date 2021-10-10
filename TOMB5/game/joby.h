@@ -10,6 +10,7 @@ void WreckingBallCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll)
 void ControlWreckingBall(short item_number);
 void DrawWreckingBall(ITEM_INFO* item);
 void ControlSecurityScreens(short item_number);
+void CookerFlameControl(short item_number);
 
 #define TriggerCableSparks	( (void(__cdecl*)(long, long, short, long, long)) 0x00442480 )
 #define TriggerLaraSparks	( (void(__cdecl*)(long)) 0x00442320 )

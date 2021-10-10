@@ -552,6 +552,22 @@ void ControlSecurityScreens(short item_number)
 	}
 }
 
+void CookerFlameControl(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (TriggerActive(item))
+	{
+		if (!lara.burn && ABS(lara_item->pos.x_pos - item->pos.x_pos) < 256 && ABS(lara_item->pos.z_pos - item->pos.z_pos) < 256 && item->pos.y_pos - lara_item->pos.y_pos < 128)
+			LaraBurn();
+
+		item->item_flags[0] = (GetRandomControl() + item->item_flags[0]) & 0x1FF;
+		item->item_flags[1] = item->item_flags[0] + 4096;
+	}
+}
+
 void inject_joby(bool replace)
 {
 	INJECT(0x00442C90, KlaxonTremor, replace);
@@ -561,4 +577,5 @@ void inject_joby(bool replace)
 	INJECT(0x00441410, ControlWreckingBall, replace);
 	INJECT(0x00441F50, DrawWreckingBall, replace);
 	INJECT(0x004421C0, ControlSecurityScreens, replace);
+	INJECT(0x00442250, CookerFlameControl, replace);
 }
