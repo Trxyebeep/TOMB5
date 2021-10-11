@@ -2257,7 +2257,7 @@ x for functions decompiled but not injected, for one reason or another.
 -		TRAPDOORS
 -		FLOOR_TRAPDOORS
 -		CEILING_TRAPDOORS
-		ROLLINGBALL
++		ROLLINGBALL
 -		TEETH_SPIKES
 +		ROME_HAMMER
 +		FLAME

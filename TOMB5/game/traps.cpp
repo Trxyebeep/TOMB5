@@ -735,7 +735,7 @@ void ControlRollingBall(short item_number)
 	item->fallspeed += 6;
 	item->pos.x_pos += item->item_flags[0] >> 5;
 	item->pos.y_pos += item->fallspeed;
-	item->pos.x_pos += item->item_flags[1] >> 5;
+	item->pos.z_pos += item->item_flags[1] >> 5;
 	room_number = item->room_number;
 	h = GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number), item->pos.x_pos, item->pos.y_pos, item->pos.z_pos) - 512;
 
@@ -942,5 +942,5 @@ void inject_traps(bool replace)
 	INJECT(0x0048A570, FlameEmitter3Control, replace);
 	INJECT(0x0048AB80, FlameControl, replace);
 	INJECT(0x0048B6D0, RollingBallCollision, replace);
-	INJECT(0x0048AE60, ControlRollingBall, 0);
+	INJECT(0x0048AE60, ControlRollingBall, replace);
 }
