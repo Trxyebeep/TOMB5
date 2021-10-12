@@ -18,3 +18,10 @@ void FlameEmitter3Control(short item_number);
 void FlameControl(short fx_number);
 void RollingBallCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll);
 void ControlRollingBall(short item_number);
+void TrapDoorControl(short item_number);
+void FloorTrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
+void CeilingTrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
+void TrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
+void FallingBlockCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
+
+#define OpenTrapDoor	( (void(__cdecl*)(ITEM_INFO*)) 0x004890C0 )

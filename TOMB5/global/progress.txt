@@ -1527,12 +1527,12 @@ x for functions decompiled but not injected, for one reason or another.
 		game/traps.cpp
 
 0x00488E30	+	CloseTrapDoor
-0x00488FA0		TrapDoorControl
+0x00488FA0	+	TrapDoorControl
 0x004890C0		OpenTrapDoor
-0x004891F0		FloorTrapDoorCollision
-0x00489450		CeilingTrapDoorCollision
-0x004896D0		TrapDoorCollision
-0x00489750		FallingBlockCollision
+0x004891F0	+	FloorTrapDoorCollision
+0x00489450	+	CeilingTrapDoorCollision
+0x004896D0	+	TrapDoorCollision
+0x00489750	+	FallingBlockCollision
 0x00489820		FallingBlock
 0x00489910		FallingBlockFloor
 0x00489980		FallingBlockCeiling
