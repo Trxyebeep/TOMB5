@@ -17,6 +17,7 @@
 #include "../specific/function_stubs.h"
 #include "sphere.h"
 #include "lara_states.h"
+#include "gameflow.h"
 
 short SPxzoffs[8] = {0, 0, 0x200, 0, 0, 0, -0x200, 0};
 short SPyoffs[8] = {-0x400, 0, -0x200, 0, 0, 0, -0x200, 0};
@@ -39,6 +40,19 @@ uchar Flame3xzoffs[16][2] =
 	{24, 55},
 	{40, 55},
 	{55, 55}
+};
+
+static PHD_VECTOR FloorTrapDoorPos = { 0, 0, -655 };
+static PHD_VECTOR CeilingTrapDoorPos = { 0, 1056, -480 };
+
+static short FloorTrapDoorBounds[12] =
+{
+	-256, 256, 0, 0, -1024, -256, -1820, 1820, -5460, 5460, -1820, 1820
+};
+
+static short CeilingTrapDoorBounds[12] =
+{
+	-256, 256, 0, 900, -768, -256, -1820, 1820, -5460, 5460, -1820, 1820
 };
 
 void LaraBurn()
@@ -929,6 +943,171 @@ void ControlRollingBall(short item_number)
 	TestTriggers(trigger_index, 1, 0);
 }
 
+void TrapDoorControl(short item_number)
+{
+	ITEM_INFO* item;
+#ifdef GENERAL_FIXES
+	short room_number;
+#endif
+
+	item = &items[item_number];
+
+	if (TriggerActive(item))
+	{
+		if (item->current_anim_state == 0 && item->trigger_flags >= 0)
+			item->goal_anim_state = 1;
+		else if (item->frame_number == anims[item->anim_number].frame_end && gfCurrentLevel == LVL5_RED_ALERT && item->object_number == TRAPDOOR1)
+			item->status = ITEM_INVISIBLE;
+	}
+	else
+	{
+		item->status = ITEM_ACTIVE;
+
+		if (item->current_anim_state == 1)
+			item->goal_anim_state = 0;
+	}
+
+	AnimateItem(item);
+
+	if (item->current_anim_state == 1 && (item->item_flags[2] || JustLoaded))
+		OpenTrapDoor(item);
+	else if (!item->current_anim_state && !item->item_flags[2])
+		CloseTrapDoor(item);
+
+#ifdef GENERAL_FIXES	//fixes flickering of trapdoors if they open into another room, see Trajan room 22
+	room_number = item->room_number;
+	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+
+	if (item->room_number != room_number)
+		ItemNewRoom(item_number, room_number);
+#endif
+}
+
+void FloorTrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+	long y;
+
+	item = &items[item_number];
+
+	if (input & IN_ACTION && item->status != ITEM_ACTIVE && l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH
+		&& lara.gun_status == LG_NO_ARMS || lara.IsMoving && lara.GeneralPtr == (void*)item_number)
+	{
+		if (TestLaraPosition(FloorTrapDoorBounds, item, l))
+		{
+			if (MoveLaraPosition(&FloorTrapDoorPos, item, l))
+			{
+				l->anim_number = ANIM_LIFTTRAP;
+				l->frame_number = anims[ANIM_LIFTTRAP].frame_base;
+				l->current_anim_state = AS_LIFTTRAP;
+				lara.IsMoving = 0;
+				lara.head_y_rot = 0;
+				lara.head_x_rot = 0;
+				lara.torso_y_rot = 0;
+				lara.torso_x_rot = 0;
+				lara.gun_status = LG_HANDS_BUSY;
+				AddActiveItem(item_number);
+				item->goal_anim_state = 1;
+				item->status = ITEM_ACTIVE;
+				UseForcedFixedCamera = 1;
+				ForcedFixedCamera.x = item->pos.x_pos - ((2048 * phd_sin(item->pos.y_rot) >> 14));
+				ForcedFixedCamera.z = item->pos.z_pos - ((2048 * phd_cos(item->pos.y_rot) >> 14));
+				y = item->pos.y_pos - 2048;
+
+				if (y < room[item->room_number].maxceiling)
+					y = room[item->room_number].maxceiling;
+
+				ForcedFixedCamera.y = y;
+				ForcedFixedCamera.room_number = item->room_number;
+			}
+			else
+				lara.GeneralPtr = (void*)item_number;
+		}
+	}
+	else if (item->current_anim_state == 1)
+		UseForcedFixedCamera = 0;
+
+	if (item->current_anim_state == 1 && item->frame_number == anims[item->anim_number].frame_end)
+		ObjectCollision(item_number, l, coll);
+}
+
+void CeilingTrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+	short pass1, pass2;
+
+	item = &items[item_number];
+
+	pass1 = TestLaraPosition(CeilingTrapDoorBounds, item, l);
+	l->pos.y_rot += 32768;
+	pass2 = TestLaraPosition(CeilingTrapDoorBounds, item, l);
+	l->pos.y_rot += 32768;
+
+	if (input & IN_ACTION && item->status != ITEM_ACTIVE && l->current_anim_state == AS_UPJUMP &&
+		l->gravity_status && lara.gun_status == LG_NO_ARMS && (pass1 || pass2))
+	{
+		AlignLaraPosition(&CeilingTrapDoorPos, item, l);
+
+		if (pass2)
+			lara_item->pos.y_rot += 32768;
+
+		lara.head_y_rot = 0;
+		lara.head_x_rot = 0;
+		lara.torso_y_rot = 0;
+		lara.torso_x_rot = 0;
+		lara.gun_status = LG_HANDS_BUSY;
+		l->gravity_status = 0;
+		l->fallspeed = 0;
+		l->anim_number = ANIM_PULLTRAP;
+		l->frame_number = anims[ANIM_PULLTRAP].frame_base;
+		l->current_anim_state = AS_PULLTRAP;
+		AddActiveItem(item_number);
+		item->status = ITEM_ACTIVE;
+		item->goal_anim_state = 1;
+		UseForcedFixedCamera = 1;
+		ForcedFixedCamera.x = item->pos.x_pos - ((1024 * phd_sin(item->pos.y_rot)) >> 14);
+		ForcedFixedCamera.y = item->pos.y_pos + 1024;
+		ForcedFixedCamera.z = item->pos.z_pos - ((1024 * phd_cos(item->pos.y_rot)) >> 14);
+		ForcedFixedCamera.room_number = item->room_number;
+	}
+	else if (item->current_anim_state == 1)
+		UseForcedFixedCamera = 0;
+
+	if (item->current_anim_state == 1 && item->frame_number == anims[item->anim_number].frame_end)
+		ObjectCollision(item_number, l, coll);
+}
+
+void TrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->current_anim_state == 1 && item->frame_number == anims[item->anim_number].frame_end)
+		ObjectCollision(item_number, l, coll);
+}
+
+void FallingBlockCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+	long x, z, tx, tz;
+
+	item = &items[item_number];
+	x = l->pos.x_pos;
+	z = l->pos.z_pos;
+	tx = item->pos.x_pos;
+	tz = item->pos.z_pos;
+
+	if (!item->item_flags[0] && !item->trigger_flags && item->pos.y_pos == l->pos.y_pos && !((tx ^ x) & -1024) && !((z ^ tz) & -1024))
+	{
+		SoundEffect(SFX_ROCK_FALL_CRUMBLE, &item->pos, SFX_DEFAULT);
+		AddActiveItem(item_number);
+		item->item_flags[0] = 0;
+		item->status = ITEM_ACTIVE;
+		item->flags |= IFL_CODEBITS;
+	}
+}
+
 void inject_traps(bool replace)
 {
 	INJECT(0x0048AD60, LaraBurn, replace);
@@ -943,4 +1122,9 @@ void inject_traps(bool replace)
 	INJECT(0x0048AB80, FlameControl, replace);
 	INJECT(0x0048B6D0, RollingBallCollision, replace);
 	INJECT(0x0048AE60, ControlRollingBall, replace);
+	INJECT(0x00488FA0, TrapDoorControl, replace);
+	INJECT(0x004891F0, FloorTrapDoorCollision, replace);
+	INJECT(0x00489450, CeilingTrapDoorCollision, replace);
+	INJECT(0x004896D0, TrapDoorCollision, replace);
+	INJECT(0x00489750, FallingBlockCollision, replace);
 }
