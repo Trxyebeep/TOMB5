@@ -291,7 +291,7 @@ void CreateSkinningData()
 		jointVerts = jointMesh->nVerts & 0xFF;
 		laraVerts = aboveMesh->nVerts & 0xFF;
 
-		if (jointVerts)
+		if (jointVerts > 0)
 			memset(vertBuf, 0, jointVerts);
 
 		joint = &jointMesh->nNorms;
@@ -359,7 +359,7 @@ void CreateSkinningData()
 		calcPointsCounter = 0;
 
 		if (vertCount == jointVerts)
-			jointMesh->nVerts &= 0xFF00;
+			jointMesh->nVerts <<= 8;
 		else
 		{
 			for (int j = 0; j < jointVerts; j++)
@@ -422,7 +422,7 @@ void CreateSkinningData()
 	for (int i = 0; i < 3; i++, meshpp += 2)
 	{
 		hairMesh = (MESH_DATA*)*meshpp;
-		hairMesh->nVerts &= 0xFF00;
+		hairMesh->nVerts <<= 8;
 	}
 
 	OptomiseSkinningData();
@@ -433,5 +433,5 @@ void inject_laraskin(bool replace)
 	INJECT(0x00457580, OptomiseSkinningData, replace);
 	INJECT(0x00457520, PushXYZ, replace);
 	INJECT(0x00457560, PopXYZ, replace);
-	INJECT(0x00456AE0, CreateSkinningData, 0);//crash!
+	INJECT(0x00456AE0, CreateSkinningData, replace);
 }
