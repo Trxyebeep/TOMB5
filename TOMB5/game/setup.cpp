@@ -360,8 +360,8 @@ void ObjectObjects()
 	{
 		obj = &objects[i];
 		obj->initialise = InitialisePickup;
-	//	obj->control = AnimatingPickUp;
-	//	obj->collision = PickUpCollision;
+		obj->control = AnimatingPickUp;
+		obj->collision = PickUpCollision;
 		obj->save_position = 1;
 		obj->save_flags = 1;
 	}
@@ -370,8 +370,8 @@ void ObjectObjects()
 	{
 		obj = &objects[i];
 		obj->initialise = InitialisePickup;
-	//	obj->control = AnimatingPickUp;
-	//	obj->collision = PickUpCollision;
+		obj->control = AnimatingPickUp;
+		obj->collision = PickUpCollision;
 		obj->save_position = 1;
 		obj->save_flags = 1;
 	}
@@ -415,7 +415,7 @@ void ObjectObjects()
 	obj = &objects[FLARE_ITEM];
 	obj->initialise = 0;
 	obj->control = FlareControl;
-//	obj->collision = PickUpCollision;
+	obj->collision = PickUpCollision;
 	obj->draw_routine = DrawFlareInAir;
 	obj->using_drawanimating_item = 0;
 	obj->pivot_length = 256;
@@ -426,7 +426,7 @@ void ObjectObjects()
 	for (int i = KEY_HOLE1; i < SWITCH_TYPE1; i++)
 	{
 		obj = &objects[i];
-	//	obj->collision = KeyHoleCollision;
+		obj->collision = KeyHoleCollision;
 		obj->save_flags = 1;
 	}
 
