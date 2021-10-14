@@ -375,7 +375,7 @@ void CreateSkinningData()
 		PointsToCalc[jointMeshNum - 1][calcPointsCounter] = 0xFF;
 	}
 
-	for (int i = 0; HairSkinVertNums[0][i] != -1; i++)
+	for (int i = 0; ; i++)
 	{
 		if (gfLevelFlags & GF_YOUNGLARA)
 		{
@@ -399,6 +399,9 @@ void CreateSkinningData()
 		ScratchVertNums[29][i] = HairScratchVertNums[2][i];
 		SkinVertNums[35][i] = HairSkinVertNums[3][i];
 		ScratchVertNums[35][i] = HairScratchVertNums[2][i];
+
+		if (HairSkinVertNums[0][i] == -1)
+			break;
 	}
 
 	for (int i = 0; i < 4; i += 2)
