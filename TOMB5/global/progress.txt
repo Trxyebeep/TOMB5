@@ -1334,7 +1334,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00473600		InitialiseObjects
 0x004737C0		BaddyObjects
 0x00475D40		TrapObjects
-0x00476360		ObjectObjects
+0x00476360	x	ObjectObjects
 0x004771E0		GetCarriedItems
 0x00477370		GetAIPickups
 0x004774D0		BuildOutsideTable

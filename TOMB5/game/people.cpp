@@ -179,7 +179,7 @@ int ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotatio
 	target.y += (target.y - start.y) >> 1;
 	target.z += (target.z - start.z) >> 1;
 
-	if (ObjectOnLOS2(&start, &target, &pos, &StaticMesh) & 0x8000)
+	if (ObjectOnLOS2(&start, &target, &pos, &StaticMesh) < 0)
 	{
 		if (StaticMesh->static_number >= 50 && StaticMesh->static_number < 58)
 		{
