@@ -300,6 +300,9 @@
     <ClCompile Include="TOMB5\game\pierre.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\game\lifts.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -597,6 +600,9 @@
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\game\pierre.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\game\lifts.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1058,7 +1058,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/lifts.cpp
 
 0x0045A560		ControlLiftTeleporter
-0x0045AAF0		DrawLiftDoors
+0x0045AAF0	+	DrawLiftDoors
 
 
 		game/lion.cpp

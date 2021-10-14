@@ -20,6 +20,7 @@
 #include "autogun.h"
 #include "effects.h"
 #include "objlight.h"
+#include "lifts.h"
 
 void InitialiseLara(int restore)
 {
@@ -285,7 +286,7 @@ void ObjectObjects()
 		obj = &objects[i];
 		obj->initialise = InitialiseDoor;
 		obj->control = DoorControl;
-	//	obj->draw_routine = DrawLiftDoors;
+		obj->draw_routine = DrawLiftDoors;
 		obj->using_drawanimating_item = 0;
 		obj->object_mip = 4096;
 		obj->save_flags = 1;
