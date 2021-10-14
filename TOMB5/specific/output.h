@@ -24,3 +24,4 @@ void phd_PutPolygonSkyMesh(short* objptr, int clipstatus);
 #define aTransformLightPrelightClipMesh	( (void(__cdecl*)(MESH_DATA*)) 0x004B35F0 )
 #define aTransformLightClipMesh	( (void(__cdecl*)(MESH_DATA*)) 0x004B2BA0 )
 #define do_boot_screen	( (void(__cdecl*)(int)) 0x004B8A80 )
+#define S_GetObjectBounds	( (long(__cdecl*)(short*)) 0x004B7EB0 )

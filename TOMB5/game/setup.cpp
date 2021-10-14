@@ -34,38 +34,31 @@ void InitialiseLara(int restore)
 	lara_item->collidable = 0;
 
 	if (!restore)
-	{
-		memset(&lara, 0, 0x154u);
-		lara.TightRopeOff = 0;
-		lara.TightRopeFall = 0;
-		lara.ChaffTimer = 0;
-	}
+		memset(&lara, 0, sizeof(LARA_INFO));
 	else
 	{
-		memcpy(&backup, &lara, sizeof(lara));
-		memset(&lara, 0, sizeof(lara));
-		memcpy(&lara.pistols_type_carried, &backup.pistols_type_carried, 0x38u);
-		lara.num_crossbow_ammo2 = backup.num_crossbow_ammo2;
+		memcpy(&backup, &lara, sizeof(LARA_INFO));
+		memset(&lara, 0, sizeof(LARA_INFO));
+		memcpy(&lara.pistols_type_carried, &backup.pistols_type_carried, 59);	//restores inventory items
 	}
 
 	lara.look = 1;
 	lara.item_number = item_num;
-	lara.hit_direction = 0;
+	lara.hit_direction = -1;
 	lara.air = 1800;
 	lara.weapon_item = NO_ITEM;
 	PoisonFlag = 0;
 	lara.dpoisoned = 0;
 	lara.poisoned = 0;
 	lara.water_surface_dist = 100;
-	lara.holster = 14;
+	lara.holster = LARA_HOLSTERS_PISTOLS;
 	lara.location = -1;
 	lara.highest_location = -1;
 	lara.RopePtr = NO_ITEM;
 	lara_item->hit_points = 1000;
 
-	if (gfNumPickups > 0)
-		for (int i = 0; i < gfNumPickups; i++)
-			DEL_picked_up_object(convert_invobj_to_obj(gfPickups[i]));
+	for (int i = 0; i < gfNumPickups; i++)
+		DEL_picked_up_object(convert_invobj_to_obj(gfPickups[i]));
 
 	gfNumPickups = 0;
 
@@ -85,7 +78,7 @@ void InitialiseLara(int restore)
 	lara.skelebob = 0;
 
 	if (objects[PISTOLS_ITEM].loaded)
-		lara.pistols_type_carried = 9;
+		lara.pistols_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
 
 	lara.binoculars = 1;
 
@@ -102,54 +95,49 @@ void InitialiseLara(int restore)
 	InitialiseLaraAnims(lara_item);
 	DashTimer = 120;
 
-	if (gfNumTakeaways > 0)
-		for (int i = 0; i < gfNumTakeaways; i++)
-			NailInvItem(convert_invobj_to_obj(gfTakeaways[i]));
+	for (int i = 0; i < gfNumTakeaways; i++)
+		NailInvItem(convert_invobj_to_obj(gfTakeaways[i]));
 
 	gfNumTakeaways = 0;
 	weapons[WEAPON_REVOLVER].damage = gfCurrentLevel > LVL5_COLOSSEUM ? 15 : 6;
 
-	switch (gfCurrentLevel)
+	if (gfCurrentLevel == LVL5_DEEPSEA_DIVE)
 	{
-	case LVL5_DEEPSEA_DIVE:
-		lara.pickupitems &= 0xFFF7;
 		lara.puzzleitems[0] = 10;
-		return;
-
-	case LVL5_SUBMARINE:
+		lara.pickupitems &= ~8;
+	}
+	else if (gfCurrentLevel == LVL5_SUBMARINE)
+	{
 		memset(&lara.puzzleitems, 0, 12);
 		lara.puzzleitemscombo = 0;
 		lara.pickupitems = 0;
 		lara.pickupitemscombo = 0;
 		lara.keyitems = 0;
 		lara.keyitemscombo = 0;
-		return;
-
-	case LVL5_SINKING_SUBMARINE:
+	}
+	else if (gfCurrentLevel == LVL5_SINKING_SUBMARINE)
+	{
 		lara.puzzleitems[0] = 0;
 		lara.pickupitems = 0;
-		return;
-
-	case LVL5_ESCAPE_WITH_THE_IRIS:
-		lara.pickupitems &= 0xFFFEu;
+	}
+	else if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
+	{
+		lara.pickupitems &= ~1;
 		lara.puzzleitems[2] = 0;
 		lara.puzzleitems[3] = 0;
-		break;
-
-	case LVL5_RED_ALERT:
-		lara.pickupitems &= 0xFFFD;
-		break;
-
-	default:
-
-		if (gfCurrentLevel < LVL5_THIRTEENTH_FLOOR || gfCurrentLevel > LVL5_RED_ALERT)
-			lara.pickupitems &= 0xFFF7;
-
-		break;
+		lara.pickupitems &= ~8;
+	}
+	else if (gfCurrentLevel == LVL5_RED_ALERT)
+	{
+		lara.pickupitems &= ~2;
+		lara.pickupitems &= ~8;
 	}
 
-	lara.bottle = 0;
-	lara.wetcloth = CLOTH_MISSING;
+	if (gfCurrentLevel >= LVL5_THIRTEENTH_FLOOR && gfCurrentLevel <= LVL5_RED_ALERT)
+	{
+		lara.bottle = 0;
+		lara.wetcloth = CLOTH_MISSING;
+	}
 }
 
 void ObjectObjects()
@@ -191,10 +179,10 @@ void ObjectObjects()
 	obj->save_flags = 1;
 	obj->save_mesh = 1;
 	obj->initialise = InitialiseFallingBlock2;
-//	obj->control = FallingBlock;
+	obj->control = FallingBlock;
 	obj->collision = FallingBlockCollision;
-//	obj->floor = FallingBlockFloor;
-//	obj->ceiling = FallingBlockCeiling;
+	obj->floor = FallingBlockFloor;
+	obj->ceiling = FallingBlockCeiling;
 
 	for (int i = SWITCH_TYPE1; i < SWITCH_TYPE7; i++)
 	{
@@ -546,8 +534,8 @@ void ObjectObjects()
 
 	obj = &objects[TEETH_SPIKES];
 	obj->initialise = InitialiseScaledSpike;
-//	obj->control = ControlScaledSpike;
-//	obj->draw_routine = DrawScaledSpike;
+	obj->control = ControlScaledSpike;
+	obj->draw_routine = DrawScaledSpike;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
 
@@ -557,7 +545,7 @@ void ObjectObjects()
 		obj->initialise = InitialiseRaisingBlock;
 	//	obj->control = ControlRaisingBlock;
 		obj->collision = 0;
-	//	obj->draw_routine = DrawScaledSpike;
+		obj->draw_routine = DrawScaledSpike;
 		obj->using_drawanimating_item = 0;
 		obj->save_flags = 1;
 	}
@@ -686,7 +674,7 @@ void ObjectObjects()
 	obj = &objects[FISHTANK];
 	obj->initialise = InitialiseFishtank;
 //	obj->control = ControlFishtank;
-//	obj->draw_routine = DrawScaledSpike;
+	obj->draw_routine = DrawScaledSpike;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
 

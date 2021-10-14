@@ -23,5 +23,11 @@ void FloorTrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
 void CeilingTrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
 void TrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
 void FallingBlockCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
+void DrawScaledSpike(ITEM_INFO* item);
+void FallingBlock(short item_number);
+void FallingBlockFloor(ITEM_INFO* item, long x, long y, long z, long* height);
+void FallingBlockCeiling(ITEM_INFO* item, long x, long y, long z, long* height);
+void ControlScaledSpike(short item_number);
 
 #define OpenTrapDoor	( (void(__cdecl*)(ITEM_INFO*)) 0x004890C0 )
+#define TestBoundsCollideTeethSpikes	( (long(__cdecl*)(ITEM_INFO*)) 0x0048BD90 )
