@@ -459,7 +459,7 @@ void ControlTriggerTriggerer(short item_number)
 
 	if (data)
 	{
-		if ((*data & 0x1F) == 5)
+		if ((*data & 0x1F) == LAVA_TYPE)
 		{
 			if (*data & 0x8000)
 				return;
@@ -467,7 +467,7 @@ void ControlTriggerTriggerer(short item_number)
 			data++;
 		}
 
-		if ((*data & 0x1F) == 6)
+		if ((*data & 0x1F) == CLIMB_TYPE)
 		{
 			if (*data & 0x8000)
 				return;
@@ -475,7 +475,7 @@ void ControlTriggerTriggerer(short item_number)
 			data++;
 		}
 
-		if ((*data & 0x1F) == 19)
+		if ((*data & 0x1F) == MONKEY_TYPE)
 		{
 			if (*data & 0x8000)
 				return;
@@ -483,15 +483,14 @@ void ControlTriggerTriggerer(short item_number)
 			data++;
 		}
 
-		if ((*data & 0x1F) == 20)
+		if ((*data & 0x1F) == TRIGTRIGGER_TYPE)
 		{
 			if (TriggerActive(item))
-				*data |= 0x20;
+				*data |= IFL_TRIGGERED;
 			else
-				*data &= 0xDF;
+				*data &= ~IFL_TRIGGERED;
 		}
 	}
-	return;
 }
 
 void AnimateWaterfalls()

@@ -21,6 +21,11 @@
 #include "effects.h"
 #include "objlight.h"
 #include "lifts.h"
+#include "deathsld.h"
+#include "andrea.h"
+#include "rope.h"
+#include "tower2.h"
+#include "lasers.h"
 
 void InitialiseLara(int restore)
 {
@@ -516,7 +521,7 @@ void ObjectObjects()
 	obj->initialise = InitialiseSteelDoor;
 //	obj->control = ControlSteelDoor;
 //	obj->collision = SteelDoorCollision;
-//	obj->draw_routine_extra = DrawSteelDoorLensFlare;	//empty, just need a stub (for now)
+	obj->draw_routine_extra = DrawSteelDoorLensFlare;
 	obj->save_position = 1;
 	obj->save_flags = 1;
 	obj->save_anim = 1;
@@ -668,7 +673,7 @@ void ObjectObjects()
 	obj = &objects[FLOOR_LASERS];
 	obj->initialise = InitialiseFloorLasers;
 //	obj->control = ControlFloorLasers;
-//	obj->draw_routine = DrawFloorLasers;	//empty, just need a stub (for now)
+	obj->draw_routine = DrawFloorLasers;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
 
@@ -712,8 +717,226 @@ void ObjectObjects()
 	obj->loaded = 1;
 }
 
+void TrapObjects()
+{
+	OBJECT_INFO* obj;
+
+	obj = &objects[ELECTRICAL_CABLES];
+	obj->control = ControlElectricalCables;
+	obj->save_flags = 1;
+	obj->save_anim = 1;
+
+	obj = &objects[ROME_HAMMER];
+	obj->initialise = InitialiseRomeHammer;
+	obj->control = ControlAnimatingSlots;
+	obj->collision = GenericSphereBoxCollision;
+	obj->save_flags = 1;
+	obj->save_anim = 1;
+
+	obj = &objects[DEATH_SLIDE];
+	obj->initialise = InitialiseDeathSlide;
+	obj->control = ControlDeathSlide;
+	obj->collision = DeathSlideCollision;
+	obj->save_position = 1;
+	obj->save_flags = 1;
+	obj->save_anim = 1;
+
+	obj = &objects[ROLLINGBALL];
+	obj->control = ControlRollingBall;
+	obj->collision = RollingBallCollision;
+	obj->save_position = 1;
+	obj->save_flags = 1;
+
+	obj = &objects[TWOBLOCK_PLATFORM];
+	obj->initialise = InitialiseTwoBlockPlatform;
+//	obj->control = ControlTwoBlockPlatform;
+//	obj->floor = TwoBlockPlatformFloor;
+//	obj->ceiling = TwoBlockPlatformCeiling;
+	obj->save_position = 1;
+	obj->save_flags = 1;
+
+	obj = &objects[KILL_ALL_TRIGGERS];
+//	obj->control = KillAllCurrentItems;
+	obj->draw_routine = 0;
+	obj->using_drawanimating_item = 0;
+	obj->hit_points = 0;
+	obj->save_flags = 1;
+
+	for (int i = FALLING_BLOCK; i < CRUMBLING_FLOOR; i++)
+	{
+		obj = &objects[i];
+		obj->initialise = InitialiseFallingBlock2;
+		obj->control = FallingBlock;
+		obj->collision = FallingBlockCollision;
+		obj->floor = FallingBlockFloor;
+		obj->ceiling = FallingBlockCeiling;
+		obj->save_position = 1;
+		obj->save_flags = 1;
+	}
+
+	obj = &objects[FALLING_CEILING];
+//	obj->control = FallingCeiling;
+//	obj->collision = TrapCollision;
+	obj->save_position = 1;
+	obj->save_flags = 1;
+	obj->save_anim = 1;
+
+	for (int i = PUSHABLE_OBJECT1; i < WRECKING_BALL; i++)
+	{
+		obj = &objects[i];
+	//	obj->initialise = InitialiseMovingBlock;
+	//	obj->control = MovableBlock;
+	//	obj->collision = MovableBlockCollision;
+		obj->save_position = 1;
+		obj->save_flags = 1;
+	}
+
+	obj = &objects[DARTS];
+	obj->control = DartsControl;
+	obj->collision = ObjectCollision;
+//	obj->draw_routine = S_DrawDarts;
+	obj->using_drawanimating_item = 0;
+	obj->shadow_size = 128;
+
+	obj = &objects[DART_EMITTER];
+	obj->control = DartEmitterControl;
+	obj->draw_routine = 0;
+	obj->using_drawanimating_item = 0;
+
+	obj = &objects[HOMING_DART_EMITTER];
+	obj->control = DartEmitterControl;
+	obj->draw_routine = 0;
+	obj->using_drawanimating_item = 0;
+
+	obj = &objects[FLAME];
+	obj->control = FlameControl;
+	obj->draw_routine = 0;
+	obj->using_drawanimating_item = 0;
+
+	obj = &objects[FLAME_EMITTER];
+	obj->initialise = InitialiseFlameEmitter;
+	obj->control = FlameEmitterControl;
+	obj->collision = FireCollision;
+	obj->draw_routine = 0;
+	obj->using_drawanimating_item = 0;
+	obj->save_flags = 1;
+
+	obj = &objects[FLAME_EMITTER2];
+	obj->initialise = InitialiseFlameEmitter2;
+	obj->control = FlameEmitter2Control;
+	obj->collision = FireCollision;
+	obj->draw_routine = 0;
+	obj->using_drawanimating_item = 0;
+	obj->save_flags = 1;
+
+	obj = &objects[FLAME_EMITTER3];
+	obj->control = FlameEmitter3Control;
+	obj->draw_routine = 0;
+	obj->using_drawanimating_item = 0;
+	obj->save_flags = 1;
+
+	obj = &objects[COOKER_FLAME];
+	obj->initialise = InitialiseCookerFlame;
+	obj->control = CookerFlameControl;
+	obj->draw_routine = DrawScaledSpike;
+	obj->using_drawanimating_item = 0;
+	obj->save_flags = 1;
+
+	obj = &objects[CUTSCENE_ROPE];
+	obj->initialise = InitialiseCutsceneRope;
+	obj->control = CutsceneRopeControl;
+	obj->draw_routine = DrawScaledSpike;
+	obj->using_drawanimating_item = 0;
+
+	obj = &objects[PORTAL];
+	obj->initialise = InitialisePortalDoor;
+	obj->control = ControlPortalDoor;
+	obj->draw_routine = DrawPortalDoor;
+	obj->using_drawanimating_item = 0;
+	obj->save_flags = 1;
+
+	obj = &objects[GEN_SLOT1];
+	obj->control = ControlGenSlot1;
+	obj->save_flags = 1;
+	obj->save_anim = 1;
+
+	obj = &objects[GEN_SLOT2];
+	obj->initialise = InitialiseGasCloud;
+//	obj->control = ControlGasCloud;
+//	obj->draw_routine = DrawGasCloud;
+	obj->using_drawanimating_item = 0;
+	obj->save_flags = 1;
+
+	obj = &objects[GEN_SLOT3];
+	obj->initialise = InitialiseGenSlot3;
+	obj->control = ControlAnimatingSlots;
+	obj->collision = HybridCollision;
+	obj->save_flags = 1;
+	obj->save_anim = 1;
+
+	obj = &objects[GEN_SLOT4];
+	obj->initialise = InitialiseArea51Laser;
+//	obj->control = ControlArea51Laser;
+	obj->save_position = 1;
+	obj->save_flags = 1;
+	obj->save_anim = 1;
+
+	obj = &objects[HIGH_OBJECT1];
+	obj->initialise = InitialiseRaisingPlinth;
+	obj->control = ControlRaisingPlinth;
+	obj->collision = ObjectCollision;
+	obj->save_position = 1;
+	obj->save_flags = 1;
+
+	init_all_ropes();
+	obj = &objects[ROPE];
+	obj->initialise = InitialiseRope;
+	obj->control = RopeControl;
+	obj->collision = RopeCollision;
+	obj->draw_routine = 0;
+	obj->using_drawanimating_item = 0;
+	obj->save_flags = 1;
+
+	obj = &objects[POLEROPE];
+	obj->collision = PoleCollision;
+	obj->save_flags = 1;
+
+	obj = &objects[WRECKING_BALL];
+	obj->initialise = InitialiseWreckingBall;
+	obj->control = ControlWreckingBall;
+	obj->collision = WreckingBallCollision;
+	obj->draw_routine_extra = DrawWreckingBall;
+	obj->save_position = 1;
+	obj->save_flags = 1;
+	obj->save_anim = 1;
+
+	obj = &objects[TRIGGER_TRIGGERER];
+	obj->initialise = ControlTriggerTriggerer;
+	obj->control = ControlTriggerTriggerer;
+	obj->draw_routine = 0;
+	obj->using_drawanimating_item = 0;
+	obj->save_flags = 1;
+
+	for (int i = PROPELLER_H; i < GRAPPLING_TARGET; i++)
+	{
+		obj = &objects[i];
+		obj->initialise = InitialisePropeller;
+		obj->control = ControlPropeller;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+	}
+
+	obj = &objects[RAISING_COG];
+	obj->initialise = InitialiseRaisingCog;
+	obj->control = ControlRaisingCog;
+	obj->save_position = 1;
+	obj->save_flags = 1;
+	obj->save_anim = 1;
+}
+
 void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
 	INJECT(0x00476360, ObjectObjects, 0);
+	INJECT(0x00475D40, TrapObjects, 0);
 }
