@@ -14,6 +14,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00405C00	+	TriggerFanEffects
 0x00406040	+	ControlRaisingCog
 0x004062B0	+	ControlPortalDoor
+0x00406560	+	DrawPortalDoor
 0x00406580	+	ControlGenSlot1
 0x004067E0	+	ControlRaisingPlinth
 
@@ -1053,12 +1054,13 @@ x for functions decompiled but not injected, for one reason or another.
 0x0045A030		ControlSteamLasers
 0x0045A1E0		ControlFloorLasers
 0x0045A4B0		GetFishTank
+0x0045A540	+	DrawFloorLasers
 
 
 		game/lifts.cpp
 
 0x0045A560		ControlLiftTeleporter
-0x0045AAF0		DrawLiftDoors
+0x0045AAF0	+	DrawLiftDoors
 
 
 		game/lion.cpp
@@ -1237,11 +1239,11 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/pickup.cpp
 
-0x004679D0		AnimatingPickUp
+0x004679D0	+	AnimatingPickUp
 0x00467AF0	+	RegeneratePickups
 0x00467C00		PickUpCollision
 0x00468770		FindPlinth
-0x00468930		KeyHoleCollision
+0x00468930	+	KeyHoleCollision
 0x00468C00	+	PuzzleDoneCollision
 0x00468C70	+	PuzzleHoleCollision
 0x004693A0	+	PuzzleDone
@@ -1333,8 +1335,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00473210	+	InitialiseLara
 0x00473600		InitialiseObjects
 0x004737C0		BaddyObjects
-0x00475D40		TrapObjects
-0x00476360		ObjectObjects
+0x00475D40	x	TrapObjects
+0x00476360	x	ObjectObjects
 0x004771E0		GetCarriedItems
 0x00477370		GetAIPickups
 0x004774D0		BuildOutsideTable
@@ -1518,6 +1520,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00486BE0		ControlSteelDoor
 0x004870B0		TriggerWeldingEffects
 0x004877E0		TriggerSteelDoorSmoke
+0x00487AB0	+	DrawSteelDoorLensFlare;
 0x00487AD0		SteelDoorCollision
 0x00487B60		TriggerLiftBrakeSparks
 0x00487FF0	+	ControlGunship
@@ -1533,9 +1536,9 @@ x for functions decompiled but not injected, for one reason or another.
 0x00489450	+	CeilingTrapDoorCollision
 0x004896D0	+	TrapDoorCollision
 0x00489750	+	FallingBlockCollision
-0x00489820		FallingBlock
-0x00489910		FallingBlockFloor
-0x00489980		FallingBlockCeiling
+0x00489820	+	FallingBlock
+0x00489910	+	FallingBlockFloor
+0x00489980	+	FallingBlockCeiling
 0x004899D0		FallingCeiling
 0x00489B30	+	DartEmitterControl
 0x00489D60	+	DartsControl
@@ -1547,13 +1550,13 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048ADD0	+	LavaBurn
 0x0048AE60	+	ControlRollingBall
 0x0048B6D0	+	RollingBallCollision
-0x0048B7E0		DrawScaledSpike
+0x0048B7E0	+	DrawScaledSpike
 0x0048B9E0		TwoBlockPlatformFloor
 0x0048BA50		TwoBlockPlatformCeiling
 0x0048BAA0		OnTwoBlockPlatform
 0x0048BBB0		ControlTwoBlockPlatform
 0x0048BD90		TestBoundsCollideTeethSpikes
-0x0048BEF0		ControlScaledSpike
+0x0048BEF0	+	ControlScaledSpike
 0x0048C3D0		ControlRaisingBlock
 0x0048C6D0	+	ControlExplosion
 

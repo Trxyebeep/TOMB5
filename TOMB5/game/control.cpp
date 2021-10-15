@@ -1120,7 +1120,7 @@ short GetDoor(FLOOR_INFO* floor)
 	if ((type & 0x1F) == TILT_TYPE || (type & 0x1F) == SPLIT1 || (type & 0x1F) == SPLIT2 || (type & 0x1F) == NOCOLF1B ||
 		(type & 0x1F) == NOCOLF1T || (type & 0x1F) == NOCOLF2B || (type & 0x1F) == NOCOLF2T)
 	{
-		if (type < 0)
+		if (type & 0x8000)
 			return NO_ROOM;
 
 		data++;
@@ -1135,7 +1135,7 @@ short GetDoor(FLOOR_INFO* floor)
 		|| (type & 0x1F) == NOCOLC2B
 		|| (type & 0x1F) == NOCOLC2T)
 	{
-		if (type < 0)
+		if (type & 0x8000)
 			return NO_ROOM;
 
 		data++;

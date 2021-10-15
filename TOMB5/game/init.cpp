@@ -774,7 +774,7 @@ void InitialiseSearchObject(short item_number)
 		for (i = 0; i < level_items; ++i)
 		{
 			if ((items[i].object_number == EXPLOSION ||
-				objects[items[i].object_number].collision == PickupCollision) &&
+				objects[items[i].object_number].collision == PickUpCollision) &&
 				item->pos.x_pos == items[i].pos.x_pos &&
 				item->pos.y_pos == items[i].pos.y_pos &&
 				item->pos.z_pos == items[i].pos.z_pos)

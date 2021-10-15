@@ -640,6 +640,11 @@ void ControlRaisingPlinth(short item_number)
 	}
 }
 
+void DrawPortalDoor(ITEM_INFO* item)
+{
+
+}
+
 void inject_andrea(bool replace)
 {
 	INJECT(0x00405610, ControlPropeller, replace);
@@ -648,4 +653,5 @@ void inject_andrea(bool replace)
 	INJECT(0x004062B0, ControlPortalDoor, replace);
 	INJECT(0x00406580, ControlGenSlot1, replace);
 	INJECT(0x004067E0, ControlRaisingPlinth, replace);
+	INJECT(0x00406560, DrawPortalDoor, replace);
 }

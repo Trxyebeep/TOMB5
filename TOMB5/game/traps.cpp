@@ -18,6 +18,8 @@
 #include "sphere.h"
 #include "lara_states.h"
 #include "gameflow.h"
+#include "draw.h"
+#include "../specific/output.h"
 
 short SPxzoffs[8] = {0, 0, 0x200, 0, 0, 0, -0x200, 0};
 short SPyoffs[8] = {-0x400, 0, -0x200, 0, 0, 0, -0x200, 0};
@@ -1108,6 +1110,271 @@ void FallingBlockCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 	}
 }
 
+void DrawScaledSpike(ITEM_INFO* item)
+{
+	OBJECT_INFO* object;
+	ROOM_INFO* r;
+	VECTOR v;
+//	CVECTOR c;
+	short** meshpp;
+	short* frmptr[2];
+	long clip, rate;//, scale;
+
+	if ((item->object_number == TEETH_SPIKES && !item->item_flags[1]) || item->object_number == RAISING_BLOCK1 && item->trigger_flags <= -1)
+		return;
+
+	r = &room[item->room_number];
+	phd_left = r->left;
+	phd_right = r->right;
+	phd_top = r->top;
+	phd_bottom = r->bottom;
+	GetFrames(item, frmptr, &rate);
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	phd_RotX(item->pos.x_rot);
+	phd_RotZ(item->pos.z_rot);
+	phd_RotY(item->pos.y_rot);
+	clip = S_GetObjectBounds(frmptr[0]);
+
+	if (clip)
+	{
+		object = &objects[item->object_number];
+		meshpp = &meshes[object->mesh_index];
+
+		if (item->object_number == CUTSCENE_ROPE)
+		{
+			v.vx = 16384;
+			v.vy = 16384;
+			v.vz = item->item_flags[1] << 2;
+		}
+		else
+		{
+			v.vx = 16384;
+			v.vy = item->item_flags[1] << 2;
+			v.vz = 16384;
+		}
+
+		ScaleCurrentMatrix(&v);
+		CalculateObjectLighting(item, frmptr[0]);
+		phd_PutPolygons(*meshpp, clip);
+	}
+
+	phd_left = 0;
+	phd_right = phd_winwidth;
+	phd_top = 0;
+	phd_bottom = phd_winheight;
+	phd_PopMatrix();
+}
+
+void FallingBlock(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->trigger_flags)
+		item->trigger_flags--;
+	else
+	{
+		if (!item->item_flags[0])
+		{
+			item->mesh_bits = -2;
+			ExplodingDeath2(item_number, -1, 0x3BA1);
+			item->item_flags[0]++;
+		}
+		else if (item->item_flags[0] >= 60)
+			KillItem(item_number);
+		else if (item->item_flags[0] >= 52)
+		{
+			item->item_flags[1] += 2;
+			item->item_flags[0]++;
+			item->pos.y_pos += item->item_flags[1];
+		}
+		else
+		{
+			if (!(GetRandomControl() % (0x3E - item->item_flags[0])))
+				item->pos.y_pos += (GetRandomControl() & 3) + 1;
+
+			item->item_flags[0]++;
+		}
+	}
+}
+
+void FallingBlockFloor(ITEM_INFO* item, long x, long y, long z, long* height)
+{
+	long tx, tz;
+
+	tx = x ^ item->pos.x_pos;
+	tz = z ^ item->pos.z_pos;
+
+	if (tx & ~1023 || tz & ~1023)
+		return;
+
+	if (y <= item->pos.y_pos)
+	{
+		*height = item->pos.y_pos;
+		height_type = 0;
+		OnObject = 1;
+	}
+}
+
+void FallingBlockCeiling(ITEM_INFO* item, long x, long y, long z, long* height)
+{
+	long tx, tz;
+
+	tx = x ^ item->pos.x_pos;
+	tz = z ^ item->pos.z_pos;
+
+	if (tx & ~1023 || tz & ~1023)
+		return;
+
+	if (y > item->pos.y_pos)
+		*height = item->pos.y_pos + 256;
+}
+
+void ControlScaledSpike(short item_number)
+{
+	ITEM_INFO* item;
+
+	short* bounds;
+	short* larabounds;
+	long dx, dy, dz, num;
+	short room_number, yt, yb, iyb1, iyb2, hit;
+
+	item = &items[item_number];
+
+	if (!TriggerActive(item) || item->item_flags[2])
+	{
+		if (TriggerActive(item))
+		{
+			item->item_flags[0] += (item->item_flags[0] >> 3) + 32;
+			item->item_flags[1] -= item->item_flags[0];
+
+			if (item->item_flags[1] < 0)
+			{
+				item->item_flags[0] = 1024;
+				item->item_flags[1] = 0;
+				item->status = ITEM_INVISIBLE;
+			}
+
+			if (item->trigger_flags & 32)
+				item->item_flags[2] = 1;
+			else if (item->item_flags[2])
+				item->item_flags[2]--;
+		}
+		else if (!item->timer)
+		{
+			item->item_flags[0] += (item->item_flags[0] >> 3) + 32;
+
+			if (item->item_flags[1] > 0)
+			{
+				item->item_flags[1] -= item->item_flags[0];
+
+				if (item->item_flags[1] < 0)
+					item->item_flags[1] = 0;
+			}
+		}
+	}
+	else
+	{
+		if (item->item_flags[0] == 1024)
+			SoundEffect(SFX_TEETH_SPIKES, &item->pos, SFX_DEFAULT);
+
+		item->status = ITEM_ACTIVE;
+		hit = (short)TestBoundsCollideTeethSpikes(item);
+
+		if (lara_item->hit_points > 0 && hit)
+		{
+			bounds = GetBestFrame(item);
+			larabounds = GetBestFrame(lara_item);
+			num = 0;
+
+			if ((item->item_flags[0] > 1024 || lara_item->gravity_status) && (item->trigger_flags & 7) > 2 && (item->trigger_flags & 7) < 6)
+			{
+				if (lara_item->fallspeed > 6 || item->item_flags[0] > 1024)
+				{
+					lara_item->hit_points = -1;
+					num = 20;
+				}
+			}
+			else if (lara_item->speed < 30)
+				num = 0;
+			else
+			{
+				lara_item->hit_points -= 8;
+				num = (GetRandomControl() & 3) + 2;
+			}
+
+			yt = (short)(item->pos.y_pos + larabounds[2]);
+			yb = (short)(item->pos.y_pos + larabounds[3]);
+
+			if ((item->trigger_flags & 0xF) == 8 || !(item->trigger_flags & 0xF))
+			{
+				iyb1 = -bounds[3];
+				iyb2 = -bounds[2];
+			}
+			else
+			{
+				iyb1 = bounds[2];
+				iyb2 = bounds[3];
+			}
+
+			if (yt < item->pos.y_pos + iyb1)
+				yt = (short)(iyb1 + item->pos.y_pos);
+
+			if (yb > item->pos.y_pos + iyb2)
+				yb = (short)(iyb2 + item->pos.y_pos);
+
+			dy = ABS(yt - yb) + 1;
+
+			if ((item->trigger_flags & 7) == 2 || (item->trigger_flags & 7) == 6)
+				num >>= 1;
+
+			while (num > 0)
+			{
+				dx = (GetRandomControl() & 0x7F) + lara_item->pos.x_pos - 64;
+				dz = (GetRandomControl() & 0x7F) + lara_item->pos.z_pos - 64;
+				TriggerBlood(dx, yb - GetRandomControl() % dy, dz, GetRandomControl() << 1, 1);
+				num--;
+			}
+
+			if (lara_item->hit_points <= 0)
+			{
+				room_number = lara_item->room_number;
+				dy = GetHeight(GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number),
+					lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+
+				if (item->pos.y_pos >= lara_item->pos.y_pos && dy - lara_item->pos.y_pos < 50)
+				{
+					lara_item->anim_number = ANIM_SPIKED;
+					lara_item->frame_number = anims[ANIM_SPIKED].frame_base;
+					lara_item->current_anim_state = AS_DEATH;
+					lara_item->goal_anim_state = AS_DEATH;
+					lara_item->gravity_status = 0;
+				}
+			}
+		}
+
+		item->item_flags[0] += 128;
+		item->item_flags[1] += item->item_flags[0];
+
+		if (item->item_flags[1] >= 5120)
+		{
+			item->item_flags[1] = 5120;
+
+			if (item->item_flags[0] <= 1024)
+			{
+				item->item_flags[0] = 0;
+
+				if (!(item->trigger_flags & 16) && lara_item->hit_points > 0)
+					item->item_flags[2] = 64;
+			}
+			else
+				item->item_flags[0] = -item->item_flags[0] >> 1;
+		}
+	}
+}
+
 void inject_traps(bool replace)
 {
 	INJECT(0x0048AD60, LaraBurn, replace);
@@ -1127,4 +1394,9 @@ void inject_traps(bool replace)
 	INJECT(0x00489450, CeilingTrapDoorCollision, replace);
 	INJECT(0x004896D0, TrapDoorCollision, replace);
 	INJECT(0x00489750, FallingBlockCollision, replace);
+	INJECT(0x0048B7E0, DrawScaledSpike, replace);
+	INJECT(0x00489820, FallingBlock, replace);
+	INJECT(0x00489910, FallingBlockFloor, replace);
+	INJECT(0x00489980, FallingBlockCeiling, replace);
+	INJECT(0x0048BEF0, ControlScaledSpike, replace);
 }

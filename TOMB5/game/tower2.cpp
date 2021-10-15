@@ -156,7 +156,13 @@ void ControlGunship(short item_number)
 	}
 }
 
+void DrawSteelDoorLensFlare(ITEM_INFO* item)
+{
+
+}
+
 void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
+	INJECT(0x00487AB0, DrawSteelDoorLensFlare, replace);
 }

@@ -16,35 +16,23 @@
 #include "switch.h"
 #include "health.h"
 #include "../specific/audio.h"
+#include "andy.h"
+
+static PHD_VECTOR SOPos = { 0, 0, 0 };
+static PHD_VECTOR MSPos = { 0, 0, 0 };
+static PHD_VECTOR KeyHolePosition = { 0, 0, 312 };
+static short SearchCollectFrames[4] = { 180, 100, 153, 83 };
+static short SearchOffsets[4] = { 160, 96, 160, 112 };
+static short SearchAnims[4] = { ANIM_SCABINET, ANIM_SDRAWERS, ANIM_SSHELVES, ANIM_SBOX };
 
 static short PuzzleBounds[12] = 
 {
-	0, 0, -0x100, 0x100, 0, 0, -0x71C, 0x71C, -0x1554, 0x1554, -0x71C, 0x71C
-};
-
-static short SearchCollectFrames[4] =
-{
-	0xB4, 0x64, 0x99, 0x53
+	0, 0, -256, 256, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
 };
 
 static short SOBounds[12] =
 {
-	0, 0, 0, 0, 0, 0, -0x71C, 0x71C, -0x1554, 0x1554, -0x71C, 0x71C
-};
-
-static PHD_VECTOR SOPos =
-{
-	0, 0, 0
-};
-
-static short SearchOffsets[4] =
-{
-	0xA0, 0x60, 0xA0, 0x70
-};
-
-static short SearchAnims[4] =
-{
-	0x1D0, 0x1D1, 0x1D2, 0x1D8
+	0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
 };
 
 static short MSBounds[12] =
@@ -52,9 +40,9 @@ static short MSBounds[12] =
 	0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
 };
 
-static PHD_VECTOR MSPos =
+static short KeyHoleBounds[12] =
 {
-	0, 0, 0
+	-256, 256, 0, 0, 0, 412, -1820, 1820, -5460, 5460, -1820, 1820
 };
 
 void RegeneratePickups()
@@ -399,7 +387,7 @@ void SearchObjectControl(short item_number)
 		if (frame >= 45 && frame <= 131)
 			item->mesh_bits |= flip ? 4 : 2;
 
-		if (item->item_flags[1] != -1 && objects[items[item->item_flags[1]].object_number].collision == PickupCollision)
+		if (item->item_flags[1] != -1 && objects[items[item->item_flags[1]].object_number].collision == PickUpCollision)
 			items[item->item_flags[1]].status = flip ? ITEM_INACTIVE : ITEM_INVISIBLE;
 	}
 
@@ -409,7 +397,7 @@ void SearchObjectControl(short item_number)
 		{
 			if (item->item_flags[1] != -1)
 			{
-				if (objects[items[item->item_flags[1]].object_number].collision == PickupCollision)
+				if (objects[items[item->item_flags[1]].object_number].collision == PickUpCollision)
 				{
 					AddDisplayPickup(items[item->item_flags[1]].object_number);
 					KillItem(item->item_flags[1]);
@@ -559,6 +547,127 @@ void MonitorScreenCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 		ObjectCollision(item_num, l, coll);
 }
 
+void AnimatingPickUp(short item_number)
+{
+	ITEM_INFO* item;
+	short room_number;
+
+	item = &items[item_number];
+
+	switch (item->trigger_flags & 0x3F)
+	{
+	case 5:
+		item->fallspeed += 6;
+		item->pos.y_pos += item->fallspeed;
+		room_number = item->room_number;
+		GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+
+		if (item->pos.y_pos > item->item_flags[0])
+		{
+			item->pos.y_pos = item->item_flags[0];
+
+			if (item->fallspeed <= 64)
+				item->trigger_flags &= -64;
+			else
+				item->fallspeed = -item->fallspeed >> 2;
+		}
+
+		if (item->room_number != room_number)
+			ItemNewRoom(item_number, room_number);
+
+		break;
+
+	case 2:
+	case 6:
+	case 7:
+	case 8:
+	case 9:
+		AnimateItem(item);
+		break;
+
+	case 11:
+		TriggerCoinGlow(item_number);
+		break;
+	}
+}
+
+void KeyHoleCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+	long key, hole;
+
+	item = &items[item_number];
+
+	if (item->trigger_flags == 1 && item->object_number == KEY_HOLE8)
+	{
+		if (item->item_flags[3])
+		{
+			item->item_flags[3]--;
+
+			if (!item->item_flags[3])
+				item->mesh_bits = 2;
+		}
+	}
+
+	if ((input & IN_ACTION || GLOBAL_inventoryitemchosen != NO_ITEM) && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
+		l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH || lara.IsMoving && lara.GeneralPtr == (void*)item_number)
+	{
+		key = GLOBAL_inventoryitemchosen - KEY_ITEM1;
+		hole = item->object_number - KEY_HOLE1;
+
+		if (TestLaraPosition(KeyHoleBounds, item, l))
+		{
+			if (!lara.IsMoving)
+			{
+				if (item->status == ITEM_INVISIBLE)
+					return;
+
+				if (GLOBAL_inventoryitemchosen == -1)
+				{
+					if (have_i_got_object((short)(hole + KEY_ITEM1)))
+						GLOBAL_enterinventory = hole + KEY_ITEM1;
+
+					return;
+				}
+
+				if (key != hole)
+					return;
+			}
+
+			if (MoveLaraPosition(&KeyHolePosition, item, l))
+			{
+				if (item->object_number != KEY_HOLE8)
+					remove_inventory_item((short)(hole + KEY_ITEM1));
+
+				if (item->object_number == KEY_HOLE8)
+					l->anim_number = ANIM_KEYCARD;
+				else
+					l->anim_number = ANIM_USEKEY;
+
+				l->current_anim_state = AS_USEKEY;
+				l->frame_number = anims[l->anim_number].frame_base;
+				lara.IsMoving = 0;
+				lara.head_y_rot = 0;
+				lara.head_x_rot = 0;
+				lara.torso_y_rot = 0;
+				lara.torso_x_rot = 0;
+				lara.gun_status = LG_HANDS_BUSY;
+				item->status = ITEM_ACTIVE;
+				item->flags &= IFL_TRIGGERED;
+
+				if (item->trigger_flags == 1 && item->object_number == KEY_HOLE8)
+					item->item_flags[3] = 92;
+			}
+			else
+				lara.GeneralPtr = (void*)item_number;
+
+			GLOBAL_inventoryitemchosen = NO_ITEM;
+		}
+	}
+	else if (item->object_number < KEY_HOLE6)
+		ObjectCollision(item_number, l, coll);
+}
+
 void inject_pickup(bool replace)
 {
 	INJECT(0x00467AF0, RegeneratePickups, replace);
@@ -570,4 +679,6 @@ void inject_pickup(bool replace)
 	INJECT(0x00469660, SearchObjectControl, replace);
 	INJECT(0x004699A0, SearchObjectCollision, replace);
 	INJECT(0x00469D10, MonitorScreenCollision, replace);
+	INJECT(0x004679D0, AnimatingPickUp, replace);
+	INJECT(0x00468930, KeyHoleCollision, replace);
 }
