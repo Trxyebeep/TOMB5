@@ -465,6 +465,7 @@
 #define bLaraTorch	VAR_U_(0x0087B0F8, long)
 #define FogEnd	VAR_U_(0x0050A43C, float)
 #define f_zfar	VAR_U_(0x0055D228, float)
+#define frames VAR_U_(0x00875174, short*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
