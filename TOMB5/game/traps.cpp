@@ -1375,6 +1375,171 @@ void ControlScaledSpike(short item_number)
 	}
 }
 
+void ControlRaisingBlock(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (TriggerActive(item))
+	{
+		if (!item->item_flags[2])
+		{
+			if (item->object_number == RAISING_BLOCK1)
+			{
+				if (item->trigger_flags == -1)
+					AlterFloorHeight(item, -255);
+				else if (item->trigger_flags == -3)
+					AlterFloorHeight(item, -1023);
+				else
+					AlterFloorHeight(item, -1024);
+			}
+			else if (item->object_number == RAISING_BLOCK2)
+				AlterFloorHeight(item, -2048);
+
+			item->item_flags[2] = 1;
+		}
+
+		if (item->trigger_flags < 0)
+			item->item_flags[1] = 1;
+		else
+		{
+			if (item->item_flags[1] < 4096)
+			{
+				SoundEffect(SFX_BLK_PLAT_RAISE_LOW, &item->pos, 0);
+				item->item_flags[1] += 64;
+
+				if (item->trigger_flags > 0 && abs(item->pos.x_pos - camera.pos.x) < 10240 && 
+					abs(item->pos.y_pos - camera.pos.y) < 10240 && abs(item->pos.z_pos - camera.pos.z) < 10240)
+				{
+					if (item->item_flags[1] == 64 || item->item_flags[1] == 4096)
+						camera.bounce = -32;
+					else
+						camera.bounce = -16;
+				}
+			}
+		}
+	}
+	else
+	{
+		if (item->item_flags[1] <= 0 || item->trigger_flags < 0)
+		{
+			if (item->item_flags[2])
+			{
+				item->item_flags[1] = 0;
+
+				if (item->object_number == RAISING_BLOCK1)
+				{
+					if (item->trigger_flags == -1)
+						AlterFloorHeight(item, 255);
+					else if (item->trigger_flags == -3)
+						AlterFloorHeight(item, 1023);
+					else
+						AlterFloorHeight(item, 1024);
+				}
+				else if (item->object_number == RAISING_BLOCK2)
+					AlterFloorHeight(item, 2048);
+
+				item->item_flags[2] = 0;
+			}
+		}
+		else
+		{
+			SoundEffect(SFX_BLK_PLAT_RAISE_LOW, &item->pos, 0);
+
+			if (item->trigger_flags >= 0 && ABS(item->pos.x_pos - camera.pos.x) < 10240 &&
+				ABS(item->pos.y_pos - camera.pos.y) < 10240 && ABS(item->pos.z_pos - camera.pos.z) < 10240)
+			{
+				if (item->item_flags[1] == 64 || item->item_flags[1] == 4096)
+					camera.bounce = -32;
+				else
+					camera.bounce = -16;
+			}
+
+			item->item_flags[1] -= 64;
+		}
+	}
+}
+
+void ControlTwoBlockPlatform(short item_number)
+{
+	ITEM_INFO* item;
+	long height;
+	short room_number;
+
+	item = &items[item_number];
+
+	if (!TriggerActive(item))
+		return;
+
+	if (item->trigger_flags)
+	{
+		if (item->pos.y_pos > item->item_flags[0] - (item->trigger_flags << 4))
+			item->pos.y_pos -= item->trigger_flags & 0xF;
+
+		room_number = item->room_number;
+		item->floor = GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number),
+			item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+
+		if (room_number != item->room_number)
+			ItemNewRoom(item_number, room_number);
+	}
+	else
+	{
+		OnObject = 0;
+		height = lara_item->pos.y_pos + 1;
+		TwoBlockPlatformFloor(item, lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &height);
+
+		if (!OnObject || lara_item->anim_number == 89)
+			item->item_flags[1] = -1;
+		else
+			item->item_flags[1] = 1;
+
+		if (item->item_flags[1] > 0)
+		{
+			if (item->pos.y_pos >= item->item_flags[0] + 128)
+				item->item_flags[1] = -1;
+			else
+			{
+				SoundEffect(SFX_2GUNTEX_FALL_BIG, &item->pos, SFX_DEFAULT);
+				item->pos.y_pos += 4;
+			}
+		}
+		else if (item->item_flags[1] < 0)
+		{
+			if (item->pos.y_pos <= item->item_flags[0])
+				item->item_flags[1] = 1;
+			else
+			{
+				SoundEffect(SFX_2GUNTEX_FALL_BIG, &item->pos, SFX_DEFAULT);
+				item->pos.y_pos -= 4;
+			}
+		}
+	}
+}
+
+void TwoBlockPlatformFloor(ITEM_INFO* item, long x, long y, long z, long* height)
+{
+	if (OnTwoBlockPlatform(item, x, z))
+	{
+		if (y <= item->pos.y_pos + 32 && item->pos.y_pos < *height)
+		{
+			*height = item->pos.y_pos;
+			OnObject = 1;
+			height_type = 0;
+		}
+	}
+}
+
+void TwoBlockPlatformCeiling(ITEM_INFO* item, long x, long y, long z, long* height)
+{
+	if (OnTwoBlockPlatform(item, x, z))
+	{
+		if (y > item->pos.y_pos + 32 && item->pos.y_pos > *height)
+			*height = item->pos.y_pos + 256;
+	}
+}
+
 void inject_traps(bool replace)
 {
 	INJECT(0x0048AD60, LaraBurn, replace);
@@ -1399,4 +1564,8 @@ void inject_traps(bool replace)
 	INJECT(0x00489910, FallingBlockFloor, replace);
 	INJECT(0x00489980, FallingBlockCeiling, replace);
 	INJECT(0x0048BEF0, ControlScaledSpike, replace);
+	INJECT(0x0048C3D0, ControlRaisingBlock, replace);
+	INJECT(0x0048BBB0, ControlTwoBlockPlatform, replace);
+	INJECT(0x0048B9E0, TwoBlockPlatformFloor, replace);
+	INJECT(0x0048BA50, TwoBlockPlatformCeiling, replace);
 }

@@ -43,6 +43,7 @@
 #include "bat.h"
 #include "spider.h"
 #include "guardian.h"
+#include "effect2.h"
 
 void InitialiseLara(int restore)
 {
@@ -566,7 +567,7 @@ void ObjectObjects()
 	{
 		obj = &objects[i];
 		obj->initialise = InitialiseRaisingBlock;
-	//	obj->control = ControlRaisingBlock;
+		obj->control = ControlRaisingBlock;
 		obj->collision = 0;
 		obj->draw_routine = DrawScaledSpike;
 		obj->using_drawanimating_item = 0;
@@ -766,14 +767,14 @@ void TrapObjects()
 
 	obj = &objects[TWOBLOCK_PLATFORM];
 	obj->initialise = InitialiseTwoBlockPlatform;
-//	obj->control = ControlTwoBlockPlatform;
-//	obj->floor = TwoBlockPlatformFloor;
-//	obj->ceiling = TwoBlockPlatformCeiling;
+	obj->control = ControlTwoBlockPlatform;
+	obj->floor = TwoBlockPlatformFloor;
+	obj->ceiling = TwoBlockPlatformCeiling;
 	obj->save_position = 1;
 	obj->save_flags = 1;
 
 	obj = &objects[KILL_ALL_TRIGGERS];
-//	obj->control = KillAllCurrentItems;
+	obj->control = KillAllCurrentItems;
 	obj->draw_routine = 0;
 	obj->using_drawanimating_item = 0;
 	obj->hit_points = 0;

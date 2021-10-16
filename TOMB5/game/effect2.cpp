@@ -129,8 +129,20 @@ void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit)
 	}
 }
 
+void KillAllCurrentItems(short item_number)
+{
+	KillEverythingFlag = 1;
+}
+
+void KillEverything()
+{
+	KillEverythingFlag = 0;
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
 	INJECT(0x00430D90, TriggerDartSmoke, replace);
+	INJECT(0x00431030, KillAllCurrentItems, replace);
+	INJECT(0x00431050, KillEverything, replace);
 }

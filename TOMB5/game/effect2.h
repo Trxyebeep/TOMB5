@@ -5,10 +5,11 @@ void inject_effect2(bool replace);
 
 void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv);
 void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit);
+void KillAllCurrentItems(short item_number);
+void KillEverything();
 
 #define TriggerDynamic	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431240 )
 #define TriggerDynamic_MIRROR	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431420 )
-#define KillEverything	( (void(__cdecl*)()) 0x00431050 )
 #define ClearDynamics	( (void(__cdecl*)()) 0x00431530 )
 #define UpdateSparks	( (void(__cdecl*)()) 0x0042E8B0 )
 #define UpdateSplashes	( (void(__cdecl*)()) 0x00430710 )
