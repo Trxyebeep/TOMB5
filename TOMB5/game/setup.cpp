@@ -968,7 +968,7 @@ void BaddyObjects()
 		obj = &objects[SAS];
 		obj->initialise = InitialiseSas;
 	//	obj->control = SasControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 40;
 		obj->pivot_length = 50;
@@ -991,8 +991,8 @@ void BaddyObjects()
 		obj = &objects[BLUE_GUARD];
 		obj->initialise = InitialiseSas;
 	//	obj->control = SasControl;
-	//	obj->collision = CreatureCollision;
-	//	obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
 
 		if (objects[SWAT].loaded)
 			obj->anim_index = objects[SWAT].anim_index;
@@ -1023,8 +1023,8 @@ void BaddyObjects()
 		obj = &objects[SWAT];
 		obj->initialise = InitialiseSas;
 	//	obj->control = SasControl;
-	//	obj->collision = CreatureCollision;
-	//	obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;
 		obj->hit_points = 24;
 		obj->pivot_length = 50;
@@ -1051,8 +1051,8 @@ void BaddyObjects()
 		obj = &objects[SWAT_PLUS];
 		obj->initialise = InitialiseSas;
 	//	obj->control = SasControl;
-	//	obj->collision = CreatureCollision;
-	//	obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
 
 		if (objects[SWAT].loaded)
 			obj->anim_index = objects[SWAT].anim_index;
@@ -1084,8 +1084,8 @@ void BaddyObjects()
 		obj = &objects[MAFIA];
 		obj->initialise = InitialiseSas;
 	//	obj->control = SasControl;
-	//	obj->collision = CreatureCollision;
-	//	obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
 
 		if (objects[SWAT].loaded)
 			obj->anim_index = objects[SWAT].anim_index;
@@ -1118,7 +1118,7 @@ void BaddyObjects()
 		obj = &objects[SCIENTIST];
 		obj->initialise = InitialiseSas;
 	//	obj->control = SasControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 
 		if (objects[SWAT].loaded)
 			obj->anim_index = objects[SWAT].anim_index;
@@ -1150,8 +1150,8 @@ void BaddyObjects()
 		obj = &objects[CRANE_GUY];
 		obj->initialise = InitialiseSas;
 	//	obj->control = SasControl;
-	//	obj->collision = CreatureCollision;
-	//	obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
 
 		if (objects[SWAT].loaded)
 			obj->anim_index = objects[SWAT].anim_index;
@@ -1218,7 +1218,7 @@ void BaddyObjects()
 		obj = &objects[SAILOR];
 		obj->initialise = InitialiseSas;
 		//	obj->control = SasControl;
-		//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 
 		if (objects[SWAT].loaded)
 			obj->anim_index = objects[SWAT].anim_index;
@@ -1248,7 +1248,7 @@ void BaddyObjects()
 		obj = &objects[ATTACK_SUB];
 		obj->initialise = InitialiseMinisub;
 		obj->control = MinisubControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 100;
 		obj->pivot_length = 200;
@@ -1272,7 +1272,7 @@ void BaddyObjects()
 		obj = &objects[LION];
 		obj->initialise = InitialiseLion;
 		obj->control = LionControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 40;
 		obj->pivot_length = 50;
@@ -1294,7 +1294,7 @@ void BaddyObjects()
 		obj = &objects[DOG];
 		obj->initialise = InitialiseDog;
 		obj->control = DogControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 18;
 		obj->pivot_length = 50;
@@ -1315,7 +1315,7 @@ void BaddyObjects()
 		obj = &objects[HUSKIE];
 		obj->initialise = InitialiseHuskie;
 		obj->control = HuskieControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 24;
 		obj->pivot_length = 50;
@@ -1336,7 +1336,7 @@ void BaddyObjects()
 		obj = &objects[CROW];
 		obj->initialise = InitialiseCrow;
 		obj->control = CrowControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 10;
 		obj->pivot_length = 50;
@@ -1357,8 +1357,8 @@ void BaddyObjects()
 		obj = &objects[REAPER];
 		obj->initialise = InitialiseJelly;
 		obj->control = JellyControl;
-	//	obj->collision = CreatureCollision;
-	//	obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;
 		obj->hit_points = 10;
 		obj->pivot_length = 50;
@@ -1379,7 +1379,7 @@ void BaddyObjects()
 		obj = &objects[MAFIA2];
 		obj->initialise = InitialiseMafia;
 		obj->control = MafiaControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 26;
 		obj->pivot_length = 50;
@@ -1407,8 +1407,8 @@ void BaddyObjects()
 		obj = &objects[PIERRE];
 		obj->initialise = InitialisePierre;
 		obj->control = PierreControl;
-	//	obj->collision = CreatureCollision;
-	//	obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;
 		obj->hit_points = 60;
 		obj->pivot_length = 50;
@@ -1432,8 +1432,8 @@ void BaddyObjects()
 		obj = &objects[LARSON];
 		obj->initialise = InitialisePierre;
 		obj->control = PierreControl;
-	//	obj->collision = CreatureCollision;
-	//	obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;
 		obj->hit_points = 60;
 		obj->pivot_length = 50;
@@ -1457,8 +1457,8 @@ void BaddyObjects()
 		obj = &objects[HITMAN];
 	//	obj->initialise = InitialiseHitman;
 	//	obj->control = HitmanControl;
-	//	obj->collision = CreatureCollision;
-	//	obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;
 		obj->hit_points = 50;
 		obj->pivot_length = 50;
@@ -1486,8 +1486,8 @@ void BaddyObjects()
 		obj = &objects[SNIPER];
 		obj->initialise = InitialiseSniper;
 		obj->control = SniperControl;
-	//	obj->collision = CreatureCollision;
-	//	obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;
 		obj->hit_points = 35;
 		obj->pivot_length = 50;
@@ -1512,7 +1512,7 @@ void BaddyObjects()
 		obj = &objects[CHEF];
 		obj->initialise = InitialiseChef;
 		obj->control = ChefControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 35;
 		obj->pivot_length = 50;
@@ -1536,7 +1536,7 @@ void BaddyObjects()
 		obj = &objects[TWOGUN];
 	//	obj->initialise = InitialiseTwoGun;
 	//	obj->control = TwogunControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 24;
 		obj->pivot_length = 50;
@@ -1562,7 +1562,7 @@ void BaddyObjects()
 		obj = &objects[HYDRA];
 		obj->initialise = InitialiseHydra;
 		obj->control = HydraControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 30;
 		obj->pivot_length = 50;
@@ -1586,7 +1586,7 @@ void BaddyObjects()
 		obj = &objects[IMP];
 		obj->initialise = InitialiseImp;
 		obj->control = ImpControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 12;
 		obj->pivot_length = 20;
@@ -1636,7 +1636,7 @@ void BaddyObjects()
 		obj = &objects[MAZE_MONSTER];
 	//	obj->initialise = InitialiseMazeMonster;
 	//	obj->control = MazeMonsterControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 4000;
 		obj->pivot_length = 20;
@@ -1660,7 +1660,7 @@ void BaddyObjects()
 		obj = &objects[GREEN_TEETH];
 		obj->initialise = InitialiseSwampy;
 		obj->control = SwampyControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 256;
 		obj->hit_points = 100;
 		obj->pivot_length = 20;
@@ -1685,7 +1685,7 @@ void BaddyObjects()
 		obj = &objects[SKELETON];
 		obj->initialise = InitialiseSkeleton;
 		obj->control = SkeletonControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 100;
 		obj->pivot_length = 20;
@@ -1736,7 +1736,7 @@ void BaddyObjects()
 		obj = &objects[GLADIATOR];
 	//	obj->initialise = InitialiseGladiator;
 	//	obj->control = GladiatorControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 20;
 		obj->pivot_length = 50;
@@ -1763,7 +1763,7 @@ void BaddyObjects()
 		obj = &objects[ROMAN_GOD];
 	//	obj->initialise = InitialiseRomangod;
 	//	obj->control = RomangodControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 300;
 		obj->pivot_length = 50;
@@ -1789,7 +1789,7 @@ void BaddyObjects()
 	{
 		obj->initialise = InitialiseGuardian;
 		obj->control = GuardianControl;
-	//	obj->collision = CreatureCollision;
+		obj->collision = CreatureCollision;
 		obj->explodable_meshbits = 6;
 		obj->HitEffect = 3;
 		obj->save_position = 1;

@@ -278,6 +278,7 @@
 #define GlobalAlpha	VAR_U_(0x00506D3C, int)
 #define current_item	VAR_U_(0x009158A8, ITEM_INFO*)
 #define aGlobalSkinMesh	VAR_U_(0x00921680, int)
+#define GLOBAL_gunflash_meshptr	VAR_U_(0x00E6D750, short*)
 /*************************************************/
 #define phd_top	VAR_U_(0x0051D0A8, long)
 #define phd_bottom	VAR_U_(0x0055D204, long)
@@ -584,6 +585,7 @@
 #define Lightning	ARRAY_(0x00E4C360, LIGHTNING_STRUCT, [16])
 #define GlobalCollisionBounds ARRAY_(0x00EEF910, short, [6])
 #define HairRotScratchVertNums	ARRAY_(0x00506D40, char, [5][12])
+#define EnemyBites	ARRAY_(0x00509A30, BITE_INFO, [9])
 
 //defs
 #define NO_HEIGHT -32512

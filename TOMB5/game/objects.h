@@ -24,11 +24,10 @@ void ParallelBarsCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
 void ControlXRayMachine(short item_number);
 void CutsceneRopeControl(short item_number);
 void HybridCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll);
+void DrawBaddieGunFlash(ITEM_INFO* item);
 
-
-
-
-enum object_types {
+enum object_types 
+{
 	LARA, PISTOLS_ANIM, UZI_ANIM, SHOTGUN_ANIM, CROSSBOW_ANIM, HK_ANIM, REVOLVER_ANIM, FLARE_ANIM,
 	LARA_SKIN, LARA_SKIN_JOINTS, LARA_SCREAM,
 	LARA_CROSSBOW_LASER,

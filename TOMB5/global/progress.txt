@@ -115,7 +115,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004120A0	+	ShiftItem
 0x004120F0		UpdateLaraRoom
 0x00412170		LaraBaddieCollision
-0x004124E0		CreatureCollision
+0x004124E0	+	CreatureCollision
 0x004126E0	+	ObjectCollision
 0x00412770		AIPickupCollision
 0x004127C0		TrapCollision
@@ -1213,7 +1213,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004661C0	+	ParallelBarsCollision
 0x00466420	+	ControlXRayMachine
 0x00466720	+	CutsceneRopeControl
-0x00466880		DrawBaddieGunFlash
+0x00466880	+	DrawBaddieGunFlash
 0x00466AA0	+	HybridCollision
 
 

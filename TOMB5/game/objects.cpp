@@ -16,6 +16,7 @@
 #include "skeleton.h"
 #include "tower2.h"
 #include "../specific/function_stubs.h"
+#include "../specific/output.h"
 
 static short ParallelBarsBounds[12] =
 {
@@ -813,6 +814,46 @@ void HybridCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll)
 		ObjectCollision(item_num, laraitem, coll);
 }
 
+void DrawBaddieGunFlash(ITEM_INFO* item)
+{
+	float m[12];
+	short node[2];
+	short bite[2];
+	short num;
+
+	GetRandomDraw();
+	GetRandomDraw();
+	GetRandomDraw();
+	GetRandomDraw();
+	bite[0] = objects[item->object_number].bite_offset;
+	bite[1] = objects[item->object_number].bite_offset + 1;
+	node[0] = (short)(EnemyBites[objects[item->object_number].bite_offset].mesh_num);
+	node[1] = (short)(EnemyBites[objects[item->object_number].bite_offset + 1].mesh_num);
+	
+	for (num = node[0] < 0 ? 1 : 0; num >= 0; num--)
+	{
+		GetJointAbsPositionMatrix(item, m, ABS(node[num]));
+		phd_PushMatrix();
+		aMXPtr[M00] = m[M00];
+		aMXPtr[M01] = m[M01];
+		aMXPtr[M02] = m[M02];
+		aMXPtr[M03] = m[M03];
+		aMXPtr[M10] = m[M10];
+		aMXPtr[M11] = m[M11];
+		aMXPtr[M12] = m[M12];
+		aMXPtr[M13] = m[M13];
+		aMXPtr[M20] = m[M20];
+		aMXPtr[M21] = m[M21];
+		aMXPtr[M22] = m[M22];
+		aMXPtr[M23] = m[M23];
+		phd_RotX(-16384);
+		phd_TranslateRel(EnemyBites[bite[num]].x, EnemyBites[bite[num]].y, EnemyBites[bite[num]].z);
+		phd_RotZ(GetRandomControl() << 1);
+		phd_PutPolygons(GLOBAL_gunflash_meshptr, -1);	//nothing writes to this pointer
+		phd_PopMatrix();
+	}
+}
+
 void inject_objects(bool replace)
 {
 	INJECT(0x00464F60, EarthQuake, replace);
@@ -835,4 +876,5 @@ void inject_objects(bool replace)
 	INJECT(0x00466420, ControlXRayMachine, replace);
 	INJECT(0x00466720, CutsceneRopeControl, replace);
 	INJECT(0x00466AA0, HybridCollision, replace);
+	INJECT(0x00466880, DrawBaddieGunFlash, replace);
 }
