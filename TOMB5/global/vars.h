@@ -522,8 +522,8 @@
 #define cutseq_meshswapbits	ARRAY_(0x00E7EEE0, ulong, [10])
 #define fmv_to_play	ARRAY_(0x0051CE28, char, [2])
 #define gfResidentCut	ARRAY_(0x00E5C278, uchar, [4])
-#define	LightningRGB	ARRAY_(0x00E6E4B8, ushort, [3])
-#define LightningRGBs	ARRAY_(0x00E6CAF0, ushort, [3])
+#define	LightningRGBs	ARRAY_(0x00E6E4B8, ushort, [3])
+#define LightningRGB	ARRAY_(0x00E6CAF0, ushort, [3])
 #define gfMips	ARRAY_(0x00E5C2C0, uchar, [8])
 #define inventry_objects_list	ARRAY_(0x00508E38, INVOBJ, [100])
 #define itemlist	ARRAY_(0x00E88EA0, ITEM_INFO*, [1024])//what the fucking fuck

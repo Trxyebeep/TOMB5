@@ -390,7 +390,7 @@ void SkyDrawPhase()
 			phd_RotY(32760);
 
 			if (gfLevelFlags & GF_LIGHTNING)
-				DrawFlatSky(RGBONLY(LightningRGBs[0], LightningRGBs[1], LightningRGBs[2]), SkyPos, -1536, 4);
+				DrawFlatSky(RGBA(LightningRGB[0], LightningRGB[1], LightningRGB[2], 44), SkyPos, -1536, 4);
 			else
 				DrawFlatSky(*(ulong*)&gfLayer1Col, SkyPos, -1536, 4);
 		}
@@ -447,7 +447,7 @@ void UpdateSkyLightning()
 
 	for (int i = 0; i < 3; i++)
 	{
-		LightningRGB[i] += ((LightningRand * LightningRGBs[i]) >> 8);
+		LightningRGB[i] = LightningRGBs[i] + ((LightningRGBs[i] * LightningRand) >> 8);
 
 		if (LightningRGB[i] > 255)
 			LightningRGB[i] = 255;
