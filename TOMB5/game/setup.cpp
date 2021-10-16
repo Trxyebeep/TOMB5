@@ -43,6 +43,9 @@
 #include "bat.h"
 #include "spider.h"
 #include "guardian.h"
+#include "hair.h"
+#include "../specific/function_stubs.h"
+#include "draw.h"
 
 void InitialiseLara(int restore)
 {
@@ -1822,10 +1825,70 @@ void BaddyObjects()
 	}
 }
 
+void InitialiseObjects()
+{
+	for (int i = 0; i < 460; i++)
+	{
+		objects[i].initialise = NULL;
+		objects[i].collision = NULL;
+		objects[i].control = NULL;
+		objects[i].intelligent = 0;
+		objects[i].save_position = 0;
+		objects[i].save_hitpoints = 0;
+		objects[i].save_flags = 0;
+		objects[i].save_anim = 0;
+		objects[i].water_creature = 0;
+		objects[i].using_drawanimating_item = 1;
+		objects[i].save_mesh = 0;
+		objects[i].draw_routine = DrawAnimatingItem;
+		objects[i].ceiling = NULL;
+		objects[i].floor = NULL;
+		objects[i].pivot_length = 0;
+		objects[i].radius = 10;
+		objects[i].shadow_size = 0;
+		objects[i].hit_points = -16384;
+		objects[i].explodable_meshbits = 0;
+		objects[i].draw_routine_extra = NULL;
+		objects[i].frame_base = (short*) ((long) objects[i].frame_base + (char*) frames);
+		objects[i].object_mip = 0;
+	}
+
+	BaddyObjects();
+	ObjectObjects();
+	TrapObjects();
+	InitialiseHair();
+	InitialiseEffects();
+
+	for (int i = 0; i < 6; i++)
+		SequenceUsed[i] = 0;
+
+	NumRPickups = 0;
+	CurrentSequence = 0;
+	SequenceResults[0][1][2] = 0;
+	SequenceResults[0][2][1] = 1;
+	SequenceResults[1][0][2] = 2;
+	SequenceResults[1][2][0] = 3;
+	SequenceResults[2][0][1] = 4;
+	SequenceResults[2][1][0] = 5;
+
+	for (int i = 0; i < gfNumMips; i++)
+		objects[2 * (gfMips[i] & 0xF) + ANIMATING1].object_mip = 64 * (gfMips[i] & 0xF0);
+
+	if (objects[RAT].loaded)
+		Rats = (RAT_STRUCT*) game_malloc(832, 0);
+
+	if (objects[BAT].loaded)
+		Bats = (BAT_STRUCT*) game_malloc(1920, 0);
+
+	if (objects[SPIDER].loaded)
+		Spiders = (SPIDER_STRUCT*) game_malloc(1664, 0);
+}
+
 void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
 	INJECT(0x00476360, ObjectObjects, 0);
 	INJECT(0x00475D40, TrapObjects, 0);
 	INJECT(0x004737C0, BaddyObjects, 0);
+	INJECT(0x00473600, InitialiseObjects, replace);
 }
