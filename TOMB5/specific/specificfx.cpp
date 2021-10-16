@@ -443,6 +443,21 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 		break;
 
 	case 2:
+		vec[0].x = -4864;
+		vec[0].y = 0;
+		vec[0].z = 4864;
+		vec[1].x = 0;
+		vec[1].y = 0;
+		vec[1].z = 4864;
+		vec[2].x = 0;
+		vec[2].y = 0;
+		vec[2].z = 0;
+		vec[3].x = -4864;
+		vec[3].y = 0;
+		vec[3].z = 0;
+		break;
+
+	case 3:
 		vec[0].x = 0;
 		vec[0].y = 0;
 		vec[0].z = 4864;
@@ -457,20 +472,6 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 		vec[3].z = 0;
 		break;
 
-	case 3:
-		vec[0].x = -4864;
-		vec[0].y = 0;
-		vec[0].z = 4864;
-		vec[1].x = 0;
-		vec[1].y = 0;
-		vec[1].z = 4864;
-		vec[2].x = 0;
-		vec[2].y = 0;
-		vec[2].z = 0;
-		vec[3].x = -4864;
-		vec[3].y = 0;
-		vec[3].z = 0;
-		break;
 
 	default:
 		return;
@@ -645,21 +646,6 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 		break;
 
 	case 2:
-		vec[0].x = 0;
-		vec[0].y = 0;
-		vec[0].z = 4864;
-		vec[1].x = 4864;
-		vec[1].y = 0;
-		vec[1].z = 4864;
-		vec[2].x = 4864;
-		vec[2].y = 0;
-		vec[2].z = 0;
-		vec[3].x = 0;
-		vec[3].y = 0;
-		vec[3].z = 0;
-		break;
-
-	case 3:
 		vec[0].x = -4864;
 		vec[0].y = 0;
 		vec[0].z = 4864;
@@ -673,6 +659,22 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 		vec[3].y = 0;
 		vec[3].z = 0;
 		break;
+
+	case 3:
+		vec[0].x = 0;
+		vec[0].y = 0;
+		vec[0].z = 4864;
+		vec[1].x = 4864;
+		vec[1].y = 0;
+		vec[1].z = 4864;
+		vec[2].x = 4864;
+		vec[2].y = 0;
+		vec[2].z = 0;
+		vec[3].x = 0;
+		vec[3].y = 0;
+		vec[3].z = 0;
+		break;
+		
 
 	default:
 		return;

@@ -26,6 +26,23 @@
 #include "rope.h"
 #include "tower2.h"
 #include "lasers.h"
+#include "lion.h"
+#include "dog.h"
+#include "huskie.h"
+#include "crow.h"
+#include "mafia2.h"
+#include "pierre.h"
+#include "sniper.h"
+#include "chef.h"
+#include "hydra.h"
+#include "imp.h"
+#include "willwisp.h"
+#include "swampy.h"
+#include "skeleton.h"
+#include "rat.h"
+#include "bat.h"
+#include "spider.h"
+#include "guardian.h"
 
 void InitialiseLara(int restore)
 {
@@ -404,7 +421,7 @@ void ObjectObjects()
 
 	obj = &objects[BURNING_TORCH_ITEM];
 	obj->initialise = 0;
-//	obj->control = FlameTorchControl;
+	obj->control = FlameTorchControl;
 	obj->save_position = 1;
 	obj->save_flags = 1;
 
@@ -934,9 +951,881 @@ void TrapObjects()
 	obj->save_anim = 1;
 }
 
+void BaddyObjects()
+{
+	OBJECT_INFO* obj;
+
+	obj = &objects[LARA];
+	obj->initialise = InitialiseLaraLoad;
+	obj->draw_routine = 0;
+	obj->using_drawanimating_item = 0;
+	obj->shadow_size = 160;
+	obj->hit_points = 1000;
+	obj->save_hitpoints = 1;
+
+	if (objects[SAS].loaded)
+	{
+		obj = &objects[SAS];
+		obj->initialise = InitialiseSas;
+	//	obj->control = SasControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 40;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 0;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+	}
+
+	if (objects[BLUE_GUARD].loaded)
+	{
+		obj = &objects[BLUE_GUARD];
+		obj->initialise = InitialiseSas;
+	//	obj->control = SasControl;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
+
+		if (objects[SWAT].loaded)
+			obj->anim_index = objects[SWAT].anim_index;
+
+		obj->shadow_size = 128;
+		obj->hit_points = 24;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 4;
+		obj->explodable_meshbits = 0x4000;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+		meshes[obj->mesh_index + (10 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (10 * 2)];
+		meshes[obj->mesh_index + (13 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (13 * 2)];
+	}
+
+	if (objects[SWAT].loaded)
+	{
+		obj = &objects[SWAT];
+		obj->initialise = InitialiseSas;
+	//	obj->control = SasControl;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->shadow_size = 128;
+		obj->hit_points = 24;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 0;
+		obj->explodable_meshbits = 0x4000;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+		meshes[obj->mesh_index + (10 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (10 * 2)];
+		meshes[obj->mesh_index + (13 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (13 * 2)];
+	}
+
+	if (objects[SWAT_PLUS].loaded)
+	{
+		obj = &objects[SWAT_PLUS];
+		obj->initialise = InitialiseSas;
+	//	obj->control = SasControl;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
+
+		if (objects[SWAT].loaded)
+			obj->anim_index = objects[SWAT].anim_index;
+		else
+			obj->anim_index = objects[BLUE_GUARD].anim_index;
+
+		obj->shadow_size = 128;
+		obj->hit_points = 24;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 0;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+		meshes[obj->mesh_index + (10 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (10 * 2)];
+		meshes[obj->mesh_index + (13 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (13 * 2)];
+	}
+
+	if (objects[MAFIA].loaded)
+	{
+		obj = &objects[MAFIA];
+		obj->initialise = InitialiseSas;
+	//	obj->control = SasControl;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
+
+		if (objects[SWAT].loaded)
+			obj->anim_index = objects[SWAT].anim_index;
+		else
+			obj->anim_index = objects[BLUE_GUARD].anim_index;
+
+		obj->shadow_size = 128;
+		obj->hit_points = 24;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 0;
+		obj->explodable_meshbits = 0x4000;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+		meshes[obj->mesh_index + (10 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (10 * 2)];
+		meshes[obj->mesh_index + (13 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (13 * 2)];
+	}
+
+	if (objects[SCIENTIST].loaded)
+	{
+		obj = &objects[SCIENTIST];
+		obj->initialise = InitialiseSas;
+	//	obj->control = SasControl;
+		obj->collision = CreatureCollision;
+
+		if (objects[SWAT].loaded)
+			obj->anim_index = objects[SWAT].anim_index;
+		else
+			obj->anim_index = objects[BLUE_GUARD].anim_index;
+
+		obj->shadow_size = 128;
+		obj->hit_points = 24;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 0;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+		meshes[obj->mesh_index + (10 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (10 * 2)];
+		meshes[obj->mesh_index + (13 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (13 * 2)];
+	}
+
+	if (objects[CRANE_GUY].loaded)
+	{
+		obj = &objects[CRANE_GUY];
+		obj->initialise = InitialiseSas;
+	//	obj->control = SasControl;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
+
+		if (objects[SWAT].loaded)
+			obj->anim_index = objects[SWAT].anim_index;
+		else
+			obj->anim_index = objects[BLUE_GUARD].anim_index;
+
+		obj->shadow_size = 128;
+		obj->hit_points = 24;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 4;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+		meshes[obj->mesh_index + (10 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (10 * 2)];
+		meshes[obj->mesh_index + (13 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (13 * 2)];
+	}
+
+	obj = &objects[CRANE_GUY_MIP];
+	obj->control = ControlAnimatingSlots;
+	obj->save_flags = 1;
+
+	objects[SAS_MIP].save_flags = 1;
+	objects[SWAT_MIP].save_flags = 1;
+	objects[SWAT_PLUS_MIP].save_flags = 1;
+	objects[BLUE_GUARD_MIP].save_flags = 1;
+	objects[TWOGUN_MIP].save_flags = 1;
+	objects[DOG_MIP].save_flags = 1;
+	objects[CROW_MIP].save_flags = 1;
+	objects[LARSON_MIP].save_flags = 1;
+	objects[PIERRE_MIP].save_flags = 1;
+	objects[MAFIA_MIP].save_flags = 1;
+	objects[MAFIA2_MIP].save_flags = 1;
+	objects[SAILOR_MIP].save_flags = 1;
+	objects[LION_MIP].save_flags = 1;
+	objects[GLADIATOR_MIP].save_flags = 1;
+	objects[ROMAN_GOD_MIP].save_flags = 1;
+	objects[HYDRA_MIP].save_flags = 1;
+	objects[GUARDIAN_MIP].save_flags = 1;
+	objects[HITMAN_MIP].save_flags = 1;
+	objects[SCIENTIST_MIP].save_flags = 1;
+	objects[WILLOWISP_MIP].save_flags = 1;
+	objects[SKELETON_MIP].save_flags = 1;
+	objects[REAPER_MIP].save_flags = 1;
+	objects[MAZE_MONSTER_MIP].save_flags = 1;
+	objects[GREEN_TEETH_MIP].save_flags = 1;
+	objects[ATTACK_SUB_MIP].save_flags = 1;
+	objects[SNIPER_MIP].save_flags = 1;
+	objects[HUSKIE_MIP].save_flags = 1;
+	objects[CHEF_MIP].save_flags = 1;
+	objects[IMP_MIP].save_flags = 1;
+	objects[GUNSHIP_MIP].save_flags = 1;
+
+	if (objects[SAILOR].loaded)
+	{
+		obj = &objects[SAILOR];
+		obj->initialise = InitialiseSas;
+		//	obj->control = SasControl;
+		obj->collision = CreatureCollision;
+
+		if (objects[SWAT].loaded)
+			obj->anim_index = objects[SWAT].anim_index;
+		else
+			obj->anim_index = objects[BLUE_GUARD].anim_index;
+
+		obj->shadow_size = 128;
+		obj->hit_points = 24;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 0;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+	}
+
+	if (objects[ATTACK_SUB].loaded)
+	{
+		obj = &objects[ATTACK_SUB];
+		obj->initialise = InitialiseMinisub;
+		obj->control = MinisubControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 100;
+		obj->pivot_length = 200;
+		obj->radius = 512;
+		obj->bite_offset = 0;
+		obj->object_mip = 7168;
+		obj->intelligent = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		obj->water_creature = 1;
+		obj->HitEffect = 3;
+		obj->undead = 1;
+		bones[obj->bone_index] |= 4;
+		bones[obj->bone_index + 4] |= 4;
+	}
+
+	if (objects[LION].loaded)
+	{
+		obj = &objects[LION];
+		obj->initialise = InitialiseLion;
+		obj->control = LionControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 40;
+		obj->pivot_length = 50;
+		obj->radius = 341;
+		obj->bite_offset = 0;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 76] |= 8;
+	}
+
+	if (objects[DOG].loaded)
+	{
+		obj = &objects[DOG];
+		obj->initialise = InitialiseDog;
+		obj->control = DogControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 18;
+		obj->pivot_length = 50;
+		obj->radius = 256;
+		obj->object_mip = 5120;
+		obj->bite_offset = 0;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 76] |= 8;
+	}
+
+	if (objects[HUSKIE].loaded)
+	{
+		obj = &objects[HUSKIE];
+		obj->initialise = InitialiseHuskie;
+		obj->control = HuskieControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 24;
+		obj->pivot_length = 50;
+		obj->radius = 256;
+		obj->object_mip = 5120;
+		obj->bite_offset = 0;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 76] |= 8;
+	}
+
+	if (objects[CROW].loaded)
+	{
+		obj = &objects[CROW];
+		obj->initialise = InitialiseCrow;
+		obj->control = CrowControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 10;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 0;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 76] |= 8;
+	}
+
+	if (objects[REAPER].loaded)
+	{
+		obj = &objects[REAPER];
+		obj->initialise = InitialiseJelly;
+		obj->control = JellyControl;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->shadow_size = 128;
+		obj->hit_points = 10;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 0;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		obj->water_creature = 1;
+	}
+
+	if (objects[MAFIA2].loaded)
+	{
+		obj = &objects[MAFIA2];
+		obj->initialise = InitialiseMafia;
+		obj->control = MafiaControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 26;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->explodable_meshbits = 0x4000;
+		obj->bite_offset = 7;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+		meshes[obj->mesh_index + (7 * 2) + 1] = meshes[objects[MESHSWAP2].mesh_index + (7 * 2)];
+		meshes[obj->mesh_index + (10 * 2) + 1] = meshes[objects[MESHSWAP2].mesh_index + (10 * 2)];
+		meshes[obj->mesh_index + (13 * 2) + 1] = meshes[objects[MESHSWAP2].mesh_index + (13 * 2)];
+	}
+
+	if (objects[PIERRE].loaded)
+	{
+		obj = &objects[PIERRE];
+		obj->initialise = InitialisePierre;
+		obj->control = PierreControl;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->shadow_size = 128;
+		obj->hit_points = 60;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 1;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 28] |= 8;
+		bones[obj->bone_index + 28] |= 4;
+	}
+
+	if (objects[LARSON].loaded)
+	{
+		obj = &objects[LARSON];
+		obj->initialise = InitialisePierre;
+		obj->control = PierreControl;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->shadow_size = 128;
+		obj->hit_points = 60;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 3;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 28] |= 8;
+		bones[obj->bone_index + 28] |= 4;
+	}
+
+	if (objects[HITMAN].loaded)
+	{
+		obj = &objects[HITMAN];
+	//	obj->initialise = InitialiseHitman;
+	//	obj->control = HitmanControl;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->shadow_size = 128;
+		obj->hit_points = 50;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 5;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 3;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		obj->undead = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+
+		for (int i = 0; i < 20; i++)
+			meshes[obj->mesh_index + (i * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (i * 2)];
+	}
+
+	if (objects[SNIPER].loaded)
+	{
+		obj = &objects[SNIPER];
+		obj->initialise = InitialiseSniper;
+		obj->control = SniperControl;
+		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
+		obj->shadow_size = 128;
+		obj->hit_points = 35;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->explodable_meshbits = 0x4000;
+		obj->bite_offset = 6;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+	}
+
+	if (obj[CHEF].loaded)
+	{
+		obj = &objects[CHEF];
+		obj->initialise = InitialiseChef;
+		obj->control = ChefControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 35;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 0;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+	}
+
+	if (objects[TWOGUN].loaded)
+	{
+		obj = &objects[TWOGUN];
+	//	obj->initialise = InitialiseTwoGun;
+	//	obj->control = TwogunControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 24;
+		obj->pivot_length = 50;
+		obj->radius = 128;
+		obj->explodable_meshbits = 4;
+		obj->bite_offset = 0;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 3;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index] |= 8;
+		bones[obj->bone_index] |= 4;
+		bones[obj->bone_index + 4] |= 8;
+		bones[obj->bone_index + 4] |= 4;
+		meshes[obj->mesh_index + (10 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (2 * 2)];
+	}
+
+	if (objects[HYDRA].loaded)
+	{
+		obj = &objects[HYDRA];
+		obj->initialise = InitialiseHydra;
+		obj->control = HydraControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 30;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 1024;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 3;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index] |= 8;
+		bones[obj->bone_index + 32] |= 8;
+		bones[obj->bone_index + 32] |= 4;
+		bones[obj->bone_index + 32] |= 16;
+	}
+
+	if (objects[IMP].loaded)
+	{
+		obj = &objects[IMP];
+		obj->initialise = InitialiseImp;
+		obj->control = ImpControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 12;
+		obj->pivot_length = 20;
+		obj->radius = 102;
+		obj->bite_offset = 256;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 16] |= 16;
+		bones[obj->bone_index + 16] |= 4;
+		bones[obj->bone_index + 36] |= 16;
+		bones[obj->bone_index + 36] |= 4;
+		meshes[obj->mesh_index + (10 * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (10 * 2)];
+	}
+
+	if (objects[WILLOWISP].loaded)
+	{
+		obj = &objects[WILLOWISP];
+		obj->initialise = InitialiseWillOWisp;
+		obj->control = WillOWispControl;
+		obj->draw_routine = 0;
+		obj->using_drawanimating_item = 0;
+		obj->shadow_size = 128;
+		obj->hit_points = 256;
+		obj->pivot_length = 20;
+		obj->radius = 256;
+		obj->bite_offset = 256;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 16] |= 16;
+		bones[obj->bone_index + 16] |= 4;
+		bones[obj->bone_index + 36] |= 16;
+		bones[obj->bone_index + 36] |= 4;
+	}
+
+	if (objects[MAZE_MONSTER].loaded)
+	{
+		obj = &objects[MAZE_MONSTER];
+	//	obj->initialise = InitialiseMazeMonster;
+	//	obj->control = MazeMonsterControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 4000;
+		obj->pivot_length = 20;
+		obj->radius = 341;
+		obj->bite_offset = 256;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 16] |= 16u;
+		bones[obj->bone_index + 16] |= 4u;
+		bones[obj->bone_index + 36] |= 16u;
+		bones[obj->bone_index + 36] |= 4u;
+	}
+
+	if (objects[GREEN_TEETH].loaded)
+	{
+		obj = &objects[GREEN_TEETH];
+		obj->initialise = InitialiseSwampy;
+		obj->control = SwampyControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 256;
+		obj->hit_points = 100;
+		obj->pivot_length = 20;
+		obj->radius = 256;
+		obj->bite_offset = 256;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		obj->water_creature = 1;
+		bones[obj->bone_index + 16] |= 16;
+		bones[obj->bone_index + 16] |= 4;
+		bones[obj->bone_index + 36] |= 16;
+		bones[obj->bone_index + 36] |= 4;
+	}
+
+	if (objects[SKELETON].loaded)
+	{
+		obj = &objects[SKELETON];
+		obj->initialise = InitialiseSkeleton;
+		obj->control = SkeletonControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 100;
+		obj->pivot_length = 20;
+		obj->radius = 256;
+		obj->bite_offset = 256;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 32] |= 8;
+		bones[obj->bone_index + 32] |= 4;
+	}
+
+	if (objects[RAT].loaded)
+	{
+		obj = &objects[RAT];
+		obj->initialise = InitialiseRatGenerator;
+		obj->control = TriggerRat;
+		obj->draw_routine = 0;
+		obj->using_drawanimating_item = 0;
+	}
+
+	if (objects[BAT].loaded)
+	{
+		obj = &objects[BAT];
+		obj->initialise = InitialiseBatEmitter;
+		obj->control = ControlBatEmitter;
+		obj->draw_routine = 0;
+		obj->using_drawanimating_item = 0;
+	}
+
+	if (objects[SPIDER].loaded)
+	{
+		obj = &objects[SPIDER];
+		obj->initialise = InitialiseSpiderGenerator;
+		obj->control = TriggerSpider;
+		obj->draw_routine = 0;
+		obj->using_drawanimating_item = 0;
+	}
+
+	if (objects[GLADIATOR].loaded)
+	{
+		obj = &objects[GLADIATOR];
+	//	obj->initialise = InitialiseGladiator;
+	//	obj->control = GladiatorControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 20;
+		obj->pivot_length = 50;
+		obj->radius = 102;
+		obj->bite_offset = 0;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 1;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+
+		for (int i = 0; i < 16; i++)
+			meshes[obj->mesh_index + ((i * 2) + 1)] = meshes[objects[MESHSWAP1].mesh_index + (i * 2)];
+	}
+
+	if (objects[ROMAN_GOD].loaded)
+	{
+		obj = &objects[ROMAN_GOD];
+	//	obj->initialise = InitialiseRomangod;
+	//	obj->control = RomangodControl;
+		obj->collision = CreatureCollision;
+		obj->shadow_size = 128;
+		obj->hit_points = 300;
+		obj->pivot_length = 50;
+		obj->radius = 256;
+		obj->bite_offset = 0;
+		obj->object_mip = 5120;
+		obj->intelligent = 1;
+		obj->HitEffect = 2;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 52] |= 8;
+		bones[obj->bone_index + 52] |= 4;
+
+		for (int i = 0; i < 17; i++)
+			meshes[obj->mesh_index + ((i * 2) + 1)] = meshes[objects[MESHSWAP1].mesh_index + (i * 2)];
+	}
+
+	if (objects[GUARDIAN].loaded)
+	{
+		obj->initialise = InitialiseGuardian;
+		obj->control = GuardianControl;
+		obj->collision = CreatureCollision;
+		obj->explodable_meshbits = 6;
+		obj->HitEffect = 3;
+		obj->save_position = 1;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		obj->save_mesh = 1;
+	}
+
+	if (objects[AUTOGUN].loaded)
+	{
+		obj->initialise = InitialiseAutogun;
+	//	obj->control = AutogunControl;
+		obj->save_hitpoints = 1;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		obj->HitEffect = 3;
+		bones[obj->bone_index + 24] |= 8;
+		bones[obj->bone_index + 24] |= 4;
+		bones[obj->bone_index + 32] |= 8;
+	}
+
+	if (objects[GUNSHIP].loaded)
+	{
+		obj->control = ControlGunship;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		bones[obj->bone_index] |= 8;
+		bones[obj->bone_index + 4] |= 4;
+	}
+}
+
 void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
 	INJECT(0x00476360, ObjectObjects, 0);
 	INJECT(0x00475D40, TrapObjects, 0);
+	INJECT(0x004737C0, BaddyObjects, 0);
 }

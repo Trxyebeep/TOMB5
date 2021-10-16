@@ -5,6 +5,9 @@
 #include "effects.h"
 #include "sphere.h"
 #include "../specific/function_stubs.h"
+#include "objects.h"
+#include "draw.h"
+#include "../specific/3dmath.h"
 
 void TriggerLaraBlood()
 {
@@ -535,6 +538,49 @@ void ObjectCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 		ItemPushLara(item, l, coll, 0, 1);
 }
 
+void CreatureCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+	short* bounds;
+	long x, z, rx, rz, c, s;
+
+	item = &items[item_number];
+
+	if (item->object_number == HITMAN && item->current_anim_state == 43)
+		return;
+
+	if (TestBoundsCollide(item, laraitem, coll->radius))
+	{
+		if (TestCollision(item, laraitem))
+		{
+			if (coll->enable_baddie_push || lara.water_status == LW_UNDERWATER || lara.water_status == LW_SURFACE)
+				ItemPushLara(item, laraitem, coll, coll->enable_spaz, 0);
+			else
+			{
+				if (coll->enable_spaz)
+				{
+					bounds = GetBestFrame(item);
+					s = phd_sin(laraitem->pos.y_rot);
+					c = phd_cos(laraitem->pos.y_rot);
+					x = (bounds[0] + bounds[1]) >> 1;
+					z = (bounds[3] - bounds[2]) >> 1;
+					rx = (laraitem->pos.x_pos - item->pos.x_pos) - ((c * x + s * z) >> 14);
+					rz = (laraitem->pos.z_pos - item->pos.z_pos) - ((c * z - s * x) >> 14);
+
+					if (bounds[3] - bounds[2] > 256)
+					{
+						lara.hit_direction = (ushort)((laraitem->pos.y_rot - phd_atan(rz, rx) - 24576)) >> 14;
+						lara.hit_frame++;
+
+						if (lara.hit_frame > 30)
+							lara.hit_frame = 30;
+					}
+				}
+			}
+		}
+	}
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -544,4 +590,5 @@ void inject_coll(bool replace)
 	INJECT(0x00410EF0, GetTiltType, replace);
 	INJECT(0x00413A90, GenericSphereBoxCollision, replace);
 	INJECT(0x004126E0, ObjectCollision, replace);
+	INJECT(0x004124E0, CreatureCollision, replace);
 }

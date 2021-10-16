@@ -11,6 +11,7 @@
 #define input VAR_U_(0x00878D98, int)
 #define dbinput   VAR_U_(0x00878DAC, int)
 #define lara_coll   VAR_U_(0x00508778, COLL_INFO*)
+#define mycoll	VAR_U_(0x00E5BC20, COLL_INFO)	//this is what lara_coll points to
 #define lara    VAR_U_(0x00E5BD60, LARA_INFO)
 #define lara_item    VAR_U_(0x00E5BF08, ITEM_INFO*)
 #define DashTimer VAR_U_(0x00E5BF04, ushort)
@@ -277,6 +278,7 @@
 #define GlobalAlpha	VAR_U_(0x00506D3C, int)
 #define current_item	VAR_U_(0x009158A8, ITEM_INFO*)
 #define aGlobalSkinMesh	VAR_U_(0x00921680, int)
+#define GLOBAL_gunflash_meshptr	VAR_U_(0x00E6D750, short*)
 /*************************************************/
 #define phd_top	VAR_U_(0x0051D0A8, long)
 #define phd_bottom	VAR_U_(0x0055D204, long)
@@ -583,6 +585,7 @@
 #define Lightning	ARRAY_(0x00E4C360, LIGHTNING_STRUCT, [16])
 #define GlobalCollisionBounds ARRAY_(0x00EEF910, short, [6])
 #define HairRotScratchVertNums	ARRAY_(0x00506D40, char, [5][12])
+#define EnemyBites	ARRAY_(0x00509A30, BITE_INFO, [9])
 
 //defs
 #define NO_HEIGHT -32512
