@@ -44,6 +44,7 @@
 #include "spider.h"
 #include "guardian.h"
 #include "effect2.h"
+#include "lara1gun.h"
 
 void InitialiseLara(int restore)
 {
@@ -428,9 +429,9 @@ void ObjectObjects()
 
 	obj = &objects[CROSSBOW_BOLT];
 	obj->initialise = 0;
-//	obj->control = ControlCrossbow;
+	obj->control = ControlCrossbow;
 	obj->collision = 0;
-//	obj->draw_routine = DrawWeaponMissile;
+	obj->draw_routine = DrawWeaponMissile;
 	obj->using_drawanimating_item = 0;
 	obj->save_position = 1;
 	obj->save_flags = 1;
@@ -504,11 +505,11 @@ void ObjectObjects()
 	obj->save_mesh = 1;
 
 	for (int i = 0; i < 28; i++)
-		meshes[((i * 2) + objects[BURNING_ROOTS].mesh_index) + 1] = meshes[((i * 2) + objects[ANIMATING16_MIP].mesh_index)];
+		meshes[(objects[BURNING_ROOTS].mesh_index + (i * 2)) + 1] = meshes[objects[ANIMATING16_MIP].mesh_index + (i * 2)];
 
 	obj = &objects[GRAPPLING_TARGET];
 	obj->initialise = InitialiseGrapplingTarget;
-//	obj->collision = AIPickupCollision;
+	obj->collision = AIPickupCollision;
 	obj->save_flags = 1;
 	obj->save_mesh = 1;
 
@@ -550,7 +551,7 @@ void ObjectObjects()
 		obj = &objects[i];
 		obj->initialise = InitialiseExplodingSwitch;
 		obj->control = ControlAnimatingSlots;
-	//	obj->collision = AIPickupCollision;
+		obj->collision = AIPickupCollision;
 		obj->save_flags = 1;
 		obj->save_anim = 1;
 		obj->save_mesh = 1;
@@ -598,7 +599,7 @@ void ObjectObjects()
 	obj->save_flags = 1;
 
 	obj = &objects[IRIS_LIGHTNING];
-//	obj->control = ControlIris;
+	obj->control = ControlIris;
 	obj->draw_routine = 0;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;

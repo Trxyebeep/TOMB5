@@ -11,6 +11,7 @@ short GetTiltType(FLOOR_INFO* floor, long x, long y, long z);
 void GenericSphereBoxCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll);
 void ObjectCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
 void CreatureCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll);
+void AIPickupCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll);
 
 #define CollideStaticObjects ( (int(__cdecl*)(COLL_INFO*, long, long, long, short, long)) 0x00411DB0 )
 #define GetCollidedObjects	( (int(__cdecl*)(ITEM_INFO*, long, int, ITEM_INFO**, MESH_INFO**, int)) 0x00413CF0 )

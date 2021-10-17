@@ -581,6 +581,16 @@ void CreatureCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll)
 	}
 }
 
+void AIPickupCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->object_number == SWITCH_TYPE7 && !(item->mesh_bits & 1))
+		item->status = ITEM_INVISIBLE;
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -591,4 +601,5 @@ void inject_coll(bool replace)
 	INJECT(0x00413A90, GenericSphereBoxCollision, replace);
 	INJECT(0x004126E0, ObjectCollision, replace);
 	INJECT(0x004124E0, CreatureCollision, replace);
+	INJECT(0x00412770, AIPickupCollision, replace);
 }

@@ -117,7 +117,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00412170		LaraBaddieCollision
 0x004124E0	+	CreatureCollision
 0x004126E0	+	ObjectCollision
-0x00412770		AIPickupCollision
+0x00412770	+	AIPickupCollision
 0x004127C0		TrapCollision
 0x00412860		ItemPushLara
 0x00412CC0		TestBoundsCollide
@@ -1504,7 +1504,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00484EB0		CalcLightningSpline
 0x004851B0		TriggerLightningGlow
 0x00485290		DrawLensFlares
-0x004852E0		DrawWeaponMissile
+0x004852E0	+	DrawWeaponMissile
 0x00485380		ControlTeleporter
 0x00485AD0	+	ControlElectricFence
 0x00485D80		TriggerFenceSparks
@@ -1513,7 +1513,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/tower2.cpp
 
-0x00486050		ControlIris
+0x00486050	+	ControlIris
 0x00486450		ControlArea51Laser
 0x004868B0		ControlFishtank
 0x00486A70		TriggerFishtankSpray
