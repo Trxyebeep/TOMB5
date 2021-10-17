@@ -228,7 +228,6 @@ void ControlIris(short item_number)
 				pos2.x = pos.x - ((2240 * phd_sin(rot)) >> 14);
 				pos2.y = pos.y;
 				pos2.z = pos.z - ((2240 * phd_cos(rot)) >> 14);
-				//v19 = b | ((g | (v13 << 8)) << 8);
 				TriggerLightning(&pos, &pos2, (GetRandomControl() & 0x3F) + 64, RGBA(r, g, b, 50), 21, 48, 5);
 				TriggerLightningGlow(pos2.x, pos2.y, pos2.z, RGBA(r >> 1, g >> 1, b >> 1, 32));
 			}
