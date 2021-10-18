@@ -11,6 +11,7 @@
 #include "debris.h"
 #include "switch.h"
 #include "../specific/function_stubs.h"
+#include "traps.h"
 
 void ControlGunship(short item_number)
 {
@@ -161,8 +162,91 @@ void DrawSteelDoorLensFlare(ITEM_INFO* item)
 
 }
 
+void ControlIris(short item_number)
+{
+	ITEM_INFO* item;
+	PHD_VECTOR pos, pos2;
+	long r, g, b, rot;
+
+	item = &items[item_number];
+
+	if (item->timer)
+	{
+		item->timer--;
+
+		if (!item->timer)
+			item->flags |= IFL_CODEBITS;
+	}
+	else if ((item->flags & IFL_CODEBITS) == IFL_CODEBITS)
+	{
+		SoundEffect(SFX_RICH_IRIS_ELEC, &item->pos, SFX_DEFAULT);
+
+		if (!lara.burn)
+		{
+			pos.z = 0;
+			pos.y = 0;
+			pos.x = 0;
+			GetLaraJointPos(&pos, 0);
+
+			if (ABS(pos.y - item->pos.y_pos) >= 1024 || ABS(pos.x - item->pos.x_pos) >= 2048 || ABS(pos.z - item->pos.z_pos) >= 2048)
+				item->item_flags[3] = 0;
+			else
+			{
+				if (!item->item_flags[3])
+					SoundEffect(SFX_LARA_INJURY_NONRND, &lara_item->pos, SFX_DEFAULT);
+
+				if (lara_item->hit_points <= 72 || item->item_flags[3] >= 45)
+				{
+					LaraBurn();
+					lara_item->hit_points = 0;
+					lara.BurnCount = 24;
+				}
+				else
+				{
+					lara_item->hit_points -= 12;
+					item->item_flags[3]++;
+				}
+			}
+		}
+
+		if (!(GlobalCounter & 1))
+		{
+			r = (GetRandomControl() & 0x3F) + 128;
+			g = (GetRandomControl() & 0x7F) + 64;
+			b = GetRandomControl() & 0x1F;
+			pos.x = item->pos.x_pos;
+			pos.y = item->pos.y_pos - 128;
+			pos.z = item->pos.z_pos;
+
+			if ((GlobalCounter & 3) == 2)
+			{
+				rot = (GetRandomControl() & 0xFF) + ((GlobalCounter & 0x7F) << 9) - 128;
+
+				if (GlobalCounter & 4)
+					rot += 32768;
+
+				pos2.x = pos.x - ((2240 * phd_sin(rot)) >> 14);
+				pos2.y = pos.y;
+				pos2.z = pos.z - ((2240 * phd_cos(rot)) >> 14);
+				TriggerLightning(&pos, &pos2, (GetRandomControl() & 0x3F) + 64, RGBA(r, g, b, 50), 21, 48, 5);
+				TriggerLightningGlow(pos2.x, pos2.y, pos2.z, RGBA(r >> 1, g >> 1, b >> 1, 32));
+			}
+			else
+			{
+				pos2.x = pos.x + ((GetRandomControl() & 0x1FF) << 1) - 512;
+				pos2.y = pos.y + ((GetRandomControl() & 0x1FF) << 1) - 512;
+				pos2.z = pos.z + ((GetRandomControl() & 0x1FF) << 1) - 512;
+				TriggerLightning(&pos, &pos2, (GetRandomControl() & 0xF) + 16, RGBA(r, g >> 2, b >> 2, 24), 7, 48, 3);
+			}
+
+			TriggerLightningGlow(pos.x, pos.y, pos.z, RGBA(r >> 1, g >> 1, b >> 1, 96));
+		}
+	}
+}
+
 void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
 	INJECT(0x00487AB0, DrawSteelDoorLensFlare, replace);
+	INJECT(0x00486050, ControlIris, replace);
 }

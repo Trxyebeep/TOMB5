@@ -15,3 +15,4 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype);
 #define SetFade	( (void(__cdecl*)(int, int)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
 #define _0x004C6BA0	( (void(__cdecl*)(D3DTLVERTEX*, float, float, float, short*)) 0x004C6BA0 )
+#define SetUpLensFlare	( (void(__cdecl*)(long, long, long, GAME_VECTOR*)) 0x004C9F70 )
