@@ -118,7 +118,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004124E0	+	CreatureCollision
 0x004126E0	+	ObjectCollision
 0x00412770	+	AIPickupCollision
-0x004127C0		TrapCollision
+0x004127C0	+	TrapCollision
 0x00412860		ItemPushLara
 0x00412CC0		TestBoundsCollide
 0x00412DE0		TestBoundsCollideStatic
@@ -1539,7 +1539,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00489820	+	FallingBlock
 0x00489910	+	FallingBlockFloor
 0x00489980	+	FallingBlockCeiling
-0x004899D0		FallingCeiling
+0x004899D0	+	FallingCeiling
 0x00489B30	+	DartEmitterControl
 0x00489D60	+	DartsControl
 0x00489F70	+	FlameEmitterControl

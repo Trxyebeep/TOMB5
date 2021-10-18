@@ -591,6 +591,23 @@ void AIPickupCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll)
 		item->status = ITEM_INVISIBLE;
 }
 
+void TrapCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->status == ITEM_ACTIVE)
+	{
+		if (!TestBoundsCollide(item, laraitem, coll->radius))
+			return;
+	}
+	else if (item->status == ITEM_INVISIBLE)
+		return;
+
+	ObjectCollision(item_number, laraitem, coll);
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -602,4 +619,5 @@ void inject_coll(bool replace)
 	INJECT(0x004126E0, ObjectCollision, replace);
 	INJECT(0x004124E0, CreatureCollision, replace);
 	INJECT(0x00412770, AIPickupCollision, replace);
+	INJECT(0x004127C0, TrapCollision, replace);
 }
