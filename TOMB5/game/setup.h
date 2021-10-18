@@ -7,5 +7,6 @@ void InitialiseLara(int restore);
 void ObjectObjects();
 void TrapObjects();
 void BaddyObjects();
+void InitialiseObjects();
 
 #define BuildOutsideTable	( (void(__cdecl*)()) 0x004774D0 )

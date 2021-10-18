@@ -31,3 +31,4 @@ void CalculateObjectLighting(ITEM_INFO* item, short* frame);
 #define CalculateObjectLightingLara	( (void(__cdecl*)()) 0x0042A1B0 )
 #define InterpolateArmMatrix	( (void(__cdecl*)(long*)) 0x0042CC10 )
 #define aInterpolateArmMatrix	( (void(__cdecl*)(float*)) 0x0042C790 )
+#define DrawAnimatingItem	( (void(__cdecl*)(ITEM_INFO*)) 0x0042B900 )
