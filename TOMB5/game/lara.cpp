@@ -2970,6 +2970,9 @@ void lara_as_pushblock(ITEM_INFO* item, COLL_INFO* coll)
 	camera.flags = 1;
 	camera.target_angle = 16380;
 	camera.target_elevation = -4550;
+#ifdef GENERAL_FIXES
+	camera.lara_node = LM_TORSO;
+#endif
 }
 
 void lara_as_pullblock(ITEM_INFO* item, COLL_INFO* coll)
@@ -2980,6 +2983,9 @@ void lara_as_pullblock(ITEM_INFO* item, COLL_INFO* coll)
 	camera.flags = 1;
 	camera.target_angle = 6370;
 	camera.target_elevation = -4550;
+#ifdef GENERAL_FIXES
+	camera.lara_node = LM_TORSO;
+#endif
 }
 
 void lara_as_ppready(ITEM_INFO* item, COLL_INFO* coll)

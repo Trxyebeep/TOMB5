@@ -233,10 +233,17 @@ void MovableBlockCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* co
 
 			if (TestLaraPosition(MovingBlockBounds, item, laraitem))
 			{
+#ifdef GENERAL_FIXES
+				if ((((ushort)(yrot + 8192)) >> 14) + (((ushort)(item->pos.y_rot)) >> 14) & 1)
+					MovingBlockPos.z = bounds[0] - 95;
+				else
+					MovingBlockPos.z = bounds[4] - 95;
+#else
 				if ((((ushort)(yrot + 8192)) >> 14) + (((ushort)(item->pos.y_rot)) >> 14) & 1)
 					MovingBlockPos.z = bounds[0] - 35;
 				else
 					MovingBlockPos.z = bounds[4] - 35;
+#endif
 
 				if (MoveLaraPosition(&MovingBlockPos, item, laraitem))
 				{
