@@ -4,6 +4,12 @@
 #include "sound.h"
 #include "delstuff.h"
 #include "../specific/function_stubs.h"
+#include "lara_states.h"
+#include "items.h"
+#include "effect2.h"
+#include "objects.h"
+#include "xatracks.h"
+#include "../specific/audio.h"
 
 long GetFreeBlood()
 {
@@ -347,6 +353,182 @@ void ControlElectricFence(short item_number)
 	}
 }
 
+void ControlTeleporter(short item_number)
+{
+	ITEM_INFO* item;
+	SPARKS* sptr;
+	PHD_VECTOR s, d;
+	long r, g, b, size;
+	short room_number;
+
+	item = &items[item_number];
+
+	if (TriggerActive(item))
+	{
+		if (item->trigger_flags == 512)
+		{
+			if (!item->item_flags[2])
+			{
+				item->item_flags[0] += 2;
+
+				if (item->item_flags[0] <= 255)
+				{
+					size = item->item_flags[0] >> 3;
+
+					if (size < 4)
+						size = 4;
+					else if (size > 31)
+						size = 31;
+
+					SoundEffect(SFX_RICH_TELEPORT, &items[item->item_flags[1]].pos, size << 8 | SFX_SETVOL);
+
+					if (FlashFader > 4)
+						FlashFader = FlashFader >> 1 & 0xFE;
+
+					if (GlobalCounter & 1)
+					{
+						s.x = items[item->item_flags[1]].pos.x_pos;
+						s.y = items[item->item_flags[1]].pos.y_pos - 496;
+						s.z = items[item->item_flags[1]].pos.z_pos + 472;
+						size = 4 * item->item_flags[0] + 256;
+						d.x = s.x + GetRandomControl() % size - (size >> 1);
+						d.y = s.y + GetRandomControl() % size - (size >> 1);
+						d.z = s.z + GetRandomControl() % size - (size >> 1);
+						r = item->item_flags[0];
+						g = item->item_flags[0] - GetRandomControl() % (item->item_flags[0] >> 1);
+						b = item->item_flags[0] >> 2;
+						TriggerLightning(&s, &d, (GetRandomControl() & 0x1F) + 16, RGBA(r, g, b, 24), 15, 40, 5);
+						TriggerLightningGlow(s.x, s.y, s.z, RGBA(r >> 1, g >> 1, b >> 1, 64));
+						TriggerDynamic(s.x, s.y, s.z, 32 * item->item_flags[0] + (GetRandomControl() & 3) + 8, r, g, b);
+					}
+
+					if (GetRandomControl() & 1)
+					{
+						FlashFadeR = item->item_flags[0];
+						FlashFadeG = item->item_flags[0] - GetRandomControl() % (item->item_flags[0] >> 1);
+						FlashFadeB = item->item_flags[0] >> 2;
+						FlashFader = 32;
+						SoundEffect(SFX_TELEPORT_CRACKLES, NULL, 0);
+					}
+
+					if (!(GlobalCounter & 3))
+					{
+						size = GetRandomControl() & 3;
+						s.x = 0;
+						s.z = 0;
+
+						if (!size)
+							s.x = -512;
+						else if (size == 1)
+							s.x = 512;
+						else
+							s.z = size - 2 ? 512 : -512;
+
+						s.x += items[item->item_flags[1]].pos.x_pos;
+						s.y = items[item->item_flags[1]].pos.y_pos - 2328;
+						s.z += items[item->item_flags[1]].pos.z_pos;
+						d.x = items[item->item_flags[1]].pos.x_pos;
+						d.y = items[item->item_flags[1]].pos.y_pos - 496;
+						d.z = items[item->item_flags[1]].pos.z_pos + 472;
+						r = item->item_flags[0];
+						g = item->item_flags[0] - GetRandomControl() % (item->item_flags[0] >> 1);
+						b = item->item_flags[0] >> 2;
+						TriggerLightning(&s, &d, (GetRandomControl() & 0xF) + 16, RGBA(r, g, b, 36), 13, 56, 5);
+						sptr = &spark[GetFreeSpark()];
+						sptr->On = 1;
+						sptr->dR = (uchar) item->item_flags[0];
+						sptr->sR = (uchar) item->item_flags[0];
+						sptr->dG = item->item_flags[0] >> 1;
+						sptr->sG = item->item_flags[0] >> 1;
+						sptr->ColFadeSpeed = 20;
+						sptr->dB = item->item_flags[0] >> 2;
+						sptr->sB = item->item_flags[0] >> 2;
+						sptr->FadeToBlack = 4;
+						sptr->Life = 24;
+						sptr->sLife = 24;
+						sptr->TransType = 2;
+						sptr->x = s.x;
+						sptr->y = s.y;
+						sptr->z = s.z;
+						sptr->Xvel = 0;
+						sptr->Yvel = 0;
+						sptr->Zvel = 0;
+						sptr->Flags = 10;
+						sptr->Scalar = 3;
+						sptr->MaxYvel = 0;
+						sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 11;
+						sptr->Gravity = 0;
+						size = (GetRandomControl() & 3) + 24;
+						sptr->dSize = (uchar) size;
+						sptr->sSize = (uchar) size;
+						sptr->Size = (uchar) size;
+					}
+
+					return;
+				}
+
+				FlashFadeR = 255;
+				FlashFadeG = 255;
+				FlashFadeB = 64;
+				FlashFader = 32;
+				item->item_flags[2] = 1;
+				SoundEffect(SFX_TELEPORT_FLASH, NULL, 0x800000 | SFX_SETPITCH);
+			}
+			else
+			{
+				lara.puzzleitems[1] = 1;
+				RemoveActiveItem(item_number);
+				item->flags &= ~IFL_CODEBITS;
+			}
+		}
+
+		bDisableLaraControl = 0;
+
+		if (item->trigger_flags == 666)
+		{
+			if (item->item_flags[0] == 15)
+			{
+				IsAtmospherePlaying = 0;
+				S_CDPlay(CDA_XA12_Z_10, 0);
+			}
+			else if (item->item_flags[0] == 70)
+			{
+				SoundEffect(SFX_LIFT_HIT_FLOOR1, NULL, 0);
+				SoundEffect(SFX_LIFT_HIT_FLOOR2, NULL, 0);
+			}
+
+			lara_item->anim_number = ANIM_ELEVATOR_RECOVER;
+			lara_item->frame_number = anims[lara_item->anim_number].frame_base;
+			lara_item->goal_anim_state = AS_CONTROLLED;
+			lara_item->current_anim_state = AS_CONTROLLED;
+			item->item_flags[0]++;
+
+			if (item->item_flags[0] >= 150)
+				KillItem(item_number);
+		}
+		else
+		{
+			camera.fixed_camera = 1;
+			lara_item->pos.x_pos = item->pos.x_pos;
+			lara_item->pos.z_pos = item->pos.z_pos;
+			lara_item->pos.y_rot = item->pos.y_rot - 32768;
+			room_number = item->room_number;
+			lara_item->pos.y_pos = GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number), item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+
+			if (lara_item->room_number != room_number)
+				ItemNewRoom(lara.item_number, room_number);
+
+			if (item->flags & IFL_INVISIBLE)
+				KillItem(item_number);
+			else if (item->trigger_flags != 512)
+			{
+				RemoveActiveItem(item_number);
+				item->flags &= ~IFL_CODEBITS;
+			}
+		}
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -356,4 +538,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00484B30, TriggerLightning, replace);
 	INJECT(0x00483470, LaraBubbles, replace);
 	INJECT(0x00485AD0, ControlElectricFence, replace);
+	INJECT(0x00485380, ControlTeleporter, replace);
 }

@@ -665,7 +665,7 @@ void ObjectObjects()
 
 	obj = &objects[TELEPORTER];
 	obj->initialise = InitialiseTeleporter;
-//	obj->control = ControlTeleporter;
+	obj->control = ControlTeleporter;
 	obj->draw_routine = 0;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;

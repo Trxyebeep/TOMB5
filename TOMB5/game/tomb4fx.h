@@ -10,6 +10,7 @@ long LSpline(long x, long* knots, long nk);
 LIGHTNING_STRUCT* TriggerLightning(PHD_VECTOR* s, PHD_VECTOR* d, char variation, long rgb, uchar flags, uchar size, uchar segments);
 void LaraBubbles(ITEM_INFO* item);
 void ControlElectricFence(short item_number);
+void ControlTeleporter(short item_number);
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define	TriggerRicochetSpark	( (void(__cdecl*)(GAME_VECTOR*, int, int, int)) 0x0042F060 )//pos, angle, size, unk
