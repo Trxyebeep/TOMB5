@@ -23,6 +23,7 @@ long DrawPhaseGame();
 void SkyDrawPhase();
 void UpdateSkyLightning();
 void CalculateObjectLighting(ITEM_INFO* item, short* frame);
+void DrawAnimatingItem(ITEM_INFO* item);
 
 #define InterpolateMatrix	( (void(__cdecl*)()) 0x0042C8F0 )
 #define	mRotBoundingBoxNoPersp	( (void(__cdecl*)(short*, short*)) 0x0042E240 )
@@ -31,4 +32,4 @@ void CalculateObjectLighting(ITEM_INFO* item, short* frame);
 #define CalculateObjectLightingLara	( (void(__cdecl*)()) 0x0042A1B0 )
 #define InterpolateArmMatrix	( (void(__cdecl*)(long*)) 0x0042CC10 )
 #define aInterpolateArmMatrix	( (void(__cdecl*)(float*)) 0x0042C790 )
-#define DrawAnimatingItem	( (void(__cdecl*)(ITEM_INFO*)) 0x0042B900 )
+#define calc_animating_item_clip_window	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042B4C0 )
