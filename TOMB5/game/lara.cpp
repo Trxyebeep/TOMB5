@@ -1521,7 +1521,7 @@ void lara_col_back(ITEM_INFO* item, COLL_INFO* coll)
 
 	if (coll->mid_floor > 128 && coll->mid_floor < 384)
 	{
-		if (item->frame_number >= 964 && item->frame_number <= 993)//jesus christ
+		if (item->frame_number >= 964 && item->frame_number <= 993)
 		{
 			item->anim_number = ANIM_BACKSTEPD_RIGHT;
 			item->frame_number = anims[ANIM_BACKSTEPD_RIGHT].frame_base;

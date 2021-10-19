@@ -3,7 +3,7 @@
 #include "objects.h"
 #include "gameflow.h"
 
-void OptomiseSkinningData()//idc
+void OptomiseSkinningData()
 {
 	OBJECT_INFO* object;
 	short** meshpp;

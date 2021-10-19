@@ -619,7 +619,7 @@ void DrawLara__5(ITEM_INFO* item, int mirror)
 	phd_PopMatrix();
 	bLaraUnderWater = LaraNodeUnderwater[8] != 0 ? 8 : -1;
 	phd_PushMatrix();
-	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;//wat
+	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;
 	phd_PopMatrix();
 	phd_left = left;
 	phd_right = right;

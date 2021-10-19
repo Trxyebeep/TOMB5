@@ -254,7 +254,7 @@ void TorpedoControl(short item_number)
 			lara_item->hit_points -= 200;
 
 			if (lara.Anxiety >= 127)
-				lara.Anxiety--;//what
+				lara.Anxiety--;
 			else
 				lara.Anxiety += 128;
 		}

@@ -1150,7 +1150,7 @@ struct LARA_INFO
 	uchar ChaffTimer;
 };
 
-struct SAVEGAME_INFO//size=7656
+struct SAVEGAME_INFO
 {
 	short Checksum;
 	char things_to_figure_out[13];

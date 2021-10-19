@@ -338,7 +338,7 @@ CUTSEQ_ROUTINES cutseq_control_routines[45] =
 	{ joby10_init, joby10_control, joby10_end },
 	{ joby9_init, joby9_control, joby9_end },
 	{ andy3_init, andy3_control, andy3_end },
-	{ joby5_init, joby5_control, joby5_end },//15
+	{ joby5_init, joby5_control, joby5_end },
 	{ andrea2_init, andrea2_control, andrea2_end },
 	{ andrea1_init, andrea1_control, andrea1_end },
 	{ joby4_init, joby4_control, joby4_end },

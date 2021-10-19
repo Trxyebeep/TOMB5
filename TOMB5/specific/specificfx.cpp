@@ -359,7 +359,7 @@ void DrawLaserSightSprite()
 	zv = f_persp / (float)results[2];
 	TempXY[0] = short(float(results[0] * zv + f_centerx));
 	TempXY[1] = short(float(results[1] * zv + f_centery));
-	TempIDK[0] = results[2] >> 14;//?????????????????????? why lmao
+	TempIDK[0] = results[2] >> 14;
 	phd_PopMatrix();
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
 	setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2, TempXY[0] + 2, TempXY[1] + 2, (int)f_mznear, clipflags);

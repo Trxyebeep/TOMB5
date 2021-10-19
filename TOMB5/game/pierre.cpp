@@ -117,7 +117,7 @@ void PierreControl(short item_number)
 
 		if (info.distance < 0x400000 && lara_item->speed > 20 || item->hit_status || TargetVisible(item, &info))
 		{
-			item->ai_bits &= 0xFE;//check this
+			item->ai_bits &= 0x1E;
 			pierre->alerted = 1;
 		}
 
@@ -305,7 +305,7 @@ void PierreControl(short item_number)
 	}
 	else if (item->current_anim_state == 5)
 	{
-		if (item->object_number == LARSON && item->frame_number == anims[item->anim_number].frame_end)//jesus fucking christ
+		if (item->object_number == LARSON && item->frame_number == anims[item->anim_number].frame_end)
 		{
 			room_number = item->item_flags[2] & 0xFF;
 			r = &room[room_number];
