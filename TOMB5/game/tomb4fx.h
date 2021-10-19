@@ -11,6 +11,8 @@ LIGHTNING_STRUCT* TriggerLightning(PHD_VECTOR* s, PHD_VECTOR* d, char variation,
 void LaraBubbles(ITEM_INFO* item);
 void ControlElectricFence(short item_number);
 void ControlTeleporter(short item_number);
+void DrawWeaponMissile(ITEM_INFO* item);
+void DrawLensFlares(ITEM_INFO* item);
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define	TriggerRicochetSpark	( (void(__cdecl*)(GAME_VECTOR*, int, int, int)) 0x0042F060 )//pos, angle, size, unk

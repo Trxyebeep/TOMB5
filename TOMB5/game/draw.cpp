@@ -18,6 +18,8 @@
 #include "../specific/texture.h"
 #endif
 
+short no_rotation[12] = { 0,0,0,0,0,0,0,0,0,0,0,0 };
+
 short* GetBoundsAccurate(ITEM_INFO* item)
 {
 	short* bptr;
@@ -390,7 +392,7 @@ void SkyDrawPhase()
 			phd_RotY(32760);
 
 			if (gfLevelFlags & GF_LIGHTNING)
-				DrawFlatSky(RGBONLY(LightningRGBs[0], LightningRGBs[1], LightningRGBs[2]), SkyPos, -1536, 4);
+				DrawFlatSky(RGBA(LightningRGB[0], LightningRGB[1], LightningRGB[2], 44), SkyPos, -1536, 4);
 			else
 				DrawFlatSky(*(ulong*)&gfLayer1Col, SkyPos, -1536, 4);
 		}
@@ -447,7 +449,7 @@ void UpdateSkyLightning()
 
 	for (int i = 0; i < 3; i++)
 	{
-		LightningRGB[i] += ((LightningRand * LightningRGBs[i]) >> 8);
+		LightningRGB[i] = LightningRGBs[i] + ((LightningRGBs[i] * LightningRand) >> 8);
 
 		if (LightningRGB[i] > 255)
 			LightningRGB[i] = 255;
@@ -479,6 +481,153 @@ void CalculateObjectLighting(ITEM_INFO* item, short* frame)
 	}
 }
 
+void DrawAnimatingItem(ITEM_INFO* item)
+{
+	OBJECT_INFO* obj;
+	short** meshpp;
+	long* bone;
+	short* frm[2];
+	short* data;
+	short* rot;
+	short* rot2;
+	long frac, rate, clip, bit;
+
+	frac = GetFrames(item, frm, &rate);
+	obj = &objects[item->object_number];
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+
+	if (obj->object_mip && (obj + 1)->loaded && phd_mxptr[M23] >> 16 > obj->object_mip)
+		obj++;
+
+	calc_animating_item_clip_window(item, frm[0]);
+	clip = S_GetObjectBounds(frm[0]);
+
+	if (clip)
+	{
+		CalculateObjectLighting(item, frm[0]);
+
+		if (!item->data)
+			data = no_rotation;
+		else
+			data = (short*)item->data;
+
+		bit = 1;
+		meshpp = &meshes[obj->mesh_index];
+		bone = &bones[obj->bone_index];
+
+		if (frac)
+		{
+			InitInterpolate(frac, rate);
+			phd_TranslateRel_ID(frm[0][6], frm[0][7], frm[0][8], frm[1][6], frm[1][7], frm[1][8]);
+			rot = frm[0] + 9;
+			rot2 = frm[1] + 9;
+			gar_RotYXZsuperpack_I(&rot, &rot2, 0);
+
+			if (item->mesh_bits & 1)
+			{
+				if (item->meshswap_meshbits & 1)
+					phd_PutPolygons_I(meshpp[1], clip);
+				else
+					phd_PutPolygons_I(meshpp[0], clip);
+			}
+
+			meshpp += 2;
+
+			for (int i = 0; i < obj->nmeshes - 1; i++, bone += 4, meshpp += 2)
+			{
+				if (bone[0] & 1)
+					phd_PopMatrix_I();
+
+				if (bone[0] & 2)
+					phd_PushMatrix_I();
+
+				phd_TranslateRel_I(bone[1], bone[2], bone[3]);
+				gar_RotYXZsuperpack_I(&rot, &rot2, 0);
+
+				if (bone[0] & 0x1C)
+				{
+					if (bone[0] & 8)
+						phd_RotY_I(*data++);
+
+					if (bone[0] & 4)
+						phd_RotX_I(*data++);
+
+					if (bone[0] & 16)
+						phd_RotZ_I(*data++);
+				}
+
+				bit <<= 1;
+
+				if (bit & item->mesh_bits)
+				{
+					if (bit & item->meshswap_meshbits)
+						phd_PutPolygons_I(meshpp[1], clip);
+					else
+						phd_PutPolygons_I(meshpp[0], clip);
+				}
+			}
+		}
+		else
+		{
+			phd_TranslateRel(frm[0][6], frm[0][7], frm[0][8]);
+			rot = frm[0] + 9;
+			gar_RotYXZsuperpack(&rot, 0);
+
+			if (item->mesh_bits & 1)
+			{
+				if (item->meshswap_meshbits & 1)
+					phd_PutPolygons(meshpp[1], clip);
+				else
+					phd_PutPolygons(meshpp[0], clip);
+			}
+
+			meshpp += 2;
+
+			for (int i = 0; i < obj->nmeshes - 1; i++, bone += 4, meshpp += 2)
+			{
+				if (bone[0] & 1)
+					phd_PopMatrix();
+
+				if (bone[0] & 2)
+					phd_PushMatrix();
+
+				phd_TranslateRel(bone[1], bone[2], bone[3]);
+				gar_RotYXZsuperpack(&rot, 0);
+
+				if (bone[0] & 0x1C)
+				{
+					if (bone[0] & 8)
+						phd_RotY(*data++);
+
+					if (bone[0] & 4)
+						phd_RotX(*data++);
+
+					if (bone[0] & 16)
+						phd_RotZ(*data++);
+				}
+
+				bit <<= 1;
+
+				if (bit & item->mesh_bits)
+				{
+					if (bit & item->meshswap_meshbits)
+						phd_PutPolygons(meshpp[1], clip);
+					else
+						phd_PutPolygons(meshpp[0], clip);
+				}
+			}
+		}
+	}
+
+	phd_right = phd_winwidth;
+	phd_left = 0;
+	phd_top = 0;
+	phd_bottom = phd_winheight;
+	phd_PopMatrix();
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -500,4 +649,5 @@ void inject_draw(bool replace)
 	INJECT(0x0042A4A0, SkyDrawPhase, replace);
 	INJECT(0x0042A310, UpdateSkyLightning, replace);
 	INJECT(0x0042CD50, CalculateObjectLighting, replace);
+	INJECT(0x0042B900, DrawAnimatingItem, replace);
 }

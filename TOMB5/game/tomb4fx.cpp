@@ -10,6 +10,9 @@
 #include "objects.h"
 #include "xatracks.h"
 #include "../specific/audio.h"
+#include "../specific/3dmath.h"
+#include "../specific/output.h"
+#include "../specific/specificfx.h"
 
 long GetFreeBlood()
 {
@@ -436,8 +439,8 @@ void ControlTeleporter(short item_number)
 						TriggerLightning(&s, &d, (GetRandomControl() & 0xF) + 16, RGBA(r, g, b, 36), 13, 56, 5);
 						sptr = &spark[GetFreeSpark()];
 						sptr->On = 1;
-						sptr->dR = (uchar) item->item_flags[0];
-						sptr->sR = (uchar) item->item_flags[0];
+						sptr->dR = (uchar)item->item_flags[0];
+						sptr->sR = (uchar)item->item_flags[0];
 						sptr->dG = item->item_flags[0] >> 1;
 						sptr->sG = item->item_flags[0] >> 1;
 						sptr->ColFadeSpeed = 20;
@@ -459,9 +462,9 @@ void ControlTeleporter(short item_number)
 						sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 11;
 						sptr->Gravity = 0;
 						size = (GetRandomControl() & 3) + 24;
-						sptr->dSize = (uchar) size;
-						sptr->sSize = (uchar) size;
-						sptr->Size = (uchar) size;
+						sptr->dSize = (uchar)size;
+						sptr->sSize = (uchar)size;
+						sptr->Size = (uchar)size;
 					}
 
 					return;
@@ -529,6 +532,26 @@ void ControlTeleporter(short item_number)
 	}
 }
 
+void DrawWeaponMissile(ITEM_INFO* item)
+{
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	phd_RotYXZ(item->pos.y_rot, item->pos.z_rot, item->pos.x_rot);
+	phd_PutPolygons_train(meshes[objects[item->object_number].mesh_index], -1);
+	phd_PopMatrix();
+}
+
+void DrawLensFlares(ITEM_INFO* item)
+{
+	GAME_VECTOR pos;
+
+	pos.x = item->pos.x_pos;
+	pos.y = item->pos.y_pos;
+	pos.z = item->pos.z_pos;
+	pos.room_number = item->room_number;
+	SetUpLensFlare(0, 0, 0, &pos);
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -539,4 +562,6 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00483470, LaraBubbles, replace);
 	INJECT(0x00485AD0, ControlElectricFence, replace);
 	INJECT(0x00485380, ControlTeleporter, replace);
+	INJECT(0x004852E0, DrawWeaponMissile, replace);
+	INJECT(0x00485290, DrawLensFlares, replace);
 }

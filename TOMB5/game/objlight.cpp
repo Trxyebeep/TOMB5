@@ -60,7 +60,7 @@ void ControlPulseLight(short item_number)
 
 	item->item_flags[0] -= 1024;
 	
-	sin = phd_sin(item->item_flags[0] + ((item->pos.y_pos & 0x3FFF) << 2)) >> 6;
+	sin = ABS(phd_sin(item->item_flags[0] + ((item->pos.y_pos & 0x3FFF) << 2)) >> 6);
 
 	if (sin > 255)
 		sin = 255;
