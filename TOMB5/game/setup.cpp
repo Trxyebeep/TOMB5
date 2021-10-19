@@ -48,6 +48,7 @@
 #include "hair.h"
 #include "../specific/function_stubs.h"
 #include "draw.h"
+#include "moveblok.h"
 
 void InitialiseLara(int restore)
 {
@@ -806,9 +807,9 @@ void TrapObjects()
 	for (int i = PUSHABLE_OBJECT1; i < WRECKING_BALL; i++)
 	{
 		obj = &objects[i];
-	//	obj->initialise = InitialiseMovingBlock;
-	//	obj->control = MovableBlock;
-	//	obj->collision = MovableBlockCollision;
+		obj->initialise = InitialiseMovingBlock;
+		obj->control = MovableBlock;
+		obj->collision = MovableBlockCollision;
 		obj->save_position = 1;
 		obj->save_flags = 1;
 	}

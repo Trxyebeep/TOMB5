@@ -433,7 +433,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042AF50		ClipRoom
 0x0042B340		DrawEffect
 0x0042B4C0		calc_animating_item_clip_window
-0x0042B900		DrawAnimatingItem
+0x0042B900	+	DrawAnimatingItem
 0x0042BE90	+	InitInterpolate
 0x0042BF00	+	phd_PopMatrix_I
 0x0042BF50	+	phd_PushMatrix_I
@@ -1114,12 +1114,12 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/moveblok.cpp
 
-0x0045E720		InitialiseMovingBlock
+0x0045E720	+	InitialiseMovingBlock
 0x0045E770		ClearMovableBlockSplitters
-0x0045EA30		MovableBlock
+0x0045EA30	+	MovableBlock
 0x0045F010		TestBlockPush
 0x0045F1E0		TestBlockPull
-0x0045F570		MovableBlockCollision
+0x0045F570	+	MovableBlockCollision
 
 
 		game/newinv2.cpp
@@ -1394,7 +1394,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047A800	+	InitSpotCamSequences
 0x0047A890	+	Spline
 0x0047A9D0	+	InitialiseSpotCam
-0x0047B280		CalculateSpotCams
+0x0047B280	x	CalculateSpotCams
 
 
 		game/subsuit.cpp

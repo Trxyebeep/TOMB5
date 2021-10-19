@@ -6,7 +6,7 @@ void inject_spotcam(bool replace);
 long Spline(long x, long* knots, int nk);
 void InitSpotCamSequences();
 void InitialiseSpotCam(short Sequence);
-#define CalculateSpotCams	( (void(__cdecl*)()) 0x0047B280 )
+void CalculateSpotCams();
 
 enum spotcam_flags
 {
