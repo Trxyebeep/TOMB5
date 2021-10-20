@@ -583,7 +583,7 @@ void ObjectObjects()
 	{
 		obj = &objects[i];
 		obj->initialise = InitialiseSmokeEmitter;
-	//	obj->control = ControlSmokeEmitter;
+		obj->control = ControlSmokeEmitter;
 		obj->draw_routine = 0;
 		obj->using_drawanimating_item = 0;
 		obj->save_flags = 1;
