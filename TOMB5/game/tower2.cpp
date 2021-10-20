@@ -12,6 +12,9 @@
 #include "switch.h"
 #include "../specific/function_stubs.h"
 #include "traps.h"
+#include "sphere.h"
+
+short SplashOffsets[18] = { 1072, 48, 1072, 48, 650, 280, 200, 320, -300, 320, -800, 320, -1200, 320, -1650, 280, -2112, 48 };
 
 void ControlGunship(short item_number)
 {
@@ -244,9 +247,47 @@ void ControlIris(short item_number)
 	}
 }
 
+void ControlFishtank(short item_number)
+{
+	ITEM_INFO* item;
+	PHD_VECTOR pos;
+	short x, z, dz;
+
+	item = &items[item_number];
+
+	for (int i = GlobalCounter & 1; i < 9; i += 2)
+	{
+		x = SplashOffsets[2 * i];
+		z = SplashOffsets[2 * i + 1];
+
+		if (i && i != 8)
+		{
+			x -= GetRandomControl() % ABS(SplashOffsets[2 * i + 2] - x);
+			dz = SplashOffsets[2 * i + 3] - z;
+
+			if (dz < 0)
+				z -= GetRandomControl() % dz;
+			else if (dz > 0)
+				z += GetRandomControl() % dz;
+		}
+
+		pos.x = x;
+		pos.y = 0;
+		pos.z = z;
+		GetJointAbsPosition(item, &pos, 0);
+		TriggerFishtankSpray(pos.x, pos.y, pos.z, (item->item_flags[1] - 800) >> 3);
+	}
+
+	if (item->item_flags[1] > 819)
+		item->item_flags[1] -= item->item_flags[1] >> 6;
+	else
+		KillItem(item_number);
+}
+
 void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
 	INJECT(0x00487AB0, DrawSteelDoorLensFlare, replace);
 	INJECT(0x00486050, ControlIris, replace);
+	INJECT(0x004868B0, ControlFishtank, replace);
 }

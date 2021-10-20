@@ -702,7 +702,7 @@ void ObjectObjects()
 
 	obj = &objects[FISHTANK];
 	obj->initialise = InitialiseFishtank;
-//	obj->control = ControlFishtank;
+	obj->control = ControlFishtank;
 	obj->draw_routine = DrawScaledSpike;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
