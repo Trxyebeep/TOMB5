@@ -653,6 +653,4 @@ void inject_laraswim(bool replace)
 	INJECT(0x004595F0, lara_col_dive, replace);
 	INJECT(0x00459620, lara_col_uwdeath, replace);
 	INJECT(0x004596A0, lara_col_waterroll, replace);
-	//GetWaterDepth
-	//LaraWaterCurrent
 }

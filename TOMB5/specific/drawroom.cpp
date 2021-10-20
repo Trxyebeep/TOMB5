@@ -31,7 +31,7 @@ void DrawBoundsRectangle(float left, float top, float right, float bottom)
 	v[7].sy = bottom + 4;
 	v[7].rhw = f_mpersp / f_mznear * f_moneopersp;
 
-	for (int i = 0; i < 7; i++)//what
+	for (int i = 0; i < 7; i++)
 	{
 		v[0].rhw = f_mpersp / f_mznear * f_moneopersp;
 		v[1].rhw = f_mpersp / f_mznear * f_moneopersp;

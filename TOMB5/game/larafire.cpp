@@ -821,29 +821,373 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 	room_number = item->room_number;
 	floor = GetFloor(x, y, z, &room_number);
 	oldheight = GetHeight(floor, x, y, z);
-	oldonobj = OnObject;
-	oldtype = height_type;
 	room_number = item->room_number;
 	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 	height = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 
-	if (item->pos.y_pos < height)
+	if (item->pos.y_pos >= height)
+	{
+		bs = 0;
+		oldtype = height_type;
+
+		if ((oldtype == BIG_SLOPE || oldtype == DIAGONAL) && oldheight < height)
+		{
+			yang = (ushort) item->pos.y_rot;
+
+			if (tiltyoff < 0 && yang >= 32768 ||
+				tiltyoff > 0 && yang <= 32768 ||
+				tiltxoff < 0 && yang >= 16384 && yang <= 49152 ||
+				tiltxoff > 0 && (yang <= 16384 || yang >= 49152))
+				bs = 1;
+		}
+
+		if (y > height + 32 && !bs && ((item->pos.x_pos ^ x) & 0xFFFFFC00 || (item->pos.z_pos ^ z) & 0xFFFFFC00))
+		{
+			xs = (item->pos.x_pos ^ x) & 0xFFFFFC00 && (item->pos.z_pos ^ z) & 0xFFFFFC00 ? ABS(x - item->pos.x_pos) < ABS(z - item->pos.z_pos) : 1;
+			item->pos.y_rot = (item->pos.x_pos ^ x) & 0xFFFFFC00 && xs ? -item->pos.y_rot : -32768 - item->pos.y_rot;
+			item->pos.x_pos = x;
+			item->pos.y_pos = y;
+			item->pos.z_pos = z;
+			item->speed >>= 1;
+		}
+		else if (oldtype != BIG_SLOPE && oldtype != DIAGONAL)
+		{
+			if (item->fallspeed > 0)
+			{
+				if (item->fallspeed > 16)
+				{
+					item->fallspeed = -(item->fallspeed >> 2);
+
+					if (item->fallspeed < -100)
+						item->fallspeed = -100;
+				}
+				else
+				{
+					item->speed -= 3;
+					item->fallspeed = 0;
+
+					if (item->speed < 0)
+						item->speed = 0;
+				}
+			}
+
+			item->pos.y_pos = height;
+		}
+		else
+		{
+			item->speed -= item->speed >> 2;
+
+			if (tiltyoff < 0 && ABS(tiltyoff) - ABS(tiltxoff) >= 2)
+			{
+				if ((ushort) item->pos.y_rot > 32768)
+				{
+					item->pos.y_rot = -1 - item->pos.y_rot;
+
+					if (item->fallspeed > 0)
+						item->fallspeed = -(item->fallspeed >> 1);
+				}
+				else
+				{
+					if (item->speed < 32)
+					{
+						item->speed -= 2 * tiltyoff;
+
+						if ((ushort) item->pos.y_rot > 16384 && (ushort) item->pos.y_rot < 49152)
+						{
+							item->pos.y_rot -= 4096;
+
+							if ((ushort) item->pos.y_rot < 16384)
+								item->pos.y_rot = 16384;
+						}
+						else if ((ushort) item->pos.y_rot < 16384)
+						{
+							item->pos.y_rot += 4096;
+
+							if ((ushort) item->pos.y_rot > 16384)
+								item->pos.y_rot = 16384;
+						}
+					}
+
+					item->fallspeed = item->fallspeed > 0 ? -(item->fallspeed >> 1) : 0;
+				}
+			}
+			else if (tiltyoff > 0 && ABS(tiltyoff) - ABS(tiltxoff) >= 2)
+			{
+				if ((ushort) item->pos.y_rot < 32768)
+				{
+					item->pos.y_rot = -1 - item->pos.y_rot;
+
+					if (item->fallspeed > 0)
+						item->fallspeed = -(item->fallspeed >> 1);
+				}
+				else
+				{
+					if (item->speed < 32)
+					{
+						item->speed += 2 * tiltyoff;
+
+						if ((ushort) item->pos.y_rot <= 49152 && (ushort) item->pos.y_rot >= 16384)
+						{
+							if ((ushort) item->pos.y_rot < 49152)
+							{
+								item->pos.y_rot += 4096;
+
+								if ((ushort) item->pos.y_rot > 49152)
+									item->pos.y_rot = -16384;
+							}
+						}
+						else
+						{
+							item->pos.y_rot -= 4096;
+
+							if ((ushort) item->pos.y_rot < 49152)
+								item->pos.y_rot = -16384;
+						}
+					}
+
+					item->fallspeed = item->fallspeed > 0 ? -(item->fallspeed >> 1) : 0;
+				}
+			}
+			else if (tiltxoff < 0 && ABS(tiltxoff) - ABS(tiltyoff) >= 2)
+			{
+				if ((ushort) item->pos.y_rot > 16384 && (ushort) item->pos.y_rot < 49152)
+				{
+					item->pos.y_rot = 32767 - item->pos.y_rot;
+
+					if (item->fallspeed > 0)
+						item->fallspeed = -(item->fallspeed >> 1);
+				}
+				else
+				{
+					if (item->speed < 32)
+					{
+						item->speed -= 2 * tiltxoff;
+
+						if ((ushort) item->pos.y_rot < 32768)
+						{
+							item->pos.y_rot -= 4096;
+
+							if ((ushort) item->pos.y_rot > 61440)
+								item->pos.y_rot = 0;
+						}
+						else
+						{
+							item->pos.y_rot += 4096;
+
+							if ((ushort) item->pos.y_rot < 4096)
+								item->pos.y_rot = 0;
+						}
+					}
+
+					item->fallspeed = item->fallspeed > 0 ? -(item->fallspeed >> 1) : 0;
+				}
+			}
+			else if (tiltxoff > 0 && ABS(tiltxoff) - ABS(tiltyoff) >= 2)
+			{
+				if ((ushort) item->pos.y_rot <= 49152 && (ushort) item->pos.y_rot >= 16384)
+				{
+					if (item->speed < 32)
+					{
+						item->speed += 2 * tiltxoff;
+
+						if ((ushort) item->pos.y_rot > 32768)
+						{
+							item->pos.y_rot -= 4096;
+
+							if ((ushort) item->pos.y_rot < 32768)
+								item->pos.y_rot = -32768;
+						}
+						else if ((ushort) item->pos.y_rot < 32768)
+						{
+							item->pos.y_rot += 4096;
+
+							if ((ushort) item->pos.y_rot > 32768)
+								item->pos.y_rot = -32768;
+						}
+					}
+
+					item->fallspeed = item->fallspeed > 0 ? -(item->fallspeed >> 1) : 0;
+				}
+				else
+				{
+					item->pos.y_rot = 32767 - item->pos.y_rot;
+
+					if (item->fallspeed > 0)
+						item->fallspeed = -(item->fallspeed >> 1);
+				}
+			}
+			else if (tiltyoff < 0 && tiltxoff < 0)
+			{
+				if ((ushort) item->pos.y_rot > 24576 && (ushort) item->pos.y_rot < 57344)
+				{
+					item->pos.y_rot = -16385 - item->pos.y_rot;
+
+					if (item->fallspeed > 0)
+						item->fallspeed = -(item->fallspeed >> 1);
+				}
+				else
+				{
+					if (item->speed < 32)
+					{
+						item->speed -= tiltxoff + tiltyoff;
+
+						if ((ushort) item->pos.y_rot > 8192 && (ushort) item->pos.y_rot < 40960)
+						{
+							item->pos.y_rot -= 4096;
+
+							if ((ushort) item->pos.y_rot < 8192)
+								item->pos.y_rot = 8192;
+						}
+						else if (item->pos.y_rot != 8192)
+						{
+							item->pos.y_rot += 4096;
+
+							if ((ushort) item->pos.y_rot > 8192)
+								item->pos.y_rot = 8192;
+						}
+					}
+
+					item->fallspeed = item->fallspeed > 0 ? -(item->fallspeed >> 1) : 0;
+				}
+			}
+			else if (tiltyoff < 0 && tiltxoff > 0)
+			{
+				if ((ushort) item->pos.y_rot <= 40960 && (ushort) item->pos.y_rot >= 8192)
+				{
+					if (item->speed < 32)
+					{
+						item->speed += tiltxoff - tiltyoff;
+
+						if ((ushort) item->pos.y_rot < 57344 && (ushort) item->pos.y_rot > 24576)
+						{
+							item->pos.y_rot -= 4096;
+
+							if ((ushort) item->pos.y_rot < 24576)
+								item->pos.y_rot = 24576;
+						}
+						else if (item->pos.y_rot != 24576)
+						{
+							item->pos.y_rot += 4096;
+
+							if ((ushort) item->pos.y_rot > 24576)
+								item->pos.y_rot = 24576;
+						}
+					}
+
+					item->fallspeed = item->fallspeed > 0 ? -(item->fallspeed >> 1) : 0;
+				}
+				else
+				{
+					item->pos.y_rot = 16383 - item->pos.y_rot;
+
+					if (item->fallspeed > 0)
+						item->fallspeed = -(item->fallspeed >> 1);
+				}
+			}
+			else if (tiltyoff > 0 && tiltxoff > 0)
+			{
+				if ((ushort) item->pos.y_rot <= 57344 && (ushort) item->pos.y_rot >= 24576)
+				{
+					if (item->speed < 32)
+					{
+						item->speed += tiltxoff + tiltyoff;
+
+						if ((ushort) item->pos.y_rot >= 8192 && (ushort) item->pos.y_rot <= 40960)
+						{
+							if (item->pos.y_rot != -24576)
+							{
+								item->pos.y_rot += 4096;
+
+								if ((ushort) item->pos.y_rot > 40960)
+									item->pos.y_rot = -24576;
+							}
+						}
+						else
+						{
+							item->pos.y_rot -= 4096;
+
+							if ((ushort) item->pos.y_rot < 40960)
+								item->pos.y_rot = -24576;
+						}
+					}
+
+					item->fallspeed = item->fallspeed > 0 ? -(item->fallspeed >> 1) : 0;
+				}
+				else
+				{
+					item->pos.y_rot = -16385 - item->pos.y_rot;
+
+					if (item->fallspeed > 0)
+						item->fallspeed = -(item->fallspeed >> 1);
+				}
+			}
+			else if (tiltyoff > 0 && tiltxoff < 0)
+			{
+				if ((ushort) item->pos.y_rot > 8192 && (ushort) item->pos.y_rot < 40960)
+				{
+					item->pos.y_rot = 16383 - item->pos.y_rot;
+
+					if (item->fallspeed > 0)
+						item->fallspeed = -(item->fallspeed >> 1);
+				}
+				else
+				{
+					if (item->speed < 32)
+					{
+						item->speed += tiltyoff - tiltxoff;
+
+						if ((ushort) item->pos.y_rot >= 24576 && (ushort) item->pos.y_rot <= 57344)
+						{
+							if (item->pos.y_rot != -8192)
+							{
+								item->pos.y_rot += 4096;
+
+								if ((ushort) item->pos.y_rot > 57344)
+									item->pos.y_rot = -8192;
+							}
+						}
+						else
+						{
+							item->pos.y_rot -= 4096;
+
+							if ((ushort) item->pos.y_rot < 57344)
+								item->pos.y_rot = -8192;
+						}
+					}
+
+					item->fallspeed = item->fallspeed > 0 ? -(item->fallspeed >> 1) : 0;
+				}
+			}
+
+			item->pos.x_pos = x;
+			item->pos.y_pos = y;
+			item->pos.z_pos = z;
+		}
+	}
+	else
 	{
 		if (yv >= 0)
 		{
 			room_number = item->room_number;
 			floor = GetFloor(item->pos.x_pos, y, item->pos.z_pos, &room_number);
-			oldheight = GetHeight(floor, item->pos.x_pos, y, item->pos.z_pos);
+			height = GetHeight(floor, item->pos.x_pos, y, item->pos.z_pos);
 			oldonobj = OnObject;
 			room_number = item->room_number;
 			floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 			GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 
-			if (item->pos.y_pos >= oldheight && oldonobj)
+			if (item->pos.y_pos >= height && oldonobj)
 			{
 				if (item->fallspeed > 0)
 				{
-					if (item->fallspeed <= 16)
+					if (item->fallspeed > 16)
+					{
+						item->fallspeed = -(item->fallspeed >> 2);
+
+						if (item->fallspeed < -100)
+							item->fallspeed = -100;
+					}
+					else
 					{
 						item->speed -= 3;
 						item->fallspeed = 0;
@@ -851,16 +1195,9 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 						if (item->speed < 0)
 							item->speed = 0;
 					}
-					else
-					{
-						item->fallspeed = -(item->fallspeed >> 2);
-
-						if (item->fallspeed < -100)
-							item->fallspeed = -100;
-					}
 				}
 
-				item->pos.y_pos = oldheight;
+				item->pos.y_pos = height;
 			}
 		}
 
@@ -868,21 +1205,11 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 		floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 		ceiling = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 
-		if (ceiling > item->pos.y_pos)
+		if (item->pos.y_pos < ceiling)
 		{
-			if (y < ceiling && ((x >> 10 != item->pos.x_pos >> 10) || (z >> 10 != item->pos.z_pos >> 10)))
+			if (y < ceiling && ((item->pos.x_pos ^ x) & 0xFFFFFC00 || (item->pos.z_pos ^ z) & 0xFFFFFC00))
 			{
-				if ((x & ~1023) != (item->pos.x_pos & ~1023))
-				{
-
-					if (xv > 0)
-						item->pos.y_rot = 49152 + (16384 - item->pos.y_rot);
-					else
-						item->pos.y_rot = 16384 + (49152 - item->pos.y_rot);
-				}
-				else
-					item->pos.y_rot = -item->pos.y_rot;
-
+				item->pos.y_rot = (item->pos.x_pos ^ x) & 0xFFFFFC00 ? -item->pos.y_rot : -32768 - item->pos.y_rot;
 				item->pos.x_pos = x;
 				item->pos.y_pos = y;
 				item->pos.z_pos = z;
@@ -893,398 +1220,6 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 
 			if (item->fallspeed < 0)
 				item->fallspeed = -item->fallspeed;
-		}
-	}
-	else
-	{
-		bs = 0;
-
-		if ((height_type == BIG_SLOPE || height_type == DIAGONAL) && oldheight < height)
-		{
-			yang = (ushort) item->pos.y_rot;
-
-			if (tiltyoff < 0)
-			{
-				if (yang >= 32768)
-					bs = 1;
-			}
-			else
-			{
-				if (tiltyoff > 0 && yang <= 32768)
-					bs = 1;
-			}
-
-			if (tiltxoff < 0)
-			{
-				if (yang >= 16384 && yang <= 49152)
-					bs = 1;
-			}
-			else
-			{
-				if (tiltxoff > 0 && (yang <= 16384 || yang >= 49152))
-					bs = 1;
-			}
-		}
-
-		if (y > height + 32 && !bs && ((x >> 10) != (item->pos.x_pos >> 10) || (z >> 10) != (item->pos.z_pos >> 10)))
-		{
-			if ((x & ~1023) != (item->pos.x_pos & ~1023) && (z & ~1023) != (item->pos.z_pos & ~1023))
-			{
-				if (ABS(x - item->pos.x_pos) < ABS(z - item->pos.z_pos))
-					xs = 1;
-				else
-					xs = 0;
-			}
-			else
-				xs = 1;
-
-			if ((x & ~1023) != (item->pos.x_pos & ~1023) && xs)
-			{
-				if (xv <= 0)
-					item->pos.y_rot = 16384 + (49152 - item->pos.y_rot);
-				else
-					item->pos.y_rot = 49152 + (16384 - item->pos.y_rot);
-			}
-			else
-				item->pos.y_rot = -item->pos.y_rot;
-
-			item->pos.x_pos = x;
-			item->pos.y_pos = y;
-			item->pos.z_pos = z;
-			item->speed >>= 1;
-		}
-		else if (height_type != BIG_SLOPE && height_type != DIAGONAL)
-		{
-			if (item->fallspeed > 0)
-			{
-				if (item->fallspeed <= 16)
-				{
-					item->speed -= 3;
-					item->fallspeed = 0;
-
-					if (item->speed < 0)
-						item->speed = 0;
-				}
-				else
-				{
-					item->fallspeed = -(item->fallspeed >> 2);
-
-					if (item->fallspeed < -100)
-						item->fallspeed = -100;
-				}
-			}
-
-			item->pos.y_pos = height;
-		}
-		else
-		{
-			item->speed -= item->speed >> 2;
-
-			if (tiltyoff < 0 && ((ABS(tiltyoff)) - (ABS(tiltxoff)) > 1))
-			{
-				if ((ushort)item->pos.y_rot > 32768)
-				{
-					item->pos.y_rot = 16384 + (49152 - (ushort)item->pos.y_rot - 1);
-
-					if (0 < item->fallspeed)
-						item->fallspeed = -(item->fallspeed >> 1);
-				}
-				else
-				{
-					if (item->speed < 32)
-					{
-						item->speed -= tiltyoff << 1;
-
-						if ((ushort)item->pos.y_rot > 16384 && (ushort)item->pos.y_rot < 49152)
-						{
-							item->pos.y_rot -= 4096;
-
-							if ((ushort)item->pos.y_rot < 16384)
-								item->pos.y_rot = 16384;
-						}
-						else if ((ushort)item->pos.y_rot < 16384)
-						{
-							item->pos.y_rot += 4096;
-
-							if ((ushort)item->pos.y_rot > 16384)
-								item->pos.y_rot = 16384;
-						}
-					}
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-					else
-						item->fallspeed = 0;
-				}
-			}
-			else if (tiltyoff > 0 && ABS(tiltyoff) - ABS(tiltxoff) > 1)
-			{
-				if ((ushort)item->pos.y_rot < 32768)
-				{
-					item->pos.y_rot = 49152 + (16384 - (ushort)item->pos.y_rot - 1);
-
-					if (0 < item->fallspeed)
-						item->fallspeed = -(item->fallspeed >> 1);
-				}
-				else
-				{
-					if (item->speed < 32)
-					{
-						item->speed += tiltyoff << 1;
-
-						if ((ushort)item->pos.y_rot > 49152 || (ushort)item->pos.y_rot < 16384)
-						{
-							item->pos.y_rot -= 4096;
-
-							if ((ushort)item->pos.y_rot < 49152)
-								item->pos.y_rot = -16384;
-						}
-						else if ((ushort)item->pos.y_rot < 49152)
-						{
-							item->pos.y_rot += 4096;
-
-							if ((ushort)item->pos.y_rot > 49152)
-								item->pos.y_rot = -16384;
-						}
-					}
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-					else
-						item->fallspeed = 0;
-				}
-			}
-			else if (tiltxoff < 0 && ((ABS(tiltxoff)) - (ABS(tiltyoff)) > 1))
-			{
-
-				if ((ushort)item->pos.y_rot > 16384 && (ushort)item->pos.y_rot < 49152)
-				{
-					item->pos.y_rot = 32767 - item->pos.y_rot;
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-				}
-				else
-				{
-					if (item->speed < 32)
-					{
-						item->speed -= tiltxoff << 1;
-
-						if ((ushort)item->pos.y_rot < 32768)
-						{
-							item->pos.y_rot -= 4096;
-
-							if ((ushort)item->pos.y_rot > 61440)
-								item->pos.y_rot = 0;
-						}
-						else if ((ushort)item->pos.y_rot >= 32768)
-						{
-							item->pos.y_rot += 4096;
-
-							if ((ushort)item->pos.y_rot < 4096)
-								item->pos.y_rot = 0;
-						}
-					}
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-					else
-						item->fallspeed = 0;
-				}
-			}
-			else if (tiltxoff > 0 && ((ABS(tiltxoff) - ABS(tiltyoff)) > 1))
-			{
-
-				if ((ushort)item->pos.y_rot > 49152 || (ushort)item->pos.y_rot < 16384)
-				{
-					item->pos.y_rot = 32767 - item->pos.y_rot;
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-				}
-				else
-				{
-					if (item->speed < 32)
-					{
-						item->speed += tiltxoff << 1;
-
-						if ((ushort)item->pos.y_rot > 32768)
-						{
-							item->pos.y_rot -= 4096;
-
-							if ((ushort)item->pos.y_rot < 32768)
-								item->pos.y_rot = -32768;
-						}
-						else if ((ushort)item->pos.y_rot < 32768)
-						{
-							item->pos.y_rot += 4096;
-
-							if ((ushort)item->pos.y_rot > 32768)
-								item->pos.y_rot = -32768;
-						}
-					}
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-					else
-						item->fallspeed = 0;
-				}
-			}
-			else if (tiltyoff < 0 && tiltxoff < 0)
-			{
-				if ((ushort)item->pos.y_rot > 24576 && (ushort)item->pos.y_rot < (ushort)-8192)
-				{
-					item->pos.y_rot = 8192 + (-24576 - (ushort)item->pos.y_rot - 1);
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-				}
-				else
-				{
-					if (item->speed < 32)
-					{
-						item->speed += (-tiltyoff) + (-tiltxoff);
-
-						if ((ushort)item->pos.y_rot > 8192 && (ushort)item->pos.y_rot < -24576)
-						{
-							item->pos.y_rot -= 4096;
-
-							if ((ushort)item->pos.y_rot < 8192)
-								item->pos.y_rot = 8192;
-						}
-						else if ((ushort)item->pos.y_rot != 8192)
-						{
-							item->pos.y_rot += 4096;
-
-							if ((ushort)item->pos.y_rot > 8192)
-								item->pos.y_rot = 8192;
-						}
-					}
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-					else
-						item->fallspeed = 0;
-				}
-
-			}
-			else if (tiltyoff < 0 && tiltxoff > 0)
-			{
-
-				if ((ushort)item->pos.y_rot > -24576 || (ushort)item->pos.y_rot < 8192)
-				{
-					item->pos.y_rot = 24576 + (-8192 - (ushort)item->pos.y_rot - 1);
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-				}
-				else
-				{
-					if (item->speed < 32)
-					{
-						item->speed += (-tiltyoff) + tiltxoff;
-
-						if ((ushort)item->pos.y_rot < -8192 && (ushort)item->pos.y_rot > 24576)
-						{
-							item->pos.y_rot -= 4096;
-
-							if ((ushort)item->pos.y_rot < 24576)
-								item->pos.y_rot = 24576;
-						}
-						else if ((ushort)item->pos.y_rot != 24576)
-						{
-							item->pos.y_rot += 4096;
-
-							if ((ushort)item->pos.y_rot > 24576)
-								item->pos.y_rot = 24576;
-						}
-					}
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-					else
-						item->fallspeed = 0;
-				}
-			}
-			else if (tiltyoff > 0 && tiltxoff > 0)
-			{
-
-				if ((ushort)item->pos.y_rot > (ushort)-8192 || (ushort)item->pos.y_rot < 24576)
-				{
-					item->pos.y_rot = -24576 + (8192 - (ushort)item->pos.y_rot - 1);
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-				}
-				else
-				{
-					if (item->speed < 32)
-					{
-						item->speed += tiltyoff + tiltxoff;
-
-						if ((ushort)item->pos.y_rot < 8192 || (ushort)item->pos.y_rot > -24576)
-						{
-							item->pos.y_rot -= 4096;
-
-							if ((ushort)item->pos.y_rot < -24576)
-								item->pos.y_rot = -24576;
-						}
-						else if ((ushort)item->pos.y_rot != -24576)
-						{
-							item->pos.y_rot += 4096;
-
-							if ((ushort)item->pos.y_rot > -24576)
-								item->pos.y_rot = -24576;
-						}
-					}
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-					else
-						item->fallspeed = 0;
-				}
-			}
-			else if (tiltyoff > 0 && tiltxoff < 0)
-			{
-				if ((ushort)item->pos.y_rot > 8192 && (ushort)item->pos.y_rot < -24576)
-				{
-					item->pos.y_rot = -8192 + (24576 - (ushort)item->pos.y_rot - 1);
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-				}
-				else
-				{
-					if (item->speed < 32)
-					{
-						item->speed += tiltyoff + (-tiltxoff);
-
-						if ((ushort)item->pos.y_rot < 24576 || (ushort)item->pos.y_rot >(ushort) -8192)
-						{
-							item->pos.y_rot -= 4096;
-
-							if ((ushort)item->pos.y_rot < (ushort)-8192)
-								item->pos.y_rot = -8192;
-						}
-						else if ((ushort)item->pos.y_rot != (ushort)-8192)
-						{
-							item->pos.y_rot += 4096;
-
-							if ((ushort)item->pos.y_rot > (ushort) -8192)
-								item->pos.y_rot = -8192;
-						}
-					}
-
-					if (item->fallspeed > 0)
-						item->fallspeed = -(item->fallspeed >> 1);
-					else
-						item->fallspeed = 0;
-				}
-			}
-
-			item->pos.x_pos = x;
-			item->pos.y_pos = y;
-			item->pos.z_pos = z;
 		}
 	}
 
@@ -1353,6 +1288,6 @@ void inject_larafire(bool replace)
 	INJECT(0x00453A90, SmashItem, replace);
 	INJECT(0x00453AE0, WeaponObject, replace);
 	INJECT(0x00453B50, WeaponObjectMesh, replace);
-	INJECT(0x00453BE0, DoProperDetection, 0);
+	INJECT(0x00453BE0, DoProperDetection, replace);
 	INJECT(0x004546C0, get_current_ammo_pointer, replace);
 }

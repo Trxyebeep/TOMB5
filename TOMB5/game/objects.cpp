@@ -112,7 +112,7 @@ void EarthQuake(short item_number)
 			{
 				item = &items[earth_item];
 
-				if (item->object_number == FLAME_EMITTER)//what
+				if (item->object_number == FLAME_EMITTER)
 				{
 					if (item->status != ITEM_ACTIVE && item->status != ITEM_DEACTIVATED)
 					{

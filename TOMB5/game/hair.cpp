@@ -216,7 +216,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	sphere[5].x = (2 * sphere[2].x + sphere[1].x) / 3;
 	sphere[5].y = (2 * sphere[2].y + sphere[1].y) / 3;
 	sphere[5].z = (2 * sphere[2].z + sphere[1].z) / 3;
-	sphere[5].r = gfLevelFlags & GF_YOUNGLARA ? 0 : 5 * sphere[2].r / 4;//whore
+	sphere[5].r = gfLevelFlags & GF_YOUNGLARA ? 0 : 5 * sphere[2].r / 4;
 #endif
 	//end of fucking shit spheres
 

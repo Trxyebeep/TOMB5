@@ -1394,7 +1394,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047A800	+	InitSpotCamSequences
 0x0047A890	+	Spline
 0x0047A9D0	+	InitialiseSpotCam
-0x0047B280	x	CalculateSpotCams
+0x0047B280	+	CalculateSpotCams
 
 
 		game/subsuit.cpp
@@ -1505,7 +1505,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004851B0		TriggerLightningGlow
 0x00485290	+	DrawLensFlares
 0x004852E0	+	DrawWeaponMissile
-0x00485380		ControlTeleporter
+0x00485380	+	ControlTeleporter
 0x00485AD0	+	ControlElectricFence
 0x00485D80		TriggerFenceSparks
 0x00485EC0		trig_actor_gunflash

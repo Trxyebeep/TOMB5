@@ -271,7 +271,7 @@ void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
 	INJECT(0x004B0910, DoStatScreen, replace);
-	INJECT(0x004B1E70, DisplayStatsUCunt, replace);//actually in some other file
+	INJECT(0x004B1E70, DisplayStatsUCunt, replace);
 	INJECT(0x004B18E0, S_DrawAirBar, replace);
 	INJECT(0x004B1950, S_DrawHealthBar, replace);
 	INJECT(0x004B19C0, S_DrawHealthBar2, replace);

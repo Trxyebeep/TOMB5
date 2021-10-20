@@ -1052,7 +1052,7 @@ void InitialiseAutogun(short item_number)
 
 	item = &items[item_number];
 	item->mesh_bits = 1024;
-	item->data = game_malloc(5702, 0);//? what is this
+	item->data = game_malloc(5702, 0);
 }
 
 void InitialiseKeyhole(short item_number)

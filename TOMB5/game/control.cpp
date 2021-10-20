@@ -2119,7 +2119,7 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 		case DUMMY:
 		case HEAVYSWITCH:
 		case HEAVYANTITRIGGER:
-#ifdef GENERAL_FIXES//trash
+#ifdef GENERAL_FIXES
 			if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS && lara_item->pos.x_pos > 37979 && lara_item->pos.x_pos < 38911 &&
 				lara_item->pos.z_pos > 67685 && lara_item->pos.z_pos < 68600 && lara_item->pos.y_pos == -24064)
 			{
@@ -2493,7 +2493,7 @@ void RemoveRoomFlipItems(ROOM_INFO* r)
 
 		if (item->flags & IFL_INVISIBLE && objects[item->object_number].intelligent)
 		{
-			if (item->hit_points <= 0 && item->hit_points != -16384)//wat
+			if (item->hit_points <= 0 && item->hit_points != -16384)
 				KillItem(item_num);
 		}
 	}

@@ -427,7 +427,7 @@
 #define first_camera	VAR_U_(0x00E51F24, short)
 #define last_camera	VAR_U_(0x00E4F6AC, short)
 #define current_camera_cnt	VAR_U_(0x00E4EAA0, short)
-#define current_spline_position	VAR_U_(0x00E51F28, short)
+#define current_spline_position	VAR_U_(0x00E51F28, long)
 #define spline_to_camera	VAR_U_(0x00E4F48C, long)
 #define spline_from_camera	VAR_U_(0x00E4F3DC, long)
 #define bCheckTrigger	VAR_U_(0x0051D014, long)
@@ -597,4 +597,4 @@
 #define UNK_00E916F0	VAR_U_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init
 #define UNK_EffectDistance	VAR_U_(0x00E914E0, short*)//used in a bunch of effect draw functions, seems to hold effect pos - lara pos values.
 #define UNK_EffectXY	VAR_U_(0x00E912E0, short*)//has X and Y values for drawing effects???
-#define UNK_00E913E0	VAR_U_(0x00E913E0, long*)//?????????????
+#define UNK_00E913E0	VAR_U_(0x00E913E0, long*)

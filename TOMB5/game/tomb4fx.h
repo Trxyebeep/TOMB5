@@ -10,6 +10,7 @@ long LSpline(long x, long* knots, long nk);
 LIGHTNING_STRUCT* TriggerLightning(PHD_VECTOR* s, PHD_VECTOR* d, char variation, long rgb, uchar flags, uchar size, uchar segments);
 void LaraBubbles(ITEM_INFO* item);
 void ControlElectricFence(short item_number);
+void ControlTeleporter(short item_number);
 void DrawWeaponMissile(ITEM_INFO* item);
 void DrawLensFlares(ITEM_INFO* item);
 

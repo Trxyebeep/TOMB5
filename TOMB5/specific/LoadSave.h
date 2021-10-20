@@ -6,7 +6,7 @@ void inject_LoadSave(bool replace);
 
 void CheckKeyConflicts();
 void DoStatScreen();
-void DisplayStatsUCunt();//actually in some other file
+void DisplayStatsUCunt();
 void S_DrawAirBar(int pos);
 void S_DrawHealthBar(int pos);
 void S_DrawHealthBar2(int pos);

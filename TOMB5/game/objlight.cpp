@@ -63,7 +63,7 @@ void ControlPulseLight(short item_number)
 	sin = ABS(phd_sin(item->item_flags[0] + ((item->pos.y_pos & 0x3FFF) << 2)) >> 6);
 
 	if (sin > 255)
-		sin = 255;//what is this clownery
+		sin = 255;
 
 	r = (sin * ((item->trigger_flags & 0x1F) << 3)) >> 9;
 	g = (sin * ((item->trigger_flags >> 2) & 0xF8)) >> 9;

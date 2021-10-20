@@ -111,13 +111,13 @@ void ControlDeathSlide(short item_number)
 				lara_item->fallspeed = item->fallspeed >> 2;
 			}
 
-			SoundEffect(SFX_COGS_ROME, &item->pos, SFX_DEFAULT);//what
+			SoundEffect(SFX_COGS_ROME, &item->pos, SFX_DEFAULT);
 			RemoveActiveItem(item_number);
 			item->status = ITEM_INACTIVE;
 			item->flags -= 0x100;
 		}
 		else
-			SoundEffect(SFX_GOD_HEAD_LASER_LOOPS, &item->pos, SFX_DEFAULT);//???????????????
+			SoundEffect(SFX_GOD_HEAD_LASER_LOOPS, &item->pos, SFX_DEFAULT);
 	}
 	else
 	{
