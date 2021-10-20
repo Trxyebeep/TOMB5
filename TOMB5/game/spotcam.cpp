@@ -319,6 +319,7 @@ void CalculateSpotCams()
 	if (SpotCam[current_spline_camera].flags & SP_FADEOUTSCREEN && CameraFade != current_spline_camera)
 	{
 		CameraFade = current_spline_camera;
+
 		if (gfCurrentLevel)
 		{
 			ScreenFadedOut = 0;
@@ -366,21 +367,21 @@ void CalculateSpotCams()
 				sp = 0;
 		}
 
-		current_spline_position += (short)((cp - current_spline_position) >> 5);
+		current_spline_position += (cp - current_spline_position) >> 5;
 
 		if (s->flags & SP_SNAPCAMERA)
 		{
 			if (ABS(cp - current_spline_position) > 0x8000)
-				current_spline_position = (short)cp;
+				current_spline_position = cp;
 		}
 
 		if (cp < 0)
 			current_spline_position = 0;
 		else if (cp > 0x10000)
-			current_spline_position = (short)0x10000;
+			current_spline_position = 0x10000;
 	}
 	else if (!spotcam_timer)
-		current_spline_position += (short)cspeed;
+		current_spline_position += cspeed;
 
 	if (!(input & IN_LOOK))
 		bFirstLook = 0;
@@ -584,7 +585,6 @@ void CalculateSpotCams()
 						else if (next_spline_camera > last_camera)
 							next_spline_camera = last_camera;
 
-						n++;
 						camera_xposition[n] = SpotCam[next_spline_camera].x;
 						camera_yposition[n] = SpotCam[next_spline_camera].y;
 						camera_zposition[n] = SpotCam[next_spline_camera].z;
@@ -594,6 +594,7 @@ void CalculateSpotCams()
 						camera_roll[n] = SpotCam[next_spline_camera].roll;
 						camera_fov[n] = SpotCam[next_spline_camera].fov;
 						camera_speed[n] = SpotCam[next_spline_camera].speed;
+						n++;
 						next_spline_camera++;
 
 					} while (n < 4);
@@ -732,5 +733,5 @@ void inject_spotcam(bool replace)
 	INJECT(0x0047A890, Spline, replace);
 	INJECT(0x0047A800, InitSpotCamSequences, replace);
 	INJECT(0x0047A9D0, InitialiseSpotCam, replace);
-	INJECT(0x0047B280, CalculateSpotCams, 0);
+	INJECT(0x0047B280, CalculateSpotCams, replace);
 }

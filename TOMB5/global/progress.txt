@@ -1394,7 +1394,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047A800	+	InitSpotCamSequences
 0x0047A890	+	Spline
 0x0047A9D0	+	InitialiseSpotCam
-0x0047B280	x	CalculateSpotCams
+0x0047B280	+	CalculateSpotCams
 
 
 		game/subsuit.cpp
