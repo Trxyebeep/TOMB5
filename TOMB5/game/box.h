@@ -23,3 +23,4 @@ typedef short(__cdecl* generate)(long, long, long, short, short, short);
 #define AlertAllGuards	( (void(__cdecl*)(short)) 0x0040BA70 )
 #define AIGuard	( (short(__cdecl*)(CREATURE_INFO*)) 0x0040BBE0 )
 #define CreatureVault	( (long(__cdecl*)(short, short, long, long)) 0x0040B5D0 )
+#define DropBaddyPickups	( (void(__cdecl*)(ITEM_INFO*)) 0x0040C5A0 )

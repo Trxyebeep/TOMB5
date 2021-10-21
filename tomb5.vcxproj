@@ -45,6 +45,7 @@
     <ClCompile Include="TOMB5\game\guardian.cpp" />
     <ClCompile Include="TOMB5\game\hair.cpp" />
     <ClCompile Include="TOMB5\game\health.cpp" />
+    <ClCompile Include="TOMB5\game\hitman.cpp" />
     <ClCompile Include="TOMB5\game\huskie.cpp" />
     <ClCompile Include="TOMB5\game\hydra.cpp" />
     <ClCompile Include="TOMB5\game\imp.cpp" />
@@ -149,6 +150,7 @@
     <ClInclude Include="TOMB5\game\guardian.h" />
     <ClInclude Include="TOMB5\game\hair.h" />
     <ClInclude Include="TOMB5\game\health.h" />
+    <ClInclude Include="TOMB5\game\hitman.h" />
     <ClInclude Include="TOMB5\game\huskie.h" />
     <ClInclude Include="TOMB5\game\hydra.h" />
     <ClInclude Include="TOMB5\game\imp.h" />

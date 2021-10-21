@@ -49,6 +49,7 @@
 #include "../specific/function_stubs.h"
 #include "draw.h"
 #include "moveblok.h"
+#include "hitman.h"
 
 void InitialiseLara(int restore)
 {
@@ -1461,8 +1462,8 @@ void BaddyObjects()
 	if (objects[HITMAN].loaded)
 	{
 		obj = &objects[HITMAN];
-	//	obj->initialise = InitialiseHitman;
-	//	obj->control = HitmanControl;
+		obj->initialise = InitialiseHitman;
+		obj->control = HitmanControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;
