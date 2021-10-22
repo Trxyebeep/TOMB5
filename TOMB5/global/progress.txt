@@ -490,7 +490,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00431420		TriggerDynamic_MIRROR
 0x00431530		ClearDynamics
 0x00431560	+	ControlSmokeEmitter
-0x00431E70		ControlEnemyMissile
+0x00431E70	+	ControlEnemyMissile
 
 
 		game/effects.cpp
@@ -1104,7 +1104,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0045DC50		Draw_Mirror_Lara
 
 
-		game/missle.cpp
+		game/missile.cpp
 
 0x0045E010		ExplodeFX
 0x0045E0E0		ControlMissile

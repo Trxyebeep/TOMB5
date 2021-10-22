@@ -627,7 +627,7 @@ void ObjectObjects()
 	obj->save_flags = 1;
 
 	obj = &objects[BUBBLES];
-//	obj->control = ControlEnemyMissile;
+	obj->control = ControlEnemyMissile;
 	obj->draw_routine = (void(*)(ITEM_INFO*))1;	//what the fuck
 	obj->nmeshes = 0;
 	obj->loaded = 1;

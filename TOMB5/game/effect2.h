@@ -8,6 +8,7 @@ void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit);
 void KillAllCurrentItems(short item_number);
 void KillEverything();
 void ControlSmokeEmitter(short item_number);
+void ControlEnemyMissile(short fx_number);
 
 #define TriggerDynamic	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431240 )
 #define TriggerDynamic_MIRROR	( (void(__cdecl*)(long, long, long, int, int, int, int)) 0x00431420 )

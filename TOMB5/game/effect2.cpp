@@ -6,6 +6,12 @@
 #include "objects.h"
 #include "sound.h"
 #include "gameflow.h"
+#include "../specific/3dmath.h"
+#include "missile.h"
+#include "items.h"
+#include "effects.h"
+#include "traps.h"
+#include "hydra.h"
 
 void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv)
 {
@@ -401,6 +407,188 @@ void ControlSmokeEmitter(short item_number)
 	}
 }
 
+#define TriggerRomanGodMissileFlame	( (void(__cdecl*)(PHD_VECTOR*, long)) 0x0046B420 )
+
+void ControlEnemyMissile(short fx_number)
+{
+	FX_INFO* fx;
+	FLOOR_INFO* floor;
+	PHD_VECTOR pos;
+	long speed, ox, oy, oz, h, c;
+	short angles[2];
+	short room_number, max_turn;
+
+	fx = &effects[fx_number];
+
+	if (fx->flag1 == 2)
+	{
+		fx->pos.z_rot += fx->speed << 4;
+
+		if (fx->speed > 64)
+			fx->speed -= 4;
+
+		if (fx->pos.x_rot > -12288)
+		{
+			if (fx->fallspeed < 512)
+				fx->fallspeed += 36;
+
+			fx->pos.x_rot -= fx->fallspeed;
+		}
+	}
+	else
+	{
+		phd_GetVectorAngles(lara_item->pos.x_pos - fx->pos.x_pos, lara_item->pos.y_pos - fx->pos.y_pos - 256,
+			lara_item->pos.z_pos - fx->pos.z_pos, &angles[0]);
+
+		if (!fx->flag1)
+		{
+			if (fx->counter)
+				fx->counter--;
+
+			max_turn = 256;
+		}
+		else if (fx->flag1 == 1)
+			max_turn = 384;
+		else
+			max_turn = 768;
+
+		if (fx->speed < 192)
+		{
+			if (!fx->flag1 || fx->flag1 == 1)
+				fx->speed++;
+
+			oy = (ushort)angles[0] - (ushort)fx->pos.y_rot;
+
+			if (ABS(oy) > 0x8000)
+				oy = (ushort)fx->pos.y_rot - (ushort)angles[0];
+
+			ox = (ushort)angles[1] - (ushort)fx->pos.x_rot;
+
+			if (ABS(ox) > 0x8000)
+				ox = (ushort)fx->pos.x_rot - (ushort)angles[1];
+
+			oy >>= 3;
+			ox >>= 3;
+
+			if (oy > max_turn)
+				oy = max_turn;
+			else if (oy < -max_turn)
+				oy = -max_turn;
+
+			if (ox > max_turn)
+				ox = max_turn;
+			else if (ox < -max_turn)
+				ox = -max_turn;
+
+			fx->pos.y_rot += (short)oy;
+			fx->pos.x_rot += (short)ox;
+		}
+
+		fx->pos.z_rot += fx->speed << 4;
+
+		if (!fx->flag1)
+			fx->pos.z_rot += fx->speed << 4;
+	}
+
+	ox = fx->pos.x_pos;
+	oy = fx->pos.y_pos;
+	oz = fx->pos.z_pos;
+	speed = fx->speed * phd_cos(fx->pos.x_rot) >> 14;
+	fx->pos.x_pos += speed * phd_sin(fx->pos.y_rot) >> 14;
+	fx->pos.y_pos += fx->speed * phd_sin(-fx->pos.x_rot) >> 14;
+	fx->pos.z_pos += speed * phd_cos(fx->pos.y_rot) >> 14;
+	room_number = fx->room_number;
+	floor = GetFloor(fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos, &room_number);
+	h = GetHeight(floor, fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos);
+	c = GetCeiling(floor, fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos);
+
+	if (fx->pos.y_pos >= h || fx->pos.y_pos <= c)
+	{
+		fx->pos.x_pos = ox;
+		fx->pos.y_pos = oy;
+		fx->pos.z_pos = oz;
+
+		if (!fx->flag1)
+		{
+			TriggerExplosionSparks(ox, oy, oz, 3, -2, 0, fx->room_number);
+			TriggerShockwave((PHD_VECTOR*)&fx->pos, 0xF00030, 48, 0x18806000, 0x20000);
+		}
+		else if (fx->flag1 == 1)
+		{
+			TriggerExplosionSparks(ox, oy, oz, 3, -2, 2, fx->room_number);
+			fx->pos.y_pos -= 64;
+			TriggerShockwave((PHD_VECTOR*)&fx->pos, 0x1000030, 64, 0x18008040, 0x10000);
+			fx->pos.y_pos -= 128;
+			TriggerShockwave((PHD_VECTOR*)&fx->pos, 0xF00030, 48, 0x18008040, 0x10000);
+		}
+		else if (fx->flag1 == 2)
+		{
+			ExplodeFX(fx, 0, 32);
+			SoundEffect(SFX_IMP_STONE_HIT, &fx->pos, SFX_DEFAULT);
+		}
+
+		KillEffect(fx_number);
+		return;
+	}
+
+	if (ItemNearLara(&fx->pos, 200))
+	{
+		lara_item->hit_status = 1;
+
+		if (!fx->flag1)
+		{
+			TriggerExplosionSparks(ox, oy, oz, 3, -2, 0, fx->room_number);
+			TriggerShockwave((PHD_VECTOR*)&fx->pos, 0xF00030, 48, 0x18806000, 0);
+
+			if (lara_item->hit_points < 500)
+				LaraBurn();
+			else
+				lara_item->hit_points -= 300;
+		}
+		else if (fx->flag1 == 1)
+		{
+			TriggerExplosionSparks(ox, oy, oz, 3, -2, 2, fx->room_number);
+			fx->pos.y_pos -= 64;
+			TriggerShockwave((PHD_VECTOR*)&fx->pos, 0x1000030, 64, 0x18008040, 0x10000);
+			fx->pos.y_pos -= 128;
+			TriggerShockwave((PHD_VECTOR*)&fx->pos, 0xF00030, 48, 0x18008040, 0x10000);
+			lara_item->hit_points -= 200;
+		}
+		else if (fx->flag1 == 2)
+		{
+			ExplodeFX(fx, 0, 32);
+			lara_item->hit_points -= 50;
+			DoBloodSplat(fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos, (GetRandomControl() & 3) + 2, lara_item->pos.y_rot, lara_item->room_number);
+			SoundEffect(SFX_IMP_STONE_HIT, &fx->pos, SFX_DEFAULT);
+			SoundEffect(SFX_LARA_INJURY_RND, &lara_item->pos, SFX_DEFAULT);
+		}
+
+		KillEffect(fx_number);
+		return;
+	}
+
+	if (room_number != fx->room_number)
+		EffectNewRoom(fx_number, room_number);
+
+	if (GlobalCounter & 1)
+	{
+		pos.x = ox;
+		pos.y = oy;
+		pos.z = oz;
+		ox -= fx->pos.x_pos;
+		oy -= fx->pos.y_pos;
+		oz -= fx->pos.z_pos;
+
+		if (!fx->flag1)
+		{
+			TriggerHydraMissileFlame(&pos, ox << 2, oy << 2, oz << 2);
+			TriggerHydraMissileFlame((PHD_VECTOR*)&fx->pos, ox << 2, oy << 2, oz << 2);
+		}
+		else if (fx->flag1 == 1)
+			TriggerRomanGodMissileFlame(&pos, fx_number);
+	}
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -408,4 +596,5 @@ void inject_effect2(bool replace)
 	INJECT(0x00431030, KillAllCurrentItems, replace);
 	INJECT(0x00431050, KillEverything, replace);
 	INJECT(0x00431560, ControlSmokeEmitter, replace);
+	INJECT(0x00431E70, ControlEnemyMissile, replace);
 }
