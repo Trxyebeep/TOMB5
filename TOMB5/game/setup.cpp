@@ -50,6 +50,7 @@
 #include "draw.h"
 #include "moveblok.h"
 #include "hitman.h"
+#include "../specific/specificfx.h"
 
 void InitialiseLara(int restore)
 {
@@ -818,7 +819,7 @@ void TrapObjects()
 	obj = &objects[DARTS];
 	obj->control = DartsControl;
 	obj->collision = ObjectCollision;
-//	obj->draw_routine = S_DrawDarts;
+	obj->draw_routine = S_DrawDarts;
 	obj->using_drawanimating_item = 0;
 	obj->shadow_size = 128;
 
