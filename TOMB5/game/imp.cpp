@@ -181,7 +181,7 @@ void ImpControl(short item_number)
 				else
 					item->goal_anim_state = 5;
 			}
-			else if (item->ai_bits == 0x2000)
+			else if (item->ai_bits == 16)
 				item->goal_anim_state = 0;
 			else
 			{

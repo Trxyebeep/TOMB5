@@ -49,6 +49,9 @@
 #include "../specific/function_stubs.h"
 #include "draw.h"
 #include "moveblok.h"
+#include "hitman.h"
+#include "../specific/specificfx.h"
+#include "missile.h"
 
 void InitialiseLara(int restore)
 {
@@ -583,7 +586,7 @@ void ObjectObjects()
 	{
 		obj = &objects[i];
 		obj->initialise = InitialiseSmokeEmitter;
-	//	obj->control = ControlSmokeEmitter;
+		obj->control = ControlSmokeEmitter;
 		obj->draw_routine = 0;
 		obj->using_drawanimating_item = 0;
 		obj->save_flags = 1;
@@ -625,7 +628,7 @@ void ObjectObjects()
 	obj->save_flags = 1;
 
 	obj = &objects[BUBBLES];
-//	obj->control = ControlEnemyMissile;
+	obj->control = ControlEnemyMissile;
 	obj->draw_routine = (void(*)(ITEM_INFO*))1;	//what the fuck
 	obj->nmeshes = 0;
 	obj->loaded = 1;
@@ -734,7 +737,7 @@ void ObjectObjects()
 	obj->save_flags = 1;
 
 	obj = &objects[BODY_PART];
-//	obj->control = ControlBodyPart;
+	obj->control = ControlBodyPart;
 	obj->draw_routine = (void(*)(ITEM_INFO*))1;	//what the fuck
 	obj->nmeshes = 0;
 	obj->loaded = 1;
@@ -817,7 +820,7 @@ void TrapObjects()
 	obj = &objects[DARTS];
 	obj->control = DartsControl;
 	obj->collision = ObjectCollision;
-//	obj->draw_routine = S_DrawDarts;
+	obj->draw_routine = S_DrawDarts;
 	obj->using_drawanimating_item = 0;
 	obj->shadow_size = 128;
 
@@ -1461,8 +1464,8 @@ void BaddyObjects()
 	if (objects[HITMAN].loaded)
 	{
 		obj = &objects[HITMAN];
-	//	obj->initialise = InitialiseHitman;
-	//	obj->control = HitmanControl;
+		obj->initialise = InitialiseHitman;
+		obj->control = HitmanControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;

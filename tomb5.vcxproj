@@ -45,6 +45,7 @@
     <ClCompile Include="TOMB5\game\guardian.cpp" />
     <ClCompile Include="TOMB5\game\hair.cpp" />
     <ClCompile Include="TOMB5\game\health.cpp" />
+    <ClCompile Include="TOMB5\game\hitman.cpp" />
     <ClCompile Include="TOMB5\game\huskie.cpp" />
     <ClCompile Include="TOMB5\game\hydra.cpp" />
     <ClCompile Include="TOMB5\game\imp.cpp" />
@@ -67,6 +68,7 @@
     <ClCompile Include="TOMB5\game\lot.cpp" />
     <ClCompile Include="TOMB5\game\mafia2.cpp" />
     <ClCompile Include="TOMB5\game\minisub.cpp" />
+    <ClCompile Include="TOMB5\game\missile.cpp" />
     <ClCompile Include="TOMB5\game\moveblok.cpp" />
     <ClCompile Include="TOMB5\game\newinv2.cpp" />
     <ClCompile Include="TOMB5\game\objects.cpp" />
@@ -149,6 +151,7 @@
     <ClInclude Include="TOMB5\game\guardian.h" />
     <ClInclude Include="TOMB5\game\hair.h" />
     <ClInclude Include="TOMB5\game\health.h" />
+    <ClInclude Include="TOMB5\game\hitman.h" />
     <ClInclude Include="TOMB5\game\huskie.h" />
     <ClInclude Include="TOMB5\game\hydra.h" />
     <ClInclude Include="TOMB5\game\imp.h" />
@@ -172,6 +175,7 @@
     <ClInclude Include="TOMB5\game\lot.h" />
     <ClInclude Include="TOMB5\game\mafia2.h" />
     <ClInclude Include="TOMB5\game\minisub.h" />
+    <ClInclude Include="TOMB5\game\missile.h" />
     <ClInclude Include="TOMB5\game\moveblok.h" />
     <ClInclude Include="TOMB5\game\newinv2.h" />
     <ClInclude Include="TOMB5\game\objects.h" />

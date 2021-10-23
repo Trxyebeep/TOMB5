@@ -13,11 +13,11 @@ note: All information (variable, file names, method names and data structures) h
 ### Credits:
 Troye: Main programmer, project leader.
 
-ChocolateFan: programmer, contributor.
+ChocolateFan: Programmer, contributor.
 
-thatguyfrombb: additional decompiling, bug fixing.
+thatguyfrombb: Additional decompiling, bug fixing, and documentation.
 
-Stohrendorf: Symdump tool creator.
+Raildex: additional fixes.
 
 ### License:
 This project is licensed under the GNU General Public License - see the [LICENSE](https://github.com/Trxyebeep/TOMB5/blob/main/LICENSE) file for details

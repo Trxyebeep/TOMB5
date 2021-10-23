@@ -26,8 +26,7 @@ long Spline(long x, long* knots, int nk)
 
 void InitSpotCamSequences()
 {
-	uchar s, cc, ce;	//int in original code according to symbols but unisgned char avoids errors and
-								//works fine since CameraCnt, SpotRemap, and Spotcam->sequence are unsigned chars
+	uchar s, cc, ce;
 
 	bTrackCamInit = 0;
 
@@ -59,7 +58,7 @@ void InitSpotCamSequences()
 void InitialiseSpotCam(short Sequence)
 {
 	SPOTCAM* s;
-	long next_spline_camera;
+	long next_spline_camera, cunt;
 
 	if (bTrackCamInit && Sequence == LastSequence)
 	{
@@ -119,8 +118,6 @@ void InitialiseSpotCam(short Sequence)
 
 	if (s->flags & SP_TRACKCAMERA)
 	{
-		int cunt;
-
 		spline_from_camera = 0;
 		cunt = 0;
 		camera_xposition[cunt] = SpotCam[first_camera].x;
@@ -214,8 +211,6 @@ void InitialiseSpotCam(short Sequence)
 		}
 		else
 		{
-			int cunt;
-
 			spline_from_camera = 1;
 			camera_xposition[0] = InitialCameraPosition.x;
 			camera_yposition[0] = InitialCameraPosition.y;
@@ -226,7 +221,6 @@ void InitialiseSpotCam(short Sequence)
 			camera_roll[0] = 0;
 			camera_fov[0] = CurrentFov;
 			camera_speed[0] = s->speed;
-
 			camera_xposition[1] = camera_xposition[0];
 			camera_yposition[1] = camera_yposition[0];
 			camera_zposition[1] = camera_zposition[0];
@@ -236,7 +230,6 @@ void InitialiseSpotCam(short Sequence)
 			camera_roll[1] = camera_roll[0];
 			camera_fov[1] = camera_fov[0];
 			camera_speed[1] = camera_speed[0];
-
 			cunt = current_spline_camera;
 			camera_xposition[2] = SpotCam[cunt].x;
 			camera_yposition[2] = SpotCam[cunt].y;
