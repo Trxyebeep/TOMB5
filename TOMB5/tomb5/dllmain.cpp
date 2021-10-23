@@ -79,6 +79,7 @@
 #include "../game/lasers.h"
 #include "../game/moveblok.h"
 #include "../game/hitman.h"
+#include "../game/missile.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -177,6 +178,7 @@ void inject_all(bool replace)
 	inject_lasers(replace);
 	inject_moveblok(replace);
 	inject_hitman(replace);
+	inject_missile(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

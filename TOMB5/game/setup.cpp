@@ -51,6 +51,7 @@
 #include "moveblok.h"
 #include "hitman.h"
 #include "../specific/specificfx.h"
+#include "missile.h"
 
 void InitialiseLara(int restore)
 {
@@ -736,7 +737,7 @@ void ObjectObjects()
 	obj->save_flags = 1;
 
 	obj = &objects[BODY_PART];
-//	obj->control = ControlBodyPart;
+	obj->control = ControlBodyPart;
 	obj->draw_routine = (void(*)(ITEM_INFO*))1;	//what the fuck
 	obj->nmeshes = 0;
 	obj->loaded = 1;
