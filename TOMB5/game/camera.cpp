@@ -1551,12 +1551,12 @@ void LookCamera(ITEM_INFO* item)
 		h = GetHeight(floor, wx, wy, wz);
 		c = GetCeiling(floor, wx, wy, wz);
 
-		if (h != NO_HEIGHT && c != NO_HEIGHT && c < h && wy <= h && wy >= c)
-		{
-			wz += dz;
-			wx += dx;
-			wy += dy;
-		}
+		if (h == NO_HEIGHT || c == NO_HEIGHT || c >= h || wy > h || wy < c)
+			break;
+
+		wz += dz;
+		wx += dx;
+		wy += dy;
 	}
 
 	if (lp)
