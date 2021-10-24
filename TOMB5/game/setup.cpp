@@ -52,6 +52,7 @@
 #include "hitman.h"
 #include "../specific/specificfx.h"
 #include "missile.h"
+#include "sas.h"
 
 void InitialiseLara(int restore)
 {
@@ -976,7 +977,7 @@ void BaddyObjects()
 	{
 		obj = &objects[SAS];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 40;
@@ -999,7 +1000,7 @@ void BaddyObjects()
 	{
 		obj = &objects[BLUE_GUARD];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 
@@ -1031,7 +1032,7 @@ void BaddyObjects()
 	{
 		obj = &objects[SWAT];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;
@@ -1059,7 +1060,7 @@ void BaddyObjects()
 	{
 		obj = &objects[SWAT_PLUS];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 
@@ -1092,7 +1093,7 @@ void BaddyObjects()
 	{
 		obj = &objects[MAFIA];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 
@@ -1126,7 +1127,7 @@ void BaddyObjects()
 	{
 		obj = &objects[SCIENTIST];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 
 		if (objects[SWAT].loaded)
@@ -1158,7 +1159,7 @@ void BaddyObjects()
 	{
 		obj = &objects[CRANE_GUY];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 
@@ -1226,7 +1227,7 @@ void BaddyObjects()
 	{
 		obj = &objects[SAILOR];
 		obj->initialise = InitialiseSas;
-		//	obj->control = SasControl;
+			obj->control = SasControl;
 		obj->collision = CreatureCollision;
 
 		if (objects[SWAT].loaded)

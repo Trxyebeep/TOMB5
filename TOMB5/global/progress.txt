@@ -1314,7 +1314,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/sas.cpp
 
-0x0046F5E0		SasControl
+0x0046F5E0	+	SasControl
 
 
 		game/savegame.cpp
