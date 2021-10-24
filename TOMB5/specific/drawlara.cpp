@@ -121,7 +121,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 	phd_right = phd_winxmax;
 	phd_PushMatrix();
 	obj = &objects[item->object_number];//when called, it points at the skin..?
-	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item, 0);
+	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
 
 	if (input & IN_LOOK)
 	{
@@ -368,7 +368,7 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
-	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item, 0);
+	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
 
 	if (input & IN_LOOK)
 	{
@@ -560,7 +560,7 @@ void DrawLara__5(ITEM_INFO* item, int mirror)
 	phd_right = phd_winxmax;
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
-	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item, 0);
+	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
 
 	if (input & IN_LOOK)
 	{
@@ -692,7 +692,7 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
-	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item, 0);
+	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
 
 	if (!mirror)
 		CalculateObjectLightingLara();
