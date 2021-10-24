@@ -377,7 +377,7 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 		v[0].sy = perspz * v[0].tv + f_centery;
 		v[0].rhw = perspz * f_moneopersp;
 
-		if (v[0].sx > phd_winxmin)
+		if (v[0].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[0].sx)
 			clipdistance += 2;
@@ -411,7 +411,7 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 		v[1].sy = perspz * v[1].tv + f_centery;
 		v[1].rhw = perspz * f_moneopersp;
 
-		if (v[1].sx > phd_winxmin)
+		if (v[1].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[1].sx)
 			clipdistance += 2;
@@ -445,7 +445,7 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 		v[2].sy = perspz * v[2].tv + f_centery;
 		v[2].rhw = perspz * f_moneopersp;
 
-		if (v[2].sx > phd_winxmin)
+		if (v[2].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[2].sx)
 			clipdistance += 2;
@@ -580,7 +580,7 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 		v[0].sy = perspz * v[0].tv + f_centery;
 		v[0].rhw = perspz * f_moneopersp;
 
-		if (v[0].sx > phd_winxmin)
+		if (v[0].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[0].sx)
 			clipdistance += 2;
@@ -614,7 +614,7 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 		v[1].sy = perspz * v[1].tv + f_centery;
 		v[1].rhw = perspz * f_moneopersp;
 
-		if (v[1].sx > phd_winxmin)
+		if (v[1].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[1].sx)
 			clipdistance += 2;
@@ -648,7 +648,7 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 		v[2].sy = perspz * v[2].tv + f_centery;
 		v[2].rhw = perspz * f_moneopersp;
 
-		if (v[2].sx > phd_winxmin)
+		if (v[2].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[2].sx)
 			clipdistance += 2;
@@ -742,7 +742,7 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 		v[0].sy = perspz * v[0].tv + f_centery;
 		v[0].rhw = perspz * f_moneopersp;
 
-		if (v[0].sx > phd_winxmin)
+		if (v[0].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[0].sx)
 			clipdistance += 2;
@@ -776,7 +776,7 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 		v[1].sy = perspz * v[1].tv + f_centery;
 		v[1].rhw = perspz * f_moneopersp;
 
-		if (v[1].sx > phd_winxmin)
+		if (v[1].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[1].sx)
 			clipdistance += 2;
@@ -810,7 +810,7 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 		v[2].sy = perspz * v[2].tv + f_centery;
 		v[2].rhw = perspz * f_moneopersp;
 
-		if (v[2].sx > phd_winxmin)
+		if (v[2].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[2].sx)
 			clipdistance += 2;
@@ -885,7 +885,7 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 		v[0].sy = perspz * v[0].tv + f_centery;
 		v[0].rhw = perspz * f_moneopersp;
 
-		if (v[0].sx > phd_winxmin)
+		if (v[0].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[0].sx)
 			clipdistance += 2;
@@ -919,7 +919,7 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 		v[1].sy = perspz * v[1].tv + f_centery;
 		v[1].rhw = perspz * f_moneopersp;
 
-		if (v[1].sx > phd_winxmin)
+		if (v[1].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[1].sx)
 			clipdistance += 2;
@@ -953,7 +953,7 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 		v[2].sy = perspz * v[2].tv + f_centery;
 		v[2].rhw = perspz * f_moneopersp;
 
-		if (v[2].sx > phd_winxmin)
+		if (v[2].sx < phd_winxmin)
 			clipdistance++;
 		else if (phd_winxmax < v[2].sx)
 			clipdistance += 2;
