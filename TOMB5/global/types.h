@@ -1419,6 +1419,13 @@ struct VECTOR
 	long vz;
 };
 
+struct FVECTOR
+{
+	float x;
+	float y;
+	float z;
+};
+
 struct AI_INFO
 {
 	short zone_number;
