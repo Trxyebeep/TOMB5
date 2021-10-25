@@ -1812,7 +1812,7 @@ void BaddyObjects()
 	if (objects[AUTOGUN].loaded)
 	{
 		obj->initialise = InitialiseAutogun;
-	//	obj->control = AutogunControl;
+		obj->control = AutogunControl;
 		obj->save_hitpoints = 1;
 		obj->save_flags = 1;
 		obj->save_anim = 1;

@@ -30,8 +30,8 @@ x for functions decompiled but not injected, for one reason or another.
 		game/autogun.cpp
 
 0x00407510	+	ControlMotionSensors
-0x00407780		TriggerAutoGunSmoke
-0x004078A0		AutogunControl
+0x00407780	+	TriggerAutoGunSmoke
+0x004078A0	+	AutogunControl
 
 
 		game/bat.cpp
