@@ -2155,7 +2155,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004CE610		DrawSteamLasers
 0x004CF191		_0x004CF191
 0x004CF1B0		aDrawWreckingBall
-0x004CF2F0		DrawMoon
+0x004CF2F0	+	DrawMoon
 0x004CF550		DrawTwogunLaser
 0x004CFD20		SuperDrawBox
 0x004CFF80		DrawGasCloud

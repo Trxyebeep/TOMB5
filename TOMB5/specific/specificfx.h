@@ -7,6 +7,7 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item);
 void DrawLaserSightSprite();
 void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype);
 void S_DrawDarts(ITEM_INFO* item);
+void DrawMoon();
 
 #define setXY4	( (void(__cdecl*)(D3DTLVERTEX*, int, int, int, int, int, int, int, int, int, short*)) 0x004C05B0 )
 #define setXYZ3	( (void(__cdecl*)(D3DTLVERTEX*, long, long, long, long, long, long, long, long, long, short*)) 0x004C0F30 )
@@ -18,3 +19,5 @@ void S_DrawDarts(ITEM_INFO* item);
 #define _0x004C6BA0	( (void(__cdecl*)(D3DTLVERTEX*, float, float, float, short*)) 0x004C6BA0 )
 #define SetUpLensFlare	( (void(__cdecl*)(long, long, long, GAME_VECTOR*)) 0x004C9F70 )
 #define ClipLine	( (bool(__cdecl*)(long&, long&, long, long&, long&, long, long, long, long, long)) 0x004C5B10 )
+#define aTransformPerspSV	( (void(__cdecl*)(SVECTOR*, LPD3DTLVERTEX, short*, long, long)) 0x004CD750 )
+#define aSetXY4	( (void(__cdecl*)(LPD3DTLVERTEX, float, float, float, float, float, float, float, float, float, short*)) 0x004C3EB0 )

@@ -369,7 +369,7 @@ void ControlSmokeEmitter(short item_number)
 		{
 			sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
 			sptr->Friction = 3;
-			sptr->Zvel = GetRandomControl() - 128;
+			sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 		}
 
 		sptr->Flags = 538;
