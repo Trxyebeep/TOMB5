@@ -12,6 +12,7 @@
 #include "switch.h"
 #include "../specific/function_stubs.h"
 #include "traps.h"
+#include "collide.h"
 
 void ControlGunship(short item_number)
 {
@@ -244,9 +245,133 @@ void ControlIris(short item_number)
 	}
 }
 
+void ControlArea51Laser(short item_number)
+{
+	ITEM_INFO* item;
+	long x, z, dx, dz;
+	short num, room_number;
+
+	item = &items[item_number];
+
+	if (!TriggerActive(item))
+		return;
+
+	item->current_anim_state = 0;
+	TriggerDynamic(item->pos.x_pos, item->pos.y_pos - 64, item->pos.z_pos,
+		(GetRandomControl() & 1) + 8, (GetRandomControl() & 3) + 24, GetRandomControl() & 3, GetRandomControl() & 1);
+	item->mesh_bits = -1 - (GetRandomControl() & 0x14);
+	dx = ABS(((item->item_flags[1] & 0xFF) << 9) - item->pos.x_pos);
+
+	if (dx < 768)
+	{
+		dz = ABS(((item->item_flags[1] & 0xFF00) << 1) - item->pos.z_pos);
+
+		if (dz < 768)
+		{
+			item->trigger_flags = 32;
+			x = ((((item->item_flags[1] & 0xFF) << 9) + ((-2560 * (item->item_flags[2] * phd_sin(item->pos.y_rot))) >> 14)) >> 9) & 0xFF;
+			z = (((((-2560 * (item->item_flags[2] * phd_cos(item->pos.y_rot))) >> 14) + ((item->item_flags[0] & 0xFF00) << 1)) >> 9) & 0xFF) << 8;
+			item->item_flags[1] = (short)(x | z);
+		}
+	}
+
+	if (item->item_flags[2] == 1)
+	{
+		if (item->trigger_flags)
+		{
+			if (item->item_flags[3])
+			{
+				if (item->item_flags[3] > 4)
+					item->item_flags[3] -= item->item_flags[3] >> 2;
+				else
+					item->item_flags[3] = 0;
+			}
+			else
+			{
+				item->trigger_flags--;
+
+				if (item->trigger_flags == 1)
+					item->item_flags[2] = -1;
+			}
+		}
+		else
+		{
+			item->item_flags[3] += 5;
+
+			if (item->item_flags[3] > 512)
+				item->item_flags[3] = 512;
+		}
+	}
+	else
+	{
+		if (item->trigger_flags)
+		{
+			if (item->item_flags[3])
+			{
+				if (item->item_flags[3] < -4)
+					item->item_flags[3] -= item->item_flags[3] >> 2;
+				else
+					item->item_flags[3] = 0;
+			}
+			else
+			{
+				item->trigger_flags--;
+
+				if (item->trigger_flags == 1)
+					item->item_flags[2] = -item->item_flags[2];
+			}
+		}
+		else
+		{
+			item->item_flags[3] -= 5;
+
+			if (item->item_flags[3] < -512)
+				item->item_flags[3] = -512;
+		}
+	}
+
+	if (item->item_flags[3])
+	{
+		num = ABS(item->item_flags[3] >> 4);
+
+		if (num > 31)
+			num = 31;
+
+		SoundEffect(SFX_ZOOM_VIEW_WHIRR, &item->pos, 0x800000 | SFX_ALWAYS | SFX_SETPITCH | SFX_SETVOL | (num << 8));
+	}
+
+	item->pos.z_pos += (item->item_flags[3] * phd_cos(item->pos.y_rot)) >> 16;
+	item->pos.x_pos += (item->item_flags[3] * phd_sin(item->pos.y_rot)) >> 16;
+	room_number = item->room_number;
+	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+
+	if (room_number != item->room_number)
+		ItemNewRoom(item_number, room_number);
+
+	if (TestBoundsCollide(item, lara_item, 64))
+	{
+		if (!item->draw_room)
+		{
+			SoundEffect(SFX_LARA_INJURY_NONRND, &lara_item->pos, SFX_DEFAULT);
+			item->draw_room = 1;
+		}
+
+		lara_item->hit_points -= 100;
+		DoBloodSplat(lara_item->pos.x_pos, item->pos.y_pos - GetRandomControl() - 32, lara_item->pos.z_pos,
+			(GetRandomControl() & 3) + 4, GetRandomControl() << 1, lara_item->room_number);
+		AnimateItem(item);
+	}
+	else
+	{
+		item->draw_room = 0;
+		AnimateItem(item);
+	}
+}
+
 void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
 	INJECT(0x00487AB0, DrawSteelDoorLensFlare, replace);
 	INJECT(0x00486050, ControlIris, replace);
+	INJECT(0x00486450, ControlArea51Laser, replace);
 }

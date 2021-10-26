@@ -1514,7 +1514,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/tower2.cpp
 
 0x00486050	+	ControlIris
-0x00486450		ControlArea51Laser
+0x00486450	+	ControlArea51Laser
 0x004868B0		ControlFishtank
 0x00486A70		TriggerFishtankSpray
 0x00486BE0		ControlSteelDoor

@@ -903,7 +903,7 @@ void TrapObjects()
 
 	obj = &objects[GEN_SLOT4];
 	obj->initialise = InitialiseArea51Laser;
-//	obj->control = ControlArea51Laser;
+	obj->control = ControlArea51Laser;
 	obj->save_position = 1;
 	obj->save_flags = 1;
 	obj->save_anim = 1;
