@@ -1607,7 +1607,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004903F0		phd_TranslateAbs
 0x004904B0		phd_GetVectorAngles
 0x00490550		phd_TransposeMatrix
-0x00490590		aInitMatrix
+0x00490590	+	aInitMatrix
 0x004905E0		aSetTrans
 0x00490610		aTranslateAbs
 0x00490720		aPushUnitMatrix

@@ -289,13 +289,15 @@
 #define	phd_winymax	VAR_U_(0x0055D240, short)
 #define	phd_winymin	VAR_U_(0x0055D1E8, short)
 #define phd_mxptr	VAR_U_(0x00E4B0F8, long*)
-#define aMXPtr	VAR_U_(0x0055DA2C, float*)//formerly named phd_dxptr!
+#define aMXPtr	VAR_U_(0x0055DA2C, float*)
 #define IM_rate	VAR_U_(0x00E6E464, long)
 #define IM_frac	VAR_U_(0x00E6D734, long)
 #define IMptr	VAR_U_(0x00E6E468, long*)
 #define aIMXPtr	VAR_U_(0x00E6D834, float*)
 #define aIFMStack	ARRAY_(0x00E6D860, float, [768])
 #define	IMstack	ARRAY_(0x00E6CB00, long, [768])
+#define aFMatrixStack	ARRAY_(0x0055D2A0, float, [indices_count * 20])
+#define matrix_stack	ARRAY_(0x0055D66C, long, [indices_count * 20])
 #define f_mpersp	VAR_U_(0x0051D15C, float)
 #define f_mznear	VAR_U_(0x0051D158, float)
 #define	f_znear	VAR_U_(0x0055D24C, float)
@@ -587,6 +589,7 @@
 #define GlobalCollisionBounds ARRAY_(0x00EEF910, short, [6])
 #define HairRotScratchVertNums	ARRAY_(0x00506D40, char, [5][12])
 #define EnemyBites	ARRAY_(0x00509A30, BITE_INFO, [9])
+#define fcossin_tbl	ARRAY_(0x0051D164, float, [65536])
 
 //defs
 #define NO_HEIGHT -32512

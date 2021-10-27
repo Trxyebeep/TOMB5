@@ -28,6 +28,8 @@ do \
 #define ABS(x) (((x)<0) ? (-(x)) : (x))
 #define phd_sin(x) (4 * rcossin_tbl[((long)(x) >> 3) & 0x1FFE])
 #define phd_cos(x) (4 * rcossin_tbl[(((long)(x) >> 3) & 0x1FFE) + 1])
+#define	fSin(x)	fcossin_tbl[(ushort)((x))]
+#define	fCos(x)	fcossin_tbl[(ushort)(((x) + 0x4000))]
 #define SQUARE(x) ((x)*(x))
 #define phd_PopMatrix()		{phd_mxptr -= 12; aMXPtr -= 12;}
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
