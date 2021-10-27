@@ -890,7 +890,7 @@ void TrapObjects()
 	obj = &objects[GEN_SLOT2];
 	obj->initialise = InitialiseGasCloud;
 //	obj->control = ControlGasCloud;
-//	obj->draw_routine = DrawGasCloud;
+	obj->draw_routine = DrawGasCloud;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
 

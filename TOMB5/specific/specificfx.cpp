@@ -6,6 +6,7 @@
 #include "../specific/function_table.h"
 #include "../game/objects.h"
 #include "polyinsert.h"
+#include "drawroom.h"
 
 #define LINE_POINTS	4	//number of points in each grid line
 #define NUM_TRIS	14	//number of triangles needed to create the shadow (this depends on what shape you're doing)
@@ -935,6 +936,71 @@ void DrawMoon()
 	phd_PopMatrix();
 }
 
+void DrawGasCloud(ITEM_INFO* item)
+{
+	GAS_CLOUD* cloud;
+	long num;
+
+	if (!TriggerActive(item))
+		return;
+
+	if (item->trigger_flags < 2)
+	{
+		cloud = (GAS_CLOUD*)item->data;
+
+		if (!cloud->mTime)
+			cloud->yo = -6144.0F;
+
+		TriggerFogBulbFX(0, 128, 0, item->pos.x_pos, (long)(item->pos.y_pos + cloud->yo), item->pos.z_pos, 4096, 40);
+
+		if (cloud->yo >= -3584.0)
+		{
+			if (cloud->sTime == 32)
+			{
+				do num = rand() & 7; while (num == cloud->num);
+				cloud->num = num;
+			}
+			else if (cloud->sTime > 32)
+			{
+				num = cloud->sTime - 32;
+
+				if (num > 128)
+				{
+					num = 256 - num;
+
+					if (!num)
+						cloud->sTime = 0;
+				}
+
+				num = 255 - (num << 1);
+
+				if (num < 64)
+					num = 64;
+
+				TriggerFogBulbFX(0, 255, 0, item->pos.x_pos + cloud[cloud->num].t.vx, item->pos.y_pos + cloud[cloud->num].t.vy,
+					item->pos.z_pos + cloud[cloud->num].t.vz, 1024, num);
+			}
+
+			cloud->sTime++;
+		}
+		else
+			cloud->yo += 12.0F;
+
+		cloud->mTime++;
+
+		for (int i = 0; i < 8; i++, cloud++)//what's the point of this loop
+		{
+			phd_PushMatrix();
+			phd_TranslateAbs(item->pos.x_pos + cloud->t.vx, item->pos.y_pos + cloud->t.vy, item->pos.z_pos + cloud->t.vz);
+			phd_RotY(-CamRot.vy << 4);
+			phd_RotX(-4096);
+			phd_PopMatrix();
+		}
+	}
+	else
+		item->item_flags[0] = 1;
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -942,4 +1008,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C5EA0, DrawFlatSky, replace);
 	INJECT(0x004CBB10, S_DrawDarts, replace);
 	INJECT(0x004CF2F0, DrawMoon, replace);
+	INJECT(0x004CFF80, DrawGasCloud, replace);
 }
