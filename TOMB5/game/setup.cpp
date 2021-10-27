@@ -889,7 +889,7 @@ void TrapObjects()
 
 	obj = &objects[GEN_SLOT2];
 	obj->initialise = InitialiseGasCloud;
-//	obj->control = ControlGasCloud;
+	obj->control = ControlGasCloud;
 	obj->draw_routine = DrawGasCloud;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
@@ -1895,7 +1895,7 @@ void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
 	INJECT(0x00476360, ObjectObjects, 0);
-	INJECT(0x00475D40, TrapObjects, 0);
+	INJECT(0x00475D40, TrapObjects, replace);
 	INJECT(0x004737C0, BaddyObjects, 0);
 	INJECT(0x00473600, InitialiseObjects, replace);
 }

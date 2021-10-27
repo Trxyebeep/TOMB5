@@ -1,3 +1,4 @@
+
 #include "../tomb5/pch.h"
 #include "tower2.h"
 #include "control.h"
@@ -368,10 +369,160 @@ void ControlArea51Laser(short item_number)
 	}
 }
 
+void ControlGasCloud(short item_number)
+{
+	ITEM_INFO* item;
+	SPARKS* sptr;
+	PHD_VECTOR pos;
+	long rad, num;
+	short room_number;
+
+	item = &items[item_number];
+
+	if (!TriggerActive(item))
+		return;
+
+	if (!lara.Gassed)
+	{
+		pos.x = 0;
+		pos.y = 0;
+		pos.z = 0;
+		GetLaraJointPos(&pos, 8);
+		room_number = lara_item->room_number;
+		GetFloor(pos.x, pos.y, pos.z, &room_number);
+
+		if (room[room_number].flags & ROOM_NO_LENSFLARE)
+			lara.Gassed = 1;
+	}
+
+	if (item->trigger_flags < 2)
+	{
+		if (item->item_flags[0])
+			item->item_flags[0]++;
+
+		return;
+	}
+
+	if (!item->item_flags[0])
+		return;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->dR = 8;
+	sptr->dG = 32;
+	sptr->dB = 8;
+	sptr->TransType = 2;
+	sptr->x = (GetRandomControl() & 0x1F) + item->pos.x_pos - 16;
+	sptr->y = (GetRandomControl() & 0x1F) + item->pos.y_pos - 16;
+	sptr->z = (GetRandomControl() & 0x1F) + item->pos.z_pos - 16;
+	rad = ((GetRandomControl() & 0x7F) + 2048);
+
+	if (item->trigger_flags == 2)
+	{
+		sptr->Xvel = (short)((rad * phd_sin(item->pos.y_rot - 32768)) >> 14);
+		sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
+		sptr->Zvel = (short)((rad * phd_cos(item->pos.y_rot - 32768)) >> 14);
+	}
+	else if (item->trigger_flags == 3)
+	{
+		sptr->Xvel = (short)((rad * phd_sin(item->pos.y_rot - 32768)) >> 14);
+		sptr->Yvel = (short)(rad);
+		sptr->Zvel = (short)((rad * phd_cos(item->pos.y_rot - 32768)) >> 14);
+	}
+	else
+	{
+		sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
+		sptr->Yvel = (short)(rad);
+		sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
+	}
+
+	sptr->Flags = 538;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = 0;
+	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+	sptr->sB = 0;
+	sptr->sG = 0;
+	sptr->sR = 0;
+	sptr->ColFadeSpeed = 2;
+	sptr->FadeToBlack = 4;
+	sptr->Scalar = 3;
+	sptr->Friction = 68;
+	sptr->Life = (GetRandomControl() & 3) + 16;
+	sptr->sLife = sptr->Life;
+	sptr->dSize = (GetRandomControl() & 0x1F) + 64;
+	sptr->sSize = sptr->dSize >> 2;
+	sptr->Size = sptr->dSize >> 2;
+
+	if (GlobalCounter & 1)
+	{
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->dR = 8;
+		sptr->dG = 32;
+		sptr->dB = 8;
+		sptr->TransType = 2;
+		rad = (GetRandomControl() & 0x3F) + 128;
+
+		if (item->trigger_flags == 2)
+		{
+			num = (GetRandomControl() & 0x1FF) - 256;
+			sptr->x = item->pos.x_pos + (GetRandomControl() & 0x1F) + ((num * phd_sin(item->pos.y_rot + 16384)) >> 14) - 16;
+			sptr->y = item->pos.y_pos + (GetRandomControl() & 0x1F) + ((GetRandomControl() & 0x1FF) - 256) - 16;
+			sptr->z = item->pos.z_pos + (GetRandomControl() & 0x1F) + ((num * phd_cos(item->pos.y_rot + 16384)) >> 14) - 16;
+			sptr->Xvel = (short)((rad * phd_sin(item->pos.y_rot - 32768)) >> 14);
+			sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
+			sptr->Zvel = (short)((rad * phd_cos(item->pos.y_rot - 32768)) >> 14);
+		}
+		else
+		{
+			if (item->trigger_flags == 3)
+			{
+				sptr->x = item->pos.x_pos + (GetRandomControl() & 0x1F) + ((GetRandomControl() & 0x1FF) - 256) - 16;
+				sptr->z = item->pos.z_pos + (GetRandomControl() & 0x1F) + ((GetRandomControl() & 0x1FF) - 256) - 16;
+				sptr->y = (GetRandomControl() & 0x1F) + item->pos.y_pos - 16;
+				room_number = item->room_number;
+				sptr->y = GetCeiling(GetFloor(sptr->x, sptr->y, sptr->z, &room_number), sptr->x, sptr->y, sptr->z);
+			}
+			else
+			{
+				sptr->x = item->pos.x_pos + (GetRandomControl() & 0x1F) + ((GetRandomControl() & 0x1FF) - 256) - 16;
+				sptr->y = (GetRandomControl() & 0x1F) + item->pos.y_pos - 16;
+				sptr->z = item->pos.z_pos + (GetRandomControl() & 0x1F) + ((GetRandomControl() & 0x1FF) - 256) - 16;
+			}
+
+			sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
+			sptr->Yvel = (short)(rad);
+			sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
+		}
+
+		sptr->Flags = 538;
+		sptr->RotAng = GetRandomControl() & 0xFFF;
+		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+		sptr->MaxYvel = 0;
+		sptr->Gravity = -16 - (GetRandomControl() & 0xF);
+		sptr->sB = 0;
+		sptr->sG = 0;
+		sptr->sR = 0;
+		sptr->ColFadeSpeed = 2;
+		sptr->FadeToBlack = 4;
+		sptr->Scalar = 2;
+		sptr->Friction = 4;
+		sptr->Life = (GetRandomControl() & 3) + 16;
+		sptr->sLife = sptr->Life;
+		sptr->dSize = (GetRandomControl() & 0x1F) + 64;
+		sptr->sSize = sptr->dSize >> 2;
+		sptr->Size = sptr->dSize >> 2;
+	}
+
+	item->item_flags[0] = 0;
+}
+
 void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
 	INJECT(0x00487AB0, DrawSteelDoorLensFlare, replace);
 	INJECT(0x00486050, ControlIris, replace);
 	INJECT(0x00486450, ControlArea51Laser, replace);
+	INJECT(0x00488710, ControlGasCloud, replace);
 }

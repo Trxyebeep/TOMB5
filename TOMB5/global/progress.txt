@@ -1335,7 +1335,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00473210	+	InitialiseLara
 0x00473600	+	InitialiseObjects
 0x004737C0	x	BaddyObjects
-0x00475D40	x	TrapObjects
+0x00475D40	+	TrapObjects
 0x00476360	x	ObjectObjects
 0x004771E0		GetCarriedItems
 0x00477370		GetAIPickups
@@ -1524,7 +1524,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00487AD0		SteelDoorCollision
 0x00487B60		TriggerLiftBrakeSparks
 0x00487FF0	+	ControlGunship
-0x00488710		ControlGasCloud
+0x00488710	+	ControlGasCloud
 
 
 		game/traps.cpp
