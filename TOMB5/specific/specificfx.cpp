@@ -6,6 +6,7 @@
 #include "../specific/function_table.h"
 #include "../game/objects.h"
 #include "polyinsert.h"
+#include "drawroom.h"
 
 #define LINE_POINTS	4	//number of points in each grid line
 #define NUM_TRIS	14	//number of triangles needed to create the shadow (this depends on what shape you're doing)
@@ -880,10 +881,132 @@ void S_DrawDarts(ITEM_INFO* item)
 	phd_PopMatrix();
 }
 
+void DrawMoon()
+{
+	D3DTLVERTEX v[4];
+	SPRITESTRUCT* sprite;
+	TEXTURESTRUCT tex;
+	SVECTOR vec;
+	short* c;
+	float x1, x2, y1, y2, z;
+	ushort tpage;
+
+	c = clipflags;
+	sprite = &spriteinfo[objects[MISC_SPRITES].mesh_index + 3];
+	tpage = sprite->tpage < nTextures ? sprite->tpage : 0;
+	phd_PushMatrix();
+	aSetViewMatrix();
+	D3DMView._41 = 0;
+	D3DMView._42 = 0;
+	D3DMView._43 = 0;
+	vec.vx = 0;
+	vec.vy = -1024;
+	vec.vz = 1920;
+	aTransformPerspSV(&vec, v, c, 1, 0);
+
+	if (*c >= 0)
+	{
+		x1 = v[0].sx - 48.0F;
+		x2 = v[0].sx + 48.0F;
+		y1 = v[0].sy - 48.0F;
+		y2 = v[0].sy + 48.0F;
+		z = f_mzfar - 1024.0F;
+		aSetXY4(v, x1, y1, x2, y1, x1, y2, x2, y2, z, c);
+		v[0].color = 0xC0E0FF;
+		v[1].color = 0xC0E0FF;
+		v[2].color = 0xC0E0FF;
+		v[3].color = 0xC0E0FF;
+		v[0].specular = 0xFF000000;
+		v[1].specular = 0xFF000000;
+		v[2].specular = 0xFF000000;
+		v[3].specular = 0xFF000000;
+		tex.u1 = sprite->x1;
+		tex.v1 = sprite->y1;
+		tex.u2 = sprite->x2;
+		tex.v2 = sprite->y1;
+		tex.u3 = sprite->x2;
+		tex.v3 = sprite->y2;
+		tex.u4 = sprite->x1;
+		tex.v4 = sprite->y2;
+		tex.drawtype = 0;
+		tex.tpage = tpage;
+		AddQuadZBuffer(v, 0, 1, 3, 2, &tex, 1);
+	}
+
+	phd_PopMatrix();
+}
+
+void DrawGasCloud(ITEM_INFO* item)
+{
+	GAS_CLOUD* cloud;
+	long num;
+
+	if (!TriggerActive(item))
+		return;
+
+	if (item->trigger_flags < 2)
+	{
+		cloud = (GAS_CLOUD*)item->data;
+
+		if (!cloud->mTime)
+			cloud->yo = -6144.0F;
+
+		TriggerFogBulbFX(0, 128, 0, item->pos.x_pos, (long)(item->pos.y_pos + cloud->yo), item->pos.z_pos, 4096, 40);
+
+		if (cloud->yo >= -3584.0)
+		{
+			if (cloud->sTime == 32)
+			{
+				do num = rand() & 7; while (num == cloud->num);
+				cloud->num = num;
+			}
+			else if (cloud->sTime > 32)
+			{
+				num = cloud->sTime - 32;
+
+				if (num > 128)
+				{
+					num = 256 - num;
+
+					if (!num)
+						cloud->sTime = 0;
+				}
+
+				num = 255 - (num << 1);
+
+				if (num < 64)
+					num = 64;
+
+				TriggerFogBulbFX(0, 255, 0, item->pos.x_pos + cloud[cloud->num].t.vx, item->pos.y_pos + cloud[cloud->num].t.vy,
+					item->pos.z_pos + cloud[cloud->num].t.vz, 1024, num);
+			}
+
+			cloud->sTime++;
+		}
+		else
+			cloud->yo += 12.0F;
+
+		cloud->mTime++;
+
+		for (int i = 0; i < 8; i++, cloud++)//what's the point of this loop
+		{
+			phd_PushMatrix();
+			phd_TranslateAbs(item->pos.x_pos + cloud->t.vx, item->pos.y_pos + cloud->t.vy, item->pos.z_pos + cloud->t.vz);
+			phd_RotY(-CamRot.vy << 4);
+			phd_RotX(-4096);
+			phd_PopMatrix();
+		}
+	}
+	else
+		item->item_flags[0] = 1;
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
 	INJECT(0x004C7320, DrawLaserSightSprite, replace);
 	INJECT(0x004C5EA0, DrawFlatSky, replace);
 	INJECT(0x004CBB10, S_DrawDarts, replace);
+	INJECT(0x004CF2F0, DrawMoon, replace);
+	INJECT(0x004CFF80, DrawGasCloud, replace);
 }

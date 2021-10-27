@@ -107,6 +107,7 @@ int S_CallInventory2()
 	if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
 	{//fucked up inv HK in this level why core
 		inventry_objects_list[INV_HK_ITEM1].xrot = 8448;
+		inventry_objects_list[INV_HK_ITEM1].yrot = 16384;
 		inventry_objects_list[INV_HK_ITEM1].zrot = 16384;
 		inventry_objects_list[INV_HK_ITEM1].flags = 10;
 		inventry_objects_list[INV_HK_ITEM1].yoff = -40;
@@ -114,6 +115,7 @@ int S_CallInventory2()
 	else//original values, for 13th floor and Red Alert
 	{
 		inventry_objects_list[INV_HK_ITEM1].xrot = -16384;
+		inventry_objects_list[INV_HK_ITEM1].yrot = 0;
 		inventry_objects_list[INV_HK_ITEM1].zrot = 0;
 		inventry_objects_list[INV_HK_ITEM1].flags = 2;
 		inventry_objects_list[INV_HK_ITEM1].yoff = 0;
@@ -2345,7 +2347,7 @@ void DEL_picked_up_object(short objnum)
 	case CROSSBOW_AMMO1_ITEM:
 
 		if (lara.num_crossbow_ammo1 != -1)
-			lara.num_crossbow_ammo1 += 10;
+			lara.num_crossbow_ammo1++;
 
 		return;
 

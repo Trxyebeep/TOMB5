@@ -30,8 +30,8 @@ x for functions decompiled but not injected, for one reason or another.
 		game/autogun.cpp
 
 0x00407510	+	ControlMotionSensors
-0x00407780		TriggerAutoGunSmoke
-0x004078A0		AutogunControl
+0x00407780	+	TriggerAutoGunSmoke
+0x004078A0	+	AutogunControl
 
 
 		game/bat.cpp
@@ -1314,7 +1314,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/sas.cpp
 
-0x0046F5E0		SasControl
+0x0046F5E0	+	SasControl
 
 
 		game/savegame.cpp
@@ -1335,7 +1335,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00473210	+	InitialiseLara
 0x00473600	+	InitialiseObjects
 0x004737C0	x	BaddyObjects
-0x00475D40	x	TrapObjects
+0x00475D40	+	TrapObjects
 0x00476360	x	ObjectObjects
 0x004771E0		GetCarriedItems
 0x00477370		GetAIPickups
@@ -1514,7 +1514,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/tower2.cpp
 
 0x00486050	+	ControlIris
-0x00486450		ControlArea51Laser
+0x00486450	+	ControlArea51Laser
 0x004868B0		ControlFishtank
 0x00486A70		TriggerFishtankSpray
 0x00486BE0		ControlSteelDoor
@@ -1524,7 +1524,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00487AD0		SteelDoorCollision
 0x00487B60		TriggerLiftBrakeSparks
 0x00487FF0	+	ControlGunship
-0x00488710		ControlGasCloud
+0x00488710	+	ControlGasCloud
 
 
 		game/traps.cpp
@@ -2155,10 +2155,10 @@ x for functions decompiled but not injected, for one reason or another.
 0x004CE610		DrawSteamLasers
 0x004CF191		_0x004CF191
 0x004CF1B0		aDrawWreckingBall
-0x004CF2F0		DrawMoon
+0x004CF2F0	+	DrawMoon
 0x004CF550		DrawTwogunLaser
 0x004CFD20		SuperDrawBox
-0x004CFF80		DrawGasCloud
+0x004CFF80	+	DrawGasCloud
 
 		specific/texture.cpp
 
