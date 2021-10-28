@@ -590,6 +590,8 @@
 #define HairRotScratchVertNums	ARRAY_(0x00506D40, char, [5][12])
 #define EnemyBites	ARRAY_(0x00509A30, BITE_INFO, [9])
 #define fcossin_tbl	ARRAY_(0x0051D164, float, [65536])
+#define StarFieldPositions	ARRAY_(0x00C86BEC, float, [1024])
+#define StarFieldColors	ARRAY_(0x00C713E4, long, [256])
 
 //defs
 #define NO_HEIGHT -32512
