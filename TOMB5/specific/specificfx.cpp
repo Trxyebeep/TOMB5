@@ -7,6 +7,7 @@
 #include "../game/objects.h"
 #include "polyinsert.h"
 #include "drawroom.h"
+#include "d3dmatrix.h"
 
 #define LINE_POINTS	4	//number of points in each grid line
 #define NUM_TRIS	14	//number of triangles needed to create the shadow (this depends on what shape you're doing)
@@ -1001,6 +1002,111 @@ void DrawGasCloud(ITEM_INFO* item)
 		item->item_flags[0] = 1;
 }
 
+void DrawStarField()
+{
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	static long first_time = 0;
+	float* pPos;
+	long* pCol;
+	float x, y, z, fx, fy, fz, bx, by;
+	long col;
+
+	if (!first_time)
+	{
+		pPos = StarFieldPositions;
+		pCol = StarFieldColors;
+
+		for (int i = 0; i < 256; i++)
+		{
+			pPos[0] = ((rand() & 0x1FF) + 512.0F) * fSin(i * 512);
+			pPos++;
+			pPos[0] = (float)(-rand() % 1900);
+			pPos++;
+			pPos[0] = ((rand() & 0x1FF) + 512.0F) * fCos(i * 512);
+			pPos++;
+			pPos[0] = (rand() & 1) + 1.0F;
+			pPos++;
+			col = rand() & 0x7F;
+			pCol[0] = RGBONLY(col + 128, col + 128, col + 192);
+			pCol++;
+		}
+
+		first_time = 1;
+	}
+
+	tex.drawtype = 0;
+	tex.tpage = 0;
+	tex.flag = 0;
+	phd_PushMatrix();
+	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
+	SetD3DViewMatrix();
+	phd_PopMatrix();
+	pPos = StarFieldPositions;
+	pCol = StarFieldColors;
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+
+	for (int i = 0; i < 184; i++)
+	{
+		fx = pPos[0];
+		pPos++;
+		fy = pPos[0];
+		pPos++;
+		fz = pPos[0];
+		pPos++;
+		col = pCol[0];
+		pCol++;
+		x = fx * D3DMView._11 + fy * D3DMView._21 + fz * D3DMView._31;
+		y = fx * D3DMView._12 + fy * D3DMView._22 + fz * D3DMView._32;
+		z = fx * D3DMView._13 + fy * D3DMView._23 + fz * D3DMView._33;
+		fy = pPos[0];
+		pPos++;
+
+		if (z >= f_mznear)
+		{
+			fz = f_mpersp / z;
+			bx = fz * x + f_centerx;
+			by = fz * y + f_centery;
+
+			if (bx >= 0 && bx <= (float)phd_winxmax && by >= 0 && by <= (float)phd_winymax)
+			{
+				v[0].sx = bx;
+				v[0].sy = by;
+				v[0].color = col;
+				v[0].specular = 0xFF000000;
+				v[0].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[0].tu = 0;
+				v[0].tv = 0;
+				v[1].sx = bx + fy;
+				v[1].sy = by;
+				v[1].color = col;
+				v[1].specular = 0xFF000000;
+				v[1].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[1].tu = 0;
+				v[1].tv = 0;
+				v[2].sx = bx;
+				v[2].sy = by + fy;
+				v[2].color = col;
+				v[2].specular = 0xFF000000;
+				v[2].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[2].tu = 0;
+				v[2].tv = 0;
+				v[3].sx = bx + fy;
+				v[3].sy = by + fy;
+				v[3].color = col;
+				v[3].specular = 0xFF000000;
+				v[3].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[3].tu = 0;
+				v[3].tv = 0;
+				AddQuadZBuffer(v, 0, 1, 3, 2, &tex, 1);
+			}
+		}
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -1009,4 +1115,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CBB10, S_DrawDarts, replace);
 	INJECT(0x004CF2F0, DrawMoon, replace);
 	INJECT(0x004CFF80, DrawGasCloud, replace);
+	INJECT(0x004C0060, DrawStarField, replace);
 }

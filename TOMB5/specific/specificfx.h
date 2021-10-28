@@ -9,6 +9,7 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype);
 void S_DrawDarts(ITEM_INFO* item);
 void DrawMoon();
 void DrawGasCloud(ITEM_INFO* item);
+void DrawStarField();
 
 #define setXY4	( (void(__cdecl*)(D3DTLVERTEX*, int, int, int, int, int, int, int, int, int, short*)) 0x004C05B0 )
 #define setXYZ3	( (void(__cdecl*)(D3DTLVERTEX*, long, long, long, long, long, long, long, long, long, short*)) 0x004C0F30 )

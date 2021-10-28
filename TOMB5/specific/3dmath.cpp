@@ -1,5 +1,6 @@
 #include "../tomb5/pch.h"
 #include "3dmath.h"
+#include <cmath>
 
 
 void AlterFOV(short fov)
@@ -44,8 +45,24 @@ void gte_sttr(PHD_VECTOR* vec)
 	vec->z = phd_mxptr[M23] >> 14;
 }
 
+void aInitMatrix()
+{
+	float* ptr;
+	float ang;
+
+	for (int i = 0; i < 65536; i++)
+	{
+		ptr = &fcossin_tbl[i];
+		ang = i * 0.000095873802F;
+		*ptr = sin(ang);
+	}
+
+	aMXPtr = aFMatrixStack;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
 	INJECT(0x00491320, gte_sttr, replace);
+	INJECT(0x00490590, aInitMatrix, replace);
 }

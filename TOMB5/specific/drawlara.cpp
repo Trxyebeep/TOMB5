@@ -103,11 +103,11 @@ void DrawLara(ITEM_INFO* item, int mirror)
 void DrawLara__1(ITEM_INFO* item, int mirror)
 {
 	OBJECT_INFO* obj;
-	PCSVECTOR v0, v1;
+	PCSVECTOR v0;
+	PCSVECTOR v1;
 	short** meshpp;
 	short* rot;
-	int top, bottom, left, right, stash;
-	long dx, dy, dz, dist, cos, sin, xRot;
+	long dx, dy, dz, dist, cos, sin, xRot, bone, top, bottom, left, right, stash;
 	static long trans_lara = 255;
 
 	aGlobalSkinMesh = 1;
@@ -120,7 +120,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 	phd_left = 0;
 	phd_right = phd_winxmax;
 	phd_PushMatrix();
-	obj = &objects[item->object_number];//when called, it points at the skin..?
+	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
 
 	if (input & IN_LOOK)
@@ -274,7 +274,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 		aMXPtr[M23] = lara_matricesF[1 * 12 + M23];
 		phd_PutPolygons(*meshpp, -1);
 		meshpp += 8;
-		aMXPtr[M00] = lara_matricesF[4 * 12 + M00];//other side of holsters. (cba check which block is which)
+		aMXPtr[M00] = lara_matricesF[4 * 12 + M00];
 		aMXPtr[M01] = lara_matricesF[4 * 12 + M01];
 		aMXPtr[M02] = lara_matricesF[4 * 12 + M02];
 		aMXPtr[M03] = lara_matricesF[4 * 12 + M03];
@@ -292,7 +292,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 		{
 			phd_PushMatrix();
 
-#ifdef GENERAL_FIXES//fixes the original bug where Lara's back weapon wouldn't draw.
+#ifdef GENERAL_FIXES	//fixes the original bug where Lara's back weapon wouldn't draw.
 			aMXPtr[M00] = lara_matricesF[84 + M00];
 			aMXPtr[M01] = lara_matricesF[84 + M01];
 			aMXPtr[M02] = lara_matricesF[84 + M02];
@@ -319,18 +319,10 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 			aMXPtr[10] = *((float*)(&lara_matrices[84]) + 10);
 			aMXPtr[11] = *((float*)(&lara_matrices[84]) + 11);
 #endif
-
-			phd_TranslateRel(*((bones + objects[lara.back_gun].bone_index) + 53),
-				*((bones + objects[lara.back_gun].bone_index) + 54),
-				*((bones + objects[lara.back_gun].bone_index) + 55));
-
+			bone = objects[lara.back_gun].bone_index;
+			phd_TranslateRel(bones[bone + 53], bones[bone + 54], bones[bone + 55]);
 			rot = objects[lara.back_gun].frame_base + 9;
 			gar_RotYXZsuperpack(&rot, 14);
-
-#ifdef GENERAL_FIXES
-			aSetViewMatrix();
-#endif
-
 			phd_PutPolygons(meshes[objects[lara.back_gun].mesh_index + 28], -1);
 			phd_PopMatrix();
 		}
@@ -351,21 +343,18 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 	PCSVECTOR v0, v1;
 	short** meshpp;
 	short* rot;
-	int top, bottom, left, right, stash;
-	long dx, dy, dz, dist, cos, sin, xRot;
+	long dx, dy, dz, dist, cos, sin, xRot, bone, top, bottom, left, right, stash;
 	static long trans_lara = 255;
 
 	top = phd_top;
 	bottom = phd_bottom;
 	left = phd_left;
 	right = phd_right;
-
 	aGlobalSkinMesh = 1;
 	phd_top = 0;
 	phd_bottom = phd_winymax;
 	phd_left = 0;
 	phd_right = phd_winxmax;
-
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
@@ -401,7 +390,6 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 
 	if (!mirror)
 		CalculateObjectLightingLara();
-
 
 	for (int i = 0; i < 15; i++)//skin
 	{
@@ -522,10 +510,8 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 		aMXPtr[M21] = lara_matricesF[84 + M21];
 		aMXPtr[M22] = lara_matricesF[84 + M22];
 		aMXPtr[M23] = lara_matricesF[84 + M23];
-		phd_TranslateRel(*((bones + objects[lara.back_gun].bone_index) + 53),
-			*((bones + objects[lara.back_gun].bone_index) + 54),
-			*((bones + objects[lara.back_gun].bone_index) + 55));
-
+		bone = objects[lara.back_gun].bone_index;
+		phd_TranslateRel(bones[bone + 53], bones[bone + 54], bones[bone + 55]);
 		rot = objects[lara.back_gun].frame_base + 9;
 		gar_RotYXZsuperpack(&rot, 14);
 		aSetViewMatrix();
@@ -546,8 +532,7 @@ void DrawLara__5(ITEM_INFO* item, int mirror)
 {
 	OBJECT_INFO* obj;
 	short** meshpp;
-	int top, bottom, left, right;
-	long dx, dy, dz, dist;
+	long dx, dy, dz, dist, top, bottom, left, right;
 	static long trans_lara = 255;
 
 	top = phd_top;
@@ -626,7 +611,6 @@ void DrawLara__5(ITEM_INFO* item, int mirror)
 	phd_top = top;
 	phd_bottom = bottom;
 	GlobalAlpha = 0xFF000000;
-
 	obj = &objects[LARA_EXTRA_MESH1];
 	meshpp = &meshes[obj->mesh_index];
 
@@ -665,7 +649,6 @@ void DrawLara__5(ITEM_INFO* item, int mirror)
 	aRotX(subsuit.XRot);
 	phd_PutPolygons(*meshpp, -1);
 	phd_PopMatrix();
-
 	bLaraUnderWater = 0;
 }
 
@@ -674,11 +657,7 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 	OBJECT_INFO* obj;
 	PCSVECTOR v0, v1;
 	short** meshpp;
-#ifdef GENERAL_FIXES
-	short* rot;
-#endif
-	int top, bottom, left, right, stash;
-	long cos, sin, xRot;
+	long cos, sin, xRot, top, bottom, left, right, stash;
 
 	top = phd_top;
 	bottom = phd_bottom;
@@ -689,7 +668,6 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 	phd_bottom = phd_winymax;
 	phd_left = 0;
 	phd_right = phd_winxmax;
-
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
@@ -791,33 +769,6 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 		meshpp += 2;
 	}
 
-#ifdef GENERAL_FIXES	//draws the gun on lara's back
-	if (lara.back_gun)
-	{
-		phd_PushMatrix();
-		aMXPtr[M00] = lara_matricesF[84 + M00];
-		aMXPtr[M01] = lara_matricesF[84 + M01];
-		aMXPtr[M02] = lara_matricesF[84 + M02];
-		aMXPtr[M03] = lara_matricesF[84 + M03];
-		aMXPtr[M10] = lara_matricesF[84 + M10];
-		aMXPtr[M11] = lara_matricesF[84 + M11];
-		aMXPtr[M12] = lara_matricesF[84 + M12];
-		aMXPtr[M13] = lara_matricesF[84 + M13];
-		aMXPtr[M20] = lara_matricesF[84 + M20];
-		aMXPtr[M21] = lara_matricesF[84 + M21];
-		aMXPtr[M22] = lara_matricesF[84 + M22];
-		aMXPtr[M23] = lara_matricesF[84 + M23];
-		phd_TranslateRel(*((bones + objects[lara.back_gun].bone_index) + 53),
-			*((bones + objects[lara.back_gun].bone_index) + 54),
-			*((bones + objects[lara.back_gun].bone_index) + 55));
-
-		rot = objects[lara.back_gun].frame_base + 9;
-		gar_RotYXZsuperpack(&rot, 14);
-		phd_PutPolygonsSpcXLU(meshes[objects[lara.back_gun].mesh_index + 28], -1);
-		phd_PopMatrix();
-	}
-#endif
-
 	phd_PopMatrix();
 	phd_left = left;
 	phd_right = right;
@@ -832,8 +783,8 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 void SetLaraUnderwaterNodes()
 {
 	PHD_VECTOR pos;
+	long bit;
 	short room_num;
-	int bit;
 
 	pos.x = lara_item->pos.x_pos;
 	pos.y = lara_item->pos.y_pos;

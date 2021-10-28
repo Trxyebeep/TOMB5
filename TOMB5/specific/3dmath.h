@@ -5,6 +5,7 @@ void inject_3dmath(bool replace);
 
 void AlterFOV(short fov);
 void gte_sttr(PHD_VECTOR* vec);
+void aInitMatrix();
 
 #define ScaleCurrentMatrix	( (void(__cdecl*)(VECTOR*)) 0x0048EFF0 )
 #define mGetAngle	( (long(__cdecl*)(long, long, long, long)) 0x0048F290 )
