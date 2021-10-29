@@ -14,6 +14,7 @@
 #include "../specific/polyinsert.h"
 #include "../specific/function_stubs.h"
 #include "../specific/lighting.h"
+#include "items.h"
 #ifdef DEBUG_FEATURES
 #include "../specific/texture.h"
 #endif
@@ -628,6 +629,67 @@ void DrawAnimatingItem(ITEM_INFO* item)
 	phd_PopMatrix();
 }
 
+void PrintObjects(short room_number)
+{
+	ITEM_INFO* item;
+	ROOM_INFO* r;
+	OBJECT_INFO* obj;
+
+	CurrentRoom = room_number;
+	nPolyType = 1;
+	r = &room[room_number];
+	r->bound_active = 0;
+	DrawStaticObjects(room_number);
+	phd_PushMatrix();
+	phd_TranslateAbs(r->x, r->y, r->z);
+	phd_left = 0;
+	phd_top = 0;
+	phd_right = phd_winxmax + 1;
+	phd_bottom = phd_winymax + 1;
+	nPolyType = 2;
+
+	for (int i = r->item_number; i != NO_ITEM; i = items[i].next_item)
+	{
+		GlobalRoomNumber = room_number;
+		item = &items[i];
+		obj = &objects[item->object_number];
+
+		if (item->status != ITEM_INVISIBLE)
+		{
+			if (item->after_death)
+				GlobalAlpha = 0xFE000000 * item->after_death;
+
+			if (gfCurrentLevel != LVL5_BASE || item->object_number != BRIDGE_FLAT)
+			{
+				if (obj->draw_routine)
+					obj->draw_routine(item);
+
+				if (obj->draw_routine_extra)
+					obj->draw_routine_extra(item);
+			}
+
+			GlobalAlpha = 0xFF000000;
+		}
+
+		if (item->after_death < 128 && item->after_death > 0 && !(wibble & 3))
+			item->after_death++;
+
+		if (item->after_death == 128)
+			KillItem(i);
+	}
+
+	nPolyType = 3;
+
+	for (int i = r->fx_number; i != NO_ITEM; i = effects[i].next_fx)
+		DrawEffect(i);
+
+	phd_PopMatrix();
+	r->left = phd_winxmax;
+	r->top = phd_winymax;
+	r->right = 0;
+	r->bottom = 0;
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -650,4 +712,5 @@ void inject_draw(bool replace)
 	INJECT(0x0042A310, UpdateSkyLightning, replace);
 	INJECT(0x0042CD50, CalculateObjectLighting, replace);
 	INJECT(0x0042B900, DrawAnimatingItem, replace);
+	INJECT(0x0042D290, PrintObjects, replace);
 }
