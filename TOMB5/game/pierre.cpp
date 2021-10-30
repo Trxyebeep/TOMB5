@@ -309,7 +309,7 @@ void PierreControl(short item_number)
 		{
 			room_number = item->item_flags[2] & 0xFF;
 			r = &room[room_number];
-			x = r->x + (item->draw_room << 2) + 512;
+			x = r->x + ((item->draw_room & 0xFFFFFF00) << 2) + 512;
 			y = r->minfloor + (item->item_flags[2] & 0xFFFFFF00);
 			z = ((item->draw_room & 0xFF) << 10) + r->z + 512;
 			floor = GetFloor(x, y, z, &room_number);

@@ -468,6 +468,7 @@
 #define FogEnd	VAR_U_(0x0050A43C, float)
 #define f_zfar	VAR_U_(0x0055D228, float)
 #define frames VAR_U_(0x00875174, short*)
+#define rgt VAR_U_(0x0051CF98, RG_TARGET)
 #define CurrentRoom	VAR_U_(0x00E6D754, long)	//static meshes light calc
 #define GlobalRoomNumber	VAR_U_(0x00E6D730, short)	//object clip window calc
 

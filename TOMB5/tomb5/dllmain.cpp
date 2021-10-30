@@ -78,6 +78,7 @@
 #include "../game/lifts.h"
 #include "../game/lasers.h"
 #include "../game/moveblok.h"
+#include "../game/romangod.h"
 #include "../game/hitman.h"
 #include "../game/missile.h"
 #include "../game/sas.h"
@@ -178,6 +179,7 @@ void inject_all(bool replace)
 	inject_lifts(replace);
 	inject_lasers(replace);
 	inject_moveblok(replace);
+	inject_romangod(replace);
 	inject_hitman(replace);
 	inject_missile(replace);
 	inject_sas(replace);
