@@ -47,9 +47,9 @@ void phd_PutPolygons(short* objptr, int clipstatus)
 	if (!aCheckMeshClip(p))
 		return;
 
-	lGlobalMeshPos.vx = p->bbox[3] - p->bbox[0];
-	lGlobalMeshPos.vy = p->bbox[4] - p->bbox[1];
-	lGlobalMeshPos.vz = p->bbox[5] - p->bbox[2];
+	lGlobalMeshPos.x = p->bbox[3] - p->bbox[0];
+	lGlobalMeshPos.y = p->bbox[4] - p->bbox[1];
+	lGlobalMeshPos.z = p->bbox[5] - p->bbox[2];
 	SuperResetLights();
 	
 	if (GlobalAmbient)

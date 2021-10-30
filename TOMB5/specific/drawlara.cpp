@@ -103,8 +103,8 @@ void DrawLara(ITEM_INFO* item, int mirror)
 void DrawLara__1(ITEM_INFO* item, int mirror)
 {
 	OBJECT_INFO* obj;
-	PCSVECTOR v0;
-	PCSVECTOR v1;
+	VECTOR v0;
+	VECTOR v1;
 	short** meshpp;
 	short* rot;
 	long dx, dy, dz, dist, cos, sin, xRot, bone, top, bottom, left, right, stash;
@@ -340,7 +340,8 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 void DrawLara__4(ITEM_INFO* item, int mirror)
 {
 	OBJECT_INFO* obj;
-	PCSVECTOR v0, v1;
+	VECTOR v0;
+	VECTOR v1;
 	short** meshpp;
 	short* rot;
 	long dx, dy, dz, dist, cos, sin, xRot, bone, top, bottom, left, right, stash;
@@ -655,7 +656,8 @@ void DrawLara__5(ITEM_INFO* item, int mirror)
 void DrawLara__6(ITEM_INFO* item, int mirror)
 {
 	OBJECT_INFO* obj;
-	PCSVECTOR v0, v1;
+	VECTOR v0;
+	VECTOR v1;
 	short** meshpp;
 	long cos, sin, xRot, top, bottom, left, right, stash;
 
