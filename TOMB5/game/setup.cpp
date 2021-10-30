@@ -49,6 +49,7 @@
 #include "../specific/function_stubs.h"
 #include "draw.h"
 #include "moveblok.h"
+#include "romangod.h"
 
 void InitialiseLara(int restore)
 {
@@ -1767,8 +1768,8 @@ void BaddyObjects()
 	if (objects[ROMAN_GOD].loaded)
 	{
 		obj = &objects[ROMAN_GOD];
-	//	obj->initialise = InitialiseRomangod;
-	//	obj->control = RomangodControl;
+		obj->initialise = InitialiseRomangod;
+		obj->control = RomangodControl;
 		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 300;

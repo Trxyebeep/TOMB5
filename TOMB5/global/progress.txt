@@ -1273,14 +1273,14 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/romangod.cpp
 
-0x0046B340		TriggerRomanGodSparks
-0x0046B420		TriggerRomanGodMissileFlame
-0x0046B590		TriggerRomanGodMissile
-0x0046B650		TriggerRomanGodLightningGlow
-0x0046B730		TriggerRomanGodPowerupFlames
-0x0046B8E0		TriggerRomangodGravel
-0x0046BB00		InitialiseRomangod
-0x0046BC10		RomangodControl
+0x0046B340	+	TriggerRomanGodSparks
+0x0046B420	+	TriggerRomanGodMissileFlame
+0x0046B590	+	TriggerRomanGodMissile
+0x0046B650	+	TriggerRomanGodLightningGlow
+0x0046B730	+	TriggerRomanGodPowerupFlames
+0x0046B8E0	+	TriggerRomangodGravel
+0x0046BB00	+	InitialiseRomangod
+0x0046BC10	+	RomangodControl
 
 
 		game/rope.cpp

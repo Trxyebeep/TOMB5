@@ -402,7 +402,7 @@ void ControlTeleporter(short item_number)
 						b = item->item_flags[0] >> 2;
 						TriggerLightning(&s, &d, (GetRandomControl() & 0x1F) + 16, RGBA(r, g, b, 24), 15, 40, 5);
 						TriggerLightningGlow(s.x, s.y, s.z, RGBA(r >> 1, g >> 1, b >> 1, 64));
-						TriggerDynamic(s.x, s.y, s.z, 32 * item->item_flags[0] + (GetRandomControl() & 3) + 8, r, g, b);
+						TriggerDynamic(s.x, s.y, s.z, (item->item_flags[0] >> 5) + (GetRandomControl() & 3) + 8, r, g, b);
 					}
 
 					if (GetRandomControl() & 1)
