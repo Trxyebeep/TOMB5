@@ -148,6 +148,12 @@ void LaraCheatGetStuff()
 	if (objects[LASERSIGHT_ITEM].loaded)
 		lara.lasersight = 1;
 
+	if (objects[BOTTLE].loaded)
+		lara.bottle = 1;
+
+	if (objects[CLOTH].loaded)
+		lara.wetcloth = CLOTH_DRY;
+
 	if (objects[UZI_ITEM].loaded)
 	{
 		lara.uzis_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;

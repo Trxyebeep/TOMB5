@@ -312,6 +312,15 @@
     <ClCompile Include="TOMB5\game\romangod.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\game\hitman.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
+    <ClCompile Include="TOMB5\game\missile.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
+    <ClCompile Include="TOMB5\game\sas.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -621,6 +630,15 @@
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\game\romangod.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\game\hitman.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\game\missile.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\game\sas.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
   </ItemGroup>

@@ -50,6 +50,10 @@
 #include "draw.h"
 #include "moveblok.h"
 #include "romangod.h"
+#include "hitman.h"
+#include "../specific/specificfx.h"
+#include "missile.h"
+#include "sas.h"
 
 void InitialiseLara(int restore)
 {
@@ -584,7 +588,7 @@ void ObjectObjects()
 	{
 		obj = &objects[i];
 		obj->initialise = InitialiseSmokeEmitter;
-	//	obj->control = ControlSmokeEmitter;
+		obj->control = ControlSmokeEmitter;
 		obj->draw_routine = 0;
 		obj->using_drawanimating_item = 0;
 		obj->save_flags = 1;
@@ -626,7 +630,7 @@ void ObjectObjects()
 	obj->save_flags = 1;
 
 	obj = &objects[BUBBLES];
-//	obj->control = ControlEnemyMissile;
+	obj->control = ControlEnemyMissile;
 	obj->draw_routine = (void(*)(ITEM_INFO*))1;	//what the fuck
 	obj->nmeshes = 0;
 	obj->loaded = 1;
@@ -735,7 +739,7 @@ void ObjectObjects()
 	obj->save_flags = 1;
 
 	obj = &objects[BODY_PART];
-//	obj->control = ControlBodyPart;
+	obj->control = ControlBodyPart;
 	obj->draw_routine = (void(*)(ITEM_INFO*))1;	//what the fuck
 	obj->nmeshes = 0;
 	obj->loaded = 1;
@@ -818,7 +822,7 @@ void TrapObjects()
 	obj = &objects[DARTS];
 	obj->control = DartsControl;
 	obj->collision = ObjectCollision;
-//	obj->draw_routine = S_DrawDarts;
+	obj->draw_routine = S_DrawDarts;
 	obj->using_drawanimating_item = 0;
 	obj->shadow_size = 128;
 
@@ -886,8 +890,8 @@ void TrapObjects()
 
 	obj = &objects[GEN_SLOT2];
 	obj->initialise = InitialiseGasCloud;
-//	obj->control = ControlGasCloud;
-//	obj->draw_routine = DrawGasCloud;
+	obj->control = ControlGasCloud;
+	obj->draw_routine = DrawGasCloud;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
 
@@ -900,7 +904,7 @@ void TrapObjects()
 
 	obj = &objects[GEN_SLOT4];
 	obj->initialise = InitialiseArea51Laser;
-//	obj->control = ControlArea51Laser;
+	obj->control = ControlArea51Laser;
 	obj->save_position = 1;
 	obj->save_flags = 1;
 	obj->save_anim = 1;
@@ -974,7 +978,7 @@ void BaddyObjects()
 	{
 		obj = &objects[SAS];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 40;
@@ -997,7 +1001,7 @@ void BaddyObjects()
 	{
 		obj = &objects[BLUE_GUARD];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 
@@ -1029,7 +1033,7 @@ void BaddyObjects()
 	{
 		obj = &objects[SWAT];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;
@@ -1057,7 +1061,7 @@ void BaddyObjects()
 	{
 		obj = &objects[SWAT_PLUS];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 
@@ -1090,7 +1094,7 @@ void BaddyObjects()
 	{
 		obj = &objects[MAFIA];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 
@@ -1124,7 +1128,7 @@ void BaddyObjects()
 	{
 		obj = &objects[SCIENTIST];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 
 		if (objects[SWAT].loaded)
@@ -1156,7 +1160,7 @@ void BaddyObjects()
 	{
 		obj = &objects[CRANE_GUY];
 		obj->initialise = InitialiseSas;
-	//	obj->control = SasControl;
+		obj->control = SasControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 
@@ -1224,7 +1228,7 @@ void BaddyObjects()
 	{
 		obj = &objects[SAILOR];
 		obj->initialise = InitialiseSas;
-		//	obj->control = SasControl;
+			obj->control = SasControl;
 		obj->collision = CreatureCollision;
 
 		if (objects[SWAT].loaded)
@@ -1462,8 +1466,8 @@ void BaddyObjects()
 	if (objects[HITMAN].loaded)
 	{
 		obj = &objects[HITMAN];
-	//	obj->initialise = InitialiseHitman;
-	//	obj->control = HitmanControl;
+		obj->initialise = InitialiseHitman;
+		obj->control = HitmanControl;
 		obj->collision = CreatureCollision;
 		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;
@@ -1809,7 +1813,7 @@ void BaddyObjects()
 	if (objects[AUTOGUN].loaded)
 	{
 		obj->initialise = InitialiseAutogun;
-	//	obj->control = AutogunControl;
+		obj->control = AutogunControl;
 		obj->save_hitpoints = 1;
 		obj->save_flags = 1;
 		obj->save_anim = 1;
@@ -1892,7 +1896,7 @@ void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
 	INJECT(0x00476360, ObjectObjects, 0);
-	INJECT(0x00475D40, TrapObjects, 0);
+	INJECT(0x00475D40, TrapObjects, replace);
 	INJECT(0x004737C0, BaddyObjects, 0);
 	INJECT(0x00473600, InitialiseObjects, replace);
 }

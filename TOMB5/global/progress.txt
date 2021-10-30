@@ -30,8 +30,8 @@ x for functions decompiled but not injected, for one reason or another.
 		game/autogun.cpp
 
 0x00407510	+	ControlMotionSensors
-0x00407780		TriggerAutoGunSmoke
-0x004078A0		AutogunControl
+0x00407780	+	TriggerAutoGunSmoke
+0x004078A0	+	AutogunControl
 
 
 		game/bat.cpp
@@ -489,8 +489,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00431240		TriggerDynamic
 0x00431420		TriggerDynamic_MIRROR
 0x00431530		ClearDynamics
-0x00431560		ControlSmokeEmitter
-0x00431E70		ControlEnemyMissile
+0x00431560	+	ControlSmokeEmitter
+0x00431E70	+	ControlEnemyMissile
 
 
 		game/effects.cpp
@@ -601,8 +601,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/hitman.cpp
 
-0x0043A2C0		InitialiseHitman
-0x0043A340		HitmanControl
+0x0043A2C0	+	InitialiseHitman
+0x0043A340	+	HitmanControl
 
 
 		game/huskie.cpp
@@ -1104,12 +1104,12 @@ x for functions decompiled but not injected, for one reason or another.
 0x0045DC50		Draw_Mirror_Lara
 
 
-		game/missle.cpp
+		game/missile.cpp
 
 0x0045E010		ExplodeFX
 0x0045E0E0		ControlMissile
 0x0045E2A0		ShootAtLara
-0x0045E380		ControlBodyPart
+0x0045E380	+	ControlBodyPart
 
 
 		game/moveblok.cpp
@@ -1314,7 +1314,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/sas.cpp
 
-0x0046F5E0		SasControl
+0x0046F5E0	+	SasControl
 
 
 		game/savegame.cpp
@@ -1335,7 +1335,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00473210	+	InitialiseLara
 0x00473600	+	InitialiseObjects
 0x004737C0	x	BaddyObjects
-0x00475D40	x	TrapObjects
+0x00475D40	+	TrapObjects
 0x00476360	x	ObjectObjects
 0x004771E0		GetCarriedItems
 0x00477370		GetAIPickups
@@ -1514,17 +1514,17 @@ x for functions decompiled but not injected, for one reason or another.
 		game/tower2.cpp
 
 0x00486050	+	ControlIris
-0x00486450		ControlArea51Laser
+0x00486450	+	ControlArea51Laser
 0x004868B0	+	ControlFishtank
 0x00486A70		TriggerFishtankSpray
 0x00486BE0		ControlSteelDoor
 0x004870B0		TriggerWeldingEffects
 0x004877E0		TriggerSteelDoorSmoke
-0x00487AB0	+	DrawSteelDoorLensFlare;
+0x00487AB0	+	DrawSteelDoorLensFlare
 0x00487AD0		SteelDoorCollision
 0x00487B60		TriggerLiftBrakeSparks
 0x00487FF0	+	ControlGunship
-0x00488710		ControlGasCloud
+0x00488710	+	ControlGasCloud
 
 
 		game/traps.cpp
@@ -1607,7 +1607,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004903F0		phd_TranslateAbs
 0x004904B0		phd_GetVectorAngles
 0x00490550		phd_TransposeMatrix
-0x00490590		aInitMatrix
+0x00490590	+	aInitMatrix
 0x004905E0		aSetTrans
 0x00490610		aTranslateAbs
 0x00490720		aPushUnitMatrix
@@ -2103,7 +2103,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004BF3C0		DoRain
 0x004BFD70		ClearFX
 0x004BFDA0		AddPolyLine
-0x004C0060		DrawStarField
+0x004C0060	+	DrawStarField
 0x004C0580		DoWeather
 0x004C05B0		setXY4
 0x004C0810		setXY3
@@ -2125,7 +2125,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004C5590		_0x004C5590
 0x004C5B10		ClipLine
 0x004C5EA0	+	DrawFlatSky
-0x004C6BA0		sub_4C6BA0
+0x004C6BA0		_0x004C6BA0
 0x004C6D10		OutputSky
 0x004C6E00		DrawRope
 0x004C7320	+	DrawLaserSightSprite
@@ -2146,7 +2146,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004CAC90		DrawFlash
 0x004CADA0		DrawBikeSpeedo
 0x004CB280		DrawShockwaves
-0x004CBB10		S_DrawDarts
+0x004CBB10	+	S_DrawDarts
 0x004CBE50		Draw2DSprite
 0x004CC0B0		DrawLightning
 0x004CCBA0		OldDrawLightning
@@ -2155,10 +2155,10 @@ x for functions decompiled but not injected, for one reason or another.
 0x004CE610		DrawSteamLasers
 0x004CF191		_0x004CF191
 0x004CF1B0		aDrawWreckingBall
-0x004CF2F0		DrawMoon
+0x004CF2F0	+	DrawMoon
 0x004CF550		DrawTwogunLaser
 0x004CFD20		SuperDrawBox
-0x004CFF80		DrawGasCloud
+0x004CFF80	+	DrawGasCloud
 
 		specific/texture.cpp
 

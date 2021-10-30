@@ -8,4 +8,4 @@ void DrawBoundsRectangleII(float left, float top, float right, float bottom, int
 void DrawClipRectangle(ROOM_INFO* r);
 
 #define DrawBuckets	( (void(__cdecl*)()) 0x0049D750 )
-
+#define TriggerFogBulbFX	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x0049AEF0 )

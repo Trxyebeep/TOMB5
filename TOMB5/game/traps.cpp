@@ -324,7 +324,7 @@ void DartEmitterControl(short item_number)
 		dart->pos.z_pos = z + item->pos.z_pos;
 		InitialiseItem(num);
 		dart->pos.x_rot = 0;
-		dart->pos.y_rot += 32768;
+		dart->pos.y_rot = item->pos.y_rot + 32768;
 		dart->speed = 256;
 		xLimit = 0;
 		zLimit = 0;
@@ -353,7 +353,7 @@ void DartEmitterControl(short item_number)
 
 		AddActiveItem(num);
 		dart->status = ITEM_ACTIVE;
-		SoundEffect(SFX_LIFT_DOORS, &dart->pos, 0);
+		SoundEffect(SFX_LIFT_DOORS, &dart->pos, SFX_DEFAULT);
 	}
 }
 

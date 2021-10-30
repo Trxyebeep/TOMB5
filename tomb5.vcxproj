@@ -45,6 +45,7 @@
     <ClCompile Include="TOMB5\game\guardian.cpp" />
     <ClCompile Include="TOMB5\game\hair.cpp" />
     <ClCompile Include="TOMB5\game\health.cpp" />
+    <ClCompile Include="TOMB5\game\hitman.cpp" />
     <ClCompile Include="TOMB5\game\huskie.cpp" />
     <ClCompile Include="TOMB5\game\hydra.cpp" />
     <ClCompile Include="TOMB5\game\imp.cpp" />
@@ -67,6 +68,7 @@
     <ClCompile Include="TOMB5\game\lot.cpp" />
     <ClCompile Include="TOMB5\game\mafia2.cpp" />
     <ClCompile Include="TOMB5\game\minisub.cpp" />
+    <ClCompile Include="TOMB5\game\missile.cpp" />
     <ClCompile Include="TOMB5\game\moveblok.cpp" />
     <ClCompile Include="TOMB5\game\newinv2.cpp" />
     <ClCompile Include="TOMB5\game\objects.cpp" />
@@ -77,6 +79,7 @@
     <ClCompile Include="TOMB5\game\rat.cpp" />
     <ClCompile Include="TOMB5\game\romangod.cpp" />
     <ClCompile Include="TOMB5\game\rope.cpp" />
+    <ClCompile Include="TOMB5\game\sas.cpp" />
     <ClCompile Include="TOMB5\game\savegame.cpp" />
     <ClCompile Include="TOMB5\game\setup.cpp" />
     <ClCompile Include="TOMB5\game\skeleton.cpp" />
@@ -150,6 +153,7 @@
     <ClInclude Include="TOMB5\game\guardian.h" />
     <ClInclude Include="TOMB5\game\hair.h" />
     <ClInclude Include="TOMB5\game\health.h" />
+    <ClInclude Include="TOMB5\game\hitman.h" />
     <ClInclude Include="TOMB5\game\huskie.h" />
     <ClInclude Include="TOMB5\game\hydra.h" />
     <ClInclude Include="TOMB5\game\imp.h" />
@@ -173,6 +177,7 @@
     <ClInclude Include="TOMB5\game\lot.h" />
     <ClInclude Include="TOMB5\game\mafia2.h" />
     <ClInclude Include="TOMB5\game\minisub.h" />
+    <ClInclude Include="TOMB5\game\missile.h" />
     <ClInclude Include="TOMB5\game\moveblok.h" />
     <ClInclude Include="TOMB5\game\newinv2.h" />
     <ClInclude Include="TOMB5\game\objects.h" />
@@ -183,6 +188,7 @@
     <ClInclude Include="TOMB5\game\rat.h" />
     <ClInclude Include="TOMB5\game\romangod.h" />
     <ClInclude Include="TOMB5\game\rope.h" />
+    <ClInclude Include="TOMB5\game\sas.h" />
     <ClInclude Include="TOMB5\game\savegame.h" />
     <ClInclude Include="TOMB5\game\setup.h" />
     <ClInclude Include="TOMB5\game\skeleton.h" />
@@ -310,6 +316,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -334,6 +341,7 @@
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
       <AssemblerOutput>NoListing</AssemblerOutput>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
