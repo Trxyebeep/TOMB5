@@ -24,6 +24,7 @@ void SkyDrawPhase();
 void UpdateSkyLightning();
 void CalculateObjectLighting(ITEM_INFO* item, short* frame);
 void DrawAnimatingItem(ITEM_INFO* item);
+void PrintObjects(short room_number);
 
 #define InterpolateMatrix	( (void(__cdecl*)()) 0x0042C8F0 )
 #define	mRotBoundingBoxNoPersp	( (void(__cdecl*)(short*, short*)) 0x0042E240 )
@@ -33,3 +34,5 @@ void DrawAnimatingItem(ITEM_INFO* item);
 #define InterpolateArmMatrix	( (void(__cdecl*)(long*)) 0x0042CC10 )
 #define aInterpolateArmMatrix	( (void(__cdecl*)(float*)) 0x0042C790 )
 #define calc_animating_item_clip_window	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042B4C0 )
+#define DrawStaticObjects	( (void(__cdecl*)(short)) 0x0042D060 )
+#define DrawEffect	( (void(__cdecl*)(short)) 0x0042B340 )

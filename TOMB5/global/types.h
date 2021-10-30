@@ -35,7 +35,7 @@ do \
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
 #define RGBA(r, g, b, a) (RGBONLY(r, g, b) | ((a) << 24))
 #define ARGB(r, g, b, a) (RGBA(b, g, r, a))
-#define RGB_M(clr, m) (clr = (clr & 0xFF000000) | (((((clr >> 16) & 0xFF) * m) >> 8) << 16) | (((((clr >> 8) & 0xFF)* m) >> 8) << 8) | (((clr & 0xFF) * m) >> 8))
+#define RGB_M(clr, m) (clr = clr & 0xFF000000 | ((num * clr & 0xFF) >> 8) | ((((num * ((*((uchar*)&(clr)+1)) & 0xFF)) >> 8) | ((num * ((*((uchar*)&(clr)+2)) & 0xFF)) >> 8 << 8)) << 8))
 
 /*typedefs*/
 typedef unsigned char uchar;
@@ -55,48 +55,49 @@ enum matrix_indices
 
 enum font_flags
 {
-	FF_SMALL = 0x1000,
-	FF_BLINK = 0x2000,
-	FF_RJUSTIFY = 0x4000,
-	FF_CENTER = 0x8000
+	FF_SMALL =		0x1000,
+	FF_BLINK =		0x2000,
+	FF_RJUSTIFY =	0x4000,
+	FF_CENTER =		0x8000
 };
 
 enum lara_draw_type
 {
-	LARA_NORMAL = 1,
-	LARA_YOUNG = 2,
-	LARA_BUNHEAD = 3,
-	LARA_CATSUIT = 4,
-	LARA_DIVESUIT = 5,
+	LARA_NONE,
+	LARA_NORMAL,
+	LARA_YOUNG,
+	LARA_BUNHEAD,
+	LARA_CATSUIT,
+	LARA_DIVESUIT
 };
 
 enum lara_mesh
 {
-	LM_HIPS = 0,
-	LM_LTHIGH = 1,
-	LM_LSHIN = 2,
-	LM_LFOOT = 3,
-	LM_RTHIGH = 4,
-	LM_RSHIN = 5,
-	LM_RFOOT = 6,
-	LM_TORSO = 7,
-	LM_RINARM = 8,
-	LM_ROUTARM = 9,
-	LM_RHAND = 10,
-	LM_LINARM = 11,
-	LM_LOUTARM = 12,
-	LM_LHAND = 13,
-	LM_HEAD = 14,
+	LM_HIPS,
+	LM_LTHIGH,
+	LM_LSHIN,
+	LM_LFOOT,
+	LM_RTHIGH,
+	LM_RSHIN,
+	LM_RFOOT,
+	LM_TORSO,
+	LM_RINARM,
+	LM_ROUTARM,
+	LM_RHAND,
+	LM_LINARM,
+	LM_LOUTARM,
+	LM_LHAND,
+	LM_HEAD,
 
 	NUM_LARA_MESHES
 };
 
 enum item_status
 {
-	ITEM_INACTIVE = 0,
-	ITEM_ACTIVE = 1,
-	ITEM_DEACTIVATED = 2,
-	ITEM_INVISIBLE = 3
+	ITEM_INACTIVE,
+	ITEM_ACTIVE,
+	ITEM_DEACTIVATED,
+	ITEM_INVISIBLE
 };
 
 enum lara_gun_status
@@ -132,8 +133,6 @@ enum ITEM_FLAGS
 enum room_flags
 {
 	ROOM_UNDERWATER =		0x1,
-	ROOM_SFX_ALWAYS =		0x2,
-	ROOM_PITCH_SHIFT =		0x4,
 	ROOM_OUTSIDE =			0x8,
 	ROOM_DYNAMIC_LIT =		0x10,
 	ROOM_NOT_INSIDE =		0x20,
@@ -143,7 +142,7 @@ enum room_flags
 
 enum collision_types
 {
-	CT_NONE,
+	CT_NONE	=			0x0,
 	CT_FRONT =			0x1,
 	CT_LEFT =			0x2,
 	CT_RIGHT =			0x4,
@@ -154,7 +153,7 @@ enum collision_types
 
 enum input_buttons
 {
-	IN_NONE,
+	IN_NONE	=			0x0,
 	IN_FORWARD =		0x1,
 	IN_BACK =			0x2,
 	IN_LEFT =			0x4,
@@ -187,7 +186,7 @@ enum input_buttons
 	IN_DUCK =			0x20000000,
 	IN_SPRINT =			0x40000000,
 	IN_TARGET =			0x80000000,
-	IN_ALL =			0xFFFFFFFF,
+	IN_ALL =			0xFFFFFFFF
 };
 
 enum height_types
@@ -227,7 +226,7 @@ enum floor_types
 
 enum weapon_type_carried 
 {
-	WTYPE_MISSING,
+	WTYPE_MISSING =			0x0,
 	WTYPE_PRESENT =			0x1,
 	WTYPE_SILENCER =		0x2,
 	WTYPE_LASERSIGHT =		0x4,
@@ -351,16 +350,16 @@ struct SUBSUIT_INFO
 
 struct ROOMLET
 {
-	short	nVtx;
-	short	nWVtx;
-	short	nSVtx;
-	short	nQuad;
-	short	nTri;
-	short	nWQuad;
-	short	nWTri;
-	short	padd;
-	float	bBox[6];
-	LPDIRECT3DVERTEXBUFFER	pVtx;
+	short nVtx;
+	short nWVtx;
+	short nSVtx;
+	short nQuad;
+	short nTri;
+	short nWQuad;
+	short nWTri;
+	short padd;
+	float bBox[6];
+	LPDIRECT3DVERTEXBUFFER pVtx;
 	float* pSVtx;
 	short* pFac;
 	long* pPrelight;
@@ -511,7 +510,7 @@ struct ANIM_STRUCT
 	short command_index;
 };
 
-struct PCLIGHT//evil bitch
+struct PCLIGHT
 {
 	float x;
 	float y;
@@ -561,7 +560,7 @@ struct ITEM_LIGHT
 	PCLIGHT	PrevLights[21];
 	long nCurrentLights;
 	long nPrevLights;
-	long	room_number;
+	long room_number;
 	long RoomChange;
 	PHD_VECTOR item_pos;
 	void* pCurrentLights;
@@ -798,6 +797,13 @@ struct COLL_INFO
 	ushort hit_ceiling : 1;
 };
 
+struct FVECTOR
+{
+	float x;
+	float y;
+	float z;
+};
+
 struct CAMERA_INFO
 {
 	GAME_VECTOR pos;
@@ -827,20 +833,8 @@ struct CAMERA_INFO
 	OBJECT_VECTOR* fixed;
 	long mike_at_lara;
 	PHD_VECTOR mike_pos;
-
-	struct
-	{
-		float x;
-		float y;
-		float z;
-	} fpos;
-
-	struct
-	{
-		float x;
-		float y;
-		float z;
-	} ftgt;
+	FVECTOR fpos;
+	FVECTOR ftgt;
 };
 
 struct OBJECT_INFO
@@ -966,7 +960,7 @@ struct ROOM_INFO
 	D3DVECTOR* fnormals;
 	long* prelight;
 	long* prelightwater;
-	long	watercalc;
+	long watercalc;
 	D3DVECTOR* verts;
 	long gt3cnt;
 	long gt4cnt;
@@ -981,7 +975,7 @@ struct ROOM_INFO
 	float* pRmVtx;
 	short* pRmFace;
 	long* pRmPrelight;
-	long	vDumpSz;
+	long vDumpSz;
 	float fLeft;
 	float fRight;
 	float fTop;
@@ -1172,12 +1166,6 @@ struct SAVEGAME_INFO
 	uchar CampaignSecrets[4];
 	uchar TLCount;
 	char buffer[7232];
-};
-
-struct OBJECT_TEXTURE_VERT
-{
-	float x;
-	float y;
 };
 
 struct DYNAMIC
@@ -1421,13 +1409,6 @@ struct VECTOR
 	long vz;
 };
 
-struct FVECTOR
-{
-	float x;
-	float y;
-	float z;
-};
-
 struct AI_INFO
 {
 	short zone_number;
@@ -1527,13 +1508,6 @@ struct MATRIX3D
 	long m20, m21, m22, m23;
 };
 
-struct PCSVECTOR
-{
-	long vx;
-	long vy;
-	long vz;
-};
-
 struct ACMESHVERTEX
 {
 	float x;
@@ -1608,13 +1582,6 @@ typedef struct _ENVUV
 	float v;
 }ENVUV, *LPENVUV;
 
-struct AFRVECTOR
-{
-	float vx;
-	float vy;
-	float vz;
-};
-
 struct DXDISPLAYMODE
 {
 	long w;
@@ -1629,7 +1596,6 @@ struct DXDISPLAYMODE
 	uchar rshift;
 	uchar gshift;
 	uchar bshift;
-
 };
 
 struct DXTEXTUREINFO

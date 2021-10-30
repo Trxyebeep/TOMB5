@@ -359,7 +359,7 @@
 #define hair_wind	VAR_U_(0x0051CEA4, int)
 #define hair_dwind_angle	VAR_U_(0x005084D4, int)
 #define hair_wind_angle	VAR_U_(0x005084D0, int)
-#define lGlobalMeshPos	VAR_U_(0x0091F3B8, AFRVECTOR)
+#define lGlobalMeshPos	VAR_U_(0x0091F3B8, FVECTOR)
 #define GlobalAmbient	VAR_U_(0x0092167C, long)
 #define App	VAR_U_(0x00D9AB38, WINAPP)
 #define aAmbientR	VAR_U_(0x0087AD0C, int)
@@ -469,6 +469,8 @@
 #define f_zfar	VAR_U_(0x0055D228, float)
 #define frames VAR_U_(0x00875174, short*)
 #define rgt VAR_U_(0x0051CF98, RG_TARGET)
+#define CurrentRoom	VAR_U_(0x00E6D754, long)	//static meshes light calc
+#define GlobalRoomNumber	VAR_U_(0x00E6D730, short)	//object clip window calc
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
