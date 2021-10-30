@@ -2189,4 +2189,13 @@ struct OLD_CAMERA
 	PHD_3DPOS pos2;
 	PHD_VECTOR t;
 };
+
+struct RG_TARGET
+{
+	long dynx;
+	long dyny;
+	long dynz;
+	LIGHTNING_STRUCT* pulptr[8];
+	char dynval;
+};
 #pragma pack(pop)

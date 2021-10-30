@@ -49,6 +49,7 @@
 #include "../specific/function_stubs.h"
 #include "draw.h"
 #include "moveblok.h"
+#include "romangod.h"
 #include "hitman.h"
 #include "../specific/specificfx.h"
 #include "missile.h"
@@ -706,7 +707,7 @@ void ObjectObjects()
 
 	obj = &objects[FISHTANK];
 	obj->initialise = InitialiseFishtank;
-//	obj->control = ControlFishtank;
+	obj->control = ControlFishtank;
 	obj->draw_routine = DrawScaledSpike;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
@@ -1771,8 +1772,8 @@ void BaddyObjects()
 	if (objects[ROMAN_GOD].loaded)
 	{
 		obj = &objects[ROMAN_GOD];
-	//	obj->initialise = InitialiseRomangod;
-	//	obj->control = RomangodControl;
+		obj->initialise = InitialiseRomangod;
+		obj->control = RomangodControl;
 		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 300;

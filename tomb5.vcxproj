@@ -77,6 +77,7 @@
     <ClCompile Include="TOMB5\game\pickup.cpp" />
     <ClCompile Include="TOMB5\game\pierre.cpp" />
     <ClCompile Include="TOMB5\game\rat.cpp" />
+    <ClCompile Include="TOMB5\game\romangod.cpp" />
     <ClCompile Include="TOMB5\game\rope.cpp" />
     <ClCompile Include="TOMB5\game\sas.cpp" />
     <ClCompile Include="TOMB5\game\savegame.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="TOMB5\game\pickup.h" />
     <ClInclude Include="TOMB5\game\pierre.h" />
     <ClInclude Include="TOMB5\game\rat.h" />
+    <ClInclude Include="TOMB5\game\romangod.h" />
     <ClInclude Include="TOMB5\game\rope.h" />
     <ClInclude Include="TOMB5\game\sas.h" />
     <ClInclude Include="TOMB5\game\savegame.h" />
