@@ -13,7 +13,6 @@
 #include "../specific/3dmath.h"
 #include "sphere.h"
 #include "debris.h"
-#include "tomb4fx.h"
 #include "tower1.h"
 #include "larafire.h"
 

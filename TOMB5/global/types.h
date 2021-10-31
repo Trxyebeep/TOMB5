@@ -35,7 +35,11 @@ do \
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
 #define RGBA(r, g, b, a) (RGBONLY(r, g, b) | ((a) << 24))
 #define ARGB(r, g, b, a) (RGBA(b, g, r, a))
-#define RGB_M(clr, m) (clr = clr & 0xFF000000 | ((num * clr & 0xFF) >> 8) | ((((num * ((*((uchar*)&(clr)+1)) & 0xFF)) >> 8) | ((num * ((*((uchar*)&(clr)+2)) & 0xFF)) >> 8 << 8)) << 8))
+#define	CLRR(clr)	((clr >> 16) & 0xFF)	//shift g and b out of the way and 0xFF
+#define	CLRG(clr)	((clr >> 8) & 0xFF)		//shift b out of the way and 0xFF
+#define	CLRB(clr)	((clr) & 0xFF)			//and 0xFF
+#define RGB_M(clr, m)	(clr = (clr & 0xFF000000) | (((CLRR(clr) * m) >> 8) << 16) | (((CLRG(clr) * m) >> 8) << 8) | ((CLRB(clr) * m) >> 8))
+//^ color multiply thingy phd_PutPolygons wants to do
 
 /*typedefs*/
 typedef unsigned char uchar;
