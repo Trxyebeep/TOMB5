@@ -268,8 +268,9 @@ void CalculateSpotCams()
 	SPOTCAM* s;
 	CAMERA_INFO backup;
 	camera_type ctype;
-	long cpx, cpy, cpz, ctx, cty, ctz, cspeed, cfov, croll, next_spline_camera, n, bFirstLook;
+	long cpx, cpy, cpz, ctx, cty, ctz, cspeed, cfov, croll, next_spline_camera, n;
 	long dx, dy, dz, cs, cp, clen, tlen, cx, cy, cz, lx, ly, lz, sp;
+	static long bFirstLook = 0;
 	short spline_cnt;
 
 	s = &SpotCam[first_camera];

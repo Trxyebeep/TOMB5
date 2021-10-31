@@ -7,7 +7,7 @@
 #include "lara1gun.h"
 #include "lara2gun.h"
 #include "control.h"
-#include "tomb4fx.h"
+#include "effect2.h"
 #include "effects.h"
 #include "sound.h"
 #include "items.h"
@@ -94,7 +94,11 @@ void LaraGun()
 
 		if ((input & IN_DRAW) || lara.request_gun_type != lara.gun_type)
 		{
-			if ((lara_item->current_anim_state == AS_DUCK || lara_item->current_anim_state == AS_DUCKROTL || lara_item->current_anim_state == AS_DUCKROTR) &&
+			if ((lara_item->current_anim_state == AS_DUCK || lara_item->current_anim_state == AS_DUCKROTL || lara_item->current_anim_state == AS_DUCKROTR
+#ifdef DUCKROLL
+				|| lara_item->current_anim_state == AS_DUCKROLL
+#endif
+				) &&
 				(lara.request_gun_type == WEAPON_SHOTGUN || lara.request_gun_type == WEAPON_HK || lara.request_gun_type == WEAPON_CROSSBOW))
 			{
 				if (lara.gun_type == WEAPON_FLARE)

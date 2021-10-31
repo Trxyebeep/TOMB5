@@ -4,7 +4,7 @@
 #include "control.h"
 #include "objects.h"
 #include "sound.h"
-#include "tomb4fx.h"
+#include "effect2.h"
 #include "sphere.h"
 #include "box.h"
 #include "debris.h"

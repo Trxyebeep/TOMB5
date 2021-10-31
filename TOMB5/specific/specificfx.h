@@ -23,3 +23,5 @@ void DrawStarField();
 #define ClipLine	( (bool(__cdecl*)(long&, long&, long, long&, long&, long, long, long, long, long)) 0x004C5B10 )
 #define aTransformPerspSV	( (void(__cdecl*)(SVECTOR*, LPD3DTLVERTEX, short*, long, long)) 0x004CD750 )
 #define aSetXY4	( (void(__cdecl*)(LPD3DTLVERTEX, float, float, float, float, float, float, float, float, float, short*)) 0x004C3EB0 )
+#define DrawLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CD960 )
+#define DrawSteamLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CE610 )

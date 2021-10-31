@@ -15,7 +15,6 @@ void DrawWeaponMissile(ITEM_INFO* item);
 void DrawLensFlares(ITEM_INFO* item);
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
-#define	TriggerRicochetSpark	( (void(__cdecl*)(GAME_VECTOR*, int, int, int)) 0x0042F060 )//pos, angle, size, unk
 #define TriggerLaraDrips	( (void(__cdecl*)()) 0x00483F00 )
 #define UpdateFadeClip	( (void(__cdecl*)()) 0x00483AC0 )
 #define UpdateDrips	( (void(__cdecl*)()) 0x00483D90 )
