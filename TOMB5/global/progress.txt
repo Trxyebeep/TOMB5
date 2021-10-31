@@ -1577,8 +1577,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x0048E500	+	InitialiseWillOWisp
 0x0048E580	+	WillOWispControl
-0x0048E8E0		InitialiseMazeMonster
-0x0048E960		MazeMonsterControl
+0x0048E8E0	+	InitialiseMazeMonster
+0x0048E960	+	MazeMonsterControl
 
 // ======================================
 // SPECIFIC

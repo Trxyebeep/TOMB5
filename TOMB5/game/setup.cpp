@@ -1645,8 +1645,8 @@ void BaddyObjects()
 	if (objects[MAZE_MONSTER].loaded)
 	{
 		obj = &objects[MAZE_MONSTER];
-	//	obj->initialise = InitialiseMazeMonster;
-	//	obj->control = MazeMonsterControl;
+		obj->initialise = InitialiseMazeMonster;
+		obj->control = MazeMonsterControl;
 		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 4000;
