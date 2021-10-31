@@ -1545,8 +1545,8 @@ void BaddyObjects()
 	if (objects[TWOGUN].loaded)
 	{
 		obj = &objects[TWOGUN];
-	//	obj->initialise = InitialiseTwoGun;
-	//	obj->control = TwogunControl;
+		obj->initialise = InitialiseTwogun;
+		obj->control = TwogunControl;
 		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 24;
