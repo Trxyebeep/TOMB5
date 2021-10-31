@@ -686,21 +686,21 @@ void ObjectObjects()
 
 	obj = &objects[LASERS];
 	obj->initialise = InitialiseLasers;
-//	obj->control = ControlLasers;
-//	obj->draw_routine = DrawLasers;
+	obj->control = ControlLasers;
+	obj->draw_routine = DrawLasers;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
 
 	obj = &objects[STEAM_LASERS];
 	obj->initialise = InitialiseSteamLasers;
-//	obj->control = ControlSteamLasers;
-//	obj->draw_routine = DrawSteamLasers;
+	obj->control = ControlSteamLasers;
+	obj->draw_routine = DrawSteamLasers;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
 
 	obj = &objects[FLOOR_LASERS];
 	obj->initialise = InitialiseFloorLasers;
-//	obj->control = ControlFloorLasers;
+	obj->control = ControlFloorLasers;
 	obj->draw_routine = DrawFloorLasers;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;

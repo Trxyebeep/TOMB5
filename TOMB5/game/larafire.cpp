@@ -7,7 +7,7 @@
 #include "lara1gun.h"
 #include "lara2gun.h"
 #include "control.h"
-#include "tomb4fx.h"
+#include "effect2.h"
 #include "effects.h"
 #include "sound.h"
 #include "items.h"
