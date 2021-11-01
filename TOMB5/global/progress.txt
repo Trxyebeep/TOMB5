@@ -1059,7 +1059,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/lifts.cpp
 
-0x0045A560		ControlLiftTeleporter
+0x0045A560	+	ControlLiftTeleporter
 0x0045AAF0	+	DrawLiftDoors
 
 
@@ -1336,7 +1336,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00473600	+	InitialiseObjects
 0x004737C0	x	BaddyObjects
 0x00475D40	+	TrapObjects
-0x00476360	x	ObjectObjects
+0x00476360	+	ObjectObjects
 0x004771E0		GetCarriedItems
 0x00477370		GetAIPickups
 0x004774D0		BuildOutsideTable
@@ -1517,11 +1517,11 @@ x for functions decompiled but not injected, for one reason or another.
 0x00486450	+	ControlArea51Laser
 0x004868B0	+	ControlFishtank
 0x00486A70		TriggerFishtankSpray
-0x00486BE0		ControlSteelDoor
+0x00486BE0	+	ControlSteelDoor
 0x004870B0		TriggerWeldingEffects
 0x004877E0		TriggerSteelDoorSmoke
 0x00487AB0	+	DrawSteelDoorLensFlare
-0x00487AD0		SteelDoorCollision
+0x00487AD0	+	SteelDoorCollision
 0x00487B60		TriggerLiftBrakeSparks
 0x00487FF0	+	ControlGunship
 0x00488710	+	ControlGasCloud

@@ -471,6 +471,7 @@
 #define rgt VAR_U_(0x0051CF98, RG_TARGET)
 #define CurrentRoom	VAR_U_(0x00E6D754, long)	//static meshes light calc
 #define GlobalRoomNumber	VAR_U_(0x00E6D730, short)	//object clip window calc
+#define SteelDoorLensPos	VAR_U_(0x00E4B110, PHD_VECTOR)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

@@ -547,8 +547,8 @@ void ObjectObjects()
 
 	obj = &objects[STEEL_DOOR];
 	obj->initialise = InitialiseSteelDoor;
-//	obj->control = ControlSteelDoor;
-//	obj->collision = SteelDoorCollision;
+	obj->control = ControlSteelDoor;
+	obj->collision = SteelDoorCollision;
 	obj->draw_routine_extra = DrawSteelDoorLensFlare;
 	obj->save_position = 1;
 	obj->save_flags = 1;
@@ -679,7 +679,7 @@ void ObjectObjects()
 	obj->save_flags = 1;
 
 	obj = &objects[LIFT_TELEPORTER];
-//	obj->control = ControlLiftTeleporter;
+	obj->control = ControlLiftTeleporter;
 	obj->draw_routine = 0;
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
@@ -1895,7 +1895,7 @@ void InitialiseObjects()
 void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
-	INJECT(0x00476360, ObjectObjects, 0);
+	INJECT(0x00476360, ObjectObjects, replace);
 	INJECT(0x00475D40, TrapObjects, replace);
 	INJECT(0x004737C0, BaddyObjects, 0);
 	INJECT(0x00473600, InitialiseObjects, replace);
