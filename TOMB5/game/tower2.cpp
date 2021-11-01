@@ -14,8 +14,19 @@
 #include "traps.h"
 #include "sphere.h"
 #include "collide.h"
+#include "camera.h"
 
 short SplashOffsets[18] = { 1072, 48, 1072, 48, 650, 280, 200, 320, -300, 320, -800, 320, -1200, 320, -1650, 280, -2112, 48 };
+
+short SteelDoorPos[4][2] =	//x z offsets for GetJointAbsPosition
+{ 
+	{ 872, 512 },
+	{ 872, -360 },
+	{ -860, -360 },
+	{ -860, 512 }
+};
+
+short SteelDoorMeshswaps[16] = { 37, 74, 111, 148, 185, 222, 259, 296, 340, 380, 420, 470, 481, 518, 555, 592 };
 
 void ControlGunship(short item_number)
 {
@@ -557,6 +568,147 @@ void ControlGasCloud(short item_number)
 	item->item_flags[0] = 0;
 }
 
+void SteelDoorCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->item_flags[0] != 3 && TestBoundsCollide(&items[item_number], laraitem, coll->radius) &&
+		TestCollision(item, laraitem) && coll->enable_baddie_push)
+		ItemPushLara(item, laraitem, coll, 0, 1);
+}
+
+void ControlSteelDoor(short item_number)
+{
+	ITEM_INFO* item;
+	PHD_VECTOR pos;
+	PHD_VECTOR pos2;
+	long h, div, rgb;
+	short room_number, frame;
+
+	item = &items[item_number];
+
+	if (item->item_flags[0] != 3)
+	{
+		if (!item->item_flags[0])
+		{
+			item->pos.y_pos += item->fallspeed;
+			item->fallspeed += 24;
+			room_number = item->room_number;
+			h = GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number),
+				item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+
+			if (item->pos.y_pos > h)
+			{
+				item->pos.y_pos = h;
+
+				if (item->fallspeed > 128)
+				{
+					ScreenShake(item, 64, 4096);
+					item->fallspeed = -item->fallspeed >> 2;
+				}
+				else
+				{
+					item->item_flags[1]++;
+					item->fallspeed = 0;
+
+					if (item->item_flags[1] > 60)
+					{
+						item->item_flags[0]++;
+						item->item_flags[1] = 0;
+					}
+				}
+			}
+		}
+		else if (item->item_flags[0] == 1)
+		{
+			SoundEffect(SFX_WELD_THRU_DOOR_LOOP, &item->pos, SFX_DEFAULT);
+			item->item_flags[3]++;
+
+			if (item->item_flags[3] == SteelDoorMeshswaps[item->trigger_flags] * 3)
+			{
+				item->mesh_bits <<= 1;
+				item->trigger_flags++;
+			}
+
+			pos.x = SteelDoorPos[item->item_flags[1]][0];
+			pos.y = 0;
+			pos.z = SteelDoorPos[item->item_flags[1]][1];
+			GetJointAbsPosition(item, &pos, 0);
+			pos2.x = SteelDoorPos[item->item_flags[1] + 1][0];
+			pos2.y = 0;
+			pos2.z = SteelDoorPos[item->item_flags[1] + 1][1];
+			GetJointAbsPosition(item, &pos2, 0);
+			div = item->item_flags[1] != 1 ? 384 : 768;
+			pos2.x = item->item_flags[2] * (pos2.x - pos.x) / div;
+			pos2.y = item->item_flags[2] * (pos2.y - pos.y) / div;
+			pos2.z = item->item_flags[2] * (pos2.z - pos.z) / div;
+			pos.x += pos2.x;
+			pos.y += pos2.y;
+			pos.z += pos2.z;
+			SteelDoorLensPos = pos;
+			TriggerWeldingEffects(&pos, item->pos.y_rot, item->item_flags[1]);
+			item->item_flags[2]++;
+
+			if (item->item_flags[2] == div)
+			{
+				item->item_flags[1]++;
+				item->item_flags[2] = 0;
+
+				if (item->item_flags[1] == 3)
+				{
+					item->item_flags[0]++;
+					item->mesh_bits = 0x30000;
+					item->item_flags[1] = 0;
+				}
+			}
+
+			rgb = (GetRandomControl() & 0x3F) + 160;
+			TriggerDynamic(pos.x, pos.y, pos.z, 10, rgb, rgb, rgb);
+		}
+		else
+		{
+			if (item->item_flags[1] >= 30)
+			{
+				if (item->current_anim_state == 2)
+				{
+					frame = item->frame_number;
+
+					if (frame == anims[item->anim_number].frame_base + 13)
+					{
+						TriggerSteelDoorSmoke(item->pos.y_rot + 16384, 0, item);
+						TriggerSteelDoorSmoke(item->pos.y_rot, 1, item);
+						TriggerSteelDoorSmoke(item->pos.y_rot - 16384, 2, item);
+						SoundEffect(SFX_RICH_VENT_IMPACT, &item->pos, SFX_DEFAULT);
+						ScreenShake(item, 96, 4096);
+					}
+					else if (frame == anims[item->anim_number].frame_end)
+					{
+						TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
+						item->item_flags[0]++;
+					}
+				}
+			}
+			else
+			{
+				item->item_flags[1]++;
+
+				if (item->item_flags[1] == 30)
+				{
+					item->goal_anim_state = 2;
+					TriggerSteelDoorSmoke(item->pos.y_rot, 0, item);
+					TriggerSteelDoorSmoke(item->pos.y_rot, 1, item);
+					TriggerSteelDoorSmoke(item->pos.y_rot, 2, item);
+					ScreenShake(item, 32, 4096);
+				}
+			}
+		}
+
+		AnimateItem(item);
+	}
+}
+
 void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
@@ -565,4 +717,6 @@ void inject_tower2(bool replace)
 	INJECT(0x004868B0, ControlFishtank, replace);
 	INJECT(0x00486450, ControlArea51Laser, replace);
 	INJECT(0x00488710, ControlGasCloud, replace);
+	INJECT(0x00487AD0, SteelDoorCollision, replace);
+	INJECT(0x00486BE0, ControlSteelDoor, replace);
 }
