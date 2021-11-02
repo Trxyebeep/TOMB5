@@ -7,6 +7,7 @@
 #define ClearObjectLighting	( (void(__cdecl*)()) 0x004AB910 )//empty
 #define ClearDynamicLighting	( (void(__cdecl*)()) 0x004AB9D0 )//empty
 #define InitObjectLighting	( (void(__cdecl*)(ITEM_INFO*)) 0x004AB7A0 )
+#define InitDynamicLighting_noparams	( (void(__cdecl*)()) 0x004AB930 )
 #define InitDynamicLighting	( (void(__cdecl*)(ITEM_INFO*)) 0x004AB950 )
 #define InitObjectFogBulbs	( (void(__cdecl*)()) 0x004AB580 )
 #define S_CalculateStaticMeshLight	( (void(__cdecl*)(long, long, long, long, ROOM_INFO*)) 0x004A9DF0 )

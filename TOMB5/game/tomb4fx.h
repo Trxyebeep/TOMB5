@@ -38,3 +38,7 @@ void DrawLensFlares(ITEM_INFO* item);
 #define ClearFires	( (void(__cdecl*)()) 0x00481B10 )
 #define TriggerFenceSparks	( (void(__cdecl*)(long, long, long, long, long)) 0x00485D80 )
 #define AddFire	( (void(__cdecl*)(long, long, long, long, short, short)) 0x00481B40 )
+#define SetGunFlash	( (void(__cdecl*)(short)) 0x004837B0 )
+#define DrawGunflashes	( (void(__cdecl*)()) 0x004838E0 )
+#define DrawGunshells	( (void(__cdecl*)()) 0x00483090 )
+#define S_DrawFires	( (void(__cdecl*)()) 0x00481BB0 )

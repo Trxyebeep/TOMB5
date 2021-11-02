@@ -25,14 +25,17 @@ void UpdateSkyLightning();
 void CalculateObjectLighting(ITEM_INFO* item, short* frame);
 void DrawAnimatingItem(ITEM_INFO* item);
 void PrintObjects(short room_number);
+void DrawRooms(short current_room);
 
 #define InterpolateMatrix	( (void(__cdecl*)()) 0x0042C8F0 )
 #define	mRotBoundingBoxNoPersp	( (void(__cdecl*)(short*, short*)) 0x0042E240 )
 #define GetFrames	( (long(__cdecl*)(ITEM_INFO*, short*[], long*)) 0x0042CEB0 )
-#define DrawRooms	( (void(__cdecl*)(short)) 0x0042A7A0 )
+#define GetRoomBounds	( (void(__cdecl*)()) 0x0042D4F0 )
 #define CalculateObjectLightingLara	( (void(__cdecl*)()) 0x0042A1B0 )
 #define InterpolateArmMatrix	( (void(__cdecl*)(long*)) 0x0042CC10 )
 #define aInterpolateArmMatrix	( (void(__cdecl*)(float*)) 0x0042C790 )
 #define calc_animating_item_clip_window	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042B4C0 )
 #define DrawStaticObjects	( (void(__cdecl*)(short)) 0x0042D060 )
 #define DrawEffect	( (void(__cdecl*)(short)) 0x0042B340 )
+#define SetupSkelebobMeshswaps	( (void(__cdecl*)()) 0x0042E500 )
+#define RestoreLaraMeshswaps	( (void(__cdecl*)()) 0x0042E630 )

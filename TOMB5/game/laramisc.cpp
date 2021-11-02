@@ -246,7 +246,10 @@ void LaraCheatyBits()
 
 #ifdef GENERAL_FIXES
 	if (keymap[DIK_F3])
+	{
 		gfLevelComplete = gfCurrentLevel + 1;
+		SCNoDrawLara = 0;
+	}
 #endif
 
 }
