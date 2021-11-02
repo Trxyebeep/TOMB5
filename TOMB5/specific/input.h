@@ -3,10 +3,10 @@
 
 void inject_input(bool replace);
 
-int Key(int number);
+long Key(long number);
+long S_UpdateInput();
 
-#define S_UpdateInput	( (int(__cdecl*)()) 0x004A92D0 )
-
+#define ReadJoystick	( (long(__cdecl*)(long&, long&)) 0x004A9280 )
 
 enum IKEYS
 {

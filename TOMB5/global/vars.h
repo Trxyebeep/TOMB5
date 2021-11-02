@@ -170,9 +170,9 @@
 #define SmokeWeapon	VAR_U_(0x00E6CAA0, long)
 #define HKTimer	VAR_U_(0x0051CEC9, char)
 #define HKShotsFired	VAR_U_(0x0051CEC8, char)
-#define joy_fire	VAR_U_(0x00878D9C, int)
-#define joy_x	VAR_U_(0x00878DA0, int)
-#define joy_y	VAR_U_(0x00878DA4, int)
+#define joy_fire	VAR_U_(0x00878D9C, long)
+#define joy_x	VAR_U_(0x00878DA0, long)
+#define joy_y	VAR_U_(0x00878DA4, long)
 #define XATrack	VAR_U_(0x00510B14, long)
 #define MusicVolume	VAR_U_(0x00E4B0EC, int)
 #define TargetSnaps	VAR_U_(0x0051CA2D, char)
@@ -481,6 +481,7 @@
 #define outside_left	VAR_U_(0x00E6D83C, long)
 #define outside_right	VAR_U_(0x00E6E4C0, long)
 #define outside_bottom	VAR_U_(0x00E6D738, long)
+#define ControlMethod	VAR_U_(0x008FBDA8, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -607,6 +608,7 @@
 #define StarFieldColors	ARRAY_(0x00C713E4, long, [256])
 #define draw_room_list	ARRAY_(0x0051CB5C, long, [128])
 #define draw_rooms	ARRAY_(0x00E6D760, short, [100])
+#define MappedControls	ARRAY_(0x00516AF0, long, [32])
 
 //defs
 #define NO_HEIGHT -32512
