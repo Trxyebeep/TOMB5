@@ -4,3 +4,7 @@
 void inject_footprnt(bool replace);
 
 void AddFootprint(ITEM_INFO* item);
+
+#ifdef FOOTPRINTS
+void S_DrawFootPrints();
+#endif
