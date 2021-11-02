@@ -68,6 +68,7 @@
     <ClCompile Include="TOMB5\game\lot.cpp" />
     <ClCompile Include="TOMB5\game\mafia2.cpp" />
     <ClCompile Include="TOMB5\game\minisub.cpp" />
+    <ClCompile Include="TOMB5\game\mirror.cpp" />
     <ClCompile Include="TOMB5\game\missile.cpp" />
     <ClCompile Include="TOMB5\game\moveblok.cpp" />
     <ClCompile Include="TOMB5\game\newinv2.cpp" />
@@ -116,6 +117,7 @@
     <ClCompile Include="TOMB5\specific\LoadSave.cpp" />
     <ClCompile Include="TOMB5\specific\output.cpp" />
     <ClCompile Include="TOMB5\specific\polyinsert.cpp" />
+    <ClCompile Include="TOMB5\specific\profiler.cpp" />
     <ClCompile Include="TOMB5\specific\specificfx.cpp" />
     <ClCompile Include="TOMB5\specific\texture.cpp" />
     <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
@@ -177,6 +179,7 @@
     <ClInclude Include="TOMB5\game\lot.h" />
     <ClInclude Include="TOMB5\game\mafia2.h" />
     <ClInclude Include="TOMB5\game\minisub.h" />
+    <ClInclude Include="TOMB5\game\mirror.h" />
     <ClInclude Include="TOMB5\game\missile.h" />
     <ClInclude Include="TOMB5\game\moveblok.h" />
     <ClInclude Include="TOMB5\game\newinv2.h" />
@@ -229,6 +232,7 @@
     <ClInclude Include="TOMB5\specific\d3dmatrix.h" />
     <ClInclude Include="TOMB5\specific\output.h" />
     <ClInclude Include="TOMB5\specific\polyinsert.h" />
+    <ClInclude Include="TOMB5\specific\profiler.h" />
     <ClInclude Include="TOMB5\specific\specificfx.h" />
     <ClInclude Include="TOMB5\specific\texture.h" />
     <ClInclude Include="TOMB5\tomb5\framework.h" />

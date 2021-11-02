@@ -472,6 +472,15 @@
 #define CurrentRoom	VAR_U_(0x00E6D754, long)	//static meshes light calc
 #define GlobalRoomNumber	VAR_U_(0x00E6D730, short)	//object clip window calc
 #define SteelDoorLensPos	VAR_U_(0x00E4B110, PHD_VECTOR)
+#define snow_outside	VAR_U_(0x00E6CAE8, long)
+#define camera_underwater	VAR_U_(0x00E6E4B4, long)
+#define room_list_start	VAR_U_(0x0051CD60, long)
+#define room_list_end	VAR_U_(0x0051CD64, long)
+#define number_draw_rooms	VAR_U_(0x00E6CAFC, long)
+#define outside_top	VAR_U_(0x00E6E4E0, long)
+#define outside_left	VAR_U_(0x00E6D83C, long)
+#define outside_right	VAR_U_(0x00E6E4C0, long)
+#define outside_bottom	VAR_U_(0x00E6D738, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -596,6 +605,8 @@
 #define fcossin_tbl	ARRAY_(0x0051D164, float, [65536])
 #define StarFieldPositions	ARRAY_(0x00C86BEC, float, [1024])
 #define StarFieldColors	ARRAY_(0x00C713E4, long, [256])
+#define draw_room_list	ARRAY_(0x0051CB5C, long, [128])
+#define draw_rooms	ARRAY_(0x00E6D760, short, [100])
 
 //defs
 #define NO_HEIGHT -32512
