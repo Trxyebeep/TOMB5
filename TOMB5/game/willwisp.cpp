@@ -11,6 +11,10 @@
 #include "lot.h"
 #include "items.h"
 #include "../specific/function_stubs.h"
+#include "effects.h"
+
+static BITE_INFO mazemonster_hitright = {0, 0, 0, 22};
+static BITE_INFO mazemonster_hitleft = {0, 0, 0, 16};
 
 void InitialiseWillOWisp(short item_number)
 {
@@ -119,8 +123,138 @@ void WillOWispControl(short item_number)
 	}
 }
 
+void InitialiseMazeMonster(short item_number)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+	InitialiseCreature(item_number);
+	item->anim_number = objects[MAZE_MONSTER].anim_index;
+	item->frame_number = anims[item->anim_number].frame_base;
+	item->goal_anim_state = 1;
+	item->current_anim_state = 1;
+}
+
+void MazeMonsterControl(short item_number)
+{
+	ITEM_INFO* item;
+	CREATURE_INFO* monster;
+	AI_INFO info;
+	long distance, dx, dz;
+	short angle, anim, frame;
+
+	if (CreatureActive(item_number))
+	{
+		item = &items[item_number];
+		monster = (CREATURE_INFO*) item->data;
+		angle = 0;
+		anim = objects[MAZE_MONSTER].anim_index;
+
+		if (item->hit_points <= 0)
+		{
+			item->hit_points = 0;
+
+			if (item->current_anim_state != 7)
+			{
+				item->anim_number = anim + 10;
+				item->frame_number = anims[item->anim_number].frame_base;
+				item->current_anim_state = 7;
+			}
+		}
+		else
+		{
+			if (item->ai_bits)
+				GetAITarget(monster);
+			else if (monster->hurt_by_lara)
+				monster->enemy = lara_item;
+
+			CreatureAIInfo(item, &info);
+
+			if (monster->enemy == lara_item)
+				distance = info.distance;
+			else
+			{
+				dx = lara_item->pos.x_pos - item->pos.x_pos;
+				dz = lara_item->pos.z_pos - item->pos.z_pos;
+				phd_atan(dz, dx);
+				distance = SQUARE(dx) + SQUARE(dz);
+			}
+
+			GetCreatureMood(item, &info, 1);
+			CreatureMood(item, &info, 1);
+			angle = CreatureTurn(item, monster->maximum_turn);
+			monster->maximum_turn = 1274;
+
+			switch (item->current_anim_state)
+			{
+			case 1:
+				monster->flags = 0;
+
+				if (monster->mood != ATTACK_MOOD)
+					item->goal_anim_state = 1;
+				else if (distance > 1048576)
+					item->goal_anim_state = GetRandomControl() & 1 ? 2 : 3;
+				else
+					item->goal_anim_state = GetRandomControl() & 1 ? 4 : 6;
+
+				break;
+
+			case 2:
+			case 3:
+
+				if (distance < 1048576 || monster->mood != ATTACK_MOOD)
+					item->goal_anim_state = 1;
+
+				SoundEffect(SFX_IMP_BARREL_ROLL, &item->pos, SFX_DEFAULT);
+				break;
+
+			case 4:
+			case 6:
+				monster->maximum_turn = 0;
+
+				if (ABS(info.angle) < 364)
+					item->pos.y_rot += info.angle;
+				else if (info.angle < 0)
+					item->pos.y_rot -= 364;
+				else
+					item->pos.y_rot += 364;
+
+				if (!monster->flags)
+				{
+					frame = anims[item->anim_number].frame_base;
+
+					if (item->touch_bits & 0x3C000 &&
+						(item->anim_number == anim + 8 && item->frame_number > frame + 19 && item->frame_number < frame + 25 ||
+						item->anim_number == anim + 2 && item->frame_number > frame + 6 && item->frame_number < frame + 16))
+					{
+						CreatureEffectT(item, &mazemonster_hitleft, 20, item->pos.y_rot, DoBloodSplat);
+						lara_item->hit_points -= 150;
+						lara_item->hit_status = 1;
+						monster->flags |= 1;
+					}
+					else if (item->touch_bits & 0xF00000 &&
+						(item->anim_number == anim + 8 && item->frame_number > frame + 13 && item->frame_number < frame + 20 ||
+						item->anim_number == anim + 2 && item->frame_number > frame + 33 && item->frame_number < frame + 43))
+					{
+						CreatureEffectT(item, &mazemonster_hitright, 20, item->pos.y_rot, DoBloodSplat);
+						lara_item->hit_points -= 150;
+						lara_item->hit_status = 1;
+						monster->flags |= 2;
+					}
+				}
+
+				break;
+			}
+		}
+
+		CreatureAnimation(item_number, angle, 0);
+	}
+}
+
 void inject_wisp(bool replace)
 {
 	INJECT(0x0048E500, InitialiseWillOWisp, replace);
 	INJECT(0x0048E580, WillOWispControl, replace);
+	INJECT(0x0048E8E0, InitialiseMazeMonster, replace);
+	INJECT(0x0048E960, MazeMonsterControl, replace);
 }

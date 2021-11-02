@@ -54,6 +54,7 @@
 #include "../specific/specificfx.h"
 #include "missile.h"
 #include "sas.h"
+#include "gladiatr.h"
 
 void InitialiseLara(int restore)
 {
@@ -1645,8 +1646,8 @@ void BaddyObjects()
 	if (objects[MAZE_MONSTER].loaded)
 	{
 		obj = &objects[MAZE_MONSTER];
-	//	obj->initialise = InitialiseMazeMonster;
-	//	obj->control = MazeMonsterControl;
+		obj->initialise = InitialiseMazeMonster;
+		obj->control = MazeMonsterControl;
 		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 4000;
@@ -1745,8 +1746,8 @@ void BaddyObjects()
 	if (objects[GLADIATOR].loaded)
 	{
 		obj = &objects[GLADIATOR];
-	//	obj->initialise = InitialiseGladiator;
-	//	obj->control = GladiatorControl;
+		obj->initialise = InitialiseGladiator;
+		obj->control = GladiatorControl;
 		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 20;
@@ -1897,6 +1898,6 @@ void inject_setup(bool replace)
 	INJECT(0x00473210, InitialiseLara, replace);
 	INJECT(0x00476360, ObjectObjects, replace);
 	INJECT(0x00475D40, TrapObjects, replace);
-	INJECT(0x004737C0, BaddyObjects, 0);
+	INJECT(0x004737C0, BaddyObjects, replace);
 	INJECT(0x00473600, InitialiseObjects, replace);
 }

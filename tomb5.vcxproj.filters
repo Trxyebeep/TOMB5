@@ -321,8 +321,15 @@
     <ClCompile Include="TOMB5\game\sas.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\game\mirror.cpp" />
-    <ClCompile Include="TOMB5\specific\profiler.cpp" />
+    <ClCompile Include="TOMB5\game\gladiatr.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
+    <ClCompile Include="TOMB5\game\mirror.cpp">
+      <Filter>TOMB5\game</Filter>
+    </ClCompile>
+    <ClCompile Include="TOMB5\specific\profiler.cpp">
+      <Filter>TOMB5\specific</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -643,8 +650,15 @@
     <ClInclude Include="TOMB5\game\sas.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\game\mirror.h" />
-    <ClInclude Include="TOMB5\specific\profiler.h" />
+    <ClInclude Include="TOMB5\game\gladiatr.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\game\mirror.h">
+      <Filter>TOMB5\game</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\specific\profiler.h">
+      <Filter>TOMB5\specific</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt">
