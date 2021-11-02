@@ -54,6 +54,7 @@
 #include "../specific/specificfx.h"
 #include "missile.h"
 #include "sas.h"
+#include "gladiatr.h"
 
 void InitialiseLara(int restore)
 {
@@ -1745,8 +1746,8 @@ void BaddyObjects()
 	if (objects[GLADIATOR].loaded)
 	{
 		obj = &objects[GLADIATOR];
-	//	obj->initialise = InitialiseGladiator;
-	//	obj->control = GladiatorControl;
+		obj->initialise = InitialiseGladiator;
+		obj->control = GladiatorControl;
 		obj->collision = CreatureCollision;
 		obj->shadow_size = 128;
 		obj->hit_points = 20;

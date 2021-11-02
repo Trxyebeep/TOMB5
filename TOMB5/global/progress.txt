@@ -567,8 +567,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/gladiatr.cpp
 
-0x00436670		InitialiseGladiator
-0x00436700		GladiatorControl
+0x00436670	+	InitialiseGladiator
+0x00436700	+	GladiatorControl
 
 
 		game/guardian.cpp

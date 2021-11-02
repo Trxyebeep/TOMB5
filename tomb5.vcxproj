@@ -42,6 +42,7 @@
     <ClCompile Include="TOMB5\game\flmtorch.cpp" />
     <ClCompile Include="TOMB5\game\footprnt.cpp" />
     <ClCompile Include="TOMB5\game\gameflow.cpp" />
+    <ClCompile Include="TOMB5\game\gladiatr.cpp" />
     <ClCompile Include="TOMB5\game\guardian.cpp" />
     <ClCompile Include="TOMB5\game\hair.cpp" />
     <ClCompile Include="TOMB5\game\health.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="TOMB5\game\flmtorch.h" />
     <ClInclude Include="TOMB5\game\footprnt.h" />
     <ClInclude Include="TOMB5\game\gameflow.h" />
+    <ClInclude Include="TOMB5\game\gladiatr.h" />
     <ClInclude Include="TOMB5\game\guardian.h" />
     <ClInclude Include="TOMB5\game\hair.h" />
     <ClInclude Include="TOMB5\game\health.h" />
