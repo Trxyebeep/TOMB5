@@ -1334,7 +1334,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00473210	+	InitialiseLara
 0x00473600	+	InitialiseObjects
-0x004737C0	x	BaddyObjects
+0x004737C0	+	BaddyObjects
 0x00475D40	+	TrapObjects
 0x00476360	+	ObjectObjects
 0x004771E0		GetCarriedItems

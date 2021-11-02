@@ -1898,6 +1898,6 @@ void inject_setup(bool replace)
 	INJECT(0x00473210, InitialiseLara, replace);
 	INJECT(0x00476360, ObjectObjects, replace);
 	INJECT(0x00475D40, TrapObjects, replace);
-	INJECT(0x004737C0, BaddyObjects, 0);
+	INJECT(0x004737C0, BaddyObjects, replace);
 	INJECT(0x00473600, InitialiseObjects, replace);
 }
