@@ -2005,10 +2005,10 @@ struct SPRITESTRUCT
 	ushort offset;
 	ushort width;
 	ushort height;
-	float x1;
-	float y1;
-	float x2;
-	float y2;
+	float x1;	//left
+	float y1;	//top
+	float x2;	//right
+	float y2;	//bottom
 };
 
 struct RAT_STRUCT
