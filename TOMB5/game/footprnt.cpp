@@ -74,23 +74,23 @@ void S_DrawFootPrints()
 			a = print->Active >> 2;
 			phd_PushMatrix();
 			phd_TranslateAbs(print->x, print->y, print->z);
-			phd_RotY(print->YRot - 8192);
-			pos.x = -128;
-			pos.y = 0;	//top left
-			pos.z = 64;
+			phd_RotY(print->YRot);
+			pos.x = 0;
+			pos.y = 0;
+			pos.z = -64;
 			x1 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
 			y1 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
 			z1 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
 
 			pos.x = -128;
-			pos.y = 0;	//bottom left
-			pos.z = -64;
+			pos.y = 0;
+			pos.z = 64;
 			x2 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
 			y2 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
 			z2 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
 
 			pos.x = 128;
-			pos.y = 0;	//top right
+			pos.y = 0;
 			pos.z = 64;
 			x3 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
 			y3 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
@@ -109,16 +109,16 @@ void S_DrawFootPrints()
 			tex.drawtype = 3;
 			tex.flag = 0;
 			tex.tpage = sprite->tpage;
-			u1 = sprite->x2;
-			u2 = sprite->x1;
-			v1 = sprite->y2;
-			v2 = sprite->y1;
-			tex.u1 = u2;
-			tex.v1 = v1;	//bottom left
+			u1 = sprite->x1;
+			u2 = sprite->x2;
+			v1 = sprite->y1;
+			v2 = sprite->y2;
+			tex.u1 = u1;
+			tex.v1 = v1;	//top left
 			tex.u2 = u2;
-			tex.v2 = v2;	//top left
+			tex.v2 = v1;	//top right
 			tex.u3 = u1;
-			tex.v3 = v2;	//top right
+			tex.v3 = v2;	//bottom left
 			AddTriSorted(v, 0, 1, 2, &tex, 1);	//a tri instead of a quad is needed to avoid the snow sprite
 		}
 	}
