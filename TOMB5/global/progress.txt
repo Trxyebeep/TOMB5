@@ -1920,7 +1920,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A8F90		DecreaseScreenSize
 0x004A9110	+	Key
 0x004A9280		ReadJoystick
-0x004A92D0		S_UpdateInput
+0x004A92D0	+	S_UpdateInput
 
 
 		specific/lighting.cpp
@@ -2106,10 +2106,10 @@ x for functions decompiled but not injected, for one reason or another.
 0x004BFDA0		AddPolyLine
 0x004C0060	+	DrawStarField
 0x004C0580		DoWeather
-0x004C05B0		setXY4
-0x004C0810		setXY3
-0x004C09E0		setXYZ4
-0x004C0F30		setXYZ3
+0x004C05B0	+	setXY4
+0x004C0810	+	setXY3
+0x004C09E0	+	setXYZ4
+0x004C0F30	+	setXYZ3
 0x004C1340		DrawBubbles
 0x004C1790		S_DrawSplashes
 0x004C23C0		S_DrawFireSparks

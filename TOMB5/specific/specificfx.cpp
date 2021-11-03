@@ -1107,6 +1107,396 @@ void DrawStarField()
 	}
 }
 
+void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, short* clip)
+{
+	float zv;
+	short clip_distance;
+
+	clip_distance = 0;	//Should've been a goddamn for loop but whatever core wants happens.
+	v->tu = (float)x1;
+	v->tv = (float)y1;
+	v->sz = (float)z1;
+
+	if (v->sz < f_mznear)
+		clip_distance = -128;
+	else
+	{
+		zv = f_mpersp / v->sz;
+
+		if (v->sz > FogEnd)
+		{
+			clip_distance = 256;
+			v->sz = f_zfar;
+		}
+
+		v->sx = zv * v->tu + f_centerx;
+		v->sy = zv * v->tv + f_centery;
+		v->rhw = f_moneopersp * zv;
+
+		if (phd_winxmin > v->sx)
+			clip_distance++;
+		else if (phd_winxmax < v->sx)
+			clip_distance += 2;
+
+		if (phd_winymin > v->sy)
+			clip_distance += 4;
+		else if (phd_winymax < v->sy)
+			clip_distance += 8;
+	}
+
+	v++;
+	clip[0] = clip_distance;
+	clip_distance = 0;
+	v->tu = (float)x2;
+	v->tv = (float)y2;
+	v->sz = (float)z2;
+
+	if (v->sz < f_mznear)
+		clip_distance = -128;
+	else
+	{
+		zv = f_mpersp / v->sz;
+
+		if (v->sz > FogEnd)
+		{
+			clip_distance = 256;
+			v->sz = f_zfar;
+		}
+
+		v->sx = zv * v->tu + f_centerx;
+		v->sy = zv * v->tv + f_centery;
+		v->rhw = f_moneopersp * zv;
+
+		if (phd_winxmin > v->sx)
+			clip_distance++;
+		else if (phd_winxmax < v->sx)
+			clip_distance += 2;
+
+		if (phd_winymin > v->sy)
+			clip_distance += 4;
+		else if (phd_winymax < v->sy)
+			clip_distance += 8;
+	}
+
+	v++;
+	clip[1] = clip_distance;
+	clip_distance = 0;
+	v->tu = (float)x3;
+	v->tv = (float)y3;
+	v->sz = (float)z3;
+
+	if (v->sz < f_mznear)
+		clip_distance = -128;
+	else
+	{
+		zv = f_mpersp / v->sz;
+
+		if (v->sz > FogEnd)
+		{
+			clip_distance = 256;
+			v->sz = f_zfar;
+		}
+
+		v->sx = zv * v->tu + f_centerx;
+		v->sy = zv * v->tv + f_centery;
+		v->rhw = f_moneopersp * zv;
+
+		if (phd_winxmin > v->sx)
+			clip_distance++;
+		else if (phd_winxmax < v->sx)
+			clip_distance += 2;
+
+		if (phd_winymin > v->sy)
+			clip_distance += 4;
+		else if (phd_winymax < v->sy)
+			clip_distance += 8;
+	}
+
+	clip[2] = clip_distance;
+}
+
+void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, long x4, long y4, long z4, short* clip)
+{
+	float zv;
+	short clip_distance;
+
+	clip_distance = 0;
+	v->tu = (float)x1;
+	v->tv = (float)y1;
+	v->sz = (float)z1;
+
+	if (v->sz < f_mznear)
+		clip_distance = -128;
+	else
+	{
+		zv= f_mpersp / v->sz;
+
+		if (v->sz > FogEnd)
+		{
+			clip_distance = 256;
+			v->sz = f_zfar;
+		}
+
+		v->sx = zv * v->tu + f_centerx;
+		v->sy = zv * v->tv + f_centery;
+		v->rhw = f_moneopersp * zv;
+
+		if (phd_winxmin > v->sx)
+			clip_distance++;
+		else if (phd_winxmax < v->sx)
+			clip_distance += 2;
+
+		if (phd_winymin > v->sy)
+			clip_distance += 4;
+		else if (phd_winymax < v->sy)
+			clip_distance += 8;
+	}
+
+	v++;
+	clip[0] = clip_distance;
+	clip_distance = 0;
+	v->tu = (float)x2;
+	v->tv = (float)y2;
+	v->sz = (float)z2;
+
+	if (v->sz < f_mznear)
+		clip_distance = -128;
+	else
+	{
+		zv = f_mpersp / v->sz;
+
+		if (v->sz > FogEnd)
+		{
+			clip_distance = 256;
+			v->sz = f_zfar;
+		}
+
+		v->sx = zv * v->tu + f_centerx;
+		v->sy = zv * v->tv + f_centery;
+		v->rhw = f_moneopersp * zv;
+
+		if (phd_winxmin > v->sx)
+			clip_distance++;
+		else if (phd_winxmax < v->sx)
+			clip_distance += 2;
+
+		if (phd_winymin > v->sy)
+			clip_distance += 4;
+		else if (phd_winymax < v->sy)
+			clip_distance += 8;
+	}
+
+	v++;
+	clip[1] = clip_distance;
+	clip_distance = 0;
+	v->tu = (float)x3;
+	v->tv = (float)y3;
+	v->sz = (float)z3;
+
+	if (v->sz < f_mznear)
+		clip_distance = -128;
+	else
+	{
+		zv = f_mpersp / v->sz;
+
+		if (v->sz > FogEnd)
+		{
+			clip_distance = 256;
+			v->sz = f_zfar;
+		}
+
+		v->sx = zv * v->tu + f_centerx;
+		v->sy = zv * v->tv + f_centery;
+		v->rhw = f_moneopersp * zv;
+
+		if (phd_winxmin > v->sx)
+			clip_distance++;
+		else if (phd_winxmax < v->sx)
+			clip_distance += 2;
+
+		if (phd_winymin > v->sy)
+			clip_distance += 4;
+		else if (phd_winymax < v->sy)
+			clip_distance += 8;
+	}
+
+	v++;
+	clip[2] = clip_distance;
+	clip_distance = 0;
+	v->tu = (float)x4;
+	v->tv = (float)y4;
+	v->sz = (float)z4;
+
+	if (v->sz < f_mznear)
+		clip_distance = -128;
+	else
+	{
+		zv = f_mpersp / v->sz;
+
+		if (v->sz > FogEnd)
+		{
+			clip_distance = 256;
+			v->sz = f_zfar;
+		}
+
+		v->sx = zv * v->tu + f_centerx;
+		v->sy = zv * v->tv + f_centery;
+		v->rhw = f_moneopersp * zv;
+
+		if (phd_winxmin > v->sx)
+			clip_distance++;
+		else if (phd_winxmax < v->sx)
+			clip_distance += 2;
+
+		if (phd_winymin > v->sy)
+			clip_distance += 4;
+		else if (phd_winymax < v->sy)
+			clip_distance += 8;
+	}
+
+	clip[3] = clip_distance;
+}
+
+void setXY3(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3, long z, short* clip)
+{
+	float zv;
+	short clip_distance;
+
+	clip_distance = 0;
+	zv = f_mpersp / (float)z;
+	v->sx = (float)x1;
+	v->sy = (float)y1;
+	v->sz = (float)z;
+	v->rhw = f_moneopersp * zv;
+
+	if (phd_winxmin > v->sx)
+		clip_distance = 1;
+	else if (phd_winxmax < v->sx)
+		clip_distance = 2;
+
+	if (phd_winymin > v->sy)
+		clip_distance += 4;
+	else if (phd_winymax < v->sy)
+		clip_distance += 8;
+
+	clip[0] = clip_distance;
+	v++;
+	clip_distance = 0;
+	v->sx = (float)x2;
+	v->sy = (float)y2;
+	v->sz = (float)z;
+	v->rhw = f_moneopersp * zv;
+
+	if (phd_winxmin > v->sx)
+		clip_distance = 1;
+	else if (phd_winxmax < v->sx)
+		clip_distance = 2;
+
+	if (phd_winymin > v->sy)
+		clip_distance += 4;
+	else if (phd_winymax < v->sy)
+		clip_distance += 8;
+
+	clip[1] = clip_distance;
+	v++;
+	clip_distance = 0;
+	v->sx = (float)x3;
+	v->sy = (float)y3;
+	v->sz = (float)z;
+	v->rhw = f_moneopersp * zv;
+
+	if (phd_winxmin > v->sx)
+		clip_distance = 1;
+	else if (phd_winxmax < v->sx)
+		clip_distance = 2;
+
+	if (phd_winymin > v->sy)
+		clip_distance += 4;
+	else if (phd_winymax < v->sy)
+		clip_distance += 8;
+
+	clip[2] = clip_distance;
+}
+
+void setXY4(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3, long x4, long y4, long z, short* clip)
+{
+	float zv;
+	short clip_distance;
+
+	clip_distance = 0;
+	zv = f_mpersp / (float)z;
+	v->sx = (float)x1;
+	v->sy = (float)y1;
+	v->sz = (float)z;
+	v->rhw = f_moneopersp * zv;
+
+	if (phd_winxmin > v->sx)
+		clip_distance = 1;
+	else if (phd_winxmax < v->sx)
+		clip_distance = 2;
+
+	if (phd_winymin > v->sy)
+		clip_distance += 4;
+	else if (phd_winymax < v->sy)
+		clip_distance += 8;
+
+	clip[0] = clip_distance;
+	v++;
+	clip_distance = 0;
+	v->sx = (float)x2;
+	v->sy = (float)y2;
+	v->sz = (float)z;
+	v->rhw = f_moneopersp * zv;
+
+	if (phd_winxmin > v->sx)
+		clip_distance = 1;
+	else if (phd_winxmax < v->sx)
+		clip_distance = 2;
+
+	if (phd_winymin > v->sy)
+		clip_distance += 4;
+	else if (phd_winymax < v->sy)
+		clip_distance += 8;
+
+	clip[1] = clip_distance;
+	v++;
+	clip_distance = 0;
+	v->sx = (float)x3;
+	v->sy = (float)y3;
+	v->sz = (float)z;
+	v->rhw = f_moneopersp * zv;
+
+	if (phd_winxmin > v->sx)
+		clip_distance = 1;
+	else if (phd_winxmax < v->sx)
+		clip_distance = 2;
+
+	if (phd_winymin > v->sy)
+		clip_distance += 4;
+	else if (phd_winymax < v->sy)
+		clip_distance += 8;
+
+	clip[2] = clip_distance;
+	v++;
+	clip_distance = 0;
+	v->sx = (float)x4;
+	v->sy = (float)y4;
+	v->sz = (float)z;
+	v->rhw = f_moneopersp * zv;
+
+	if (phd_winxmin > v->sx)
+		clip_distance = 1;
+	else if (phd_winxmax < v->sx)
+		clip_distance = 2;
+
+	if (phd_winymin > v->sy)
+		clip_distance += 4;
+	else if (phd_winymax < v->sy)
+		clip_distance += 8;
+
+	clip[3] = clip_distance;
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -1116,4 +1506,8 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CF2F0, DrawMoon, replace);
 	INJECT(0x004CFF80, DrawGasCloud, replace);
 	INJECT(0x004C0060, DrawStarField, replace);
+	INJECT(0x004C0F30, setXYZ3, replace);
+	INJECT(0x004C09E0, setXYZ4, replace);
+	INJECT(0x004C0810, setXY3, replace);
+	INJECT(0x004C05B0, setXY4, replace);
 }

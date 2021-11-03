@@ -31,6 +31,9 @@
 #ifdef DEBUG_FEATURES
 #include "../specific/texture.h"
 #endif
+#ifdef FOOTPRINTS
+#include "footprnt.h"
+#endif
 
 short no_rotation[12] = { 0,0,0,0,0,0,0,0,0,0,0,0 };
 
@@ -886,6 +889,9 @@ void DrawRooms(short current_room)
 	DrawShockwaves();
 	DrawLightning();
 	DrawTwogunLasers();
+#ifdef FOOTPRINTS
+	S_DrawFootPrints();
+#endif
 	lara_item->pos.x_pos = lx;
 	lara_item->pos.y_pos = ly;
 	lara_item->pos.z_pos = lz;

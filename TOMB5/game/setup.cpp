@@ -973,7 +973,10 @@ void BaddyObjects()
 	obj->using_drawanimating_item = 0;
 	obj->shadow_size = 160;
 	obj->hit_points = 1000;
+	obj->save_position = 1;
 	obj->save_hitpoints = 1;
+	obj->save_flags = 1;
+	obj->save_anim = 1;
 
 	if (objects[SAS].loaded)
 	{
@@ -1799,6 +1802,7 @@ void BaddyObjects()
 
 	if (objects[GUARDIAN].loaded)
 	{
+		obj = &objects[GUARDIAN];
 		obj->initialise = InitialiseGuardian;
 		obj->control = GuardianControl;
 		obj->collision = CreatureCollision;
@@ -1813,6 +1817,7 @@ void BaddyObjects()
 
 	if (objects[AUTOGUN].loaded)
 	{
+		obj = &objects[AUTOGUN];
 		obj->initialise = InitialiseAutogun;
 		obj->control = AutogunControl;
 		obj->save_hitpoints = 1;
@@ -1826,6 +1831,7 @@ void BaddyObjects()
 
 	if (objects[GUNSHIP].loaded)
 	{
+		obj = &objects[GUNSHIP];
 		obj->control = ControlGunship;
 		obj->save_flags = 1;
 		obj->save_anim = 1;
