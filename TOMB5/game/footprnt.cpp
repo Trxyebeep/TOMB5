@@ -126,11 +126,12 @@ void S_DrawFootPrints()
 
 void GetProperFootPos(PHD_VECTOR* pos)	//more hacks to be added later
 {
+	FOOTPRINT* print;
+	FLOOR_INFO* floor;
 	PHD_VECTOR left_foot;
 	PHD_VECTOR right_foot;
-	FLOOR_INFO* floor;
 	long height;
-	short room_number;
+	short room_number, frame, base;
 
 	left_foot.x = 0;
 	left_foot.y = 0;
@@ -142,21 +143,246 @@ void GetProperFootPos(PHD_VECTOR* pos)	//more hacks to be added later
 	right_foot.z = 0;
 	GetLaraJointPos(&right_foot, LM_RFOOT);
 
-	room_number = lara_item->room_number;
-	floor = GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number);
-	height = GetHeight(floor, lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+	frame = lara_item->frame_number;
+	base = anims[lara_item->anim_number].frame_base;
 
-	if (ABS(left_foot.y - height) < ABS(right_foot.y - height))
+	switch (lara_item->anim_number)	//thank u core
 	{
-		pos->x = left_foot.x;	//left foot winer!
-		pos->y = left_foot.y;
-		pos->z = left_foot.z;
-	}
-	else
-	{
+	case 7:	//run to walk right
+
+		if (frame == base + 16)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+
+		break;
+
+	case 10:	//run -> stop right foot
+
+		if (frame == base + 7)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+		else if (frame == base + 12)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+
+		break;
+
+	case 12:	//turn right slow
+
+		if (frame == base + 3)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+		else if (frame == base + 17)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+
+		break;
+
+	case 13:	//turn left slow
+
+		if (frame == base + 13)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+		else if (frame == base + 27)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+
+		break;
+
+	case 24:	//hard land
+
+		if (frame == base + 34)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+		else if (frame == base + 39)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+
+		break;
+
+	case 31:	//land from standing jump
+
+		if (frame == base + 15)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+		else if (frame == base + 19)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+
+		break;
+
+	case 38:	//walk back end right
 		pos->x = right_foot.x;	//right foot winer!
 		pos->y = right_foot.y;
 		pos->z = right_foot.z;
+		break;
+
+	case 39:	//walk back end left
+		pos->x = left_foot.x;	//left foot winer!
+		pos->y = left_foot.y;
+		pos->z = left_foot.z;
+		break;
+
+	case 40:	//walk back
+
+		if (frame == base + 14)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+		else if (frame == base + 44)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+
+		break;
+
+	case 44:	//fast turn right
+
+		if (frame == base + 9)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+		else if (frame == base + 20)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+
+		break;
+
+	case 65:	//sidestep left
+
+		if (frame == base + 1)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+		else if (frame == base + 17)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+
+		break;
+
+	case 67:	//sidestep right
+
+		if (frame == base + 14)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+		else if (frame == base + 24)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+
+		break;
+
+	case 69:	//turn left fast
+
+		if (frame == base + 12)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+		else if (frame == base + 20)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+
+		break;
+
+	case 82:	//soft land, both feet winer!
+		pos->x = right_foot.x;
+		pos->y = right_foot.y;
+		pos->z = right_foot.z;
+		room_number = lara_item->room_number;
+		floor = GetFloor(pos->x, pos->y, pos->z, &room_number);
+
+		if (floor->fx < 3 && !OnObject)	//add right foot print
+		{
+			print = &FootPrint[FootPrintNum];
+			print->x = pos->x;
+			print->y = GetHeight(floor, pos->x, pos->y, pos->z);
+			print->z = pos->z;
+			print->YRot = lara_item->pos.y_rot;
+			print->Active = 512;
+			FootPrintNum = FootPrintNum + 1 & 0x1F;
+		}
+
+		pos->x = left_foot.x;	//now left foot
+		pos->y = left_foot.y;
+		pos->z = left_foot.z;
+		break;
+
+	default:
+		room_number = lara_item->room_number;
+		floor = GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number);
+		height = GetHeight(floor, lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+
+		if (ABS(left_foot.y - height) < ABS(right_foot.y - height))
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+		else
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+
+		break;
 	}
 }
 #endif

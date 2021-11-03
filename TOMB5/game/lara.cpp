@@ -19,6 +19,9 @@
 #include "../specific/3dmath.h"
 #include "rope.h"
 #include "../specific/function_stubs.h"
+#ifdef FOOTPRINTS
+#include "footprnt.h"
+#endif
 
 void(*lara_control_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* coll) =
 {
@@ -923,6 +926,11 @@ void lara_as_walk(ITEM_INFO* item, COLL_INFO* coll)
 	}
 	else
 		item->goal_anim_state = AS_STOP;
+
+#ifdef FOOTPRINTS
+	if (item->anim_number == 7)
+		AddFootprint(item);
+#endif
 }
 
 void lara_col_walk(ITEM_INFO* item, COLL_INFO* coll)
