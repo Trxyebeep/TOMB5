@@ -124,7 +124,7 @@ void S_DrawFootPrints()
 	}
 }
 
-void GetProperFootPos(PHD_VECTOR* pos)	//more hacks to be added later
+void GetProperFootPos(PHD_VECTOR* pos)
 {
 	FOOTPRINT* print;
 	FLOOR_INFO* floor;
