@@ -482,6 +482,8 @@
 #define outside_right	VAR_U_(0x00E6E4C0, long)
 #define outside_bottom	VAR_U_(0x00E6D738, long)
 #define ControlMethod	VAR_U_(0x008FBDA8, long)
+#define SetupLight_thing	VAR_U_(0x0087B0D8, long)
+#define unused_bLaraUnderWater	VAR_U_(0x0087B0FC, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
