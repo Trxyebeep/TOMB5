@@ -10,9 +10,12 @@
 #include "d3dmatrix.h"
 
 #define LINE_POINTS	4	//number of points in each grid line
+#define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
+#ifdef SMOOTH_SHADOWS
+#define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
+#else
 #define NUM_TRIS	14	//number of triangles needed to create the shadow (this depends on what shape you're doing)
 #define GRID_POINTS	(LINE_POINTS * LINE_POINTS)	//number of points in the whole grid
-#define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
 
 long ShadowTable[NUM_TRIS * 3] =	//num of triangles * 3 points
 {
@@ -53,26 +56,48 @@ long ShadowTable[NUM_TRIS * 3] =	//num of triangles * 3 points
 14, 9, 10,
 14, 10, 11
 };
+#endif
 
 void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 {
 	TEXTURESTRUCT Tex;
 	D3DTLVERTEX v[3];
 	PHD_VECTOR pos;
+#ifdef SMOOTH_SHADOWS
+	FVECTOR cv[CIRCUMFERENCE_POINTS];
+	PHD_VECTOR cp[CIRCUMFERENCE_POINTS];
+	FVECTOR ccv;
+	PHD_VECTOR ccp;
+#else
 	float* sXYZ;
 	long* hXZ;
 	long* hY;
 	float sxyz[GRID_POINTS * 3];
-	float fx, fy, fz;
 	long hxz[GRID_POINTS * 2];
 	long hy[GRID_POINTS];
-	long x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, xSize, zSize, xDist, zDist, triA, triB, triC;
+	long triA, triB, triC;
+#endif
+	float fx, fy, fz;
+	long x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, xSize, zSize, xDist, zDist;
 	short room_number;
 
 	xSize = size * (box[1] - box[0]) / 192;	//x size of grid
 	zSize = size * (box[5] - box[4]) / 192;	//z size of grid
 	xDist = xSize / LINE_POINTS;			//distance between each point of the grid on X
 	zDist = zSize / LINE_POINTS;			//distance between each point of the grid on Z
+
+#ifdef SMOOTH_SHADOWS
+	x = xDist + (xDist >> 1);
+	z = zDist + (zDist >> 1);
+
+	for (int i = 0; i < CIRCUMFERENCE_POINTS; i++)
+	{
+		cp[i].x = x * phd_sin(65536 * i / CIRCUMFERENCE_POINTS) >> 14;
+		cp[i].z = z * phd_cos(65536 * i / CIRCUMFERENCE_POINTS) >> 14;
+		cv[i].x = (float) cp[i].x;
+		cv[i].z = (float) cp[i].z;
+	}
+#else
 	x = -xDist - (xDist >> 1);				//idfk
 	z = zDist + (zDist >> 1);
 	sXYZ = sxyz;
@@ -90,6 +115,7 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 
 		x = -xDist - (xDist >> 1);
 	}
+#endif
 
 	phd_PushUnitMatrix();
 
@@ -115,6 +141,19 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 	y -= 16;
 	phd_TranslateRel(pos.x, y, pos.z);
 	phd_RotY(item->pos.y_rot);	//rot the grid to correct Y
+
+#ifdef SMOOTH_SHADOWS
+	for (int i = 0; i < CIRCUMFERENCE_POINTS; i++)
+	{
+		x = cp[i].x;
+		z = cp[i].z;
+		cp[i].x = (x * phd_mxptr[M00] + z * phd_mxptr[M02] + phd_mxptr[M03]) >> 14;
+		cp[i].z = (x * phd_mxptr[M20] + z * phd_mxptr[M22] + phd_mxptr[M23]) >> 14;
+	}
+
+	ccp.x = phd_mxptr[M03] >> 14;
+	ccp.z = phd_mxptr[M23] >> 14;
+#else
 	hXZ = hxz;
 
 	for (int i = 0; i < GRID_POINTS; i++, hXZ += 2)
@@ -124,8 +163,26 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 		hXZ[0] = (x * phd_mxptr[M00] + z * phd_mxptr[M02] + phd_mxptr[M03]) >> 14;
 		hXZ[1] = (x * phd_mxptr[M20] + z * phd_mxptr[M22] + phd_mxptr[M23]) >> 14;
 	}
+#endif
 
 	phd_PopMatrix();
+
+#ifdef SMOOTH_SHADOWS
+	for (int i = 0; i < CIRCUMFERENCE_POINTS; i++)
+	{
+		room_number = item->room_number;
+		cp[i].y = GetHeight(GetFloor(cp[i].x, item->floor, cp[i].z, &room_number), cp[i].x, item->floor, cp[i].z);
+
+		if (ABS(cp[i].y - item->floor) > POINT_HEIGHT_CORRECTION)
+			cp[i].y = item->floor;
+	}
+
+	room_number = item->room_number;
+	ccp.y = GetHeight(GetFloor(ccp.x, item->floor, ccp.z, &room_number), ccp.x, item->floor, ccp.z);
+
+	if (ABS(ccp.y - item->floor) > POINT_HEIGHT_CORRECTION)
+		ccp.y = item->floor;
+#else
 	hXZ = hxz;
 	hY = hy;
 
@@ -137,10 +194,28 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 		if (ABS(*hY - item->floor) > POINT_HEIGHT_CORRECTION)
 			*hY = item->floor;
 	}
+#endif
 
 	phd_PushMatrix();
 	phd_TranslateAbs(pos.x, y, pos.z);
 	phd_RotY(item->pos.y_rot);
+
+#ifdef SMOOTH_SHADOWS
+	for (int i = 0; i < CIRCUMFERENCE_POINTS; i++)
+	{
+		fx = cv[i].x;
+		fy = (float) (cp[i].y - item->floor);
+		fz = cv[i].z;
+		cv[i].x = aMXPtr[M00] * fx + aMXPtr[M01] * fy + aMXPtr[M02] * fz + aMXPtr[M03];
+		cv[i].y = aMXPtr[M10] * fx + aMXPtr[M11] * fy + aMXPtr[M12] * fz + aMXPtr[M13];
+		cv[i].z = aMXPtr[M20] * fx + aMXPtr[M21] * fy + aMXPtr[M22] * fz + aMXPtr[M23];
+	}
+
+	fy = (float) (ccp.y - item->floor);
+	ccv.x = aMXPtr[M01] * fy + aMXPtr[M03];
+	ccv.y = aMXPtr[M11] * fy + aMXPtr[M13];
+	ccv.z = aMXPtr[M21] * fy + aMXPtr[M23];
+#else
 	sXYZ = sxyz;
 	hY = hy;
 
@@ -153,12 +228,29 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 		sXYZ[1] = aMXPtr[M10] * fx + aMXPtr[M11] * fy + aMXPtr[M12] * fz + aMXPtr[M13];
 		sXYZ[2] = aMXPtr[M20] * fx + aMXPtr[M21] * fy + aMXPtr[M22] * fz + aMXPtr[M23];
 	}
+#endif
 
 	phd_PopMatrix();
+
+#ifdef SMOOTH_SHADOWS
+	for (int i = 0; i < CIRCUMFERENCE_POINTS; i++) // Draw the pizza
+#else
 	sXYZ = sxyz;
 
 	for (int i = 0; i < NUM_TRIS; i++)	//draw triangles
+#endif
 	{
+#ifdef SMOOTH_SHADOWS
+		x1 = (long) cv[i].x;
+		y1 = (long) cv[i].y;
+		z1 = (long) cv[i].z;
+		x2 = (long) cv[(i + 1) % CIRCUMFERENCE_POINTS].x;
+		y2 = (long) cv[(i + 1) % CIRCUMFERENCE_POINTS].y;
+		z2 = (long) cv[(i + 1) % CIRCUMFERENCE_POINTS].z;
+		x3 = (long) ccv.x;
+		y3 = (long) ccv.y;
+		z3 = (long) ccv.z;
+#else
 		triA = 3 * ShadowTable[(i * 3) + 0];	//get tri points
 		triB = 3 * ShadowTable[(i * 3) + 1];
 		triC = 3 * ShadowTable[(i * 3) + 2];
@@ -171,6 +263,8 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 		x3 = (long)sXYZ[triC + 0];
 		y3 = (long)sXYZ[triC + 1];
 		z3 = (long)sXYZ[triC + 2];
+#endif
+
 		setXYZ3(v, x1, y1, z1, x2, y2, z2, x3, y3, z3, clipflags);
 		v[0].color = 0x4F000000;
 		v[1].color = 0x4F000000;
