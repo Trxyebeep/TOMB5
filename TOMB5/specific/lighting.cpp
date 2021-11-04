@@ -1,6 +1,7 @@
 #include "../tomb5/pch.h"
 #include "lighting.h"
 #include "3dmath.h"
+#include "d3dmatrix.h"
 
 void InitObjectLighting(ITEM_INFO* item)
 {
@@ -38,8 +39,6 @@ void InitObjectLighting(ITEM_INFO* item)
 		else
 			node_ambient = LaraNodeAmbient[1];
 	}
-	else
-		node_ambient = item->il.ambient;
 
 	aAmbientR = CLRR(node_ambient);
 	aAmbientG = CLRG(node_ambient);
@@ -126,8 +125,184 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 	}
 }
 
+void CreateLightList(ITEM_INFO* item)
+{
+	ROOM_INFO* r;
+	PCLIGHT* current_lights;
+	PCLIGHT* prev_lights;
+	PCLIGHT_INFO* room_light;
+	D3DVECTOR vec;
+	void* bakPtr;
+	long bakNum, dx, dy, dz, range;
+	bool in_range;
+
+	r = &room[item->room_number];
+
+	if (item->il.room_number != item->room_number)
+	{
+		bakPtr = item->il.pCurrentLights;
+		bakNum = item->il.nCurrentLights;
+		item->il.pCurrentLights = item->il.pPrevLights;
+		item->il.nCurrentLights = item->il.nPrevLights;
+		item->il.pPrevLights = bakPtr;
+		item->il.nPrevLights = bakNum;
+		item->il.room_number = item->room_number;
+		prev_lights = (PCLIGHT*)item->il.pPrevLights;
+
+		for (int i = 0; i < item->il.nPrevLights; i++)
+		{
+			if (prev_lights[i].Active)
+			{
+				if (prev_lights[i].Type == LIGHT_SHADOW)
+					prev_lights[i].iny = -prev_lights[i].shadow >> 3;
+				else
+				{
+					prev_lights[i].rs = prev_lights[i].r * -0.125F;
+					prev_lights[i].gs = prev_lights[i].g * -0.125F;
+					prev_lights[i].bs = prev_lights[i].b * -0.125F;
+					prev_lights[i].tr = 0.0F;
+					prev_lights[i].tg = 0.0F;
+					prev_lights[i].tb = 0.0F;
+				}
+
+				prev_lights[i].fcnt = 8;
+			}
+		}
+
+		item->il.nCurrentLights = r->num_lights;
+		current_lights = (PCLIGHT*)item->il.pCurrentLights;
+		room_light = r->pclight;
+
+		for (int i = 0; i < r->num_lights; i++)
+		{
+			current_lights->r = room_light->r;
+			current_lights->g = room_light->g;
+			current_lights->b = room_light->b;
+			current_lights->tr = room_light->r;
+			current_lights->tg = room_light->g;
+			current_lights->tb = room_light->b;
+			current_lights->x = room_light->x;
+			current_lights->y = room_light->y;
+			current_lights->z = room_light->z;
+			current_lights->shadow = room_light->shadow << 3;
+			current_lights->Inner = room_light->Inner;
+			current_lights->Outer = room_light->Outer;
+			current_lights->InnerAngle = room_light->InnerAngle;
+			current_lights->OuterAngle = room_light->OuterAngle;
+			current_lights->Cutoff = room_light->Cutoff;
+			current_lights->inx = room_light->inx;
+			current_lights->iny = room_light->iny;
+			current_lights->inz = room_light->inz;
+			current_lights->ix = room_light->ix;
+			current_lights->iy = room_light->iy;
+			current_lights->iz = room_light->iz;
+			current_lights->nx = room_light->nx;
+			current_lights->ny = room_light->ny;
+			current_lights->nz = room_light->nz;
+			current_lights->Type = room_light->Type;
+			current_lights->Active = 0;
+
+			if (room_light->Type == LIGHT_SHADOW)
+				current_lights->inx = room_light->shadow;
+
+			current_lights++;
+			room_light++;
+		}
+	}
+
+	current_lights = (PCLIGHT*)item->il.pCurrentLights;
+	prev_lights = (PCLIGHT*)item->il.pPrevLights;
+
+	for (int i = 0; i < item->il.nCurrentLights; i++)
+	{
+		in_range = 1;
+		dx = current_lights[i].ix - item->il.item_pos.x;
+		dy = current_lights[i].iy - item->il.item_pos.y;
+		dz = current_lights[i].iz - item->il.item_pos.z;
+
+#ifdef GENERAL_FIXES	//stupid uninitialized var
+		range = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+#endif
+
+		if (current_lights[i].Type == LIGHT_POINT || current_lights[i].Type == LIGHT_SHADOW)
+		{
+			range = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+
+			if (range > SQUARE(current_lights[i].Outer))
+				in_range = 0;
+		}
+		else if (current_lights[i].Type == LIGHT_SPOT)
+		{
+			range = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
+
+			if (range > SQUARE(current_lights[i].Cutoff))
+				in_range = 0;
+			else
+			{
+				vec.x = (float)-dx;
+				vec.y = (float)-dy;
+				vec.z = (float)-dz;
+				D3DNormalise(&vec);
+
+				if (current_lights[i].nx * vec.x + current_lights[i].ny * vec.y + current_lights[i].nz * vec.z <= current_lights[i].Outer)
+					in_range = 0;
+			}
+		}
+
+		current_lights[i].rlp.x = dx;
+		current_lights[i].rlp.y = dy;
+		current_lights[i].rlp.z = dz;
+		current_lights[i].Range = range;
+
+		if (in_range)
+		{
+			if (!current_lights[i].Active)
+			{
+				if (current_lights[i].Type == LIGHT_SHADOW)
+				{
+					current_lights[i].Active = 1;
+					current_lights[i].iny = current_lights[i].inx;
+					current_lights[i].shadow = 0;
+				}
+				else
+				{
+					current_lights[i].rs = current_lights[i].tr * 0.125F;
+					current_lights[i].gs = current_lights[i].tg * 0.125F;
+					current_lights[i].bs = current_lights[i].tb * 0.125F;
+					current_lights[i].r = 0;
+					current_lights[i].g = 0;
+					current_lights[i].b = 0;
+					current_lights[i].Active = 1;
+				}
+
+				current_lights[i].fcnt = 8;
+			}
+		}
+		else
+		{
+			if (current_lights[i].Active && !current_lights[i].fcnt)
+			{
+				if (current_lights[i].Type == LIGHT_SHADOW)
+					current_lights[i].iny = -current_lights[i].shadow >> 3;
+				else
+				{
+					current_lights[i].rs = current_lights[i].r * -0.125F;
+					current_lights[i].gs = current_lights[i].g * -0.125F;
+					current_lights[i].bs = current_lights[i].b * -0.125F;
+				}
+
+				current_lights[i].fcnt = 8;
+			}
+		}
+	}
+
+	FadeLightList(current_lights, item->il.nCurrentLights);
+	FadeLightList(prev_lights, item->il.nPrevLights);
+}
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
 	INJECT(0x004AAFE0, SuperSetupLight, replace);
+	INJECT(0x004AA5A0, CreateLightList, replace);
 }
