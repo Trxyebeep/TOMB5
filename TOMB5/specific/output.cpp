@@ -459,7 +459,7 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 		aVertexBuffer[i].sz = vec.z;
 		fCol2 = 0;
 
-		if (NumFogBulbs)	//FIXME this is buggy
+		if (NumFogBulbs)
 		{
 			for (int j = 0; j < NumFogBulbs; j++)
 			{

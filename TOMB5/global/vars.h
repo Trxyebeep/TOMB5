@@ -619,7 +619,7 @@
 #define MappedControls	ARRAY_(0x00516AF0, long, [32])
 #define SunLights	ARRAY_(0x00879538, SUNLIGHT_STRUCT, [16])
 #define PointLights	ARRAY_(0x00878E28, POINTLIGHT_STRUCT, [64])
-#define FogBulbs	ARRAY_(0x0087AD1C, FOGBULB_STRUCT, [16])
+#define FogBulbs	ARRAY_(0x0087AD18, FOGBULB_STRUCT, [16])
 
 //defs
 #define NO_HEIGHT -32512
