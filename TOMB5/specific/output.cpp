@@ -429,6 +429,8 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 		vec2.x = vec.x;
 		vec2.y = vec.y;
 		vec2.z = vec.z;
+		aVertexBuffer[i].tu = vec.x;
+		aVertexBuffer[i].tv = vec.y;
 		clip_distance = 0;
 
 		if (vec.z < f_mznear)
