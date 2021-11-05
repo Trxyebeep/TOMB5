@@ -6,6 +6,7 @@ void inject_lighting(bool replace);
 void InitObjectLighting(ITEM_INFO* item);
 void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient);
 void CreateLightList(ITEM_INFO* item);
+void FadeLightList(PCLIGHT* lights, long nLights);
 
 #define SuperResetLights	( (void(__cdecl*)()) 0x004AAF00 )
 #define CalcAmbientLight	( (void(__cdecl*)(ITEM_INFO*)) 0x004A9E60 )
@@ -16,4 +17,3 @@ void CreateLightList(ITEM_INFO* item);
 #define InitObjectFogBulbs	( (void(__cdecl*)()) 0x004AB580 )
 #define S_CalculateStaticMeshLight	( (void(__cdecl*)(long, long, long, long, ROOM_INFO*)) 0x004A9DF0 )
 #define ShowOmni	( (void(__cdecl*)(long, long, long, long)) 0x004AA0C0 )
-#define FadeLightList	( (void(__cdecl*)(PCLIGHT*, long)) 0x004A9FE0 )

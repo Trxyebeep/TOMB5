@@ -300,9 +300,41 @@ void CreateLightList(ITEM_INFO* item)
 	FadeLightList(prev_lights, item->il.nPrevLights);
 }
 
+void FadeLightList(PCLIGHT* lights, long nLights)
+{
+	for (int i = 0; i < nLights; i++)
+	{
+		if (lights[i].Active && lights[i].fcnt)
+		{
+			if (lights[i].Type == LIGHT_SHADOW)
+				lights[i].shadow += lights[i].iny;
+			else
+			{
+				lights[i].r += lights[i].rs;
+				lights[i].g += lights[i].gs;
+				lights[i].b += lights[i].bs;
+			}
+
+			lights[i].fcnt--;
+
+			if (lights[i].Type == LIGHT_SHADOW)
+			{
+				if (lights[i].shadow <= 0)
+					lights[i].Active = 0;
+			}
+			else
+			{
+				if (lights[i].r <= 0 && lights[i].g <= 0 && lights[i].b <= 0)
+					lights[i].Active = 0;
+			}
+		}
+	}
+}
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
 	INJECT(0x004AAFE0, SuperSetupLight, replace);
 	INJECT(0x004AA5A0, CreateLightList, replace);
+	INJECT(0x004A9FE0, FadeLightList, replace);
 }
