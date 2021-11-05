@@ -487,6 +487,7 @@
 #define NumSunLights	VAR_U_(0x0087B100, long)
 #define NumPointLights	VAR_U_(0x0087B104, long)
 #define NumShadowLights	VAR_U_(0x0087B10C, long)
+#define NumFogBulbs	VAR_U_(0x0087B114, long)
 #define TotalNumLights	VAR_U_(0x0087B110, long)
 #define aLightMatrix	VAR_U_(0x0087ACC0, D3DMATRIX)
 
@@ -618,6 +619,7 @@
 #define MappedControls	ARRAY_(0x00516AF0, long, [32])
 #define SunLights	ARRAY_(0x00879538, SUNLIGHT_STRUCT, [16])
 #define PointLights	ARRAY_(0x00878E28, POINTLIGHT_STRUCT, [64])
+#define FogBulbs	ARRAY_(0x0087AD1C, FOGBULB_STRUCT, [16])
 
 //defs
 #define NO_HEIGHT -32512

@@ -2001,7 +2001,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B2620		PrelightVerts
 0x004B27E0		SetGlobalAmbient
 0x004B2800		aCheckMeshClip
-0x004B2BA0		aTransformLightClipMesh
+0x004B2BA0	+	aTransformLightClipMesh
 0x004B35F0		aTransformLightPrelightClipMesh
 0x004B3F00	+	phd_PutPolygons
 0x004B4CA0		phd_PutPolygonsSpcXLU

@@ -2194,4 +2194,19 @@ struct POINTLIGHT_STRUCT
 	float b;
 	float rad;
 };
+
+struct FOGBULB_STRUCT
+{
+	FVECTOR pos;
+	FVECTOR world;
+	float rad;
+	float sqrad;
+	float sqlen;
+	float dist;
+	float r;
+	float g;
+	float b;
+	float d;
+	long visible;
+};
 #pragma pack(pop)
