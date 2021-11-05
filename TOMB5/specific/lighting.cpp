@@ -2,6 +2,7 @@
 #include "lighting.h"
 #include "3dmath.h"
 #include "d3dmatrix.h"
+#include "../game/control.h"
 
 void InitObjectLighting(ITEM_INFO* item)
 {
@@ -353,6 +354,50 @@ void SuperResetLights()
 	lGlobalMeshPos.z = aCamera.pos.z + aLightMatrix._43;
 }
 
+void CalcAmbientLight(ITEM_INFO* item)
+{
+	ROOM_INFO* r;
+	short room_number;
+
+	room_number = item->room_number;
+	GetFloor(item->il.item_pos.x, item->il.item_pos.y, item->il.item_pos.z, &room_number);
+	r = &room[room_number];
+
+	if (item->il.ambient != r->ambient)
+	{
+		if (item->il.fcnt == -1)
+		{
+			item->il.ambient = r->ambient;
+			item->il.fcnt = 0;
+		}
+		else
+		{
+			if (!item->il.fcnt)
+			{
+				item->il.r = CLRR(item->il.ambient);
+				item->il.g = CLRG(item->il.ambient);
+				item->il.b = CLRB(item->il.ambient);
+				item->il.rs = CLRR(r->ambient) - item->il.r;
+				item->il.gs = CLRG(r->ambient) - item->il.g;
+				item->il.bs = CLRB(r->ambient) - item->il.b;
+				item->il.r <<= 3;
+				item->il.g <<= 3;
+				item->il.b <<= 3;
+				item->il.fcnt = 8;
+			}
+
+			if (item->il.fcnt)
+			{
+				item->il.r += item->il.rs;
+				item->il.g += item->il.gs;
+				item->il.b += item->il.bs;
+				item->il.ambient = (item->il.b >> 3) | ((item->il.g & 0xFFFFFFF8 | (item->il.b << 8)) << 5);
+				item->il.fcnt--;
+			}
+		}
+	}
+}
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
@@ -360,4 +405,5 @@ void inject_lighting(bool replace)
 	INJECT(0x004AA5A0, CreateLightList, replace);
 	INJECT(0x004A9FE0, FadeLightList, replace);
 	INJECT(0x004AAF00, SuperResetLights, replace);
+	INJECT(0x004A9E60, CalcAmbientLight, replace);
 }
