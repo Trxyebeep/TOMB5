@@ -7,8 +7,8 @@ void InitObjectLighting(ITEM_INFO* item);
 void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient);
 void CreateLightList(ITEM_INFO* item);
 void FadeLightList(PCLIGHT* lights, long nLights);
+void SuperResetLights();
 
-#define SuperResetLights	( (void(__cdecl*)()) 0x004AAF00 )
 #define CalcAmbientLight	( (void(__cdecl*)(ITEM_INFO*)) 0x004A9E60 )
 #define ClearObjectLighting	( (void(__cdecl*)()) 0x004AB910 )//empty
 #define ClearDynamicLighting	( (void(__cdecl*)()) 0x004AB9D0 )//empty

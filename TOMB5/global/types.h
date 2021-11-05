@@ -2209,4 +2209,15 @@ struct FOGBULB_STRUCT
 	float d;
 	long visible;
 };
+
+struct FCAMERA
+{
+	FVECTOR i;
+	FVECTOR j;
+	FVECTOR k;
+	FVECTOR pos;
+	FVECTOR tar;
+	float matrix[12];
+	float invmatrix[12];
+};
 #pragma pack(pop)

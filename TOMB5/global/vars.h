@@ -488,8 +488,11 @@
 #define NumPointLights	VAR_U_(0x0087B104, long)
 #define NumShadowLights	VAR_U_(0x0087B10C, long)
 #define NumFogBulbs	VAR_U_(0x0087B114, long)
+#define NumSpotLights	VAR_U_(0x0087B108, long)
 #define TotalNumLights	VAR_U_(0x0087B110, long)
 #define aLightMatrix	VAR_U_(0x0087ACC0, D3DMATRIX)
+#define D3DInvCameraMatrix	VAR_U_(0x0055D168, D3DMATRIX)
+#define aCamera	VAR_U_(0x0051D0B0, FCAMERA)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

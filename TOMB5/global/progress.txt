@@ -1936,7 +1936,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004AA0C0		ShowOmni
 0x004AA5A0	+	CreateLightList
 0x004AAAC0		SetupLight
-0x004AAF00		SuperResetLights
+0x004AAF00	+	SuperResetLights
 0x004AAFE0	+	SuperSetupLight
 0x004AB3A0		SuperSetupDynamicLight
 0x004AB580		InitObjectFogBulbs

@@ -331,10 +331,33 @@ void FadeLightList(PCLIGHT* lights, long nLights)
 	}
 }
 
+void SuperResetLights()
+{
+	D3DMATRIX view;
+	D3DMATRIX cam;
+
+	view = D3DMView;
+	cam = D3DInvCameraMatrix;
+	NumPointLights = 0;
+	NumSunLights = 0;
+	NumSpotLights = 0;
+	NumShadowLights = 0;
+	TotalNumLights = 0;
+	NumFogBulbs = 0;
+	aAmbientR = 0;
+	aAmbientG = 0;
+	aAmbientB = 0;
+	D3DMultMatrix(&aLightMatrix, &view, &cam);
+	lGlobalMeshPos.x = aCamera.pos.x + aLightMatrix._41;
+	lGlobalMeshPos.y = aCamera.pos.y + aLightMatrix._42;
+	lGlobalMeshPos.z = aCamera.pos.z + aLightMatrix._43;
+}
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
 	INJECT(0x004AAFE0, SuperSetupLight, replace);
 	INJECT(0x004AA5A0, CreateLightList, replace);
 	INJECT(0x004A9FE0, FadeLightList, replace);
+	INJECT(0x004AAF00, SuperResetLights, replace);
 }
