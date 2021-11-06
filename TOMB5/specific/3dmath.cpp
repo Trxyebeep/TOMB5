@@ -1,7 +1,5 @@
 #include "../tomb5/pch.h"
 #include "3dmath.h"
-#include <cmath>
-
 
 void AlterFOV(short fov)
 {

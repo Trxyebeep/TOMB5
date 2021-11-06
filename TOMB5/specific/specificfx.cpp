@@ -266,9 +266,15 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 #endif
 
 		setXYZ3(v, x1, y1, z1, x2, y2, z2, x3, y3, z3, clipflags);
+#ifdef SMOOTH_SHADOWS
+		v[0].color = 0x00000000;
+		v[1].color = 0x00000000;
+		v[2].color = 0xFF000000;
+#else
 		v[0].color = 0x4F000000;
 		v[1].color = 0x4F000000;
 		v[2].color = 0x4F000000;
+#endif
 
 		if (item->after_death)
 		{

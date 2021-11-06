@@ -48,6 +48,15 @@ typedef unsigned long ulong;
 
 /*enums*/
 
+enum LightTypes
+{
+	LIGHT_SUN,
+	LIGHT_POINT,
+	LIGHT_SPOT,
+	LIGHT_SHADOW,
+	LIGHT_FOG
+};
+
 enum matrix_indices
 {
 	M00, M01, M02, M03,
@@ -2167,5 +2176,48 @@ struct RG_TARGET
 	long dynz;
 	LIGHTNING_STRUCT* pulptr[8];
 	char dynval;
+};
+
+struct SUNLIGHT_STRUCT
+{
+	FVECTOR vec;
+	float r;
+	float g;
+	float b;
+};
+
+struct POINTLIGHT_STRUCT
+{
+	FVECTOR vec;
+	float r;
+	float g;
+	float b;
+	float rad;
+};
+
+struct FOGBULB_STRUCT
+{
+	FVECTOR pos;
+	FVECTOR world;
+	float rad;
+	float sqrad;
+	float sqlen;
+	float dist;
+	float r;
+	float g;
+	float b;
+	float d;
+	long visible;
+};
+
+struct FCAMERA
+{
+	FVECTOR i;
+	FVECTOR j;
+	FVECTOR k;
+	FVECTOR pos;
+	FVECTOR tar;
+	float matrix[12];
+	float invmatrix[12];
 };
 #pragma pack(pop)

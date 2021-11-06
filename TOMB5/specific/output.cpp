@@ -321,10 +321,301 @@ void phd_PutPolygonSkyMesh(short* objptr, int clipstatus)
 	num = (float)phd_centery;
 }
 
+void aTransformLightClipMesh(MESH_DATA* mesh)
+{
+	POINTLIGHT_STRUCT* point;
+	SUNLIGHT_STRUCT* sun;
+	FOGBULB_STRUCT* bulb;
+	FVECTOR vec;
+	FVECTOR vec2;
+	FVECTOR vec3;
+	FVECTOR vec4;
+	short* clip;
+	float fR, fG, fB, val, val2, val3, zv, fCol, fCol2;
+	long sR, sG, sB, cR, cG, cB;
+	short clip_distance;
+
+	clip = clipflags;
+
+	for (int i = 0; i < mesh->nVerts; i++)
+	{
+		sR = 0;
+		sG = 0;
+		sB = 0;
+		vec.x = (mesh->aVtx[i].x * D3DMView._11) + (mesh->aVtx[i].y * D3DMView._21) + (mesh->aVtx[i].z * D3DMView._31) + D3DMView._41;
+		vec.y = (mesh->aVtx[i].x * D3DMView._12) + (mesh->aVtx[i].y * D3DMView._22) + (mesh->aVtx[i].z * D3DMView._32) + D3DMView._42;
+		vec.z = (mesh->aVtx[i].x * D3DMView._13) + (mesh->aVtx[i].y * D3DMView._23) + (mesh->aVtx[i].z * D3DMView._33) + D3DMView._43;
+
+		if (TotalNumLights)
+		{
+			fR = (float)aAmbientR;
+			fG = (float)aAmbientG;
+			fB = (float)aAmbientB;
+
+			if (NumPointLights)
+			{
+				for (int j = 0; j < NumPointLights; j++)
+				{
+					point = &PointLights[j];
+					val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
+
+					if (val > 0)
+					{
+						val *= point->rad;
+						fR += val * point->r;
+						fG += val * point->g;
+						fB += val * point->b;
+					}
+				}
+			}
+
+			if (NumSunLights)
+			{
+				for (int j = 0; j < NumSunLights; j++)
+				{
+					sun = &SunLights[j];
+					val = sun->vec.x * mesh->aVtx[i].nx + sun->vec.y * mesh->aVtx[i].ny + sun->vec.z * mesh->aVtx[i].nz;
+
+					if (val > 0)
+					{
+						val += val;
+						fR += val * sun->r;
+						fG += val * sun->g;
+						fB += val * sun->b;
+					}
+				}
+			}
+
+#ifdef  GENERAL_FIXES
+			//spotlights here, just do the same as the others, val = etc. then add it to fR fG fB
+			//and shadows??
+#endif
+
+			cR = (long)fR;
+			cG = (long)fG;
+			cB = (long)fB;
+		}
+		else
+		{
+			cR = aAmbientR;
+			cG = aAmbientG;
+			cB = aAmbientB;
+		}
+
+		if (cR - 128 <= 0)
+			cR <<= 1;
+		else
+		{
+			sR = (cR - 128) >> 1;
+			cR = 255;
+		}
+
+		if (cG - 128 <= 0)
+			cG <<= 1;
+		else
+		{
+			sG = (cG - 128) >> 1;
+			cG = 255;
+		}
+
+		if (cB - 128 <= 0)
+			cB <<= 1;
+		else
+		{
+			sB = (cB - 128) >> 1;
+			cB = 255;
+		}
+
+		vec2.x = vec.x;
+		vec2.y = vec.y;
+		vec2.z = vec.z;
+		aVertexBuffer[i].tu = vec.x;
+		aVertexBuffer[i].tv = vec.y;
+		clip_distance = 0;
+
+		if (vec.z < f_mznear)
+			clip_distance = -128;
+		else
+		{
+			zv = f_mpersp / vec.z;
+			vec.x = vec.x * zv + f_centerx;
+			vec.y = vec.y * zv + f_centery;
+			aVertexBuffer[i].rhw = f_moneopersp * zv;
+
+			if (vec.x < clip_left)
+				clip_distance = 1;
+			else if (vec.x > clip_right)
+				clip_distance = 2;
+
+			if (vec.y < clip_top)
+				clip_distance += 4;
+			else if (vec.y > clip_bottom)
+				clip_distance += 8;
+		}
+
+		clip[0] = clip_distance;
+		clip++;
+
+		aVertexBuffer[i].sx = vec.x;
+		aVertexBuffer[i].sy = vec.y;
+		aVertexBuffer[i].sz = vec.z;
+		fCol2 = 0;
+
+		if (NumFogBulbs)
+		{
+			for (int j = 0; j < NumFogBulbs; j++)
+			{
+				bulb = &FogBulbs[j];
+				fCol = 0;
+
+				if (bulb->rad + vec2.z > 0)
+				{
+					if (fabs(vec2.x) - bulb->rad < fabs(vec2.z) && fabs(vec2.y) - bulb->rad < fabs(vec2.z))
+					{
+						vec3.x = 0;
+						vec3.y = 0;
+						vec3.z = 0;
+						vec4.x = 0;
+						vec4.y = 0;
+						vec4.z = 0;
+						val = SQUARE(bulb->pos.x - vec2.x) + SQUARE(bulb->pos.y - vec2.y) + SQUARE(bulb->pos.z - vec2.z);
+
+						if (bulb->sqlen >= bulb->sqrad)
+						{
+							if (val >= bulb->sqrad)
+							{
+								val = SQUARE(vec2.z) + SQUARE(vec2.y) + SQUARE(vec2.x);
+								val2 = 1.0F / sqrt(val);
+								vec3.x = val2 * vec2.x;
+								vec3.y = val2 * vec2.y;
+								vec3.z = val2 * vec2.z;
+								val2 = bulb->pos.x * vec3.x + bulb->pos.y * vec3.y + bulb->pos.z * vec3.z;
+
+								if (val2 > 0)
+								{
+									val3 = SQUARE(val2);
+
+									if (val > val3)
+									{
+										val = bulb->sqlen - val3;
+
+										if (val >= bulb->sqrad)
+										{
+											vec3.x = 0;
+											vec3.y = 0;
+											vec3.z = 0;
+											vec4.x = 0;
+											vec4.y = 0;
+											vec4.z = 0;
+										}
+										else
+										{
+											val3 = sqrtf(bulb->sqrad - val);
+											val = val2 - val3;
+											vec4.x = val * vec3.x;
+											vec4.y = val * vec3.y;
+											vec4.z = val * vec3.z;
+											val = val2 + val3;
+											vec3.x *= val;
+											vec3.y *= val;
+											vec3.z *= val;
+										}
+									}
+								}
+							}
+							else
+							{
+								vec4.z = vec2.z;
+								vec4.x = vec2.x;
+								vec4.y = vec2.y;
+								val = 1.0F / sqrt(SQUARE(vec2.z) + SQUARE(vec2.y) + SQUARE(vec2.x));
+								vec3.x = val * vec2.x;
+								vec3.y = val * vec2.y;
+								vec3.z = val * vec2.z;
+								val2 = vec3.x * bulb->pos.x + vec3.y * bulb->pos.y + vec3.z * bulb->pos.z;
+								val = val2 - sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
+								vec3.x *= val;
+								vec3.y *= val;
+								vec3.z *= val;
+							}
+						}
+						else if (val >= bulb->sqrad)
+						{
+							val = 1.0F / sqrt(SQUARE(vec2.z) + SQUARE(vec2.y) + SQUARE(vec2.x));
+							vec4.x = val * vec2.x;
+							vec4.y = val * vec2.y;
+							vec4.z = val * vec2.z;
+							val2 = vec4.x * bulb->pos.x + vec4.y * bulb->pos.y + vec4.z * bulb->pos.z;
+							val = val2 + sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
+							vec4.x *= val;
+							vec4.y *= val;
+							vec4.z *= val;
+						}
+						else
+						{
+							vec4.x = vec2.x;
+							vec4.y = vec2.y;
+							vec4.z = vec2.z;
+						}
+
+						fCol = sqrt(SQUARE((vec4.z - vec3.z)) + SQUARE((vec4.y - vec3.y)) + SQUARE((vec4.x - vec3.x))) * bulb->d;
+					}
+				}
+
+				if (fCol)
+				{
+					fCol2 += fCol;
+					sR += (long)(fCol * bulb->r);
+					sG += (long)(fCol * bulb->g);
+					sB += (long)(fCol * bulb->b);
+				}
+			}
+
+			cR -= (long)fCol2;
+			cG -= (long)fCol2;
+			cB -= (long)fCol2;
+		}
+
+		if (sR > 255)
+			sR = 255;
+		else if (sR < 0)
+			sR = 0;
+
+		if (sG > 255)
+			sG = 255;
+		else if (sG < 0)
+			sG = 0;
+
+		if (sB > 255)
+			sB = 255;
+		else if (sB < 0)
+			sB = 0;
+
+		if (cR > 255)
+			cR = 255;
+		else if (cR < 0)
+			cR = 0;
+
+		if (cG > 255)
+			cG = 255;
+		else if (cG < 0)
+			cG = 0;
+
+		if (cB > 255)
+			cB = 255;
+		else if (cB < 0)
+			cB = 0;
+
+		aVertexBuffer[i].color = cB | GlobalAlpha | ((cG | (cR << 8)) << 8);
+		aVertexBuffer[i].specular = sB | ((sG | ((sR | 0xFFFFFF00) << 8)) << 8);
+	}
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
 	INJECT(0x004B3F00, phd_PutPolygons, replace);
 	INJECT(0x004B74D0, phd_PutPolygonSkyMesh, replace);
+	INJECT(0x004B2BA0, aTransformLightClipMesh, replace);
 }
 

@@ -1931,16 +1931,16 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A9CD0		ApplyMatrix
 0x004A9D60		ApplyTransposeMatrix
 0x004A9DF0		S_CalculateStaticMeshLight
-0x004A9E60		CalcAmbientLight
-0x004A9FE0		FadeLightList
+0x004A9E60	+	CalcAmbientLight
+0x004A9FE0	+	FadeLightList
 0x004AA0C0		ShowOmni
-0x004AA5A0		CreateLightList
+0x004AA5A0	+	CreateLightList
 0x004AAAC0		SetupLight
-0x004AAF00		SuperResetLights
-0x004AAFE0		SuperSetupLight
+0x004AAF00	+	SuperResetLights
+0x004AAFE0	+	SuperSetupLight
 0x004AB3A0		SuperSetupDynamicLight
 0x004AB580		InitObjectFogBulbs
-0x004AB7A0		InitObjectLighting
+0x004AB7A0	+	InitObjectLighting
 0x004AB910		ClearObjectLighting
 0x004AB930		InitDynamicLighting		//void, no params, empty anyway
 0x004AB950		InitDynamicLighting		//void, ITEM_INFO* i
@@ -2001,7 +2001,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B2620		PrelightVerts
 0x004B27E0		SetGlobalAmbient
 0x004B2800		aCheckMeshClip
-0x004B2BA0		aTransformLightClipMesh
+0x004B2BA0	+	aTransformLightClipMesh
 0x004B35F0		aTransformLightPrelightClipMesh
 0x004B3F00	+	phd_PutPolygons
 0x004B4CA0		phd_PutPolygonsSpcXLU

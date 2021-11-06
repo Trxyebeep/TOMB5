@@ -239,9 +239,11 @@ long S_UpdateInput()
 			if (lara_item->hit_points > 0 && lara_item->hit_points < 1000 || lara.poisoned)
 			{
 #ifdef GENERAL_FIXES
-				if (lara.num_small_medipack && lara.num_small_medipack != -1)
+				if (lara.num_small_medipack)
 				{
-					lara.num_small_medipack--;
+					if (lara.num_small_medipack != -1)
+						lara.num_small_medipack--;
+
 					lara.dpoisoned = 0;
 					lara_item->hit_points += 500;
 					SoundEffect(SFX_MENU_MEDI, 0, SFX_ALWAYS);
@@ -287,9 +289,11 @@ long S_UpdateInput()
 			if (lara_item->hit_points > 0 && lara_item->hit_points < 1000 || lara.poisoned)
 			{
 #ifdef GENERAL_FIXES
-				if (lara.num_large_medipack && lara.num_large_medipack != -1)
+				if (lara.num_large_medipack)
 				{
-					lara.num_large_medipack--;
+					if (lara.num_large_medipack != -1)
+						lara.num_large_medipack--;
+
 					lara.dpoisoned = 0;
 					lara_item->hit_points = 1000;
 					SoundEffect(SFX_MENU_MEDI, 0, SFX_ALWAYS);
