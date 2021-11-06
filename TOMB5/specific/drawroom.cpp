@@ -95,9 +95,51 @@ void DrawClipRectangle(ROOM_INFO* r)
 	DrawBoundsRectangle((float)r->left, (float)r->top, (float)r->right, (float)r->bottom);
 }
 
+void InsertRoom(ROOM_INFO* r)
+{
+	float dx, dy, dz, dir;
+
+	clip_left = (float)r->left;
+	clip_top = (float)r->top;
+	clip_right = (float)r->right;
+	clip_bottom = (float)r->bottom;
+	room_clip_top = clip_top;
+	room_clip_right = clip_right;
+	room_clip_left = clip_left;
+	room_clip_bottom = clip_bottom;
+	aCamPos.x = (float)camera.pos.x;
+	aCamPos.y = (float)camera.pos.y;
+	aCamPos.z = (float)camera.pos.z;
+	aCamTar.x = (float)camera.target.x;
+	aCamTar.y = (float)camera.target.y;
+	aCamTar.z = (float)camera.target.z;
+	dx = aCamTar.x - aCamPos.x;
+	dy = aCamTar.y - aCamPos.y;
+	dz = aCamTar.z - aCamPos.z;
+	dir = 1.0F / (SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+	aCamDir.x = dx * dir;
+	aCamDir.y = dy * dir;
+	aCamDir.z = dz * dir;
+
+	if (r->nVerts)
+	{
+		current_room_ptr = r;
+		current_room_underwater = r->flags & ROOM_UNDERWATER;
+
+		for (int i = 0; i < r->nRoomlets; i++)
+		{
+			if (CheckBoundsClip(r->pRoomlets[i].bBox))
+				InsertRoomlet(&r->pRoomlets[i]);
+		}
+
+		RoomRGB = 0x00FFFFFF;
+	}
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
 	INJECT(0x0049CC20, DrawBoundsRectangleII, replace);
 	INJECT(0x0049CE40, DrawClipRectangle, replace);
+	INJECT(0x0049A9D0, InsertRoom, replace);
 }

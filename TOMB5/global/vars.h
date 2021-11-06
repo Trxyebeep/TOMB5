@@ -493,6 +493,16 @@
 #define aLightMatrix	VAR_U_(0x0087ACC0, D3DMATRIX)
 #define D3DInvCameraMatrix	VAR_U_(0x0055D168, D3DMATRIX)
 #define aCamera	VAR_U_(0x0051D0B0, FCAMERA)
+#define aCamPos	VAR_U_(0x007ED6A0, FVECTOR)
+#define aCamTar	VAR_U_(0x007EE0B8, FVECTOR)
+#define aCamDir	VAR_U_(0x007ED0E8, FVECTOR)
+#define room_clip_top	VAR_U_(0x007DFC08, float)
+#define room_clip_right	VAR_U_(0x007DBC04, float)
+#define room_clip_left	VAR_U_(0x007DBC00, float)
+#define room_clip_bottom	VAR_U_(0x007DFC10, float)
+#define current_room_ptr	VAR_U_(0x007DFC0C, ROOM_INFO*)
+#define current_room_underwater	VAR_U_(0x007EE0C8, long)
+#define RoomRGB	VAR_U_(0x0057A508, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
