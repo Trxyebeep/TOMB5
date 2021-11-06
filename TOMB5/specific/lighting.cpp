@@ -391,7 +391,7 @@ void CalcAmbientLight(ITEM_INFO* item)
 				item->il.r += item->il.rs;
 				item->il.g += item->il.gs;
 				item->il.b += item->il.bs;
-				item->il.ambient = (item->il.b >> 3) | ((item->il.g & 0xFFFFFFF8 | (item->il.b << 8)) << 5);
+				item->il.ambient = (item->il.b >> 3) | ((item->il.g & 0xFFFFFFF8 | (item->il.r << 8)) << 5);
 				item->il.fcnt--;
 			}
 		}
