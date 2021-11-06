@@ -6,6 +6,7 @@ void inject_3dmath(bool replace);
 void AlterFOV(short fov);
 void gte_sttr(PHD_VECTOR* vec);
 void aInitMatrix();
+void aSetViewMatrix();
 
 #define ScaleCurrentMatrix	( (void(__cdecl*)(VECTOR*)) 0x0048EFF0 )
 #define mGetAngle	( (long(__cdecl*)(long, long, long, long)) 0x0048F290 )
@@ -23,7 +24,6 @@ void aInitMatrix();
 #define	phd_RotYXZ	( (void(__cdecl*)(short, short, short)) 0x00490150 )
 #define phd_TranslateAbs	( (void(__cdecl*)(long, long, long)) 0x004903F0 )
 #define	phd_GetVectorAngles	( (void(__cdecl*)(long, long, long, short*)) 0x004904B0 )
-#define aSetViewMatrix	( (void(__cdecl*)()) 0x00490BE0 )
 #define aLookAt	( (void(__cdecl*)(float, float, float, float, float, float, int)) 0x00490C20 )
 #define phd_RotYXZpack	( (void(__cdecl*)(long)) 0x0048FEB0 )
 #define aTranslateRel	( (void(__cdecl*)(long, long, long)) 0x00490790 )
