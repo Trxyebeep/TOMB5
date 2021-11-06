@@ -1011,7 +1011,11 @@ void DrawMoon()
 		x2 = v[0].sx + 48.0F;
 		y1 = v[0].sy - 48.0F;
 		y2 = v[0].sy + 48.0F;
+#ifdef GENERAL_FIXES
+		z = f_mzfar;
+#else
 		z = f_mzfar - 1024.0F;
+#endif
 		aSetXY4(v, x1, y1, x2, y1, x1, y2, x2, y2, z, c);
 		v[0].color = 0xC0E0FF;
 		v[1].color = 0xC0E0FF;
@@ -1029,9 +1033,14 @@ void DrawMoon()
 		tex.v3 = sprite->y2;
 		tex.u4 = sprite->x1;
 		tex.v4 = sprite->y2;
-		tex.drawtype = 0;
 		tex.tpage = tpage;
+#ifdef GENERAL_FIXES
+		tex.drawtype = 1;
+		AddQuadSubdivide(v, 0, 1, 3, 2, &tex, 1);
+#else
+		tex.drawtype = 0;
 		AddQuadZBuffer(v, 0, 1, 3, 2, &tex, 1);
+#endif
 	}
 
 	phd_PopMatrix();

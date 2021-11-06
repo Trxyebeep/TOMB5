@@ -370,6 +370,14 @@ void SkyDrawPhase()
 			return;
 		}
 
+#ifdef IRELAND_SKIES
+		if (gfCurrentLevel == LVL5_GALLOWS_TREE || gfCurrentLevel == LVL5_OLD_MILL)
+		{
+			DrawMoon();
+			DrawStarField();
+		}
+#endif
+
 		if (BinocularRange)
 			AlterFOV(14560 - (short)BinocularRange);
 

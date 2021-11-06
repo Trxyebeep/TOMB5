@@ -1,5 +1,7 @@
 #include "../tomb5/pch.h"
 #include "3dmath.h"
+#include "d3dmatrix.h"
+#include "dxshell.h"
 
 void AlterFOV(short fov)
 {
@@ -58,9 +60,16 @@ void aInitMatrix()
 	aMXPtr = aFMatrixStack;
 }
 
+void aSetViewMatrix()
+{
+	SetD3DMatrixF(&D3DMView, aMXPtr);
+	DXAttempt(App.dx.lpD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &D3DMView));
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
 	INJECT(0x00491320, gte_sttr, replace);
 	INJECT(0x00490590, aInitMatrix, replace);
+	INJECT(0x00490BE0, aSetViewMatrix, replace);
 }
