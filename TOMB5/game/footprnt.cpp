@@ -149,14 +149,9 @@ void GetProperFootPos(PHD_VECTOR* pos)
 	switch (lara_item->anim_number)	//thank u core
 	{
 	case 7:	//run to walk right
-
-		if (frame == base + 16)
-		{
-			pos->x = right_foot.x;	//right foot winer!
-			pos->y = right_foot.y;
-			pos->z = right_foot.z;
-		}
-
+		pos->x = right_foot.x;	//right foot winer!
+		pos->y = right_foot.y;
+		pos->z = right_foot.z;
 		break;
 
 	case 10:	//run -> stop right foot

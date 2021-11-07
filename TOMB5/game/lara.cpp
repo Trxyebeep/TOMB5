@@ -928,7 +928,7 @@ void lara_as_walk(ITEM_INFO* item, COLL_INFO* coll)
 		item->goal_anim_state = AS_STOP;
 
 #ifdef FOOTPRINTS
-	if (item->anim_number == 7)
+	if (item->anim_number == 7 && item->frame_number == anims[7].frame_base + 16)
 		AddFootprint(item);
 #endif
 }
