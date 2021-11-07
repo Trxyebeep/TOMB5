@@ -460,6 +460,9 @@ void ObjectObjects()
 	for (int i = KEY_HOLE1; i < SWITCH_TYPE1; i++)
 	{
 		obj = &objects[i];
+#ifdef GENERAL_FIXES
+		obj->initialise = InitialiseKeyhole;
+#endif
 		obj->collision = KeyHoleCollision;
 		obj->save_flags = 1;
 	}
