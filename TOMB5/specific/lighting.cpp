@@ -45,6 +45,7 @@ void InitObjectLighting(ITEM_INFO* item)
 	aAmbientG = CLRG(node_ambient);
 	aAmbientB = CLRB(node_ambient);
 
+#ifndef GENERAL_FIXES // Fixes shadows
 	if (aAmbientR < 16)
 		aAmbientR = 16;
 
@@ -53,6 +54,7 @@ void InitObjectLighting(ITEM_INFO* item)
 
 	if (aAmbientB < 16)
 		aAmbientB = 16;
+#endif
 }
 
 void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
