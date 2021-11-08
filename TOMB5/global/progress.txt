@@ -130,7 +130,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00413A90	+	GenericSphereBoxCollision
 0x00413CF0		GetCollidedObjects
 0x00414370	+	TriggerLaraBlood
-0x00414450		TestForObjectOnLedge
+0x00414450	+	TestForObjectOnLedge
 
 
 		game/control.cpp
