@@ -668,6 +668,60 @@ void KeyHoleCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 		ObjectCollision(item_number, l, coll);
 }
 
+short* FindPlinth(ITEM_INFO* item)
+{
+	ITEM_INFO* plinth;
+	ROOM_INFO* r;
+	MESH_INFO* mesh;
+	short* p;
+	short* o;
+	long i;
+	short item_num;
+	
+	o = 0;
+	r = &room[item->room_number];
+	mesh = r->mesh;
+
+	for (i = r->num_meshes; i > 0; i--)
+	{
+		if (mesh->Flags & 1 && item->pos.x_pos == mesh->x && item->pos.z_pos == mesh->z)
+		{
+			p = GetBestFrame(item);
+			o = &static_objects[mesh->static_number].x_minc;
+
+			if (p[0] <= o[1] && p[1] >= o[0] && p[4] <= o[5] && p[5] >= o[4] && (o[0] || o[1]))
+				break;
+		}
+
+		mesh++;
+	}
+
+	if (i)
+		return o;
+
+	item_num = r->item_number;
+
+	while (1)
+	{
+		plinth = &items[item_num];
+
+		if (item != plinth)
+		{
+			if (objects[plinth->object_number].collision != PickUpCollision && item->pos.x_pos == plinth->pos.x_pos &&
+				item->pos.y_pos <= plinth->pos.y_pos && item->pos.z_pos == plinth->pos.z_pos &&
+				(plinth->object_number != HIGH_OBJECT1 || plinth->item_flags[0] == 5))
+				break;
+		}
+
+		item_num = plinth->next_item;
+
+		if (item_num == NO_ITEM)
+			return 0;
+	}
+
+	return GetBestFrame(&items[item_num]);
+}
+
 void inject_pickup(bool replace)
 {
 	INJECT(0x00467AF0, RegeneratePickups, replace);
@@ -681,4 +735,5 @@ void inject_pickup(bool replace)
 	INJECT(0x00469D10, MonitorScreenCollision, replace);
 	INJECT(0x004679D0, AnimatingPickUp, replace);
 	INJECT(0x00468930, KeyHoleCollision, replace);
+	INJECT(0x00468770, FindPlinth, replace);
 }

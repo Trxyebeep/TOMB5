@@ -1242,7 +1242,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004679D0	+	AnimatingPickUp
 0x00467AF0	+	RegeneratePickups
 0x00467C00		PickUpCollision
-0x00468770		FindPlinth
+0x00468770	+	FindPlinth
 0x00468930	+	KeyHoleCollision
 0x00468C00	+	PuzzleDoneCollision
 0x00468C70	+	PuzzleHoleCollision
