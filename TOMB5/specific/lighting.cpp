@@ -70,7 +70,13 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		x = (float)light->inx;
 		y = (float)light->iny;
 		z = (float)light->inz;
+
+#ifdef GENERAL_FIXES
+		num = 1.0F / sqrt(SQUARE(z) + SQUARE(y) + SQUARE(x));
+#else
 		num = 1.0F / (float)(SQUARE(z) + SQUARE(y) + SQUARE(x));
+#endif
+
 		sun->vec.x = (aLightMatrix._11 * x + aLightMatrix._12 * y + aLightMatrix._13 * z) * num;
 		sun->vec.y = (aLightMatrix._21 * x + aLightMatrix._22 * y + aLightMatrix._23 * z) * num;
 		sun->vec.z = (aLightMatrix._31 * x + aLightMatrix._32 * y + aLightMatrix._33 * z) * num;

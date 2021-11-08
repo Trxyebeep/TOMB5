@@ -378,7 +378,10 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 
 					if (val > 0)
 					{
+#ifndef GENERAL_FIXES
 						val += val;
+#endif
+
 						fR += val * sun->r;
 						fG += val * sun->g;
 						fB += val * sun->b;
