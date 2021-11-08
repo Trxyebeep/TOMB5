@@ -14,3 +14,4 @@ void ItemNewRoom(short item_num, short room_number);
 #define InitialiseFXArray	( (void(__cdecl*)(int)) 0x00441080 )
 #define EffectNewRoom	( (void(__cdecl*)(short, short)) 0x004412F0 )
 #define KillEffect	( (void(__cdecl*)(short)) 0x00441180 )
+#define RemoveDrawnItem	( (void(__cdecl*)(short)) 0x00440C40 )
