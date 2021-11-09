@@ -664,5 +664,8 @@
     <Text Include="TOMB5\global\progress.txt">
       <Filter>TOMB5\global</Filter>
     </Text>
+    <Text Include="TOMB5\global\style guide.txt">
+      <Filter>TOMB5\global</Filter>
+    </Text>
   </ItemGroup>
 </Project>
