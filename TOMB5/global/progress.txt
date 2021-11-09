@@ -130,7 +130,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00413A90	+	GenericSphereBoxCollision
 0x00413CF0		GetCollidedObjects
 0x00414370	+	TriggerLaraBlood
-0x00414450		TestForObjectOnLedge
+0x00414450	+	TestForObjectOnLedge
 
 
 		game/control.cpp
@@ -1241,8 +1241,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x004679D0	+	AnimatingPickUp
 0x00467AF0	+	RegeneratePickups
-0x00467C00		PickUpCollision
-0x00468770		FindPlinth
+0x00467C00	+	PickUpCollision
+0x00468770	+	FindPlinth
 0x00468930	+	KeyHoleCollision
 0x00468C00	+	PuzzleDoneCollision
 0x00468C70	+	PuzzleHoleCollision
@@ -1337,7 +1337,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004737C0	+	BaddyObjects
 0x00475D40	+	TrapObjects
 0x00476360	+	ObjectObjects
-0x004771E0		GetCarriedItems
+0x004771E0	+	GetCarriedItems
 0x00477370		GetAIPickups
 0x004774D0		BuildOutsideTable
 0x00477880		InitialiseGameFlags

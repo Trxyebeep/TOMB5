@@ -55,6 +55,7 @@
 #include "missile.h"
 #include "sas.h"
 #include "gladiatr.h"
+#include "items.h"
 
 void InitialiseLara(int restore)
 {
@@ -1902,6 +1903,47 @@ void InitialiseObjects()
 		Spiders = (SPIDER_STRUCT*) game_malloc(1664, 0);
 }
 
+void GetCarriedItems()
+{
+	ITEM_INFO* baddy;
+	ITEM_INFO* pickup;
+	ROOM_INFO* r;
+	short item_num;
+
+	for (int i = 0; i < level_items; i++)
+	{
+		baddy = &items[i];
+		baddy->carried_item = NO_ITEM;
+	}
+
+	for (int i = 0; i < level_items; i++)
+	{
+		baddy = &items[i];
+
+		if (objects[baddy->object_number].intelligent || (baddy->object_number >= SEARCH_OBJECT1 && baddy->object_number <= SEARCH_OBJECT3))
+		{
+			r = &room[baddy->room_number];
+			item_num = r->item_number;
+
+			while (item_num != NO_ITEM)
+			{
+				pickup = &items[item_num];
+
+				if (ABS(baddy->pos.x_pos - pickup->pos.x_pos) < 512 && ABS(baddy->pos.y_pos - pickup->pos.y_pos) < 256 &&
+					ABS(baddy->pos.z_pos - pickup->pos.z_pos) < 512 && objects[pickup->object_number].collision == PickUpCollision)
+				{
+					pickup->carried_item = baddy->carried_item;
+					baddy->carried_item = item_num;
+					RemoveDrawnItem(item_num);
+					pickup->room_number = NO_ROOM;
+				}
+
+				item_num = pickup->next_item;
+			}
+		}
+	}
+}
+
 void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
@@ -1909,4 +1951,5 @@ void inject_setup(bool replace)
 	INJECT(0x00475D40, TrapObjects, replace);
 	INJECT(0x004737C0, BaddyObjects, replace);
 	INJECT(0x00473600, InitialiseObjects, replace);
+	INJECT(0x004771E0, GetCarriedItems, replace);
 }

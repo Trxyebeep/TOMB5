@@ -8,6 +8,7 @@
 #include "objects.h"
 #include "draw.h"
 #include "../specific/3dmath.h"
+#include "pickup.h"
 
 void TriggerLaraBlood()
 {
@@ -608,6 +609,63 @@ void TrapCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll)
 	ObjectCollision(item_number, laraitem, coll);
 }
 
+void TestForObjectOnLedge(ITEM_INFO* item, COLL_INFO* coll)
+{
+	MESH_INFO* StaticMesh;
+	STATIC_INFO* stat;
+	GAME_VECTOR s;
+	GAME_VECTOR d;
+	PHD_VECTOR v;
+	long objectonlos2;
+
+	for (int i = 0; i < 3; i++)
+	{
+		s.x = (i * 96) - 96;	//-96, 0, 96
+		s.y = -512;
+		s.z = -128;
+		GetLaraJointPos((PHD_VECTOR*)&s, 7);
+		s.room_number = lara_item->room_number;
+		d.x = s.x + ((768 * phd_sin(lara_item->pos.y_rot)) >> 14);
+		d.y = s.y;
+		d.z = s.z + ((768 * phd_cos(lara_item->pos.y_rot)) >> 14);
+		LOS(&s, &d);
+		objectonlos2 = ObjectOnLOS2(&s, &d, &v, &StaticMesh);
+
+		if (objectonlos2 == 999)
+			coll->hit_static = 0;
+		else
+		{
+			if (objectonlos2 >= 0)
+			{
+				if (objects[items[objectonlos2].object_number].collision != PickUpCollision)
+				{
+					coll->hit_static = 1;
+					return;
+				}
+				else
+					coll->hit_static = 0;
+			}
+			else
+			{
+				if (StaticMesh->Flags & 1)
+				{
+					stat = &static_objects[StaticMesh->static_number];
+
+					if (!stat->x_minc && !stat->x_maxc && !stat->y_minc && !stat->y_maxc && !stat->z_minc && !stat->z_maxc)
+						coll->hit_static = 0;
+					else
+					{
+						coll->hit_static = 1;
+						return;
+					}
+				}
+				else
+					coll->hit_static = 0;
+			}
+		}
+	}
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -620,4 +678,5 @@ void inject_coll(bool replace)
 	INJECT(0x004124E0, CreatureCollision, replace);
 	INJECT(0x00412770, AIPickupCollision, replace);
 	INJECT(0x004127C0, TrapCollision, replace);
+	INJECT(0x00414450, TestForObjectOnLedge, replace);
 }

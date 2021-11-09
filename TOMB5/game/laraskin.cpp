@@ -406,7 +406,7 @@ void CreateSkinningData()
 
 	for (int i = 0; i < 4; i += 2)
 	{
-		for (int j = 0; HairSkinVertNums[2][j] != -1; j++)
+		for (int j = 0; ; j++)
 		{
 			SkinVertNums[i + 30][j] = HairSkinVertNums[4][j];
 			SkinVertNums[i + 31][j] = HairSkinVertNums[3][j];
@@ -416,6 +416,9 @@ void CreateSkinningData()
 			ScratchVertNums[i + 37][j] = HairScratchVertNums[2][j];
 			SkinVertNums[i + 36][j] = HairSkinVertNums[4][j];
 			SkinVertNums[i + 37][j] = HairSkinVertNums[3][j];
+
+			if (HairSkinVertNums[2][j] == -1)
+				break;
 		}
 	}
 

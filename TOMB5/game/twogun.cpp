@@ -200,8 +200,8 @@ void TwogunControl(short item_number)
 		CreatureMood(item, &twogunInfo, _2gun->enemy != lara_item);
 		angle = CreatureTurn(item, _2gun->maximum_turn);
 
-		if ((lara_info.distance < 0x400000 && (lara_info.angle < 0x4000 && lara_info.angle > -16384) || lara_item->speed > 20) || item->hit_status ||
-			TargetVisible(item, &lara_info) && ABS(item->pos.y_pos - lara_item->pos.y_pos) < 1536)
+		if (((lara_info.distance < 0x400000 && (lara_info.angle < 0x4000 && lara_info.angle > -16384 || lara_item->speed > 20)) ||
+			item->hit_status || TargetVisible(item, &lara_info)) && ABS(item->pos.y_pos - lara_item->pos.y_pos) < 1536)
 		{
 			_2gun->enemy = lara_item;
 			AlertAllGuards(item_number);
