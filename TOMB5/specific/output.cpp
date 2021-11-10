@@ -360,7 +360,19 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 				for (int j = 0; j < NumPointLights; j++)
 				{
 					point = &PointLights[j];
+
+//#define tr4_way
+#ifdef GENERAL_FIXES
+#ifdef tr4_way
+					val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz);
+#else	//!tr4_way
 					val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
+					val *= val;
+#endif	//tr4_way
+#else	//!GENERAL_FIXES
+					val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
+#endif	//GENERAL_FIXES
+#undef tr4_way
 
 					if (val > 0)
 					{
@@ -373,17 +385,20 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 			}
 
 #ifdef GENERAL_FIXES
-			for (int j = 0; j < NumSpotLights; j++)
+			if (NumSpotLights)
 			{
-				spot = &SpotLights[j];
-				val = spot->vec.x * mesh->aVtx[i].nx + spot->vec.y * mesh->aVtx[i].ny + spot->vec.z * mesh->aVtx[i].nz;
-
-				if (val > 0)
+				for (int j = 0; j < NumSpotLights; j++)
 				{
-					val *= spot->rad;
-					fR += val * spot->r;
-					fG += val * spot->g;
-					fB += val * spot->b;
+					spot = &SpotLights[j];
+					val = spot->vec.x * mesh->aVtx[i].nx + spot->vec.y * mesh->aVtx[i].ny + spot->vec.z * mesh->aVtx[i].nz;
+
+					if (val > 0)
+					{
+						val *= spot->rad;
+						fR += val * spot->r;
+						fG += val * spot->g;
+						fB += val * spot->b;
+					}
 				}
 			}
 #endif
@@ -397,21 +412,17 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 
 					if (val > 0)
 					{
-#ifndef GENERAL_FIXES
+#ifdef GENERAL_FIXES
+						val *= 0.5F;
+#else
 						val += val;
 #endif
-
 						fR += val * sun->r;
 						fG += val * sun->g;
 						fB += val * sun->b;
 					}
 				}
 			}
-
-#ifdef  GENERAL_FIXES
-			//spotlights here, just do the same as the others, val = etc. then add it to fR fG fB
-			//and shadows??
-#endif
 
 			cR = (long)fR;
 			cG = (long)fG;
