@@ -136,10 +136,49 @@ void InsertRoom(ROOM_INFO* r)
 	}
 }
 
+void InsertRoomlet(ROOMLET* roomlet)
+{
+	TEXTURESTRUCT* tex;
+	static long* prelightptr;
+	short* ptr;
+	long lights, double_sided;
+
+	if (roomlet->nVtx)
+	{
+		prelightptr = roomlet->pPrelight;
+		lights = aBuildRoomletLights(roomlet);
+		aRoomletTransformLight(roomlet->pSVtx, roomlet->nVtx, lights & 0x7FFFFFFF, roomlet->nWVtx, roomlet->nSVtx);
+		ptr = roomlet->pFac;
+
+		for (int i = 0; i < roomlet->nQuad; i++, ptr += 6)
+		{
+			double_sided = (ptr[4] >> 15) & 1;
+			tex = &textinfo[ptr[4] & 0x3FFF];
+
+			if (tex->drawtype)
+				AddQuadSorted(aVertexBuffer, ptr[0], ptr[1], ptr[2], ptr[3], tex, double_sided);
+			else
+				AddQuadZBuffer(aVertexBuffer, ptr[0], ptr[1], ptr[2], ptr[3], tex, double_sided);
+		}
+
+		for (int i = 0; i < roomlet->nTri; i++, ptr += 5)
+		{
+			double_sided = (ptr[3] >> 15) & 1;
+			tex = &textinfo[ptr[3] & 0x3FFF];
+
+			if (tex->drawtype)
+				AddTriSorted(aVertexBuffer, ptr[0], ptr[1], ptr[2], tex, double_sided);
+			else
+				AddTriZBuffer(aVertexBuffer, ptr[0], ptr[1], ptr[2], tex, double_sided);
+		}
+	}
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
 	INJECT(0x0049CC20, DrawBoundsRectangleII, replace);
 	INJECT(0x0049CE40, DrawClipRectangle, replace);
 	INJECT(0x0049A9D0, InsertRoom, replace);
+	INJECT(0x0049ABF0, InsertRoomlet, replace);
 }
