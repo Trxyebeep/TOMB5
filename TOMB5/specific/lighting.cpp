@@ -4,6 +4,10 @@
 #include "d3dmatrix.h"
 #include "../game/control.h"
 
+#ifdef GENERAL_FIXES
+SPOTLIGHT_STRUCT SpotLights[64];
+#endif
+
 void InitObjectLighting(ITEM_INFO* item)
 {
 	PCLIGHT* light;
@@ -61,6 +65,9 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 {
 	SUNLIGHT_STRUCT* sun;
 	POINTLIGHT_STRUCT* point;
+#ifdef GENERAL_FIXES
+	SPOTLIGHT_STRUCT* spot;
+#endif
 	float x, y, z, num, num2;
 	long aR, aG, aB, val, val2;
 
@@ -104,6 +111,25 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		NumPointLights++;
 		TotalNumLights++;
 	}
+#ifdef GENERAL_FIXES
+	else if (light->Type == LIGHT_SPOT)
+	{
+		x = light->x - lGlobalMeshPos.x;
+		y = light->y - lGlobalMeshPos.y;
+		z = light->z - lGlobalMeshPos.z;
+		spot = &SpotLights[NumSpotLights];
+		num = sqrt(SQUARE(z) + SQUARE(y) + SQUARE(x));
+		spot->vec.x = (aLightMatrix._11 * x + aLightMatrix._12 * y + aLightMatrix._13 * z) / num;
+		spot->vec.y = (aLightMatrix._21 * x + aLightMatrix._22 * y + aLightMatrix._23 * z) / num;
+		spot->vec.z = (aLightMatrix._31 * x + aLightMatrix._32 * y + aLightMatrix._33 * z) / num;
+		spot->r = light->r * 255.0F;
+		spot->g = light->g * 255.0F;
+		spot->b = light->b * 255.0F;
+		spot->rad = 1.0F - num / light->Cutoff;
+		NumSpotLights++;
+		TotalNumLights++;
+	}
+#endif
 	else if (light->Type == LIGHT_SHADOW)
 	{
 		aR = CLRR(*ambient);

@@ -325,6 +325,9 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 {
 	POINTLIGHT_STRUCT* point;
 	SUNLIGHT_STRUCT* sun;
+#ifdef GENERAL_FIXES
+	SPOTLIGHT_STRUCT* spot;
+#endif
 	FOGBULB_STRUCT* bulb;
 	FVECTOR vec;
 	FVECTOR vec2;
@@ -368,6 +371,22 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 					}
 				}
 			}
+
+#ifdef GENERAL_FIXES
+			for (int j = 0; j < NumSpotLights; j++)
+			{
+				spot = &SpotLights[j];
+				val = spot->vec.x * mesh->aVtx[i].nx + spot->vec.y * mesh->aVtx[i].ny + spot->vec.z * mesh->aVtx[i].nz;
+
+				if (val > 0)
+				{
+					val *= spot->rad;
+					fR += val * spot->r;
+					fG += val * spot->g;
+					fB += val * spot->b;
+				}
+			}
+#endif
 
 			if (NumSunLights)
 			{

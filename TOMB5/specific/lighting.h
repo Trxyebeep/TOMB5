@@ -10,6 +10,10 @@ void FadeLightList(PCLIGHT* lights, long nLights);
 void SuperResetLights();
 void CalcAmbientLight(ITEM_INFO* item);
 
+#ifdef GENERAL_FIXES
+extern SPOTLIGHT_STRUCT SpotLights[64];
+#endif
+
 #define ClearObjectLighting	( (void(__cdecl*)()) 0x004AB910 )//empty
 #define ClearDynamicLighting	( (void(__cdecl*)()) 0x004AB9D0 )//empty
 #define InitDynamicLighting_noparams	( (void(__cdecl*)()) 0x004AB930 )
