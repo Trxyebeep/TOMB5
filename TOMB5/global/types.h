@@ -2210,6 +2210,17 @@ struct FOGBULB_STRUCT
 	long visible;
 };
 
+#ifdef GENERAL_FIXES
+struct SPOTLIGHT_STRUCT
+{
+	FVECTOR vec;
+	float r;
+	float g;
+	float b;
+	float rad;
+};
+#endif
+
 struct FCAMERA
 {
 	FVECTOR i;
