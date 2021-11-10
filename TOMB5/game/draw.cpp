@@ -28,9 +28,8 @@
 #include "twogun.h"
 #include "mirror.h"
 #include "../specific/alexstuff.h"
-#ifdef DEBUG_FEATURES
-#include "../specific/texture.h"
-#endif
+#include "lara_states.h"
+#include "control.h"
 #ifdef FOOTPRINTS
 #include "footprnt.h"
 #endif
@@ -345,11 +344,6 @@ long DrawPhaseGame()
 
 	if (GLOBAL_playing_cutseq)
 		frigup_lara();
-
-#ifdef DEBUG_FEATURES
-	if (input & IN_SPRINT)
-		ShowTextures();
-#endif
 
 	SetLaraUnderwaterNodes();
 	DrawRooms(camera.pos.room_number);
@@ -918,6 +912,48 @@ void DrawRooms(short current_room)
 	aUpdate();
 }
 
+void CalculateObjectLightingLara()
+{
+	PHD_VECTOR pos;
+	short room_no;
+
+	if (GLOBAL_playing_cutseq)
+		CalculateObjectLightingLaraCutSeq();
+	else
+	{
+		pos.x = 0;
+		pos.y = 0;
+		pos.z = 0;
+
+		if (lara_item->anim_number == ANIM_DUCKBREATHE || lara_item->anim_number == ANIM_ALL4S || lara_item->anim_number == ANIM_BREATH)
+		{
+			pos.x = lara_item->pos.x_pos;
+
+			if (lara_item->anim_number == ANIM_BREATH)
+				pos.y = lara_item->pos.y_pos - 512;
+			else
+				pos.y = lara_item->pos.y_pos - 192;
+
+			pos.z = lara_item->pos.z_pos;
+			room_no = lara_item->room_number;
+			GetFloor(pos.x, pos.y, pos.z, &room_no);
+		}
+		else
+		{
+			GetLaraJointPos(&pos, 7);
+			room_no = lara_item->room_number;
+			GetFloor(pos.x, pos.y, pos.z, &room_no);
+		}
+
+		current_item = lara_item;
+		lara_item->il.item_pos.x = pos.x;
+		lara_item->il.item_pos.y = pos.y;
+		lara_item->il.item_pos.z = pos.z;
+		CalcAmbientLight(lara_item);
+		CreateLightList(lara_item);
+	}
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -942,4 +978,5 @@ void inject_draw(bool replace)
 	INJECT(0x0042B900, DrawAnimatingItem, replace);
 	INJECT(0x0042D290, PrintObjects, replace);
 	INJECT(0x0042A7A0, DrawRooms, replace);
+	INJECT(0x0042A1B0, CalculateObjectLightingLara, replace);
 }

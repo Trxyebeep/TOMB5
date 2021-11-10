@@ -3499,7 +3499,7 @@ void CalculateObjectLightingLaraCutSeq()
 	pos.x = 0;
 	pos.y = 0;
 	pos.z = 0;
-	GetLaraJointPos(&pos, 8);
+	GetLaraJointPos(&pos, 7);
 	room_num = lara_item->room_number;
 	IsRoomOutsideNo = -1;
 	IsRoomOutside(pos.x, pos.y, pos.z);
