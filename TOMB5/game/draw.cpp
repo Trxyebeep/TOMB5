@@ -371,7 +371,7 @@ void SkyDrawPhase()
 		}
 
 #ifdef IRELAND_SKIES
-		if (gfCurrentLevel == LVL5_GALLOWS_TREE || gfCurrentLevel == LVL5_OLD_MILL)
+		if (gfCurrentLevel == LVL5_GALLOWS_TREE || gfCurrentLevel == LVL5_LABYRINTH || gfCurrentLevel == LVL5_OLD_MILL)
 		{
 			DrawMoon();
 			DrawStarField();
