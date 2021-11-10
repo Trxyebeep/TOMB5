@@ -3574,8 +3574,9 @@ void lara_as_all4s(ITEM_INFO* item, COLL_INFO* coll)
 
 			if (LOS(&s, &d))
 			{
-#ifdef GENERAL_FIXES //restrict roll out to anims 263 and 264 otherwise lara's gun_status bugs out
-				if (ObjectOnLOS2(&s, &d, &v, &StaticMesh) == 999 && lara_item->anim_number == 263 || lara_item->anim_number == 264)
+#ifdef GENERAL_FIXES //restrict roll out to crawl anims otherwise lara's gun_status bugs out
+				if (ObjectOnLOS2(&s, &d, &v, &StaticMesh) == 999 && 
+					(lara_item->anim_number == 263 || lara_item->anim_number == 264 || item->anim_number == 266 || item->anim_number == 268))
 #else
 				if (ObjectOnLOS2(&s, &d, &v, &StaticMesh) == 999)
 #endif
@@ -3643,7 +3644,11 @@ void lara_col_all4s(ITEM_INFO* item, COLL_INFO* coll)
 				return;
 			}
 
+#ifdef GENERAL_FIXES	//more flexible crawling
+			if (item->anim_number == ANIM_ALL4S || item->anim_number == ANIM_ALL4S2 || item->anim_number == 266 || item->anim_number == 268)
+#else
 			if (item->anim_number == ANIM_ALL4S || item->anim_number == ANIM_ALL4S2)
+#endif
 			{
 				if (input & IN_FORWARD)
 				{

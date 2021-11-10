@@ -8,5 +8,6 @@ void ObjectObjects();
 void TrapObjects();
 void BaddyObjects();
 void InitialiseObjects();
+void GetCarriedItems();
 
 #define BuildOutsideTable	( (void(__cdecl*)()) 0x004774D0 )
