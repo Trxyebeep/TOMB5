@@ -3058,7 +3058,8 @@ void lara_as_switchon(ITEM_INFO* item, COLL_INFO* coll)
 	camera.speed = 6;
 
 #ifdef GENERAL_FIXES
-	if (item->frame_number == anims[ANIM_AIRLOCKSW].frame_end - 1)
+	if (item->frame_number == anims[ANIM_AIRLOCKSW].frame_end - 1 ||
+		item->frame_number == anims[ANIM_CROWDOVE].frame_end - 1)
 		lara.gun_status = LG_NO_ARMS;
 #endif
 }
