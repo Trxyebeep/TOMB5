@@ -503,6 +503,7 @@
 #define current_room_ptr	VAR_U_(0x007DFC0C, ROOM_INFO*)
 #define current_room_underwater	VAR_U_(0x007EE0C8, long)
 #define RoomRGB	VAR_U_(0x0057A508, long)
+#define old_lighting_water	VAR_U_(0x007EE0D4, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

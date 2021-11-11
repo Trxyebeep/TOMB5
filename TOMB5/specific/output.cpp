@@ -644,11 +644,207 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 	}
 }
 
+void phd_PutPolygonsPickup(short* objptr, float x, float y, long color)
+{
+	MESH_DATA* mesh;
+	ENVUV* envuv;
+	ACMESHVERTEX* vtx;
+	TEXTURESTRUCT* pTex;
+	TEXTURESTRUCT tex;
+	short* quad;
+	short* tri;
+	float val, xbak, ybak;
+	long clrbak[4];
+	long spcbak[4];
+	long num;
+	ushort drawbak;
+	bool envmap;
+
+	old_lighting_water = 0;
+	SetD3DViewMatrix();
+	aSetViewMatrix();
+	mesh = (MESH_DATA*)objptr;
+	lGlobalMeshPos.x = mesh->bbox[3] - mesh->bbox[0];
+	lGlobalMeshPos.y = mesh->bbox[4] - mesh->bbox[1];
+	lGlobalMeshPos.z = mesh->bbox[5] - mesh->bbox[2];
+	SuperResetLights();
+	ClearDynamicLighting();
+	ClearObjectLighting();
+	clip_left = f_left;
+	clip_top = f_top;
+	clip_right = f_right;
+	clip_bottom = f_bottom;
+	SunLights[0].r = (float)CLRR(color);
+	SunLights[0].g = (float)CLRG(color);
+	SunLights[0].b = (float)CLRB(color);
+	val = 1.0F / sqrt(12500.0F);
+	SunLights[0].vec.x = (D3DMView._12 * -50.0F + D3DMView._13 * -100.0F) * val;	//x must be 0
+	SunLights[0].vec.y = (D3DMView._22 * -50.0F + D3DMView._23 * -100.0F) * val;
+	SunLights[0].vec.z = (D3DMView._32 * -50.0F + D3DMView._33 * -100.0F) * val;
+	NumSunLights = 1;
+	TotalNumLights = 1;
+	aAmbientR = 8;
+	aAmbientG = 8;
+	aAmbientB = 8;
+	xbak = f_centerx;
+	ybak = f_centery;
+	f_centerx = x;
+	f_centery = y;
+	aTransformLightClipMesh(mesh);
+	f_centerx = xbak;
+	f_centery = ybak;
+
+	if (mesh->aFlags & 1)
+	{
+		envuv = aMappedEnvUV;
+		vtx = mesh->aVtx;
+
+		for (int i = 0; i < mesh->nVerts; i++, envuv++, vtx++)
+		{
+			envuv->u = (vtx->nx * D3DMView._11 + vtx->ny * D3DMView._21 + vtx->nz * D3DMView._31) * 0.25F + 0.25F;
+			envuv->v = (vtx->nx * D3DMView._12 + vtx->ny * D3DMView._22 + vtx->nz * D3DMView._32) * 0.25F + 0.25F;
+		}
+	}
+
+	quad = mesh->gt4;
+
+	for (int i = 0; i < mesh->ngt4; i++, quad += 6)
+	{
+		envmap = 0;
+		pTex = &textinfo[quad[4] & 0x7FFF];
+		drawbak = pTex->drawtype;
+
+		if (quad[5] & 1)
+			pTex->drawtype = 2;
+
+		if (quad[5] & 2)
+		{
+			envmap = 1;
+			tex.drawtype = 2;
+			tex.flag = pTex->flag;
+			tex.tpage = nTextures - 3;
+			tex.u1 = aMappedEnvUV[quad[0]].u;
+			tex.v1 = aMappedEnvUV[quad[0]].v;
+			tex.u2 = aMappedEnvUV[quad[1]].u;
+			tex.v2 = aMappedEnvUV[quad[1]].v;
+			tex.u3 = aMappedEnvUV[quad[2]].u;
+			tex.v3 = aMappedEnvUV[quad[2]].v;
+			tex.u4 = aMappedEnvUV[quad[3]].u;
+			tex.v4 = aMappedEnvUV[quad[3]].v;
+			num = (quad[5] & 0x7C) << 1;
+		}
+
+		if (GlobalAlpha == 0xFF000000)
+		{
+			AddQuadSorted(aVertexBuffer, quad[0], quad[1], quad[2], quad[3], pTex, 0);
+
+			if (envmap)
+			{
+				clrbak[0] = aVertexBuffer[quad[0]].color;
+				clrbak[1] = aVertexBuffer[quad[1]].color;
+				clrbak[2] = aVertexBuffer[quad[2]].color;
+				clrbak[3] = aVertexBuffer[quad[3]].color;
+				spcbak[0] = aVertexBuffer[quad[0]].specular;
+				spcbak[1] = aVertexBuffer[quad[1]].specular;
+				spcbak[2] = aVertexBuffer[quad[2]].specular;
+				spcbak[3] = aVertexBuffer[quad[3]].specular;
+				RGB_M(aVertexBuffer[quad[0]].color, num);
+				RGB_M(aVertexBuffer[quad[1]].color, num);
+				RGB_M(aVertexBuffer[quad[2]].color, num);
+				RGB_M(aVertexBuffer[quad[3]].color, num);
+				RGB_M(aVertexBuffer[quad[0]].specular, num);
+				RGB_M(aVertexBuffer[quad[1]].specular, num);
+				RGB_M(aVertexBuffer[quad[2]].specular, num);
+				RGB_M(aVertexBuffer[quad[3]].specular, num);
+				AddQuadSorted(aVertexBuffer, quad[0], quad[1], quad[2], quad[3], &tex, 0);
+				aVertexBuffer[quad[0]].color = clrbak[0];
+				aVertexBuffer[quad[1]].color = clrbak[1];
+				aVertexBuffer[quad[2]].color = clrbak[2];
+				aVertexBuffer[quad[3]].color = clrbak[3];
+				aVertexBuffer[quad[0]].specular = spcbak[0];
+				aVertexBuffer[quad[1]].specular = spcbak[1];
+				aVertexBuffer[quad[2]].specular = spcbak[2];
+				aVertexBuffer[quad[3]].specular = spcbak[3];
+			}
+		}
+		else
+		{
+			pTex->drawtype = 0;
+			AddQuadSorted(aVertexBuffer, quad[0], quad[1], quad[2], quad[3], pTex, 0);
+		}
+
+		pTex->drawtype = drawbak;
+	}
+
+	tri = mesh->gt3;
+
+	for (int i = 0; i < mesh->ngt3; i++, tri += 5)
+	{
+		envmap = 0;
+		pTex = &textinfo[tri[3] & 0x7FFF];
+		drawbak = pTex->drawtype;
+
+		if (tri[4] & 1)
+			pTex->drawtype = 2;
+
+		if (tri[4] & 2)
+		{
+			envmap = 1;
+			tex.drawtype = 2;
+			tex.flag = pTex->flag;
+			tex.tpage = nTextures - 3;
+			tex.u1 = aMappedEnvUV[*tri].u;
+			tex.v1 = aMappedEnvUV[*tri].v;
+			tex.u2 = aMappedEnvUV[tri[1]].u;
+			tex.v2 = aMappedEnvUV[tri[1]].v;
+			tex.u3 = aMappedEnvUV[tri[2]].u;
+			tex.v3 = aMappedEnvUV[tri[2]].v;
+			num = (tri[4] & 0x7C) << 1;
+		}
+
+		if (GlobalAlpha == 0xFF000000)
+		{
+			AddTriSorted(aVertexBuffer, tri[0], tri[1], tri[2], pTex, 0);
+
+			if (envmap)
+			{
+				clrbak[0] = aVertexBuffer[tri[0]].color;
+				clrbak[1] = aVertexBuffer[tri[1]].color;
+				clrbak[2] = aVertexBuffer[tri[2]].color;
+				spcbak[0] = aVertexBuffer[tri[0]].specular;
+				spcbak[1] = aVertexBuffer[tri[1]].specular;
+				spcbak[2] = aVertexBuffer[tri[2]].specular;
+				RGB_M(aVertexBuffer[tri[0]].color, num);
+				RGB_M(aVertexBuffer[tri[1]].color, num);
+				RGB_M(aVertexBuffer[tri[2]].color, num);
+				RGB_M(aVertexBuffer[tri[0]].specular, num);
+				RGB_M(aVertexBuffer[tri[1]].specular, num);
+				RGB_M(aVertexBuffer[tri[2]].specular, num);
+				AddTriSorted(aVertexBuffer, tri[0], tri[1], tri[2], &tex, 0);
+				aVertexBuffer[tri[0]].color = clrbak[0];
+				aVertexBuffer[tri[1]].color = clrbak[1];
+				aVertexBuffer[tri[2]].color = clrbak[2];
+				aVertexBuffer[tri[0]].specular = spcbak[0];
+				aVertexBuffer[tri[1]].specular = spcbak[1];
+				aVertexBuffer[tri[2]].specular = spcbak[2];
+			}
+		}
+		else
+		{
+			pTex->drawtype = 7;
+			AddTriSorted(aVertexBuffer, tri[0], tri[1], tri[2], pTex, 0);
+		}
+
+		pTex->drawtype = drawbak;
+	}
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
 	INJECT(0x004B3F00, phd_PutPolygons, replace);
 	INJECT(0x004B74D0, phd_PutPolygonSkyMesh, replace);
 	INJECT(0x004B2BA0, aTransformLightClipMesh, replace);
+	INJECT(0x004B66B0, phd_PutPolygonsPickup, replace);
 }
 
