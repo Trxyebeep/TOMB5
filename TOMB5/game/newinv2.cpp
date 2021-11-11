@@ -168,6 +168,7 @@ int S_CallInventory2()
 
 		do_debounced_joystick_poo();
 
+#ifndef TRF
 		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
 			keymap[DIK_G] && keymap[DIK_U] && keymap[DIK_N] && keymap[DIK_S])//GUNS
 			dels_give_lara_guns_cheat();
@@ -181,6 +182,7 @@ int S_CallInventory2()
 			savegame.CampaignSecrets[2] = 9;
 			savegame.CampaignSecrets[3] = 9;
 		}
+#endif
 
 		if (GLOBAL_invkeypadmode)
 			do_keypad_mode();
@@ -2837,7 +2839,10 @@ void do_stats_mode()
 
 void dels_give_lara_items_cheat()
 {
-#ifdef VER_JP
+#ifdef TRF
+	return;
+#endif
+#ifdef ENABLE_CHEATS
 	long piss;//I'll keep it for reasons
 
 	if (objects[CROWBAR_ITEM].loaded)
@@ -2883,7 +2888,10 @@ void dels_give_lara_items_cheat()
 
 void dels_give_lara_guns_cheat()
 {
-#ifdef VER_JP
+#ifdef TRF
+	return;
+#endif
+#ifdef ENABLE_CHEATS
 	//actually this isn't in the JP exe either, it's taken from PSX code
 	if (objects[FLARE_INV_ITEM].loaded)
 		lara.num_flares = -1;
