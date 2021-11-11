@@ -413,10 +413,12 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 					if (val > 0)
 					{
 #ifdef GENERAL_FIXES
-						val *= 0.5F;
-#else
-						val += val;
+						if (!InventoryActive)	//fucking shit
+							val *= 0.5F;
+						else
 #endif
+							val += val;
+
 						fR += val * sun->r;
 						fG += val * sun->g;
 						fB += val * sun->b;
