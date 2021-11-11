@@ -259,8 +259,7 @@ void DoorControl(short item_number)
 
 				if (item->current_anim_state == 1)
 					item->goal_anim_state = 0;
-
-				if (door->Opened)
+				else if (door->Opened)
 				{
 					ShutThatDoor(&door->d1, door);
 					ShutThatDoor(&door->d2, door);

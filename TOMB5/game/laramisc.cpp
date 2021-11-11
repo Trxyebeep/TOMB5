@@ -2,8 +2,10 @@
 #include "laramisc.h"
 #include "lara_states.h"
 #include "gameflow.h"
-#ifdef VER_JP
+#ifndef TRF
+#ifdef ENABLE_CHEATS
 #include "newinv2.h"
+#endif
 #endif
 #include "../specific/3dmath.h"
 #include "draw.h"
@@ -199,7 +201,8 @@ void LaraCheatGetStuff()
 #endif
 }
 
-#ifdef VER_JP
+#ifndef TRF
+#ifdef ENABLE_CHEATS
 void LaraCheatyBits()
 {
 #ifndef GENERAL_FIXES	//make cheats available
@@ -253,6 +256,7 @@ void LaraCheatyBits()
 #endif
 
 }
+#endif
 #endif
 
 void AnimateLara(ITEM_INFO* item)
@@ -416,8 +420,10 @@ void LaraControl(short item_number)
 		lara.gun_status = LG_NO_ARMS;
 	}
 
-#ifdef VER_JP
+#ifndef TRF
+#ifdef ENABLE_CHEATS
 	LaraCheatyBits();
+#endif
 #endif
 
 	if (!bDisableLaraControl)

@@ -99,9 +99,11 @@ long ControlPhase(long _nframes, int demo_mode)
 
 		if (cutseq_trig)
 		{
+#ifndef TRF
 #ifdef CUTSCENE_SKIPPER
 			if (keymap[DIK_ESCAPE] && !ScreenFading)//skip them with esc
 				do_cutseq_skipper_shit();
+#endif
 #endif
 			input = 0;
 		}
@@ -119,8 +121,10 @@ long ControlPhase(long _nframes, int demo_mode)
 			}
 		}
 
+#ifndef TRF
 		if (keymap[23] != 0)//the I button
 			dels_give_lara_items_cheat();
+#endif
 
 		if (gfLevelComplete)
 			return 3;

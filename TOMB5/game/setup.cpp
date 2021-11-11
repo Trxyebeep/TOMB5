@@ -1526,7 +1526,7 @@ void BaddyObjects()
 		bones[obj->bone_index + 52] |= 4;
 	}
 
-	if (obj[CHEF].loaded)
+	if (objects[CHEF].loaded)
 	{
 		obj = &objects[CHEF];
 		obj->initialise = InitialiseChef;
