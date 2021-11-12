@@ -2464,6 +2464,11 @@ void FlipMap(long FlipNumber)
 
 		if (r->flipped_room >= 0 && r->FlipNumber == FlipNumber)
 		{
+#ifdef GENERAL_FIXES	//reset lighting room so objects take the new room's light!
+			for (int j = r->item_number; j != NO_ITEM; j = items[j].next_item)
+				items[j].il.room_number = NO_ROOM;
+
+#endif
 			RemoveRoomFlipItems(r);
 			flipped = &room[r->flipped_room];
 			memcpy(&temp, r, sizeof(temp));
