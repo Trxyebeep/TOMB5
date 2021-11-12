@@ -935,7 +935,7 @@ void FullBlockSwitchCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 		}
 	}
 	else
-		ObjectCollision(item_number, item, coll);
+		ObjectCollision(item_number, l, coll);
 }
 
 void CogSwitchControl(short item_number)
