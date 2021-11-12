@@ -141,7 +141,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 
 	phd_PushMatrix();
 	objptr = lara.mesh_ptrs[LM_TORSO];
-	phd_TranslateRel(*objptr - 9, objptr[1], objptr[2] + 25);
+	phd_TranslateRel(*objptr - 9, objptr[1], objptr[2] + 25);//repositioned to avoid floaty hair
 	sphere[1].x = phd_mxptr[M03] >> 14;
 	sphere[1].y = phd_mxptr[M13] >> 14;
 	sphere[1].z = phd_mxptr[M23] >> 14;
@@ -160,7 +160,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	sphere[3].x = phd_mxptr[M03] >> 14;
 	sphere[3].y = phd_mxptr[M13] >> 14;
 	sphere[3].z = phd_mxptr[M23] >> 14;
-	sphere[3].r = 4 * objptr[3] / 3;
+	sphere[3].r = 4 * objptr[3] / 3;	//limited rad to avoid floating hair when crawling with the new neck sphere
 	phd_PopMatrix();
 
 	phd_PushMatrix();
@@ -171,7 +171,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	sphere[4].x = phd_mxptr[M03] >> 14;
 	sphere[4].y = phd_mxptr[M13] >> 14;
 	sphere[4].z = phd_mxptr[M23] >> 14;
-	sphere[4].r = 4 * objptr[3] / 3;
+	sphere[4].r = 4 * objptr[3] / 3;	//limited rad to avoid floating hair when crawling with the new neck sphere
 	phd_PopMatrix();
 	phd_TranslateRel(bone[53], bone[54], bone[55]);
 	gar_RotYXZsuperpack(&rot, 2);
@@ -179,7 +179,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 
 	phd_PushMatrix();
 	objptr = lara.mesh_ptrs[LM_HEAD];
-	phd_TranslateRel(*objptr - 2, objptr[1], objptr[2]);
+	phd_TranslateRel(*objptr - 2, objptr[1], objptr[2]);//repositioned to avoid floaty hair
 	sphere[2].x = phd_mxptr[M03] >> 14;
 	sphere[2].y = phd_mxptr[M13] >> 14;
 	sphere[2].z = phd_mxptr[M23] >> 14;
@@ -193,7 +193,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 		sphere[1].z = (sphere[1].z + sphere[2].z) >> 1;
 	}
 
-	sphere[5].x = (2 * sphere[2].x + sphere[1].x) / 3;
+	sphere[5].x = (2 * sphere[2].x + sphere[1].x) / 3;//sphere[5] is an extra sphere added between the head and torso sphere to simulate a neck sphere
 	sphere[5].y = (2 * sphere[2].y + sphere[1].y) / 3;
 	sphere[5].z = (2 * sphere[2].z + sphere[1].z) / 3;
 	sphere[5].r = gfLevelFlags & GF_YOUNGLARA ? 0 : 5 * sphere[2].r / 4;
@@ -307,7 +307,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			switch (lara.water_status)
 			{
 			case LW_ABOVE_WATER:
-			case LW_WADE:
+			case LW_WADE:	//here instead of the other case to fix stiff hair during wade
 				hair->pos.y_pos += 10;
 
 				if (water != NO_HEIGHT && hair->pos.y_pos > water)
@@ -331,7 +331,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 				break;
 			}
 
-			for (int j = 0; j < 6; j++)
+			for (int j = 0; j < 6; j++)	//6 instead of 5 for new sphere
 			{
 				x = hair->pos.x_pos - sphere[j].x;
 				y = hair->pos.y_pos - sphere[j].y;
@@ -358,7 +358,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 
 			if (!((cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211) || (GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480))) ||
 				(cutseq_num == 8 && (GLOBAL_cutseq_frame >= 840 && GLOBAL_cutseq_frame <= 846)) ||
-				(cutseq_num == 27 && (GLOBAL_cutseq_frame >= 928 && GLOBAL_cutseq_frame <= 934))))
+				(cutseq_num == 27 && (GLOBAL_cutseq_frame >= 928 && GLOBAL_cutseq_frame <= 934))))	//To avoid hair jumps in cuts
 			{
 				(hair - 1)->pos.y_rot = (short)phd_atan(dz, dx);
 				(hair - 1)->pos.x_rot = (short)-phd_atan(dist, dy);
@@ -380,7 +380,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			if ((cutseq_num == 16 && ((GLOBAL_cutseq_frame >= 409 && GLOBAL_cutseq_frame < 411) || GLOBAL_cutseq_frame == 1873 || GLOBAL_cutseq_frame == 3049)) ||
 				(cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211) || (GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480))) ||
 				(cutseq_num == 8 && (GLOBAL_cutseq_frame >= 840 && GLOBAL_cutseq_frame <= 846)) ||
-				(cutseq_num == 27 && (GLOBAL_cutseq_frame >= 928 && GLOBAL_cutseq_frame <= 934)))
+				(cutseq_num == 27 && (GLOBAL_cutseq_frame >= 928 && GLOBAL_cutseq_frame <= 934)))//To avoid hair jumps in cuts
 			{
 				hair->vel.x = 0;
 				hair->vel.y = 0;
