@@ -320,7 +320,7 @@ void ControlArea51Laser(short item_number)
 		if (dz < 768)
 		{
 			item->trigger_flags = 32;
-			x = ((((item->item_flags[1] & 0xFF) << 9) + ((-2560 * (item->item_flags[2] * phd_sin(item->pos.y_rot))) >> 14)) >> 9) & 0xFF;
+			x = ((((item->item_flags[0] & 0xFF) << 9) + ((-2560 * (item->item_flags[2] * phd_sin(item->pos.y_rot))) >> 14)) >> 9) & 0xFF;
 			z = (((((-2560 * (item->item_flags[2] * phd_cos(item->pos.y_rot))) >> 14) + ((item->item_flags[0] & 0xFF00) << 1)) >> 9) & 0xFF) << 8;
 			item->item_flags[1] = (short)(x | z);
 		}

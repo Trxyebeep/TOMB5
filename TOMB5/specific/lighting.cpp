@@ -74,13 +74,15 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 	if (light->Type == LIGHT_SUN)
 	{
 		sun = &SunLights[NumSunLights];
+#ifdef GENERAL_FIXES
+		x = light->nx;
+		y = light->ny;
+		z = light->nz;
+		num = -1.0F / sqrt(SQUARE(z) + SQUARE(y) + SQUARE(x));	//MINUS one because [redacted] winroomedit inverted direction
+#else
 		x = (float)light->inx;
 		y = (float)light->iny;
 		z = (float)light->inz;
-
-#ifdef GENERAL_FIXES
-		num = 1.0F / sqrt(SQUARE(z) + SQUARE(y) + SQUARE(x));
-#else
 		num = 1.0F / (float)(SQUARE(z) + SQUARE(y) + SQUARE(x));
 #endif
 
