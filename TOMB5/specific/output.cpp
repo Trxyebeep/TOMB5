@@ -414,7 +414,7 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 					{
 #ifdef GENERAL_FIXES
 						if (!InventoryActive)	//fucking shit
-							val *= 0.5F;
+							val *= 0.75F;
 						else
 #endif
 							val += val;
