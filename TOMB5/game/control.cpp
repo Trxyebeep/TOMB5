@@ -139,6 +139,10 @@ long ControlPhase(long _nframes, int demo_mode)
 			else
 			{
 				reset_flag = 0;
+#ifdef GENERAL_FIXES	//open load menu on if player dies
+				GetSaveLoadFiles();
+				menu_to_display = 2;
+#endif
 				return 1;
 			}
 		}
