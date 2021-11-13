@@ -129,9 +129,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	phd_PushMatrix();
 	objptr = lara.mesh_ptrs[LM_HIPS];
 	phd_TranslateRel(*objptr, objptr[1], objptr[2]);
-	sphere[0].x = phd_mxptr[M03] >> 14;
-	sphere[0].y = phd_mxptr[M13] >> 14;
-	sphere[0].z = phd_mxptr[M23] >> 14;
+	sphere[0].x = (long) aMXPtr[M03]; // Use float matrix
+	sphere[0].y = (long) aMXPtr[M13];
+	sphere[0].z = (long) aMXPtr[M23];
 	sphere[0].r = objptr[3];
 	phd_PopMatrix();
 
@@ -142,9 +142,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	phd_PushMatrix();
 	objptr = lara.mesh_ptrs[LM_TORSO];
 	phd_TranslateRel(*objptr - 9, objptr[1], objptr[2] + 25);//repositioned to avoid floaty hair
-	sphere[1].x = phd_mxptr[M03] >> 14;
-	sphere[1].y = phd_mxptr[M13] >> 14;
-	sphere[1].z = phd_mxptr[M23] >> 14;
+	sphere[1].x = (long) aMXPtr[M03];
+	sphere[1].y = (long) aMXPtr[M13];
+	sphere[1].z = (long) aMXPtr[M23];
 	sphere[1].r = objptr[3];
 
 	if (gfLevelFlags & GF_YOUNGLARA)
@@ -157,9 +157,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	gar_RotYXZsuperpack(&rot, 0);
 	objptr = lara.mesh_ptrs[LM_RINARM];
 	phd_TranslateRel(*objptr, objptr[1], objptr[2]);
-	sphere[3].x = phd_mxptr[M03] >> 14;
-	sphere[3].y = phd_mxptr[M13] >> 14;
-	sphere[3].z = phd_mxptr[M23] >> 14;
+	sphere[3].x = (long) aMXPtr[M03];
+	sphere[3].y = (long) aMXPtr[M13];
+	sphere[3].z = (long) aMXPtr[M23];
 	sphere[3].r = 4 * objptr[3] / 3;	//limited rad to avoid floating hair when crawling with the new neck sphere
 	phd_PopMatrix();
 
@@ -168,9 +168,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	gar_RotYXZsuperpack(&rot, 2);
 	objptr = lara.mesh_ptrs[LM_LINARM];
 	phd_TranslateRel(*objptr, objptr[1], objptr[2]);
-	sphere[4].x = phd_mxptr[M03] >> 14;
-	sphere[4].y = phd_mxptr[M13] >> 14;
-	sphere[4].z = phd_mxptr[M23] >> 14;
+	sphere[4].x = (long) aMXPtr[M03];
+	sphere[4].y = (long) aMXPtr[M13];
+	sphere[4].z = (long) aMXPtr[M23];
 	sphere[4].r = 4 * objptr[3] / 3;	//limited rad to avoid floating hair when crawling with the new neck sphere
 	phd_PopMatrix();
 	phd_TranslateRel(bone[53], bone[54], bone[55]);
@@ -180,9 +180,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	phd_PushMatrix();
 	objptr = lara.mesh_ptrs[LM_HEAD];
 	phd_TranslateRel(*objptr - 2, objptr[1], objptr[2]);//repositioned to avoid floaty hair
-	sphere[2].x = phd_mxptr[M03] >> 14;
-	sphere[2].y = phd_mxptr[M13] >> 14;
-	sphere[2].z = phd_mxptr[M23] >> 14;
+	sphere[2].x = (long) aMXPtr[M03];
+	sphere[2].y = (long) aMXPtr[M13];
+	sphere[2].z = (long) aMXPtr[M23];
 	sphere[2].r = objptr[3];
 	phd_PopMatrix();
 
@@ -209,9 +209,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			phd_TranslateRel(-4, -4, -48);
 	}
 
-	pos.x = phd_mxptr[M03] >> 14;
-	pos.y = phd_mxptr[M13] >> 14;
-	pos.z = phd_mxptr[M23] >> 14;
+	pos.x = (long) aMXPtr[M03];
+	pos.y = (long) aMXPtr[M13];
+	pos.z = (long) aMXPtr[M23];
 	phd_PopMatrix();
 
 	obj = &objects[HAIR];
@@ -231,9 +231,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			phd_SetTrans(hair->pos.x_pos, hair->pos.y_pos, hair->pos.z_pos);
 			phd_RotYXZ(hair->pos.y_rot, hair->pos.x_rot, 0);
 			phd_TranslateRel(bone[1], bone[2], bone[3]);
-			(hair + 1)->pos.x_pos = phd_mxptr[M03] >> 14;
-			(hair + 1)->pos.y_pos = phd_mxptr[M13] >> 14;
-			(hair + 1)->pos.z_pos = phd_mxptr[M23] >> 14;
+			(hair + 1)->pos.x_pos = (long) aMXPtr[M03];
+			(hair + 1)->pos.y_pos = (long) aMXPtr[M13];
+			(hair + 1)->pos.z_pos = (long) aMXPtr[M23];
 			phd_PopMatrix();
 			hair++;
 		}
@@ -373,9 +373,9 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 			else
 				phd_TranslateRel(bone[1], bone[2], bone[3]);
 
-			hair->pos.x_pos = phd_mxptr[M03] >> 14;
-			hair->pos.y_pos = phd_mxptr[M13] >> 14;
-			hair->pos.z_pos = phd_mxptr[M23] >> 14;
+			hair->pos.x_pos = (long) aMXPtr[M03];
+			hair->pos.y_pos = (long) aMXPtr[M13];
+			hair->pos.z_pos = (long) aMXPtr[M23];
 
 			if ((cutseq_num == 16 && ((GLOBAL_cutseq_frame >= 409 && GLOBAL_cutseq_frame < 411) || GLOBAL_cutseq_frame == 1873 || GLOBAL_cutseq_frame == 3049)) ||
 				(cutseq_num == 17 && ((GLOBAL_cutseq_frame >= 205 && GLOBAL_cutseq_frame <= 211) || (GLOBAL_cutseq_frame >= 474 && GLOBAL_cutseq_frame <= 480))) ||

@@ -264,7 +264,12 @@ void phd_SetTrans(long x, long y, long z)
 	phd_mxptr[3] = x << 14;
 	phd_mxptr[7] = y << 14;
 	phd_mxptr[11] = z << 14;
+
+#ifdef GENERAL_FIXES // Fixes wrong translation
+	aSetTrans(x, y, z);
+#else
 	aSetTrans(x << 14, y << 14, z << 14);
+#endif
 }
 
 void phd_PushUnitMatrix()
