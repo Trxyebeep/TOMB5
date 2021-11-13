@@ -1595,18 +1595,18 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048F760		phd_LookAt
 0x0048F8A0		phd_atan
 0x0048F980		phd_sqrt
-0x0048F9C0		phd_PushMatrix
-0x0048FA40		phd_SetTrans
-0x0048FA90		phd_PushUnitMatrix
-0x0048FB20		phd_TranslateRel
-0x0048FBE0		phd_RotX
-0x0048FCD0		phd_RotY
-0x0048FDC0		phd_RotZ
-0x0048FEB0		phd_RotYXZpack
-0x00490150		phd_RotYXZ
-0x004903F0		phd_TranslateAbs
-0x004904B0		phd_GetVectorAngles
-0x00490550		phd_TransposeMatrix
+0x0048F9C0	+	phd_PushMatrix
+0x0048FA40	+	phd_SetTrans
+0x0048FA90	+	phd_PushUnitMatrix
+0x0048FB20	+	phd_TranslateRel
+0x0048FBE0	+	phd_RotX
+0x0048FCD0	+	phd_RotY
+0x0048FDC0	+	phd_RotZ
+0x0048FEB0	+	phd_RotYXZpack
+0x00490150	+	phd_RotYXZ
+0x004903F0	+	phd_TranslateAbs
+0x004904B0	+	phd_GetVectorAngles
+0x00490550	+	phd_TransposeMatrix
 0x00490590	+	aInitMatrix
 0x004905E0	+	aSetTrans
 0x00490610	+	aTranslateAbs
