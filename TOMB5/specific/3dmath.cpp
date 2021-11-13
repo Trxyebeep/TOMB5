@@ -117,61 +117,79 @@ long aTranslateRel(long x, long y, long z)
 
 void aRotX(short angle)
 {
-	float sin, cos, trash;
+	float sin, cos, mx1, mx2;
 
 	if (angle)
 	{
 		sin = fSin(angle);
 		cos = fCos(angle);
-		trash = aMXPtr[M01];
-		aMXPtr[M01] = cos * aMXPtr[M01] + sin * aMXPtr[M02];
-		aMXPtr[M02] = cos * aMXPtr[M02] - sin * trash;
-		trash = aMXPtr[M11];
-		aMXPtr[M11] = cos * aMXPtr[M11] + sin * aMXPtr[M12];
-		aMXPtr[M12] = cos * aMXPtr[M12] - sin * trash;
-		trash = aMXPtr[M21];
-		aMXPtr[M21] = cos * aMXPtr[M21] + sin * aMXPtr[M22];
-		aMXPtr[M22] = cos * aMXPtr[M22] - sin * trash;
+
+		mx1 = cos * aMXPtr[M01] + sin * aMXPtr[M02];
+		mx2 = cos * aMXPtr[M02] - sin * aMXPtr[M01];
+		aMXPtr[M01] = mx1;
+		aMXPtr[M02] = mx2;
+
+		mx1 = cos * aMXPtr[M11] + sin * aMXPtr[M12];
+		mx2 = cos * aMXPtr[M12] - sin * aMXPtr[M11];
+		aMXPtr[M11] = mx1;
+		aMXPtr[M12] = mx2;
+
+		mx1 = cos * aMXPtr[M21] + sin * aMXPtr[M22];
+		mx2 = cos * aMXPtr[M22] - sin * aMXPtr[M21];
+		aMXPtr[M21] = mx1;
+		aMXPtr[M22] = mx2;
 	}
 }
 
 void aRotY(short angle)
 {
-	float sin, cos, trash;
+	float sin, cos, mx1, mx2;
 
 	if (angle)
 	{
 		sin = fSin(angle);
 		cos = fCos(angle);
-		trash = aMXPtr[M00];
-		aMXPtr[M00] = cos * aMXPtr[M00] - sin * aMXPtr[M02];
-		aMXPtr[M02] = cos * aMXPtr[M02] + sin * trash;
-		trash = aMXPtr[M10];
-		aMXPtr[M10] = cos * aMXPtr[M10] - sin * aMXPtr[M12];
-		aMXPtr[M12] = cos * aMXPtr[M12] + sin * trash;
-		trash = aMXPtr[M20];
-		aMXPtr[M20] = cos * aMXPtr[M20] - sin * aMXPtr[M22];
-		aMXPtr[M22] = cos * aMXPtr[M22] + sin * trash;
+
+		mx1 = cos * aMXPtr[M00] - sin * aMXPtr[M02];
+		mx2 = cos * aMXPtr[M02] + sin * aMXPtr[M00];
+		aMXPtr[M00] = mx1;
+		aMXPtr[M02] = mx2;
+
+		mx1 = cos * aMXPtr[M10] - sin * aMXPtr[M12];
+		mx2 = cos * aMXPtr[M12] + sin * aMXPtr[M10];
+		aMXPtr[M10] = mx1;
+		aMXPtr[M12] = mx2;
+
+		mx1 = cos * aMXPtr[M20] - sin * aMXPtr[M22];
+		mx2 = cos * aMXPtr[M22] + sin * aMXPtr[M20];
+		aMXPtr[M20] = mx1;
+		aMXPtr[M22] = mx2;
 	}
 }
 
 void aRotZ(short angle)
 {
-	float sin, cos, trash;
+	float sin, cos, mx1, mx2;
 
 	if (angle)
 	{
 		sin = fSin(angle);
 		cos = fCos(angle);
-		trash = aMXPtr[M00];
-		aMXPtr[M00] = cos * aMXPtr[M00] + sin * aMXPtr[M01];
-		aMXPtr[M01] = cos * aMXPtr[M01] - sin * trash;
-		trash = aMXPtr[M10];
-		aMXPtr[M10] = cos * aMXPtr[M10] + sin * aMXPtr[M11];
-		aMXPtr[M11] = cos * aMXPtr[M11] - sin * trash;
-		trash = aMXPtr[M20];
-		aMXPtr[M20] = cos * aMXPtr[M20] + sin * aMXPtr[M21];
-		aMXPtr[M21] = cos * aMXPtr[M21] - sin * trash;
+
+		mx1 = cos * aMXPtr[M00] + sin * aMXPtr[M01];
+		mx2 = cos * aMXPtr[M01] - sin * aMXPtr[M00];
+		aMXPtr[M00] = mx1;
+		aMXPtr[M01] = mx2;
+
+		mx1 = cos * aMXPtr[M10] + sin * aMXPtr[M11];
+		mx2 = cos * aMXPtr[M11] - sin * aMXPtr[M10];
+		aMXPtr[M10] = mx1;
+		aMXPtr[M11] = mx2;
+
+		mx1= cos * aMXPtr[M20] + sin * aMXPtr[M21];
+		mx2 = cos * aMXPtr[M21] - sin * aMXPtr[M20];;
+		aMXPtr[M20] = mx1;
+		aMXPtr[M21] = mx2;
 	}
 }
 
@@ -290,21 +308,27 @@ long phd_TranslateRel(long x, long y, long z)
 
 void phd_RotX(short angle)
 {
-	long sin, cos, trash;
+	long sin, cos, mx1, mx2;
 
 	if (angle)
 	{
 		sin = phd_sin(angle);
 		cos = phd_cos(angle);
-		trash = phd_mxptr[M01];
-		phd_mxptr[M01] = (cos * phd_mxptr[M01] + sin * phd_mxptr[M02]) >> 14;
-		phd_mxptr[M02] = (cos * phd_mxptr[M02] - sin * trash) >> 14;
-		trash = phd_mxptr[M11];
-		phd_mxptr[M11] = (cos * phd_mxptr[M11] + sin * phd_mxptr[M12]) >> 14;
-		phd_mxptr[M12] = (cos * phd_mxptr[M12] - sin * trash) >> 14;
-		trash = phd_mxptr[M21];
-		phd_mxptr[M21] = (cos * phd_mxptr[M21] + sin * phd_mxptr[M22]) >> 14;
-		phd_mxptr[M22] = (cos * phd_mxptr[M22] - sin * trash) >> 14;
+
+		mx1 = cos * phd_mxptr[M01] + sin * phd_mxptr[M02];
+		mx2 = cos * phd_mxptr[M02] - sin * phd_mxptr[M01];
+		phd_mxptr[M01] = mx1 >> 14;
+		phd_mxptr[M02] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M11] + sin * phd_mxptr[M12];
+		mx2 = cos * phd_mxptr[M12] - sin * phd_mxptr[M11];
+		phd_mxptr[M11] = mx1 >> 14;
+		phd_mxptr[M12] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M21] + sin * phd_mxptr[M22];
+		mx2 = cos * phd_mxptr[M22] - sin * phd_mxptr[M21];
+		phd_mxptr[M21] = mx1 >> 14;
+		phd_mxptr[M22] = mx2 >> 14;
 	}
 
 	aRotX(angle);
@@ -312,21 +336,27 @@ void phd_RotX(short angle)
 
 void phd_RotY(short angle)
 {
-	long sin, cos, trash;
+	long sin, cos, mx1, mx2;
 
 	if (angle)
 	{
 		sin = phd_sin(angle);
 		cos = phd_cos(angle);
-		trash = phd_mxptr[M00];
-		phd_mxptr[M00] = (cos * phd_mxptr[M00] - sin * phd_mxptr[M02]) >> 14;
-		phd_mxptr[M02] = (cos * phd_mxptr[M02] + sin * trash) >> 14;
-		trash = phd_mxptr[M10];
-		phd_mxptr[M10] = (cos * phd_mxptr[M10] - sin * phd_mxptr[M12]) >> 14;
-		phd_mxptr[M12] = (cos * phd_mxptr[M12] + sin * trash) >> 14;
-		trash = phd_mxptr[M20];
-		phd_mxptr[M20] = (cos * phd_mxptr[M20] - sin * phd_mxptr[M22]) >> 14;
-		phd_mxptr[M22] = (cos * phd_mxptr[M22] + sin * trash) >> 14;
+
+		mx1 = cos * phd_mxptr[M00] - sin * phd_mxptr[M02];
+		mx2 = cos * phd_mxptr[M02] + sin * phd_mxptr[M00];
+		phd_mxptr[M00] = mx1 >> 14;
+		phd_mxptr[M02] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M10] - sin * phd_mxptr[M12];
+		mx2 = cos * phd_mxptr[M12] + sin * phd_mxptr[M10];
+		phd_mxptr[M10] = mx1 >> 14;
+		phd_mxptr[M12] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M20] - sin * phd_mxptr[M22];
+		mx2 = cos * phd_mxptr[M22] + sin * phd_mxptr[M20];
+		phd_mxptr[M20] = mx1 >> 14;
+		phd_mxptr[M22] = mx2 >> 14;
 	}
 
 	aRotY(angle);
@@ -334,21 +364,27 @@ void phd_RotY(short angle)
 
 void phd_RotZ(short angle)
 {
-	long sin, cos, trash;
+	long sin, cos, mx1, mx2;
 
 	if (angle)
 	{
 		sin = phd_sin(angle);
 		cos = phd_cos(angle);
-		trash = phd_mxptr[M00];
-		phd_mxptr[M00] = (cos * phd_mxptr[M00] + sin * phd_mxptr[M01]) >> 14;
-		phd_mxptr[M01] = (cos * phd_mxptr[M01] - sin * trash) >> 14;
-		trash = phd_mxptr[M10];
-		phd_mxptr[M10] = (cos * phd_mxptr[M10] + sin * phd_mxptr[M11]) >> 14;
-		phd_mxptr[M11] = (cos * phd_mxptr[M11] - sin * trash) >> 14;
-		trash = phd_mxptr[M20];
-		phd_mxptr[M20] = (cos * phd_mxptr[M20] + sin * phd_mxptr[M21]) >> 14;
-		phd_mxptr[M21] = (cos * phd_mxptr[M21] - sin * trash) >> 14;
+
+		mx1 = cos * phd_mxptr[M00] + sin * phd_mxptr[M01];
+		mx2 = cos * phd_mxptr[M01] - sin * phd_mxptr[M00];
+		phd_mxptr[M00] = mx1 >> 14;
+		phd_mxptr[M01] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M10] + sin * phd_mxptr[M11];
+		mx2 = cos * phd_mxptr[M11] - sin * phd_mxptr[M10];
+		phd_mxptr[M10] = mx1 >> 14;
+		phd_mxptr[M11] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M20] + sin * phd_mxptr[M21];
+		mx2 = cos * phd_mxptr[M21] - sin * phd_mxptr[M20];
+		phd_mxptr[M20] = mx1 >> 14;
+		phd_mxptr[M21] = mx2 >> 14;
 	}
 
 	aRotZ(angle);
@@ -356,7 +392,7 @@ void phd_RotZ(short angle)
 
 void phd_RotYXZpack(long angles)//angles is XYZ, not YXZ as the name suggests, ty core
 {
-	long sin, cos, trash;
+	long sin, cos, mx1, mx2;
 	short angle;
 
 	aRotYXZPack(angles);
@@ -367,15 +403,21 @@ void phd_RotYXZpack(long angles)//angles is XYZ, not YXZ as the name suggests, t
 	{
 		sin = phd_sin(angle);
 		cos = phd_cos(angle);
-		trash = phd_mxptr[M00];
-		phd_mxptr[M00] = (cos * phd_mxptr[M00] - sin * phd_mxptr[M02]) >> 14;
-		phd_mxptr[M02] = (cos * phd_mxptr[M02] + sin * trash) >> 14;
-		trash = phd_mxptr[M10];
-		phd_mxptr[M10] = (cos * phd_mxptr[M10] - sin * phd_mxptr[M12]) >> 14;
-		phd_mxptr[M12] = (cos * phd_mxptr[M12] + sin * trash) >> 14;
-		trash = phd_mxptr[M20];
-		phd_mxptr[M20] = (cos * phd_mxptr[M20] - sin * phd_mxptr[M22]) >> 14;
-		phd_mxptr[M22] = (cos * phd_mxptr[M22] + sin * trash) >> 14;
+
+		mx1 = cos * phd_mxptr[M00] - sin * phd_mxptr[M02];
+		mx2 = cos * phd_mxptr[M02] + sin * phd_mxptr[M00];
+		phd_mxptr[M00] = mx1 >> 14;
+		phd_mxptr[M02] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M10] - sin * phd_mxptr[M12];
+		mx2 = cos * phd_mxptr[M12] + sin * phd_mxptr[M10];
+		phd_mxptr[M10] = mx1 >> 14;
+		phd_mxptr[M12] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M20] - sin * phd_mxptr[M22];
+		mx2 = cos * phd_mxptr[M22] + sin * phd_mxptr[M20];
+		phd_mxptr[M20] = mx1 >> 14;
+		phd_mxptr[M22] = mx2 >> 14;
 	}
 
 	angle = (angles >> 20) & 0x3FF;//firrst ten bits, X
@@ -385,15 +427,21 @@ void phd_RotYXZpack(long angles)//angles is XYZ, not YXZ as the name suggests, t
 	{
 		sin = phd_sin(angle);
 		cos = phd_cos(angle);
-		trash = phd_mxptr[M01];
-		phd_mxptr[M01] = (cos * phd_mxptr[M01] + sin * phd_mxptr[M02]) >> 14;
-		phd_mxptr[M02] = (cos * phd_mxptr[M02] - sin * trash) >> 14;
-		trash = phd_mxptr[M11];
-		phd_mxptr[M11] = (cos * phd_mxptr[M11] + sin * phd_mxptr[M12]) >> 14;
-		phd_mxptr[M12] = (cos * phd_mxptr[M12] - sin * trash) >> 14;
-		trash = phd_mxptr[M21];
-		phd_mxptr[M21] = (cos * phd_mxptr[M21] + sin * phd_mxptr[M22]) >> 14;
-		phd_mxptr[M22] = (cos * phd_mxptr[M22] - sin * trash) >> 14;
+
+		mx1 = cos * phd_mxptr[M01] + sin * phd_mxptr[M02];
+		mx2 = cos * phd_mxptr[M02] - sin * phd_mxptr[M01];
+		phd_mxptr[M01] = mx1 >> 14;
+		phd_mxptr[M02] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M11] + sin * phd_mxptr[M12];
+		mx2 = cos * phd_mxptr[M12] - sin * phd_mxptr[M11];
+		phd_mxptr[M11] = mx1 >> 14;
+		phd_mxptr[M12] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M21] + sin * phd_mxptr[M22];
+		mx2 = cos * phd_mxptr[M22] - sin * phd_mxptr[M21];
+		phd_mxptr[M21] = mx1 >> 14;
+		phd_mxptr[M22] = mx2 >> 14;
 	}
 
 	angle = angles & 0x3FF;//last ten, Z
@@ -403,21 +451,27 @@ void phd_RotYXZpack(long angles)//angles is XYZ, not YXZ as the name suggests, t
 	{
 		sin = phd_sin(angle);
 		cos = phd_cos(angle);
-		trash = phd_mxptr[M00];
-		phd_mxptr[M00] = (cos * phd_mxptr[M00] + sin * phd_mxptr[M01]) >> 14;
-		phd_mxptr[M01] = (cos * phd_mxptr[M01] - sin * trash) >> 14;
-		trash = phd_mxptr[M10];
-		phd_mxptr[M10] = (cos * phd_mxptr[M10] + sin * phd_mxptr[M11]) >> 14;
-		phd_mxptr[M11] = (cos * phd_mxptr[M11] - sin * trash) >> 14;
-		trash = phd_mxptr[M20];
-		phd_mxptr[M20] = (cos * phd_mxptr[M20] + sin * phd_mxptr[M21]) >> 14;
-		phd_mxptr[M21] = (cos * phd_mxptr[M21] - sin * trash) >> 14;
+
+		mx1 = cos * phd_mxptr[M00] + sin * phd_mxptr[M01];
+		mx2 = cos * phd_mxptr[M01] - sin * phd_mxptr[M00];
+		phd_mxptr[M00] = mx1 >> 14;
+		phd_mxptr[M01] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M10] + sin * phd_mxptr[M11];
+		mx2 = cos * phd_mxptr[M11] - sin * phd_mxptr[M10];
+		phd_mxptr[M10] = mx1 >> 14;
+		phd_mxptr[M11] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M20] + sin * phd_mxptr[M21];
+		mx2 = cos * phd_mxptr[M21] - sin * phd_mxptr[M20];
+		phd_mxptr[M20] = mx1 >> 14;
+		phd_mxptr[M21] = mx2 >> 14;
 	}
 }
 
 void phd_RotYXZ(short y, short x, short z)
 {
-	long sin, cos, trash;
+	long sin, cos, mx1, mx2;
 
 	aRotYXZ(y, x, z);
 
@@ -425,45 +479,63 @@ void phd_RotYXZ(short y, short x, short z)
 	{
 		sin = phd_sin(y);
 		cos = phd_cos(y);
-		trash = phd_mxptr[M00];
-		phd_mxptr[M00] = (cos * phd_mxptr[M00] - sin * phd_mxptr[M02]) >> 14;
-		phd_mxptr[M02] = (cos * phd_mxptr[M02] + sin * trash) >> 14;
-		trash = phd_mxptr[M10];
-		phd_mxptr[M10] = (cos * phd_mxptr[M10] - sin * phd_mxptr[M12]) >> 14;
-		phd_mxptr[M12] = (cos * phd_mxptr[M12] + sin * trash) >> 14;
-		trash = phd_mxptr[M20];
-		phd_mxptr[M20] = (cos * phd_mxptr[M20] - sin * phd_mxptr[M22]) >> 14;
-		phd_mxptr[M22] = (cos * phd_mxptr[M22] + sin * trash) >> 14;
+
+		mx1 = cos * phd_mxptr[M00] - sin * phd_mxptr[M02];
+		mx2 = cos * phd_mxptr[M02] + sin * phd_mxptr[M00];
+		phd_mxptr[M00] = mx1 >> 14;
+		phd_mxptr[M02] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M10] - sin * phd_mxptr[M12];
+		mx2 = cos * phd_mxptr[M12] + sin * phd_mxptr[M10];
+		phd_mxptr[M10] = mx1 >> 14;
+		phd_mxptr[M12] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M20] - sin * phd_mxptr[M22];
+		mx2 = cos * phd_mxptr[M22] + sin * phd_mxptr[M20];
+		phd_mxptr[M20] = mx1 >> 14;
+		phd_mxptr[M22] = mx2 >> 14;
 	}
 
 	if (x)
 	{
 		sin = phd_sin(x);
 		cos = phd_cos(x);
-		trash = phd_mxptr[M01];
-		phd_mxptr[M01] = (cos * phd_mxptr[M01] + sin * phd_mxptr[M02]) >> 14;
-		phd_mxptr[M02] = (cos * phd_mxptr[M02] - sin * trash) >> 14;
-		trash = phd_mxptr[M11];
-		phd_mxptr[M11] = (cos * phd_mxptr[M11] + sin * phd_mxptr[M12]) >> 14;
-		phd_mxptr[M12] = (cos * phd_mxptr[M12] - sin * trash) >> 14;
-		trash = phd_mxptr[M21];
-		phd_mxptr[M21] = (cos * phd_mxptr[M21] + sin * phd_mxptr[M22]) >> 14;
-		phd_mxptr[M22] = (cos * phd_mxptr[M22] - sin * trash) >> 14;
+
+		mx1 = cos * phd_mxptr[M01] + sin * phd_mxptr[M02];
+		mx2 = cos * phd_mxptr[M02] - sin * phd_mxptr[M01];
+		phd_mxptr[M01] = mx1 >> 14;
+		phd_mxptr[M02] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M11] + sin * phd_mxptr[M12];
+		mx2 = cos * phd_mxptr[M12] - sin * phd_mxptr[M11];
+		phd_mxptr[M11] = mx1 >> 14;
+		phd_mxptr[M12] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M21] + sin * phd_mxptr[M22];
+		mx2 = cos * phd_mxptr[M22] - sin * phd_mxptr[M21];
+		phd_mxptr[M21] = mx1 >> 14;
+		phd_mxptr[M22] = mx2 >> 14;
 	}
 
 	if (z)
 	{
 		sin = phd_sin(z);
 		cos = phd_cos(z);
-		trash = phd_mxptr[M00];
-		phd_mxptr[M00] = (cos * phd_mxptr[M00] + sin * phd_mxptr[M01]) >> 14;
-		phd_mxptr[M01] = (cos * phd_mxptr[M01] - sin * trash) >> 14;
-		trash = phd_mxptr[M10];
-		phd_mxptr[M10] = (cos * phd_mxptr[M10] + sin * phd_mxptr[M11]) >> 14;
-		phd_mxptr[M11] = (cos * phd_mxptr[M11] - sin * trash) >> 14;
-		trash = phd_mxptr[M20];
-		phd_mxptr[M20] = (cos * phd_mxptr[M20] + sin * phd_mxptr[M21]) >> 14;
-		phd_mxptr[M21] = (cos * phd_mxptr[M21] - sin * trash) >> 14;
+
+		mx1 = cos * phd_mxptr[M00] + sin * phd_mxptr[M01];
+		mx2 = cos * phd_mxptr[M01] - sin * phd_mxptr[M00];
+		phd_mxptr[M00] = mx1 >> 14;
+		phd_mxptr[M01] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M10] + sin * phd_mxptr[M11];
+		mx2 = cos * phd_mxptr[M11] - sin * phd_mxptr[M10];
+		phd_mxptr[M10] = mx1 >> 14;
+		phd_mxptr[M11] = mx2 >> 14;
+
+		mx1 = cos * phd_mxptr[M20] + sin * phd_mxptr[M21];
+		mx2 = cos * phd_mxptr[M21] - sin * phd_mxptr[M20];
+		phd_mxptr[M20] = mx1 >> 14;
+		phd_mxptr[M21] = mx2 >> 14;
 	}
 }
 
@@ -503,17 +575,19 @@ void phd_GetVectorAngles(long x, long y, long z, short* angles)
 
 void phd_TransposeMatrix()
 {
-	long trash;
+	long bak;
 
-	trash = phd_mxptr[M01];
+	bak = phd_mxptr[M01];
 	phd_mxptr[M01] = phd_mxptr[M10];
-	phd_mxptr[M10] = trash;
-	trash = phd_mxptr[M12];
+	phd_mxptr[M10] = bak;
+
+	bak = phd_mxptr[M12];
 	phd_mxptr[M12] = phd_mxptr[M21];
-	phd_mxptr[M21] = trash;
-	trash = phd_mxptr[M20];
+	phd_mxptr[M21] = bak;
+
+	bak = phd_mxptr[M20];
 	phd_mxptr[M20] = phd_mxptr[M21];
-	phd_mxptr[M21] = trash;
+	phd_mxptr[M21] = bak;
 }
 
 void inject_3dmath(bool replace)
