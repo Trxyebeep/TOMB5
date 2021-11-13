@@ -66,10 +66,482 @@ void aSetViewMatrix()
 	DXAttempt(App.dx.lpD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &D3DMView));
 }
 
+void aSetTrans(long x, long y, long z)
+{
+	aMXPtr[M03] = (float)x;
+	aMXPtr[M13] = (float)y;
+	aMXPtr[M23] = (float)z;
+}
+
+void aTranslateAbs(long x, long y, long z)
+{
+	float fx, fy, fz;
+
+	fx = x - aCamera.matrix[M03];
+	fy = y - aCamera.matrix[M13];
+	fz = z - aCamera.matrix[M23];
+	aMXPtr[M03] = fx * aMXPtr[M00] + fy * aMXPtr[M01] + fz * aMXPtr[M02];
+	aMXPtr[M13] = fx * aMXPtr[M10] + fy * aMXPtr[M11] + fz * aMXPtr[M12];
+	aMXPtr[M23] = fx * aMXPtr[M20] + fy * aMXPtr[M21] + fz * aMXPtr[M22];
+}
+
+void aUnitMatrixByMat(float* matrix)
+{
+	matrix[M00] = 1;
+	matrix[M01] = 0;
+	matrix[M02] = 0;
+	matrix[M03] = 0;
+	matrix[M10] = 0;
+	matrix[M11] = 1;
+	matrix[M12] = 0;
+	matrix[M13] = 0;
+	matrix[M20] = 0;
+	matrix[M21] = 0;
+	matrix[M22] = 1;
+	matrix[M23] = 0;
+}
+
+void aPushUnitMatrix()
+{
+	aMXPtr += 12;
+	aUnitMatrixByMat(aMXPtr);
+}
+
+long aTranslateRel(long x, long y, long z)
+{
+	aMXPtr[M03] += x * aMXPtr[M00] + y * aMXPtr[M01] + z * aMXPtr[M02];
+	aMXPtr[M13] += x * aMXPtr[M10] + y * aMXPtr[M11] + z * aMXPtr[M12];
+	aMXPtr[M23] += x * aMXPtr[M20] + y * aMXPtr[M21] + z * aMXPtr[M22];
+	return 1;
+}
+
+void aRotX(short angle)
+{
+	float sin, cos, trash;
+
+	if (angle)
+	{
+		sin = fSin(angle);
+		cos = fCos(angle);
+		trash = aMXPtr[M01];
+		aMXPtr[M01] = cos * aMXPtr[M01] + sin * aMXPtr[M02];
+		aMXPtr[M02] = cos * aMXPtr[M02] - sin * trash;
+		trash = aMXPtr[M11];
+		aMXPtr[M11] = cos * aMXPtr[M11] + sin * aMXPtr[M12];
+		aMXPtr[M12] = cos * aMXPtr[M12] - sin * trash;
+		trash = aMXPtr[M21];
+		aMXPtr[M21] = cos * aMXPtr[M21] + sin * aMXPtr[M22];
+		aMXPtr[M22] = cos * aMXPtr[M22] - sin * trash;
+	}
+}
+
+void aRotY(short angle)
+{
+	float sin, cos, trash;
+
+	if (angle)
+	{
+		sin = fSin(angle);
+		cos = fCos(angle);
+		trash = aMXPtr[M00];
+		aMXPtr[M00] = cos * aMXPtr[M00] - sin * aMXPtr[M02];
+		aMXPtr[M02] = cos * aMXPtr[M02] + sin * trash;
+		trash = aMXPtr[M10];
+		aMXPtr[M10] = cos * aMXPtr[M10] - sin * aMXPtr[M12];
+		aMXPtr[M12] = cos * aMXPtr[M12] + sin * trash;
+		trash = aMXPtr[M20];
+		aMXPtr[M20] = cos * aMXPtr[M20] - sin * aMXPtr[M22];
+		aMXPtr[M22] = cos * aMXPtr[M22] + sin * trash;
+	}
+}
+
+void aRotZ(short angle)
+{
+	float sin, cos, trash;
+
+	if (angle)
+	{
+		sin = fSin(angle);
+		cos = fCos(angle);
+		trash = aMXPtr[M00];
+		aMXPtr[M00] = cos * aMXPtr[M00] + sin * aMXPtr[M01];
+		aMXPtr[M01] = cos * aMXPtr[M01] - sin * trash;
+		trash = aMXPtr[M10];
+		aMXPtr[M10] = cos * aMXPtr[M10] + sin * aMXPtr[M11];
+		aMXPtr[M11] = cos * aMXPtr[M11] - sin * trash;
+		trash = aMXPtr[M20];
+		aMXPtr[M20] = cos * aMXPtr[M20] + sin * aMXPtr[M21];
+		aMXPtr[M21] = cos * aMXPtr[M21] - sin * trash;
+	}
+}
+
+void aRotYXZPack(long angles)//angles is XYZ, not YXZ as the name suggests, ty core
+{
+	short angle;
+
+	angle = (angles >> 10) & 0x3FF;//second ten bits, Y
+	angle <<= 6;//* 64
+
+	if (angle)
+		aRotY(angle);
+
+	angle = (angles >> 20) & 0x3FF;//firrst ten bits, X
+	angle <<= 6;//* 64
+
+	if (angle)
+		aRotX(angle);
+
+	angle = angles & 0x3FF;//last ten, Z
+	angle <<= 6;//* 64
+
+	if (angle)
+		aRotZ(angle);
+}
+
+void aRotYXZ(short y, short x, short z)
+{
+	if (y)
+		aRotY(y);
+
+	if (x)
+		aRotX(x);
+
+	if (z)
+		aRotZ(z);
+}
+
+void phd_PushMatrix()
+{
+	phd_mxptr[indices_count + M00] = phd_mxptr[M00];
+	phd_mxptr[indices_count + M01] = phd_mxptr[M01];
+	phd_mxptr[indices_count + M02] = phd_mxptr[M02];
+	phd_mxptr[indices_count + M03] = phd_mxptr[M03];
+	phd_mxptr[indices_count + M10] = phd_mxptr[M10];
+	phd_mxptr[indices_count + M11] = phd_mxptr[M11];
+	phd_mxptr[indices_count + M12] = phd_mxptr[M12];
+	phd_mxptr[indices_count + M13] = phd_mxptr[M13];
+	phd_mxptr[indices_count + M20] = phd_mxptr[M20];
+	phd_mxptr[indices_count + M21] = phd_mxptr[M21];
+	phd_mxptr[indices_count + M22] = phd_mxptr[M22];
+	phd_mxptr[indices_count + M23] = phd_mxptr[M23];
+	phd_mxptr += 12;
+
+	aMXPtr[indices_count + M00] = aMXPtr[M00];
+	aMXPtr[indices_count + M01] = aMXPtr[M01];
+	aMXPtr[indices_count + M02] = aMXPtr[M02];
+	aMXPtr[indices_count + M03] = aMXPtr[M03];
+	aMXPtr[indices_count + M10] = aMXPtr[M10];
+	aMXPtr[indices_count + M11] = aMXPtr[M11];
+	aMXPtr[indices_count + M12] = aMXPtr[M12];
+	aMXPtr[indices_count + M13] = aMXPtr[M13];
+	aMXPtr[indices_count + M20] = aMXPtr[M20];
+	aMXPtr[indices_count + M21] = aMXPtr[M21];
+	aMXPtr[indices_count + M22] = aMXPtr[M22];
+	aMXPtr[indices_count + M23] = aMXPtr[M23];
+	aMXPtr += 12;
+}
+
+void phd_SetTrans(long x, long y, long z)
+{
+	phd_mxptr[3] = x << 14;
+	phd_mxptr[7] = y << 14;
+	phd_mxptr[11] = z << 14;
+	aSetTrans(x << 14, y << 14, z << 14);
+}
+
+void phd_PushUnitMatrix()
+{
+	aMXPtr += 12;
+	phd_mxptr += 12;
+	phd_mxptr[M00] = 16384;
+	phd_mxptr[M01] = 0;
+	phd_mxptr[M02] = 0;
+	phd_mxptr[M03] = 0;
+	phd_mxptr[M10] = 0;
+	phd_mxptr[M11] = 16384;
+	phd_mxptr[M12] = 0;
+	phd_mxptr[M13] = 0;
+	phd_mxptr[M20] = 0;
+	phd_mxptr[M21] = 0;
+	phd_mxptr[M22] = 16384;
+	phd_mxptr[M23] = 0;
+	aMXPtr[M00] = 1;
+	aMXPtr[M01] = 0;
+	aMXPtr[M02] = 0;
+	aMXPtr[M03] = 0;
+	aMXPtr[M10] = 0;
+	aMXPtr[M11] = 1;
+	aMXPtr[M12] = 0;
+	aMXPtr[M13] = 0;
+	aMXPtr[M20] = 0;
+	aMXPtr[M21] = 0;
+	aMXPtr[M22] = 1;
+	aMXPtr[M23] = 0;
+}
+
+long phd_TranslateRel(long x, long y, long z)
+{
+	phd_mxptr[M03] += x * phd_mxptr[M00] + y * phd_mxptr[M01] + z * phd_mxptr[M02];
+	phd_mxptr[M13] += x * phd_mxptr[M10] + y * phd_mxptr[M11] + z * phd_mxptr[M12];
+	phd_mxptr[M23] += x * phd_mxptr[M20] + y * phd_mxptr[M21] + z * phd_mxptr[M22];
+	aTranslateRel(x, y, z);
+	return 1;
+}
+
+void phd_RotX(short angle)
+{
+	long sin, cos, trash;
+
+	if (angle)
+	{
+		sin = phd_sin(angle);
+		cos = phd_cos(angle);
+		trash = phd_mxptr[M01];
+		phd_mxptr[M01] = (cos * phd_mxptr[M01] + sin * phd_mxptr[M02]) >> 14;
+		phd_mxptr[M02] = (cos * phd_mxptr[M02] - sin * trash) >> 14;
+		trash = phd_mxptr[M11];
+		phd_mxptr[M11] = (cos * phd_mxptr[M11] + sin * phd_mxptr[M12]) >> 14;
+		phd_mxptr[M12] = (cos * phd_mxptr[M12] - sin * trash) >> 14;
+		trash = phd_mxptr[M21];
+		phd_mxptr[M21] = (cos * phd_mxptr[M21] + sin * phd_mxptr[M22]) >> 14;
+		phd_mxptr[M22] = (cos * phd_mxptr[M22] - sin * trash) >> 14;
+	}
+
+	aRotX(angle);
+}
+
+void phd_RotY(short angle)
+{
+	long sin, cos, trash;
+
+	if (angle)
+	{
+		sin = phd_sin(angle);
+		cos = phd_cos(angle);
+		trash = phd_mxptr[M00];
+		phd_mxptr[M00] = (cos * phd_mxptr[M00] - sin * phd_mxptr[M02]) >> 14;
+		phd_mxptr[M02] = (cos * phd_mxptr[M02] + sin * trash) >> 14;
+		trash = phd_mxptr[M10];
+		phd_mxptr[M10] = (cos * phd_mxptr[M10] - sin * phd_mxptr[M12]) >> 14;
+		phd_mxptr[M12] = (cos * phd_mxptr[M12] + sin * trash) >> 14;
+		trash = phd_mxptr[M20];
+		phd_mxptr[M20] = (cos * phd_mxptr[M20] - sin * phd_mxptr[M22]) >> 14;
+		phd_mxptr[M22] = (cos * phd_mxptr[M22] + sin * trash) >> 14;
+	}
+
+	aRotY(angle);
+}
+
+void phd_RotZ(short angle)
+{
+	long sin, cos, trash;
+
+	if (angle)
+	{
+		sin = phd_sin(angle);
+		cos = phd_cos(angle);
+		trash = phd_mxptr[M00];
+		phd_mxptr[M00] = (cos * phd_mxptr[M00] + sin * phd_mxptr[M01]) >> 14;
+		phd_mxptr[M01] = (cos * phd_mxptr[M01] - sin * trash) >> 14;
+		trash = phd_mxptr[M10];
+		phd_mxptr[M10] = (cos * phd_mxptr[M10] + sin * phd_mxptr[M11]) >> 14;
+		phd_mxptr[M11] = (cos * phd_mxptr[M11] - sin * trash) >> 14;
+		trash = phd_mxptr[M20];
+		phd_mxptr[M20] = (cos * phd_mxptr[M20] + sin * phd_mxptr[M21]) >> 14;
+		phd_mxptr[M21] = (cos * phd_mxptr[M21] - sin * trash) >> 14;
+	}
+
+	aRotZ(angle);
+}
+
+void phd_RotYXZpack(long angles)//angles is XYZ, not YXZ as the name suggests, ty core
+{
+	long sin, cos, trash;
+	short angle;
+
+	aRotYXZPack(angles);
+	angle = (angles >> 10) & 0x3FF;//second ten bits, Y
+	angle <<= 6;//* 64
+
+	if (angle)
+	{
+		sin = phd_sin(angle);
+		cos = phd_cos(angle);
+		trash = phd_mxptr[M00];
+		phd_mxptr[M00] = (cos * phd_mxptr[M00] - sin * phd_mxptr[M02]) >> 14;
+		phd_mxptr[M02] = (cos * phd_mxptr[M02] + sin * trash) >> 14;
+		trash = phd_mxptr[M10];
+		phd_mxptr[M10] = (cos * phd_mxptr[M10] - sin * phd_mxptr[M12]) >> 14;
+		phd_mxptr[M12] = (cos * phd_mxptr[M12] + sin * trash) >> 14;
+		trash = phd_mxptr[M20];
+		phd_mxptr[M20] = (cos * phd_mxptr[M20] - sin * phd_mxptr[M22]) >> 14;
+		phd_mxptr[M22] = (cos * phd_mxptr[M22] + sin * trash) >> 14;
+	}
+
+	angle = (angles >> 20) & 0x3FF;//firrst ten bits, X
+	angle <<= 6;//* 64
+
+	if (angle)
+	{
+		sin = phd_sin(angle);
+		cos = phd_cos(angle);
+		trash = phd_mxptr[M01];
+		phd_mxptr[M01] = (cos * phd_mxptr[M01] + sin * phd_mxptr[M02]) >> 14;
+		phd_mxptr[M02] = (cos * phd_mxptr[M02] - sin * trash) >> 14;
+		trash = phd_mxptr[M11];
+		phd_mxptr[M11] = (cos * phd_mxptr[M11] + sin * phd_mxptr[M12]) >> 14;
+		phd_mxptr[M12] = (cos * phd_mxptr[M12] - sin * trash) >> 14;
+		trash = phd_mxptr[M21];
+		phd_mxptr[M21] = (cos * phd_mxptr[M21] + sin * phd_mxptr[M22]) >> 14;
+		phd_mxptr[M22] = (cos * phd_mxptr[M22] - sin * trash) >> 14;
+	}
+
+	angle = angles & 0x3FF;//last ten, Z
+	angle <<= 6;//* 64
+
+	if (angle)
+	{
+		sin = phd_sin(angle);
+		cos = phd_cos(angle);
+		trash = phd_mxptr[M00];
+		phd_mxptr[M00] = (cos * phd_mxptr[M00] + sin * phd_mxptr[M01]) >> 14;
+		phd_mxptr[M01] = (cos * phd_mxptr[M01] - sin * trash) >> 14;
+		trash = phd_mxptr[M10];
+		phd_mxptr[M10] = (cos * phd_mxptr[M10] + sin * phd_mxptr[M11]) >> 14;
+		phd_mxptr[M11] = (cos * phd_mxptr[M11] - sin * trash) >> 14;
+		trash = phd_mxptr[M20];
+		phd_mxptr[M20] = (cos * phd_mxptr[M20] + sin * phd_mxptr[M21]) >> 14;
+		phd_mxptr[M21] = (cos * phd_mxptr[M21] - sin * trash) >> 14;
+	}
+}
+
+void phd_RotYXZ(short y, short x, short z)
+{
+	long sin, cos, trash;
+
+	aRotYXZ(y, x, z);
+
+	if (y)
+	{
+		sin = phd_sin(y);
+		cos = phd_cos(y);
+		trash = phd_mxptr[M00];
+		phd_mxptr[M00] = (cos * phd_mxptr[M00] - sin * phd_mxptr[M02]) >> 14;
+		phd_mxptr[M02] = (cos * phd_mxptr[M02] + sin * trash) >> 14;
+		trash = phd_mxptr[M10];
+		phd_mxptr[M10] = (cos * phd_mxptr[M10] - sin * phd_mxptr[M12]) >> 14;
+		phd_mxptr[M12] = (cos * phd_mxptr[M12] + sin * trash) >> 14;
+		trash = phd_mxptr[M20];
+		phd_mxptr[M20] = (cos * phd_mxptr[M20] - sin * phd_mxptr[M22]) >> 14;
+		phd_mxptr[M22] = (cos * phd_mxptr[M22] + sin * trash) >> 14;
+	}
+
+	if (x)
+	{
+		sin = phd_sin(x);
+		cos = phd_cos(x);
+		trash = phd_mxptr[M01];
+		phd_mxptr[M01] = (cos * phd_mxptr[M01] + sin * phd_mxptr[M02]) >> 14;
+		phd_mxptr[M02] = (cos * phd_mxptr[M02] - sin * trash) >> 14;
+		trash = phd_mxptr[M11];
+		phd_mxptr[M11] = (cos * phd_mxptr[M11] + sin * phd_mxptr[M12]) >> 14;
+		phd_mxptr[M12] = (cos * phd_mxptr[M12] - sin * trash) >> 14;
+		trash = phd_mxptr[M21];
+		phd_mxptr[M21] = (cos * phd_mxptr[M21] + sin * phd_mxptr[M22]) >> 14;
+		phd_mxptr[M22] = (cos * phd_mxptr[M22] - sin * trash) >> 14;
+	}
+
+	if (z)
+	{
+		sin = phd_sin(z);
+		cos = phd_cos(z);
+		trash = phd_mxptr[M00];
+		phd_mxptr[M00] = (cos * phd_mxptr[M00] + sin * phd_mxptr[M01]) >> 14;
+		phd_mxptr[M01] = (cos * phd_mxptr[M01] - sin * trash) >> 14;
+		trash = phd_mxptr[M10];
+		phd_mxptr[M10] = (cos * phd_mxptr[M10] + sin * phd_mxptr[M11]) >> 14;
+		phd_mxptr[M11] = (cos * phd_mxptr[M11] - sin * trash) >> 14;
+		trash = phd_mxptr[M20];
+		phd_mxptr[M20] = (cos * phd_mxptr[M20] + sin * phd_mxptr[M21]) >> 14;
+		phd_mxptr[M21] = (cos * phd_mxptr[M21] - sin * trash) >> 14;
+	}
+}
+
+void phd_TranslateAbs(long x, long y, long z)
+{
+	long fx, fy, fz;
+
+	aTranslateAbs(x, y, z);
+	fx = x - w2v_matrix[M03];
+	fy = y - w2v_matrix[M13];
+	fz = z - w2v_matrix[M23];
+	phd_mxptr[M03] = fx * phd_mxptr[M00] + fy * phd_mxptr[M01] + fz * phd_mxptr[M02];
+	phd_mxptr[M13] = fx * phd_mxptr[M10] + fy * phd_mxptr[M11] + fz * phd_mxptr[M12];
+	phd_mxptr[M23] = fx * phd_mxptr[M20] + fy * phd_mxptr[M21] + fz * phd_mxptr[M22];
+}
+
+void phd_GetVectorAngles(long x, long y, long z, short* angles)
+{
+	short atan;
+
+	angles[0] = (short)phd_atan(z, x);
+
+	while ((short)x != x || (short)y != y || (short)z != z)
+	{
+		x >>= 2;
+		y >>= 2;
+		z >>= 2;
+	}
+
+	atan = (short)phd_atan(phd_sqrt(SQUARE(z) + SQUARE(x)), y);
+
+	if ((y > 0 && atan > 0) || (y < 0 && atan < 0))
+		atan = -atan;
+
+	angles[1] = atan;
+}
+
+void phd_TransposeMatrix()
+{
+	long trash;
+
+	trash = phd_mxptr[M01];
+	phd_mxptr[M01] = phd_mxptr[M10];
+	phd_mxptr[M10] = trash;
+	trash = phd_mxptr[M12];
+	phd_mxptr[M12] = phd_mxptr[M21];
+	phd_mxptr[M21] = trash;
+	trash = phd_mxptr[M20];
+	phd_mxptr[M20] = phd_mxptr[M21];
+	phd_mxptr[M21] = trash;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
 	INJECT(0x00491320, gte_sttr, replace);
 	INJECT(0x00490590, aInitMatrix, replace);
 	INJECT(0x00490BE0, aSetViewMatrix, replace);
+	INJECT(0x004905E0, aSetTrans, replace);
+	INJECT(0x00490610, aTranslateAbs, replace);
+	INJECT(0x004912E0, aUnitMatrixByMat, replace);
+	INJECT(0x00490720, aPushUnitMatrix, replace);
+	INJECT(0x00490790, aTranslateRel, replace);
+	INJECT(0x00490810, aRotX, replace);
+	INJECT(0x004908E0, aRotY, replace);
+	INJECT(0x004909B0, aRotZ, replace);
+	INJECT(0x00490A80, aRotYXZPack, replace);
+	INJECT(0x00490AF0, aRotYXZ, replace);
+	INJECT(0x0048F9C0, phd_PushMatrix, replace);
+	INJECT(0x0048FA40, phd_SetTrans, replace);
+	INJECT(0x0048FA90, phd_PushUnitMatrix, replace);
+	INJECT(0x0048FB20, phd_TranslateRel, replace);
+	INJECT(0x0048FBE0, phd_RotX, replace);
+	INJECT(0x0048FCD0, phd_RotY, replace);
+	INJECT(0x0048FDC0, phd_RotZ, replace);
+	INJECT(0x0048FEB0, phd_RotYXZpack, replace);
+	INJECT(0x00490150, phd_RotYXZ, replace);
+	INJECT(0x004903F0, phd_TranslateAbs, replace);
+	INJECT(0x004904B0, phd_GetVectorAngles, replace);
+	INJECT(0x00490550, phd_TransposeMatrix, replace);
 }

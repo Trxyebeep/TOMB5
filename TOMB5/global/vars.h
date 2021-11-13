@@ -634,6 +634,7 @@
 #define SunLights	ARRAY_(0x00879538, SUNLIGHT_STRUCT, [16])
 #define PointLights	ARRAY_(0x00878E28, POINTLIGHT_STRUCT, [64])
 #define FogBulbs	ARRAY_(0x0087AD18, FOGBULB_STRUCT, [16])
+#define w2v_matrix	ARRAY_(0x0055D26C, long, [12])
 
 //defs
 #define NO_HEIGHT -32512

@@ -1595,28 +1595,28 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048F760		phd_LookAt
 0x0048F8A0		phd_atan
 0x0048F980		phd_sqrt
-0x0048F9C0		phd_PushMatrix
-0x0048FA40		phd_SetTrans
-0x0048FA90		phd_PushUnitMatrix
-0x0048FB20		phd_TranslateRel
-0x0048FBE0		phd_RotX
-0x0048FCD0		phd_RotY
-0x0048FDC0		phd_RotZ
-0x0048FEB0		phd_RotYXZpack
-0x00490150		phd_RotYXZ
-0x004903F0		phd_TranslateAbs
-0x004904B0		phd_GetVectorAngles
-0x00490550		phd_TransposeMatrix
+0x0048F9C0	+	phd_PushMatrix
+0x0048FA40	+	phd_SetTrans
+0x0048FA90	+	phd_PushUnitMatrix
+0x0048FB20	+	phd_TranslateRel
+0x0048FBE0	+	phd_RotX
+0x0048FCD0	+	phd_RotY
+0x0048FDC0	+	phd_RotZ
+0x0048FEB0	+	phd_RotYXZpack
+0x00490150	+	phd_RotYXZ
+0x004903F0	+	phd_TranslateAbs
+0x004904B0	+	phd_GetVectorAngles
+0x00490550	+	phd_TransposeMatrix
 0x00490590	+	aInitMatrix
-0x004905E0		aSetTrans
-0x00490610		aTranslateAbs
-0x00490720		aPushUnitMatrix
-0x00490790		aTranslateRel
-0x00490810		aRotX
-0x004908E0		aRotY
-0x004909B0		aRotZ
-0x00490A80		aRotYXZPack
-0x00490AF0		aRotYXZ
+0x004905E0	+	aSetTrans
+0x00490610	+	aTranslateAbs
+0x00490720	+	aPushUnitMatrix
+0x00490790	+	aTranslateRel
+0x00490810	+	aRotX
+0x004908E0	+	aRotY
+0x004909B0	+	aRotZ
+0x00490A80	+	aRotYXZPack
+0x00490AF0	+	aRotYXZ
 0x00490B40		aScaleCurrentMatrix
 0x00490BE0	+	aSetViewMatrix
 0x00490C20		aLookAt
@@ -1625,7 +1625,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004910D0		aVectorNormal
 0x00491120		aOuterProduct
 0x00491170		aPerpVectors
-0x004912E0		aUnitMatrixByMat
+0x004912E0	+	aUnitMatrixByMat
 0x00491320	+	gte_sttr
 
 	
