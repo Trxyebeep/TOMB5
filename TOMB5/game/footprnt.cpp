@@ -77,7 +77,7 @@ void S_DrawFootPrints()
 			print->Active--;
 			a = print->Active >> 2;
 			phd_PushMatrix();
-			phd_TranslateAbs(print->x, print->y, print->z);
+			phd_TranslateAbs(print->x, print->y - 1, print->z);
 			phd_RotY(print->YRot);
 			pos.x = 0;
 			pos.y = 0;
@@ -361,6 +361,47 @@ void GetProperFootPos(PHD_VECTOR* pos)
 		pos->x = left_foot.x;	//now left foot
 		pos->y = left_foot.y;
 		pos->z = left_foot.z;
+		break;
+
+	case 97:	//climb up
+
+		if (frame == base + 52)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+			
+		}
+		else if (frame == base + 69)
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+		else if (frame == base + 73)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+
+		break;
+
+	case 159:	//handstand
+
+		if (frame == base + 157)
+		{
+			pos->x = left_foot.x;	//left foot winer!
+			pos->y = left_foot.y;
+			pos->z = left_foot.z;
+		}
+		else
+		{
+			pos->x = right_foot.x;	//right foot winer!
+			pos->y = right_foot.y;
+			pos->z = right_foot.z;
+		}
+
 		break;
 
 	default:

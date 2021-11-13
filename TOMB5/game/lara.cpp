@@ -1157,6 +1157,11 @@ void lara_as_null(ITEM_INFO* item, COLL_INFO* coll)
 {
 	coll->enable_baddie_push = 0;
 	coll->enable_spaz = 0;
+
+#ifdef FOOTPRINTS
+	if (item->frame_number == anims[97].frame_base + 69)
+		AddFootprint(item);
+#endif
 }
 
 void lara_as_run(ITEM_INFO* item, COLL_INFO* coll)
@@ -3166,6 +3171,12 @@ void lara_as_gymnast(ITEM_INFO* item, COLL_INFO* coll)
 {
 	coll->enable_baddie_push = 0;
 	coll->enable_spaz = 0;
+
+#ifdef FOOTPRINTS
+	if (item->frame_number == anims[159].frame_base + 157 ||
+		item->frame_number == anims[159].frame_base + 188)
+		AddFootprint(item);
+#endif
 }
 
 void lara_as_duck(ITEM_INFO* item, COLL_INFO* coll)
