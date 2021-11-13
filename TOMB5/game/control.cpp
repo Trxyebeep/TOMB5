@@ -34,8 +34,10 @@
 #include "twogun.h"
 #include "text.h"
 #include "../specific/dxsound.h"
+#ifndef TRF
 #ifdef CUTSCENE_SKIPPER
 #include "deltapak.h"
+#endif
 #endif
 
 uchar ShatterSounds[18][10] =
