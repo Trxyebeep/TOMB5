@@ -28,6 +28,8 @@ void PrintObjects(short room_number);
 void DrawRooms(short current_room);
 void CalculateObjectLightingLara();
 
+extern short no_rotation[];
+
 #define InterpolateMatrix	( (void(__cdecl*)()) 0x0042C8F0 )
 #define	mRotBoundingBoxNoPersp	( (void(__cdecl*)(short*, short*)) 0x0042E240 )
 #define GetFrames	( (long(__cdecl*)(ITEM_INFO*, short*[], long*)) 0x0042CEB0 )
