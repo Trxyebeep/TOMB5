@@ -277,7 +277,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 
 	if (coll->bad_pos < coll->front_floor || coll->front_floor < coll->bad_neg || coll->bad_ceiling < coll->front_ceiling)
 	{
-		if (coll->front_type == DIAGONAL || coll->coll_type == SPLIT_TRI)
+		if (coll->front_type == DIAGONAL || coll->front_type == SPLIT_TRI)
 		{
 			coll->shift.x = coll->old.x - xpos;
 			coll->shift.z = coll->old.z - zpos;

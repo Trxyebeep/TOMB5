@@ -513,6 +513,12 @@ void DrawAnimatingItem(ITEM_INFO* item)
 
 	frac = GetFrames(item, frm, &rate);
 	obj = &objects[item->object_number];
+
+#ifdef GENERAL_FIXES
+	if (obj->shadow_size)
+		S_PrintShadow(obj->shadow_size, frm[0], item);
+#endif
+
 	phd_PushMatrix();
 	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);

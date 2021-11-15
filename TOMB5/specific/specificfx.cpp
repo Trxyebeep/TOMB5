@@ -359,7 +359,146 @@ void DrawLaserSightSprite()
 }
 
 #ifdef USE_SKY_SPRITE
-void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
+
+#define SetVecXYZ(num, X, Y, Z)	 vec[(num)].x = (X); vec[(num)].y = (Y); vec[(num)].z = (Z);
+
+void SetSkyCoords(FVECTOR* vec, long segment, long def)
+{
+	if (segment == 1)	//bottom left
+	{
+		switch (def)
+		{
+		case 0:	//bottom left
+			SetVecXYZ(0, -4864, 0, -2432);
+			SetVecXYZ(1, -2432, 0, -2432);
+			SetVecXYZ(2, -2432, 0, -4864);
+			SetVecXYZ(3, -4864, 0, -4864);
+			break;
+
+		case 1:	//bottom right
+			SetVecXYZ(0, -2432, 0, -2432);
+			SetVecXYZ(1, 0, 0, -2432);
+			SetVecXYZ(2, 0, 0, -4864);
+			SetVecXYZ(3, -2432, 0, -4864);
+			break;
+
+		case 2:	//top left
+			SetVecXYZ(0, -4864, 0, 0);
+			SetVecXYZ(1, -2432, 0, 0);
+			SetVecXYZ(2, -2432, 0, -2432);
+			SetVecXYZ(3, -4864, 0, -2432);
+			break;
+
+		case 3:	//top right
+			SetVecXYZ(0, -2432, 0, 0);
+			SetVecXYZ(1, 0, 0, 0);
+			SetVecXYZ(2, 0, 0, -2432);
+			SetVecXYZ(3, -2432, 0, -2432);
+			break;
+		}
+	}
+	else if (segment == 2)	//bottom right
+	{
+		switch (def)
+		{
+		case 0:	//bottom left
+			SetVecXYZ(0, 0, 0, -2432);
+			SetVecXYZ(1, 2432, 0, -2432);
+			SetVecXYZ(2, 2432, 0, -4864);
+			SetVecXYZ(3, 0, 0, -4864);
+			break;
+
+		case 1:	//bottom right
+			SetVecXYZ(0, 2432, 0, -2432);
+			SetVecXYZ(1, 4864, 0, -2432);
+			SetVecXYZ(2, 4864, 0, -4864);
+			SetVecXYZ(3, 2432, 0, -4864);
+			break;
+
+		case 2:	//top left
+			SetVecXYZ(0, 0, 0, 0);
+			SetVecXYZ(1, 2432, 0, 0);
+			SetVecXYZ(2, 2432, 0, -2432);
+			SetVecXYZ(3, 0, 0, -2432);
+			break;
+
+		case 3:	//top right
+			SetVecXYZ(0, 2432, 0, 0);
+			SetVecXYZ(1, 4864, 0, 0);
+			SetVecXYZ(2, 4864, 0, -2432);
+			SetVecXYZ(3, 2432, 0, -2432);
+			break;
+		}
+	}
+	else if (segment == 3)	//top right
+	{
+		switch (def)
+		{
+		case 0:	//bottom left
+			SetVecXYZ(0, 0, 0, 2432);
+			SetVecXYZ(1, 2432, 0, 2432);
+			SetVecXYZ(2, 2432, 0, 0);
+			SetVecXYZ(3, 0, 0, 0);
+			break;
+
+		case 1:	//bottom right
+			SetVecXYZ(0, 2432, 0, 2432);
+			SetVecXYZ(1, 4864, 0, 2432);
+			SetVecXYZ(2, 4864, 0, 0);
+			SetVecXYZ(3, 2432, 0, 0);
+			break;
+
+		case 2:	//top left
+			SetVecXYZ(0, 0, 0, 4864);
+			SetVecXYZ(1, 2432, 0, 4864);
+			SetVecXYZ(2, 2432, 0, 2432);
+			SetVecXYZ(3, 0, 0, 2432);
+			break;
+
+		case 3:	//top right
+			SetVecXYZ(0, 2432, 0, 4864);
+			SetVecXYZ(1, 4864, 0, 4864);
+			SetVecXYZ(2, 4864, 0, 2432);
+			SetVecXYZ(3, 2432, 0, 2432);
+			break;
+		}
+	}
+	else if (segment == 4)	//top left
+	{
+		switch (def)
+		{
+		case 0:	//bottom left
+			SetVecXYZ(0, -4864, 0, 2432);
+			SetVecXYZ(1, -2432, 0, 2432);
+			SetVecXYZ(2, -2432, 0, 0);
+			SetVecXYZ(3, -4864, 0, 0);
+			break;
+
+		case 1:	//bottom right
+			SetVecXYZ(0, -2432, 0, 2432);
+			SetVecXYZ(1, 0, 0, 2432);
+			SetVecXYZ(2, 0, 0, 0);
+			SetVecXYZ(3, -2432, 0, 0);
+			break;
+
+		case 2:	//top left
+			SetVecXYZ(0, -4864, 0, 4864);
+			SetVecXYZ(1, -2432, 0, 4864);
+			SetVecXYZ(2, -2432, 0, 2432);
+			SetVecXYZ(3, -4864, 0, 2432);
+			break;
+
+		case 3:	//top right
+			SetVecXYZ(0, -2432, 0, 4864);
+			SetVecXYZ(1, 0, 0, 4864);
+			SetVecXYZ(2, 0, 0, 2432);
+			SetVecXYZ(3, -2432, 0, 2432);
+			break;
+		}
+	}
+}
+
+void DrawSkySegment(ulong color, long drawtype, long def, long seg, long zpos, long ypos)
 {
 	SPRITESTRUCT* sprite;
 	FVECTOR vec[4];
@@ -376,68 +515,7 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 	else
 		phd_TranslateRel(0, ypos, 0);
 
-	switch (def)
-	{
-	case 0:
-		vec[0].x = -4864;
-		vec[0].y = 0;
-		vec[0].z = 0;
-		vec[1].x = 0;
-		vec[1].y = 0;
-		vec[1].z = 0;
-		vec[2].x = 0;
-		vec[2].y = 0;
-		vec[2].z = -4864;
-		vec[3].x = -4864;
-		vec[3].y = 0;
-		vec[3].z = -4864;
-		break;
-
-	case 1:
-		vec[0].x = 0;
-		vec[0].y = 0;
-		vec[0].z = 0;
-		vec[1].x = 4864;
-		vec[1].y = 0;
-		vec[1].z = 0;
-		vec[2].x = 4864;
-		vec[2].y = 0;
-		vec[2].z = -4864;
-		vec[3].x = 0;
-		vec[3].y = 0;
-		vec[3].z = -4864;
-		break;
-
-	case 2:
-		vec[0].x = -4864;
-		vec[0].y = 0;
-		vec[0].z = 4864;
-		vec[1].x = 0;
-		vec[1].y = 0;
-		vec[1].z = 4864;
-		vec[2].x = 0;
-		vec[2].y = 0;
-		vec[2].z = 0;
-		vec[3].x = -4864;
-		vec[3].y = 0;
-		vec[3].z = 0;
-		break;
-
-	case 3:
-		vec[0].x = 0;
-		vec[0].y = 0;
-		vec[0].z = 4864;
-		vec[1].x = 4864;
-		vec[1].y = 0;
-		vec[1].z = 4864;
-		vec[2].x = 4864;
-		vec[2].y = 0;
-		vec[2].z = 0;
-		vec[3].x = 0;
-		vec[3].y = 0;
-		vec[3].z = 0;
-		break;
-	}
+	SetSkyCoords(vec, seg, def);
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -509,69 +587,7 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 	Tex.v4 = v2;
 	AddQuadSorted(v, 3, 2, 1, 0, &Tex, 1);
 	phd_TranslateRel(-9728, 0, 0);
-
-	switch (def)
-	{
-	case 0:
-		vec[0].x = -4864;
-		vec[0].y = 0;
-		vec[0].z = 0;
-		vec[1].x = 0;
-		vec[1].y = 0;
-		vec[1].z = 0;
-		vec[2].x = 0;
-		vec[2].y = 0;
-		vec[2].z = -4864;
-		vec[3].x = -4864;
-		vec[3].y = 0;
-		vec[3].z = -4864;
-		break;
-
-	case 1:
-		vec[0].x = 0;
-		vec[0].y = 0;
-		vec[0].z = 0;
-		vec[1].x = 4864;
-		vec[1].y = 0;
-		vec[1].z = 0;
-		vec[2].x = 4864;
-		vec[2].y = 0;
-		vec[2].z = -4864;
-		vec[3].x = 0;
-		vec[3].y = 0;
-		vec[3].z = -4864;
-		break;
-
-	case 2:
-		vec[0].x = -4864;
-		vec[0].y = 0;
-		vec[0].z = 4864;
-		vec[1].x = 0;
-		vec[1].y = 0;
-		vec[1].z = 4864;
-		vec[2].x = 0;
-		vec[2].y = 0;
-		vec[2].z = 0;
-		vec[3].x = -4864;
-		vec[3].y = 0;
-		vec[3].z = 0;
-		break;
-
-	case 3:
-		vec[0].x = 0;
-		vec[0].y = 0;
-		vec[0].z = 4864;
-		vec[1].x = 4864;
-		vec[1].y = 0;
-		vec[1].z = 4864;
-		vec[2].x = 4864;
-		vec[2].y = 0;
-		vec[2].z = 0;
-		vec[3].x = 0;
-		vec[3].y = 0;
-		vec[3].z = 0;
-		break;
-	}
+	SetSkyCoords(vec, seg, def);
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -633,10 +649,9 @@ void DrawSkySegment(ulong color, char drawtype, char def, long zpos, long ypos)
 
 void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 {
-	DrawSkySegment(color, (char)drawtype, 0, zpos, ypos);
-	DrawSkySegment(color, (char)drawtype, 1, zpos, ypos);
-	DrawSkySegment(color, (char)drawtype, 2, zpos, ypos);
-	DrawSkySegment(color, (char)drawtype, 3, zpos, ypos);
+	for (int i = 1; i < 5; i++)
+		for (int j = 0; j < 4; j++)
+			DrawSkySegment(color, drawtype, j, i, zpos, ypos);
 }
 #else
 void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)

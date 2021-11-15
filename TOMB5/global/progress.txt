@@ -425,11 +425,11 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/draw.cpp
 
-0x0042A1B0		CalculateObjectLightingLara
+0x0042A1B0	+	CalculateObjectLightingLara
 0x0042A310	+	UpdateSkyLightning
 0x0042A400	+	DrawPhaseGame
 0x0042A4A0	+	SkyDrawPhase
-0x0042A7A0		DrawRooms
+0x0042A7A0	+	DrawRooms
 0x0042AF50		ClipRoom
 0x0042B340		DrawEffect
 0x0042B4C0		calc_animating_item_clip_window
@@ -1377,7 +1377,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00479380		GetSpheres
 0x00479780		GetJointAbsPosition
 0x00479BB0		InitInterpolate2
-0x00479C20		GetJointAbsPositionMatrix
+0x00479C20	+	GetJointAbsPositionMatrix
 
 
 		game/spider.cpp
@@ -1942,8 +1942,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x004AB580		InitObjectFogBulbs
 0x004AB7A0	+	InitObjectLighting
 0x004AB910		ClearObjectLighting
-0x004AB930		InitDynamicLighting		//void, no params, empty anyway
-0x004AB950		InitDynamicLighting		//void, ITEM_INFO* i
+0x004AB930		InitDynamicLighting_noparams
+0x004AB950		InitDynamicLighting
 0x004AB9D0		ClearDynamicLighting
 
 
@@ -2055,9 +2055,9 @@ x for functions decompiled but not injected, for one reason or another.
 0x004BC120		AddTriClippedSorted
 0x004BC7F0		AddQuadClippedSorted
 0x004BCE20		AddLineClippedSorted
-0x004BCF30		CalcColorSplitMMX	//asm(maybe), D3DCOLOR s, D3DCOLOR* color
-0x004BCFD0		AddPrelitMMX		//asm(maybe), long p, D3DCOLOR *color
-0x004BD070		AddPrelitMMX		//asm(maybe), MESH_DATA* r, int nv, D3DCOLOR *color
+0x004BCF30		CalcColorSplitMMX
+0x004BCFD0		AddPrelitMMX
+0x004BD070		AddPrelitMMX
 0x004BD150		CalcColorSplit
 0x004BD270		S_DrawLine
 0x004BD300		S_DrawTriFan
@@ -2079,17 +2079,17 @@ x for functions decompiled but not injected, for one reason or another.
 0x004BD860		REG_OpenKey
 0x004BD8A0		REG_KeyWasCreated
 0x004BD8C0		REG_CloseKey
-0x004BD8E0		REG_WriteValue		//char* szName, ulong dwValue
-0x004BD910		REG_WriteValue		//char* szName, bool tValue
-0x004BD950		REG_WriteValue		//char* szName, double dValue
-0x004BD990		REG_WriteValue		//char* szName, void* pData, int nSize
-0x004BD9E0		REG_WriteValue		//char* szName, char* szString, int nLength
+0x004BD8E0		REG_WriteValue	//long
+0x004BD910		REG_WriteValue	//bool
+0x004BD950		REG_WriteValue	//double
+0x004BD990		REG_WriteValue	//void*
+0x004BD9E0		REG_WriteValue	//string
 0x004BDA50		REG_DeleteValue
-0x004BDA80		REG_ReadValue		//char* szName, ulong &rdwValue, ulong dwDefault
-0x004BDB00		REG_ReadValue		//char* szName, bool &rtBool, bool tDefault
-0x004BDBA0		REG_ReadValue		//char* szName, double &rdDouble, double dDefault
-0x004BDC20		REG_ReadValue		//char* szName, void* pData,int nSize, void* pDefaultData
-0x004BDCC0		REG_ReadValue		//char* szName, char* szString, int nMax, char* szDefault
+0x004BDA80		REG_ReadValue	//long
+0x004BDB00		REG_ReadValue	//bool
+0x004BDBA0		REG_ReadValue	//double
+0x004BDC20		REG_ReadValue	//void*
+0x004BDCC0		REG_ReadValue	//string
 0x004BDD90		OpenRegistry
 0x004BDE00		CloseRegistry
 0x004BDE20		LoadSettings

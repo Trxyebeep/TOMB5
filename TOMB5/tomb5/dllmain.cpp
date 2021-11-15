@@ -85,6 +85,7 @@
 #include "../game/gladiatr.h"
 #include "../specific/lighting.h"
 #include "../specific/d3dmatrix.h"
+#include "../game/sphere.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -189,6 +190,7 @@ void inject_all(bool replace)
 	inject_gladiator(replace);
 	inject_lighting(replace);
 	inject_d3dmatrix(replace);
+	inject_sphere(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
