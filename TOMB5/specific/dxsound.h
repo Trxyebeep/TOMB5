@@ -6,3 +6,6 @@
 #define S_SoundSetPitch	( (void(__cdecl*)(int, int)) 0x004A3B90 )
 #define S_SoundStopAllSamples	( (void(__cdecl*)()) 0x004A39D0 )
 #define S_SoundStopSample	( (void(__cdecl*)(int)) 0x004A3A00 )
+#define DSIsChannelPlaying	( (bool(__cdecl*)(long)) 0x004A3790 )
+#define DSChangeVolume	( (void(__cdecl*)(long, long)) 0x004A2F10 )
+#define DXChangeOutputFormat	( (bool(__cdecl*)(long, bool)) 0x004A2E30 )

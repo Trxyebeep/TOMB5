@@ -84,8 +84,8 @@ void CalculateCamera()
 
 	if (gfCurrentLevel == LVL5_STREETS_OF_ROME && (!XATrack || XATrack == 13))
 	{
-		if (camera.underwater && MusicVolume)
-			S_CDVolume(25 * MusicVolume + 5);
+		if (camera.underwater && old_MusicVolume)
+			S_CDVolume(25 * old_MusicVolume + 5);
 
 		TLFlag = 1;
 	}
@@ -113,8 +113,8 @@ void CalculateCamera()
 		}
 		else if (camera.underwater)
 		{
-			if (MusicVolume)
-				S_CDVolume(25 * MusicVolume + 5);
+			if (old_MusicVolume)
+				S_CDVolume(25 * old_MusicVolume + 5);
 
 			camera.underwater = 0;
 		}

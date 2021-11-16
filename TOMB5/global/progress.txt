@@ -1806,6 +1806,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/dxsound.cpp
 
+0x004A2E30		DXChangeOutputFormat
 0x004A2F10		DSChangeVolume
 0x004A2F40		DSAdjustPitch
 0x004A2FB0		DSAdjustPan
@@ -1965,7 +1966,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004AD460	+	DoLoadSave
 0x004AD820		DoSlider
 0x004ADF40	+	CheckKeyConflicts
-0x004ADF90		DoOptions
+0x004ADF90	+	DoOptions
 0x004B0910	+	DoStatScreen
 0x004B0D60		S_DisplayPauseMenu
 0x004B1030		S_PauseMenu

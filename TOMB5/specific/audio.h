@@ -5,3 +5,4 @@
 #define	S_CDStop	( (void(__cdecl*)()) 0x004929E0 )
 #define	S_CDPlay	( (void(__cdecl*)(short, int)) 0x00492990 )
 #define S_StartSyncedAudio	( (void(__cdecl*)(int)) 0x00492AC0 )
+#define ACMSetVolume	( (void(__cdecl*)()) 0x00492AF0 )
