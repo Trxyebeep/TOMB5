@@ -6,6 +6,9 @@
 #include "lighting.h"
 #include "function_table.h"
 #include "../game/gameflow.h"
+#ifdef GENERAL_FIXES
+#include "../tomb5/tomb5.h"
+#endif
 
 void S_DrawPickup(short object_number)
 {
@@ -361,18 +364,17 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 				{
 					point = &PointLights[j];
 
-//#define tr4_way
 #ifdef GENERAL_FIXES
-#ifdef tr4_way
-					val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz);
-#else	//!tr4_way
+					if (tomb5.tr4_point_lights)
+						val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz);
+					else
+					{
+						val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
+						val *= val;
+					}
+#else
 					val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
-					val *= val;
-#endif	//tr4_way
-#else	//!GENERAL_FIXES
-					val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
-#endif	//GENERAL_FIXES
-#undef tr4_way
+#endif
 
 					if (val > 0)
 					{

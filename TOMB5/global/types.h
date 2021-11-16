@@ -2231,4 +2231,12 @@ struct FCAMERA
 	float matrix[12];
 	float invmatrix[12];
 };
+
+#ifdef GENERAL_FIXES
+struct tomb5_options
+{
+	bool footprints;		//on off
+	bool tr4_point_lights;	//on off (1 -> TR4, 0 -> fixed TR5)
+};
+#endif
 #pragma pack(pop)

@@ -6,6 +6,9 @@
 #include "audio.h"
 #include "dxsound.h"
 #include "input.h"
+#ifdef GENERAL_FIXES
+#include "../tomb5/tomb5.h"
+#endif
 
 void CheckKeyConflicts()
 {
@@ -663,7 +666,11 @@ void DoOptions()
 	else if (menu == 0)	//main options menu
 	{
 		textY= 3 * font_height;
+#ifdef GENERAL_FIXES	//1 more option
+		num = 6;
+#else
 		num = 5;
+#endif
 		PrintString(phd_centerx, 3 * font_height, 6, &gfStringWad[gfStringOffset_bis[STR_OPTIONS]], FF_CENTER);
 		PrintString(phd_centerx, (ushort)(textY + font_height + (font_height >> 1)), selection & 1 ? 1 : 2, &gfStringWad[gfStringOffset_bis[STR_CONTROL_CONFIGURATION]], FF_CENTER);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 2 * font_height + font_height), selection & 2 ? 1 : 2, &gfStringWad[gfStringOffset_bis[STR_MUSIC_VOLUME_BIS]], 0);
@@ -700,11 +707,22 @@ void DoOptions()
 
 		if (gfGameMode == 1)
 		{
+#ifdef GENERAL_FIXES
+			num = 7;
+#else
 			num = 6;
+#endif
 			PrintString(phd_centerx, (ushort)((font_height >> 1) + textY + 7 * font_height), selection & 0x20 ? 1 : 2, & gfStringWad[gfStringOffset_bis[STR_SPECIAL_FEATURES]], FF_CENTER);
 		}
 		else
 			special_features_available = 0;
+
+#ifdef GENERAL_FIXES	//if special features are available, print it below them
+		if (special_features_available)
+			PrintString(phd_centerx, (ushort)((font_height >> 1) + textY + 8 * font_height), selection & 0x40 ? 1 : 2, "tomb5 options", FF_CENTER);
+		else
+			PrintString(phd_centerx, (ushort)((font_height >> 1) + textY + 7 * font_height), selection & 0x20 ? 1 : 2, "tomb5 options", FF_CENTER);
+#endif
 
 		if (dbinput & IN_FORWARD)
 		{
@@ -723,6 +741,18 @@ void DoOptions()
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 			menu = 1;
 		}
+
+#ifdef GENERAL_FIXES	//time to change some options
+		num2 = !special_features_available ? 0x20 : 0x40;
+
+		if (dbinput & IN_SELECT && selection & num2)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			selection_bak = selection;
+			selection = 1;
+			menu = 200;
+		}
+#endif
 
 		if (!selection)
 			selection = 1;
@@ -835,6 +865,75 @@ void DoOptions()
 			menu = 100;
 		}
 	}
+#ifdef GENERAL_FIXES	//new menu
+	else if (menu == 200)
+	{
+		num = 5;
+		PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
+		PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 2, "FootPrints", 0);
+		PrintString(phd_centerx >> 2, (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 2, "Point light shadows", 0);
+	//	PrintString(phd_centerx >> 2, (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 2, "option 3", 0);
+	//	PrintString(phd_centerx >> 2, (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 2, "option 4", 0);
+	//	PrintString(phd_centerx >> 2, (ushort)(textY + 7 * font_height), selection & 0x10 ? 1 : 2, "option 5", 0);
+
+		if (dbinput & IN_FORWARD)
+		{
+			SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+			selection >>= 1;
+		}
+
+		if (dbinput & IN_BACK)
+		{
+			SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+			selection <<= 1;
+		}
+
+		if (!selection)
+			selection = 1;
+
+		if (selection > (ulong)(1 << (num - 1)))
+			selection = 1 << (num - 1);
+
+		if (dbinput & IN_DESELECT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			menu = 0;
+			dbinput &= ~IN_DESELECT;
+			selection = selection_bak;
+		}
+
+		if (tomb5.footprints)
+			strcpy(quality_text, "on");
+		else
+			strcpy(quality_text, "off");
+
+		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 6, quality_text, 0);
+
+		if (tomb5.tr4_point_lights)
+			strcpy(quality_text, "TR4: stronger shadows");
+		else
+			strcpy(quality_text, "TR5: more coverage");
+
+		PrintString(phd_centerx + (phd_centerx >> 1), (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 6, quality_text, FF_CENTER);
+
+		if (selection & 1)
+		{
+			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+				tomb5.footprints = !tomb5.footprints;
+			}
+		}
+		else if (selection & 2)
+		{
+			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+				tomb5.tr4_point_lights = !tomb5.tr4_point_lights;
+			}
+		}
+	}
+#endif
 }
 
 void inject_LoadSave(bool replace)

@@ -8,6 +8,7 @@
 #include "../specific/specificfx.h"
 #include "objects.h"
 #include "../specific/function_table.h"
+#include "../tomb5/tomb5.h"
 #endif
 
 static char footsounds[14] =
@@ -74,6 +75,12 @@ void S_DrawFootPrints()
 
 		if (print->Active)
 		{
+			if (!tomb5.footprints)
+			{
+				print->Active = 0;
+				return;
+			}
+
 			print->Active--;
 			a = print->Active >> 2;
 			phd_PushMatrix();
