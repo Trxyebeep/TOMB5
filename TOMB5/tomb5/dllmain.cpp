@@ -86,6 +86,7 @@
 #include "../specific/lighting.h"
 #include "../specific/d3dmatrix.h"
 #include "../game/sphere.h"
+#include "../specific/registry.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -191,6 +192,7 @@ void inject_all(bool replace)
 	inject_lighting(replace);
 	inject_d3dmatrix(replace);
 	inject_sphere(replace);
+	inject_registry(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

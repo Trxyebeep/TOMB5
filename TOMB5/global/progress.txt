@@ -2077,7 +2077,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/registry.cpp
 
-0x004BD860		REG_OpenKey
+0x004BD860	+	REG_OpenKey
 0x004BD8A0		REG_KeyWasCreated
 0x004BD8C0		REG_CloseKey
 0x004BD8E0		REG_WriteValue	//long

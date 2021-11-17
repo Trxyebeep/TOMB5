@@ -651,6 +651,15 @@
 #define JoyStickButtons	ARRAY_(0x00517504, char*, [16])
 #define DefaultControls	ARRAY_(0x00516B70, long, [32])
 
+/****************/
+//registry
+#define phkResult	VAR_U_(0x00C713C0, HKEY)
+#define dwDisposition	VAR_U_(0x00C713C4, DWORD)
+
+
+#define lpClass	ARRAY_(0x0057A080, CHAR, [4])
+/****************/
+
 //defs
 #define NO_HEIGHT -32512
 #define	NO_ITEM	-1
