@@ -2078,21 +2078,21 @@ x for functions decompiled but not injected, for one reason or another.
 		specific/registry.cpp
 
 0x004BD860	+	REG_OpenKey
-0x004BD8A0		REG_KeyWasCreated
-0x004BD8C0		REG_CloseKey
-0x004BD8E0		REG_WriteValue	//long
-0x004BD910		REG_WriteValue	//bool
-0x004BD950		REG_WriteValue	//double
-0x004BD990		REG_WriteValue	//void*
-0x004BD9E0		REG_WriteValue	//string
-0x004BDA50		REG_DeleteValue
-0x004BDA80		REG_ReadValue	//long
-0x004BDB00		REG_ReadValue	//bool
-0x004BDBA0		REG_ReadValue	//double
-0x004BDC20		REG_ReadValue	//void*
-0x004BDCC0		REG_ReadValue	//string
-0x004BDD90		OpenRegistry
-0x004BDE00		CloseRegistry
+0x004BD8A0	+	REG_KeyWasCreated
+0x004BD8C0	+	REG_CloseKey
+0x004BD8E0	+	REG_WriteLong	//originally, all these write and read funcs were called REG_WriteValue and REG_ReadValue, but we renamed them to avoid headaches
+0x004BD910	+	REG_WriteBool
+0x004BD950	+	REG_WriteDouble
+0x004BD990	+	REG_WriteVoid
+0x004BD9E0	+	REG_WriteString
+0x004BDA50	+	REG_DeleteValue
+0x004BDA80		REG_ReadLong
+0x004BDB00		REG_ReadBool
+0x004BDBA0		REG_ReadDouble
+0x004BDC20		REG_ReadVoid
+0x004BDCC0		REG_ReadString
+0x004BDD90	+	OpenRegistry
+0x004BDE00	+	CloseRegistry
 0x004BDE20		LoadSettings
 0x004BE4E0		SaveSetup
 0x004BE7E0		SaveSettings
