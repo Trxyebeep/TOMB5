@@ -931,6 +931,7 @@ void DoOptions()
 			{
 				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 				tomb5.footprints = !tomb5.footprints;
+				save_new_tomb5_settings();
 			}
 		}
 		else if (selection & 2)
@@ -939,6 +940,7 @@ void DoOptions()
 			{
 				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 				tomb5.tr4_point_lights = !tomb5.tr4_point_lights;
+				save_new_tomb5_settings();
 			}
 		}
 		else if (selection & 4)
@@ -950,6 +952,8 @@ void DoOptions()
 
 				if (tomb5.shadow_mode > 2)
 					tomb5.shadow_mode = 0;
+
+				save_new_tomb5_settings();
 			}
 
 			if (dbinput & IN_LEFT)
@@ -959,6 +963,8 @@ void DoOptions()
 
 				if (tomb5.shadow_mode < 0)
 					tomb5.shadow_mode = 2;
+
+				save_new_tomb5_settings();
 			}
 		}
 	}

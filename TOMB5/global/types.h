@@ -2233,11 +2233,11 @@ struct FCAMERA
 };
 
 #ifdef GENERAL_FIXES
-struct tomb5_options
+struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
 	bool footprints;		//on off
 	bool tr4_point_lights;	//on off (1 -> TR4, 0 -> fixed TR5)
-	short shadow_mode;		//0-> original, 1-> circle, 2-> PSX color like circle
+	ulong shadow_mode;		//0-> original, 1-> circle, 2-> PSX color like circle
 };
 #endif
 #pragma pack(pop)
