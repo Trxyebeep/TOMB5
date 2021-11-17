@@ -22,6 +22,9 @@
 #include "../specific/function_stubs.h"
 #include "../specific/audio.h"
 #include "../specific/fmv.h"
+#ifdef GENERAL_FIXES
+#include "../tomb5/tomb5.h"
+#endif
 
 uchar dels_cutseq_selector_cursorpos = 0;
 
@@ -84,6 +87,10 @@ void DoGameflow()
 	fmv_to_play[0] = 0;
 	gfCurrentLevel = Gameflow->TitleEnabled ? 0 : 1;
 	gf = &gfScriptWad[gfScriptOffset[gfCurrentLevel]];
+
+#ifdef GENERAL_FIXES
+	init_tomb5_stuff();	//This is only called once at the beginning of the game, and these settings can technically be considered 'gameflow' so this is fine here
+#endif
 
 	while (1)
 	{
