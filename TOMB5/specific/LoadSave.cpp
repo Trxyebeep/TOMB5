@@ -868,11 +868,11 @@ void DoOptions()
 #ifdef GENERAL_FIXES	//new menu
 	else if (menu == 200)
 	{
-		num = 5;
+		num = 3;
 		PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 2, "FootPrints", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 2, "Point light shadows", 0);
-	//	PrintString(phd_centerx >> 2, (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 2, "option 3", 0);
+		PrintString(phd_centerx >> 2, (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 2, "Shadow mode", 0);
 	//	PrintString(phd_centerx >> 2, (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 2, "option 4", 0);
 	//	PrintString(phd_centerx >> 2, (ushort)(textY + 7 * font_height), selection & 0x10 ? 1 : 2, "option 5", 0);
 
@@ -916,6 +916,15 @@ void DoOptions()
 
 		PrintString(phd_centerx + (phd_centerx >> 1), (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 6, quality_text, FF_CENTER);
 
+		if (!tomb5.shadow_mode)
+			strcpy(quality_text, "original");
+		else if (tomb5.shadow_mode == 1)
+			strcpy(quality_text, "circle");
+		else if (tomb5.shadow_mode == 2)
+			strcpy(quality_text, "PSX-like");
+
+		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 6, quality_text, 0);
+
 		if (selection & 1)
 		{
 			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
@@ -930,6 +939,26 @@ void DoOptions()
 			{
 				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 				tomb5.tr4_point_lights = !tomb5.tr4_point_lights;
+			}
+		}
+		else if (selection & 4)
+		{
+			if (dbinput & IN_RIGHT)
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+				tomb5.shadow_mode++;
+
+				if (tomb5.shadow_mode > 2)
+					tomb5.shadow_mode = 0;
+			}
+
+			if (dbinput & IN_LEFT)
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+				tomb5.shadow_mode--;
+
+				if (tomb5.shadow_mode < 0)
+					tomb5.shadow_mode = 2;
 			}
 		}
 	}

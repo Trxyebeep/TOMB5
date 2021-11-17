@@ -33,6 +33,9 @@
 #ifdef FOOTPRINTS
 #include "footprnt.h"
 #endif
+#ifdef SMOOTH_SHADOWS
+#include "../tomb5/tomb5.h"
+#endif
 
 short no_rotation[12] = { 0,0,0,0,0,0,0,0,0,0,0,0 };
 
@@ -515,8 +518,18 @@ void DrawAnimatingItem(ITEM_INFO* item)
 	obj = &objects[item->object_number];
 
 #ifdef GENERAL_FIXES
+#ifdef SMOOTH_SHADOWS
+	if (obj->shadow_size)
+	{
+		if (tomb5.shadow_mode == 1 || tomb5.shadow_mode == 2)
+			S_PrintCircleShadow(obj->shadow_size, frm[0], item);
+		else
+			S_PrintShadow(obj->shadow_size, frm[0], item);
+	}
+#else
 	if (obj->shadow_size)
 		S_PrintShadow(obj->shadow_size, frm[0], item);
+#endif
 #endif
 
 	phd_PushMatrix();

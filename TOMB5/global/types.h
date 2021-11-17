@@ -2237,6 +2237,7 @@ struct tomb5_options
 {
 	bool footprints;		//on off
 	bool tr4_point_lights;	//on off (1 -> TR4, 0 -> fixed TR5)
+	short shadow_mode;		//0-> original, 1-> circle, 2-> PSX color like circle
 };
 #endif
 #pragma pack(pop)
