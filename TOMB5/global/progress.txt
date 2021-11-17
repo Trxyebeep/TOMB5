@@ -2086,11 +2086,11 @@ x for functions decompiled but not injected, for one reason or another.
 0x004BD990	+	REG_WriteVoid
 0x004BD9E0	+	REG_WriteString
 0x004BDA50	+	REG_DeleteValue
-0x004BDA80		REG_ReadLong
-0x004BDB00		REG_ReadBool
-0x004BDBA0		REG_ReadDouble
-0x004BDC20		REG_ReadVoid
-0x004BDCC0		REG_ReadString
+0x004BDA80	+	REG_ReadLong
+0x004BDB00	+	REG_ReadBool
+0x004BDBA0	+	REG_ReadDouble
+0x004BDC20	+	REG_ReadVoid
+0x004BDCC0	+	REG_ReadString
 0x004BDD90	+	OpenRegistry
 0x004BDE00	+	CloseRegistry
 0x004BDE20		LoadSettings
