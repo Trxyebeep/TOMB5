@@ -370,6 +370,9 @@ void DrawLaserSightSprite()
 	short* TempXY;
 	float zv, u1, u2, v1, v2;
 	long results[3];
+#ifdef GENERAL_FIXES
+	short size;
+#endif
 
 	phd_PushMatrix();
 	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
@@ -387,8 +390,22 @@ void DrawLaserSightSprite()
 	TempXY[1] = short(float(results[1] * zv + f_centery));
 	TempIDK[0] = results[2] >> 14;
 	phd_PopMatrix();
-	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
-	setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2, TempXY[0] + 2, TempXY[1] + 2, (int)f_mznear, clipflags);
+
+#ifdef GENERAL_FIXES	//restore the target sprite
+	if (LaserSightCol)
+	{
+		size = (GlobalCounter & 4) + 12;// PSX ASM does + 8, but it's way too small
+		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 18];
+		setXY4(v, TempXY[0] - size, TempXY[1] - size, TempXY[0] + size, TempXY[1] - size, TempXY[0] - size,
+			TempXY[1] + size, TempXY[0] + size, TempXY[1] + size, (int)f_mznear, clipflags);
+	}
+	else
+#endif
+	{
+		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
+		setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2, TempXY[0] + 2, TempXY[1] + 2, (int)f_mznear, clipflags);
+	}
+
 	v[0].color = LaserSightCol ? 0x0000FF00 : 0x00FF0000;//if LaserSightCol is on, it turns green
 	v[1].color = v[0].color;
 	v[2].color = v[0].color;
@@ -412,7 +429,11 @@ void DrawLaserSightSprite()
 	Tex.v3 = v2;
 	Tex.u4 = u1;
 	Tex.v4 = v2;
+#ifdef GENERAL_FIXES
+	AddQuadSorted(v, 0, 1, 3, 2, &Tex, 0);
+#else
 	AddQuadSorted(v, 0, 1, 2, 3, &Tex, 0);
+#endif
 	LaserSightCol = 0;
 	LaserSightActive = 0;
 }
