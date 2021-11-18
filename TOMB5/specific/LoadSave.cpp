@@ -868,12 +868,12 @@ void DoOptions()
 #ifdef GENERAL_FIXES	//new menu
 	else if (menu == 200)
 	{
-		num = 3;
+		num = 4;
 		PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 2, "FootPrints", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 2, "Point light shadows", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 2, "Shadow mode", 0);
-	//	PrintString(phd_centerx >> 2, (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 2, "option 4", 0);
+		PrintString(phd_centerx >> 2, (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 2, "Volumetric FX", 0);
 	//	PrintString(phd_centerx >> 2, (ushort)(textY + 7 * font_height), selection & 0x10 ? 1 : 2, "option 5", 0);
 
 		if (dbinput & IN_FORWARD)
@@ -925,6 +925,13 @@ void DoOptions()
 
 		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 6, quality_text, 0);
 
+		if (tomb5.fog)
+			strcpy(quality_text, "on");
+		else
+			strcpy(quality_text, "off");
+
+		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 6, quality_text, 0);
+
 		if (selection & 1)
 		{
 			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
@@ -964,6 +971,15 @@ void DoOptions()
 				if (tomb5.shadow_mode < 0)
 					tomb5.shadow_mode = 2;
 
+				save_new_tomb5_settings();
+			}
+		}
+		else if (selection & 8)
+		{
+			if (dbinput & IN_RIGHT || dbinput & IN_LEFT)
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+				tomb5.fog = !tomb5.fog;
 				save_new_tomb5_settings();
 			}
 		}
