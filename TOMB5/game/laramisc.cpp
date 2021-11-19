@@ -211,7 +211,11 @@ void LaraCheatyBits()
 #endif
 
 #ifdef GENERAL_FIXES
+#ifdef TRF
 	if (keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_E] && keymap[DIK_M])
+#else
+	if (keymap[DIK_F1])
+#endif
 #else
 	if (input & IN_D)
 #endif
@@ -221,7 +225,11 @@ void LaraCheatyBits()
 	}
 
 #ifdef GENERAL_FIXES
+#ifdef TRF
 	if (keymap[DIK_D] && keymap[DIK_O] && keymap[DIK_Z] && keymap[DIK_Y])
+#else
+	if (keymap[DIK_F2])
+#endif
 #else
 	if (input & IN_CHEAT)
 #endif
