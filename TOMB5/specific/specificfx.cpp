@@ -394,17 +394,21 @@ void DrawLaserSightSprite()
 #ifdef GENERAL_FIXES	//restore the target sprite
 	if (LaserSightCol)
 	{
-		size = (GlobalCounter & 4) + 12;// PSX ASM does + 8, but it's way too small
+		size = (GlobalCounter & 7) + 16;// PSX ASM does + 8, but it's way too small
 		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 18];
-		setXY4(v, TempXY[0] - size, TempXY[1] - size, TempXY[0] + size, TempXY[1] - size, TempXY[0] - size,
-			TempXY[1] + size, TempXY[0] + size, TempXY[1] + size, (int)f_mznear, clipflags);
 	}
 	else
-#endif
 	{
+		size = 4;
 		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
-		setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2, TempXY[0] + 2, TempXY[1] + 2, (int)f_mznear, clipflags);
 	}
+
+	setXY4(v, TempXY[0] - size, TempXY[1] - size, TempXY[0] + size, TempXY[1] - size, TempXY[0] - size,
+		TempXY[1] + size, TempXY[0] + size, TempXY[1] + size, (long)f_mznear, clipflags);
+#else
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
+	setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2, TempXY[0] + 2, TempXY[1] + 2, (long)f_mznear, clipflags);
+#endif
 
 	v[0].color = LaserSightCol ? 0x0000FF00 : 0x00FF0000;//if LaserSightCol is on, it turns green
 	v[1].color = v[0].color;
