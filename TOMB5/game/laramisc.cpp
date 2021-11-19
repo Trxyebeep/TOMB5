@@ -259,14 +259,16 @@ void LaraCheatyBits()
 		}
 	}
 
-#ifndef TRF
 #ifdef GENERAL_FIXES
+#ifdef TRF
+	if (keymap[DIK_N] && keymap[DIK_E] && keymap[DIK_X] && keymap[DIK_T])
+#else
 	if (keymap[DIK_F3])
+#endif
 	{
 		gfLevelComplete = gfCurrentLevel + 1;
 		SCNoDrawLara = 0;
 	}
-#endif
 #endif
 
 }
