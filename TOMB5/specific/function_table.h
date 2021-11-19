@@ -4,6 +4,7 @@
 void inject_functbl(bool replace);
 
 void InitialiseFunctionTable();
+void HWInitialise();
 
 #define AddQuadSorted	( *(void(__cdecl**)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, int)) 0x00876C04 )
 #define AddQuadZBuffer	( *(void(__cdecl**)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, int)) 0x00876C08 )
