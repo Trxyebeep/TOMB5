@@ -31,8 +31,12 @@ void init_tomb5_stuff()
 		REG_WriteBool(buf, tomb5.fix_climb_up_delay);
 
 		sprintf(buf, "flex_crawl");
-		tomb5.flexible_crawling = 1;
+		tomb5.flexible_crawling = 1;					//on
 		REG_WriteBool(buf, tomb5.flexible_crawling);
+
+		sprintf(buf, "cutseq_skipper");
+		tomb5.cutseq_skipper = 0;						//off
+		REG_WriteBool(buf, tomb5.cutseq_skipper);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -50,6 +54,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "flex_crawl");
 		REG_ReadBool(buf, tomb5.flexible_crawling, 1);
+
+		sprintf(buf, "cutseq_skipper");
+		REG_ReadBool(buf, tomb5.cutseq_skipper, 0);
 	}
 
 	CloseRegistry();
@@ -74,6 +81,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "flex_crawl");
 	REG_WriteBool(buf, tomb5.flexible_crawling);
+
+	sprintf(buf, "cutseq_skipper");
+	REG_WriteBool(buf, tomb5.cutseq_skipper);
 
 	CloseRegistry();
 }
