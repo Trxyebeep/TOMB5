@@ -1898,8 +1898,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A7EA0		SetCullCW
 0x004A7EC0		SetCullCCW
 0x004A7EE0	+	InitialiseFunctionTable
-0x004A7FA0		HWBeginScene
-0x004A8010		HWEndScene
+0x004A7FA0	+	HWBeginScene
+0x004A8010	+	HWEndScene
 0x004A8040	+	HWInitialise
 0x004A84A0		SetFogColor
 

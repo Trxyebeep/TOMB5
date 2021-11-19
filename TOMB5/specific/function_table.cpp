@@ -6,8 +6,8 @@
 
 void InitialiseFunctionTable()
 {
-	BeginScene = HWBeginScene;
-	EndScene = HWEndScene;
+	_BeginScene = HWBeginScene;
+	_EndScene = HWEndScene;
 	IsVisible = _NVisible;
 
 	if (App.dx.lpZBuffer)
@@ -90,8 +90,27 @@ void HWInitialise()
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, 1);
 }
 
+HRESULT HWBeginScene()
+{
+	if (App.dx.InScene)
+		Log(1, "Already In Scene");
+
+	App.dx.InScene = 1;
+	App.dx.DoneBlit = 0;
+	while (App.dx.WaitAtBeginScene) {};
+	return App.dx.lpD3DDevice->BeginScene();
+}
+
+HRESULT HWEndScene()
+{
+	App.dx.InScene = 0;
+	return App.dx.lpD3DDevice->EndScene();
+}
+
 void inject_functbl(bool replace)
 {
 	INJECT(0x004A7EE0, InitialiseFunctionTable, replace);
 	INJECT(0x004A8040, HWInitialise, replace);
+	INJECT(0x004A7FA0, HWBeginScene, replace);
+	INJECT(0x004A8010, HWEndScene, replace);
 }
