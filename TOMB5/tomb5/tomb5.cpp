@@ -25,6 +25,14 @@ void init_tomb5_stuff()
 		sprintf(buf, "shadow");
 		tomb5.shadow_mode = 2;							//PSX like shadow
 		REG_WriteLong(buf, tomb5.shadow_mode);
+
+		sprintf(buf, "climbup");
+		tomb5.fix_climb_up_delay = 1;					//no delay
+		REG_WriteBool(buf, tomb5.fix_climb_up_delay);
+
+		sprintf(buf, "flex_crawl");
+		tomb5.flexible_crawling = 1;
+		REG_WriteBool(buf, tomb5.flexible_crawling);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -36,6 +44,12 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "shadow");
 		REG_ReadLong(buf, tomb5.shadow_mode, 2);
+
+		sprintf(buf, "climbup");
+		REG_ReadBool(buf, tomb5.fix_climb_up_delay, 1);
+
+		sprintf(buf, "flex_crawl");
+		REG_ReadBool(buf, tomb5.flexible_crawling, 1);
 	}
 
 	CloseRegistry();
@@ -54,6 +68,12 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "shadow");
 	REG_WriteLong(buf, tomb5.shadow_mode);
+
+	sprintf(buf, "climbup");
+	REG_WriteBool(buf, tomb5.fix_climb_up_delay);
+
+	sprintf(buf, "flex_crawl");
+	REG_WriteBool(buf, tomb5.flexible_crawling);
 
 	CloseRegistry();
 }
