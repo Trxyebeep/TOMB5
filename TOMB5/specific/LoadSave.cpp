@@ -912,17 +912,17 @@ void DoOptions()
 		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 6, quality_text, 0);
 
 		if (tomb5.tr4_point_lights)
-			strcpy(quality_text, "TR4: stronger shadows");
+			strcpy(quality_text, "TR4");
 		else
-			strcpy(quality_text, "TR5: more coverage");
+			strcpy(quality_text, "TR5");
 
-		PrintString(phd_centerx + (phd_centerx >> 1), (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 6, quality_text, FF_CENTER);
+		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 6, quality_text, 0);
 
-		if (!tomb5.shadow_mode)
+		if (tomb5.shadow_mode == 1)
 			strcpy(quality_text, "original");
-		else if (tomb5.shadow_mode == 1)
-			strcpy(quality_text, "circle");
 		else if (tomb5.shadow_mode == 2)
+			strcpy(quality_text, "circle");
+		else if (tomb5.shadow_mode == 3)
 			strcpy(quality_text, "PSX-like");
 
 		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 6, quality_text, 0);
@@ -980,8 +980,8 @@ void DoOptions()
 				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 				tomb5.shadow_mode++;
 
-				if (tomb5.shadow_mode > 2)
-					tomb5.shadow_mode = 0;
+				if (tomb5.shadow_mode > 3)
+					tomb5.shadow_mode = 1;
 
 				save_new_tomb5_settings();
 			}
@@ -991,8 +991,8 @@ void DoOptions()
 				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 				tomb5.shadow_mode--;
 
-				if (tomb5.shadow_mode < 0)
-					tomb5.shadow_mode = 2;
+				if (tomb5.shadow_mode < 1)
+					tomb5.shadow_mode = 3;
 
 				save_new_tomb5_settings();
 			}

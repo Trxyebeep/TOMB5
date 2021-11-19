@@ -23,7 +23,7 @@ void init_tomb5_stuff()
 		REG_WriteBool(buf, tomb5.tr4_point_lights);		
 
 		sprintf(buf, "shadow");
-		tomb5.shadow_mode = 2;							//PSX like shadow
+		tomb5.shadow_mode = 3;							//PSX like shadow
 		REG_WriteLong(buf, tomb5.shadow_mode);
 
 		sprintf(buf, "climbup");
@@ -51,7 +51,7 @@ void init_tomb5_stuff()
 		REG_ReadBool(buf, tomb5.tr4_point_lights, 0);
 
 		sprintf(buf, "shadow");
-		REG_ReadLong(buf, tomb5.shadow_mode, 2);
+		REG_ReadLong(buf, tomb5.shadow_mode, 3);
 
 		sprintf(buf, "climbup");
 		REG_ReadBool(buf, tomb5.fix_climb_up_delay, 1);

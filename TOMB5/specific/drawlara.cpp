@@ -126,7 +126,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 	obj = &objects[item->object_number];
 
 #ifdef SMOOTH_SHADOWS
-	if (tomb5.shadow_mode == 1 || tomb5.shadow_mode == 2)
+	if (tomb5.shadow_mode == 2 || tomb5.shadow_mode == 3)
 		S_PrintCircleShadow(obj->shadow_size, GLaraShadowframe, item);
 	else
 		S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
@@ -371,7 +371,7 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 	obj = &objects[item->object_number];
 
 #ifdef SMOOTH_SHADOWS
-	if (tomb5.shadow_mode == 1 || tomb5.shadow_mode == 2)
+	if (tomb5.shadow_mode == 2 || tomb5.shadow_mode == 3)
 		S_PrintCircleShadow(obj->shadow_size, GLaraShadowframe, item);
 	else
 		S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
@@ -567,7 +567,7 @@ void DrawLara__5(ITEM_INFO* item, int mirror)
 	obj = &objects[item->object_number];
 	
 #ifdef SMOOTH_SHADOWS
-	if (tomb5.shadow_mode == 1 || tomb5.shadow_mode == 2)
+	if (tomb5.shadow_mode == 2 || tomb5.shadow_mode == 3)
 		S_PrintCircleShadow(obj->shadow_size, GLaraShadowframe, item);
 	else
 		S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
@@ -701,7 +701,7 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 	obj = &objects[item->object_number];
 	
 #ifdef SMOOTH_SHADOWS
-	if (tomb5.shadow_mode == 1 || tomb5.shadow_mode == 2)
+	if (tomb5.shadow_mode == 2 || tomb5.shadow_mode == 3)
 		S_PrintCircleShadow(obj->shadow_size, GLaraShadowframe, item);
 	else
 		S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);

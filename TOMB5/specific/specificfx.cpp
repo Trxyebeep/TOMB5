@@ -172,7 +172,7 @@ void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 		z3 = (long)ccv.z;
 		setXYZ3(v, x1, y1, z1, x2, y2, z2, x3, y3, z3, clipflags);
 
-		if (tomb5.shadow_mode == 2)	//psx like?
+		if (tomb5.shadow_mode == 3)	//psx like?
 		{
 			v[0].color = 0x00000000;
 			v[1].color = 0x00000000;

@@ -521,7 +521,7 @@ void DrawAnimatingItem(ITEM_INFO* item)
 #ifdef SMOOTH_SHADOWS
 	if (obj->shadow_size)
 	{
-		if (tomb5.shadow_mode == 1 || tomb5.shadow_mode == 2)
+		if (tomb5.shadow_mode == 2 || tomb5.shadow_mode == 3)
 			S_PrintCircleShadow(obj->shadow_size, frm[0], item);
 		else
 			S_PrintShadow(obj->shadow_size, frm[0], item);
