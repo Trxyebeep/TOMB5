@@ -2238,7 +2238,6 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool footprints;		//on off
 	bool tr4_point_lights;	//on off (1 -> TR4, 0 -> fixed TR5)
 	ulong shadow_mode;		//0-> original, 1-> circle, 2-> PSX color like circle
-	bool fog;				//on off
 };
 #endif
 #pragma pack(pop)
