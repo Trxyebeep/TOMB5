@@ -868,7 +868,7 @@ void DoOptions()
 #ifdef GENERAL_FIXES	//new menu
 	else if (menu == 200)
 	{
-		num = 6;
+		num = 7;
 		PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 2, "FootPrints", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 2, "Point light shadows", 0);
@@ -876,6 +876,7 @@ void DoOptions()
 		PrintString(phd_centerx >> 2, (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 2, "Fix climb up delay", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 7 * font_height), selection & 0x10 ? 1 : 2, "Flexible crawling", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 8 * font_height), selection & 0x20 ? 1 : 2, "Cutscene skipper", 0);
+		PrintString(phd_centerx >> 2, (ushort)(textY + 9 * font_height), selection & 0x40 ? 1 : 2, "Cheats", 0);
 
 		if (dbinput & IN_FORWARD)
 		{
@@ -947,6 +948,13 @@ void DoOptions()
 
 		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 8 * font_height), selection & 0x20 ? 1 : 6, quality_text, 0);
 
+		if (tomb5.enable_cheats)
+			strcpy(quality_text, "on");
+		else
+			strcpy(quality_text, "off");
+
+		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 9 * font_height), selection & 0x40 ? 1 : 6, quality_text, 0);
+
 		if (selection & 1)
 		{
 			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
@@ -1013,6 +1021,15 @@ void DoOptions()
 			{
 				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 				tomb5.cutseq_skipper = !tomb5.cutseq_skipper;
+				save_new_tomb5_settings();
+			}
+		}
+		else if (selection & 0x40)
+		{
+			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+				tomb5.enable_cheats = !tomb5.enable_cheats;
 				save_new_tomb5_settings();
 			}
 		}

@@ -2839,9 +2839,6 @@ void do_stats_mode()
 
 void dels_give_lara_items_cheat()
 {
-#ifdef TRF
-	return;
-#endif
 #ifdef ENABLE_CHEATS
 	long piss;//I'll keep it for reasons
 
@@ -2881,8 +2878,6 @@ void dels_give_lara_items_cheat()
 		lara.keyitemscombo = 0;
 		lara.pickupitemscombo = 0;
 	}
-#else
-	return;
 #endif
 }
 

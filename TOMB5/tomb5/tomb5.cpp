@@ -37,6 +37,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "cutseq_skipper");
 		tomb5.cutseq_skipper = 0;						//off
 		REG_WriteBool(buf, tomb5.cutseq_skipper);
+
+		sprintf(buf, "cheats");
+		tomb5.enable_cheats = 0;						//off
+		REG_WriteBool(buf, tomb5.enable_cheats);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -57,6 +61,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "cutseq_skipper");
 		REG_ReadBool(buf, tomb5.cutseq_skipper, 0);
+
+		sprintf(buf, "cheats");
+		REG_ReadBool(buf, tomb5.enable_cheats, 0);
 	}
 
 	CloseRegistry();
@@ -84,6 +91,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "cutseq_skipper");
 	REG_WriteBool(buf, tomb5.cutseq_skipper);
+
+	sprintf(buf, "cheats");
+	REG_WriteBool(buf, tomb5.enable_cheats);
 
 	CloseRegistry();
 }

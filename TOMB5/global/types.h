@@ -2241,6 +2241,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool fix_climb_up_delay;	//on off 
 	bool flexible_crawling;		//on off
 	bool cutseq_skipper;		//on off
+	bool enable_cheats;			//on off
 };
 #endif
 #pragma pack(pop)
