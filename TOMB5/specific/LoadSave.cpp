@@ -164,6 +164,7 @@ void S_DrawDashBar(int pos)
 {
 #ifdef GENERAL_FIXES
 	long x, y;
+
 	if (tomb5.bars_pos == 1)//original
 	{
 		x = 490 - (font_height >> 2);
@@ -187,6 +188,31 @@ void S_DrawDashBar(int pos)
 		DoBar(490 - (font_height >> 2), (font_height >> 2) + 32, 150, 12, pos, 0xA0A000, 0x00A000);//yellow rgb 160, 160, 0 / green rgb 0, 160, 0
 #endif
 }
+
+#ifdef ENEMY_BARS
+void S_DrawEnemyBar(long pos)
+{
+	long x, y;
+
+	if (tomb5.bars_pos == 1)//original
+	{
+		x = font_height >> 2;
+		y = (font_height >> 1) + (font_height >> 2) + 32;
+	}
+	else if (tomb5.bars_pos == 2)//improved
+	{
+		x = font_height >> 2;
+		y = (font_height >> 1) + (font_height >> 2);
+	}
+	else//PSX
+	{
+		x = 490 - (font_height >> 2);
+		y = (font_height >> 1) + (font_height >> 2) + (font_height >> 2) + 32;
+	}
+
+	DoBar(x, y, 150, 12, pos, 0xA00000, 0xA0A000);
+}
+#endif
 
 int DoLoadSave(int LoadSave)
 {
@@ -944,7 +970,7 @@ void DoOptions()
 #ifdef GENERAL_FIXES	//new menu
 	else if (menu == 200)
 	{
-		num = 8;
+		num = 9;
 		PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 2, "FootPrints", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 2, "Point light shadows", 0);
@@ -954,6 +980,7 @@ void DoOptions()
 		PrintString(phd_centerx >> 2, (ushort)(textY + 8 * font_height), selection & 0x20 ? 1 : 2, "Cutscene skipper", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 9 * font_height), selection & 0x40 ? 1 : 2, "Cheats", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 10 * font_height), selection & 0x80 ? 1 : 2, "Bar positions", 0);
+		PrintString(phd_centerx >> 2, (ushort)(textY + 11 * font_height), selection & 0x100 ? 1 : 2, "Enemy bars", 0);
 
 		if (dbinput & IN_FORWARD)
 		{
@@ -1040,6 +1067,13 @@ void DoOptions()
 			strcpy(quality_text, "PSX");
 
 		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 10 * font_height), selection & 0x80 ? 1 : 6, quality_text, 0);
+
+		if (tomb5.enemy_bars)
+			strcpy(quality_text, "on");
+		else
+			strcpy(quality_text, "off");
+
+		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 11 * font_height), selection & 0x100 ? 1 : 6, quality_text, 0);
 
 		if (selection & 1)
 		{
@@ -1140,6 +1174,15 @@ void DoOptions()
 				if (tomb5.bars_pos < 1)
 					tomb5.bars_pos = 3;
 
+				save_new_tomb5_settings();
+			}
+		}
+		else if (selection & 0x100)
+		{
+			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+				tomb5.enemy_bars = !tomb5.enemy_bars;
 				save_new_tomb5_settings();
 			}
 		}

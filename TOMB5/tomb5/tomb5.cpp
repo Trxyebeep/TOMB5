@@ -45,6 +45,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "bar_pos");
 		tomb5.bars_pos = 1;								//original
 		REG_WriteLong(buf, tomb5.bars_pos);
+
+		sprintf(buf, "enemy_bar");
+		tomb5.enemy_bars = 0;
+		REG_WriteBool(buf, tomb5.enemy_bars);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -71,6 +75,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "bar_pos");
 		REG_ReadLong(buf, tomb5.bars_pos, 1);
+
+		sprintf(buf, "enemy_bar");
+		REG_ReadBool(buf, tomb5.enemy_bars, 0);
 	}
 
 	CloseRegistry();
@@ -104,6 +111,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "bar_pos");
 	REG_WriteLong(buf, tomb5.bars_pos);
+
+	sprintf(buf, "enemy_bar");
+	REG_WriteBool(buf, tomb5.enemy_bars);
 
 	CloseRegistry();
 }

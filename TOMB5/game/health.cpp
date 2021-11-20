@@ -9,6 +9,7 @@
 #ifdef AMMO_COUNTER
 #include "larafire.h"
 #endif
+#include "../tomb5/tomb5.h"
 
 int FlashIt()
 {
@@ -43,6 +44,14 @@ void DrawGameInfo(int timed)
 
 		if (DashTimer < 120)
 			S_DrawDashBar(100 * DashTimer / 120);
+
+#ifdef ENEMY_BARS
+		if (lara.target)
+		{
+			if (tomb5.enemy_bars && lara.target->hit_points > 0)
+				S_DrawEnemyBar(100 * lara.target->hit_points / objects[lara.target->object_number].hit_points);
+		}
+#endif
 
 		if (gfLevelFlags & GF_TIMER && savegame.Level.Timer && savegame.Level.Timer < 108000)
 		{

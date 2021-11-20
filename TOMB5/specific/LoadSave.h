@@ -15,6 +15,9 @@ int DoLoadSave(int LoadSave);
 void S_MemSet(void* p, int val, size_t sz);
 int GetCampaignCheatValue();
 void DoOptions();
+#ifdef ENEMY_BARS
+void S_DrawEnemyBar(long pos);
+#endif
 
 #define CreateMonoScreen	( (void(__cdecl*)()) 0x004AC430 )
 #define S_DisplayMonoScreen	( (void(__cdecl*)()) 0x004AD010 )
