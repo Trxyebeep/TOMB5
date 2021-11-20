@@ -41,6 +41,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "cheats");
 		tomb5.enable_cheats = 0;						//off
 		REG_WriteBool(buf, tomb5.enable_cheats);
+
+		sprintf(buf, "bar_pos");
+		tomb5.bars_pos = 1;								//original
+		REG_WriteLong(buf, tomb5.bars_pos);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -64,6 +68,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "cheats");
 		REG_ReadBool(buf, tomb5.enable_cheats, 0);
+
+		sprintf(buf, "bar_pos");
+		REG_ReadLong(buf, tomb5.bars_pos, 1);
 	}
 
 	CloseRegistry();
@@ -94,6 +101,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "cheats");
 	REG_WriteBool(buf, tomb5.enable_cheats);
+
+	sprintf(buf, "bar_pos");
+	REG_WriteLong(buf, tomb5.bars_pos);
 
 	CloseRegistry();
 }
