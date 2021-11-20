@@ -323,7 +323,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;NO_CD;GENERAL_FIXES;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;AMMO_COUNTER;NO_CD;GENERAL_FIXES;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
@@ -346,7 +346,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;GENERAL_FIXES;NO_CD;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;AMMO_COUNTER;GENERAL_FIXES;NO_CD;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
