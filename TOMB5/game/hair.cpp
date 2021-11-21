@@ -315,7 +315,6 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 				else if (hair->pos.y_pos > height)
 				{
 					hair->pos.x_pos = pos.x;
-					hair->pos.y_pos = height;	//absent in the original
 					hair->pos.z_pos = pos.z;
 				}
 
