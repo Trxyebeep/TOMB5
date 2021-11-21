@@ -2231,4 +2231,20 @@ struct FCAMERA
 	float matrix[12];
 	float invmatrix[12];
 };
+
+#ifdef GENERAL_FIXES
+struct tomb5_options	//only bools or ulongs because that's what registry likes
+{
+	bool footprints;			//on off
+	bool tr4_point_lights;		//on off (1 -> TR4, 0 -> fixed TR5)
+	ulong shadow_mode;			//1-> original, 2-> circle, 3-> PSX color like circle
+	bool fix_climb_up_delay;	//on off 
+	bool flexible_crawling;		//on off
+	bool cutseq_skipper;		//on off
+	bool enable_cheats;			//on off
+	ulong bars_pos;				//1-> original, 2-> improved, 3-> PSX
+	bool enemy_bars;			//on off
+	bool ammo_counter;			//on off
+};
+#endif
 #pragma pack(pop)

@@ -174,7 +174,7 @@
 #define joy_x	VAR_U_(0x00878DA0, long)
 #define joy_y	VAR_U_(0x00878DA4, long)
 #define XATrack	VAR_U_(0x00510B14, long)
-#define MusicVolume	VAR_U_(0x00E4B0EC, int)
+#define old_MusicVolume	VAR_U_(0x00E4B0EC, long)	//no one writes to it, CalculateCamera reads it, useless
 #define TargetSnaps	VAR_U_(0x0051CA2D, char)
 #define SniperCount	VAR_U_(0x0051CA1C, char)
 #define TLFlag	VAR_U_(0x0051CA44, char)
@@ -465,6 +465,7 @@
 #define LSHKShotsFired	VAR_U_(0x0051CA45, char)
 #define ExittingBinos	VAR_U_(0x0051CA20, long)
 #define bLaraTorch	VAR_U_(0x0087B0F8, long)
+#define FogStart	VAR_U_(0x0050A438, float)
 #define FogEnd	VAR_U_(0x0050A43C, float)
 #define f_zfar	VAR_U_(0x0055D228, float)
 #define frames VAR_U_(0x00875174, short*)
@@ -504,6 +505,15 @@
 #define current_room_underwater	VAR_U_(0x007EE0C8, long)
 #define RoomRGB	VAR_U_(0x0057A508, long)
 #define old_lighting_water	VAR_U_(0x007EE0D4, long)
+#define SFXVolume	VAR_U_(0x00517B6C, long)
+#define MusicVolume	VAR_U_(0x00517B68, long)
+#define SoundQuality	VAR_U_(0x00517B70, long)
+#define NumSpecialFeatures	VAR_U_(0x008FBD9C, long)
+#define SpecialFeaturesNum	VAR_U_(0x00517B28, long)
+#define big_char_height	VAR_U_(0x00E4DEA4, long)
+#define load_save_options_unk	VAR_U_(0x00E4DEAC, long)
+#define default_font_height	VAR_U_(0x00E4DC40, long)
+#define joystick_read	VAR_U_(0x0086BA34, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -635,6 +645,21 @@
 #define PointLights	ARRAY_(0x00878E28, POINTLIGHT_STRUCT, [64])
 #define FogBulbs	ARRAY_(0x0087AD18, FOGBULB_STRUCT, [16])
 #define w2v_matrix	ARRAY_(0x0055D26C, long, [12])
+#define SpecialFeaturesPage	ARRAY_(0x0087BD50, char, [5])
+#define sfx_frequencies	ARRAY_(0x00517B5C, long, [3])
+#define GermanKeyboard	ARRAY_(0x00516C84, char*, [272])
+#define KeyboardButtons	ARRAY_(0x005170C4, char*, [272])
+#define JoyStickButtons	ARRAY_(0x00517504, char*, [16])
+#define DefaultControls	ARRAY_(0x00516B70, long, [32])
+
+/****************/
+//registry
+#define phkResult	VAR_U_(0x00C713C0, HKEY)
+#define dwDisposition	VAR_U_(0x00C713C4, DWORD)
+
+
+#define lpClass	ARRAY_(0x0057A080, CHAR, [4])
+/****************/
 
 //defs
 #define NO_HEIGHT -32512

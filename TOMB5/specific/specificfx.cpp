@@ -8,12 +8,13 @@
 #include "polyinsert.h"
 #include "drawroom.h"
 #include "d3dmatrix.h"
+#ifdef SMOOTH_SHADOWS
+#include "../tomb5/tomb5.h"
 
+#define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
+#endif
 #define LINE_POINTS	4	//number of points in each grid line
 #define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
-#ifdef SMOOTH_SHADOWS
-#define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
-#else
 #define NUM_TRIS	14	//number of triangles needed to create the shadow (this depends on what shape you're doing)
 #define GRID_POINTS	(LINE_POINTS * LINE_POINTS)	//number of points in the whole grid
 
@@ -56,27 +57,17 @@ long ShadowTable[NUM_TRIS * 3] =	//num of triangles * 3 points
 14, 9, 10,
 14, 10, 11
 };
-#endif
 
-void S_PrintShadow(short size, short* box, ITEM_INFO* item)
+#ifdef SMOOTH_SHADOWS
+void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 {
 	TEXTURESTRUCT Tex;
 	D3DTLVERTEX v[3];
 	PHD_VECTOR pos;
-#ifdef SMOOTH_SHADOWS
 	FVECTOR cv[CIRCUMFERENCE_POINTS];
 	PHD_VECTOR cp[CIRCUMFERENCE_POINTS];
 	FVECTOR ccv;
 	PHD_VECTOR ccp;
-#else
-	float* sXYZ;
-	long* hXZ;
-	long* hY;
-	float sxyz[GRID_POINTS * 3];
-	long hxz[GRID_POINTS * 2];
-	long hy[GRID_POINTS];
-	long triA, triB, triC;
-#endif
 	float fx, fy, fz;
 	long x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, xSize, zSize, xDist, zDist;
 	short room_number;
@@ -85,8 +76,6 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 	zSize = size * (box[5] - box[4]) / 192;	//z size of grid
 	xDist = xSize / LINE_POINTS;			//distance between each point of the grid on X
 	zDist = zSize / LINE_POINTS;			//distance between each point of the grid on Z
-
-#ifdef SMOOTH_SHADOWS
 	x = xDist + (xDist >> 1);
 	z = zDist + (zDist >> 1);
 
@@ -94,28 +83,9 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 	{
 		cp[i].x = x * phd_sin(65536 * i / CIRCUMFERENCE_POINTS) >> 14;
 		cp[i].z = z * phd_cos(65536 * i / CIRCUMFERENCE_POINTS) >> 14;
-		cv[i].x = (float) cp[i].x;
-		cv[i].z = (float) cp[i].z;
+		cv[i].x = (float)cp[i].x;
+		cv[i].z = (float)cp[i].z;
 	}
-#else
-	x = -xDist - (xDist >> 1);				//idfk
-	z = zDist + (zDist >> 1);
-	sXYZ = sxyz;
-	hXZ = hxz;
-
-	for (int i = 0; i < LINE_POINTS; i++, z -= zDist)
-	{
-		for (int j = 0; j < LINE_POINTS; j++, sXYZ += 3, hXZ += 2, x += xDist)
-		{
-			sXYZ[0] = (float)x;		//fill shadow XYZ array with the points of the grid
-			sXYZ[2] = (float)z;
-			hXZ[0] = x;				//fill height XZ array with the points of the grid
-			hXZ[1] = z;
-		}
-
-		x = -xDist - (xDist >> 1);
-	}
-#endif
 
 	phd_PushUnitMatrix();
 
@@ -142,7 +112,6 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 	phd_TranslateRel(pos.x, y, pos.z);
 	phd_RotY(item->pos.y_rot);	//rot the grid to correct Y
 
-#ifdef SMOOTH_SHADOWS
 	for (int i = 0; i < CIRCUMFERENCE_POINTS; i++)
 	{
 		x = cp[i].x;
@@ -153,21 +122,8 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 
 	ccp.x = phd_mxptr[M03] >> 14;
 	ccp.z = phd_mxptr[M23] >> 14;
-#else
-	hXZ = hxz;
-
-	for (int i = 0; i < GRID_POINTS; i++, hXZ += 2)
-	{
-		x = hXZ[0];
-		z = hXZ[1];
-		hXZ[0] = (x * phd_mxptr[M00] + z * phd_mxptr[M02] + phd_mxptr[M03]) >> 14;
-		hXZ[1] = (x * phd_mxptr[M20] + z * phd_mxptr[M22] + phd_mxptr[M23]) >> 14;
-	}
-#endif
-
 	phd_PopMatrix();
 
-#ifdef SMOOTH_SHADOWS
 	for (int i = 0; i < CIRCUMFERENCE_POINTS; i++)
 	{
 		room_number = item->room_number;
@@ -182,7 +138,153 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 
 	if (ABS(ccp.y - item->floor) > POINT_HEIGHT_CORRECTION)
 		ccp.y = item->floor;
-#else
+
+	phd_PushMatrix();
+	phd_TranslateAbs(pos.x, y, pos.z);
+	phd_RotY(item->pos.y_rot);
+
+	for (int i = 0; i < CIRCUMFERENCE_POINTS; i++)
+	{
+		fx = cv[i].x;
+		fy = (float)(cp[i].y - item->floor);
+		fz = cv[i].z;
+		cv[i].x = aMXPtr[M00] * fx + aMXPtr[M01] * fy + aMXPtr[M02] * fz + aMXPtr[M03];
+		cv[i].y = aMXPtr[M10] * fx + aMXPtr[M11] * fy + aMXPtr[M12] * fz + aMXPtr[M13];
+		cv[i].z = aMXPtr[M20] * fx + aMXPtr[M21] * fy + aMXPtr[M22] * fz + aMXPtr[M23];
+	}
+
+	fy = (float)(ccp.y - item->floor);
+	ccv.x = aMXPtr[M01] * fy + aMXPtr[M03];
+	ccv.y = aMXPtr[M11] * fy + aMXPtr[M13];
+	ccv.z = aMXPtr[M21] * fy + aMXPtr[M23];
+	phd_PopMatrix();
+
+	for (int i = 0; i < CIRCUMFERENCE_POINTS; i++) // Draw the pizza
+	{
+		x1 = (long)cv[i].x;
+		y1 = (long)cv[i].y;
+		z1 = (long)cv[i].z;
+		x2 = (long)cv[(i + 1) % CIRCUMFERENCE_POINTS].x;
+		y2 = (long)cv[(i + 1) % CIRCUMFERENCE_POINTS].y;
+		z2 = (long)cv[(i + 1) % CIRCUMFERENCE_POINTS].z;
+		x3 = (long)ccv.x;
+		y3 = (long)ccv.y;
+		z3 = (long)ccv.z;
+		setXYZ3(v, x1, y1, z1, x2, y2, z2, x3, y3, z3, clipflags);
+
+		if (tomb5.shadow_mode == 3)	//psx like?
+		{
+			v[0].color = 0x00000000;
+			v[1].color = 0x00000000;
+			v[2].color = 0xFF000000;
+		}
+		else
+		{
+			v[0].color = 0x4F000000;
+			v[1].color = 0x4F000000;
+			v[2].color = 0x4F000000;
+		}
+
+		if (item->after_death)
+		{
+			v[0].color = 0x80000000 - (item->after_death << 24);
+			v[1].color = v[0].color;
+			v[2].color = v[0].color;
+		}
+
+		v[0].specular = 0xFF000000;
+		v[1].specular = 0xFF000000;
+		v[2].specular = 0xFF000000;
+		Tex.flag = 0;
+		Tex.tpage = 0;
+		Tex.drawtype = 3;
+		Tex.u1 = 0;
+		Tex.v1 = 0;
+		Tex.u2 = 0;
+		Tex.v2 = 0;
+		Tex.u3 = 0;
+		Tex.v3 = 0;
+		Tex.u4 = 0;
+		Tex.v4 = 0;
+		AddTriSorted(v, 0, 1, 2, &Tex, 1);
+	}
+}
+#endif
+
+void S_PrintShadow(short size, short* box, ITEM_INFO* item)
+{
+	TEXTURESTRUCT Tex;
+	D3DTLVERTEX v[3];
+	PHD_VECTOR pos;
+	float* sXYZ;
+	long* hXZ;
+	long* hY;
+	float sxyz[GRID_POINTS * 3];
+	long hxz[GRID_POINTS * 2];
+	long hy[GRID_POINTS];
+	long triA, triB, triC;
+	float fx, fy, fz;
+	long x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, xSize, zSize, xDist, zDist;
+	short room_number;
+
+	xSize = size * (box[1] - box[0]) / 192;	//x size of grid
+	zSize = size * (box[5] - box[4]) / 192;	//z size of grid
+	xDist = xSize / LINE_POINTS;			//distance between each point of the grid on X
+	zDist = zSize / LINE_POINTS;			//distance between each point of the grid on Z
+	x = -xDist - (xDist >> 1);				//idfk
+	z = zDist + (zDist >> 1);
+	sXYZ = sxyz;
+	hXZ = hxz;
+
+	for (int i = 0; i < LINE_POINTS; i++, z -= zDist)
+	{
+		for (int j = 0; j < LINE_POINTS; j++, sXYZ += 3, hXZ += 2, x += xDist)
+		{
+			sXYZ[0] = (float)x;		//fill shadow XYZ array with the points of the grid
+			sXYZ[2] = (float)z;
+			hXZ[0] = x;				//fill height XZ array with the points of the grid
+			hXZ[1] = z;
+		}
+
+		x = -xDist - (xDist >> 1);
+	}
+
+	phd_PushUnitMatrix();
+
+	if (item == lara_item)	//position the grid
+	{
+		pos.x = 0;
+		pos.y = 0;
+		pos.z = 0;
+		GetLaraJointPos(&pos, LM_TORSO);
+		room_number = lara_item->room_number;
+		y = GetHeight(GetFloor(pos.x, pos.y, pos.z, &room_number), pos.x, pos.y, pos.z);
+
+		if (y == NO_HEIGHT)
+			y = item->floor;
+	}
+	else
+	{
+		pos.x = item->pos.x_pos;
+		y = item->floor;
+		pos.z = item->pos.z_pos;
+	}
+
+	y -= 16;
+	phd_TranslateRel(pos.x, y, pos.z);
+	phd_RotY(item->pos.y_rot);	//rot the grid to correct Y
+	hXZ = hxz;
+
+	for (int i = 0; i < GRID_POINTS; i++, hXZ += 2)
+	{
+		x = hXZ[0];
+		z = hXZ[1];
+		hXZ[0] = (x * phd_mxptr[M00] + z * phd_mxptr[M02] + phd_mxptr[M03]) >> 14;
+		hXZ[1] = (x * phd_mxptr[M20] + z * phd_mxptr[M22] + phd_mxptr[M23]) >> 14;
+	}
+
+	phd_PopMatrix();
+
 	hXZ = hxz;
 	hY = hy;
 
@@ -194,28 +296,10 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 		if (ABS(*hY - item->floor) > POINT_HEIGHT_CORRECTION)
 			*hY = item->floor;
 	}
-#endif
 
 	phd_PushMatrix();
 	phd_TranslateAbs(pos.x, y, pos.z);
 	phd_RotY(item->pos.y_rot);
-
-#ifdef SMOOTH_SHADOWS
-	for (int i = 0; i < CIRCUMFERENCE_POINTS; i++)
-	{
-		fx = cv[i].x;
-		fy = (float) (cp[i].y - item->floor);
-		fz = cv[i].z;
-		cv[i].x = aMXPtr[M00] * fx + aMXPtr[M01] * fy + aMXPtr[M02] * fz + aMXPtr[M03];
-		cv[i].y = aMXPtr[M10] * fx + aMXPtr[M11] * fy + aMXPtr[M12] * fz + aMXPtr[M13];
-		cv[i].z = aMXPtr[M20] * fx + aMXPtr[M21] * fy + aMXPtr[M22] * fz + aMXPtr[M23];
-	}
-
-	fy = (float) (ccp.y - item->floor);
-	ccv.x = aMXPtr[M01] * fy + aMXPtr[M03];
-	ccv.y = aMXPtr[M11] * fy + aMXPtr[M13];
-	ccv.z = aMXPtr[M21] * fy + aMXPtr[M23];
-#else
 	sXYZ = sxyz;
 	hY = hy;
 
@@ -228,29 +312,12 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 		sXYZ[1] = aMXPtr[M10] * fx + aMXPtr[M11] * fy + aMXPtr[M12] * fz + aMXPtr[M13];
 		sXYZ[2] = aMXPtr[M20] * fx + aMXPtr[M21] * fy + aMXPtr[M22] * fz + aMXPtr[M23];
 	}
-#endif
 
 	phd_PopMatrix();
-
-#ifdef SMOOTH_SHADOWS
-	for (int i = 0; i < CIRCUMFERENCE_POINTS; i++) // Draw the pizza
-#else
 	sXYZ = sxyz;
 
 	for (int i = 0; i < NUM_TRIS; i++)	//draw triangles
-#endif
 	{
-#ifdef SMOOTH_SHADOWS
-		x1 = (long) cv[i].x;
-		y1 = (long) cv[i].y;
-		z1 = (long) cv[i].z;
-		x2 = (long) cv[(i + 1) % CIRCUMFERENCE_POINTS].x;
-		y2 = (long) cv[(i + 1) % CIRCUMFERENCE_POINTS].y;
-		z2 = (long) cv[(i + 1) % CIRCUMFERENCE_POINTS].z;
-		x3 = (long) ccv.x;
-		y3 = (long) ccv.y;
-		z3 = (long) ccv.z;
-#else
 		triA = 3 * ShadowTable[(i * 3) + 0];	//get tri points
 		triB = 3 * ShadowTable[(i * 3) + 1];
 		triC = 3 * ShadowTable[(i * 3) + 2];
@@ -263,18 +330,10 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 		x3 = (long)sXYZ[triC + 0];
 		y3 = (long)sXYZ[triC + 1];
 		z3 = (long)sXYZ[triC + 2];
-#endif
-
 		setXYZ3(v, x1, y1, z1, x2, y2, z2, x3, y3, z3, clipflags);
-#ifdef SMOOTH_SHADOWS
-		v[0].color = 0x00000000;
-		v[1].color = 0x00000000;
-		v[2].color = 0xFF000000;
-#else
 		v[0].color = 0x4F000000;
 		v[1].color = 0x4F000000;
 		v[2].color = 0x4F000000;
-#endif
 
 		if (item->after_death)
 		{
@@ -311,6 +370,9 @@ void DrawLaserSightSprite()
 	short* TempXY;
 	float zv, u1, u2, v1, v2;
 	long results[3];
+#ifdef GENERAL_FIXES
+	short size;
+#endif
 
 	phd_PushMatrix();
 	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
@@ -328,8 +390,26 @@ void DrawLaserSightSprite()
 	TempXY[1] = short(float(results[1] * zv + f_centery));
 	TempIDK[0] = results[2] >> 14;
 	phd_PopMatrix();
+
+#ifdef GENERAL_FIXES	//restore the target sprite
+	if (LaserSightCol)
+	{
+		size = (GlobalCounter & 7) + 16;// PSX ASM does + 8, but it's way too small
+		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 18];
+	}
+	else
+	{
+		size = 4;
+		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
+	}
+
+	setXY4(v, TempXY[0] - size, TempXY[1] - size, TempXY[0] + size, TempXY[1] - size, TempXY[0] - size,
+		TempXY[1] + size, TempXY[0] + size, TempXY[1] + size, (long)f_mznear, clipflags);
+#else
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
-	setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2, TempXY[0] + 2, TempXY[1] + 2, (int)f_mznear, clipflags);
+	setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2, TempXY[0] + 2, TempXY[1] + 2, (long)f_mznear, clipflags);
+#endif
+
 	v[0].color = LaserSightCol ? 0x0000FF00 : 0x00FF0000;//if LaserSightCol is on, it turns green
 	v[1].color = v[0].color;
 	v[2].color = v[0].color;
@@ -353,7 +433,11 @@ void DrawLaserSightSprite()
 	Tex.v3 = v2;
 	Tex.u4 = u1;
 	Tex.v4 = v2;
+#ifdef GENERAL_FIXES
+	AddQuadSorted(v, 0, 1, 3, 2, &Tex, 0);
+#else
 	AddQuadSorted(v, 0, 1, 2, 3, &Tex, 0);
+#endif
 	LaserSightCol = 0;
 	LaserSightActive = 0;
 }

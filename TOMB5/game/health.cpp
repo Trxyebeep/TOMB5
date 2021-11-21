@@ -9,6 +9,7 @@
 #ifdef AMMO_COUNTER
 #include "larafire.h"
 #endif
+#include "../tomb5/tomb5.h"
 
 int FlashIt()
 {
@@ -44,6 +45,14 @@ void DrawGameInfo(int timed)
 		if (DashTimer < 120)
 			S_DrawDashBar(100 * DashTimer / 120);
 
+#ifdef ENEMY_BARS
+		if (lara.target)
+		{
+			if (tomb5.enemy_bars && lara.target->hit_points > 0)
+				S_DrawEnemyBar(100 * lara.target->hit_points / objects[lara.target->object_number].hit_points);
+		}
+#endif
+
 		if (gfLevelFlags & GF_TIMER && savegame.Level.Timer && savegame.Level.Timer < 108000)
 		{
 			seconds = savegame.Level.Timer / 30;
@@ -58,19 +67,22 @@ void DrawGameInfo(int timed)
 		}
 
 #ifdef AMMO_COUNTER
-		if (lara.gun_status == LG_READY)
+		if (tomb5.ammo_counter)
 		{
-			ammo = *get_current_ammo_pointer(lara.gun_type);
+			if (lara.gun_status == LG_READY)
+			{
+				ammo = *get_current_ammo_pointer(lara.gun_type);
 
-			if (ammo == -1)
-				return;
+				if (ammo == -1)
+					return;
 
-			if (lara.gun_type == WEAPON_SHOTGUN)
-				ammo /= 6;
-			
-			sprintf(&buf[0], "%i", ammo);
-			GetStringLength(buf, 0, &btm);
-			PrintString(LaserSight ? phd_centerx + 30 : (phd_winxmax - GetStringLength(buf, 0, 0) - 80), phd_winymax - btm - 70, 0, &buf[0], 0);
+				if (lara.gun_type == WEAPON_SHOTGUN)
+					ammo /= 6;
+
+				sprintf(&buf[0], "%i", ammo);
+				GetStringLength(buf, 0, &btm);
+				PrintString(LaserSight ? phd_centerx + 30 : (phd_winxmax - GetStringLength(buf, 0, 0) - 80), phd_winymax - btm - 70, 0, &buf[0], 0);
+			}
 		}
 #endif
 	}

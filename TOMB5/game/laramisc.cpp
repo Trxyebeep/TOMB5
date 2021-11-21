@@ -2,10 +2,8 @@
 #include "laramisc.h"
 #include "lara_states.h"
 #include "gameflow.h"
-#ifndef TRF
 #ifdef ENABLE_CHEATS
 #include "newinv2.h"
-#endif
 #endif
 #include "../specific/3dmath.h"
 #include "draw.h"
@@ -20,6 +18,7 @@
 #include "larasurf.h"
 #include "../specific/function_stubs.h"
 #include "../specific/audio.h"
+#include "../tomb5/tomb5.h"
 
 void GetLaraDeadlyBounds()
 {
@@ -134,9 +133,6 @@ void LaraInitialiseMeshes()
 
 void LaraCheatGetStuff()
 {
-	if (objects[CROWBAR_ITEM].loaded)
-		lara.crowbar = 1;
-
 #ifdef GENERAL_FIXES	//fix errors with cheats
 	if (objects[FLARE_INV_ITEM].loaded)
 		lara.num_flares = -1;
@@ -187,7 +183,12 @@ void LaraCheatGetStuff()
 		lara.num_crossbow_ammo1 = -1;
 		lara.num_crossbow_ammo2 = 0;
 	}
+
+	dels_give_lara_items_cheat();
 #else
+	if (objects[CROWBAR_ITEM].loaded)
+		lara.crowbar = 1;
+
 	lara.num_flares = -1;
 	lara.num_small_medipack = -1;
 	lara.num_large_medipack = -1;
@@ -201,30 +202,41 @@ void LaraCheatGetStuff()
 #endif
 }
 
-#ifndef TRF
 #ifdef ENABLE_CHEATS
 void LaraCheatyBits()
 {
 #ifndef GENERAL_FIXES	//make cheats available
 	if (!Gameflow->CheatEnabled)
 		return;
+#endif
 
-	if (input & IN_D)
+#ifdef GENERAL_FIXES
+#ifdef TRF
+	if (keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_E] && keymap[DIK_M])
 #else
 	if (keymap[DIK_F1])
+#endif
+#else
+	if (input & IN_D)
 #endif
 	{
 		LaraCheatGetStuff();
 		lara_item->hit_points = 1000;
 	}
 
-#ifndef GENERAL_FIXES
-	if (input & IN_CHEAT)
+#ifdef GENERAL_FIXES
+#ifdef TRF
+	if (keymap[DIK_D] && keymap[DIK_O] && keymap[DIK_Z] && keymap[DIK_Y])
 #else
 	if (keymap[DIK_F2])
 #endif
+#else
+	if (input & IN_CHEAT)
+#endif
 	{
+#ifndef GENERAL_FIXES
 		dels_give_lara_items_cheat();
+#endif
 		lara_item->pos.y_pos -= 128;
 
 		if (lara.water_status != LW_FLYCHEAT)
@@ -248,7 +260,11 @@ void LaraCheatyBits()
 	}
 
 #ifdef GENERAL_FIXES
+#ifdef TRF
+	if (keymap[DIK_N] && keymap[DIK_E] && keymap[DIK_X] && keymap[DIK_T])
+#else
 	if (keymap[DIK_F3])
+#endif
 	{
 		gfLevelComplete = gfCurrentLevel + 1;
 		SCNoDrawLara = 0;
@@ -256,7 +272,6 @@ void LaraCheatyBits()
 #endif
 
 }
-#endif
 #endif
 
 void AnimateLara(ITEM_INFO* item)
@@ -420,10 +435,9 @@ void LaraControl(short item_number)
 		lara.gun_status = LG_NO_ARMS;
 	}
 
-#ifndef TRF
 #ifdef ENABLE_CHEATS
-	LaraCheatyBits();
-#endif
+	if (tomb5.enable_cheats)
+		LaraCheatyBits();
 #endif
 
 	if (!bDisableLaraControl)

@@ -119,6 +119,7 @@
     <ClCompile Include="TOMB5\specific\output.cpp" />
     <ClCompile Include="TOMB5\specific\polyinsert.cpp" />
     <ClCompile Include="TOMB5\specific\profiler.cpp" />
+    <ClCompile Include="TOMB5\specific\registry.cpp" />
     <ClCompile Include="TOMB5\specific\specificfx.cpp" />
     <ClCompile Include="TOMB5\specific\texture.cpp" />
     <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
@@ -128,6 +129,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TOMB5\tomb5\tomb5.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\andrea.h" />
@@ -235,10 +237,12 @@
     <ClInclude Include="TOMB5\specific\output.h" />
     <ClInclude Include="TOMB5\specific\polyinsert.h" />
     <ClInclude Include="TOMB5\specific\profiler.h" />
+    <ClInclude Include="TOMB5\specific\registry.h" />
     <ClInclude Include="TOMB5\specific\specificfx.h" />
     <ClInclude Include="TOMB5\specific\texture.h" />
     <ClInclude Include="TOMB5\tomb5\framework.h" />
     <ClInclude Include="TOMB5\tomb5\pch.h" />
+    <ClInclude Include="TOMB5\tomb5\tomb5.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />
@@ -319,7 +323,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;NO_CD;GENERAL_FIXES;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;AMMO_COUNTER;NO_CD;GENERAL_FIXES;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
@@ -342,7 +346,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;GENERAL_FIXES;NO_CD;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;AMMO_COUNTER;GENERAL_FIXES;NO_CD;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>

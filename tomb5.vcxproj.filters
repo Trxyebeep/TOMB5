@@ -330,6 +330,12 @@
     <ClCompile Include="TOMB5\specific\profiler.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\tomb5\tomb5.cpp">
+      <Filter>TOMB5\tomb5</Filter>
+    </ClCompile>
+    <ClCompile Include="TOMB5\specific\registry.cpp">
+      <Filter>TOMB5\specific</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -657,6 +663,12 @@
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\specific\profiler.h">
+      <Filter>TOMB5\specific</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\tomb5\tomb5.h">
+      <Filter>TOMB5\tomb5</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\specific\registry.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
   </ItemGroup>

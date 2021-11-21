@@ -14,6 +14,8 @@
 #include "sphere.h"
 #include "delstuff.h"
 #include "effects.h"
+#include "../specific/function_table.h"
+#include "../specific/specificfx.h"
 
 void ControlPropeller(short item_number)
 {
@@ -642,7 +644,78 @@ void ControlRaisingPlinth(short item_number)
 
 void DrawPortalDoor(ITEM_INFO* item)
 {
+	return;	//what's left: color and pos changing/rotation
+	SPRITESTRUCT* sprite;
+	PORTAL_STRUCT* portal;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT Tex;
+	SVECTOR pos;
+	float x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
+	float u1, u2, v1, v2;
 
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	portal = (PORTAL_STRUCT*)item->data;
+
+	pos.vx = portal->v1.vx;
+	pos.vy = portal->v1.vy;
+	pos.vz = portal->v1.vz;
+	x1 = aMXPtr[M00] * pos.vx + aMXPtr[M01] * pos.vy + aMXPtr[M02] * pos.vz + aMXPtr[M03];
+	y1 = aMXPtr[M10] * pos.vx + aMXPtr[M11] * pos.vy + aMXPtr[M12] * pos.vz + aMXPtr[M13];
+	z1 = aMXPtr[M20] * pos.vx + aMXPtr[M21] * pos.vy + aMXPtr[M22] * pos.vz + aMXPtr[M23];
+
+	pos.vx = portal->v2.vx;
+	pos.vy = portal->v2.vy;
+	pos.vz = portal->v2.vz;
+	x2 = aMXPtr[M00] * pos.vx + aMXPtr[M01] * pos.vy + aMXPtr[M02] * pos.vz + aMXPtr[M03];
+	y2 = aMXPtr[M10] * pos.vx + aMXPtr[M11] * pos.vy + aMXPtr[M12] * pos.vz + aMXPtr[M13];
+	z2 = aMXPtr[M20] * pos.vx + aMXPtr[M21] * pos.vy + aMXPtr[M22] * pos.vz + aMXPtr[M23];
+
+	pos.vx = portal->v3.vx;
+	pos.vy = portal->v3.vy;
+	pos.vz = portal->v3.vz;
+	x3 = aMXPtr[M00] * pos.vx + aMXPtr[M01] * pos.vy + aMXPtr[M02] * pos.vz + aMXPtr[M03];
+	y3 = aMXPtr[M10] * pos.vx + aMXPtr[M11] * pos.vy + aMXPtr[M12] * pos.vz + aMXPtr[M13];
+	z3 = aMXPtr[M20] * pos.vx + aMXPtr[M21] * pos.vy + aMXPtr[M22] * pos.vz + aMXPtr[M23];
+
+	pos.vx = portal->v4.vx;
+	pos.vy = portal->v4.vy;
+	pos.vz = portal->v4.vz;
+	x4 = aMXPtr[M00] * pos.vx + aMXPtr[M01] * pos.vy + aMXPtr[M02] * pos.vz + aMXPtr[M03];
+	y4 = aMXPtr[M10] * pos.vx + aMXPtr[M11] * pos.vy + aMXPtr[M12] * pos.vz + aMXPtr[M13];
+	z4 = aMXPtr[M20] * pos.vx + aMXPtr[M21] * pos.vy + aMXPtr[M22] * pos.vz + aMXPtr[M23];
+	phd_PopMatrix();
+
+	setXYZ4(v, (long)x1, (long)y1, (long)z1, (long)x2, (long)y2, (long)z2, (long)x3, (long)y3, (long)z3, (long)x4, (long)y4, (long)z4, clipflags);
+
+	sprite = &spriteinfo[objects[MISC_SPRITES].mesh_index + 1];
+
+	v[0].color = 0xFFFFFFFF;
+	v[1].color = 0xFFFFFFFF;
+	v[2].color = 0xFFFFFFFF;
+	v[3].color = 0xFFFFFFFF;
+	v[0].specular = 0xFF000000;
+	v[1].specular = 0xFF000000;
+	v[2].specular = 0xFF000000;
+	v[3].specular = 0xFF000000;
+	Tex.drawtype = 2;
+	Tex.flag = 0;
+	Tex.tpage = sprite->tpage;
+
+	u1 = sprite->x1;
+	u2 = sprite->x2;
+	v1 = sprite->y1;
+	v2 = sprite->y2;
+	Tex.u1 = u1;
+	Tex.v1 = v1;
+	Tex.u2 = u1;
+	Tex.v2 = v2;
+	Tex.u3 = u2;
+	Tex.v3 = v2;
+	Tex.u4 = u2;
+	Tex.v4 = v1;
+
+	AddQuadSorted(v, 0, 1, 3, 2, &Tex, 1);
 }
 
 void inject_andrea(bool replace)

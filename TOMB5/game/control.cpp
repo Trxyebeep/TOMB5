@@ -34,10 +34,9 @@
 #include "twogun.h"
 #include "text.h"
 #include "../specific/dxsound.h"
-#ifndef TRF
 #ifdef CUTSCENE_SKIPPER
 #include "deltapak.h"
-#endif
+#include "../tomb5/tomb5.h"
 #endif
 
 uchar ShatterSounds[18][10] =
@@ -101,11 +100,12 @@ long ControlPhase(long _nframes, int demo_mode)
 
 		if (cutseq_trig)
 		{
-#ifndef TRF
 #ifdef CUTSCENE_SKIPPER
-			if (keymap[DIK_ESCAPE] && !ScreenFading)//skip them with esc
-				do_cutseq_skipper_shit();
-#endif
+			if (tomb5.cutseq_skipper)
+			{
+				if (keymap[DIK_ESCAPE] && !ScreenFading)//skip them with esc
+					do_cutseq_skipper_shit();
+			}
 #endif
 			input = 0;
 		}
@@ -124,7 +124,7 @@ long ControlPhase(long _nframes, int demo_mode)
 		}
 
 #ifndef TRF
-		if (keymap[23] != 0)//the I button
+		if (keymap[DIK_I])
 			dels_give_lara_items_cheat();
 #endif
 
