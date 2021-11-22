@@ -451,7 +451,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042C8F0		InterpolateMatrix
 0x0042CC10		InterpolateArmMatrix
 0x0042CD50	+	CalculateObjectLighting
-0x0042CEB0		GetFrames
+0x0042CEB0	+	GetFrames
 0x0042CF80	+	GetBoundsAccurate
 0x0042D020	+	GetBestFrame
 0x0042D060		DrawStaticObjects
@@ -1971,7 +1971,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B0D60		S_DisplayPauseMenu
 0x004B1030		S_PauseMenu
 0x004B1120		S_LoadSave
-0x004B1250		DoBar
+0x004B1250	+	DoBar
 0x004B1890	+	S_DrawDashBar
 0x004B18E0	+	S_DrawAirBar
 0x004B1950	+	S_DrawHealthBar

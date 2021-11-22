@@ -472,7 +472,7 @@ void ObjectObjects()
 	{
 		obj = &objects[i];
 		obj->control = ControlAnimatingSlots;
-		obj->collision = PuzzleHoleCollision;
+		obj->collision = j_PuzzleHoleCollision;	//whore RestoreLevelData references the address causing bugs on reload
 		obj->save_flags = 1;
 		obj->save_anim = 1;
 	}

@@ -27,12 +27,12 @@ void DrawAnimatingItem(ITEM_INFO* item);
 void PrintObjects(short room_number);
 void DrawRooms(short current_room);
 void CalculateObjectLightingLara();
+long GetFrames(ITEM_INFO* item, short* frm[], long* rate);
 
 extern short no_rotation[];
 
 #define InterpolateMatrix	( (void(__cdecl*)()) 0x0042C8F0 )
 #define	mRotBoundingBoxNoPersp	( (void(__cdecl*)(short*, short*)) 0x0042E240 )
-#define GetFrames	( (long(__cdecl*)(ITEM_INFO*, short*[], long*)) 0x0042CEB0 )
 #define GetRoomBounds	( (void(__cdecl*)()) 0x0042D4F0 )
 #define InterpolateArmMatrix	( (void(__cdecl*)(long*)) 0x0042CC10 )
 #define aInterpolateArmMatrix	( (void(__cdecl*)(float*)) 0x0042C790 )

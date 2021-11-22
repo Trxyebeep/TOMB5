@@ -9,6 +9,7 @@
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
+#include "function_table.h"
 
 void CheckKeyConflicts()
 {
@@ -1207,6 +1208,131 @@ void DoOptions()
 #endif
 }
 
+void DoBar(long x, long y, long width, long height, long pos, long clr1, long clr2)
+{
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	float fx, fx2, fy, fw, fh, r1, g1, b1, r2, g2, b2, r, g, b, mul;
+	long lr, lg, lb, clr_11, clr_12, clr_21, clr_22;
+
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+	nPolyType = 4;
+	tex.drawtype = 0;
+	tex.tpage = 0;
+	fx = (float)phd_winxmax * 0.0015625F;
+	fy = (float)phd_winymax * 0.0020833334F;
+	fw = (float)width;
+	fh = (float)(height >> 1);
+	fx2 = (fw * fx) * 0.0099999998F * (float)pos;
+	v[0].specular = 0xFF000000;
+	v[1].specular = 0xFF000000;
+	v[2].specular = 0xFF000000;
+	v[3].specular = 0xFF000000;
+	v[0].sx = (float)x * fx;
+	v[1].sx = ((float)x * fx) + fx2;
+	v[2].sx = (float)x * fx;
+	v[3].sx = ((float)x * fx) + fx2;
+	v[0].sy = (float)y * fy;
+	v[1].sy = (float)y * fy;
+	v[2].sy = ((float)y * fy) + (fh * fy);
+	v[3].sy = ((float)y * fy) + (fh * fy);
+	v[0].sz = f_mznear;
+	v[1].sz = f_mznear;
+	v[2].sz = f_mznear;
+	v[3].sz = f_mznear;
+	v[0].rhw = f_mpersp / f_mznear * f_moneopersp;
+	v[1].rhw = f_mpersp / f_mznear * f_moneopersp;
+	v[2].rhw = f_mpersp / f_mznear * f_moneopersp;
+	v[3].rhw = f_mpersp / f_mznear * f_moneopersp;
+
+	r1 = (float)CLRR(clr1);		//get rgbs
+	g1 = (float)CLRG(clr1);
+	b1 = (float)CLRB(clr1);
+	r2 = (float)CLRR(clr2);
+	g2 = (float)CLRG(clr2);
+	b2 = (float)CLRB(clr2);
+
+	mul = fx2 / (fw * fx);		//mix
+	r = r1 + ((r2 - r1) * mul);
+	g = g1 + ((g2 - g1) * mul);
+	b = b1 + ((b2 - b1) * mul);
+
+	lr = (long)r1;
+	lg = (long)g1;
+	lb = (long)b1;
+	clr_11 = RGBONLY(lr >> 1, lg >> 1, lb >> 1);	//clr1 is taken as is
+	clr_12 = RGBONLY(lr, lg, lb);
+
+	lr = (long)r;
+	lg = (long)g;
+	lb = (long)b;
+	clr_21 = RGBONLY(lr >> 1, lg >> 1, lb >> 1);	//clr2 is the mix
+	clr_22 = RGBONLY(lr, lg, lb);
+
+	v[0].color = clr_11;
+	v[1].color = clr_21;
+	v[2].color = clr_12;
+	v[3].color = clr_22;
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//top half
+
+	v[0].color = clr_12;
+	v[1].color = clr_22;
+	v[2].color = clr_11;
+	v[3].color = clr_21;
+	v[0].sy = ((float)y * fy) + (fh * fy);
+	v[1].sy = ((float)y * fy) + (fh * fy);
+	v[2].sy = (fh * fy) + (fh * fy) + ((float)y * fy);
+	v[3].sy = (fh * fy) + (fh * fy) + ((float)y * fy);
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);		//bottom half
+
+	v[0].sx = (float)x * fx;
+	v[1].sx = (fw * fx) + ((float)x * fx);
+	v[2].sx = (float)x * fx;
+	v[3].sx = (fw * fx) + ((float)x * fx);
+	v[0].sy = (float)y * fy;
+	v[1].sy = (float)y * fy;
+	v[2].sy = (fh * fy) + (fh * fy) + ((float)y * fy);
+	v[3].sy = (fh * fy) + (fh * fy) + ((float)y * fy);
+	v[0].sz = f_mznear + 1;
+	v[1].sz = f_mznear + 1;
+	v[2].sz = f_mznear + 1;
+	v[3].sz = f_mznear + 1;
+	v[0].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
+	v[1].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
+	v[2].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
+	v[3].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
+	v[0].color = 0;
+	v[1].color = 0;
+	v[2].color = 0;
+	v[3].color = 0;
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//black background
+
+	v[0].sx = ((float)x * fx) - 1;
+	v[1].sx = (fw * fx) + ((float)x * fx) + 1;
+	v[2].sx = ((float)x * fx) - 1;
+	v[3].sx = (fw * fx) + ((float)x * fx) + 1;
+	v[0].sy = ((float)y * fy) - 1;
+	v[1].sy = ((float)y * fy) - 1;
+	v[2].sy = (fh * fy) + (fh * fy) + ((float)y * fy) + 1;
+	v[3].sy = (fh * fy) + (fh * fy) + ((float)y * fy) + 1;
+	v[0].sz = f_mznear + 2;
+	v[1].sz = f_mznear + 2;
+	v[2].sz = f_mznear + 2;
+	v[3].sz = f_mznear + 2;
+	v[0].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
+	v[1].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
+	v[2].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
+	v[3].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
+	v[0].color = 0xFFFFFFFF;
+	v[1].color = 0xFFFFFFFF;
+	v[2].color = 0xFFFFFFFF;
+	v[3].color = 0xFFFFFFFF;
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//white border
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -1220,4 +1346,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004B1E30, S_MemSet, replace);
 	INJECT(0x004B1F00, GetCampaignCheatValue, replace);
 	INJECT(0x004ADF90, DoOptions, replace);
+	INJECT(0x004B1250, DoBar, replace);
 }

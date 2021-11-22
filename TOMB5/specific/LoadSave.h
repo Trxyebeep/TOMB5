@@ -18,6 +18,7 @@ void DoOptions();
 #ifdef ENEMY_BARS
 void S_DrawEnemyBar(long pos);
 #endif
+void DoBar(long x, long y, long width, long height, long pos, long clr1, long clr2);
 
 #define CreateMonoScreen	( (void(__cdecl*)()) 0x004AC430 )
 #define S_DisplayMonoScreen	( (void(__cdecl*)()) 0x004AD010 )
@@ -26,7 +27,6 @@ void S_DrawEnemyBar(long pos);
 #define S_PauseMenu	( (int(__cdecl*)()) 0x004B1030 )
 #define S_LoadSave	( (int(__cdecl*)(int, int)) 0x004B1120 )
 #define DoSpecialFeaturesServer	( (void(__cdecl*)()) 0x004B1D90 )
-#define DoBar	( (void(__cdecl*)(int, int, int, int, int, long, long)) 0x004B1250 )
 #define DoFrontEndOneShotStuff	( (void(__cdecl*)()) 0x004B2090 )
 #define IsHardware	( (int(__cdecl*)()) 0x004B1E90 )
 #define IsSuperLowRes	( (int(__cdecl*)()) 0x004B1EB0 )
