@@ -451,7 +451,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042C8F0		InterpolateMatrix
 0x0042CC10		InterpolateArmMatrix
 0x0042CD50	+	CalculateObjectLighting
-0x0042CEB0		GetFrames
+0x0042CEB0	+	GetFrames
 0x0042CF80	+	GetBoundsAccurate
 0x0042D020	+	GetBestFrame
 0x0042D060		DrawStaticObjects

@@ -973,6 +973,32 @@ void CalculateObjectLightingLara()
 	}
 }
 
+long GetFrames(ITEM_INFO* item, short* frm[], long* rate)
+{
+	ANIM_STRUCT* anim;
+	long frame, size, frac, num;
+
+	anim = &anims[item->anim_number];
+	frm[0] = anim->frame_ptr;
+	frm[1] = anim->frame_ptr;
+	*rate = anim->interpolation & 0xFF;
+	frame = item->frame_number - anim->frame_base;
+	size = anim->interpolation >> 8;
+	frm[0] += size * (frame / *rate);
+	frm[1] = frm[0] + size;
+	frac = (frame % *rate);
+
+	if (!frac)
+		return 0;
+
+	num = *rate * (frame / *rate + 1);
+
+	if (num > anim->frame_end)
+		*rate = *rate + anim->frame_end - num;
+
+	return frac;
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -998,4 +1024,5 @@ void inject_draw(bool replace)
 	INJECT(0x0042D290, PrintObjects, replace);
 	INJECT(0x0042A7A0, DrawRooms, replace);
 	INJECT(0x0042A1B0, CalculateObjectLightingLara, replace);
+	INJECT(0x0042CEB0, GetFrames, replace);
 }
