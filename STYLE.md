@@ -1,26 +1,23 @@
-tomb5 style guide.
+# tomb5 style guide
 
-******************************
+## Tabs
 
-tabs.
+## No braces for single lined ifs, for loops, while loops, etc.
 
-******************************
-
-no braces for single lined ifs, for loops, while loops, etc.
 eg:
 
+```
 if (room_number != item->room_number)
 	ItemNewRoom(item_number, room_number);
+```
 
-******************************
+## Spaces before and after if statements, for loops, while loops, switch/case blocks
 
-spaces before and after if statements, for loops, while loops, switch/case blocks
+## Braces need to be on their own lines
 
-******************************
-
-braces need to be on their own lines.
 eg:
 
+```
 if (camera.item && (camera.type == FIXED_CAMERA || camera.type == HEAVY_CAMERA))
 		fixed_camera = 1;
 	else
@@ -28,41 +25,42 @@ if (camera.item && (camera.type == FIXED_CAMERA || camera.type == HEAVY_CAMERA))
 		item = lara_item;
 		fixed_camera = 0;
 	}
+```
 
-******************************
+## Single line do-while loops can be on the same line
 
-single line do-while loops can be on the same line
 eg:
 
+```
 do AnimateLara(l); while (l->current_anim_state != AS_NULL);
+```
 
-******************************
+## ++ or -- should be a suffix, only a prefix when necessary
 
-++ or -- should be a suffix. only a prefix when necessary
+## Try to keep all the locals at the top of said functions
 
-******************************
+Exceptions are the control vars in for loops.
 
-Try to keep all the locals at the top of said functions. 
-Exceptions are the control vars in for loops.. eg:
+eg:
 
+```
 for (int i = 0; i < num; i++)
 {
 	stuff
 	stufffff
 }
+```
 
-******************************
+## For loops
 
-for loops must look like  this:
-
+```
 for (int i = 0; i < num; i++)
+```
 
-for nested loops, first name to use is i, then j, then you are free to choose
+For nested loops, first name to use is i, then j, then you are free to choose.
 UNLESS the value is used elsewhere after the loop, then any name is fine, and the variable should be at the top of the function.
 
-******************************
-
-order of variables at the top of functions:
+## Order of variables at the top of functions
 
 struct pointers
 structs
@@ -83,13 +81,14 @@ shorts
 char arrays
 chars
 
-******************************
+## Switch/case formatting
 
-switch/case formatting:
-- empty spaces between each case
-- empty spaces between the case and the line that follows if that line is an if statement, for loop, while loop, or another switch/case
+- Empty spaces between each case
+- Empty spaces between the case and the line that follows if that line is an if statement, for loop, while loop, or another switch/case
+
 example:
 
+```
 switch (x)
 {
 	case 0:
@@ -118,3 +117,4 @@ switch (x)
 		abort();
 		break;
 }
+```
