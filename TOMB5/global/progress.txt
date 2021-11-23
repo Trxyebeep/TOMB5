@@ -1319,8 +1319,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/savegame.cpp
 
-0x00470EC0		WriteSG
-0x00470F10		ReadSG
+0x00470EC0	+	WriteSG
+0x00470F10	+	ReadSG
 0x00470F60		CheckSumValid
 0x00470FA0		sgSaveGame
 0x00471050		SaveLaraData

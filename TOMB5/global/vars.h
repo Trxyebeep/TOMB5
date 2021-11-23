@@ -514,6 +514,8 @@
 #define load_save_options_unk	VAR_U_(0x00E4DEAC, long)
 #define default_font_height	VAR_U_(0x00E4DC40, long)
 #define joystick_read	VAR_U_(0x0086BA34, long)
+#define SGcount	VAR_U_(0x0051CFFC, long)
+#define SGpoint	VAR_U_(0x0051CFF8, char*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
