@@ -590,14 +590,14 @@
 #define layout	ARRAY_(0x00516C3C, short, [2][18])
 #define conflict	ARRAY_(0x00878C4C, int, [18])
 #define reg_class	ARRAY_(0x0057A080, char, [4])
-#define flip_stats	ARRAY_(0x00EEF060, long, [10])
+#define flip_stats	ARRAY_(0x00EEF060, long, [1020])
 #define LaSlot	ARRAY_(0x00E52420, SoundSlot, [32])
 #define rings	ARRAY_(0x00E59900, RINGME*, [2])
 #define SequenceUsed	ARRAY_(0x00E4EA78, uchar, [6])
 #define SequenceResults	ARRAY_(0x00E4EA80, uchar, [3][3][3])
 #define Sequences	ARRAY_(0x00E4EA9C, uchar, [3])
 #define ClosedDoors	ARRAY_(0x0051CAC0, long, [32])
-#define flipmap	ARRAY_(0x00EEEBA0, long, [10])
+#define flipmap	ARRAY_(0x00EEEBA0, long, [1020])
 #define spark	ARRAY_(0x00E5F380, SPARKS, [1024])
 #define pickups	ARRAY_(0x00E5BF40, DISPLAYPU, [8])
 #define twogun	ARRAY_(0x00EEEB00, TWOGUN_INFO, [4])
@@ -653,6 +653,7 @@
 #define KeyboardButtons	ARRAY_(0x005170C4, char*, [272])
 #define JoyStickButtons	ARRAY_(0x00517504, char*, [16])
 #define DefaultControls	ARRAY_(0x00516B70, long, [32])
+#define cd_flags	ARRAY_(0x00EEEA40, char, [136])
 
 /****************/
 //registry
