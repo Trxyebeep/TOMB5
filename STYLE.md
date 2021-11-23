@@ -62,6 +62,7 @@ UNLESS the value is used elsewhere after the loop, then any name is fine, and th
 
 ## Order of variables at the top of functions
 
+```
 struct pointers
 structs
 struct arrays
@@ -80,6 +81,7 @@ short arrays
 shorts
 char arrays
 chars
+```
 
 ## Switch/case formatting
 
