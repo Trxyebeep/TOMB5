@@ -1326,7 +1326,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00471050	+	SaveLaraData
 0x004711E0		SaveLevelData
 0x00472060		sgRestoreGame
-0x004720B0		RestoreLaraData
+0x004720B0	+	RestoreLaraData
 0x00472290		RestoreLevelData
 
 
