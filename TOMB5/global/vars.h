@@ -516,6 +516,7 @@
 #define joystick_read	VAR_U_(0x0086BA34, long)
 #define SGcount	VAR_U_(0x0051CFFC, long)
 #define SGpoint	VAR_U_(0x0051CFF8, char*)
+#define mesh_base	VAR_U_(0x0087516C, short*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
