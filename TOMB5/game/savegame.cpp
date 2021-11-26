@@ -483,7 +483,7 @@ static void SaveLevelData(long FullSave)	//write all the bs to the savegame buff
 			{
 				byte = 0;
 
-				for (int j = 0; i < maxval; i++)
+				for (int j = 0; j < maxval; j++)
 				{
 					if (rat[j].On)
 						byte++;
@@ -491,37 +491,37 @@ static void SaveLevelData(long FullSave)	//write all the bs to the savegame buff
 
 				WriteSG(&byte, sizeof(char));		//number of rats/spiders
 
-				for (int j = 0; i < maxval; i++)
+				for (int j = 0; j < maxval; j++)
 				{
 					if (rat[j].On)
 					{
-						word = rat->room_number << 8;
+						word = rat[j].room_number << 8;
 
-						if (rat->pos.x_pos & 1)
+						if (rat[j].pos.x_pos & 1)
 							word |= 1;
 
-						if (rat->pos.y_pos & 1)
+						if (rat[j].pos.y_pos & 1)
 							word |= 2;
 
-						if (rat->pos.z_pos & 1)
+						if (rat[j].pos.z_pos & 1)
 							word |= 4;
 
-						if (rat->pos.x_rot)
+						if (rat[j].pos.x_rot)
 							word |= 8;
 
 						WriteSG(&word, sizeof(short));
-						pos = (short)(rat->pos.x_pos >> 1);
+						pos = (short)(rat[j].pos.x_pos >> 1);
 						WriteSG(&pos, sizeof(short));
-						pos = (short)(rat->pos.y_pos >> 1);
+						pos = (short)(rat[j].pos.y_pos >> 1);
 						WriteSG(&pos, sizeof(short));
-						pos = (short)(rat->pos.z_pos >> 1);
+						pos = (short)(rat[j].pos.z_pos >> 1);
 						WriteSG(&pos, sizeof(short));
-						WriteSG(&rat->pos.y_rot, sizeof(short));
+						WriteSG(&rat[j].pos.y_rot, sizeof(short));
 
 						if (word & 8)
-							WriteSG(&rat->pos.x_rot, sizeof(short));
+							WriteSG(&rat[j].pos.x_rot, sizeof(short));
 
-						WriteSG(&rat->flags, sizeof(uchar));
+						WriteSG(&rat[j].flags, sizeof(uchar));
 					}
 				}
 			}
@@ -540,39 +540,39 @@ static void SaveLevelData(long FullSave)	//write all the bs to the savegame buff
 					byte++;
 			}
 
-			WriteSG(&byte, sizeof(char));	//number of bats
+			WriteSG(&byte, sizeof(uchar));	//number of bats
 
 			for (int i = 0; i < 64; i++)
 			{
 				if (bat[i].On)
 				{
-					word = bat->room_number << 8;
+					word = bat[i].room_number << 8;
 
-					if (bat->pos.x_pos & 1)
+					if (bat[i].pos.x_pos & 1)
 						word |= 1;
 
-					if (bat->pos.y_pos & 1)
+					if (bat[i].pos.y_pos & 1)
 						word |= 2;
 
-					if (bat->pos.z_pos & 1)
+					if (bat[i].pos.z_pos & 1)
 						word |= 4;
 
-					if (bat->pos.x_rot)
+					if (bat[i].pos.x_rot)
 						word |= 8;
 
 					WriteSG(&word, sizeof(short));	//what have we saved?
-					pos = (short)(bat->pos.x_pos >> 1);
+					pos = (short)(bat[i].pos.x_pos >> 1);
 					WriteSG(&pos, sizeof(short));	//save xpos
-					pos = (short)(bat->pos.y_pos >> 1);
+					pos = (short)(bat[i].pos.y_pos >> 1);
 					WriteSG(&pos, sizeof(short));	//ypos
-					pos = (short)(bat->pos.z_pos >> 1);
+					pos = (short)(bat[i].pos.z_pos >> 1);
 					WriteSG(&pos, sizeof(short));	//zpos
-					WriteSG(&bat->pos.y_rot, sizeof(short));	//yrot
+					WriteSG(&bat[i].pos.y_rot, sizeof(short));	//yrot
 
 					if (word & 8)
-						WriteSG(&bat->pos.x_rot, sizeof(short));
+						WriteSG(&bat[i].pos.x_rot, sizeof(short));
 
-					WriteSG(&bat->Counter, sizeof(short));
+					WriteSG(&bat[i].Counter, sizeof(short));
 				}
 			}
 		}
