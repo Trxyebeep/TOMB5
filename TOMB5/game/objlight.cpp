@@ -154,7 +154,7 @@ void ControlElectricalLight(short item_number)
 		shade = item->item_flags[1] - (GetRandomControl() & 0x7F);
 
 		if (shade > 64)
-			SoundEffectCS(130, &item->pos, (32 * (shade & 0xFFFFFFF8)) | 8);
+			SoundEffectCS(SFX_ELEC_LIGHT_CRACKLES, &item->pos, (32 * (shade & 0xFFFFFFF8)) | 8);
 	}
 
 	r = ((shade * (item->trigger_flags & 0x1F)) << 3) >> 8;
