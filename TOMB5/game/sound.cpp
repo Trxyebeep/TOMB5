@@ -99,8 +99,6 @@ void GetPanVolume(SoundSlot* slot)
 				nPan = (CamRot.vy << 4) + phd_atan(dz, dx);
 				nVolume = slot->OrigVolume;
 
-				//#define phd_sin(x) (4 * rcossin_tbl[((long)(x) >> 3) & 0x1FFE])
-
 				if (distance)
 					nVolume = (nVolume * (4096 - (phd_sin((distance << 14) / radius) >> 2))) >> 12;
 
