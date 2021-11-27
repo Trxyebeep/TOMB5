@@ -4,8 +4,8 @@
 void inject_sound(bool replace);
 
 void SoundEffectCS(long sfx, PHD_3DPOS* pos, long flags);
+void SayNo();
 
-#define SayNo	( (void(__cdecl*)()) 0x004790E0 )
 #define SoundEffect	( (long(__cdecl*)(long, PHD_3DPOS*, int)) 0x00478570 )
 #define StopSoundEffect	( (void(__cdecl*)(short)) 0x00478FE0 )
 #define SOUND_Stop	( (void(__cdecl*)()) 0x00479060 )
