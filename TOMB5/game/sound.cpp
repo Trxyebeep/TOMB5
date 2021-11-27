@@ -1,5 +1,6 @@
 #include "../tomb5/pch.h"
 #include "sound.h"
+#include "../specific/function_stubs.h"
 
 void SoundEffectCS(long sfx, PHD_3DPOS* pos, long flags)
 {
@@ -25,8 +26,19 @@ void SayNo()
 	SoundEffect(fx, 0, SFX_ALWAYS);
 }
 
+void SOUND_Init()
+{
+	S_SoundSetMasterVolume();
+
+	for (int i = 0; i < 32; i++)
+		LaSlot[i].nSampleInfo = -1;
+
+	sound_active = 1;
+}
+
 void inject_sound(bool replace)
 {
 	INJECT(0x00479130, SoundEffectCS, replace);
 	INJECT(0x004790E0, SayNo, replace);
+	INJECT(0x004790A0, SOUND_Init, replace);
 }
