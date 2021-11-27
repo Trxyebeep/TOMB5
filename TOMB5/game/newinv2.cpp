@@ -320,8 +320,8 @@ void init_new_inventry()
 	{
 		if (GLOBAL_lastinvitem != NO_ITEM)
 		{
-			if (have_i_got_item(GLOBAL_lastinvitem))
-				setup_objectlist_startposition(GLOBAL_lastinvitem);
+			if (have_i_got_item((short)GLOBAL_lastinvitem))
+				setup_objectlist_startposition((short)GLOBAL_lastinvitem);
 
 			GLOBAL_lastinvitem = NO_ITEM;
 		}
@@ -2398,11 +2398,17 @@ void DEL_picked_up_object(short objnum)
 		return;
 
 	case BIGMEDI_ITEM:
-		lara.num_large_medipack++;
+
+		if (lara.num_large_medipack != -1)
+			lara.num_large_medipack++;
+
 		return;
 
 	case SMALLMEDI_ITEM:
-		lara.num_small_medipack++;
+
+		if (lara.num_small_medipack != -1)
+			lara.num_small_medipack++;
+
 		return;
 
 	case BINOCULARS_ITEM:
@@ -2457,7 +2463,7 @@ void DEL_picked_up_object(short objnum)
 
 	default:
 
-		if (objnum >= PICKUP_ITEM1 && objnum <= PICKUP_ITEM4)
+		if (objnum >= PICKUP_ITEM1 && objnum <= PICKUP_ITEM3)
 			lara.pickupitems |= 1 << (objnum - PICKUP_ITEM1);
 		else if (objnum >= PICKUP_ITEM1_COMBO1 && objnum <= PICKUP_ITEM4_COMBO2)
 			lara.pickupitemscombo |= 1 << (objnum - PICKUP_ITEM1_COMBO1);

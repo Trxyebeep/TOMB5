@@ -9,5 +9,7 @@ void TrapObjects();
 void BaddyObjects();
 void InitialiseObjects();
 void GetCarriedItems();
+void InitialiseGameFlags();
+void ClearFootPrints();
 
 #define BuildOutsideTable	( (void(__cdecl*)()) 0x004774D0 )
