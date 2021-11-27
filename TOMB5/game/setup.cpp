@@ -1944,6 +1944,25 @@ void GetCarriedItems()
 	}
 }
 
+void InitialiseGameFlags()
+{
+	memset(flipmap, 0, 1020);
+	memset(flip_stats, 0, 1020);
+	flipeffect = -1;
+	flip_status = 0;
+	memset(cd_flags, 0, sizeof(cd_flags));
+	IsAtmospherePlaying = 0;
+	camera.underwater = 0;
+}
+
+void ClearFootPrints()
+{
+	for (int i = 0; i < 32; i++)
+		FootPrint[i].Active = 0;
+
+	FootPrintNum = 0;
+}
+
 void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
@@ -1952,4 +1971,6 @@ void inject_setup(bool replace)
 	INJECT(0x004737C0, BaddyObjects, replace);
 	INJECT(0x00473600, InitialiseObjects, replace);
 	INJECT(0x004771E0, GetCarriedItems, replace);
+	INJECT(0x00477880, InitialiseGameFlags, replace);
+	INJECT(0x004779B0, ClearFootPrints, replace);
 }

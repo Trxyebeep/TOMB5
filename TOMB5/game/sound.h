@@ -1,12 +1,16 @@
 #pragma once
 #include "../global/vars.h"
 
-#define SayNo	( (void(__cdecl*)()) 0x004790E0 )
-#define SoundEffect	( (long(__cdecl*)(short, PHD_3DPOS*, int)) 0x00478570 )
-#define StopSoundEffect	( (void(__cdecl*)(short)) 0x00478FE0 )
-#define SOUND_Stop	( (void(__cdecl*)()) 0x00479060 )
-#define GetPanVolume	( (void(__cdecl*)(SoundSlot*)) 0x00478D30 )
-#define SoundEffectCS	( (void(__cdecl*)(long, PHD_3DPOS*, long)) 0x00479130 )
+void inject_sound(bool replace);
+
+void SoundEffectCS(long sfx, PHD_3DPOS* pos, long flags);
+void SayNo();
+void SOUND_Init();
+void SOUND_Stop();
+void StopSoundEffect(long sfx);
+void GetPanVolume(SoundSlot* slot);
+
+#define SoundEffect	( (long(__cdecl*)(long, PHD_3DPOS*, int)) 0x00478570 )
 
 enum sfx_types
 {

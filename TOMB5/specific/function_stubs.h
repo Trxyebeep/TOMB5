@@ -8,6 +8,7 @@ int GetRandomControl();
 void SeedRandomControl(long seed);
 int GetRandomDraw();
 void SeedRandomDraw(long seed);
+void S_SoundSetMasterVolume();
 
 #define Log	( (void(__cdecl*)(ulong, const char*, ...)) 0x004DEB10 )//wrong place, idk where it goes
 #define S_CDVolume	( (void(__cdecl*)(int)) 0x004A7BB0 )

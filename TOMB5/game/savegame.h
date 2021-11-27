@@ -1,5 +1,11 @@
 #pragma once
 #include "../global/vars.h"
 
-#define WriteSG	( (void(__cdecl*)(void*, int)) 0x00470EC0 )
-#define ReadSG	( (void(__cdecl*)(void*, int)) 0x00470F10 )
+void inject_savegame(bool replace);
+
+void WriteSG(void* pointer, long size);
+void ReadSG(void* pointer, long size);
+long CheckSumValid(char* buffer);
+static void SaveLaraData();
+static void RestoreLaraData(long FullSave);
+static void SaveLevelData(long FullSave);
