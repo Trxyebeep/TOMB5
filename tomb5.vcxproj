@@ -132,6 +132,7 @@
     <ClCompile Include="TOMB5\tomb5\tomb5.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="TOMB5\game\andrea.h" />
     <ClInclude Include="TOMB5\game\andy.h" />
     <ClInclude Include="TOMB5\game\autogun.h" />
@@ -247,6 +248,9 @@
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />
     <Text Include="TOMB5\global\style guide.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="tomb5.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -671,6 +671,7 @@
     <ClInclude Include="TOMB5\specific\registry.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt">
@@ -679,5 +680,8 @@
     <Text Include="TOMB5\global\style guide.txt">
       <Filter>TOMB5\global</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="tomb5.rc" />
   </ItemGroup>
 </Project>
