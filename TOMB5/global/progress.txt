@@ -1362,7 +1362,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/sound.cpp
 
-0x00478570		SoundEffect
+0x00478570	+	SoundEffect
 0x00478D30	+	GetPanVolume
 0x00478FE0	+	StopSoundEffect
 0x00479060	+	SOUND_Stop
@@ -1889,6 +1889,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A7CB0		init_game_malloc
 0x004A7D00	+	game_malloc
 0x004A7D90		game_free
+0x004A7DE0	+	deadLog
 
 
 		specific/function_table.cpp

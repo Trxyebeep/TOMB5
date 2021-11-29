@@ -9,3 +9,5 @@
 #define DSIsChannelPlaying	( (bool(__cdecl*)(long)) 0x004A3790 )
 #define DSChangeVolume	( (void(__cdecl*)(long, long)) 0x004A2F10 )
 #define DXChangeOutputFormat	( (bool(__cdecl*)(long, bool)) 0x004A2E30 )
+#define S_SoundPlaySample	( (long(__cdecl*)(long, ushort, long, short)) 0x004A3A20 )
+#define S_SoundPlaySampleLooped	( (long(__cdecl*)(long, ushort, long, short)) 0x004A3A60 )
