@@ -364,7 +364,7 @@ static void SaveLevelData(long FullSave)	//write all the bs to the savegame buff
 					if (packed & 0x1000)
 						WriteSG(&item->trigger_flags, sizeof(short));
 
-					if (obj->intelligent || (item->object_number >= SEARCH_OBJECT1 && item->object_number <= SEARCH_OBJECT4))
+					if (obj->intelligent || (item->object_number >= SEARCH_OBJECT1 && item->object_number <= SEARCH_OBJECT3))
 						WriteSG(&item->carried_item, sizeof(short));
 
 					if (flags & 0x80000000)
