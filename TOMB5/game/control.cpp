@@ -103,7 +103,7 @@ long ControlPhase(long _nframes, int demo_mode)
 #ifdef CUTSCENE_SKIPPER
 			if (tomb5.cutseq_skipper)
 			{
-				if (keymap[DIK_ESCAPE] && !ScreenFading)//skip them with esc
+				if (keymap[DIK_ESCAPE] && !ScreenFading && !bDoCredits)//skip them with esc
 					do_cutseq_skipper_shit();
 			}
 #endif

@@ -85,7 +85,11 @@ void LaraCheat(ITEM_INFO* item, COLL_INFO* coll)
 		lara.gun_status = 0;
 		LaraInitialiseMeshes();
 		lara.mesh_effects = 0;
+#ifdef GENERAL_FIXES
+		lara_item->hit_points = 1000;
+#else
 		lara_item->hit_points = cheat_hit_points;
+#endif
 	}
 }
 
