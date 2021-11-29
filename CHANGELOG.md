@@ -1,6 +1,6 @@
 # tomb5 changelog
 
-## [2.0.0](https://github.com/Trxyebeep/TOMB5/tree/V2.0.0) (24/11/2021)
+## [2.0.0](https://github.com/Trxyebeep/TOMB5/tree/V2.0.0) (29/11/2021)
 
 ### tomb5 bug fixes
 
@@ -17,6 +17,7 @@
 - Enemy health bars
 - Ammo counter
 - Hair respects interpolated frames (smooth hair)
+- Fix floating hair in Joby levels
 
 ## [1.1.0](https://github.com/Trxyebeep/TOMB5/tree/V1.1.0) (15/11/2021)
 
