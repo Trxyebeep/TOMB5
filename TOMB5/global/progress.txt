@@ -1350,8 +1350,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00477A20	+	InitialiseSkeleton
 0x00477AB0	+	SkeletonControl
-0x00477D50		TriggerSkeletonFire
-0x00477ED0		TriggerFontFire
+0x00477D50	+	TriggerSkeletonFire
+0x00477ED0	+	TriggerFontFire
 
 
 		game/sniper.cpp
