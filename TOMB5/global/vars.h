@@ -521,6 +521,8 @@
 #define number_cameras	VAR_U_(0x00EEFAC0, long)
 #define spec_wibble	VAR_U_(0x0057753C, long)
 #define water_buffer_calced	VAR_U_(0x00577534, long)
+#define acm_ready   VAR_U_(0x0057A00C, bool)
+#define audio_counter   VAR_U_(0x0057A018, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
