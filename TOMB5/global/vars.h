@@ -519,6 +519,8 @@
 #define mesh_base	VAR_U_(0x0087516C, short*)
 #define FmvSceneTriggered	VAR_U_(0x00EEEAD8, long)
 #define number_cameras	VAR_U_(0x00EEFAC0, long)
+#define spec_wibble	VAR_U_(0x0057753C, long)
+#define water_buffer_calced	VAR_U_(0x00577534, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -657,6 +659,7 @@
 #define JoyStickButtons	ARRAY_(0x00517504, char*, [16])
 #define DefaultControls	ARRAY_(0x00516B70, long, [32])
 #define cd_flags	ARRAY_(0x00EEEA40, char, [136])
+#define water_buffer	ARRAY_(0x0056ED14, float, [8712])
 
 /****************/
 //registry

@@ -1,6 +1,7 @@
 #include "../tomb5/pch.h"
 #include "alexstuff.h"
 #include "function_stubs.h"
+#include "profiler.h"
 
 void aLoadRoomStream()
 {
@@ -78,8 +79,40 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 		MaxRoomLights = r->num_lights;
 }
 
+void aUpdate()
+{
+	static float znear;
+	static long zero;
+	static long alphamaybe;
+
+	spec_wibble++;
+	znear = f_mznear;
+	mAddProfilerEvent();
+	mAddProfilerEvent();
+	zero = 0;
+	mAddProfilerEvent();
+
+	if (aCamDir.y >= 0)
+	{
+		alphamaybe = (long)(95 - ((1 - aCamDir.y) * -144));
+		alphamaybe <<= 24;
+	}
+	else
+		alphamaybe = -0x11000000;
+
+	mAddProfilerEvent();
+}
+
+void aInitWater()
+{
+	memset(&water_buffer, 0, sizeof(water_buffer));
+	water_buffer_calced = 0;
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
 	INJECT(0x004917D0, aFixUpRoom, replace);
+	INJECT(0x00491BE0, aUpdate, replace);
+	INJECT(0x00491950, aInitWater, replace);
 }
