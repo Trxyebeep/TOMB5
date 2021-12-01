@@ -459,7 +459,11 @@ long TestBlockPull(ITEM_INFO* item, long height, ushort quadrant)
 	GetCollidedObjects(lara_item, 256, 1, itemlist, 0, 0);
 	lara_item->pos.x_pos = rx;
 	lara_item->pos.z_pos = rz;
+#ifdef GENERAL_FIXES
+	return !*itemlist || *itemlist == item;
+#else
 	return !*itemlist;
+#endif
 }
 
 void inject_moveblok(bool replace)
