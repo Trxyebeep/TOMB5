@@ -4,6 +4,7 @@
 void inject_items(bool replace);
 
 void ItemNewRoom(short item_num, short room_number);
+void InitialiseItemArray(short num);
 
 #define KillItem	( (void(__cdecl*)(short)) 0x00440620 )
 #define AddActiveItem	( (void(__cdecl*)(short)) 0x00440D10 )
@@ -15,4 +16,3 @@ void ItemNewRoom(short item_num, short room_number);
 #define EffectNewRoom	( (void(__cdecl*)(short, short)) 0x004412F0 )
 #define KillEffect	( (void(__cdecl*)(short)) 0x00441180 )
 #define RemoveDrawnItem	( (void(__cdecl*)(short)) 0x00440C40 )
-#define InitialiseItemArray	( (void(__cdecl*)(short)) 0x00440590 )

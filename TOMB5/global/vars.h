@@ -59,6 +59,7 @@
 #define GotLaraSpheres	VAR_U_(0x00E51F2E, char)
 #define InItemControlLoop	VAR_U_(0x0051CA53, uchar)
 #define next_item_active	VAR_U_(0x00E5BF22, short)
+#define next_item_free	VAR_U_(0x00E5BF16, short)
 #define next_fx_active	VAR_U_(0x00E5C5FC, short)
 #define KillEverythingFlag	VAR_U_(0x0051CDF4, long)
 #define SmokeCountL	VAR_U_(0x00E6C9E8, long)
