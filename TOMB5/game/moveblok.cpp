@@ -308,9 +308,71 @@ void MovableBlockCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* co
 		ObjectCollision(item_number, laraitem, coll);
 }
 
+long TestBlockPush(ITEM_INFO* item, long height, ushort quadrant)
+{
+	FLOOR_INFO* floor;
+	ROOM_INFO* r;
+	long x, y, z, rx, rz;
+	short room_number;
+
+	x = item->pos.x_pos;
+	y = item->pos.y_pos;
+	z = item->pos.z_pos;
+
+	switch (quadrant)
+	{
+	case NORTH:
+		z += 1024;
+		break;
+
+	case EAST:
+		x += 1024;
+		break;
+
+	case SOUTH:
+		z -= 1024;
+		break;
+
+	case WEST:
+		x -= 1024;
+		break;
+	}
+
+	room_number = item->room_number;
+	floor = GetFloor(x, y - 256, z, &room_number);
+	r = &room[room_number];
+	rx = (x - r->x) >> 10;
+	rz = (z - r->z) >> 10;
+
+	if (r->floor[rx * r->x_size + rz].stopper)
+		return 0;
+
+	if (GetHeight(floor, x, y - 256, z) != y)
+		return 0;
+
+	GetHeight(floor, x, y, z);
+
+	if (height_type != WALL)
+		return 0;
+
+	y -= height - 100;
+	floor = GetFloor(x, y, z, &room_number);
+
+	if (GetCeiling(floor, x, y, z) > y)
+		return 0;
+
+	rx = item->pos.x_pos;
+	rz = item->pos.z_pos;
+	GetCollidedObjects(item, 256, 1, itemlist, 0, 0);
+	item->pos.x_pos = rx;
+	item->pos.z_pos = rz;
+	return !*itemlist;
+}
+
 void inject_moveblok(bool replace)
 {
 	INJECT(0x0045E720, InitialiseMovingBlock, replace);
 	INJECT(0x0045EA30, MovableBlock, replace);
 	INJECT(0x0045F570, MovableBlockCollision, replace);
+	INJECT(0x0045F010, TestBlockPush, replace);
 }
