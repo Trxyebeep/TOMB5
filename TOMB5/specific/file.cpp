@@ -4,6 +4,8 @@
 #include "../game/gameflow.h"
 #include "../game/setup.h"
 #include "alexstuff.h"
+#include "../game/init.h"
+#include "../game/items.h"
 
 //when every part that uses the c library funcs is decompiled, remove the stupid defines
 
@@ -174,6 +176,87 @@ int FileSize(FILE* fp)
 #undef cunt2
 }
 
+#define num_items	VAR_U_(0x00874250, long)
+
+bool LoadItems()
+{
+	ITEM_INFO* item;
+	ROOM_INFO* r;
+	FLOOR_INFO* floor;
+	STATIC_INFO* stat;
+	long x, y, z;
+
+	Log(2, "LoadItems");
+	num_items = *(long*)FileData;
+	FileData += 4;
+
+	if (!num_items)
+		return 1;
+
+	items = (ITEM_INFO*)game_malloc(MAX_ITEMS * sizeof(ITEM_INFO), 0);
+	level_items = num_items;
+	InitialiseClosedDoors();
+	InitialiseItemArray(MAX_ITEMS);
+
+	for (int i = 0; i < num_items; i++)
+	{
+		item = &items[i];
+		item->object_number = *(short*)FileData;
+		FileData += 2;
+		item->room_number = *(short*)FileData;
+		FileData += 2;
+		item->pos.x_pos = *(long*)FileData;
+		FileData += 4;
+		item->pos.y_pos = *(long*)FileData;
+		FileData += 4;
+		item->pos.z_pos = *(long*)FileData;
+		FileData += 4;
+		item->pos.y_rot = *(short*)FileData;
+		FileData += 2;
+		item->shade = *(short*)FileData;
+		FileData += 2;
+		item->trigger_flags = *(short*)FileData;
+		FileData += 2;
+		item->flags = *(short*)FileData;
+		FileData += 2;
+	}
+
+	for (int i = 0; i < num_items; i++)
+		InitialiseItem(i);
+
+	for (int i = 0; i < number_rooms; i++)
+	{
+		r = &room[i];
+
+		for (int j = 0; j < r->num_meshes; j++)
+		{
+			x = (r->mesh[j].x - r->x) >> 10;
+			z = (r->mesh[j].z - r->z) >> 10;
+
+			floor = &(r->floor[x * r->x_size + z]);
+
+			if (!(boxes[floor->box].overlap_index & 0x4000) && (gfCurrentLevel != 4 || i != 19 && i != 23 && i != 16))
+			{
+				stat = &static_objects[r->mesh[j].static_number];
+				y = floor->floor << 8;
+
+				if (y <= (r->mesh[j].y - stat->y_maxc + 512) && y < r->mesh[j].y - stat->y_minc)
+				{
+					if (!stat->x_maxc || !stat->x_minc || !stat->z_maxc || !stat->z_minc ||
+						(stat->x_maxc ^ stat->x_minc) & 0x8000 && (stat->z_maxc ^ stat->z_minc) & 0x8000)
+					{
+						x = (r->mesh[j].x - r->x) >> 10;
+						z = (r->mesh[j].z - r->z) >> 10;
+						r->floor[x * r->x_size + z].stopper = 1;
+					}
+				}
+			}
+		}
+	}
+
+	return 1;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A60E0, LoadTextureInfos, replace);
@@ -182,4 +265,5 @@ void inject_file(bool replace)
 	INJECT(0x004A3BC0, FindCDDrive, replace);
 	INJECT(0x004A3DA0, FileClose, replace);
 	INJECT(0x004A3DD0, FileSize, replace);
+	INJECT(0x004A6380, LoadItems, replace);
 }

@@ -9,6 +9,7 @@ FILE* FileOpen(const char* Filename);
 bool FindCDDrive();
 void FileClose(FILE* fp);
 int FileSize(FILE* fp);
+bool LoadItems();
 
 #define S_LoadLevelFile	( (int(__cdecl*)(uchar)) 0x004A72B0 )
 #define	AdjustUV	( (void(__cdecl*)(int)) 0x004A5430 )

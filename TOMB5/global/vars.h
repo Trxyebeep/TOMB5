@@ -676,6 +676,7 @@
 #define NO_HEIGHT -32512
 #define	NO_ITEM	-1
 #define NO_ROOM	255
+#define MAX_ITEMS	256
 
 //unknowns
 #define UNK_00E916F0	VAR_U_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init
