@@ -369,10 +369,104 @@ long TestBlockPush(ITEM_INFO* item, long height, ushort quadrant)
 	return !*itemlist;
 }
 
+long TestBlockPull(ITEM_INFO* item, long height, ushort quadrant)
+{
+	FLOOR_INFO* floor;
+	ROOM_INFO* r;
+	long x, y, z, destx, destz, rx, rz;
+	short room_number;
+
+	destx = 0;
+	destz = 0;
+
+	switch (quadrant)
+	{
+	case NORTH:
+		destz = -1024;
+		break;
+
+	case EAST:
+		destx = -1024;
+		break;
+
+	case SOUTH:
+		destz = 1024;
+		break;
+
+	case WEST:
+		destx = 1024;
+		break;
+	}
+
+	x = item->pos.x_pos + destx;
+	y = item->pos.y_pos;
+	z = item->pos.z_pos + destz;
+	room_number = item->room_number;
+	floor = GetFloor(x, y - 256, z, &room_number);
+	r = &room[room_number];
+	rx = (x - r->x) >> 10;
+	rz = (z - r->z) >> 10;
+
+	if (r->floor[rx * r->x_size + rz].stopper)
+		return 0;
+
+	if (GetHeight(floor, x, y - 256, z) != y)
+		return 0;
+
+	floor = GetFloor(x, y - height, z, &room_number);
+
+	if (floor->ceiling << 8 > y - height)
+		return 0;
+
+	rx = item->pos.x_pos;
+	rz = item->pos.z_pos;
+	GetCollidedObjects(item, 256, 1, itemlist, 0, 0);
+	item->pos.x_pos = rx;
+	item->pos.z_pos = rz;
+
+	if (*itemlist)
+		return 0;
+
+	x += destx;
+	z += destz;
+	room_number = item->room_number;
+	floor = GetFloor(x, y - 256, z, &room_number);
+
+	if (GetHeight(floor, x, y - 256, z) != y)
+		return 0;
+
+	floor = GetFloor(x, y - 762, z, &room_number);
+
+	if (floor->ceiling << 8 > y - 762)
+		return 0;
+
+	x = lara_item->pos.x_pos + destx;
+	y = lara_item->pos.y_pos;
+	z = lara_item->pos.z_pos + destz;
+	room_number = lara_item->room_number;
+	GetFloor(x, y, z, &room_number);
+	r = &room[room_number];
+	rx = (x - r->x) >> 10;
+	rz = (z - r->z) >> 10;
+
+	if (r->floor[rx * r->x_size + rz].stopper)
+		return 0;
+
+	rx = lara_item->pos.x_pos;
+	rz = lara_item->pos.z_pos;
+	lara_item->pos.x_pos = x;
+	lara_item->pos.z_pos = z;
+	GetCollidedObjects(lara_item, 256, 1, itemlist, 0, 0);
+	lara_item->pos.x_pos = rx;
+	lara_item->pos.z_pos = rz;
+	return !*itemlist;
+}
+
 void inject_moveblok(bool replace)
 {
 	INJECT(0x0045E720, InitialiseMovingBlock, replace);
 	INJECT(0x0045EA30, MovableBlock, replace);
 	INJECT(0x0045F570, MovableBlockCollision, replace);
 	INJECT(0x0045F010, TestBlockPush, replace);
+	INJECT(0x0045F1E0, TestBlockPull, replace);
 }
