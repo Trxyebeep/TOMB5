@@ -523,6 +523,7 @@
 #define water_buffer_calced	VAR_U_(0x00577534, long)
 #define acm_ready   VAR_U_(0x0057A00C, bool)
 #define audio_counter   VAR_U_(0x0057A018, long)
+#define num_items	VAR_U_(0x00874250, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

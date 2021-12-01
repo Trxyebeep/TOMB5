@@ -176,8 +176,6 @@ int FileSize(FILE* fp)
 #undef cunt2
 }
 
-#define num_items	VAR_U_(0x00874250, long)
-
 bool LoadItems()
 {
 	ITEM_INFO* item;
@@ -256,6 +254,8 @@ bool LoadItems()
 
 	return 1;
 }
+
+
 
 void inject_file(bool replace)
 {
