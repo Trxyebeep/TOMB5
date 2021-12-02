@@ -6,6 +6,7 @@
 #include "alexstuff.h"
 #include "../game/init.h"
 #include "../game/items.h"
+#include "../game/objects.h"
 
 //when every part that uses the c library funcs is decompiled, remove the stupid defines
 
@@ -255,7 +256,71 @@ bool LoadItems()
 	return 1;
 }
 
+bool LoadSprites()
+{
+	STATIC_INFO* stat;
+	OBJECT_INFO* obj;
+	PHDSPRITESTRUCT sprite;
+	long num_sprites, num_slots, slot;
 
+	Log(2, "LoadSprites");
+	FileData += 4;
+	num_sprites = *(long*)FileData;
+	FileData += 4;
+	spriteinfo = (SPRITESTRUCT*)game_malloc(sizeof(SPRITESTRUCT) * num_sprites, 0);
+
+	for (int i = 0; i < num_sprites; i++)
+	{
+		memcpy(&sprite, FileData, sizeof(PHDSPRITESTRUCT));
+		FileData += sizeof(PHDSPRITESTRUCT);
+		spriteinfo[i].height = sprite.height;
+		spriteinfo[i].offset = sprite.offset;
+		spriteinfo[i].tpage = sprite.tpage;
+		spriteinfo[i].width = sprite.width;
+		spriteinfo[i].x1 = (float)(sprite.x1) * (1.0F / 256.0F);
+		spriteinfo[i].y1 = (float)(sprite.y1) * (1.0F / 256.0F);
+		spriteinfo[i].x2 = (float)(sprite.x2) * (1.0F / 256.0F);
+		spriteinfo[i].y2 = (float)(sprite.y2) * (1.0F / 256.0F);
+		spriteinfo[i].x1 += (1.0F / 256.0F);
+		spriteinfo[i].y1 += (1.0F / 256.0F);
+		spriteinfo[i].x2 -= (1.0F / 256.0F);
+		spriteinfo[i].y2 -= (1.0F / 256.0F);
+		spriteinfo[i].tpage++;
+	}
+
+	num_slots = *(long*)FileData;
+	FileData += 4;
+
+	if (num_slots <= 0)
+		return 1;
+
+	for (int i = 0; i < num_slots; i++)
+	{
+		slot = *(long*)FileData;
+		FileData += 4;
+
+		if (slot >= NUMBER_OBJECTS)
+		{
+			slot -= NUMBER_OBJECTS;
+			stat = &static_objects[slot];
+			stat->mesh_number = *(short*)FileData;
+			FileData += 2;
+			stat->mesh_number = *(short*)FileData;	//what the hell
+			FileData += 2;
+		}
+		else
+		{
+			obj = &objects[slot];
+			obj->nmeshes = *(short*)FileData;
+			FileData += 2;
+			obj->mesh_index = *(short*)FileData;
+			FileData += 2;
+			obj->loaded = 1;
+		}
+	}
+
+	return 1;
+}
 
 void inject_file(bool replace)
 {
@@ -266,4 +331,5 @@ void inject_file(bool replace)
 	INJECT(0x004A3DA0, FileClose, replace);
 	INJECT(0x004A3DD0, FileSize, replace);
 	INJECT(0x004A6380, LoadItems, replace);
+	INJECT(0x004A59D0, LoadSprites, replace);
 }
