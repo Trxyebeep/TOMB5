@@ -1841,7 +1841,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A3EF0		Decompress
 0x004A3FC0		LoadTextures
 0x004A4DA0	+	LoadRooms
-0x004A4E60		LoadObjects
+0x004A4E60	+	LoadObjects
 0x004A5430		AdjustUV
 0x004A59D0	+	LoadSprites
 0x004A5CA0	+	LoadCameras

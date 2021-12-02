@@ -14,6 +14,7 @@ bool LoadSprites();
 bool LoadCameras();
 bool LoadSoundEffects();
 bool LoadAnimatedTextures();
+bool LoadObjects();
 
 #define S_LoadLevelFile	( (int(__cdecl*)(uchar)) 0x004A72B0 )
 #define	AdjustUV	( (void(__cdecl*)(int)) 0x004A5430 )

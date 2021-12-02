@@ -18,3 +18,4 @@ void InsertRoomlet(ROOMLET* roomlet);
 #define CheckBoundsClip	( (long(__cdecl*)(float*)) 0x0049C6B0 )
 #define aBuildRoomletLights	( (long(__cdecl*)(ROOMLET*)) 0x0049B390 )
 #define aRoomletTransformLight	( (void(__cdecl*)(float*, long, long, long, long)) 0x0049B7B0 )
+#define ProcessMeshData	( (void(__cdecl*)(long)) 0x0049A3D0 )

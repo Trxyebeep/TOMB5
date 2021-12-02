@@ -7,6 +7,8 @@
 #include "../game/init.h"
 #include "../game/items.h"
 #include "../game/objects.h"
+#include "../game/laraskin.h"
+#include "drawroom.h"
 
 //when every part that uses the c library funcs is decompiled, remove the stupid defines
 
@@ -378,6 +380,162 @@ bool LoadAnimatedTextures()
 	return 1;
 }
 
+bool LoadObjects()
+{
+	OBJECT_INFO* obj;
+	STATIC_INFO* stat;
+	short** mesh;
+	short** mesh_size;
+	long num, slot;
+	static long num_meshes;
+	static long num_anims;
+
+	Log(2, "LoadObjects");
+	memset(objects, 0, NUMBER_OBJECTS * sizeof(OBJECT_INFO));
+	memset(static_objects, 0, 70 * sizeof(STATIC_INFO));
+
+	num = *(long*)FileData;	//load mesh mess
+	FileData += 4;
+	mesh_base = (short*)game_malloc(num * 2, 0);
+	memcpy(mesh_base, FileData, num * 2);
+	FileData += num * 2;
+
+	num = *(long*)FileData;
+	FileData += 4;
+	meshes = (short**)game_malloc(num * 8, 0);
+	memcpy(meshes, FileData, num * 4);
+	FileData += num * 4;
+
+	for (int i = 0; i < num; i++)
+		meshes[i] = &mesh_base[(long)meshes[i] / 2];
+
+	num_meshes = num;
+
+	num_anims = *(long*)FileData;	//load anims
+	FileData += 4;
+	anims = (ANIM_STRUCT*)game_malloc(num_anims * sizeof(ANIM_STRUCT), 0);
+	memcpy(anims, FileData, num_anims * sizeof(ANIM_STRUCT));
+	FileData += num_anims * sizeof(ANIM_STRUCT);
+
+	num = *(long*)FileData;	//changes
+	FileData += 4;
+	changes = (CHANGE_STRUCT*)game_malloc(num * sizeof(CHANGE_STRUCT), 0);
+	memcpy(changes, FileData, num * sizeof(CHANGE_STRUCT));
+	FileData += num * sizeof(CHANGE_STRUCT);
+
+	num = *(long*)FileData;	//ranges
+	FileData += 4;
+	ranges = (RANGE_STRUCT*)game_malloc(num * sizeof(RANGE_STRUCT), 0);
+	memcpy(ranges, FileData, num * sizeof(RANGE_STRUCT));
+	FileData += num * sizeof(RANGE_STRUCT);
+
+	num = *(long*)FileData;	//anim commands
+	FileData += 4;
+	commands = (short*)game_malloc(num * 2, 0);
+	memcpy(commands, FileData, num * 2);
+	FileData += num * 2;
+
+	num = *(long*)FileData;	//bones
+	FileData += 4;
+	bones = (long*)game_malloc(num * 4, 0);
+	memcpy(bones, FileData, num * 4);
+	FileData += num * 4;
+
+	num = *(long*)FileData;	//frames
+	FileData += 4;
+	frames = (short*)game_malloc(num * 2, 0);
+	memcpy(frames, FileData, num * 2);
+	FileData += num * 2;
+
+	for (int i = 0; i < num_anims; i++)
+		anims[i].frame_ptr = (short*)((long)anims[i].frame_ptr + (long)frames);
+
+	num = *(long*)FileData;
+	FileData += 4;
+
+	for (int i = 0; i < num; i++)
+	{
+		slot = *(long*)FileData;
+		FileData += 4;
+		obj = &objects[slot];
+
+		obj->nmeshes = *(short*)FileData;
+		FileData += 2;
+
+		obj->mesh_index = *(short*)FileData;
+		FileData += 2;
+
+		obj->bone_index = *(long*)FileData;
+		FileData += 4;
+
+		obj->frame_base = (short*)(*(short**)FileData);
+		FileData += 4;
+
+		obj->anim_index = *(short*)FileData;
+		FileData += 2;
+
+		obj->loaded = 1;
+		slot = *(short*)FileData;	//I think some alignment padding?
+		FileData += 2;
+	}
+
+	if (LaraDrawType != LARA_DIVESUIT)
+		CreateSkinningData();
+
+	for (int i = 0; i < NUMBER_OBJECTS; i++)
+	{
+		obj = &objects[i];
+		obj->mesh_index *= 2;
+	}
+
+	mesh = meshes;
+	mesh_size = &meshes[num_meshes];
+	memcpy(mesh_size, mesh, num_meshes * 4);
+
+	for (int i = 0; i < num_meshes; i++)
+	{
+		*mesh = *mesh_size;
+		mesh++;
+		*mesh = *mesh_size;
+		mesh++;
+		mesh_size++;
+	}
+
+	InitialiseObjects();
+	InitialiseClosedDoors();
+
+	num = *(long*)FileData;	//statics
+	FileData += 4;
+
+	for (int i = 0; i < num; i++)
+	{
+		slot = *(long*)FileData;
+		FileData += 4;
+		stat = &static_objects[slot];
+
+		stat->mesh_number = *(short*)FileData;
+		FileData += 2;
+
+		memcpy(&stat->x_minp, FileData, 12);
+		FileData += 12;
+
+		memcpy(&stat->x_minc, FileData, 12);
+		FileData += 12;
+
+		stat->flags = *(short*)FileData;
+		FileData += 2;
+	}
+
+	for (int i = 0; i < 70; i++)
+	{
+		stat = &static_objects[i];
+		stat->mesh_number *= 2;
+	}
+
+	ProcessMeshData(num_meshes * 2);
+	return 1;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A60E0, LoadTextureInfos, replace);
@@ -391,4 +549,5 @@ void inject_file(bool replace)
 	INJECT(0x004A5CA0, LoadCameras, replace);
 	INJECT(0x004A5D90, LoadSoundEffects, replace);
 	INJECT(0x004A6060, LoadAnimatedTextures, replace);
+	INJECT(0x004A4E60, LoadObjects, replace);
 }
