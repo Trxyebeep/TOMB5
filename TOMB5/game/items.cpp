@@ -55,6 +55,7 @@ void InitialiseItemArray(short num)
 	{
 		item->next_item = i;
 		item->active = 0;
+		item++;
 	}
 
 	item->next_item = NO_ITEM;
