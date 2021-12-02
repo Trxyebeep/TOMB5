@@ -525,6 +525,8 @@
 #define acm_ready   VAR_U_(0x0057A00C, bool)
 #define audio_counter   VAR_U_(0x0057A018, long)
 #define num_items	VAR_U_(0x00874250, long)
+#define AnimTextureRanges	VAR_U_(0x00D9ADA0, short*)
+#define nAnimUVRanges	VAR_U_(0x0087495C, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
