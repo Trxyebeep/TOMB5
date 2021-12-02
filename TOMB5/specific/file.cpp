@@ -536,6 +536,12 @@ bool LoadObjects()
 	return 1;
 }
 
+bool LoadCinematic()
+{
+	FileData += 2;
+	return 1;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A60E0, LoadTextureInfos, replace);
@@ -550,4 +556,5 @@ void inject_file(bool replace)
 	INJECT(0x004A5D90, LoadSoundEffects, replace);
 	INJECT(0x004A6060, LoadAnimatedTextures, replace);
 	INJECT(0x004A4E60, LoadObjects, replace);
+	INJECT(0x004A67D0, LoadCinematic, replace);
 }

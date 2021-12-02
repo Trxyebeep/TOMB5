@@ -1851,7 +1851,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A60E0	+	LoadTextureInfos
 0x004A6380	+	LoadItems
 0x004A6760		LoadMapFile
-0x004A67D0		LoadCinematic
+0x004A67D0	+	LoadCinematic
 0x004A67F0		LoadAIInfo
 0x004A6880		LoadSamples
 0x004A6AB0		S_GetUVRotateTextures
