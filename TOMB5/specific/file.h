@@ -11,6 +11,7 @@ void FileClose(FILE* fp);
 int FileSize(FILE* fp);
 bool LoadItems();
 bool LoadSprites();
+bool LoadCameras();
 
 #define S_LoadLevelFile	( (int(__cdecl*)(uchar)) 0x004A72B0 )
 #define	AdjustUV	( (void(__cdecl*)(int)) 0x004A5430 )

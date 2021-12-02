@@ -322,6 +322,31 @@ bool LoadSprites()
 	return 1;
 }
 
+bool LoadCameras()
+{
+	Log(2, "LoadCameras");
+	number_cameras = *(long*)FileData;
+	FileData += 4;
+
+	if (number_cameras)
+	{
+		camera.fixed = (OBJECT_VECTOR*)game_malloc(number_cameras * sizeof(OBJECT_VECTOR), 0);
+		memcpy(camera.fixed, FileData, number_cameras * sizeof(OBJECT_VECTOR));
+		FileData += number_cameras * sizeof(OBJECT_VECTOR);
+	}
+
+	number_spotcams = *(short*)FileData;	//it's a short to avoid warning but it reserves 4 bytes in the level file
+	FileData += 4;							//so +4, not +2
+
+	if (number_spotcams)
+	{
+		memcpy(SpotCam, FileData, number_spotcams * sizeof(SPOTCAM));
+		FileData += number_spotcams * sizeof(SPOTCAM);
+	}
+
+	return 1;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A60E0, LoadTextureInfos, replace);
@@ -332,4 +357,5 @@ void inject_file(bool replace)
 	INJECT(0x004A3DD0, FileSize, replace);
 	INJECT(0x004A6380, LoadItems, replace);
 	INJECT(0x004A59D0, LoadSprites, replace);
+	INJECT(0x004A5CA0, LoadCameras, replace);
 }
