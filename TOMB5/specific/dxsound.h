@@ -11,3 +11,6 @@
 #define DXChangeOutputFormat	( (bool(__cdecl*)(long, bool)) 0x004A2E30 )
 #define S_SoundPlaySample	( (long(__cdecl*)(long, ushort, long, short)) 0x004A3A20 )
 #define S_SoundPlaySampleLooped	( (long(__cdecl*)(long, ushort, long, short)) 0x004A3A60 )
+#define InitSampleDecompress	( (bool(__cdecl*)()) 0x004A3300 )
+#define FreeSampleDecompress	( (bool(__cdecl*)()) 0x004A3470 )
+#define DXCreateSampleADPCM	( (bool(__cdecl*)(char*, long, long, long)) 0x004A3510 )

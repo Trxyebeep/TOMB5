@@ -9,6 +9,7 @@
 #include "../game/objects.h"
 #include "../game/laraskin.h"
 #include "drawroom.h"
+#include "dxsound.h"
 
 //when every part that uses the c library funcs is decompiled, remove the stupid defines
 
@@ -542,6 +543,66 @@ bool LoadCinematic()
 	return 1;
 }
 
+bool LoadSamples()
+{
+	long num_samples, uncomp_size, comp_size;
+	static long num_sample_infos;
+
+	Log(2, "LoadSamples");
+	sample_lut = (short*)game_malloc(MAX_SAMPLES * sizeof(short), 0);
+	memcpy(sample_lut, FileData, MAX_SAMPLES * sizeof(short));
+	FileData += MAX_SAMPLES * sizeof(short);
+	num_sample_infos = *(long*)FileData;
+	FileData += 4;
+	Log(8, "Number Of Sample Infos %d", num_sample_infos);
+
+	if (!num_sample_infos)
+	{
+		Log(1, "No Sample Infos");
+		return 0;
+	}
+
+	sample_infos = (SAMPLE_INFO*)game_malloc(sizeof(SAMPLE_INFO) * num_sample_infos, 0);
+	memcpy(sample_infos, FileData, sizeof(SAMPLE_INFO) * num_sample_infos);
+	FileData += sizeof(SAMPLE_INFO) * num_sample_infos;
+	num_samples = *(long*)FileData;
+	FileData += 4;
+
+	if (!num_samples)
+	{
+		Log(1, "No Samples");
+		return 0;
+	}
+
+	Log(8, "Number Of Samples %d", num_samples);
+#define freadd	( (size_t(__cdecl*)(void*, size_t, size_t, FILE*)) 0x004E1D20 )
+	freadd(&num_samples, 1, 4, LevelFILEptr);
+
+	if (feof(LevelFILEptr))
+		Log(1, "END OF FILE");
+
+	InitSampleDecompress();
+
+	if (num_samples <= 0)
+	{
+		FreeSampleDecompress();
+		return 1;
+	}
+
+	for (int i = 0; i < num_samples; i++)
+	{
+		freadd(&uncomp_size, 1, 4, LevelFILEptr);
+		freadd(&comp_size, 1, 4, LevelFILEptr);
+		freadd(samples_buffer, comp_size, 1, LevelFILEptr);
+
+		if (!DXCreateSampleADPCM(samples_buffer, comp_size, uncomp_size, i))
+			break;
+	}
+#undef freadd
+	FreeSampleDecompress();
+	return 1;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A60E0, LoadTextureInfos, replace);
@@ -557,4 +618,5 @@ void inject_file(bool replace)
 	INJECT(0x004A6060, LoadAnimatedTextures, replace);
 	INJECT(0x004A4E60, LoadObjects, replace);
 	INJECT(0x004A67D0, LoadCinematic, replace);
+	INJECT(0x004A6880, LoadSamples, replace);
 }

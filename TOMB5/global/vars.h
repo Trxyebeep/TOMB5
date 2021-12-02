@@ -527,6 +527,8 @@
 #define num_items	VAR_U_(0x00874250, long)
 #define AnimTextureRanges	VAR_U_(0x00D9ADA0, short*)
 #define nAnimUVRanges	VAR_U_(0x0087495C, long)
+#define LevelFILEptr	VAR_U_(0x00875164, FILE*)
+#define samples_buffer	VAR_U_(0x0086BEDC, char*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -681,6 +683,7 @@
 #define	NO_ITEM	-1
 #define NO_ROOM	255
 #define MAX_ITEMS	256
+#define MAX_SAMPLES	450
 
 //unknowns
 #define UNK_00E916F0	VAR_U_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init
