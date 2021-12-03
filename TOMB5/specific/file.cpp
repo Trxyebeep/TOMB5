@@ -603,6 +603,23 @@ bool LoadSamples()
 	return 1;
 }
 
+bool LoadAIInfo()
+{
+	long num_ai;
+
+	num_ai = *(long*)FileData;
+	FileData += 4;
+
+	if (!num_ai)
+		return 1;
+
+	nAIObjects = (short)num_ai;
+	AIObjects = (AIOBJECT*)game_malloc(sizeof(AIOBJECT) * num_ai, 0);
+	memcpy(AIObjects, FileData, sizeof(AIOBJECT) * num_ai);
+	FileData += sizeof(AIOBJECT) * num_ai;
+	return 1;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A60E0, LoadTextureInfos, replace);
@@ -619,4 +636,5 @@ void inject_file(bool replace)
 	INJECT(0x004A4E60, LoadObjects, replace);
 	INJECT(0x004A67D0, LoadCinematic, replace);
 	INJECT(0x004A6880, LoadSamples, replace);
+	INJECT(0x004A67F0, LoadAIInfo, replace);
 }
