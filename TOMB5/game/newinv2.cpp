@@ -168,7 +168,6 @@ int S_CallInventory2()
 
 		do_debounced_joystick_poo();
 
-#ifndef TRF
 		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
 			keymap[DIK_G] && keymap[DIK_U] && keymap[DIK_N] && keymap[DIK_S])//GUNS
 			dels_give_lara_guns_cheat();
@@ -176,12 +175,31 @@ int S_CallInventory2()
 		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
 			keymap[DIK_B] && keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_S])//BITS
 		{
+#ifndef GENERAL_FIXES	//no items with BITS
 			dels_give_lara_items_cheat();
+#endif
 			savegame.CampaignSecrets[0] = 9;
 			savegame.CampaignSecrets[1] = 9;
 			savegame.CampaignSecrets[2] = 9;
 			savegame.CampaignSecrets[3] = 9;
 		}
+
+#ifdef TRF
+		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
+			keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_E] && keymap[DIK_M])	//ITEM
+			dels_give_lara_items_cheat();
+
+		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
+			keymap[DIK_S] && keymap[DIK_K] && keymap[DIK_I] && keymap[DIK_P])	//SKIP
+		{
+			gfLevelComplete = gfCurrentLevel + 1;
+			SCNoDrawLara = 0;
+			bDisableLaraControl = 0;
+		}
+
+		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
+			keymap[DIK_H] && keymap[DIK_E] && keymap[DIK_A] && keymap[DIK_L])	//heal
+			lara_item->hit_points = 1000;
 #endif
 
 		if (GLOBAL_invkeypadmode)
@@ -2888,9 +2906,6 @@ void dels_give_lara_items_cheat()
 
 void dels_give_lara_guns_cheat()
 {
-#ifdef TRF
-	return;
-#endif
 #ifdef ENABLE_CHEATS
 	//actually this isn't in the JP exe either, it's taken from PSX code
 	if (objects[FLARE_INV_ITEM].loaded)
@@ -2944,8 +2959,6 @@ void dels_give_lara_guns_cheat()
 		if (objects[SILENCER_ITEM].loaded)
 			lara.silencer = 1;
 	}
-#else
-	return;
 #endif
 }
 
