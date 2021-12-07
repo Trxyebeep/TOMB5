@@ -217,22 +217,6 @@ long ControlPhase(long _nframes, int demo_mode)
 					break;
 				}
 			}
-			else if (LaserSight && (lara.request_gun_type == WEAPON_PISTOLS || lara.request_gun_type == WEAPON_NONE))
-			{
-				BinocularRange = 0;
-				LaserSight = 0;
-				AlterFOV(14560);
-				lara_item->mesh_bits = -1;
-				lara.Busy = 0;
-				camera.type = BinocularOldCamera;
-				lara.torso_x_rot = 0;
-				lara.torso_y_rot = 0;
-				lara.head_x_rot = 0;
-				lara.head_y_rot = 0;
-				camera.bounce = 0;
-				BinocularOn = -8;
-				input &= ~IN_LOOK;
-			}
 		}
 		else if (BinocularRange)
 		{

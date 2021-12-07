@@ -39,6 +39,8 @@ do \
 #define	CLRG(clr)	((clr >> 8) & 0xFF)		//shift b out of the way and 0xFF
 #define	CLRB(clr)	((clr) & 0xFF)			//and 0xFF
 #define RGB_M(clr, m)	(clr = (clr & 0xFF000000) | (((CLRR(clr) * m) >> 8) << 16) | (((CLRG(clr) * m) >> 8) << 8) | ((CLRB(clr) * m) >> 8))
+#define SCRIPT_TEXT(num)		(&gfStringWad[gfStringOffset[num]])
+#define SCRIPT_TEXT_bis(num)	(&gfStringWad[gfStringOffset_bis[num]])
 //^ color multiply thingy phd_PutPolygons wants to do
 
 /*typedefs*/
