@@ -1026,6 +1026,40 @@ static void RestoreLevelData(long FullSave)
 	JustLoaded = 1;
 }
 
+void sgSaveGame()
+{
+	char* ptr;
+	char sum;
+
+	SGcount = 0;
+	SGpoint = savegame.buffer;
+	savegame.Game.Timer = GameTimer;
+	savegame.CurrentLevel = gfCurrentLevel;
+	SaveLevelData(1);
+	SaveLaraData();
+	savegame.Checksum = 0;
+	ptr = (char*)&savegame;
+	sum = 0;
+
+	for (int i = 0; i < sizeof(SAVEGAME_INFO); i++)
+	{
+		sum += *ptr;
+		ptr++;
+	}
+
+	savegame.Checksum = -sum;
+}
+
+void sgRestoreGame()
+{
+	SGcount = 0;
+	SGpoint = savegame.buffer;
+	GameTimer = savegame.Game.Timer;
+	gfCurrentLevel = savegame.CurrentLevel;
+	RestoreLevelData(1);
+	RestoreLaraData(1);
+}
+
 void inject_savegame(bool replace)
 {
 	INJECT(0x00470EC0, WriteSG, replace);
@@ -1035,4 +1069,6 @@ void inject_savegame(bool replace)
 	INJECT(0x004720B0, RestoreLaraData, replace);
 	INJECT(0x004711E0, SaveLevelData, replace);
 	INJECT(0x00472290, RestoreLevelData, replace);
+	INJECT(0x00470FA0, sgSaveGame, replace);
+	INJECT(0x00472060, sgRestoreGame, replace);
 }

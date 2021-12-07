@@ -1322,10 +1322,10 @@ x for functions decompiled but not injected, for one reason or another.
 0x00470EC0	+	WriteSG
 0x00470F10	+	ReadSG
 0x00470F60	+	CheckSumValid
-0x00470FA0		sgSaveGame
+0x00470FA0	+	sgSaveGame
 0x00471050	+	SaveLaraData
 0x004711E0	+	SaveLevelData
-0x00472060		sgRestoreGame
+0x00472060	+	sgRestoreGame
 0x004720B0	+	RestoreLaraData
 0x00472290	+	RestoreLevelData
 

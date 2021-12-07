@@ -1164,7 +1164,6 @@ struct LARA_INFO
 struct SAVEGAME_INFO
 {
 	short Checksum;
-	char things_to_figure_out[13];
 	uchar AutoTarget;
 	LARA_INFO Lara;
 	STATS Level;
@@ -1180,7 +1179,7 @@ struct SAVEGAME_INFO
 	uchar CurrentLevel;
 	uchar CampaignSecrets[4];
 	uchar TLCount;
-	char buffer[7232];
+	char buffer[7245];
 };
 
 struct DYNAMIC
