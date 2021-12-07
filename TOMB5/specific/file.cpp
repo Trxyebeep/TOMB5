@@ -596,7 +596,10 @@ bool LoadSamples()
 		freadd(samples_buffer, comp_size, 1, LevelFILEptr);
 
 		if (!DXCreateSampleADPCM(samples_buffer, comp_size, uncomp_size, i))
-			break;
+		{
+			FreeSampleDecompress();
+			return 0;
+		}
 	}
 #undef freadd
 	FreeSampleDecompress();
