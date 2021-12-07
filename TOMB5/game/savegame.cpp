@@ -166,7 +166,11 @@ static void SaveLevelData(long FullSave)	//write all the bs to the savegame buff
 	WriteSG(&GLOBAL_lastinvitem, sizeof(long));
 	word = 0;//used to write 2 bytes
 
+#ifdef GENERAL_FIXES	//fix Red Alert flip bugs, word was being overwritten on high numbers
+	for (int i = 0; i < 16; i++)
+#else
 	for (int i = 0; i < 255; i++)
+#endif
 	{
 		if (flip_stats[i])
 			word |= (1 << i);
@@ -615,9 +619,13 @@ static void RestoreLevelData(long FullSave)
 
 	ReadSG(&FmvSceneTriggered, sizeof(long));
 	ReadSG(&GLOBAL_lastinvitem, sizeof(long));
-	ReadSG(&sword, sizeof(short));	//why are flip_stats not reloaded??
+	ReadSG(&sword, sizeof(short));	//FlipMap sets flip_stats
 
+#ifdef GENERAL_FIXES	//stop FlipMapping random rooms in Red Alert..
+	for (int i = 0; i < 16; i++)
+#else
 	for (int i = 0; i < 255; i++)
+#endif
 	{
 		if (sword & (1 << i))
 			FlipMap(i);
@@ -625,6 +633,11 @@ static void RestoreLevelData(long FullSave)
 		ReadSG(&uword, sizeof(ushort));
 		flipmap[i] = uword << 8;
 	}
+
+#ifdef GENERAL_FIXES	//align without corrupting flipmap array
+	for (int i = 0; i < 255 - 16; i++)
+		ReadSG(&uword, sizeof(ushort));
+#endif
 
 	ReadSG(&flipeffect, sizeof(long));
 	ReadSG(&fliptimer, sizeof(long));
