@@ -646,7 +646,7 @@ static void RestoreLevelData(long FullSave)
 				if (k == 16)
 				{
 					ReadSG(&uword, sizeof(ushort));
-					j = 0;
+					k = 0;
 				}
 
 				mesh->Flags ^= (uword ^ mesh->Flags) & 1;
