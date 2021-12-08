@@ -1101,7 +1101,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/mirror.cpp
 
-0x0045DC50		Draw_Mirror_Lara
+0x0045DC50	+	Draw_Mirror_Lara
 
 
 		game/missile.cpp

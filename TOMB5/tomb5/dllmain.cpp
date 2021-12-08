@@ -90,6 +90,7 @@
 #include "../game/savegame.h"
 #include "../game/sound.h"
 #include "../specific/audio.h"
+#include "../game/mirror.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -199,6 +200,7 @@ void inject_all(bool replace)
 	inject_savegame(replace);
 	inject_sound(replace);
 	inject_audio(replace);
+	inject_mirror(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
