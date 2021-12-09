@@ -668,6 +668,8 @@
 #define DefaultControls	ARRAY_(0x00516B70, long, [32])
 #define cd_flags	ARRAY_(0x00EEEA40, char, [136])
 #define water_buffer	ARRAY_(0x0056ED14, float, [8712])
+#define slots_used	VAR_U_(0x0051CEE8, long)
+#define number_boxes	VAR_U_(0x00EEFB68, long)
 
 /****************/
 //registry
