@@ -449,6 +449,10 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 				else if (hair->pos.y_pos > height)
 				{
 					hair->pos.x_pos = pos.x;
+
+					if (ABS(hair->pos.y_pos - height) <= 256)	//snap to floor if it goes below, no more than 1 click to avoid hairection when going through corners
+						hair->pos.y_pos = height;
+
 					hair->pos.z_pos = pos.z;
 				}
 
