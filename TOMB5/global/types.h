@@ -2233,6 +2233,37 @@ struct FCAMERA
 	float invmatrix[12];
 };
 
+struct D3DTLBUMPVERTEX
+{
+	D3DVALUE sx;
+	D3DVALUE sy;
+	D3DVALUE sz;
+	D3DVALUE rhw;
+	D3DCOLOR color;
+	D3DCOLOR specular;
+	D3DVALUE tu;
+	D3DVALUE tv;
+	D3DVALUE tx;
+	D3DVALUE ty;
+};
+
+struct TEXTURE
+{
+	IDirect3DTexture2* tex;
+	LPDIRECTDRAWSURFACE4 surface;
+	IDirect3DTexture2* bumpTex;
+	LPDIRECTDRAWSURFACE4 bumpSurface;
+	ulong xoff;
+	ulong yoff;
+	ulong width;
+	ulong height;
+	long tpage;
+	bool bump;
+	bool realBump;
+	bool staticTex;
+	long bumptpage;
+};
+
 #ifdef GENERAL_FIXES
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {

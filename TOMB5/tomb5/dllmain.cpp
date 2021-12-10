@@ -92,6 +92,7 @@
 #include "../specific/audio.h"
 #include "../game/mirror.h"
 #include "../game/lot.h"
+#include "../specific/polyinsert.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -203,6 +204,7 @@ void inject_all(bool replace)
 	inject_audio(replace);
 	inject_mirror(replace);
 	inject_lot(replace);
+	inject_polyinsert(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

@@ -529,6 +529,9 @@
 #define nAnimUVRanges	VAR_U_(0x0087495C, long)
 #define LevelFILEptr	VAR_U_(0x00875164, FILE*)
 #define samples_buffer	VAR_U_(0x0086BEDC, char*)
+#define slots_used	VAR_U_(0x0051CEE8, long)
+#define number_boxes	VAR_U_(0x00EEFB68, long)
+#define DrawPrimitiveCnt    VAR_U_(0x00D9AD98, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -668,8 +671,7 @@
 #define DefaultControls	ARRAY_(0x00516B70, long, [32])
 #define cd_flags	ARRAY_(0x00EEEA40, char, [136])
 #define water_buffer	ARRAY_(0x0056ED14, float, [8712])
-#define slots_used	VAR_U_(0x0051CEE8, long)
-#define number_boxes	VAR_U_(0x00EEFB68, long)
+#define Textures	ARRAY_(0x00D99DA8, TEXTURE, [64])
 
 /****************/
 //registry
