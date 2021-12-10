@@ -2264,6 +2264,22 @@ struct TEXTURE
 	long bumptpage;
 };
 
+struct SORTLIST
+{
+	float zVal;
+	short drawtype;
+	short tpage;
+	short nVtx;
+	short polytype;
+};
+
+struct TEXTUREBUCKET
+{
+	long tpage;
+	long cnt;
+	D3DTLBUMPVERTEX Vertex[2080];
+};
+
 #ifdef GENERAL_FIXES
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {

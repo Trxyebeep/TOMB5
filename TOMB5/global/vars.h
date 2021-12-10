@@ -532,6 +532,7 @@
 #define slots_used	VAR_U_(0x0051CEE8, long)
 #define number_boxes	VAR_U_(0x00EEFB68, long)
 #define DrawPrimitiveCnt    VAR_U_(0x00D9AD98, long)
+#define SortCount	VAR_U_(0x00BA4384, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -672,6 +673,8 @@
 #define cd_flags	ARRAY_(0x00EEEA40, char, [136])
 #define water_buffer	ARRAY_(0x0056ED14, float, [8712])
 #define Textures	ARRAY_(0x00D99DA8, TEXTURE, [64])
+#define SortList	ARRAY_(0x00BA4390, SORTLIST*, [65536])
+#define Bucket	ARRAY_(0x0057A510, TEXTUREBUCKET, [30])
 
 /****************/
 //registry

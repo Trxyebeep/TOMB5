@@ -2030,7 +2030,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/polyinsert.cpp
 
-0x004B8DB0		DrawSortList
+0x004B8DB0	+	DrawSortList
 0x004B98E0	+	HWR_DrawSortList
 0x004B9FB0		DoSort
 0x004BA090		SortPolyList

@@ -4,9 +4,9 @@
 void inject_polyinsert(bool replace);
 
 void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, short type);
+void DrawSortList();
 
 #define AddQuadClippedSorted	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, int)) 0x004BC7F0 )
-#define DrawSortList	( (void(__cdecl*)()) 0x004B8DB0 )
 #define IsVolumetric	( (char(__cdecl*)()) 0x004BA1B0 )
 #define AddQuadClippedSorted	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, int)) 0x004BC7F0 )
 #define AddQuadSubdivide	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, int)) 0x004BBFA0 )
