@@ -8,11 +8,11 @@ void DrawBoundsRectangleII(float left, float top, float right, float bottom, int
 void DrawClipRectangle(ROOM_INFO* r);
 void InsertRoom(ROOM_INFO* r);
 void InsertRoomlet(ROOMLET* roomlet);
+void RoomTestThing();
 
 #define DrawBuckets	( (void(__cdecl*)()) 0x0049D750 )
 #define TriggerFogBulbFX	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x0049AEF0 )
 #define aResetFogBulbList	( (void(__cdecl*)()) 0x0049AD70 )
-#define RoomTestThing	( (void(__cdecl*)()) 0x0049A9B0 )
 #define aBuildFogBulbList	( (void(__cdecl*)()) 0x0049AFB0 )
 #define aBuildFXFogBulbList	( (void(__cdecl*)()) 0x0049B1C0 )
 #define CheckBoundsClip	( (long(__cdecl*)(float*)) 0x0049C6B0 )
