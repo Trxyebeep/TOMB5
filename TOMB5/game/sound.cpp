@@ -179,7 +179,11 @@ long SoundEffect(long sfx, PHD_3DPOS* pos, long flags)
 
 	if (info->randomness)
 	{
-		if (GetRandomDraw() > info->randomness)
+#ifdef GENERAL_FIXES	//fix random sfx playback when randomness is > 127 (eg: jump)
+		if ((GetRandomDraw() & 0xFF) > (uchar)info->randomness)
+#else
+		if ((GetRandomDraw() & 0xFF) > info->randomness)
+#endif
 			return 0;
 	}
 
