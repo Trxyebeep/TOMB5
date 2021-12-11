@@ -686,6 +686,10 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 	VECTOR v0;
 	VECTOR v1;
 	short** meshpp;
+#ifdef GENERAL_FIXES
+	short* rot;
+	long bone;
+#endif
 	long cos, sin, xRot, top, bottom, left, right, stash;
 
 	top = phd_top;
@@ -805,6 +809,31 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 
 		meshpp += 2;
 	}
+
+#ifdef GENERAL_FIXES
+	if (lara.back_gun)
+	{
+		phd_PushMatrix();
+		aMXPtr[M00] = lara_matricesF[84 + M00];
+		aMXPtr[M01] = lara_matricesF[84 + M01];
+		aMXPtr[M02] = lara_matricesF[84 + M02];
+		aMXPtr[M03] = lara_matricesF[84 + M03];
+		aMXPtr[M10] = lara_matricesF[84 + M10];
+		aMXPtr[M11] = lara_matricesF[84 + M11];
+		aMXPtr[M12] = lara_matricesF[84 + M12];
+		aMXPtr[M13] = lara_matricesF[84 + M13];
+		aMXPtr[M20] = lara_matricesF[84 + M20];
+		aMXPtr[M21] = lara_matricesF[84 + M21];
+		aMXPtr[M22] = lara_matricesF[84 + M22];
+		aMXPtr[M23] = lara_matricesF[84 + M23];
+		bone = objects[lara.back_gun].bone_index;
+		phd_TranslateRel(bones[bone + 53], bones[bone + 54], bones[bone + 55]);
+		rot = objects[lara.back_gun].frame_base + 9;
+		gar_RotYXZsuperpack(&rot, 14);
+		phd_PutPolygonsSpcXLU(meshes[objects[lara.back_gun].mesh_index + 28], -1);
+		phd_PopMatrix();
+	}
+#endif
 
 	phd_PopMatrix();
 	phd_left = left;

@@ -533,6 +533,9 @@
 #define number_boxes	VAR_U_(0x00EEFB68, long)
 #define DrawPrimitiveCnt    VAR_U_(0x00D9AD98, long)
 #define SortCount	VAR_U_(0x00BA4384, long)
+#define skelly_backgunbak	VAR_U_(0x00E6D732, short)
+#define skelly_rhandbak	VAR_U_(0x00E6D840, short*)
+#define skelly_lhandbak	VAR_U_(0x00E6D828, short*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
