@@ -8,6 +8,7 @@ void phd_PutPolygons(short* objptr, int clipstatus);
 void phd_PutPolygonSkyMesh(short* objptr, int clipstatus);
 void aTransformLightClipMesh(MESH_DATA* mesh);
 void phd_PutPolygonsPickup(short* objptr, float x, float y, long color);
+void aTransformLightPrelightClipMesh(MESH_DATA* mesh);
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
@@ -22,6 +23,5 @@ void phd_PutPolygonsPickup(short* objptr, float x, float y, long color);
 #define S_OutputPolyList	( (void(__cdecl*)()) 0x004B79A0 )
 #define S_DumpScreen	( (long(__cdecl*)()) 0x004B7DA0 )
 #define aCheckMeshClip	( (int(__cdecl*)(MESH_DATA*)) 0x004B2800 )
-#define aTransformLightPrelightClipMesh	( (void(__cdecl*)(MESH_DATA*)) 0x004B35F0 )
 #define do_boot_screen	( (void(__cdecl*)(int)) 0x004B8A80 )
 #define S_GetObjectBounds	( (long(__cdecl*)(short*)) 0x004B7EB0 )

@@ -536,6 +536,7 @@
 #define skelly_backgunbak	VAR_U_(0x00E6D732, short)
 #define skelly_rhandbak	VAR_U_(0x00E6D840, short*)
 #define skelly_lhandbak	VAR_U_(0x00E6D828, short*)
+#define StaticMeshShade	VAR_U_(0x0087B0DC, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
