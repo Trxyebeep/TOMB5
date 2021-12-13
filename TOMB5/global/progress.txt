@@ -2122,7 +2122,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004C36B0		DrawBinoculars
 0x004C3EB0		aSetXY4
 0x004C4130		S_DrawDrawSparks
-0x004C4790		S_DrawDrawSparksNEW
+0x004C4790	+	S_DrawDrawSparksNEW
 0x004C4C60		S_DrawSparks
 0x004C54F0		_0x004C54F0
 0x004C5590		_0x004C5590
