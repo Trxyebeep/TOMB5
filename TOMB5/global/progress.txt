@@ -1795,7 +1795,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A2290		DXFindTextureFormat
 0x004A23A0		DXSaveScreen
 0x004A27A0		FlashLEDs
-0x004A2880		DXReadKeyboard
+0x004A2880	+	DXReadKeyboard
 0x004A28F0		DXGetKey
 0x004A2970		DXInitInput
 0x004A2C40		EnumJoysticksCallback
