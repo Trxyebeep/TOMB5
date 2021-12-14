@@ -76,10 +76,8 @@ void CalculateCamera()
 	{
 		camera.type = FIXED_CAMERA;
 
-#ifndef SMOOTH_FIXED_CAM
 		if (camera.old_type == FIXED_CAMERA)
 			camera.speed = 1;
-#endif
 	}
 
 	if (gfCurrentLevel == LVL5_STREETS_OF_ROME && (!XATrack || XATrack == 13))
@@ -682,15 +680,7 @@ void FixedCamera()
 	}
 
 	camera.fixed_camera = 1;
-
-#ifdef SMOOTH_FIXED_CAM
-	fixed = &camera.fixed[camera.number];
-
-	if (UseForcedFixedCamera || !(fixed->flags & 2))//trapdoor fixed cams and not the stupid sniper :)
-		MoveCamera(&ideal, 30);
-	else
-#endif
-		MoveCamera(&ideal, 1);
+	MoveCamera(&ideal, 1);
 
 	if (camera.timer)
 	{
@@ -821,10 +811,8 @@ void ChaseCamera(ITEM_INFO* item)
 	ideal.room_number = ideals[farthestnum].room_number;
 	CameraCollisionBounds(&ideal, 384, 1);
 
-#ifndef SMOOTH_FIXED_CAM
 	if (camera.old_type == FIXED_CAMERA)
 		camera.speed = 1;
-#endif
 
 	MoveCamera(&ideal, camera.speed);
 }
@@ -982,10 +970,8 @@ void CombatCamera(ITEM_INFO* item)
 	ideal.room_number = ideals[farthestnum].room_number;
 	CameraCollisionBounds(&ideal, 384, 1);
 
-#ifndef SMOOTH_FIXED_CAM
 	if (camera.old_type == FIXED_CAMERA)
 		camera.speed = 1;
-#endif
 
 	MoveCamera(&ideal, camera.speed);
 }
