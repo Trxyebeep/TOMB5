@@ -28,6 +28,11 @@
 
 uchar dels_cutseq_selector_cursorpos = 0;
 
+char available_levels[40] =
+{
+	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+};
+
 struct cutseq_selector_item
 {
 	short string;//string to show
@@ -323,6 +328,9 @@ int TitleOptions()
 	static long load_or_new;
 	static long always0 = 0;//leftover debug thing? if it's ever 1, the menu and logo don't show.
 	static long gfLevelComplete_bak;
+	static long menu_to_display = 0;//0 main menu, del's cutseq selector. 1 level select. 2 the reload menu. 3 the options menu
+	static long selected_level = 0;
+	static __int64 selected_option = 1;
 	static __int64 selected_option_bak = 0;
 
 	ret = 0;
@@ -561,7 +569,7 @@ int TitleOptions()
 
 			if (menu_to_display != 0)
 			{
-				if (menu_to_display == 1 && level_select_names[selected_level])
+				if (menu_to_display == 1 && available_levels[selected_level])
 				{
 					gfLevelComplete = 0;
 

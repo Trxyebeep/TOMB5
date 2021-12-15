@@ -543,20 +543,11 @@
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
 //if 0 + playing cut menu selections dont make a sound. never seems to be the case though!
 
-#define selected_option	VAR_U_(0x005082F0, __int64)
-
-#define menu_to_display	VAR_U_(0x0051CE40, int)//which menu should we be displaying right now??
-//0 main menu, del's cutseq selector. 1 level select. 2 the reload menu. 3 the options menu
-
 #define DoFade	VAR_U_(0x00C87BF0, int)// 2 everywhere, 1 in loading screens
 
 #define title_string	ARRAY_(0x0050842C, char, [8])
 
 #define nframes	VAR_U_(0x005082C4, int)
-
-#define selected_level	VAR_U_(0x0051CE50, int)//# (on the list) of the selected level in the level select menu
-
-#define level_select_names	ARRAY_(0x005082C8, char, [40])
 
 #define CreditsDone	VAR_U_(0x00E6D838, uchar)
 #define CanLoad	VAR_U_(0x0051CE54, char)

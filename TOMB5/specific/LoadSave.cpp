@@ -971,7 +971,7 @@ void DoOptions()
 #ifdef GENERAL_FIXES	//new menu
 	else if (menu == 200)
 	{
-		num = 10;
+		num = 11;
 		PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 2, "FootPrints", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 2, "Point light shadows", 0);
@@ -983,6 +983,7 @@ void DoOptions()
 		PrintString(phd_centerx >> 2, (ushort)(textY + 10 * font_height), selection & 0x80 ? 1 : 2, "Bar positions", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 11 * font_height), selection & 0x100 ? 1 : 2, "Enemy bars", 0);
 		PrintString(phd_centerx >> 2, (ushort)(textY + 12 * font_height), selection & 0x200 ? 1 : 2, "Ammo counter", 0);
+		PrintString(phd_centerx >> 2, (ushort)(textY + 13 * font_height), selection & 0x400 ? 1 : 2, "Gameover menu", 0);
 
 		if (dbinput & IN_FORWARD)
 		{
@@ -1083,6 +1084,13 @@ void DoOptions()
 			strcpy(quality_text, "off");
 
 		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 12 * font_height), selection & 0x200 ? 1 : 6, quality_text, 0);
+
+		if (tomb5.gameover)
+			strcpy(quality_text, "on");
+		else
+			strcpy(quality_text, "off");
+
+		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 13 * font_height), selection & 0x400 ? 1 : 6, quality_text, 0);
 
 		if (selection & 1)
 		{
@@ -1201,6 +1209,15 @@ void DoOptions()
 			{
 				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 				tomb5.ammo_counter = !tomb5.ammo_counter;
+				save_new_tomb5_settings();
+			}
+		}
+		else if (selection & 0x400)
+		{
+			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+				tomb5.gameover = !tomb5.gameover;
 				save_new_tomb5_settings();
 			}
 		}

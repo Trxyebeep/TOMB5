@@ -32,6 +32,9 @@ void FlipMap(long FlipNumber);
 void RemoveRoomFlipItems(ROOM_INFO* r);
 void AddRoomFlipItems(ROOM_INFO* r);
 void RefreshCamera(short type, short* data);
+#ifdef GENERAL_FIXES
+long S_Death();
+#endif
 
 extern uchar ShatterSounds[18][10];
 
