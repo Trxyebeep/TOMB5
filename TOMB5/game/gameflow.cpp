@@ -344,9 +344,11 @@ int TitleOptions()
 			gfLevelComplete = (uchar)gfLevelComplete_bak;
 			gfLevelComplete_bak = 0;
 			load_or_new = 0;
+#ifndef GENERAL_FIXES
 			always0 = 0;
 			menu_to_display = 0;
-			selected_option = 1;		
+			selected_option = 1;
+#endif
 			return ret2;
 		}
 
