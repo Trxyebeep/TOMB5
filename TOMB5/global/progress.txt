@@ -1932,7 +1932,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A9CB0		FreeD3DLights
 0x004A9CD0		ApplyMatrix
 0x004A9D60		ApplyTransposeMatrix
-0x004A9DF0		S_CalculateStaticMeshLight
+0x004A9DF0	+	S_CalculateStaticMeshLight
 0x004A9E60	+	CalcAmbientLight
 0x004A9FE0	+	FadeLightList
 0x004AA0C0		ShowOmni

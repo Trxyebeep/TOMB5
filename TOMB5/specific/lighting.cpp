@@ -434,6 +434,17 @@ void CalcAmbientLight(ITEM_INFO* item)
 	}
 }
 
+void S_CalculateStaticMeshLight(int x, int y, int z, int shade, ROOM_INFO* r)
+{
+	StaticMesh.il.ambient = r->ambient;
+	StaticMesh.il.item_pos.x = x;
+	StaticMesh.il.item_pos.y = y;
+	StaticMesh.il.item_pos.z = z;
+	StaticMesh.room_number = CurrentRoom;
+	StaticMeshShade = shade;
+	current_item = &StaticMesh;
+}
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
@@ -442,4 +453,5 @@ void inject_lighting(bool replace)
 	INJECT(0x004A9FE0, FadeLightList, replace);
 	INJECT(0x004AAF00, SuperResetLights, replace);
 	INJECT(0x004A9E60, CalcAmbientLight, replace);
+	INJECT(0x004A9DF0, S_CalculateStaticMeshLight, replace);
 }

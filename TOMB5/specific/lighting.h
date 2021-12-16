@@ -9,6 +9,7 @@ void CreateLightList(ITEM_INFO* item);
 void FadeLightList(PCLIGHT* lights, long nLights);
 void SuperResetLights();
 void CalcAmbientLight(ITEM_INFO* item);
+void S_CalculateStaticMeshLight(int x, int y, int z, int shade, ROOM_INFO* r);
 
 #ifdef GENERAL_FIXES
 extern SPOTLIGHT_STRUCT SpotLights[64];
@@ -19,5 +20,4 @@ extern SPOTLIGHT_STRUCT SpotLights[64];
 #define InitDynamicLighting_noparams	( (void(__cdecl*)()) 0x004AB930 )
 #define InitDynamicLighting	( (void(__cdecl*)(ITEM_INFO*)) 0x004AB950 )
 #define InitObjectFogBulbs	( (void(__cdecl*)()) 0x004AB580 )
-#define S_CalculateStaticMeshLight	( (void(__cdecl*)(long, long, long, long, ROOM_INFO*)) 0x004A9DF0 )
 #define ShowOmni	( (void(__cdecl*)(long, long, long, long)) 0x004AA0C0 )
