@@ -1792,10 +1792,19 @@ void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz)
 			v[2].specular = 0xFF000000;
 			v[3].specular = 0xFF000000;
 
-			if (sptr->TransType)
-				tex.drawtype = 2;
+#ifdef GENERAL_FIXES
+			if (sptr->TransType == 3)
+				tex.drawtype = 5;
 			else
-				tex.drawtype = 1;
+			{
+#endif
+				if (sptr->TransType)
+					tex.drawtype = 2;
+				else
+					tex.drawtype = 1;
+#ifdef GENERAL_FIXES
+			}
+#endif
 
 			tex.tpage = sprite->tpage;
 			tex.u1 = sprite->x1;

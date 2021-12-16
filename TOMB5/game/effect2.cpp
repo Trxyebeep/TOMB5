@@ -339,15 +339,35 @@ void ControlSmokeEmitter(short item_number)
 	{
 		sptr = &spark[GetFreeSpark()];
 		sptr->On = 1;
-		sptr->sR = 0;
-		sptr->sG = 0;
-		sptr->sB = 0;
-		sptr->dR = 64;
-		sptr->dG = 64;
-		sptr->dB = 64;
-		sptr->FadeToBlack = 16;
-		sptr->ColFadeSpeed = (GetRandomControl() & 3) + 8;
-		sptr->Life = (GetRandomControl() & 7) + 28;
+
+#ifdef GENERAL_FIXES
+		if (item->object_number == SMOKE_EMITTER_BLACK)
+		{
+			sptr->sR = 255;
+			sptr->sG = 255;
+			sptr->sB = 255;
+			sptr->dR = 255;
+			sptr->dG = 255;
+			sptr->dB = 255;
+			sptr->FadeToBlack = 8;
+			sptr->ColFadeSpeed = (GetRandomControl() & 3) + 20;
+			sptr->Life = (GetRandomControl() & 7) + 38;
+		}
+		else
+		{
+#endif
+			sptr->sR = 0;
+			sptr->sG = 0;
+			sptr->sB = 0;
+			sptr->dR = 64;
+			sptr->dG = 64;
+			sptr->dB = 64;
+			sptr->FadeToBlack = 16;
+			sptr->ColFadeSpeed = (GetRandomControl() & 3) + 8;
+			sptr->Life = (GetRandomControl() & 7) + 28;
+#ifdef GENERAL_FIXES
+		}
+#endif
 		sptr->sLife = sptr->Life;
 
 		if (item->object_number == SMOKE_EMITTER_BLACK)

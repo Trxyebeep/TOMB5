@@ -84,6 +84,24 @@ void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, sho
 
 		break;
 
+#ifdef GENERAL_FIXES
+	case 5:
+
+		if (App.dx.lpZBuffer)
+			App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, 0);
+
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, 0);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, 1);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ZERO);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCCOLOR);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+		DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[texture].tex));
+		App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, info, num_verts, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, 1);
+		break;
+#endif
+
 	case 6:
 
 		if (App.dx.lpZBuffer)
@@ -195,6 +213,9 @@ void DrawSortList()
 				else
 				{
 					//literal copy of HWR_DrawSortList, but ok
+#ifdef GENERAL_FIXES
+					HWR_DrawSortList(bVtxbak, nVtx, tpage, drawtype);
+#else
 					switch (drawtype)
 					{
 					case 0:
@@ -300,6 +321,7 @@ void DrawSortList()
 					}
 
 					DrawPrimitiveCnt++;
+#endif
 					drawtype = pSort->drawtype;
 					tpage = pSort->tpage;
 					bVtx = bVtxbak;
@@ -316,7 +338,11 @@ void DrawSortList()
 		{
 			pSort = SortList[num];
 
+#ifdef GENERAL_FIXES
+			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 5 || pSort->drawtype == 6 || pSort->drawtype == 7)
+#else
 			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 6 || pSort->drawtype == 7)
+#endif
 				break;
 		}
 
@@ -330,7 +356,11 @@ void DrawSortList()
 		{
 			pSort = SortList[num];
 
+#ifdef GENERAL_FIXES
+			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 5 || pSort->drawtype == 6 || pSort->drawtype == 7)
+#else
 			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 6 || pSort->drawtype == 7)
+#endif
 			{
 				if (pSort->tpage == tpage && pSort->drawtype == drawtype)
 				{
