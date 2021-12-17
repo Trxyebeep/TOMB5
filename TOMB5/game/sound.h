@@ -9,8 +9,7 @@ void SOUND_Init();
 void SOUND_Stop();
 void StopSoundEffect(long sfx);
 void GetPanVolume(SoundSlot* slot);
-
-#define SoundEffect	( (long(__cdecl*)(long, PHD_3DPOS*, int)) 0x00478570 )
+long SoundEffect(long sfx, PHD_3DPOS* pos, long flags);
 
 enum sfx_types
 {

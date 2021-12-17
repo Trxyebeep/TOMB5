@@ -9,7 +9,6 @@ int KeyTrigger(short item_num);
 int PickupTrigger(short item_num);
 void PuzzleDoneCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
 void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
-#define j_PuzzleHoleCollision	( (void(__cdecl*)(short, ITEM_INFO*, COLL_INFO*)) 0x004030C6 )//yeet this out of existence once RestoreLevelData is decompiled (see ObjectObjects)
 void SearchObjectControl(short item_number);
 void SearchObjectCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
 void MonitorScreenCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);

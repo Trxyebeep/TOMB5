@@ -1705,6 +1705,121 @@ void setXY4(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3
 	clip[3] = clip_distance;
 }
 
+void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz)
+{
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	float x0, y0, x1, y1, x2, y2, x3, y3;
+	float fs1, fs2, sin, cos, sinf1, sinf2, cosf1, cosf2;
+	long s, scale, s1, s2;
+
+	if (!(sptr->Flags & 8))
+		return;
+
+	if (xyz[2] <= f_mznear || xyz[2] >= f_mzfar)
+	{
+		if (xyz[2] >= f_mzfar)
+			sptr->On = 0;
+	}
+	else
+	{
+		if (sptr->Flags & 2)
+		{
+			scale = sptr->Size << sptr->Scalar;
+			s = ((phd_persp * sptr->Size) << sptr->Scalar) / (long)xyz[2];
+			s1 = s;
+			s2 = s;
+
+			if (s > scale)
+				s1 = scale;
+			else if (s < smallest_size)
+				s1 = smallest_size;
+
+			if (s > scale)
+				s1 = scale;
+			else if (s < smallest_size)
+				s2 = smallest_size;
+		}
+		else
+		{
+			s1 = sptr->Size;
+			s2 = s1;
+		}
+
+		fs1 = (float)s1;
+		fs2 = (float)s2;
+
+		if ((fs1 * 2) + xyz[0] >= f_left && xyz[0] - (fs1 * 2) < f_right && (fs2 * 2) + xyz[1] >= f_top && xyz[1] - (fs2 * 2) < f_bottom)
+		{
+			fs1 *= 0.5F;
+			fs2 *= 0.5F;
+
+			if (sptr->Flags & 0x10)
+			{
+				sin = fSin(sptr->RotAng << 1);
+				cos = fCos(sptr->RotAng << 1);
+				sinf1 = sin * fs1;
+				sinf2 = sin * fs2;
+				cosf1 = cos * fs1;
+				cosf2 = cos * fs2;
+				x0 = cosf2 - sinf1 + xyz[0];
+				y0 = xyz[1] - cosf1 - sinf2;
+				x1 = sinf1 + cosf2 + xyz[0];
+				y1 = cosf1 + xyz[1] - sinf2;
+				x2 = sinf1 - cosf2 + xyz[0];
+				y2 = cosf1 + xyz[1] + sinf2;
+				x3 = -sinf1 - cosf2 + xyz[0];
+				y3 = xyz[1] - cosf1 + sinf2;
+				aSetXY4(v, x0, y0, x1, y1, x2, y2, x3, y3, xyz[2], clipflags);
+			}
+			else
+			{
+				x0 = xyz[0] - fs1;
+				x1 = fs1 + xyz[0];
+				y0 = xyz[1] - fs2;
+				y1 = fs2 + xyz[1];
+				aSetXY4(v, x0, y0, x1, y0, x1, y1, x0, y1, xyz[2], clipflags);
+			}
+
+			sprite = &spriteinfo[sptr->Def];
+			v[0].color = RGBA(sptr->R, sptr->G, sptr->B, 0xFF);//sptr->B | ((sptr->G | ((sptr->R | 0xFFFFFF00) << 8)) << 8);
+			v[1].color = v[0].color;
+			v[2].color = v[0].color;
+			v[3].color = v[0].color;
+			v[0].specular = 0xFF000000;
+			v[1].specular = 0xFF000000;
+			v[2].specular = 0xFF000000;
+			v[3].specular = 0xFF000000;
+
+#ifdef GENERAL_FIXES
+			if (sptr->TransType == 3)
+				tex.drawtype = 5;
+			else
+			{
+#endif
+				if (sptr->TransType)
+					tex.drawtype = 2;
+				else
+					tex.drawtype = 1;
+#ifdef GENERAL_FIXES
+			}
+#endif
+
+			tex.tpage = sprite->tpage;
+			tex.u1 = sprite->x1;
+			tex.v1 = sprite->y1;
+			tex.u2 = sprite->x2;
+			tex.v2 = sprite->y1;
+			tex.u3 = sprite->x2;
+			tex.v3 = sprite->y2;
+			tex.u4 = sprite->x1;
+			tex.v4 = sprite->y2;
+			AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+		}
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -1718,4 +1833,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C09E0, setXYZ4, replace);
 	INJECT(0x004C0810, setXY3, replace);
 	INJECT(0x004C05B0, setXY4, replace);
+	INJECT(0x004C4790, S_DrawDrawSparksNEW, replace);
 }

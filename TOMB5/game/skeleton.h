@@ -5,6 +5,5 @@ void inject_skelly(bool replace);
 
 void InitialiseSkeleton(short item_number);
 void SkeletonControl(short item_number);
-
-#define TriggerSkeletonFire	( (void(__cdecl*)(ITEM_INFO*)) 0x00477D50 )
-#define TriggerFontFire	( (void(__cdecl*)(ITEM_INFO*, int, int)) 0x00477ED0 )
+void TriggerSkeletonFire(ITEM_INFO* item);
+void TriggerFontFire(ITEM_INFO* item, long num, long loop);

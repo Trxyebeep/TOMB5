@@ -89,6 +89,11 @@
 #include "../specific/registry.h"
 #include "../game/savegame.h"
 #include "../game/sound.h"
+#include "../specific/audio.h"
+#include "../game/mirror.h"
+#include "../game/lot.h"
+#include "../specific/polyinsert.h"
+#include "../specific/dxshell.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -197,6 +202,11 @@ void inject_all(bool replace)
 	inject_registry(replace);
 	inject_savegame(replace);
 	inject_sound(replace);
+	inject_audio(replace);
+	inject_mirror(replace);
+	inject_lot(replace);
+	inject_polyinsert(replace);
+	inject_dxshell(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

@@ -206,20 +206,41 @@ void LaraCheatGetStuff()
 #endif
 }
 
-#ifdef ENABLE_CHEATS
+#if ENABLE_CHEATS
 void LaraCheatyBits()
 {
+#ifdef TRF	//public releases have cheats in inventory, except for DOZY
+	if (keymap[DIK_D] && keymap[DIK_O] && keymap[DIK_Z] && keymap[DIK_Y])
+	{
+		lara_item->pos.y_pos -= 128;
+
+		if (lara.water_status != LW_FLYCHEAT)
+		{
+			lara.water_status = LW_FLYCHEAT;
+			lara_item->frame_number = anims[ANIM_SWIMCHEAT].frame_base;
+			lara_item->anim_number = ANIM_SWIMCHEAT;
+			lara_item->current_anim_state = AS_SWIMCHEAT;
+			lara_item->goal_anim_state = AS_SWIMCHEAT;
+			lara_item->gravity_status = 0;
+			lara_item->pos.x_rot = 5460;
+			lara_item->fallspeed = 30;
+			lara.air = 1800;
+			lara.death_count = 0;
+			lara.torso_y_rot = 0;
+			lara.torso_x_rot = 0;
+			lara.head_y_rot = 0;
+			lara.head_x_rot = 0;
+		}
+	}
+#else
+
 #ifndef GENERAL_FIXES	//make cheats available
 	if (!Gameflow->CheatEnabled)
 		return;
 #endif
 
 #ifdef GENERAL_FIXES
-#ifdef TRF
-	if (keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_E] && keymap[DIK_M])
-#else
 	if (keymap[DIK_F1])
-#endif
 #else
 	if (input & IN_D)
 #endif
@@ -229,11 +250,7 @@ void LaraCheatyBits()
 	}
 
 #ifdef GENERAL_FIXES
-#ifdef TRF
-	if (keymap[DIK_D] && keymap[DIK_O] && keymap[DIK_Z] && keymap[DIK_Y])
-#else
 	if (keymap[DIK_F2])
-#endif
 #else
 	if (input & IN_CHEAT)
 #endif
@@ -264,19 +281,17 @@ void LaraCheatyBits()
 	}
 
 #ifdef GENERAL_FIXES
-#ifdef TRF
-	if (keymap[DIK_N] && keymap[DIK_E] && keymap[DIK_X] && keymap[DIK_T])
-#else
 	if (keymap[DIK_F3])
-#endif
 	{
 		gfLevelComplete = gfCurrentLevel + 1;
 		SCNoDrawLara = 0;
+		bDisableLaraControl = 0;
 	}
 #endif
 
+#endif	//TRF
 }
-#endif
+#endif	//ENABLE_CHEATS
 
 void AnimateLara(ITEM_INFO* item)
 {

@@ -38,6 +38,10 @@
 #include "deltapak.h"
 #include "../tomb5/tomb5.h"
 #endif
+#ifdef GENERAL_FIXES
+#include "../specific/output.h"
+#include "../specific/gamemain.h"
+#endif
 
 uchar ShatterSounds[18][10] =
 {
@@ -131,23 +135,40 @@ long ControlPhase(long _nframes, int demo_mode)
 		if (gfLevelComplete)
 			return 3;
 
-		if (reset_flag || lara.death_count > 300 || (lara.death_count > 60 && input != IN_NONE))
+#ifdef GENERAL_FIXES
+		if (tomb5.gameover)
 		{
-			if (Gameflow->DemoDisc && reset_flag)
+			if (reset_flag)
 			{
 				reset_flag = 0;
-				return 4;
-			}
-			else
-			{
-				reset_flag = 0;
-#ifdef GENERAL_FIXES	//open load menu on if player dies
-				GetSaveLoadFiles();
-				menu_to_display = 2;
-#endif
 				return 1;
 			}
+
+			if (lara.death_count > 90)
+			{
+				reset_flag = 0;
+				return S_Death();
+			}
 		}
+		else
+		{
+#endif
+			if (reset_flag || lara.death_count > 300 || (lara.death_count > 60 && input != IN_NONE))
+			{
+				if (Gameflow->DemoDisc && reset_flag)
+				{
+					reset_flag = 0;
+					return 4;
+				}
+				else
+				{
+					reset_flag = 0;
+					return 1;
+				}
+			}
+#ifdef GENERAL_FIXES
+		}
+#endif
 
 		if (demo_mode && input == IN_ALL)
 			input = IN_NONE;
@@ -216,22 +237,6 @@ long ControlPhase(long _nframes, int demo_mode)
 
 					break;
 				}
-			}
-			else if (LaserSight && (lara.request_gun_type == WEAPON_PISTOLS || lara.request_gun_type == WEAPON_NONE))
-			{
-				BinocularRange = 0;
-				LaserSight = 0;
-				AlterFOV(14560);
-				lara_item->mesh_bits = -1;
-				lara.Busy = 0;
-				camera.type = BinocularOldCamera;
-				lara.torso_x_rot = 0;
-				lara.torso_y_rot = 0;
-				lara.head_x_rot = 0;
-				lara.head_y_rot = 0;
-				camera.bounce = 0;
-				BinocularOn = -8;
-				input &= ~IN_LOOK;
 			}
 		}
 		else if (BinocularRange)
@@ -2575,6 +2580,96 @@ void RefreshCamera(short type, short* data)
 	if (camera.number == -1 && camera.timer > 0)
 		camera.timer = -1;
 }
+
+#ifdef GENERAL_FIXES
+long S_Death()
+{
+	long selection, menu, ret;
+
+	CreateMonoScreen();
+	selection = 0;
+	menu = 0;
+	ret = 0;
+
+	while (!ret)
+	{
+		S_InitialisePolyList();
+		SetDebounce = 1;
+		S_UpdateInput();
+		UpdatePulseColour();
+		lara.death_count++;
+		S_DisplayMonoScreen();
+
+		if (Gameflow->LoadSaveEnabled)
+		{
+			if (!menu)	//"main" menu
+			{
+				PrintString(phd_centerx, phd_centery, 3, SCRIPT_TEXT(STR_GAME_OVER), FF_CENTER);
+				PrintString(phd_centerx, phd_centery + 2 * font_height, !selection ? 1 : 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
+				PrintString(phd_centerx, phd_centery + 3 * font_height, selection == 1 ? 1 : 2, SCRIPT_TEXT(STR_EXIT_TO_TITLE), FF_CENTER);
+
+				if (selection)
+				{
+					if (dbinput & IN_FORWARD)
+					{
+						selection = 0;
+						SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+					}
+
+					if (dbinput & IN_SELECT)
+					{
+						lara.death_count = 0;
+						ret = 1;
+						SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+					}
+				}
+				else
+				{
+					if (dbinput & IN_BACK)
+					{
+						selection = 1;
+						SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+					}
+
+					if (dbinput & IN_SELECT)
+					{
+						menu = 1;
+						SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+					}
+				}
+			}
+			else if (menu == 1)	//reload
+			{
+				lara.death_count = 0;
+				ret = go_and_load_game();
+
+				if (ret)
+				{
+					if (ret > 0)
+						ret = 2;
+					else
+					{
+						menu = 0;
+						ret = 0;
+					}
+				}
+			}
+		}
+		else
+		{
+			PrintString(phd_centerx, phd_centery, 3, SCRIPT_TEXT(STR_GAME_OVER), FF_CENTER);
+
+			if (lara.death_count > 300 || (lara.death_count > 150 && input != IN_NONE))
+				return 1;
+		}
+
+		S_OutputPolyList();
+		camera.number_frames = S_DumpScreen();
+	}
+
+	return ret;
+}
+#endif
 
 void inject_control(bool replace)
 {

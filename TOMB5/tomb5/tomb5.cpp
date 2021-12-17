@@ -53,6 +53,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "ammo_counter");
 		tomb5.ammo_counter = 0;							//off
 		REG_WriteBool(buf, tomb5.ammo_counter);
+
+		sprintf(buf, "gameover");
+		tomb5.gameover = 1;								//on
+		REG_WriteBool(buf, tomb5.gameover);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -85,6 +89,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "ammo_counter");
 		REG_ReadBool(buf, tomb5.ammo_counter, 0);
+
+		sprintf(buf, "gameover");
+		REG_ReadBool(buf, tomb5.gameover, 1);
 	}
 
 	CloseRegistry();
@@ -124,6 +131,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "ammo_counter");
 	REG_WriteBool(buf, tomb5.ammo_counter);
+
+	sprintf(buf, "gameover");
+	REG_WriteBool(buf, tomb5.gameover);
 
 	CloseRegistry();
 }

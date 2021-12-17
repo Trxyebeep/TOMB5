@@ -168,7 +168,6 @@ int S_CallInventory2()
 
 		do_debounced_joystick_poo();
 
-#ifndef TRF
 		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
 			keymap[DIK_G] && keymap[DIK_U] && keymap[DIK_N] && keymap[DIK_S])//GUNS
 			dels_give_lara_guns_cheat();
@@ -176,12 +175,31 @@ int S_CallInventory2()
 		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
 			keymap[DIK_B] && keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_S])//BITS
 		{
+#ifndef GENERAL_FIXES	//no items with BITS
 			dels_give_lara_items_cheat();
+#endif
 			savegame.CampaignSecrets[0] = 9;
 			savegame.CampaignSecrets[1] = 9;
 			savegame.CampaignSecrets[2] = 9;
 			savegame.CampaignSecrets[3] = 9;
 		}
+
+#ifdef TRF
+		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
+			keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_E] && keymap[DIK_M])	//ITEM
+			dels_give_lara_items_cheat();
+
+		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
+			keymap[DIK_S] && keymap[DIK_K] && keymap[DIK_I] && keymap[DIK_P])	//SKIP
+		{
+			gfLevelComplete = gfCurrentLevel + 1;
+			SCNoDrawLara = 0;
+			bDisableLaraControl = 0;
+		}
+
+		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
+			keymap[DIK_H] && keymap[DIK_E] && keymap[DIK_A] && keymap[DIK_L])	//heal
+			lara_item->hit_points = 1000;
 #endif
 
 		if (GLOBAL_invkeypadmode)
@@ -1074,9 +1092,9 @@ void draw_current_object_list(int ringnum)
 						nummeup = lara.puzzleitems[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number - PUZZLE_ITEM1];
 
 						if (nummeup <= 1)
-							sprintf(textbufme, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+							sprintf(textbufme, SCRIPT_TEXT(inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname));
 						else
-							sprintf(textbufme, "%d x %s", nummeup, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+							sprintf(textbufme, "%d x %s", nummeup, SCRIPT_TEXT(inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname));
 					}
 
 					break;
@@ -1088,14 +1106,14 @@ void draw_current_object_list(int ringnum)
 					if (nummeup)
 					{
 						if (inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number == PICKUP_ITEM4)
-							sprintf(textbufme, &gfStringWad[gfStringOffset_bis[STR_SECRETS_NUM]], nummeup, wanky_secrets_table[gfCurrentLevel]);
+							sprintf(textbufme, SCRIPT_TEXT_bis(STR_SECRETS_NUM), nummeup, wanky_secrets_table[gfCurrentLevel]);
 						else if (nummeup == -1)
-							sprintf(textbufme, &gfStringWad[gfStringOffset[STR_UNLIMITED]], &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+							sprintf(textbufme, SCRIPT_TEXT(STR_UNLIMITED), SCRIPT_TEXT(inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname));
 						else
-							sprintf(textbufme, "%d x %s", nummeup, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+							sprintf(textbufme, "%d x %s", nummeup, SCRIPT_TEXT(inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname));
 					}
 					else
-						sprintf(textbufme, &gfStringWad[gfStringOffset[inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname]]);
+						sprintf(textbufme, SCRIPT_TEXT(inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname));
 				}
 
 				if (ringnum == RING_INVENTORY)
@@ -1237,7 +1255,7 @@ void handle_inventry_menu()
 
 	if (rings[RING_AMMO]->ringactive)
 	{
-		PrintString(phd_centerx, phd_centery, 1, &gfStringWad[gfStringOffset[optmessages[5]]], FF_CENTER);
+		PrintString(phd_centerx, phd_centery, 1, SCRIPT_TEXT(optmessages[5]), FF_CENTER);
 
 		if (rings[RING_INVENTORY]->objlistmovement)
 			return;
@@ -1290,56 +1308,56 @@ void handle_inventry_menu()
 			if ((opts & 0x1000))
 			{
 				current_options[0].type = 9;
-				current_options[0].text = &gfStringWad[gfStringOffset[optmessages[6]]];
+				current_options[0].text = SCRIPT_TEXT(optmessages[6]);
 				n = 1;
 			}
 
 			if ((opts & 0x2000))
 			{
 				current_options[n].type = 10;
-				current_options[n].text = &gfStringWad[gfStringOffset[optmessages[7]]];
+				current_options[n].text = SCRIPT_TEXT(optmessages[7]);
 				n++;
 			}
 
 			if ((opts & 0x20))
 			{
 				current_options[n].type = 11;
-				current_options[n].text = &gfStringWad[gfStringOffset[optmessages[8]]];
+				current_options[n].text = SCRIPT_TEXT(optmessages[8]);
 				n++;
 			}
 
 			if ((opts & 0x8000))
 			{
 				current_options[n].type = 12;
-				current_options[n].text = &gfStringWad[gfStringOffset[optmessages[9]]];
+				current_options[n].text = SCRIPT_TEXT(optmessages[9]);
 				n++;
 			}
 
 			if ((opts & 0x4))
 			{
 				current_options[n].type = 1;
-				current_options[n].text = &gfStringWad[gfStringOffset[optmessages[0]]];
+				current_options[n].text = SCRIPT_TEXT(optmessages[0]);
 				n++;
 			}
 
 			if ((opts & 0x2))
 			{
 				current_options[n].type = 5;
-				current_options[n].text = &gfStringWad[gfStringOffset[optmessages[4]]];
+				current_options[n].text = SCRIPT_TEXT(optmessages[4]);
 				n++;
 			}
 
 			if ((opts & 0xC0))
 			{
 				current_options[n].type = 2;
-				current_options[n].text = &gfStringWad[gfStringOffset[optmessages[1]]];
+				current_options[n].text = SCRIPT_TEXT(optmessages[1]);
 				n++;
 			}
 
 			if ((opts & 0x100))
 			{
 				current_options[n].type = 2;
-				current_options[n].text = &gfStringWad[gfStringOffset[optmessages[10]]];
+				current_options[n].text = SCRIPT_TEXT(optmessages[10]);
 				n++;
 			}
 
@@ -1348,7 +1366,7 @@ void handle_inventry_menu()
 				if (is_item_currently_combinable((short)num))
 				{
 					current_options[n].type = 3;
-					current_options[n].text = &gfStringWad[gfStringOffset[optmessages[2]]];
+					current_options[n].text = SCRIPT_TEXT(optmessages[2]);
 					n++;
 				}
 			}
@@ -1356,30 +1374,30 @@ void handle_inventry_menu()
 			if ((opts & 0x1))
 			{
 				current_options[n].type = 3;
-				current_options[n].text = &gfStringWad[gfStringOffset[optmessages[2]]];
+				current_options[n].text = SCRIPT_TEXT(optmessages[2]);
 				n++;
 			}
 
 			if ((opts & 0x10))
 			{
 				current_options[n].type = 4;
-				current_options[n].text = &gfStringWad[gfStringOffset[optmessages[3]]];
+				current_options[n].text = SCRIPT_TEXT(optmessages[3]);
 				n++;
 			}
 		}
 		else
 		{
 			current_options[0].type = 6;
-			current_options[0].text = &gfStringWad[gfStringOffset[inventry_objects_list[ammo_object_list[0].invitem].objname]];
+			current_options[0].text = SCRIPT_TEXT(inventry_objects_list[ammo_object_list[0].invitem].objname);
 			current_options[1].type = 7;
-			current_options[1].text = &gfStringWad[gfStringOffset[inventry_objects_list[ammo_object_list[1].invitem].objname]];
+			current_options[1].text = SCRIPT_TEXT(inventry_objects_list[ammo_object_list[1].invitem].objname);
 			n = 2;
 
 			if ((options_table[rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem] & 0x100))
 			{
 				n = 3;
 				current_options[2].type = 8;
-				current_options[2].text = &gfStringWad[gfStringOffset[inventry_objects_list[ammo_object_list[2].invitem].objname]];
+				current_options[2].text = SCRIPT_TEXT(inventry_objects_list[ammo_object_list[2].invitem].objname);
 
 			}
 
@@ -1683,9 +1701,9 @@ void draw_ammo_selector()
 			if (i == current_ammo_type[0])
 			{
 				if (ammo_object_list[i].amount == -1)
-					sprintf(cunter, &gfStringWad[gfStringOffset[STR_UNLIMITED]], &gfStringWad[gfStringOffset[inventry_objects_list[ammo_object_list[i].invitem].objname]]);
+					sprintf(cunter, SCRIPT_TEXT(STR_UNLIMITED), SCRIPT_TEXT(inventry_objects_list[ammo_object_list[i].invitem].objname));
 				else
-					sprintf(cunter, "%d x %s", ammo_object_list[i].amount, &gfStringWad[gfStringOffset[inventry_objects_list[ammo_object_list[i].invitem].objname]]);
+					sprintf(cunter, "%d x %s", ammo_object_list[i].amount, SCRIPT_TEXT(inventry_objects_list[ammo_object_list[i].invitem].objname));
 
 				if (ammo_selector_fade_val)
 					PrintString(phd_centerx, font_height + phd_centery + 2 * font_height - 9, 8, &cunter[0], FF_CENTER);
@@ -2693,8 +2711,7 @@ void do_keypad_mode()
 
 	DrawThreeDeeObject2D((int)(phd_centerx * 0.00390625 * 256.0 + inventry_xpos), (int)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2),
 		INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
-	PrintString(0x100, (ushort)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, 
-		&gfStringWad[gfStringOffset_bis[STR_ENTER_COMBINATION]], FF_CENTER);
+	PrintString(0x100, (ushort)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, SCRIPT_TEXT_bis(STR_ENTER_COMBINATION), FF_CENTER);
 	buf[0] = 45;
 	buf[1] = 45;
 	buf[2] = 45;
@@ -2889,9 +2906,6 @@ void dels_give_lara_items_cheat()
 
 void dels_give_lara_guns_cheat()
 {
-#ifdef TRF
-	return;
-#endif
 #ifdef ENABLE_CHEATS
 	//actually this isn't in the JP exe either, it's taken from PSX code
 	if (objects[FLARE_INV_ITEM].loaded)
@@ -2945,8 +2959,6 @@ void dels_give_lara_guns_cheat()
 		if (objects[SILENCER_ITEM].loaded)
 			lara.silencer = 1;
 	}
-#else
-	return;
 #endif
 }
 

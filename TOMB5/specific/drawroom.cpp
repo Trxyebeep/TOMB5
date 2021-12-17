@@ -174,6 +174,11 @@ void InsertRoomlet(ROOMLET* roomlet)
 	}
 }
 
+void RoomTestThing()
+{
+
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -181,4 +186,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049CE40, DrawClipRectangle, replace);
 	INJECT(0x0049A9D0, InsertRoom, replace);
 	INJECT(0x0049ABF0, InsertRoomlet, replace);
+	INJECT(0x0049A9B0, RoomTestThing, replace);
 }

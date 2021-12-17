@@ -50,6 +50,11 @@ void S_SoundSetMasterVolume()
 
 }
 
+void deadLog(const char* string, ...)
+{
+
+}
+
 void inject_funcStubs(bool replace)
 {
 	INJECT(0x004A7D00, game_malloc, replace);
@@ -58,4 +63,5 @@ void inject_funcStubs(bool replace)
 	INJECT(0x004A7C40, GetRandomDraw, replace);
 	INJECT(0x004A7C90, SeedRandomDraw, replace);
 	INJECT(0x004A7B30, S_SoundSetMasterVolume, replace);
+	INJECT(0x004A7DE0, deadLog, replace);
 }

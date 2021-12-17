@@ -43,7 +43,26 @@ void ItemNewRoom(short item_num, short room_number)
 	r->item_number = item_num;
 }
 
+void InitialiseItemArray(short num)
+{
+	ITEM_INFO* item;
+
+	item = &items[level_items];
+	next_item_free = level_items;
+	next_item_active = NO_ITEM;
+	
+	for (int i = level_items + 1; i < num; i++)
+	{
+		item->next_item = i;
+		item->active = 0;
+		item++;
+	}
+
+	item->next_item = NO_ITEM;
+}
+
 void inject_items(bool replace)
 {
 	INJECT(0x00440DA0, ItemNewRoom, replace);
+	INJECT(0x00440590, InitialiseItemArray, replace);
 }

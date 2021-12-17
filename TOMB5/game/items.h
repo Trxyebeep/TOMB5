@@ -4,6 +4,7 @@
 void inject_items(bool replace);
 
 void ItemNewRoom(short item_num, short room_number);
+void InitialiseItemArray(short num);
 
 #define KillItem	( (void(__cdecl*)(short)) 0x00440620 )
 #define AddActiveItem	( (void(__cdecl*)(short)) 0x00440D10 )

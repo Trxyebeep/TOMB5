@@ -200,7 +200,7 @@ long S_UpdateInput()
 			linput |= IN_LOOK;
 
 		if (Key(MappedControls[8] + 256))
-			input |= IN_ROLL;
+			linput |= IN_ROLL;
 
 		if (Key(MappedControls[9] + 256))
 			linput |= IN_OPTION;
@@ -337,7 +337,7 @@ long S_UpdateInput()
 
 #ifdef WEP_HOTKEYS	//decompiled from TR4, accomodated for TR5!
 
-	if (!(gfLevelFlags & LARA_YOUNG) && (lara.water_status == LW_ABOVE_WATER || lara.water_status == LW_WADE))//Note: TR4 only checks for young lara.
+	if (!(gfLevelFlags & LARA_YOUNG) && (lara.water_status == LW_ABOVE_WATER || lara.water_status == LW_WADE) && !bDisableLaraControl)//Note: TR4 only checks for young lara.
 	{
 		if (keymap[DIK_1])
 		{

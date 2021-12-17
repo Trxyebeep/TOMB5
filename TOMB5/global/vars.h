@@ -59,6 +59,7 @@
 #define GotLaraSpheres	VAR_U_(0x00E51F2E, char)
 #define InItemControlLoop	VAR_U_(0x0051CA53, uchar)
 #define next_item_active	VAR_U_(0x00E5BF22, short)
+#define next_item_free	VAR_U_(0x00E5BF16, short)
 #define next_fx_active	VAR_U_(0x00E5C5FC, short)
 #define KillEverythingFlag	VAR_U_(0x0051CDF4, long)
 #define SmokeCountL	VAR_U_(0x00E6C9E8, long)
@@ -81,7 +82,7 @@
 #define Gameflow	VAR_U_(0x00E5C2BC, GAMEFLOW*)
 #define camera	VAR_U_(0x00EEF940, CAMERA_INFO)
 #define CamOldPos	VAR_U_(0x00EEFB00, PHD_VECTOR)
-#define savegame	VAR_U_(0x00E52EB3, SAVEGAME_INFO)
+#define savegame	VAR_U_(0x00E52EC0, SAVEGAME_INFO)
 #define NumRPickups	VAR_U_(0x00E5970C, uchar)
 #define AnimatingWaterfallsVOffset	VAR_U_(0x0051CF54, int)
 #define next_blood	VAR_U_(0x0051D088, long)
@@ -519,25 +520,35 @@
 #define mesh_base	VAR_U_(0x0087516C, short*)
 #define FmvSceneTriggered	VAR_U_(0x00EEEAD8, long)
 #define number_cameras	VAR_U_(0x00EEFAC0, long)
+#define spec_wibble	VAR_U_(0x0057753C, long)
+#define water_buffer_calced	VAR_U_(0x00577534, long)
+#define acm_ready   VAR_U_(0x0057A00C, bool)
+#define audio_counter   VAR_U_(0x0057A018, long)
+#define num_items	VAR_U_(0x00874250, long)
+#define AnimTextureRanges	VAR_U_(0x00D9ADA0, short*)
+#define nAnimUVRanges	VAR_U_(0x0087495C, long)
+#define LevelFILEptr	VAR_U_(0x00875164, FILE*)
+#define samples_buffer	VAR_U_(0x0086BEDC, char*)
+#define slots_used	VAR_U_(0x0051CEE8, long)
+#define number_boxes	VAR_U_(0x00EEFB68, long)
+#define DrawPrimitiveCnt    VAR_U_(0x00D9AD98, long)
+#define SortCount	VAR_U_(0x00BA4384, long)
+#define skelly_backgunbak	VAR_U_(0x00E6D732, short)
+#define skelly_rhandbak	VAR_U_(0x00E6D840, short*)
+#define skelly_lhandbak	VAR_U_(0x00E6D828, short*)
+#define StaticMeshShade	VAR_U_(0x0087B0DC, long)
+#define G_dxptr	VAR_U_(0x0086BD94, DXPTR*)
+#define StaticMeshLightItem	VAR_U_(0x008796C8, ITEM_INFO)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
 //if 0 + playing cut menu selections dont make a sound. never seems to be the case though!
-
-#define selected_option	VAR_U_(0x005082F0, __int64)
-
-#define menu_to_display	VAR_U_(0x0051CE40, int)//which menu should we be displaying right now??
-//0 main menu, del's cutseq selector. 1 level select. 2 the reload menu. 3 the options menu
 
 #define DoFade	VAR_U_(0x00C87BF0, int)// 2 everywhere, 1 in loading screens
 
 #define title_string	ARRAY_(0x0050842C, char, [8])
 
 #define nframes	VAR_U_(0x005082C4, int)
-
-#define selected_level	VAR_U_(0x0051CE50, int)//# (on the list) of the selected level in the level select menu
-
-#define level_select_names	ARRAY_(0x005082C8, char, [40])
 
 #define CreditsDone	VAR_U_(0x00E6D838, uchar)
 #define CanLoad	VAR_U_(0x0051CE54, char)
@@ -657,6 +668,10 @@
 #define JoyStickButtons	ARRAY_(0x00517504, char*, [16])
 #define DefaultControls	ARRAY_(0x00516B70, long, [32])
 #define cd_flags	ARRAY_(0x00EEEA40, char, [136])
+#define water_buffer	ARRAY_(0x0056ED14, float, [8712])
+#define Textures	ARRAY_(0x00D99DA8, TEXTURE, [64])
+#define SortList	ARRAY_(0x00BA4390, SORTLIST*, [65536])
+#define Bucket	ARRAY_(0x0057A510, TEXTUREBUCKET, [30])
 
 /****************/
 //registry
@@ -671,6 +686,8 @@
 #define NO_HEIGHT -32512
 #define	NO_ITEM	-1
 #define NO_ROOM	255
+#define MAX_ITEMS	256
+#define MAX_SAMPLES	450
 
 //unknowns
 #define UNK_00E916F0	VAR_U_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init

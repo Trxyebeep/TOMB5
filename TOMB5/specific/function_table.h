@@ -18,3 +18,5 @@ HRESULT HWEndScene();
 #define _EndScene	( *(HRESULT(__cdecl**)()) 0x00876C0C )
 #define _NVisible	( (bool(__cdecl*)(D3DTLVERTEX, D3DTLVERTEX, D3DTLVERTEX)) 0x004A7E00 )
 #define	SetFogColor	( (void(__cdecl*)(char, char, char)) 0x004A84A0 )
+#define SetCullCW	( (void(__cdecl*)()) 0x004A7EA0 )
+#define SetCullCCW	( (void(__cdecl*)()) 0x004A7EC0 )

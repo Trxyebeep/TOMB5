@@ -6,6 +6,8 @@
 #include "effects.h"
 #include "../specific/3dmath.h"
 #include "../specific/function_stubs.h"
+#include "effect2.h"
+#include "sphere.h"
 
 static BITE_INFO skeleton_hit = {0, 0, 0, 17};
 
@@ -114,8 +116,123 @@ void SkeletonControl(short item_number)
 	CreatureAnimation(item_number, angle, 0);
 }
 
+void TriggerSkeletonFire(ITEM_INFO* item)
+{
+	SPARKS* sptr;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->dR = (GetRandomControl() & 0xF) + 64;
+	sptr->dG = sptr->dR - (sptr->dR >> 2);
+	sptr->dB = 0;
+	sptr->sR = 0;
+	sptr->sB = (GetRandomControl() & 0x1F) + 48;
+	sptr->sG = sptr->sB >> 1;
+	sptr->FadeToBlack = 4;
+	sptr->ColFadeSpeed = (GetRandomControl() & 3) + 16;
+	sptr->TransType = 2;
+	sptr->Dynamic = -1;
+	sptr->Life = (GetRandomControl() & 3) + 32;
+	sptr->sLife = sptr->Life;
+	sptr->x = (GetRandomControl() & 0x3F) - 32;
+	sptr->y = 0;
+	sptr->z = (GetRandomControl() & 0x3F) - 32;
+	sptr->Xvel = (GetRandomControl() & 0x1FF) - 256;
+	sptr->Yvel = 0;
+	sptr->Zvel = (GetRandomControl() & 0x1FF) - 256;
+	sptr->Friction = 4;
+	sptr->Flags = 4762;
+	sptr->NodeNumber = 8;
+	sptr->FxObj = item - items;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = -16 - (GetRandomControl() & 0xF);
+	sptr->Scalar = 3;
+	sptr->dSize = 4;
+	sptr->Size = (GetRandomControl() & 0x1F) + 32;
+	sptr->sSize = sptr->Size;
+}
+
+void TriggerFontFire(ITEM_INFO* item, long num, long loop)
+{
+	SPARKS* sptr;
+	PHD_VECTOR pos;
+	long numbak, color, falloff;
+
+	numbak = num;
+
+	if (!num || num > 32)
+		num = 32;
+
+#ifdef GENERAL_FIXES	//can compile without, but VS complains about uninitialized var
+	pos.x = 0;
+	pos.y = 0;
+	pos.z = 0;
+#endif
+
+	for (; loop > 0; loop--)
+	{
+		pos.x = (num * ((GetRandomControl() & 0x7F) - 64)) >> 5;
+		pos.y = -80;
+		pos.z = (num * ((GetRandomControl() & 0x7F) - 64)) >> 5;
+		GetJointAbsPosition(item, &pos, 0);
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->dB = 0;
+		sptr->sR = 0;
+		sptr->dR = (uchar)((num * ((GetRandomControl() & 0xF) + 64)) >> 5);
+		sptr->dG = sptr->dR - (sptr->dR >> 2);
+		sptr->sB = (uchar)((num * ((GetRandomControl() & 0x1F) + 48)) >> 5);
+		sptr->sG = sptr->sB >> 1;
+		sptr->FadeToBlack = 4;
+		sptr->ColFadeSpeed = (GetRandomControl() & 3) + 16;
+		sptr->TransType = 2;
+		sptr->Dynamic = -1;
+		sptr->Life = (GetRandomControl() & 3) + 32;
+		sptr->sLife = sptr->Life;
+		sptr->x = pos.x;
+		sptr->y = pos.y;
+		sptr->z = pos.z;
+		sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
+		sptr->Yvel = 0;
+		sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
+		sptr->Friction = 3;
+		sptr->Flags = 538;
+		sptr->RotAng = GetRandomControl() & 0xFFF;
+		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+		sptr->MaxYvel = 0;
+		sptr->Gravity = -8 - (GetRandomControl() & 7);
+		sptr->Scalar = 2;
+		sptr->dSize = 4;
+		sptr->Size = (uchar)((num * ((GetRandomControl() & 0x1F) + 64)) >> 5);
+		sptr->sSize = sptr->Size;
+	}
+
+	if (numbak > 111)
+	{
+		falloff = 8;
+		color = 127 - numbak;
+	}
+	else if (numbak < 32)
+	{
+		falloff = 24 - (numbak >> 1);
+		color = 32 - (numbak >> 1);
+	}
+	else
+	{
+		falloff = 8;
+		color = 16;
+	}
+
+	color = ((64 + (GetRandomControl() & 15)) * color) >> 4;
+	TriggerDynamic(pos.x, pos.y, pos.z, falloff, color, color - (color >> 2), color >> 1);
+}
+
 void inject_skelly(bool replace)
 {
 	INJECT(0x00477A20, InitialiseSkeleton, replace);
 	INJECT(0x00477AB0, SkeletonControl, replace);
+	INJECT(0x00477D50, TriggerSkeletonFire, replace);
+	INJECT(0x00477ED0, TriggerFontFire, replace);
 }

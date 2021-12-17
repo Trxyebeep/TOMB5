@@ -40,6 +40,8 @@ do \
 #define	CLRB(clr)	((clr) & 0xFF)			//and 0xFF
 #define RGB_M(clr, m)	(clr = (clr & 0xFF000000) | (((CLRR(clr) * m) >> 8) << 16) | (((CLRG(clr) * m) >> 8) << 8) | ((CLRB(clr) * m) >> 8))
 //^ color multiply thingy phd_PutPolygons wants to do
+#define SCRIPT_TEXT(num)		(&gfStringWad[gfStringOffset[num]])
+#define SCRIPT_TEXT_bis(num)	(&gfStringWad[gfStringOffset_bis[num]])
 
 /*typedefs*/
 typedef unsigned char uchar;
@@ -601,7 +603,7 @@ struct SoundSlot
 	PHD_VECTOR pos;
 };
 
-struct box_node
+struct BOX_NODE
 {
 	short exit_box;
 	ushort search_number;
@@ -714,7 +716,7 @@ struct FX_INFO
 
 struct LOT_INFO
 {
-	box_node* node;
+	BOX_NODE* node;
 	short head;
 	short tail;
 	ushort search_number;
@@ -1162,7 +1164,6 @@ struct LARA_INFO
 struct SAVEGAME_INFO
 {
 	short Checksum;
-	char things_to_figure_out[13];
 	uchar AutoTarget;
 	LARA_INFO Lara;
 	STATS Level;
@@ -1178,7 +1179,7 @@ struct SAVEGAME_INFO
 	uchar CurrentLevel;
 	uchar CampaignSecrets[4];
 	uchar TLCount;
-	char buffer[7232];
+	char buffer[7245];
 };
 
 struct DYNAMIC
@@ -2232,6 +2233,53 @@ struct FCAMERA
 	float invmatrix[12];
 };
 
+struct D3DTLBUMPVERTEX
+{
+	D3DVALUE sx;
+	D3DVALUE sy;
+	D3DVALUE sz;
+	D3DVALUE rhw;
+	D3DCOLOR color;
+	D3DCOLOR specular;
+	D3DVALUE tu;
+	D3DVALUE tv;
+	D3DVALUE tx;
+	D3DVALUE ty;
+};
+
+struct TEXTURE
+{
+	IDirect3DTexture2* tex;
+	LPDIRECTDRAWSURFACE4 surface;
+	IDirect3DTexture2* bumpTex;
+	LPDIRECTDRAWSURFACE4 bumpSurface;
+	ulong xoff;
+	ulong yoff;
+	ulong width;
+	ulong height;
+	long tpage;
+	bool bump;
+	bool realBump;
+	bool staticTex;
+	long bumptpage;
+};
+
+struct SORTLIST
+{
+	float zVal;
+	short drawtype;
+	short tpage;
+	short nVtx;
+	short polytype;
+};
+
+struct TEXTUREBUCKET
+{
+	long tpage;
+	long cnt;
+	D3DTLBUMPVERTEX Vertex[2080];
+};
+
 #ifdef GENERAL_FIXES
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
@@ -2245,6 +2293,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	ulong bars_pos;				//1-> original, 2-> improved, 3-> PSX
 	bool enemy_bars;			//on off
 	bool ammo_counter;			//on off
+	bool gameover;				//on off, gameover menu after death
 };
 #endif
 #pragma pack(pop)

@@ -9,3 +9,6 @@ long CheckSumValid(char* buffer);
 static void SaveLaraData();
 static void RestoreLaraData(long FullSave);
 static void SaveLevelData(long FullSave);
+static void RestoreLevelData(long FullSave);
+void sgSaveGame();
+void sgRestoreGame();

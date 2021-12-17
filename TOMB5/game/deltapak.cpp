@@ -1791,7 +1791,7 @@ void joby4_control()
 	f = GLOBAL_cutseq_frame;
 
 	if (GLOBAL_cutseq_frame <= 130)
-		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, &gfStringWad[gfStringOffset[STR_SEVERAL_HOURS_LATER]], FF_CENTER);
+		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, SCRIPT_TEXT(STR_SEVERAL_HOURS_LATER), FF_CENTER);
 
 	if (f == 575)
 		cutseq_meshbits[5] &= 0x7FFFFFFF;

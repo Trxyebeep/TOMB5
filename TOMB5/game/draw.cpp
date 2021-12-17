@@ -999,6 +999,49 @@ long GetFrames(ITEM_INFO* item, short* frm[], long* rate)
 	return frac;
 }
 
+void SetupSkelebobMeshswaps()
+{
+	lara.mesh_ptrs[LM_HEAD] = meshes[objects[LARA_EXTRA_MESH2].mesh_index + 2 * LM_HEAD];
+	lara.mesh_ptrs[LM_TORSO] = meshes[objects[LARA_EXTRA_MESH2].mesh_index + 2 * LM_TORSO];
+	skelly_backgunbak = lara.back_gun;
+	skelly_rhandbak = lara.mesh_ptrs[LM_RHAND];
+	skelly_lhandbak = lara.mesh_ptrs[LM_LHAND];
+
+	if (lara.back_gun)
+	{
+		if (lara.back_gun == CROSSBOW_ANIM)
+			lara.back_gun = UZI_ANIM;
+		else if (lara.back_gun == HK_ANIM)
+			lara.back_gun = PISTOLS_ANIM;
+	}
+
+	if (lara.gun_type == WEAPON_CROSSBOW)
+	{
+		if (lara.mesh_ptrs[LM_RHAND] == meshes[objects[CROSSBOW_ANIM].mesh_index + 2 * LM_RHAND])
+			lara.mesh_ptrs[LM_RHAND] = meshes[objects[UZI_ANIM].mesh_index + 2 * LM_RHAND];
+		else
+			lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA_EXTRA_MESH2].mesh_index + 2 * LM_RHAND];
+	}
+	else if (lara.gun_type == WEAPON_HK)
+	{
+		if (lara.mesh_ptrs[LM_RHAND] == meshes[objects[HK_ANIM].mesh_index + 20])
+			lara.mesh_ptrs[LM_RHAND] = meshes[objects[PISTOLS_ANIM].mesh_index + 2 * LM_RHAND];
+		else
+			lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA_EXTRA_MESH2].mesh_index + 2 * LM_RHAND];
+	}
+	
+	lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA_EXTRA_MESH2].mesh_index + 2 * LM_LHAND];
+}
+
+void RestoreLaraMeshswaps()
+{
+	lara.mesh_ptrs[LM_HEAD] = meshes[objects[LARA].mesh_index + 2 * LM_HEAD];
+	lara.mesh_ptrs[LM_TORSO] = meshes[objects[LARA].mesh_index + 2 * LM_TORSO];
+	lara.back_gun = skelly_backgunbak;
+	lara.mesh_ptrs[LM_RHAND] = skelly_rhandbak;
+	lara.mesh_ptrs[LM_LHAND] = skelly_lhandbak;
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -1025,4 +1068,6 @@ void inject_draw(bool replace)
 	INJECT(0x0042A7A0, DrawRooms, replace);
 	INJECT(0x0042A1B0, CalculateObjectLightingLara, replace);
 	INJECT(0x0042CEB0, GetFrames, replace);
+	INJECT(0x0042E500, SetupSkelebobMeshswaps, replace);
+	INJECT(0x0042E630, RestoreLaraMeshswaps, replace);
 }
