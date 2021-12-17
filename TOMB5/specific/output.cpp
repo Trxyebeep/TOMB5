@@ -846,11 +846,17 @@ void phd_PutPolygonsPickup(short* objptr, float x, float y, long color)
 void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 {
 	FOGBULB_STRUCT* bulb;
+#ifdef GENERAL_FIXES
+	POINTLIGHT_STRUCT* point;
+#endif
 	FVECTOR vec;
 	FVECTOR vec2;
 	FVECTOR vec3;
 	FVECTOR vec4;
 	short* clip;
+#ifdef GENERAL_FIXES
+	float fR, fG, fB;
+#endif
 	float val, val2, val3, zv, fCol, fCol2;
 	long sR, sG, sB, cR, cG, cB, pR, pG, pB;
 	short clip_distance;
@@ -874,6 +880,30 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 		cR = (cR * pR) >> 8;
 		cG = (cG * pG) >> 8;
 		cB = (cB * pB) >> 8;
+
+#ifdef GENERAL_FIXES
+		if (TotalNumLights)
+		{
+			fR = (float)cR;
+			fG = (float)cG;
+			fB = (float)cB;
+
+			if (NumPointLights)
+			{
+				for (int j = 0; j < NumPointLights; j++)
+				{
+					point = &PointLights[j];
+					fR += point->rad * point->r;
+					fG += point->rad * point->g;
+					fB += point->rad * point->b;
+				}
+			}
+
+			cR = (long)fR;
+			cG = (long)fG;
+			cB = (long)fB;
+		}
+#endif
 
 		if (cR - 128 <= 0)
 			cR <<= 1;
