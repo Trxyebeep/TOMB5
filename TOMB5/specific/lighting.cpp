@@ -445,6 +445,33 @@ void S_CalculateStaticMeshLight(int x, int y, int z, int shade, ROOM_INFO* r)
 	current_item = &StaticMeshLightItem;
 }
 
+void SuperSetupDynamicLight(DYNAMIC* light, ITEM_INFO* item)
+{
+	POINTLIGHT_STRUCT* point;
+	float dx, dy, dz, falloff, dist, val;
+
+	dx = light->x - lGlobalMeshPos.x;
+	dy = light->y - lGlobalMeshPos.y;
+	dz = light->z - lGlobalMeshPos.z;
+	falloff = (float)(light->falloff - (light->falloff >> 3));
+	dist = sqrt(SQUARE(dz) + SQUARE(dy) + SQUARE(dx));
+	point = &PointLights[NumPointLights];
+
+	if (dist <= falloff)
+	{
+		val = 1.0F / dist;
+		point->vec.x = val * (dx * aLightMatrix._11 + dy * aLightMatrix._12 + dz * aLightMatrix._13);
+		point->vec.y = val * (dx * aLightMatrix._21 + dy * aLightMatrix._22 + dz * aLightMatrix._23);
+		point->vec.z = val * (dx * aLightMatrix._31 + dy * aLightMatrix._32 + dz * aLightMatrix._33);
+		point->r = light->r;
+		point->g = light->g;
+		point->b = light->b;
+		point->rad = (falloff - dist) / falloff;
+		NumPointLights++;
+		TotalNumLights++;
+	}
+}
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
@@ -454,4 +481,5 @@ void inject_lighting(bool replace)
 	INJECT(0x004AAF00, SuperResetLights, replace);
 	INJECT(0x004A9E60, CalcAmbientLight, replace);
 	INJECT(0x004A9DF0, S_CalculateStaticMeshLight, replace);
+	INJECT(0x004AB3A0, SuperSetupDynamicLight, replace);
 }

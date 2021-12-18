@@ -10,6 +10,7 @@ void FadeLightList(PCLIGHT* lights, long nLights);
 void SuperResetLights();
 void CalcAmbientLight(ITEM_INFO* item);
 void S_CalculateStaticMeshLight(int x, int y, int z, int shade, ROOM_INFO* r);
+void SuperSetupDynamicLight(DYNAMIC* light, ITEM_INFO* item);
 
 #ifdef GENERAL_FIXES
 extern SPOTLIGHT_STRUCT SpotLights[64];
