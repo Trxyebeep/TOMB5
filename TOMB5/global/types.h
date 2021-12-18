@@ -2280,6 +2280,12 @@ struct TEXTUREBUCKET
 	D3DTLBUMPVERTEX Vertex[2080];
 };
 
+struct D3DLIGHT_STRUCT
+{
+	LPDIRECT3DLIGHT D3DLight;
+	D3DLIGHT2 D3DLight2;
+};
+
 #ifdef GENERAL_FIXES
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
@@ -2294,6 +2300,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool enemy_bars;			//on off
 	bool ammo_counter;			//on off
 	bool gameover;				//on off, gameover menu after death
+	bool fog;					//on off
 };
 #endif
 #pragma pack(pop)

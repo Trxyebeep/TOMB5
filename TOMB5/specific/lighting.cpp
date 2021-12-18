@@ -3,6 +3,7 @@
 #include "3dmath.h"
 #include "d3dmatrix.h"
 #include "../game/control.h"
+#include "function_stubs.h"
 
 #ifdef GENERAL_FIXES
 SPOTLIGHT_STRUCT SpotLights[64];
@@ -445,6 +446,99 @@ void S_CalculateStaticMeshLight(int x, int y, int z, int shade, ROOM_INFO* r)
 	current_item = &StaticMeshLightItem;
 }
 
+void SuperSetupDynamicLight(DYNAMIC* light, ITEM_INFO* item)
+{
+	POINTLIGHT_STRUCT* point;
+	float dx, dy, dz, falloff, dist, val;
+
+	dx = light->x - lGlobalMeshPos.x;
+	dy = light->y - lGlobalMeshPos.y;
+	dz = light->z - lGlobalMeshPos.z;
+	falloff = (float)(light->falloff - (light->falloff >> 3));
+	dist = sqrt(SQUARE(dz) + SQUARE(dy) + SQUARE(dx));
+	point = &PointLights[NumPointLights];
+
+	if (dist <= falloff)
+	{
+		val = 1.0F / dist;
+		point->vec.x = val * (dx * aLightMatrix._11 + dy * aLightMatrix._12 + dz * aLightMatrix._13);
+		point->vec.y = val * (dx * aLightMatrix._21 + dy * aLightMatrix._22 + dz * aLightMatrix._23);
+		point->vec.z = val * (dx * aLightMatrix._31 + dy * aLightMatrix._32 + dz * aLightMatrix._33);
+		point->r = light->r;
+		point->g = light->g;
+		point->b = light->b;
+		point->rad = (falloff - dist) / falloff;
+		NumPointLights++;
+		TotalNumLights++;
+	}
+}
+
+void InitDynamicLighting_noparams()
+{
+	//dope
+}
+
+void InitDynamicLighting(ITEM_INFO* item)
+{
+	DYNAMIC* light;
+
+	for (int i = 0; i < 32; i++)
+	{
+		light = &dynamics[i];
+
+		if (light->on)
+			SuperSetupDynamicLight(light, item);
+	}
+
+	aAmbientR = CLRR(item->il.ambient);
+	aAmbientG = CLRG(item->il.ambient);
+	aAmbientB = CLRB(item->il.ambient);
+}
+
+void ClearObjectLighting()
+{
+
+}
+
+void ClearDynamicLighting()
+{
+
+}
+
+void ApplyMatrix(long* matrix, PHD_VECTOR* start, PHD_VECTOR* dest)
+{
+	dest->x = (start->x * matrix[M00] + start->y * matrix[M01] + start->z * matrix[M02]) >> 14;
+	dest->y = (start->x * matrix[M10] + start->y * matrix[M11] + start->z * matrix[M12]) >> 14;
+	dest->z = (start->x * matrix[M20] + start->y * matrix[M21] + start->z * matrix[M22]) >> 14;
+}
+
+void ApplyTransposeMatrix(long* matrix, PHD_VECTOR* start, PHD_VECTOR* dest)
+{
+	dest->x = (start->x * matrix[M00] + start->y * matrix[M10] + start->z * matrix[M20]) >> 14;
+	dest->y = (start->x * matrix[M01] + start->y * matrix[M11] + start->z * matrix[M21]) >> 14;
+	dest->z = (start->x * matrix[M02] + start->y * matrix[M12] + start->z * matrix[M22]) >> 14;
+}
+
+void CreateD3DLights()
+{
+
+}
+
+void FreeD3DLights()
+{
+
+}
+
+void MallocD3DLights()
+{
+	if (MaxRoomLights > 21)
+		Log(1, "MAX Room Lights of %d Exceeded - %d", 21, MaxRoomLights);
+
+	MaxRoomLights *= 2;
+	D3DLights = (D3DLIGHT_STRUCT*)game_malloc(sizeof(D3DLIGHT_STRUCT) * MaxRoomLights, 0);
+	D3DDynamics = (D3DLIGHT_STRUCT*)game_malloc(sizeof(D3DLIGHT_STRUCT) * 32, 0);
+}
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
@@ -454,4 +548,14 @@ void inject_lighting(bool replace)
 	INJECT(0x004AAF00, SuperResetLights, replace);
 	INJECT(0x004A9E60, CalcAmbientLight, replace);
 	INJECT(0x004A9DF0, S_CalculateStaticMeshLight, replace);
+	INJECT(0x004AB3A0, SuperSetupDynamicLight, replace);
+	INJECT(0x004AB930, InitDynamicLighting_noparams, replace);
+	INJECT(0x004AB950, InitDynamicLighting, replace);
+	INJECT(0x004AB910, ClearObjectLighting, replace);
+	INJECT(0x004AB9D0, ClearDynamicLighting, replace);
+	INJECT(0x004A9CD0, ApplyMatrix, replace);
+	INJECT(0x004A9D60, ApplyTransposeMatrix, replace);
+	INJECT(0x004A9C90, CreateD3DLights, replace);
+	INJECT(0x004A9CB0, FreeD3DLights, replace);
+	INJECT(0x004A9C10, MallocD3DLights, replace);
 }

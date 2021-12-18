@@ -57,6 +57,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "gameover");
 		tomb5.gameover = 1;								//on
 		REG_WriteBool(buf, tomb5.gameover);
+
+		sprintf(buf, "fog");
+		tomb5.fog = 1;									//on
+		REG_WriteBool(buf, tomb5.fog);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -92,6 +96,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "gameover");
 		REG_ReadBool(buf, tomb5.gameover, 1);
+
+		sprintf(buf, "fog");
+		REG_ReadBool(buf, tomb5.fog, 1);
 	}
 
 	CloseRegistry();
@@ -134,6 +141,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "gameover");
 	REG_WriteBool(buf, tomb5.gameover);
+
+	sprintf(buf, "fog");
+	REG_WriteBool(buf, tomb5.fog);
 
 	CloseRegistry();
 }

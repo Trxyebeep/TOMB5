@@ -860,6 +860,12 @@ void DrawRooms(short current_room)
 	RoomTestThing();
 	aBuildFogBulbList();
 	aBuildFXFogBulbList();
+
+#ifdef GENERAL_FIXES
+	if (!tomb5.fog)
+		aResetFogBulbList();	//do this properly when fog stuff are decompiled
+#endif
+
 	mAddProfilerEvent();
 
 	for (int i = 0; i < number_draw_rooms; i++)
