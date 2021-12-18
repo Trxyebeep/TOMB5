@@ -539,6 +539,8 @@
 #define StaticMeshShade	VAR_U_(0x0087B0DC, long)
 #define G_dxptr	VAR_U_(0x0086BD94, DXPTR*)
 #define StaticMeshLightItem	VAR_U_(0x008796C8, ITEM_INFO)
+#define D3DLights	VAR_U_(0x0087B0F0, D3DLIGHT_STRUCT*)
+#define D3DDynamics	VAR_U_(0x0087B0F4, D3DLIGHT_STRUCT*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

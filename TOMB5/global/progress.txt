@@ -1927,11 +1927,11 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/lighting.cpp
 
-0x004A9C10		MallocD3DLights
-0x004A9C90		CreateD3DLights
-0x004A9CB0		FreeD3DLights
-0x004A9CD0		ApplyMatrix
-0x004A9D60		ApplyTransposeMatrix
+0x004A9C10	+	MallocD3DLights
+0x004A9C90	+	CreateD3DLights
+0x004A9CB0	+	FreeD3DLights
+0x004A9CD0	+	ApplyMatrix
+0x004A9D60	+	ApplyTransposeMatrix
 0x004A9DF0	+	S_CalculateStaticMeshLight
 0x004A9E60	+	CalcAmbientLight
 0x004A9FE0	+	FadeLightList
@@ -1943,10 +1943,10 @@ x for functions decompiled but not injected, for one reason or another.
 0x004AB3A0	+	SuperSetupDynamicLight
 0x004AB580		InitObjectFogBulbs
 0x004AB7A0	+	InitObjectLighting
-0x004AB910		ClearObjectLighting
+0x004AB910	+	ClearObjectLighting
 0x004AB930	+	InitDynamicLighting_noparams
 0x004AB950	+	InitDynamicLighting
-0x004AB9D0		ClearDynamicLighting
+0x004AB9D0	+	ClearDynamicLighting
 
 
 		specific/LoadSave.cpp

@@ -3,6 +3,7 @@
 #include "3dmath.h"
 #include "d3dmatrix.h"
 #include "../game/control.h"
+#include "function_stubs.h"
 
 #ifdef GENERAL_FIXES
 SPOTLIGHT_STRUCT SpotLights[64];
@@ -494,6 +495,50 @@ void InitDynamicLighting(ITEM_INFO* item)
 	aAmbientB = CLRB(item->il.ambient);
 }
 
+void ClearObjectLighting()
+{
+
+}
+
+void ClearDynamicLighting()
+{
+
+}
+
+void ApplyMatrix(long* matrix, PHD_VECTOR* start, PHD_VECTOR* dest)
+{
+	dest->x = (start->x * matrix[M00] + start->y * matrix[M01] + start->z * matrix[M02]) >> 14;
+	dest->y = (start->x * matrix[M10] + start->y * matrix[M11] + start->z * matrix[M12]) >> 14;
+	dest->z = (start->x * matrix[M20] + start->y * matrix[M21] + start->z * matrix[M22]) >> 14;
+}
+
+void ApplyTransposeMatrix(long* matrix, PHD_VECTOR* start, PHD_VECTOR* dest)
+{
+	dest->x = (start->x * matrix[M00] + start->y * matrix[M10] + start->z * matrix[M20]) >> 14;
+	dest->y = (start->x * matrix[M01] + start->y * matrix[M11] + start->z * matrix[M21]) >> 14;
+	dest->z = (start->x * matrix[M02] + start->y * matrix[M12] + start->z * matrix[M22]) >> 14;
+}
+
+void CreateD3DLights()
+{
+
+}
+
+void FreeD3DLights()
+{
+
+}
+
+void MallocD3DLights()
+{
+	if (MaxRoomLights > 21)
+		Log(1, "MAX Room Lights of %d Exceeded - %d", 21, MaxRoomLights);
+
+	MaxRoomLights *= 2;
+	D3DLights = (D3DLIGHT_STRUCT*)game_malloc(sizeof(D3DLIGHT_STRUCT) * MaxRoomLights, 0);
+	D3DDynamics = (D3DLIGHT_STRUCT*)game_malloc(sizeof(D3DLIGHT_STRUCT) * 32, 0);
+}
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
@@ -506,4 +551,11 @@ void inject_lighting(bool replace)
 	INJECT(0x004AB3A0, SuperSetupDynamicLight, replace);
 	INJECT(0x004AB930, InitDynamicLighting_noparams, replace);
 	INJECT(0x004AB950, InitDynamicLighting, replace);
+	INJECT(0x004AB910, ClearObjectLighting, replace);
+	INJECT(0x004AB9D0, ClearDynamicLighting, replace);
+	INJECT(0x004A9CD0, ApplyMatrix, replace);
+	INJECT(0x004A9D60, ApplyTransposeMatrix, replace);
+	INJECT(0x004A9C90, CreateD3DLights, replace);
+	INJECT(0x004A9CB0, FreeD3DLights, replace);
+	INJECT(0x004A9C10, MallocD3DLights, replace);
 }
