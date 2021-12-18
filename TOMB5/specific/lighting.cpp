@@ -472,6 +472,28 @@ void SuperSetupDynamicLight(DYNAMIC* light, ITEM_INFO* item)
 	}
 }
 
+void InitDynamicLighting_noparams()
+{
+	//dope
+}
+
+void InitDynamicLighting(ITEM_INFO* item)
+{
+	DYNAMIC* light;
+
+	for (int i = 0; i < 32; i++)
+	{
+		light = &dynamics[i];
+
+		if (light->on)
+			SuperSetupDynamicLight(light, item);
+	}
+
+	aAmbientR = CLRR(item->il.ambient);
+	aAmbientG = CLRG(item->il.ambient);
+	aAmbientB = CLRB(item->il.ambient);
+}
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
@@ -482,4 +504,6 @@ void inject_lighting(bool replace)
 	INJECT(0x004A9E60, CalcAmbientLight, replace);
 	INJECT(0x004A9DF0, S_CalculateStaticMeshLight, replace);
 	INJECT(0x004AB3A0, SuperSetupDynamicLight, replace);
+	INJECT(0x004AB930, InitDynamicLighting_noparams, replace);
+	INJECT(0x004AB950, InitDynamicLighting, replace);
 }

@@ -1944,8 +1944,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x004AB580		InitObjectFogBulbs
 0x004AB7A0	+	InitObjectLighting
 0x004AB910		ClearObjectLighting
-0x004AB930		InitDynamicLighting_noparams
-0x004AB950		InitDynamicLighting
+0x004AB930	+	InitDynamicLighting_noparams
+0x004AB950	+	InitDynamicLighting
 0x004AB9D0		ClearDynamicLighting
 
 
