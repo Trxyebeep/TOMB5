@@ -893,9 +893,11 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 				for (int j = 0; j < NumPointLights; j++)
 				{
 					point = &PointLights[j];
-					fR += point->rad * point->r;
-					fG += point->rad * point->g;
-					fB += point->rad * point->b;
+					val = sqrt(SQUARE(point->vec.x - mesh->aVtx[i].x) + SQUARE(point->vec.y - mesh->aVtx[i].y) + SQUARE(point->vec.z - mesh->aVtx[i].z));
+					val2 = (point->rad - val) / point->rad;
+					fR += val2 * point->r;
+					fG += val2 * point->g;
+					fB += val2 * point->b;
 				}
 			}
 

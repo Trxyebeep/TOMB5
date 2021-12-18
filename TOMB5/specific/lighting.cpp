@@ -461,13 +461,33 @@ void SuperSetupDynamicLight(DYNAMIC* light, ITEM_INFO* item)
 	if (dist <= falloff)
 	{
 		val = 1.0F / dist;
-		point->vec.x = val * (dx * aLightMatrix._11 + dy * aLightMatrix._12 + dz * aLightMatrix._13);
-		point->vec.y = val * (dx * aLightMatrix._21 + dy * aLightMatrix._22 + dz * aLightMatrix._23);
-		point->vec.z = val * (dx * aLightMatrix._31 + dy * aLightMatrix._32 + dz * aLightMatrix._33);
+
+#ifdef GENERAL_FIXES
+		if (item == &StaticMeshLightItem)
+		{
+			point->vec.x = dx;
+			point->vec.y = dy;
+			point->vec.z = dz;
+		}
+		else
+#endif
+		{
+			point->vec.x = val * (dx * aLightMatrix._11 + dy * aLightMatrix._12 + dz * aLightMatrix._13);
+			point->vec.y = val * (dx * aLightMatrix._21 + dy * aLightMatrix._22 + dz * aLightMatrix._23);
+			point->vec.z = val * (dx * aLightMatrix._31 + dy * aLightMatrix._32 + dz * aLightMatrix._33);
+		}
+
 		point->r = light->r;
 		point->g = light->g;
 		point->b = light->b;
-		point->rad = (falloff - dist) / falloff;
+
+#ifdef GENERAL_FIXES
+		if (item == &StaticMeshLightItem)
+			point->rad = falloff;
+		else
+#endif
+			point->rad = (falloff - dist) / falloff;
+
 		NumPointLights++;
 		TotalNumLights++;
 	}
