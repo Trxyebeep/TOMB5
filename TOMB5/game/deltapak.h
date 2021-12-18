@@ -125,7 +125,7 @@ void special3_end();
 void special4_init();
 void special4_control();
 void special4_end();
-void handle_cutseq_triggering(int name);
+void handle_cutseq_triggering(long name);
 void cutseq_givelara_pistols();
 void cutseq_removelara_pistols();
 void do_pierre_gun_meshswap();
