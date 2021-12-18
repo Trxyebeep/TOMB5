@@ -2300,6 +2300,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool enemy_bars;			//on off
 	bool ammo_counter;			//on off
 	bool gameover;				//on off, gameover menu after death
+	bool fog;					//on off
 };
 #endif
 #pragma pack(pop)
