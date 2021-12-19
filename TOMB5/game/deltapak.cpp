@@ -2218,13 +2218,11 @@ void special4_end()
 	_special4_end();
 }
 
-void handle_cutseq_triggering(int name)
+void handle_cutseq_triggering(long name)
 {
-	int n, goin;// , fuck;//idk where to use it
+	long n, goin, fuck;
 
-	n = cutseq_num;
-
-	if (!n)
+	if (!cutseq_num)
 		return;
 
 	if (!cutseq_trig)
@@ -2235,7 +2233,7 @@ void handle_cutseq_triggering(int name)
 		cutseq_trig = 1;
 		memset(cutseq_meshswapbits, 0, sizeof(cutseq_meshswapbits));
 		cutseq_busy_timeout = 50;
-		memset(cutseq_meshbits, 0xFF, sizeof(cutseq_meshbits));
+		memset(cutseq_meshbits, -1, sizeof(cutseq_meshbits));
 
 		if (gfCurrentLevel != LVL5_TITLE)
 			SetFadeClip(28, 1);
@@ -2248,45 +2246,113 @@ void handle_cutseq_triggering(int name)
 			SetScreenFadeOut(16, 0);
 		}
 
-		return;
 	}
-
-	if (cutseq_trig != 1)
+	else if (cutseq_trig == 1)
 	{
-		if (cutseq_trig == 3)
+		n = lara_item->current_anim_state;
+
+		if (!ScreenFadedOut)
+			return;
+
+		cutseq_busy_timeout--;
+
+		if (cutseq_busy_timeout <= 0)
 		{
-			SetScreenFadeOut(16, 1);
-
-			if (gfCurrentLevel != LVL5_TITLE)
-				S_CDFade(0);
-
-			cutseq_trig = 4;
+			cutseq_busy_timeout = 0;
 			return;
 		}
 
-		if (cutseq_trig != 4 || !ScreenFadedOut)
+		if (lara.gun_status != LG_HANDS_BUSY && (lara.gun_status != LG_NO_ARMS || lara.flare_control_left) &&
+			n != AS_ALL4S && n != AS_CRAWL && n != AS_ALL4TURNL && n != AS_ALL4TURNR && n != AS_CRAWLBACK)
+			return;
+
+		lara.flare_control_left = 0;
+		lara.flare_age = 0;
+
+		if (!(gfLevelFlags & GF_YOUNGLARA))
+		{
+			lara.gun_type = WEAPON_NONE;
+			lara.request_gun_type = WEAPON_NONE;
+			lara.gun_status = LG_NO_ARMS;
+			lara.last_gun_type = WEAPON_PISTOLS;
+
+			if (!objects[PISTOLS_ITEM].loaded || lara.pistols_type_carried == WTYPE_MISSING)
+				lara.last_gun_type = WEAPON_NONE;
+
+			if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & WTYPE_PRESENT)
+				lara.last_gun_type = WEAPON_HK;
+
+			lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + (2 * LM_LHAND)];
+			lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA].mesh_index + (2 * LM_RHAND)];
+			lara.left_arm.frame_number = 0;
+			lara.right_arm.frame_number = 0;
+			lara.target = 0;
+			lara.right_arm.lock = 0;
+			lara.left_arm.lock = 0;
+			lara_item->goal_anim_state = AS_STOP;
+			lara_item->current_anim_state = AS_STOP;
+			lara_item->frame_number = anims[ANIM_STOP].frame_base;
+			lara_item->anim_number = ANIM_STOP;
+			lara_item->speed = 0;
+			lara_item->fallspeed = 0;
+			lara_item->gravity_status = 0;
+			lara.back_gun = 0;
+
+			if (lara.weapon_item != NO_ITEM)
+			{
+				KillItem(lara.weapon_item);
+				lara.weapon_item = NO_ITEM;
+			}
+		}
+
+		lara.water_status = LW_ABOVE_WATER;
+
+		if (gfCurrentLevel != LVL5_TITLE)
+			S_CDStop();
+
+		goin = cutseq_num;
+		numnailed = 0;
+		GLOBAL_oldcamtype = camera.type;
+		ScreenFading = 0;
+		SetScreenFadeIn(16);
+		Load_and_Init_Cutseq(goin);
+		cutseq_trig = 2;
+		cut_seethrough = 128;
+
+		if (cutseq_control_routines[goin].init_func)
+			cutseq_control_routines[goin].init_func();
+
+		AlterFOV(11488);
+
+		if (GLOBAL_cutme->audio_track != -1 && !bDoCredits)
+			S_StartSyncedAudio(GLOBAL_cutme->audio_track);
+	}
+	else if (cutseq_trig == 3)
+	{
+		SetScreenFadeOut(16, 1);
+
+		if (gfCurrentLevel != LVL5_TITLE)
+			S_CDFade(0);
+
+		cutseq_trig = 4;
+	}
+	else if (cutseq_trig == 4)
+	{
+		if (!ScreenFadedOut)
 			return;
 
 		if (gfCurrentLevel != LVL5_TITLE)
-		{
 			S_CDStop();
-			n = cutseq_num;
-		}
 
 		ScreenFadedOut = 0;
 		numnailed = 0;
+		fuck = cutseq_num;
 
-		if (cutseq_control_routines[cutseq_num].end_func)
-		{
-			cutseq_control_routines[cutseq_num].end_func();
-			n = cutseq_num;
-		}
+		if (cutseq_control_routines[fuck].end_func)
+			cutseq_control_routines[fuck].end_func();
 
-		if (n <= 4)
-		{
+		if (fuck <= 4)
 			DelsHandyTeleportLara(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, cutrot << 14);
-			n = cutseq_num;
-		}
 
 		cutseq_trig = 0;
 		GLOBAL_playing_cutseq = 0;
@@ -2297,10 +2363,36 @@ void handle_cutseq_triggering(int name)
 			{
 				reset_flag = 1;
 				dels_cutseq_player = 0;
+				gfRequiredStartPos = 0;
+				cutseq_num = 0;
+				GLOBAL_playing_cutseq = 0;
+				cutseq_trig = 0;
+				AlterFOV(14560);
+				ScreenFade = 0;
+				dScreenFade = 0;
+				ScreenFadeSpeed = 8;
+				ScreenFadeBack = 0;
+				ScreenFadedOut = 0;
+				ScreenFading = 0;
 			}
 			else
 			{
-				if (n != 26 && n != 22 && n != 5 && n != 16 && n != 33 && n != 44 && n != 12)
+				if (fuck == 26 || fuck == 22 || fuck == 5 || fuck == 16 || fuck == 33 || fuck == 44 || fuck == 12)
+				{
+					gfLevelComplete = gfCurrentLevel + 1;
+					gfRequiredStartPos = 0;
+					cutseq_num = 0;
+					GLOBAL_playing_cutseq = 0;
+					cutseq_trig = 0;
+					AlterFOV(14560);
+					ScreenFade = 0;
+					dScreenFade = 0;
+					ScreenFadeSpeed = 8;
+					ScreenFadeBack = 0;
+					ScreenFadedOut = 0;
+					ScreenFading = 0;
+				}
+				else
 				{
 					finish_cutseq(name);
 					cutseq_num = 0;
@@ -2315,124 +2407,31 @@ void handle_cutseq_triggering(int name)
 						S_CDPlay(CurrentAtmosphere, 1);
 
 					IsAtmospherePlaying = 1;
-					return;
 				}
+			}
+		}
+		else
+		{
+			switch (fuck)
+			{
+			case 28:
+				fuck = 29;
+				break;
 
-				gfLevelComplete = gfCurrentLevel + 1;
+			case 29:
+				fuck = 30;
+				break;
+
+			case 30:
+				fuck = 28;
+				break;
 			}
 
-			gfRequiredStartPos = 0;
-			cutseq_num = 0;
-			GLOBAL_playing_cutseq = 0;
-			cutseq_trig = 0;
-			AlterFOV(14560);
-			ScreenFade = 0;
-			dScreenFade = 0;
-			ScreenFadeSpeed = 8;
-			ScreenFadeBack = 0;
-			ScreenFadedOut = 0;
-			ScreenFading = 0;
-			return;
-		}
-
-		switch (n)
-		{
-		case 28:
-			goin = 29;
-			break;
-
-		case 29:
-			goin = 30;
-			break;
-
-		case 30:
-			goin = 28;
-			break;
-
-		default:
-			Load_and_Init_Cutseq(n);
+			Load_and_Init_Cutseq(fuck);
 			cutseq_trig = 2;
-			return;
-		}
-
-		cutseq_num = goin;
-		Load_and_Init_Cutseq(goin);
-		cutseq_trig = 2;
-		return;
-	}
-
-	if (!ScreenFadedOut)
-		return;
-
-	if (--cutseq_busy_timeout > 0)
-	{
-		if (lara.gun_status != LG_HANDS_BUSY && (lara.gun_status != LG_NO_ARMS || lara.flare_control_left) &&
-			lara_item->current_anim_state != AS_ALL4S && lara_item->current_anim_state != AS_CRAWL && lara_item->current_anim_state != AS_ALL4TURNL &&
-			lara_item->current_anim_state != AS_ALL4TURNR && lara_item->current_anim_state != AS_CRAWLBACK)
-			return;
-	}
-	else
-		cutseq_busy_timeout = 0;
-
-	lara.flare_control_left = 0;
-	lara.flare_age = 0;
-
-	if (!(gfLevelFlags & GF_YOUNGLARA))
-	{
-		lara.gun_type = WEAPON_NONE;
-		lara.request_gun_type = WEAPON_NONE;
-		lara.gun_status = LG_NO_ARMS;
-		lara.last_gun_type = WEAPON_PISTOLS;
-
-		if (!objects[PISTOLS_ITEM].loaded || lara.pistols_type_carried == WTYPE_MISSING)
-			lara.last_gun_type = WEAPON_NONE;
-
-		if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & WTYPE_PRESENT)
-			lara.last_gun_type = WEAPON_HK;
-
-		lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + (2 * LM_LHAND)];
-		lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA].mesh_index + (2 * LM_RHAND)];
-		lara.left_arm.frame_number = 0;
-		lara.right_arm.frame_number = 0;
-		lara.target = 0;
-		lara.right_arm.lock = 0;
-		lara.left_arm.lock = 0;
-		lara_item->goal_anim_state = AS_STOP;
-		lara_item->current_anim_state = AS_STOP;
-		lara_item->frame_number = anims[ANIM_STOP].frame_base;
-		lara_item->anim_number = ANIM_STOP;
-		lara_item->speed = 0;
-		lara_item->fallspeed = 0;
-		lara_item->gravity_status = 0;
-		lara.back_gun = 0;
-
-		if (lara.weapon_item != NO_ITEM)
-		{
-			KillItem(lara.weapon_item);
-			lara.weapon_item = NO_ITEM;
+			cutseq_num = fuck;
 		}
 	}
-
-	lara.water_status = LW_ABOVE_WATER;
-
-	if (gfCurrentLevel != LVL5_TITLE)
-		S_CDStop();
-
-	numnailed = 0;
-	GLOBAL_oldcamtype = camera.type;
-	ScreenFading = 0;
-	SetScreenFadeIn(16);
-	Load_and_Init_Cutseq(cutseq_num);
-	cutseq_trig = 2;
-	cut_seethrough = 128;
-
-	if (cutseq_control_routines[cutseq_num].init_func)
-		cutseq_control_routines[cutseq_num].init_func();
-
-	AlterFOV(11488);
-
-	if (GLOBAL_cutme->audio_track != -1 && !bDoCredits)
-		S_StartSyncedAudio(GLOBAL_cutme->audio_track);
 }
 
 void cutseq_givelara_pistols()
