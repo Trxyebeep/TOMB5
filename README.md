@@ -20,7 +20,10 @@ thatguyfrombb: Additional decompiling, bug fixing, and documentation.
 Raildex: additional fixes.
 
 ### License:
-This project is licensed under the GNU General Public License - see the [LICENSE](https://github.com/Trxyebeep/TOMB5/blob/main/LICENSE) file for details
+This project is licensed under the GNU General Public License - see the [LICENSE](https://github.com/Trxyebeep/TOMB5/blob/master/LICENSE) file for details
+
+### Using:
+Be sure to check this [guide](https://github.com/Trxyebeep/TOMB5/blob/master/USING.md)
 
 ### Note: 
 this mainly started to see if I could do it, but it blew out of proportion into a full fledged decompilation project. I only do this in my free time, and I'm still rather new at this :)
