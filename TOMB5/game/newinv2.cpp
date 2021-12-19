@@ -184,7 +184,7 @@ int S_CallInventory2()
 			savegame.CampaignSecrets[3] = 9;
 		}
 
-#ifdef TRF
+#ifndef _DEBUG
 		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
 			keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_E] && keymap[DIK_M])	//ITEM
 			dels_give_lara_items_cheat();
