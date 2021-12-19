@@ -127,7 +127,7 @@ long ControlPhase(long _nframes, int demo_mode)
 			}
 		}
 
-#ifndef TRF
+#ifdef _DEBUG	//this IS present in original codebase, just don't need it in public releases.
 		if (keymap[DIK_I])
 			dels_give_lara_items_cheat();
 #endif

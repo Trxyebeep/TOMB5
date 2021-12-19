@@ -557,7 +557,7 @@ int TitleOptions()
 				gfLevelComplete = (uchar)cheat_jump;
 				ret = 3;
 			}
-#ifndef TRF
+#ifdef _DEBUG	//not for public releases, doesn't exist in original codebase
 #ifdef CUTSCENE_SELECTOR	//enable the cutscene selector
 			if (keymap[DIK_F] && keymap[DIK_U] && keymap[DIK_C] && keymap[DIK_K])//F U C K because this is fucking shit.
 				dels_cutseq_selector_flag = 1;

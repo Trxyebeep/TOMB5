@@ -209,7 +209,7 @@ void LaraCheatGetStuff()
 #if ENABLE_CHEATS
 void LaraCheatyBits()
 {
-#ifdef TRF	//public releases have cheats in inventory, except for DOZY
+#ifndef _DEBUG	//public releases have cheats in inventory, except for DOZY
 	if (keymap[DIK_D] && keymap[DIK_O] && keymap[DIK_Z] && keymap[DIK_Y])
 	{
 		lara_item->pos.y_pos -= 128;
@@ -289,7 +289,7 @@ void LaraCheatyBits()
 	}
 #endif
 
-#endif	//TRF
+#endif	//!_DEBUG
 }
 #endif	//ENABLE_CHEATS
 
