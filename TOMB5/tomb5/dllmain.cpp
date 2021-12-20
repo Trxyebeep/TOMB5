@@ -94,6 +94,7 @@
 #include "../game/lot.h"
 #include "../specific/polyinsert.h"
 #include "../specific/dxshell.h"
+#include "../game/lara2gun.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -207,6 +208,7 @@ void inject_all(bool replace)
 	inject_lot(replace);
 	inject_polyinsert(replace);
 	inject_dxshell(replace);
+	inject_lara2gun(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

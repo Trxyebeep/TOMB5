@@ -1,6 +1,9 @@
 #pragma once
 #include "../global/vars.h"
 
+void inject_lara2gun(bool replace);
+
+void ready_pistols(long weapon_type);
 
 #define PistolHandler	( (void(__cdecl*)(int)) 0x0044FFC0 )
 #define	undraw_pistols	( (void(__cdecl*)(int)) 0x0044FAC0 )
