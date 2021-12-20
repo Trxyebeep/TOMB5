@@ -1,6 +1,7 @@
 #include "../tomb5/pch.h"
 #include "lara2gun.h"
 #include "larafire.h"
+#include "objects.h"
 
 void ready_pistols(long weapon_type)
 {
@@ -20,7 +21,20 @@ void ready_pistols(long weapon_type)
 	lara.left_arm.frame_base = lara.right_arm.frame_base;
 }
 
+void draw_pistol_meshes(long weapon_type)
+{
+	long mesh_index;
+
+	mesh_index = objects[WeaponObjectMesh(weapon_type)].mesh_index;
+	lara.holster = LARA_HOLSTERS;
+	lara.mesh_ptrs[LM_RHAND] = meshes[mesh_index + LM_RHAND * 2];
+
+	if (weapon_type != 2)
+		lara.mesh_ptrs[LM_LHAND] = meshes[mesh_index + LM_LHAND * 2];
+}
+
 void inject_lara2gun(bool replace)
 {
 	INJECT(0x0044FDD0, ready_pistols, replace);
+	INJECT(0x0044FE60, draw_pistol_meshes, replace);
 }
