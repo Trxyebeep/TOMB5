@@ -29,12 +29,38 @@ void draw_pistol_meshes(long weapon_type)
 	lara.holster = LARA_HOLSTERS;
 	lara.mesh_ptrs[LM_RHAND] = meshes[mesh_index + LM_RHAND * 2];
 
-	if (weapon_type != 2)
+	if (weapon_type != WEAPON_REVOLVER)
 		lara.mesh_ptrs[LM_LHAND] = meshes[mesh_index + LM_LHAND * 2];
+}
+
+void undraw_pistol_mesh_left(long weapon_type)
+{
+	WeaponObject(weapon_type);	//ok core
+	lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + LM_LHAND * 2];
+
+	if (weapon_type == WEAPON_PISTOLS)
+		lara.holster = LARA_HOLSTERS_PISTOLS;
+	else if (weapon_type == WEAPON_UZI)
+		lara.holster = LARA_HOLSTERS_UZIS;
+}
+
+void undraw_pistol_mesh_right(long weapon_type)
+{
+	WeaponObject(weapon_type);
+	lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA].mesh_index + LM_RHAND * 2];
+
+	if (weapon_type == WEAPON_PISTOLS)
+		lara.holster = LARA_HOLSTERS_PISTOLS;
+	else if (weapon_type == WEAPON_UZI)
+		lara.holster = LARA_HOLSTERS_UZIS;
+	else if (weapon_type == WEAPON_REVOLVER)
+		lara.holster = LARA_HOLSTERS_REVOLVER;
 }
 
 void inject_lara2gun(bool replace)
 {
 	INJECT(0x0044FDD0, ready_pistols, replace);
 	INJECT(0x0044FE60, draw_pistol_meshes, replace);
+	INJECT(0x0044FED0, undraw_pistol_mesh_left, replace);
+	INJECT(0x0044FF40, undraw_pistol_mesh_right, replace);
 }
