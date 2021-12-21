@@ -3,6 +3,7 @@
 #include "../specific/function_stubs.h"
 #include "tomb4fx.h"
 #include "../specific/3dmath.h"
+#include "control.h"
 
 void TriggerDebris(GAME_VECTOR* pos, void* TextInfo, short* Offsets, long* Vels, short rgb)
 {
@@ -142,8 +143,50 @@ long GetFreeDebris()
 	return eldestfree;
 }
 
+void UpdateDebris()
+{
+	DEBRIS_STRUCT* dptr;
+	FLOOR_INFO* floor;
+	long height, ceiling;
+
+	for (int i = 0; i < 256; i++)
+	{
+		dptr = &debris[i];
+
+		if (dptr->On)
+		{
+			dptr->Yvel += dptr->Gravity;
+
+			if (dptr->Yvel > 4096)
+				dptr->Yvel = 4096;
+
+			dptr->Speed -= dptr->Speed >> 4;
+			dptr->x += dptr->Speed * phd_sin(dptr->Dir) >> 14;
+			dptr->y += dptr->Yvel >> 4;
+			dptr->z += dptr->Speed * phd_cos(dptr->Dir) >> 14;
+			floor = GetFloor(dptr->x, dptr->y, dptr->z, &dptr->RoomNumber);
+			height = GetHeight(floor, dptr->x, dptr->y, dptr->z);
+			ceiling = GetCeiling(floor, dptr->x, dptr->y, dptr->z);
+
+			if (dptr->y >= height || dptr->y < ceiling)
+				dptr->On--;
+			else
+			{
+				dptr->XRot += dptr->Yvel >> 6;
+
+				if (dptr->Yvel)
+					dptr->YRot += dptr->Speed >> 5;
+
+				if (room[dptr->RoomNumber].flags & ROOM_UNDERWATER)
+					dptr->Yvel -= dptr->Yvel >> 2;
+			}
+		}
+	}
+}
+
 void inject_debris(bool replace)
 {
 	INJECT(0x0041D210, TriggerDebris, replace);
 	INJECT(0x0041D170, GetFreeDebris, replace);
+	INJECT(0x0041D500, UpdateDebris, replace);
 }
