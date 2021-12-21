@@ -541,6 +541,13 @@
 #define StaticMeshLightItem	VAR_U_(0x008796C8, ITEM_INFO)
 #define D3DLights	VAR_U_(0x0087B0F0, D3DLIGHT_STRUCT*)
 #define D3DDynamics	VAR_U_(0x0087B0F4, D3DLIGHT_STRUCT*)
+#define DebrisFlags	VAR_U_(0x0051CA88, short)
+#define DebrisMesh	VAR_U_(0x00E8CAB0, MESH_DATA*)
+#define DebrisMeshC1	VAR_U_(0x00E912C4, long)
+#define DebrisMeshC2	VAR_U_(0x00E912C0, long)
+#define DebrisMeshC3	VAR_U_(0x00E912C8, long)
+#define DebrisMeshAmbient	VAR_U_(0x00E8CAAC, long)
+#define DebrisMeshFlags	VAR_U_(0x00E8CAB4, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

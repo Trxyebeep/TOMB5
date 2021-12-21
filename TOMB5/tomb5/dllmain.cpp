@@ -95,6 +95,7 @@
 #include "../specific/polyinsert.h"
 #include "../specific/dxshell.h"
 #include "../game/lara2gun.h"
+#include "../game/debris.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -209,6 +210,7 @@ void inject_all(bool replace)
 	inject_polyinsert(replace);
 	inject_dxshell(replace);
 	inject_lara2gun(replace);
+	inject_debris(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
