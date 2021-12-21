@@ -11,5 +11,4 @@ void AnimatePistols(long weapon_type);
 void PistolHandler(long weapon_type);
 void draw_pistols(long weapon_type);
 void undraw_pistols(long weapon_type);
-
-#define set_arm_info	( (void(__cdecl*)(LARA_ARM*, long)) 0x0044FA20 )
+static void set_arm_info(LARA_ARM* arm, long frame);

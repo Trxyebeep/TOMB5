@@ -465,6 +465,32 @@ void undraw_pistols(long weapon_type)
 	}
 }
 
+static void set_arm_info(LARA_ARM* arm, long frame)
+{
+	PISTOL_DEF* p;
+	long anim_base;
+
+	p = &PistolTable[lara.gun_type];
+	anim_base = objects[p->ObjectNum].anim_index;
+
+	if (frame >= p->Draw1Anim)
+	{
+		if (frame >= p->Draw2Anim)
+		{
+			if (frame < p->RecoilAnim)
+				anim_base += 2;
+			else
+				anim_base += 3;
+		}
+		else
+			anim_base++;
+	}
+
+	arm->anim_number = (short)anim_base;
+	arm->frame_number = (short)frame;
+	arm->frame_base = anims[anim_base].frame_ptr;
+}
+
 void inject_lara2gun(bool replace)
 {
 	INJECT(0x0044FDD0, ready_pistols, replace);
@@ -475,4 +501,5 @@ void inject_lara2gun(bool replace)
 	INJECT(0x0044FFC0, PistolHandler, replace);
 	INJECT(0x0044F950, draw_pistols, replace);
 	INJECT(0x0044FAC0, undraw_pistols, replace);
+	INJECT(0x0044FA20, set_arm_info, replace);
 }

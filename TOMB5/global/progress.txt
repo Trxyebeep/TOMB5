@@ -915,7 +915,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/lara2gun.cpp
 
 0x0044F950	+	draw_pistols
-0x0044FA20		set_arm_info
+0x0044FA20	+	set_arm_info
 0x0044FAC0	+	undraw_pistols
 0x0044FDD0	+	ready_pistols
 0x0044FE60	+	draw_pistol_meshes
