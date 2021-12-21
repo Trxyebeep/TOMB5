@@ -356,6 +356,31 @@ void PistolHandler(long weapon_type)
 	}
 }
 
+void draw_pistols(long weapon_type)
+{
+	PISTOL_DEF* p;
+	short ani;
+
+	ani = lara.left_arm.frame_number + 1;
+	p = &PistolTable[lara.gun_type];
+
+	if (ani < PistolTable[lara.gun_type].Draw1Anim || ani > p->RecoilAnim - 1)
+		ani = PistolTable[lara.gun_type].Draw1Anim;
+	else if (ani == p->Draw2Anim)
+	{
+		draw_pistol_meshes(weapon_type);
+		SoundEffect(6, &lara_item->pos, 0);
+	}
+	else if (ani == p->RecoilAnim - 1)
+	{
+		ready_pistols(weapon_type);
+		ani = 0;
+	}
+
+	set_arm_info(&lara.right_arm, ani);
+	set_arm_info(&lara.left_arm, ani);
+}
+
 void inject_lara2gun(bool replace)
 {
 	INJECT(0x0044FDD0, ready_pistols, replace);
@@ -364,4 +389,5 @@ void inject_lara2gun(bool replace)
 	INJECT(0x0044FF40, undraw_pistol_mesh_right, replace);
 	INJECT(0x004502B0, AnimatePistols, replace);
 	INJECT(0x0044FFC0, PistolHandler, replace);
+	INJECT(0x0044F950, draw_pistols, replace);
 }
