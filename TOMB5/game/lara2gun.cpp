@@ -369,7 +369,7 @@ void draw_pistols(long weapon_type)
 	else if (ani == p->Draw2Anim)
 	{
 		draw_pistol_meshes(weapon_type);
-		SoundEffect(6, &lara_item->pos, 0);
+		SoundEffect(SFX_LARA_HOLSTER_DRAW, &lara_item->pos, SFX_DEFAULT);
 	}
 	else if (ani == p->RecoilAnim - 1)
 	{
@@ -381,6 +381,90 @@ void draw_pistols(long weapon_type)
 	set_arm_info(&lara.left_arm, ani);
 }
 
+void undraw_pistols(long weapon_type)
+{
+	PISTOL_DEF* p;
+	short anil, anir;
+
+	p = &PistolTable[lara.gun_type];
+	anil = lara.left_arm.frame_number;
+
+	if (lara.left_arm.frame_number >= PistolTable[lara.gun_type].RecoilAnim)
+		anil = p->Draw1Anim2;
+	else if (lara.left_arm.frame_number > 0 && lara.left_arm.frame_number < p->Draw1Anim)
+	{
+		lara.left_arm.x_rot -= lara.left_arm.x_rot / anil;
+		lara.left_arm.y_rot -= lara.left_arm.y_rot / anil;
+		anil--;
+	}
+	else if (!lara.left_arm.frame_number)
+	{
+		lara.left_arm.x_rot = 0;
+		lara.left_arm.y_rot = 0;
+		lara.left_arm.z_rot = 0;
+		anil = p->RecoilAnim - 1;
+	}
+	else if (lara.left_arm.frame_number > p->Draw1Anim)
+	{
+		anil--;
+
+		if (anil == p->Draw2Anim - 1)
+		{
+			undraw_pistol_mesh_left(weapon_type);
+			SoundEffect(SFX_LARA_HOLSTER_AWAY, &lara_item->pos, SFX_DEFAULT);
+		}
+	}
+
+	set_arm_info(&lara.left_arm, anil);
+	anir = lara.right_arm.frame_number;
+
+	if (lara.right_arm.frame_number >= p->RecoilAnim)
+		anir = p->Draw1Anim2;
+	else if (lara.right_arm.frame_number > 0 && lara.right_arm.frame_number < p->Draw1Anim)
+	{
+		lara.right_arm.x_rot -= lara.right_arm.x_rot / anir;
+		lara.right_arm.y_rot -= lara.right_arm.y_rot / anir;
+		anir--;
+	}
+	else if (!lara.right_arm.frame_number)
+	{
+		lara.right_arm.z_rot = 0;
+		lara.right_arm.y_rot = 0;
+		lara.right_arm.x_rot = 0;
+		anir = p->RecoilAnim - 1;
+	}
+	else if (lara.right_arm.frame_number > p->Draw1Anim)
+	{
+		anir--;
+
+		if (anir == p->Draw2Anim - 1)
+		{
+			undraw_pistol_mesh_right(weapon_type);
+			SoundEffect(SFX_LARA_HOLSTER_AWAY, &lara_item->pos, SFX_DEFAULT);
+		}
+	}
+
+	set_arm_info(&lara.right_arm, anir);
+
+	if (anil == p->Draw1Anim && anir == p->Draw1Anim)
+	{
+		lara.gun_status = LG_NO_ARMS;
+		lara.left_arm.frame_number = 0;
+		lara.right_arm.frame_number = 0;
+		lara.target = 0;
+		lara.right_arm.lock = 0;
+		lara.left_arm.lock = 0;
+	}
+
+	if (!(input & IN_LOOK))
+	{
+		lara.head_x_rot = (lara.left_arm.x_rot + lara.right_arm.x_rot) >> 2;
+		lara.torso_x_rot = lara.head_x_rot;
+		lara.head_y_rot = (lara.left_arm.y_rot + lara.right_arm.y_rot) >> 2;
+		lara.torso_y_rot = lara.head_y_rot;
+	}
+}
+
 void inject_lara2gun(bool replace)
 {
 	INJECT(0x0044FDD0, ready_pistols, replace);
@@ -390,4 +474,5 @@ void inject_lara2gun(bool replace)
 	INJECT(0x004502B0, AnimatePistols, replace);
 	INJECT(0x0044FFC0, PistolHandler, replace);
 	INJECT(0x0044F950, draw_pistols, replace);
+	INJECT(0x0044FAC0, undraw_pistols, replace);
 }

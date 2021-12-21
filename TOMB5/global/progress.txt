@@ -916,7 +916,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x0044F950	+	draw_pistols
 0x0044FA20		set_arm_info
-0x0044FAC0		undraw_pistols
+0x0044FAC0	+	undraw_pistols
 0x0044FDD0	+	ready_pistols
 0x0044FE60	+	draw_pistol_meshes
 0x0044FED0	+	undraw_pistol_mesh_left
