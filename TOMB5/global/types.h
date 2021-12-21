@@ -2286,6 +2286,15 @@ struct D3DLIGHT_STRUCT
 	D3DLIGHT2 D3DLight2;
 };
 
+struct PISTOL_DEF
+{
+	short ObjectNum;
+	char Draw1Anim2;
+	char Draw1Anim;
+	char Draw2Anim;
+	char RecoilAnim;
+};
+
 #ifdef GENERAL_FIXES
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
