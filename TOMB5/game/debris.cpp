@@ -102,7 +102,48 @@ void TriggerDebris(GAME_VECTOR* pos, void* TextInfo, short* Offsets, long* Vels,
 	dptr->flags = DebrisMeshFlags;
 }
 
+long GetFreeDebris()
+{
+	DEBRIS_STRUCT* dptr;
+	long eldestage, eldestfree, free;
+
+	free = next_debris;
+	eldestfree = 0;
+	eldestage = -16384;
+	dptr = &debris[next_debris];
+
+	for (int i = 0; i < 256; i++)
+	{
+		if (!dptr->On)
+		{
+			next_debris = (free + 1) & 0xFF;
+			return free;
+		}
+
+		if (dptr->Yvel > eldestage)
+		{
+			eldestfree = free;
+			eldestage = dptr->Yvel;
+		}
+
+		if (free == 255)
+		{
+			dptr = debris;
+			free = 0;
+		}
+		else
+		{
+			++free;
+			++dptr;
+		}
+	}
+
+	next_debris = (eldestfree + 1) & 0xFF;
+	return eldestfree;
+}
+
 void inject_debris(bool replace)
 {
 	INJECT(0x0041D210, TriggerDebris, replace);
+	INJECT(0x0041D170, GetFreeDebris, replace);
 }
