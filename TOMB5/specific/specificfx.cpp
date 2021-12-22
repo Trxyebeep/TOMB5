@@ -1963,7 +1963,7 @@ void DoRain()
 			zz = vec2.z;
 			clr = (long)((1.0F - (f_mzfar - vec2.z) * (1.0F / f_mzfar)) * 8.0F + 8.0F);
 			v[0].specular = 0xFF000000;
-			v[0].color = clr | ((clr | ((clr | 0xFFFF8000) << 8)) << 8); //RGBA(clr, clr, clr, 128);
+			v[0].color = RGBA(clr, clr, clr, 128);
 			v[0].tu = vec2.x;
 			v[0].tv = vec2.y;
 
@@ -2006,7 +2006,7 @@ void DoRain()
 			vec2.z = vec.x * D3DMView._13 + vec.y * D3DMView._23 + vec.z * D3DMView._33 + D3DMView._43;
 			clr = (long)((1.0F - (f_mzfar - vec2.z) * (1.0F / f_mzfar)) * 16.0F + 16.0F);
 			v[1].specular = 0xFF000000;
-			v[1].color = clr | ((clr | ((clr | 0xFFFF8000) << 8)) << 8); //RGBA(clr, clr, clr, 128);
+			v[1].color = RGBA(clr, clr, clr, 128);
 			v[1].tu = vec2.x;
 			v[1].tv = vec2.y;
 
