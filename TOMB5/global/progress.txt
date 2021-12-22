@@ -2103,7 +2103,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x004BEB50		aInitFX
 0x004BEBD0		DoSnow
-0x004BF3C0		DoRain
+0x004BF3C0	+	DoRain
 0x004BFD70		ClearFX
 0x004BFDA0		AddPolyLine
 0x004C0060	+	DrawStarField

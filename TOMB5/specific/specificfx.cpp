@@ -8,11 +8,15 @@
 #include "polyinsert.h"
 #include "drawroom.h"
 #include "d3dmatrix.h"
+#include "function_stubs.h"
+#include "../game/tomb4fx.h"
+
 #ifdef SMOOTH_SHADOWS
 #include "../tomb5/tomb5.h"
 
 #define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
 #endif
+
 #define LINE_POINTS	4	//number of points in each grid line
 #define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
 #define NUM_TRIS	14	//number of triangles needed to create the shadow (this depends on what shape you're doing)
@@ -1820,6 +1824,229 @@ void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz)
 	}
 }
 
+void DoRain()
+{
+	RAINDROPS* rptr;
+	ROOM_INFO* r;
+	D3DTLVERTEX v[2];
+	TEXTURESTRUCT tex;
+	FVECTOR vec;
+	FVECTOR vec2;
+	short* clip;
+	float ctop, cbottom, cright, cleft, zv, zz;
+	long num_alive, rad, angle, rnd, x, z, x_size, y_size, clr;
+	short room_number, clip_distance;
+
+	num_alive = 0;
+
+	for (int i = 0; i < rain_count; i++)
+	{
+		rptr = &Rain[i];
+
+		if (outside && !rptr->x && num_alive < max_rain)
+		{
+			num_alive++;
+			rad = GetRandomDraw() & 8191;
+			angle = GetRandomDraw() & 8190;
+			rptr->x = camera.pos.x + (rad * rcossin_tbl[angle] >> 12);
+			rptr->y = camera.pos.y + -1024 - (GetRandomDraw() & 2047);
+			rptr->z = camera.pos.z + (rad * rcossin_tbl[angle + 1] >> 12);
+
+			if (IsRoomOutside(rptr->x, rptr->y, rptr->z) < 0)
+			{
+				rptr->x = 0;
+				continue;
+			}
+
+			if (room[IsRoomOutsideNo].flags & ROOM_UNDERWATER)
+			{
+				rptr->x = 0;
+				continue;
+			}
+
+			rptr->xv = (GetRandomDraw() & 7) - 4;
+			rptr->yv = (GetRandomDraw() & 3) + 24;
+			rptr->zv = (GetRandomDraw() & 7) - 4;
+			rptr->room_number = IsRoomOutsideNo;
+			rptr->life = 64 - rptr->yv;
+		}
+
+		if (rptr->x)
+		{
+			if (rptr->life > 240 || ABS(CamPos.x - rptr->x) > 6000 || ABS(CamPos.z - rptr->z) > 6000)
+			{
+				rptr->x = 0;
+				continue;
+			}
+
+			rptr->x += rptr->xv + 4 * SmokeWindX;
+			rptr->y += rptr->yv << 3;
+			rptr->z += rptr->zv + 4 * SmokeWindZ;
+			r = &room[rptr->room_number];
+			x = r->x + 1024;
+			z = r->z + 1024;
+			x_size = r->x_size - 1;
+			y_size = r->y_size - 1;
+
+			if (rptr->y <= r->maxceiling || rptr->y >= r->minfloor || rptr->z <= z ||
+				rptr->z >= r->z + (x_size << 10) || rptr->x <= x || rptr->x >= r->x + (y_size << 10))
+			{
+				room_number = rptr->room_number;
+				GetFloor(rptr->x, rptr->y, rptr->z, &room_number);
+
+				if (room_number == rptr->room_number || room[room_number].flags & ROOM_UNDERWATER)
+				{
+					TriggerSmallSplash(rptr->x, rptr->y, rptr->z, 1);
+					rptr->x = 0;
+					continue;
+				}
+				else
+					rptr->room_number = room_number;
+			}
+
+			rnd = GetRandomDraw();
+
+			if ((rnd & 3) != 3)
+			{
+				rptr->xv += (rnd & 3) - 1;
+
+				if (rptr->xv < -4)
+					rptr->xv = -4;
+				else if (rptr->xv > 4)
+					rptr->xv = 4;
+			}
+
+			rnd = (rnd >> 2) & 3;
+
+			if (rnd != 3)
+			{
+				rptr->zv += (char)(rnd - 1);
+
+				if (rptr->zv < -4)
+					rptr->zv = -4;
+				else if (rptr->zv > 4)
+					rptr->zv = 4;
+			}
+
+			rptr->life -= 2;
+
+			if (rptr->life > 240)
+				rptr->x = 0;
+		}
+	}
+
+	tex.drawtype = 2;
+	tex.tpage = 0;
+	tex.flag = 0;
+	ctop = f_top;
+	cleft = f_left + 4.0F;
+	cbottom = f_bottom;
+	cright = f_right - 4.0F;
+	phd_PushMatrix();
+	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+	SetD3DViewMatrix();
+
+	for (int i = 0; i < rain_count; i++)
+	{
+		rptr = &Rain[i];
+
+		if (rptr->x)
+		{
+			clip_distance = 0;
+			clip = clipflags;
+			vec.x = (float)(rptr->x - lara_item->pos.x_pos - 2 * SmokeWindX);
+			vec.y = (float)(rptr->y - 8 * rptr->yv - lara_item->pos.y_pos);
+			vec.z = (float)(rptr->z - lara_item->pos.z_pos - 2 * SmokeWindZ);
+			vec2.x = vec.x * D3DMView._11 + vec.y * D3DMView._21 + vec.z * D3DMView._31 + D3DMView._41;
+			vec2.y = vec.x * D3DMView._12 + vec.y * D3DMView._22 + vec.z * D3DMView._32 + D3DMView._42;
+			vec2.z = vec.x * D3DMView._13 + vec.y * D3DMView._23 + vec.z * D3DMView._33 + D3DMView._43;
+			zz = vec2.z;
+			clr = (long)((1.0F - (f_mzfar - vec2.z) * (1.0F / f_mzfar)) * 8.0F + 8.0F);
+			v[0].specular = 0xFF000000;
+			v[0].color = clr | ((clr | ((clr | 0xFFFF8000) << 8)) << 8); //RGBA(clr, clr, clr, 128);
+			v[0].tu = vec2.x;
+			v[0].tv = vec2.y;
+
+			if (vec2.z < f_mznear)
+				clip_distance = -128;
+			else
+			{
+				if (vec2.z > FogEnd)
+				{
+					zz = f_zfar;
+					clip_distance = 16;
+				}
+
+				zv = f_mpersp / zz;
+				v[0].sx = zv * vec2.x + f_centerx;
+				v[0].sy = zv * vec2.y + f_centery;
+				v[0].rhw = f_moneopersp * zv;
+
+				if (v[0].sx < cleft)
+					clip_distance++;
+				else if (v[0].sx > cright)
+					clip_distance += 2;
+
+				if (v[0].sy < ctop)
+					clip_distance += 4;
+				else if (v[0].sy > cbottom)
+					clip_distance += 8;
+			}
+
+			v[0].sz = zz;
+			clip[0] = clip_distance;
+			clip_distance = 0;
+			clip++;
+
+			vec.x = (float)(rptr->x - lara_item->pos.x_pos);
+			vec.y = (float)(rptr->y - lara_item->pos.y_pos);
+			vec.z = (float)(rptr->z - lara_item->pos.z_pos);
+			vec2.x = vec.x * D3DMView._11 + vec.y * D3DMView._21 + vec.z * D3DMView._31 + D3DMView._41;
+			vec2.y = vec.x * D3DMView._12 + vec.y * D3DMView._22 + vec.z * D3DMView._32 + D3DMView._42;
+			vec2.z = vec.x * D3DMView._13 + vec.y * D3DMView._23 + vec.z * D3DMView._33 + D3DMView._43;
+			clr = (long)((1.0F - (f_mzfar - vec2.z) * (1.0F / f_mzfar)) * 16.0F + 16.0F);
+			v[1].specular = 0xFF000000;
+			v[1].color = clr | ((clr | ((clr | 0xFFFF8000) << 8)) << 8); //RGBA(clr, clr, clr, 128);
+			v[1].tu = vec2.x;
+			v[1].tv = vec2.y;
+
+			if (vec2.z < f_mznear)
+				clip_distance = -128;
+			else
+			{
+				if (vec2.z > FogEnd)
+				{
+					zz = f_zfar;
+					clip_distance = 16;
+				}
+
+				zv = f_mpersp / zz;
+				v[1].sx = zv * vec2.x + f_centerx;
+				v[1].sy = zv * vec2.y + f_centery;
+				v[1].rhw = f_moneopersp * zv;
+
+				if (v[1].sx < cleft)
+					clip_distance++;
+				else if (v[1].sx > cright)
+					clip_distance += 2;
+
+				if (v[1].sy < ctop)
+					clip_distance += 4;
+				else if (v[1].sy > cbottom)
+					clip_distance += 8;
+			}
+
+			v[1].sz = zz;
+			clip[0] = clip_distance;
+
+			if (!clipflags[0] && !clipflags[1])
+				AddPolyLine(v, &tex);
+		}
+	}
+
+	phd_PopMatrix();
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -1834,4 +2061,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C0810, setXY3, replace);
 	INJECT(0x004C05B0, setXY4, replace);
 	INJECT(0x004C4790, S_DrawDrawSparksNEW, replace);
+	INJECT(0x004BF3C0, DoRain, replace);
 }

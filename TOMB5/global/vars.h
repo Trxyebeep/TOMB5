@@ -548,6 +548,8 @@
 #define DebrisMeshC3	VAR_U_(0x00E912C8, long)
 #define DebrisMeshAmbient	VAR_U_(0x00E8CAAC, long)
 #define DebrisMeshFlags	VAR_U_(0x00E8CAB4, long)
+#define rain_count	VAR_U_(0x00D6866C, short)
+#define max_rain	VAR_U_(0x00C713D8, short)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -681,6 +683,9 @@
 #define Textures	ARRAY_(0x00D99DA8, TEXTURE, [64])
 #define SortList	ARRAY_(0x00BA4390, SORTLIST*, [65536])
 #define Bucket	ARRAY_(0x0057A510, TEXTUREBUCKET, [30])
+#define UWdust	ARRAY_(0x00C717E8, UWEFFECTS, [256])
+#define Rain	ARRAY_(0x00C72BE8, RAINDROPS, [2048])
+#define Snow	ARRAY_(0x00C7CBE8, SNOWFLAKE, [2048])
 
 /****************/
 //registry

@@ -2083,7 +2083,7 @@ struct SPIDER_STRUCT
 	uchar flags;
 };
 
-struct SNOWFLAKE
+typedef struct SNOWFLAKE
 {
 	long x;
 	long y;
@@ -2094,7 +2094,7 @@ struct SNOWFLAKE
 	uchar life;
 	short stopped;
 	short room_number;
-};
+} RAINDROPS, UWEFFECTS;
 
 struct PORTAL_STRUCT
 {
