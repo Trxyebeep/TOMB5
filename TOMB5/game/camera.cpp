@@ -144,7 +144,7 @@ void CalculateCamera()
 			shift = phd_sqrt(SQUARE(camera.item->pos.z_pos - item->pos.z_pos) + SQUARE(camera.item->pos.x_pos - item->pos.x_pos));
 			gotit = (phd_atan(camera.item->pos.z_pos - item->pos.z_pos, camera.item->pos.x_pos - item->pos.x_pos) - item->pos.y_rot) >> 1;
 			bounds = GetBoundsAccurate(camera.item);
-			tilt = (short)(phd_atan(shift, y - (bounds[2] + bounds[3]) / 2 - camera.item->pos.y_pos) >> 1);
+			tilt = (short)(phd_atan(shift, y - (bounds[2] + bounds[3]) / 2 - camera.item->pos.y_pos)) >> 1;
 
 			if (gotit > -9100 && gotit < 9100 && tilt > -15470 && tilt < 15470)
 			{
