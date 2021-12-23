@@ -1828,6 +1828,9 @@ void DoRain()
 {
 	RAINDROPS* rptr;
 	ROOM_INFO* r;
+#ifdef GENERAL_FIXES
+	FLOOR_INFO* floor;
+#endif
 	D3DTLVERTEX v[2];
 	TEXTURESTRUCT tex;
 	FVECTOR vec;
@@ -1892,11 +1895,29 @@ void DoRain()
 				rptr->z >= r->z + (x_size << 10) || rptr->x <= x || rptr->x >= r->x + (y_size << 10))
 			{
 				room_number = rptr->room_number;
+#ifdef GENERAL_FIXES
+				floor =		//only need it for Get(Water)Height
+#endif
 				GetFloor(rptr->x, rptr->y, rptr->z, &room_number);
 
 				if (room_number == rptr->room_number || room[room_number].flags & ROOM_UNDERWATER)
 				{
+#ifdef GENERAL_FIXES
+					if (room[room_number].flags & ROOM_UNDERWATER)
+					{
+					//	clr = GetWaterHeight(rptr->x, rptr->y, rptr->z, room_number);
+					//	SetupRipple(rptr->x, clr, rptr->z, 3, 0);
+					//max num of ripples is 32, this fills up very quickly and Lara produces no ripples when walking through water... 
+					//increase limit someday.. nothing for now!
+					}
+					else
+					{
+						clr = GetHeight(floor, rptr->x, rptr->y, rptr->z);
+						TriggerSmallSplash(rptr->x, clr, rptr->z, 1);
+					}
+#else
 					TriggerSmallSplash(rptr->x, rptr->y, rptr->z, 1);
+#endif
 					rptr->x = 0;
 					continue;
 				}

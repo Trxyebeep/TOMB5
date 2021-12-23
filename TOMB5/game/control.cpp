@@ -2667,6 +2667,7 @@ long S_Death()
 		camera.number_frames = S_DumpScreen();
 	}
 
+	FreeMonoScreen();
 	return ret;
 }
 #endif
