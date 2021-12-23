@@ -1367,6 +1367,12 @@ void DoBar(long x, long y, long width, long height, long pos, long clr1, long cl
 	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//white border
 }
 
+void CreateMonoScreen()
+{
+	MonoScreenOn = 1;
+	ConvertSurfaceToTextures(App.dx.lpPrimaryBuffer);
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -1381,4 +1387,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004B1F00, GetCampaignCheatValue, replace);
 	INJECT(0x004ADF90, DoOptions, replace);
 	INJECT(0x004B1250, DoBar, replace);
+	INJECT(0x004AC430, CreateMonoScreen, replace);
 }

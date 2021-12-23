@@ -1956,7 +1956,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004ABAE0		MemBltSurf
 0x004AC010		RGBM_Mono
 0x004AC050		ConvertSurfaceToTextures
-0x004AC430		CreateMonoScreen
+0x004AC430	+	CreateMonoScreen
 0x004AC460		FreeMonoScreen
 0x004AC810		LoadScreen
 0x004ACA30		ReleaseScreen

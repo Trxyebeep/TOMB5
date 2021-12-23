@@ -550,6 +550,7 @@
 #define DebrisMeshFlags	VAR_U_(0x00E8CAB4, long)
 #define rain_count	VAR_U_(0x00D6866C, short)
 #define max_rain	VAR_U_(0x00C713D8, short)
+#define MonoScreenOn	VAR_U_(0x0087B81C, char)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
