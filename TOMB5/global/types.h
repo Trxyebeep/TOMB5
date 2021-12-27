@@ -2295,6 +2295,14 @@ struct PISTOL_DEF
 	char RecoilAnim;
 };
 
+struct WATERTAB
+{
+	char shimmer;
+	char choppy;
+	uchar random;
+	uchar abs;
+};
+
 #ifdef GENERAL_FIXES
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
