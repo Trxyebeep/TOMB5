@@ -2303,6 +2303,20 @@ struct WATERTAB
 	uchar abs;
 };
 
+struct ROOMLET_LIGHT
+{
+	float x;
+	float y;
+	float z;
+	float r;
+	float g;
+	float b;
+	float falloff;
+	float sqr_falloff;
+	float inv_falloff;
+	long type;
+};
+
 #ifdef GENERAL_FIXES
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {

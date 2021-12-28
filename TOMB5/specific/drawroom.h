@@ -9,6 +9,7 @@ void DrawClipRectangle(ROOM_INFO* r);
 void InsertRoom(ROOM_INFO* r);
 void InsertRoomlet(ROOMLET* roomlet);
 void RoomTestThing();
+void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWaterVerts, long nShortVerts);
 
 #define DrawBuckets	( (void(__cdecl*)()) 0x0049D750 )
 #define TriggerFogBulbFX	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x0049AEF0 )
@@ -17,6 +18,5 @@ void RoomTestThing();
 #define aBuildFXFogBulbList	( (void(__cdecl*)()) 0x0049B1C0 )
 #define CheckBoundsClip	( (long(__cdecl*)(float*)) 0x0049C6B0 )
 #define aBuildRoomletLights	( (long(__cdecl*)(ROOMLET*)) 0x0049B390 )
-#define aRoomletTransformLight	( (void(__cdecl*)(float*, long, long, long, long)) 0x0049B7B0 )
 #define ProcessMeshData	( (void(__cdecl*)(long)) 0x0049A3D0 )
 #define InitBuckets	( (void(__cdecl*)()) 0x0049D220 )

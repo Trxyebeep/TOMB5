@@ -551,6 +551,8 @@
 #define rain_count	VAR_U_(0x00D6866C, short)
 #define max_rain	VAR_U_(0x00C713D8, short)
 #define MonoScreenOn	VAR_U_(0x0087B81C, char)
+#define aRoomletTransformLight_num	VAR_U_(0x00511A64, float)
+#define aRoomletTransformLight_bignum	VAR_U_(0x00511A5C, float)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -690,6 +692,7 @@
 #define WaterTable	ARRAY_(0x00876C54, WATERTAB, [22][64])
 #define vert_wibble_table	ARRAY_(0x00878658, float, [32])
 #define unused_vert_wibble_table	ARRAY_(0x00878254, float, [128])
+#define RoomletLights	ARRAY_(0x007ED6B0, ROOMLET_LIGHT, [64])
 
 /****************/
 //registry
