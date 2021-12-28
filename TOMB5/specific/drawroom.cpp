@@ -182,13 +182,15 @@ void RoomTestThing()
 void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWaterVerts, long nShortVerts)
 {
 	ROOMLET_LIGHT* light;
+	FOGBULB_STRUCT* bulb;
 	FVECTOR xyz;
 	FVECTOR Nxyz;
 	FVECTOR fog_bak;
 	FVECTOR vec;
+	FVECTOR vec2;
 	FVECTOR Lxyz;
 	short* clip;
-	float num, zbak, zv, zv2, fR, fG, fB, val, val2;
+	float num, zbak, zv, zv2, fR, fG, fB, val, val2, val3, fCol;
 	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal, n;
 	short clip_distance;
 	uchar rnd;
@@ -363,7 +365,122 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			cB = 255;
 		}
 
-		//fog
+		if (nRoomletFogBulbs)
+		{
+			prelight = 0;
+
+			for (int j = 0; j < nRoomletFogBulbs; j++)
+			{
+				bulb = &RoomletFogBulbs[j];
+				fCol = 0;
+
+				if (fog_bak.z + bulb->rad > 0)
+				{
+					if (fabs(fog_bak.x) - bulb->rad < fabs(fog_bak.z) && fabs(fog_bak.y) - bulb->rad < fabs(fog_bak.z))
+					{
+						vec.x = 0;
+						vec.y = 0;
+						vec.z = 0;
+						vec2.x = 0;
+						vec2.y = 0;
+						vec2.z = 0;
+						val = SQUARE(bulb->pos.x - fog_bak.x) + SQUARE(bulb->pos.y - fog_bak.y) + SQUARE(bulb->pos.z - fog_bak.z);
+
+						if (bulb->sqlen >= bulb->sqrad)
+						{
+							if (val >= bulb->sqrad)
+							{
+								val = SQUARE(fog_bak.x) + SQUARE(fog_bak.y) + SQUARE(fog_bak.z);
+								val2 = 1.0F / sqrt(val);
+								vec.x = val2 * fog_bak.x;
+								vec.y = val2 * fog_bak.y;
+								vec.z = val2 * fog_bak.z;
+								val2 = bulb->pos.x * vec.x + bulb->pos.y * vec.y + bulb->pos.z * vec.z;
+
+								if (val2 > 0)
+								{
+									val3 = SQUARE(val2);
+
+									if (val > val3)
+									{
+										val = bulb->sqlen - val3;
+
+										if (val >= bulb->sqrad)
+										{
+											vec.x = 0;
+											vec.y = 0;
+											vec.z = 0;
+											vec2.x = 0;
+											vec2.y = 0;
+											vec2.z = 0;
+										}
+										else
+										{
+											val3 = sqrtf(bulb->sqrad - val);
+											val = val2 - val3;
+											vec2.x = val * vec.x;
+											vec2.y = val * vec.y;
+											vec2.z = val * vec.z;
+											val = val2 + val3;
+											vec.x *= val;
+											vec.y *= val;
+											vec.z *= val;
+										}
+									}
+								}
+							}
+							else
+							{
+								vec2.x = fog_bak.x;
+								vec2.y = fog_bak.y;
+								vec2.z = fog_bak.z;
+								val = 1.0F / sqrt(SQUARE(fog_bak.x) + SQUARE(fog_bak.y) + SQUARE(fog_bak.z));
+								vec.x = val * fog_bak.x;
+								vec.y = val * fog_bak.y;
+								vec.z = val * fog_bak.z;
+								val2 = bulb->pos.x * vec.x + bulb->pos.y * vec.y + bulb->pos.z * vec.z;
+								val = val2 - sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
+								vec.x *= val;
+								vec.y *= val;
+								vec.z *= val;
+							}
+						}
+						else if (val >= bulb->sqrad)
+						{
+							val = 1.0F / sqrt(SQUARE(fog_bak.x) + SQUARE(fog_bak.y) + SQUARE(fog_bak.z));
+							vec2.x = val * fog_bak.x;
+							vec2.y = val * fog_bak.y;
+							vec2.z = val * fog_bak.z;
+							val2 = bulb->pos.x * vec2.x + bulb->pos.y * vec2.y + bulb->pos.z * vec2.z;
+							val = val2 + sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
+							vec2.x *= val;
+							vec2.y *= val;
+							vec2.z *= val;
+						}
+						else
+						{
+							vec2.x = fog_bak.x;
+							vec2.y = fog_bak.y;
+							vec2.z = fog_bak.z;
+						}
+
+						fCol = sqrt(SQUARE(vec2.x - vec.x) + SQUARE(vec2.y - vec.y) + SQUARE(vec2.z - vec.z)) * bulb->d;
+					}
+				}
+
+				if (fCol)
+				{
+					prelight += (long)fCol;
+					sR += (long)(fCol * bulb->r);
+					sG += (long)(fCol * bulb->g);
+					sB += (long)(fCol * bulb->b);
+				}
+			}
+
+			cR -= prelight;
+			cG -= prelight;
+			cB -= prelight;
+		}
 
 		if (sR > 255)
 			sR = 255;
