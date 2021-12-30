@@ -179,7 +179,7 @@ void RoomTestThing()
 
 }
 
-void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWaterVerts, long nShortVerts)
+void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWaterVerts, long nShoreVerts)
 {
 	ROOMLET_LIGHT* light;
 	FOGBULB_STRUCT* bulb;
@@ -320,7 +320,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			cG += iVal;
 			cB += iVal;
 		}
-		else if (nShortVerts && i > nWaterVerts && i < nShortVerts + nWaterVerts)
+		else if (nShoreVerts && i > nWaterVerts && i < nShoreVerts + nWaterVerts)
 		{
 			wx = (long)(xyz.x * 0.015625F);
 			wy = (long)(xyz.y * 0.015625F);

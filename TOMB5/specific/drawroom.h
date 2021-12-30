@@ -9,7 +9,7 @@ void DrawClipRectangle(ROOM_INFO* r);
 void InsertRoom(ROOM_INFO* r);
 void InsertRoomlet(ROOMLET* roomlet);
 void RoomTestThing();
-void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWaterVerts, long nShortVerts);
+void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWaterVerts, long nShoreVerts);
 
 #define DrawBuckets	( (void(__cdecl*)()) 0x0049D750 )
 #define TriggerFogBulbFX	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x0049AEF0 )
