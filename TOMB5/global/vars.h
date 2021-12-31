@@ -554,6 +554,7 @@
 #define aRoomletTransformLight_num	VAR_U_(0x00511A64, float)
 #define aRoomletTransformLight_bignum	VAR_U_(0x00511A5C, float)
 #define nRoomletFogBulbs	VAR_U_(0x007DFFDC, long)
+#define FPCW	VAR_U_(0x00878654, short)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

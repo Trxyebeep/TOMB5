@@ -10,6 +10,8 @@
 #include "d3dmatrix.h"
 #include "function_stubs.h"
 #include "../game/tomb4fx.h"
+#include "winmain.h"
+#include "mmx.h"
 
 #ifdef SMOOTH_SHADOWS
 #include "../tomb5/tomb5.h"
@@ -2068,6 +2070,26 @@ void DoRain()
 	phd_PopMatrix();
 }
 
+void OutputSky()
+{
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, 1);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, 0);
+	DrawBuckets();
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, 1);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, 1);
+	SortPolyList(SortCount, SortList);
+	RestoreFPCW(FPCW);
+	MMXSetPerspecLimit(0);
+	DrawSortList();
+	MMXSetPerspecLimit(0x3F19999A);
+	MungeFPCW(&FPCW);
+	InitBuckets();
+	InitialiseSortList();
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2083,4 +2105,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C05B0, setXY4, replace);
 	INJECT(0x004C4790, S_DrawDrawSparksNEW, replace);
 	INJECT(0x004BF3C0, DoRain, replace);
+	INJECT(0x004C6D10, OutputSky, replace);
 }
