@@ -1097,7 +1097,12 @@ struct LARA_INFO
 	short torso_z_rot;
 	LARA_ARM left_arm;
 	LARA_ARM right_arm;
+#ifdef GENERAL_FIXES
+	uchar Rholster;
+	uchar Lholster;
+#else
 	ushort holster;
+#endif
 	CREATURE_INFO* creature;
 	long CornerX;
 	long CornerZ;

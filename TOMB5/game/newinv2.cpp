@@ -2506,7 +2506,12 @@ void NailInvItem(short objnum)
 		break;
 
 	case PISTOLS_ITEM:
+#ifdef GENERAL_FIXES
+		lara.Lholster = LARA_HOLSTERS;
+		lara.Rholster = LARA_HOLSTERS;
+#else
 		lara.holster = LARA_HOLSTERS;
+#endif
 		lara.pistols_type_carried = WTYPE_MISSING;
 		lara.gun_status = LG_NO_ARMS;
 		lara.last_gun_type = WEAPON_NONE;
