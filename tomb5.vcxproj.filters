@@ -336,6 +336,12 @@
     <ClCompile Include="TOMB5\specific\registry.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\specific\mmx.cpp">
+      <Filter>TOMB5\specific</Filter>
+    </ClCompile>
+    <ClCompile Include="TOMB5\specific\winmain.cpp">
+      <Filter>TOMB5\specific</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -672,6 +678,12 @@
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="TOMB5\specific\mmx.h">
+      <Filter>TOMB5\specific</Filter>
+    </ClInclude>
+    <ClInclude Include="TOMB5\specific\winmain.h">
+      <Filter>TOMB5\specific</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt">

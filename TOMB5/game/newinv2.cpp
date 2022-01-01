@@ -220,7 +220,7 @@ int S_CallInventory2()
 			fade_ammo_selector();
 		}
 
-		if (use_the_bitch & !input)
+		if (use_the_bitch && !input)
 			val = 1;
 
 		S_OutputPolyList();
@@ -875,7 +875,7 @@ void draw_current_object_list(int ringnum)
 	short ymeup, yrot;
 	char textbufme[128];
 
-	if (rings[ringnum]->current_object_list <= 0)
+	if (rings[ringnum]->numobjectsinlist <= 0)
 		return;
 
 	if (ringnum == RING_AMMO)
@@ -2506,7 +2506,12 @@ void NailInvItem(short objnum)
 		break;
 
 	case PISTOLS_ITEM:
+#ifdef GENERAL_FIXES
+		lara.Lholster = LARA_HOLSTERS;
+		lara.Rholster = LARA_HOLSTERS;
+#else
 		lara.holster = LARA_HOLSTERS;
+#endif
 		lara.pistols_type_carried = WTYPE_MISSING;
 		lara.gun_status = LG_NO_ARMS;
 		lara.last_gun_type = WEAPON_NONE;

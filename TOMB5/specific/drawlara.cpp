@@ -268,6 +268,41 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 
 	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
+#ifdef GENERAL_FIXES
+		obj = &objects[lara.Lholster];
+		meshpp = &meshes[obj->mesh_index];
+		meshpp += 8;
+		aMXPtr[M00] = lara_matricesF[1 * 12 + M00];
+		aMXPtr[M01] = lara_matricesF[1 * 12 + M01];
+		aMXPtr[M02] = lara_matricesF[1 * 12 + M02];
+		aMXPtr[M03] = lara_matricesF[1 * 12 + M03];
+		aMXPtr[M10] = lara_matricesF[1 * 12 + M10];
+		aMXPtr[M11] = lara_matricesF[1 * 12 + M11];
+		aMXPtr[M12] = lara_matricesF[1 * 12 + M12];
+		aMXPtr[M13] = lara_matricesF[1 * 12 + M13];
+		aMXPtr[M20] = lara_matricesF[1 * 12 + M20];
+		aMXPtr[M21] = lara_matricesF[1 * 12 + M21];
+		aMXPtr[M22] = lara_matricesF[1 * 12 + M22];
+		aMXPtr[M23] = lara_matricesF[1 * 12 + M23];
+		phd_PutPolygons(*meshpp, -1);
+
+		obj = &objects[lara.Rholster];
+		meshpp = &meshes[obj->mesh_index];
+		meshpp += 16;
+		aMXPtr[M00] = lara_matricesF[4 * 12 + M00];
+		aMXPtr[M01] = lara_matricesF[4 * 12 + M01];
+		aMXPtr[M02] = lara_matricesF[4 * 12 + M02];
+		aMXPtr[M03] = lara_matricesF[4 * 12 + M03];
+		aMXPtr[M10] = lara_matricesF[4 * 12 + M10];
+		aMXPtr[M11] = lara_matricesF[4 * 12 + M11];
+		aMXPtr[M12] = lara_matricesF[4 * 12 + M12];
+		aMXPtr[M13] = lara_matricesF[4 * 12 + M13];
+		aMXPtr[M20] = lara_matricesF[4 * 12 + M20];
+		aMXPtr[M21] = lara_matricesF[4 * 12 + M21];
+		aMXPtr[M22] = lara_matricesF[4 * 12 + M22];
+		aMXPtr[M23] = lara_matricesF[4 * 12 + M23];
+		phd_PutPolygons(*meshpp, -1);
+#else
 		obj = &objects[lara.holster];
 		meshpp = &meshes[obj->mesh_index];
 		meshpp += 8;
@@ -298,7 +333,8 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 		aMXPtr[M22] = lara_matricesF[4 * 12 + M22];
 		aMXPtr[M23] = lara_matricesF[4 * 12 + M23];
 		phd_PutPolygons(*meshpp, -1);
-		
+#endif
+
 		if (lara.back_gun)//back gun
 		{
 			phd_PushMatrix();

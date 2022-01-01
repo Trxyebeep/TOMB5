@@ -18,8 +18,9 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 void setXY3(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3, long z, short* clip);
 void setXY4(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3, long x4, long y4, long z, short* clip);
 void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz);
+void DoRain();
+void OutputSky();
 
-#define OutputSky	( (void(__cdecl*)()) 0x004C6D10 )
 #define aDrawWreckingBall	( (void(__cdecl*)(ITEM_INFO*, long)) 0x004CF1B0 )
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
 #define SetFade	( (void(__cdecl*)(int, int)) 0x004CA720 )
@@ -43,4 +44,4 @@ void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz);
 #define DrawShockwaves	( (void(__cdecl*)()) 0x004CB280 )
 #define DrawLightning	( (void(__cdecl*)()) 0x004CC0B0 )
 #define OldDrawLightning	( (void(__cdecl*)()) 0x004CCBA0 )
-
+#define AddPolyLine	( (void(__cdecl*)(D3DTLVERTEX*, TEXTURESTRUCT*)) 0x004BFDA0 )

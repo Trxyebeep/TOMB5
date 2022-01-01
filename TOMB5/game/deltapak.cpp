@@ -30,6 +30,10 @@
 #include "../specific/audio.h"
 #include "../specific/alexstuff.h"
 
+#ifdef GENERAL_FIXES
+uchar old_lara_LHolster;
+#endif
+
 short frig_shadow_bbox[6] =
 {
 	-165, 150, -777, 1, -87, 78
@@ -398,7 +402,12 @@ void andrea1_control()
 
 	case 603:
 		undraw_pistol_mesh_right(1);
+#ifdef GENERAL_FIXES
+		lara.Lholster = old_lara_LHolster;
+		lara.Rholster = (uchar)old_lara_holster;
+#else
 		lara.holster = old_lara_holster;
+#endif
 		break;
 
 	case 705:
@@ -444,7 +453,12 @@ void andrea2_control()
 	else if (GLOBAL_cutseq_frame == 678)
 	{
 		undraw_pistol_mesh_right(1);
+#ifdef GENERAL_FIXES
+		lara.Lholster = old_lara_LHolster;
+		lara.Rholster = (uchar)old_lara_holster;
+#else
 		lara.holster = old_lara_holster;
+#endif
 	}
 	else if (GLOBAL_cutseq_frame == 2500)
 		lara_item->mesh_bits = 0;
@@ -2436,8 +2450,15 @@ void handle_cutseq_triggering(long name)
 
 void cutseq_givelara_pistols()
 {
+#ifdef GENERAL_FIXES
+	old_lara_LHolster = lara.Lholster;
+	old_lara_holster = lara.Rholster;
+	lara.Rholster = LARA_HOLSTERS;
+	lara.Lholster = LARA_HOLSTERS;
+#else
 	old_lara_holster = lara.holster;
 	lara.holster = LARA_HOLSTERS;
+#endif
 	draw_pistol_meshes(WEAPON_PISTOLS);
 }
 
@@ -2445,7 +2466,12 @@ void cutseq_removelara_pistols()
 {
 	undraw_pistol_mesh_left(WEAPON_PISTOLS);
 	undraw_pistol_mesh_right(WEAPON_PISTOLS);
+#ifdef GENERAL_FIXES
+	lara.Lholster = old_lara_LHolster;
+	lara.Rholster = (uchar)old_lara_holster;
+#else
 	lara.holster = old_lara_holster;
+#endif
 }
 
 void do_pierre_gun_meshswap()
@@ -3832,7 +3858,10 @@ void do_cutseq_skipper_shit()
 		}
 
 		if (GLOBAL_cutseq_frame < 603 && GLOBAL_cutseq_frame > 452)
-			lara.holster = old_lara_holster;
+		{
+			lara.Lholster = old_lara_LHolster;
+			lara.Rholster = old_lara_holster;
+		}
 
 		break;
 

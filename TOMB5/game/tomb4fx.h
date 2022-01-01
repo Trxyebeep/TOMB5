@@ -42,3 +42,4 @@ void DrawLensFlares(ITEM_INFO* item);
 #define DrawGunflashes	( (void(__cdecl*)()) 0x004838E0 )
 #define DrawGunshells	( (void(__cdecl*)()) 0x00483090 )
 #define S_DrawFires	( (void(__cdecl*)()) 0x00481BB0 )
+#define TriggerShatterSmoke	( (void(__cdecl*)(long, long, long)) 0x004823A0 )

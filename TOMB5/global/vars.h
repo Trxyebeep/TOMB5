@@ -541,6 +541,20 @@
 #define StaticMeshLightItem	VAR_U_(0x008796C8, ITEM_INFO)
 #define D3DLights	VAR_U_(0x0087B0F0, D3DLIGHT_STRUCT*)
 #define D3DDynamics	VAR_U_(0x0087B0F4, D3DLIGHT_STRUCT*)
+#define DebrisFlags	VAR_U_(0x0051CA88, short)
+#define DebrisMesh	VAR_U_(0x00E8CAB0, MESH_DATA*)
+#define DebrisMeshC1	VAR_U_(0x00E912C4, long)
+#define DebrisMeshC2	VAR_U_(0x00E912C0, long)
+#define DebrisMeshC3	VAR_U_(0x00E912C8, long)
+#define DebrisMeshAmbient	VAR_U_(0x00E8CAAC, long)
+#define DebrisMeshFlags	VAR_U_(0x00E8CAB4, long)
+#define rain_count	VAR_U_(0x00D6866C, short)
+#define max_rain	VAR_U_(0x00C713D8, short)
+#define MonoScreenOn	VAR_U_(0x0087B81C, char)
+#define aRoomletTransformLight_num	VAR_U_(0x00511A64, float)
+#define aRoomletTransformLight_bignum	VAR_U_(0x00511A5C, float)
+#define nRoomletFogBulbs	VAR_U_(0x007DFFDC, long)
+#define FPCW	VAR_U_(0x00878654, short)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -674,6 +688,14 @@
 #define Textures	ARRAY_(0x00D99DA8, TEXTURE, [64])
 #define SortList	ARRAY_(0x00BA4390, SORTLIST*, [65536])
 #define Bucket	ARRAY_(0x0057A510, TEXTUREBUCKET, [30])
+#define UWdust	ARRAY_(0x00C717E8, UWEFFECTS, [256])
+#define Rain	ARRAY_(0x00C72BE8, RAINDROPS, [2048])
+#define Snow	ARRAY_(0x00C7CBE8, SNOWFLAKE, [2048])
+#define WaterTable	ARRAY_(0x00876C54, WATERTAB, [22][64])
+#define vert_wibble_table	ARRAY_(0x00878658, float, [32])
+#define unused_vert_wibble_table	ARRAY_(0x00878254, float, [128])
+#define RoomletLights	ARRAY_(0x007ED6B0, ROOMLET_LIGHT, [64])
+#define RoomletFogBulbs	ARRAY_(0x007DFC18, FOGBULB_STRUCT, [16])
 
 /****************/
 //registry

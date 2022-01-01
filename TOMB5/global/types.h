@@ -1097,7 +1097,12 @@ struct LARA_INFO
 	short torso_z_rot;
 	LARA_ARM left_arm;
 	LARA_ARM right_arm;
+#ifdef GENERAL_FIXES
+	uchar Rholster;
+	uchar Lholster;
+#else
 	ushort holster;
+#endif
 	CREATURE_INFO* creature;
 	long CornerX;
 	long CornerZ;
@@ -2083,7 +2088,7 @@ struct SPIDER_STRUCT
 	uchar flags;
 };
 
-struct SNOWFLAKE
+typedef struct SNOWFLAKE
 {
 	long x;
 	long y;
@@ -2094,7 +2099,7 @@ struct SNOWFLAKE
 	uchar life;
 	short stopped;
 	short room_number;
-};
+} RAINDROPS, UWEFFECTS;
 
 struct PORTAL_STRUCT
 {
@@ -2284,6 +2289,37 @@ struct D3DLIGHT_STRUCT
 {
 	LPDIRECT3DLIGHT D3DLight;
 	D3DLIGHT2 D3DLight2;
+};
+
+struct PISTOL_DEF
+{
+	short ObjectNum;
+	char Draw1Anim2;
+	char Draw1Anim;
+	char Draw2Anim;
+	char RecoilAnim;
+};
+
+struct WATERTAB
+{
+	char shimmer;
+	char choppy;
+	uchar random;
+	uchar abs;
+};
+
+struct ROOMLET_LIGHT
+{
+	float x;
+	float y;
+	float z;
+	float r;
+	float g;
+	float b;
+	float falloff;
+	float sqr_falloff;
+	float inv_falloff;
+	long type;
 };
 
 #ifdef GENERAL_FIXES

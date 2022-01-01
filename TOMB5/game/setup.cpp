@@ -87,7 +87,12 @@ void InitialiseLara(int restore)
 	lara.dpoisoned = 0;
 	lara.poisoned = 0;
 	lara.water_surface_dist = 100;
+#ifdef GENERAL_FIXES
+	lara.Lholster = LARA_HOLSTERS_PISTOLS;
+	lara.Rholster = LARA_HOLSTERS_PISTOLS;
+#else
 	lara.holster = LARA_HOLSTERS_PISTOLS;
+#endif
 	lara.location = -1;
 	lara.highest_location = -1;
 	lara.RopePtr = NO_ITEM;
@@ -1590,6 +1595,7 @@ void BaddyObjects()
 		obj->object_mip = 5120;
 		obj->intelligent = 1;
 		obj->HitEffect = 3;
+		obj->undead = 1;
 		obj->save_position = 1;
 		obj->save_hitpoints = 1;
 		obj->save_flags = 1;

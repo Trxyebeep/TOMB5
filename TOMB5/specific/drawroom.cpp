@@ -179,6 +179,344 @@ void RoomTestThing()
 
 }
 
+void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWaterVerts, long nShoreVerts)
+{
+	ROOMLET_LIGHT* light;
+	FOGBULB_STRUCT* bulb;
+	FVECTOR xyz;
+	FVECTOR Nxyz;
+	FVECTOR fog_bak;
+	FVECTOR vec;
+	FVECTOR vec2;
+	FVECTOR Lxyz;
+	short* clip;
+	float num, zbak, zv, zv2, fR, fG, fB, val, val2, val3, fCol;
+	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal, n;
+	short clip_distance;
+	uchar rnd;
+	char choppy;
+
+	clip = clipflags;
+	cam_underwater = camera.underwater;
+
+	if (!(App.dx.Flags & 0x80))	//no wibble on software mode?
+		cam_underwater = 0;
+
+	num = aRoomletTransformLight_num * 255.0F;
+
+	for (int i = 0; i < nVerts; i++)
+	{
+		xyz.x = verts[0];
+		xyz.y = verts[1];
+		xyz.z = verts[2];
+		Nxyz.x = verts[3];
+		Nxyz.y = verts[4];
+		Nxyz.z = verts[5];
+		verts += 6;
+
+		if (i < nWaterVerts)
+		{
+			wx = (long)(xyz.x + current_room_ptr->x) >> 6;
+			wy = (long)(xyz.y + current_room_ptr->y) >> 6;
+			wz = (long)(xyz.z + current_room_ptr->z) >> 7;
+			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
+			xyz.y += WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
+		}
+
+		vec.x = xyz.x * D3DMView._11 + xyz.y * D3DMView._21 + xyz.z * D3DMView._31 + D3DMView._41;
+		vec.y = xyz.x * D3DMView._12 + xyz.y * D3DMView._22 + xyz.z * D3DMView._32 + D3DMView._42;
+		vec.z = xyz.x * D3DMView._13 + xyz.y * D3DMView._23 + xyz.z * D3DMView._33 + D3DMView._43;
+		fog_bak.x = vec.x;
+		fog_bak.y = vec.y;
+		fog_bak.z = vec.z;
+		zbak = vec.z;
+		aVertexBuffer[i].tu = vec.x;
+		aVertexBuffer[i].tv = vec.y;
+		clip_distance = 0;
+
+		if (vec.z < f_mznear)
+			clip_distance = -128;
+		else
+		{
+			zv = f_mpersp / vec.z;
+
+			if (cam_underwater)
+			{
+				zv2 = 1.0F / (vec.z * 0.001953125F);
+				vec.x = vec.x * zv + f_centerx + vert_wibble_table[((wibble + (long)(zv2 * vec.y)) >> 3) & 0x1F];
+				vec.y = vec.y * zv + f_centery + vert_wibble_table[((wibble + (long)(zv2 * vec.x)) >> 3) & 0x1F];
+			}
+			else
+			{
+				vec.x = vec.x * zv + f_centerx;
+				vec.y = vec.y * zv + f_centery;
+			}
+
+			aVertexBuffer[i].rhw = zv * f_moneopersp;
+
+			if (vec.x < clip_left)
+				clip_distance = 1;
+			else if (vec.x > clip_right)
+				clip_distance = 2;
+
+			if (vec.y < clip_top)
+				clip_distance += 4;
+			else if (vec.y > clip_bottom)
+				clip_distance += 8;
+		}
+
+		clip[0] = clip_distance;
+		clip++;
+		aVertexBuffer[i].sx = vec.x;
+		aVertexBuffer[i].sy = vec.y;
+		aVertexBuffer[i].sz = vec.z;
+		prelight = *(long*)verts;
+		verts++;
+		fR = 0;
+		fG = 0;
+		fB = 0;
+		sR = 0;
+		sG = 0;
+		sB = 0;
+
+		for (int j = 0; j < nLights; j++)
+		{
+			light = &RoomletLights[j];
+			Lxyz.x = xyz.x - light->x;
+			Lxyz.y = xyz.y - light->y;
+			Lxyz.z = xyz.z - light->z;
+			val = SQUARE(Lxyz.x) + SQUARE(Lxyz.y) + SQUARE(Lxyz.z);
+
+			if (val < light->sqr_falloff)
+			{
+				val = sqrt(val);
+				val2 = light->inv_falloff * (light->falloff - val);
+				Lxyz.x = (Nxyz.x * D3DMView._11 + Nxyz.y * D3DMView._21 + Nxyz.z * D3DMView._31) * (1.0F / val * Lxyz.x);
+				Lxyz.y = (Nxyz.x * D3DMView._12 + Nxyz.y * D3DMView._22 + Nxyz.z * D3DMView._32) * (1.0F / val * Lxyz.y);
+				Lxyz.z = (Nxyz.x * D3DMView._13 + Nxyz.y * D3DMView._23 + Nxyz.z * D3DMView._33) * (1.0F / val * Lxyz.z);
+				val = val2 * (1.0F - (Lxyz.x + Lxyz.y + Lxyz.z));
+				fR += light->r * val;
+				fG += light->g * val;
+				fB += light->b * val;
+			}
+		}
+
+		fR = CLRR(prelight) + fR * 255.0F;
+		fG = CLRG(prelight) + fG * 255.0F;
+		fB = CLRB(prelight) + fB * 255.0F;
+		cR = (long)fR;
+		cG = (long)fG;
+		cB = (long)fB;
+
+		if (current_room_underwater)
+		{
+			wx = (long)(xyz.x * 0.015625F);
+			wy = (long)(xyz.y * 0.015625F);
+			wz = (long)(xyz.z * 0.0078125F);
+			rnd = WaterTable[current_room_ptr->MeshEffect][((wx + wy) + wz) & 0x3F].random;
+			choppy = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
+			iVal = -2 * choppy;
+			cR += iVal;
+			cG += iVal;
+			cB += iVal;
+		}
+		else if (nShoreVerts && i > nWaterVerts && i < nShoreVerts + nWaterVerts)
+		{
+			wx = (long)(xyz.x * 0.015625F);
+			wy = (long)(xyz.y * 0.015625F);
+			wz = (long)(xyz.z * 0.0078125F);
+			rnd = WaterTable[current_room_ptr->MeshEffect][((wx + wy) + wz) & 0x3F].random;
+			n = (current_room_ptr->MeshEffect << 6) + (((wibble >> 2) + rnd) & 0x3F);
+			iVal = WaterTable[0][n].shimmer + WaterTable[0][n].abs;
+			cR += iVal;
+			cG += iVal;
+			cB += iVal;
+		}
+
+		if (zbak > aRoomletTransformLight_bignum)
+		{
+			val = (zbak - aRoomletTransformLight_bignum) * num;
+			cR -= (long)val;
+			cG -= (long)val;
+			cB -= (long)val;
+		}
+
+		if (cR - 128 <= 0)
+			cR <<= 1;
+		else
+		{
+			sR = (cR - 128) >> 1;
+			cR = 255;
+		}
+
+		if (cG - 128 <= 0)
+			cG <<= 1;
+		else
+		{
+			sG = (cG - 128) >> 1;
+			cG = 255;
+		}
+
+		if (cB - 128 <= 0)
+			cB <<= 1;
+		else
+		{
+			sB = (cB - 128) >> 1;
+			cB = 255;
+		}
+
+		if (nRoomletFogBulbs)
+		{
+			prelight = 0;
+
+			for (int j = 0; j < nRoomletFogBulbs; j++)
+			{
+				bulb = &RoomletFogBulbs[j];
+				fCol = 0;
+
+				if (fog_bak.z + bulb->rad > 0)
+				{
+					if (fabs(fog_bak.x) - bulb->rad < fabs(fog_bak.z) && fabs(fog_bak.y) - bulb->rad < fabs(fog_bak.z))
+					{
+						vec.x = 0;
+						vec.y = 0;
+						vec.z = 0;
+						vec2.x = 0;
+						vec2.y = 0;
+						vec2.z = 0;
+						val = SQUARE(bulb->pos.x - fog_bak.x) + SQUARE(bulb->pos.y - fog_bak.y) + SQUARE(bulb->pos.z - fog_bak.z);
+
+						if (bulb->sqlen >= bulb->sqrad)
+						{
+							if (val >= bulb->sqrad)
+							{
+								val = SQUARE(fog_bak.x) + SQUARE(fog_bak.y) + SQUARE(fog_bak.z);
+								val2 = 1.0F / sqrt(val);
+								vec.x = val2 * fog_bak.x;
+								vec.y = val2 * fog_bak.y;
+								vec.z = val2 * fog_bak.z;
+								val2 = bulb->pos.x * vec.x + bulb->pos.y * vec.y + bulb->pos.z * vec.z;
+
+								if (val2 > 0)
+								{
+									val3 = SQUARE(val2);
+
+									if (val > val3)
+									{
+										val = bulb->sqlen - val3;
+
+										if (val >= bulb->sqrad)
+										{
+											vec.x = 0;
+											vec.y = 0;
+											vec.z = 0;
+											vec2.x = 0;
+											vec2.y = 0;
+											vec2.z = 0;
+										}
+										else
+										{
+											val3 = sqrtf(bulb->sqrad - val);
+											val = val2 - val3;
+											vec2.x = val * vec.x;
+											vec2.y = val * vec.y;
+											vec2.z = val * vec.z;
+											val = val2 + val3;
+											vec.x *= val;
+											vec.y *= val;
+											vec.z *= val;
+										}
+									}
+								}
+							}
+							else
+							{
+								vec2.x = fog_bak.x;
+								vec2.y = fog_bak.y;
+								vec2.z = fog_bak.z;
+								val = 1.0F / sqrt(SQUARE(fog_bak.x) + SQUARE(fog_bak.y) + SQUARE(fog_bak.z));
+								vec.x = val * fog_bak.x;
+								vec.y = val * fog_bak.y;
+								vec.z = val * fog_bak.z;
+								val2 = bulb->pos.x * vec.x + bulb->pos.y * vec.y + bulb->pos.z * vec.z;
+								val = val2 - sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
+								vec.x *= val;
+								vec.y *= val;
+								vec.z *= val;
+							}
+						}
+						else if (val >= bulb->sqrad)
+						{
+							val = 1.0F / sqrt(SQUARE(fog_bak.x) + SQUARE(fog_bak.y) + SQUARE(fog_bak.z));
+							vec2.x = val * fog_bak.x;
+							vec2.y = val * fog_bak.y;
+							vec2.z = val * fog_bak.z;
+							val2 = bulb->pos.x * vec2.x + bulb->pos.y * vec2.y + bulb->pos.z * vec2.z;
+							val = val2 + sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
+							vec2.x *= val;
+							vec2.y *= val;
+							vec2.z *= val;
+						}
+						else
+						{
+							vec2.x = fog_bak.x;
+							vec2.y = fog_bak.y;
+							vec2.z = fog_bak.z;
+						}
+
+						fCol = sqrt(SQUARE(vec2.x - vec.x) + SQUARE(vec2.y - vec.y) + SQUARE(vec2.z - vec.z)) * bulb->d;
+					}
+				}
+
+				if (fCol)
+				{
+					prelight += (long)fCol;
+					sR += (long)(fCol * bulb->r);
+					sG += (long)(fCol * bulb->g);
+					sB += (long)(fCol * bulb->b);
+				}
+			}
+
+			cR -= prelight;
+			cG -= prelight;
+			cB -= prelight;
+		}
+
+		if (sR > 255)
+			sR = 255;
+		else if (sR < 0)
+			sR = 0;
+
+		if (sG > 255)
+			sG = 255;
+		else if (sG < 0)
+			sG = 0;
+
+		if (sB > 255)
+			sB = 255;
+		else if (sB < 0)
+			sB = 0;
+
+		if (cR > 255)
+			cR = 255;
+		else if (cR < 0)
+			cR = 0;
+
+		if (cG > 255)
+			cG = 255;
+		else if (cG < 0)
+			cG = 0;
+
+		if (cB > 255)
+			cB = 255;
+		else if (cB < 0)
+			cB = 0;
+
+		aVertexBuffer[i].color = RGBA(cR, cG, cB, 255);
+		aVertexBuffer[i].specular = RGBA(sR, sG, sB, 255);
+	}
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -187,4 +525,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049A9D0, InsertRoom, replace);
 	INJECT(0x0049ABF0, InsertRoomlet, replace);
 	INJECT(0x0049A9B0, RoomTestThing, replace);
+	INJECT(0x0049B7B0, aRoomletTransformLight, replace);
 }

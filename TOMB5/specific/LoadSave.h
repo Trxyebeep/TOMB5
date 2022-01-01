@@ -19,8 +19,8 @@ void DoOptions();
 void S_DrawEnemyBar(long pos);
 #endif
 void DoBar(long x, long y, long width, long height, long pos, long clr1, long clr2);
+void CreateMonoScreen();
 
-#define CreateMonoScreen	( (void(__cdecl*)()) 0x004AC430 )
 #define S_DisplayMonoScreen	( (void(__cdecl*)()) 0x004AD010 )
 #define FreeMonoScreen	( (void(__cdecl*)()) 0x004AC460 )
 #define GetSaveLoadFiles	( (void(__cdecl*)()) 0x004AD290 )
@@ -33,3 +33,4 @@ void DoBar(long x, long y, long width, long height, long pos, long clr1, long cl
 #define FindSFCursor	( (long(__cdecl*)(long, long)) 0x004ABA60 )
 #define DoSlider	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x004AD820 )
 #define CalculateNumSpecialFeatures	( (void(__cdecl*)()) 0x004AB9F0 )
+#define ConvertSurfaceToTextures	( (void(__cdecl*)(LPDIRECTDRAWSURFACE4)) 0x004AC050 )

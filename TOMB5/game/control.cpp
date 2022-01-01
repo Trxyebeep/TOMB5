@@ -2514,7 +2514,13 @@ void RemoveRoomFlipItems(ROOM_INFO* r)
 		if (item->flags & IFL_INVISIBLE && objects[item->object_number].intelligent)
 		{
 			if (item->hit_points <= 0 && item->hit_points != -16384)
+			{
+#ifdef GENERAL_FIXES	//fix bug where in gas rooms if player flips the switch back before hitman death anim finishes, it disappears
+				if (gfCurrentLevel == LVL5_RED_ALERT && item->object_number == HITMAN)
+					continue;
+#endif
 				KillItem(item_num);
+			}
 		}
 	}
 }
@@ -2667,6 +2673,7 @@ long S_Death()
 		camera.number_frames = S_DumpScreen();
 	}
 
+	FreeMonoScreen();
 	return ret;
 }
 #endif

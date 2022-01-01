@@ -452,8 +452,18 @@ void undraw_flare()
 
 void DrawFlareInAir(ITEM_INFO* item)
 {
+#ifdef GENERAL_FIXES
+	short* bounds;
+#endif
+
 	phd_PushMatrix();
+#ifdef GENERAL_FIXES
+	bounds = GetBoundsAccurate(item);
+	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos - bounds[3], item->pos.z_pos);
+#else
 	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+#endif
+
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
 #ifdef GENERAL_FIXES
