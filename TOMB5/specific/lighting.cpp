@@ -299,13 +299,7 @@ void CreateLightList(ITEM_INFO* item)
 				if (current_lights[i].Type == LIGHT_SHADOW)
 				{
 					current_lights[i].Active = 1;
-
-#ifdef GENERAL_FIXES // Fixes flashes
-					current_lights[i].iny = current_lights[i].inx >> 3;
-#else
 					current_lights[i].iny = current_lights[i].inx;
-#endif
-
 					current_lights[i].shadow = 0;
 				}
 				else
