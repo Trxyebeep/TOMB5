@@ -111,6 +111,12 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		point->g = light->g * 255.0F;
 		point->b = light->b * 255.0F;
 		point->rad = (light->Outer - num2) / light->Outer;
+
+#ifdef GENERAL_FIXES // Fixes flashes
+		if (point->rad < 0)
+			point->rad = 0;
+#endif
+
 		NumPointLights++;
 		TotalNumLights++;
 	}
@@ -129,6 +135,12 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		spot->g = light->g * 255.0F;
 		spot->b = light->b * 255.0F;
 		spot->rad = 1.0F - num / light->Cutoff;
+
+#ifdef GENERAL_FIXES // Fixes flashes
+		if (spot->rad < 0)
+			spot->rad = 0;
+#endif
+
 		NumSpotLights++;
 		TotalNumLights++;
 	}
@@ -143,6 +155,11 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 
 		if (val >= light->Inner)
 			val2 = (long)((val - light->Outer) / ((light->Outer - light->Inner) / -val2));
+
+#ifdef GENERAL_FIXES // Fixes flashes
+		if (val2 < 0)
+			val2 = 0;
+#endif
 
 		val = val2 >> 1;
 		aR -= val;
