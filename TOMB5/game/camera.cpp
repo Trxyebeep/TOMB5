@@ -269,7 +269,6 @@ void CalculateCamera()
 					camera.target.x = last_target.x + ((camera.target.x - last_target.x) >> 2);
 					camera.target.y = last_target.y + ((camera.target.y - last_target.y) >> 2);
 					camera.target.z = last_target.z + ((camera.target.z - last_target.z) >> 2);
-					y = camera.target.y;
 				}
 				else
 					TargetSnaps = 0;
