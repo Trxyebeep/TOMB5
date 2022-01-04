@@ -1,5 +1,26 @@
 # tomb5 changelog
 
+## [2.1.0](https://github.com/Trxyebeep/TOMB5/tree/V2.1.0) (18/12/2021)
+
+### Original bug fixes
+
+- Fix flipmap saving
+- Fix sample playing for samples with randomness > 127
+
+### tomb5 bug fixes
+
+- Fix rolling with controllers
+
+### tomb5 additions
+
+- Move cheats to inventory
+- Add gameover menu
+- Add hair-floor collision
+- Remember last title menu instead of always going to load menu.
+- Add subtractive blending mode
+- Add option to remove fog
+- Add dynamic light support for static meshes
+
 ## [2.0.0](https://github.com/Trxyebeep/TOMB5/tree/V2.0.0) (29/11/2021)
 
 ### tomb5 bug fixes
