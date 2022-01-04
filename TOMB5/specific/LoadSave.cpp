@@ -376,6 +376,275 @@ int GetCampaignCheatValue()
 	return jump;
 }
 
+static void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_bak)	//:peepohappy:
+{
+	long num;
+	char buffer[80];
+	bool changed;
+
+	num = 13;
+	PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 2, "FootPrints", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 2, "Point light shadows", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 2, "Shadow mode", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 2, "Fix climb up delay", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 7 * font_height), selection & 0x10 ? 1 : 2, "Flexible crawling", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 8 * font_height), selection & 0x20 ? 1 : 2, "Cutscene skipper", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 9 * font_height), selection & 0x40 ? 1 : 2, "Cheats", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 10 * font_height), selection & 0x80 ? 1 : 2, "Bar positions", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 11 * font_height), selection & 0x100 ? 1 : 2, "Enemy bars", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 12 * font_height), selection & 0x200 ? 1 : 2, "Ammo counter", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 13 * font_height), selection & 0x400 ? 1 : 2, "Gameover menu", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 14 * font_height), selection & 0x800 ? 1 : 2, "Fog", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 15 * font_height), selection & 0x1000 ? 1 : 2, "Camera", 0);
+
+	if (dbinput & IN_FORWARD)
+	{
+		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+		selection >>= 1;
+	}
+
+	if (dbinput & IN_BACK)
+	{
+		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+		selection <<= 1;
+	}
+
+	if (!selection)
+		selection = 1;
+
+	if (selection > (ulong)(1 << (num - 1)))
+		selection = 1 << (num - 1);
+
+	if (dbinput & IN_DESELECT)
+	{
+		SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+		menu = 0;
+		dbinput &= ~IN_DESELECT;
+		selection = selection_bak;
+		return;
+	}
+
+	strcpy(buffer, tomb5.footprints ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.tr4_point_lights ? "TR4" : "TR5");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.shadow_mode == 1 ? "original" : tomb5.shadow_mode == 2 ? "circle" : "PSX");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.fix_climb_up_delay ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.flexible_crawling ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 7 * font_height), selection & 0x10 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.cutseq_skipper ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 8 * font_height), selection & 0x20 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.enable_cheats ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 9 * font_height), selection & 0x40 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.bars_pos == 1 ? "original" : tomb5.bars_pos == 2 ? "improved" : "PSX");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 10 * font_height), selection & 0x80 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.enemy_bars ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 11 * font_height), selection & 0x100 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.ammo_counter ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 12 * font_height), selection & 0x200 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.gameover ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 13 * font_height), selection & 0x400 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.fog ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 14 * font_height), selection & 0x800 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.tr4_camera?"TR4":"TR5");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 15 * font_height), selection & 0x1000 ? 1 : 6, buffer, 0);
+	changed = 0;
+
+	switch (selection)
+	{
+	case 1 << 0:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.footprints = !tomb5.footprints;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 1:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.tr4_point_lights = !tomb5.tr4_point_lights;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 2:
+		
+		if (dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.shadow_mode++;
+
+			if (tomb5.shadow_mode > 3)
+				tomb5.shadow_mode = 1;
+
+			changed = 1;
+		}
+
+		if (dbinput & IN_LEFT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.shadow_mode--;
+
+			if (tomb5.shadow_mode < 1)
+				tomb5.shadow_mode = 3;
+
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 3:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.fix_climb_up_delay = !tomb5.fix_climb_up_delay;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 4:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.flexible_crawling = !tomb5.flexible_crawling;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 5:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.cutseq_skipper = !tomb5.cutseq_skipper;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 6:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.enable_cheats = !tomb5.enable_cheats;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 7:
+
+		if (dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.bars_pos++;
+
+			if (tomb5.bars_pos > 3)
+				tomb5.bars_pos = 1;
+
+			changed = 1;
+		}
+
+		if (dbinput & IN_LEFT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.bars_pos--;
+
+			if (tomb5.bars_pos < 1)
+				tomb5.bars_pos = 3;
+
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 8:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.enemy_bars = !tomb5.enemy_bars;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 9:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.ammo_counter = !tomb5.ammo_counter;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 10:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.gameover = !tomb5.gameover;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 11:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.fog = !tomb5.fog;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 12:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.tr4_camera = !tomb5.tr4_camera;
+			changed = 1;
+		}
+
+		break;
+	}
+
+	if (changed)
+		save_new_tomb5_settings();
+}
+
 void DoOptions()
 {
 	char** keyboard_buttons;
@@ -970,275 +1239,7 @@ void DoOptions()
 	}
 #ifdef GENERAL_FIXES	//new menu
 	else if (menu == 200)
-	{
-		num = 12;
-		PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 2, "FootPrints", 0);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 2, "Point light shadows", 0);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 2, "Shadow mode", 0);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 2, "Fix climb up delay", 0);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 7 * font_height), selection & 0x10 ? 1 : 2, "Flexible crawling", 0);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 8 * font_height), selection & 0x20 ? 1 : 2, "Cutscene skipper", 0);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 9 * font_height), selection & 0x40 ? 1 : 2, "Cheats", 0);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 10 * font_height), selection & 0x80 ? 1 : 2, "Bar positions", 0);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 11 * font_height), selection & 0x100 ? 1 : 2, "Enemy bars", 0);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 12 * font_height), selection & 0x200 ? 1 : 2, "Ammo counter", 0);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 13 * font_height), selection & 0x400 ? 1 : 2, "Gameover menu", 0);
-		PrintString(phd_centerx >> 2, (ushort)(textY + 14 * font_height), selection & 0x800 ? 1 : 2, "Fog", 0);
-
-		if (dbinput & IN_FORWARD)
-		{
-			SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
-			selection >>= 1;
-		}
-
-		if (dbinput & IN_BACK)
-		{
-			SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
-			selection <<= 1;
-		}
-
-		if (!selection)
-			selection = 1;
-
-		if (selection > (ulong)(1 << (num - 1)))
-			selection = 1 << (num - 1);
-
-		if (dbinput & IN_DESELECT)
-		{
-			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-			menu = 0;
-			dbinput &= ~IN_DESELECT;
-			selection = selection_bak;
-		}
-
-		if (tomb5.footprints)
-			strcpy(quality_text, "on");
-		else
-			strcpy(quality_text, "off");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 6, quality_text, 0);
-
-		if (tomb5.tr4_point_lights)
-			strcpy(quality_text, "TR4");
-		else
-			strcpy(quality_text, "TR5");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 6, quality_text, 0);
-
-		if (tomb5.shadow_mode == 1)
-			strcpy(quality_text, "original");
-		else if (tomb5.shadow_mode == 2)
-			strcpy(quality_text, "circle");
-		else if (tomb5.shadow_mode == 3)
-			strcpy(quality_text, "PSX");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 6, quality_text, 0);
-
-		if (tomb5.fix_climb_up_delay)
-			strcpy(quality_text, "on");
-		else
-			strcpy(quality_text, "off");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 6, quality_text, 0);
-
-		if (tomb5.flexible_crawling)
-			strcpy(quality_text, "on");
-		else
-			strcpy(quality_text, "off");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 7 * font_height), selection & 0x10 ? 1 : 6, quality_text, 0);
-
-		if (tomb5.cutseq_skipper)
-			strcpy(quality_text, "on");
-		else
-			strcpy(quality_text, "off");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 8 * font_height), selection & 0x20 ? 1 : 6, quality_text, 0);
-
-		if (tomb5.enable_cheats)
-			strcpy(quality_text, "on");
-		else
-			strcpy(quality_text, "off");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 9 * font_height), selection & 0x40 ? 1 : 6, quality_text, 0);
-
-		if (tomb5.bars_pos == 1)
-			strcpy(quality_text, "original");
-		else if (tomb5.bars_pos == 2)
-			strcpy(quality_text, "improved");
-		else if (tomb5.bars_pos == 3)
-			strcpy(quality_text, "PSX");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 10 * font_height), selection & 0x80 ? 1 : 6, quality_text, 0);
-
-		if (tomb5.enemy_bars)
-			strcpy(quality_text, "on");
-		else
-			strcpy(quality_text, "off");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 11 * font_height), selection & 0x100 ? 1 : 6, quality_text, 0);
-
-		if (tomb5.ammo_counter)
-			strcpy(quality_text, "on");
-		else
-			strcpy(quality_text, "off");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 12 * font_height), selection & 0x200 ? 1 : 6, quality_text, 0);
-
-		if (tomb5.gameover)
-			strcpy(quality_text, "on");
-		else
-			strcpy(quality_text, "off");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 13 * font_height), selection & 0x400 ? 1 : 6, quality_text, 0);
-
-		if (tomb5.fog)
-			strcpy(quality_text, "on");
-		else
-			strcpy(quality_text, "off");
-
-		PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 14 * font_height), selection & 0x800 ? 1 : 6, quality_text, 0);
-
-		if (selection & 1)
-		{
-			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.footprints = !tomb5.footprints;
-				save_new_tomb5_settings();
-			}
-		}
-		else if (selection & 2)
-		{
-			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.tr4_point_lights = !tomb5.tr4_point_lights;
-				save_new_tomb5_settings();
-			}
-		}
-		else if (selection & 4)
-		{
-			if (dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.shadow_mode++;
-
-				if (tomb5.shadow_mode > 3)
-					tomb5.shadow_mode = 1;
-
-				save_new_tomb5_settings();
-			}
-
-			if (dbinput & IN_LEFT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.shadow_mode--;
-
-				if (tomb5.shadow_mode < 1)
-					tomb5.shadow_mode = 3;
-
-				save_new_tomb5_settings();
-			}
-		}
-		else if (selection & 8)
-		{
-			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.fix_climb_up_delay = !tomb5.fix_climb_up_delay;
-				save_new_tomb5_settings();
-			}
-		}
-		else if (selection & 0x10)
-		{
-			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.flexible_crawling = !tomb5.flexible_crawling;
-				save_new_tomb5_settings();
-			}
-		}
-		else if (selection & 0x20)
-		{
-			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.cutseq_skipper = !tomb5.cutseq_skipper;
-				save_new_tomb5_settings();
-			}
-		}
-		else if (selection & 0x40)
-		{
-			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.enable_cheats = !tomb5.enable_cheats;
-				save_new_tomb5_settings();
-			}
-		}
-		else if (selection & 0x80)
-		{
-			if (dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.bars_pos++;
-
-				if (tomb5.bars_pos > 3)
-					tomb5.bars_pos = 1;
-
-				save_new_tomb5_settings();
-			}
-
-			if (dbinput & IN_LEFT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.bars_pos--;
-
-				if (tomb5.bars_pos < 1)
-					tomb5.bars_pos = 3;
-
-				save_new_tomb5_settings();
-			}
-		}
-		else if (selection & 0x100)
-		{
-			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.enemy_bars = !tomb5.enemy_bars;
-				save_new_tomb5_settings();
-			}
-		}
-		else if (selection & 0x200)
-		{
-			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.ammo_counter = !tomb5.ammo_counter;
-				save_new_tomb5_settings();
-			}
-		}
-		else if (selection & 0x400)
-		{
-			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.gameover = !tomb5.gameover;
-				save_new_tomb5_settings();
-			}
-		}
-		else if (selection & 0x800)
-		{
-			if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
-			{
-				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-				tomb5.fog = !tomb5.fog;
-				save_new_tomb5_settings();
-			}
-		}
-	}
+		TroyeMenu(textY, menu, selection, selection_bak);
 #endif
 }
 
