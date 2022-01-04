@@ -3860,7 +3860,7 @@ void do_cutseq_skipper_shit()
 		if (GLOBAL_cutseq_frame < 603 && GLOBAL_cutseq_frame > 452)
 		{
 			lara.Lholster = old_lara_LHolster;
-			lara.Rholster = old_lara_holster;
+			lara.Rholster = (uchar)old_lara_holster;
 		}
 
 		break;
