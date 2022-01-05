@@ -251,7 +251,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt" />
-    <Text Include="TOMB5\global\style guide.txt" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tomb5.rc" />
