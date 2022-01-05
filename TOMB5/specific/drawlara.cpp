@@ -12,6 +12,9 @@
 #ifdef SMOOTH_SHADOWS
 #include "../tomb5/tomb5.h"
 #endif
+#ifdef GENERAL_FIXES
+#include "../game/savegame.h"
+#endif
 
 char lara_underwater_skin_sweetness_table[15] =
 {
@@ -269,7 +272,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
 #ifdef GENERAL_FIXES
-		obj = &objects[lara.Lholster];
+		obj = &objects[tomb5_save.LHolster];
 		meshpp = &meshes[obj->mesh_index];
 		meshpp += 8;
 		aMXPtr[M00] = lara_matricesF[1 * 12 + M00];
@@ -286,7 +289,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 		aMXPtr[M23] = lara_matricesF[1 * 12 + M23];
 		phd_PutPolygons(*meshpp, -1);
 
-		obj = &objects[lara.Rholster];
+		obj = &objects[lara.holster];
 		meshpp = &meshes[obj->mesh_index];
 		meshpp += 16;
 		aMXPtr[M00] = lara_matricesF[4 * 12 + M00];

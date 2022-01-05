@@ -24,6 +24,9 @@
 #include "../specific/polyinsert.h"
 #include "text.h"
 #include "../specific/audio.h"
+#ifdef GENERAL_FIXES
+#include "savegame.h"
+#endif
 
 short optmessages[11] =
 {
@@ -2507,11 +2510,9 @@ void NailInvItem(short objnum)
 
 	case PISTOLS_ITEM:
 #ifdef GENERAL_FIXES
-		lara.Lholster = LARA_HOLSTERS;
-		lara.Rholster = LARA_HOLSTERS;
-#else
-		lara.holster = LARA_HOLSTERS;
+		tomb5_save.LHolster = LARA_HOLSTERS;
 #endif
+		lara.holster = LARA_HOLSTERS;
 		lara.pistols_type_carried = WTYPE_MISSING;
 		lara.gun_status = LG_NO_ARMS;
 		lara.last_gun_type = WEAPON_NONE;

@@ -1,5 +1,8 @@
 #include "../tomb5/pch.h"
 #include "gamemain.h"
+#ifdef GENERAL_FIXES
+#include "../game/savegame.h"
+#endif
 
 uchar water_abs[4] = { 4, 8, 12, 16 };
 short water_shimmer[4] = { 31, 63, 95, 127 };
@@ -109,6 +112,9 @@ long S_SaveGame(long slot_num)
 		WriteFile(file, &minutes, 2, &bytes, NULL);
 		WriteFile(file, &seconds, 2, &bytes, NULL);
 		WriteFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, NULL);
+#ifdef GENERAL_FIXES
+		WriteFile(file, &tomb5_save, sizeof(tomb5_save_info), &bytes, NULL);
+#endif
 		CloseHandle(file);
 		wsprintf(counter, "%d", save_counter);
 		save_counter++;
@@ -135,6 +141,10 @@ long S_LoadGame(long slot_num)
 		ReadFile(file, &value, sizeof(long), &bytes, NULL);
 		ReadFile(file, &value, sizeof(long), &bytes, NULL);
 		ReadFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, NULL);
+#ifdef GENERAL_FIXES
+		ReadFile(file, &tomb5_save, sizeof(tomb5_save_info), &bytes, NULL);
+		tomb5_save_present = bytes;
+#endif
 		CloseHandle(file);
 		return 1;
 	}

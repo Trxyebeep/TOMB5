@@ -8,6 +8,9 @@
 #include "../specific/function_stubs.h"
 #include "gameflow.h"
 #include "effect2.h"
+#ifdef GENERAL_FIXES
+#include "savegame.h"
+#endif
 
 static PISTOL_DEF PistolTable[4] =
 {
@@ -40,15 +43,13 @@ void draw_pistol_meshes(long weapon_type)
 	long mesh_index;
 
 	mesh_index = objects[WeaponObjectMesh(weapon_type)].mesh_index;
+
 #ifdef GENERAL_FIXES
-
 	if (weapon_type != WEAPON_REVOLVER)
-		lara.Lholster = LARA_HOLSTERS;
-
-	lara.Rholster = LARA_HOLSTERS;
-#else
-	lara.holster = LARA_HOLSTERS;
+		tomb5_save.LHolster = LARA_HOLSTERS;
 #endif
+
+	lara.holster = LARA_HOLSTERS;
 	lara.mesh_ptrs[LM_RHAND] = meshes[mesh_index + LM_RHAND * 2];
 
 	if (weapon_type != WEAPON_REVOLVER)
@@ -62,9 +63,9 @@ void undraw_pistol_mesh_left(long weapon_type)
 
 #ifdef GENERAL_FIXES
 	if (weapon_type == WEAPON_PISTOLS)
-		lara.Lholster = LARA_HOLSTERS_PISTOLS;
+		tomb5_save.LHolster = LARA_HOLSTERS_PISTOLS;
 	else if (weapon_type == WEAPON_UZI)
-		lara.Lholster = LARA_HOLSTERS_UZIS;
+		tomb5_save.LHolster = LARA_HOLSTERS_UZIS;
 #else
 	if (weapon_type == WEAPON_PISTOLS)
 		lara.holster = LARA_HOLSTERS_PISTOLS;
@@ -78,21 +79,12 @@ void undraw_pistol_mesh_right(long weapon_type)
 	WeaponObject(weapon_type);
 	lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA].mesh_index + LM_RHAND * 2];
 
-#ifdef GENERAL_FIXES
-	if (weapon_type == WEAPON_PISTOLS)
-		lara.Rholster = LARA_HOLSTERS_PISTOLS;
-	else if (weapon_type == WEAPON_UZI)
-		lara.Rholster = LARA_HOLSTERS_UZIS;
-	else if (weapon_type == WEAPON_REVOLVER)
-		lara.Rholster = LARA_HOLSTERS_REVOLVER;
-#else
 	if (weapon_type == WEAPON_PISTOLS)
 		lara.holster = LARA_HOLSTERS_PISTOLS;
 	else if (weapon_type == WEAPON_UZI)
 		lara.holster = LARA_HOLSTERS_UZIS;
 	else if (weapon_type == WEAPON_REVOLVER)
 		lara.holster = LARA_HOLSTERS_REVOLVER;
-#endif
 }
 
 void AnimatePistols(long weapon_type)

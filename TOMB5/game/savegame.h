@@ -3,6 +3,11 @@
 
 void inject_savegame(bool replace);
 
+#ifdef GENERAL_FIXES
+extern tomb5_save_info tomb5_save;
+extern bool tomb5_save_present;
+#endif
+
 void WriteSG(void* pointer, long size);
 void ReadSG(void* pointer, long size);
 long CheckSumValid(char* buffer);
