@@ -110,7 +110,7 @@ static void RestoreLaraData(long FullSave)
 	memcpy(&lara, &savegame.Lara, sizeof(lara));
 
 #ifdef GENERAL_FIXES
-	if (tomb5_save_size > offsetof(tomb5_save_info, LHolster))
+	if (tomb5_save_size <= offsetof(tomb5_save_info, LHolster))
 		tomb5_save.LHolster = lara.holster;
 #endif
 
