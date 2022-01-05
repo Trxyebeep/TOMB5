@@ -785,7 +785,7 @@ long GetCollidedObjects(ITEM_INFO* item, long rad, long noInvisible, ITEM_INFO**
 				continue;
 			}
 
-			if (noInvisible && item2->flags == IFL_INVISIBLE)	//don't get invisibles if we don't want them
+			if (noInvisible && item2->status == ITEM_INVISIBLE)	//don't get invisibles if we don't want them
 			{
 				item_number = next_item;
 				continue;
