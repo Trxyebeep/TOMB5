@@ -5,7 +5,7 @@ void inject_savegame(bool replace);
 
 #ifdef GENERAL_FIXES
 extern tomb5_save_info tomb5_save;
-extern bool tomb5_save_present;
+extern ulong tomb5_save_size;
 #endif
 
 void WriteSG(void* pointer, long size);

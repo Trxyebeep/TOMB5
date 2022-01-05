@@ -142,8 +142,7 @@ long S_LoadGame(long slot_num)
 		ReadFile(file, &value, sizeof(long), &bytes, NULL);
 		ReadFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, NULL);
 #ifdef GENERAL_FIXES
-		ReadFile(file, &tomb5_save, sizeof(tomb5_save_info), &bytes, NULL);
-		tomb5_save_present = bytes;
+		ReadFile(file, &tomb5_save, sizeof(tomb5_save_info), &tomb5_save_size, NULL);
 #endif
 		CloseHandle(file);
 		return 1;
