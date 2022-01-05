@@ -750,7 +750,7 @@ long GetCollidedObjects(ITEM_INFO* item, long rad, long noInvisible, ITEM_INFO**
 	{
 		item_number = room[rooms[i]].item_number;
 
-		do
+		while (item_number != NO_ITEM)
 		{
 			item2 = &items[item_number];
 			next_item = item2->next_item;
@@ -839,8 +839,7 @@ long GetCollidedObjects(ITEM_INFO* item, long rad, long noInvisible, ITEM_INFO**
 			}
 
 			item_number = next_item;
-
-		} while (item_number != NO_ITEM);
+		}
 	}
 
 	StoredItems[items_count] = 0;
