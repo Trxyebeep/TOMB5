@@ -1097,12 +1097,7 @@ struct LARA_INFO
 	short torso_z_rot;
 	LARA_ARM left_arm;
 	LARA_ARM right_arm;
-#ifdef GENERAL_FIXES
-	uchar Rholster;
-	uchar Lholster;
-#else
 	ushort holster;
-#endif
 	CREATURE_INFO* creature;
 	long CornerX;
 	long CornerZ;
@@ -1186,6 +1181,13 @@ struct SAVEGAME_INFO
 	uchar TLCount;
 	char buffer[7245];
 };
+
+#ifdef GENERAL_FIXES
+struct tomb5_save_info
+{
+	ushort LHolster;
+};
+#endif
 
 struct DYNAMIC
 {

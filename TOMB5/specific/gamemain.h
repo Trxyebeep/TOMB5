@@ -5,5 +5,5 @@ void inject_gamemain(bool replace);
 
 ushort GetRandom(WATERTAB* wt, long lp);
 void init_water_table();
-
-#define S_LoadGame	( (int(__cdecl*)(int)) 0x004A8E10 )
+long S_SaveGame(long slot_num);
+long S_LoadGame(long slot_num);

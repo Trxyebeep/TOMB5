@@ -8,6 +8,11 @@
 #include "pickup.h"
 #include "lot.h"
 
+#ifdef GENERAL_FIXES
+tomb5_save_info tomb5_save;
+ulong tomb5_save_size;
+#endif
+
 void WriteSG(void* pointer, long size)
 {
 	char* data;
@@ -103,6 +108,12 @@ static void RestoreLaraData(long FullSave)
 	}
 
 	memcpy(&lara, &savegame.Lara, sizeof(lara));
+
+#ifdef GENERAL_FIXES
+	if (tomb5_save_size <= offsetof(tomb5_save_info, LHolster))
+		tomb5_save.LHolster = lara.holster;
+#endif
+
 	lara.target = 0;
 	lara.spaz_effect = 0;
 	lara.left_arm.frame_base = (short*)((long)lara.left_arm.frame_base + (long)objects[PISTOLS_ANIM].frame_base);

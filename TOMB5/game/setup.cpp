@@ -56,6 +56,9 @@
 #include "sas.h"
 #include "gladiatr.h"
 #include "items.h"
+#ifdef GENERAL_FIXES
+#include "savegame.h"
+#endif
 
 void InitialiseLara(int restore)
 {
@@ -88,11 +91,9 @@ void InitialiseLara(int restore)
 	lara.poisoned = 0;
 	lara.water_surface_dist = 100;
 #ifdef GENERAL_FIXES
-	lara.Lholster = LARA_HOLSTERS_PISTOLS;
-	lara.Rholster = LARA_HOLSTERS_PISTOLS;
-#else
-	lara.holster = LARA_HOLSTERS_PISTOLS;
+	tomb5_save.LHolster = LARA_HOLSTERS_PISTOLS;
 #endif
+	lara.holster = LARA_HOLSTERS_PISTOLS;
 	lara.location = -1;
 	lara.highest_location = -1;
 	lara.RopePtr = NO_ITEM;

@@ -1,5 +1,8 @@
 #include "../tomb5/pch.h"
 #include "gamemain.h"
+#ifdef GENERAL_FIXES
+#include "../game/savegame.h"
+#endif
 
 uchar water_abs[4] = { 4, 8, 12, 16 };
 short water_shimmer[4] = { 31, 63, 95, 127 };
@@ -79,8 +82,79 @@ void init_water_table()
 	}
 }
 
+long S_SaveGame(long slot_num)
+{
+	HANDLE file;
+	ulong bytes;
+	long days, hours, minutes, seconds;
+	char buffer[80], counter[16];
+
+	for (int i = 0; i < 20; i++)
+		buffer[i] = '\0';
+
+	wsprintf(buffer, "savegame.%d", slot_num);
+	file = CreateFile(buffer, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (file != INVALID_HANDLE_VALUE)
+	{
+		for (int i = 0; i < 20; i++)
+			buffer[i] = '\0';
+
+		wsprintf(buffer, "%s", &gfStringWad[gfStringOffset_bis[gfLevelNames[gfCurrentLevel]]]);
+		WriteFile(file, buffer, 75, &bytes, NULL);
+		WriteFile(file, &save_counter, sizeof(long), &bytes, NULL);
+		days = savegame.Game.Timer / 30 / 86400;
+		hours = savegame.Game.Timer / 30 % 86400 / 3600;
+		minutes = savegame.Game.Timer / 30 / 60 % 60;
+		seconds = savegame.Game.Timer / 30 % 60;
+		WriteFile(file, &days, 2, &bytes, NULL);
+		WriteFile(file, &hours, 2, &bytes, NULL);
+		WriteFile(file, &minutes, 2, &bytes, NULL);
+		WriteFile(file, &seconds, 2, &bytes, NULL);
+		WriteFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, NULL);
+#ifdef GENERAL_FIXES
+		WriteFile(file, &tomb5_save, sizeof(tomb5_save_info), &bytes, NULL);
+#endif
+		CloseHandle(file);
+		wsprintf(counter, "%d", save_counter);
+		save_counter++;
+		return 1;
+	}
+
+	return 0;
+}
+
+long S_LoadGame(long slot_num)
+{
+	HANDLE file;
+	ulong bytes;
+	long value;
+	char buffer[80];
+
+	wsprintf(buffer, "savegame.%d", slot_num);
+	file = CreateFile(buffer, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (file != INVALID_HANDLE_VALUE)
+	{
+		ReadFile(file, buffer, 75, &bytes, NULL);
+		ReadFile(file, &value, sizeof(long), &bytes, NULL);
+		ReadFile(file, &value, sizeof(long), &bytes, NULL);
+		ReadFile(file, &value, sizeof(long), &bytes, NULL);
+		ReadFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, NULL);
+#ifdef GENERAL_FIXES
+		ReadFile(file, &tomb5_save, sizeof(tomb5_save_info), &tomb5_save_size, NULL);
+#endif
+		CloseHandle(file);
+		return 1;
+	}
+
+	return 0;
+}
+
 void inject_gamemain(bool replace)
 {
 	INJECT(0x004A8B70, GetRandom, replace);
 	INJECT(0x004A8880, init_water_table, replace);
+	INJECT(0x004A8BC0, S_SaveGame, replace);
+	INJECT(0x004A8E10, S_LoadGame, replace);
 }
