@@ -14,9 +14,9 @@ void CreatureCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll);
 void AIPickupCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll);
 void TrapCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll);
 void TestForObjectOnLedge(ITEM_INFO* item, COLL_INFO* coll);
+long GetCollidedObjects(ITEM_INFO* item, long rad, long noInvisible, ITEM_INFO** StoredItems, MESH_INFO** StoredStatics, long StoreLara);
 
 #define CollideStaticObjects ( (int(__cdecl*)(COLL_INFO*, long, long, long, short, long)) 0x00411DB0 )
-#define GetCollidedObjects	( (int(__cdecl*)(ITEM_INFO*, long, int, ITEM_INFO**, MESH_INFO**, int)) 0x00413CF0 )
 #define	UpdateLaraRoom	( (void(__cdecl*)(ITEM_INFO*, int)) 0x004120F0 )
 #define TestLaraPosition	( (int(__cdecl*)(short*, ITEM_INFO*, ITEM_INFO*)) 0x00413210 )
 #define MoveLaraPosition	( (int(__cdecl*)(PHD_VECTOR*, ITEM_INFO*, ITEM_INFO*)) 0x00413840 )
