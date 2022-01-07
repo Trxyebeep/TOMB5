@@ -1801,8 +1801,10 @@ void joby4_control()
 	
 	f = GLOBAL_cutseq_frame;
 
+#ifndef GENERAL_FIXES
 	if (GLOBAL_cutseq_frame <= 130)
 		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, SCRIPT_TEXT(STR_SEVERAL_HOURS_LATER), FF_CENTER);
+#endif
 
 	if (f == 575)
 		cutseq_meshbits[5] &= 0x7FFFFFFF;
@@ -3488,6 +3490,11 @@ void frigup_lara()
 	long* bone;
 	short* frame;
 
+#ifdef GENERAL_FIXES
+	if (cutseq_num == 18 && GLOBAL_cutseq_frame <= 130)
+		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, SCRIPT_TEXT(STR_SEVERAL_HOURS_LATER), FF_CENTER);
+#endif
+
 	lara_item->pos.x_pos = GLOBAL_cutme->orgx;
 	lara_item->pos.y_pos = GLOBAL_cutme->orgy;
 	lara_item->pos.z_pos = GLOBAL_cutme->orgz;
@@ -3861,12 +3868,6 @@ void do_cutseq_skipper_shit()
 			item->mesh_bits = item->mesh_bits & 0xFFFFFFFD | 4;
 		}
 
-		if (GLOBAL_cutseq_frame < 603 && GLOBAL_cutseq_frame > 452)
-		{
-			tomb5_save.LHolster = old_lara_LHolster;
-			lara.holster = old_lara_holster;
-		}
-
 		break;
 
 	case 20:
@@ -3940,11 +3941,6 @@ void do_cutseq_skipper_shit()
 		}
 
 		break;
-
-	case 40:
-
-		if (GLOBAL_cutseq_frame < 3134)
-			cutseq_givelara_pistols();
 
 	default:
 		break;
