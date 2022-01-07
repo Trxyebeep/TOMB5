@@ -400,11 +400,11 @@ void andrea1_control()
 		break;
 
 	case 580:
-		undraw_pistol_mesh_left(1);
+		undraw_pistol_mesh_left(WEAPON_PISTOLS);
 		break;
 
 	case 603:
-		undraw_pistol_mesh_right(1);
+		undraw_pistol_mesh_right(WEAPON_PISTOLS);
 #ifndef GENERAL_FIXES
 		lara.holster = old_lara_holster;
 #endif
@@ -449,10 +449,10 @@ void andrea2_control()
 	else if (GLOBAL_cutseq_frame == 178)
 		cutseq_givelara_pistols();
 	else if (GLOBAL_cutseq_frame == 667)
-		undraw_pistol_mesh_left(1);
+		undraw_pistol_mesh_left(WEAPON_PISTOLS);
 	else if (GLOBAL_cutseq_frame == 678)
 	{
-		undraw_pistol_mesh_right(1);
+		undraw_pistol_mesh_right(WEAPON_PISTOLS);
 #ifndef GENERAL_FIXES
 		lara.holster = old_lara_holster;
 #endif
@@ -659,7 +659,7 @@ void andrea4_control()
 	if (GLOBAL_cutseq_frame == 3134)
 	{
 		cutseq_givelara_pistols();
-		undraw_pistol_mesh_left(1);
+		undraw_pistol_mesh_left(WEAPON_PISTOLS);
 	}
 	else if (GLOBAL_cutseq_frame == 3169)
 		cutseq_givelara_pistols();
