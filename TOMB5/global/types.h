@@ -1186,6 +1186,7 @@ struct SAVEGAME_INFO
 struct tomb5_save_info
 {
 	ushort LHolster;
+	ushort dash_timer;
 };
 #endif
 
