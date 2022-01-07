@@ -89,6 +89,10 @@ static void SaveLaraData()
 
 	savegame.CutSceneTriggered1 = _CutSceneTriggered1;
 	savegame.CutSceneTriggered2 = _CutSceneTriggered2;
+
+#ifdef GENERAL_FIXES
+	tomb5_save.dash_timer = DashTimer;
+#endif
 }
 
 static void RestoreLaraData(long FullSave)
@@ -112,6 +116,9 @@ static void RestoreLaraData(long FullSave)
 #ifdef GENERAL_FIXES
 	if (tomb5_save_size <= offsetof(tomb5_save_info, LHolster))
 		tomb5_save.LHolster = lara.holster;
+
+	if (tomb5_save_size > offsetof(tomb5_save_info, dash_timer))
+		DashTimer = tomb5_save.dash_timer;
 #endif
 
 	lara.target = 0;
