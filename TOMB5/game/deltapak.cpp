@@ -400,15 +400,14 @@ void andrea1_control()
 		break;
 
 	case 580:
-		undraw_pistol_mesh_left(1);
+		undraw_pistol_mesh_left(WEAPON_PISTOLS);
 		break;
 
 	case 603:
-		undraw_pistol_mesh_right(1);
-#ifdef GENERAL_FIXES
-		tomb5_save.LHolster = old_lara_LHolster;
-#endif
+		undraw_pistol_mesh_right(WEAPON_PISTOLS);
+#ifndef GENERAL_FIXES
 		lara.holster = old_lara_holster;
+#endif
 		break;
 
 	case 705:
@@ -450,14 +449,13 @@ void andrea2_control()
 	else if (GLOBAL_cutseq_frame == 178)
 		cutseq_givelara_pistols();
 	else if (GLOBAL_cutseq_frame == 667)
-		undraw_pistol_mesh_left(1);
+		undraw_pistol_mesh_left(WEAPON_PISTOLS);
 	else if (GLOBAL_cutseq_frame == 678)
 	{
-		undraw_pistol_mesh_right(1);
-#ifdef GENERAL_FIXES
-		tomb5_save.LHolster = old_lara_LHolster;
-#endif
+		undraw_pistol_mesh_right(WEAPON_PISTOLS);
+#ifndef GENERAL_FIXES
 		lara.holster = old_lara_holster;
+#endif
 	}
 	else if (GLOBAL_cutseq_frame == 2500)
 		lara_item->mesh_bits = 0;
@@ -661,7 +659,7 @@ void andrea4_control()
 	if (GLOBAL_cutseq_frame == 3134)
 	{
 		cutseq_givelara_pistols();
-		undraw_pistol_mesh_left(1);
+		undraw_pistol_mesh_left(WEAPON_PISTOLS);
 	}
 	else if (GLOBAL_cutseq_frame == 3169)
 		cutseq_givelara_pistols();
@@ -1803,8 +1801,10 @@ void joby4_control()
 	
 	f = GLOBAL_cutseq_frame;
 
+#ifndef GENERAL_FIXES
 	if (GLOBAL_cutseq_frame <= 130)
 		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, SCRIPT_TEXT(STR_SEVERAL_HOURS_LATER), FF_CENTER);
+#endif
 
 	if (f == 575)
 		cutseq_meshbits[5] &= 0x7FFFFFFF;
@@ -2287,6 +2287,7 @@ void handle_cutseq_triggering(long name)
 			lara.gun_type = WEAPON_NONE;
 			lara.request_gun_type = WEAPON_NONE;
 			lara.gun_status = LG_NO_ARMS;
+#ifndef GENERAL_FIXES // Fixes drawing pistols regardless of last weapon after cutscenes
 			lara.last_gun_type = WEAPON_PISTOLS;
 
 			if (!objects[PISTOLS_ITEM].loaded || lara.pistols_type_carried == WTYPE_MISSING)
@@ -2294,7 +2295,14 @@ void handle_cutseq_triggering(long name)
 
 			if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & WTYPE_PRESENT)
 				lara.last_gun_type = WEAPON_HK;
+#endif
 
+#ifdef GENERAL_FIXES
+			old_lara_LHolster = tomb5_save.LHolster;
+			tomb5_save.LHolster = lara.pistols_type_carried == WTYPE_MISSING ? LARA_HOLSTERS : LARA_HOLSTERS_PISTOLS;
+			old_lara_holster = lara.holster;
+			lara.holster = tomb5_save.LHolster;
+#endif
 			lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + (2 * LM_LHAND)];
 			lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA].mesh_index + (2 * LM_RHAND)];
 			lara.left_arm.frame_number = 0;
@@ -2363,6 +2371,11 @@ void handle_cutseq_triggering(long name)
 
 		if (cutseq_control_routines[fuck].end_func)
 			cutseq_control_routines[fuck].end_func();
+
+#ifdef GENERAL_FIXES
+		tomb5_save.LHolster = old_lara_LHolster;
+		lara.holster = old_lara_holster;
+#endif
 
 		if (fuck <= 4)
 			DelsHandyTeleportLara(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, cutrot << 14);
@@ -2450,10 +2463,10 @@ void handle_cutseq_triggering(long name)
 void cutseq_givelara_pistols()
 {
 #ifdef GENERAL_FIXES
-	old_lara_LHolster = tomb5_save.LHolster;
 	tomb5_save.LHolster = LARA_HOLSTERS;
-#endif
+#else
 	old_lara_holster = lara.holster;
+#endif
 	lara.holster = LARA_HOLSTERS;
 	draw_pistol_meshes(WEAPON_PISTOLS);
 }
@@ -2462,10 +2475,9 @@ void cutseq_removelara_pistols()
 {
 	undraw_pistol_mesh_left(WEAPON_PISTOLS);
 	undraw_pistol_mesh_right(WEAPON_PISTOLS);
-#ifdef GENERAL_FIXES
-	tomb5_save.LHolster = old_lara_LHolster;
-#endif
+#ifndef GENERAL_FIXES
 	lara.holster = old_lara_holster;
+#endif
 }
 
 void do_pierre_gun_meshswap()
@@ -3478,6 +3490,11 @@ void frigup_lara()
 	long* bone;
 	short* frame;
 
+#ifdef GENERAL_FIXES
+	if (cutseq_num == 18 && GLOBAL_cutseq_frame <= 130)
+		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, SCRIPT_TEXT(STR_SEVERAL_HOURS_LATER), FF_CENTER);
+#endif
+
 	lara_item->pos.x_pos = GLOBAL_cutme->orgx;
 	lara_item->pos.y_pos = GLOBAL_cutme->orgy;
 	lara_item->pos.z_pos = GLOBAL_cutme->orgz;
@@ -3851,12 +3868,6 @@ void do_cutseq_skipper_shit()
 			item->mesh_bits = item->mesh_bits & 0xFFFFFFFD | 4;
 		}
 
-		if (GLOBAL_cutseq_frame < 603 && GLOBAL_cutseq_frame > 452)
-		{
-			tomb5_save.LHolster = old_lara_LHolster;
-			lara.holster = old_lara_holster;
-		}
-
 		break;
 
 	case 20:
@@ -3930,11 +3941,6 @@ void do_cutseq_skipper_shit()
 		}
 
 		break;
-
-	case 40:
-
-		if (GLOBAL_cutseq_frame < 3134)
-			cutseq_givelara_pistols();
 
 	default:
 		break;
