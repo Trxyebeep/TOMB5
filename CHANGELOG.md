@@ -1,5 +1,25 @@
 # tomb5 changelog
 
+## [2.2.0](https://github.com/Trxyebeep/TOMB5/tree/V2.2.0) (11/01/2022)
+
+### Original bug fixes
+
+- Fix Red Alert hitman disappearing in gas chamber
+- Fix rain splashes on the floor
+- Fix the random white flashes on Lara in multiple levels
+
+### tomb5 bug fixes
+
+- Fix hydra shooting
+- Fix not being able to pull pushables
+- Fix look_at camera
+
+### tomb5 additions
+
+- New system to add new things to savegames, Dash Timer now saved
+- Separate holster drawing to restore tr3-like holster behavior with the revolver
+- TR4 camera
+
 ## [2.1.0](https://github.com/Trxyebeep/TOMB5/tree/V2.1.0) (18/12/2021)
 
 ### Original bug fixes
