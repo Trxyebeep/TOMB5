@@ -94,3 +94,6 @@ Changes the positions of the bars on the screen.
 ### 11. Fog:
 - Toggles volumetric fog on and off.
 ![fog](https://user-images.githubusercontent.com/38836940/146662639-09301530-241d-4ffa-88e5-31d6f02a2656.png)
+
+### 12. TR4 Camera:
+- Toggles TR4 camera behavior on and off.
