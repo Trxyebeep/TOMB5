@@ -13,6 +13,7 @@
 #include "../specific/3dmath.h"
 #include "../specific/output.h"
 #include "../specific/specificfx.h"
+#include "draw.h"
 
 long GetFreeBlood()
 {
@@ -552,6 +553,178 @@ void DrawLensFlares(ITEM_INFO* item)
 	SetUpLensFlare(0, 0, 0, &pos);
 }
 
+long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
+{
+	ITEM_INFO* item;
+	OBJECT_INFO* obj;
+	FX_INFO* fx;
+	long* bone;
+	short* rotation;
+	short* frame;
+	short* extra_rotation;
+	long bit, poppush;
+	short fx_number;
+	
+	item = &items[item_number];
+	obj = &objects[item->object_number];
+	frame = GetBestFrame(item);
+	phd_PushUnitMatrix();
+	phd_mxptr[M03] = 0;
+	phd_mxptr[M13] = 0;
+	phd_mxptr[M23] = 0;
+	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+	phd_TranslateRel(frame[6], frame[7], frame[8]);
+	rotation = frame + 9;
+	gar_RotYXZsuperpack(&rotation, 0);
+	extra_rotation = (short*)item->data;
+	bone = &bones[obj->bone_index];
+	bit = 1;
+
+	if (mesh_bits & 1 && item->mesh_bits & 1)
+	{
+		if (Flags & 0x100 || !(GetRandomControl() & 3))
+		{
+			fx_number = CreateEffect(item->room_number);
+
+			if (fx_number != NO_ITEM)
+			{
+				fx = &effects[fx_number];
+				fx->pos.x_pos = item->pos.x_pos + (phd_mxptr[M03] >> 14);
+				fx->pos.y_pos = item->pos.y_pos + (phd_mxptr[M13] >> 14);
+				fx->pos.z_pos = item->pos.z_pos + (phd_mxptr[M23] >> 14);
+				fx->room_number = item->room_number;
+				fx->pos.y_rot = 0;
+				fx->pos.z_rot = 0;
+				fx->pos.x_rot = 0;
+
+				if (Flags & 0x10)
+					fx->speed = 0;
+				else if (Flags & 0x20)
+					fx->speed = GetRandomControl() >> 12;
+				else
+					fx->speed = GetRandomControl() >> 8;
+
+				if (Flags & 0x40)
+					fx->fallspeed = 0;
+				else if (Flags & 0x80)
+					fx->fallspeed = -(GetRandomControl() >> 8);
+				else
+					fx->fallspeed = -(GetRandomControl() >> 12);
+
+				fx->frame_number = obj->mesh_index;
+				fx->object_number = 408;
+				fx->shade = 0x4210;
+				fx->flag2 = Flags;
+
+				if (item->object_number == CRUMBLING_FLOOR)
+				{
+					fx->speed = 0;
+					fx->fallspeed = 0;
+					fx->counter = 61;
+				}
+				else
+					fx->counter = 0;
+
+				fx->flag1 = 0;
+			}
+
+			item->mesh_bits -= bit;
+		}
+	}
+
+	for (int i = 1; i < obj->nmeshes; i++, bone += 4)
+	{
+		poppush = bone[0];
+
+		if (poppush & 1)
+			phd_PopMatrix();
+
+		if (poppush & 2)
+			phd_PushMatrix();
+
+		phd_TranslateRel(bone[1], bone[2], bone[3]);
+		gar_RotYXZsuperpack(&rotation, 0);
+
+		if (poppush & 28)
+		{
+			if (poppush & 8)
+			{
+				phd_RotY(*extra_rotation);
+				extra_rotation++;
+			}
+
+			if (poppush & 4)
+			{
+				phd_RotX(*extra_rotation);
+				extra_rotation++;
+			}
+
+			if (poppush & 16)
+			{
+				phd_RotZ(*extra_rotation);
+				extra_rotation++;
+			}
+		}
+
+		bit <<= 1;
+
+		if (bit & mesh_bits && bit & item->mesh_bits && (Flags & 0x100 || !(GetRandomControl() & 3)))
+		{
+			fx_number = CreateEffect(item->room_number);
+
+			if (fx_number != NO_ITEM)
+			{
+				fx = &effects[fx_number];
+				fx->pos.x_pos = item->pos.x_pos + (phd_mxptr[M03] >> 14);
+				fx->pos.y_pos = item->pos.y_pos + (phd_mxptr[M13] >> 14);
+				fx->pos.z_pos = item->pos.z_pos + (phd_mxptr[M23] >> 14);
+				fx->room_number = item->room_number;
+				fx->pos.y_rot = 0;
+				fx->pos.z_rot = 0;
+				fx->pos.x_rot = 0;
+
+				if (Flags & 0x10)
+					fx->speed = 0;
+				else if (Flags & 0x20)
+					fx->speed = GetRandomControl() >> 12;
+				else
+					fx->speed = GetRandomControl() >> 8;
+
+				if (Flags & 0x40)
+					fx->fallspeed = 0;
+				else
+				{
+					if ((Flags & 0x80u) == 0)
+						fx->fallspeed = -(GetRandomControl() >> 8);
+					else
+						fx->fallspeed = -(GetRandomControl() >> 12);
+				}
+
+				fx->frame_number = obj->mesh_index + 2 * i;
+				fx->object_number = BODY_PART;
+				fx->shade = 0x4210;
+				fx->flag2 = Flags;
+
+				if (item->object_number == CRUMBLING_FLOOR)
+				{
+					fx->speed = 0;
+					fx->fallspeed = 0;
+					fx->counter = 61;
+				}
+				else
+					fx->counter = 0;
+
+				fx->flag1 = 0;
+			}
+
+			item->mesh_bits -= bit;
+		}
+	}
+
+	phd_PopMatrix();
+	return !item->mesh_bits;
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -564,4 +737,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00485380, ControlTeleporter, replace);
 	INJECT(0x004852E0, DrawWeaponMissile, replace);
 	INJECT(0x00485290, DrawLensFlares, replace);
+	INJECT(0x00484080, ExplodingDeath2, replace);
 }
