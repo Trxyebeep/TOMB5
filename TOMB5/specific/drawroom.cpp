@@ -517,6 +517,61 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	}
 }
 
+void aBuildFogBulbList()
+{
+	FOGBULB_STRUCT* ActiveFog;
+	FOGBULB* Fog;
+	FVECTOR vec;
+	FVECTOR vec2;
+	static float unused1 = 0.025F;
+	static float unused2 = 64.0F;
+	long num_active;
+
+	if (NumLevelFogBulbs)
+	{
+		num_active = 0;
+
+		for (int i = 0; i < NumLevelFogBulbs; i++)
+		{
+			ActiveFog = &ActiveFogBulbs[i];
+			Fog = &fog_bulbs[i];
+
+			vec.x = Fog->px;
+			vec.y = Fog->py;
+			vec.z = Fog->pz;
+			vec2.x = vec.x - aCamera.pos.x;
+			vec2.y = vec.y - aCamera.pos.y;
+			vec2.z = vec.z - aCamera.pos.z;
+
+			if (sqrt(SQUARE(vec2.x) + SQUARE(vec2.y) + SQUARE(vec2.z)) >= 20480)
+				continue;
+
+			ActiveFog->visible = 1;
+			ActiveFog->world.x = vec.x;
+			ActiveFog->world.y = vec.y;
+			ActiveFog->world.z = vec.z;
+			ActiveFog->rad = Fog->rad;
+			ActiveFog->sqrad = Fog->sqrad;
+			ActiveFog->r = Fog->r;
+			ActiveFog->g = Fog->g;
+			ActiveFog->b = Fog->b;
+			num_active++;
+			vec2.x = D3DCameraMatrix._11 * vec.x + D3DCameraMatrix._21 * vec.y + D3DCameraMatrix._31 * vec.z + D3DCameraMatrix._41;
+			vec2.y = D3DCameraMatrix._12 * vec.x + D3DCameraMatrix._22 * vec.y + D3DCameraMatrix._32 * vec.z + D3DCameraMatrix._42;
+			vec2.z = D3DCameraMatrix._13 * vec.x + D3DCameraMatrix._23 * vec.y + D3DCameraMatrix._33 * vec.z + D3DCameraMatrix._43;
+			ActiveFog->pos.x = vec2.x;
+			ActiveFog->pos.y = vec2.y;
+			ActiveFog->pos.z = vec2.z;
+			ActiveFog->sqlen = SQUARE(vec2.x) + SQUARE(vec2.y) + SQUARE(vec2.z);
+			ActiveFog->d = 1 / Fog->den;
+		}
+
+		NumActiveFogBulbs = num_active;
+	}
+
+	unused1 = 1.0F / unused2;
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -526,4 +581,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049ABF0, InsertRoomlet, replace);
 	INJECT(0x0049A9B0, RoomTestThing, replace);
 	INJECT(0x0049B7B0, aRoomletTransformLight, replace);
+	INJECT(0x0049AFB0, aBuildFogBulbList, replace);
 }

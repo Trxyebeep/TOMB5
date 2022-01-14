@@ -1735,7 +1735,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0049AD70		aResetFogBulbList
 0x0049AD90		aRoomInit
 0x0049AEF0		TriggerFogBulbFX
-0x0049AFB0		aBuildFogBulbList
+0x0049AFB0	+	aBuildFogBulbList
 0x0049B1C0		aBuildFXFogBulbList
 0x0049B390		aBuildRoomletLights
 0x0049B7B0	+	aRoomletTransformLight
