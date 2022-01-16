@@ -559,6 +559,7 @@
 #define NumLevelFogBulbs	VAR_U_(0x007DFFD8, long)
 #define NumActiveFogBulbs	VAR_U_(0x007EE0C4, long)
 #define D3DCameraMatrix	VAR_U_(0x0057A0B0, D3DMATRIX)
+#define DEL_playingamefmv	VAR_U_(0x0051CE24, char)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

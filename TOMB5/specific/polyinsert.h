@@ -20,3 +20,4 @@ void DrawSortList();
 #define CreateFXBulbs	( (void(__cdecl*)()) 0x004BA170 )
 #define SortPolyList	( (void(__cdecl*)(long, SORTLIST**)) 0x004BA090 )
 #define InitialiseSortList	( (void(__cdecl*)()) 0x004BA100 )
+#define ClearFXFogBulbs	( (void(__cdecl*)()) 0x004BA130 )

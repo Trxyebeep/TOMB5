@@ -561,7 +561,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00434B60	+	TitleOptions
 0x004354B0	+	DoGameflow
 0x00435C70	+	DoTitle
-0x00435F60		DoLevel
+0x00435F60	+	DoLevel
 0x004364B0	+	do_dels_cutseq_selector
 
 
