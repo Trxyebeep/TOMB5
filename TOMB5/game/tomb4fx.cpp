@@ -569,9 +569,13 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 	obj = &objects[item->object_number];
 	frame = GetBestFrame(item);
 	phd_PushUnitMatrix();
+#ifdef GENERAL_FIXES
+	phd_SetTrans(0, 0, 0);
+#else
 	phd_mxptr[M03] = 0;
 	phd_mxptr[M13] = 0;
 	phd_mxptr[M23] = 0;
+#endif
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 	phd_TranslateRel(frame[6], frame[7], frame[8]);
 	rotation = frame + 9;
@@ -593,9 +597,9 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 				fx->pos.y_pos = item->pos.y_pos + (phd_mxptr[M13] >> 14);
 				fx->pos.z_pos = item->pos.z_pos + (phd_mxptr[M23] >> 14);
 				fx->room_number = item->room_number;
+				fx->pos.x_rot = 0;
 				fx->pos.y_rot = 0;
 				fx->pos.z_rot = 0;
-				fx->pos.x_rot = 0;
 
 				if (Flags & 0x10)
 					fx->speed = 0;
@@ -607,12 +611,12 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 				if (Flags & 0x40)
 					fx->fallspeed = 0;
 				else if (Flags & 0x80)
-					fx->fallspeed = -(GetRandomControl() >> 8);
-				else
 					fx->fallspeed = -(GetRandomControl() >> 12);
+				else
+					fx->fallspeed = -(GetRandomControl() >> 8);
 
 				fx->frame_number = obj->mesh_index;
-				fx->object_number = 408;
+				fx->object_number = BODY_PART;
 				fx->shade = 0x4210;
 				fx->flag2 = Flags;
 
@@ -679,9 +683,9 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 				fx->pos.y_pos = item->pos.y_pos + (phd_mxptr[M13] >> 14);
 				fx->pos.z_pos = item->pos.z_pos + (phd_mxptr[M23] >> 14);
 				fx->room_number = item->room_number;
+				fx->pos.x_rot = 0;
 				fx->pos.y_rot = 0;
 				fx->pos.z_rot = 0;
-				fx->pos.x_rot = 0;
 
 				if (Flags & 0x10)
 					fx->speed = 0;
@@ -692,13 +696,10 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 
 				if (Flags & 0x40)
 					fx->fallspeed = 0;
+				else if (Flags & 0x80)
+					fx->fallspeed = -(GetRandomControl() >> 12);
 				else
-				{
-					if ((Flags & 0x80u) == 0)
-						fx->fallspeed = -(GetRandomControl() >> 8);
-					else
-						fx->fallspeed = -(GetRandomControl() >> 12);
-				}
+					fx->fallspeed = -(GetRandomControl() >> 8);
 
 				fx->frame_number = obj->mesh_index + 2 * i;
 				fx->object_number = BODY_PART;

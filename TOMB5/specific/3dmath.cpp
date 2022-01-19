@@ -261,9 +261,9 @@ void phd_PushMatrix()
 
 void phd_SetTrans(long x, long y, long z)
 {
-	phd_mxptr[3] = x << 14;
-	phd_mxptr[7] = y << 14;
-	phd_mxptr[11] = z << 14;
+	phd_mxptr[M03] = x << 14;
+	phd_mxptr[M13] = y << 14;
+	phd_mxptr[M23] = z << 14;
 
 #ifdef GENERAL_FIXES // Fixes wrong translation
 	aSetTrans(x, y, z);
