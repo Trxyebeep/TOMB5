@@ -9,13 +9,13 @@ void phd_PutPolygonSkyMesh(short* objptr, int clipstatus);
 void aTransformLightClipMesh(MESH_DATA* mesh);
 void phd_PutPolygonsPickup(short* objptr, float x, float y, long color);
 void aTransformLightPrelightClipMesh(MESH_DATA* mesh);
+void phd_PutPolygons_train(short* lol, long x);
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
 #define StashSkinNormals	( (void(__cdecl*)(long)) 0x004B2410 )
 #define SkinVerticesToScratch	( (void(__cdecl*)(long)) 0x004B2340 )
 #define phd_PutPolygons_seethrough	( (void(__cdecl*)(short*, int)) 0x004B4F10 )
-#define phd_PutPolygons_train	( (void(__cdecl*)(short*, int)) 0x004B74A0 )
 #define phd_PutPolygonsSpcEnvmap	( (void(__cdecl*)(short*, int)) 0x004B5190 )
 #define phd_PutPolygonsSpcXLU	( (void(__cdecl*)(short*, int)) 0x004B4CA0 )
 #define SkinNormalsToScratch	( (void(__cdecl*)(long)) 0x004B2480 )
