@@ -1592,7 +1592,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048F0E0		InitWindow
 0x0048F290		mGetAngle
 0x0048F330		phd_GenerateW2V
-0x0048F760		phd_LookAt
+0x0048F760	+	phd_LookAt
 0x0048F8A0		phd_atan
 0x0048F980		phd_sqrt
 0x0048F9C0	+	phd_PushMatrix
@@ -1619,7 +1619,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00490AF0	+	aRotYXZ
 0x00490B40		aScaleCurrentMatrix
 0x00490BE0	+	aSetViewMatrix
-0x00490C20		aLookAt
+0x00490C20	+	aLookAt
 0x00490F30		aPointCamera
 0x00490FA0		aPointCameraByVector
 0x004910D0		aVectorNormal
