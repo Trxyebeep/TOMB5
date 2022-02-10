@@ -22,6 +22,8 @@
 #include "../specific/function_stubs.h"
 #include "../specific/audio.h"
 #include "../specific/fmv.h"
+#include "../specific/polyinsert.h"
+#include "savegame.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
@@ -736,7 +738,7 @@ void DoTitle(uchar name, uchar audio)
 	bDisableLaraControl = 0;
 
 	if (gfLevelComplete == 1 && gfStatus != 2)
-		PlayFmvNow(2);
+		PlayFmvNow(2, 1);
 
 	if (gfStatus != 4)
 		input = 0;
@@ -780,10 +782,195 @@ void do_dels_cutseq_selector()
 		dels_cutseq_selector_flag = 0;
 }
 
+void DoLevel(uchar Name, uchar Audio)
+{
+	long gamestatus;
+
+	gamestatus = 0;
+	SetFade(255, 0);
+
+	if (gfGameMode != 4)
+	{
+		savegame.Level.Timer = 0;
+		savegame.Level.Distance = 0;
+		savegame.Level.AmmoUsed = 0;
+		savegame.Level.AmmoHits = 0;
+		savegame.Level.Kills = 0;
+		savegame.Level.Secrets = 0;
+	}
+
+	S_LoadLevelFile(Name);
+	SetFogColor(gfFog.r, gfFog.g, gfFog.b);
+	InitialiseFXArray(1);
+	InitialiseLOTarray(1);
+	ClearFXFogBulbs();
+	GlobalSoftReset = 0;
+	InitSpotCamSequences();
+	InitialisePickUpDisplay();
+	S_InitialiseScreen();
+	SOUND_Stop();
+	bDisableLaraControl = 0;
+
+	if (gfGameMode == 4)
+	{
+		sgRestoreGame();
+		gfRequiredStartPos = 0;
+		gfInitialiseGame = 0;
+
+		if (IsVolumetric())
+			SetFogColor(gfFog.r, gfFog.g, gfFog.b);
+	}
+	else
+	{
+		gfRequiredStartPos = 0;
+
+		if (gfInitialiseGame)
+		{
+			GameTimer = 0;
+			gfRequiredStartPos = 0;
+			gfInitialiseGame = 0;
+			FmvSceneTriggered = 0;
+			InitCutPlayed();
+		}
+
+		CurrentAtmosphere = Audio;
+		savegame.Level.Timer = 0;
+
+		if (gfCurrentLevel == LVL5_STREETS_OF_ROME)
+			savegame.TLCount = 0;
+	}
+
+	S_CDPlay(CurrentAtmosphere, 1);
+	IsAtmospherePlaying = 1;
+	ScreenFadedOut = 0;
+	ScreenFading = 0;
+	ScreenFadeBack = 0;
+	dScreenFade = 255;
+	ScreenFade = 255;
+
+	if (dels_cutseq_player)
+	{
+		gfCutNumber = 0;
+		cutseq_num = dels_cutseq_player;
+		ScreenFadedOut = 1;
+	}
+	else if (gfCutNumber && !CheckCutPlayed(gfCutNumber))
+	{
+		ScreenFadedOut = 1;
+		cutseq_num = gfCutNumber;
+		gfCutNumber = 0;
+	}
+	else
+	{
+		cutseq_num = 0;
+		gfCutNumber = 0;
+		SetScreenFadeIn(16);
+	}
+
+	InitialiseCamera();
+	bUseSpotCam = 0;
+	gfGameMode = 0;
+	gfLevelComplete = 0;
+	nframes = 2;
+	framecount = 0;
+	gfStatus = ControlPhase(2, 0);
+	dbinput = 0;
+	JustLoaded = 0;
+
+	while (!gfStatus)	//game loooooooooooopppppppppppp
+	{
+		S_InitialisePolyList();
+
+		if (gfLegendTime && !DestFadeScreenHeight && !FadeScreenHeight && !cutseq_num)
+		{
+			PrintString(phd_winwidth >> 1, phd_winymax - font_height, 2, SCRIPT_TEXT_bis(gfLegend), FF_CENTER);
+			gfLegendTime--;
+		}
+
+		nframes = DrawPhaseGame();
+		handle_cutseq_triggering(Name);
+
+		if (DEL_playingamefmv)
+			DEL_playingamefmv = 0;
+
+		if (gfLevelComplete)
+		{
+			gfStatus = 3;
+			break;
+		}
+
+		gfStatus = ControlPhase(nframes, 0);
+
+		if (GlobalSoftReset)
+		{
+			GlobalSoftReset = 0;
+			gfStatus = 1;
+		}
+
+		if (gfStatus && !gamestatus)
+		{
+			if (lara_item->hit_points < 0)
+			{
+				gamestatus = gfStatus;
+				SetFade(0, 255);
+				gfStatus = 0;
+			}
+			else
+				break;
+		}
+
+		if (gamestatus)
+		{
+			gfStatus = 0;
+
+			if (DoFade == 2)
+				gfStatus = gamestatus;
+		}
+	}
+
+	S_SoundStopAllSamples();
+	S_CDStop();
+
+	if (gfStatus == 3)
+	{
+		if (fmv_to_play[0] & 0x80)
+		{
+			if ((fmv_to_play[0] & 0x7F) == 9 && gfLevelComplete != 10)
+				fmv_to_play[0] = 0;
+																						//leftover TR4 hacks
+			if ((fmv_to_play[0] & 0x7F) == 8 && gfLevelComplete != 22)
+				fmv_to_play[0] = 0;
+		}
+
+		if (fmv_to_play[0] && PlayFmvNow(fmv_to_play[0] & 0x7F, 1) == 2)
+		{
+			if (fmv_to_play[1])
+				PlayFmvNow(fmv_to_play[1] & 0x7F, 1);
+		}
+	}
+
+	num_fmvs = 0;
+	fmv_to_play[0] = 0;
+	fmv_to_play[1] = 0;
+	lara.examine1 = 0;
+	lara.examine2 = 0;
+	lara.examine3 = 0;
+
+	if (gfStatus == 3 && gfCurrentLevel == LVL5_RED_ALERT)
+	{
+		gfStatus = 1;
+		bDoCredits = 1;
+	}
+
+	input = 0;
+	reset_flag = 0;
+}
+
 void inject_gameflow(bool replace)
 {
 	INJECT(0x00434B60, TitleOptions, replace);
 	INJECT(0x004354B0, DoGameflow, replace);
 	INJECT(0x00435C70, DoTitle, replace);
 	INJECT(0x004364B0, do_dels_cutseq_selector, replace);
+	INJECT(0x00435F60, DoLevel, replace);
 }

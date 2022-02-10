@@ -8,8 +8,7 @@ void DoGameflow();
 int TitleOptions();
 void DoTitle(uchar name, uchar audio);
 void do_dels_cutseq_selector();
-
-#define DoLevel	( (void(__cdecl*)(uchar, uchar)) 0x00435F60 )
+void DoLevel(uchar name, uchar audio);
 
 enum gf_languages
 {

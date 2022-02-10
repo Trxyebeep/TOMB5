@@ -556,6 +556,10 @@
 #define nRoomletFogBulbs	VAR_U_(0x007DFFDC, long)
 #define FPCW	VAR_U_(0x00878654, short)
 #define save_counter	VAR_U_(0x008786EC, long)
+#define NumLevelFogBulbs	VAR_U_(0x007DFFD8, long)
+#define NumActiveFogBulbs	VAR_U_(0x007EE0C4, long)
+#define D3DCameraMatrix	VAR_U_(0x0057A0B0, D3DMATRIX)
+#define DEL_playingamefmv	VAR_U_(0x0051CE24, char)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -697,6 +701,8 @@
 #define unused_vert_wibble_table	ARRAY_(0x00878254, float, [128])
 #define RoomletLights	ARRAY_(0x007ED6B0, ROOMLET_LIGHT, [64])
 #define RoomletFogBulbs	ARRAY_(0x007DFC18, FOGBULB_STRUCT, [16])
+#define ActiveFogBulbs	ARRAY_(0x007E7FF0, FOGBULB_STRUCT, [64])
+#define fog_bulbs	ARRAY_(0x007ED0F8, FOGBULB, [64])
 
 /****************/
 //registry

@@ -561,7 +561,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00434B60	+	TitleOptions
 0x004354B0	+	DoGameflow
 0x00435C70	+	DoTitle
-0x00435F60		DoLevel
+0x00435F60	+	DoLevel
 0x004364B0	+	do_dels_cutseq_selector
 
 
@@ -1592,7 +1592,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048F0E0		InitWindow
 0x0048F290		mGetAngle
 0x0048F330		phd_GenerateW2V
-0x0048F760		phd_LookAt
+0x0048F760	+	phd_LookAt
 0x0048F8A0		phd_atan
 0x0048F980		phd_sqrt
 0x0048F9C0	+	phd_PushMatrix
@@ -1619,7 +1619,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00490AF0	+	aRotYXZ
 0x00490B40		aScaleCurrentMatrix
 0x00490BE0	+	aSetViewMatrix
-0x00490C20		aLookAt
+0x00490C20	+	aLookAt
 0x00490F30		aPointCamera
 0x00490FA0		aPointCameraByVector
 0x004910D0		aVectorNormal
@@ -1735,7 +1735,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0049AD70		aResetFogBulbList
 0x0049AD90		aRoomInit
 0x0049AEF0		TriggerFogBulbFX
-0x0049AFB0		aBuildFogBulbList
+0x0049AFB0	+	aBuildFogBulbList
 0x0049B1C0		aBuildFXFogBulbList
 0x0049B390		aBuildRoomletLights
 0x0049B7B0	+	aRoomletTransformLight
@@ -2010,7 +2010,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B4F10		phd_PutPolygons_seethrough
 0x004B5190		phd_PutPolygonsSpcEnvmap
 0x004B66B0	+	phd_PutPolygonsPickup
-0x004B74A0		phd_PutPolygons_train
+0x004B74A0	+	phd_PutPolygons_train
 0x004B74D0	+	phd_PutPolygonSkyMesh
 0x004B78B0		S_InsertRoom
 0x004B78D0	+	S_DrawPickup

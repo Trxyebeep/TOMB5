@@ -261,9 +261,9 @@ void phd_PushMatrix()
 
 void phd_SetTrans(long x, long y, long z)
 {
-	phd_mxptr[3] = x << 14;
-	phd_mxptr[7] = y << 14;
-	phd_mxptr[11] = z << 14;
+	phd_mxptr[M03] = x << 14;
+	phd_mxptr[M13] = y << 14;
+	phd_mxptr[M23] = z << 14;
 
 #ifdef GENERAL_FIXES // Fixes wrong translation
 	aSetTrans(x, y, z);
@@ -595,6 +595,96 @@ void phd_TransposeMatrix()
 	phd_mxptr[M21] = bak;
 }
 
+void phd_LookAt(long xsrc, long ysrc, long zsrc, long xtar, long ytar, long ztar, short roll)
+{
+	PHD_3DPOS viewPos;
+	long dx, dy, dz;
+	short angles[2];
+
+	phd_GetVectorAngles(xtar - xsrc, ytar - ysrc, ztar - zsrc, angles);
+	viewPos.x_pos = xsrc;
+	viewPos.y_pos = ysrc;
+	viewPos.z_pos = zsrc;
+	viewPos.x_rot = angles[1];
+	viewPos.y_rot = angles[0];
+	viewPos.z_rot = roll;
+	dx = xsrc - xtar;
+	dy = ysrc - ytar;
+	dz = zsrc - ztar;
+	CamRot.vx = (mGetAngle(0, 0, (long)sqrt(SQUARE(dx) + SQUARE(dz)), dy) >> 4) & 0xFFF;
+	CamRot.vy = (mGetAngle(zsrc, xsrc, ztar, xtar) >> 4) & 0xFFF;
+	CamRot.vz = 0;
+	CamPos.x = xsrc;
+	CamPos.y = ysrc;
+	CamPos.z = zsrc;
+	phd_GenerateW2V(&viewPos);
+	S_InitD3DMatrix();
+}
+
+void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float ztar, long roll)
+{
+	D3DMATRIX mx;
+
+	aCamera.pos.x = xsrc;
+	aCamera.pos.y = ysrc;
+	aCamera.pos.z = zsrc;
+	aMXPtr = aFMatrixStack;
+	aCamera.tar.x = xtar;
+	aCamera.tar.y = ytar;
+	aCamera.tar.z = ztar;
+	aPointCamera(&aCamera);
+	aCamera.matrix[M03] = xsrc;
+	aCamera.matrix[M13] = ysrc;
+	aCamera.matrix[M23] = zsrc;
+	aMXPtr[M00] = aCamera.matrix[M00];
+	aMXPtr[M01] = aCamera.matrix[M01];
+	aMXPtr[M02] = aCamera.matrix[M02];
+	aMXPtr[M03] = aCamera.matrix[M03];
+	aMXPtr[M10] = aCamera.matrix[M10];
+	aMXPtr[M11] = aCamera.matrix[M11];
+	aMXPtr[M12] = aCamera.matrix[M12];
+	aMXPtr[M13] = aCamera.matrix[M13];
+	aMXPtr[M20] = aCamera.matrix[M20];
+	aMXPtr[M21] = aCamera.matrix[M21];
+	aMXPtr[M22] = aCamera.matrix[M22];
+	aMXPtr[M23] = aCamera.matrix[M23];
+
+	if (roll)
+	{
+		aRotZ((short)roll);
+		aCamera.matrix[M00] = aMXPtr[M00];
+		aCamera.matrix[M01] = aMXPtr[M01];
+		aCamera.matrix[M02] = aMXPtr[M02];
+		aCamera.matrix[M10] = aMXPtr[M10];
+		aCamera.matrix[M11] = aMXPtr[M11];
+		aCamera.matrix[M12] = aMXPtr[M12];
+		aCamera.matrix[M20] = aMXPtr[M20];
+		aCamera.matrix[M21] = aMXPtr[M21];
+		aCamera.matrix[M22] = aMXPtr[M22];
+	}
+
+	aCamera.matrix[M10] *= LfAspectCorrection;
+	aCamera.matrix[M11] *= LfAspectCorrection;
+	aCamera.matrix[M12] *= LfAspectCorrection;
+	SetD3DMatrixF(&mx, aCamera.matrix);
+	D3DInvCameraMatrix._11 = mx._11;
+	D3DInvCameraMatrix._12 = mx._21;
+	D3DInvCameraMatrix._13 = mx._31;
+	D3DInvCameraMatrix._14 = mx._41;
+	D3DInvCameraMatrix._21 = mx._12;
+	D3DInvCameraMatrix._22 = mx._22;
+	D3DInvCameraMatrix._23 = mx._32;
+	D3DInvCameraMatrix._24 = mx._42;
+	D3DInvCameraMatrix._31 = mx._13;
+	D3DInvCameraMatrix._32 = mx._23;
+	D3DInvCameraMatrix._33 = mx._33;
+	D3DInvCameraMatrix._34 = mx._43;
+	D3DInvCameraMatrix._41 = mx._14;
+	D3DInvCameraMatrix._42 = mx._24;
+	D3DInvCameraMatrix._43 = mx._34;
+	D3DInvCameraMatrix._44 = mx._44;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -623,4 +713,6 @@ void inject_3dmath(bool replace)
 	INJECT(0x004903F0, phd_TranslateAbs, replace);
 	INJECT(0x004904B0, phd_GetVectorAngles, replace);
 	INJECT(0x00490550, phd_TransposeMatrix, replace);
+	INJECT(0x0048F760, phd_LookAt, replace);
+	INJECT(0x00490C20, aLookAt, replace);
 }

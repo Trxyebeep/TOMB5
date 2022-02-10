@@ -457,6 +457,7 @@ void DrawFlareInAir(ITEM_INFO* item)
 #endif
 
 	phd_PushMatrix();
+
 #ifdef GENERAL_FIXES
 	bounds = GetBoundsAccurate(item);
 	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos - bounds[3], item->pos.z_pos);
@@ -465,11 +466,6 @@ void DrawFlareInAir(ITEM_INFO* item)
 #endif
 
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-
-#ifdef GENERAL_FIXES
-	CalculateObjectLighting(item, GetBestFrame(item));
-#endif
-
 	phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
 	phd_PopMatrix();
 
