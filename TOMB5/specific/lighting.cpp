@@ -136,10 +136,9 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		spot->b = light->b * 255.0F;
 		spot->rad = 1.0F - num / light->Cutoff;
 
-#ifdef GENERAL_FIXES // Fixes flashes
+		// Fixes flashes
 		if (spot->rad < 0)
 			spot->rad = 0;
-#endif
 
 		NumSpotLights++;
 		TotalNumLights++;
