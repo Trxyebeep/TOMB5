@@ -12,6 +12,7 @@
 #include "effects.h"
 #include "traps.h"
 #include "hydra.h"
+#include "romangod.h"
 
 void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv)
 {
@@ -426,8 +427,6 @@ void ControlSmokeEmitter(short item_number)
 		}
 	}
 }
-
-#define TriggerRomanGodMissileFlame	( (void(__cdecl*)(PHD_VECTOR*, long)) 0x0046B420 )
 
 void ControlEnemyMissile(short fx_number)
 {

@@ -42,6 +42,7 @@ do \
 //^ color multiply thingy phd_PutPolygons wants to do
 #define SCRIPT_TEXT(num)		(&gfStringWad[gfStringOffset[num]])
 #define SCRIPT_TEXT_bis(num)	(&gfStringWad[gfStringOffset_bis[num]])
+#define SetVecXYZ(num, X, Y, Z)	 vec[(num)].x = (X); vec[(num)].y = (Y); vec[(num)].z = (Z);
 
 /*typedefs*/
 typedef unsigned char uchar;

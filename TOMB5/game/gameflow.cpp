@@ -45,7 +45,11 @@ struct cutseq_selector_item
 cutseq_selector_item cutseq_selector_data[] =
 {
 	{0,0,0},
+#ifdef GENERAL_FIXES
+	{STR_ANDY4B, LVL5_GALLOWS_TREE, 9},
+#else
 	{STR_ANDY4B, LVL5_SINKING_SUBMARINE, 13},//cmon del this should be gallows, cut 9!
+#endif
 	{STR_ANDY11, LVL5_OLD_MILL, 44},
 	{STR_SWAMPY, LVL5_OLD_MILL, 43},
 	{STR_MONK2, LVL5_LABYRINTH, 42},

@@ -450,8 +450,6 @@ void DrawLaserSightSprite()
 
 #ifdef USE_SKY_SPRITE
 
-#define SetVecXYZ(num, X, Y, Z)	 vec[(num)].x = (X); vec[(num)].y = (Y); vec[(num)].z = (Z);
-
 void SetSkyCoords(FVECTOR* vec, long segment, long def)
 {
 	if (segment == 1)	//bottom left
