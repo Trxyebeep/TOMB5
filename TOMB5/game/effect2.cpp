@@ -598,6 +598,93 @@ void ControlEnemyMissile(short fx_number)
 	}
 }
 
+void TriggerExplosionSmokeEnd(long x, long y, long z, long uw)
+{
+	SPARKS* sptr;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+
+	if (uw)
+	{
+		sptr->sR = 0;
+		sptr->sG = 0;
+		sptr->sB = 0;
+		sptr->dR = 192;
+		sptr->dG = 192;
+		sptr->dB = 208;
+	}
+	else
+	{
+#ifdef GENERAL_FIXES
+		sptr->sR = 196;
+		sptr->sG = 196;
+		sptr->sB = 196;
+		sptr->dR = 96;
+		sptr->dG = 96;
+		sptr->dB = 96;
+#else
+		sptr->sR = 144;
+		sptr->sG = 144;
+		sptr->sB = 144;
+		sptr->dR = 64;
+		sptr->dG = 64;
+		sptr->dB = 64;
+#endif
+	}
+
+	sptr->ColFadeSpeed = 8;
+	sptr->FadeToBlack = 64;
+	sptr->Life = (GetRandomControl() & 0x1F) + 96;
+	sptr->sLife = sptr->Life;
+
+	if (uw)
+		sptr->TransType = 2;
+	else
+		sptr->TransType = 3;
+
+	sptr->x = (GetRandomControl() & 0x1F) + x - 16;
+	sptr->y = (GetRandomControl() & 0x1F) + y - 16;
+	sptr->z = (GetRandomControl() & 0x1F) + z - 16;
+	sptr->Xvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
+	sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
+
+	if (uw)
+	{
+		sptr->Friction = 20;
+		sptr->Yvel >>= 4;
+		sptr->y += 32;
+	}
+	else
+		sptr->Friction = 6;
+
+	sptr->Flags = 538;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+
+	if (GetRandomControl() & 1)
+		sptr->RotAdd = -16 - (GetRandomControl() & 0xF);
+	else
+		sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
+
+	sptr->Scalar = 3;
+
+	if (uw)
+	{
+		sptr->MaxYvel = 0;
+		sptr->Gravity = 0;
+	}
+	else
+	{
+		sptr->Gravity = -3 - (GetRandomControl() & 3);
+		sptr->MaxYvel = -4 - (GetRandomControl() & 3);
+	}
+
+	sptr->dSize = (GetRandomControl() & 0x1F) + 128;
+	sptr->sSize = sptr->dSize >> 2;
+	sptr->Size = sptr->sSize;
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -606,4 +693,5 @@ void inject_effect2(bool replace)
 	INJECT(0x00431050, KillEverything, replace);
 	INJECT(0x00431560, ControlSmokeEmitter, replace);
 	INJECT(0x00431E70, ControlEnemyMissile, replace);
+	INJECT(0x0042FA10, TriggerExplosionSmokeEnd, replace);
 }
