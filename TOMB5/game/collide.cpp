@@ -916,21 +916,21 @@ int Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, int speed, short rotation)
 		{
 			switch ((((ulong)(mGetAngle(dest->x_pos, dest->z_pos, pos->x_pos, pos->z_pos) + 8192) >> 14) - ((ushort)(dest->y_rot + 8192) >> 14)) & 0x3)
 			{
-			case NORTH:
+			case 0:
 				lara_item->anim_number = 65;
 				lara_item->frame_number = anims[lara_item->anim_number].frame_base;
 				lara_item->goal_anim_state = AS_STEPLEFT;
 				lara_item->current_anim_state = AS_STEPLEFT;
 				break;
 
-			case EAST:
+			case 1:
 				lara_item->anim_number = 1;
 				lara_item->frame_number = anims[lara_item->anim_number].frame_base;
 				lara_item->goal_anim_state = AS_WALK;
 				lara_item->current_anim_state = AS_WALK;
 				break;
 
-			case SOUTH:
+			case 2:
 				lara_item->anim_number = 67;
 				lara_item->frame_number = anims[lara_item->anim_number].frame_base;
 				lara_item->goal_anim_state = AS_STEPRIGHT;
