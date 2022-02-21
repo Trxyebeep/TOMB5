@@ -180,7 +180,7 @@ long GetOffset(ITEM_INFO* item, long x, long z)
 {
 	if (item->pos.y_rot == 0)
 #ifdef GENERAL_FIXES // Fixes bridge bug
-		return (-x - 1) & 0x3FF;
+		return ~x & 0x3FF;
 #else
 		return -x & 0x3FF;
 #endif
@@ -190,7 +190,7 @@ long GetOffset(ITEM_INFO* item, long x, long z)
 		return z & 0x3FF;
 	else
 #ifdef GENERAL_FIXES
-		return (-z - 1) & 0x3FF;
+		return ~z & 0x3FF;
 #else
 		return -z & 0x3FF;
 #endif
