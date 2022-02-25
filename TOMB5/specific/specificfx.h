@@ -4,9 +4,6 @@
 void inject_specificfx(bool replace);
 
 void S_PrintShadow(short size, short* box, ITEM_INFO* item);
-#ifdef SMOOTH_SHADOWS
-void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item);
-#endif
 void DrawLaserSightSprite();
 void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype);
 void S_DrawDarts(ITEM_INFO* item);
