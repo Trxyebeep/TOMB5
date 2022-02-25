@@ -15,11 +15,12 @@ void AIPickupCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll);
 void TrapCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll);
 void TestForObjectOnLedge(ITEM_INFO* item, COLL_INFO* coll);
 long GetCollidedObjects(ITEM_INFO* item, long rad, long noInvisible, ITEM_INFO** StoredItems, MESH_INFO** StoredStatics, long StoreLara);
+int MoveLaraPosition(PHD_VECTOR* pos, ITEM_INFO* item, ITEM_INFO* l);
+int Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, int speed, short rotation);
 
 #define CollideStaticObjects ( (int(__cdecl*)(COLL_INFO*, long, long, long, short, long)) 0x00411DB0 )
 #define	UpdateLaraRoom	( (void(__cdecl*)(ITEM_INFO*, int)) 0x004120F0 )
 #define TestLaraPosition	( (int(__cdecl*)(short*, ITEM_INFO*, ITEM_INFO*)) 0x00413210 )
-#define MoveLaraPosition	( (int(__cdecl*)(PHD_VECTOR*, ITEM_INFO*, ITEM_INFO*)) 0x00413840 )
 #define	TestBoundsCollide	( (int(__cdecl*)(ITEM_INFO*, ITEM_INFO*, long)) 0x00412CC0 )
 #define	ItemPushLara	( (int(__cdecl*)(ITEM_INFO*, ITEM_INFO*, COLL_INFO*, int, int)) 0x00412860 )
 #define LaraBaddieCollision	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00412170 )

@@ -9,6 +9,7 @@
 #include "draw.h"
 #include "../specific/3dmath.h"
 #include "pickup.h"
+#include "lara_states.h"
 
 void TriggerLaraBlood()
 {
@@ -846,6 +847,141 @@ long GetCollidedObjects(ITEM_INFO* item, long rad, long noInvisible, ITEM_INFO**
 	return items_count | statics_count;
 }
 
+int MoveLaraPosition(PHD_VECTOR* v, ITEM_INFO* item, ITEM_INFO* laraitem)
+{
+	PHD_3DPOS pos;
+	long height;
+	short room_number;
+
+	pos.x_rot = item->pos.x_rot;
+	pos.y_rot = item->pos.y_rot;
+	pos.z_rot = item->pos.z_rot;
+	phd_PushUnitMatrix();
+	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+	pos.x_pos = item->pos.x_pos + ((v->x * phd_mxptr[M00] + v->y * phd_mxptr[M01] + v->z * phd_mxptr[M02]) >> 14);
+	pos.y_pos = item->pos.y_pos + ((v->x * phd_mxptr[M10] + v->y * phd_mxptr[M11] + v->z * phd_mxptr[M12]) >> 14);
+	pos.z_pos = item->pos.z_pos + ((v->x * phd_mxptr[M20] + v->y * phd_mxptr[M21] + v->z * phd_mxptr[M22]) >> 14);
+	phd_PopMatrix();
+
+	if (item->object_number == FLARE_ITEM || item->object_number == BURNING_TORCH_ITEM)
+	{
+		room_number = laraitem->room_number;
+		height = GetHeight(GetFloor(pos.x_pos, pos.y_pos, pos.z_pos, &room_number), pos.x_pos, pos.y_pos, pos.z_pos);
+
+		if (ABS(height - laraitem->pos.y_pos) > 512)
+		{
+			if (lara.IsMoving)
+			{
+				lara.IsMoving = 0;
+				lara.gun_status = LG_NO_ARMS;
+			}
+
+			return 0;
+		}
+
+		if (phd_sqrt(SQUARE(pos.x_pos - laraitem->pos.x_pos) + SQUARE(pos.y_pos - laraitem->pos.y_pos) + SQUARE(pos.z_pos - laraitem->pos.z_pos)) < 128)
+			return 1;
+	}
+
+	return Move3DPosTo3DPos(&laraitem->pos, &pos, 12, 364);
+}
+
+int Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, int speed, short rotation)
+{
+	long dx, dy, dz, distance, shift;
+	short adiff;
+
+	dx = dest->x_pos - pos->x_pos;
+	dy = dest->y_pos - pos->y_pos;
+	dz = dest->z_pos - pos->z_pos;
+	distance = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+
+	if (speed >= distance)
+	{
+		pos->x_pos = dest->x_pos;
+		pos->y_pos = dest->y_pos;
+		pos->z_pos = dest->z_pos;
+	}
+	else
+	{
+		shift = 65536 * speed / distance;
+		pos->x_pos += shift * dx >> 16;
+		pos->y_pos += shift * dy >> 16;
+		pos->z_pos += shift * dz >> 16;
+	}
+
+	if (!lara.IsMoving)
+	{
+		if (lara.water_status != LW_UNDERWATER)
+		{
+			switch ((((ulong)(mGetAngle(dest->x_pos, dest->z_pos, pos->x_pos, pos->z_pos) + 8192) >> 14) - ((ushort)(dest->y_rot + 8192) >> 14)) & 0x3)
+			{
+			case 0:
+				lara_item->anim_number = 65;
+				lara_item->frame_number = anims[lara_item->anim_number].frame_base;
+				lara_item->goal_anim_state = AS_STEPLEFT;
+				lara_item->current_anim_state = AS_STEPLEFT;
+				break;
+
+			case 1:
+				lara_item->anim_number = 1;
+				lara_item->frame_number = anims[lara_item->anim_number].frame_base;
+				lara_item->goal_anim_state = AS_WALK;
+				lara_item->current_anim_state = AS_WALK;
+				break;
+
+			case 2:
+				lara_item->anim_number = 67;
+				lara_item->frame_number = anims[lara_item->anim_number].frame_base;
+				lara_item->goal_anim_state = AS_STEPRIGHT;
+				lara_item->current_anim_state = AS_STEPRIGHT;
+				break;
+
+			default:
+				lara_item->anim_number = 40;
+				lara_item->frame_number = anims[lara_item->anim_number].frame_base;
+				lara_item->goal_anim_state = AS_BACK;
+				lara_item->current_anim_state = AS_BACK;
+				break;
+			}
+
+			lara.gun_status = LG_HANDS_BUSY;
+		}
+
+		lara.IsMoving = 1;
+		lara.MoveCount = 0;
+	}
+
+	adiff = dest->x_rot - pos->x_rot;
+
+	if (adiff > rotation)
+		pos->x_rot += rotation;
+	else if (adiff < -rotation)
+		pos->x_rot -= rotation;
+	else
+		pos->x_rot = dest->x_rot;
+
+	adiff = dest->y_rot - pos->y_rot;
+
+	if (adiff > rotation)
+		pos->y_rot += rotation;
+	else if (adiff < -rotation)
+		pos->y_rot -= rotation;
+	else
+		pos->y_rot = dest->y_rot;
+
+	adiff = dest->z_rot - pos->z_rot;
+
+	if (adiff > rotation)
+		pos->z_rot += rotation;
+	else if (adiff < -rotation)
+		pos->z_rot -= rotation;
+	else
+		pos->z_rot = dest->z_rot;
+
+	return pos->x_pos == dest->x_pos && pos->y_pos == dest->y_pos && pos->z_pos == dest->z_pos && pos->x_rot == dest->x_rot && pos->y_rot == dest->y_rot && pos->z_rot == dest->z_rot;
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -860,4 +996,6 @@ void inject_coll(bool replace)
 	INJECT(0x004127C0, TrapCollision, replace);
 	INJECT(0x00414450, TestForObjectOnLedge, replace);
 	INJECT(0x00413CF0, GetCollidedObjects, replace);
+	INJECT(0x00413840, MoveLaraPosition, replace);
+	INJECT(0x004134E0, Move3DPosTo3DPos, replace);
 }
