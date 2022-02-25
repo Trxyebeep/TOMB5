@@ -9,9 +9,6 @@
 #include "../game/gameflow.h"
 #include "../game/control.h"
 #include "../game/delstuff.h"
-#ifdef SMOOTH_SHADOWS
-#include "../tomb5/tomb5.h"
-#endif
 #ifdef GENERAL_FIXES
 #include "../game/savegame.h"
 #endif
@@ -127,15 +124,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 	phd_right = phd_winxmax;
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
-
-#ifdef SMOOTH_SHADOWS
-	if (tomb5.shadow_mode == 2 || tomb5.shadow_mode == 3)
-		S_PrintCircleShadow(obj->shadow_size, GLaraShadowframe, item);
-	else
-		S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-#else
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-#endif
 
 	if (input & IN_LOOK)
 	{
@@ -408,15 +397,7 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 	phd_right = phd_winxmax;
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
-
-#ifdef SMOOTH_SHADOWS
-	if (tomb5.shadow_mode == 2 || tomb5.shadow_mode == 3)
-		S_PrintCircleShadow(obj->shadow_size, GLaraShadowframe, item);
-	else
-		S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-#else
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-#endif
 
 	if (input & IN_LOOK)
 	{
@@ -604,15 +585,7 @@ void DrawLara__5(ITEM_INFO* item, int mirror)
 	phd_right = phd_winxmax;
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
-	
-#ifdef SMOOTH_SHADOWS
-	if (tomb5.shadow_mode == 2 || tomb5.shadow_mode == 3)
-		S_PrintCircleShadow(obj->shadow_size, GLaraShadowframe, item);
-	else
-		S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-#else
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-#endif
 
 	if (input & IN_LOOK)
 	{
@@ -742,15 +715,7 @@ void DrawLara__6(ITEM_INFO* item, int mirror)
 	phd_right = phd_winxmax;
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
-	
-#ifdef SMOOTH_SHADOWS
-	if (tomb5.shadow_mode == 2 || tomb5.shadow_mode == 3)
-		S_PrintCircleShadow(obj->shadow_size, GLaraShadowframe, item);
-	else
-		S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-#else
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-#endif
 
 	if (!mirror)
 		CalculateObjectLightingLara();

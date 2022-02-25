@@ -65,7 +65,7 @@ long ShadowTable[NUM_TRIS * 3] =	//num of triangles * 3 points
 };
 
 #ifdef SMOOTH_SHADOWS
-void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
+static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 {
 	TEXTURESTRUCT Tex;
 	D3DTLVERTEX v[3];
@@ -193,9 +193,14 @@ void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 
 		if (item->after_death)
 		{
-			v[0].color = 0x80000000 - (item->after_death << 24);
-			v[1].color = v[0].color;
-			v[2].color = v[0].color;
+			if (tomb5.shadow_mode == 3)	//to stop PSX shadow from turning to a flat circle when entities are dying
+				v[2].color = 0x80000000 - (item->after_death << 24);
+			else
+			{
+				v[0].color = 0x80000000 - (item->after_death << 24);
+				v[1].color = v[0].color;
+				v[2].color = v[0].color;
+			}
 		}
 
 		v[0].specular = 0xFF000000;
@@ -232,6 +237,14 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 	float fx, fy, fz;
 	long x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, xSize, zSize, xDist, zDist;
 	short room_number;
+
+#ifdef SMOOTH_SHADOWS
+	if (tomb5.shadow_mode != 1)
+	{
+		S_PrintCircleShadow(size, box, item);
+		return;
+	}
+#endif
 
 	xSize = size * (box[1] - box[0]) / 192;	//x size of grid
 	zSize = size * (box[5] - box[4]) / 192;	//z size of grid
