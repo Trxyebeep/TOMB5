@@ -437,8 +437,8 @@ void CalculateSpotCams()
 			}
 		}
 
-		phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, (short)croll);
-		aLookAt(camera.fpos.x, camera.fpos.y, camera.fpos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, (short)croll);
+		aLookAt(camera.fpos.x, camera.fpos.y, camera.fpos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
+		phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
 
 		if (bCheckTrigger)
 		{

@@ -632,30 +632,40 @@ void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float z
 	aCamera.tar.x = xtar;
 	aCamera.tar.y = ytar;
 	aCamera.tar.z = ztar;
-	aMXPtr[M00] = (float)phd_mxptr[M00] / 16384;
-	aMXPtr[M01] = (float)phd_mxptr[M01] / 16384;
-	aMXPtr[M02] = (float)phd_mxptr[M02] / 16384;
-	aMXPtr[M03] = xsrc;
-	aMXPtr[M10] = (float)phd_mxptr[M10] / 16384;
-	aMXPtr[M11] = (float)phd_mxptr[M11] / 16384;
-	aMXPtr[M12] = (float)phd_mxptr[M12] / 16384;
-	aMXPtr[M13] = ysrc;
-	aMXPtr[M20] = (float)phd_mxptr[M20] / 16384;
-	aMXPtr[M21] = (float)phd_mxptr[M21] / 16384;
-	aMXPtr[M22] = (float)phd_mxptr[M22] / 16384;
-	aMXPtr[M23] = zsrc;
-	aCamera.matrix[M00] = aMXPtr[M00];
-	aCamera.matrix[M01] = aMXPtr[M01];
-	aCamera.matrix[M02] = aMXPtr[M02];
-	aCamera.matrix[M03] = aMXPtr[M03];
-	aCamera.matrix[M10] = aMXPtr[M10];
-	aCamera.matrix[M11] = aMXPtr[M11];
-	aCamera.matrix[M12] = aMXPtr[M12];
-	aCamera.matrix[M13] = aMXPtr[M13];
-	aCamera.matrix[M20] = aMXPtr[M20];
-	aCamera.matrix[M21] = aMXPtr[M21];
-	aCamera.matrix[M22] = aMXPtr[M22];
-	aCamera.matrix[M23] = aMXPtr[M22];
+	aPointCamera(&aCamera);
+	aCamera.matrix[M03] = xsrc;
+	aCamera.matrix[M13] = ysrc;
+	aCamera.matrix[M23] = zsrc;
+	aMXPtr[M00] = aCamera.matrix[M00];
+	aMXPtr[M01] = aCamera.matrix[M01];
+	aMXPtr[M02] = aCamera.matrix[M02];
+	aMXPtr[M03] = aCamera.matrix[M03];
+	aMXPtr[M10] = aCamera.matrix[M10];
+	aMXPtr[M11] = aCamera.matrix[M11];
+	aMXPtr[M12] = aCamera.matrix[M12];
+	aMXPtr[M13] = aCamera.matrix[M13];
+	aMXPtr[M20] = aCamera.matrix[M20];
+	aMXPtr[M21] = aCamera.matrix[M21];
+	aMXPtr[M22] = aCamera.matrix[M22];
+	aMXPtr[M23] = aCamera.matrix[M23];
+
+	if (roll)
+	{
+		aRotZ((short)roll);
+		aCamera.matrix[M00] = aMXPtr[M00];
+		aCamera.matrix[M01] = aMXPtr[M01];
+		aCamera.matrix[M02] = aMXPtr[M02];
+		aCamera.matrix[M10] = aMXPtr[M10];
+		aCamera.matrix[M11] = aMXPtr[M11];
+		aCamera.matrix[M12] = aMXPtr[M12];
+		aCamera.matrix[M20] = aMXPtr[M20];
+		aCamera.matrix[M21] = aMXPtr[M21];
+		aCamera.matrix[M22] = aMXPtr[M22];
+	}
+
+	aCamera.matrix[M10] *= LfAspectCorrection;
+	aCamera.matrix[M11] *= LfAspectCorrection;
+	aCamera.matrix[M12] *= LfAspectCorrection;
 	SetD3DMatrixF(&mx, aCamera.matrix);
 	D3DInvCameraMatrix._11 = mx._11;
 	D3DInvCameraMatrix._12 = mx._21;
