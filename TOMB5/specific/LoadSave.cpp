@@ -80,7 +80,7 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 	fy = phd_winymax * 0.0020833334F;
 	fvalue = 0.0099999998F * value;
 	fx2 = width * fvalue;
-	fy2 = height * 0.25F;
+	fy2 = height * 0.1666666716F;
 	v[0].specular = 0xFF000000;
 	v[1].specular = 0xFF000000;
 	v[2].specular = 0xFF000000;
@@ -102,6 +102,32 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 	v[2].rhw = f_mpersp / f_mznear * f_moneopersp;
 	v[3].rhw = f_mpersp / f_mznear * f_moneopersp;
 
+	v[0].sy += fy2 * fy;
+	v[1].sy += fy2 * fy;
+	v[2].sy += fy2 * fy;
+	v[3].sy += fy2 * fy;
+
+	v[0].color = 0xFF000000;
+	v[1].color = 0xFF000000;
+
+	r = colour->abLeftRed[0];
+	g = colour->abLeftGreen[0];
+	b = colour->abLeftBlue[0];
+	r -= r >> 2;
+	g -= g >> 2;
+	b -= b >> 2;
+	v[2].color = RGBONLY(r, g, b);
+
+	r = (long)((1 - fvalue) * colour->abLeftRed[0] + fvalue * colour->abRightRed[0]);
+	g = (long)((1 - fvalue) * colour->abLeftGreen[0] + fvalue * colour->abRightGreen[0]);
+	b = (long)((1 - fvalue) * colour->abLeftBlue[0] + fvalue * colour->abRightBlue[0]);
+	r -= r >> 2;
+	g -= g >> 2;
+	b -= b >> 2;
+	v[3].color = RGBONLY(r, g, b);
+
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
+
 	for (int i = 0; i < 4; i++)
 	{
 		v[0].sy += fy2 * fy;
@@ -121,10 +147,35 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 		AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
 	}
 
-	v[0].sx = x * fx;
-	v[1].sx = x * fx + width * fx;
-	v[2].sx = x * fx;
-	v[3].sx = x * fx + width * fx;
+	v[0].sy += fy2 * fy;
+	v[1].sy += fy2 * fy;
+	v[2].sy += fy2 * fy;
+	v[3].sy += fy2 * fy;
+
+	r = colour->abLeftRed[4];
+	g = colour->abLeftGreen[4];
+	b = colour->abLeftBlue[4];
+	r -= r >> 2;
+	g -= g >> 2;
+	b -= b >> 2;
+	v[0].color = RGBONLY(r, g, b);
+
+	r = (long)((1 - fvalue) * colour->abLeftRed[4] + fvalue * colour->abRightRed[4]);
+	g = (long)((1 - fvalue) * colour->abLeftGreen[4] + fvalue * colour->abRightGreen[4]);
+	b = (long)((1 - fvalue) * colour->abLeftBlue[4] + fvalue * colour->abRightBlue[4]);
+	r -= r >> 2;
+	g -= g >> 2;
+	b -= b >> 2;
+	v[1].color = RGBONLY(r, g, b);
+
+	v[2].color = 0xFF000000;
+	v[3].color = 0xFF000000;
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
+
+	v[0].sx = x * fx - 2;
+	v[1].sx = x * fx + width * fx + 2;
+	v[2].sx = x * fx - 2;
+	v[3].sx = x * fx + width * fx + 2;
 	v[0].sy = y * fy;
 	v[1].sy = y * fy;
 	v[2].sy = y * fy + height * fy;
@@ -143,10 +194,10 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 	v[3].color = 0;
 	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//black background
 
-	v[0].sx = x * fx - 1;
-	v[1].sx = x * fx + width * fx + 1;
-	v[2].sx = x * fx - 1;
-	v[3].sx = x * fx + width * fx + 1;
+	v[0].sx = x * fx - 3;
+	v[1].sx = x * fx + width * fx + 3;
+	v[2].sx = x * fx - 3;
+	v[3].sx = x * fx + width * fx + 3;
 	v[0].sy = y * fy - 1;
 	v[1].sy = y * fy - 1;
 	v[2].sy = y * fy + height * fy + 1;
