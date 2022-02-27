@@ -655,7 +655,7 @@ void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float z
 	aCamera.matrix[M20] = aMXPtr[M20];
 	aCamera.matrix[M21] = aMXPtr[M21];
 	aCamera.matrix[M22] = aMXPtr[M22];
-	aCamera.matrix[M23] = aMXPtr[M22];
+	aCamera.matrix[M23] = aMXPtr[M23];
 	SetD3DMatrixF(&mx, aCamera.matrix);
 	D3DInvCameraMatrix._11 = mx._11;
 	D3DInvCameraMatrix._12 = mx._21;
