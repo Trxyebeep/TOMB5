@@ -62,6 +62,16 @@ static GouraudBarColourSet loadBarColourSet =
 	{ 48, 96, 127, 80, 32 }
 };
 
+static GouraudBarColourSet enemyBarColourSet =
+{
+	{ 128, 192, 255, 192, 128 },
+	{ 64, 96, 128, 96, 64 },
+	{ 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0 },
+	{ 123, 154, 123, 107, 91 },
+	{ 0, 0, 0, 0, 0 }
+};
+
 static void S_DrawGouraudBar(int x, int y, int width, int height, int value, GouraudBarColourSet* colour)
 {
 	D3DTLVERTEX v[4];
@@ -440,7 +450,10 @@ void S_DrawEnemyBar(long pos)
 		y = (font_height >> 1) + (font_height >> 2) + (font_height >> 2) + 32;
 	}
 
-	DoBar(x, y, 150, 12, pos, 0xA00000, 0xA0A000);
+	if (tomb5.PSXBars)
+		S_DrawGouraudBar(x, y, 150, 12, pos, &enemyBarColourSet);
+	else
+		DoBar(x, y, 150, 12, pos, 0xA00000, 0xA0A000);
 }
 #endif
 
