@@ -65,6 +65,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "tr4cam");
 		tomb5.tr4_camera = 0;							//off
 		REG_WriteBool(buf, tomb5.tr4_camera);
+
+		sprintf(buf, "PSXBars");
+		tomb5.PSXBars = 1;								//on
+		REG_WriteBool(buf, tomb5.PSXBars);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -106,6 +110,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "tr4cam");
 		REG_ReadBool(buf, tomb5.tr4_camera, 0);
+
+		sprintf(buf, "PSXBars");
+		REG_ReadBool(buf, tomb5.PSXBars, 1);
 	}
 
 	CloseRegistry();
@@ -154,6 +161,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "tr4cam");
 	REG_WriteBool(buf, tomb5.tr4_camera);
+
+	sprintf(buf, "PSXBars");
+	REG_WriteBool(buf, tomb5.PSXBars);
 
 	CloseRegistry();
 }

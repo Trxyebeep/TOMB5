@@ -2354,6 +2354,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool gameover;				//on off, gameover menu after death
 	bool fog;					//on off
 	bool tr4_camera;			//on off (1 -> TR4, 0 -> TR5)
+	bool PSXBars;				//on off
 };
 #endif
 #pragma pack(pop)
