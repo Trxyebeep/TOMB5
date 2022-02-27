@@ -473,7 +473,9 @@ void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, 
 	item.pos.z_rot = zrot + objme->zrot;
 	item.object_number = objme->object_number;
 	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
+#ifndef GENERAL_FIXES
 	aLookAt(0, 1024, 0, 100, 0, 200, 0);
+#endif
 
 	if (!bright)
 		pcbright = 0x007F7F7F;

@@ -1237,7 +1237,9 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 
 	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+#ifndef GENERAL_FIXES
 	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
+#endif
 
 	if (camera.mike_at_lara)
 	{
@@ -1364,7 +1366,9 @@ void BinocularCamera(ITEM_INFO* item)
 
 	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+#ifndef GENERAL_FIXES
 	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
+#endif
 
 	if (camera.mike_at_lara)
 	{
@@ -1794,7 +1798,9 @@ void LookCamera(ITEM_INFO* item)
 
 	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+#ifndef GENERAL_FIXES
 	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
+#endif
 
 	if (camera.mike_at_lara)
 	{
