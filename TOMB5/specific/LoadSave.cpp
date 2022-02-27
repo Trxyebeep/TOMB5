@@ -80,7 +80,7 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 	fy = phd_winymax * 0.0020833334F;
 	fvalue = 0.0099999998F * value;
 	fx2 = width * fvalue;
-	fy2 = height * 0.25F;
+	fy2 = height * 0.1666666716F;
 	v[0].specular = 0xFF000000;
 	v[1].specular = 0xFF000000;
 	v[2].specular = 0xFF000000;
@@ -102,6 +102,19 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 	v[2].rhw = f_mpersp / f_mznear * f_moneopersp;
 	v[3].rhw = f_mpersp / f_mznear * f_moneopersp;
 
+	v[0].sy += fy2 * fy;
+	v[1].sy += fy2 * fy;
+	v[2].sy += fy2 * fy;
+	v[3].sy += fy2 * fy;
+	v[0].color = 0;
+	v[1].color = 0;
+	v[2].color = RGBONLY(colour->abLeftRed[0], colour->abLeftGreen[0], colour->abLeftBlue[0]);
+	r = (long)((1 - fvalue) * colour->abLeftRed[0] + fvalue * colour->abRightRed[0]);
+	g = (long)((1 - fvalue) * colour->abLeftGreen[0] + fvalue * colour->abRightGreen[0]);
+	b = (long)((1 - fvalue) * colour->abLeftBlue[0] + fvalue * colour->abRightBlue[0]);
+	v[3].color = RGBONLY(r, g, b);
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
+
 	for (int i = 0; i < 4; i++)
 	{
 		v[0].sy += fy2 * fy;
@@ -120,6 +133,19 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 		v[3].color = RGBONLY(r, g, b);
 		AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
 	}
+
+	v[0].sy += fy2 * fy;
+	v[1].sy += fy2 * fy;
+	v[2].sy += fy2 * fy;
+	v[3].sy += fy2 * fy;
+	v[0].color = RGBONLY(colour->abLeftRed[4], colour->abLeftGreen[4], colour->abLeftBlue[4]);
+	r = (long)((1 - fvalue) * colour->abLeftRed[4] + fvalue * colour->abRightRed[4]);
+	g = (long)((1 - fvalue) * colour->abLeftGreen[4] + fvalue * colour->abRightGreen[4]);
+	b = (long)((1 - fvalue) * colour->abLeftBlue[4] + fvalue * colour->abRightBlue[4]);
+	v[1].color = RGBONLY(r, g, b);
+	v[2].color = 0;
+	v[3].color = 0;
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
 
 	v[0].sx = x * fx;
 	v[1].sx = x * fx + width * fx;
