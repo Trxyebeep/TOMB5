@@ -2326,6 +2326,18 @@ struct ROOMLET_LIGHT
 	long type;
 };
 
+#ifdef PSX_BAR
+struct GouraudBarColourSet
+{
+	uchar abLeftRed[5];
+	uchar abLeftGreen[5];
+	uchar abLeftBlue[5];
+	uchar abRightRed[5];
+	uchar abRightGreen[5];
+	uchar abRightBlue[5];
+};
+#endif
+
 #ifdef GENERAL_FIXES
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
