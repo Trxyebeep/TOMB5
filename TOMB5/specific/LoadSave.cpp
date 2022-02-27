@@ -62,6 +62,16 @@ static GouraudBarColourSet loadBarColourSet =
 	{ 48, 96, 127, 80, 32 }
 };
 
+static GouraudBarColourSet enemyBarColourSet =
+{
+	{ 128, 192, 255, 192, 128 },
+	{ 64, 96, 128, 96, 64 },
+	{ 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0 },
+	{ 123, 154, 123, 107, 91 },
+	{ 0, 0, 0, 0, 0 }
+};
+
 static void S_DrawGouraudBar(int x, int y, int width, int height, int value, GouraudBarColourSet* colour)
 {
 	D3DTLVERTEX v[4];
@@ -302,10 +312,11 @@ void S_DrawAirBar(int pos)
 		}
 
 #ifdef PSX_BAR
-		S_DrawGouraudBar(x, y, 150, 12, pos, &airBarColourSet);
-#else
-		DoBar(x, y, 150, 12, pos, 0x0000A0, 0x0050A0);
+		if (tomb5.PSXBars)
+			S_DrawGouraudBar(x, y, 150, 12, pos, &airBarColourSet);
+		else
 #endif
+			DoBar(x, y, 150, 12, pos, 0x0000A0, 0x0050A0);
 	}
 #else
 	if (gfCurrentLevel != LVL5_TITLE)
@@ -343,10 +354,11 @@ void S_DrawHealthBar(int pos)
 		}
 
 #ifdef PSX_BAR
-		S_DrawGouraudBar(x, y, 150, 12, pos, lara.poisoned || lara.Gassed ? &poisonBarColourSet : &healthBarColourSet);
-#else
-		DoBar(x, y, 150, 12, pos, 0xA00000, color);
+		if (tomb5.PSXBars)
+			S_DrawGouraudBar(x, y, 150, 12, pos, lara.poisoned || lara.Gassed ? &poisonBarColourSet : &healthBarColourSet);
+		else
 #endif
+			DoBar(x, y, 150, 12, pos, 0xA00000, color);
 	}
 #else
 	if (gfCurrentLevel != LVL5_TITLE)
@@ -373,10 +385,11 @@ void S_DrawHealthBar2(int pos)//same as above just different screen position
 			color = 0xA000;
 
 #ifdef PSX_BAR
-		S_DrawGouraudBar(245, (font_height >> 1) + 32, 150, 12, pos, lara.poisoned || lara.Gassed ? &poisonBarColourSet : &healthBarColourSet);
-#else
-		DoBar(245, (font_height >> 1) + 32, 150, 12, pos, 0xA00000, color);
+		if (tomb5.PSXBars)
+			S_DrawGouraudBar(245, (font_height >> 1) + 32, 150, 12, pos, lara.poisoned || lara.Gassed ? &poisonBarColourSet : &healthBarColourSet);
+		else
 #endif
+			DoBar(245, (font_height >> 1) + 32, 150, 12, pos, 0xA00000, color);
 	}
 }
 
@@ -402,15 +415,18 @@ void S_DrawDashBar(int pos)
 	}
 
 	if (gfCurrentLevel != LVL5_TITLE)
+	{
 #ifdef PSX_BAR
-		S_DrawGouraudBar(x, y, 150, 12, pos, &dashBarColourSet);
-#else
-		DoBar(x, y, 150, 12, pos, 0xA0A000, 0x00A000);
-#endif
-#else
+		if (tomb5.PSXBars)
+			S_DrawGouraudBar(x, y, 150, 12, pos, &dashBarColourSet);
+		else
+#endif	//PSX_BAR
+			DoBar(x, y, 150, 12, pos, 0xA0A000, 0x00A000);
+	}
+#else	//GENERAL_FIXES
 	if (gfCurrentLevel != LVL5_TITLE)
 		DoBar(490 - (font_height >> 2), (font_height >> 2) + 32, 150, 12, pos, 0xA0A000, 0x00A000);//yellow rgb 160, 160, 0 / green rgb 0, 160, 0
-#endif
+#endif	//GENERAL_FIXES
 }
 
 #ifdef ENEMY_BARS
@@ -434,7 +450,10 @@ void S_DrawEnemyBar(long pos)
 		y = (font_height >> 1) + (font_height >> 2) + (font_height >> 2) + 32;
 	}
 
-	DoBar(x, y, 150, 12, pos, 0xA00000, 0xA0A000);
+	if (tomb5.PSXBars)
+		S_DrawGouraudBar(x, y, 150, 12, pos, &enemyBarColourSet);
+	else
+		DoBar(x, y, 150, 12, pos, 0xA00000, 0xA0A000);
 }
 #endif
 
@@ -605,21 +624,22 @@ static void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_
 	char buffer[80];
 	bool changed;
 
-	num = 13;
+	num = 14;
 	PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 2, "FootPrints", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 2, "Point light shadows", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 2, "Shadow mode", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 2, "Fix climb up delay", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 7 * font_height), selection & 0x10 ? 1 : 2, "Flexible crawling", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 8 * font_height), selection & 0x20 ? 1 : 2, "Cutscene skipper", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 9 * font_height), selection & 0x40 ? 1 : 2, "Cheats", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 10 * font_height), selection & 0x80 ? 1 : 2, "Bar positions", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 11 * font_height), selection & 0x100 ? 1 : 2, "Enemy bars", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 12 * font_height), selection & 0x200 ? 1 : 2, "Ammo counter", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 13 * font_height), selection & 0x400 ? 1 : 2, "Gameover menu", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 14 * font_height), selection & 0x800 ? 1 : 2, "Fog", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 15 * font_height), selection & 0x1000 ? 1 : 2, "Camera", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 2 * font_height), selection & 1 ? 1 : 2, "FootPrints", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 2 ? 1 : 2, "Point light shadows", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 4 * font_height), selection & 4 ? 1 : 2, "Shadow mode", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 5 * font_height), selection & 8 ? 1 : 2, "Fix climb up delay", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 6 * font_height), selection & 0x10 ? 1 : 2, "Flexible crawling", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 7 * font_height), selection & 0x20 ? 1 : 2, "Cutscene skipper", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 8 * font_height), selection & 0x40 ? 1 : 2, "Cheats", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 9 * font_height), selection & 0x80 ? 1 : 2, "Bar positions", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 10 * font_height), selection & 0x100 ? 1 : 2, "Enemy bars", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 11 * font_height), selection & 0x200 ? 1 : 2, "Ammo counter", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 12 * font_height), selection & 0x400 ? 1 : 2, "Gameover menu", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 13 * font_height), selection & 0x800 ? 1 : 2, "Fog", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 14 * font_height), selection & 0x1000 ? 1 : 2, "Camera", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 15 * font_height), selection & 0x2000 ? 1 : 2, "PSX Bars", 0);
 
 	if (dbinput & IN_FORWARD)
 	{
@@ -649,43 +669,47 @@ static void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_
 	}
 
 	strcpy(buffer, tomb5.footprints ? "on" : "off");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 3 * font_height), selection & 1 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 2 * font_height), selection & 1 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.tr4_point_lights ? "TR4" : "TR5");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 4 * font_height), selection & 2 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 3 * font_height), selection & 2 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.shadow_mode == 1 ? "original" : tomb5.shadow_mode == 2 ? "circle" : "PSX");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 5 * font_height), selection & 4 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 4 * font_height), selection & 4 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.fix_climb_up_delay ? "on" : "off");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 6 * font_height), selection & 8 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 5 * font_height), selection & 8 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.flexible_crawling ? "on" : "off");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 7 * font_height), selection & 0x10 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 6 * font_height), selection & 0x10 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.cutseq_skipper ? "on" : "off");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 8 * font_height), selection & 0x20 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 7 * font_height), selection & 0x20 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.enable_cheats ? "on" : "off");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 9 * font_height), selection & 0x40 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 8 * font_height), selection & 0x40 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.bars_pos == 1 ? "original" : tomb5.bars_pos == 2 ? "improved" : "PSX");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 10 * font_height), selection & 0x80 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 9 * font_height), selection & 0x80 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.enemy_bars ? "on" : "off");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 11 * font_height), selection & 0x100 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 10 * font_height), selection & 0x100 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.ammo_counter ? "on" : "off");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 12 * font_height), selection & 0x200 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 11 * font_height), selection & 0x200 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.gameover ? "on" : "off");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 13 * font_height), selection & 0x400 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 12 * font_height), selection & 0x400 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.fog ? "on" : "off");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 14 * font_height), selection & 0x800 ? 1 : 6, buffer, 0);
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 13 * font_height), selection & 0x800 ? 1 : 6, buffer, 0);
 
-	strcpy(buffer, tomb5.tr4_camera?"TR4":"TR5");
-	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 15 * font_height), selection & 0x1000 ? 1 : 6, buffer, 0);
+	strcpy(buffer, tomb5.tr4_camera ? "TR4" : "TR5");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 14 * font_height), selection & 0x1000 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.PSXBars ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 15 * font_height), selection & 0x2000 ? 1 : 6, buffer, 0);
+
 	changed = 0;
 
 	switch (selection)
@@ -858,6 +882,17 @@ static void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_
 		{
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 			tomb5.tr4_camera = !tomb5.tr4_camera;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 13:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.PSXBars = !tomb5.PSXBars;
 			changed = 1;
 		}
 
