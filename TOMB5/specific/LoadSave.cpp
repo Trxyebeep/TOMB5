@@ -543,9 +543,9 @@ void S_DrawHealthBar2(int pos)//same as above just different screen position
 		else if (tomb5.bar_mode == 2)
 		{
 			if (lara.poisoned || lara.Gassed)
-				S_DoTR4Bar(245, (font_height >> 1) + 32, 150, 12, pos, 0xFF000000, 0xFFFFFF00);
+				S_DoTR4Bar(245, font_height + 48, 150, 12, pos, 0xFF000000, 0xFFFFFF00);
 			else
-				S_DoTR4Bar(245, (font_height >> 1) + 32, 150, 12, pos, 0xFF000000, 0xFFFF0000);
+				S_DoTR4Bar(245, font_height + 48, 150, 12, pos, 0xFF000000, 0xFFFF0000);
 		}
 		else
 #endif
