@@ -567,6 +567,9 @@
 #define loadbar_maxpos	VAR_U_(0x008BBD64, long)
 #define loadbar_on	VAR_U_(0x008FBDC0, long)
 #define LevelLoadingThread	VAR_U_(0x00874968, THREAD)
+#define load_cam	VAR_U_(0x00875198, PHD_VECTOR)
+#define load_target	VAR_U_(0x008751A4, PHD_VECTOR)
+#define load_roomnum	VAR_U_(0x005165CD, char)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

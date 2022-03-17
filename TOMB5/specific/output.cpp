@@ -6,8 +6,11 @@
 #include "lighting.h"
 #include "function_table.h"
 #include "../game/gameflow.h"
+#include "../game/effects.h"
+#include "specificfx.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
+#include "../game/draw.h"
 #endif
 
 void S_DrawPickup(short object_number)
@@ -1192,6 +1195,57 @@ void phd_PutPolygons_train(short* objptr, long x)
 #endif
 }
 
+void RenderLoadPic(long unused)
+{
+	short poisoned;
+
+	camera.pos.y = load_cam.y;
+	camera.pos.x = load_cam.x;
+	camera.pos.z = load_cam.z;
+	lara_item->pos.x_pos = camera.pos.x;
+	lara_item->pos.y_pos = camera.pos.y;
+	lara_item->pos.z_pos = camera.pos.z;
+	camera.target.x = load_target.x;
+	camera.target.y = load_target.y;
+	camera.target.z = load_target.z;
+	camera.pos.room_number = load_roomnum;
+
+	if (load_roomnum == 255)
+		return;
+
+	KillActiveBaddies((ITEM_INFO*)0xABCDEF);
+	SetFade(255, 0);
+	poisoned = lara.poisoned;
+	FadeScreenHeight = 0;
+	lara.poisoned = 0;
+	GlobalFogOff = 1;
+	BinocularRange = 0;
+
+	if (App.dx.InScene)
+		_EndScene();
+
+#ifdef GENERAL_FIXES
+	do
+	{
+		phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+		S_InitialisePolyList();
+		RenderIt(camera.pos.room_number);
+		S_OutputPolyList();
+		S_DumpScreen();
+
+	} while (DoFade != 2);
+
+	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+	S_InitialisePolyList();
+	RenderIt(camera.pos.room_number);
+	S_OutputPolyList();
+	S_DumpScreen();
+#endif
+
+	lara.poisoned = poisoned;
+	GlobalFogOff = 0;
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1201,5 +1255,6 @@ void inject_output(bool replace)
 	INJECT(0x004B66B0, phd_PutPolygonsPickup, replace);
 	INJECT(0x004B35F0, aTransformLightPrelightClipMesh, replace);
 	INJECT(0x004B74A0, phd_PutPolygons_train, replace);
+	INJECT(0x004B8660, RenderLoadPic, replace);
 }
 

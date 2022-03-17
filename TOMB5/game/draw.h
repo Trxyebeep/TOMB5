@@ -41,3 +41,4 @@ extern short no_rotation[];
 #define calc_animating_item_clip_window	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042B4C0 )
 #define DrawStaticObjects	( (void(__cdecl*)(short)) 0x0042D060 )
 #define DrawEffect	( (void(__cdecl*)(short)) 0x0042B340 )
+#define RenderIt	( (void(__cdecl*)(short)) 0x0042DE20 )

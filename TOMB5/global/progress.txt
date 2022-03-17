@@ -2020,7 +2020,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B7EB0		S_GetObjectBounds
 0x004B8310		S_AnimateTextures
 0x004B8530		ProjectTrainVerts
-0x004B8660		RenderLoadPic
+0x004B8660	+	RenderLoadPic
 0x004B8780		DDCopyBitmap
 0x004B8930		LoadBitmap
 0x004B89F0		aLoadBitmap

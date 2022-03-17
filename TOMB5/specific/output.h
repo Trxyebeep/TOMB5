@@ -10,6 +10,7 @@ void aTransformLightClipMesh(MESH_DATA* mesh);
 void phd_PutPolygonsPickup(short* objptr, float x, float y, long color);
 void aTransformLightPrelightClipMesh(MESH_DATA* mesh);
 void phd_PutPolygons_train(short* lol, long x);
+void RenderLoadPic(long unused);
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
