@@ -2326,6 +2326,15 @@ struct ROOMLET_LIGHT
 	long type;
 };
 
+struct THREAD
+{
+	volatile long active;
+	long unk;
+	volatile long ended;
+	ulong handle;
+	ulong address;
+};
+
 #ifdef IMPROVED_BARS
 struct GouraudBarColourSet
 {

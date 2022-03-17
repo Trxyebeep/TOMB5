@@ -10,6 +10,11 @@
 #include "../game/laraskin.h"
 #include "drawroom.h"
 #include "dxsound.h"
+#include "LoadSave.h"
+#include "function_table.h"
+#include "polyinsert.h"
+#include "winmain.h"
+#include "output.h"
 
 //when every part that uses the c library funcs is decompiled, remove the stupid defines
 
@@ -623,8 +628,81 @@ bool LoadAIInfo()
 	return 1;
 }
 
+unsigned int __stdcall LoadLevel(void* name)
+{
+	return 1;
+}
+
+long S_LoadLevelFile(long num)
+{
+	static long lscreen = 0;
+	static long flag = 0;
+	long chosen_screen;
+	char name[80];
+
+	Log(2, "S_LoadLevelFile");
+
+	if (!MonoScreenOn)
+	{
+		chosen_screen = num;
+
+		if (!num)
+		{
+			if (flag)
+			{
+				chosen_screen = lscreen % 3 + 15;
+				lscreen++;
+			}
+			else
+			{
+				flag = 1;
+				chosen_screen = -2;
+			}
+		}
+
+		LoadScreen(chosen_screen + 2, 4);
+	}
+
+	strcpy(name, &gfFilenameWad[gfFilenameOffset[num]]);
+	loadbar_on = 0;
+	strcat(name, ".TRC");
+
+	for (int i = 0; i < 4; i++)
+	{
+		_BeginScene();
+		InitBuckets();
+		InitialiseSortList();
+		DrawLoadingScreen();
+		SortPolyList(SortCount, SortList);
+		RestoreFPCW(FPCW);
+		DrawSortList();
+		MungeFPCW(&FPCW);
+		S_DumpScreenFrame();
+	}
+
+	if (MonoScreenOn == 1)
+		ReleaseScreen();
+
+	LevelLoadingThread.active = 1;
+	LevelLoadingThread.ended = 0;
+	LevelLoadingThread.handle = _beginthreadex(0, 0, LoadLevel, name, 0, (unsigned int*)&LevelLoadingThread.address);
+
+	while (LevelLoadingThread.active)
+	{
+		if (App.dx.Flags & 0x80 && loadbar_on)
+			S_DrawLoadBar();
+	}
+
+	if (App.dx.Flags & 0x80 && !S_DrawLoadBar())
+		while (!S_DrawLoadBar());
+
+	return 1;
+}
+
 void inject_file(bool replace)
 {
+	INJECT(0x004A6B30, LoadLevel, 0);
+
 	INJECT(0x004A60E0, LoadTextureInfos, replace);
 	INJECT(0x004A4DA0, LoadRooms, replace);
 	INJECT(0x004A3CD0, FileOpen, replace);
@@ -640,4 +718,5 @@ void inject_file(bool replace)
 	INJECT(0x004A67D0, LoadCinematic, replace);
 	INJECT(0x004A6880, LoadSamples, replace);
 	INJECT(0x004A67F0, LoadAIInfo, replace);
+	INJECT(0x004A72B0, S_LoadLevelFile, replace);
 }

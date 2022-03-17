@@ -120,6 +120,7 @@
 #define gfScriptWad	VAR_U_(0x0051CE20, uchar*)
 #define	gfStringWad	VAR_U_(0x00E5C310, char*)
 #define	gfFilenameWad	VAR_U_(0x00E5C2CC, char*)
+#define gfFilenameOffset	VAR_U_(0x00E5C34C, ushort*)
 #define gfScriptOffset	VAR_U_(0x0051CE10, ushort*)
 #define	gfStringOffset	VAR_U_(0x00E5C2AC, ushort*)
 #define gfStringOffset_bis	VAR_U_(0x00E5C2B8, ushort*)
@@ -561,6 +562,8 @@
 #define NumActiveFogBulbs	VAR_U_(0x007EE0C4, long)
 #define D3DCameraMatrix	VAR_U_(0x0057A0B0, D3DMATRIX)
 #define DEL_playingamefmv	VAR_U_(0x0051CE24, char)
+#define loadbar_on	VAR_U_(0x008FBDC0, long)
+#define LevelLoadingThread	VAR_U_(0x00874968, THREAD)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

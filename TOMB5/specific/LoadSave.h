@@ -34,3 +34,7 @@ void CreateMonoScreen();
 #define DoSlider	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x004AD820 )
 #define CalculateNumSpecialFeatures	( (void(__cdecl*)()) 0x004AB9F0 )
 #define ConvertSurfaceToTextures	( (void(__cdecl*)(LPDIRECTDRAWSURFACE4)) 0x004AC050 )
+#define LoadScreen	( (void(__cdecl*)(long, long)) 0x004AC810 )
+#define DrawLoadingScreen	( (void(__cdecl*)()) 0x004ACAB0 )
+#define ReleaseScreen	( (void(__cdecl*)()) 0x004ACA30 )
+#define S_DrawLoadBar	( (long(__cdecl*)()) 0x004B1AB0 )

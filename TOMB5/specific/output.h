@@ -25,3 +25,4 @@ void phd_PutPolygons_train(short* lol, long x);
 #define aCheckMeshClip	( (int(__cdecl*)(MESH_DATA*)) 0x004B2800 )
 #define do_boot_screen	( (void(__cdecl*)(int)) 0x004B8A80 )
 #define S_GetObjectBounds	( (long(__cdecl*)(short*)) 0x004B7EB0 )
+#define S_DumpScreenFrame	( (void(__cdecl*)()) 0x004B7E40 )
