@@ -1954,15 +1954,15 @@ x for functions decompiled but not injected, for one reason or another.
 0x004AB9F0		CalculateNumSpecialFeatures
 0x004ABA60		FindSFCursor
 0x004ABAE0	+	MemBltSurf
-0x004AC010		RGBM_Mono
-0x004AC050		ConvertSurfaceToTextures
+0x004AC010	+	RGBM_Mono
+0x004AC050	+	ConvertSurfaceToTextures
 0x004AC430	+	CreateMonoScreen
-0x004AC460		FreeMonoScreen
+0x004AC460	+	FreeMonoScreen
 0x004AC810		LoadScreen
 0x004ACA30		ReleaseScreen
 0x004ACAB0		DrawLoadingScreen
-0x004ACC70		S_DrawTile
-0x004AD010		S_DisplayMonoScreen
+0x004ACC70	+	S_DrawTile
+0x004AD010	+	S_DisplayMonoScreen
 0x004AD290		GetSaveLoadFiles
 0x004AD460	+	DoLoadSave
 0x004AD820		DoSlider

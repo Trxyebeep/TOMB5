@@ -2335,6 +2335,12 @@ struct THREAD
 	ulong address;
 };
 
+struct MONOSCREEN_STRUCT
+{
+	IDirect3DTexture2* tex;
+	LPDIRECTDRAWSURFACE4 surface;
+};
+
 #ifdef IMPROVED_BARS
 struct GouraudBarColourSet
 {

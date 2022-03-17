@@ -12,9 +12,14 @@
 #include "winmain.h"
 #include "output.h"
 #include "dxshell.h"
+#include "texture.h"
+#include "function_stubs.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
+
+static long MonoScreenX[4] = { 0, 256, 512, 640 };
+static long MonoScreenY[3] = { 0, 256, 480 };
 
 #ifdef IMPROVED_BARS
 static GouraudBarColourSet healthBarColourSet =
@@ -1975,6 +1980,230 @@ void MemBltSurf(void* dest, long x, long y, long w, long h, long dadd, void* sou
 	}
 }
 
+void RGBM_Mono(uchar* r, uchar* g, uchar* b)
+{
+	uchar c;
+
+	c = (*r + *b) >> 1;
+	*r = c;
+	*g = c;
+	*b = c;
+}
+
+void ConvertSurfaceToTextures(LPDIRECTDRAWSURFACE4 surface)
+{
+	DDSURFACEDESC2 tSurf;
+	ushort* pTexture;
+	ushort* pSrc;
+
+	memset(&tSurf, 0, sizeof(tSurf));
+	tSurf.dwSize = sizeof(DDSURFACEDESC2);
+	surface->Lock(0, &tSurf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
+	pSrc = (ushort*)tSurf.lpSurface;
+	pTexture = (ushort*)malloc(0x40000);
+
+	MemBltSurf(pTexture, 0, 0, 256, 256, 256, pSrc, 0, 0, tSurf, 1.0F, 1.0F);
+	MonoScreen[0].surface = CreateTexturePage(256, 256, 0, (long*)pTexture, RGBM_Mono, 0);
+	DXAttempt(MonoScreen[0].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[0].tex));
+
+	MemBltSurf(pTexture, 0, 0, 256, 256, 256, pSrc, 256, 0, tSurf, 1.0F, 1.0F);
+	MonoScreen[1].surface = CreateTexturePage(256, 256, 0, (long*)pTexture, RGBM_Mono, 0);
+	DXAttempt(MonoScreen[1].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[1].tex));
+
+	MemBltSurf(pTexture, 0, 0, 128, 256, 256, pSrc, 512, 0, tSurf, 1.0F, 1.0F);
+	MemBltSurf(pTexture, 128, 0, 128, 224, 256, pSrc, 512, 256, tSurf, 1.0F, 1.0F);
+	MonoScreen[2].surface = CreateTexturePage(256, 256, 0, (long*)pTexture, RGBM_Mono, 0);
+	DXAttempt(MonoScreen[2].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[2].tex));
+
+	MemBltSurf(pTexture, 0, 0, 256, 224, 256, pSrc, 0, 256, tSurf, 1.0F, 1.0F);
+	MonoScreen[3].surface = CreateTexturePage(256, 256, 0, (long*)pTexture, RGBM_Mono, 0);
+	DXAttempt(MonoScreen[3].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[3].tex));
+
+	MemBltSurf(pTexture, 0, 0, 256, 224, 256, pSrc, 256, 256, tSurf, 1.0F, 1.0F);
+	MonoScreen[4].surface = CreateTexturePage(256, 256, 0, (long*)pTexture, RGBM_Mono, 0);
+	DXAttempt(MonoScreen[4].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[4].tex));
+
+	surface->Unlock(0);
+	free(pTexture);
+}
+
+void FreeMonoScreen()
+{
+	if (MonoScreenOn == 1)
+	{
+		if (MonoScreen[0].surface)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen[0].surface, MonoScreen[0].surface->Release());
+			MonoScreen[0].surface = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
+
+		if (MonoScreen[1].surface)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen[1].surface, MonoScreen[1].surface->Release());
+			MonoScreen[1].surface = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
+
+		if (MonoScreen[2].surface)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen[2].surface, MonoScreen[2].surface->Release());
+			MonoScreen[2].surface = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
+
+		if (MonoScreen[3].surface)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen[3].surface, MonoScreen[3].surface->Release());
+			MonoScreen[3].surface = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
+
+		if (MonoScreen[4].surface)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen[4].surface, MonoScreen[4].surface->Release());
+			MonoScreen[4].surface = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
+
+		if (MonoScreen[0].tex)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[0].tex, MonoScreen[0].tex->Release());
+			MonoScreen[0].tex = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
+
+		if (MonoScreen[1].tex)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[1].tex, MonoScreen[1].tex->Release());
+			MonoScreen[1].tex = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
+
+		if (MonoScreen[2].tex)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[2].tex, MonoScreen[2].tex->Release());
+			MonoScreen[2].tex = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
+
+		if (MonoScreen[3].tex)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[3].tex, MonoScreen[3].tex->Release());
+			MonoScreen[3].tex = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
+
+		if (MonoScreen[4].tex)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[4].tex, MonoScreen[4].tex->Release());
+			MonoScreen[4].tex = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
+	}
+
+	MonoScreenOn = 0;
+}
+
+void S_DrawTile(long x, long y, long w, long h, IDirect3DTexture2* t, long tU, long tV, long tW, long tH, long c0, long c1, long c2, long c3)
+{
+	D3DTLBUMPVERTEX v[4];
+	D3DTLBUMPVERTEX tri[3];
+	float u1, v1, u2, v2;
+
+	u1 = float(tU * (1.0F / 256.0F));
+	v1 = float(tV * (1.0F / 256.0F));
+	u2 = float((tW + tU) * (1.0F / 256.0F));
+	v2 = float((tH + tV) * (1.0F / 256.0F));
+
+	v[0].sx = (float)x;
+	v[0].sy = (float)y;
+	v[0].sz = 0.995F;
+	v[0].tu = u1;
+	v[0].tv = v1;
+	v[0].rhw = 1;
+	v[0].color = c0;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = float(w + x);
+	v[1].sy = (float)y;
+	v[1].sz = 0.995F;
+	v[1].tu = u2;
+	v[1].tv = v1;
+	v[1].rhw = 1;
+	v[1].color = c1;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = float(w + x);
+	v[2].sy = float(h + y);
+	v[2].sz = 0.995F;
+	v[2].tu = u2;
+	v[2].tv = v2;
+	v[2].rhw = 1;
+	v[2].color = c3;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = (float)x;
+	v[3].sy = float(h + y);
+	v[3].sz = 0.995F;
+	v[3].tu = u1;
+	v[3].tv = v2;
+	v[3].rhw = 1;
+	v[3].color = c2;
+	v[3].specular = 0xFF000000;
+
+	App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_POINT);
+	App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFG_POINT);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, 0);
+	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, t));
+	tri[0] = v[0];
+	tri[1] = v[2];
+	tri[2] = v[3];
+	App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, v, 3, D3DDP_DONOTCLIP | D3DDP_DONOTUPDATEEXTENTS);
+	App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, tri, 3, D3DDP_DONOTCLIP | D3DDP_DONOTUPDATEEXTENTS);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_TEXTUREPERSPECTIVE, 1);
+
+	if (App.Filtering)
+	{
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTFG_LINEAR);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTFG_LINEAR);
+	}
+}
+
+void S_DisplayMonoScreen()
+{
+	long x[4];
+	long y[4];
+
+	if (MonoScreenOn == 1)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			x[i] = phd_winxmin + phd_winwidth * MonoScreenX[i] / 640;
+			y[i] = phd_winymin + phd_winheight * MonoScreenY[i] / 480;
+		}
+
+		x[3] = phd_winxmin + phd_winwidth * MonoScreenX[3] / 640;
+		RestoreFPCW(FPCW);
+		S_DrawTile(x[0], y[0], x[1] - x[0], y[1] - y[0], MonoScreen[0].tex, 0, 0, 256, 256, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
+		S_DrawTile(x[1], y[0], x[2] - x[1], y[1] - y[0], MonoScreen[1].tex, 0, 0, 256, 256, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
+		S_DrawTile(x[2], y[0], x[3] - x[2], y[1] - y[0], MonoScreen[2].tex, 0, 0, 128, 256, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
+		S_DrawTile(x[0], y[1], x[1] - x[0], y[2] - y[1], MonoScreen[3].tex, 0, 0, 256, 224, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
+		S_DrawTile(x[1], y[1], x[2] - x[1], y[2] - y[1], MonoScreen[4].tex, 0, 0, 256, 224, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
+		S_DrawTile(x[2], y[1], x[3] - x[2], y[2] - y[1], MonoScreen[2].tex, 128, 0, 128, 224, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
+	}
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -1995,4 +2224,9 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004B1AB0, S_DrawLoadBar, replace);
 	INJECT(0x004B1BE0, S_LoadBar, replace);
 	INJECT(0x004ABAE0, MemBltSurf, replace);
+	INJECT(0x004AC010, RGBM_Mono, replace);
+	INJECT(0x004AC050, ConvertSurfaceToTextures, replace);
+	INJECT(0x004AC460, FreeMonoScreen, replace);
+	INJECT(0x004ACC70, S_DrawTile, replace);
+	INJECT(0x004AD010, S_DisplayMonoScreen, replace);
 }

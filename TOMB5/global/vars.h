@@ -710,6 +710,7 @@
 #define RoomletFogBulbs	ARRAY_(0x007DFC18, FOGBULB_STRUCT, [16])
 #define ActiveFogBulbs	ARRAY_(0x007E7FF0, FOGBULB_STRUCT, [64])
 #define fog_bulbs	ARRAY_(0x007ED0F8, FOGBULB, [64])
+#define MonoScreen	ARRAY_(0x008BBD68, MONOSCREEN_STRUCT, [5])
 
 /****************/
 //registry
@@ -726,6 +727,7 @@
 #define NO_ROOM	255
 #define MAX_ITEMS	256
 #define MAX_SAMPLES	450
+#define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
 
 //unknowns
 #define UNK_00E916F0	VAR_U_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init
