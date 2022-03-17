@@ -6,10 +6,14 @@
 #include "audio.h"
 #include "dxsound.h"
 #include "input.h"
+#include "function_table.h"
+#include "drawroom.h"
+#include "polyinsert.h"
+#include "winmain.h"
+#include "output.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
-#include "function_table.h"
 
 #ifdef IMPROVED_BARS
 static GouraudBarColourSet healthBarColourSet =
@@ -1835,6 +1839,46 @@ void CreateMonoScreen()
 	ConvertSurfaceToTextures(App.dx.lpPrimaryBuffer);
 }
 
+void S_InitLoadBar(long max)
+{
+	loadbar_steps = 0;
+	loadbar_maxpos = max;
+	loadbar_pos = 0;
+	loadbar_on = 1;
+}
+
+void S_UpdateLoadBar()
+{
+	loadbar_steps = 100.0F / loadbar_maxpos + loadbar_steps;
+}
+
+long S_DrawLoadBar()
+{
+	_BeginScene();
+	InitBuckets();
+	InitialiseSortList();
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
+	DoBar(170, 480 - font_height, 300, 10, (long)loadbar_pos, 0xA0, 0xF0);
+	SortPolyList(SortCount, SortList);
+	RestoreFPCW(FPCW);
+	DrawSortList();
+	MungeFPCW(&FPCW);
+	S_DumpScreenFrame();
+
+	if (loadbar_pos >= loadbar_steps)
+		return loadbar_maxpos <= loadbar_steps;
+
+	loadbar_pos += 2;
+	return 0;
+}
+
+void S_LoadBar()
+{
+	S_UpdateLoadBar();
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -1850,4 +1894,8 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004ADF90, DoOptions, replace);
 	INJECT(0x004B1250, DoBar, replace);
 	INJECT(0x004AC430, CreateMonoScreen, replace);
+	INJECT(0x004B1A40, S_InitLoadBar, replace);
+	INJECT(0x004B1A80, S_UpdateLoadBar, replace);
+	INJECT(0x004B1AB0, S_DrawLoadBar, replace);
+	INJECT(0x004B1BE0, S_LoadBar, replace);
 }

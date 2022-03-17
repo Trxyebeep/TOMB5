@@ -562,6 +562,9 @@
 #define NumActiveFogBulbs	VAR_U_(0x007EE0C4, long)
 #define D3DCameraMatrix	VAR_U_(0x0057A0B0, D3DMATRIX)
 #define DEL_playingamefmv	VAR_U_(0x0051CE24, char)
+#define loadbar_steps	VAR_U_(0x008BBD94, float)
+#define loadbar_pos	VAR_U_(0x008BBD90, float)
+#define loadbar_maxpos	VAR_U_(0x008BBD64, long)
 #define loadbar_on	VAR_U_(0x008FBDC0, long)
 #define LevelLoadingThread	VAR_U_(0x00874968, THREAD)
 

@@ -20,6 +20,10 @@ void S_DrawEnemyBar(long pos);
 #endif
 void DoBar(long x, long y, long width, long height, long pos, long clr1, long clr2);
 void CreateMonoScreen();
+void S_InitLoadBar(long max);
+void S_UpdateLoadBar();
+long S_DrawLoadBar();
+void S_LoadBar();
 
 #define S_DisplayMonoScreen	( (void(__cdecl*)()) 0x004AD010 )
 #define FreeMonoScreen	( (void(__cdecl*)()) 0x004AC460 )
@@ -37,4 +41,3 @@ void CreateMonoScreen();
 #define LoadScreen	( (void(__cdecl*)(long, long)) 0x004AC810 )
 #define DrawLoadingScreen	( (void(__cdecl*)()) 0x004ACAB0 )
 #define ReleaseScreen	( (void(__cdecl*)()) 0x004ACA30 )
-#define S_DrawLoadBar	( (long(__cdecl*)()) 0x004B1AB0 )
