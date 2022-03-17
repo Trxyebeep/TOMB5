@@ -11,7 +11,7 @@
 #endif
 #include "function_table.h"
 
-#ifdef PSX_BAR
+#ifdef IMPROVED_BARS
 static GouraudBarColourSet healthBarColourSet =
 {
 	{ 64, 96, 128, 96, 64 },
@@ -24,12 +24,12 @@ static GouraudBarColourSet healthBarColourSet =
 
 static GouraudBarColourSet poisonBarColourSet =
 {
-	{ 96, 176, 240, 176, 96 },
-	{ 96, 176, 240, 176, 96 },
+	{ 64, 96, 128, 96, 64 },
 	{ 0, 0, 0, 0, 0 },
-	{ 96, 176, 240, 176, 96 },
-	{ 96, 176, 240, 176, 96 },
-	{ 0, 0, 0, 0, 0 }
+	{ 0, 0, 0, 0, 0 },
+	{ 64, 96, 128, 96, 64 },
+	{ 0, 0, 0, 0, 0 },
+	{ 128, 192, 255, 192, 128 }
 };
 
 static GouraudBarColourSet airBarColourSet =
@@ -182,14 +182,14 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 	v[3].color = 0xFF000000;
 	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
 
-	v[0].sx = x * fx - 2;
-	v[1].sx = x * fx + width * fx + 2;
-	v[2].sx = x * fx - 2;
-	v[3].sx = x * fx + width * fx + 2;
-	v[0].sy = y * fy;
-	v[1].sy = y * fy;
-	v[2].sy = y * fy + height * fy;
-	v[3].sy = y * fy + height * fy;
+	v[0].sx = x * fx - 3;
+	v[1].sx = x * fx + width * fx + 3;
+	v[2].sx = x * fx - 3;
+	v[3].sx = x * fx + width * fx + 3;
+	v[0].sy = y * fy - 1;
+	v[1].sy = y * fy - 1;
+	v[2].sy = y * fy + height * fy + 1;
+	v[3].sy = y * fy + height * fy + 1;
 	v[0].sz = f_mznear + 1;
 	v[1].sz = f_mznear + 1;
 	v[2].sz = f_mznear + 1;
@@ -204,14 +204,14 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 	v[3].color = 0;
 	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//black background
 
-	v[0].sx = x * fx - 3;
-	v[1].sx = x * fx + width * fx + 3;
-	v[2].sx = x * fx - 3;
-	v[3].sx = x * fx + width * fx + 3;
-	v[0].sy = y * fy - 1;
-	v[1].sy = y * fy - 1;
-	v[2].sy = y * fy + height * fy + 1;
-	v[3].sy = y * fy + height * fy + 1;
+	v[0].sx = x * fx - 4;
+	v[1].sx = x * fx + width * fx + 4;
+	v[2].sx = x * fx - 4;
+	v[3].sx = x * fx + width * fx + 4;
+	v[0].sy = y * fy - 2;
+	v[1].sy = y * fy - 2;
+	v[2].sy = y * fy + height * fy + 2;
+	v[3].sy = y * fy + height * fy + 2;
 	v[0].sz = f_mznear + 2;
 	v[1].sz = f_mznear + 2;
 	v[2].sz = f_mznear + 2;
@@ -225,6 +225,138 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 	v[2].color = 0xFFFFFFFF;
 	v[3].color = 0xFFFFFFFF;
 	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//white border
+}
+
+void S_DoTR4Bar(long x, long y, long width, long height, long pos, long clr1, long clr2)
+{
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	static float wat = 0;
+	long x2, sx, sy;
+
+	nPolyType = 4;
+	wat += 0.0099999998F;
+
+	if (wat > 0.99000001F)
+		wat = 0;
+
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+
+	x2 = (long)(x * phd_winxmax * 0.0015625F);
+	sx = (long(width * phd_winxmax * 0.0015625F) * pos) / 100;
+	sy = (long)((height >> 1) * phd_winymax * 0.0020833334F);
+
+	v[0].sx = (float)x2;
+	v[0].sy = (float)y;
+	v[0].color = clr1;
+
+	v[1].sx = (float)(x2 + sx);
+	v[1].sy = (float)y;
+	v[1].color = clr1;
+
+	v[2].sx = (float)(x2 + sx);
+	v[2].sy = (float)(y + sy);
+	v[2].color = clr2;
+
+	v[3].sx = (float)x2;
+	v[3].sy = (float)(y + sy);
+	v[3].color = clr2;
+
+	for (int i = 0; i < 4; i++)
+	{
+		v[i].specular = 0xFF000000;
+		v[i].sz = f_mznear - 6;
+		v[i].rhw = f_moneoznear - 2;
+		v[i].tu = 0;
+		v[i].tv = 0;
+	}
+
+	tex.drawtype = 0;
+	tex.flag = 0;
+	tex.tpage = 0;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+
+	v[0].sx = (float)x2;
+	v[0].sy = (float)(y + sy);
+	v[0].color = clr2;
+
+	v[1].sx = (float)(x2 + sx);
+	v[1].sy = (float)(y + sy);
+	v[1].color = clr2;
+
+	v[2].sx = (float)(x2 + sx);
+	v[2].sy = (float)(y + 2 * sy);
+	v[2].color = clr1;
+
+	v[3].sx = (float)x2;
+	v[3].sy = (float)(y + 2 * sy);
+	v[3].color = clr1;
+
+	for (int i = 0; i < 4; i++)
+	{
+		v[i].specular = 0xFF000000;
+		v[i].sz = f_mznear - 6;
+		v[i].rhw = f_moneoznear - 2;
+		v[i].tu = 0;
+		v[i].tv = 0;
+	}
+
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+
+	x2 = (long)(x * phd_winxmax * 0.0015625F);
+	sx = (long)(width * phd_winxmax * 0.0015625F);
+	sy = (long)((height >> 1) * phd_winymax * 0.0020833334F);
+
+	v[0].sx = (float)(x2 - 1);
+	v[0].sy = (float)(y - 1);
+
+	v[1].sx = (float)(x2 + sx + 1);
+	v[1].sy = (float)(y - 1);
+
+	v[2].sx = (float)(x2 + sx + 1);
+	v[2].sy = (float)(y + 2 * sy + 1);
+
+	v[3].sx = (float)(x2 - 1);
+	v[3].sy = (float)(y + 2 * sy + 1);
+
+	for (int i = 0; i < 4; i++)
+	{
+		v[i].color = 0xFFFFFFFF;
+		v[i].specular = 0xFF000000;
+		v[i].sz = f_mznear - 3;
+		v[i].rhw = f_moneoznear - 4;
+		v[i].tu = 0;
+		v[i].tv = 0;
+	}
+
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+
+	v[0].sx = (float)x2;
+	v[0].sy = (float)y;
+
+	v[1].sx = (float)(x2 + sx);
+	v[1].sy = (float)y;
+
+	v[2].sx = (float)(x2 + sx);
+	v[2].sy = (float)(y + 2 * sy);
+
+	v[3].sx = (float)x2;
+	v[3].sy = (float)(y + 2 * sy);
+
+	for (int i = 0; i < 4; i++)
+	{
+		v[i].color = 0xFF000000;
+		v[i].specular = 0xFF000000;
+		v[i].sz = f_mznear - 4;
+		v[i].rhw = f_moneoznear - 3;
+		v[i].tu = 0;
+		v[i].tv = 0;
+	}
+
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
 }
 #endif
 
@@ -298,7 +430,11 @@ void S_DrawAirBar(int pos)
 		if (tomb5.bars_pos == 1)//original
 		{
 			x = 490 - (font_height >> 2);
-			y = (font_height >> 1) + (font_height >> 2) + 32;
+
+			if (tomb5.bar_mode == 2)
+				y = (font_height >> 2) + (2 * font_height / 3);
+			else
+				y = (font_height >> 1) + (font_height >> 2) + 32;
 		}
 		else if (tomb5.bars_pos == 2)//improved
 		{
@@ -307,13 +443,19 @@ void S_DrawAirBar(int pos)
 		}
 		else//PSX
 		{
-			x = 490 - (font_height >> 2);
-			y = (font_height >> 1) + (font_height >> 2);
+			x = 470 - (font_height >> 2);
+
+			if (tomb5.bar_mode == 2)
+				y = (font_height >> 2) + (2 * font_height / 3);
+			else
+				y = (font_height >> 1) + (font_height >> 2);
 		}
 
-#ifdef PSX_BAR
-		if (tomb5.PSXBars)
+#ifdef IMPROVED_BARS
+		if (tomb5.bar_mode == 3)
 			S_DrawGouraudBar(x, y, 150, 12, pos, &airBarColourSet);
+		else if (tomb5.bar_mode == 2)
+			S_DoTR4Bar(x, y, 150, 12, pos, 0xFF000000, 0xFF0000FF);
 		else
 #endif
 			DoBar(x, y, 150, 12, pos, 0x0000A0, 0x0050A0);
@@ -340,7 +482,11 @@ void S_DrawHealthBar(int pos)
 		if (tomb5.bars_pos == 1)//original
 		{
 			x = font_height >> 2;
-			y = (font_height >> 2) + 32;
+
+			if (tomb5.bar_mode == 2)
+				y = font_height >> 2;
+			else
+				y = (font_height >> 2) + 32;
 }
 		else if (tomb5.bars_pos == 2)//improved
 		{
@@ -349,13 +495,20 @@ void S_DrawHealthBar(int pos)
 		}
 		else//PSX
 		{
-			x = 490 - (font_height >> 2);
+			x = 470 - (font_height >> 2);
 			y = font_height >> 2;
 		}
 
-#ifdef PSX_BAR
-		if (tomb5.PSXBars)
+#ifdef IMPROVED_BARS
+		if (tomb5.bar_mode == 3)
 			S_DrawGouraudBar(x, y, 150, 12, pos, lara.poisoned || lara.Gassed ? &poisonBarColourSet : &healthBarColourSet);
+		else if (tomb5.bar_mode == 2)
+		{
+			if (lara.poisoned || lara.Gassed)
+				S_DoTR4Bar(x, y, 150, 12, pos, 0xFF000000, 0xFFFFFF00);
+			else
+				S_DoTR4Bar(x, y, 150, 12, pos, 0xFF000000, 0xFFFF0000);
+		}
 		else
 #endif
 			DoBar(x, y, 150, 12, pos, 0xA00000, color);
@@ -384,9 +537,16 @@ void S_DrawHealthBar2(int pos)//same as above just different screen position
 		else
 			color = 0xA000;
 
-#ifdef PSX_BAR
-		if (tomb5.PSXBars)
+#ifdef IMPROVED_BARS
+		if (tomb5.bar_mode == 3)
 			S_DrawGouraudBar(245, (font_height >> 1) + 32, 150, 12, pos, lara.poisoned || lara.Gassed ? &poisonBarColourSet : &healthBarColourSet);
+		else if (tomb5.bar_mode == 2)
+		{
+			if (lara.poisoned || lara.Gassed)
+				S_DoTR4Bar(245, font_height + 48, 150, 12, pos, 0xFF000000, 0xFFFFFF00);
+			else
+				S_DoTR4Bar(245, font_height + 48, 150, 12, pos, 0xFF000000, 0xFFFF0000);
+		}
 		else
 #endif
 			DoBar(245, (font_height >> 1) + 32, 150, 12, pos, 0xA00000, color);
@@ -401,26 +561,40 @@ void S_DrawDashBar(int pos)
 	if (tomb5.bars_pos == 1)//original
 	{
 		x = 490 - (font_height >> 2);
-		y = (font_height >> 2) + 32;
+
+		if (tomb5.bar_mode == 2)
+			y = font_height >> 2;
+		else
+			y = (font_height >> 2) + 32;
 }
 	else if (tomb5.bars_pos == 2)//improved
 	{
 		x = 490 - (font_height >> 2);
-		y = (font_height >> 1) + (font_height >> 2);
+
+		if (tomb5.bar_mode == 2)
+			y = (font_height >> 2) + (2 * font_height / 3);
+		else
+			y = (font_height >> 1) + (font_height >> 2);
 	}
 	else//PSX
 	{
-		x = 490 - (font_height >> 2);
-		y = (font_height >> 2) + (font_height >> 2) + 32;
+		x = 470 - (font_height >> 2);
+
+		if (tomb5.bar_mode == 2)
+			y = (font_height >> 2) + (2 * font_height / 3) + (2 * font_height / 3);
+		else
+			y = (font_height >> 2) + (font_height >> 2) + 32;
 	}
 
 	if (gfCurrentLevel != LVL5_TITLE)
 	{
-#ifdef PSX_BAR
-		if (tomb5.PSXBars)
+#ifdef IMPROVED_BARS
+		if (tomb5.bar_mode == 3)
 			S_DrawGouraudBar(x, y, 150, 12, pos, &dashBarColourSet);
+		else if (tomb5.bar_mode == 2)
+			S_DoTR4Bar(x, y, 150, 12, pos, 0xFF000000, 0xFF00FF00);
 		else
-#endif	//PSX_BAR
+#endif	//IMPROVED_BARS
 			DoBar(x, y, 150, 12, pos, 0xA0A000, 0x00A000);
 	}
 #else	//GENERAL_FIXES
@@ -437,21 +611,35 @@ void S_DrawEnemyBar(long pos)
 	if (tomb5.bars_pos == 1)//original
 	{
 		x = font_height >> 2;
-		y = (font_height >> 1) + (font_height >> 2) + 32;
+
+		if (tomb5.bar_mode == 2)
+			y = (font_height >> 2) + (2 * font_height / 3);
+		else
+			y = (font_height >> 1) + (font_height >> 2) + 32;
 	}
 	else if (tomb5.bars_pos == 2)//improved
 	{
 		x = font_height >> 2;
-		y = (font_height >> 1) + (font_height >> 2);
+
+		if (tomb5.bar_mode == 2)
+			y = (font_height >> 2) + (2 * font_height / 3);
+		else
+			y = (font_height >> 1) + (font_height >> 2);
 	}
 	else//PSX
 	{
-		x = 490 - (font_height >> 2);
-		y = (font_height >> 1) + (font_height >> 2) + (font_height >> 2) + 32;
+		x = 470 - (font_height >> 2);
+
+		if (tomb5.bar_mode == 2)
+			y = (font_height >> 2) + (2 * font_height / 3) + (2 * font_height / 3) + (2 * font_height / 3);
+		else
+			y = (font_height >> 1) + (font_height >> 2) + (font_height >> 2) + 32;
 	}
 
-	if (tomb5.PSXBars)
+	if (tomb5.bar_mode == 3)
 		S_DrawGouraudBar(x, y, 150, 12, pos, &enemyBarColourSet);
+	else if (tomb5.bar_mode == 2)
+		S_DoTR4Bar(x, y, 150, 12, pos, 0xFF000000, 0xFFFFA000);
 	else
 		DoBar(x, y, 150, 12, pos, 0xA00000, 0xA0A000);
 }
@@ -639,7 +827,7 @@ static void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_
 	PrintString(phd_centerx >> 2, (ushort)(textY + 12 * font_height), selection & 0x400 ? 1 : 2, "Gameover menu", 0);
 	PrintString(phd_centerx >> 2, (ushort)(textY + 13 * font_height), selection & 0x800 ? 1 : 2, "Fog", 0);
 	PrintString(phd_centerx >> 2, (ushort)(textY + 14 * font_height), selection & 0x1000 ? 1 : 2, "Camera", 0);
-	PrintString(phd_centerx >> 2, (ushort)(textY + 15 * font_height), selection & 0x2000 ? 1 : 2, "PSX Bars", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 15 * font_height), selection & 0x2000 ? 1 : 2, "Bar mode", 0);
 
 	if (dbinput & IN_FORWARD)
 	{
@@ -707,7 +895,7 @@ static void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_
 	strcpy(buffer, tomb5.tr4_camera ? "TR4" : "TR5");
 	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 14 * font_height), selection & 0x1000 ? 1 : 6, buffer, 0);
 
-	strcpy(buffer, tomb5.PSXBars ? "on" : "off");
+	strcpy(buffer, tomb5.bar_mode == 1 ? "original" : tomb5.bar_mode == 2 ? "TR4" : "PSX");
 	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 15 * font_height), selection & 0x2000 ? 1 : 6, buffer, 0);
 
 	changed = 0;
@@ -889,10 +1077,25 @@ static void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_
 
 	case 1 << 13:
 
-		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		if (dbinput & IN_RIGHT)
 		{
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-			tomb5.PSXBars = !tomb5.PSXBars;
+			tomb5.bar_mode++;
+
+			if (tomb5.bar_mode > 3)
+				tomb5.bar_mode = 1;
+
+			changed = 1;
+		}
+
+		if (dbinput & IN_LEFT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.bar_mode--;
+
+			if (tomb5.bar_mode < 1)
+				tomb5.bar_mode = 3;
+
 			changed = 1;
 		}
 
