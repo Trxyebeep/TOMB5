@@ -11,6 +11,7 @@
 #include "polyinsert.h"
 #include "winmain.h"
 #include "output.h"
+#include "dxshell.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
@@ -1879,6 +1880,101 @@ void S_LoadBar()
 	S_UpdateLoadBar();
 }
 
+void MemBltSurf(void* dest, long x, long y, long w, long h, long dadd, void* source, long x2, long y2, DDSURFACEDESC2 surface, float xsize, float ysize)
+{
+	ulong* pDest;
+	short* psSrc;
+	char* pSrc;
+	long xadd, yadd, rx2, ry2, xoff, yoff, curY;
+	short andVal;
+	uchar r, g, b, rshift, gshift, bshift, rcount, gcount, bcount;
+
+	xadd = long(((float)App.dx.dwRenderWidth / 640.0F) * xsize * 65536.0);
+	yadd = long(((float)App.dx.dwRenderHeight / 480.0F) * ysize * 65536.0);
+	rx2 = long(x2 * ((float)App.dx.dwRenderWidth / 639.0F));
+	ry2 = long(y2 * ((float)App.dx.dwRenderHeight / 479.0F));
+
+	if (App.dx.Flags & 2)
+	{
+		rx2 += App.dx.rScreen.left;
+		ry2 += App.dx.rScreen.top;
+	}
+
+	DXBitMask2ShiftCnt(surface.ddpfPixelFormat.dwRBitMask, &rshift, &rcount);
+	DXBitMask2ShiftCnt(surface.ddpfPixelFormat.dwGBitMask, &gshift, &gcount);
+	DXBitMask2ShiftCnt(surface.ddpfPixelFormat.dwBBitMask, &bshift, &bcount);
+	pDest = (ulong*)dest + 4 * h * y + x;
+	pSrc = (char*)source + rx2 * (surface.ddpfPixelFormat.dwRGBBitCount >> 3) + (ry2 * surface.lPitch);
+	psSrc = (short*)pSrc;
+	curY = 0;
+	yoff = 0;
+
+	if (surface.ddpfPixelFormat.dwRGBBitCount == 16)
+	{
+		for (int i = 0; i < h; i++)
+		{
+			xoff = 0;
+
+			for (int j = 0; j < w; j++)
+			{
+				andVal = psSrc[curY + (xoff >> 16)];
+				r = uchar(((surface.ddpfPixelFormat.dwRBitMask & andVal) >> rshift) << (8 - rcount));
+				g = uchar(((surface.ddpfPixelFormat.dwGBitMask & andVal) >> gshift) << (8 - gcount));
+				b = uchar(((surface.ddpfPixelFormat.dwBBitMask & andVal) >> bshift) << (8 - bcount));
+				*pDest = RGBA(r, g, b, 0xFF);
+				pDest++;
+				xoff += xadd;
+			}
+
+			yoff += yadd;
+			curY = (surface.lPitch >> 1) * (yoff >> 16);
+			pDest += dadd - w;
+		}
+	}
+	else if (surface.ddpfPixelFormat.dwRGBBitCount == 24)
+	{
+		for (int i = 0; i < h; i++)
+		{
+			xoff = 0;
+
+			for (int j = 0; j < w; j++)
+			{
+				r = pSrc[curY + (xoff >> 16)];
+				g = pSrc[curY + 1 + (xoff >> 16)];
+				b = pSrc[curY + 2 + (xoff >> 16)];
+				*pDest = RGBA(r, g, b, 0xFF);
+				pDest++;
+				xoff += 3 * xadd;
+			}
+
+			yoff += yadd;
+			curY = surface.lPitch * (yoff >> 16);
+			pDest += dadd - w;
+		}
+	}
+	else if (surface.ddpfPixelFormat.dwRGBBitCount == 32)
+	{
+		for (int i = 0; i < h; i++)
+		{
+			xoff = 0;
+
+			for (int j = 0; j < w; j++)
+			{
+				r = pSrc[curY + (xoff >> 16)];
+				g = pSrc[curY + 1 + (xoff >> 16)];
+				b = pSrc[curY + 2 + (xoff >> 16)];
+				*pDest = RGBA(r, g, b, 0xFF);
+				pDest++;
+				xoff += xadd << 2;
+			}
+
+			yoff += yadd;
+			curY = surface.lPitch * (yoff >> 16);
+			pDest += dadd - w;
+		}
+	}
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -1898,4 +1994,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004B1A80, S_UpdateLoadBar, replace);
 	INJECT(0x004B1AB0, S_DrawLoadBar, replace);
 	INJECT(0x004B1BE0, S_LoadBar, replace);
+	INJECT(0x004ABAE0, MemBltSurf, replace);
 }

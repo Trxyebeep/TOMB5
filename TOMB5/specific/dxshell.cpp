@@ -27,7 +27,23 @@ void DXReadKeyboard(char* KeyMap)
 #endif
 }
 
+void DXBitMask2ShiftCnt(ulong mask, uchar* shift, uchar* count)
+{
+	uchar i;
+
+	for (i = 0; !(mask & 1); i++)
+		mask >>= 1;
+
+	*shift = i;
+
+	for (i = 0; mask & 1; i++)
+		mask >>= 1;
+
+	*count = i;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
+	INJECT(0x0049F9C0, DXBitMask2ShiftCnt, replace);
 }

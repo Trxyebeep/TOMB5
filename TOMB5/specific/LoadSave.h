@@ -24,6 +24,7 @@ void S_InitLoadBar(long max);
 void S_UpdateLoadBar();
 long S_DrawLoadBar();
 void S_LoadBar();
+void MemBltSurf(void* dest, long x, long y, long w, long h, long dadd, void* source, long x2, long y2, DDSURFACEDESC2 surface, float xsize, float ysize);
 
 #define S_DisplayMonoScreen	( (void(__cdecl*)()) 0x004AD010 )
 #define FreeMonoScreen	( (void(__cdecl*)()) 0x004AC460 )
