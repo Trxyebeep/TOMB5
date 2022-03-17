@@ -1079,6 +1079,12 @@ void RenderIt(short current_room)
 	InitialiseFogBulbs();
 	CreateFXBulbs();
 
+#ifdef GENERAL_FIXES
+	ProcessClosedDoors();
+
+	if (gfCurrentLevel)
+		SkyDrawPhase();
+#else
 	if (outside)
 	{
 		if (!objects[HORIZON].loaded)
@@ -1120,12 +1126,42 @@ void RenderIt(short current_room)
 			phd_PopMatrix();
 		}
 	}
+#endif
 
 	InitDynamicLighting_noparams();
 	nPolyType = 0;
 
+#ifdef GENERAL_FIXES
+	phd_PushMatrix();
+	phd_TranslateAbs(0, 0, 0);
+	SaveD3DCameraMatrix();
+	phd_PopMatrix();
+	aResetFogBulbList();
+	aBuildFogBulbList();
+	aBuildFXFogBulbList();
+
+	if (!tomb5.fog)
+		aResetFogBulbList();	//do this properly when fog stuff are decompiled
+#endif
+
 	for (int i = 0; i < number_draw_rooms; i++)
+#ifdef GENERAL_FIXES
+	{
+		r = &room[draw_rooms[i]];
+		phd_PushMatrix();
+		phd_TranslateAbs(r->x, r->y, r->z);
+		CurrentRoom = draw_rooms[i];
+		phd_left = r->left;
+		phd_right = r->right;
+		phd_top = r->top;
+		phd_bottom = r->bottom;
+		aSetViewMatrix();
+		InsertRoom(r);
+		phd_PopMatrix();
+	}
+#else
 		PrintRooms(draw_rooms[i]);
+#endif
 
 	for (int i = 0; i < number_draw_rooms; i++)
 		PrintObjects(draw_rooms[i]);
