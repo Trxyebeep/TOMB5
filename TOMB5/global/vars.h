@@ -332,6 +332,7 @@
 #define f_centery	VAR_U_(0x0055D230, float)
 #define f_a	VAR_U_(0x0051D150, float)
 #define f_boo	VAR_U_(0x0055D220, float)
+#define f_moneoznear	VAR_U_(0x0055D25C, float)
 /*************************************************/
 #define IsRoomOutsideNo	VAR_U_(0x00EEF902, short)
 #define _CutSceneTriggered1	VAR_U_(0x00EEF004, ulong)

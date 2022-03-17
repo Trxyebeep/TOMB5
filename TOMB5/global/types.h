@@ -2326,7 +2326,7 @@ struct ROOMLET_LIGHT
 	long type;
 };
 
-#ifdef PSX_BAR
+#ifdef IMPROVED_BARS
 struct GouraudBarColourSet
 {
 	uchar abLeftRed[5];
@@ -2354,6 +2354,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool gameover;				//on off, gameover menu after death
 	bool fog;					//on off
 	bool tr4_camera;			//on off (1 -> TR4, 0 -> TR5)
+	ulong bar_mode;				//1-> original, 2-> TR4, 3-> PSX
 };
 #endif
 #pragma pack(pop)
