@@ -18,12 +18,12 @@ void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz);
 void DoRain();
 void OutputSky();
 void DoScreenFade();
+void ClipCheckPoint(D3DTLVERTEX* v, float x, float y, float z, short* clip);
 
 #define aDrawWreckingBall	( (void(__cdecl*)(ITEM_INFO*, long)) 0x004CF1B0 )
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
 #define SetFade	( (void(__cdecl*)(int, int)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
-#define ClipCheckPoint	( (void(__cdecl*)(D3DTLVERTEX*, float, float, float, short*)) 0x004C6BA0 )
 #define SetUpLensFlare	( (void(__cdecl*)(long, long, long, GAME_VECTOR*)) 0x004C9F70 )
 #define ClipLine	( (bool(__cdecl*)(long&, long&, long, long&, long&, long, long, long, long, long)) 0x004C5B10 )
 #define aTransformPerspSV	( (void(__cdecl*)(SVECTOR*, LPD3DTLVERTEX, short*, long, long)) 0x004CD750 )

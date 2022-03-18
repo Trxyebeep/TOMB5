@@ -1980,6 +1980,46 @@ void DoScreenFade()
 #endif
 }
 
+void ClipCheckPoint(D3DTLVERTEX* v, float x, float y, float z, short* clip)
+{
+	float perspz;
+	short clipdistance;
+
+	v->tu = x;
+	v->tv = y;
+	v->sz = z;
+	clipdistance = 0;
+
+	if (v->sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v->sz;
+
+		if (v->sz > FogEnd)
+		{
+			v->sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v->sx = perspz * v->tu + f_centerx;
+		v->sy = perspz * v->tv + f_centery;
+		v->rhw = perspz * f_moneopersp;
+
+		if (v->sx < phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v->sx)
+			clipdistance += 2;
+
+		if (v->sy < phd_winymin)
+			clipdistance += 4;
+		else if (v->sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -1997,4 +2037,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004BF3C0, DoRain, replace);
 	INJECT(0x004C6D10, OutputSky, replace);
 	INJECT(0x004CA770, DoScreenFade, replace);
+	INJECT(0x004C6BA0, ClipCheckPoint, replace);
 }
