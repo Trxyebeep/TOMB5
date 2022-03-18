@@ -1158,6 +1158,12 @@ void RenderIt(short current_room)
 		PrintRooms(draw_rooms[i]);
 #endif
 
+#ifdef GENERAL_FIXES
+	DoWeather();
+	S_DrawFires();
+	DrawLightning();
+#endif
+
 	for (int i = 0; i < number_draw_rooms; i++)
 		PrintObjects(draw_rooms[i]);
 }
