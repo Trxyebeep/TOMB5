@@ -156,7 +156,7 @@ int S_CallInventory2()
 			val = 1;
 		}
 
-		return_value = thread_started;
+		return_value = MainThread.ended;
 
 		if (return_value)
 			return return_value;

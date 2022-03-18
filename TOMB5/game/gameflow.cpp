@@ -643,7 +643,7 @@ int TitleOptions()
 		}
 	}
 
-	if (thread_started)
+	if (MainThread.ended)
 		return 4;
 
 	if (ret)

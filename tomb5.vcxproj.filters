@@ -342,6 +342,7 @@
     <ClCompile Include="TOMB5\specific\winmain.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\specific\time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -684,6 +685,7 @@
     <ClInclude Include="TOMB5\specific\winmain.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
+    <ClInclude Include="TOMB5\specific\time.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt">

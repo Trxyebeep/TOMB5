@@ -30,10 +30,10 @@ void ConvertSurfaceToTextures(LPDIRECTDRAWSURFACE4 surface);
 void FreeMonoScreen();
 void S_DrawTile(long x, long y, long w, long h, IDirect3DTexture2* t, long tU, long tV, long tW, long tH, long c0, long c1, long c2, long c3);
 void S_DisplayMonoScreen();
+long S_LoadSave(long load_or_save, long mono);
 
 #define GetSaveLoadFiles	( (void(__cdecl*)()) 0x004AD290 )
 #define S_PauseMenu	( (int(__cdecl*)()) 0x004B1030 )
-#define S_LoadSave	( (int(__cdecl*)(int, int)) 0x004B1120 )
 #define DoSpecialFeaturesServer	( (void(__cdecl*)()) 0x004B1D90 )
 #define DoFrontEndOneShotStuff	( (void(__cdecl*)()) 0x004B2090 )
 #define IsHardware	( (int(__cdecl*)()) 0x004B1E90 )

@@ -123,6 +123,7 @@
     <ClCompile Include="TOMB5\specific\registry.cpp" />
     <ClCompile Include="TOMB5\specific\specificfx.cpp" />
     <ClCompile Include="TOMB5\specific\texture.cpp" />
+    <ClCompile Include="TOMB5\specific\time.cpp" />
     <ClCompile Include="TOMB5\specific\winmain.cpp" />
     <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
     <ClCompile Include="TOMB5\tomb5\pch.cpp">
@@ -244,6 +245,7 @@
     <ClInclude Include="TOMB5\specific\registry.h" />
     <ClInclude Include="TOMB5\specific\specificfx.h" />
     <ClInclude Include="TOMB5\specific\texture.h" />
+    <ClInclude Include="TOMB5\specific\time.h" />
     <ClInclude Include="TOMB5\specific\winmain.h" />
     <ClInclude Include="TOMB5\tomb5\framework.h" />
     <ClInclude Include="TOMB5\tomb5\pch.h" />

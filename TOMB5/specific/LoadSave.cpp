@@ -14,6 +14,10 @@
 #include "dxshell.h"
 #include "texture.h"
 #include "function_stubs.h"
+#include "../game/savegame.h"
+#include "gamemain.h"
+#include "specificfx.h"
+#include "time.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
@@ -2360,6 +2364,76 @@ void S_DisplayMonoScreen()
 	}
 }
 
+long S_LoadSave(long load_or_save, long mono)
+{
+	long fade, ret;
+
+	fade = 0;
+
+	if (!mono)
+		CreateMonoScreen();
+
+	GetSaveLoadFiles();
+	InventoryActive = 1;
+
+	while (1)
+	{
+		S_InitialisePolyList();
+
+		if (fade)
+			dbinput = 0;
+		else
+			S_UpdateInput();
+
+		SetDebounce = 1;
+		S_DisplayMonoScreen();
+		ret = DoLoadSave(load_or_save);
+		UpdatePulseColour();
+		S_OutputPolyList();
+		S_DumpScreen();
+
+		if (ret >= 0)
+		{
+			if (load_or_save & IN_SAVE)
+			{
+				sgSaveGame();
+				S_SaveGame(ret);
+				GetSaveLoadFiles();
+				break;
+			}
+
+			fade = ret + 1;
+			S_LoadGame(ret);
+			SetFade(0, 255);
+			ret = -1;
+		}
+
+		if (fade && DoFade == 2)
+		{
+			ret = fade - 1;
+			break;
+		}
+
+		if (input & IN_OPTION)
+		{
+			ret = -1;
+			break;
+		}
+
+		if (MainThread.ended)
+			break;
+	}
+
+	TIME_Init();
+
+	if (!mono)
+		FreeMonoScreen();
+
+	InventoryActive = 0;
+	return ret;
+}
+
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2385,4 +2459,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004AC460, FreeMonoScreen, replace);
 	INJECT(0x004ACC70, S_DrawTile, replace);
 	INJECT(0x004AD010, S_DisplayMonoScreen, replace);
+	INJECT(0x004B1120, S_LoadSave, replace);
 }
