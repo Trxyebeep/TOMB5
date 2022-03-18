@@ -69,6 +69,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "barMode");
 		tomb5.bar_mode = 3;								//PSX
 		REG_WriteLong(buf, tomb5.bar_mode);
+
+		sprintf(buf, "crawltilt");
+		tomb5.crawltilt = 1;							//on
+		REG_WriteBool(buf, tomb5.crawltilt);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -113,6 +117,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "barMode");
 		REG_ReadLong(buf, tomb5.bar_mode, 3);
+
+		sprintf(buf, "crawltilt");
+		REG_ReadBool(buf, tomb5.crawltilt, 1);
 	}
 
 	CloseRegistry();
@@ -164,6 +171,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "barMode");
 	REG_WriteLong(buf, tomb5.bar_mode);
+
+	sprintf(buf, "crawltilt");
+	REG_WriteBool(buf, tomb5.crawltilt);
 
 	CloseRegistry();
 }

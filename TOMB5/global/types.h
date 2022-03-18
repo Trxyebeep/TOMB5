@@ -2386,6 +2386,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool fog;					//on off
 	bool tr4_camera;			//on off (1 -> TR4, 0 -> TR5)
 	ulong bar_mode;				//1-> original, 2-> TR4, 3-> PSX
+	bool crawltilt;				//on off
 };
 #endif
 #pragma pack(pop)
