@@ -15,6 +15,9 @@
 #include "polyinsert.h"
 #include "winmain.h"
 #include "output.h"
+#ifdef GENERAL_FIXES
+#include "../tomb5/tomb5.h"
+#endif
 
 //when every part that uses the c library funcs is decompiled, remove the stupid defines
 
@@ -642,25 +645,30 @@ long S_LoadLevelFile(long num)
 
 	Log(2, "S_LoadLevelFile");
 
-	if (!MonoScreenOn)
+#ifdef GENERAL_FIXES
+	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits))
+#endif
 	{
-		chosen_screen = num;
-
-		if (!num)
+		if (!MonoScreenOn)
 		{
-			if (flag)
-			{
-				chosen_screen = lscreen % 3 + 15;
-				lscreen++;
-			}
-			else
-			{
-				flag = 1;
-				chosen_screen = -2;
-			}
-		}
+			chosen_screen = num;
 
-		LoadScreen(chosen_screen + 2, 4);
+			if (!num)
+			{
+				if (flag)
+				{
+					chosen_screen = lscreen % 3 + 15;
+					lscreen++;
+				}
+				else
+				{
+					flag = 1;
+					chosen_screen = -2;
+				}
+			}
+
+			LoadScreen(chosen_screen + 2, 4);
+		}
 	}
 
 	strcpy(name, &gfFilenameWad[gfFilenameOffset[num]]);
@@ -680,8 +688,13 @@ long S_LoadLevelFile(long num)
 		S_DumpScreenFrame();
 	}
 
-	if (MonoScreenOn == 1)
-		ReleaseScreen();
+#ifdef GENERAL_FIXES
+	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits))
+#endif
+	{
+		if (MonoScreenOn == 1)
+			ReleaseScreen();
+	}
 
 	LevelLoadingThread.active = 1;
 	LevelLoadingThread.ended = 0;

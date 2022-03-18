@@ -1195,12 +1195,50 @@ void phd_PutPolygons_train(short* objptr, long x)
 #endif
 }
 
+#ifdef GENERAL_FIXES
+TR4LS tr4_load_screens[15] =
+{
+	{58434, -634, 42783, 57337, -1048, 40945, 59},			//Title
+	{58434, -634, 42783, 57337, -1048, 40945, 59},			//Streets of Rome
+	{71226, 336, 32992, 71875, -568, 33761, 23},			//Trajan's Markets
+	{37136, -111, 31451, 38734, 343, 33029, 47},			//Colosseum
+	{11735, -2342, 37322, 12804, -2603, 36568, 145},		//The Base
+	{57948, 3115, 47907, 56425, 3509, 50335, 49},			//Sub
+	{22752, 14192, 63136, 24777, 13541, 61615, 11},			//Deepsea
+	{61212, -1112, 58204, 59492, -582, 57087, 4},			//Sinking
+	{63265, 8282, 62685, 63871, 8091, 64431, 113},			//Gallows
+	{48924, 18279, 38112, 47348, 19063, 39496, 55},			//Labyrinth
+	{36048, 9395, 41333, 36985, 8725, 42910, 101},			//Old Mill
+	{34286, -5004, 44626, 34288, -3651, 44523, 16},			//13th
+	{55449, -5595, 67644, 53396, -5268, 67908, 120},		//Iris
+	{0, 0, 0, 0, 0, 0, 0},									//Security breach cut
+	{51416, -2639, 47734, 51437, -2444, 36968, 119},		//Red Alert
+};
+
+static inline void GetLoadScreenCam()
+{
+	TR4LS* ls;
+
+	ls = &tr4_load_screens[gfCurrentLevel];
+	load_cam.x = ls->px;
+	load_cam.y = ls->py;
+	load_cam.z = ls->pz;
+	load_target.x = ls->tx;
+	load_target.y = ls->ty;
+	load_target.z = ls->tz;
+	load_roomnum = ls->rn;
+}
+#endif
+
 void RenderLoadPic(long unused)
 {
 	short poisoned;
 
-	camera.pos.y = load_cam.y;
+#ifdef GENERAL_FIXES
+	GetLoadScreenCam();
+#endif
 	camera.pos.x = load_cam.x;
+	camera.pos.y = load_cam.y;
 	camera.pos.z = load_cam.z;
 	lara_item->pos.x_pos = camera.pos.x;
 	lara_item->pos.y_pos = camera.pos.y;

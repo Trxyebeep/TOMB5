@@ -2370,6 +2370,17 @@ struct COLOR_BIT_MASKS
 	ulong dwRGBAlphaBitOffset;
 };
 
+struct TR4LS
+{
+	long px;
+	long py;
+	long pz;
+	long tx;
+	long ty;
+	long tz;
+	uchar rn;
+};
+
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
 	bool footprints;			//on off
@@ -2388,6 +2399,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	ulong bar_mode;				//1-> original, 2-> TR4, 3-> PSX
 	bool crawltilt;				//on off
 	bool PSX_skies;				//on off
+	bool tr4_loadscreens;		//on off
 };
 #endif
 #pragma pack(pop)

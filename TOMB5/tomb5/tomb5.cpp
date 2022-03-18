@@ -77,6 +77,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "psxsky");
 		tomb5.PSX_skies = 1;							//on
 		REG_WriteBool(buf, tomb5.PSX_skies);
+
+		sprintf(buf, "tr4LS");
+		tomb5.tr4_loadscreens = 1;						//on
+		REG_WriteBool(buf, tomb5.tr4_loadscreens);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -127,6 +131,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "psxsky");
 		REG_ReadBool(buf, tomb5.PSX_skies, 1);
+
+		sprintf(buf, "tr4LS");
+		REG_ReadBool(buf, tomb5.tr4_loadscreens, 1);
 	}
 
 	CloseRegistry();
@@ -184,6 +191,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "psxsky");
 	REG_WriteBool(buf, tomb5.PSX_skies);
+
+	sprintf(buf, "tr4LS");
+	REG_WriteBool(buf, tomb5.tr4_loadscreens);
 
 	CloseRegistry();
 }

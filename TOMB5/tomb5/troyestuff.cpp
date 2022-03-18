@@ -5,7 +5,7 @@
 #include "tomb5.h"
 
 #define PAGE0_NUM	14
-#define PAGE1_NUM	2
+#define PAGE1_NUM	3
 
 void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_bak)
 {
@@ -363,12 +363,16 @@ bool Page1(long& num, long textY, ulong selection)
 	PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
 	PrintString(phd_centerx >> 2, (ushort)(textY + 2 * font_height), selection & 1 ? 1 : 2, "Crawl Tilting", 0);
 	PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 2 ? 1 : 2, "PSX skies", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 4 * font_height), selection & 4 ? 1 : 2, "TR4 loadscreens", 0);
 
 	strcpy(buffer, tomb5.crawltilt ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 2 * font_height), selection & 1 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.PSX_skies ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 3 * font_height), selection & 2 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.tr4_loadscreens ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 4 * font_height), selection & 4 ? 1 : 6, buffer, 0);
 
 	switch (selection)
 	{
@@ -389,6 +393,17 @@ bool Page1(long& num, long textY, ulong selection)
 		{
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 			tomb5.PSX_skies = !tomb5.PSX_skies;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 2:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.tr4_loadscreens = !tomb5.tr4_loadscreens;
 			changed = 1;
 		}
 
