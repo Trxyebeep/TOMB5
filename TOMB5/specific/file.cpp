@@ -646,7 +646,7 @@ long S_LoadLevelFile(long num)
 	Log(2, "S_LoadLevelFile");
 
 #ifdef GENERAL_FIXES
-	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits))
+	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits && !gfStatus))
 #endif
 	{
 		if (!MonoScreenOn)
@@ -689,7 +689,7 @@ long S_LoadLevelFile(long num)
 	}
 
 #ifdef GENERAL_FIXES
-	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits))
+	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits && !gfStatus))
 #endif
 	{
 		if (MonoScreenOn == 1)
