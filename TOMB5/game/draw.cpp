@@ -1081,9 +1081,7 @@ void RenderIt(short current_room)
 
 #ifdef GENERAL_FIXES
 	ProcessClosedDoors();
-
-	if (gfCurrentLevel)
-		SkyDrawPhase();
+	SkyDrawPhase();
 #else
 	if (outside)
 	{
@@ -1136,12 +1134,6 @@ void RenderIt(short current_room)
 	phd_TranslateAbs(0, 0, 0);
 	SaveD3DCameraMatrix();
 	phd_PopMatrix();
-	aResetFogBulbList();
-	aBuildFogBulbList();
-	aBuildFXFogBulbList();
-
-	if (!tomb5.fog)
-		aResetFogBulbList();	//do this properly when fog stuff are decompiled
 #endif
 
 	for (int i = 0; i < number_draw_rooms; i++)

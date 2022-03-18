@@ -1198,7 +1198,7 @@ void phd_PutPolygons_train(short* objptr, long x)
 #ifdef GENERAL_FIXES
 TR4LS tr4_load_screens[15] =
 {
-	{58434, -634, 42783, 57337, -1048, 40945, 59},			//Title
+	{30548, 1770, 14103, 29452, 1576, 14853, 36},			//Title
 	{58434, -634, 42783, 57337, -1048, 40945, 59},			//Streets of Rome
 	{71226, 336, 32992, 71875, -568, 33761, 23},			//Trajan's Markets
 	{37136, -111, 31451, 38734, 343, 33029, 47},			//Colosseum
