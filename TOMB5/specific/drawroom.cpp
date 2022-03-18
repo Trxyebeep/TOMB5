@@ -530,12 +530,11 @@ void aBuildFogBulbList()
 	if (NumLevelFogBulbs)
 	{
 		num_active = 0;
+		ActiveFog = ActiveFogBulbs;
 
 		for (int i = 0; i < NumLevelFogBulbs; i++)
 		{
-			ActiveFog = &ActiveFogBulbs[i];
 			Fog = &fog_bulbs[i];
-
 			vec.x = Fog->px;
 			vec.y = Fog->py;
 			vec.z = Fog->pz;
@@ -564,6 +563,7 @@ void aBuildFogBulbList()
 			ActiveFog->pos.z = vec2.z;
 			ActiveFog->sqlen = SQUARE(vec2.x) + SQUARE(vec2.y) + SQUARE(vec2.z);
 			ActiveFog->d = 1 / Fog->den;
+			ActiveFog++;
 		}
 
 		NumActiveFogBulbs = num_active;
