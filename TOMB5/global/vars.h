@@ -570,12 +570,15 @@
 #define load_cam	VAR_U_(0x00875198, PHD_VECTOR)
 #define load_target	VAR_U_(0x008751A4, PHD_VECTOR)
 #define load_roomnum	VAR_U_(0x005165CD, char)
+#define DoFade	VAR_U_(0x00C87BF0, long)
+#define FadeVal	VAR_U_(0x00C86BE8, long)
+#define FadeStep	VAR_U_(0x00C713D4, long)
+#define FadeCnt	VAR_U_(0x00C713DC, long)
+#define FadeEnd	VAR_U_(0x00C713E0, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
 //if 0 + playing cut menu selections dont make a sound. never seems to be the case though!
-
-#define DoFade	VAR_U_(0x00C87BF0, int)// 2 everywhere, 1 in loading screens
 
 #define title_string	ARRAY_(0x0050842C, char, [8])
 

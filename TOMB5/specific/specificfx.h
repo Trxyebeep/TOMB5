@@ -17,6 +17,7 @@ void setXY4(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3
 void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz);
 void DoRain();
 void OutputSky();
+void DoScreenFade();
 
 #define aDrawWreckingBall	( (void(__cdecl*)(ITEM_INFO*, long)) 0x004CF1B0 )
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
