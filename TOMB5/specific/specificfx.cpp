@@ -462,7 +462,6 @@ void DrawLaserSightSprite()
 }
 
 #ifdef USE_SKY_SPRITE
-
 void SetSkyCoords(FVECTOR* vec, long segment, long def)
 {
 	if (segment == 1)	//bottom left
@@ -748,22 +747,28 @@ void DrawSkySegment(ulong color, long drawtype, long def, long seg, long zpos, l
 	phd_PopMatrix();
 }
 
-void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
+void DrawPSXSky(ulong color, long zpos, long ypos, long drawtype)
 {
 	for (int i = 1; i < 5; i++)
 		for (int j = 0; j < 4; j++)
 			DrawSkySegment(color, drawtype, j, i, zpos, ypos);
 }
-#else
+#endif
 void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 {
 	PHD_VECTOR vec[4];
 	D3DTLVERTEX v[4];
 	TEXTURESTRUCT Tex;
 	short* clip;
-	float perspz;
 	long x, y, z;
-	short clipdistance;
+
+#ifdef GENERAL_FIXES
+	if (tomb5.PSX_skies)
+	{
+		DrawPSXSky(color, zpos, ypos, drawtype);
+		return;
+	}
+#endif
 
 	phd_PushMatrix();
 
@@ -799,109 +804,13 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 	}
 
 	clip = clipflags;
-	v[0].tu = (float)vec[0].x;
-	v[0].tv = (float)vec[0].y;
-	v[0].sz = (float)vec[0].z;
-	clipdistance = 0;
-
-	if (v[0].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[0].sz;
-
-		if (v[0].sz > FogEnd)
-		{
-			v[0].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[0].sx = perspz * v[0].tu + f_centerx;
-		v[0].sy = perspz * v[0].tv + f_centery;
-		v[0].rhw = perspz * f_moneopersp;
-
-		if (v[0].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[0].sx)
-			clipdistance += 2;
-
-		if (v[0].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[0].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[0], (float)vec[0].x, (float)vec[0].y, (float)vec[0].z, clip);	//originally inlined
 	clip++;
-	v[1].tu = (float)vec[1].x;
-	v[1].tv = (float)vec[1].y;
-	v[1].sz = (float)vec[1].z;
-	clipdistance = 0;
-
-	if (v[1].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[1].sz;
-
-		if (v[1].sz > FogEnd)
-		{
-			v[1].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[1].sx = perspz * v[1].tu + f_centerx;
-		v[1].sy = perspz * v[1].tv + f_centery;
-		v[1].rhw = perspz * f_moneopersp;
-
-		if (v[1].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[1].sx)
-			clipdistance += 2;
-
-		if (v[1].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[1].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[1], (float)vec[1].x, (float)vec[1].y, (float)vec[1].z, clip);	//originally inlined
 	clip++;
-	v[2].tu = (float)vec[2].x;
-	v[2].tv = (float)vec[2].y;
-	v[2].sz = (float)vec[2].z;
-	clipdistance = 0;
-
-	if (v[2].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[2].sz;
-
-		if (v[2].sz > FogEnd)
-		{
-			v[2].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[2].sx = perspz * v[2].tu + f_centerx;
-		v[2].sy = perspz * v[2].tv + f_centery;
-		v[2].rhw = perspz * f_moneopersp;
-
-		if (v[2].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[2].sx)
-			clipdistance += 2;
-
-		if (v[2].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[2].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[2], (float)vec[2].x, (float)vec[2].y, (float)vec[2].z, clip);	//originally inlined
 	clip++;
-	_0x004C6BA0(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);
+	ClipCheckPoint(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);	//the only one that survived
 	Tex.drawtype = (ushort)drawtype;
 	Tex.flag = 0;
 	Tex.tpage = nTextures - 1;
@@ -942,116 +851,19 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 	}
 
 	clip = clipflags;
-	v[0].tu = (float)vec[0].x;
-	v[0].tv = (float)vec[0].y;
-	v[0].sz = (float)vec[0].z;
-	clipdistance = 0;
-
-	if (v[0].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[0].sz;
-
-		if (v[0].sz > FogEnd)
-		{
-			v[0].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[0].sx = perspz * v[0].tu + f_centerx;
-		v[0].sy = perspz * v[0].tv + f_centery;
-		v[0].rhw = perspz * f_moneopersp;
-
-		if (v[0].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[0].sx)
-			clipdistance += 2;
-
-		if (v[0].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[0].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[0], (float)vec[0].x, (float)vec[0].y, (float)vec[0].z, clip);	//originally inlined
 	clip++;
-	v[1].tu = (float)vec[1].x;
-	v[1].tv = (float)vec[1].y;
-	v[1].sz = (float)vec[1].z;
-	clipdistance = 0;
-
-	if (v[1].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[1].sz;
-
-		if (v[1].sz > FogEnd)
-		{
-			v[1].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[1].sx = perspz * v[1].tu + f_centerx;
-		v[1].sy = perspz * v[1].tv + f_centery;
-		v[1].rhw = perspz * f_moneopersp;
-
-		if (v[1].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[1].sx)
-			clipdistance += 2;
-
-		if (v[1].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[1].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[1], (float)vec[1].x, (float)vec[1].y, (float)vec[1].z, clip);	//originally inlined
 	clip++;
-	v[2].tu = (float)vec[2].x;
-	v[2].tv = (float)vec[2].y;
-	v[2].sz = (float)vec[2].z;
-	clipdistance = 0;
-
-	if (v[2].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[2].sz;
-
-		if (v[2].sz > FogEnd)
-		{
-			v[2].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[2].sx = perspz * v[2].tu + f_centerx;
-		v[2].sy = perspz * v[2].tv + f_centery;
-		v[2].rhw = perspz * f_moneopersp;
-
-		if (v[2].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[2].sx)
-			clipdistance += 2;
-
-		if (v[2].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[2].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[2], (float)vec[2].x, (float)vec[2].y, (float)vec[2].z, clip);	//originally inlined
 	clip++;
-	_0x004C6BA0(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);
+	ClipCheckPoint(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);	//the only one that survived
 
-	if (gfCurrentLevel != 0)
+	if (gfCurrentLevel)
 		AddQuadSorted(v, 3, 2, 1, 0, &Tex, 1);
 
 	phd_PopMatrix();
 }
-#endif
 
 void S_DrawDarts(ITEM_INFO* item)
 {

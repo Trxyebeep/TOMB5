@@ -4,6 +4,9 @@
 #include "../game/sound.h"
 #include "tomb5.h"
 
+#define PAGE0_NUM	14
+#define PAGE1_NUM	2
+
 void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_bak)
 {
 	long num;
@@ -64,12 +67,12 @@ void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_bak)
 			if (page)
 			{
 				page = 0;
-				num = 14;
+				num = PAGE0_NUM;
 			}
 			else
 			{
 				page = 1;
-				num = 1;
+				num = PAGE1_NUM;
 			}
 
 			selection = 1 << num;
@@ -86,7 +89,7 @@ bool Page0(long& num, long textY, ulong selection)
 	bool changed;
 
 	changed = 0;
-	num = 14;
+	num = PAGE0_NUM;
 	PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
 	PrintString(phd_centerx >> 2, (ushort)(textY + 2 * font_height), selection & 1 ? 1 : 2, "FootPrints", 0);
 	PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 2 ? 1 : 2, "Point light shadows", 0);
@@ -356,12 +359,16 @@ bool Page1(long& num, long textY, ulong selection)
 	bool changed;
 
 	changed = 0;
-	num = 1;
+	num = PAGE1_NUM;
 	PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
 	PrintString(phd_centerx >> 2, (ushort)(textY + 2 * font_height), selection & 1 ? 1 : 2, "Crawl Tilting", 0);
+	PrintString(phd_centerx >> 2, (ushort)(textY + 3 * font_height), selection & 2 ? 1 : 2, "PSX skies", 0);
 
 	strcpy(buffer, tomb5.crawltilt ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 2 * font_height), selection & 1 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.PSX_skies ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 3 * font_height), selection & 2 ? 1 : 6, buffer, 0);
 
 	switch (selection)
 	{
@@ -371,6 +378,17 @@ bool Page1(long& num, long textY, ulong selection)
 		{
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 			tomb5.crawltilt = !tomb5.crawltilt;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 1:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.PSX_skies = !tomb5.PSX_skies;
 			changed = 1;
 		}
 
