@@ -1076,8 +1076,10 @@ void RenderIt(short current_room)
 	}
 
 	GetRoomBounds();
+#ifndef GENERAL_FIXES
 	InitialiseFogBulbs();
 	CreateFXBulbs();
+#endif
 
 #ifdef GENERAL_FIXES
 	ProcessClosedDoors();
@@ -1134,6 +1136,7 @@ void RenderIt(short current_room)
 	phd_TranslateAbs(0, 0, 0);
 	SaveD3DCameraMatrix();
 	phd_PopMatrix();
+	aResetFogBulbList();
 #endif
 
 	for (int i = 0; i < number_draw_rooms; i++)
