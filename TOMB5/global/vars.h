@@ -575,6 +575,11 @@
 #define FadeStep	VAR_U_(0x00C713D4, long)
 #define FadeCnt	VAR_U_(0x00C713DC, long)
 #define FadeEnd	VAR_U_(0x00C713E0, long)
+#define DestVB  VAR_U_(0x00D9AAC8, LPDIRECT3DVERTEXBUFFER)
+#define wav_file_buffer	VAR_U_(0x0057A004, uchar*)
+#define ADPCMBuffer	VAR_U_(0x0057A008, uchar*)
+#define gfScriptFile	VAR_U_(0x00E5C2EC, uchar*)
+#define gfLanguageFile	VAR_U_(0x00E5C2AC, uchar*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

@@ -1,6 +1,7 @@
 #include "../tomb5/pch.h"
 #include "tomb5.h"
 #include "../specific/registry.h"
+#include "libs/discordRPC/discord_rpc.h"
 
 tomb5_options tomb5;
 
@@ -196,4 +197,87 @@ void save_new_tomb5_settings()
 	REG_WriteBool(buf, tomb5.tr4_loadscreens);
 
 	CloseRegistry();
+}
+
+void RPC_Init()
+{
+	DiscordEventHandlers handlers;
+
+	memset(&handlers, 0, sizeof(handlers));
+	Discord_Initialize("946240885866262598", &handlers, 1, 0);
+}
+
+const char* RPC_GetLevelName()
+{
+	if (!gfCurrentLevel)
+	{
+		if (bDoCredits)
+			return "In Credits";
+		else
+			return "In Title";
+	}
+	else
+		return SCRIPT_TEXT(gfLevelNames[gfCurrentLevel]);
+}
+
+const char* RPC_GetTimer()
+{
+	long sec, days, hours, min;
+	static char buf[64];
+
+	sec = GameTimer / 30;
+	days = sec / 86400;
+	hours = (sec % 86400) / 3600;
+	min = (sec / 60) % 60;
+	sec = (sec % 60);
+	sprintf(buf, "Time Taken: %02d:%02d:%02d", (days * 24) + hours, min, sec);
+	return buf;
+}
+
+const char* RPC_GetLevelPic()
+{
+	return "default";
+}
+
+const char* RPC_GetHealthPic()
+{
+	if (lara_item->hit_points > 666)
+		return "green";
+
+	if (lara_item->hit_points > 333)
+		return "yellow";
+
+	return "red";
+}
+
+const char* RPC_GetHealthPercentage()
+{
+	static char buf[32];
+
+	sprintf(buf, "Health: %i%%", lara_item->hit_points / 10);
+	return buf;
+}
+
+void RPC_Update()
+{
+	DiscordRichPresence RPC;
+
+	memset(&RPC, 0, sizeof(RPC));
+
+	RPC.details = RPC_GetLevelName();
+	RPC.largeImageKey = RPC_GetLevelPic();
+	RPC.largeImageText = RPC.details;
+
+	RPC.smallImageKey = RPC_GetHealthPic();
+	RPC.smallImageText = RPC_GetHealthPercentage();
+
+	RPC.state = RPC_GetTimer();
+
+	RPC.instance = 1;
+	Discord_UpdatePresence(&RPC);
+}
+
+void RPC_close()
+{
+	Discord_Shutdown();
 }

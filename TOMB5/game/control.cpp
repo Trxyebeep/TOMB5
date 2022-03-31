@@ -87,6 +87,9 @@ long ControlPhase(long _nframes, int demo_mode)
 	{
 		GlobalCounter++;
 		UpdateSky();
+#ifdef DISCORD_RPC
+		RPC_Update();
+#endif
 
 		if (cdtrack > 0)
 			S_CDLoop();

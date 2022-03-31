@@ -38,3 +38,4 @@ void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float z
 #define phd_atan	( (long(__cdecl*)(long, long)) 0x0048F8A0 )
 #define phd_sqrt	( (long(__cdecl*)(long)) 0x0048F980 )
 #define aPointCamera	( (void(__cdecl*)(FCAMERA*)) 0x00490F30 )
+#define InitWindow	(  (void(__cdecl*)(long, long, long, long, long, long, long, long, long)) 0x0048F0E0 )
