@@ -204,7 +204,7 @@ void RPC_Init()
 	DiscordEventHandlers handlers;
 
 	memset(&handlers, 0, sizeof(handlers));
-	Discord_Initialize("946240885866262598", &handlers, 1, 0);
+	Discord_Initialize("959220032787869751", &handlers, 1, 0);
 }
 
 const char* RPC_GetLevelName()
@@ -236,7 +236,54 @@ const char* RPC_GetTimer()
 
 const char* RPC_GetLevelPic()
 {
-	return "default";
+	switch (gfCurrentLevel)
+	{
+	case 1:
+		return "rome";
+
+	case 2:
+		return "streets";
+
+	case 3:
+		return "colosseum";
+
+	case 4:
+		return "base";
+
+	case 5:
+		return "submarine";
+
+	case 6:
+		return "deepsea";
+
+	case 7:
+		return "sink";
+
+	case 8:
+		return "gallow1";
+
+	case 9:
+		return "laby";
+
+	case 10:
+		return "mill";
+
+	case 11:
+		return "13th";
+
+	case 12:
+		return "iris";
+
+	case 13:
+		return "breach";
+
+	case 14:
+		return "alert";
+
+	default:
+		return "default";
+	}
+	
 }
 
 const char* RPC_GetHealthPic()
