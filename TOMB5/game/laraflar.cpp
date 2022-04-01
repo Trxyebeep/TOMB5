@@ -466,6 +466,9 @@ void DrawFlareInAir(ITEM_INFO* item)
 #endif
 
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+#ifdef GENERAL_FIXES
+	current_item = item;
+#endif
 	phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
 	phd_PopMatrix();
 

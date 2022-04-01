@@ -323,7 +323,7 @@ void RPC_Update()
 
 	RPC.details = RPC_GetLevelName();
 	RPC.largeImageKey = RPC_GetLevelPic();
-	RPC.largeImageText = RPC.details;
+	RPC.largeImageText = gfCurrentLevel == 3 ? "BOO" : RPC.details;	//xoxo
 
 	RPC.smallImageKey = RPC_GetHealthPic();
 	RPC.smallImageText = RPC_GetHealthPercentage();

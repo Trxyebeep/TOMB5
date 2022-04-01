@@ -1124,75 +1124,7 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 
 void phd_PutPolygons_train(short* objptr, long x)
 {
-	//in TR4 this function draws stuff with a translation on X, but more importantly, with NO lighting.
-	//it was used for train stuff, obv, but also flares/scarabs, etc. anything that didn't need lighting.
-	//then a TR5 smartass decided to replace it with just phd_PutPolygons which causes lighting bugs on flares, rats, bats, and spiders.
-#ifndef GENERAL_FIXES
-	phd_PutPolygons(objptr, x);
-#else
-	//minimalistic version of phd_PutPolygons without lighting ahoy. decompiled from TR4
-	MESH_DATA* mesh;
-	TEXTURESTRUCT* pTex;
-	short* quad;
-	short* tri;
-	ushort drawbak;
-
-	phd_PushMatrix();
-	SetD3DViewMatrix();
-	mesh = (MESH_DATA*)objptr;
-	phd_PopMatrix();
-
-	if (objptr)
-	{
-		ClearObjectLighting();
-		ClearDynamicLighting();
-		App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_AMBIENT, 0xFFFFFF);	//THIS
-		clip_left = f_left;
-		clip_top = f_top;
-		clip_right = f_right;
-		clip_bottom = f_bottom;
-
-		if (aCheckMeshClip(mesh))
-		{
-			aTransformLightClipMesh(mesh);
-			quad = mesh->gt4;
-
-			for (int i = 0; i < mesh->ngt4; i++, quad += 6)
-			{
-				pTex = &textinfo[quad[4] & 0x7FFF];
-				drawbak = pTex->drawtype;
-
-				if (quad[5] & 1)
-					pTex->drawtype = 2;
-
-				if (!pTex->drawtype)
-					AddQuadZBuffer(aVertexBuffer, quad[0], quad[1], quad[2], quad[3], pTex, 0);
-				else if (pTex->drawtype <= 2)
-					AddQuadSorted(aVertexBuffer, quad[0], quad[1], quad[2], quad[3], pTex, 0);
-
-				pTex->drawtype = drawbak;
-			}
-
-			tri = mesh->gt3;
-
-			for (int i = 0; i < mesh->ngt3; i++, tri += 5)
-			{
-				pTex = &textinfo[tri[3] & 0x7FFF];
-				drawbak = pTex->drawtype;
-
-				if (tri[4] & 1)
-					pTex->drawtype = 2;
-
-				if (!pTex->drawtype)
-					AddTriZBuffer(aVertexBuffer, tri[0], tri[1], tri[2], pTex, 0);
-				else if (pTex->drawtype <= 2)
-					AddTriSorted(aVertexBuffer, tri[0], tri[1], tri[2], pTex, 0);
-
-				pTex->drawtype = drawbak;
-			}
-		}
-	}
-#endif
+	phd_PutPolygons(objptr, x);	//thanks alex
 }
 
 #ifdef GENERAL_FIXES
