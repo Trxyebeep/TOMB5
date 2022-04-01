@@ -1039,6 +1039,102 @@ void DrawGasCloud(ITEM_INFO* item)
 		item->item_flags[0] = 1;
 }
 
+#ifdef GENERAL_FIXES
+STARS stars[512];
+
+static void DrawStars()
+{
+	STARS* star;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	static long first_time = 0;
+	float x, y, z, fx, fy, fz, bx, by, sv;
+	long col;
+
+	if (!first_time)
+	{
+		for (int i = 0; i < 512; i++)
+		{
+			star = &stars[i];
+			star->pos.x = ((rand() & 0x1FF) + 512.0F) * fSin(i * 512);
+			star->pos.y = (float)(-rand() % 1900);
+			star->pos.z = ((rand() & 0x1FF) + 512.0F) * fCos(i * 512);
+			star->sv = (rand() & 1) + 1.0F;
+			col = rand() & 0x7F;
+			star->col = RGBONLY(col + 128, col + 128, col + 192);
+		}
+
+		first_time = 1;
+	}
+
+	tex.drawtype = 0;
+	tex.tpage = 0;
+	tex.flag = 0;
+	phd_PushMatrix();
+	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
+	SetD3DViewMatrix();
+	phd_PopMatrix();
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+
+	for (int i = 0; i < 512; i++)
+	{
+		star = &stars[i];
+		fx = star->pos.x;
+		fy = star->pos.y;
+		fz = star->pos.z;
+		col = star->col;
+		sv = star->sv;
+		x = fx * D3DMView._11 + fy * D3DMView._21 + fz * D3DMView._31;
+		y = fx * D3DMView._12 + fy * D3DMView._22 + fz * D3DMView._32;
+		z = fx * D3DMView._13 + fy * D3DMView._23 + fz * D3DMView._33;
+		
+
+		if (z >= f_mznear)
+		{
+			fz = f_mpersp / z;
+			bx = fz * x + f_centerx;
+			by = fz * y + f_centery;
+
+			if (bx >= 0 && bx <= (float)phd_winxmax && by >= 0 && by <= (float)phd_winymax)
+			{
+				v[0].sx = bx;
+				v[0].sy = by;
+				v[0].color = col;
+				v[0].specular = 0xFF000000;
+				v[0].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[0].tu = 0;
+				v[0].tv = 0;
+				v[1].sx = bx + sv;
+				v[1].sy = by;
+				v[1].color = col;
+				v[1].specular = 0xFF000000;
+				v[1].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[1].tu = 0;
+				v[1].tv = 0;
+				v[2].sx = bx;
+				v[2].sy = by + sv;
+				v[2].color = col;
+				v[2].specular = 0xFF000000;
+				v[2].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[2].tu = 0;
+				v[2].tv = 0;
+				v[3].sx = bx + sv;
+				v[3].sy = by + sv;
+				v[3].color = col;
+				v[3].specular = 0xFF000000;
+				v[3].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[3].tu = 0;
+				v[3].tv = 0;
+				AddQuadZBuffer(v, 0, 1, 3, 2, &tex, 1);
+			}
+		}
+	}
+}
+#endif
+
 void DrawStarField()
 {
 	D3DTLVERTEX v[4];
@@ -1048,6 +1144,11 @@ void DrawStarField()
 	long* pCol;
 	float x, y, z, fx, fy, fz, bx, by;
 	long col;
+
+#ifdef GENERAL_FIXES
+	DrawStars();
+	return;
+#endif
 
 	if (!first_time)
 	{

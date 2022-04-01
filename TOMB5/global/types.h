@@ -2381,6 +2381,13 @@ struct TR4LS
 	uchar rn;
 };
 
+struct STARS
+{
+	FVECTOR pos;
+	float sv;
+	long col;
+};
+
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
 	bool footprints;			//on off
