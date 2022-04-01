@@ -1588,8 +1588,17 @@ long S_DrawLoadBar()
 			DoBar(20, 480 - (font_height >> 1), 600, 15, (long)loadbar_pos, 0xFF7F007F, 0xFF007F7F);
 	}
 	else
-#endif
+	{
+		if (tomb5.bar_mode == 3)
+			S_DrawGouraudBar(170, 480 - font_height, 300, 10, (long)loadbar_pos, &loadBarColourSet);
+		else if (tomb5.bar_mode == 2)
+			S_DoTR4Bar(170, phd_winymax- (font_height << 1), 300, 10, (long)loadbar_pos, 0xFF000000, 0xFF9F1F80);
+		else
+			DoBar(170, 480 - font_height, 300, 10, (long)loadbar_pos, 0xA0, 0xF0);
+	}
+#else
 		DoBar(170, 480 - font_height, 300, 10, (long)loadbar_pos, 0xA0, 0xF0);
+#endif
 
 	SortPolyList(SortCount, SortList);
 	RestoreFPCW(FPCW);
