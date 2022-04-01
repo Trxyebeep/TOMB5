@@ -1576,7 +1576,21 @@ long S_DrawLoadBar()
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
-	DoBar(170, 480 - font_height, 300, 10, (long)loadbar_pos, 0xA0, 0xF0);
+
+#ifdef GENERAL_FIXES
+	if (tomb5.tr4_loadbar)
+	{
+		if (tomb5.bar_mode == 3)
+			S_DrawGouraudBar(20, 480 - (font_height >> 1), 600, 15, (long)loadbar_pos, &loadBarColourSet);
+		else if (tomb5.bar_mode == 2)
+			S_DoTR4Bar(20, phd_winymax - font_height, 600, 15, (long)loadbar_pos, 0xFF000000, 0xFF9F1F80);
+		else
+			DoBar(20, 480 - (font_height >> 1), 600, 15, (long)loadbar_pos, 0xFF7F007F, 0xFF007F7F);
+	}
+	else
+#endif
+		DoBar(170, 480 - font_height, 300, 10, (long)loadbar_pos, 0xA0, 0xF0);
+
 	SortPolyList(SortCount, SortList);
 	RestoreFPCW(FPCW);
 	DrawSortList();

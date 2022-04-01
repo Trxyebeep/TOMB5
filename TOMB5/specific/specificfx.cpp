@@ -963,8 +963,8 @@ void DrawMoon()
 		tex.v4 = sprite->y2;
 		tex.tpage = tpage;
 #ifdef GENERAL_FIXES
-		tex.drawtype = 1;
-		AddQuadSubdivide(v, 0, 1, 3, 2, &tex, 1);
+		tex.drawtype = 2;
+		AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
 #else
 		tex.drawtype = 0;
 		AddQuadZBuffer(v, 0, 1, 3, 2, &tex, 1);

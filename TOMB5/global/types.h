@@ -2400,6 +2400,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool crawltilt;				//on off
 	bool PSX_skies;				//on off
 	bool tr4_loadscreens;		//on off
+	bool tr4_loadbar;			//on off
 };
 #endif
 #pragma pack(pop)
