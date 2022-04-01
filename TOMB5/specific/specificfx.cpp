@@ -1040,7 +1040,7 @@ void DrawGasCloud(ITEM_INFO* item)
 }
 
 #ifdef GENERAL_FIXES
-STARS stars[512];
+STARS stars[2048];
 
 static void DrawStars()
 {
@@ -1053,12 +1053,22 @@ static void DrawStars()
 
 	if (!first_time)
 	{
-		for (int i = 0; i < 512; i++)
+		for (int i = 0; i < 2048; i++)
 		{
 			star = &stars[i];
-			star->pos.x = ((rand() & 0x1FF) + 512.0F) * fSin(i * 512);
+
+			if (i > 1792)
+			{
+				star->pos.x = ((rand() & 0x1FF) + 32) * fSin(i * 512);
+				star->pos.z = ((rand() & 0x1FF) + 32) * fCos(i * 512);
+			}
+			else
+			{
+				star->pos.x = ((rand() & 0x7FF) + 512.0F) * fSin(i * 512);
+				star->pos.z = ((rand() & 0x7FF) + 512.0F) * fCos(i * 512);
+			}
+
 			star->pos.y = (float)(-rand() % 1900);
-			star->pos.z = ((rand() & 0x1FF) + 512.0F) * fCos(i * 512);
 			star->sv = (rand() & 1) + 1.0F;
 			col = rand() & 0x3F;
 			star->col = RGBONLY(col + 160, col + 160, col + 192);
@@ -1079,7 +1089,7 @@ static void DrawStars()
 	clipflags[2] = 0;
 	clipflags[3] = 0;
 
-	for (int i = 0; i < 512; i++)
+	for (int i = 0; i < 2048; i++)
 	{
 		star = &stars[i];
 		fx = star->pos.x;
