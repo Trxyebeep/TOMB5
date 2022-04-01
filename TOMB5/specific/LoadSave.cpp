@@ -197,14 +197,14 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 	v[3].color = 0xFF000000;
 	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
 
-	v[0].sx = x * fx - 3;
-	v[1].sx = x * fx + width * fx + 3;
-	v[2].sx = x * fx - 3;
-	v[3].sx = x * fx + width * fx + 3;
-	v[0].sy = y * fy - 1;
-	v[1].sy = y * fy - 1;
-	v[2].sy = y * fy + height * fy + 1;
-	v[3].sy = y * fy + height * fy + 1;
+	v[0].sx = x * fx - 2;
+	v[1].sx = x * fx + width * fx + 2;
+	v[2].sx = x * fx - 2;
+	v[3].sx = x * fx + width * fx + 2;
+	v[0].sy = y * fy;
+	v[1].sy = y * fy;
+	v[2].sy = y * fy + height * fy;
+	v[3].sy = y * fy + height * fy;
 	v[0].sz = f_mznear + 1;
 	v[1].sz = f_mznear + 1;
 	v[2].sz = f_mznear + 1;
@@ -219,14 +219,14 @@ static void S_DrawGouraudBar(int x, int y, int width, int height, int value, Gou
 	v[3].color = 0;
 	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//black background
 
-	v[0].sx = x * fx - 4;
-	v[1].sx = x * fx + width * fx + 4;
-	v[2].sx = x * fx - 4;
-	v[3].sx = x * fx + width * fx + 4;
-	v[0].sy = y * fy - 2;
-	v[1].sy = y * fy - 2;
-	v[2].sy = y * fy + height * fy + 2;
-	v[3].sy = y * fy + height * fy + 2;
+	v[0].sx = x * fx - 3;
+	v[1].sx = x * fx + width * fx + 3;
+	v[2].sx = x * fx - 3;
+	v[3].sx = x * fx + width * fx + 3;
+	v[0].sy = y * fy - 1;
+	v[1].sy = y * fy - 1;
+	v[2].sy = y * fy + height * fy + 1;
+	v[3].sy = y * fy + height * fy + 1;
 	v[0].sz = f_mznear + 2;
 	v[1].sz = f_mznear + 2;
 	v[2].sz = f_mznear + 2;
