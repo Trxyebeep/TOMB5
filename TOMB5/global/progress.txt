@@ -2153,7 +2153,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004CBE50		Draw2DSprite
 0x004CC0B0		DrawLightning
 0x004CCBA0		OldDrawLightning
-0x004CD750		aTransformPerspSV
+0x004CD750	+	aTransformPerspSV
 0x004CD960		DrawLasers
 0x004CE610		DrawSteamLasers
 0x004CF191		_0x004CF191

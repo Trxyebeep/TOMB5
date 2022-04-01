@@ -2125,6 +2125,55 @@ void ClipCheckPoint(D3DTLVERTEX* v, float x, float y, float z, short* clip)
 	clip[0] = clipdistance;
 }
 
+void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long col)
+{
+	float x, y, z, vx, vy, vz, zv;
+	short clip;
+
+	for (int i = 0; i < nVtx; i++)
+	{
+		clip = 0;
+		vx = vec->vx;
+		vy = vec->vy;
+		vz = vec->vz;
+		x = D3DMView._11 * vx + D3DMView._21 * vy + D3DMView._31 * vz + D3DMView._41;
+		y = D3DMView._12 * vx + D3DMView._22 * vy + D3DMView._32 * vz + D3DMView._42;
+		z = D3DMView._13 * vx + D3DMView._23 * vy + D3DMView._33 * vz + D3DMView._43;
+		v->tu = x;
+		v->tv = y;
+
+		if (z < f_mznear)
+			clip = -128;
+		else
+		{
+			zv = f_mpersp / z;
+			x = x * zv + f_centerx;
+			y = y * zv + f_centery;
+			v->rhw = f_moneopersp * zv;
+
+			if (x < f_left)
+				clip = 1;
+			else if (x > f_right)
+				clip = 2;
+
+			if (y < f_top)
+				clip += 4;
+			else if (y > f_bottom)
+				clip += 8;
+
+			v->sx = x;
+			v->sy = y;
+		}
+
+		v->sz = z;
+		v->color = col;
+		v->specular = 0xFF000000;
+		*c++ = clip;
+		v++;
+		vec++;
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2143,4 +2192,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C6D10, OutputSky, replace);
 	INJECT(0x004CA770, DoScreenFade, replace);
 	INJECT(0x004C6BA0, ClipCheckPoint, replace);
+	INJECT(0x004CD750, aTransformPerspSV, replace);
 }
