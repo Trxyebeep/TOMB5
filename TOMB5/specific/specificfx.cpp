@@ -1049,7 +1049,7 @@ static void DrawStars()
 	TEXTURESTRUCT tex;
 	static long first_time = 0;
 	float x, y, z, fx, fy, fz, bx, by, sv;
-	long col;
+	long col, r, g, b;
 
 	if (!first_time)
 	{
@@ -1064,14 +1064,14 @@ static void DrawStars()
 			}
 			else
 			{
-				star->pos.x = ((rand() & 0x7FF) + 512.0F) * fSin(i * 512);
-				star->pos.z = ((rand() & 0x7FF) + 512.0F) * fCos(i * 512);
+				star->pos.x = ((rand() & 0x7FF) + 512) * fSin(i * 512);
+				star->pos.z = ((rand() & 0x7FF) + 512) * fCos(i * 512);
 			}
 
 			star->pos.y = (float)(-rand() % 1900);
 			star->sv = (rand() & 1) + 1.0F;
 			col = rand() & 0x3F;
-			star->col = RGBONLY(col + 160, col + 160, col + 192);
+			star->col = RGBONLY(col + 160, col + 160, col + 160);
 		}
 
 		first_time = 1;
@@ -1097,8 +1097,38 @@ static void DrawStars()
 		fz = star->pos.z;
 		col = star->col;
 
-		if ((GlobalCounter & 3) == 3)
-			star->sv = (rand() & 1) + 1.0F;
+		if (GlobalCounter & 1)
+		{
+			r = CLRR(col);
+			g = CLRG(col);
+			b = CLRB(col);
+			col = GetRandomControl() & 0x3F;
+
+			if (GetRandomControl() & 1)
+				col = -col;
+
+			r -= col;
+			g -= col;
+			b -= col;
+
+			if (r > 255)
+				r = 255;
+			else if (r < 0)
+				r = 0;
+
+			if (g > 255)
+				g = 255;
+			else if (g < 0)
+				g = 0;
+
+			if (b > 255)
+				b = 255;
+			else if (b < 0)
+				b = 0;
+
+			col = RGBONLY(r, g, b);
+			star->col = col;
+		}
 
 		sv = star->sv;
 		x = fx * D3DMView._11 + fy * D3DMView._21 + fz * D3DMView._31;
