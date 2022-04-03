@@ -1216,6 +1216,104 @@ void RenderLoadPic(long unused)
 	GlobalFogOff = 0;
 }
 
+long S_GetObjectBounds(short* bounds)
+{
+	FVECTOR vtx[8];
+	float xMin, xMax, yMin, yMax, zMin, zMax, numZ, xv, yv, zv;
+
+	if (phd_mxptr[11] >= phd_zfar && !outside)
+		return 0;
+
+	xMin = bounds[0];
+	xMax = bounds[1];
+	yMin = bounds[2];
+	yMax = bounds[3];
+	zMin = bounds[4];
+	zMax = bounds[5];
+
+	vtx[0].x = xMin;
+	vtx[0].y = yMin;
+	vtx[0].z = zMin;
+
+	vtx[1].x = xMax;
+	vtx[1].y = yMin;
+	vtx[1].z = zMin;
+
+	vtx[2].x = xMax;
+	vtx[2].y = yMax;
+	vtx[2].z = zMin;
+
+	vtx[3].x = xMin;
+	vtx[3].y = yMax;
+	vtx[3].z = zMin;
+
+	vtx[4].x = xMin;
+	vtx[4].y = yMin;
+	vtx[4].z = zMax;
+
+	vtx[5].x = xMax;
+	vtx[5].y = yMin;
+	vtx[5].z = zMax;
+
+	vtx[6].x = xMax;
+	vtx[6].y = yMax;
+	vtx[6].z = zMax;
+
+	vtx[7].x = xMin;
+	vtx[7].y = yMax;
+	vtx[7].z = zMax;
+
+	xMin = (float)0x3FFFFFFF;
+	xMax = (float)-0x3FFFFFFF;
+	yMin = (float)0x3FFFFFFF;
+	yMax = (float)-0x3FFFFFFF;
+	numZ = 0;
+
+	for (int i = 0; i < 8; i++)
+	{
+		zv = vtx[i].x * phd_mxptr[M20] + vtx[i].y * phd_mxptr[M21] + vtx[i].z * phd_mxptr[M22] + phd_mxptr[M23];
+
+		if (zv > phd_znear && phd_zfar > zv)
+		{
+			numZ++;
+			zv /= phd_persp;
+
+			if (!zv)
+				zv = 1;
+
+			zv = 1 / zv;
+			xv = zv * (vtx[i].x * phd_mxptr[M00] + vtx[i].y * phd_mxptr[M01] + vtx[i].z * phd_mxptr[M02] + phd_mxptr[M03]);
+
+			if (xv < xMin)
+				xMin = xv;
+
+			if (xv > xMax)
+				xMax = xv;
+
+			yv = zv * (vtx[i].x * phd_mxptr[M10] + vtx[i].y * phd_mxptr[M11] + vtx[i].z * phd_mxptr[M12] + phd_mxptr[M13]);
+
+			if (yv < yMin)
+				yMin = yv;
+
+			if (yv > yMax)
+				yMax = yv;
+		}
+	}
+
+	xMin += phd_centerx;
+	xMax += phd_centerx;
+	yMin += phd_centery;
+	yMax += phd_centery;
+
+	if (numZ < 8 || xMin < 0 || yMin < 0 || phd_winxmax < xMax || phd_winymax < yMax)
+		return -1;
+
+	if (phd_right >= xMin && phd_bottom >= yMin && phd_left <= xMax && phd_top <= yMax)
+		return 1;
+	else
+		return 0;
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1226,5 +1324,6 @@ void inject_output(bool replace)
 	INJECT(0x004B35F0, aTransformLightPrelightClipMesh, replace);
 	INJECT(0x004B74A0, phd_PutPolygons_train, replace);
 	INJECT(0x004B8660, RenderLoadPic, replace);
+	INJECT(0x004B7EB0, S_GetObjectBounds, replace);
 }
 
