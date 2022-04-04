@@ -44,6 +44,14 @@ do \
 #define SCRIPT_TEXT_bis(num)	(&gfStringWad[gfStringOffset_bis[num]])
 #define SetVecXYZ(num, X, Y, Z)	 vec[(num)].x = (X); vec[(num)].y = (Y); vec[(num)].z = (Z);
 
+	/**********************************/
+#define OPEN	( (FILE*(__cdecl*)(const char*, const char*)) 0x004E46E0 )
+#define SEEK	( (int(__cdecl*)(FILE*, int, int)) 0x004E1F30 )
+#define READ	( (size_t(__cdecl*)(void*, size_t, size_t, FILE*)) 0x004E1D20 )
+#define TELL	( (int(__cdecl*)(FILE*)) 0x004E4700 )
+#define CLOSE	( (int(__cdecl*)(FILE*)) 0x004E20D0 )
+	/**********************************/
+
 /*typedefs*/
 typedef unsigned char uchar;
 typedef unsigned short ushort;

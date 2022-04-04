@@ -18,6 +18,7 @@
 #include "gamemain.h"
 #include "specificfx.h"
 #include "time.h"
+#include "file.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../tomb5/troyestuff.h"
@@ -25,6 +26,15 @@
 
 static long MonoScreenX[4] = { 0, 256, 512, 640 };
 static long MonoScreenY[3] = { 0, 256, 480 };
+
+static const char* screen_paths[5] =
+{
+	"SCREENS\\STORY1.STR",
+	"SCREENS\\NXG.STR",
+	"SCREENS\\STORY2.STR",
+	"SCREENS\\GALLERY.STR",
+	"SCREENS\\SCREENS.STR"
+};
 
 #ifdef IMPROVED_BARS
 static GouraudBarColourSet healthBarColourSet =
@@ -2157,6 +2167,74 @@ long S_LoadSave(long load_or_save, long mono)
 	return ret;
 }
 
+void LoadScreen(long screen, long pathNum)
+{
+	FILE* file;
+	DDPIXELFORMAT pixel_format;
+	DDSURFACEDESC2 surf;
+	void* pic;
+	ushort* pSrc;
+	ushort* pDst;
+	ushort col, r, g, b;
+
+	memset(&surf, 0, sizeof(surf));
+	memset(&pixel_format, 0, sizeof(pixel_format));
+	surf.dwSize = sizeof(DDSURFACEDESC2);
+	surf.dwWidth = 640;
+	surf.dwHeight = 480;
+	pixel_format.dwSize = sizeof(DDPIXELFORMAT);
+	pixel_format.dwFlags = DDPF_RGB;
+	pixel_format.dwRGBBitCount = 16;
+	pixel_format.dwRBitMask = 0xF800;
+	pixel_format.dwGBitMask = 0x7E0;
+	pixel_format.dwBBitMask = 0x1F;
+	pixel_format.dwRGBAlphaBitMask = 0;
+	memcpy(&surf.ddpfPixelFormat, &pixel_format, sizeof(surf.ddpfPixelFormat));
+	surf.dwFlags = DDSD_PIXELFORMAT | DDSD_HEIGHT | DDSD_WIDTH | DDSD_CAPS;
+	surf.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
+	file = FileOpen(screen_paths[pathNum]);
+
+	if (DXCreateSurface(G_dxptr->lpDD, &surf, &screen_surface) && file)
+	{
+		pic = malloc(0x96000);
+		SEEK(file, 0x96000 * screen, SEEK_SET);//fseek(file, 0x96000 * screen, SEEK_SET);
+		READ(pic, 0x96000, 1, file);//fread(pic, 0x96000, 1, file);
+		CLOSE(file);//fclose(file);
+		memset(&surf, 0, sizeof(surf));
+		surf.dwSize = sizeof(DDSURFACEDESC2);
+		screen_surface->Lock(0, &surf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
+		pDst = (ushort*)surf.lpSurface;
+		pSrc = (ushort*)pic;
+		
+		for (int i = 0; i < 0x4B000; i++, pSrc++, pDst++)
+		{
+			col = *pSrc;
+			r = (col >> 10) & 0x1F;
+			g = (col >> 5) & 0x1F;
+			b = col & 0x1F;
+			*pDst = (r << 11) | (g << 6) | b;
+		}
+
+		screen_surface->Unlock(0);
+		free(pic);
+		MonoScreenOn = 1;
+	}
+	else
+		Log(0, "WHORE!");
+}
+
+void ReleaseScreen()
+{
+	MonoScreenOn = 0;
+
+	if (screen_surface)
+	{
+		Log(4, "Released %s @ %x - RefCnt = %d", "Picture Surface", screen_surface, screen_surface->Release());
+		screen_surface = 0;
+	}
+	else
+		Log(1, "%s Attempt To Release NULL Ptr", "Picture Surface");
+}
 
 void inject_LoadSave(bool replace)
 {
@@ -2184,4 +2262,6 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004ACC70, S_DrawTile, replace);
 	INJECT(0x004AD010, S_DisplayMonoScreen, replace);
 	INJECT(0x004B1120, S_LoadSave, replace);
+	INJECT(0x004AC810, LoadScreen, replace);
+	INJECT(0x004ACA30, ReleaseScreen, replace);
 }

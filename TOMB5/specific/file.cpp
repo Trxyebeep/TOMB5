@@ -19,8 +19,6 @@
 #include "../tomb5/tomb5.h"
 #endif
 
-//when every part that uses the c library funcs is decompiled, remove the stupid defines
-
 bool LoadTextureInfos()
 {
 	int val;
@@ -117,9 +115,7 @@ FILE* FileOpen(const char* Filename)
 
 	strcat(cdFilename, Filename);
 	Log(5, "FileOpen - %s", cdFilename);
-#define what_the_f	( (FILE*(__cdecl*)(const char*, const char*)) 0x004E46E0 )//temporary until we solve the fopen mystery :)
-	fp = what_the_f(cdFilename, "rb");//fp = fopen(cdFilename, "rb");
-#undef what_the_f
+	fp = OPEN(cdFilename, "rb");//fp = fopen(cdFilename, "rb");
 
 	if (!fp)
 		Log(1, "Unable To Open %s", cdFilename);
@@ -170,22 +166,17 @@ bool FindCDDrive()
 void FileClose(FILE* fp)
 {
 	Log(2, "FileClose");
-#define what_the_f	( (int(__cdecl*)(FILE*)) 0x004E20D0 )
-	what_the_f(fp);//fclose(fp);
-#undef what_the_f
+	CLOSE(fp);//fclose(fp);
 }
 
 int FileSize(FILE* fp)
 {
 	int size;
-#define cunt1	( (int(__cdecl*)(FILE*, long, int)) 0x004E1F30 )
-#define cunt2	( (int(__cdecl*)(FILE*)) 0x004E4700 )
-	cunt1(fp, 0, SEEK_END);//fseek(fp, 0, SEEK_END);
-	size = cunt2(fp);//ftell(fp);
-	cunt1(fp, 0, SEEK_SET);//fseek(fp, 0, SEEK_SET);
+
+	SEEK(fp, 0, SEEK_END);//fseek(fp, 0, SEEK_END);
+	size = TELL(fp);//ftell(fp);
+	SEEK(fp, 0, SEEK_SET);//fseek(fp, 0, SEEK_SET);
 	return size;
-#undef cunt1
-#undef cunt2
 }
 
 bool LoadItems()
@@ -583,8 +574,7 @@ bool LoadSamples()
 	}
 
 	Log(8, "Number Of Samples %d", num_samples);
-#define freadd	( (size_t(__cdecl*)(void*, size_t, size_t, FILE*)) 0x004E1D20 )
-	freadd(&num_samples, 1, 4, LevelFILEptr);
+	READ(&num_samples, 1, 4, LevelFILEptr);
 
 	if (feof(LevelFILEptr))
 		Log(1, "END OF FILE");
@@ -599,9 +589,9 @@ bool LoadSamples()
 
 	for (int i = 0; i < num_samples; i++)
 	{
-		freadd(&uncomp_size, 1, 4, LevelFILEptr);
-		freadd(&comp_size, 1, 4, LevelFILEptr);
-		freadd(samples_buffer, comp_size, 1, LevelFILEptr);
+		READ(&uncomp_size, 1, 4, LevelFILEptr);
+		READ(&comp_size, 1, 4, LevelFILEptr);
+		READ(samples_buffer, comp_size, 1, LevelFILEptr);
 
 		if (!DXCreateSampleADPCM(samples_buffer, comp_size, uncomp_size, i))
 		{
@@ -609,7 +599,7 @@ bool LoadSamples()
 			return 0;
 		}
 	}
-#undef freadd
+
 	FreeSampleDecompress();
 	return 1;
 }

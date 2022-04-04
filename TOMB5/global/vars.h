@@ -582,6 +582,7 @@
 #define ADPCMBuffer	VAR_U_(0x0057A008, uchar*)
 #define gfScriptFile	VAR_U_(0x00E5C2EC, uchar*)
 #define gfLanguageFile	VAR_U_(0x00E5C2AC, uchar*)
+#define screen_surface	VAR_U_(0x0087BD58, LPDIRECTDRAWSURFACE4)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

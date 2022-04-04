@@ -31,6 +31,8 @@ void FreeMonoScreen();
 void S_DrawTile(long x, long y, long w, long h, IDirect3DTexture2* t, long tU, long tV, long tW, long tH, long c0, long c1, long c2, long c3);
 void S_DisplayMonoScreen();
 long S_LoadSave(long load_or_save, long mono);
+void LoadScreen(long screen, long pathNum);
+void ReleaseScreen();
 
 #define GetSaveLoadFiles	( (void(__cdecl*)()) 0x004AD290 )
 #define S_PauseMenu	( (int(__cdecl*)()) 0x004B1030 )
@@ -41,6 +43,4 @@ long S_LoadSave(long load_or_save, long mono);
 #define FindSFCursor	( (long(__cdecl*)(long, long)) 0x004ABA60 )
 #define DoSlider	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x004AD820 )
 #define CalculateNumSpecialFeatures	( (void(__cdecl*)()) 0x004AB9F0 )
-#define LoadScreen	( (void(__cdecl*)(long, long)) 0x004AC810 )
 #define DrawLoadingScreen	( (void(__cdecl*)()) 0x004ACAB0 )
-#define ReleaseScreen	( (void(__cdecl*)()) 0x004ACA30 )
