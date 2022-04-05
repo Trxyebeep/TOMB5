@@ -220,6 +220,77 @@ static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 		AddTriSorted(v, 0, 1, 2, &Tex, 1);
 	}
 }
+
+static void S_PrintSpriteShadow(short size, short* box, ITEM_INFO* item)
+{
+	SPRITESTRUCT* sprite;
+	TEXTURESTRUCT Tex;
+	D3DTLVERTEX v[4];
+	FVECTOR pos;
+	float xSize, zSize, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
+	long opt;
+
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 11];
+	xSize = float(size * (box[1] - box[0]) / 160) / 2;
+	zSize = float(size * (box[5] - box[4]) / 160) / 2;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, item->floor, item->pos.z_pos);
+	phd_RotY(item->pos.y_rot);
+
+	pos.x = -xSize;
+	pos.y = -16;
+	pos.z = zSize;
+	x1 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
+	y1 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
+	z1 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
+
+	pos.x = xSize;
+	pos.y = -16;
+	pos.z = zSize;
+	x2 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
+	y2 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
+	z2 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
+
+	pos.x = xSize;
+	pos.y = -16;
+	pos.z = -zSize;
+	x3 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
+	y3 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
+	z3 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
+
+	pos.x = -xSize;
+	pos.y = -16;
+	pos.z = -zSize;
+	x4 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
+	y4 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
+	z4 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
+	phd_PopMatrix();
+
+	setXYZ4(v, (long)x1, (long)y1, (long)z1, (long)x2, (long)y2, (long)z2, (long)x3, (long)y3, (long)z3, (long)x4, (long)y4, (long)z4, clipflags);
+
+	for (int i = 0; i < 4; i++)
+	{
+		v[i].color = 0xFF3C3C3C;
+		v[i].specular = 0xFF000000;
+	}
+
+	Tex.drawtype = 5;
+	Tex.flag = 0;
+	Tex.tpage = sprite->tpage;
+	Tex.u1 = sprite->x2;
+	Tex.v1 = sprite->y2;
+	Tex.u2 = sprite->x1;
+	Tex.v2 = sprite->y2;
+	Tex.u3 = sprite->x1;
+	Tex.v3 = sprite->y1;
+	Tex.u4 = sprite->x2;
+	Tex.v4 = sprite->y1;
+	opt = nPolyType;
+	nPolyType = 6;
+	AddQuadSorted(v, 0, 1, 2, 3, &Tex, 0);
+	nPolyType = opt;
+}
 #endif
 
 void S_PrintShadow(short size, short* box, ITEM_INFO* item)
@@ -241,7 +312,11 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 #ifdef SMOOTH_SHADOWS
 	if (tomb5.shadow_mode != 1)
 	{
-		S_PrintCircleShadow(size, box, item);
+		if (tomb5.shadow_mode == 4)
+			S_PrintSpriteShadow(size, box, item);
+		else
+			S_PrintCircleShadow(size, box, item);
+
 		return;
 	}
 #endif
