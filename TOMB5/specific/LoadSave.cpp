@@ -23,6 +23,7 @@
 #include "../tomb5/tomb5.h"
 #include "../tomb5/troyestuff.h"
 #endif
+#include "mmx.h"
 
 static long MonoScreenX[4] = { 0, 256, 512, 640 };
 static long MonoScreenY[3] = { 0, 256, 480 };
@@ -2236,6 +2237,52 @@ void ReleaseScreen()
 		Log(1, "%s Attempt To Release NULL Ptr", "Picture Surface");
 }
 
+void DrawLoadingScreen()
+{
+	DDSURFACEDESC2 surf;
+	ushort* pSrc;
+	uchar* pDest;
+	float xoff, yoff, xadd, yadd;
+	long w, h, val;
+	ushort sVal;
+
+	if (!(App.dx.Flags & 0x80))	//software mode bs
+	{
+		memset(&surf, 0, sizeof(surf));
+		surf.dwSize = sizeof(DDSURFACEDESC2);
+		screen_surface->Lock(0, &surf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
+		pSrc = (ushort*)surf.lpSurface;
+		pDest = (uchar*)MMXGetDeviceViewPort(App.dx.lpD3DDevice);
+		MMXGetBackSurfWH(w, h);
+		xadd = 640.0F / (float)w;
+		yadd = 480.0F / (float)h;
+		xoff = 0;
+		yoff = 0;
+		
+		for (int i = 0; i < h; i++)
+		{
+			for (int j = 0; j < w; j++)
+			{
+				val = long(640 * yoff + xoff);
+				xoff += xadd;
+				sVal = pSrc[val];
+				pDest[0] = sVal << 3;			//b
+				pDest[1] = (sVal >> 6) << 3;	//g
+				pDest[2] = (sVal >> 11) << 3;	//r
+				pDest[3] = 0xFF;				//a
+				pDest += 4;
+			}
+
+			xoff = 0;
+			yoff += yadd;
+		}
+
+		screen_surface->Unlock(0);
+	}
+	else
+		G_dxptr->lpBackBuffer->Blt(0, screen_surface, 0, DDBLT_WAIT, 0);
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2264,4 +2311,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004B1120, S_LoadSave, replace);
 	INJECT(0x004AC810, LoadScreen, replace);
 	INJECT(0x004ACA30, ReleaseScreen, replace);
+	INJECT(0x004ACAB0, DrawLoadingScreen, replace);
 }

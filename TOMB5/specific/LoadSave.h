@@ -33,6 +33,7 @@ void S_DisplayMonoScreen();
 long S_LoadSave(long load_or_save, long mono);
 void LoadScreen(long screen, long pathNum);
 void ReleaseScreen();
+void DrawLoadingScreen();
 
 #define GetSaveLoadFiles	( (void(__cdecl*)()) 0x004AD290 )
 #define S_PauseMenu	( (int(__cdecl*)()) 0x004B1030 )
@@ -43,4 +44,3 @@ void ReleaseScreen();
 #define FindSFCursor	( (long(__cdecl*)(long, long)) 0x004ABA60 )
 #define DoSlider	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x004AD820 )
 #define CalculateNumSpecialFeatures	( (void(__cdecl*)()) 0x004AB9F0 )
-#define DrawLoadingScreen	( (void(__cdecl*)()) 0x004ACAB0 )
