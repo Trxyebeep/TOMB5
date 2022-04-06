@@ -220,6 +220,77 @@ static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 		AddTriSorted(v, 0, 1, 2, &Tex, 1);
 	}
 }
+
+static void S_PrintSpriteShadow(short size, short* box, ITEM_INFO* item)
+{
+	SPRITESTRUCT* sprite;
+	TEXTURESTRUCT Tex;
+	D3DTLVERTEX v[4];
+	FVECTOR pos;
+	float xSize, zSize, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
+	long opt;
+
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 11];
+	xSize = float(size * (box[1] - box[0]) / 160) / 2;
+	zSize = float(size * (box[5] - box[4]) / 160) / 2;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, item->floor, item->pos.z_pos);
+	phd_RotY(item->pos.y_rot);
+
+	pos.x = -xSize;
+	pos.y = -16;
+	pos.z = zSize;
+	x1 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
+	y1 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
+	z1 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
+
+	pos.x = xSize;
+	pos.y = -16;
+	pos.z = zSize;
+	x2 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
+	y2 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
+	z2 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
+
+	pos.x = xSize;
+	pos.y = -16;
+	pos.z = -zSize;
+	x3 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
+	y3 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
+	z3 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
+
+	pos.x = -xSize;
+	pos.y = -16;
+	pos.z = -zSize;
+	x4 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
+	y4 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
+	z4 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
+	phd_PopMatrix();
+
+	setXYZ4(v, (long)x1, (long)y1, (long)z1, (long)x2, (long)y2, (long)z2, (long)x3, (long)y3, (long)z3, (long)x4, (long)y4, (long)z4, clipflags);
+
+	for (int i = 0; i < 4; i++)
+	{
+		v[i].color = 0xFF3C3C3C;
+		v[i].specular = 0xFF000000;
+	}
+
+	Tex.drawtype = 5;
+	Tex.flag = 0;
+	Tex.tpage = sprite->tpage;
+	Tex.u1 = sprite->x2;
+	Tex.v1 = sprite->y2;
+	Tex.u2 = sprite->x1;
+	Tex.v2 = sprite->y2;
+	Tex.u3 = sprite->x1;
+	Tex.v3 = sprite->y1;
+	Tex.u4 = sprite->x2;
+	Tex.v4 = sprite->y1;
+	opt = nPolyType;
+	nPolyType = 6;
+	AddQuadSorted(v, 0, 1, 2, 3, &Tex, 0);
+	nPolyType = opt;
+}
 #endif
 
 void S_PrintShadow(short size, short* box, ITEM_INFO* item)
@@ -241,7 +312,11 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 #ifdef SMOOTH_SHADOWS
 	if (tomb5.shadow_mode != 1)
 	{
-		S_PrintCircleShadow(size, box, item);
+		if (tomb5.shadow_mode == 4)
+			S_PrintSpriteShadow(size, box, item);
+		else
+			S_PrintCircleShadow(size, box, item);
+
 		return;
 	}
 #endif
@@ -462,7 +537,6 @@ void DrawLaserSightSprite()
 }
 
 #ifdef USE_SKY_SPRITE
-
 void SetSkyCoords(FVECTOR* vec, long segment, long def)
 {
 	if (segment == 1)	//bottom left
@@ -748,22 +822,28 @@ void DrawSkySegment(ulong color, long drawtype, long def, long seg, long zpos, l
 	phd_PopMatrix();
 }
 
-void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
+void DrawPSXSky(ulong color, long zpos, long ypos, long drawtype)
 {
 	for (int i = 1; i < 5; i++)
 		for (int j = 0; j < 4; j++)
 			DrawSkySegment(color, drawtype, j, i, zpos, ypos);
 }
-#else
+#endif
 void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 {
 	PHD_VECTOR vec[4];
 	D3DTLVERTEX v[4];
 	TEXTURESTRUCT Tex;
 	short* clip;
-	float perspz;
 	long x, y, z;
-	short clipdistance;
+
+#ifdef GENERAL_FIXES
+	if (tomb5.PSX_skies)
+	{
+		DrawPSXSky(color, zpos, ypos, drawtype);
+		return;
+	}
+#endif
 
 	phd_PushMatrix();
 
@@ -799,109 +879,13 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 	}
 
 	clip = clipflags;
-	v[0].tu = (float)vec[0].x;
-	v[0].tv = (float)vec[0].y;
-	v[0].sz = (float)vec[0].z;
-	clipdistance = 0;
-
-	if (v[0].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[0].sz;
-
-		if (v[0].sz > FogEnd)
-		{
-			v[0].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[0].sx = perspz * v[0].tu + f_centerx;
-		v[0].sy = perspz * v[0].tv + f_centery;
-		v[0].rhw = perspz * f_moneopersp;
-
-		if (v[0].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[0].sx)
-			clipdistance += 2;
-
-		if (v[0].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[0].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[0], (float)vec[0].x, (float)vec[0].y, (float)vec[0].z, clip);	//originally inlined
 	clip++;
-	v[1].tu = (float)vec[1].x;
-	v[1].tv = (float)vec[1].y;
-	v[1].sz = (float)vec[1].z;
-	clipdistance = 0;
-
-	if (v[1].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[1].sz;
-
-		if (v[1].sz > FogEnd)
-		{
-			v[1].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[1].sx = perspz * v[1].tu + f_centerx;
-		v[1].sy = perspz * v[1].tv + f_centery;
-		v[1].rhw = perspz * f_moneopersp;
-
-		if (v[1].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[1].sx)
-			clipdistance += 2;
-
-		if (v[1].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[1].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[1], (float)vec[1].x, (float)vec[1].y, (float)vec[1].z, clip);	//originally inlined
 	clip++;
-	v[2].tu = (float)vec[2].x;
-	v[2].tv = (float)vec[2].y;
-	v[2].sz = (float)vec[2].z;
-	clipdistance = 0;
-
-	if (v[2].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[2].sz;
-
-		if (v[2].sz > FogEnd)
-		{
-			v[2].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[2].sx = perspz * v[2].tu + f_centerx;
-		v[2].sy = perspz * v[2].tv + f_centery;
-		v[2].rhw = perspz * f_moneopersp;
-
-		if (v[2].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[2].sx)
-			clipdistance += 2;
-
-		if (v[2].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[2].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[2], (float)vec[2].x, (float)vec[2].y, (float)vec[2].z, clip);	//originally inlined
 	clip++;
-	_0x004C6BA0(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);
+	ClipCheckPoint(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);	//the only one that survived
 	Tex.drawtype = (ushort)drawtype;
 	Tex.flag = 0;
 	Tex.tpage = nTextures - 1;
@@ -942,116 +926,19 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 	}
 
 	clip = clipflags;
-	v[0].tu = (float)vec[0].x;
-	v[0].tv = (float)vec[0].y;
-	v[0].sz = (float)vec[0].z;
-	clipdistance = 0;
-
-	if (v[0].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[0].sz;
-
-		if (v[0].sz > FogEnd)
-		{
-			v[0].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[0].sx = perspz * v[0].tu + f_centerx;
-		v[0].sy = perspz * v[0].tv + f_centery;
-		v[0].rhw = perspz * f_moneopersp;
-
-		if (v[0].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[0].sx)
-			clipdistance += 2;
-
-		if (v[0].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[0].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[0], (float)vec[0].x, (float)vec[0].y, (float)vec[0].z, clip);	//originally inlined
 	clip++;
-	v[1].tu = (float)vec[1].x;
-	v[1].tv = (float)vec[1].y;
-	v[1].sz = (float)vec[1].z;
-	clipdistance = 0;
-
-	if (v[1].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[1].sz;
-
-		if (v[1].sz > FogEnd)
-		{
-			v[1].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[1].sx = perspz * v[1].tu + f_centerx;
-		v[1].sy = perspz * v[1].tv + f_centery;
-		v[1].rhw = perspz * f_moneopersp;
-
-		if (v[1].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[1].sx)
-			clipdistance += 2;
-
-		if (v[1].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[1].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[1], (float)vec[1].x, (float)vec[1].y, (float)vec[1].z, clip);	//originally inlined
 	clip++;
-	v[2].tu = (float)vec[2].x;
-	v[2].tv = (float)vec[2].y;
-	v[2].sz = (float)vec[2].z;
-	clipdistance = 0;
-
-	if (v[2].sz < f_mznear)
-		clipdistance = -128;
-	else
-	{
-		perspz = f_mpersp / v[2].sz;
-
-		if (v[2].sz > FogEnd)
-		{
-			v[2].sz = f_zfar;
-			clipdistance = 256;
-		}
-
-		v[2].sx = perspz * v[2].tu + f_centerx;
-		v[2].sy = perspz * v[2].tv + f_centery;
-		v[2].rhw = perspz * f_moneopersp;
-
-		if (v[2].sx < phd_winxmin)
-			clipdistance++;
-		else if (phd_winxmax < v[2].sx)
-			clipdistance += 2;
-
-		if (v[2].sy < phd_winymin)
-			clipdistance += 4;
-		else if (v[2].sy > phd_winymax)
-			clipdistance += 8;
-	}
-
-	clip[0] = clipdistance;
+	ClipCheckPoint(&v[2], (float)vec[2].x, (float)vec[2].y, (float)vec[2].z, clip);	//originally inlined
 	clip++;
-	_0x004C6BA0(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);
+	ClipCheckPoint(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);	//the only one that survived
 
-	if (gfCurrentLevel != 0)
+	if (gfCurrentLevel)
 		AddQuadSorted(v, 3, 2, 1, 0, &Tex, 1);
 
 	phd_PopMatrix();
 }
-#endif
 
 void S_DrawDarts(ITEM_INFO* item)
 {
@@ -1151,8 +1038,8 @@ void DrawMoon()
 		tex.v4 = sprite->y2;
 		tex.tpage = tpage;
 #ifdef GENERAL_FIXES
-		tex.drawtype = 1;
-		AddQuadSubdivide(v, 0, 1, 3, 2, &tex, 1);
+		tex.drawtype = 2;
+		AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
 #else
 		tex.drawtype = 0;
 		AddQuadZBuffer(v, 0, 1, 3, 2, &tex, 1);
@@ -1227,6 +1114,146 @@ void DrawGasCloud(ITEM_INFO* item)
 		item->item_flags[0] = 1;
 }
 
+#ifdef GENERAL_FIXES
+STARS stars[2048];
+
+static void DrawStars()
+{
+	STARS* star;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	static long first_time = 0;
+	float x, y, z, fx, fy, fz, bx, by, sv;
+	long col, r, g, b;
+
+	if (!first_time)
+	{
+		for (int i = 0; i < 2048; i++)
+		{
+			star = &stars[i];
+
+			if (i > 1792)
+			{
+				star->pos.x = ((rand() & 0x1FF) + 32) * fSin(i * 512);
+				star->pos.z = ((rand() & 0x1FF) + 32) * fCos(i * 512);
+			}
+			else
+			{
+				star->pos.x = ((rand() & 0x7FF) + 512) * fSin(i * 512);
+				star->pos.z = ((rand() & 0x7FF) + 512) * fCos(i * 512);
+			}
+
+			star->pos.y = (float)(-rand() % 1900);
+			star->sv = (rand() & 1) + 1.0F;
+			col = rand() & 0x3F;
+			star->col = RGBONLY(col + 160, col + 160, col + 160);
+		}
+
+		first_time = 1;
+	}
+
+	tex.drawtype = 0;
+	tex.tpage = 0;
+	tex.flag = 0;
+	phd_PushMatrix();
+	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
+	SetD3DViewMatrix();
+	phd_PopMatrix();
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+
+	for (int i = 0; i < 2048; i++)
+	{
+		star = &stars[i];
+		fx = star->pos.x;
+		fy = star->pos.y;
+		fz = star->pos.z;
+		col = star->col;
+
+		if (GlobalCounter & 1)
+		{
+			r = CLRR(col);
+			g = CLRG(col);
+			b = CLRB(col);
+			col = GetRandomControl() & 0x3F;
+
+			if (GetRandomControl() & 1)
+				col = -col;
+
+			r -= col;
+			g -= col;
+			b -= col;
+
+			if (r > 255)
+				r = 255;
+			else if (r < 0)
+				r = 0;
+
+			if (g > 255)
+				g = 255;
+			else if (g < 0)
+				g = 0;
+
+			if (b > 255)
+				b = 255;
+			else if (b < 0)
+				b = 0;
+
+			col = RGBONLY(r, g, b);
+			star->col = col;
+		}
+
+		sv = star->sv;
+		x = fx * D3DMView._11 + fy * D3DMView._21 + fz * D3DMView._31;
+		y = fx * D3DMView._12 + fy * D3DMView._22 + fz * D3DMView._32;
+		z = fx * D3DMView._13 + fy * D3DMView._23 + fz * D3DMView._33;
+		
+
+		if (z >= f_mznear)
+		{
+			fz = f_mpersp / z;
+			bx = fz * x + f_centerx;
+			by = fz * y + f_centery;
+
+			if (bx >= 0 && bx <= (float)phd_winxmax && by >= 0 && by <= (float)phd_winymax)
+			{
+				v[0].sx = bx;
+				v[0].sy = by;
+				v[0].color = col;
+				v[0].specular = 0xFF000000;
+				v[0].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[0].tu = 0;
+				v[0].tv = 0;
+				v[1].sx = bx + sv;
+				v[1].sy = by;
+				v[1].color = col;
+				v[1].specular = 0xFF000000;
+				v[1].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[1].tu = 0;
+				v[1].tv = 0;
+				v[2].sx = bx;
+				v[2].sy = by + sv;
+				v[2].color = col;
+				v[2].specular = 0xFF000000;
+				v[2].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[2].tu = 0;
+				v[2].tv = 0;
+				v[3].sx = bx + sv;
+				v[3].sy = by + sv;
+				v[3].color = col;
+				v[3].specular = 0xFF000000;
+				v[3].rhw = f_mpersp / f_mzfar * f_moneopersp;
+				v[3].tu = 0;
+				v[3].tv = 0;
+				AddQuadZBuffer(v, 0, 1, 3, 2, &tex, 1);
+			}
+		}
+	}
+}
+#endif
+
 void DrawStarField()
 {
 	D3DTLVERTEX v[4];
@@ -1236,6 +1263,11 @@ void DrawStarField()
 	long* pCol;
 	float x, y, z, fx, fy, fz, bx, by;
 	long col;
+
+#ifdef GENERAL_FIXES
+	DrawStars();
+	return;
+#endif
 
 	if (!first_time)
 	{
@@ -2101,6 +2133,162 @@ void OutputSky()
 	InitialiseSortList();
 }
 
+void DoScreenFade()
+{
+#ifdef GENERAL_FIXES
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	long a;
+
+	a = FadeVal << 24;
+	FadeVal += FadeStep;
+	FadeCnt++;
+
+	if (FadeCnt > 8)
+	{
+		DoFade = 2;
+		a = FadeEnd << 24;
+	}
+
+	v[0].sx = 0;
+	v[0].sy = 0;
+	v[0].sz = 0;
+	v[0].rhw = f_moneoznear;
+	v[0].color = a;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = float(phd_winxmax + 1);
+	v[1].sy = (float)phd_winymin;
+	v[1].sz = 0;
+	v[1].rhw = f_moneoznear;
+	v[1].color = a;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = float(phd_winxmax + 1);
+	v[2].sy = float(phd_winymax + 1);
+	v[2].sz = 0;
+	v[2].rhw = f_moneoznear;
+	v[2].color = a;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = (float)phd_winxmin;
+	v[3].sy = float(phd_winymax + 1);
+	v[3].sz = 0;
+	v[3].rhw = f_moneoznear;
+	v[3].color = a;
+	v[3].specular = 0xFF000000;
+
+	tex.drawtype = 3;
+	tex.flag = 0;
+	tex.tpage = 0;
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+#else
+	FadeVal += FadeStep;
+	FadeCnt++;
+
+	if (FadeCnt > 8)
+		DoFade = 2;
+
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+#endif
+}
+
+void ClipCheckPoint(D3DTLVERTEX* v, float x, float y, float z, short* clip)
+{
+	float perspz;
+	short clipdistance;
+
+	v->tu = x;
+	v->tv = y;
+	v->sz = z;
+	clipdistance = 0;
+
+	if (v->sz < f_mznear)
+		clipdistance = -128;
+	else
+	{
+		perspz = f_mpersp / v->sz;
+
+		if (v->sz > FogEnd)
+		{
+			v->sz = f_zfar;
+			clipdistance = 256;
+		}
+
+		v->sx = perspz * v->tu + f_centerx;
+		v->sy = perspz * v->tv + f_centery;
+		v->rhw = perspz * f_moneopersp;
+
+		if (v->sx < phd_winxmin)
+			clipdistance++;
+		else if (phd_winxmax < v->sx)
+			clipdistance += 2;
+
+		if (v->sy < phd_winymin)
+			clipdistance += 4;
+		else if (v->sy > phd_winymax)
+			clipdistance += 8;
+	}
+
+	clip[0] = clipdistance;
+}
+
+void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long col)
+{
+	float x, y, z, vx, vy, vz, zv;
+	short clip;
+
+	for (int i = 0; i < nVtx; i++)
+	{
+		clip = 0;
+		vx = vec->vx;
+		vy = vec->vy;
+		vz = vec->vz;
+		x = D3DMView._11 * vx + D3DMView._21 * vy + D3DMView._31 * vz + D3DMView._41;
+		y = D3DMView._12 * vx + D3DMView._22 * vy + D3DMView._32 * vz + D3DMView._42;
+		z = D3DMView._13 * vx + D3DMView._23 * vy + D3DMView._33 * vz + D3DMView._43;
+		v->tu = x;
+		v->tv = y;
+
+		if (z < f_mznear)
+			clip = -128;
+		else
+		{
+			zv = f_mpersp / z;
+			x = x * zv + f_centerx;
+			y = y * zv + f_centery;
+			v->rhw = f_moneopersp * zv;
+
+			if (x < f_left)
+				clip = 1;
+			else if (x > f_right)
+				clip = 2;
+
+			if (y < f_top)
+				clip += 4;
+			else if (y > f_bottom)
+				clip += 8;
+
+			v->sx = x;
+			v->sy = y;
+		}
+
+		v->sz = z;
+		v->color = col;
+		v->specular = 0xFF000000;
+		*c++ = clip;
+		v++;
+		vec++;
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2117,4 +2305,7 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C4790, S_DrawDrawSparksNEW, replace);
 	INJECT(0x004BF3C0, DoRain, replace);
 	INJECT(0x004C6D10, OutputSky, replace);
+	INJECT(0x004CA770, DoScreenFade, replace);
+	INJECT(0x004C6BA0, ClipCheckPoint, replace);
+	INJECT(0x004CD750, aTransformPerspSV, replace);
 }

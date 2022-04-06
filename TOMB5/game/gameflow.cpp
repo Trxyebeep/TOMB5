@@ -643,7 +643,7 @@ int TitleOptions()
 		}
 	}
 
-	if (thread_started)
+	if (MainThread.ended)
 		return 4;
 
 	if (ret)
@@ -743,6 +743,11 @@ void DoTitle(uchar name, uchar audio)
 
 	if (gfLevelComplete == 1 && gfStatus != 2)
 		PlayFmvNow(2, 1);
+
+#ifdef GENERAL_FIXES
+	if (gfStatus != 4 && tomb5.tr4_loadscreens)
+		RenderLoadPic(0);
+#endif
 
 	if (gfStatus != 4)
 		input = 0;
@@ -959,6 +964,11 @@ void DoLevel(uchar Name, uchar Audio)
 	lara.examine1 = 0;
 	lara.examine2 = 0;
 	lara.examine3 = 0;
+
+#ifdef GENERAL_FIXES
+	if (tomb5.tr4_loadscreens)
+		RenderLoadPic(0);
+#endif
 
 	if (gfStatus == 3 && gfCurrentLevel == LVL5_RED_ALERT)
 	{

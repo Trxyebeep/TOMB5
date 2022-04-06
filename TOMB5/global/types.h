@@ -44,6 +44,14 @@ do \
 #define SCRIPT_TEXT_bis(num)	(&gfStringWad[gfStringOffset_bis[num]])
 #define SetVecXYZ(num, X, Y, Z)	 vec[(num)].x = (X); vec[(num)].y = (Y); vec[(num)].z = (Z);
 
+	/**********************************/
+#define OPEN	( (FILE*(__cdecl*)(const char*, const char*)) 0x004E46E0 )
+#define SEEK	( (int(__cdecl*)(FILE*, int, int)) 0x004E1F30 )
+#define READ	( (size_t(__cdecl*)(void*, size_t, size_t, FILE*)) 0x004E1D20 )
+#define TELL	( (int(__cdecl*)(FILE*)) 0x004E4700 )
+#define CLOSE	( (int(__cdecl*)(FILE*)) 0x004E20D0 )
+	/**********************************/
+
 /*typedefs*/
 typedef unsigned char uchar;
 typedef unsigned short ushort;
@@ -2326,6 +2334,21 @@ struct ROOMLET_LIGHT
 	long type;
 };
 
+struct THREAD
+{
+	volatile long active;
+	long unk;
+	volatile long ended;
+	ulong handle;
+	ulong address;
+};
+
+struct MONOSCREEN_STRUCT
+{
+	IDirect3DTexture2* tex;
+	LPDIRECTDRAWSURFACE4 surface;
+};
+
 #ifdef IMPROVED_BARS
 struct GouraudBarColourSet
 {
@@ -2339,6 +2362,40 @@ struct GouraudBarColourSet
 #endif
 
 #ifdef GENERAL_FIXES
+struct COLOR_BIT_MASKS
+{
+	ulong dwRBitMask;
+	ulong dwGBitMask;
+	ulong dwBBitMask;
+	ulong dwRGBAlphaBitMask;
+	ulong dwRBitDepth;
+	ulong dwGBitDepth;
+	ulong dwBBitDepth;
+	ulong dwRGBAlphaBitDepth;
+	ulong dwRBitOffset;
+	ulong dwGBitOffset;
+	ulong dwBBitOffset;
+	ulong dwRGBAlphaBitOffset;
+};
+
+struct TR4LS
+{
+	long px;
+	long py;
+	long pz;
+	long tx;
+	long ty;
+	long tz;
+	uchar rn;
+};
+
+struct STARS
+{
+	FVECTOR pos;
+	float sv;
+	long col;
+};
+
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
 	bool footprints;			//on off
@@ -2355,6 +2412,10 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool fog;					//on off
 	bool tr4_camera;			//on off (1 -> TR4, 0 -> TR5)
 	ulong bar_mode;				//1-> original, 2-> TR4, 3-> PSX
+	bool crawltilt;				//on off
+	bool PSX_skies;				//on off
+	bool tr4_loadscreens;		//on off
+	bool tr4_loadbar;			//on off
 };
 #endif
 #pragma pack(pop)

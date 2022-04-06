@@ -6,8 +6,11 @@
 #include "lighting.h"
 #include "function_table.h"
 #include "../game/gameflow.h"
+#include "../game/effects.h"
+#include "specificfx.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
+#include "../game/draw.h"
 #endif
 
 void S_DrawPickup(short object_number)
@@ -1121,75 +1124,194 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 
 void phd_PutPolygons_train(short* objptr, long x)
 {
-	//in TR4 this function draws stuff with a translation on X, but more importantly, with NO lighting.
-	//it was used for train stuff, obv, but also flares/scarabs, etc. anything that didn't need lighting.
-	//then a TR5 smartass decided to replace it with just phd_PutPolygons which causes lighting bugs on flares, rats, bats, and spiders.
-#ifndef GENERAL_FIXES
-	phd_PutPolygons(objptr, x);
-#else
-	//minimalistic version of phd_PutPolygons without lighting ahoy. decompiled from TR4
-	MESH_DATA* mesh;
-	TEXTURESTRUCT* pTex;
-	short* quad;
-	short* tri;
-	ushort drawbak;
+	phd_PutPolygons(objptr, x);	//thanks alex
+}
 
-	phd_PushMatrix();
-	SetD3DViewMatrix();
-	mesh = (MESH_DATA*)objptr;
-	phd_PopMatrix();
+#ifdef GENERAL_FIXES
+TR4LS tr4_load_screens[15] =
+{
+	{30548, 1770, 14103, 29452, 1576, 14853, 36},			//Title
+	{58434, -634, 42783, 57337, -1048, 40945, 59},			//Streets of Rome
+	{71226, 336, 32992, 71875, -568, 33761, 23},			//Trajan's Markets
+	{37136, -111, 31451, 38734, 343, 33029, 47},			//Colosseum
+	{46136, -6491, 27144, 46971, -6059, 28119, 95},			//The Base
+	{57948, 3115, 47907, 56425, 3509, 50335, 49},			//Sub
+	{22752, 14192, 63136, 24777, 13541, 61615, 11},			//Deepsea
+	{61212, -1112, 58204, 59492, -582, 57087, 4},			//Sinking
+	{63265, 8282, 62685, 63871, 8091, 64431, 113},			//Gallows
+	{48924, 18279, 38112, 47348, 19063, 39496, 55},			//Labyrinth
+	{36048, 9395, 41333, 36985, 8725, 42910, 101},			//Old Mill
+	{34286, -5004, 44626, 34288, -3651, 44523, 16},			//13th
+	{18204, -24322, 69690, 17000, -25322, 67556, 97},		//Iris
+	{46959, -1147, 71996, 47934, -1109, 70446, 0},			//Security breach cut
+	{51416, -2639, 47734, 51437, -2444, 36968, 119},		//Red Alert
+};
 
-	if (objptr)
+static inline void GetLoadScreenCam()
+{
+	TR4LS* ls;
+
+	ls = &tr4_load_screens[gfCurrentLevel];
+	load_cam.x = ls->px;
+	load_cam.y = ls->py;
+	load_cam.z = ls->pz;
+	load_target.x = ls->tx;
+	load_target.y = ls->ty;
+	load_target.z = ls->tz;
+	load_roomnum = ls->rn;
+}
+#endif
+
+void RenderLoadPic(long unused)
+{
+	short poisoned;
+
+#ifdef GENERAL_FIXES
+	GetLoadScreenCam();
+#endif
+	camera.pos.x = load_cam.x;
+	camera.pos.y = load_cam.y;
+	camera.pos.z = load_cam.z;
+	lara_item->pos.x_pos = camera.pos.x;
+	lara_item->pos.y_pos = camera.pos.y;
+	lara_item->pos.z_pos = camera.pos.z;
+	camera.target.x = load_target.x;
+	camera.target.y = load_target.y;
+	camera.target.z = load_target.z;
+	camera.pos.room_number = load_roomnum;
+
+	if (load_roomnum == 255)
+		return;
+
+	KillActiveBaddies((ITEM_INFO*)0xABCDEF);
+	SetFade(255, 0);
+	poisoned = lara.poisoned;
+	FadeScreenHeight = 0;
+	lara.poisoned = 0;
+	GlobalFogOff = 1;
+	BinocularRange = 0;
+
+	if (App.dx.InScene)
+		_EndScene();
+
+#ifdef GENERAL_FIXES
+	do
 	{
-		ClearObjectLighting();
-		ClearDynamicLighting();
-		App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_AMBIENT, 0xFFFFFF);	//THIS
-		clip_left = f_left;
-		clip_top = f_top;
-		clip_right = f_right;
-		clip_bottom = f_bottom;
+		phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+		S_InitialisePolyList();
+		RenderIt(camera.pos.room_number);
+		S_OutputPolyList();
+		S_DumpScreen();
 
-		if (aCheckMeshClip(mesh))
+	} while (DoFade != 2);
+
+	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
+	S_InitialisePolyList();
+	RenderIt(camera.pos.room_number);
+	S_OutputPolyList();
+	S_DumpScreen();
+#endif
+
+	lara.poisoned = poisoned;
+	GlobalFogOff = 0;
+}
+
+long S_GetObjectBounds(short* bounds)
+{
+	FVECTOR vtx[8];
+	float xMin, xMax, yMin, yMax, zMin, zMax, numZ, xv, yv, zv;
+
+	if (phd_mxptr[11] >= phd_zfar && !outside)
+		return 0;
+
+	xMin = bounds[0];
+	xMax = bounds[1];
+	yMin = bounds[2];
+	yMax = bounds[3];
+	zMin = bounds[4];
+	zMax = bounds[5];
+
+	vtx[0].x = xMin;
+	vtx[0].y = yMin;
+	vtx[0].z = zMin;
+
+	vtx[1].x = xMax;
+	vtx[1].y = yMin;
+	vtx[1].z = zMin;
+
+	vtx[2].x = xMax;
+	vtx[2].y = yMax;
+	vtx[2].z = zMin;
+
+	vtx[3].x = xMin;
+	vtx[3].y = yMax;
+	vtx[3].z = zMin;
+
+	vtx[4].x = xMin;
+	vtx[4].y = yMin;
+	vtx[4].z = zMax;
+
+	vtx[5].x = xMax;
+	vtx[5].y = yMin;
+	vtx[5].z = zMax;
+
+	vtx[6].x = xMax;
+	vtx[6].y = yMax;
+	vtx[6].z = zMax;
+
+	vtx[7].x = xMin;
+	vtx[7].y = yMax;
+	vtx[7].z = zMax;
+
+	xMin = (float)0x3FFFFFFF;
+	xMax = (float)-0x3FFFFFFF;
+	yMin = (float)0x3FFFFFFF;
+	yMax = (float)-0x3FFFFFFF;
+	numZ = 0;
+
+	for (int i = 0; i < 8; i++)
+	{
+		zv = vtx[i].x * phd_mxptr[M20] + vtx[i].y * phd_mxptr[M21] + vtx[i].z * phd_mxptr[M22] + phd_mxptr[M23];
+
+		if (zv > phd_znear && phd_zfar > zv)
 		{
-			aTransformLightClipMesh(mesh);
-			quad = mesh->gt4;
+			numZ++;
+			zv /= phd_persp;
 
-			for (int i = 0; i < mesh->ngt4; i++, quad += 6)
-			{
-				pTex = &textinfo[quad[4] & 0x7FFF];
-				drawbak = pTex->drawtype;
+			if (!zv)
+				zv = 1;
 
-				if (quad[5] & 1)
-					pTex->drawtype = 2;
+			zv = 1 / zv;
+			xv = zv * (vtx[i].x * phd_mxptr[M00] + vtx[i].y * phd_mxptr[M01] + vtx[i].z * phd_mxptr[M02] + phd_mxptr[M03]);
 
-				if (!pTex->drawtype)
-					AddQuadZBuffer(aVertexBuffer, quad[0], quad[1], quad[2], quad[3], pTex, 0);
-				else if (pTex->drawtype <= 2)
-					AddQuadSorted(aVertexBuffer, quad[0], quad[1], quad[2], quad[3], pTex, 0);
+			if (xv < xMin)
+				xMin = xv;
 
-				pTex->drawtype = drawbak;
-			}
+			if (xv > xMax)
+				xMax = xv;
 
-			tri = mesh->gt3;
+			yv = zv * (vtx[i].x * phd_mxptr[M10] + vtx[i].y * phd_mxptr[M11] + vtx[i].z * phd_mxptr[M12] + phd_mxptr[M13]);
 
-			for (int i = 0; i < mesh->ngt3; i++, tri += 5)
-			{
-				pTex = &textinfo[tri[3] & 0x7FFF];
-				drawbak = pTex->drawtype;
+			if (yv < yMin)
+				yMin = yv;
 
-				if (tri[4] & 1)
-					pTex->drawtype = 2;
-
-				if (!pTex->drawtype)
-					AddTriZBuffer(aVertexBuffer, tri[0], tri[1], tri[2], pTex, 0);
-				else if (pTex->drawtype <= 2)
-					AddTriSorted(aVertexBuffer, tri[0], tri[1], tri[2], pTex, 0);
-
-				pTex->drawtype = drawbak;
-			}
+			if (yv > yMax)
+				yMax = yv;
 		}
 	}
-#endif
+
+	xMin += phd_centerx;
+	xMax += phd_centerx;
+	yMin += phd_centery;
+	yMax += phd_centery;
+
+	if (numZ < 8 || xMin < 0 || yMin < 0 || phd_winxmax < xMax || phd_winymax < yMax)
+		return -1;
+
+	if (phd_right >= xMin && phd_bottom >= yMin && phd_left <= xMax && phd_top <= yMax)
+		return 1;
+	else
+		return 0;
 }
 
 void inject_output(bool replace)
@@ -1201,5 +1323,7 @@ void inject_output(bool replace)
 	INJECT(0x004B66B0, phd_PutPolygonsPickup, replace);
 	INJECT(0x004B35F0, aTransformLightPrelightClipMesh, replace);
 	INJECT(0x004B74A0, phd_PutPolygons_train, replace);
+	INJECT(0x004B8660, RenderLoadPic, replace);
+	INJECT(0x004B7EB0, S_GetObjectBounds, replace);
 }
 

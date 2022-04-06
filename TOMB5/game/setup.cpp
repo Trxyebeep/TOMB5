@@ -1571,6 +1571,7 @@ void BaddyObjects()
 		obj->object_mip = 5120;
 		obj->intelligent = 1;
 		obj->HitEffect = 3;
+		obj->undead = 1;
 		obj->save_position = 1;
 		obj->save_hitpoints = 1;
 		obj->save_flags = 1;

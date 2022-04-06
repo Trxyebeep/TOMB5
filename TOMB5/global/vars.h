@@ -48,7 +48,6 @@
 #define GLOBAL_inventoryitemchosen	VAR_U_(0x00508E1C, int)
 #define reset_flag	VAR_U_(0x0051CA6C, int)
 #define FadeScreenHeight	VAR_U_(0x0051D074, short)
-#define thread_started	VAR_U_(0x00876C48, bool)
 #define SniperCamActive	VAR_U_(0x0051CA1D, char)
 #define BinocularRange	VAR_U_(0x0051CA30, long)
 #define BinocularOn	VAR_U_(0x0051CA34, long)
@@ -120,6 +119,7 @@
 #define gfScriptWad	VAR_U_(0x0051CE20, uchar*)
 #define	gfStringWad	VAR_U_(0x00E5C310, char*)
 #define	gfFilenameWad	VAR_U_(0x00E5C2CC, char*)
+#define gfFilenameOffset	VAR_U_(0x00E5C34C, ushort*)
 #define gfScriptOffset	VAR_U_(0x0051CE10, ushort*)
 #define	gfStringOffset	VAR_U_(0x00E5C2AC, ushort*)
 #define gfStringOffset_bis	VAR_U_(0x00E5C2B8, ushort*)
@@ -289,6 +289,8 @@
 #define	phd_winxmin	VAR_U_(0x0055D234, short)
 #define	phd_winymax	VAR_U_(0x0055D240, short)
 #define	phd_winymin	VAR_U_(0x0055D1E8, short)
+#define phd_znear	VAR_U_(0x0055D21C, long)
+#define phd_zfar	VAR_U_(0x0055D1F4, long)
 #define phd_mxptr	VAR_U_(0x00E4B0F8, long*)
 #define aMXPtr	VAR_U_(0x0055DA2C, float*)
 #define IM_rate	VAR_U_(0x00E6E464, long)
@@ -563,12 +565,30 @@
 #define DEL_playingamefmv	VAR_U_(0x0051CE24, char)
 #define num_level_meshes	VAR_U_(0x007DFFE4, long)
 #define mesh_vtxbuf	VAR_U_(0x007DFFE0, MESH_DATA**)
+#define loadbar_steps	VAR_U_(0x008BBD94, float)
+#define loadbar_pos	VAR_U_(0x008BBD90, float)
+#define loadbar_maxpos	VAR_U_(0x008BBD64, long)
+#define loadbar_on	VAR_U_(0x008FBDC0, long)
+#define MainThread	VAR_U_(0x00876C40, THREAD)
+#define LevelLoadingThread	VAR_U_(0x00874968, THREAD)
+#define load_cam	VAR_U_(0x00875198, PHD_VECTOR)
+#define load_target	VAR_U_(0x008751A4, PHD_VECTOR)
+#define load_roomnum	VAR_U_(0x005165CD, char)
+#define DoFade	VAR_U_(0x00C87BF0, long)
+#define FadeVal	VAR_U_(0x00C86BE8, long)
+#define FadeStep	VAR_U_(0x00C713D4, long)
+#define FadeCnt	VAR_U_(0x00C713DC, long)
+#define FadeEnd	VAR_U_(0x00C713E0, long)
+#define DestVB  VAR_U_(0x00D9AAC8, LPDIRECT3DVERTEXBUFFER)
+#define wav_file_buffer	VAR_U_(0x0057A004, uchar*)
+#define ADPCMBuffer	VAR_U_(0x0057A008, uchar*)
+#define gfScriptFile	VAR_U_(0x00E5C2EC, uchar*)
+#define gfLanguageFile	VAR_U_(0x00E5C2AC, uchar*)
+#define screen_surface	VAR_U_(0x0087BD58, LPDIRECTDRAWSURFACE4)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, int)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
 //if 0 + playing cut menu selections dont make a sound. never seems to be the case though!
-
-#define DoFade	VAR_U_(0x00C87BF0, int)// 2 everywhere, 1 in loading screens
 
 #define title_string	ARRAY_(0x0050842C, char, [8])
 
@@ -706,6 +726,7 @@
 #define RoomletFogBulbs	ARRAY_(0x007DFC18, FOGBULB_STRUCT, [16])
 #define ActiveFogBulbs	ARRAY_(0x007E7FF0, FOGBULB_STRUCT, [64])
 #define fog_bulbs	ARRAY_(0x007ED0F8, FOGBULB, [64])
+#define MonoScreen	ARRAY_(0x008BBD68, MONOSCREEN_STRUCT, [5])
 
 /****************/
 //registry
@@ -722,6 +743,7 @@
 #define NO_ROOM	255
 #define MAX_ITEMS	256
 #define MAX_SAMPLES	450
+#define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
 
 //unknowns
 #define UNK_00E916F0	VAR_U_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init

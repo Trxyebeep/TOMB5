@@ -30,6 +30,7 @@ void CalculateObjectLightingLara();
 long GetFrames(ITEM_INFO* item, short* frm[], long* rate);
 void SetupSkelebobMeshswaps();
 void RestoreLaraMeshswaps();
+void RenderIt(short current_room);
 
 extern short no_rotation[];
 
@@ -41,3 +42,4 @@ extern short no_rotation[];
 #define calc_animating_item_clip_window	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042B4C0 )
 #define DrawStaticObjects	( (void(__cdecl*)(short)) 0x0042D060 )
 #define DrawEffect	( (void(__cdecl*)(short)) 0x0042B340 )
+#define PrintRooms	( (void(__cdecl*)(short)) 0x0042E1C0 )

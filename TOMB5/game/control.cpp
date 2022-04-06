@@ -87,6 +87,9 @@ long ControlPhase(long _nframes, int demo_mode)
 	{
 		GlobalCounter++;
 		UpdateSky();
+#ifdef DISCORD_RPC
+		RPC_Update();
+#endif
 
 		if (cdtrack > 0)
 			S_CDLoop();
@@ -190,7 +193,7 @@ long ControlPhase(long _nframes, int demo_mode)
 			}
 		}
 
-		if (thread_started)
+		if (MainThread.ended)
 			return 4;
 
 		if ((input & IN_LOOK) && !SniperCamActive && !bUseSpotCam && !bTrackCamInit &&

@@ -1,6 +1,7 @@
 #include "../tomb5/pch.h"
 #include "tomb5.h"
 #include "../specific/registry.h"
+#include "libs/discordRPC/discord_rpc.h"
 
 tomb5_options tomb5;
 
@@ -69,6 +70,22 @@ void init_tomb5_stuff()
 		sprintf(buf, "barMode");
 		tomb5.bar_mode = 3;								//PSX
 		REG_WriteLong(buf, tomb5.bar_mode);
+
+		sprintf(buf, "crawltilt");
+		tomb5.crawltilt = 1;							//on
+		REG_WriteBool(buf, tomb5.crawltilt);
+
+		sprintf(buf, "psxsky");
+		tomb5.PSX_skies = 1;							//on
+		REG_WriteBool(buf, tomb5.PSX_skies);
+
+		sprintf(buf, "tr4LS");
+		tomb5.tr4_loadscreens = 1;						//on
+		REG_WriteBool(buf, tomb5.tr4_loadscreens);
+
+		sprintf(buf, "tr4LB");
+		tomb5.tr4_loadbar = 1;							//on
+		REG_WriteBool(buf, tomb5.tr4_loadbar);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -113,6 +130,18 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "barMode");
 		REG_ReadLong(buf, tomb5.bar_mode, 3);
+
+		sprintf(buf, "crawltilt");
+		REG_ReadBool(buf, tomb5.crawltilt, 1);
+
+		sprintf(buf, "psxsky");
+		REG_ReadBool(buf, tomb5.PSX_skies, 1);
+
+		sprintf(buf, "tr4LS");
+		REG_ReadBool(buf, tomb5.tr4_loadscreens, 1);
+
+		sprintf(buf, "tr4LB");
+		REG_ReadBool(buf, tomb5.tr4_loadbar, 1);
 	}
 
 	CloseRegistry();
@@ -165,5 +194,147 @@ void save_new_tomb5_settings()
 	sprintf(buf, "barMode");
 	REG_WriteLong(buf, tomb5.bar_mode);
 
+	sprintf(buf, "crawltilt");
+	REG_WriteBool(buf, tomb5.crawltilt);
+
+	sprintf(buf, "psxsky");
+	REG_WriteBool(buf, tomb5.PSX_skies);
+
+	sprintf(buf, "tr4LS");
+	REG_WriteBool(buf, tomb5.tr4_loadscreens);
+
+	sprintf(buf, "tr4LB");
+	REG_WriteBool(buf, tomb5.tr4_loadbar);
+
 	CloseRegistry();
+}
+
+void RPC_Init()
+{
+	DiscordEventHandlers handlers;
+
+	memset(&handlers, 0, sizeof(handlers));
+	Discord_Initialize("959220032787869751", &handlers, 1, 0);
+}
+
+const char* RPC_GetLevelName()
+{
+	if (!gfCurrentLevel)
+	{
+		if (bDoCredits)
+			return "In Credits";
+		else
+			return "In Title";
+	}
+	else
+		return SCRIPT_TEXT(gfLevelNames[gfCurrentLevel]);
+}
+
+const char* RPC_GetTimer()
+{
+	long sec, days, hours, min;
+	static char buf[64];
+
+	sec = GameTimer / 30;
+	days = sec / 86400;
+	hours = (sec % 86400) / 3600;
+	min = (sec / 60) % 60;
+	sec = (sec % 60);
+	sprintf(buf, "Time Taken: %02d:%02d:%02d", (days * 24) + hours, min, sec);
+	return buf;
+}
+
+const char* RPC_GetLevelPic()
+{
+	switch (gfCurrentLevel)
+	{
+	case 1:
+		return "rome";
+
+	case 2:
+		return "streets";
+
+	case 3:
+		return "colosseum";
+
+	case 4:
+		return "base";
+
+	case 5:
+		return "submarine";
+
+	case 6:
+		return "deepsea";
+
+	case 7:
+		return "sink";
+
+	case 8:
+		return "gallow1";
+
+	case 9:
+		return "laby";
+
+	case 10:
+		return "mill";
+
+	case 11:
+		return "13th";
+
+	case 12:
+		return "iris";
+
+	case 13:
+		return "breach";
+
+	case 14:
+		return "alert";
+
+	default:
+		return "default";
+	}
+	
+}
+
+const char* RPC_GetHealthPic()
+{
+	if (lara_item->hit_points > 666)
+		return "green";
+
+	if (lara_item->hit_points > 333)
+		return "yellow";
+
+	return "red";
+}
+
+const char* RPC_GetHealthPercentage()
+{
+	static char buf[32];
+
+	sprintf(buf, "Health: %i%%", lara_item->hit_points / 10);
+	return buf;
+}
+
+void RPC_Update()
+{
+	DiscordRichPresence RPC;
+
+	memset(&RPC, 0, sizeof(RPC));
+
+	RPC.details = RPC_GetLevelName();
+	RPC.largeImageKey = RPC_GetLevelPic();
+	RPC.largeImageText = gfCurrentLevel == 3 ? "BOO" : RPC.details;	//xoxo
+
+	RPC.smallImageKey = RPC_GetHealthPic();
+	RPC.smallImageText = RPC_GetHealthPercentage();
+
+	RPC.state = RPC_GetTimer();
+
+	RPC.instance = 1;
+	Discord_UpdatePresence(&RPC);
+}
+
+void RPC_close()
+{
+	Discord_Shutdown();
 }
