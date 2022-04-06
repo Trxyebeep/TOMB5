@@ -12,6 +12,7 @@
 #include "../tomb5/tomb5.h"
 #include "../game/draw.h"
 #include "../game/health.h"
+#include "../game/text.h"
 #endif
 
 void S_DrawPickup(short object_number)
@@ -1203,6 +1204,11 @@ void RenderLoadPic(long unused)
 		phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
 		S_InitialisePolyList();
 		RenderIt(camera.pos.room_number);
+
+		if (tomb5.loadingtxt && tomb5.tr4_loadbar)
+			PrintString((ushort)phd_centerx, ushort((float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1)),
+				5, SCRIPT_TEXT(STR_LOADING), FF_CENTER);
+
 		S_OutputPolyList();
 		S_DumpScreen();
 
@@ -1211,6 +1217,11 @@ void RenderLoadPic(long unused)
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
 	S_InitialisePolyList();
 	RenderIt(camera.pos.room_number);
+
+	if (tomb5.loadingtxt && tomb5.tr4_loadbar)
+		PrintString((ushort)phd_centerx, ushort((float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1)),
+			5, SCRIPT_TEXT(STR_LOADING), FF_CENTER);
+
 	S_OutputPolyList();
 	S_DumpScreen();
 #endif
