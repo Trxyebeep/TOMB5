@@ -2979,14 +2979,23 @@ void dels_give_lara_guns_cheat()
 
 int LoadGame()
 {
+#ifdef GENERAL_FIXES
+	return S_LoadSave(IN_LOAD, 1, 1) < 0 ? -1 : 1;
+#else
 	return S_LoadSave(IN_LOAD, 1) < 0 ? -1 : 1;
+#endif
 }
 
 int SaveGame()
 {
 	input = 0;
 	dbinput = 0;
+
+#ifdef GENERAL_FIXES
+	return S_LoadSave(IN_SAVE, 1, 1) < 0 ? -1 : 1;
+#else
 	return S_LoadSave(IN_SAVE, 1) < 0 ? -1 : 1;
+#endif
 }
 
 void DelDrawSprite(int x, int y, int def, int z)
