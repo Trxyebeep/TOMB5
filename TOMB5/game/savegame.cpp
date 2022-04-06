@@ -1002,8 +1002,8 @@ static void RestoreLevelData(long FullSave)
 					ReadSG(&uword, sizeof(ushort));
 					rat[j].pos.x_pos = uword << 1;
 					rat[j].pos.x_pos |= sword & 1;
-					ReadSG(&word, sizeof(ushort));
-					rat[j].pos.y_pos = word << 1;
+					ReadSG(&req, sizeof(short));
+					rat[j].pos.y_pos = req << 1;
 					rat[j].pos.y_pos |= (sword >> 1) & 1;
 					ReadSG(&uword, sizeof(ushort));
 					rat[j].pos.z_pos = uword << 1;
