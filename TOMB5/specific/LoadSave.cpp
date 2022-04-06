@@ -2127,7 +2127,11 @@ void S_DisplayMonoScreen()
 	}
 }
 
+#ifdef GENERAL_FIXES
+long S_LoadSave(long load_or_save, long mono, long inv_active)
+#else
 long S_LoadSave(long load_or_save, long mono)
+#endif
 {
 	long fade, ret;
 
@@ -2137,7 +2141,11 @@ long S_LoadSave(long load_or_save, long mono)
 		CreateMonoScreen();
 
 	GetSaveLoadFiles();
-	InventoryActive = 1;
+
+#ifdef GENERAL_FIXES
+	if (!inv_active)
+#endif
+		InventoryActive = 1;
 
 	while (1)
 	{
@@ -2192,7 +2200,11 @@ long S_LoadSave(long load_or_save, long mono)
 	if (!mono)
 		FreeMonoScreen();
 
-	InventoryActive = 0;
+#ifdef GENERAL_FIXES
+	if (!inv_active)
+#endif
+		InventoryActive = 0;
+
 	return ret;
 }
 

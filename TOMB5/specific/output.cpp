@@ -11,6 +11,7 @@
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../game/draw.h"
+#include "../game/health.h"
 #endif
 
 void S_DrawPickup(short object_number)
@@ -1195,6 +1196,8 @@ void RenderLoadPic(long unused)
 		_EndScene();
 
 #ifdef GENERAL_FIXES
+	InitialisePickUpDisplay();
+
 	do
 	{
 		phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
