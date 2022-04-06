@@ -2079,7 +2079,9 @@ void S_DisplayMonoScreen()
 	long y[4];
 	ulong col;
 
-#ifndef GENERAL_FIXES
+#ifdef GENERAL_FIXES
+	if (MonoScreenOn == 1 || MonoScreenOn == 2)
+#else
 	if (MonoScreenOn == 1)
 #endif
 	{
