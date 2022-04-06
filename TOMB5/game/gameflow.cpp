@@ -99,10 +99,6 @@ void DoGameflow()
 	gfCurrentLevel = Gameflow->TitleEnabled ? 0 : 1;
 	gf = &gfScriptWad[gfScriptOffset[gfCurrentLevel]];
 
-#ifdef GENERAL_FIXES
-	init_tomb5_stuff();	//This is only called once at the beginning of the game, and these settings can technically be considered 'gameflow' so this is fine here
-#endif
-
 	while (1)
 	{
 		switch (n = *gf++)

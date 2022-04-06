@@ -216,6 +216,10 @@ unsigned int __stdcall GameMain(void* ptr)
 		RPC_Init();
 #endif
 
+#ifdef GENERAL_FIXES	//Better here than in DoGameflow
+		init_tomb5_stuff();
+#endif
+
 		DoGameflow();
 		GameClose();
 		S_CDStop();

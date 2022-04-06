@@ -1607,11 +1607,11 @@ struct PHDTEXTURESTRUCT
 	ulong height;
 };
 
-typedef struct _ENVUV
+struct ENVUV
 {
 	float u;
 	float v;
-}ENVUV, *LPENVUV;
+};
 
 struct DXDISPLAYMODE
 {
@@ -2416,6 +2416,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool PSX_skies;				//on off
 	bool tr4_loadscreens;		//on off
 	bool tr4_loadbar;			//on off
+	ulong inv_bg_mode;			//1-> original, 2->TR4, 3-> clear
 };
 #endif
 #pragma pack(pop)
