@@ -2417,6 +2417,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool tr4_loadscreens;		//on off
 	bool tr4_loadbar;			//on off
 	ulong inv_bg_mode;			//1-> original, 2->TR4, 3-> clear
+	bool loadingtxt;			//on off
 };
 #endif
 #pragma pack(pop)

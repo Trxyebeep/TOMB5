@@ -34,6 +34,7 @@
 - Make mono screen (inventory background) style customizable.
 - Allow quick reloading while dead.
 - Extend the time it takes for the death menu to pop up.
+- Add optional loading text.
 
 ## [2.2.0](https://github.com/Trxyebeep/TOMB5/tree/V2.2.0) (Jan. 11 2022)
 
