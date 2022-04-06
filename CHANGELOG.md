@@ -1,6 +1,41 @@
 # tomb5 changelog
 
-## [2.2.0](https://github.com/Trxyebeep/TOMB5/tree/V2.2.0) (11/01/2022)
+## [3.0.0](https://github.com/Trxyebeep/TOMB5/tree/V3.0.0) (Apr. 6 2022)
+
+### Original bug fixes
+
+- Fix the bridge bug.
+- Restore and fix flyby roll.
+- Fix corrupt inventory background in 32 bit color mode.
+- Fix fades.
+- Fix pictures not drawing in 32 bit color mode.
+
+### tomb5 bug fixes
+
+- Fix flares turning white near statics.
+- Fix the moon disappearing behind the clouds.
+- Fix twogun invincibility.
+- Fix spiders reloading in 13th Floor.
+- Fix inventory exitting after save.
+
+### tomb5 additions
+
+- Better colsub blending mode.
+- Adapt footprints and smoke to new colsub mode.
+- Better footprint graphics.
+- Tilt footprints with the floor.
+- Add PSX style bars.
+- Add TR4 style bars.
+- Implement brand new inventory background.
+- Make PSX sky usage optional.
+- Add Discord RPC.
+- Completely rework the stars.
+- Add more accurate PSX sprite shadow mode.
+- Make mono screen (inventory background) style customizable.
+- Allow quick reloading while dead.
+- Extend the time it takes for the death menu to pop up.
+
+## [2.2.0](https://github.com/Trxyebeep/TOMB5/tree/V2.2.0) (Jan. 11 2022)
 
 ### Original bug fixes
 
@@ -20,7 +55,7 @@
 - Separate holster drawing to restore tr3-like holster behavior with the revolver
 - TR4 camera
 
-## [2.1.0](https://github.com/Trxyebeep/TOMB5/tree/V2.1.0) (18/12/2021)
+## [2.1.0](https://github.com/Trxyebeep/TOMB5/tree/V2.1.0) (Dec. 18 2021)
 
 ### Original bug fixes
 
@@ -41,7 +76,7 @@
 - Add option to remove fog
 - Add dynamic light support for static meshes
 
-## [2.0.0](https://github.com/Trxyebeep/TOMB5/tree/V2.0.0) (29/11/2021)
+## [2.0.0](https://github.com/Trxyebeep/TOMB5/tree/V2.0.0) (Nov. 29 2021)
 
 ### tomb5 bug fixes
 
@@ -60,7 +95,7 @@
 - Hair respects interpolated frames (smooth hair)
 - Fix floating hair in Joby levels
 
-## [1.1.0](https://github.com/Trxyebeep/TOMB5/tree/V1.1.0) (15/11/2021)
+## [1.1.0](https://github.com/Trxyebeep/TOMB5/tree/V1.1.0) (Nov. 15 2021)
 
 ### Original bug fixes
 
@@ -80,7 +115,7 @@
 - Change hair drawing to use floats
 - Go directly to load menu after death
 
-## [1.0.0](https://github.com/Trxyebeep/TOMB5/tree/V1.0.0) (10/11/2021)
+## [1.0.0](https://github.com/Trxyebeep/TOMB5/tree/V1.0.0) (Nov. 10 2021)
 
 ### Original bug fixes
 
