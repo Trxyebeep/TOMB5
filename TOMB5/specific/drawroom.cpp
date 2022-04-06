@@ -1,6 +1,8 @@
 #include "../tomb5/pch.h"
 #include "drawroom.h"
 #include "function_table.h"
+#include "function_stubs.h"
+#include "d3dmatrix.h"
 
 void DrawBoundsRectangle(float left, float top, float right, float bottom)
 {
@@ -572,6 +574,194 @@ void aBuildFogBulbList()
 	unused1 = 1.0F / unused2;
 }
 
+void ProcessMeshData(long num_meshes)
+{
+	MESH_DATA* data;
+	D3DVECTOR d3dvec;
+	FVECTOR vec;
+	short* sMeshPtr;
+	short* no_mesh;
+	short* gtx;
+	float minx, miny, minz, maxx, maxy, maxz;
+	long num, pre;
+
+	Log(2, "ProcessMeshData %d", num_meshes);
+	num_level_meshes = num_meshes;
+	mesh_vtxbuf = (MESH_DATA**)game_malloc(4 * num_meshes, 0);
+	mesh_base = (short*)malloc_ptr;
+	no_mesh = 0;
+#ifdef GENERAL_FIXES	//fucking stupid fuck uninitialized var why core
+	data = 0;
+#endif
+
+	for (int i = 0; i < num_meshes; i++)
+	{
+		sMeshPtr = meshes[i];
+
+		if (no_mesh == sMeshPtr)
+		{
+			meshes[i] = (short*)data;
+			mesh_vtxbuf[i] = data;
+		}
+		else
+		{
+			no_mesh = meshes[i];
+			minx = 20000.0F;
+			miny = 20000.0F;
+			minz = 20000.0F;
+			maxx = -20000.0F;
+			maxy = -20000.0F;
+			maxz = -20000.0F;
+			data = (MESH_DATA*)game_malloc(sizeof(MESH_DATA), 0);
+			memset(data, 0, sizeof(MESH_DATA));
+			meshes[i] = (short*)data;
+			mesh_vtxbuf[i] = data;
+			data->x = *sMeshPtr;
+			sMeshPtr++;
+			data->y = *sMeshPtr;
+			sMeshPtr++;
+			data->z = *sMeshPtr;
+			sMeshPtr++;
+			data->r = *sMeshPtr;
+			sMeshPtr++;
+			data->flags = *sMeshPtr;
+			sMeshPtr++;
+			data->nVerts = *sMeshPtr & 0xFF;
+
+			if (!data->nVerts)
+				num = *sMeshPtr >> 8;
+
+			sMeshPtr++;
+			data->aVtx = (ACMESHVERTEX*)game_malloc(sizeof(ACMESHVERTEX) * data->nVerts, 0);
+
+			if (data->nVerts)
+			{
+				for (int j = 0; j < data->nVerts; j++)
+				{
+					vec.x = *sMeshPtr;
+					sMeshPtr++;
+					vec.y = *sMeshPtr;
+					sMeshPtr++;
+					vec.z = *sMeshPtr;
+					sMeshPtr++;
+					data->aVtx[j].x = vec.x;
+					data->aVtx[j].y = vec.y;
+					data->aVtx[j].z = vec.z;
+
+					if (vec.x < minx)
+						minx = vec.x;
+
+					if (vec.x > maxx)
+						maxx = vec.x;
+
+					if (vec.y < miny)
+						miny = vec.y;
+
+					if (vec.y > maxy)
+						maxy = vec.y;
+
+					if (vec.z < minz)
+						minz = vec.z;
+
+					if (vec.z > maxz)
+						maxz = vec.z;
+				}
+
+				data->bbox[0] = minx;
+				data->bbox[1] = miny;
+				data->bbox[2] = minz;
+				data->bbox[3] = maxx;
+				data->bbox[4] = maxy;
+				data->bbox[5] = maxz;
+				data->nNorms = *sMeshPtr;
+				sMeshPtr++;
+
+				if (!data->nNorms)
+					data->nNorms = data->nVerts;
+
+				if (data->nNorms <= 0)
+				{
+					data->Normals = 0;
+					data->prelight = (long*)game_malloc(4 * data->nVerts, 0);
+
+					for (int j = 0; j < data->nVerts; j++)
+					{
+						pre = 255 - (*sMeshPtr >> 5);
+						sMeshPtr++;
+						data->prelight[j] = pre | ((pre | (pre << 8)) << 8);
+						data->aVtx[j].prelight = pre | ((pre | (pre << 8)) << 8);
+					}
+
+					data->aFlags |= 2;
+				}
+				else
+				{
+					data->Normals = (D3DVECTOR*)game_malloc(sizeof(D3DVECTOR) * data->nNorms, 0);
+
+					for (int j = 0; j < data->nVerts; j++)
+					{
+						d3dvec.x = *sMeshPtr;
+						sMeshPtr++;
+						d3dvec.y = *sMeshPtr;
+						sMeshPtr++;
+						d3dvec.z = *sMeshPtr;
+						sMeshPtr++;
+						D3DNormalise(&d3dvec);
+						data->aVtx[j].nx = d3dvec.x;
+						data->aVtx[j].ny = d3dvec.y;
+						data->aVtx[j].nz = d3dvec.z;
+					}
+
+					data->prelight = 0;
+				}
+			}
+			else
+				sMeshPtr += (6 * num) + 1;
+
+			data->ngt4 = *sMeshPtr;
+			sMeshPtr++;
+
+			if (data->ngt4)
+			{
+				data->gt4 = (short*)game_malloc(12 * data->ngt4, 0);
+				memcpy(data->gt4, sMeshPtr, 12 * data->ngt4);
+				sMeshPtr += 6 * data->ngt4;
+				gtx = data->gt4 + 5;
+
+				for (int j = 0; j < data->ngt4; j++)
+				{
+					if (gtx[j * 6] & 2)
+					{
+						data->aFlags |= 1;
+						break;
+					}
+				}
+			}
+
+			data->ngt3 = *sMeshPtr;
+			sMeshPtr++;
+
+			if (data->ngt3)
+			{
+				data->gt3 = (short*)game_malloc(10 * data->ngt3, 0);
+				memcpy(data->gt3, sMeshPtr, 10 * data->ngt3);
+				gtx = data->gt3 + 4;
+
+				for (int j = 0; j < data->ngt3; j++)
+				{
+					if (gtx[j * 5] & 2)
+					{
+						data->aFlags |= 1;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	Log(2, "End ProcessMeshData");
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -582,4 +772,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049A9B0, RoomTestThing, replace);
 	INJECT(0x0049B7B0, aRoomletTransformLight, replace);
 	INJECT(0x0049AFB0, aBuildFogBulbList, replace);
+	INJECT(0x0049A3D0, ProcessMeshData, replace);
 }
