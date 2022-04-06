@@ -1728,6 +1728,11 @@ void RGBM_Mono(uchar* r, uchar* g, uchar* b)
 {
 	uchar c;
 
+#ifdef GENERAL_FIXES
+	if (MonoScreenOn == 2)
+		return;
+#endif
+
 	c = (*r + *b) >> 1;
 	*r = c;
 	*g = c;
@@ -2070,7 +2075,9 @@ void S_DisplayMonoScreen()
 	long x[4];
 	long y[4];
 
+#ifndef GENERAL_FIXES
 	if (MonoScreenOn == 1)
+#endif
 	{
 #ifdef GENERAL_FIXES
 		x[0] = phd_winxmin;
@@ -2087,7 +2094,14 @@ void S_DisplayMonoScreen()
 		x[3] = phd_winxmin + phd_winwidth * MonoScreenX[3] / 640;
 #endif
 		RestoreFPCW(FPCW);
-		S_DrawTile(x[0], y[0], x[1] - x[0], y[1] - y[0], MonoScreen[0].tex, 0, 0, 256, 256, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
+
+#ifdef GENERAL_FIXES
+		if (MonoScreenOn == 2)
+			S_DrawTile(x[0], y[0], x[1] - x[0], y[1] - y[0], MonoScreen[0].tex, 0, 0, 256, 256, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+		else
+#endif
+			S_DrawTile(x[0], y[0], x[1] - x[0], y[1] - y[0], MonoScreen[0].tex, 0, 0, 256, 256, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
+
 #ifndef GENERAL_FIXES
 		S_DrawTile(x[1], y[0], x[2] - x[1], y[1] - y[0], MonoScreen[1].tex, 0, 0, 256, 256, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
 		S_DrawTile(x[2], y[0], x[3] - x[2], y[1] - y[0], MonoScreen[2].tex, 0, 0, 128, 256, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
@@ -2218,7 +2232,13 @@ void LoadScreen(long screen, long pathNum)
 
 		screen_surface->Unlock(0);
 		free(pic);
+		
+#ifdef GENERAL_FIXES
+		MonoScreenOn = 2;
+		ConvertSurfaceToTextures(screen_surface);
+#else
 		MonoScreenOn = 1;
+#endif
 	}
 	else
 		Log(0, "WHORE!");
@@ -2235,6 +2255,10 @@ void ReleaseScreen()
 	}
 	else
 		Log(1, "%s Attempt To Release NULL Ptr", "Picture Surface");
+
+#ifdef GENERAL_FIXES
+	FreeMonoScreen();
+#endif
 }
 
 void DrawLoadingScreen()
@@ -2258,7 +2282,7 @@ void DrawLoadingScreen()
 		yadd = 480.0F / (float)h;
 		xoff = 0;
 		yoff = 0;
-		
+
 		for (int i = 0; i < h; i++)
 		{
 			for (int j = 0; j < w; j++)
@@ -2280,7 +2304,11 @@ void DrawLoadingScreen()
 		screen_surface->Unlock(0);
 	}
 	else
+#ifdef GENERAL_FIXES
+		S_DisplayMonoScreen();
+#else
 		G_dxptr->lpBackBuffer->Blt(0, screen_surface, 0, DDBLT_WAIT, 0);
+#endif
 }
 
 void inject_LoadSave(bool replace)

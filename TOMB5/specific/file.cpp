@@ -682,7 +682,11 @@ long S_LoadLevelFile(long num)
 	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits && !gfStatus))
 #endif
 	{
+#ifdef GENERAL_FIXES
+		if (MonoScreenOn == 2)
+#else
 		if (MonoScreenOn == 1)
+#endif
 			ReleaseScreen();
 	}
 
