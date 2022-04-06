@@ -30,7 +30,11 @@ void ConvertSurfaceToTextures(LPDIRECTDRAWSURFACE4 surface);
 void FreeMonoScreen();
 void S_DrawTile(long x, long y, long w, long h, IDirect3DTexture2* t, long tU, long tV, long tW, long tH, long c0, long c1, long c2, long c3);
 void S_DisplayMonoScreen();
+#ifdef GENERAL_FIXES
+long S_LoadSave(long load_or_save, long mono, long inv_active);
+#else
 long S_LoadSave(long load_or_save, long mono);
+#endif
 void LoadScreen(long screen, long pathNum);
 void ReleaseScreen();
 void DrawLoadingScreen();

@@ -1731,6 +1731,9 @@ void RGBM_Mono(uchar* r, uchar* g, uchar* b)
 #ifdef GENERAL_FIXES
 	if (MonoScreenOn == 2)
 		return;
+
+	if (tomb5.inv_bg_mode == 3)
+		return;
 #endif
 
 	c = (*r + *b) >> 1;
@@ -2074,8 +2077,11 @@ void S_DisplayMonoScreen()
 {
 	long x[4];
 	long y[4];
+	ulong col;
 
-#ifndef GENERAL_FIXES
+#ifdef GENERAL_FIXES
+	if (MonoScreenOn == 1 || MonoScreenOn == 2)
+#else
 	if (MonoScreenOn == 1)
 #endif
 	{
@@ -2096,11 +2102,19 @@ void S_DisplayMonoScreen()
 		RestoreFPCW(FPCW);
 
 #ifdef GENERAL_FIXES
-		if (MonoScreenOn == 2)
-			S_DrawTile(x[0], y[0], x[1] - x[0], y[1] - y[0], MonoScreen[0].tex, 0, 0, 256, 256, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF);
+		if (MonoScreenOn == 2)	//pictures always the same!!
+			col = 0xFFFFFFFF;
 		else
+		{
+			if (tomb5.inv_bg_mode == 2 || tomb5.inv_bg_mode == 3)
+				col = 0xFFFFFFFF;
+			else
+				col = 0xFFFFFF80;
+		}
+#else
+		col = 0xFFFFFF80;
 #endif
-			S_DrawTile(x[0], y[0], x[1] - x[0], y[1] - y[0], MonoScreen[0].tex, 0, 0, 256, 256, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
+			S_DrawTile(x[0], y[0], x[1] - x[0], y[1] - y[0], MonoScreen[0].tex, 0, 0, 256, 256, col, col, col, col);
 
 #ifndef GENERAL_FIXES
 		S_DrawTile(x[1], y[0], x[2] - x[1], y[1] - y[0], MonoScreen[1].tex, 0, 0, 256, 256, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
@@ -2113,7 +2127,11 @@ void S_DisplayMonoScreen()
 	}
 }
 
+#ifdef GENERAL_FIXES
+long S_LoadSave(long load_or_save, long mono, long inv_active)
+#else
 long S_LoadSave(long load_or_save, long mono)
+#endif
 {
 	long fade, ret;
 
@@ -2123,7 +2141,11 @@ long S_LoadSave(long load_or_save, long mono)
 		CreateMonoScreen();
 
 	GetSaveLoadFiles();
-	InventoryActive = 1;
+
+#ifdef GENERAL_FIXES
+	if (!inv_active)
+#endif
+		InventoryActive = 1;
 
 	while (1)
 	{
@@ -2178,7 +2200,11 @@ long S_LoadSave(long load_or_save, long mono)
 	if (!mono)
 		FreeMonoScreen();
 
-	InventoryActive = 0;
+#ifdef GENERAL_FIXES
+	if (!inv_active)
+#endif
+		InventoryActive = 0;
+
 	return ret;
 }
 

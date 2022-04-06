@@ -83,7 +83,7 @@ COMBINELIST dels_handy_combine_table[24] =
 int S_CallInventory2()
 {
 	ITEM_INFO* item;
-	long return_value, val;
+	long return_value, val, flag;
 	short room_number;
 
 	if (gfCurrentLevel < LVL5_BASE || gfCurrentLevel > LVL5_SINKING_SUBMARINE)
@@ -231,8 +231,9 @@ int S_CallInventory2()
 
 		if (loading_or_saving)
 		{
-			do
+			while (1)
 			{
+				flag = 0;
 				S_InitialisePolyList();
 				SetDebounce = 1;
 				S_UpdateInput();
@@ -240,16 +241,22 @@ int S_CallInventory2()
 				UpdatePulseColour();
 
 				if (loading_or_saving == 1)
-					val = go_and_load_game();
+					flag = go_and_load_game();
 				else if (go_and_save_game())
-					val = 1;
+					flag = 1;
 
-			} while (!val);
+				if (flag == 1)
+				{
+					if (loading_or_saving == flag)
+					{
+						return_value = 1;
+						val = 1;
+					}
 
-			if (val == 1 && loading_or_saving == val)
-			{
-				return_value = 1;
-				val = 1;
+					break;
+				}
+				else if (flag)
+					break;
 			}
 
 			friggrimmer2 = 1;
@@ -2972,14 +2979,23 @@ void dels_give_lara_guns_cheat()
 
 int LoadGame()
 {
+#ifdef GENERAL_FIXES
+	return S_LoadSave(IN_LOAD, 1, 1) < 0 ? -1 : 1;
+#else
 	return S_LoadSave(IN_LOAD, 1) < 0 ? -1 : 1;
+#endif
 }
 
 int SaveGame()
 {
 	input = 0;
 	dbinput = 0;
+
+#ifdef GENERAL_FIXES
+	return S_LoadSave(IN_SAVE, 1, 1) < 0 ? -1 : 1;
+#else
 	return S_LoadSave(IN_SAVE, 1) < 0 ? -1 : 1;
+#endif
 }
 
 void DelDrawSprite(int x, int y, int def, int z)
