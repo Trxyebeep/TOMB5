@@ -11,7 +11,7 @@
 #endif
 #include "../tomb5/tomb5.h"
 
-int FlashIt()
+long FlashIt()
 {
 	static long flash_state;
 	static long flash_count;
@@ -27,7 +27,7 @@ int FlashIt()
 	return flash_state;
 }
 
-void DrawGameInfo(int timed)
+void DrawGameInfo(long timed)
 {
 	long flash_state, seconds;
 	char buf[80];
@@ -81,14 +81,14 @@ void DrawGameInfo(int timed)
 
 				sprintf(&buf[0], "%i", ammo);
 				GetStringLength(buf, 0, &btm);
-				PrintString(LaserSight ? phd_centerx + 30 : (phd_winxmax - GetStringLength(buf, 0, 0) - 80), phd_winymax - btm - 70, 0, &buf[0], 0);
+				PrintString(LaserSight ? ushort(phd_centerx + 30) : ushort(phd_winxmax - GetStringLength(buf, 0, 0) - 80), phd_winymax - btm - 70, 0, &buf[0], 0);
 			}
 		}
 #endif
 	}
 }
 
-void DrawHealthBar(int flash_state)
+void DrawHealthBar(long flash_state)
 {
 	static long old_hitpoints;
 	long hitpoints;
@@ -138,7 +138,7 @@ void DrawHealthBar(int flash_state)
 		PoisonFlag--;
 }
 
-void DrawAirBar(int flash_state)
+void DrawAirBar(long flash_state)
 {
 	long air;
 
@@ -199,7 +199,7 @@ void InitialisePickUpDisplay()
 	CurrentPickup = 0;
 }
 
-void DrawPickups(int timed)
+void DrawPickups(long timed)
 {
 	DISPLAYPU* pu;
 	long lp;

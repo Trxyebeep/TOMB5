@@ -71,7 +71,7 @@ short* GetBestFrame(ITEM_INFO* item)
 		return frm[0];
 }
 
-void InitInterpolate(int frac, int rate)
+void InitInterpolate(long frac, long rate)
 {
 	IM_rate = rate;
 	IM_frac = frac;
@@ -142,7 +142,7 @@ void phd_RotZ_I(short ang)
 	aMXPtr = amxptr;
 }
 
-void phd_TranslateRel_I(int x, int y, int z)
+void phd_TranslateRel_I(long x, long y, long z)
 {
 	float* amxptr;
 	long* mxptr;
@@ -157,7 +157,7 @@ void phd_TranslateRel_I(int x, int y, int z)
 	aMXPtr = amxptr;
 }
 
-void phd_TranslateRel_ID(int x, int y, int z, int x2, int y2, int z2)
+void phd_TranslateRel_ID(long x, long y, long z, long x2, long y2, long z2)
 {
 	float* amxptr;
 	long* mxptr;
@@ -187,7 +187,7 @@ void phd_RotYXZ_I(short y, short x, short z)
 	aMXPtr = amxptr;
 }
 
-void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, int skip)
+void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, long skip)
 {
 	float* amxptr;
 	long* mxptr;
@@ -202,7 +202,7 @@ void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, int skip)
 	aMXPtr = amxptr;
 }
 
-void gar_RotYXZsuperpack(short** pprot, int skip)
+void gar_RotYXZsuperpack(short** pprot, long skip)
 {
 	ushort* prot;
 //	long packed;
@@ -240,7 +240,7 @@ void gar_RotYXZsuperpack(short** pprot, int skip)
 	++*pprot;
 }
 
-void phd_PutPolygons_I(short* ptr, int clip)
+void phd_PutPolygons_I(short* ptr, long clip)
 {
 	phd_PushMatrix();
 	InterpolateMatrix();

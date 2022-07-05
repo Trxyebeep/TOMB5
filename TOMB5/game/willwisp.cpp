@@ -75,7 +75,7 @@ void WillOWispControl(short item_number)
 		angle = CreatureTurn(item, willowisp->maximum_turn);
 		willowisp->maximum_turn = 1274;
 
-		if (lara_info.distance <= 1863225 && ABS((int) (item->pos.y_pos - lara_item->pos.y_pos <= 1024)) && !willowisp->reached_goal)
+		if (lara_info.distance <= 1863225 && ABS(long(item->pos.y_pos - lara_item->pos.y_pos <= 1024)) && !willowisp->reached_goal)
 			item->goal_anim_state = 2;
 		else
 			item->goal_anim_state = 1;

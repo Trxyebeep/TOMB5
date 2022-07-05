@@ -536,7 +536,7 @@ void LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll)
+long LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll)
 {
 	long land_speed;
 	
@@ -555,7 +555,7 @@ int LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll)
 	return (item->hit_points < 1);
 }
 
-int TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll)
+long TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll)
 {
 	static short old_ang = 1;
 	short ang_diff, ang;
@@ -608,7 +608,7 @@ int TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll)
 	return 1;
 }
 
-int LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll)
+long LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (coll->coll_type == CT_FRONT || coll->coll_type == CT_TOP_FRONT)
 	{
@@ -666,7 +666,7 @@ void LaraCollideStop(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll)
+long LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (coll->coll_type == CT_TOP || coll->coll_type == CT_CLAMP)
 	{
@@ -1167,7 +1167,7 @@ void lara_col_walk(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int LaraFallen(ITEM_INFO* item, COLL_INFO* coll)
+long LaraFallen(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (lara.water_status == LW_WADE || coll->mid_floor <= 384)
 		return 0;
@@ -1183,7 +1183,7 @@ int LaraFallen(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
+long TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
 {
 	long hdif, slope;
 	short angle;
@@ -1983,7 +1983,7 @@ void lara_default_col(ITEM_INFO* item, COLL_INFO* coll)
 	GetLaraCollisionInfo(item, coll);
 }
 
-int TestWall(ITEM_INFO* item, long front, long right, long down)
+long TestWall(ITEM_INFO* item, long front, long right, long down)
 {
 	FLOOR_INFO* floor;
 	long x, y, z, h, c;
@@ -2460,7 +2460,7 @@ void lara_col_hang(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int CanLaraHangSideways(ITEM_INFO* item,COLL_INFO* coll, short angle)
+long CanLaraHangSideways(ITEM_INFO* item,COLL_INFO* coll, short angle)
 {
 	long oldx, oldz, x, z, res;
 
@@ -4023,7 +4023,7 @@ void lara_col_crawl(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int LaraDeflectEdgeDuck(ITEM_INFO* item, COLL_INFO* coll)
+long LaraDeflectEdgeDuck(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (coll->coll_type == CT_FRONT || coll->coll_type == CT_TOP_FRONT)
 	{
@@ -5132,7 +5132,7 @@ void UpdateRopeSwing(ITEM_INFO* item)
 		lara.RopeMaxXBackward = ABS(item->pos.x_rot);
 }
 
-void ApplyVelocityToRope(int node, ushort angle, ushort n)
+void ApplyVelocityToRope(long node, ushort angle, ushort n)
 {
 	long xvel, zvel;
 
@@ -5174,7 +5174,7 @@ void JumpOffRope(ITEM_INFO* item)
 	}
 }
 
-int LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
+long LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
 {
 	short* bounds;
 	long x, z, oldfloor, hdif, flag;

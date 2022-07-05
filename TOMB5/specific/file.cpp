@@ -21,7 +21,7 @@
 
 bool LoadTextureInfos()
 {
-	int val;
+	long val;
 	PHDTEXTURESTRUCT tex;
 
 	Log(2, "LoadTextureInfos");
@@ -169,9 +169,9 @@ void FileClose(FILE* fp)
 	CLOSE(fp);//fclose(fp);
 }
 
-int FileSize(FILE* fp)
+long FileSize(FILE* fp)
 {
-	int size;
+	long size;
 
 	SEEK(fp, 0, SEEK_END);//fseek(fp, 0, SEEK_END);
 	size = TELL(fp);//ftell(fp);

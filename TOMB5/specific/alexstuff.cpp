@@ -6,7 +6,7 @@
 void aLoadRoomStream()
 {
 	ROOM_INFO* room_data;
-	int length, num_rooms, size;
+	long length, num_rooms, size;
 	char* data;
 
 	length = *(long*)FileData;
@@ -28,7 +28,7 @@ void aLoadRoomStream()
 		room_data++;
 	}
 
-	number_rooms = num_rooms;
+	number_rooms = (short)num_rooms;
 }
 
 void aFixUpRoom(ROOM_INFO* r, char* s)

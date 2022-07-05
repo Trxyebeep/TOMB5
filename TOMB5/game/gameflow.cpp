@@ -167,7 +167,7 @@ void DoGameflow()
 			gfLevelFlags = gf[0] | (gf[1] << 8);
 			DoTitle(gf[2], gf[3]);
 			gfMirrorRoom = -1;
-			*(int*)gfResidentCut = 0;
+			*(long*)gfResidentCut = 0;
 			gfUVRotate = 0;
 			gfNumMips = 0;
 			gfNumPickups = 0;
@@ -324,7 +324,9 @@ void DoGameflow()
 	}
 }
 
-int TitleOptions()
+#pragma warning(push)
+#pragma warning(disable : 4244)
+long TitleOptions()
 {
 	long ret, ret2, i, n, n2, load, cheat_jump, colorFlag, flag, height;
 	static long load_or_new;
@@ -653,6 +655,7 @@ int TitleOptions()
 
 	return ret;
 }
+#pragma warning(pop)
 
 void DoTitle(uchar name, uchar audio)
 {
@@ -769,7 +772,7 @@ void do_dels_cutseq_selector()
 	for (int i = 0; num < 36 && i < 5; i++)
 	{
 		name = &cutseq_selector_data[num + 1].string;
-		PrintString((short)phd_centerx, i * font_height + 136, (-(dels_cutseq_selector_cursorpos != num) & 4) + 1, SCRIPT_TEXT_bis(*name), FF_CENTER);
+		PrintString((short)phd_centerx, ushort(i * font_height + 136), (-(dels_cutseq_selector_cursorpos != num) & 4) + 1, SCRIPT_TEXT_bis(*name), FF_CENTER);
 		num++;
 	}
 
@@ -888,7 +891,7 @@ void DoLevel(uchar Name, uchar Audio)
 
 		if (gfLegendTime && !DestFadeScreenHeight && !FadeScreenHeight && !cutseq_num)
 		{
-			PrintString(phd_winwidth >> 1, phd_winymax - font_height, 2, SCRIPT_TEXT_bis(gfLegend), FF_CENTER);
+			PrintString(ushort(phd_winwidth >> 1), ushort(phd_winymax - font_height), 2, SCRIPT_TEXT_bis(gfLegend), FF_CENTER);
 			gfLegendTime--;
 		}
 

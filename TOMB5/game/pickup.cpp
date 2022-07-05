@@ -161,10 +161,10 @@ static void PuzzleDone(ITEM_INFO* item, short item_num)
 	}
 }
 
-int KeyTrigger(short item_num)
+long KeyTrigger(short item_num)
 {
 	ITEM_INFO* item;
-	int oldkey;
+	long oldkey;
 
 	item = &items[item_num];
 
@@ -180,7 +180,7 @@ int KeyTrigger(short item_num)
 	return oldkey;
 }
 
-int PickupTrigger(short item_num)
+long PickupTrigger(short item_num)
 {
 	ITEM_INFO* item;
 

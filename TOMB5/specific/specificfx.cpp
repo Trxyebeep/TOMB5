@@ -888,7 +888,7 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 	ClipCheckPoint(&v[3], (float)vec[3].x, (float)vec[3].y, (float)vec[3].z, clip);	//the only one that survived
 	Tex.drawtype = (ushort)drawtype;
 	Tex.flag = 0;
-	Tex.tpage = nTextures - 1;
+	Tex.tpage = ushort(nTextures - 1);
 	Tex.u1 = 0.0;
 	Tex.v1 = 0.0;
 	Tex.u2 = 1.0;

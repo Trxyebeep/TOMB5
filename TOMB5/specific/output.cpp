@@ -20,11 +20,11 @@ void S_DrawPickup(short object_number)
 	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
 	SetD3DViewMatrix();
 	aSetViewMatrix();
-	DrawThreeDeeObject2D((int)(phd_winxmax * 0.001953125 * 448.0 + PickupX), (int)(phd_winymax * 0.00390625 * 216.0), convert_obj_to_invobj(object_number),
+	DrawThreeDeeObject2D(long(phd_winxmax * 0.001953125 * 448.0 + PickupX), long(phd_winymax * 0.00390625 * 216.0), convert_obj_to_invobj(object_number),
 		128, 0, (GnFrameCounter & 0x7F) << 9, 0, 0, 1);
 }
 
-void phd_PutPolygons(short* objptr, int clipstatus)
+void phd_PutPolygons(short* objptr, long clipstatus)
 {
 	MESH_DATA* mesh;
 	ENVUV* envuv;
@@ -112,7 +112,7 @@ void phd_PutPolygons(short* objptr, int clipstatus)
 					envmap = 1;
 					tex.drawtype = 2;
 					tex.flag = pTex->flag;
-					tex.tpage = nTextures - 3;
+					tex.tpage = ushort(nTextures - 3);
 					tex.u1 = aMappedEnvUV[quad[0]].u;
 					tex.v1 = aMappedEnvUV[quad[0]].v;
 					tex.u2 = aMappedEnvUV[quad[1]].u;
@@ -185,7 +185,7 @@ void phd_PutPolygons(short* objptr, int clipstatus)
 					envmap = 1;
 					tex.drawtype = 2;
 					tex.flag = pTex->flag;
-					tex.tpage = nTextures - 3;
+					tex.tpage = ushort(nTextures - 3);
 					tex.u1 = aMappedEnvUV[tri[0]].u;
 					tex.v1 = aMappedEnvUV[tri[0]].v;
 					tex.u2 = aMappedEnvUV[tri[1]].u;
@@ -237,7 +237,7 @@ void phd_PutPolygons(short* objptr, int clipstatus)
 	}
 }
 
-void phd_PutPolygonSkyMesh(short* objptr, int clipstatus)
+void phd_PutPolygonSkyMesh(short* objptr, long clipstatus)
 {
 	TEXTURESTRUCT* pTex;
 	MESH_DATA* mesh;
@@ -731,7 +731,7 @@ void phd_PutPolygonsPickup(short* objptr, float x, float y, long color)
 			envmap = 1;
 			tex.drawtype = 2;
 			tex.flag = pTex->flag;
-			tex.tpage = nTextures - 3;
+			tex.tpage = ushort(nTextures - 3);
 			tex.u1 = aMappedEnvUV[quad[0]].u;
 			tex.v1 = aMappedEnvUV[quad[0]].v;
 			tex.u2 = aMappedEnvUV[quad[1]].u;
@@ -801,7 +801,7 @@ void phd_PutPolygonsPickup(short* objptr, float x, float y, long color)
 			envmap = 1;
 			tex.drawtype = 2;
 			tex.flag = pTex->flag;
-			tex.tpage = nTextures - 3;
+			tex.tpage = ushort(nTextures - 3);
 			tex.u1 = aMappedEnvUV[*tri].u;
 			tex.v1 = aMappedEnvUV[*tri].v;
 			tex.u2 = aMappedEnvUV[tri[1]].u;

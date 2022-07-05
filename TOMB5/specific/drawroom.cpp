@@ -50,7 +50,7 @@ void DrawBoundsRectangle(float left, float top, float right, float bottom)
 	AddQuadZBuffer(v, 0, 4, 7, 3, textinfo, 1);
 }
 
-void DrawBoundsRectangleII(float left, float top, float right, float bottom, int rgba)
+void DrawBoundsRectangleII(float left, float top, float right, float bottom, long rgba)
 {
 	D3DTLVERTEX v[8];
 	TEXTURESTRUCT Tex;

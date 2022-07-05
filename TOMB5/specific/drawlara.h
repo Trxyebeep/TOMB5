@@ -3,9 +3,9 @@
 
 void inject_drawlara(bool replace);
 
-void DrawLara(ITEM_INFO* item, int mirror);
-void DrawLara__1(ITEM_INFO* item, int mirror);
-void DrawLara__4(ITEM_INFO* item, int mirror);
-void DrawLara__5(ITEM_INFO* item, int mirror);
-void DrawLara__6(ITEM_INFO* item, int mirror);
+void DrawLara(ITEM_INFO* item, long mirror);
+void DrawLara__1(ITEM_INFO* item, long mirror);
+void DrawLara__4(ITEM_INFO* item, long mirror);
+void DrawLara__5(ITEM_INFO* item, long mirror);
+void DrawLara__6(ITEM_INFO* item, long mirror);
 void SetLaraUnderwaterNodes();

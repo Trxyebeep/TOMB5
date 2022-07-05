@@ -8,7 +8,7 @@
 #include "larafire.h"
 #include "laraswim.h"
 
-int LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll)
+long LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (coll->coll_type == CT_FRONT || coll->mid_type == BIG_SLOPE || coll->mid_type == DIAGONAL || coll->mid_floor >= 0)
 		return 0;
@@ -46,7 +46,7 @@ int LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll)
 	return 1;
 }
 
-int LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
+long LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
 {
 	long hdif;
 	short angle;

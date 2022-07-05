@@ -23,7 +23,7 @@ void TriggerLaraBlood()
 			vec.y = (GetRandomControl() & 0x1F) - 16;
 			vec.z = (GetRandomControl() & 0x1F) - 16;
 			GetLaraJointPos(&vec, LM[i]);
-			DoBloodSplat(vec.x, vec.y, vec.z, (GetRandomControl() & 7) + 8, GetRandomControl() << 1, lara_item->room_number);
+			DoBloodSplat(vec.x, vec.y, vec.z, (GetRandomControl() & 7) + 8, short(GetRandomControl() << 1), lara_item->room_number);
 		}
 	}
 }
@@ -369,9 +369,9 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	}
 }
 
-int FindGridShift(int src, int dst)
+long FindGridShift(long src, long dst)
 {
-	int srcw, dstw;
+	long srcw, dstw;
 
 	srcw = src >> 10;
 	dstw = dst >> 10;
@@ -847,7 +847,7 @@ long GetCollidedObjects(ITEM_INFO* item, long rad, long noInvisible, ITEM_INFO**
 	return items_count | statics_count;
 }
 
-int MoveLaraPosition(PHD_VECTOR* v, ITEM_INFO* item, ITEM_INFO* laraitem)
+long MoveLaraPosition(PHD_VECTOR* v, ITEM_INFO* item, ITEM_INFO* laraitem)
 {
 	PHD_3DPOS pos;
 	long height;
@@ -886,7 +886,7 @@ int MoveLaraPosition(PHD_VECTOR* v, ITEM_INFO* item, ITEM_INFO* laraitem)
 	return Move3DPosTo3DPos(&laraitem->pos, &pos, 12, 364);
 }
 
-int Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, int speed, short rotation)
+long Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, long speed, short rotation)
 {
 	long dx, dy, dz, distance, shift;
 	short adiff;

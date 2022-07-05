@@ -48,7 +48,7 @@ void InitialiseItemArray(short num)
 	ITEM_INFO* item;
 
 	item = &items[level_items];
-	next_item_free = level_items;
+	next_item_free = (short)level_items;
 	next_item_active = NO_ITEM;
 	
 	for (int i = level_items + 1; i < num; i++)

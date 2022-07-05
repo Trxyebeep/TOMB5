@@ -16,7 +16,7 @@ void InitialiseCreature(short item_number)
 	item->TOSSPAD = item->pos.y_rot & 0xE000;
 }
 
-int CreatureActive(short item_number)
+long CreatureActive(short item_number)
 {
 	ITEM_INFO* item;
 

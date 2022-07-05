@@ -3,28 +3,28 @@
 
 void inject_newinv2(bool replace);
 
-int S_CallInventory2();
+long S_CallInventory2();
 void init_new_inventry();
 void do_debounced_joystick_poo();
-void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, int zrot, int bright, int overlay);
-void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag);
-int go_and_load_game();
-int go_and_save_game();
+void DrawThreeDeeObject2D(long x, long y, long num, long shade, long xrot, long yrot, long zrot, long bright, long overlay);
+void DrawInventoryItemMe(ITEM_INFO* item, long shade, long overlay, long shagflag);
+long go_and_load_game();
+long go_and_save_game();
 void construct_combine_object_list();
-void insert_object_into_list_v2(int num);
+void insert_object_into_list_v2(long num);
 void construct_object_list();
-void insert_object_into_list(int num);
-void draw_current_object_list(int ringnum);
-void handle_object_changeover(int ringnum);
+void insert_object_into_list(long num);
+void draw_current_object_list(long ringnum);
+void handle_object_changeover(long ringnum);
 void handle_inventry_menu();
 void setup_ammo_selector();
 void fade_ammo_selector();
 void draw_ammo_selector();
 void spinback(ushort* cock);
 void update_laras_weapons_status();
-int is_item_currently_combinable(short obj);
-int have_i_got_item(short obj);
-int do_these_objects_combine(int obj1, int obj2);
+long is_item_currently_combinable(short obj);
+long have_i_got_item(short obj);
+long do_these_objects_combine(long obj1, long obj2);
 void combine_these_two_objects(short obj1, short obj2);
 void seperate_object(short obj);
 void combine_HK_SILENCER(long flag);
@@ -56,19 +56,19 @@ void setup_objectlist_startposition2(short newobj);
 void use_current_item();
 void DEL_picked_up_object(short objnum);
 void NailInvItem(short objnum);
-int have_i_got_object(short object_number);
+long have_i_got_object(short object_number);
 void remove_inventory_item(short object_number);
-int convert_obj_to_invobj(short obj);
-int convert_invobj_to_obj(int obj);
+long convert_obj_to_invobj(short obj);
+long convert_invobj_to_obj(long obj);
 void init_keypad_mode();
 void do_keypad_mode();
 void do_examine_mode();
 void do_stats_mode();
 void dels_give_lara_items_cheat();
 void dels_give_lara_guns_cheat();
-int LoadGame();
-int SaveGame();
-void DelDrawSprite(int x, int y, int def, int z);
+long LoadGame();
+long SaveGame();
+void DelDrawSprite(long x, long y, long def, long z);
 
 enum ring_types
 {
