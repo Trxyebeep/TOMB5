@@ -217,7 +217,7 @@ void ControlExplosion(short item_number)
 			{
 				if (item->item_flags[1] == 3)
 				{
-					NumTrigs = GetSwitchTrigger(item, TriggerItems, 1);
+					NumTrigs = (short)GetSwitchTrigger(item, TriggerItems, 1);
 
 					for (int i = 0; i < NumTrigs; i++)
 					{
@@ -1040,9 +1040,9 @@ void CeilingTrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 
 	item = &items[item_number];
 
-	pass1 = TestLaraPosition(CeilingTrapDoorBounds, item, l);
+	pass1 = (short)TestLaraPosition(CeilingTrapDoorBounds, item, l);
 	l->pos.y_rot += 32768;
-	pass2 = TestLaraPosition(CeilingTrapDoorBounds, item, l);
+	pass2 = (short)TestLaraPosition(CeilingTrapDoorBounds, item, l);
 	l->pos.y_rot += 32768;
 
 	if (input & IN_ACTION && item->status != ITEM_ACTIVE && l->current_anim_state == AS_UPJUMP &&

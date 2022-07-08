@@ -216,7 +216,7 @@ void TriggerRomangodGravel(ITEM_INFO* item, PHD_VECTOR* pos, long node)
 			fx->room_number = item->room_number;
 			fx->pos.x_rot = 0;
 			fx->pos.z_rot = 0;
-			fx->pos.y_rot = 2 * GetRandomControl();
+			fx->pos.y_rot = short(2 * GetRandomControl());
 			fx->speed = 1;
 			fx->fallspeed = 0;
 			fx->object_number = BODY_PART;

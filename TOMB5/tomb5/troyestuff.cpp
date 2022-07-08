@@ -7,6 +7,8 @@
 #define PAGE0_NUM	14
 #define PAGE1_NUM	6
 
+#pragma warning(push)
+#pragma warning(disable : 4244)
 void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_bak)
 {
 	long num;
@@ -472,3 +474,4 @@ bool Page1(long& num, long textY, ulong selection)
 
 	return changed;
 }
+#pragma warning(pop)

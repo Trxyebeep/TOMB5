@@ -11,7 +11,7 @@
 #include "effects.h"
 #include "../specific/function_stubs.h"
 
-int TargetVisible(ITEM_INFO* item, AI_INFO* info)
+long TargetVisible(ITEM_INFO* item, AI_INFO* info)
 {
 	ITEM_INFO* enemy;
 	CREATURE_INFO* creature;
@@ -37,7 +37,7 @@ int TargetVisible(ITEM_INFO* item, AI_INFO* info)
 	return LOS(&start, &target);
 }
 
-int Targetable(ITEM_INFO* item, AI_INFO* info)
+long Targetable(ITEM_INFO* item, AI_INFO* info)
 {
 	ITEM_INFO* enemy;
 	CREATURE_INFO* creature;
@@ -98,7 +98,7 @@ short GunMiss(long x, long y, long z, short speed, short yrot, short room_number
 	return GunShot(x, y, z, speed, yrot, room_number);
 }
 
-int ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotation, int damage)
+long ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotation, long damage)
 {
 	ITEM_INFO* enemy;
 	CREATURE_INFO* creature;
@@ -140,7 +140,7 @@ int ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotatio
 			if (hit)
 			{
 				CreatureEffect(item, gun, GunHit);
-				lara_item->hit_points -= damage;
+				lara_item->hit_points -= (short)damage;
 				lara_item->hit_status = 1;
 			}
 			else if (targetable)
@@ -152,7 +152,7 @@ int ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotatio
 
 			if (hit)
 			{
-				enemy->hit_points -= damage / 10;
+				enemy->hit_points -= short(damage / 10);
 				enemy->hit_status = 1;
 				random = GetRandomControl() & 0xF;
 

@@ -78,7 +78,7 @@ void TriggerSpider(short item_number)
 
 			if (item->item_flags[0])
 			{
-				fx->pos.y_rot = 2 * GetRandomControl();
+				fx->pos.y_rot = short(2 * GetRandomControl());
 				fx->fallspeed = -16 - (GetRandomControl() & 0x1F);
 			}
 			else

@@ -1,7 +1,7 @@
 #include "../tomb5/pch.h"
 #include "function_stubs.h"
 
-void* game_malloc(int size, int type)
+void* game_malloc(long size, long type)
 {
 	char* ptr;
 
@@ -18,12 +18,12 @@ void* game_malloc(int size, int type)
 		malloc_free -= size;
 		malloc_used += size;
 		malloc_ptr += size;
-		memset(ptr, 0, 4 * ((unsigned int)size >> 2));
+		memset(ptr, 0, size);
 		return ptr;
 	}
 }
 
-int GetRandomControl()
+long GetRandomControl()
 {
 	rand_1 = 1103515245 * rand_1 + 12345;
 	return (rand_1 >> 10) & 0x7FFF;
@@ -34,7 +34,7 @@ void SeedRandomControl(long seed)
 	rand_1 = seed;
 }
 
-int GetRandomDraw()
+long GetRandomDraw()
 {
 	rand_2 = 1103515245 * rand_2 + 12345;
 	return (rand_2 >> 10) & 0x7FFF;

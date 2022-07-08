@@ -19,19 +19,19 @@
 #include "objects.h"
 #include "../specific/function_stubs.h"
 
-void draw_shotgun_meshes(int weapon_type)
+void draw_shotgun_meshes(long weapon_type)
 {
 	lara.back_gun = WEAPON_NONE;
 	lara.mesh_ptrs[LM_RHAND] = meshes[objects[WeaponObjectMesh(weapon_type)].mesh_index + 2 * LM_RHAND];
 }
 
-void undraw_shotgun_meshes(int weapon_type)
+void undraw_shotgun_meshes(long weapon_type)
 {
-	lara.back_gun = WeaponObject(weapon_type);
+	lara.back_gun = (short)WeaponObject(weapon_type);
 	lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA].mesh_index + 2 * LM_RHAND];
 }
 
-void ready_shotgun(int weapon_type)
+void ready_shotgun(long weapon_type)
 {
 	lara.gun_status = LG_READY;
 	lara.left_arm.z_rot = 0;
@@ -49,7 +49,7 @@ void ready_shotgun(int weapon_type)
 	lara.left_arm.frame_base = objects[WeaponObject(weapon_type)].frame_base;
 }
 
-void RifleHandler(int weapon_type)
+void RifleHandler(long weapon_type)
 {
 	WEAPON_INFO* winfo;
 	PHD_VECTOR pos;
@@ -186,7 +186,7 @@ void FireShotgun()
 	}
 }
 
-void FireHK(int running)
+void FireHK(long running)
 {
 	short angles[2];
 
@@ -316,7 +316,7 @@ void ControlCrossbow(short item_number)
 	}
 }
 
-void draw_shotgun(int weapon_type)
+void draw_shotgun(long weapon_type)
 {
 	ITEM_INFO* item;
 
@@ -324,7 +324,7 @@ void draw_shotgun(int weapon_type)
 	{
 		lara.weapon_item = CreateItem();
 		item = &items[lara.weapon_item];
-		item->object_number = WeaponObject(weapon_type);
+		item->object_number = (short)WeaponObject(weapon_type);
 		item->anim_number = objects[item->object_number].anim_index + 1;
 		item->frame_number = anims[item->anim_number].frame_base;
 		item->status = ITEM_ACTIVE;
@@ -357,7 +357,7 @@ void draw_shotgun(int weapon_type)
 	lara.right_arm.anim_number = item->anim_number;
 }
 
-void undraw_shotgun(int weapon_type)
+void undraw_shotgun(long weapon_type)
 {
 	ITEM_INFO* item; 
 
@@ -390,7 +390,7 @@ void undraw_shotgun(int weapon_type)
 	lara.left_arm.anim_number = item->anim_number;
 }
 
-void AnimateShotgun(int weapon_type)
+void AnimateShotgun(long weapon_type)
 {
 	ITEM_INFO* item;
 	PHD_VECTOR pos;
@@ -685,7 +685,7 @@ void TriggerGrapplingEffect(long x, long y, long z)
 	}
 }
 
-void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, int MustHitLastNode)
+void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, long MustHitLastNode)
 {
 	SPHERE* ptr1;
 	long dx, dy, dz, num1, cs, cd;
@@ -733,7 +733,7 @@ void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, int MustHitLast
 			}
 			else
 			{
-				NumTrigs = GetSwitchTrigger(target, TriggerItems, 1);
+				NumTrigs = (short)GetSwitchTrigger(target, TriggerItems, 1);
 
 				for (int i = 0; i < NumTrigs; i++)
 				{

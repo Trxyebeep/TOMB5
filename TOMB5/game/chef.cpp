@@ -29,7 +29,7 @@ void ChefControl(short item_number)
 	CREATURE_INFO* creature;
 	AI_INFO ai;
 	AI_INFO laraAI;
-	int dx, dz;
+	long dx, dz;
 	short angle, head, torso_y, torso_x;
 
 	if (!CreatureActive(item_number))

@@ -704,7 +704,7 @@ void FixedCamera()
 
 					if (HitLara && GetRandomControl() & 3)
 					{
-						DoBloodSplat(v.x, v.y, v.z, (GetRandomControl() & 3) + 3, GetRandomControl() << 1, lara_item->room_number);
+						DoBloodSplat(v.x, v.y, v.z, (GetRandomControl() & 3) + 3, short(GetRandomControl() << 1), lara_item->room_number);
 						lara_item->hit_points -= 100;
 						GetLaraOnLOS = 0;
 					}

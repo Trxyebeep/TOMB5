@@ -12,7 +12,7 @@ void InitialiseItemArray(short num);
 #define CreateItem	( (short(__cdecl*)()) 0x00440840)
 #define CreateEffect	( (short(__cdecl*)(short)) 0x004410F0 )
 #define InitialiseItem	( (void(__cdecl*)(short)) 0x004408B0 )
-#define InitialiseFXArray	( (void(__cdecl*)(int)) 0x00441080 )
+#define InitialiseFXArray	( (void(__cdecl*)(long)) 0x00441080 )
 #define EffectNewRoom	( (void(__cdecl*)(short, short)) 0x004412F0 )
 #define KillEffect	( (void(__cdecl*)(short)) 0x00441180 )
 #define RemoveDrawnItem	( (void(__cdecl*)(short)) 0x00440C40 )

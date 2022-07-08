@@ -79,7 +79,7 @@ void TriggerRat(short item_number)
 
 			if (item->item_flags[0])
 			{
-				fx->pos.y_rot = GetRandomControl() << 1;
+				fx->pos.y_rot = short(GetRandomControl() << 1);
 				fx->fallspeed = -16 - (GetRandomControl() & 31);
 			}
 			else

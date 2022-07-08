@@ -156,9 +156,8 @@ void UpdateBlood()
 
 long LSpline(long x, long* knots, long nk)
 {
-	int span;
 	long* k;
-	long c1, c2, c3, ret;
+	long c1, c2, c3, ret, span;
 
 	x *= nk - 3;
 	span = x >> 16;
@@ -611,16 +610,16 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 				if (Flags & 0x10)
 					fx->speed = 0;
 				else if (Flags & 0x20)
-					fx->speed = GetRandomControl() >> 12;
+					fx->speed = short(GetRandomControl() >> 12);
 				else
-					fx->speed = GetRandomControl() >> 8;
+					fx->speed = short(GetRandomControl() >> 8);
 
 				if (Flags & 0x40)
 					fx->fallspeed = 0;
 				else if (Flags & 0x80)
-					fx->fallspeed = -(GetRandomControl() >> 12);
+					fx->fallspeed = (short)-(GetRandomControl() >> 12);
 				else
-					fx->fallspeed = -(GetRandomControl() >> 8);
+					fx->fallspeed = (short)-(GetRandomControl() >> 8);
 
 				fx->frame_number = obj->mesh_index;
 				fx->object_number = BODY_PART;
@@ -697,16 +696,16 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 				if (Flags & 0x10)
 					fx->speed = 0;
 				else if (Flags & 0x20)
-					fx->speed = GetRandomControl() >> 12;
+					fx->speed = short(GetRandomControl() >> 12);
 				else
-					fx->speed = GetRandomControl() >> 8;
+					fx->speed = short(GetRandomControl() >> 8);
 
 				if (Flags & 0x40)
 					fx->fallspeed = 0;
 				else if (Flags & 0x80)
-					fx->fallspeed = -(GetRandomControl() >> 12);
+					fx->fallspeed = (short)-(GetRandomControl() >> 12);
 				else
-					fx->fallspeed = -(GetRandomControl() >> 8);
+					fx->fallspeed = (short)-(GetRandomControl() >> 8);
 
 				fx->frame_number = obj->mesh_index + 2 * i;
 				fx->object_number = BODY_PART;

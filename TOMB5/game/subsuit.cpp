@@ -90,7 +90,7 @@ void FireChaff()
 	short item_number;
 	ITEM_INFO* item;
 	FLOOR_INFO* floor;
-	int height;
+	long height;
 	PHD_VECTOR pos;
 	PHD_VECTOR pos2;
 

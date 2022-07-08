@@ -7,13 +7,13 @@ void inject_LoadSave(bool replace);
 void CheckKeyConflicts();
 void DoStatScreen();
 void DisplayStatsUCunt();
-void S_DrawAirBar(int pos);
-void S_DrawHealthBar(int pos);
-void S_DrawHealthBar2(int pos);
-void S_DrawDashBar(int pos);
-int DoLoadSave(int LoadSave);
-void S_MemSet(void* p, int val, size_t sz);
-int GetCampaignCheatValue();
+void S_DrawAirBar(long pos);
+void S_DrawHealthBar(long pos);
+void S_DrawHealthBar2(long pos);
+void S_DrawDashBar(long pos);
+long DoLoadSave(long LoadSave);
+void S_MemSet(void* p, long val, size_t sz);
+long GetCampaignCheatValue();
 void DoOptions();
 #ifdef ENEMY_BARS
 void S_DrawEnemyBar(long pos);
@@ -40,11 +40,11 @@ void ReleaseScreen();
 void DrawLoadingScreen();
 
 #define GetSaveLoadFiles	( (void(__cdecl*)()) 0x004AD290 )
-#define S_PauseMenu	( (int(__cdecl*)()) 0x004B1030 )
+#define S_PauseMenu	( (long(__cdecl*)()) 0x004B1030 )
 #define DoSpecialFeaturesServer	( (void(__cdecl*)()) 0x004B1D90 )
 #define DoFrontEndOneShotStuff	( (void(__cdecl*)()) 0x004B2090 )
-#define IsHardware	( (int(__cdecl*)()) 0x004B1E90 )
-#define IsSuperLowRes	( (int(__cdecl*)()) 0x004B1EB0 )
+#define IsHardware	( (long(__cdecl*)()) 0x004B1E90 )
+#define IsSuperLowRes	( (long(__cdecl*)()) 0x004B1EB0 )
 #define FindSFCursor	( (long(__cdecl*)(long, long)) 0x004ABA60 )
 #define DoSlider	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x004AD820 )
 #define CalculateNumSpecialFeatures	( (void(__cdecl*)()) 0x004AB9F0 )

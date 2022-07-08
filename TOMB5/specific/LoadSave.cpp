@@ -98,7 +98,7 @@ static GouraudBarColourSet enemyBarColourSet =
 	{ 0, 0, 0, 0, 0 }
 };
 
-static void S_DrawGouraudBar(int x, int y, int width, int height, int value, GouraudBarColourSet* colour)
+static void S_DrawGouraudBar(long x, long y, long width, long height, long value, GouraudBarColourSet* colour)
 {
 	D3DTLVERTEX v[4];
 	TEXTURESTRUCT tex;
@@ -407,12 +407,14 @@ void CheckKeyConflicts()
 	}
 }
 
+#pragma warning(push)
+#pragma warning(disable : 4244)
 void DoStatScreen()
 {
 	ushort ypos;
 	short Days, Hours, Min, Sec;
 	char buffer[40];
-	int seconds;
+	long seconds;
 
 	ypos = phd_centery - 4 * font_height;
 	PrintString(phd_centerx, ypos, 6, SCRIPT_TEXT(STR_STATISTICS), FF_CENTER);
@@ -440,13 +442,13 @@ void DoStatScreen()
 	sprintf(buffer, "%d / 36", savegame.Game.Secrets);
 	PrintString(phd_centerx + (phd_centerx >> 2), ypos + 7 * font_height, 6, buffer, 0);
 }
-
+#pragma warning(pop)
 void DisplayStatsUCunt()
 {
 	DoStatScreen();
 }
 
-void S_DrawAirBar(int pos)
+void S_DrawAirBar(long pos)
 {
 #ifdef GENERAL_FIXES
 	long x, y;
@@ -492,7 +494,7 @@ void S_DrawAirBar(int pos)
 #endif
 }
 
-void S_DrawHealthBar(int pos)
+void S_DrawHealthBar(long pos)
 {
 	long color;
 #ifdef GENERAL_FIXES
@@ -552,7 +554,7 @@ void S_DrawHealthBar(int pos)
 #endif
 }
 
-void S_DrawHealthBar2(int pos)//same as above just different screen position
+void S_DrawHealthBar2(long pos)//same as above just different screen position
 {
 	long color;
 
@@ -579,7 +581,7 @@ void S_DrawHealthBar2(int pos)//same as above just different screen position
 	}
 }
 
-void S_DrawDashBar(int pos)
+void S_DrawDashBar(long pos)
 {
 #ifdef GENERAL_FIXES
 	long x, y;
@@ -671,9 +673,11 @@ void S_DrawEnemyBar(long pos)
 }
 #endif
 
-int DoLoadSave(int LoadSave)
+#pragma warning(push)
+#pragma warning(disable : 4244)
+long DoLoadSave(long LoadSave)
 {
-	int String, color, n;
+	long String, color, n;
 	char SaveInfo[80];
 	char string[41];
 
@@ -704,10 +708,10 @@ int DoLoadSave(int LoadSave)
 		if (SaveGames[i].bValid)
 		{
 			wsprintf(SaveInfo, "%03d", SaveGames[i].Count);
-			PrintString(phd_centerx - int((310.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, SaveInfo, 0);
-			PrintString(phd_centerx - int((270.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, string, 0);
+			PrintString(phd_centerx - long((310.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, SaveInfo, 0);
+			PrintString(phd_centerx - long((270.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, string, 0);
 			wsprintf(SaveInfo, "%d %s %02d:%02d:%02d", SaveGames[i].Day, SCRIPT_TEXT_bis(STR_DAYS), SaveGames[i].Hour, SaveGames[i].Min, SaveGames[i].Sec);
-			PrintString(phd_centerx + int((135.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, SaveInfo, 0);
+			PrintString(phd_centerx + long((135.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, SaveInfo, 0);
 		}
 		else
 		{
@@ -746,17 +750,18 @@ int DoLoadSave(int LoadSave)
 
 	return -1;
 }
+#pragma warning (pop)
 
-void S_MemSet(void* p, int val, size_t sz)
+void S_MemSet(void* p, long val, size_t sz)
 {
 	memset(p, val, sz);
 }
 
-int GetCampaignCheatValue()
+long GetCampaignCheatValue()
 {
-	static int counter = 0;
-	static int timer;
-	int jump;
+	static long counter = 0;
+	static long timer;
+	long jump;
 
 	if (timer)
 		timer--;
@@ -832,6 +837,8 @@ int GetCampaignCheatValue()
 	return jump;
 }
 
+#pragma warning(push)
+#pragma warning(disable : 4244)
 void DoOptions()
 {
 	char** keyboard_buttons;
@@ -1363,7 +1370,7 @@ void DoOptions()
 					S_SoundStopAllSamples();
 					sfx_bak = SFXVolume;
 					sfx_breath_db = SoundEffect(SFX_LARA_BREATH, 0, SFX_DEFAULT);
-					DSChangeVolume(0, -100 * ((int)(100 - SFXVolume) >> 1));
+					DSChangeVolume(0, -100 * (long(100 - SFXVolume) >> 1));
 				}
 				else if (sfx_breath_db != -1 && DSIsChannelPlaying(0))
 					DSChangeVolume(0, -100 * ((100 - SFXVolume) >> 1));
@@ -1429,6 +1436,7 @@ void DoOptions()
 		TroyeMenu(textY, menu, selection, selection_bak);
 #endif
 }
+#pragma warning (pop)
 
 void DoBar(long x, long y, long width, long height, long pos, long clr1, long clr2)
 {

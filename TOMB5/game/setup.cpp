@@ -60,7 +60,7 @@
 #include "savegame.h"
 #endif
 
-void InitialiseLara(int restore)
+void InitialiseLara(long restore)
 {
 	LARA_INFO backup;
 	short item_num, gun;
@@ -100,7 +100,7 @@ void InitialiseLara(int restore)
 	lara_item->hit_points = 1000;
 
 	for (int i = 0; i < gfNumPickups; i++)
-		DEL_picked_up_object(convert_invobj_to_obj(gfPickups[i]));
+		DEL_picked_up_object((short)convert_invobj_to_obj(gfPickups[i]));
 
 	gfNumPickups = 0;
 
@@ -138,7 +138,7 @@ void InitialiseLara(int restore)
 	DashTimer = 120;
 
 	for (int i = 0; i < gfNumTakeaways; i++)
-		NailInvItem(convert_invobj_to_obj(gfTakeaways[i]));
+		NailInvItem((short)convert_invobj_to_obj(gfTakeaways[i]));
 
 	gfNumTakeaways = 0;
 	weapons[WEAPON_REVOLVER].damage = gfCurrentLevel > LVL5_COLOSSEUM ? 15 : 6;

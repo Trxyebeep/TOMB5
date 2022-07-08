@@ -5,7 +5,7 @@
 void inject_gameflow(bool replace);
 
 void DoGameflow();
-int TitleOptions();
+long TitleOptions();
 void DoTitle(uchar name, uchar audio);
 void do_dels_cutseq_selector();
 void DoLevel(uchar name, uchar audio);

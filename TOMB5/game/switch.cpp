@@ -181,7 +181,7 @@ void SwitchControl(short item_number)
 	{
 		if (item->anim_number == objects[AIRLOCK_SWITCH].anim_index + 1 && item->frame_number == anims[item->anim_number].frame_end - 1)
 		{
-			for (NumTrigs = GetSwitchTrigger(&items[item_number], TriggerItems, 1); NumTrigs > 0; NumTrigs--)
+			for (NumTrigs = (short)GetSwitchTrigger(&items[item_number], TriggerItems, 1); NumTrigs > 0; NumTrigs--)
 			{
 				switem = &items[TriggerItems[NumTrigs - 1]];
 				switem->flags ^= IFL_CODEBITS;

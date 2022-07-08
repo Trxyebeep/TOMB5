@@ -25,7 +25,7 @@ void TriggerDebris(GAME_VECTOR* pos, void* TextInfo, short* Offsets, long* Vels,
 
 	if (DebrisFlags & 1)
 	{
-		dptr->Dir = GetRandomControl() << 1;
+		dptr->Dir = short(GetRandomControl() << 1);
 		dptr->Speed = (GetRandomControl() & 0xF) + 16;
 		dptr->Yvel = -64 - (GetRandomControl() & 0x7F);
 		dptr->Gravity = (GetRandomControl() & 0x1F) + 16;

@@ -3,7 +3,7 @@
 
 void inject_spotcam(bool replace);
 
-long Spline(long x, long* knots, int nk);
+long Spline(long x, long* knots, long nk);
 void InitSpotCamSequences();
 void InitialiseSpotCam(short Sequence);
 void CalculateSpotCams();

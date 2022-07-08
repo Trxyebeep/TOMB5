@@ -5,11 +5,11 @@
 void inject_health(bool replace);
 
 
-int FlashIt();
-void DrawGameInfo(int timed);
-void DrawHealthBar(int flash_state);
-void DrawAirBar(int flash_state);
+long FlashIt();
+void DrawGameInfo(long timed);
+void DrawHealthBar(long flash_state);
+void DrawAirBar(long flash_state);
 void MakeAmmoString(char* string);
 void InitialisePickUpDisplay();
-void DrawPickups(int timed);
+void DrawPickups(long timed);
 void AddDisplayPickup(short object_number);

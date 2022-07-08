@@ -47,6 +47,6 @@ void TL_12(ITEM_INFO* item);
 short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room_number);
 #define Richochet	( (void(__cdecl*)(GAME_VECTOR*)) 0x00432710 );
 
-#define WadeSplash	( (void(__cdecl*)(ITEM_INFO*, int, int)) 0x00432A30 )
+#define WadeSplash	( (void(__cdecl*)(ITEM_INFO*, long, long)) 0x00432A30 )
 #define Splash	( (void(__cdecl*)(ITEM_INFO*)) 0x00432900 )
-#define ItemNearLara	( (int(__cdecl*)(PHD_3DPOS*, long)) 0x00432580 )
+#define ItemNearLara	( (long(__cdecl*)(PHD_3DPOS*, long)) 0x00432580 )

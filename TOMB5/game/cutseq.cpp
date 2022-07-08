@@ -302,17 +302,17 @@ void _special4_end()
 	title_controls_locked_out = 0;
 }
 
-void ResetCutItem(int item_num)
+void ResetCutItem(long item_num)
 {
 	find_a_fucking_item(item_num)->mesh_bits = -1;
 }
 
-void resetwindowsmash(int item_num)
+void resetwindowsmash(long item_num)
 {
 	find_a_fucking_item(item_num)->mesh_bits = 1;
 }
 
-void triggerwindowsmash(int item_num)
+void triggerwindowsmash(long item_num)
 {
 	ITEM_INFO* item;
 	
@@ -324,7 +324,7 @@ void triggerwindowsmash(int item_num)
 void FlamingHell(PHD_VECTOR* pos)
 {
 	SPARKS* sptr;
-	int r, size;
+	long r;
 
 	r = (GetRandomControl() & 0x1FF) - 128;
 
@@ -351,10 +351,9 @@ void FlamingHell(PHD_VECTOR* pos)
 	sptr->MaxYvel = 0;
 	sptr->Flags = 538;
 	sptr->Scalar = 2;
-	size = (GetRandomControl() & 0xF) + (r >> 6) + 16;
-	sptr->dSize = size;
-	sptr->sSize = size >> 1;
-	sptr->Size = size >> 1;
+	sptr->dSize = uchar((GetRandomControl() & 0xF) + (r >> 6) + 16);
+	sptr->sSize = sptr->dSize >> 1;
+	sptr->Size = sptr->dSize >> 1;
 	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
 	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Yvel = -(short)r;

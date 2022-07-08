@@ -794,7 +794,7 @@ void richcut1_init()
 void richcut1_control()
 {
 	ITEM_INFO* item;
-	int f; 
+	long f; 
 	
 	f = GLOBAL_cutseq_frame;
 
@@ -2528,7 +2528,7 @@ void do_chalk_meshswap()//optimized out
 	meshes[objects[MAFIA_MIP].mesh_index + 2 * LM_RHAND] = temp;
 }
 
-void cutseq_shoot_pistols(int left_or_right)
+void cutseq_shoot_pistols(long left_or_right)
 {
 	if (left_or_right == 14)
 	{
@@ -2542,7 +2542,7 @@ void cutseq_shoot_pistols(int left_or_right)
 	}
 }
 
-ITEM_INFO* ResetCutanimate(int objnum)
+ITEM_INFO* ResetCutanimate(long objnum)
 {
 	ITEM_INFO* item;
 	
@@ -2555,7 +2555,7 @@ ITEM_INFO* ResetCutanimate(int objnum)
 	return item;
 }
 
-void Cutanimate(int objnum)
+void Cutanimate(long objnum)
 {
 	ITEM_INFO* item;
 	
@@ -2581,19 +2581,19 @@ void cutseq_givelara_hk()
 	draw_shotgun_meshes(WEAPON_HK);
 }
 
-void TriggerActorBlood(int actornum, ulong nodenum, PHD_VECTOR* pos, int direction, int speed)
+void TriggerActorBlood(long actornum, ulong nodenum, PHD_VECTOR* pos, long direction, long speed)
 {
 	GetActorJointAbsPosition(actornum, nodenum, pos);
 	TriggerBlood(pos->x, pos->y, pos->z, direction >> 4, speed);
 }
 
-void finish_cutseq(int name)
+void finish_cutseq(long name)
 {
 	GLOBAL_playing_cutseq = 0;
 	InitialiseHair();
 }
 
-void trigger_weapon_dynamics(int left_or_right)
+void trigger_weapon_dynamics(long left_or_right)
 {
 	PHD_VECTOR pos;
 
@@ -2604,7 +2604,7 @@ void trigger_weapon_dynamics(int left_or_right)
 	TriggerDynamic(pos.x, pos.y, pos.z, 10, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, (GetRandomControl() & 0x3F));
 }
 
-ITEM_INFO* find_a_fucking_item(int object_number)
+ITEM_INFO* find_a_fucking_item(long object_number)
 {
 	ITEM_INFO* item;
 
@@ -2619,7 +2619,7 @@ ITEM_INFO* find_a_fucking_item(int object_number)
 	return 0;
 }
 
-void TriggerDelSmoke(long x, long y, long z, int sizeme)
+void TriggerDelSmoke(long x, long y, long z, long sizeme)
 {
 	SPARKS* sptr;
 	long size, dx, dz;
@@ -2768,7 +2768,7 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->dSize += sptr->dSize >> 2;
 }
 
-void trigger_title_spotcam(int num)
+void trigger_title_spotcam(long num)
 {
 	ITEM_INFO* item;
 
@@ -2810,7 +2810,7 @@ void trigger_title_spotcam(int num)
 		ResetCutanimate(ANIMATING14);
 		ResetCutanimate(ANIMATING15);
 		S_CDPlay(CDA_XA12_FLYBY4, 0);
-		InitialiseSpotCam(num);
+		InitialiseSpotCam((short)num);
 		return;
 
 	case 2:
@@ -2824,7 +2824,7 @@ void trigger_title_spotcam(int num)
 		return;
 
 	default:
-		InitialiseSpotCam(num);
+		InitialiseSpotCam((short)num);
 		return;
 	}	
 }
@@ -2921,7 +2921,7 @@ void deal_with_pistols(ushort* shootdata)
 void handle_lara_chatting(short* _ranges)//short* ranges//until the anim ranges array is moved into the dll.
 {
 	short* poo;
-	int r1, r2, f, rndme;
+	long r1, r2, f, rndme;
 
 	f = GLOBAL_cutseq_frame;
 	lara_chat_cnt = (lara_chat_cnt - 1) & 1;
@@ -2951,7 +2951,7 @@ void handle_lara_chatting(short* _ranges)//short* ranges//until the anim ranges 
 	}
 }
 
-void handle_actor_chatting(int speechslot, int node, int slot, int objslot, short* _ranges)//short* ranges//until the anim ranges array is moved into the dll.
+void handle_actor_chatting(long speechslot, long node, long slot, long objslot, short* _ranges)//short* ranges//until the anim ranges array is moved into the dll.
 {
 	long r1, r2, f, rnd;
 
@@ -2986,7 +2986,7 @@ void handle_actor_chatting(int speechslot, int node, int slot, int objslot, shor
 
 }
 
-void trigger_item_in_room(short room_number, int object)
+void trigger_item_in_room(short room_number, long object)
 {
 	ITEM_INFO* item;
 	short num, nex;
@@ -3009,7 +3009,7 @@ void trigger_item_in_room(short room_number, int object)
 	}
 }
 
-void untrigger_item_in_room(short room_number, int object)
+void untrigger_item_in_room(short room_number, long object)
 {
 	ITEM_INFO* item;
 	short num, nex;
@@ -3032,7 +3032,7 @@ void untrigger_item_in_room(short room_number, int object)
 	}
 }
 
-void deal_with_actor_shooting(ushort* shootdata, int actornum, int nodenum, PHD_VECTOR* pos)
+void deal_with_actor_shooting(ushort* shootdata, long actornum, long nodenum, PHD_VECTOR* pos)
 {
 	MATRIX3D arse;
 	long f;
@@ -3061,7 +3061,7 @@ void deal_with_actor_shooting(ushort* shootdata, int actornum, int nodenum, PHD_
 
 }
 
-void DelsHandyTeleportLara(int x, int y, int z, int yrot)
+void DelsHandyTeleportLara(long x, long y, long z, long yrot)
 {
 	lara_item->pos.x_pos = x;
 	lara_item->pos.y_pos = y;
@@ -3071,7 +3071,7 @@ void DelsHandyTeleportLara(int x, int y, int z, int yrot)
 	lara.torso_x_rot = 0;
 	lara.torso_y_rot = 0;
 	lara_item->pos.x_rot = 0;
-	lara_item->pos.y_rot = yrot;
+	lara_item->pos.y_rot = (short)yrot;
 	lara_item->pos.z_rot = 0;
 	IsRoomOutside(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
 
@@ -3089,7 +3089,7 @@ void DelsHandyTeleportLara(int x, int y, int z, int yrot)
 	camera.fixed_camera = 1;
 }
 
-void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int numnodes)
+void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, long numnodes)
 {
 	long offset, xoff, yoff, zoff;
 
@@ -3121,7 +3121,7 @@ void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, int num
 	}
 }
 
-short GetTrackWord(int off, char* packed, int packmethod)
+short GetTrackWord(long off, char* packed, long packmethod)
 {
 	long offset, offset2;
 	short ret;
@@ -3129,12 +3129,12 @@ short GetTrackWord(int off, char* packed, int packmethod)
 	offset = packmethod * off;
 	offset2 = offset >> 3;
 
-	ret = ((1 << packmethod) - 1) & ((unsigned int)(*(uchar*)(packed + offset2) |
+	ret = ((1 << packmethod) - 1) & ((ulong)(*(uchar*)(packed + offset2) |
 		((*(uchar*)(packed + offset2 + 1) |
 			(*(ushort*)(packed + offset2 + 2) << 8)) << 8)) >> (offset & 7));
 
 	if (((1 << (packmethod - 1)) & ret) != 0)
-		return (unsigned int)(ret | ~((1 << packmethod) - 1));
+		return ulong(ret | ~((1 << packmethod) - 1));
 
 	return ret;
 }
@@ -3200,7 +3200,7 @@ short DecodeTrack(char* packed, RTDECODE* decode)
 	}
 }
 
-void DecodeAnim(PACKNODE* node, int num_nodes, int frame, int flags)
+void DecodeAnim(PACKNODE* node, long num_nodes, long frame, long flags)
 {
 	if (!frame)
 	{
@@ -3320,7 +3320,7 @@ void do_new_cutscene_camera()
 		GLOBAL_cutseq_frame = GLOBAL_numcutseq_frames;
 }
 
-void updateAnimFrame(PACKNODE* node, int flags, short* frame)
+void updateAnimFrame(PACKNODE* node, long flags, short* frame)
 {
 	short* nex;
 	short y;
@@ -3370,7 +3370,7 @@ void DrawCutSeqActors()
 	short** mesh;
 	long* bone;
 	short* rot;
-	int n;
+	long n;
 
 	phd_PushMatrix();
 
@@ -3494,7 +3494,7 @@ void frigup_lara()
 
 #ifdef GENERAL_FIXES
 	if (cutseq_num == 18 && GLOBAL_cutseq_frame <= 130)
-		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, SCRIPT_TEXT(STR_SEVERAL_HOURS_LATER), FF_CENTER);
+		PrintString((ushort)phd_centerx, ushort(phd_winymax - 3 * font_height), 5, SCRIPT_TEXT(STR_SEVERAL_HOURS_LATER), FF_CENTER);
 #endif
 
 	lara_item->pos.x_pos = GLOBAL_cutme->orgx;
@@ -3556,7 +3556,7 @@ void CalculateObjectLightingLaraCutSeq()
 	lara_item->room_number = room_num2;
 }
 
-void GrabActorMatrix(int actornum, ulong nodenum, MATRIX3D* matrixstash)
+void GrabActorMatrix(long actornum, ulong nodenum, MATRIX3D* matrixstash)
 {
 	OBJECT_INFO* obj;
 	long* bone;
@@ -3622,7 +3622,7 @@ void GrabActorMatrix(int actornum, ulong nodenum, MATRIX3D* matrixstash)
 	phd_PopMatrix();
 }
 
-int Load_and_Init_Cutseq(int num)
+long Load_and_Init_Cutseq(long num)
 {
 	char* packed;
 
@@ -3641,7 +3641,7 @@ int Load_and_Init_Cutseq(int num)
 	return 0;
 }
 
-void cutseq_kill_item(int num)
+void cutseq_kill_item(long num)
 {
 	ITEM_INFO* item;
 
@@ -3660,7 +3660,7 @@ void cutseq_kill_item(int num)
 	}
 }
 
-ITEM_INFO* cutseq_restore_item(int num)
+ITEM_INFO* cutseq_restore_item(long num)
 {
 	ITEM_INFO* item;
 
@@ -3680,7 +3680,7 @@ ITEM_INFO* cutseq_restore_item(int num)
 	return 0;
 }
 
-void GetActorJointAbsPosition(int actornum, ulong nodenum, PHD_VECTOR* vec)
+void GetActorJointAbsPosition(long actornum, ulong nodenum, PHD_VECTOR* vec)
 {
 	ITEM_INFO* item;
 	long* bone;
@@ -3720,7 +3720,7 @@ void GetActorJointAbsPosition(int actornum, ulong nodenum, PHD_VECTOR* vec)
 	phd_PopMatrix();
 }
 
-void init_cutseq_actors(char* data, int resident)
+void init_cutseq_actors(char* data, long resident)
 {
 	NODELOADHEADER* nlheader;
 	char* packed;
@@ -3809,7 +3809,7 @@ void init_cutseq_actors(char* data, int resident)
 	InitialiseHair();
 }
 
-void init_resident_cutseq(int num)
+void init_resident_cutseq(long num)
 {
 	char* packed;
 

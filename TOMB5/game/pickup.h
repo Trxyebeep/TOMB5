@@ -5,8 +5,8 @@ void inject_pickup(bool replace);
 
 static void PuzzleDone(ITEM_INFO* item, short item_num);
 void RegeneratePickups();
-int KeyTrigger(short item_num);
-int PickupTrigger(short item_num);
+long KeyTrigger(short item_num);
+long PickupTrigger(short item_num);
 void PuzzleDoneCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
 void PuzzleHoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
 void SearchObjectControl(short item_number);

@@ -58,7 +58,7 @@ void DrawHair()
 }
 
 #ifdef GENERAL_FIXES	//it was getting ridiculous
-void HairControl(int in_cutscene, int pigtail, short* cutscenething)
+void HairControl(long in_cutscene, long pigtail, short* cutscenething)
 {
 	OBJECT_INFO* obj;
 	HAIR_STRUCT* hair;
@@ -537,7 +537,7 @@ void HairControl(int in_cutscene, int pigtail, short* cutscenething)
 	}
 }
 #else
-void HairControl(int in_cutscene, int pigtail, short* cutscenething)
+void HairControl(long in_cutscene, long pigtail, short* cutscenething)
 {
 	OBJECT_INFO* obj;
 	HAIR_STRUCT* hair;

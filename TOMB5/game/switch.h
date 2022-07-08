@@ -20,8 +20,8 @@ void FullBlockSwitchCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
 void CogSwitchControl(short item_number);
 void CogSwitchCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
 
-#define TestTriggersAtXYZ	( (void(__cdecl*)(long, long, long, short, int, int)) 0x0047D9D0 )
+#define TestTriggersAtXYZ	( (void(__cdecl*)(long, long, long, short, long, long)) 0x0047D9D0 )
 #define ProcessExplodingSwitchType8	( (void(__cdecl*)(ITEM_INFO*)) 0x0047FF20 )
-#define GetSwitchTrigger	( (int(__cdecl*)(ITEM_INFO*, short*, long)) 0x0047D7B0 )
-#define GetKeyTrigger	( (int(__cdecl*)(ITEM_INFO*)) 0x0047D8C0 )
-#define SwitchTrigger	( (int(__cdecl*)(short, short)) 0x0047D670 )
+#define GetSwitchTrigger	( (long(__cdecl*)(ITEM_INFO*, short*, long)) 0x0047D7B0 )
+#define GetKeyTrigger	( (long(__cdecl*)(ITEM_INFO*)) 0x0047D8C0 )
+#define SwitchTrigger	( (long(__cdecl*)(short, short)) 0x0047D670 )
