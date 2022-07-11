@@ -3,7 +3,7 @@
 
 void inject_setup(bool replace);
 
-void InitialiseLara(int restore);
+void InitialiseLara(long restore);
 void ObjectObjects();
 void TrapObjects();
 void BaddyObjects();

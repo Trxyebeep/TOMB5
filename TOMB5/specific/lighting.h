@@ -9,7 +9,7 @@ void CreateLightList(ITEM_INFO* item);
 void FadeLightList(PCLIGHT* lights, long nLights);
 void SuperResetLights();
 void CalcAmbientLight(ITEM_INFO* item);
-void S_CalculateStaticMeshLight(int x, int y, int z, int shade, ROOM_INFO* r);
+void S_CalculateStaticMeshLight(long x, long y, long z, long shade, ROOM_INFO* r);
 void SuperSetupDynamicLight(DYNAMIC* light, ITEM_INFO* item);
 void InitDynamicLighting_noparams();
 void InitDynamicLighting(ITEM_INFO* item);

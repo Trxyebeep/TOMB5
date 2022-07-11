@@ -75,7 +75,7 @@ void DogControl(short item_number)
 
 					if (dog->mood == BORED_MOOD)
 					{
-						random = GetRandomControl();
+						random = (short)GetRandomControl();
 
 						if (random < 768)
 						{
@@ -119,7 +119,7 @@ void DogControl(short item_number)
 							item->goal_anim_state = item->required_anim_state;
 						else
 						{
-							random = GetRandomControl();
+							random = (short)GetRandomControl();
 
 							if (random < 768)
 								item->goal_anim_state = 4;

@@ -3,8 +3,8 @@
 
 void inject_larasurf(bool replace);
 
-int LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll);
-int LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll);
+long LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll);
+long LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll);
 void LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll);
 void LaraSurface(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_surfswim(ITEM_INFO* item, COLL_INFO* coll);

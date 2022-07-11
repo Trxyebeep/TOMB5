@@ -31,6 +31,7 @@
 ## New options menu:
 *accessible through the title options menu/pause options menu*
 
+# page 1
 
 ### 1. FootPrints:
 - Toggles footprints on and off.
@@ -97,3 +98,35 @@ Changes the positions of the bars on the screen.
 
 ### 12. TR4 Camera:
 - Toggles TR4 camera behavior on and off.
+
+### 13. Bar Mode:
+Determines the mode of the bars.
+- original: original TR4 bars.
+- TR5: TR5 bar colors.
+- PSX: PSX bar colors.
+
+# page 2
+
+### 14. Crawl Tilting:
+- Toggles Lara tilting while crawling on sloped surfaces.
+
+### 15. PSX Skies:
+- Toggles using the PSX sprite for the sky.
+
+### 16. TR4 loadscreens:
+- Toggles using original picture or new TR4 style loading screens.
+
+### 17. Loadbar style:
+Determines the style of the loading bar in the loading screens.
+- TR4: big bar, like TR4.
+- TR5: original small TR5 bar.
+
+### 18. mono screen style:
+Determines the style of the inventory/pause menu background.
+- original: The original yellow-ish style.
+- TR4: The TR4 black and white.
+- Clear: Clear game screen as is, no color modification.
+
+### 19. Loading text:
+- Toggles the "Loading" text in loading screens.
+Note: TR5 loadbar style will ignore this option and never show the text. This is intentional and will not change.

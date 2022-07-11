@@ -86,7 +86,7 @@ void FlareControl(short item_number)
 	flare->data = (void*)flare_age;
 }
 
-void CreateFlare(short object, int thrown)
+void CreateFlare(short object, long thrown)
 {
 	ITEM_INFO* flare;
 	FLOOR_INFO* floor;
@@ -193,7 +193,7 @@ void draw_flare_meshes()
 	lara.mesh_ptrs[LM_LHAND] = meshes[objects[FLARE_ANIM].mesh_index + (2 * LM_LHAND)];
 }
 
-void set_flare_arm(int frame)
+void set_flare_arm(long frame)
 {
 	long anim_base;
 	
@@ -212,7 +212,7 @@ void set_flare_arm(int frame)
 	lara.left_arm.frame_base = anims[anim_base].frame_ptr;
 }
 
-void DoFlareInHand(int flare_age)
+void DoFlareInHand(long flare_age)
 {
 	PHD_VECTOR pos;
 
@@ -237,7 +237,7 @@ void DoFlareInHand(int flare_age)
 		lara.flare_age++;
 }
 
-int DoFlareLight(PHD_VECTOR* pos, int flare_age)
+long DoFlareLight(PHD_VECTOR* pos, long flare_age)
 {
 	long x, y, z, r, g, b, random, random2, falloff;
 
@@ -466,6 +466,9 @@ void DrawFlareInAir(ITEM_INFO* item)
 #endif
 
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+#ifdef GENERAL_FIXES
+	current_item = item;
+#endif
 	phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
 	phd_PopMatrix();
 

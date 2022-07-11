@@ -41,7 +41,7 @@ void KlaxonTremor()
 
 	if (timer < 0)
 	{
-		if ((signed int)InGameCnt >= ABS(timer))
+		if ((long)InGameCnt >= ABS(timer))
 		{
 			camera.bounce = -(GetRandomControl() % ABS(timer));
 			timer++;

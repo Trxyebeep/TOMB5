@@ -6,7 +6,7 @@
 #include "sound.h"
 #include "sphere.h"
 
-void TriggerAlertLight(long x, long y, long z, long r, long g, long b, long angle, int room_no, int falloff)
+void TriggerAlertLight(long x, long y, long z, long r, long g, long b, long angle, long room_no, long falloff)
 {
 	GAME_VECTOR src, target;
 	long sin, cos;
@@ -15,7 +15,7 @@ void TriggerAlertLight(long x, long y, long z, long r, long g, long b, long angl
 	src.y = y;
 	src.z = z;
 	GetFloor(x, y, z, (short*) &room_no);
-	src.room_number = room_no;
+	src.room_number = (short)room_no;
 	sin = phd_sin(16 * angle);
 	cos = phd_cos(16 * angle);
 	target.x = x + sin;

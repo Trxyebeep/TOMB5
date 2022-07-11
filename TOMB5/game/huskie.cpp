@@ -101,7 +101,7 @@ void HuskieControl(short item_number)
 				item->ai_bits &= ~8;
 			}
 
-			random = GetRandomControl();
+			random = (short)GetRandomControl();
 			frame = item->frame_number - anims[item->anim_number].frame_base;
 
 			switch (item->current_anim_state)

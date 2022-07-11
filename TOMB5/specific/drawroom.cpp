@@ -50,7 +50,7 @@ void DrawBoundsRectangle(float left, float top, float right, float bottom)
 	AddQuadZBuffer(v, 0, 4, 7, 3, textinfo, 1);
 }
 
-void DrawBoundsRectangleII(float left, float top, float right, float bottom, int rgba)
+void DrawBoundsRectangleII(float left, float top, float right, float bottom, long rgba)
 {
 	D3DTLVERTEX v[8];
 	TEXTURESTRUCT Tex;
@@ -532,12 +532,11 @@ void aBuildFogBulbList()
 	if (NumLevelFogBulbs)
 	{
 		num_active = 0;
+		ActiveFog = ActiveFogBulbs;
 
 		for (int i = 0; i < NumLevelFogBulbs; i++)
 		{
-			ActiveFog = &ActiveFogBulbs[i];
 			Fog = &fog_bulbs[i];
-
 			vec.x = Fog->px;
 			vec.y = Fog->py;
 			vec.z = Fog->pz;
@@ -566,6 +565,7 @@ void aBuildFogBulbList()
 			ActiveFog->pos.z = vec2.z;
 			ActiveFog->sqlen = SQUARE(vec2.x) + SQUARE(vec2.y) + SQUARE(vec2.z);
 			ActiveFog->d = 1 / Fog->den;
+			ActiveFog++;
 		}
 
 		NumActiveFogBulbs = num_active;

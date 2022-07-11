@@ -263,7 +263,7 @@ void InitialiseDoor(short item_number)
 	ROOM_INFO* r;
 	ROOM_INFO* b;
 	DOOR_DATA* door;
-	int dx, dy;
+	long dx, dy;
 	short two_room, box_number, room_number;
 
 	item = &items[item_number];
@@ -494,7 +494,7 @@ void AddClosedDoor(ITEM_INFO* item)
 	}
 }
 
-void SetupClosedDoorStuff(DOOR_DATA* door, ITEM_INFO* item, short room2, int dx, int dy)
+void SetupClosedDoorStuff(DOOR_DATA* door, ITEM_INFO* item, short room2, long dx, long dy)
 {
 	ROOM_INFO* r;
 	long ox, oz;
@@ -617,7 +617,7 @@ void InitialiseLasers(short item_number)
 	}
 
 	for (int i = 0; i < 18; i++)
-		ls->Rand[i] = GetRandomControl() << 1;
+		ls->Rand[i] = short(GetRandomControl() << 1);
 }
 
 void InitialiseSteamLasers(short item_number)
@@ -662,7 +662,7 @@ void InitialiseSteamLasers(short item_number)
 	}
 
 	for (int i = 0; i < 27; i++)
-		ls->Rand[i] = GetRandomControl() << 1;
+		ls->Rand[i] = short(GetRandomControl() << 1);
 }
 
 void InitialiseFloorLasers(short item_number)
@@ -694,7 +694,7 @@ void InitialiseFloorLasers(short item_number)
 	height = (height << 1) + 1;
 
 	for (int i = 0; i < width * height; i++)
-		ls->Rand[i] = (GetRandomControl() << 1);
+		ls->Rand[i] = short(GetRandomControl() << 1);
 
 	item->trigger_flags = 0;
 }
@@ -754,7 +754,7 @@ void InitialiseSearchObject(short item_number)
 {
 	ITEM_INFO* item;
 	short ObjNum;
-	int i;
+	long i;
 
 	item = &items[item_number];
 	ObjNum = 3 - ((SEARCH_OBJECT4 - item->object_number) >> 1);
@@ -779,7 +779,7 @@ void InitialiseSearchObject(short item_number)
 				item->pos.y_pos == items[i].pos.y_pos &&
 				item->pos.z_pos == items[i].pos.z_pos)
 			{
-				item->item_flags[1] = i;
+				item->item_flags[1] = (short)i;
 				break;
 			}
 
@@ -1262,7 +1262,7 @@ void InitialiseGasCloud(short item_number)
 			cloud->v4.vz = 512;
 
 			for (int j = 0; j < 36; j++)
-				cloud->Rand[j] = GetRandomControl() << 1;
+				cloud->Rand[j] = short(GetRandomControl() << 1);
 
 			cloud->mTime = 0;
 			cloud->sTime = 0;
@@ -1270,12 +1270,12 @@ void InitialiseGasCloud(short item_number)
 			cloud++;
 		}
 
-		item->item_flags[1] = (short)(item->pos.x_pos >> 1);
-		item->item_flags[2] = (short)(item->pos.y_pos >> 1);
-		item->item_flags[3] = (short)(item->pos.z_pos >> 1);
-		item->current_anim_state = GetRandomControl() << 1;
-		item->goal_anim_state = GetRandomControl() << 1;
-		item->required_anim_state = GetRandomControl() << 1;
+		item->item_flags[1] = short(item->pos.x_pos >> 1);
+		item->item_flags[2] = short(item->pos.y_pos >> 1);
+		item->item_flags[3] = short(item->pos.z_pos >> 1);
+		item->current_anim_state = short(GetRandomControl() << 1);
+		item->goal_anim_state = short(GetRandomControl() << 1);
+		item->required_anim_state = short(GetRandomControl() << 1);
 	}
 }
 
@@ -1362,7 +1362,7 @@ void InitialiseRaisingCog(short item_number)
 	short NumTrigs;
 
 	item = &items[item_number];
-	NumTrigs = GetSwitchTrigger(item, TriggerItems, 1);
+	NumTrigs = (short)GetSwitchTrigger(item, TriggerItems, 1);
 
 	for (int i = NumTrigs; i > 0; i--)
 	{

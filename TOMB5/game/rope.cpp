@@ -14,7 +14,7 @@ void InitialiseRope(short item_number)
 	PHD_VECTOR RopePos, RopeDir;
 	ITEM_INFO* item;
 	FLOOR_INFO* floor;
-	int height;
+	long height;
 	short room_number;
 
 	item = &items[item_number];
@@ -29,13 +29,13 @@ void InitialiseRope(short item_number)
 	RopeDir.y = 16384;
 	RopeDir.z = 0;
 	CreateRope(&RopeList[nRope], &RopePos, &RopeDir, 128, item);
-	item->trigger_flags = nRope;
-	++nRope;
+	item->trigger_flags = (short)nRope;
+	nRope++;
 }
 
 void CreateRope(ROPE_STRUCT* rope, PHD_VECTOR* pos, PHD_VECTOR* dir, long slength, ITEM_INFO* item)
 {
-	int n;
+	long n;
 
 	rope->Position = *pos;
 	rope->SegmentLength = 65536 * slength;
@@ -91,9 +91,9 @@ PHD_VECTOR* Normalise(PHD_VECTOR* v)
 	return v;
 }
 
-void GetRopePos(ROPE_STRUCT* rope, int pos, long* x, long* y, long* z)
+void GetRopePos(ROPE_STRUCT* rope, long pos, long* x, long* y, long* z)
 {
-	int segment;
+	long segment;
 
 	segment = pos >> 7;
 	*x = (rope->NormalisedSegment[segment].x * (pos & 0x7F) >> 16) + (rope->MeshSegment[segment].x >> 16) + rope->Position.x;
@@ -162,7 +162,7 @@ void RopeControl(short item_number)
 void RopeCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 {
 	ROPE_STRUCT* rope;
-	int i;
+	long i;
 	short* bounds;
 	long x, y, z, rad;
 
@@ -197,7 +197,7 @@ void RopeCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 			l->fallspeed = 0;
 			lara.gun_status = LG_HANDS_BUSY;
 			lara.RopePtr = items[item_number].trigger_flags;
-			lara.RopeSegment = i;
+			lara.RopeSegment = (char)i;
 			lara.RopeY = l->pos.y_rot;
 			AlignLaraToRope(l);
 			CurrentPendulum.Velocity.x = 0;
@@ -210,7 +210,7 @@ void RopeCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 
 void CalculateRope(ROPE_STRUCT* Rope)
 {
-	int n, bSetFlag;
+	long n, bSetFlag;
 	PENDULUM* Pendulum;
 	PHD_VECTOR dir;
 
@@ -389,9 +389,9 @@ void CalculateRope(ROPE_STRUCT* Rope)
 	}
 }
 
-int RopeNodeCollision(ROPE_STRUCT* rope, long x, long y, long z, long rad)
+long RopeNodeCollision(ROPE_STRUCT* rope, long x, long y, long z, long rad)
 {
-	int i;
+	long i;
 	long rx, ry, rz;
 
 	for (i = 0; i < 22; ++i)
@@ -410,7 +410,7 @@ int RopeNodeCollision(ROPE_STRUCT* rope, long x, long y, long z, long rad)
 	return -1;
 }
 
-void SetPendulumVelocity(int x, int y, int z)
+void SetPendulumVelocity(long x, long y, long z)
 {
 	long scale;
 
@@ -427,7 +427,7 @@ void SetPendulumVelocity(int x, int y, int z)
 	CurrentPendulum.Velocity.z += z;
 }
 
-void SetPendulumPoint(ROPE_STRUCT* Rope, int node)
+void SetPendulumPoint(ROPE_STRUCT* Rope, long node)
 {
 	CurrentPendulum.Position.x = Rope->Segment[node].x;
 	CurrentPendulum.Position.y = Rope->Segment[node].y;
@@ -505,7 +505,7 @@ void AlignLaraToRope(ITEM_INFO* l)
 	short xyz[3];
 	short ropeangle;
 	long* mptr;
-	int i;
+	long i;
 	short* frame;
 	ROPE_STRUCT* rope;
 	PHD_VECTOR n;
@@ -632,7 +632,7 @@ void LaraClimbRope(ITEM_INFO* item, COLL_INFO* coll)
 
 void DrawRopeList()
 {
-	int n;
+	long n;
 
 	for (n = 0; n < nRope; n++)
 	{
@@ -648,7 +648,7 @@ void ProjectRopePoints(ROPE_STRUCT* Rope)
 	PHD_VECTOR t;
 	float zv;
 	long sw, sh;
-	int n;
+	long n;
 
 	sw = phd_winwidth >> 1;
 	sh = phd_winheight >> 1;
@@ -674,7 +674,7 @@ void ProjectRopePoints(ROPE_STRUCT* Rope)
 
 void init_all_ropes()
 {
-	int i;
+	long i;
 
 	for (i = 0; i < 8; i++)
 		RopeList[i].Active = 0;
@@ -701,7 +701,7 @@ void StraightenRope(ITEM_INFO* item)
 {
 	FLOOR_INFO* floor;
 	PHD_VECTOR RopePos, RopeDir;
-	int height;
+	long height;
 	short room_number;
 
 	room_number = item->room_number;
@@ -719,7 +719,7 @@ void StraightenRope(ITEM_INFO* item)
 
 void _Straighten(ROPE_STRUCT* rope, PHD_VECTOR* pos, PHD_VECTOR* dir, long slength)
 {
-	int n;
+	long n;
 
 	rope->Position = *pos;
 	rope->SegmentLength = 65536 * slength;

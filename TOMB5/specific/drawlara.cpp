@@ -18,7 +18,7 @@ char lara_underwater_skin_sweetness_table[15] =
 	0, 2, 3, 0, 5, 6, 7, 9, 10, 11, 12, 13, 14, 8, 0
 };
 
-int	lara_mesh_sweetness_table[15] = 
+long	lara_mesh_sweetness_table[15] = 
 {
 	0, 1, 2, 3, 4, 5, 6, 7, 14, 8, 9, 10, 11, 12, 13
 };
@@ -78,7 +78,7 @@ uchar SkinUseMatrix[14][2] =
 	{255, 255}
 };
 
-void DrawLara(ITEM_INFO* item, int mirror)
+void DrawLara(ITEM_INFO* item, long mirror)
 {
 	if (lara.skelebob)
 		DrawLara__6(item, mirror);
@@ -103,7 +103,7 @@ void DrawLara(ITEM_INFO* item, int mirror)
 	}
 }
 
-void DrawLara__1(ITEM_INFO* item, int mirror)
+void DrawLara__1(ITEM_INFO* item, long mirror)
 {
 	OBJECT_INFO* obj;
 	VECTOR v0;
@@ -376,7 +376,7 @@ void DrawLara__1(ITEM_INFO* item, int mirror)
 	GlobalAlpha = 0xFF000000;
 }
 
-void DrawLara__4(ITEM_INFO* item, int mirror)
+void DrawLara__4(ITEM_INFO* item, long mirror)
 {
 	OBJECT_INFO* obj;
 	VECTOR v0;
@@ -568,7 +568,7 @@ void DrawLara__4(ITEM_INFO* item, int mirror)
 	GlobalAlpha = 0xFF000000;
 }
 
-void DrawLara__5(ITEM_INFO* item, int mirror)
+void DrawLara__5(ITEM_INFO* item, long mirror)
 {
 	OBJECT_INFO* obj;
 	short** meshpp;
@@ -692,7 +692,7 @@ void DrawLara__5(ITEM_INFO* item, int mirror)
 	bLaraUnderWater = 0;
 }
 
-void DrawLara__6(ITEM_INFO* item, int mirror)
+void DrawLara__6(ITEM_INFO* item, long mirror)
 {
 	OBJECT_INFO* obj;
 	VECTOR v0;

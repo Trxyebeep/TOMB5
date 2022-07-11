@@ -294,7 +294,7 @@ void LaraGun()
 	}
 }
 
-static int CheckForHoldingState(int state)
+static long CheckForHoldingState(long state)
 {
 	short* holds;
 
@@ -634,7 +634,7 @@ void AimWeapon(WEAPON_INFO* winfo, LARA_ARM* arm)
 	arm->z_rot = 0;
 }
 
-int FireWeapon(int weapon_type, ITEM_INFO* target, ITEM_INFO* src, short* angles)
+long FireWeapon(long weapon_type, ITEM_INFO* target, ITEM_INFO* src, short* angles)
 {
 	WEAPON_INFO* winfo;
 	SPHERE* sptr;
@@ -715,7 +715,7 @@ int FireWeapon(int weapon_type, ITEM_INFO* target, ITEM_INFO* src, short* angles
 	}
 }
 
-void HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, int damage, int grenade)
+void HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, long damage, long grenade)
 {
 	OBJECT_INFO* obj;
 
@@ -750,7 +750,7 @@ void HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, int damage, int grenade)
 	if (item->hit_points > 0 && damage > item->hit_points)
 		savegame.Level.Kills++;
 
-	item->hit_points -= damage;
+	item->hit_points -= (short)damage;
 }
 
 void SmashItem(short item_number, long weapon_type)
@@ -759,7 +759,7 @@ void SmashItem(short item_number, long weapon_type)
 		SmashObject(item_number);
 }
 
-int WeaponObject(int weapon_type)
+long WeaponObject(long weapon_type)
 {
 	switch (weapon_type)
 	{
@@ -783,7 +783,7 @@ int WeaponObject(int weapon_type)
 	}
 }
 
-int WeaponObjectMesh(int weapon_type)
+long WeaponObjectMesh(long weapon_type)
 {
 	switch (weapon_type)
 	{
@@ -894,7 +894,7 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed -= 2 * tiltyoff;
+						item->speed -= short(2 * tiltyoff);
 
 						if ((ushort) item->pos.y_rot > 16384 && (ushort) item->pos.y_rot < 49152)
 						{
@@ -928,7 +928,7 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed += 2 * tiltyoff;
+						item->speed += short(2 * tiltyoff);
 
 						if ((ushort) item->pos.y_rot <= 49152 && (ushort) item->pos.y_rot >= 16384)
 						{
@@ -965,7 +965,7 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed -= 2 * tiltxoff;
+						item->speed -= short(2 * tiltxoff);
 
 						if ((ushort) item->pos.y_rot < 32768)
 						{
@@ -992,7 +992,7 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed += 2 * tiltxoff;
+						item->speed += short(2 * tiltxoff);
 
 						if ((ushort) item->pos.y_rot > 32768)
 						{
@@ -1033,7 +1033,7 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed -= tiltxoff + tiltyoff;
+						item->speed -= short(tiltxoff + tiltyoff);
 
 						if ((ushort) item->pos.y_rot > 8192 && (ushort) item->pos.y_rot < 40960)
 						{
@@ -1060,7 +1060,7 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed += tiltxoff - tiltyoff;
+						item->speed += short(tiltxoff - tiltyoff);
 
 						if ((ushort) item->pos.y_rot < 57344 && (ushort) item->pos.y_rot > 24576)
 						{
@@ -1094,7 +1094,7 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed += tiltxoff + tiltyoff;
+						item->speed += short(tiltxoff + tiltyoff);
 
 						if ((ushort) item->pos.y_rot >= 8192 && (ushort) item->pos.y_rot <= 40960)
 						{
@@ -1138,7 +1138,7 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 				{
 					if (item->speed < 32)
 					{
-						item->speed += tiltyoff - tiltxoff;
+						item->speed += short(tiltyoff - tiltxoff);
 
 						if ((ushort) item->pos.y_rot >= 24576 && (ushort) item->pos.y_rot <= 57344)
 						{
@@ -1234,7 +1234,7 @@ void DoProperDetection(short item_number, long x, long y, long z, long xv, long 
 		ItemNewRoom(item_number, room_number);
 }
 
-short* get_current_ammo_pointer(int num)
+short* get_current_ammo_pointer(long num)
 {
 	short* ammo;
 

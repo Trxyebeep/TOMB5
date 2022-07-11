@@ -7,7 +7,7 @@
 #include "../specific/function_stubs.h"
 #include "switch.h"
 
-long Spline(long x, long* knots, int nk)
+long Spline(long x, long* knots, long nk)
 {
 	long* k;
 	long span, c1, c2;

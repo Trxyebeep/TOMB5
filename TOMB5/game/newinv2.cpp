@@ -80,10 +80,10 @@ COMBINELIST dels_handy_combine_table[24] =
 	{combine_clothbottle, INV_CLOTH, INV_BOTTLE, INV_WET_CLOTH}
 };
 
-int S_CallInventory2()
+long S_CallInventory2()
 {
 	ITEM_INFO* item;
-	long return_value, val;
+	long return_value, val, flag;
 	short room_number;
 
 	if (gfCurrentLevel < LVL5_BASE || gfCurrentLevel > LVL5_SINKING_SUBMARINE)
@@ -156,7 +156,7 @@ int S_CallInventory2()
 			val = 1;
 		}
 
-		return_value = thread_started;
+		return_value = MainThread.ended;
 
 		if (return_value)
 			return return_value;
@@ -231,8 +231,9 @@ int S_CallInventory2()
 
 		if (loading_or_saving)
 		{
-			do
+			while (1)
 			{
+				flag = 0;
 				S_InitialisePolyList();
 				SetDebounce = 1;
 				S_UpdateInput();
@@ -240,16 +241,22 @@ int S_CallInventory2()
 				UpdatePulseColour();
 
 				if (loading_or_saving == 1)
-					val = go_and_load_game();
+					flag = go_and_load_game();
 				else if (go_and_save_game())
-					val = 1;
+					flag = 1;
 
-			} while (!val);
+				if (flag == 1)
+				{
+					if (loading_or_saving == flag)
+					{
+						return_value = 1;
+						val = 1;
+					}
 
-			if (val == 1 && loading_or_saving == val)
-			{
-				return_value = 1;
-				val = 1;
+					break;
+				}
+				else if (flag)
+					break;
 			}
 
 			friggrimmer2 = 1;
@@ -355,8 +362,8 @@ void init_new_inventry()
 	}
 	else
 	{
-		if (have_i_got_object(GLOBAL_enterinventory))
-			setup_objectlist_startposition2(GLOBAL_enterinventory);
+		if (have_i_got_object((short)GLOBAL_enterinventory))
+			setup_objectlist_startposition2((short)GLOBAL_enterinventory);
 
 		GLOBAL_enterinventory = NO_ITEM;
 	}
@@ -462,15 +469,15 @@ void do_debounced_joystick_poo()
 	}
 }
 
-void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, int zrot, int bright, int overlay)
+void DrawThreeDeeObject2D(long x, long y, long num, long shade, long xrot, long yrot, long zrot, long bright, long overlay)
 {
 	INVOBJ* objme;
 	ITEM_INFO item;
 
 	objme = &inventry_objects_list[num];
-	item.pos.x_rot = xrot + objme->xrot;
-	item.pos.y_rot = yrot + objme->yrot;
-	item.pos.z_rot = zrot + objme->zrot;
+	item.pos.x_rot = short(xrot + objme->xrot);
+	item.pos.y_rot = short(yrot + objme->yrot);
+	item.pos.z_rot = short(zrot + objme->zrot);
 	item.object_number = objme->object_number;
 	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
 #ifndef GENERAL_FIXES
@@ -510,7 +517,7 @@ void DrawThreeDeeObject2D(int x, int y, int num, int shade, int xrot, int yrot, 
 	yoffset = phd_centery;
 }
 
-void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
+void DrawInventoryItemMe(ITEM_INFO* item, long shade, long overlay, long shagflag)
 {
 	ANIM_STRUCT* anim;
 	OBJECT_INFO* object;
@@ -607,12 +614,12 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, int overlay, int shagflag)
 	phd_PopMatrix();
 }
 
-int go_and_load_game()
+long go_and_load_game()
 {
 	return LoadGame();
 }
 
-int go_and_save_game()
+long go_and_save_game()
 {
 	return SaveGame();
 }
@@ -677,13 +684,13 @@ void construct_combine_object_list()
 	rings[RING_AMMO]->ringactive = 0;
 }
 
-void insert_object_into_list_v2(int num)
+void insert_object_into_list_v2(long num)
 {
 	if (options_table[num] & 9)
 	{
 		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem != num)
 		{
-			rings[RING_AMMO]->current_object_list[rings[RING_AMMO]->numobjectsinlist].invitem = num;
+			rings[RING_AMMO]->current_object_list[rings[RING_AMMO]->numobjectsinlist].invitem = (short)num;
 			rings[RING_AMMO]->current_object_list[rings[RING_AMMO]->numobjectsinlist].yrot = 0;
 			rings[RING_AMMO]->current_object_list[rings[RING_AMMO]->numobjectsinlist++].bright = 32;
 		}
@@ -866,15 +873,15 @@ void construct_object_list()
 	ammo_active = 0;
 }
 
-void insert_object_into_list(int num)
+void insert_object_into_list(long num)
 {
-	rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->numobjectsinlist].invitem = num;
+	rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->numobjectsinlist].invitem = (short)num;
 	rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->numobjectsinlist].yrot = 0;
 	rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->numobjectsinlist].bright = 32;
 	rings[RING_INVENTORY]->numobjectsinlist++;
 }
 
-void draw_current_object_list(int ringnum)
+void draw_current_object_list(long ringnum)
 {
 	long n, maxobj, xoff, shade, minobj, objmeup, nummeup, activenum;
 	short ymeup, yrot;
@@ -1122,11 +1129,11 @@ void draw_current_object_list(int ringnum)
 				}
 
 				if (ringnum == RING_INVENTORY)
-					objmeup = (int)(phd_centery - (phd_winymax + 1) * 0.0625 * 3.0);
+					objmeup = long(phd_centery - (phd_winymax + 1) * 0.0625 * 3.0);
 				else
-					objmeup = (int)((phd_winymax + 1) * 0.0625 * 3.0 + phd_centery);
+					objmeup = long((phd_winymax + 1) * 0.0625 * 3.0 + phd_centery);
 
-				PrintString(phd_centerx, (ushort)objmeup, 8, textbufme, FF_CENTER);
+				PrintString((ushort)phd_centerx, (ushort)objmeup, 8, textbufme, FF_CENTER);
 			}
 
 			if (!i && !rings[ringnum]->objlistmovement)
@@ -1247,7 +1254,7 @@ void draw_current_object_list(int ringnum)
 	}
 }
 
-void handle_object_changeover(int ringnum)
+void handle_object_changeover(long ringnum)
 {
 	current_selected_option = 0;
 	menu_active = 1;
@@ -1260,7 +1267,7 @@ void handle_inventry_menu()
 
 	if (rings[RING_AMMO]->ringactive)
 	{
-		PrintString(phd_centerx, phd_centery, 1, SCRIPT_TEXT(optmessages[5]), FF_CENTER);
+		PrintString((ushort)phd_centerx, (ushort)phd_centery, 1, SCRIPT_TEXT(optmessages[5]), FF_CENTER);
 
 		if (rings[RING_INVENTORY]->objlistmovement)
 			return;
@@ -1422,12 +1429,12 @@ void handle_inventry_menu()
 			{
 				if (i == current_selected_option)
 				{
-					PrintString(phd_centerx, (ushort)ypos, 1, current_options[i].text, FF_CENTER);
+					PrintString((ushort)phd_centerx, (ushort)ypos, 1, current_options[i].text, FF_CENTER);
 					ypos += font_height;
 				}
 				else
 				{
-					PrintString(phd_centerx, (ushort)ypos, 5, current_options[i].text, FF_CENTER);
+					PrintString((ushort)phd_centerx, (ushort)ypos, 5, current_options[i].text, FF_CENTER);
 					ypos += font_height;
 				}
 			}
@@ -1711,15 +1718,15 @@ void draw_ammo_selector()
 					sprintf(cunter, "%d x %s", ammo_object_list[i].amount, SCRIPT_TEXT(inventry_objects_list[ammo_object_list[i].invitem].objname));
 
 				if (ammo_selector_fade_val)
-					PrintString(phd_centerx, font_height + phd_centery + 2 * font_height - 9, 8, &cunter[0], FF_CENTER);
+					PrintString((ushort)phd_centerx, ushort(font_height + phd_centery + 2 * font_height - 9), 8, &cunter[0], FF_CENTER);
 
 				if (i == current_ammo_type[0])
-					DrawThreeDeeObject2D((int)(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos), (int)(phd_centery * 0.0083333338 * 190.0 + inventry_ypos), ammo_object_list[i].invitem, ammo_selector_fade_val, 0, yrot, 0, 0, 0);
+					DrawThreeDeeObject2D(long(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos), long(phd_centery * 0.0083333338 * 190.0 + inventry_ypos), ammo_object_list[i].invitem, ammo_selector_fade_val, 0, yrot, 0, 0, 0);
 				else
-					DrawThreeDeeObject2D((int)(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos), (int)(phd_centery * 0.0083333338 * 190.0 + inventry_ypos), ammo_object_list[i].invitem, ammo_selector_fade_val, 0, yrot, 0, 1, 0);
+					DrawThreeDeeObject2D(long(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos), long(phd_centery * 0.0083333338 * 190.0 + inventry_ypos), ammo_object_list[i].invitem, ammo_selector_fade_val, 0, yrot, 0, 1, 0);
 			}
 			else
-				DrawThreeDeeObject2D((int)(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos), (int)(phd_centery * 0.0083333338 * 190.0 + inventry_ypos), ammo_object_list[i].invitem, ammo_selector_fade_val, 0, yrot, 0, 1, 0);
+				DrawThreeDeeObject2D(long(phd_centerx * 0.00390625 * 64.0 + inventry_xpos + xpos), long(phd_centery * 0.0083333338 * 190.0 + inventry_ypos), ammo_object_list[i].invitem, ammo_selector_fade_val, 0, yrot, 0, 1, 0);
 
 			xpos += OBJLIST_SPACING;
 		}
@@ -1802,7 +1809,7 @@ void update_laras_weapons_status()
 	}
 }
 
-int is_item_currently_combinable(short obj)
+long is_item_currently_combinable(short obj)
 {
 	for (int i = 0; i < 24; i++)
 	{
@@ -1816,7 +1823,7 @@ int is_item_currently_combinable(short obj)
 	return 0;
 }
 
-int have_i_got_item(short obj)
+long have_i_got_item(short obj)
 {
 	for (int i = 0; i < 100; i++)
 		if (rings[RING_INVENTORY]->current_object_list[i].invitem == obj)
@@ -1825,7 +1832,7 @@ int have_i_got_item(short obj)
 	return 0;
 }
 
-int do_these_objects_combine(int obj1, int obj2)
+long do_these_objects_combine(long obj1, long obj2)
 {
 	for (int i = 0; i < 24; i++)
 	{
@@ -1841,7 +1848,7 @@ int do_these_objects_combine(int obj1, int obj2)
 
 void combine_these_two_objects(short obj1, short obj2)
 {
-	int n;
+	long n;
 
 	for (n = 0; n < 24; n++)
 	{
@@ -1862,7 +1869,7 @@ void combine_these_two_objects(short obj1, short obj2)
 
 void seperate_object(short obj)
 {
-	int n;
+	long n;
 
 	for (n = 0; n < 24; n++)
 		if (dels_handy_combine_table[n].combined_item == obj)
@@ -2613,7 +2620,7 @@ void NailInvItem(short objnum)
 	}
 }
 
-int have_i_got_object(short object_number)
+long have_i_got_object(short object_number)
 {
 	if (object_number >= PUZZLE_ITEM1_COMBO1 && object_number <= PUZZLE_ITEM8_COMBO2)
 		return (lara.puzzleitemscombo >> (object_number - PUZZLE_ITEM1_COMBO1)) & 1;
@@ -2663,7 +2670,7 @@ void remove_inventory_item(short object_number)
 		lara.pickupitems &= ~(1 << (object_number + 36));
 }
 
-int convert_obj_to_invobj(short obj)
+long convert_obj_to_invobj(short obj)
 {
 	for (int i = 0; i < 100; i++)
 		if (inventry_objects_list[i].object_number == obj)
@@ -2672,7 +2679,7 @@ int convert_obj_to_invobj(short obj)
 	return 27;
 }
 
-int convert_invobj_to_obj(int obj)
+long convert_invobj_to_obj(long obj)
 {
 	return inventry_objects_list[obj].object_number;
 }
@@ -2692,6 +2699,7 @@ void init_keypad_mode()
 void do_keypad_mode()
 {
 	INVOBJ* objme;
+	ulong va2;
 	long n, val, val2;
 	char buf[5];
 
@@ -2699,7 +2707,7 @@ void do_keypad_mode()
 
 	if (keypadnuminputs)
 	{
-		for (int i = 0; i < (int)keypadnuminputs; i++)
+		for (int i = 0; i < (long)keypadnuminputs; i++)
 		{
 			val2 = keypadinputs[i];
 
@@ -2717,7 +2725,7 @@ void do_keypad_mode()
 	else
 		objme->meshbits = val & ~(1 << (((keypadx + 3 * keypady) + 1) & 0x1F)) | 1 << (((keypadx + 3 * keypady) + 13) & 0x1F);
 
-	DrawThreeDeeObject2D((int)(phd_centerx * 0.00390625 * 256.0 + inventry_xpos), (int)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2),
+	DrawThreeDeeObject2D(long(phd_centerx * 0.00390625 * 256.0 + inventry_xpos), long((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2),
 		INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
 	PrintString(0x100, (ushort)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, SCRIPT_TEXT_bis(STR_ENTER_COMBINATION), FF_CENTER);
 	buf[0] = 45;
@@ -2764,7 +2772,7 @@ void do_keypad_mode()
 	if (go_select)
 	{
 		uchar va = keypady * 3 + keypadx + 1;
-		unsigned int va2 = (unsigned int)(va);
+		va2 = ulong(va);
 
 		switch (va)
 		{
@@ -2838,7 +2846,7 @@ void do_examine_mode()
 		examine_mode = 128;
 
 	objme->scale1 = 300;
-	DrawThreeDeeObject2D((int)(phd_centerx + inventry_xpos), (int)(phd_centery / 120.0 * 256.0 + inventry_xpos) / 2,
+	DrawThreeDeeObject2D(long(phd_centerx + inventry_xpos), long(phd_centery / 120.0 * 256.0 + inventry_xpos) / 2,
 		rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem,
 		examine_mode, 32768, 16384, 16384, 96, 0);
 	objme->scale1 = (short)saved_scale;
@@ -2970,19 +2978,28 @@ void dels_give_lara_guns_cheat()
 #endif
 }
 
-int LoadGame()
+long LoadGame()
 {
+#ifdef GENERAL_FIXES
+	return S_LoadSave(IN_LOAD, 1, 1) < 0 ? -1 : 1;
+#else
 	return S_LoadSave(IN_LOAD, 1) < 0 ? -1 : 1;
+#endif
 }
 
-int SaveGame()
+long SaveGame()
 {
 	input = 0;
 	dbinput = 0;
+
+#ifdef GENERAL_FIXES
+	return S_LoadSave(IN_SAVE, 1, 1) < 0 ? -1 : 1;
+#else
 	return S_LoadSave(IN_SAVE, 1) < 0 ? -1 : 1;
+#endif
 }
 
-void DelDrawSprite(int x, int y, int def, int z)
+void DelDrawSprite(long x, long y, long def, long z)
 {
 	SPRITESTRUCT* sprite;
 	D3DTLVERTEX v[4];
@@ -2993,9 +3010,9 @@ void DelDrawSprite(int x, int y, int def, int z)
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + def];
 
 	if (z >= 200)
-		z = (int)(f_mzfar - 20.0);
+		z = long(f_mzfar - 20.0);
 	else
-		z = (int)(f_mznear + 20.0);
+		z = long(f_mznear + 20.0);
 
 	x1 = x4 = (long)((float)x * (float)phd_centerx * (1.0f / 256.0f));
 	x2 = x3 = (long)(((float)((sprite->width >> 8) + x + 1)) * (float)phd_centerx * (1.0f / 256.0f));

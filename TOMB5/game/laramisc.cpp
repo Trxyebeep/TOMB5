@@ -443,7 +443,7 @@ void LaraControl(short item_number)
 {
 	ITEM_INFO* item;
 	long oldx, oldy, oldz;
-	int wh, wd ,hfw, room_water_state;
+	long wh, wd ,hfw, room_water_state;
 	short room_number;
 
 	item = lara_item;

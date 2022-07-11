@@ -121,7 +121,7 @@ void ControlBodyPart(short fx_number)
 
 		if (fx->flag2 & 2 && GetRandomControl() & 1)
 			DoBloodSplat((GetRandomControl() & 0x3F) + fx->pos.x_pos - 32, (GetRandomControl() & 0x1F) + fx->pos.y_pos - 16,
-				(GetRandomControl() & 0x3F) + fx->pos.z_pos - 32, 1, GetRandomControl() << 1, fx->room_number);
+				(GetRandomControl() & 0x3F) + fx->pos.z_pos - 32, 1, short(GetRandomControl() << 1), fx->room_number);
 	}
 
 	if (room_number != fx->room_number)

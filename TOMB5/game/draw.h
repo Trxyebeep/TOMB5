@@ -6,18 +6,18 @@ void inject_draw(bool replace);
 
 short* GetBoundsAccurate(ITEM_INFO* item);
 short* GetBestFrame(ITEM_INFO* item);
-void InitInterpolate(int frac, int rate);
+void InitInterpolate(long frac, long rate);
 void phd_PopMatrix_I();
 void phd_PushMatrix_I();
 void phd_RotY_I(short ang);
 void phd_RotX_I(short ang);
 void phd_RotZ_I(short ang);
-void phd_TranslateRel_I(int x, int y, int z);
-void phd_TranslateRel_ID(int x, int y, int z, int x2, int y2, int z2);
+void phd_TranslateRel_I(long x, long y, long z);
+void phd_TranslateRel_ID(long x, long y, long z, long x2, long y2, long z2);
 void phd_RotYXZ_I(short y, short x, short z);
-void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, int skip);
-void gar_RotYXZsuperpack(short** pprot, int skip);
-void phd_PutPolygons_I(short* ptr, int clip);
+void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, long skip);
+void gar_RotYXZsuperpack(short** pprot, long skip);
+void phd_PutPolygons_I(short* ptr, long clip);
 void aInterpolateMatrix();
 long DrawPhaseGame();
 void SkyDrawPhase();
@@ -30,6 +30,7 @@ void CalculateObjectLightingLara();
 long GetFrames(ITEM_INFO* item, short* frm[], long* rate);
 void SetupSkelebobMeshswaps();
 void RestoreLaraMeshswaps();
+void RenderIt(short current_room);
 
 extern short no_rotation[];
 
@@ -41,3 +42,4 @@ extern short no_rotation[];
 #define calc_animating_item_clip_window	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042B4C0 )
 #define DrawStaticObjects	( (void(__cdecl*)(short)) 0x0042D060 )
 #define DrawEffect	( (void(__cdecl*)(short)) 0x0042B340 )
+#define PrintRooms	( (void(__cdecl*)(short)) 0x0042E1C0 )

@@ -302,12 +302,12 @@ void GuardianControl(short item_number)
 				}
 				else
 				{
-					a1 = 4096 - (GetRandomControl() >> 2);
+					a1 = ushort(4096 - (GetRandomControl() >> 2));
 
 					if (farflag)
 						a2 = (GetRandomControl() & 0x3FFF) + item->pos.y_rot + 24576;
 					else
-						a2 = 2 * GetRandomControl();
+						a2 = ushort(GetRandomControl() << 1);
 
 					lp = (GetRandomControl() & 0x1FFF) + 8192;
 					d.x = s.x + ((lp * phd_cos(a1) >> 14) * phd_sin(a2) >> 14);
@@ -430,7 +430,7 @@ void GuardianControl(short item_number)
 							else
 							{
 								d.room_number = item->room_number;
-								gt.ricochet[i] = LOS(&d, &eye);
+								gt.ricochet[i] = (char)LOS(&d, &eye);
 								gt.elptr[i] = TriggerLightning((PHD_VECTOR*) &d, (PHD_VECTOR*) &eye, (GetRandomControl() & 7) + 4, (0x640000 | a1) << 8 | a2, 12, 64, 5);
 								StopSoundEffect(SFX_GOD_HEAD_CHARGE);
 								SoundEffect(SFX_GOD_HEAD_BLAST, &item->pos, 0);

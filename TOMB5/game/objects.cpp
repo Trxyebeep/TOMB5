@@ -626,13 +626,14 @@ void ParallelBarsCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 		return;
 	}
 
-	pass = TestLaraPosition(ParallelBarsBounds, item, l);
+	pass = (short)TestLaraPosition(ParallelBarsBounds, item, l);
 
 	if (!pass)
 	{
 		item->pos.y_rot += -32768;
-		pass1 = TestLaraPosition(ParallelBarsBounds, item, l);
+		pass1 = (short)TestLaraPosition(ParallelBarsBounds, item, l);
 		item->pos.y_rot += -32768;
+
 		if (!pass1)
 		{
 			ObjectCollision(item_num, l, coll);
@@ -856,7 +857,7 @@ void DrawBaddieGunFlash(ITEM_INFO* item)
 		aMXPtr[M23] = m[M23];
 		phd_RotX(-16384);
 		phd_TranslateRel(EnemyBites[bite[num]].x, EnemyBites[bite[num]].y, EnemyBites[bite[num]].z);
-		phd_RotZ(GetRandomControl() << 1);
+		phd_RotZ(short(GetRandomControl() << 1));
 		phd_PutPolygons(GLOBAL_gunflash_meshptr, -1);	//nothing writes to this pointer
 		phd_PopMatrix();
 	}

@@ -8,11 +8,11 @@ extern void (*lara_collision_routines[])(ITEM_INFO* item, COLL_INFO* coll);
 
 void LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll);
 void GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
-int LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll);
-int TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll);
-int LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll);
+long LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll);
+long TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll);
+long LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll);
 void LaraCollideStop(ITEM_INFO* item, COLL_INFO* coll);
-int LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll);
+long LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_fastback(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_fastback(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_fallback(ITEM_INFO* item, COLL_INFO* coll);
@@ -32,8 +32,8 @@ void ResetLook();
 void lara_void_func(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_walk(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_walk(ITEM_INFO* item, COLL_INFO* coll);
-int LaraFallen(ITEM_INFO* item, COLL_INFO* coll);
-int TestLaraVault(ITEM_INFO* item, COLL_INFO* coll);
+long LaraFallen(ITEM_INFO* item, COLL_INFO* coll);
+long TestLaraVault(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_null(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_run(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_run(ITEM_INFO* item, COLL_INFO* coll);
@@ -48,7 +48,7 @@ void lara_col_dash(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_dashdive(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_dashdive(ITEM_INFO* item, COLL_INFO* coll);
 void lara_default_col(ITEM_INFO* item, COLL_INFO* coll);
-int TestWall(ITEM_INFO* item, long front, long right, long down);
+long TestWall(ITEM_INFO* item, long front, long right, long down);
 short LaraFloorFront(ITEM_INFO* item, short ang, long dist);
 short LaraCeilingFront(ITEM_INFO* item, short ang, long dist, long h);
 void lara_as_turn_r(ITEM_INFO* item, COLL_INFO* coll);
@@ -62,7 +62,7 @@ void lara_col_fastfall(ITEM_INFO* item, COLL_INFO* coll);
 void LaraSlideEdgeJump(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_hang(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_hang(ITEM_INFO* item, COLL_INFO* coll);
-int CanLaraHangSideways(ITEM_INFO* item, COLL_INFO* coll, short angle);
+long CanLaraHangSideways(ITEM_INFO* item, COLL_INFO* coll, short angle);
 void lara_as_reach(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_reach(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_splat(ITEM_INFO* item, COLL_INFO* coll);
@@ -121,7 +121,7 @@ void lara_as_all4s(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_all4s(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_crawl(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_crawl(ITEM_INFO* item, COLL_INFO* coll);
-int LaraDeflectEdgeDuck(ITEM_INFO* item, COLL_INFO* coll);
+long LaraDeflectEdgeDuck(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_hangturnl(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_hangturnr(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_hangturnlr(ITEM_INFO* item, COLL_INFO* coll);
@@ -166,21 +166,21 @@ void lara_as_pbleapoff(ITEM_INFO* item, COLL_INFO* coll);
 void LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll);
 void FallFromRope(ITEM_INFO* item);
 void UpdateRopeSwing(ITEM_INFO* item);
-void ApplyVelocityToRope(int node, ushort angle, ushort n);
+void ApplyVelocityToRope(long node, ushort angle, ushort n);
 void JumpOffRope(ITEM_INFO* item);
-int LaraHangTest(ITEM_INFO* item, COLL_INFO* coll);
+long LaraHangTest(ITEM_INFO* item, COLL_INFO* coll);
 
 #ifdef DUCKROLL
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 #endif
 
-#define LaraTestClimbStance	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00445580 )
-#define LaraHangLeftCornerTest	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x0044A2B0 )
-#define LaraHangRightCornerTest	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00449CC0 )
-#define LaraTestEdgeCatch	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*, long*)) 0x00444890 )
-#define LaraTestHangOnClimbWall	( (int(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00444970 )
-#define TestHangSwingIn	( (int(__cdecl*)(ITEM_INFO*, short)) 0x00444B30 )
+#define LaraTestClimbStance	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00445580 )
+#define LaraHangLeftCornerTest	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x0044A2B0 )
+#define LaraHangRightCornerTest	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00449CC0 )
+#define LaraTestEdgeCatch	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*, long*)) 0x00444890 )
+#define LaraTestHangOnClimbWall	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00444970 )
+#define TestHangSwingIn	( (long(__cdecl*)(ITEM_INFO*, short)) 0x00444B30 )
 #define TestMonkeyLeft	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446810 )
 #define TestMonkeyRight	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446960 )
 #define SetCornerAnim	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, short, short)) 0x0044A980 )

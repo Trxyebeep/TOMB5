@@ -451,7 +451,7 @@ void CalcAmbientLight(ITEM_INFO* item)
 	}
 }
 
-void S_CalculateStaticMeshLight(int x, int y, int z, int shade, ROOM_INFO* r)
+void S_CalculateStaticMeshLight(long x, long y, long z, long shade, ROOM_INFO* r)
 {
 	StaticMeshLightItem.il.ambient = r->ambient;
 	StaticMeshLightItem.il.item_pos.x = x;

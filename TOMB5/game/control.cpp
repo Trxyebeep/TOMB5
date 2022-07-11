@@ -65,7 +65,7 @@ uchar ShatterSounds[18][10] =
 {SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS}
 };
 
-long ControlPhase(long _nframes, int demo_mode)
+long ControlPhase(long _nframes, long demo_mode)
 {
 	ITEM_INFO* item;
 	FX_INFO* fx;
@@ -87,6 +87,9 @@ long ControlPhase(long _nframes, int demo_mode)
 	{
 		GlobalCounter++;
 		UpdateSky();
+#ifdef DISCORD_RPC
+		RPC_Update();
+#endif
 
 		if (cdtrack > 0)
 			S_CDLoop();
@@ -144,7 +147,7 @@ long ControlPhase(long _nframes, int demo_mode)
 				return 1;
 			}
 
-			if (lara.death_count > 90)
+			if (lara.death_count > 300 || lara.death_count > 90 && input)
 			{
 				reset_flag = 0;
 				return S_Death();
@@ -173,24 +176,41 @@ long ControlPhase(long _nframes, int demo_mode)
 		if (demo_mode && input == IN_ALL)
 			input = IN_NONE;
 
+#ifdef GENERAL_FIXES
+		if (!FadeScreenHeight)
+#else
 		if (!lara.death_count && !FadeScreenHeight)
+#endif
 		{
+#ifdef GENERAL_FIXES
+			if (input & IN_SAVE && lara_item->hit_points > 0)
+				S_LoadSave(IN_SAVE, 0, 0);
+#else
 			if (input & IN_SAVE)
 				S_LoadSave(IN_SAVE, 0);
+#endif
 			else if (input & IN_LOAD)
 			{
+#ifdef GENERAL_FIXES
+				if (S_LoadSave(IN_LOAD, 0, 0) >= 0)
+#else
 				if (S_LoadSave(IN_LOAD, 0) >= 0)
+#endif
 					return 2;
 			}
 
+#ifdef GENERAL_FIXES
+			if (input & IN_PAUSE && gfGameMode == 0 && lara_item->hit_points > 0)
+#else
 			if (input & IN_PAUSE && gfGameMode == 0)
+#endif
 			{
 				if (S_PauseMenu() == 8)
 					return 1;
 			}
 		}
 
-		if (thread_started)
+		if (MainThread.ended)
 			return 4;
 
 		if ((input & IN_LOOK) && !SniperCamActive && !bUseSpotCam && !bTrackCamInit &&
@@ -474,7 +494,7 @@ long ControlPhase(long _nframes, int demo_mode)
 	return 0;
 }
 
-int GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
+long GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
 {
 	CHANGE_STRUCT* change;
 	RANGE_STRUCT* range;
@@ -505,7 +525,7 @@ int GetChange(ITEM_INFO* item, ANIM_STRUCT* anim)
 	return 0;
 }
 
-int CheckGuardOnTrigger()
+long CheckGuardOnTrigger()
 {
 	ITEM_INFO* item;
 	CREATURE_INFO* cinfo;
@@ -569,7 +589,7 @@ void InitCutPlayed()
 	_CutSceneTriggered2 = 0;
 }
 
-void SetCutPlayed(int num)
+void SetCutPlayed(long num)
 {
 	if (num < 1 || num > 4)
 	{
@@ -580,7 +600,7 @@ void SetCutPlayed(int num)
 	}
 }
 
-void SetCutNotPlayed(int num)
+void SetCutNotPlayed(long num)
 {
 	if (num < 32)
 		_CutSceneTriggered1 &= ~(1 << num);
@@ -588,7 +608,7 @@ void SetCutNotPlayed(int num)
 		_CutSceneTriggered2 &= ~(1 << (num - 32));
 }
 
-int CheckCutPlayed(int num)
+long CheckCutPlayed(long num)
 {
 	if (num < 32)
 		return _CutSceneTriggered1 & (1 << num);
@@ -596,7 +616,7 @@ int CheckCutPlayed(int num)
 		return _CutSceneTriggered2 & (1 << (num - 32));
 }
 
-void NeatAndTidyTriggerCutscene(int value, int timer)
+void NeatAndTidyTriggerCutscene(long value, long timer)
 {
 	ITEM_INFO* item;
 	long inv_item_stealth_frigggggs;
@@ -764,7 +784,7 @@ void NeatAndTidyTriggerCutscene(int value, int timer)
 	}
 }
 
-int is_object_in_room(int roomnumber, int objnumber)
+long is_object_in_room(long roomnumber, long objnumber)
 {
 	ITEM_INFO* item;
 
@@ -779,7 +799,7 @@ int is_object_in_room(int roomnumber, int objnumber)
 	return 0;
 }
 
-int check_xray_machine_trigger()
+long check_xray_machine_trigger()
 {
 	for (int i = 0; i < level_items; i++)
 		if (items[i].object_number == XRAY_CONTROLLER && items[i].trigger_flags == 0 && items[i].item_flags[0] == 666)
@@ -1002,7 +1022,7 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 	return height;
 }
 
-FLOOR_INFO* GetFloor(int x, int y, int z, short* room_number)
+FLOOR_INFO* GetFloor(long x, long y, long z, short* room_number)
 {
 	ROOM_INFO* r;
 	FLOOR_INFO* floor;
@@ -1092,7 +1112,7 @@ FLOOR_INFO* GetFloor(int x, int y, int z, short* room_number)
 	return floor;
 }
 
-int ExplodeItemNode(ITEM_INFO* item, int Node, int NoXZVel, long bits)
+long ExplodeItemNode(ITEM_INFO* item, long Node, long NoXZVel, long bits)
 {
 	OBJECT_INFO* object;
 	short** meshpp;
@@ -1369,9 +1389,9 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 	return height;
 }
 
-int LOS(GAME_VECTOR* start, GAME_VECTOR* target)
+long LOS(GAME_VECTOR* start, GAME_VECTOR* target)
 {
-	int los1, los2;
+	long los1, los2;
 
 	target->room_number = start->room_number;
 
@@ -1397,7 +1417,7 @@ int LOS(GAME_VECTOR* start, GAME_VECTOR* target)
 	return 0;
 }
 
-int xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
+long xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 {
 	FLOOR_INFO* floor;
 	long dx, dy, dz, x, y, z;
@@ -1518,7 +1538,7 @@ int xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 	return 1;
 }
 
-int zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
+long zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 {
 	FLOOR_INFO* floor;
 	long dx, dy, dz, x, y, z;
@@ -1639,7 +1659,7 @@ int zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 	return 1;
 }
 
-int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target)
+long ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target)
 {
 	GAME_VECTOR src;
 	long dx, dy, dz;
@@ -1698,7 +1718,7 @@ int ClipTarget(GAME_VECTOR* start, GAME_VECTOR* target)
 	return 1;
 }
 
-int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firing)
+long GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, long DrawTarget, long firing)
 {
 	ITEM_INFO* shotitem;
 	MESH_INFO* Mesh;
@@ -1709,7 +1729,7 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 	target.x = dest->x;
 	target.y = dest->y;
 	target.z = dest->z;
-	ricochet = LOS(src, &target);
+	ricochet = (short)LOS(src, &target);
 	GetFloor(target.x, target.y, target.z, &target.room_number);
 
 	if (firing && LaserSight)
@@ -1722,7 +1742,7 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 	}
 
 	hit = 0;
-	item_no = ObjectOnLOS2(src, dest, &v, &Mesh);
+	item_no = (short)ObjectOnLOS2(src, dest, &v, &Mesh);
 
 	if (item_no != 999)
 	{
@@ -1825,7 +1845,7 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 								}
 								else
 								{
-									NumTrigs = GetSwitchTrigger(shotitem, TriggerItems, 1);
+									NumTrigs = (short)GetSwitchTrigger(shotitem, TriggerItems, 1);
 
 									for (int i = NumTrigs - 1; i >= 0; i--)
 									{
@@ -1901,7 +1921,7 @@ int GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, int DrawTarget, int firi
 	return hit;
 }
 
-int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MESH_INFO** StaticMesh)
+long ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MESH_INFO** StaticMesh)
 {
 	ITEM_INFO* item;
 	MESH_INFO* mesh;
@@ -1964,7 +1984,7 @@ int ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, MES
 	return ClosestItem;
 }
 
-void TestTriggers(short* data, int heavy, int HeavyFlags)
+void TestTriggers(short* data, long heavy, long HeavyFlags)
 {
 	globoncuttrig = 0;
 	_TestTriggers(data, heavy, HeavyFlags);
@@ -1976,7 +1996,7 @@ void TestTriggers(short* data, int heavy, int HeavyFlags)
 	}
 }
 
-void _TestTriggers(short* data, int heavy, int HeavyFlags)
+void _TestTriggers(short* data, long heavy, long HeavyFlags)
 {
 	ITEM_INFO* item;
 	ITEM_INFO* camera_item;
@@ -2077,7 +2097,7 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 			else
 			{
 				flags |= IFL_CODEBITS;
-				flags += HeavyFlags;
+				flags += (short)HeavyFlags;
 			}
 
 			break;
@@ -2296,7 +2316,7 @@ void _TestTriggers(short* data, int heavy, int HeavyFlags)
 					item->touch_bits = 0;
 					AddActiveItem(value);
 					item->status = ITEM_ACTIVE;
-					HeavyTriggered = heavy;
+					HeavyTriggered = (uchar)heavy;
 				}
 			}
 
@@ -2610,9 +2630,9 @@ long S_Death()
 		{
 			if (!menu)	//"main" menu
 			{
-				PrintString(phd_centerx, phd_centery, 3, SCRIPT_TEXT(STR_GAME_OVER), FF_CENTER);
-				PrintString(phd_centerx, phd_centery + 2 * font_height, !selection ? 1 : 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-				PrintString(phd_centerx, phd_centery + 3 * font_height, selection == 1 ? 1 : 2, SCRIPT_TEXT(STR_EXIT_TO_TITLE), FF_CENTER);
+				PrintString((ushort)phd_centerx, (ushort)phd_centery, 3, SCRIPT_TEXT(STR_GAME_OVER), FF_CENTER);
+				PrintString((ushort)phd_centerx, ushort(phd_centery + 2 * font_height), !selection ? 1 : 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
+				PrintString((ushort)phd_centerx, ushort(phd_centery + 3 * font_height), selection == 1 ? 1 : 2, SCRIPT_TEXT(STR_EXIT_TO_TITLE), FF_CENTER);
 
 				if (selection)
 				{
@@ -2663,7 +2683,7 @@ long S_Death()
 		}
 		else
 		{
-			PrintString(phd_centerx, phd_centery, 3, SCRIPT_TEXT(STR_GAME_OVER), FF_CENTER);
+			PrintString((ushort)phd_centerx, (ushort)phd_centery, 3, SCRIPT_TEXT(STR_GAME_OVER), FF_CENTER);
 
 			if (lara.death_count > 300 || (lara.death_count > 150 && input != IN_NONE))
 				return 1;

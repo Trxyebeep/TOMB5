@@ -10,12 +10,18 @@
 #include "../game/laraskin.h"
 #include "drawroom.h"
 #include "dxsound.h"
-
-//when every part that uses the c library funcs is decompiled, remove the stupid defines
+#include "LoadSave.h"
+#include "function_table.h"
+#include "polyinsert.h"
+#include "winmain.h"
+#include "output.h"
+#ifdef GENERAL_FIXES
+#include "../tomb5/tomb5.h"
+#endif
 
 bool LoadTextureInfos()
 {
-	int val;
+	long val;
 	PHDTEXTURESTRUCT tex;
 
 	Log(2, "LoadTextureInfos");
@@ -109,9 +115,7 @@ FILE* FileOpen(const char* Filename)
 
 	strcat(cdFilename, Filename);
 	Log(5, "FileOpen - %s", cdFilename);
-#define what_the_f	( (FILE*(__cdecl*)(const char*, const char*)) 0x004E46E0 )//temporary until we solve the fopen mystery :)
-	fp = what_the_f(cdFilename, "rb");//fp = fopen(cdFilename, "rb");
-#undef what_the_f
+	fp = OPEN(cdFilename, "rb");//fp = fopen(cdFilename, "rb");
 
 	if (!fp)
 		Log(1, "Unable To Open %s", cdFilename);
@@ -162,22 +166,17 @@ bool FindCDDrive()
 void FileClose(FILE* fp)
 {
 	Log(2, "FileClose");
-#define what_the_f	( (int(__cdecl*)(FILE*)) 0x004E20D0 )
-	what_the_f(fp);//fclose(fp);
-#undef what_the_f
+	CLOSE(fp);//fclose(fp);
 }
 
-int FileSize(FILE* fp)
+long FileSize(FILE* fp)
 {
-	int size;
-#define cunt1	( (int(__cdecl*)(FILE*, long, int)) 0x004E1F30 )
-#define cunt2	( (int(__cdecl*)(FILE*)) 0x004E4700 )
-	cunt1(fp, 0, SEEK_END);//fseek(fp, 0, SEEK_END);
-	size = cunt2(fp);//ftell(fp);
-	cunt1(fp, 0, SEEK_SET);//fseek(fp, 0, SEEK_SET);
+	long size;
+
+	SEEK(fp, 0, SEEK_END);//fseek(fp, 0, SEEK_END);
+	size = TELL(fp);//ftell(fp);
+	SEEK(fp, 0, SEEK_SET);//fseek(fp, 0, SEEK_SET);
 	return size;
-#undef cunt1
-#undef cunt2
 }
 
 bool LoadItems()
@@ -575,8 +574,7 @@ bool LoadSamples()
 	}
 
 	Log(8, "Number Of Samples %d", num_samples);
-#define freadd	( (size_t(__cdecl*)(void*, size_t, size_t, FILE*)) 0x004E1D20 )
-	freadd(&num_samples, 1, 4, LevelFILEptr);
+	READ(&num_samples, 1, 4, LevelFILEptr);
 
 	if (feof(LevelFILEptr))
 		Log(1, "END OF FILE");
@@ -591,9 +589,9 @@ bool LoadSamples()
 
 	for (int i = 0; i < num_samples; i++)
 	{
-		freadd(&uncomp_size, 1, 4, LevelFILEptr);
-		freadd(&comp_size, 1, 4, LevelFILEptr);
-		freadd(samples_buffer, comp_size, 1, LevelFILEptr);
+		READ(&uncomp_size, 1, 4, LevelFILEptr);
+		READ(&comp_size, 1, 4, LevelFILEptr);
+		READ(samples_buffer, comp_size, 1, LevelFILEptr);
 
 		if (!DXCreateSampleADPCM(samples_buffer, comp_size, uncomp_size, i))
 		{
@@ -601,7 +599,7 @@ bool LoadSamples()
 			return 0;
 		}
 	}
-#undef freadd
+
 	FreeSampleDecompress();
 	return 1;
 }
@@ -623,8 +621,95 @@ bool LoadAIInfo()
 	return 1;
 }
 
+unsigned int __stdcall LoadLevel(void* name)
+{
+	return 1;
+}
+
+long S_LoadLevelFile(long num)
+{
+	static long lscreen = 0;
+	static long flag = 0;
+	long chosen_screen;
+	char name[80];
+
+	Log(2, "S_LoadLevelFile");
+
+#ifdef GENERAL_FIXES
+	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits && !gfStatus))
+#endif
+	{
+		if (!MonoScreenOn)
+		{
+			chosen_screen = num;
+
+			if (!num)
+			{
+				if (flag)
+				{
+					chosen_screen = lscreen % 3 + 15;
+					lscreen++;
+				}
+				else
+				{
+					flag = 1;
+					chosen_screen = -2;
+				}
+			}
+
+			LoadScreen(chosen_screen + 2, 4);
+		}
+	}
+
+	strcpy(name, &gfFilenameWad[gfFilenameOffset[num]]);
+	loadbar_on = 0;
+	strcat(name, ".TRC");
+
+	for (int i = 0; i < 4; i++)
+	{
+		_BeginScene();
+		InitBuckets();
+		InitialiseSortList();
+		DrawLoadingScreen();
+		SortPolyList(SortCount, SortList);
+		RestoreFPCW(FPCW);
+		DrawSortList();
+		MungeFPCW(&FPCW);
+		S_DumpScreenFrame();
+	}
+
+#ifdef GENERAL_FIXES
+	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits && !gfStatus))
+#endif
+	{
+#ifdef GENERAL_FIXES
+		if (MonoScreenOn == 2)
+#else
+		if (MonoScreenOn == 1)
+#endif
+			ReleaseScreen();
+	}
+
+	LevelLoadingThread.active = 1;
+	LevelLoadingThread.ended = 0;
+	LevelLoadingThread.handle = _beginthreadex(0, 0, LoadLevel, name, 0, (unsigned int*)&LevelLoadingThread.address);
+
+	while (LevelLoadingThread.active)
+	{
+		if (App.dx.Flags & 0x80 && loadbar_on)
+			S_DrawLoadBar();
+	}
+
+	if (App.dx.Flags & 0x80 && !S_DrawLoadBar())
+		while (!S_DrawLoadBar());
+
+	return 1;
+}
+
 void inject_file(bool replace)
 {
+	INJECT(0x004A6B30, LoadLevel, 0);
+
 	INJECT(0x004A60E0, LoadTextureInfos, replace);
 	INJECT(0x004A4DA0, LoadRooms, replace);
 	INJECT(0x004A3CD0, FileOpen, replace);
@@ -640,4 +725,5 @@ void inject_file(bool replace)
 	INJECT(0x004A67D0, LoadCinematic, replace);
 	INJECT(0x004A6880, LoadSamples, replace);
 	INJECT(0x004A67F0, LoadAIInfo, replace);
+	INJECT(0x004A72B0, S_LoadLevelFile, replace);
 }

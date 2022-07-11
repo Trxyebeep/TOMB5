@@ -328,7 +328,7 @@ void ControlRaisingCog(short item_number)
 
 			if (item->item_flags[0] == 3)
 			{
-				for (NumTrigs = GetSwitchTrigger(item, TriggerItems, 1); NumTrigs; NumTrigs--)
+				for (NumTrigs = (short)GetSwitchTrigger(item, TriggerItems, 1); NumTrigs; NumTrigs--)
 				{
 					triggered = &items[TriggerItems[NumTrigs - 1]];
 

@@ -53,8 +53,9 @@ void ControlLiftTeleporter(short item_number)
 {
 	ITEM_INFO* item;
 	ITEM_INFO* item2;
+	long num;
 	short triggeredItems[8];
-	short num, room_number;
+	short room_number;
 
 	item = &items[item_number];
 

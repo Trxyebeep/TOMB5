@@ -123,8 +123,10 @@
     <ClCompile Include="TOMB5\specific\registry.cpp" />
     <ClCompile Include="TOMB5\specific\specificfx.cpp" />
     <ClCompile Include="TOMB5\specific\texture.cpp" />
+    <ClCompile Include="TOMB5\specific\time.cpp" />
     <ClCompile Include="TOMB5\specific\winmain.cpp" />
     <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
+    <ClCompile Include="TOMB5\tomb5\troyestuff.cpp" />
     <ClCompile Include="TOMB5\tomb5\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -244,8 +246,12 @@
     <ClInclude Include="TOMB5\specific\registry.h" />
     <ClInclude Include="TOMB5\specific\specificfx.h" />
     <ClInclude Include="TOMB5\specific\texture.h" />
+    <ClInclude Include="TOMB5\specific\time.h" />
     <ClInclude Include="TOMB5\specific\winmain.h" />
     <ClInclude Include="TOMB5\tomb5\framework.h" />
+    <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_register.h" />
+    <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_rpc.h" />
+    <ClInclude Include="TOMB5\tomb5\troyestuff.h" />
     <ClInclude Include="TOMB5\tomb5\pch.h" />
     <ClInclude Include="TOMB5\tomb5\tomb5.h" />
   </ItemGroup>
@@ -254,6 +260,10 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tomb5.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="TOMB5\tomb5\libs\discordRPC\discord-rpc.lib" />
+    <Library Include="TOMB5\tomb5\libs\discordRPC\discord-rpcd.lib" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -312,11 +322,13 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)Build\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <LibraryPath>$(ProjectDir)TOMB5\tomb5\libs\discordRPC;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)Build\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <LibraryPath>$(ProjectDir)TOMB5\tomb5\libs\discordRPC;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -330,17 +342,21 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;AMMO_COUNTER;IMPROVED_BARS;NO_CD;GENERAL_FIXES;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;AMMO_COUNTER;IMPROVED_BARS;DISCORD_RPC;NO_CD;GENERAL_FIXES;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalOptions>/SECTION:.text,RWE %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/SECTION:.text,RWE /IGNORE:4099 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>dxguid.lib;discord-rpcd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)TOMB5\tomb5\libs\discordRPC;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -353,7 +369,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;AMMO_COUNTER;IMPROVED_BARS;GENERAL_FIXES;NO_CD;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;AMMO_COUNTER;IMPROVED_BARS;DISCORD_RPC;GENERAL_FIXES;NO_CD;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
@@ -368,6 +384,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalOptions>/SECTION:.text,RWE %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>dxguid.lib;discord-rpc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)TOMB5\tomb5\libs\discordRPC;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>

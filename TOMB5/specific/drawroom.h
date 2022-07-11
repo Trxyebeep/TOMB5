@@ -4,7 +4,7 @@
 void inject_drawroom(bool replace);
 
 void DrawBoundsRectangle(float left, float top, float right, float bottom);
-void DrawBoundsRectangleII(float left, float top, float right, float bottom, int rgba);
+void DrawBoundsRectangleII(float left, float top, float right, float bottom, long rgba);
 void DrawClipRectangle(ROOM_INFO* r);
 void InsertRoom(ROOM_INFO* r);
 void InsertRoomlet(ROOMLET* roomlet);

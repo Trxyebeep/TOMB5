@@ -320,6 +320,156 @@ void(*lara_collision_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* 
 	lara_void_func
 };
 
+#ifdef GENERAL_FIXES
+static void TiltHer(ITEM_INFO* item, long rad, long height)
+{
+	FLOOR_INFO* floor;
+	FVECTOR plane;
+	long wy[4];
+	long yT, wx, wz, cx, cz, x, z, ctx, cty, ctz, tx, ty, tz, dy;
+	short room_number, rotX, rotZ;
+
+	if (!tomb5.crawltilt)
+		return;
+
+	yT = item->pos.y_pos - height - 162;
+	room_number = item->room_number;
+	floor = GetFloor(item->pos.x_pos, yT, item->pos.z_pos, &room_number);
+	GetHeight(floor, item->pos.x_pos, yT, item->pos.z_pos);
+
+	if (!OnObject)
+	{
+		plane.x = -(float)tiltxoff / 4;
+		plane.y = -(float)tiltyoff / 4;
+	}
+	else
+	{
+		wx = item->pos.x_pos & 0xFFFFFC00 | 0xFF;
+		wz = item->pos.z_pos & 0xFFFFFC00 | 0xFF;
+		room_number = item->room_number;
+		floor = GetFloor(wx, yT, wz, &room_number);
+		wy[0] = GetHeight(floor, wx, yT, wz);
+		wx = item->pos.x_pos & 0xFFFFFC00 | 0x2FF;
+		wz = item->pos.z_pos & 0xFFFFFC00 | 0xFF;
+		room_number = item->room_number;
+		floor = GetFloor(wx, yT, wz, &room_number);
+		wy[1] = GetHeight(floor, wx, yT, wz);
+		wx = item->pos.x_pos & 0xFFFFFC00 | 0xFF;
+		wz = item->pos.z_pos & 0xFFFFFC00 | 0x2FF;
+		room_number = item->room_number;
+		floor = GetFloor(wx, yT, wz, &room_number);
+		wy[2] = GetHeight(floor, wx, yT, wz);
+		plane.x = (float)(wy[1] - wy[0]) / 512;
+		plane.y = (float)(wy[2] - wy[0]) / 512;
+	}
+
+	plane.z = item->pos.y_pos - plane.x * item->pos.x_pos - plane.y * item->pos.z_pos;
+	cx = item->pos.x_pos >> 10;
+	cz = item->pos.z_pos >> 10;
+
+	for (int i = 0; i < 4; i++)
+	{
+		wx = item->pos.x_pos + (rad * phd_sin(item->pos.y_rot + 16384 * i) >> 14);
+		wz = item->pos.z_pos + (rad * phd_cos(item->pos.y_rot + 16384 * i) >> 14);
+		x = wx >> 10;
+		z = wz >> 10;
+
+		if (x != cx || z != cz)
+		{
+			if (x > cx)
+			{
+				ctx = item->pos.x_pos | 0x3FF;
+				tx = ctx + 1;
+			}
+			else if (x < cx)
+			{
+				ctx = item->pos.x_pos & 0xFFFFFC00;
+				tx = ctx - 1;
+			}
+			else
+			{
+				ctx = item->pos.x_pos & 0xFFFFFC00 | ((item->pos.x_pos & 0x3FF) + (wx & 0x3FF) < 1024 ? 0xFF : 0x2FF);
+				tx = ctx;
+			}
+
+			if (z > cz)
+			{
+				ctz = item->pos.z_pos | 0x3FF;
+				tz = ctz + 1;
+			}
+			else if (z < cz)
+			{
+				ctz = item->pos.z_pos & 0xFFFFFC00;
+				tz = ctz - 1;
+			}
+			else
+			{
+				ctz = item->pos.z_pos & 0xFFFFFC00 | ((item->pos.z_pos & 0x3FF) + (wz & 0x3FF) < 1024 ? 0xFF : 0x2FF);
+				tz = ctz;
+			}
+
+			room_number = item->room_number;
+			floor = GetFloor(ctx, yT, ctz, &room_number);
+			cty = GetHeight(floor, ctx, yT, ctz);
+			room_number = item->room_number;
+			floor = GetFloor(tx, yT, tz, &room_number);
+			ty = GetHeight(floor, tx, yT, tz);
+
+			if (ABS(cty - ty) > 1)
+				wy[i] = (long)(plane.x * wx + plane.y * wz + plane.z);
+			else
+			{
+				room_number = item->room_number;
+				floor = GetFloor(wx, yT, wz, &room_number);
+				wy[i] = GetHeight(floor, wx, yT, wz);
+			}
+		}
+		else
+		{
+			room_number = item->room_number;
+			floor = GetFloor(wx, yT, wz, &room_number);
+			wy[i] = GetHeight(floor, wx, yT, wz);
+		}
+	}
+
+	dy = wy[0] - wy[2];
+	rotX = (short)phd_atan(2 * rad, dy);
+
+	if (dy > 0 && rotX > 0 || dy < 0 && rotX < 0)
+		rotX = -rotX;
+
+	dy = wy[3] - wy[1];
+	rotZ = (short)phd_atan(2 * rad, dy);
+
+	if (dy > 0 && rotZ > 0 || dy < 0 && rotZ < 0)
+		rotZ = -rotZ;
+
+	if (ABS(rotX - item->pos.x_rot) < 546)
+		item->pos.x_rot = rotX;
+	else if (rotX > item->pos.x_rot)
+		item->pos.x_rot += 546;
+	else if (rotX < item->pos.x_rot)
+		item->pos.x_rot -= 546;
+
+	if (item->pos.x_rot > 8192)
+		item->pos.x_rot = 8192;
+	else if (item->pos.x_rot < -8192)
+		item->pos.x_rot = -8192;
+
+	if (ABS(rotZ - item->pos.z_rot) < 546)
+		item->pos.z_rot = rotZ;
+	else if (rotZ > item->pos.z_rot)
+		item->pos.z_rot += 546;
+	else if (rotZ < item->pos.z_rot)
+		item->pos.z_rot -= 546;
+
+	if (item->pos.z_rot > 8192)
+		item->pos.z_rot = 8192;
+	else if (item->pos.z_rot < -8192)
+		item->pos.z_rot = -8192;
+}
+#endif
+
 void LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll)
 {
 	ShiftItem(item, coll);
@@ -386,7 +536,7 @@ void LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll)
+long LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll)
 {
 	long land_speed;
 	
@@ -405,7 +555,7 @@ int LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll)
 	return (item->hit_points < 1);
 }
 
-int TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll)
+long TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll)
 {
 	static short old_ang = 1;
 	short ang_diff, ang;
@@ -458,7 +608,7 @@ int TestLaraSlide(ITEM_INFO* item, COLL_INFO* coll)
 	return 1;
 }
 
-int LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll)
+long LaraDeflectEdge(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (coll->coll_type == CT_FRONT || coll->coll_type == CT_TOP_FRONT)
 	{
@@ -516,7 +666,7 @@ void LaraCollideStop(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll)
+long LaraHitCeiling(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (coll->coll_type == CT_TOP || coll->coll_type == CT_CLAMP)
 	{
@@ -1017,7 +1167,7 @@ void lara_col_walk(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int LaraFallen(ITEM_INFO* item, COLL_INFO* coll)
+long LaraFallen(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (lara.water_status == LW_WADE || coll->mid_floor <= 384)
 		return 0;
@@ -1033,7 +1183,7 @@ int LaraFallen(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
+long TestLaraVault(ITEM_INFO* item, COLL_INFO* coll)
 {
 	long hdif, slope;
 	short angle;
@@ -1833,7 +1983,7 @@ void lara_default_col(ITEM_INFO* item, COLL_INFO* coll)
 	GetLaraCollisionInfo(item, coll);
 }
 
-int TestWall(ITEM_INFO* item, long front, long right, long down)
+long TestWall(ITEM_INFO* item, long front, long right, long down)
 {
 	FLOOR_INFO* floor;
 	long x, y, z, h, c;
@@ -2310,7 +2460,7 @@ void lara_col_hang(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int CanLaraHangSideways(ITEM_INFO* item,COLL_INFO* coll, short angle)
+long CanLaraHangSideways(ITEM_INFO* item,COLL_INFO* coll, short angle)
 {
 	long oldx, oldz, x, z, res;
 
@@ -3662,6 +3812,10 @@ void lara_col_all4s(ITEM_INFO* item, COLL_INFO* coll)
 	coll->slopes_are_pits = 1;
 	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 400);
 
+#ifdef GENERAL_FIXES
+	TiltHer(item, 140, 400);
+#endif
+
 	if (LaraFallen(item, coll))
 		lara.gun_status = LG_NO_ARMS;
 	else if (!TestLaraSlide(item, coll))
@@ -3843,6 +3997,10 @@ void lara_col_crawl(ITEM_INFO* item, COLL_INFO* coll)
 	coll->facing = lara.move_angle;
 	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, -400);
 
+#ifdef GENERAL_FIXES
+	TiltHer(item, 140, 400);
+#endif
+
 	if (LaraDeflectEdgeDuck(item, coll))
 	{
 		item->current_anim_state = AS_ALL4S;
@@ -3865,7 +4023,7 @@ void lara_col_crawl(ITEM_INFO* item, COLL_INFO* coll)
 	}
 }
 
-int LaraDeflectEdgeDuck(ITEM_INFO* item, COLL_INFO* coll)
+long LaraDeflectEdgeDuck(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (coll->coll_type == CT_FRONT || coll->coll_type == CT_TOP_FRONT)
 	{
@@ -3958,6 +4116,10 @@ void lara_col_all4turnlr(ITEM_INFO* item, COLL_INFO* coll)
 {
 	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 400);
 
+#ifdef GENERAL_FIXES
+	TiltHer(item, 140, 400);
+#endif
+
 	if (!TestLaraSlide(item, coll) && (coll->mid_floor != NO_HEIGHT && coll->mid_floor > -256))
 		item->pos.y_pos += coll->mid_floor;
 }
@@ -4013,6 +4175,10 @@ void lara_col_crawlb(ITEM_INFO* item, COLL_INFO* coll)
 	lara.move_angle = item->pos.y_rot + 32768;
 	coll->facing = lara.move_angle;
 	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 400);
+
+#ifdef GENERAL_FIXES
+	TiltHer(item, 140, 400);
+#endif
 
 	if (LaraDeflectEdgeDuck(item, coll))
 	{
@@ -4844,6 +5010,14 @@ void LaraAboveWater(ITEM_INFO* item, COLL_INFO* coll)
 		item->pos.z_rot -= 182;
 	else item->pos.z_rot = 0;
 
+#ifdef GENERAL_FIXES
+	if (item->pos.x_rot < -182)
+		item->pos.x_rot += 182;
+	else if (item->pos.x_rot > 182)
+		item->pos.x_rot -= 182;
+	else item->pos.x_rot = 0;
+#endif
+
 	if (lara.turn_rate < -364)
 		lara.turn_rate += 364;
 	else if (lara.turn_rate > 364)
@@ -4958,7 +5132,7 @@ void UpdateRopeSwing(ITEM_INFO* item)
 		lara.RopeMaxXBackward = ABS(item->pos.x_rot);
 }
 
-void ApplyVelocityToRope(int node, ushort angle, ushort n)
+void ApplyVelocityToRope(long node, ushort angle, ushort n)
 {
 	long xvel, zvel;
 
@@ -5000,7 +5174,7 @@ void JumpOffRope(ITEM_INFO* item)
 	}
 }
 
-int LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
+long LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
 {
 	short* bounds;
 	long x, z, oldfloor, hdif, flag;

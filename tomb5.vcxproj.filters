@@ -342,6 +342,8 @@
     <ClCompile Include="TOMB5\specific\winmain.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
+    <ClCompile Include="TOMB5\specific\time.cpp" />
+    <ClCompile Include="TOMB5\tomb5\troyestuff.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -684,6 +686,10 @@
     <ClInclude Include="TOMB5\specific\winmain.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
+    <ClInclude Include="TOMB5\specific\time.h" />
+    <ClInclude Include="TOMB5\tomb5\troyestuff.h" />
+    <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_register.h" />
+    <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_rpc.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt">
@@ -692,5 +698,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tomb5.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="TOMB5\tomb5\libs\discordRPC\discord-rpc.lib" />
+    <Library Include="TOMB5\tomb5\libs\discordRPC\discord-rpcd.lib" />
   </ItemGroup>
 </Project>
