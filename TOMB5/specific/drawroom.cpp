@@ -193,6 +193,8 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	FVECTOR Lxyz;
 	short* clip;
 	float num, zbak, zv, zv2, fR, fG, fB, val, val2, val3, fCol;
+	static float fog_start = 1.0F / (12.0F / 1024.0F);	//12 blocks
+	static float fog_end = 20.0F * 1024.0F;				//20 blocks
 	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal, n;
 	short clip_distance;
 	uchar rnd;
@@ -204,7 +206,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	if (!(App.dx.Flags & 0x80))	//no wibble on software mode?
 		cam_underwater = 0;
 
-	num = aRoomletTransformLight_num * 255.0F;
+	num = fog_start * 255.0F;
 
 	for (int i = 0; i < nVerts; i++)
 	{
@@ -335,9 +337,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			cB += iVal;
 		}
 
-		if (zbak > aRoomletTransformLight_bignum)
+		if (zbak > fog_end)
 		{
-			val = (zbak - aRoomletTransformLight_bignum) * num;
+			val = (zbak - fog_end) * num;
 			cR -= (long)val;
 			cG -= (long)val;
 			cB -= (long)val;
