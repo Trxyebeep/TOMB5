@@ -852,16 +852,13 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 {
 	FOGBULB_STRUCT* bulb;
 #ifdef GENERAL_FIXES
-	POINTLIGHT_STRUCT* point;
+	DYNAMIC* light;
 #endif
 	FVECTOR vec;
 	FVECTOR vec2;
 	FVECTOR vec3;
 	FVECTOR vec4;
 	short* clip;
-#ifdef GENERAL_FIXES
-	float fR, fG, fB;
-#endif
 	float val, val2, val3, zv, fCol, fCol2;
 	long sR, sG, sB, cR, cG, cB, pR, pG, pB;
 	short clip_distance;
@@ -887,31 +884,28 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 		cB = (cB * pB) >> 8;
 
 #ifdef GENERAL_FIXES
-		if (TotalNumLights)
+		for (int j = 0; j < 32; j++)
 		{
-			fR = (float)cR;
-			fG = (float)cG;
-			fB = (float)cB;
+			light = &dynamics[j];
 
-			if (NumPointLights)
+			if (light->on)
 			{
-				for (int j = 0; j < NumPointLights; j++)
+				vec2.x = light->x - lGlobalMeshPos.x;
+				vec2.y = light->y - lGlobalMeshPos.y;
+				vec2.z = light->z - lGlobalMeshPos.z;
+				vec3.x = (aLightMatrix._11 * vec2.x + aLightMatrix._12 * vec2.y + aLightMatrix._13 * vec2.z);
+				vec3.y = (aLightMatrix._21 * vec2.x + aLightMatrix._22 * vec2.y + aLightMatrix._23 * vec2.z);
+				vec3.z = (aLightMatrix._31 * vec2.x + aLightMatrix._32 * vec2.y + aLightMatrix._33 * vec2.z);
+				val = sqrt(SQUARE(vec3.x - mesh->aVtx[i].x) + SQUARE(vec3.y - mesh->aVtx[i].y) + SQUARE(vec3.z - mesh->aVtx[i].z));
+
+				if (val <= light->falloff)
 				{
-					point = &PointLights[j];
-					vec2.x = (aLightMatrix._11 * point->vec.x + aLightMatrix._12 * point->vec.y + aLightMatrix._13 * point->vec.z);
-					vec2.y = (aLightMatrix._21 * point->vec.x + aLightMatrix._22 * point->vec.y + aLightMatrix._23 * point->vec.z);
-					vec2.z = (aLightMatrix._31 * point->vec.x + aLightMatrix._32 * point->vec.y + aLightMatrix._33 * point->vec.z);
-					val = sqrt(SQUARE(vec2.x - mesh->aVtx[i].x) + SQUARE(vec2.y - mesh->aVtx[i].y) + SQUARE(vec2.z - mesh->aVtx[i].z));
-					val2 = (point->rad - val) / point->rad;
-					fR += val2 * point->r;
-					fG += val2 * point->g;
-					fB += val2 * point->b;
+					val2 = (light->falloff - val) / light->falloff;
+					cR += long(val2 * light->r);
+					cG += long(val2 * light->g);
+					cB += long(val2 * light->b);
 				}
 			}
-
-			cR = (long)fR;
-			cG = (long)fG;
-			cB = (long)fB;
 		}
 #endif
 
