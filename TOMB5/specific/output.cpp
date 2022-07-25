@@ -896,7 +896,7 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 				vec3.x = (aLightMatrix._11 * vec2.x + aLightMatrix._12 * vec2.y + aLightMatrix._13 * vec2.z);
 				vec3.y = (aLightMatrix._21 * vec2.x + aLightMatrix._22 * vec2.y + aLightMatrix._23 * vec2.z);
 				vec3.z = (aLightMatrix._31 * vec2.x + aLightMatrix._32 * vec2.y + aLightMatrix._33 * vec2.z);
-				val = sqrt(SQUARE(vec3.x - mesh->aVtx[i].x) + SQUARE(vec3.y - mesh->aVtx[i].y) + SQUARE(vec3.z - mesh->aVtx[i].z));
+				val = sqrt(SQUARE(vec3.x - mesh->aVtx[i].x) + SQUARE(vec3.y - mesh->aVtx[i].y) + SQUARE(vec3.z - mesh->aVtx[i].z)) * 1.7F;
 
 				if (val <= light->falloff)
 				{
