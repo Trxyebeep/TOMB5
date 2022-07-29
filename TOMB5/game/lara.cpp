@@ -5206,7 +5206,7 @@ long LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
 	}
 	else if (input & IN_ACTION && item->hit_points > 0 && coll->front_floor <= 0)
 	{
-		if (flag && wall > 0 && move > 0 == coll->left_floor > coll->right_floor)
+		if (flag && wall > 0 && (move > 0 && coll->left_floor > coll->right_floor || move < 0 && coll->left_floor < coll->right_floor))
 			flag = 0;
 
 		bounds = GetBoundsAccurate(item);
