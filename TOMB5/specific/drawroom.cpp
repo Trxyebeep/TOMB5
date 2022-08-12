@@ -193,6 +193,8 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	FVECTOR vec2;
 	FVECTOR Lxyz;
 	short* clip;
+	static float iDistanceFogStart = 1.0F / (12.0F * 1024.0F);
+	static float DistanceFogEnd = 20.0F * 1024.0F;
 	float num, zbak, zv, zv2, fR, fG, fB, val, val2, val3, fCol;
 	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal, n;
 	short clip_distance;
@@ -205,7 +207,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	if (!(App.dx.Flags & 0x80))	//no wibble on software mode?
 		cam_underwater = 0;
 
-	num = aRoomletTransformLight_num * 255.0F;
+	num = iDistanceFogStart * 255.0F;
 
 	for (int i = 0; i < nVerts; i++)
 	{
@@ -245,9 +247,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 			if (cam_underwater)
 			{
-				zv2 = 1.0F / (vec.z * 0.001953125F);
-				vec.x = vec.x * zv + f_centerx + vert_wibble_table[((wibble + (long)(zv2 * vec.y)) >> 3) & 0x1F];
-				vec.y = vec.y * zv + f_centery + vert_wibble_table[((wibble + (long)(zv2 * vec.x)) >> 3) & 0x1F];
+				zv2 = 1.0F / (vec.z * (1.0F / 512.0F));
+				vec.x = vec.x * zv + f_centerx + vert_wibble_table[((wibble + long(zv2 * vec.y)) >> 3) & 0x1F];
+				vec.y = vec.y * zv + f_centery + vert_wibble_table[((wibble + long(zv2 * vec.x)) >> 3) & 0x1F];
 			}
 			else
 			{
@@ -313,9 +315,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 		if (current_room_underwater)
 		{
-			wx = (long)(xyz.x * 0.015625F);
-			wy = (long)(xyz.y * 0.015625F);
-			wz = (long)(xyz.z * 0.0078125F);
+			wx = long(xyz.x * 0.015625F);
+			wy = long(xyz.y * 0.015625F);
+			wz = long(xyz.z * 0.0078125F);
 			rnd = WaterTable[current_room_ptr->MeshEffect][((wx + wy) + wz) & 0x3F].random;
 			choppy = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
 			iVal = -2 * choppy;
@@ -325,10 +327,10 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		}
 		else if (nShoreVerts && i > nWaterVerts && i < nShoreVerts + nWaterVerts)
 		{
-			wx = (long)(xyz.x * 0.015625F);
-			wy = (long)(xyz.y * 0.015625F);
-			wz = (long)(xyz.z * 0.0078125F);
-			rnd = WaterTable[current_room_ptr->MeshEffect][((wx + wy) + wz) & 0x3F].random;
+			wx = long(xyz.x * 0.015625F);
+			wy = long(xyz.y * 0.015625F);
+			wz = long(xyz.z * 0.0078125F);
+			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
 			n = (current_room_ptr->MeshEffect << 6) + (((wibble >> 2) + rnd) & 0x3F);
 			iVal = WaterTable[0][n].shimmer + WaterTable[0][n].abs;
 			cR += iVal;
@@ -336,9 +338,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			cB += iVal;
 		}
 
-		if (zbak > aRoomletTransformLight_bignum)
+		if (zbak > DistanceFogEnd)
 		{
-			val = (zbak - aRoomletTransformLight_bignum) * num;
+			val = (zbak - DistanceFogEnd) * num;
 			cR -= (long)val;
 			cG -= (long)val;
 			cB -= (long)val;
