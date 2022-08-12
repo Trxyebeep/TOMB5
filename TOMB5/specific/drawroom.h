@@ -12,6 +12,7 @@ void RoomTestThing();
 void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWaterVerts, long nShoreVerts);
 void aBuildFogBulbList();
 void ProcessMeshData(long num_meshes);
+void DrawRoomletBounds(ROOMLET* r);
 
 #define DrawBuckets	( (void(__cdecl*)()) 0x0049D750 )
 #define TriggerFogBulbFX	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x0049AEF0 )

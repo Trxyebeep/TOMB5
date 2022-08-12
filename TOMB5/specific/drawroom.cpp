@@ -3,6 +3,7 @@
 #include "function_table.h"
 #include "function_stubs.h"
 #include "d3dmatrix.h"
+#include "alexstuff.h"
 
 void DrawBoundsRectangle(float left, float top, float right, float bottom)
 {
@@ -762,6 +763,70 @@ void ProcessMeshData(long num_meshes)
 	Log(2, "End ProcessMeshData");
 }
 
+void DrawRoomletBounds(ROOMLET* r)
+{
+	D3DTLVERTEX v[32];
+	D3DVECTOR bounds[8];
+	float zv;
+	ulong col;
+
+	bounds[0].x = r->bBox[0];
+	bounds[0].y = r->bBox[1] + 32;
+	bounds[0].z = r->bBox[2];
+
+	bounds[1].x = r->bBox[3];
+	bounds[1].y = r->bBox[1] + 32;
+	bounds[1].z = r->bBox[2];
+
+	bounds[2].x = r->bBox[0];
+	bounds[2].y = r->bBox[1] + 32;
+	bounds[2].z = r->bBox[5];
+
+	bounds[3].x = r->bBox[3];
+	bounds[3].y = r->bBox[1] + 32;
+	bounds[3].z = r->bBox[5];
+
+	bounds[4].x = r->bBox[0];
+	bounds[4].y = r->bBox[4] + 32;
+	bounds[4].z = r->bBox[2];
+
+	bounds[5].x = r->bBox[3];
+	bounds[5].y = r->bBox[4] + 32;
+	bounds[5].z = r->bBox[2];
+
+	bounds[6].x = r->bBox[0];
+	bounds[6].y = r->bBox[4] + 32;
+	bounds[6].z = r->bBox[5];
+
+	bounds[7].x = r->bBox[3];
+	bounds[7].y = r->bBox[4] + 32;
+	bounds[7].z = r->bBox[5];
+
+	aTransformClip_D3DV(bounds, &v[0], 8, 0);
+	aTransformClip_D3DV(bounds, &v[8], 8, 8);
+	aTransformClip_D3DV(bounds, &v[16], 8, 16);
+	aTransformClip_D3DV(bounds, &v[24], 8, 24);
+
+	col = 0xFF000000 | RoomRGB;
+	zv = f_mpersp / f_mznear * f_moneopersp;
+
+	for (int i = 0; i < 32; i++)
+	{
+		v[i].color = col;
+		v[i].specular = 0xFF000000;
+		v[i].rhw = zv;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		v[i + 8].sx += 8;
+		v[i + 12].sx += 8;
+		v[i + 24].sx += 8;
+		v[i + 28].sx += 8;
+		AddQuadZBuffer(v, i, i + 8, i + 28, i + 20, textinfo, 1);
+	}
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -773,4 +838,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049B7B0, aRoomletTransformLight, replace);
 	INJECT(0x0049AFB0, aBuildFogBulbList, replace);
 	INJECT(0x0049A3D0, ProcessMeshData, replace);
+	INJECT(0x0049CEB0, DrawRoomletBounds, replace);
 }

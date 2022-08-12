@@ -10,3 +10,4 @@ void aInitWater();
 
 #define aFetchCutData	( (char*(__cdecl*)(long)) 0x00491F60 )
 #define DoCredits	( (long(__cdecl*)()) 0x004927C0 )
+#define aTransformClip_D3DV	( (void(__cdecl*)(D3DVECTOR*, D3DTLVERTEX*, long, long)) 0x004914C0 )
