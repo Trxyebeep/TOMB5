@@ -3,6 +3,7 @@
 #include "function_table.h"
 #include "function_stubs.h"
 #include "d3dmatrix.h"
+#include "alexstuff.h"
 
 void DrawBoundsRectangle(float left, float top, float right, float bottom)
 {
@@ -192,6 +193,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	FVECTOR vec2;
 	FVECTOR Lxyz;
 	short* clip;
+	static float DistanceFogStart = 12.0F * 1024.0F;
+	static float iDistanceFogStart = 1.0F / DistanceFogStart;
+	static float DistanceFogEnd = 20.0F * 1024.0F;
 	float num, zbak, zv, zv2, fR, fG, fB, val, val2, val3, fCol;
 	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal, n;
 	short clip_distance;
@@ -204,7 +208,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	if (!(App.dx.Flags & 0x80))	//no wibble on software mode?
 		cam_underwater = 0;
 
-	num = aRoomletTransformLight_num * 255.0F;
+	num = iDistanceFogStart * 255.0F;
 
 	for (int i = 0; i < nVerts; i++)
 	{
@@ -244,9 +248,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 			if (cam_underwater)
 			{
-				zv2 = 1.0F / (vec.z * 0.001953125F);
-				vec.x = vec.x * zv + f_centerx + vert_wibble_table[((wibble + (long)(zv2 * vec.y)) >> 3) & 0x1F];
-				vec.y = vec.y * zv + f_centery + vert_wibble_table[((wibble + (long)(zv2 * vec.x)) >> 3) & 0x1F];
+				zv2 = 1.0F / (vec.z * (1.0F / 512.0F));
+				vec.x = vec.x * zv + f_centerx + vert_wibble_table[((wibble + long(zv2 * vec.y)) >> 3) & 0x1F];
+				vec.y = vec.y * zv + f_centery + vert_wibble_table[((wibble + long(zv2 * vec.x)) >> 3) & 0x1F];
 			}
 			else
 			{
@@ -312,9 +316,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 		if (current_room_underwater)
 		{
-			wx = (long)(xyz.x * 0.015625F);
-			wy = (long)(xyz.y * 0.015625F);
-			wz = (long)(xyz.z * 0.0078125F);
+			wx = long(xyz.x * 0.015625F);
+			wy = long(xyz.y * 0.015625F);
+			wz = long(xyz.z * 0.0078125F);
 			rnd = WaterTable[current_room_ptr->MeshEffect][((wx + wy) + wz) & 0x3F].random;
 			choppy = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
 			iVal = -2 * choppy;
@@ -324,10 +328,10 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		}
 		else if (nShoreVerts && i > nWaterVerts && i < nShoreVerts + nWaterVerts)
 		{
-			wx = (long)(xyz.x * 0.015625F);
-			wy = (long)(xyz.y * 0.015625F);
-			wz = (long)(xyz.z * 0.0078125F);
-			rnd = WaterTable[current_room_ptr->MeshEffect][((wx + wy) + wz) & 0x3F].random;
+			wx = long(xyz.x * 0.015625F);
+			wy = long(xyz.y * 0.015625F);
+			wz = long(xyz.z * 0.0078125F);
+			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
 			n = (current_room_ptr->MeshEffect << 6) + (((wibble >> 2) + rnd) & 0x3F);
 			iVal = WaterTable[0][n].shimmer + WaterTable[0][n].abs;
 			cR += iVal;
@@ -335,9 +339,15 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			cB += iVal;
 		}
 
-		if (zbak > aRoomletTransformLight_bignum)
+#ifdef GENERAL_FIXES
+		if (zbak > DistanceFogStart)
 		{
-			val = (zbak - aRoomletTransformLight_bignum) * num;
+			val = (zbak - DistanceFogStart) * num;
+#else
+		if (zbak > DistanceFogEnd)
+		{
+			val = (zbak - DistanceFogEnd) * num;
+#endif
 			cR -= (long)val;
 			cG -= (long)val;
 			cB -= (long)val;
@@ -762,6 +772,70 @@ void ProcessMeshData(long num_meshes)
 	Log(2, "End ProcessMeshData");
 }
 
+void DrawRoomletBounds(ROOMLET* r)
+{
+	D3DTLVERTEX v[32];
+	D3DVECTOR bounds[8];
+	float zv;
+	ulong col;
+
+	bounds[0].x = r->bBox[0];
+	bounds[0].y = r->bBox[1] + 32;
+	bounds[0].z = r->bBox[2];
+
+	bounds[1].x = r->bBox[3];
+	bounds[1].y = r->bBox[1] + 32;
+	bounds[1].z = r->bBox[2];
+
+	bounds[2].x = r->bBox[0];
+	bounds[2].y = r->bBox[1] + 32;
+	bounds[2].z = r->bBox[5];
+
+	bounds[3].x = r->bBox[3];
+	bounds[3].y = r->bBox[1] + 32;
+	bounds[3].z = r->bBox[5];
+
+	bounds[4].x = r->bBox[0];
+	bounds[4].y = r->bBox[4] + 32;
+	bounds[4].z = r->bBox[2];
+
+	bounds[5].x = r->bBox[3];
+	bounds[5].y = r->bBox[4] + 32;
+	bounds[5].z = r->bBox[2];
+
+	bounds[6].x = r->bBox[0];
+	bounds[6].y = r->bBox[4] + 32;
+	bounds[6].z = r->bBox[5];
+
+	bounds[7].x = r->bBox[3];
+	bounds[7].y = r->bBox[4] + 32;
+	bounds[7].z = r->bBox[5];
+
+	aTransformClip_D3DV(bounds, &v[0], 8, 0);
+	aTransformClip_D3DV(bounds, &v[8], 8, 8);
+	aTransformClip_D3DV(bounds, &v[16], 8, 16);
+	aTransformClip_D3DV(bounds, &v[24], 8, 24);
+
+	col = 0xFF000000 | RoomRGB;
+	zv = f_mpersp / f_mznear * f_moneopersp;
+
+	for (int i = 0; i < 32; i++)
+	{
+		v[i].color = col;
+		v[i].specular = 0xFF000000;
+		v[i].rhw = zv;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		v[i + 8].sx += 8;
+		v[i + 12].sx += 8;
+		v[i + 24].sx += 8;
+		v[i + 28].sx += 8;
+		AddQuadZBuffer(v, i, i + 8, i + 28, i + 20, textinfo, 1);
+	}
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -773,4 +847,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049B7B0, aRoomletTransformLight, replace);
 	INJECT(0x0049AFB0, aBuildFogBulbList, replace);
 	INJECT(0x0049A3D0, ProcessMeshData, replace);
+	INJECT(0x0049CEB0, DrawRoomletBounds, replace);
 }
