@@ -193,7 +193,8 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	FVECTOR vec2;
 	FVECTOR Lxyz;
 	short* clip;
-	static float iDistanceFogStart = 1.0F / (12.0F * 1024.0F);
+	static float DistanceFogStart = 12.0F * 1024.0F;
+	static float iDistanceFogStart = 1.0F / DistanceFogStart;
 	static float DistanceFogEnd = 20.0F * 1024.0F;
 	float num, zbak, zv, zv2, fR, fG, fB, val, val2, val3, fCol;
 	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal, n;
@@ -338,9 +339,15 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			cB += iVal;
 		}
 
+#ifdef GENERAL_FIXES
+		if (zbak > DistanceFogStart)
+		{
+			val = (zbak - DistanceFogStart) * num;
+#else
 		if (zbak > DistanceFogEnd)
 		{
 			val = (zbak - DistanceFogEnd) * num;
+#endif
 			cR -= (long)val;
 			cG -= (long)val;
 			cB -= (long)val;
