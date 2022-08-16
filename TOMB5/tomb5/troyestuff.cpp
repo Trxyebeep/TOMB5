@@ -5,7 +5,7 @@
 #include "tomb5.h"
 
 #define PAGE0_NUM	14
-#define PAGE1_NUM	6
+#define PAGE1_NUM	7
 
 #pragma warning(push)
 #pragma warning(disable : 4244)
@@ -369,6 +369,7 @@ bool Page1(long& num, long textY, ulong selection)
 	PrintString(phd_centerx >> 2, ushort(textY + 5 * font_height), selection & 8 ? 1 : 2, "loadbar style", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 6 * font_height), selection & 0x10 ? 1 : 2, "mono screen style", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 7 * font_height), selection & 0x20 ? 1 : 2, "Loading text", 0);
+	PrintString(phd_centerx >> 2, ushort(textY + 8 * font_height), selection & 0x40 ? 1 : 2, "Shimmer", 0);
 
 	strcpy(buffer, tomb5.crawltilt ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 2 * font_height), selection & 1 ? 1 : 6, buffer, 0);
@@ -387,6 +388,9 @@ bool Page1(long& num, long textY, ulong selection)
 
 	strcpy(buffer, tomb5.loadingtxt ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 7 * font_height), selection & 0x20 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.shimmer == 1 ? "off" : "on");
+	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 8 * font_height), selection & 0x40 ? 1 : 6, buffer, 0);
 
 	switch (selection)
 	{
@@ -466,6 +470,21 @@ bool Page1(long& num, long textY, ulong selection)
 		{
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 			tomb5.loadingtxt = !tomb5.loadingtxt;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 6:
+
+		if (dbinput & IN_RIGHT || dbinput & IN_LEFT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.shimmer++;
+
+			if (tomb5.shimmer > 2)
+				tomb5.shimmer = 1;
+
 			changed = 1;
 		}
 

@@ -161,7 +161,12 @@ enum room_flags
 	ROOM_DYNAMIC_LIT =		0x10,
 	ROOM_NOT_INSIDE =		0x20,
 	ROOM_INSIDE =			0x40,
-	ROOM_NO_LENSFLARE =		0x80
+	ROOM_NO_LENSFLARE =		0x80,
+	ROOM_MIST =				0x100,
+	ROOM_REFLECT =			0x200,
+	ROOM_UNK1 =				0x400,
+	ROOM_UNK2 =				0x800,
+	ROOM_REFLECT_CEILING =	0x1000
 };
 
 enum collision_types
@@ -2396,6 +2401,16 @@ struct STARS
 	long col;
 };
 
+struct PORTAL
+{
+	short rn;
+	short normal[3];
+	short v1[3];
+	short v2[3];
+	short v3[3];
+	short v4[3];
+};
+
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
 	bool footprints;			//on off
@@ -2418,6 +2433,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool tr4_loadbar;			//on off
 	ulong inv_bg_mode;			//1-> original, 2->TR4, 3-> clear
 	bool loadingtxt;			//on off
+	ulong shimmer;				//1-> off, 2-> original, 3->improved
 };
 #endif
 #pragma pack(pop)

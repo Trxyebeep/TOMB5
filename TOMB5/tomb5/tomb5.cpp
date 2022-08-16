@@ -94,6 +94,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "loadtxt");
 		tomb5.loadingtxt = 1;							//on
 		REG_WriteBool(buf, tomb5.loadingtxt);
+
+		sprintf(buf, "shimmer");
+		tomb5.shimmer = 3;								//improved!
+		REG_WriteLong(buf, tomb5.shimmer);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -156,6 +160,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "loadtxt");
 		REG_ReadBool(buf, tomb5.loadingtxt, 1);
+
+		sprintf(buf, "shimmer");
+		REG_ReadLong(buf, tomb5.shimmer, 3);
 	}
 
 	CloseRegistry();
@@ -225,6 +232,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "loadtxt");
 	REG_WriteBool(buf, tomb5.loadingtxt);
+
+	sprintf(buf, "shimmer");
+	REG_WriteLong(buf, tomb5.shimmer);
 
 	CloseRegistry();
 }
