@@ -5,7 +5,7 @@
 #include "tomb5.h"
 
 #define PAGE0_NUM	14
-#define PAGE1_NUM	7
+#define PAGE1_NUM	8
 
 #pragma warning(push)
 #pragma warning(disable : 4244)
@@ -370,6 +370,7 @@ bool Page1(long& num, long textY, ulong selection)
 	PrintString(phd_centerx >> 2, ushort(textY + 6 * font_height), selection & 0x10 ? 1 : 2, "mono screen style", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 7 * font_height), selection & 0x20 ? 1 : 2, "Loading text", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 8 * font_height), selection & 0x40 ? 1 : 2, "Shimmer", 0);
+	PrintString(phd_centerx >> 2, ushort(textY + 9 * font_height), selection & 0x80 ? 1 : 2, "distance fog", 0);
 
 	strcpy(buffer, tomb5.crawltilt ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 2 * font_height), selection & 1 ? 1 : 6, buffer, 0);
@@ -391,6 +392,9 @@ bool Page1(long& num, long textY, ulong selection)
 
 	strcpy(buffer, tomb5.shimmer == 1 ? "off" : "on");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 8 * font_height), selection & 0x40 ? 1 : 6, buffer, 0);
+
+	sprintf(buffer, "%i", tomb5.distance_fog);
+	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 9 * font_height), selection & 0x80 ? 1 : 6, buffer, 0);
 
 	switch (selection)
 	{
@@ -484,6 +488,32 @@ bool Page1(long& num, long textY, ulong selection)
 
 			if (tomb5.shimmer > 2)
 				tomb5.shimmer = 1;
+
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 7:
+
+		if (dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.distance_fog++;
+
+			if (tomb5.distance_fog > 30.0F)
+				tomb5.distance_fog = 30.0F;
+
+			changed = 1;
+		}
+
+		if (dbinput & IN_LEFT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.distance_fog--;
+
+			if (tomb5.distance_fog < 3.0F)
+				tomb5.distance_fog = 3.0F;
 
 			changed = 1;
 		}

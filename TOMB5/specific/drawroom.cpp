@@ -399,6 +399,11 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	if (!(App.dx.Flags & 0x80))	//no wibble on software mode?
 		cam_underwater = 0;
 
+#ifdef GENERAL_FIXES
+	DistanceFogStart = tomb5.distance_fog * 1024.0F;
+	iDistanceFogStart = 1.0F / DistanceFogStart;
+#endif
+
 	num = iDistanceFogStart * 255.0F;
 
 	for (int i = 0; i < nVerts; i++)

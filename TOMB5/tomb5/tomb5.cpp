@@ -96,8 +96,12 @@ void init_tomb5_stuff()
 		REG_WriteBool(buf, tomb5.loadingtxt);
 
 		sprintf(buf, "shimmer");
-		tomb5.shimmer = 3;								//improved!
+		tomb5.shimmer = 2;								//on
 		REG_WriteLong(buf, tomb5.shimmer);
+
+		sprintf(buf, "distance_fog");
+		tomb5.distance_fog = 12;
+		REG_WriteLong(buf, tomb5.distance_fog);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -163,6 +167,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "shimmer");
 		REG_ReadLong(buf, tomb5.shimmer, 3);
+
+		sprintf(buf, "distance_fog");
+		REG_ReadLong(buf, tomb5.distance_fog, 12);
 	}
 
 	CloseRegistry();
@@ -235,6 +242,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "shimmer");
 	REG_WriteLong(buf, tomb5.shimmer);
+
+	sprintf(buf, "distance_fog");
+	REG_WriteLong(buf, tomb5.distance_fog);
 
 	CloseRegistry();
 }
