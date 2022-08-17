@@ -1865,7 +1865,7 @@ struct BUBBLE_STRUCT
 
 struct GUNFLASH_STRUCT
 {
-	MATRIX3D matrix;
+	long mx[12];
 	short on;
 };
 

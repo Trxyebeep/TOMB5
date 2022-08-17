@@ -732,6 +732,73 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 	return !item->mesh_bits;
 }
 
+void SetGunFlash(short weapon)
+{
+	GUNFLASH_STRUCT* flash;
+	long num;
+	short xrot, y, z;
+
+	switch (weapon)
+	{
+	case WEAPON_FLARE:
+	case WEAPON_SHOTGUN:
+	case WEAPON_CROSSBOW:
+		return;
+
+	case WEAPON_REVOLVER:
+		xrot = -0x38E0;
+		y = 192;
+		z = 68;
+		break;
+
+	case WEAPON_UZI:
+		xrot = -0x3FFC;
+		y = 190;
+		z = 50;
+		break;
+
+	case WEAPON_HK:
+		xrot = -0x38E0;
+		y = 300;
+		z = 92;
+		break;
+
+	default:
+		xrot = -0x3FFC;
+		y = 180;
+		z = 40;
+		break;
+	}
+
+	num = 0;
+	flash = Gunflashes;
+
+	while (flash->on)
+	{
+		flash++;
+		num++;
+
+		if (num >= 4)
+			return;
+	}
+	
+	flash->on = 1;
+	phd_TranslateRel(0, y, z);
+	phd_RotX(xrot);
+	flash->mx[M00] = (long)aMXPtr[M00];
+	flash->mx[M01] = (long)aMXPtr[M01];
+	flash->mx[M02] = (long)aMXPtr[M02];
+	flash->mx[M03] = (long)aMXPtr[M03];
+	flash->mx[M10] = (long)aMXPtr[M10];
+	flash->mx[M11] = (long)aMXPtr[M11];
+	flash->mx[M12] = (long)aMXPtr[M12];
+	flash->mx[M13] = (long)aMXPtr[M13];
+	flash->mx[M20] = (long)aMXPtr[M20];
+	flash->mx[M21] = (long)aMXPtr[M21];
+	flash->mx[M22] = (long)aMXPtr[M22];
+	flash->mx[M23] = (long)aMXPtr[M23];
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -745,4 +812,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x004852E0, DrawWeaponMissile, replace);
 	INJECT(0x00485290, DrawLensFlares, replace);
 	INJECT(0x00484080, ExplodingDeath2, replace);
+	INJECT(0x004837B0, SetGunFlash, 0);
 }
