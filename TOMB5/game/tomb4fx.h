@@ -15,6 +15,7 @@ void DrawWeaponMissile(ITEM_INFO* item);
 void DrawLensFlares(ITEM_INFO* item);
 long ExplodingDeath2(short item_number, long mesh_bits, short Flags);
 void SetGunFlash(short weapon);
+void DrawGunflashes();
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define TriggerLaraDrips	( (void(__cdecl*)()) 0x00483F00 )
@@ -39,7 +40,6 @@ void SetGunFlash(short weapon);
 #define ClearFires	( (void(__cdecl*)()) 0x00481B10 )
 #define TriggerFenceSparks	( (void(__cdecl*)(long, long, long, long, long)) 0x00485D80 )
 #define AddFire	( (void(__cdecl*)(long, long, long, long, short, short)) 0x00481B40 )
-#define DrawGunflashes	( (void(__cdecl*)()) 0x004838E0 )
 #define DrawGunshells	( (void(__cdecl*)()) 0x00483090 )
 #define S_DrawFires	( (void(__cdecl*)()) 0x00481BB0 )
 #define TriggerShatterSmoke	( (void(__cdecl*)(long, long, long)) 0x004823A0 )

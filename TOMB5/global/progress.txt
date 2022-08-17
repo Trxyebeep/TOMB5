@@ -1483,8 +1483,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00483350		CreateBubble
 0x00483470	+	LaraBubbles
 0x00483540		UpdateBubbles
-0x004837B0	x	SetGunFlash
-0x004838E0		DrawGunflashes
+0x004837B0	+	SetGunFlash
+0x004838E0	+	DrawGunflashes
 0x00483A90		SetFadeClip
 0x00483AC0		UpdateFadeClip
 0x00483B30		SetScreenFadeOut
