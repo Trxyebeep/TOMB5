@@ -73,10 +73,42 @@ void DSAdjustPan(long num, long pan)
 	}
 }
 
+bool DXSetOutputFormat()
+{
+	DSBUFFERDESC desc;
+
+	Log(2, "DXSetOutputFormat");
+	memset(&desc, 0, sizeof(desc));
+	desc.dwSize = sizeof(desc);
+	desc.dwFlags = DSBCAPS_PRIMARYBUFFER;
+
+	if (DXAttempt(App.dx.lpDS->CreateSoundBuffer(&desc, &DSPrimary, 0)) == DS_OK)
+	{
+		DXChangeOutputFormat(sfx_frequencies[SoundQuality], 0);
+		DSPrimary->Play(0, 0, DSBPLAY_LOOPING);
+		return 1;
+	}
+
+	Log(1, "Can't Get Primary Sound Buffer");
+	return 0;
+}
+
+bool DXDSCreate()
+{
+	Log(2, "DXDSCreate");
+	DXAttempt(DirectSoundCreate(G_dxinfo->DSInfo[G_dxinfo->nDS].lpGuid, &App.dx.lpDS, 0));
+	DXAttempt(App.dx.lpDS->SetCooperativeLevel(App.hWnd, DSSCL_EXCLUSIVE));
+	DXSetOutputFormat();
+	sound_active = 1;
+	return 1;
+}
+
 void inject_dxsound(bool replace)
 {
 	INJECT(0x004A2E30, DXChangeOutputFormat, replace);
 	INJECT(0x004A2F10, DSChangeVolume, replace);
 	INJECT(0x004A2F40, DSAdjustPitch, replace);
 	INJECT(0x004A2FB0, DSAdjustPan, replace);
+	INJECT(0x004A3030, DXSetOutputFormat, replace);
+	INJECT(0x004A3100, DXDSCreate, replace);
 }

@@ -1810,8 +1810,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A2F10	+	DSChangeVolume
 0x004A2F40	+	DSAdjustPitch
 0x004A2FB0	+	DSAdjustPan
-0x004A3030		DXSetOutputFormat
-0x004A3100		DXDSCreate
+0x004A3030	+	DXSetOutputFormat
+0x004A3100	+	DXDSCreate
 0x004A3190		DXCreateSample
 0x004A3300		InitSampleDecompress
 0x004A3470		FreeSampleDecompress

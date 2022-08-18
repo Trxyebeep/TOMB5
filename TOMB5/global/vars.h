@@ -585,6 +585,7 @@
 #define gfScriptFile	VAR_U_(0x00E5C2EC, uchar*)
 #define gfLanguageFile	VAR_U_(0x00E5C2AC, uchar*)
 #define screen_surface	VAR_U_(0x0087BD58, LPDIRECTDRAWSURFACE4)
+#define G_dxinfo	VAR_U_(0x0086B9AC, DXINFO*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

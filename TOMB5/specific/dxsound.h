@@ -7,6 +7,8 @@ bool DXChangeOutputFormat(long nSamplesPerSec, bool force);
 void DSChangeVolume(long num, long volume);
 void DSAdjustPitch(long num, long pitch);
 void DSAdjustPan(long num, long pan);
+bool DXSetOutputFormat();
+bool DXDSCreate();
 
 #define S_SoundSampleIsPlaying	( (long(__cdecl*)(long)) 0x004A3B10 )
 #define S_SoundSetPanAndVolume	( (void(__cdecl*)(long, short, ushort)) 0x004A3B40 )
