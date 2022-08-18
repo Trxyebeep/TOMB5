@@ -50,6 +50,10 @@ do \
 #define READ	( (size_t(__cdecl*)(void*, size_t, size_t, FILE*)) 0x004E1D20 )
 #define TELL	( (int(__cdecl*)(FILE*)) 0x004E4700 )
 #define CLOSE	( (int(__cdecl*)(FILE*)) 0x004E20D0 )
+
+#define MALLOC	( (void*(__cdecl*)(size_t)) 0x004E2220 )
+#define REALLOC	( (void*(__cdecl*)(void*, size_t)) 0x004E26B0 )
+#define FREE	( (void(__cdecl*)(void*)) 0x004E2C90 )
 	/**********************************/
 
 /*typedefs*/
