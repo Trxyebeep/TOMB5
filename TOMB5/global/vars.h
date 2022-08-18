@@ -727,6 +727,7 @@
 #define ActiveFogBulbs	ARRAY_(0x007E7FF0, FOGBULB_STRUCT, [64])
 #define fog_bulbs	ARRAY_(0x007ED0F8, FOGBULB, [64])
 #define MonoScreen	ARRAY_(0x008BBD68, MONOSCREEN_STRUCT, [5])
+#define aBoundingBox	ARRAY_(0x00921618, float, [24])
 
 /****************/
 //registry

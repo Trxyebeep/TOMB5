@@ -1093,6 +1093,116 @@ void DrawRoomletBounds(ROOMLET* r)
 	}
 }
 
+long aBuildRoomletLights(ROOMLET* r)
+{
+	ROOMLET_LIGHT* light;
+	DYNAMIC* dynamic;
+	FOGBULB_STRUCT* fogbulb;
+	FOGBULB_STRUCT* rFog;
+	FVECTOR dPos;
+	FVECTOR fPos;
+	FVECTOR box;
+	float* bbox;
+	float falloff, sqr, val;
+	long numLights;
+
+	light = RoomletLights;
+	numLights = 0;
+
+	for (int i = 0; i < 32; i++)
+	{
+		dynamic = &dynamics[i];
+
+		if (!dynamic->on)
+			continue;
+
+		dPos.x = dynamic->x - current_room_ptr->posx;
+		dPos.y = dynamic->y - current_room_ptr->posy;
+		dPos.z = dynamic->z - current_room_ptr->posz;
+		falloff = float((dynamic->falloff >> 1) + (dynamic->falloff >> 3));
+
+		if (dPos.x - falloff <= r->bBox[3] && falloff + dPos.x >= r->bBox[0] &&
+			dPos.z - falloff <= r->bBox[5] && falloff + dPos.z >= r->bBox[2])
+		{
+			light->type = 0;
+			light->x = dPos.x;
+			light->y = dPos.y;
+			light->z = dPos.z;
+			light->r = (float)dynamic->r * (1.0F / 255.0F);
+			light->g = (float)dynamic->g * (1.0F / 255.0F);
+			light->b = (float)dynamic->b * (1.0F / 255.0F);
+			light->falloff = falloff;
+			light->inv_falloff = 1.0F / light->falloff;
+			light->sqr_falloff = SQUARE(light->falloff);
+			light++;
+			numLights++;
+		}
+	}
+
+	nRoomletFogBulbs = 0;
+	rFog = RoomletFogBulbs;
+
+	for (int i = 0; i < NumActiveFogBulbs; i++)
+	{
+		fogbulb = &ActiveFogBulbs[i];
+
+		if (!fogbulb->visible)
+			continue;
+
+		if (fogbulb->sqlen >= fogbulb->sqrad)	//this block does nothing <3
+		{
+			bbox = aBoundingBox;
+
+			for (int j = 0; j < 8; j++)
+			{
+				box.x = *bbox++;
+				box.y = *bbox++;
+				box.z = *bbox++;
+				fPos.x = fogbulb->pos.x - box.x;
+				fPos.y = fogbulb->pos.y - box.y;
+				fPos.z = fogbulb->pos.z - box.z;
+
+				if (SQUARE(fPos.x) + SQUARE(fPos.y) + SQUARE(fPos.y) < fogbulb->sqrad)
+					break;
+
+				sqr = SQUARE(box.x) + SQUARE(box.y) + SQUARE(box.z);
+				val = 1.0F / sqrt(sqr);
+				fPos.x = box.x * val;
+				fPos.y = box.y * val;
+				fPos.z = box.z * val;
+				val = fogbulb->pos.x * fPos.x + fogbulb->pos.y * fPos.y + fogbulb->pos.z * fPos.z;
+
+				if (val > 0)
+				{
+					val = SQUARE(val);
+
+					if (sqr > val && fogbulb->sqlen - val < fogbulb->sqrad)
+						break;
+				}
+			}
+		}
+
+		rFog->pos.x = fogbulb->pos.x;
+		rFog->pos.y = fogbulb->pos.y;
+		rFog->pos.z = fogbulb->pos.z;
+		rFog->world.x = fogbulb->world.x;
+		rFog->world.y = fogbulb->world.y;
+		rFog->world.z = fogbulb->world.z;
+		rFog->r = fogbulb->r;
+		rFog->g = fogbulb->g;
+		rFog->b = fogbulb->b;
+		rFog->sqlen = fogbulb->sqlen;
+		rFog->d = fogbulb->d;
+		rFog->rad = fogbulb->rad;
+		rFog->sqrad = fogbulb->sqrad;
+		rFog++;
+		nRoomletFogBulbs++;
+		numLights |= 0x80000000;
+	}
+
+	return numLights;
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1105,4 +1215,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049AFB0, aBuildFogBulbList, replace);
 	INJECT(0x0049A3D0, ProcessMeshData, replace);
 	INJECT(0x0049CEB0, DrawRoomletBounds, replace);
+	INJECT(0x0049B390, aBuildRoomletLights, replace);
 }
