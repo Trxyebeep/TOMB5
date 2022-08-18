@@ -2358,6 +2358,13 @@ struct MONOSCREEN_STRUCT
 	LPDIRECTDRAWSURFACE4 surface;
 };
 
+struct DS_SAMPLE
+{
+	LPDIRECTSOUNDBUFFER buffer;
+	long frequency;
+	long playing;
+};
+
 #ifdef IMPROVED_BARS
 struct GouraudBarColourSet
 {
