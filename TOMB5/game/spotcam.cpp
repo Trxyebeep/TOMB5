@@ -6,6 +6,9 @@
 #include "control.h"
 #include "../specific/function_stubs.h"
 #include "switch.h"
+#ifdef GENERAL_FIXES
+#include "../tomb5/tomb5.h"
+#endif
 
 long Spline(long x, long* knots, long nk)
 {
@@ -376,6 +379,11 @@ void CalculateSpotCams()
 	}
 	else if (!spotcam_timer)
 		current_spline_position += cspeed;
+
+#ifdef GENERAL_FIXES
+	if (tomb5.cutseq_skipper && keymap[DIK_ESCAPE] && gfCurrentLevel)
+		current_spline_position = 0x10000;
+#endif
 
 	if (!(input & IN_LOOK))
 		bFirstLook = 0;
