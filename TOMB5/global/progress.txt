@@ -2060,7 +2060,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004BCF30		CalcColorSplitMMX
 0x004BCFD0		AddPrelitMMX
 0x004BD070		AddPrelitMMX
-0x004BD150		CalcColorSplit
+0x004BD150	+	CalcColorSplit
 0x004BD270		S_DrawLine
 0x004BD300		S_DrawTriFan
 

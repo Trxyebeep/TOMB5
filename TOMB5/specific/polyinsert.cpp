@@ -410,8 +410,66 @@ void DrawSortList()
 	InitBuckets();
 }
 
+void CalcColorSplit(D3DCOLOR s, D3DCOLOR* d)
+{
+	long r, g, b, sr, sg, sb;
+
+	sr = 0;
+	sg = 0;
+	sb = 0;
+	r = CLRR(s);
+	g = CLRG(s);
+	b = CLRB(s);
+	r -= 128;
+	g -= 128;
+	b -= 128;
+
+	if (r <= 0)
+		r = CLRR(s) << 1;
+	else
+	{
+		sr = r;
+		r = 255;
+	}
+
+	if (g <= 0)
+		g = CLRG(s) << 1;
+	else
+	{
+		sg = g;
+		g = 255;
+	}
+
+	if (b <= 0)
+		b = CLRB(s) << 1;
+	else
+	{
+		sb = b;
+		b = 255;
+	}
+
+	if (r > 255)
+		r = 255;
+
+	if (g > 255)
+		g = 255;
+
+	if (b > 255)
+		b = 255;
+
+	d[0] = (d[0] & 0xFF000000) | RGBONLY(r, g, b);		//color
+	d[0] &= 0xFFFFFF;
+	d[0] |= GlobalAlpha;
+
+	sr >>= 1;
+	sg >>= 1;
+	sb >>= 1;
+	d[1] = (d[1] & 0xFF000000) | RGBONLY(sr, sg, sb);	//specular
+}
+
 void inject_polyinsert(bool replace)
 {
 	INJECT(0x004B98E0, HWR_DrawSortList, replace);
 	INJECT(0x004B8DB0, DrawSortList, replace);
+	INJECT(0x004BD150, CalcColorSplit, replace);
 }

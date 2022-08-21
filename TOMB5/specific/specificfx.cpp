@@ -501,7 +501,8 @@ void DrawLaserSightSprite()
 		TempXY[1] + size, TempXY[0] + size, TempXY[1] + size, (long)f_mznear, clipflags);
 #else
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
-	setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2, TempXY[0] + 2, TempXY[1] + 2, (long)f_mznear, clipflags);
+	setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2,
+		TempXY[0] + 2, TempXY[1] + 2, (long)f_mznear, clipflags);
 #endif
 
 	v[0].color = LaserSightCol ? 0x0000FF00 : 0x00FF0000;//if LaserSightCol is on, it turns green
