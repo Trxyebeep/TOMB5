@@ -67,7 +67,7 @@ long S_UpdateInput()
 	static long LookCnt;
 	static long med_hotkey_timer;
 	static long cheat_code;
-	static long weird;
+	static long weird = 0;
 	long flag;
 	short state;
 	static bool flare_no_db = 0;
@@ -483,7 +483,7 @@ long S_UpdateInput()
 	}
 
 	if (debounce)
-		dbinput = linput & (dbinput ^ linput);
+		dbinput = inputBusy & (dbinput ^ inputBusy);
 
 	input = linput;
 	linput = weird;
