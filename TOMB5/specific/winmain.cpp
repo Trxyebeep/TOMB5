@@ -152,6 +152,24 @@ void WinGetLastError()
 	LocalFree(buf);
 }
 
+void WinProcMsg()
+{
+	MSG msg;
+
+	Log(2, "WinProcMsg");
+
+	do
+	{
+		GetMessage(&msg, 0, 0, 0);
+
+		if (!TranslateAccelerator(App.hWnd, App.hAccel, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+	} while (!MainThread.ended && msg.message != WM_QUIT);
+}
+
 void inject_winmain(bool replace)
 {
 	INJECT(0x004D1AD0, ClearSurfaces, replace);
@@ -160,4 +178,5 @@ void inject_winmain(bool replace)
 	INJECT(0x004D2FD0, WinFrameRate, replace);
 	INJECT(0x004D3070, WinDisplayString, replace);
 	INJECT(0x004D2450, WinGetLastError, replace);
+	INJECT(0x004D24C0, WinProcMsg, replace);
 }
