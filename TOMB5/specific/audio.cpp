@@ -12,7 +12,30 @@ void S_CDPlay(short track, long mode)
     }
 }
 
+void S_CDStop()
+{
+    if (acm_ready && audio_stream_fp)
+    {
+        memset(wav_file_buffer, 0, 0x37000);
+        DSBuffer->Stop();
+        DSBuffer->SetCurrentPosition(0);
+        while (reading_audio_file) {};
+        CLOSE(audio_stream_fp);
+        audio_stream_fp = 0;
+        audio_counter = 0;
+        XAFlag = 7;
+        XATrack = -1;
+    }
+}
+
+void S_CDFade()
+{
+
+}
+
 void inject_audio(bool replace)
 {
     INJECT(0x00492990, S_CDPlay, replace);
+    INJECT(0x004929E0, S_CDStop, replace);
+    INJECT(0x00492AA0, S_CDFade, replace);
 }

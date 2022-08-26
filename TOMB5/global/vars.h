@@ -589,6 +589,10 @@
 #define t_frequency	VAR_U_(0x00D9AAB0, __int64)
 #define pSortBuffer	VAR_U_(0x00BA4388, char*)
 #define pSortList	VAR_U_(0x00923FA8, SORTLIST**)
+#define audio_stream_fp	VAR_U_(0x0057A010, FILE*)
+#define DSBuffer	VAR_U_(0x00579FFC, LPDIRECTSOUNDBUFFER)
+#define reading_audio_file	VAR_U_(0x0057A01C, volatile bool)
+#define XAFlag	VAR_U_(0x00510B18, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
