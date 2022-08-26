@@ -100,6 +100,7 @@
 #include "../specific/dxsound.h"
 #include "../specific/winmain.h"
 #include "../specific/time.h"
+#include "../specific/texture.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -219,6 +220,7 @@ void inject_all(bool replace)
 	inject_dxsound(replace);
 	inject_winmain(replace);
 	inject_time(replace);
+	inject_texture(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

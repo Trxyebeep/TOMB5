@@ -2165,7 +2165,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/texture.cpp
 
-0x004D01D0		AdjustTextInfo
+0x004D01D0	+	AdjustTextInfo
 0x004D03A0		FindHighestBit
 0x004D03D0		RGBMDarkMap
 0x004D0400		RGBMLightMap
