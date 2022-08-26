@@ -2169,7 +2169,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004D03A0	+	FindHighestBit
 0x004D03D0	+	RGBMDarkMap
 0x004D0400	+	RGBMLightMap
-0x004D0450		CreateTexturePage
+0x004D0450	+	CreateTexturePage
 0x004D0980	+	aGenerateMipMaps
 0x004D0B90		FreeTextures
 0x004D0CC0		ShowTextures
