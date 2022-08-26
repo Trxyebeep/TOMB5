@@ -84,6 +84,25 @@ void OpenStreamFile(char* name)
     }
 }
 
+void GetADPCMData()
+{
+    if (!audio_stream_fp)
+        return;
+
+    memset(audio_fp_write_ptr, 0, 0x5800);
+
+    if (READ(audio_fp_write_ptr, 1, 0x5800, audio_stream_fp) < 0x5800 && audio_play_mode == 1)
+    {
+        Log(0, "FileReset In GetADPCMData");
+        SEEK(audio_stream_fp, 90, SEEK_SET);
+    }
+
+    audio_fp_write_ptr += 0x5800;
+
+    if ((long)audio_fp_write_ptr >= long(wav_file_buffer + 0x37000))
+        audio_fp_write_ptr = wav_file_buffer;
+}
+
 void inject_audio(bool replace)
 {
     INJECT(0x00492990, S_CDPlay, replace);
@@ -92,4 +111,5 @@ void inject_audio(bool replace)
     INJECT(0x00492AC0, S_StartSyncedAudio, replace);
     INJECT(0x00492AF0, ACMSetVolume, replace);
     INJECT(0x00493350, OpenStreamFile, replace);
+    INJECT(0x004936A0, GetADPCMData, replace);
 }
