@@ -144,6 +144,16 @@ const char* TrackFileNames[136] =
 	"xa17_Andy11.wav",
 };
 
+#pragma warning(push)
+#pragma warning(disable : 4838)
+#pragma warning(disable : 4309)
+static char source_wav_format[50] =
+{
+	2, 0, 2, 0, 68, 172, 0, 0, 71, 173, 0, 0, 0, 8, 4, 0, 32, 0, 244, 7, 7, 0, 0, 1, 0, 0, 0,
+	2, 0, 255, 0, 0, 0, 0, 192, 0, 64, 0, 240, 0, 0, 0, 204, 1, 48, 255, 136, 1, 24, 255
+};
+#pragma warning(pop)
+
 void S_CDPlay(long track, long mode)
 {
     if (acm_ready)
@@ -465,6 +475,104 @@ long ACMHandleNotifications()
 	return DS_OK;
 }
 
+bool ACMInit()
+{
+	DSBUFFERDESC desc;
+	static WAVEFORMATEX wav_format;
+	static ulong StreamSize;
+	ulong version, pMetric;
+
+	version = acmGetVersion();
+	InitializeCriticalSection(&audio_cs);
+	acm_ready = 0;
+	Log(8, "ACM Version %u.%.02u", ((version >> 16) & 0xFFFF) >> 8, (version >> 16) & 0xFF);
+	acmDriverEnum(ACMEnumCallBack, 0, 0);
+
+	if (!hACMDriverID)
+	{
+		Log(1, "*** Unable To Locate MS-ADPCM Driver ***");
+		return 0;
+	}
+
+	if (acmDriverOpen(&hACMDriver, hACMDriverID, 0))
+	{
+		Log(1, "*** Failed To Open Driver MS-ADPCM Driver ***");
+		return 0;
+	}
+
+	ADPCMBuffer = (uchar*)MALLOC(0x5800);
+	wav_file_buffer = (uchar*)MALLOC(0x37000);
+	wav_format.wFormatTag = WAVE_FORMAT_PCM;
+	acmMetrics(0, ACM_METRIC_MAX_SIZE_FORMAT, &pMetric);
+	acmFormatSuggest(hACMDriver, (LPWAVEFORMATEX)&source_wav_format, &wav_format, pMetric, ACM_FORMATSUGGESTF_WFORMATTAG);
+	audio_buffer_size = 0x577C0;
+	NotifySize = 0x15DF0;
+
+	memset(&desc, 0, sizeof(DSBUFFERDESC));
+	desc.dwSize = sizeof(DSBUFFERDESC);
+	desc.dwBufferBytes = 0x577C0;
+	desc.dwFlags = DSBCAPS_LOCSOFTWARE | DSBCAPS_CTRLFREQUENCY | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GETCURRENTPOSITION2;
+	desc.lpwfxFormat = &wav_format;
+	App.dx.lpDS->CreateSoundBuffer(&desc, &DSBuffer, 0);
+	DSBuffer->QueryInterface(IID_IDirectSoundNotify, (LPVOID*)&DSNotify);
+
+	ACMSetupNotifications();
+	acmStreamOpen(&hACMStream, hACMDriver, (LPWAVEFORMATEX)&source_wav_format, &wav_format, 0, 0, 0, 0);
+	acmStreamSize(hACMStream, 0x5800, &StreamSize, 0);
+	DXAttempt(DSBuffer->Lock(0, audio_buffer_size, (LPVOID*)&pAudioWrite, &AudioBytes, 0, 0, 0));
+	memset(pAudioWrite, 0, audio_buffer_size);
+
+	for (int i = 0; i < 4; i++)
+	{
+		memset(&StreamHeaders[i], 0, sizeof(ACMSTREAMHEADER));
+		StreamHeaders[i].cbStruct = sizeof(ACMSTREAMHEADER);
+		StreamHeaders[i].pbSrc = ADPCMBuffer;
+		StreamHeaders[i].cbSrcLength = 0x5800;
+		StreamHeaders[i].cbDstLength = StreamSize;
+		StreamHeaders[i].pbDst = &pAudioWrite[NotifySize * i];
+		acmStreamPrepareHeader(hACMStream, &StreamHeaders[i], 0);
+	}
+
+	DXAttempt(DSBuffer->Unlock(pAudioWrite, audio_buffer_size, 0, 0));
+	acm_ready = 1;
+	return 1;
+}
+
+void ACMClose()
+{
+	if (!acm_ready)
+		return;
+
+	EnterCriticalSection(&audio_cs);
+	S_CDStop();
+	CloseHandle(NotifyEventHandles[0]);
+	CloseHandle(NotifyEventHandles[1]);
+	acmStreamUnprepareHeader(hACMStream, &StreamHeaders[0], 0);
+	acmStreamUnprepareHeader(hACMStream, &StreamHeaders[1], 0);
+	acmStreamUnprepareHeader(hACMStream, &StreamHeaders[2], 0);
+	acmStreamUnprepareHeader(hACMStream, &StreamHeaders[3], 0);
+	acmStreamClose(hACMStream, 0);
+	acmDriverClose(hACMDriver, 0);
+
+	if (DSNotify)
+	{
+		Log(4, "Released %s @ %x - RefCnt = %d", "Notification", DSNotify, DSNotify->Release());
+		DSNotify = 0;
+	}
+	else
+		Log(1, "%s Attempt To Release NULL Ptr", "Notification");
+
+	if (DSBuffer)
+	{
+		Log(4, "Released %s @ %x - RefCnt = %d", "Stream Buffer", DSBuffer, DSBuffer->Release());
+		DSBuffer = 0;
+	}
+	else
+		Log(1, "%s Attempt To Release NULL Ptr", "Stream Buffer");
+
+	LeaveCriticalSection(&audio_cs);
+}
+
 void inject_audio(bool replace)
 {
     INJECT(0x00492990, S_CDPlay, replace);
@@ -479,4 +587,6 @@ void inject_audio(bool replace)
 	INJECT(0x00492C20, ACMSetupNotifications, replace);
 	INJECT(0x00493490, FillADPCMBuffer, 0);
 	INJECT(0x00493990, ACMHandleNotifications, replace);
+	INJECT(0x00492DA0, ACMInit, replace);
+	INJECT(0x004931A0, ACMClose, replace);
 }

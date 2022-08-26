@@ -15,5 +15,5 @@ BOOL __stdcall ACMEnumCallBack(HACMDRIVERID hadid, DWORD_PTR dwInstance, DWORD f
 long ACMSetupNotifications();
 void FillADPCMBuffer(char* p, long track);
 long ACMHandleNotifications();
-
-#define ACMClose	( (void(__cdecl*)()) 0x004931A0 )
+bool ACMInit();
+void ACMClose();
