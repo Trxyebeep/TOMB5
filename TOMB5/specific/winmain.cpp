@@ -75,8 +75,37 @@ long CheckMMXTechnology()
 	return mmx;
 }
 
+bool WinRunCheck(LPSTR WindowName, LPSTR ClassName, HANDLE* mutex)
+{
+	HWND window;
+
+	Log(2, "WinRunCheck");
+	*mutex = CreateMutex(0, 1, WindowName);
+
+	if (GetLastError() == ERROR_ALREADY_EXISTS)
+	{
+		window = FindWindow(ClassName, WindowName);
+
+		if (window)
+		{
+#ifdef GENERAL_FIXES
+			SendMessage(window, WM_ACTIVATE, WA_ACTIVE, 0);
+			SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+			SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+#else
+			SendMessage(window, WM_ACTIVATE, 0, 0);
+#endif
+		}
+
+		return 1;
+	}
+
+	return 0;
+}
+
 void inject_winmain(bool replace)
 {
 	INJECT(0x004D1AD0, ClearSurfaces, replace);
 	INJECT(0x004D22D0, CheckMMXTechnology, replace);
+	INJECT(0x004D2DD0, WinRunCheck, replace);
 }
