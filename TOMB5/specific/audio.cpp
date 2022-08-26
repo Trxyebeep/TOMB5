@@ -33,9 +33,16 @@ void S_CDFade()
 
 }
 
+void S_StartSyncedAudio(long track)
+{
+    S_CDStop();
+    S_CDPlay(track, 2);
+}
+
 void inject_audio(bool replace)
 {
     INJECT(0x00492990, S_CDPlay, replace);
     INJECT(0x004929E0, S_CDStop, replace);
     INJECT(0x00492AA0, S_CDFade, replace);
+    INJECT(0x00492AC0, S_StartSyncedAudio, replace);
 }
