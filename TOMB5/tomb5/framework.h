@@ -13,3 +13,4 @@
 #include <dinput.h>
 #include <dsound.h>
 #include <cmath>
+#include <time.h>

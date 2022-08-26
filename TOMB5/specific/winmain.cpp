@@ -103,9 +103,38 @@ bool WinRunCheck(LPSTR WindowName, LPSTR ClassName, HANDLE* mutex)
 	return 0;
 }
 
+float WinFrameRate()
+{
+	double t, time_now;
+	static float fps;
+	static long time, counter;
+	static char first_time;
+
+	if (!(first_time & 1))
+	{
+		first_time |= 1;
+		time = clock();
+	}
+
+	counter++;
+
+	if (counter == 10)
+	{
+		time_now = clock();
+		t = (time_now - time) / (double)CLOCKS_PER_SEC;
+		time = (long)time_now;
+		fps = float(counter / t);
+		counter = 0;
+	}
+
+	App.fps = fps;
+	return fps;
+}
+
 void inject_winmain(bool replace)
 {
 	INJECT(0x004D1AD0, ClearSurfaces, replace);
 	INJECT(0x004D22D0, CheckMMXTechnology, replace);
 	INJECT(0x004D2DD0, WinRunCheck, replace);
+	INJECT(0x004D2FD0, WinFrameRate, replace);
 }
