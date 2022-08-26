@@ -12,6 +12,7 @@ bool DXDSCreate();
 bool InitSampleDecompress();
 bool FreeSampleDecompress();
 bool DXCreateSampleADPCM(char* data, long comp_size, long uncomp_size, long num);
+void DXStopSample(long num);
 
 #define S_SoundSampleIsPlaying	( (long(__cdecl*)(long)) 0x004A3B10 )
 #define S_SoundSetPanAndVolume	( (void(__cdecl*)(long, short, ushort)) 0x004A3B40 )
