@@ -263,6 +263,154 @@ void FreeTextures()
 	}
 }
 
+void ShowTextures()
+{
+	D3DTLBUMPVERTEX v[4];
+	static long page = 1;
+	static long db = 0;
+	static long bump = 0;
+	static long x, y, n = 0;
+	float n00, n10, n01, n11, o;
+	long w, h;
+
+	db++;
+
+	if (db > 1)
+	{
+		db = 0;
+
+		if (keymap[DIK_A])
+			page--;
+
+		if (keymap[DIK_S])
+			page++;
+
+		if (keymap[DIK_B])
+			bump ^= 1;
+
+		if (page < 0)
+			page = 0;
+
+		if (page >= nTextures)
+			page = nTextures - 1;
+	}
+
+	x = 0;
+	y = 32;
+	w = 2 * (Textures[page].width + 1);
+	h = 2 * (Textures[page].height + 1);
+
+	v[0].sx = (float)x;
+	v[0].sy = (float)y;
+	v[0].sz = 0;
+	v[0].rhw = 1;
+	v[0].color = 0xFFFFFFFF;
+	v[0].specular = 0xFF000000;
+	v[0].tu = 0;
+	v[0].tv = 0;
+	v[0].tx = 0;
+	v[0].ty = 0;
+
+	v[1].sx = float(x + w);
+	v[1].sy = (float)y;
+	v[1].sz = 0;
+	v[1].rhw = 1;
+	v[1].color = 0xFFFFFFFF;
+	v[1].specular = 0xFF000000;
+	v[1].tu = 1;
+	v[1].tv = 0;
+	v[1].tx = 4;
+	v[1].ty = 0;
+
+	v[2].sx = float(x + w);
+	v[2].sy = float(y + h);
+	v[2].sz = 0;
+	v[2].rhw = 1;
+	v[2].color = 0xFFFFFFFF;
+	v[2].specular = 0xFF000000;
+	v[2].tu = 1;
+	v[2].tv = 1;
+	v[2].tx = 4;
+	v[2].ty = 4;
+
+	v[3].sx = (float)x;
+	v[3].sy = float(y + h);
+	v[3].sz = 0;
+	v[3].rhw = 1;
+	v[3].color = 0xFFFFFFFF;
+	v[3].specular = 0xFF000000;
+	v[3].tu = 0;
+	v[3].tv = 1;
+	v[3].tx = 0;
+	v[3].ty = 4;
+
+	if (Textures[page].realBump && bump & 1)
+	{
+		o = 1.0F;
+		n00 = fSin(n) * 0.25F;
+		n10 = fCos(n) * 0.25F;
+		n01 = -fCos(n) * 0.25F;
+		n11 = -fSin(n) * 0.25F;
+		n = (n + 327) & 0xFFFF;
+
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
+
+		App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 0);
+		App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_BUMPENVMAP);
+		App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
+		App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_BUMPENVMAT00, *((ulong*)&n00));
+		App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_BUMPENVMAT10, *((ulong*)&n10));
+		App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_BUMPENVMAT01, *((ulong*)&n01));
+		App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_BUMPENVMAT11, *((ulong*)&n11));
+		App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_BUMPENVLSCALE, *((ulong*)&o));
+		App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_BUMPENVLOFFSET, 0);
+
+		App.dx.lpD3DDevice->SetTextureStageState(2, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
+		App.dx.lpD3DDevice->SetTextureStageState(2, D3DTSS_TEXCOORDINDEX, 1);
+		App.dx.lpD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_ADD);
+		App.dx.lpD3DDevice->SetTextureStageState(2, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		App.dx.lpD3DDevice->SetTextureStageState(2, D3DTSS_COLORARG2, D3DTA_CURRENT);
+		App.dx.lpD3DDevice->SetTextureStageState(2, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+		App.dx.lpD3DDevice->SetTextureStageState(2, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+		App.dx.lpD3DDevice->SetTextureStageState(2, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+
+		DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[page].tex));
+		DXAttempt(App.dx.lpD3DDevice->SetTexture(1, Textures[page].bumpTex));
+		DXAttempt(App.dx.lpD3DDevice->SetTexture(2, Textures[nTextures - 3].tex));
+
+		App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, FVF, v, 4, 0);
+
+		App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
+		App.dx.lpD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
+	}
+	else
+	{
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, 4);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, 2);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, 2);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, 0);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, 2);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, 0);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
+		DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[page].tex));
+		App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, FVF, v, 4, 0);
+	}
+}
+
 void inject_texture(bool replace)
 {
 	INJECT(0x004D01D0, AdjustTextInfo, replace);
@@ -272,4 +420,5 @@ void inject_texture(bool replace)
 	INJECT(0x004D0980, aGenerateMipMaps, replace);
 	INJECT(0x004D0450, CreateTexturePage, replace);
 	INJECT(0x004D0B90, FreeTextures, replace);
+	INJECT(0x004D0CC0, ShowTextures, replace);
 }
