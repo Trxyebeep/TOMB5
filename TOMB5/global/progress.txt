@@ -2188,7 +2188,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x004D1AD0	+	ClearSurfaces
 0x004D1C00		WinMain
-0x004D22D0		CheckMMXTechnology
+0x004D22D0	+	CheckMMXTechnology
 0x004D23E0		WinClose
 0x004D2450		WinGetLastError
 0x004D24C0		WinProcMsg
