@@ -715,6 +715,36 @@ void CalcColorSplitMMX(D3DCOLOR s, D3DCOLOR* d)
 }
 #pragma warning(pop)
 
+void S_DrawLine(long nVtx, D3DTLVERTEX* v)
+{
+	float zv;
+
+	for (int i = 0; i < nVtx; i++)
+	{
+		zv = f_persp / v[i].sz;
+		v[i].rhw = zv * f_oneopersp;
+		v[i].sz = f_a - v[i].rhw * f_boo;
+	}
+
+	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, 0));
+	App.dx.lpD3DDevice->DrawPrimitive(D3DPT_LINESTRIP, D3DFVF_TLVERTEX, v, nVtx, D3DDP_DONOTUPDATEEXTENTS);
+}
+
+void S_DrawTriFan(long nVtx, D3DTLVERTEX* v)
+{
+	float zv;
+
+	for (int i = 0; i < nVtx; i++)
+	{
+		zv = f_persp / v[i].sz;
+		v[i].rhw = zv * f_oneopersp;
+		v[i].sz = f_a - v[i].rhw * f_boo;
+	}
+
+	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[0].tex));
+	App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, v, nVtx, D3DDP_DONOTUPDATEEXTENTS);
+}
+
 void inject_polyinsert(bool replace)
 {
 	INJECT(0x004B98E0, HWR_DrawSortList, replace);
@@ -737,4 +767,6 @@ void inject_polyinsert(bool replace)
 	INJECT(0x004BCFD0, AddPrelitMMX, replace);
 	INJECT(0x004BD070, AddPrelitMeshMMX, replace);
 	INJECT(0x004BCF30, CalcColorSplitMMX, replace);
+	INJECT(0x004BD270, S_DrawLine, replace);
+	INJECT(0x004BD300, S_DrawTriFan, replace);
 }

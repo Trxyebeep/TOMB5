@@ -2061,8 +2061,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x004BCFD0	+	AddPrelitMMX
 0x004BD070	+	AddPrelitMeshMMX
 0x004BD150	+	CalcColorSplit
-0x004BD270		S_DrawLine
-0x004BD300		S_DrawTriFan
+0x004BD270	+	S_DrawLine
+0x004BD300	+	S_DrawTriFan
 
 
 		specific/profiler.cpp
