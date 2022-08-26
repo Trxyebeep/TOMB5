@@ -3,6 +3,7 @@
 #include "dxshell.h"
 #include "function_stubs.h"
 #include "output.h"
+#include "../game/text.h"
 
 void ClearSurfaces()
 {
@@ -131,10 +132,21 @@ float WinFrameRate()
 	return fps;
 }
 
+void WinDisplayString(long x, long y, char* string, ...)
+{
+	va_list list;
+	char buf[4096];
+
+	va_start(list, string);
+	vsprintf(buf, string, list);
+	PrintString((ushort)x, (ushort)y, 6, buf, 0);
+}
+
 void inject_winmain(bool replace)
 {
 	INJECT(0x004D1AD0, ClearSurfaces, replace);
 	INJECT(0x004D22D0, CheckMMXTechnology, replace);
 	INJECT(0x004D2DD0, WinRunCheck, replace);
 	INJECT(0x004D2FD0, WinFrameRate, replace);
+	INJECT(0x004D3070, WinDisplayString, replace);
 }
