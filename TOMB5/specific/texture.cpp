@@ -48,8 +48,24 @@ long FindHighestBit(long n)
 	return bit;
 }
 
+void RGBMDarkMap(uchar* r, uchar* g, uchar* b)
+{
+	*r >>= 1;
+	*g >>= 1;
+	*b >>= 1;
+}
+
+void RGBMLightMap(uchar* r, uchar* g, uchar* b)
+{
+	*r = (255 - *r) >> 1;
+	*g = (255 - *g) >> 1;
+	*b = (255 - *b) >> 1;
+}
+
 void inject_texture(bool replace)
 {
 	INJECT(0x004D01D0, AdjustTextInfo, replace);
 	INJECT(0x004D03A0, FindHighestBit, replace);
+	INJECT(0x004D03D0, RGBMDarkMap, replace);
+	INJECT(0x004D0400, RGBMLightMap, replace);
 }
