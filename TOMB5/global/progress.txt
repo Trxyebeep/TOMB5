@@ -1658,7 +1658,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00492AA0	+	S_CDFade
 0x00492AC0	+	S_StartSyncedAudio
 0x00492AF0	+	ACMSetVolume
-0x00492B60		ACMEnumCallback
+0x00492B60	+	ACMEnumCallback
 0x00492C20		ACMSetupNotifications
 0x00492DA0		ACMInit
 0x004931A0		ACMClose

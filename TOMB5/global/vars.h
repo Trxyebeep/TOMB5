@@ -604,6 +604,7 @@
 #define CurrentNotify	VAR_U_(0x00579E4C, long)
 #define NextWriteOffset	VAR_U_(0x00579FD8, long)
 #define NotifySize	VAR_U_(0x00579FD0, long)
+#define hACMDriverID	VAR_U_(0x00579FCC, HACMDRIVERID)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
