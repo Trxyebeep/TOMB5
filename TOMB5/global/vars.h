@@ -605,6 +605,8 @@
 #define NextWriteOffset	VAR_U_(0x00579FD8, long)
 #define NotifySize	VAR_U_(0x00579FD0, long)
 #define hACMDriverID	VAR_U_(0x00579FCC, HACMDRIVERID)
+#define NotificationThreadHandle	VAR_U_(0x00579FA8, HANDLE)
+#define DSNotify	VAR_U_(0x0057A000, LPDIRECTSOUNDNOTIFY)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -750,6 +752,7 @@
 #define aBoundingBox	ARRAY_(0x00921618, float, [24])
 #define SortBuffer	ARRAY_(0x00923FAC, char, [])
 #define StreamHeaders	ARRAY_(0x00579E50, ACMSTREAMHEADER, [4])
+#define NotifyEventHandles	ARRAY_(0x00579FA0, HANDLE, [2])
 
 /****************/
 //registry

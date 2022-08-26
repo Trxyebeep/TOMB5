@@ -12,5 +12,7 @@ void OpenStreamFile(char* name);
 void GetADPCMData();
 void ACMEmulateCDPlay(long track, long mode);
 BOOL __stdcall ACMEnumCallBack(HACMDRIVERID hadid, DWORD_PTR dwInstance, DWORD fdwSupport);
+long ACMSetupNotifications();
 
 #define ACMClose	( (void(__cdecl*)()) 0x004931A0 )
+#define ACMHandleNotifications	( (long(__cdecl*)()) 0x00493990 )
