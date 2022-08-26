@@ -2067,11 +2067,12 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/profiler.cpp
 
+0x004BD3A0	+	mDrawTriangle
 0x004BD3C0		mResetTime
 0x004BD3E0		mInitTimer
 0x004BD430		mGetTime
 0x004BD470		mSync
-0x004BD590		mAddProfilerEvent
+0x004BD590	+	mAddProfilerEvent
 0x004BD5B0		mDrawProfiler
 0x004BD6A0		mInitDrawProfiler
 

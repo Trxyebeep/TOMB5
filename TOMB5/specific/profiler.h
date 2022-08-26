@@ -1,4 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-#define mAddProfilerEvent	( (void(__cdecl*)()) 0x004BD590 )
+void inject_profiler(bool replace);
+
+void mDrawTriangle();
+void mAddProfilerEvent();
