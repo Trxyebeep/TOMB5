@@ -344,6 +344,81 @@ long ACMSetupNotifications()
 	return result;
 }
 
+void FillADPCMBuffer(char* p, long track)
+{
+	reading_audio_file = 1;
+
+	__try
+	{
+		EnterCriticalSection(&audio_cs);
+	}
+	__finally
+	{
+		LeaveCriticalSection(&audio_cs);
+	}
+
+	if (!audio_stream_fp)
+	{
+		reading_audio_file = 0;
+		continue_reading_audio_file = 0;
+		return;
+	}
+
+	if (track != XATrack || track == -1)
+	{
+		Log(0, "Not Current Track %d", track);
+		reading_audio_file = 0;
+		continue_reading_audio_file = 0;
+		return;
+	}
+
+	memset(p, 0, 0x5800);
+
+	if (!audio_stream_fp)
+	{
+		reading_audio_file = 0;
+		continue_reading_audio_file = 0;
+		return;
+	}
+
+	fread(p, 1, 0x5800, audio_stream_fp);
+
+	if (audio_stream_fp && feof(audio_stream_fp))
+	{
+		if (audio_play_mode == 1)
+			SEEK(audio_stream_fp, 90, SEEK_SET);
+		else
+		{
+			audio_counter++;
+
+			if (audio_counter > 8)
+			{
+				audio_counter = 0;
+
+				if (audio_play_mode == 2)
+				{
+					reading_audio_file = 0;
+					continue_reading_audio_file = 0;
+					S_CDStop();
+					return;
+				}
+
+				if (CurrentAtmosphere && !IsAtmospherePlaying)
+				{
+					reading_audio_file = 0;
+					continue_reading_audio_file = 0;
+					S_CDStop();
+					S_CDPlay(CurrentAtmosphere, 1);
+					return;
+				}
+			}
+		}
+	}
+
+	reading_audio_file = 0;
+	continue_reading_audio_file = 1;
+}
+
 void inject_audio(bool replace)
 {
     INJECT(0x00492990, S_CDPlay, replace);
@@ -356,4 +431,5 @@ void inject_audio(bool replace)
     INJECT(0x00493760, ACMEmulateCDPlay, replace);
 	INJECT(0x00492B60, ACMEnumCallBack, replace);
 	INJECT(0x00492C20, ACMSetupNotifications, replace);
+	INJECT(0x00493490, FillADPCMBuffer, 0);
 }

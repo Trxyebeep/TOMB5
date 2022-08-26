@@ -1663,7 +1663,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00492DA0		ACMInit
 0x004931A0		ACMClose
 0x00493350	+	OpenStreamFile
-0x00493490		FillADPCMBuffer
+0x00493490	+	FillADPCMBuffer
 0x004936A0	+	GetADPCMData
 0x00493760	+	ACMEmulateCDPlay
 0x00493990		ACMHandleNotifications

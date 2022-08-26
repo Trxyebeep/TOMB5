@@ -592,6 +592,7 @@
 #define audio_stream_fp	VAR_U_(0x0057A010, FILE*)
 #define DSBuffer	VAR_U_(0x00579FFC, LPDIRECTSOUNDBUFFER)
 #define reading_audio_file	VAR_U_(0x0057A01C, volatile bool)
+#define continue_reading_audio_file	VAR_U_(0x00579FE4, volatile bool)
 #define XAFlag	VAR_U_(0x00510B18, long)
 #define audio_cs	VAR_U_(0x00579FB0, CRITICAL_SECTION)
 #define audio_fp_write_ptr	VAR_U_(0x00579FD4, uchar*)
