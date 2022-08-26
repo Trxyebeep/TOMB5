@@ -4,10 +4,10 @@
 void AdjustTextInfo(PHDTEXTURESTRUCT* ptex, long num, TEXTURESTRUCT* tex)
 {
 	float w, h;
-	long x, y;
+	ushort x, y;
 
-	x = Textures[num].xoff << 8;
-	y = Textures[num].yoff << 8;
+	x = ushort(Textures[num].xoff << 8);
+	y = ushort(Textures[num].yoff << 8);
 	ptex->u1 -= x;
 	ptex->u2 -= x;
 	ptex->u3 -= x;
@@ -17,7 +17,7 @@ void AdjustTextInfo(PHDTEXTURESTRUCT* ptex, long num, TEXTURESTRUCT* tex)
 	ptex->v3 -= y;
 	ptex->v4 -= y;
 	tex->drawtype = ptex->drawtype;
-	tex->tpage = num;
+	tex->tpage = (ushort)num;
 	tex->flag = ptex->tpage ^ (ptex->tpage ^ ptex->flag) & 0x7FFF;
 	w = 1.0F / (65535.0F / float(256 / Textures[num].width));
 	h = 1.0F / (65535.0F / float(256 / Textures[num].height));
@@ -31,7 +31,25 @@ void AdjustTextInfo(PHDTEXTURESTRUCT* ptex, long num, TEXTURESTRUCT* tex)
 	tex->v4 = (float)ptex->v4 * h;
 }
 
+long FindHighestBit(long n)
+{
+	long bit;
+
+	bit = 0;
+
+	for (int i = 0; i < 31; ++i)
+	{
+		if (n & 1)
+			bit = i;
+
+		n >>= 1;
+	}
+
+	return bit;
+}
+
 void inject_texture(bool replace)
 {
 	INJECT(0x004D01D0, AdjustTextInfo, replace);
+	INJECT(0x004D03A0, FindHighestBit, replace);
 }
