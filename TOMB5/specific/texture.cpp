@@ -3,6 +3,9 @@
 #include "function_stubs.h"
 #include "dxshell.h"
 
+static long bBumpMapSupported = 0;
+static DDPIXELFORMAT bumpPF;
+
 void AdjustTextInfo(PHDTEXTURESTRUCT* ptex, long num, TEXTURESTRUCT* tex)
 {
 	float w, h;
@@ -411,6 +414,108 @@ void ShowTextures()
 	}
 }
 
+HRESULT __stdcall aBumpTextureCallback(DDPIXELFORMAT* p, LPVOID pO)
+{
+	if (p->dwFlags == DDPF_BUMPDUDV)
+	{
+		memcpy(pO, p, sizeof(DDPIXELFORMAT));
+		bBumpMapSupported = 1;
+		return D3DENUMRET_CANCEL;
+	}
+
+	return D3DENUMRET_OK;
+}
+
+void aCheckBumpMappingSupport()
+{
+	DXD3DDEVICE* device;
+	static long bump;
+
+	bump = 0;
+	device = &G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D];
+	
+	if (!(device->DeviceDesc.dwTextureOpCaps & (D3DTEXOPCAPS_BUMPENVMAP | D3DTEXOPCAPS_BUMPENVMAPLUMINANCE)) ||
+		device->DeviceDesc.wMaxTextureBlendStages < 3)
+		return;
+
+	bBumpMapSupported = 0;
+	App.dx.lpD3DDevice->EnumTextureFormats(aBumpTextureCallback, (LPVOID)&bumpPF);
+
+	if (bBumpMapSupported)
+	{
+		Log(5, "Bump bit count 0x%X", bumpPF.dwRGBBitCount);
+		Log(5, "Bump DU %X", bumpPF.dwRBitMask);
+		Log(5, "Bump DV %X", bumpPF.dwGBitMask);
+
+		if (bumpPF.dwRGBBitCount == 16)
+			bump = 1;
+	}
+}
+
+LPDIRECTDRAWSURFACE4 aCreateBumpPage(long w, long h, long* pSrc, long format)
+{
+	LPDIRECTDRAWSURFACE4 tSurf;
+	DDSURFACEDESC2 desc;
+	short* pDest;
+	ulong c;
+	long d;
+	ushort o;
+	uchar r, g, b;
+
+	memset(&desc, 0, sizeof(DDSURFACEDESC2));
+	desc.dwSize = sizeof(DDSURFACEDESC2);
+	desc.dwWidth = w;
+	desc.dwHeight = h;
+	memcpy(&desc.ddpfPixelFormat, &bumpPF, sizeof(desc.ddpfPixelFormat));
+	desc.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
+	desc.ddsCaps.dwCaps = DDSCAPS_TEXTURE;
+	desc.ddsCaps.dwCaps2 = DDSCAPS2_TEXTUREMANAGE;
+	tSurf = 0;
+	DXCreateSurface(App.dx.lpDD, &desc, &tSurf);
+	DXAttempt(tSurf->Lock(0, &desc, DDLOCK_NOSYSLOCK, 0));
+
+	if (!format || format == 1)
+	{
+		pDest = (short*)desc.lpSurface;
+
+		for (ulong y = 0; y < desc.dwHeight; y++)
+		{
+			for (ulong x = 0; x < desc.dwWidth; x++)
+			{
+				c = *(pSrc + x * 256 / w + y * 0x10000 / h);
+				r = CLRR(c);
+				g = CLRG(c);
+				b = CLRB(c);
+				d = ((r + g + b) / 3) - 127;
+				
+				if (d < -127)
+					d = -127;
+				else if (d > 128)
+					d = 128;
+
+				o = d & 0xFF;
+
+				c = *(pSrc + x * 256 / w + y * 0x10000 / h);
+				r = CLRR(c);
+				g = CLRG(c);
+				b = CLRB(c);
+				d = ((r + g + b) / 3) - 127;
+
+				if (d < -127)
+					d = -127;
+				else if (d > 128)
+					d = 128;
+
+				o |= (d & 0xFF) << 8;
+				*pDest++ = o;
+			}
+		}
+	}
+
+	DXAttempt(tSurf->Unlock(0));
+	return tSurf;
+}
+
 void inject_texture(bool replace)
 {
 	INJECT(0x004D01D0, AdjustTextInfo, replace);
@@ -421,4 +526,7 @@ void inject_texture(bool replace)
 	INJECT(0x004D0450, CreateTexturePage, replace);
 	INJECT(0x004D0B90, FreeTextures, replace);
 	INJECT(0x004D0CC0, ShowTextures, replace);
+	INJECT(0x004D15B0, aBumpTextureCallback, replace);
+	INJECT(0x004D1600, aCheckBumpMappingSupport, replace);
+	INJECT(0x004D1710, aCreateBumpPage, replace);
 }

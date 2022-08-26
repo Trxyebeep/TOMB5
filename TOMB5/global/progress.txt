@@ -2173,9 +2173,9 @@ x for functions decompiled but not injected, for one reason or another.
 0x004D0980	+	aGenerateMipMaps
 0x004D0B90	+	FreeTextures
 0x004D0CC0	+	ShowTextures
-0x004D15B0		aBumpTextureCallback
-0x004D1600		aCheckBumpMappingSupport
-0x004D1710		aCreateBumpPage
+0x004D15B0	+	aBumpTextureCallback
+0x004D1600	+	aCheckBumpMappingSupport
+0x004D1710	+	aCreateBumpPage
 
 
 		specific/time.cpp

@@ -12,3 +12,5 @@ typedef void(__cdecl* rgbfunc)(uchar*, uchar*, uchar*);
 LPDIRECTDRAWSURFACE4 CreateTexturePage(long w, long h, long MipMapCount, long* pSrc, rgbfunc RGBM, long format);
 void FreeTextures();
 void ShowTextures();
+void aCheckBumpMappingSupport();
+LPDIRECTDRAWSURFACE4 aCreateBumpPage(long w, long h, long* pSrc, long format);
