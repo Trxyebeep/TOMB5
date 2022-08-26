@@ -2035,17 +2035,17 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B9FB0	+	DoSort
 0x004BA090	+	SortPolyList
 0x004BA100	+	InitialiseSortList
-0x004BA130		ClearFXFogBulbs
-0x004BA150		ControlFXBulb
-0x004BA170		CreateFXBulbs
-0x004BA190		TriggerFXFogBulb
-0x004BA1B0		IsVolumetric
-0x004BA1D0		mD3DTransform
-0x004BA260		CreateFogPos
-0x004BA280		DistCompare
-0x004BA2A0		InitialiseFogBulbs	
-0x004BA2C0		OmniEffect
-0x004BA2E0		OmniFog
+0x004BA130	+	ClearFXFogBulbs
+0x004BA150	+	ControlFXBulb
+0x004BA170	+	CreateFXBulbs
+0x004BA190	+	TriggerFXFogBulb
+0x004BA1B0	+	IsVolumetric
+0x004BA1D0	+	mD3DTransform
+0x004BA260	+	CreateFogPos
+0x004BA280	+	DistCompare
+0x004BA2A0	+	InitialiseFogBulbs	
+0x004BA2C0	+	OmniEffect
+0x004BA2E0	+	OmniFog
 0x004BA300		AddQuadClippedZBuffer
 0x004BA960		AddTriClippedZBuffer
 0x004BAF20		AddClippedPoly

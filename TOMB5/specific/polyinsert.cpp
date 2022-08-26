@@ -521,6 +521,68 @@ void SortPolyList(long count, SORTLIST** list)
 	DoSort(0, count - 1, list);
 }
 
+void ClearFXFogBulbs()
+{
+
+}
+
+void ControlFXBulb()
+{
+
+}
+
+void CreateFXBulbs()
+{
+
+}
+
+void TriggerFXFogBulb()
+{
+
+}
+
+long IsVolumetric()
+{
+	return App.Volumetric;
+}
+
+void mD3DTransform(FVECTOR* vec, D3DMATRIX* mx)
+{
+	float x, y, z;
+
+	x = vec->x * mx->_11 + mx->_21 * vec->y + mx->_31 * vec->z + mx->_41;
+	y = vec->x * mx->_12 + mx->_22 * vec->y + mx->_32 * vec->z + mx->_42;
+	z = vec->x * mx->_13 + mx->_23 * vec->y + mx->_33 * vec->z + mx->_43;
+	vec->x = x;
+	vec->y = y;
+	vec->z = z;
+}
+
+void CreateFogPos()
+{
+
+}
+
+long DistCompare()
+{
+	return 0;
+}
+
+void InitialiseFogBulbs()
+{
+
+}
+
+void OmniEffect()
+{
+
+}
+
+void OmniFog()
+{
+
+}
+
 void inject_polyinsert(bool replace)
 {
 	INJECT(0x004B98E0, HWR_DrawSortList, replace);
@@ -529,4 +591,15 @@ void inject_polyinsert(bool replace)
 	INJECT(0x004BA100, InitialiseSortList, replace);
 	INJECT(0x004B9FB0, DoSort, replace);
 	INJECT(0x004BA090, SortPolyList, replace);
+	INJECT(0x004BA130, ClearFXFogBulbs, replace);
+	INJECT(0x004BA150, ControlFXBulb, replace);
+	INJECT(0x004BA170, CreateFXBulbs, replace);
+	INJECT(0x004BA190, TriggerFXFogBulb, replace);
+	INJECT(0x004BA1B0, IsVolumetric, replace);
+	INJECT(0x004BA1D0, mD3DTransform, replace);
+	INJECT(0x004BA260, CreateFogPos, replace);
+	INJECT(0x004BA280, DistCompare, replace);
+	INJECT(0x004BA2A0, InitialiseFogBulbs, replace);
+	INJECT(0x004BA2C0, OmniEffect, replace);
+	INJECT(0x004BA2E0, OmniFog, replace);
 }
