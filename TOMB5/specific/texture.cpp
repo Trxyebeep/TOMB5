@@ -231,6 +231,38 @@ LPDIRECTDRAWSURFACE4 CreateTexturePage(long w, long h, long MipMapCount, long* p
 	return tSurf;
 }
 
+void FreeTextures()
+{
+	TEXTURE* tex;
+
+	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, 0));
+	DXAttempt(App.dx.lpD3D->EvictManagedTextures());
+
+	for (int i = 0; i < nTextures; i++)
+	{
+		tex = &Textures[i];
+
+		if (tex->tex)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Texture", tex->tex, tex->tex->Release());
+			tex->tex = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Texture");
+
+		if (!tex->staticTex)
+		{
+			if (tex->surface)
+			{
+				Log(4, "Released %s @ %x - RefCnt = %d", "Surface", tex->surface, tex->surface->Release());
+				tex->surface = 0;
+			}
+			else
+				Log(1, "%s Attempt To Release NULL Ptr", "Surface");
+		}
+	}
+}
+
 void inject_texture(bool replace)
 {
 	INJECT(0x004D01D0, AdjustTextInfo, replace);
@@ -239,4 +271,5 @@ void inject_texture(bool replace)
 	INJECT(0x004D0400, RGBMLightMap, replace);
 	INJECT(0x004D0980, aGenerateMipMaps, replace);
 	INJECT(0x004D0450, CreateTexturePage, replace);
+	INJECT(0x004D0B90, FreeTextures, replace);
 }

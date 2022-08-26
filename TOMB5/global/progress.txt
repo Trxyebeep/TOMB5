@@ -2171,7 +2171,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004D0400	+	RGBMLightMap
 0x004D0450	+	CreateTexturePage
 0x004D0980	+	aGenerateMipMaps
-0x004D0B90		FreeTextures
+0x004D0B90	+	FreeTextures
 0x004D0CC0		ShowTextures
 0x004D15B0		aBumpTextureCallback
 0x004D1600		aCheckBumpMappingSupport
