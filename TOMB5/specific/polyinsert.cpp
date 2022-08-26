@@ -467,9 +467,66 @@ void CalcColorSplit(D3DCOLOR s, D3DCOLOR* d)
 	d[1] = (d[1] & 0xFF000000) | RGBONLY(sr, sg, sb);	//specular
 }
 
+void InitialiseSortList()
+{
+	pSortBuffer = SortBuffer;
+	pSortList = SortList;
+	SortCount = 0;
+}
+
+void DoSort(long left, long right, SORTLIST** list)
+{
+	SORTLIST* swap;
+	float z;
+	long l, r;
+
+	l = left;
+	r = right;
+	z = list[(left + right) / 2]->zVal;
+
+	do
+	{
+		while (l < right && list[l]->zVal > z)
+			l++;
+
+		while (r > left && list[r]->zVal < z)
+			r--;
+
+		if (l <= r)
+		{
+			swap = list[l];
+			list[l] = list[r];
+			list[r] = swap;
+			l++;
+			r--;
+		}
+
+	} while (l <= r);
+
+	if (r > left)
+		DoSort(left, r, list);
+
+	if (l < right)
+		DoSort(l, right, list);
+}
+
+void SortPolyList(long count, SORTLIST** list)
+{
+	if (!count)
+		return;
+
+	for (int i = 0; i < count; i++)
+		list[i]->zVal -= (float)i * 0.1F;
+
+	DoSort(0, count - 1, list);
+}
+
 void inject_polyinsert(bool replace)
 {
 	INJECT(0x004B98E0, HWR_DrawSortList, replace);
 	INJECT(0x004B8DB0, DrawSortList, replace);
 	INJECT(0x004BD150, CalcColorSplit, replace);
+	INJECT(0x004BA100, InitialiseSortList, replace);
+	INJECT(0x004B9FB0, DoSort, replace);
+	INJECT(0x004BA090, SortPolyList, replace);
 }

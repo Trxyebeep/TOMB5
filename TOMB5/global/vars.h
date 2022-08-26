@@ -587,6 +587,8 @@
 #define screen_surface	VAR_U_(0x0087BD58, LPDIRECTDRAWSURFACE4)
 #define G_dxinfo	VAR_U_(0x0086B9AC, DXINFO*)
 #define t_frequency	VAR_U_(0x00D9AAB0, __int64)
+#define pSortBuffer	VAR_U_(0x00BA4388, char*)
+#define pSortList	VAR_U_(0x00923FA8, SORTLIST**)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -730,6 +732,7 @@
 #define fog_bulbs	ARRAY_(0x007ED0F8, FOGBULB, [64])
 #define MonoScreen	ARRAY_(0x008BBD68, MONOSCREEN_STRUCT, [5])
 #define aBoundingBox	ARRAY_(0x00921618, float, [24])
+#define SortBuffer	ARRAY_(0x00923FAC, char, [])
 
 /****************/
 //registry
