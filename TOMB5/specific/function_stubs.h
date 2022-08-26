@@ -17,3 +17,4 @@ void deadLog(const char* string, ...);
 #define S_SetReverbType	( (void(__cdecl*)(long)) 0x004A7B90 )
 #define S_ExitSystem	( (void(__cdecl*)(const char*)) 0x004A7AE0 )
 #define S_InitialiseScreen	( (void(__cdecl*)()) 0x004A7B10 )
+#define ClearFakeDevice	( (HRESULT(__cdecl*)(LPDIRECT3DDEVICE3, long, D3DRECT*, long, long, float, long)) 0x004D3D20 )

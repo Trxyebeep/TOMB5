@@ -98,6 +98,7 @@
 #include "../game/debris.h"
 #include "../specific/gamemain.h"
 #include "../specific/dxsound.h"
+#include "../specific/winmain.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -215,6 +216,7 @@ void inject_all(bool replace)
 	inject_debris(replace);
 	inject_gamemain(replace);
 	inject_dxsound(replace);
+	inject_winmain(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
