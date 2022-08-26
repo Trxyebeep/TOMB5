@@ -20,6 +20,9 @@ long DistCompare();
 void InitialiseFogBulbs();
 void OmniEffect();
 void OmniFog();
+void AddPrelitMMX(long prelight, D3DCOLOR* color);
+void AddPrelitMeshMMX(MESH_DATA* m, long p, D3DCOLOR* color);
+void CalcColorSplitMMX(D3DCOLOR s, D3DCOLOR* d);
 
 #define AddQuadClippedSorted	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, long)) 0x004BC7F0 )
 #define AddQuadClippedSorted	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, long)) 0x004BC7F0 )
