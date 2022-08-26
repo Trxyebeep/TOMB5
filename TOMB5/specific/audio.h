@@ -10,6 +10,6 @@ void S_StartSyncedAudio(long track);
 void ACMSetVolume();
 void OpenStreamFile(char* name);
 void GetADPCMData();
+void ACMEmulateCDPlay(long track, long mode);
 
-#define ACMEmulateCDPlay    ( (void(__cdecl*)(long, long)) 0x00493760 )
 #define ACMClose	( (void(__cdecl*)()) 0x004931A0 )

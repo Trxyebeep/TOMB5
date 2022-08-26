@@ -354,8 +354,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalOptions>/SECTION:.text,RWE /IGNORE:4099 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>dxguid.lib;Dsound.lib;discord-rpcd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/SECTION:.text,RWE /IGNORE:4099 %(AdditionalOptions) /pdbaltpath:%_PDB%</AdditionalOptions>
+      <AdditionalDependencies>dxguid.lib;Dsound.lib;Msacm32.lib;discord-rpcd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)TOMB5\tomb5\libs\discordRPC;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -383,8 +383,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalOptions>/SECTION:.text,RWE %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>dxguid.lib;Dsound.lib;discord-rpc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/SECTION:.text,RWE %(AdditionalOptions) /pdbaltpath:%_PDB%</AdditionalOptions>
+      <AdditionalDependencies>dxguid.lib;Dsound.lib;Msacm32.lib;discord-rpc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)TOMB5\tomb5\libs\discordRPC;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

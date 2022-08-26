@@ -14,3 +14,6 @@
 #include <dsound.h>
 #include <cmath>
 #include <time.h>
+#include <mmreg.h>
+#include <mmiscapi.h>
+#include <msacm.h>

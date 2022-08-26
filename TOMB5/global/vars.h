@@ -596,6 +596,14 @@
 #define audio_cs	VAR_U_(0x00579FB0, CRITICAL_SECTION)
 #define audio_fp_write_ptr	VAR_U_(0x00579FD4, uchar*)
 #define audio_play_mode	VAR_U_(0x00579E30, long)
+#define XAReqTrack	VAR_U_(0x0057A014, long)
+#define audio_buffer_size	VAR_U_(0x00579FF8, long)
+#define hACMStream	VAR_U_(0x00579FF0, HACMSTREAM)
+#define pAudioWrite	VAR_U_(0x00579FE0, uchar*)
+#define AudioBytes	VAR_U_(0x00579FE8, ulong)
+#define CurrentNotify	VAR_U_(0x00579E4C, long)
+#define NextWriteOffset	VAR_U_(0x00579FD8, long)
+#define NotifySize	VAR_U_(0x00579FD0, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -740,6 +748,7 @@
 #define MonoScreen	ARRAY_(0x008BBD68, MONOSCREEN_STRUCT, [5])
 #define aBoundingBox	ARRAY_(0x00921618, float, [24])
 #define SortBuffer	ARRAY_(0x00923FAC, char, [])
+#define StreamHeaders	ARRAY_(0x00579E50, ACMSTREAMHEADER, [4])
 
 /****************/
 //registry
