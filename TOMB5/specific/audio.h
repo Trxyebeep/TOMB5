@@ -8,6 +8,7 @@ void S_CDStop();
 void S_CDFade(long n);
 void S_StartSyncedAudio(long track);
 void ACMSetVolume();
+void OpenStreamFile(char* name);
 
 #define ACMEmulateCDPlay    ( (void(__cdecl*)(long, long)) 0x00493760 )
 #define ACMClose	( (void(__cdecl*)()) 0x004931A0 )

@@ -593,6 +593,9 @@
 #define DSBuffer	VAR_U_(0x00579FFC, LPDIRECTSOUNDBUFFER)
 #define reading_audio_file	VAR_U_(0x0057A01C, volatile bool)
 #define XAFlag	VAR_U_(0x00510B18, long)
+#define audio_cs	VAR_U_(0x00579FB0, CRITICAL_SECTION)
+#define audio_fp_write_ptr	VAR_U_(0x00579FD4, uchar*)
+#define audio_play_mode	VAR_U_(0x00579E30, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

@@ -1,5 +1,7 @@
 #include "../tomb5/pch.h"
 #include "audio.h"
+#include "file.h"
+#include "function_stubs.h"
 
 void S_CDPlay(long track, long mode)
 {
@@ -52,6 +54,36 @@ void ACMSetVolume()
         DSBuffer->SetVolume(volume);
 }
 
+void OpenStreamFile(char* name)
+{
+    __try
+    {
+        EnterCriticalSection(&audio_cs);
+    }
+    __finally
+    {
+        LeaveCriticalSection(&audio_cs);
+    }
+
+    audio_stream_fp = FileOpen(name);
+
+    if (!audio_stream_fp)
+    {
+        Log(1, "%s - Not Found", name);
+        return;
+    }
+
+    SEEK(audio_stream_fp, 90, SEEK_SET);
+    audio_fp_write_ptr = wav_file_buffer;
+    memset(wav_file_buffer, 0, 0x37000);
+
+    if (READ(wav_file_buffer, 1, 0x37000, audio_stream_fp) < 0x37000 && audio_play_mode == 1)
+    {
+        SEEK(audio_stream_fp, 90, SEEK_SET);
+        Log(0, "FileReset In OpenStreamFile");
+    }
+}
+
 void inject_audio(bool replace)
 {
     INJECT(0x00492990, S_CDPlay, replace);
@@ -59,4 +91,5 @@ void inject_audio(bool replace)
     INJECT(0x00492AA0, S_CDFade, replace);
     INJECT(0x00492AC0, S_StartSyncedAudio, replace);
     INJECT(0x00492AF0, ACMSetVolume, replace);
+    INJECT(0x00493350, OpenStreamFile, replace);
 }
