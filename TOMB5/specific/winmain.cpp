@@ -142,6 +142,16 @@ void WinDisplayString(long x, long y, char* string, ...)
 	PrintString((ushort)x, (ushort)y, 6, buf, 0);
 }
 
+void WinGetLastError()
+{
+	LPVOID buf;
+
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_FROM_SYSTEM, 0,
+		GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&buf, 0, 0);
+	Log(1, "%s", buf);
+	LocalFree(buf);
+}
+
 void inject_winmain(bool replace)
 {
 	INJECT(0x004D1AD0, ClearSurfaces, replace);
@@ -149,4 +159,5 @@ void inject_winmain(bool replace)
 	INJECT(0x004D2DD0, WinRunCheck, replace);
 	INJECT(0x004D2FD0, WinFrameRate, replace);
 	INJECT(0x004D3070, WinDisplayString, replace);
+	INJECT(0x004D2450, WinGetLastError, replace);
 }
