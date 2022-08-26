@@ -19,9 +19,15 @@ static char source_pcm_format[50] =
 #pragma warning(pop)
 
 static MMRESULT mmresult;
+#define pcm_format	VAR_U_(0x0086BEC8, WAVEFORMATEX)
+#define ACMStreamHeader	VAR_U_(0x0086BE70, ACMSTREAMHEADER)
+#define decompressed_samples_buffer	VAR_U_(0x0086CC78, char*)
+/*
+fix DXCreateSampleADPCM..
 static WAVEFORMATEX pcm_format;
 static ACMSTREAMHEADER ACMStreamHeader;
 static char* decompressed_samples_buffer;
+*/
 
 bool DXChangeOutputFormat(long nSamplesPerSec, bool force)
 {
@@ -168,7 +174,7 @@ bool FreeSampleDecompress()
 	return 1;
 }
 
-bool DXCreateSampleADPCM(char* data, long comp_size, long uncomp_size, long num)
+bool DXCreateSampleADPCM(char* data, long comp_size, long uncomp_size, long num)	//fixme
 {
 	LPWAVEFORMATEX format;
 	LPDIRECTSOUNDBUFFER buffer;
@@ -290,7 +296,7 @@ void inject_dxsound(bool replace)
 	INJECT(0x004A3100, DXDSCreate, replace);
 	INJECT(0x004A3300, InitSampleDecompress, replace);
 	INJECT(0x004A3470, FreeSampleDecompress, replace);
-	INJECT(0x004A3510, DXCreateSampleADPCM, replace);
+	INJECT(0x004A3510, DXCreateSampleADPCM, 0);
 	INJECT(0x004A3720, DXStopSample, replace);
 	INJECT(0x004A3790, DSIsChannelPlaying, replace);
 	INJECT(0x004A3800, DSGetFreeChannel, replace);
