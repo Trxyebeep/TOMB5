@@ -229,6 +229,57 @@ void DXStopSample(long num)
 	}
 }
 
+bool DSIsChannelPlaying(long num)
+{
+	ulong status;
+
+	if (DS_Samples[num].buffer)
+	{
+		if (DXAttempt(DS_Samples[num].buffer->GetStatus(&status)) == DS_OK)
+		{
+			if (status & DSBSTATUS_PLAYING)
+				return 1;
+
+			DXStopSample(num);
+		}
+	}
+
+	return 0;
+}
+
+long DSGetFreeChannel()
+{
+	for (int i = 0; i < 32; i++)
+	{
+		if (!DSIsChannelPlaying(i))
+			return i;
+	}
+
+	return -1;
+}
+
+long DXStartSample(long num, long volume, long pitch, long pan, ulong flags)
+{
+	LPDIRECTSOUNDBUFFER buffer;
+	long channel;
+
+	channel = DSGetFreeChannel();
+
+	if (channel < 0 || DXAttempt(App.dx.lpDS->DuplicateSoundBuffer(DS_Buffers[num].buffer, &buffer)) != DS_OK)
+		return -1;
+
+	if (DXAttempt(buffer->SetVolume(volume)) != DS_OK || DXAttempt(buffer->SetCurrentPosition(0)) != DS_OK)
+		return -1;
+
+	DS_Samples[channel].buffer = buffer;
+	DS_Samples[channel].playing = num;
+	DSAdjustPitch(channel, pitch);
+	DSAdjustPan(channel, pan);
+	buffer->Stop();
+	DXAttempt(buffer->Play(0, 0, flags));
+	return channel;
+}
+
 void inject_dxsound(bool replace)
 {
 	INJECT(0x004A2E30, DXChangeOutputFormat, replace);
@@ -241,4 +292,7 @@ void inject_dxsound(bool replace)
 	INJECT(0x004A3470, FreeSampleDecompress, replace);
 	INJECT(0x004A3510, DXCreateSampleADPCM, replace);
 	INJECT(0x004A3720, DXStopSample, replace);
+	INJECT(0x004A3790, DSIsChannelPlaying, replace);
+	INJECT(0x004A3800, DSGetFreeChannel, replace);
+	INJECT(0x004A3830, DXStartSample, replace);
 }
