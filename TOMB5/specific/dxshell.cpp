@@ -333,6 +333,17 @@ long DXSetVideoMode(LPDIRECTDRAW4 dd, long dwWidth, long dwHeight, long dwBPP)
 	return 1;
 }
 
+long DXCreateSurface(LPDIRECTDRAW4 dd, LPDDSURFACEDESC2 desc, LPDIRECTDRAWSURFACE4* surf)
+{
+	Log(2, "DXCreateSurface");
+
+	if (DXAttempt(dd->CreateSurface(desc, surf, 0)) == DD_OK)
+		return 1;
+
+	Log(1, "DXCreateSurface Failed");
+	return 0;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -349,4 +360,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x0049FB80, BPPToDDBD, replace);
 	INJECT(0x004A0C30, DXCreateD3DDevice, replace);
 	INJECT(0x004A0590, DXSetVideoMode, replace);
+	INJECT(0x004A0520, DXCreateSurface, replace);
 }
