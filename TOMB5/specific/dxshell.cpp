@@ -203,6 +203,23 @@ HRESULT __stdcall DXEnumDisplayModes(DDSURFACEDESC2* lpDDSurfaceDesc2, LPVOID lp
 	return DDENUMRET_OK;
 }
 
+HRESULT __stdcall DXEnumZBufferFormats(LPDDPIXELFORMAT lpDDPixFmt, LPVOID lpContext)
+{
+	DXD3DDEVICE* d3d;
+	DXZBUFFERINFO* zbuffer;
+	long nZBufferInfos;
+
+	d3d = (DXD3DDEVICE*)lpContext;
+	nZBufferInfos = d3d->nZBufferInfos;
+	d3d->ZBufferInfos = (DXZBUFFERINFO*)AddStruct(d3d->ZBufferInfos, nZBufferInfos, sizeof(DXZBUFFERINFO));
+	zbuffer = &d3d->ZBufferInfos[nZBufferInfos];
+	memcpy(&zbuffer->ddpf, lpDDPixFmt, sizeof(DDPIXELFORMAT));
+	zbuffer->bpp = lpDDPixFmt->dwRGBBitCount;
+	Log(3, "%d Bit", zbuffer->bpp);
+	d3d->nZBufferInfos++;
+	return D3DENUMRET_OK;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -214,4 +231,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x0049F620, DXD3DCreate, replace);
 	INJECT(0x004A0600, DXSetCooperativeLevel, replace);
 	INJECT(0x0049FA10, DXEnumDisplayModes, replace);
+	INJECT(0x004A0490, DXEnumZBufferFormats, replace);
 }

@@ -12,6 +12,7 @@ long DXDDCreate(LPGUID pGuid, void** pDD4);
 long DXD3DCreate(LPDIRECTDRAW4 pDD4, void** pD3D);
 long DXSetCooperativeLevel(LPDIRECTDRAW4 pDD4, HWND hwnd, long flags);
 HRESULT __stdcall DXEnumDisplayModes(DDSURFACEDESC2* lpDDSurfaceDesc2, LPVOID lpContext);
+HRESULT __stdcall DXEnumZBufferFormats(LPDDPIXELFORMAT lpDDPixFmt, LPVOID lpContext);
 
 #define DXUpdateJoystick	( (void(__cdecl*)()) 0x004A2D00 )
 #define DXCreateSurface	( (long(__cdecl*)(LPDIRECTDRAW4, LPDDSURFACEDESC2, LPDIRECTDRAWSURFACE4*)) 0x004A0520 )
