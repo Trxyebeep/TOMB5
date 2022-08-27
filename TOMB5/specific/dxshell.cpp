@@ -61,10 +61,24 @@ long DIAttempt(HRESULT r)
 	return r;
 }
 
+void* AddStruct(void* p, long num, long size)
+{
+	void* ptr;
+
+	if (!num)
+		ptr = MALLOC(size);
+	else
+		ptr = REALLOC(p, size * (num + 1));
+
+	memset((char*)ptr + size * num, 0, size);
+	return ptr;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
 	INJECT(0x0049F9C0, DXBitMask2ShiftCnt, replace);
 	INJECT(0x0049F1C0, DXAttempt, replace);
 	INJECT(0x0049F200, DIAttempt, replace);
+	INJECT(0x0049F4C0, AddStruct, replace);
 }
