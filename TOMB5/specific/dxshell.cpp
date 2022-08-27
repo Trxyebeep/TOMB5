@@ -100,6 +100,20 @@ long DXDDCreate(LPGUID pGuid, void** pDD4)
 	return 1;
 }
 
+long DXD3DCreate(LPDIRECTDRAW4 pDD4, void** pD3D)
+{
+	Log(2, "DXD3DCreate");
+
+	if (DXAttempt(pDD4->QueryInterface(IID_IDirect3D3, pD3D)) != DD_OK)
+	{
+		Log(1, "DXD3DCreate Failed");
+		return 0;
+	}
+
+	Log(5, "DXD3DCreate Successful");
+	return 1;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -108,4 +122,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x0049F200, DIAttempt, replace);
 	INJECT(0x0049F4C0, AddStruct, replace);
 	INJECT(0x0049F530, DXDDCreate, replace);
+	INJECT(0x0049F620, DXD3DCreate, replace);
 }
