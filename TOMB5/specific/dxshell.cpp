@@ -470,6 +470,14 @@ HRESULT DXShowFrame()
 		return DXAttempt(G_dxptr->lpPrimaryBuffer->Flip(0, DDFLIP_WAIT));
 }
 
+void DXMove(long x, long y)
+{
+	Log(2, "DXMove : x %d y %d", x, y);
+
+	if (G_dxptr && !(G_dxptr->Flags & 1))
+		SetRect(&G_dxptr->rScreen, x, y, x + G_dxptr->dwRenderWidth, y + G_dxptr->dwRenderHeight);
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -490,4 +498,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A1F50, DXCreateViewport, replace);
 	INJECT(0x004A23A0, DXSaveScreen, replace);
 	INJECT(0x004A2080, DXShowFrame, replace);
+	INJECT(0x004A21B0, DXMove, replace);
 }
