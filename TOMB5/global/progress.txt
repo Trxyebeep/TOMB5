@@ -1770,7 +1770,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0049F620	+	DXD3DCreate
 0x0049F6A0		DXEnumDirectDraw
 0x0049F9C0	+	DXBitMask2ShiftCnt
-0x0049FA10		DXEnumDisplayModes
+0x0049FA10	+	DXEnumDisplayModes
 0x0049FB80		BPPToDDBD
 0x0049FC40		DXEnumDirect3D
 0x004A0270		DXEnumTextureFormats

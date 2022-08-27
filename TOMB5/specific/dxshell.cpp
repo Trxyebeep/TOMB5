@@ -172,6 +172,37 @@ long DXSetCooperativeLevel(LPDIRECTDRAW4 pDD4, HWND hwnd, long flags)
 	return 1;
 }
 
+HRESULT __stdcall DXEnumDisplayModes(DDSURFACEDESC2* lpDDSurfaceDesc2, LPVOID lpContext)
+{
+	DXDIRECTDRAWINFO* DDInfo;
+	DXDISPLAYMODE* DM;
+	long nDisplayModes;
+
+	DDInfo = (DXDIRECTDRAWINFO*)lpContext;
+	nDisplayModes = DDInfo->nDisplayModes;
+	DDInfo->DisplayModes = (DXDISPLAYMODE*)AddStruct(DDInfo->DisplayModes, nDisplayModes, sizeof(DXDISPLAYMODE));
+	DM = &DDInfo->DisplayModes[nDisplayModes];
+	DM->w = lpDDSurfaceDesc2->dwWidth;
+	DM->h = lpDDSurfaceDesc2->dwHeight;
+	DM->bpp = lpDDSurfaceDesc2->ddpfPixelFormat.dwRGBBitCount;
+	DM->bPalette = (lpDDSurfaceDesc2->ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8) >> 5;
+	DM->RefreshRate = lpDDSurfaceDesc2->dwRefreshRate;
+	memcpy(&DM->ddsd, lpDDSurfaceDesc2, sizeof(DM->ddsd));
+
+	if (DM->bPalette)
+		Log(3, "%d x %d - %d Bit - Palette", DM->w, DM->h, DM->bpp);
+	else
+	{
+		DXBitMask2ShiftCnt(lpDDSurfaceDesc2->ddpfPixelFormat.dwRBitMask, &DM->rshift, &DM->rbpp);
+		DXBitMask2ShiftCnt(lpDDSurfaceDesc2->ddpfPixelFormat.dwGBitMask, &DM->gshift, &DM->gbpp);
+		DXBitMask2ShiftCnt(lpDDSurfaceDesc2->ddpfPixelFormat.dwBBitMask, &DM->bshift, &DM->bbpp);
+		Log(3, "%d x %d - %d Bit - %d%d%d", DM->w, DM->h, DM->bpp, DM->rbpp, DM->gbpp, DM->bbpp);
+	}
+
+	DDInfo->nDisplayModes++;
+	return DDENUMRET_OK;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -182,4 +213,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x0049F530, DXDDCreate, replace);
 	INJECT(0x0049F620, DXD3DCreate, replace);
 	INJECT(0x004A0600, DXSetCooperativeLevel, replace);
+	INJECT(0x0049FA10, DXEnumDisplayModes, replace);
 }
