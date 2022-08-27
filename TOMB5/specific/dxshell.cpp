@@ -74,6 +74,32 @@ void* AddStruct(void* p, long num, long size)
 	return ptr;
 }
 
+long DXDDCreate(LPGUID pGuid, void** pDD4)
+{
+	LPDIRECTDRAW pDD;
+
+	Log(2, "DXDDCreate");
+
+	if (DXAttempt(DirectDrawCreate(pGuid, &pDD, 0)) != DD_OK)
+	{
+		Log(1, "DXDDCreate Failed");
+		return 0;
+	}
+
+	DXAttempt(pDD->QueryInterface(IID_IDirectDraw4, pDD4));
+
+	if (pDD)
+	{
+		Log(4, "Released %s @ %x - RefCnt = %d", "DirectDraw", pDD, pDD->Release());
+		pDD = 0;
+	}
+	else
+		Log(1, "%s Attempt To Release NULL Ptr", "DirectDraw");
+
+	Log(5, "DXDDCreate Successful");
+	return 1;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -81,4 +107,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x0049F1C0, DXAttempt, replace);
 	INJECT(0x0049F200, DIAttempt, replace);
 	INJECT(0x0049F4C0, AddStruct, replace);
+	INJECT(0x0049F530, DXDDCreate, replace);
 }
