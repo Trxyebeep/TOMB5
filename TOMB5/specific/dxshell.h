@@ -25,6 +25,7 @@ void DXMove(long x, long y);
 void DXClose();
 long DXCreate(long w, long h, long bpp, long Flags, DXPTR* dxptr, HWND hWnd, long WindowStyle);
 long DXChangeVideoMode();
+long DXToggleFullScreen();
 
 #define DXUpdateJoystick	( (void(__cdecl*)()) 0x004A2D00 )
 #define DXGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049E050 )
