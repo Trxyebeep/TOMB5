@@ -1020,6 +1020,17 @@ BOOL __stdcall DXEnumDirectSound(LPGUID lpGuid, LPCSTR lpcstrDescription, LPCSTR
 	return DDENUMRET_OK;
 }
 
+long DXGetInfo(DXINFO* dxinfo, HWND hwnd)
+{
+	Log(2, "DXInitialise");
+	G_hwnd = hwnd;
+	Log(5, "Enumerating DirectDraw Devices");
+	DXAttempt(DirectDrawEnumerate(DXEnumDirectDraw, dxinfo));
+	DXAttempt(DirectSoundEnumerate(DXEnumDirectSound, dxinfo));
+	G_dxinfo = dxinfo;
+	return 1;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1048,4 +1059,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x0049FC40, DXEnumDirect3D, replace);
 	INJECT(0x0049F6A0, DXEnumDirectDraw, replace);
 	INJECT(0x0049F2C0, DXEnumDirectSound, replace);
+	INJECT(0x0049F240, DXGetInfo, replace);
 }
