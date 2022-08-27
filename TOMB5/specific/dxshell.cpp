@@ -478,6 +478,73 @@ void DXMove(long x, long y)
 		SetRect(&G_dxptr->rScreen, x, y, x + G_dxptr->dwRenderWidth, y + G_dxptr->dwRenderHeight);
 }
 
+void DXClose()
+{
+	Log(2, "CloseDirectX");
+
+	if (!G_dxptr)
+		return;
+
+	if (G_dxptr->lpViewport)
+	{
+		Log(4, "Released %s @ %x - RefCnt = %d", "Viewport", G_dxptr->lpViewport, G_dxptr->lpViewport->Release());
+		G_dxptr->lpViewport = 0;
+	}
+	else
+		Log(1, "%s Attempt To Release NULL Ptr", "Viewport");
+
+	if (G_dxptr->lpD3DDevice)
+	{
+		Log(4, "Released %s @ %x - RefCnt = %d", "Direct3DDevice", G_dxptr->lpD3DDevice, G_dxptr->lpD3DDevice->Release());
+		G_dxptr->lpD3DDevice = 0;
+	}
+	else
+		Log(1, "%s Attempt To Release NULL Ptr", "Direct3DDevice");
+
+	if (G_dxptr->lpZBuffer)
+	{
+		Log(4, "Released %s @ %x - RefCnt = %d", "Z Buffer", G_dxptr->lpZBuffer, G_dxptr->lpZBuffer->Release());
+		G_dxptr->lpZBuffer = 0;
+	}
+	else
+		Log(1, "%s Attempt To Release NULL Ptr", "Z Buffer");
+
+	if (G_dxptr->lpBackBuffer)
+	{
+		Log(4, "Released %s @ %x - RefCnt = %d", "Back Buffer", G_dxptr->lpBackBuffer, G_dxptr->lpBackBuffer->Release());
+		G_dxptr->lpBackBuffer = 0;
+	}
+	else
+		Log(1, "%s Attempt To Release NULL Ptr", "Back Buffer");
+
+	if (G_dxptr->lpPrimaryBuffer)
+	{
+		Log(4, "Released %s @ %x - RefCnt = %d", "Primary Buffer", G_dxptr->lpPrimaryBuffer, G_dxptr->lpPrimaryBuffer->Release());
+		G_dxptr->lpPrimaryBuffer = 0;
+	}
+	else
+		Log(1, "%s Attempt To Release NULL Ptr", "Primary Buffer");
+
+	if (!(G_dxptr->Flags & 0x40))
+	{
+		if (G_dxptr->lpDD)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "DirectDraw", G_dxptr->lpDD, G_dxptr->lpDD->Release());
+			G_dxptr->lpDD = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "DirectDraw");
+
+		if (G_dxptr->lpD3D)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Direct3D", G_dxptr->lpD3D, G_dxptr->lpD3D->Release());
+			G_dxptr->lpD3D = 0;
+		}
+		else
+			Log(1, "%s Attempt To Release NULL Ptr", "Direct3D");
+	}
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -499,4 +566,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A23A0, DXSaveScreen, replace);
 	INJECT(0x004A2080, DXShowFrame, replace);
 	INJECT(0x004A21B0, DXMove, replace);
+	INJECT(0x004A1C40, DXClose, replace);
 }

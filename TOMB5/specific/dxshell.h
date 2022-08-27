@@ -22,6 +22,7 @@ long DXCreateViewport(LPDIRECT3D3 d3d, LPDIRECT3DDEVICE3 device, long w, long h,
 void DXSaveScreen(LPDIRECTDRAWSURFACE4 surf, const char* name);
 HRESULT DXShowFrame();
 void DXMove(long x, long y);
+void DXClose();
 
 #define DXUpdateJoystick	( (void(__cdecl*)()) 0x004A2D00 )
 #define DXGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049E050 )
