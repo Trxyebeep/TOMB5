@@ -344,6 +344,39 @@ long DXCreateSurface(LPDIRECTDRAW4 dd, LPDDSURFACEDESC2 desc, LPDIRECTDRAWSURFAC
 	return 0;
 }
 
+long DXCreateViewport(LPDIRECT3D3 d3d, LPDIRECT3DDEVICE3 device, long w, long h, LPDIRECT3DVIEWPORT3* viewport)
+{
+	D3DVIEWPORT2 vp2;
+
+	Log(2, "DXCreateViewport");
+
+
+	if (DXAttempt(d3d->CreateViewport(viewport, 0)) != DD_OK)
+		return 0;
+
+	if (DXAttempt(device->AddViewport(*viewport)) != DD_OK)
+		return 0;
+
+	memset(&vp2, 0, sizeof(D3DVIEWPORT2));
+	vp2.dwSize = sizeof(D3DVIEWPORT2);
+	vp2.dvClipWidth = (float)w;
+	vp2.dvClipHeight = (float)h;
+	vp2.dwX = 0;
+	vp2.dwY = 0;
+	vp2.dvClipX = 0;
+	vp2.dvClipY = 0;
+	vp2.dvMinZ = 0;
+	vp2.dvMaxZ = 1;
+	vp2.dwWidth = w;
+	vp2.dwHeight = h;
+
+	if (DXAttempt((*viewport)->SetViewport2(&vp2)) != DD_OK)
+		return 0;
+
+	DXAttempt(device->SetCurrentViewport(*viewport));
+	return 1;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -361,4 +394,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A0C30, DXCreateD3DDevice, replace);
 	INJECT(0x004A0590, DXSetVideoMode, replace);
 	INJECT(0x004A0520, DXCreateSurface, replace);
+	INJECT(0x004A1F50, DXCreateViewport, replace);
 }

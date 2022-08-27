@@ -18,6 +18,7 @@ long BPPToDDBD(long BPP);
 long DXCreateD3DDevice(LPDIRECT3D3 d3d, GUID guid, LPDIRECTDRAWSURFACE4 surf, LPDIRECT3DDEVICE3* device);
 long DXSetVideoMode(LPDIRECTDRAW4 dd, long dwWidth, long dwHeight, long dwBPP);
 long DXCreateSurface(LPDIRECTDRAW4 dd, LPDDSURFACEDESC2 desc, LPDIRECTDRAWSURFACE4* surf);
+long DXCreateViewport(LPDIRECT3D3 d3d, LPDIRECT3DDEVICE3 device, long w, long h, LPDIRECT3DVIEWPORT3* viewport);
 
 #define DXUpdateJoystick	( (void(__cdecl*)()) 0x004A2D00 )
 #define DXGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049E050 )
