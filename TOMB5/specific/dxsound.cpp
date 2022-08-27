@@ -286,6 +286,116 @@ long DXStartSample(long num, long volume, long pitch, long pan, ulong flags)
 	return channel;
 }
 
+long CalcVolume(long volume)
+{
+	long result;
+
+	result = 8000 - long(float(0x7FFF - volume) * 0.30518511F);
+
+	if (result > 0)
+		result = 0;
+	else if (result < -10000)
+		result = -10000;
+
+	result -= (100 - SFXVolume) * 50;
+
+	if (result > 0)
+		result = 0;
+
+	if (result < -10000)
+		result = -10000;
+
+	return result;
+}
+
+void S_SoundStopAllSamples()
+{
+	for (int i = 0; i < 32; i++)
+		DXStopSample(i);
+}
+
+void S_SoundStopSample(long num)
+{
+	DXStopSample(num);
+}
+
+long S_SoundPlaySample(long num, ushort volume, long pitch, short pan)
+{
+	return DXStartSample(num, CalcVolume(volume), pitch, pan, 0);
+}
+
+long S_SoundPlaySampleLooped(long num, ushort volume, long pitch, short pan)
+{
+	return DXStartSample(num, CalcVolume(volume), pitch, pan, DSBPLAY_LOOPING);
+}
+
+void DXFreeSounds()
+{
+	S_SoundStopAllSamples();
+
+	for (int i = 0; i < 256; i++)
+	{
+		if (DS_Buffers[i].buffer)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "SoundBuffer", DS_Buffers[i].buffer, DS_Buffers[i].buffer->Release());
+			DS_Buffers[i].buffer = 0;
+		}
+	}
+}
+
+long S_SoundSampleIsPlaying(long num)
+{
+	if (sound_active && DSIsChannelPlaying(num))
+		return 1;
+
+	return 0;
+}
+
+void S_SoundSetPanAndVolume(long num, short pan, ushort volume)
+{
+	if (sound_active)
+	{
+		DSChangeVolume(num, CalcVolume(volume));
+		DSAdjustPan(num, pan);
+	}
+}
+
+void S_SoundSetPitch(long num, long pitch)
+{
+	if (sound_active)
+		DSAdjustPitch(num, pitch);
+}
+
+bool DXCreateSample(long num, LPWAVEFORMATEX format, LPVOID data, ulong bytes)
+{
+	DSBUFFERDESC desc;
+	LPVOID lData;
+	ulong lBytes;
+
+	Log(2, "DXCreateSample");
+
+	if (!App.dx.lpDS)
+		return 0;
+
+	memset(&desc, 0, sizeof(DSBUFFERDESC));
+	desc.dwSize = sizeof(DSBUFFERDESC);
+	desc.lpwfxFormat = format;
+	desc.dwFlags = DSBCAPS_STATIC | DSBCAPS_CTRLFREQUENCY | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME;
+	desc.dwBufferBytes = bytes;
+	desc.dwReserved = 0;
+
+	if (DXAttempt(App.dx.lpDS->CreateSoundBuffer(&desc, &DS_Buffers[num].buffer, 0)) != DS_OK)
+		return 0;
+
+	if (DXAttempt(DS_Buffers[num].buffer->Lock(0, bytes, &lData, &lBytes, 0, 0, 0)) != DS_OK)
+		return 0;
+
+	memcpy(lData, data, lBytes);
+	DXAttempt(DS_Buffers[num].buffer->Unlock(lData, lBytes, 0, 0));
+	DS_Buffers[num].frequency = format->nSamplesPerSec;
+	return 1;
+}
+
 void inject_dxsound(bool replace)
 {
 	INJECT(0x004A2E30, DXChangeOutputFormat, replace);
@@ -301,4 +411,14 @@ void inject_dxsound(bool replace)
 	INJECT(0x004A3790, DSIsChannelPlaying, replace);
 	INJECT(0x004A3800, DSGetFreeChannel, replace);
 	INJECT(0x004A3830, DXStartSample, replace);
+	INJECT(0x004A3950, CalcVolume, replace);
+	INJECT(0x004A39D0, S_SoundStopAllSamples, replace);
+	INJECT(0x004A3A00, S_SoundStopSample, replace);
+	INJECT(0x004A3A20, S_SoundPlaySample, replace);
+	INJECT(0x004A3A60, S_SoundPlaySampleLooped, replace);
+	INJECT(0x004A3AA0, DXFreeSounds, replace);
+	INJECT(0x004A3B10, S_SoundSampleIsPlaying, replace);
+	INJECT(0x004A3B40, S_SoundSetPanAndVolume, replace);
+	INJECT(0x004A3B90, S_SoundSetPitch, replace);
+	INJECT(0x004A3190, DXCreateSample, replace);
 }

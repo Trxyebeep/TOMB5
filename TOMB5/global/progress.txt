@@ -1812,7 +1812,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A2FB0	+	DSAdjustPan
 0x004A3030	+	DXSetOutputFormat
 0x004A3100	+	DXDSCreate
-0x004A3190		DXCreateSample
+0x004A3190	+	DXCreateSample
 0x004A3300	+	InitSampleDecompress
 0x004A3470	+	FreeSampleDecompress
 0x004A3510	x	DXCreateSampleADPCM
@@ -1820,15 +1820,15 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A3790	+	DSIsChannelPlaying
 0x004A3800	+	DSGetFreeChannel
 0x004A3830	+	DXStartSample
-0x004A3950		CalcVolume
-0x004A39D0		S_SoundStopAllSamples
-0x004A3A00		S_SoundStopSample
-0x004A3A20		S_SoundPlaySample
-0x004A3A60		S_SoundPlaySampleLooped
-0x004A3AA0		DXFreeSounds
-0x004A3B10		S_SoundSampleIsPlaying
-0x004A3B40		S_SoundSetPanAndVolume
-0x004A3B90		S_SoundSetPitch
+0x004A3950	+	CalcVolume
+0x004A39D0	+	S_SoundStopAllSamples
+0x004A3A00	+	S_SoundStopSample
+0x004A3A20	+	S_SoundPlaySample
+0x004A3A60	+	S_SoundPlaySampleLooped
+0x004A3AA0	+	DXFreeSounds
+0x004A3B10	+	S_SoundSampleIsPlaying
+0x004A3B40	+	S_SoundSetPanAndVolume
+0x004A3B90	+	S_SoundSetPitch
 
 
 		specific/file.cpp
