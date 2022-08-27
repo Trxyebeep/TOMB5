@@ -322,6 +322,17 @@ long DXCreateD3DDevice(LPDIRECT3D3 d3d, GUID guid, LPDIRECTDRAWSURFACE4 surf, LP
 	}
 }
 
+long DXSetVideoMode(LPDIRECTDRAW4 dd, long dwWidth, long dwHeight, long dwBPP)
+{
+	Log(2, "DXSetVideoMode");
+	Log(5, "SetDisplayMode - %dx%dx%d", dwWidth, dwHeight, dwBPP);
+
+	if (DXAttempt(dd->SetDisplayMode(dwWidth, dwHeight, dwBPP, 0, 0)) != DD_OK)
+		return 0;
+
+	return 1;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -337,4 +348,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A0270, DXEnumTextureFormats, replace);
 	INJECT(0x0049FB80, BPPToDDBD, replace);
 	INJECT(0x004A0C30, DXCreateD3DDevice, replace);
+	INJECT(0x004A0590, DXSetVideoMode, replace);
 }

@@ -16,6 +16,7 @@ HRESULT __stdcall DXEnumZBufferFormats(LPDDPIXELFORMAT lpDDPixFmt, LPVOID lpCont
 HRESULT __stdcall DXEnumTextureFormats(LPDDPIXELFORMAT lpDDPixFmt, LPVOID lpContext);
 long BPPToDDBD(long BPP);
 long DXCreateD3DDevice(LPDIRECT3D3 d3d, GUID guid, LPDIRECTDRAWSURFACE4 surf, LPDIRECT3DDEVICE3* device);
+long DXSetVideoMode(LPDIRECTDRAW4 dd, long dwWidth, long dwHeight, long dwBPP);
 
 #define DXUpdateJoystick	( (void(__cdecl*)()) 0x004A2D00 )
 #define DXCreateSurface	( (long(__cdecl*)(LPDIRECTDRAW4, LPDDSURFACEDESC2, LPDIRECTDRAWSURFACE4*)) 0x004A0520 )

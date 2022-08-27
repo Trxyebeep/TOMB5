@@ -1776,7 +1776,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A0270	+	DXEnumTextureFormats
 0x004A0490	+	DXEnumZBufferFormats
 0x004A0520		DXCreateSurface
-0x004A0590		DXSetVideoMode
+0x004A0590	+	DXSetVideoMode
 0x004A0600	+	DXSetCooperativeLevel
 0x004A0C30	+	DXCreateD3DDevice
 0x004A0CB0		DXFindDevice
