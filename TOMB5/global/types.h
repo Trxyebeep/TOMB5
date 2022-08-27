@@ -50,6 +50,7 @@ do \
 #define SEEK	( (int(__cdecl*)(FILE*, int, int)) 0x004E1F30 )
 #define READ	( (size_t(__cdecl*)(void*, size_t, size_t, FILE*)) 0x004E1D20 )
 #define TELL	( (int(__cdecl*)(FILE*)) 0x004E4700 )
+#define WRITE	( (size_t(__cdecl*)(const void*, size_t, size_t, FILE*)) 0x004E4380 )
 #define CLOSE	( (int(__cdecl*)(FILE*)) 0x004E20D0 )
 
 #define MALLOC	( (void*(__cdecl*)(size_t)) 0x004E2220 )

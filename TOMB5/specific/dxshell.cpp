@@ -32,6 +32,8 @@ const char* DDSCL_TEXT[11] =
 	"setfocuswindow"
 };
 
+char tga_header[18] = { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 1, 0, 1, 16, 0 };
+
 void DXReadKeyboard(char* KeyMap)
 {
 #ifndef GENERAL_FIXES	//Arsunt's fix for keyboard deadlock, reproduceable in TR5 when a debugger breakpoint is hit..
@@ -377,6 +379,97 @@ long DXCreateViewport(LPDIRECT3D3 d3d, LPDIRECT3DDEVICE3 device, long w, long h,
 	return 1;
 }
 
+void DXSaveScreen(LPDIRECTDRAWSURFACE4 surf, const char* name)
+{
+	FILE* file;
+	DDSURFACEDESC2 desc;
+	short* pSurf;
+	short* pDest;
+	char* pM;
+	ulong val;
+	static long num = 0;
+	long r, g, b;
+	char buf[16];
+
+	memset(&desc, 0, sizeof(DDSURFACEDESC2));
+	desc.dwSize = sizeof(DDSURFACEDESC2);
+	DXAttempt(surf->GetSurfaceDesc(&desc));
+	DXAttempt(surf->Lock(0, &desc, DDLOCK_WAIT, 0));
+	pSurf = (short*)desc.lpSurface;
+	sprintf(buf, "%s%04d.tga", name, num);
+	num++;
+	file = OPEN(buf, "wb");
+
+	if (file)
+	{
+		*(short*)&tga_header[12] = (short)desc.dwWidth;
+		*(short*)&tga_header[14] = (short)desc.dwHeight;
+		WRITE(tga_header, sizeof(tga_header), 1, file);
+		pM = (char*)MALLOC(2 * desc.dwWidth * desc.dwHeight);
+		pDest = (short*)pM;
+		pSurf += desc.dwHeight * (desc.lPitch / 2);
+
+		for (ulong h = 0; h < desc.dwHeight; h++)
+		{
+			for (ulong w = 0; w < desc.dwWidth; w++)
+			{
+				val = pSurf[w];
+
+				if (desc.ddpfPixelFormat.dwRBitMask == 0xF800)
+				{
+					r = (val >> 11) & 0x1F;
+					g = (val >> 6) & 0x1F;
+					b = val & 0x1F;
+					*pDest++ = short((r << 10) + (g << 5) + b);
+				}
+				else
+					*pDest++ = (short)val;
+			}
+
+			pSurf -= desc.lPitch / 2;
+		}
+
+		WRITE(pM, 2 * desc.dwWidth * desc.dwHeight, 1, file);
+		CLOSE(file);
+		FREE(pM);
+		buf[7]++;
+
+		if (buf[7] > '9')
+		{
+			buf[7] = '0';
+			buf[6]++;
+		}
+	}
+
+	DXAttempt(surf->Unlock(0));
+}
+
+HRESULT DXShowFrame()
+{
+	if (keymap[DIK_APOSTROPHE])
+		DXSaveScreen(App.dx.lpBackBuffer, "Tomb");
+
+	if (G_dxptr->lpPrimaryBuffer->IsLost())
+	{
+		Log(3, "Restored Primary Buffer");
+		DXAttempt(G_dxptr->lpPrimaryBuffer->Restore());
+	}
+
+	if (G_dxptr->lpBackBuffer->IsLost())
+	{
+		Log(3, "Restored Back Buffer");
+		DXAttempt(G_dxptr->lpBackBuffer->Restore());
+	}
+
+	if (!(App.dx.Flags & 0x82))
+		return 0;
+
+	if (G_dxptr->Flags & 2)
+		return DXAttempt(G_dxptr->lpPrimaryBuffer->Blt(&G_dxptr->rScreen, G_dxptr->lpBackBuffer, &G_dxptr->rViewport, DDBLT_WAIT, 0));
+	else
+		return DXAttempt(G_dxptr->lpPrimaryBuffer->Flip(0, DDFLIP_WAIT));
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -395,4 +488,6 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A0590, DXSetVideoMode, replace);
 	INJECT(0x004A0520, DXCreateSurface, replace);
 	INJECT(0x004A1F50, DXCreateViewport, replace);
+	INJECT(0x004A23A0, DXSaveScreen, replace);
+	INJECT(0x004A2080, DXShowFrame, replace);
 }
