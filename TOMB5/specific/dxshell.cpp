@@ -276,6 +276,36 @@ HRESULT __stdcall DXEnumTextureFormats(LPDDPIXELFORMAT lpDDPixFmt, LPVOID lpCont
 	return D3DENUMRET_OK;
 }
 
+long BPPToDDBD(long BPP)
+{
+	switch (BPP)
+	{
+	case 1:
+		return DDBD_1;
+
+	case 2:
+		return DDBD_2;
+
+	case 4:
+		return DDBD_4;
+
+	case 8:
+		return DDBD_8;
+
+	case 16:
+		return DDBD_16;
+
+	case 24:
+		return DDBD_24;
+
+	case 32:
+		return DDBD_32;
+
+	default:
+		return 0;
+	}
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -289,4 +319,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x0049FA10, DXEnumDisplayModes, replace);
 	INJECT(0x004A0490, DXEnumZBufferFormats, replace);
 	INJECT(0x004A0270, DXEnumTextureFormats, replace);
+	INJECT(0x0049FB80, BPPToDDBD, replace);
 }
