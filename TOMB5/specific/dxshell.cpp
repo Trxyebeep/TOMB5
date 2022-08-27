@@ -306,6 +306,22 @@ long BPPToDDBD(long BPP)
 	}
 }
 
+long DXCreateD3DDevice(LPDIRECT3D3 d3d, GUID guid, LPDIRECTDRAWSURFACE4 surf, LPDIRECT3DDEVICE3* device)
+{
+	Log(2, "DXCreateD3DDevice");
+
+	if (DXAttempt(d3d->CreateDevice(guid, surf, device, 0)) != DD_OK)
+	{
+		Log(1, "DXCreateD3DDevice Failed");
+		return 0;
+	}
+	else
+	{
+		Log(2, "DXCreateD3DDevice Successful");
+		return 1;
+	}
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -320,4 +336,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A0490, DXEnumZBufferFormats, replace);
 	INJECT(0x004A0270, DXEnumTextureFormats, replace);
 	INJECT(0x0049FB80, BPPToDDBD, replace);
+	INJECT(0x004A0C30, DXCreateD3DDevice, replace);
 }
