@@ -1,5 +1,6 @@
 #include "../tomb5/pch.h"
 #include "dxshell.h"
+#include "function_stubs.h"
 
 void DXReadKeyboard(char* KeyMap)
 {
@@ -42,8 +43,28 @@ void DXBitMask2ShiftCnt(ulong mask, uchar* shift, uchar* count)
 	*count = i;
 }
 
+long DXAttempt(HRESULT r)
+{
+	if (SUCCEEDED(r))
+		return DD_OK;
+
+	Log(1, "ERROR : %s", DXGetErrorString(r));
+	return DD_FALSE;
+}
+
+long DIAttempt(HRESULT r)
+{
+	if (SUCCEEDED(r))
+		return DI_OK;
+
+	Log(1, "ERROR : %s", DIGetErrorString(r));
+	return r;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
 	INJECT(0x0049F9C0, DXBitMask2ShiftCnt, replace);
+	INJECT(0x0049F1C0, DXAttempt, replace);
+	INJECT(0x0049F200, DIAttempt, replace);
 }
