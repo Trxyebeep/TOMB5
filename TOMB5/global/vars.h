@@ -775,6 +775,7 @@
 #define MAX_ITEMS	256
 #define MAX_SAMPLES	450
 #define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
+#define MALLOC_SIZE	5000000		//5MB
 
 //unknowns
 #define UNK_00E916F0	VAR_U_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init

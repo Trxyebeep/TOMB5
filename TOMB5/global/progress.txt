@@ -1867,24 +1867,24 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/function_stubs.cpp
 
-0x004A7A70		DBG_Print
-0x004A7AC0		exit_message
-0x004A7AE0		S_ExitSystem
-0x004A7B10		S_InitialiseScreen
+0x004A7A70	+	DBG_Print
+0x004A7AC0	+	exit_message
+0x004A7AE0	+	S_ExitSystem
+0x004A7B10	+	S_InitialiseScreen
 0x004A7B30	+	S_SoundSetMasterVolume
-0x004A7B50		S_CalculateStaticLight
-0x004A7B70		S_CalculateLight
-0x004A7B90		S_SetReverbType
-0x004A7BB0		S_CDVolume
-0x004A7BD0		S_CDLoop
-0x004A7BF0		PrintDbug
+0x004A7B50	+	S_CalculateStaticLight
+0x004A7B70	+	S_CalculateLight
+0x004A7B90	+	S_SetReverbType
+0x004A7BB0	+	S_CDVolume
+0x004A7BD0	+	S_CDLoop
+0x004A7BF0	+	PrintDbug
 0x004A7C10	+	GetRandomControl
 0x004A7C40	+	GetRandomDraw
 0x004A7C70	+	SeedRandomControl
 0x004A7C90	+	SeedRandomDraw
-0x004A7CB0		init_game_malloc
+0x004A7CB0	+	init_game_malloc
 0x004A7D00	+	game_malloc
-0x004A7D90		game_free
+0x004A7D90	+	game_free
 0x004A7DE0	+	deadLog
 
 
