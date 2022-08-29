@@ -1058,6 +1058,17 @@ void DXFreeInfo(DXINFO* dxinfo)
 	FREE(dxinfo->DSInfo);
 }
 
+void DXJoyAcquisition(long acquire)
+{
+	if (!G_dxptr->Joystick)
+		return;
+
+	if (acquire)
+		G_dxptr->Joystick->Acquire();
+	else
+		G_dxptr->Joystick->Unacquire();
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1088,4 +1099,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x0049F2C0, DXEnumDirectSound, replace);
 	INJECT(0x0049F240, DXGetInfo, replace);
 	INJECT(0x0049F390, DXFreeInfo, replace);
+	INJECT(0x004A2DF0, DXJoyAcquisition, replace);
 }

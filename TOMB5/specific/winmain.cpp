@@ -9,6 +9,7 @@
 #include "d3dmatrix.h"
 #include "3dmath.h"
 #include "cmdline.h"
+#include "audio.h"
 
 static COMMANDLINES commandlines[] =
 {
@@ -376,6 +377,90 @@ void WinProcessCommandLine(LPSTR cmd)
 	}
 }
 
+LRESULT CALLBACK WinMainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	static long mouseX, mouseY, mouseB;
+	static bool closing;
+
+	switch (uMsg)
+	{
+	case WM_CREATE:
+		resChangeCounter = 0;
+		Log(6, "WM_CREATE");
+		break;
+
+	case WM_MOVE:
+		Log(6, "WM_MOVE");
+		DXMove((short)lParam, short((lParam >> 16) & 0xFFFF));
+		break;
+
+	case WM_ACTIVATE:
+
+		if (!closing)
+		{
+			if (App.fmv)
+				return 0;
+
+			switch (wParam & 0xFFFF)
+			{
+			case WA_INACTIVE:
+				Log(6, "WM_INACTIVE");
+
+				if (App.SetupComplete)
+				{
+					DXJoyAcquisition(0);
+					Log(5, "HangGameThread");
+					while (App.dx.InScene) {};
+					App.dx.WaitAtBeginScene = 1;
+					while (!App.dx.InScene) {};
+					SuspendThread((HANDLE)MainThread.handle);
+					Log(5, "Game Thread Suspended");
+				}
+
+				return 0;
+
+			case WA_ACTIVE:
+			case WA_CLICKACTIVE:
+				Log(6, "WM_ACTIVE");
+
+				if (App.SetupComplete)
+				{
+					DXJoyAcquisition(1);
+					ResumeThread((HANDLE)MainThread.handle);
+					App.dx.WaitAtBeginScene = 0;
+					Log(5, "Game Thread Resumed");
+				}
+
+				return 0;
+			}
+		}
+
+		break;
+
+	case WM_CLOSE:
+		closing = 1;
+		PostQuitMessage(0);
+		break;
+
+	case WM_COMMAND:
+		Log(6, "WM_COMMAND");
+		WinProcessCommands(wParam & 0xFFFF);
+		break;
+
+	case WM_MOUSEMOVE:
+		mouseX = GET_X_LPARAM(lParam);
+		mouseY = GET_Y_LPARAM(lParam);
+		mouseB = wParam;
+		break;
+
+	case WM_APP:
+		FillADPCMBuffer((char*)lParam, wParam);
+		return 0;
+	}
+
+	return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
 void inject_winmain(bool replace)
 {
 	INJECT(0x004D1AD0, ClearSurfaces, replace);
@@ -387,4 +472,5 @@ void inject_winmain(bool replace)
 	INJECT(0x004D24C0, WinProcMsg, replace);
 	INJECT(0x004D2560, WinProcessCommands, replace);
 	INJECT(0x004D2E50, WinProcessCommandLine, replace);
+	INJECT(0x004D2AB0, WinMainWndProc, replace);
 }
