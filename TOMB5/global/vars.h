@@ -613,6 +613,8 @@
 #define DSNotify	VAR_U_(0x0057A000, LPDIRECTSOUNDNOTIFY)
 #define hACMDriver	VAR_U_(0x00579FF4, HACMDRIVER)
 #define resChangeCounter	VAR_U_(0x00D9AD9C, long)
+#define start_setup	VAR_U_(0x0057A098, bool)
+#define fmvs_disabled	VAR_U_(0x0057A099, bool)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

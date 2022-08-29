@@ -102,6 +102,7 @@
 #include "../specific/time.h"
 #include "../specific/texture.h"
 #include "../specific/profiler.h"
+#include "../specific/cmdline.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -223,6 +224,7 @@ void inject_all(bool replace)
 	inject_time(replace);
 	inject_texture(replace);
 	inject_profiler(replace);
+	inject_cmdline(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

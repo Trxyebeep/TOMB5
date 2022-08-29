@@ -11,6 +11,7 @@ void WinDisplayString(long x, long y, char* string, ...);
 void WinGetLastError();
 void WinProcMsg();
 void WinProcessCommands(long cmd);
+void WinProcessCommandLine(LPSTR cmd);
 
 #define RestoreFPCW	( (void(__cdecl*)(short)) 0x004D3150 )
 #define MungeFPCW	( (long(__cdecl*)(short*)) 0x004D30E0 )

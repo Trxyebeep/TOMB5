@@ -2374,6 +2374,14 @@ struct DS_SAMPLE
 	long playing;
 };
 
+struct COMMANDLINES
+{
+	char command[20];
+	bool needs_parameter;
+	void (*code)(char*);
+	char parameter[20];
+};
+
 #ifdef IMPROVED_BARS
 struct GouraudBarColourSet
 {

@@ -1678,8 +1678,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/cmdline.cpp
 
-0x00495B70		CLSetup
-0x00495BA0		CLNoFMV
+0x00495B70	+	CLSetup
+0x00495BA0	+	CLNoFMV
 0x00495BD0		DXSetupDialog
 0x00495C40		InitDSDevice
 0x00495D50		InitTFormats
@@ -2192,7 +2192,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004D2560	+	WinProcessCommands
 0x004D2AB0		WinMainWndProc
 0x004D2DD0	+	WinRunCheck
-0x004D2E50		WinProcessCommandLine
+0x004D2E50	+	WinProcessCommandLine
 0x004D2FD0	+	WinFrameRate
 0x004D3070	+	WinDisplayString
 0x004D30E0		MungeFPCW
