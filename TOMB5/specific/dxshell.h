@@ -36,3 +36,4 @@ void DXJoyAcquisition(long acquire);
 #define DXUpdateJoystick	( (void(__cdecl*)()) 0x004A2D00 )
 #define DXGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049E050 )
 #define DIGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049EFA0 )
+#define DXInitInput	( (void(__cdecl*)(HWND, HINSTANCE)) 0x004A2970 )

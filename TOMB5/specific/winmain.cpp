@@ -11,6 +11,11 @@
 #include "cmdline.h"
 #include "audio.h"
 #include "registry.h"
+#include "../game/gameflow.h"
+#include "texture.h"
+#include "dxsound.h"
+#include "gamemain.h"
+#include "file.h"
 
 static COMMANDLINES commandlines[] =
 {
@@ -501,6 +506,184 @@ void WinClose()
 		Log(1, "%s Attempt To Release NULL Ptr", "DirectInput");
 }
 
+int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nShowCmd)
+{
+	DXDISPLAYMODE* dm;
+	RECT r;
+	HWND desktop;
+	HWND dbg;
+	HDC hdc;
+	DEVMODE devmode;
+	long dbgflag;
+#ifndef NO_CD
+	bool drive;
+#endif
+
+	start_setup = 0;
+	App.mmx = CheckMMXTechnology();
+	App.SetupComplete = 0;
+	App.AutoTarget = 0;
+
+	Log_Init(1);
+	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
+
+	if (dbg)
+		PostMessage(dbg, dbm_command, 2, 0);
+
+	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
+
+	if (dbg)
+		PostMessage(dbg, dbm_clearlog, 0, 0);
+
+	Log_DefType("Error", 0xFF, 1);
+	Log_DefType("Function", 0x8000, 0);
+	Log_DefType("DirectX Information", 0x802040, 1);
+	Log_DefType("Object Release", 128, 0);
+	Log_DefType("General Information", 0x800000, 1);
+	Log_DefType("Windows Message", 0x800080, 0);
+	Log_DefType("Level Info", 0x8000FF, 0);
+	Log_DefType("Sound", 0x8080, 0);
+	Log(5, "Launching - %s", "Tomb Raider Chronicles");
+	Log(2, "WinMain");
+	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+	dbgflag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+	dbgflag |= _CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_LEAK_CHECK_DF;
+	_CrtSetDbgFlag(dbgflag);
+
+	if (WinRunCheck((char*)"Tomb Raider Chronicles", (char*)"MainGameWindow", &App.mutex))
+		return 0;
+
+#ifndef NO_CD
+	if (!FindCDDrive())
+	{
+		drive = 0;
+
+		while (!drive)
+		{
+			if (MessageBox(0, "Tomb Raider - The Last Revelation CD", "Tomb Raider", MB_RETRYCANCEL | MB_ICONQUESTION) == IDCANCEL)
+				return 0;
+
+			drive = FindCDDrive();
+		}
+	}
+#endif
+
+	LoadGameflow();
+	WinProcessCommandLine(lpCmdLine);
+	App.hInstance = hInstance;
+	App.WindowClass.hIcon = 0;
+	App.WindowClass.lpszMenuName = 0;
+	App.WindowClass.lpszClassName = "MainGameWindow";
+	App.WindowClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
+	App.WindowClass.hInstance = hInstance;
+	App.WindowClass.style = CS_VREDRAW | CS_HREDRAW;
+	App.WindowClass.lpfnWndProc = WinMainWndProc;
+	App.WindowClass.cbClsExtra = 0;
+	App.WindowClass.cbWndExtra = 0;
+	App.WindowClass.hCursor = LoadCursor(App.hInstance, MAKEINTRESOURCE(104));
+
+	if (!RegisterClass(&App.WindowClass))
+	{
+		Log(1, "Unable To Register Window Class");
+		return 0;
+	}
+
+	r.left = 0;
+	r.top = 0;
+	r.right = 640;
+	r.bottom = 480;
+	AdjustWindowRect(&r, WINDOW_STYLE, 0);
+	App.hWnd = CreateWindowEx(WS_EX_APPWINDOW, "MainGameWindow", "Tomb Raider Chronicles", WINDOW_STYLE,
+		CW_USEDEFAULT, CW_USEDEFAULT, r.right - r.left, r.bottom - r.top, 0, 0, hInstance, 0);
+
+	if (!App.hWnd)
+	{
+		Log(1, "Unable To Create Window");
+		return 0;
+	}
+
+	DXGetInfo(&App.DXInfo, App.hWnd);
+
+	if (start_setup || !LoadSettings())
+	{
+		if (!DXSetupDialog())
+		{
+			FREE(gfScriptFile);
+			FREE(gfLanguageFile);
+			WinClose();
+			return 0;
+		}
+
+		LoadSettings();
+	}
+
+	SetWindowPos(App.hWnd, 0, App.dx.rScreen.left, App.dx.rScreen.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	desktop = GetDesktopWindow();
+	hdc = GetDC(desktop);
+	App.Desktopbpp = GetDeviceCaps(hdc, BITSPIXEL);
+	ReleaseDC(desktop, hdc);
+	App.dx.WaitAtBeginScene = 0;
+	App.dx.InScene = 0;
+	App.fmv = 0;
+	dm = &G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode];
+
+	if (!DXCreate(dm->w, dm->h, dm->bpp, App.StartFlags, &App.dx, App.hWnd, WINDOW_STYLE))
+	{
+		MessageBox(0, SCRIPT_TEXT_bis(STR_FAILED_TO_SETUP_DIRECTX), "Tomb Raider IV", 0);
+		return 0;
+	}
+
+#ifdef GENERAL_FIXES	//remove the border in fullscreen
+	if (G_dxptr->Flags & 1)
+	{
+		SetWindowLongPtr(App.hWnd, GWL_STYLE, WS_POPUP);
+		SetWindowPos(App.hWnd, 0, App.dx.rScreen.left, App.dx.rScreen.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	}
+#endif
+
+	aCheckBumpMappingSupport();
+	UpdateWindow(App.hWnd);
+	ShowWindow(App.hWnd, nShowCmd);
+
+	if (App.dx.Flags & 1)
+	{
+		SetCursor(0);
+		ShowCursor(0);
+	}
+
+	DXInitInput(App.hWnd, App.hInstance);
+	App.hAccel = LoadAccelerators(hInstance, MAKEINTRESOURCE(101));
+
+	if (!App.SoundDisabled)
+	{
+		DXDSCreate();
+		ACMInit();
+	}
+
+	MainThread.active = 1;
+	MainThread.ended = 0;
+	MainThread.handle = _beginthreadex(0, 0, GameMain, 0, 0, (unsigned int*)&MainThread.address);
+	WinProcMsg();
+	MainThread.ended = 1;
+	while (MainThread.active) {};
+
+	WinClose();
+	desktop = GetDesktopWindow();
+	hdc = GetDC(desktop);
+	devmode.dmSize = sizeof(DEVMODE);
+	devmode.dmBitsPerPel = App.Desktopbpp;
+	ReleaseDC(desktop, hdc);
+	devmode.dmFields = DM_BITSPERPEL;
+	ChangeDisplaySettings(&devmode, 0);
+
+	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
+
+	if (dbg)
+		PostMessageA(dbg, dbm_command, 4, 0);
+
+	return 0;
+}
+
 void inject_winmain(bool replace)
 {
 	INJECT(0x004D1AD0, ClearSurfaces, replace);
@@ -514,4 +697,5 @@ void inject_winmain(bool replace)
 	INJECT(0x004D2E50, WinProcessCommandLine, replace);
 	INJECT(0x004D2AB0, WinMainWndProc, replace);
 	INJECT(0x004D23E0, WinClose, replace);
+	INJECT(0x004D1C00, WinMain, replace);
 }

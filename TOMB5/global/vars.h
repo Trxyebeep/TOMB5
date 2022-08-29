@@ -366,6 +366,8 @@
 #define lGlobalMeshPos	VAR_U_(0x0091F3B8, FVECTOR)
 #define GlobalAmbient	VAR_U_(0x0092167C, long)
 #define App	VAR_U_(0x00D9AB38, WINAPP)
+#define dbm_command	VAR_U_(0x00E4ACB4, ulong)
+#define dbm_clearlog	VAR_U_(0x00E4ACAC, ulong)
 #define aAmbientR	VAR_U_(0x0087AD0C, long)
 #define aAmbientG	VAR_U_(0x0087AD08, long)
 #define aAmbientB	VAR_U_(0x0087AD04, long)
@@ -779,6 +781,7 @@
 #define MAX_SAMPLES	450
 #define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
 #define MALLOC_SIZE	5000000		//5MB
+#define WINDOW_STYLE	(WS_OVERLAPPED | WS_BORDER | WS_CAPTION)
 
 //unknowns
 #define UNK_00E916F0	VAR_U_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init

@@ -9,7 +9,7 @@
 #include "../specific/3dmath.h"
 #include "../specific/function_stubs.h"
 
-char iswappedit;//original one is on 0051CA84.
+char iswappedit;
 
 ushort special2_pistols_info[13] =
 {
