@@ -2195,8 +2195,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x004D2E50	+	WinProcessCommandLine
 0x004D2FD0	+	WinFrameRate
 0x004D3070	+	WinDisplayString
-0x004D30E0		MungeFPCW
-0x004D3150		RestoreFPCW
+0x004D30E0	+	MungeFPCW
+0x004D3150	+	RestoreFPCW
 
 // ======================================
 // SOFTWARE RENDERER

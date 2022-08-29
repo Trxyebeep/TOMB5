@@ -15,6 +15,5 @@ void WinProcessCommandLine(LPSTR cmd);
 LRESULT CALLBACK WinMainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void WinClose();
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nShowCmd);
-
-#define RestoreFPCW	( (void(__cdecl*)(short)) 0x004D3150 )
-#define MungeFPCW	( (long(__cdecl*)(short*)) 0x004D30E0 )
+long MungeFPCW(short* fpcw);
+void RestoreFPCW(short fpcw);
