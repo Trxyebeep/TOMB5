@@ -18,6 +18,8 @@
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
+#include "texture.h"
+#include "dxshell.h"
 
 bool LoadTextureInfos()
 {
@@ -706,6 +708,303 @@ long S_LoadLevelFile(long num)
 	return 1;
 }
 
+bool LoadTextures(long RTPages, long OTPages, long BTPages)
+{
+	DXTEXTUREINFO* dxtex;
+	LPDIRECTDRAWSURFACE4 tSurf;
+	LPDIRECT3DTEXTURE2 pTex;
+	uchar* TextureData;
+	long* d;
+	char* pData;
+	char* pComp;
+	char* s;
+	long format, skip, size, compressedSize, nTex, c;
+	uchar r, g, b, a;
+
+	Log(2, "LoadTextures");
+	nTextures = 1;
+	format = 0;
+	skip = 4;
+	dxtex = &G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].TextureInfos[G_dxinfo->nTexture];
+
+	if (dxtex->rbpp == 8 && dxtex->gbpp == 8 && dxtex->bbpp == 8 && dxtex->abpp == 8)
+		format = 1;
+	else if (dxtex->rbpp == 5 && dxtex->gbpp == 5 && dxtex->bbpp == 5 && dxtex->abpp == 1)
+	{
+		format = 2;
+		skip = 2;
+	}
+
+	if (format <= 1)
+	{
+		READ(&size, 1, 4, level_fp);
+		READ(&compressedSize, 1, 4, level_fp);
+		CompressedData = (char*)MALLOC(compressedSize);
+		FileData = (char*)MALLOC(size);
+
+		if (FileCompressed)
+		{
+			READ(CompressedData, compressedSize, 1, level_fp);
+			Decompress(FileData, CompressedData, compressedSize, size);
+			READ(&size, 1, 4, level_fp);
+			READ(&compressedSize, 1, 4, level_fp);
+			SEEK(level_fp, compressedSize, SEEK_CUR);
+		}
+		else
+		{
+			READ(FileData, size, 1, level_fp);
+			READ(&size, 1, 4, level_fp);
+			READ(&compressedSize, 1, 4, level_fp);
+			SEEK(level_fp, size, SEEK_CUR);
+		}
+
+		FREE(CompressedData);
+	}
+	else
+	{
+		READ(&size, 1, 4, level_fp);
+		READ(&compressedSize, 1, 4, level_fp);
+
+		if (FileCompressed)
+			SEEK(level_fp, compressedSize, SEEK_CUR);
+		else
+			SEEK(level_fp, size, SEEK_CUR);
+
+		READ(&size, 1, 4, level_fp);
+		READ(&compressedSize, 1, 4, level_fp);
+		CompressedData = (char*)MALLOC(compressedSize);
+		FileData = (char*)MALLOC(size);
+
+		if (FileCompressed)
+		{
+			READ(CompressedData, compressedSize, 1, level_fp);
+			Decompress(FileData, CompressedData, compressedSize, size);
+		}
+		else
+			READ(FileData, size, 1, level_fp);
+
+		FREE(CompressedData);
+	}
+
+	pData = FileData;
+
+	Log(5, "RTPages %d", RTPages);
+	size = RTPages * skip * 0x10000;
+	TextureData = (uchar*)MALLOC(size);
+	memcpy(TextureData, FileData, size);
+	FileData += size;
+	S_LoadBar();
+
+	for (int i = 0; i < RTPages; i++)
+	{
+		nTex = nTextures++;
+		tSurf = CreateTexturePage(App.TextureSize, App.TextureSize, 0, (long*)(TextureData + (i * skip * 0x10000)), 0, format);
+		DXAttempt(tSurf->QueryInterface(IID_IDirect3DTexture2, (LPVOID*)&pTex));
+		Textures[nTex].tex = pTex;
+		Textures[nTex].surface = tSurf;
+		Textures[nTex].width = App.TextureSize;
+		Textures[nTex].height = App.TextureSize;
+		Textures[nTex].bump = 0;
+		Textures[nTex].realBump = 0;
+		Textures[nTex].staticTex = 0;
+		S_LoadBar();
+	}
+
+	FREE(TextureData);
+
+	Log(5, "OTPages %d", OTPages);
+	size = OTPages * skip * 0x10000;
+	TextureData = (uchar*)MALLOC(size);
+	memcpy(TextureData, FileData, size);
+	FileData += size;
+	S_LoadBar();
+
+	for (int i = 0; i < OTPages; i++)
+	{
+		nTex = nTextures++;
+		tSurf = CreateTexturePage(App.TextureSize, App.TextureSize, 0, (long*)(TextureData + (i * skip * 0x10000)), 0, format);
+		DXAttempt(tSurf->QueryInterface(IID_IDirect3DTexture2, (LPVOID*)&pTex));
+		Textures[nTex].tex = pTex;
+		Textures[nTex].surface = tSurf;
+		Textures[nTex].width = App.TextureSize;
+		Textures[nTex].height = App.TextureSize;
+		Textures[nTex].bump = 0;
+		Textures[nTex].staticTex = 0;
+		App.dx.lpD3DDevice->SetTexture(0, pTex);
+		S_LoadBar();
+	}
+
+	FREE(TextureData);
+	S_LoadBar();
+
+	Log(5, "BTPages %d", BTPages);
+
+	if (BTPages)
+	{
+		size = BTPages * skip * 0x10000;
+		TextureData = (uchar*)MALLOC(size);
+		memcpy(TextureData, FileData, size);
+		FileData += size;
+
+		for (int i = 0; i < BTPages; i++)
+		{
+			if (i < (BTPages >> 1))
+				tSurf = CreateTexturePage(App.TextureSize, App.TextureSize, 0, (long*)(TextureData + (i * skip * 0x10000)), 0, format);
+			else
+			{
+				if (!App.BumpMapping)
+					break;
+
+				tSurf = CreateTexturePage(App.BumpMapSize, App.BumpMapSize, 0, (long*)(TextureData + (i * skip * 0x10000)), 0, format);
+			}
+
+			nTex = nTextures++;
+			DXAttempt(tSurf->QueryInterface(IID_IDirect3DTexture2, (LPVOID*)&pTex));
+			Textures[nTex].tex = pTex;
+			Textures[nTex].surface = tSurf;
+
+			if (i < (BTPages >> 1))
+			{
+				Textures[nTex].width = App.TextureSize;
+				Textures[nTex].height = App.TextureSize;
+			}
+			else
+			{
+				Textures[nTex].width = App.BumpMapSize;
+				Textures[nTex].height = App.BumpMapSize;
+			}
+
+			Textures[nTex].bump = 1;
+			Textures[nTex].bumptpage = nTex + (BTPages >> 1);
+			Textures[nTex].staticTex = 0;
+			S_LoadBar();
+		}
+
+		FREE(TextureData);
+	}
+
+	FREE(pData);
+
+	READ(&size, 1, 4, level_fp);
+	READ(&compressedSize, 1, 4, level_fp);
+	CompressedData = (char*)MALLOC(compressedSize);
+	FileData = (char*)MALLOC(size);
+
+	if (FileCompressed)
+	{
+		READ(CompressedData, compressedSize, 1, level_fp);
+		Decompress(FileData, CompressedData, compressedSize, size);
+	}
+	else
+		READ(FileData, size, 1, level_fp);
+
+	FREE(CompressedData);
+
+	pData = FileData;
+	TextureData = (uchar*)MALLOC(0x40000);
+
+	if (!gfCurrentLevel)	//main menu logo
+	{
+		pComp = 0;
+		CompressedData = 0;
+
+		if (Gameflow->Language == US)
+			size = LoadFile("data\\uslogo.pak", &CompressedData);
+		else if (Gameflow->Language == GERMAN)
+			size = LoadFile("data\\grlogo.pak", &CompressedData);
+		else if (Gameflow->Language == FRENCH)
+			size = LoadFile("data\\frlogo.pak", &CompressedData);
+		else
+			size = LoadFile("data\\logo512.pak", &CompressedData);
+
+		pComp = (char*)MALLOC(*(long*)CompressedData);
+		Decompress(pComp, CompressedData + 4, size - 4, *(long*)CompressedData);
+		FREE(CompressedData);
+
+		for (int i = 0; i < 2; i++)
+		{
+			s = pComp + (i * 768);
+			d = (long*)TextureData;
+
+			for (int y = 0; y < 256; y++)
+			{
+				for (int x = 0; x < 256; x++)
+				{
+					r = *(s + (x * 3) + (y * 1536));
+					g = *(s + (x * 3) + (y * 1536) + 1);
+					b = *(s + (x * 3) + (y * 1536) + 2);
+					a = 0xFF;
+
+					if (r == 0xFF && b == 0xFF && !g)	//magenta
+					{
+						r = 0;
+						b = 0;
+						a = 0;
+					}
+
+					c = RGBA(r, g, b, a);
+					*d++ = c;
+				}
+			}
+
+			nTex = nTextures++;
+			tSurf = CreateTexturePage(256, 256, 0, (long*)TextureData, 0, 0);
+			DXAttempt(tSurf->QueryInterface(IID_IDirect3DTexture2, (LPVOID*)&pTex));
+			Textures[nTex].tex = pTex;
+			Textures[nTex].surface = tSurf;
+			Textures[nTex].width = 256;
+			Textures[nTex].height = 256;
+			Textures[nTex].bump = 0;
+			Textures[nTex].staticTex = 0;
+		}
+
+		FREE(pComp);
+	}
+
+	//shine
+	memcpy(TextureData, FileData, 0x40000);
+	FileData += 0x40000;
+	nTex = nTextures++;
+	tSurf = CreateTexturePage(256, 256, 0, (long*)TextureData, 0, 0);
+	DXAttempt(tSurf->QueryInterface(IID_IDirect3DTexture2, (LPVOID*)&pTex));
+	Textures[nTex].tex = pTex;
+	Textures[nTex].surface = tSurf;
+	Textures[nTex].width = 256;
+	Textures[nTex].height = 256;
+	Textures[nTex].bump = 0;
+	Textures[nTex].staticTex = 0;
+
+	//font
+	memcpy(TextureData, FileData, 0x40000);
+	FileData += 0x40000;
+	nTex = nTextures++;
+	tSurf = CreateTexturePage(256, 256, 0, (long*)TextureData, 0, 0);
+	DXAttempt(tSurf->QueryInterface(IID_IDirect3DTexture2, (LPVOID*)&pTex));
+	Textures[nTex].tex = pTex;
+	Textures[nTex].surface = tSurf;
+	Textures[nTex].width = 256;
+	Textures[nTex].height = 256;
+	Textures[nTex].bump = 0;
+	Textures[nTex].staticTex = 0;
+
+	//sky
+	memcpy(TextureData, FileData, 0x40000);
+	FileData += 0x40000;
+	nTex = nTextures++;
+	tSurf = CreateTexturePage(256, 256, 0, (long*)TextureData, 0, 0);
+	DXAttempt(tSurf->QueryInterface(IID_IDirect3DTexture2, (LPVOID*)&pTex));
+	Textures[nTex].tex = pTex;
+	Textures[nTex].surface = tSurf;
+	Textures[nTex].width = 256;
+	Textures[nTex].height = 256;
+	Textures[nTex].bump = 0;
+	Textures[nTex].staticTex = 0;
+
+	FREE(TextureData);
+	FREE(pData);
+	return 1;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A6B30, LoadLevel, 0);
@@ -726,4 +1025,5 @@ void inject_file(bool replace)
 	INJECT(0x004A6880, LoadSamples, replace);
 	INJECT(0x004A67F0, LoadAIInfo, replace);
 	INJECT(0x004A72B0, S_LoadLevelFile, replace);
+	INJECT(0x004A3FC0, LoadTextures, replace);
 }

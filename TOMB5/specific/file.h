@@ -19,7 +19,10 @@ bool LoadCinematic();
 bool LoadSamples();
 bool LoadAIInfo();
 long S_LoadLevelFile(long num);
+bool LoadTextures(long RTPages, long OTPages, long BTPages);
 
 #define	AdjustUV	( (void(__cdecl*)(long)) 0x004A5430 )
 #define DoMonitorScreen	( (void(__cdecl*)()) 0x004A7020 )
 #define FreeLevel	( (void(__cdecl*)()) 0x004A7130 )
+#define Decompress	( (bool(__cdecl*)(char*, char*, long, long)) 0x004A3EF0 )
+#define LoadFile	( (long(__cdecl*)(const char*, char**)) 0x004A3E10 )

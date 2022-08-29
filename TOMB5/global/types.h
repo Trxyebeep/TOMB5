@@ -65,6 +65,18 @@ typedef unsigned long ulong;
 
 /*enums*/
 
+enum languages
+{
+	ENGLISH,
+	FRENCH,
+	GERMAN,
+	ITALIAN,
+	SPANISH,
+	US,
+	JAPAN,
+	DUTCH
+};
+
 enum win_commands
 {
 	KA_ALTENTER = 8,

@@ -617,6 +617,9 @@
 #define resChangeCounter	VAR_U_(0x00D9AD9C, long)
 #define start_setup	VAR_U_(0x0057A098, bool)
 #define fmvs_disabled	VAR_U_(0x0057A099, bool)
+#define level_fp	VAR_U_(0x00875164, FILE*)
+#define CompressedData	VAR_U_(0x00875148, char*)
+#define FileCompressed	VAR_U_(0x005165C8, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
