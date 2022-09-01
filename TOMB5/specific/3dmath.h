@@ -32,6 +32,7 @@ void phd_TransposeMatrix();
 void phd_LookAt(long xsrc, long ysrc, long zsec, long xtar, long ytar, long ztar, short roll);
 void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float ztar, long roll);
 void aOuterProduct(FVECTOR* v1, FVECTOR* v2, FVECTOR* dest);
+void aVectorNormal(FVECTOR* s, FVECTOR* v);
 
 #define ScaleCurrentMatrix	( (void(__cdecl*)(VECTOR*)) 0x0048EFF0 )
 #define mGetAngle	( (long(__cdecl*)(long, long, long, long)) 0x0048F290 )

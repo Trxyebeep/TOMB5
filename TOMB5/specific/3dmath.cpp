@@ -713,6 +713,16 @@ void aOuterProduct(FVECTOR* v1, FVECTOR* v2, FVECTOR* dest)
 	dest->z = v1->x * v2->y - v1->y * v2->x;
 }
 
+void aVectorNormal(FVECTOR* v, FVECTOR* a)
+{
+	float m;
+
+	m = sqrt(SQUARE(v->x) + SQUARE(v->y) + SQUARE(v->z));
+	v->x = 1.0F / m * v->x;
+	v->y = 1.0F / m * v->y;
+	v->z = 1.0F / m * v->z;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -744,4 +754,5 @@ void inject_3dmath(bool replace)
 	INJECT(0x0048F760, phd_LookAt, replace);
 	INJECT(0x00490C20, aLookAt, replace);
 	INJECT(0x00491120, aOuterProduct, replace);
+	INJECT(0x004910D0, aVectorNormal, replace);
 }
