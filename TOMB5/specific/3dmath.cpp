@@ -723,6 +723,42 @@ void aVectorNormal(FVECTOR* v, FVECTOR* a)
 	v->z = 1.0F / m * v->z;
 }
 
+void aPerpVectors(FVECTOR* a, FVECTOR* b, FVECTOR* c)
+{
+	FVECTOR vA, vB, vC;
+
+	vA.x = a->x;
+	vA.y = a->y;
+	vA.z = a->z;
+	vC.x = c->x;
+	vC.y = c->y;
+	vC.z = c->z;
+	aVectorNormal(&vA, &vA);
+
+	if (!vA.x && !vA.y)
+	{
+		vB.x = b->x;
+		vB.y = b->y;
+		vB.z = b->z;
+	}
+	else
+		aOuterProduct(&vC, &vA, &vB);
+
+	aOuterProduct(&vA, &vB, &vC);
+	aVectorNormal(&vB, &vB);
+	aVectorNormal(&vC, &vC);
+
+	a->x = vA.x;
+	a->y = vA.y;
+	a->z = vA.z;
+	b->x = vB.x;
+	b->y = vB.y;
+	b->z = vB.z;
+	c->x = vC.x;
+	c->y = vC.y;
+	c->z = vC.z;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -755,4 +791,5 @@ void inject_3dmath(bool replace)
 	INJECT(0x00490C20, aLookAt, replace);
 	INJECT(0x00491120, aOuterProduct, replace);
 	INJECT(0x004910D0, aVectorNormal, replace);
+	INJECT(0x00491170, aPerpVectors, replace);
 }
