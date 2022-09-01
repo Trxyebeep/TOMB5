@@ -706,6 +706,13 @@ void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float z
 	D3DInvCameraMatrix._44 = mx._44;
 }
 
+void aOuterProduct(FVECTOR* v1, FVECTOR* v2, FVECTOR* dest)
+{
+	dest->x = v1->y * v2->z - v1->z * v2->y;
+	dest->y = v1->z * v2->x - v1->x * v2->z;
+	dest->z = v1->x * v2->y - v1->y * v2->x;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -736,4 +743,5 @@ void inject_3dmath(bool replace)
 	INJECT(0x00490550, phd_TransposeMatrix, replace);
 	INJECT(0x0048F760, phd_LookAt, replace);
 	INJECT(0x00490C20, aLookAt, replace);
+	INJECT(0x00491120, aOuterProduct, replace);
 }
