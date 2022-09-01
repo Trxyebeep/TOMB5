@@ -5,6 +5,34 @@
 #include "control.h"
 #include "laramisc.h"
 
+static long LaraCheckForLetGo(ITEM_INFO* item, COLL_INFO* coll)
+{
+	short room_number;
+
+	item->gravity_status = 0;
+	item->fallspeed = 0;
+	room_number = item->room_number;
+	GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number), item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	coll->trigger = trigger_index;
+
+	if (input & IN_ACTION && item->hit_points > 0)
+		return 0;
+
+	lara.torso_y_rot = 0;
+	lara.torso_x_rot = 0;
+	lara.head_y_rot = 0;
+	lara.head_x_rot = 0;
+	item->goal_anim_state = AS_FORWARDJUMP;
+	item->current_anim_state = AS_FORWARDJUMP;
+	item->anim_number = ANIM_FALLDOWN;
+	item->frame_number = anims[ANIM_FALLDOWN].frame_base;
+	item->speed = 2;
+	item->gravity_status = 1;
+	item->fallspeed = 1;
+	lara.gun_status = LG_NO_ARMS;
+	return 1;
+}
+
 void lara_as_climbstnc(ITEM_INFO* item, COLL_INFO* coll)
 {
 	lara.IsClimbing = 1;
@@ -130,34 +158,6 @@ void lara_col_climbstnc(ITEM_INFO* item, COLL_INFO* coll)
 			item->pos.y_pos += shift_l;
 		}
 	}
-}
-
-static long LaraCheckForLetGo(ITEM_INFO* item, COLL_INFO* coll)
-{
-	short room_number;
-
-	item->gravity_status = 0;
-	item->fallspeed = 0;
-	room_number = item->room_number;
-	GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number), item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
-	coll->trigger = trigger_index;
-
-	if (input & IN_ACTION && item->hit_points > 0)
-		return 0;
-
-	lara.torso_y_rot = 0;
-	lara.torso_x_rot = 0;
-	lara.head_y_rot = 0;
-	lara.head_x_rot = 0;
-	item->goal_anim_state = AS_FORWARDJUMP;
-	item->current_anim_state = AS_FORWARDJUMP;
-	item->anim_number = ANIM_FALLDOWN;
-	item->frame_number = anims[ANIM_FALLDOWN].frame_base;
-	item->speed = 2;
-	item->gravity_status = 1;
-	item->fallspeed = 1;
-	lara.gun_status = LG_NO_ARMS;
-	return 1;
 }
 
 void lara_as_climbing(ITEM_INFO* item, COLL_INFO* coll)

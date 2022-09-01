@@ -53,20 +53,12 @@ void KlaxonTremor()
 
 static long CheckCableBox(PHD_VECTOR* pos, short size)
 {
-	long ret;
-	
-	ret = 0;
+	if (pos->x + size >= DeadlyBounds[0] && pos->x - size <= DeadlyBounds[1] &&
+		pos->y + size >= DeadlyBounds[2] && pos->y - size <= DeadlyBounds[3] &&
+		pos->z + size >= DeadlyBounds[4] && pos->z - size <= DeadlyBounds[5])
+		return 1;
 
-	if (pos->x + size >= DeadlyBounds[0] && pos->x - size <= DeadlyBounds[1])
-	{
-		if (pos->y + size >= DeadlyBounds[2] && pos->y - size <= DeadlyBounds[3])
-		{
-			if (pos->z + size >= DeadlyBounds[4] && pos->z - size <= DeadlyBounds[5])
-				ret = 1;
-		}
-	}
-
-	return ret;
+	return 0;
 }
 
 void ControlElectricalCables(short item_number)

@@ -5,7 +5,6 @@ void inject_laraclmb(bool replace);
 
 void lara_as_climbstnc(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_climbstnc(ITEM_INFO* item, COLL_INFO* coll);
-static long LaraCheckForLetGo(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_climbing(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_climbing(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_climbleft(ITEM_INFO* item, COLL_INFO* coll);
