@@ -154,9 +154,9 @@ long ControlPhase(long _nframes, long demo_mode)
 			}
 		}
 		else
-		{
 #endif
-			if (reset_flag || lara.death_count > 300 || (lara.death_count > 60 && input != IN_NONE))
+		{
+			if (reset_flag || lara.death_count > 300 || (lara.death_count > 60 && input))
 			{
 				if (Gameflow->DemoDisc && reset_flag)
 				{
@@ -169,9 +169,7 @@ long ControlPhase(long _nframes, long demo_mode)
 					return 1;
 				}
 			}
-#ifdef GENERAL_FIXES
 		}
-#endif
 
 		if (demo_mode && input == IN_ALL)
 			input = IN_NONE;
@@ -213,9 +211,9 @@ long ControlPhase(long _nframes, long demo_mode)
 		if (MainThread.ended)
 			return 4;
 
-		if ((input & IN_LOOK) && !SniperCamActive && !bUseSpotCam && !bTrackCamInit &&
+		if (input & IN_LOOK && !SniperCamActive && !bUseSpotCam && !bTrackCamInit &&
 			((lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH) ||
-			 (lara.IsDucked && !(input & IN_DUCK)&& lara_item->anim_number == ANIM_DUCKBREATHE && lara_item->goal_anim_state == AS_DUCK)))
+			 (lara.IsDucked && !(input & IN_DUCK) && lara_item->anim_number == ANIM_DUCKBREATHE && lara_item->goal_anim_state == AS_DUCK)))
 		{
 			if (!BinocularRange)
 			{
@@ -223,7 +221,7 @@ long ControlPhase(long _nframes, long demo_mode)
 				{
 				case WEAPON_REVOLVER:
 
-					if ((lara.sixshooter_type_carried & WTYPE_LASERSIGHT) && lara.gun_status == LG_READY)
+					if (lara.sixshooter_type_carried & WTYPE_LASERSIGHT && lara.gun_status == LG_READY)
 					{
 						BinocularRange = 128;
 						BinocularOldCamera = camera.old_type;
@@ -235,7 +233,7 @@ long ControlPhase(long _nframes, long demo_mode)
 
 				case WEAPON_CROSSBOW:
 
-					if ((lara.crossbow_type_carried & WTYPE_LASERSIGHT) && lara.gun_status == LG_READY)
+					if (lara.crossbow_type_carried & WTYPE_LASERSIGHT && lara.gun_status == LG_READY)
 					{
 						BinocularRange = 128;
 						BinocularOldCamera = camera.old_type;
@@ -283,7 +281,7 @@ long ControlPhase(long _nframes, long demo_mode)
 		else if (SniperCamActive || bUseSpotCam || bTrackCamInit)
 			input &= ~IN_LOOK;
 
-		if (BinocularRange && (!LaserSight && (gfLevelFlags & GF_OFFICE) && (inputBusy & IN_ACTION)))//VCI levels, headset + action
+		if (BinocularRange && (!LaserSight && gfLevelFlags & GF_OFFICE && inputBusy & IN_ACTION))//VCI levels, headset + action
 			InfraRed = 1;
 		else if (BinocularRange && (LaserSight && !(gfLevelFlags & GF_OFFICE)))//none vci levels, lasersight
 			InfraRed = 1;
@@ -481,7 +479,7 @@ long ControlPhase(long _nframes, long demo_mode)
 		{
 			GameTimer++;
 
-			if (savegame.Level.Timer != 0)
+			if (savegame.Level.Timer)
 			{
 				if (!GLOBAL_playing_cutseq)
 					savegame.Level.Timer++;
@@ -569,18 +567,18 @@ void InterpolateAngle(short dest, short* src, short* diff, short speed)
 	if (diff)
 		diff[0] = (short)adiff;
 
-	*src += (short)(adiff >> speed);
+	*src += short(adiff >> speed);
 }
 
 void TranslateItem(ITEM_INFO* item, short x, short y, short z)
 {
-	short sin, cos;
+	long s, c;
 
-	cos = phd_cos(item->pos.y_rot);
-	sin = phd_sin(item->pos.y_rot);
-	item->pos.x_pos += ((cos * x) + (sin * z)) >> 14;
+	s = phd_sin(item->pos.y_rot);
+	c = phd_cos(item->pos.y_rot);
+	item->pos.x_pos += (z * s + x * c) >> 14;
 	item->pos.y_pos += y;
-	item->pos.z_pos += ((-sin * x) + (cos * z)) >> 14;
+	item->pos.z_pos += (z * c - x * s) >> 14;
 }
 
 void InitCutPlayed()
@@ -637,151 +635,150 @@ void NeatAndTidyTriggerCutscene(long value, long timer)
 		return;
 	}
 
-	if (!lara.burn)
+	if (lara.burn)
+		return;
+	
+	if (value == 23)
 	{
-		if (value == 23)
+		if (!cutseq_trig && CheckCutPlayed(23))
+			richcutfrigflag = 1;
+	}
+
+	if (cutseq_trig || CheckCutPlayed(value))
+		return;
+
+	cutrot = timer & 3;
+
+	if (value <= 4 || value > 63)	//stealth "frigggggs"
+	{
+		if (value == 2)
+			inv_item_stealth_frigggggs = CROWBAR_ITEM;
+		else
+			inv_item_stealth_frigggggs = WET_CLOTH;
+
+		if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
+			lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH &&
+			GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object((short)inv_item_stealth_frigggggs))
 		{
-			if (!cutseq_trig && CheckCutPlayed(23))
-				richcutfrigflag = 1;
-		}
+			if (CheckGuardOnTrigger())
+				GLOBAL_enterinventory = inv_item_stealth_frigggggs;
 
-		if (!cutseq_trig && !CheckCutPlayed(value))
-		{
-			cutrot = timer & 3;
-
-			if (value <= 4 || value > 63)
-			{
-				if (value == 2)
-					inv_item_stealth_frigggggs = CROWBAR_ITEM;
-				else
-					inv_item_stealth_frigggggs = WET_CLOTH;
-
-				if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
-					lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH &&
-					GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object((short)inv_item_stealth_frigggggs))
-				{
-					if (CheckGuardOnTrigger())
-						GLOBAL_enterinventory = inv_item_stealth_frigggggs;
-
-					return;
-				}
-
-				if (GLOBAL_inventoryitemchosen != inv_item_stealth_frigggggs || !CheckGuardOnTrigger())
-					return;
-
-				if (inv_item_stealth_frigggggs == WET_CLOTH)
-					lara.wetcloth = 1;
-
-				GLOBAL_inventoryitemchosen = NO_ITEM;
-			}
-			else
-			{
-				switch (value)
-				{
-				case 43:
-
-					if (cutrot != 1 || is_object_in_room(lara_item->room_number, GREEN_TEETH) && !have_i_got_object(PUZZLE_ITEM2))
-						cutseq_num = 43;
-
-					return;
-
-				case 39:
-
-					if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
-						lara_item->current_anim_state == AS_TREAD && lara_item->anim_number == ANIM_TREAD &&
-						GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object(PUZZLE_ITEM2))
-						GLOBAL_enterinventory = PUZZLE_ITEM2;
-					else if (GLOBAL_inventoryitemchosen == PUZZLE_ITEM2)
-					{
-						GLOBAL_inventoryitemchosen = NO_ITEM;
-						cutseq_num = 39;
-					}
-
-					return;
-
-				case 38:
-
-					if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
-						lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH &&
-						GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object(PUZZLE_ITEM1))
-						GLOBAL_enterinventory = PUZZLE_ITEM1;
-					else if (GLOBAL_inventoryitemchosen == PUZZLE_ITEM1)
-					{
-						GLOBAL_inventoryitemchosen = NO_ITEM;
-						cutseq_num = 38;
-					}
-
-					return;
-
-				case 10:
-
-					if (have_i_got_object(PUZZLE_ITEM3))
-					{
-						SetCutPlayed(10);
-						cutseq_num = 9;
-						return;
-					}
-
-					break;
-
-				case 24:
-
-					for (item_num = room[lara_item->room_number].item_number; item_num != NO_ITEM; item_num = item->next_item)					
-					{
-						item = &items[item_num];
-
-						if (item->object_number == SCIENTIST && item->hit_points > 0 &&
-							item->anim_number == objects[BLUE_GUARD].anim_index + 62 && item->frame_number == anims[item->anim_number].frame_end)
-						{
-							cutseq_num = 24;
-							break;
-						}
-					}
-
-					return;
-
-				case 20:
-
-					if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
-						lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH &&
-						GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object(KEY_ITEM7))
-						GLOBAL_enterinventory = KEY_ITEM7;
-					else if (GLOBAL_inventoryitemchosen == KEY_ITEM7)
-					{
-						GLOBAL_inventoryitemchosen = NO_ITEM;
-						cutseq_num = 20;
-					}
-
-					return;
-
-				case 14:
-
-					if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
-						lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH &&
-						GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object(PUZZLE_ITEM2))
-						GLOBAL_enterinventory = PUZZLE_ITEM2;
-					else if (GLOBAL_inventoryitemchosen == PUZZLE_ITEM2)
-					{
-						GLOBAL_inventoryitemchosen = NO_ITEM;
-						cutseq_num = 14;
-						remove_inventory_item(PUZZLE_ITEM2);
-					}
-
-					return;
-
-				case 23:
-
-					if (lara.hk_type_carried && !check_xray_machine_trigger() && !richcutfrigflag)
-						cutseq_num = 23;
-
-					return;
-				}
-			}
-
-			cutseq_num = value;
 			return;
 		}
+
+		if (GLOBAL_inventoryitemchosen != inv_item_stealth_frigggggs || !CheckGuardOnTrigger())
+			return;
+
+		if (inv_item_stealth_frigggggs == WET_CLOTH)
+			lara.wetcloth = 1;
+
+		GLOBAL_inventoryitemchosen = NO_ITEM;
+		cutseq_num = value;
+		return;
 	}
+
+	switch (value)
+	{
+	case 43:
+
+		if (cutrot != 1 || is_object_in_room(lara_item->room_number, GREEN_TEETH) && !have_i_got_object(PUZZLE_ITEM2))
+			cutseq_num = 43;
+
+		return;
+
+	case 39:
+
+		if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
+			lara_item->current_anim_state == AS_TREAD && lara_item->anim_number == ANIM_TREAD &&
+			GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object(PUZZLE_ITEM2))
+			GLOBAL_enterinventory = PUZZLE_ITEM2;
+		else if (GLOBAL_inventoryitemchosen == PUZZLE_ITEM2)
+		{
+			GLOBAL_inventoryitemchosen = NO_ITEM;
+			cutseq_num = 39;
+		}
+
+		return;
+
+	case 38:
+
+		if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
+			lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH &&
+			GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object(PUZZLE_ITEM1))
+			GLOBAL_enterinventory = PUZZLE_ITEM1;
+		else if (GLOBAL_inventoryitemchosen == PUZZLE_ITEM1)
+		{
+			GLOBAL_inventoryitemchosen = NO_ITEM;
+			cutseq_num = 38;
+		}
+
+		return;
+
+	case 10:
+
+		if (have_i_got_object(PUZZLE_ITEM3))
+		{
+			SetCutPlayed(10);
+			cutseq_num = 9;
+			return;
+		}
+
+		break;
+
+	case 24:
+
+		for (item_num = room[lara_item->room_number].item_number; item_num != NO_ITEM; item_num = item->next_item)
+		{
+			item = &items[item_num];
+
+			if (item->object_number == SCIENTIST && item->hit_points > 0 &&
+				item->anim_number == objects[BLUE_GUARD].anim_index + 62 && item->frame_number == anims[item->anim_number].frame_end)
+			{
+				cutseq_num = 24;
+				break;
+			}
+		}
+
+		return;
+
+	case 20:
+
+		if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
+			lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH &&
+			GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object(KEY_ITEM7))
+			GLOBAL_enterinventory = KEY_ITEM7;
+		else if (GLOBAL_inventoryitemchosen == KEY_ITEM7)
+		{
+			GLOBAL_inventoryitemchosen = NO_ITEM;
+			cutseq_num = 20;
+		}
+
+		return;
+
+	case 14:
+
+		if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
+			lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH &&
+			GLOBAL_inventoryitemchosen == NO_ITEM && have_i_got_object(PUZZLE_ITEM2))
+			GLOBAL_enterinventory = PUZZLE_ITEM2;
+		else if (GLOBAL_inventoryitemchosen == PUZZLE_ITEM2)
+		{
+			GLOBAL_inventoryitemchosen = NO_ITEM;
+			cutseq_num = 14;
+			remove_inventory_item(PUZZLE_ITEM2);
+		}
+
+		return;
+
+	case 23:
+
+		if (lara.hk_type_carried && !check_xray_machine_trigger() && !richcutfrigflag)
+			cutseq_num = 23;
+
+		return;
+	}
+
+	cutseq_num = value;
 }
 
 long is_object_in_room(long roomnumber, long objnumber)
@@ -845,9 +842,9 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 
 	do
 	{
-		type = *(data++);
+		type = *data++;
 
-		switch ((type & 0x1F))
+		switch (type & 0x1F)
 		{
 		case DOOR_TYPE:
 		case ROOF_TYPE:
@@ -861,20 +858,20 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			break;
 
 		case TILT_TYPE:
-			xoff = (*data) >> 8;
-			yoff = *(char*)(data);
+			xoff = *data >> 8;
+			yoff = *(char*)data;
 			tiltxoff = xoff;
 			tiltyoff = yoff;
 
-			if ((ABS(xoff)) > 2 || (ABS(yoff)) > 2)
+			if (ABS(xoff) > 2 || ABS(yoff) > 2)
 				height_type = BIG_SLOPE;
 			else
 				height_type = SMALL_SLOPE;
 
 			if (xoff < 0)
-				height -= (xoff * (z & 1023) >> 2);
+				height -= xoff * (z & 1023) >> 2;
 			else
-				height += (xoff * ((-1 - z) & 1023) >> 2);
+				height += xoff * ((-1 - z) & 1023) >> 2;
 
 			if (yoff < 0)
 				height -= yoff * (x & 1023) >> 2;
@@ -894,12 +891,12 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			do
 			{
 
-				trigger = *(data++);
+				trigger = *data++;
 
-				if (trigger & 0x3C00)
+				if ((trigger & 0x3C00) != (TO_OBJECT << 10))
 				{
-					if ((trigger & 0x3C00) == 1024 || (trigger & 0x3C00) == 12288)
-						trigger = *(data++);
+					if ((trigger & 0x3C00) == (TO_CAMERA << 10) || (trigger & 0x3C00) == (TO_FLYBY << 10))
+						trigger = *data++;
 
 					continue;
 				}
@@ -1059,7 +1056,7 @@ FLOOR_INFO* GetFloor(long x, long y, long z, short* room_number)
 		else if (y_floor >= r->y_size)
 			y_floor = r->y_size - 1;
 
-		floor = &r->floor[x_floor + (y_floor * r->x_size)];
+		floor = &r->floor[x_floor + y_floor * r->x_size];
 		door = GetDoor(floor);
 
 		if (door == NO_ROOM)
@@ -1204,186 +1201,189 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 		f = &r->floor[xoff + r->x_size * yoff];
 	}
 
-	height = 256 * f->ceiling;
+	height = f->ceiling << 8;
 
-	if (height != NO_HEIGHT)
+	if (height == NO_HEIGHT)
+		return NO_HEIGHT;
+
+	if (f->index)
 	{
-		if (f->index)
+		data = &floor_data[f->index];
+		type = *data++;
+		ended = 0;
+
+		if ((type & 0x1F) == TILT_TYPE || (type & 0x1F) == SPLIT1 || (type & 0x1F) == SPLIT2 || (type & 0x1F) == NOCOLF1T ||
+			(type & 0x1F) == NOCOLF1B || (type & 0x1F) == NOCOLF2T || (type & 0x1F) == NOCOLF2B)
 		{
-			data = &floor_data[f->index];
-			type = *data;
 			data++;
-			ended = 0;
 
-			if ((type & 0x1F) == TILT_TYPE || (type & 0x1F) == SPLIT1 || (type & 0x1F) == SPLIT2 || (type & 0x1F) == NOCOLF1T || (type & 0x1F) == NOCOLF1B || (type & 0x1F) == NOCOLF2T || (type & 0x1F) == NOCOLF2B)
+			if (type & 0x8000)
+				ended = 1;
+
+			type = *data++;
+		}
+
+		if (!ended)
+		{
+			h1 = 0;
+			h2 = 0;
+
+			if ((type & 0x1F) != ROOF_TYPE)
 			{
-				data++;
-
-				if (type & 0x8000)
-					ended = 1;
-
-				type = *data;
-				data++;
-			}
-
-			if (!ended)
-			{
-				h1 = 0;
-				h2 = 0;
-
-				if ((type & 0x1F) != ROOF_TYPE)
+				if ((type & 0x1F) == SPLIT3 || (type & 0x1F) == SPLIT4 || (type & 0x1F) == NOCOLC1T ||
+					(type & 0x1F) == NOCOLC1B || (type & 0x1F) == NOCOLC2T || (type & 0x1F) == NOCOLC2B)
 				{
-					if ((type & 0x1F) == SPLIT3 || (type & 0x1F) == SPLIT4 || (type & 0x1F) == NOCOLC1T || (type & 0x1F) == NOCOLC1B || (type & 0x1F) == NOCOLC2T || (type & 0x1F) == NOCOLC2B)
+					dx = x & 0x3FF;
+					dz = z & 0x3FF;
+					t0 = -(*data & 0xF);
+					t1 = -(*data >> 4 & 0xF);
+					t2 = -(*data >> 8 & 0xF);
+					t3 = -(*data >> 12 & 0xF);
+
+					if ((type & 0x1F) == SPLIT3 || (type & 0x1F) == NOCOLC1T || (type & 0x1F) == NOCOLC1B)
 					{
-						dx = x & 0x3FF;
-						dz = z & 0x3FF;
-						t0 = -(*data & 0xF);
-						t1 = -(*data >> 4 & 0xF);
-						t2 = -(*data >> 8 & 0xF);
-						t3 = -(*data >> 12 & 0xF);
-
-						if ((type & 0x1F) == SPLIT3 || (type & 0x1F) == NOCOLC1T || (type & 0x1F) == NOCOLC1B)
+						if (dx <= 1024 - dz)
 						{
-							if (dx <= 1024 - dz)
-							{
-								hadj = type >> 10 & 0x1F;
+							hadj = type >> 10 & 0x1F;
 
-								if (hadj & 0x10)
-									hadj |= 0xFFF0;
+							if (hadj & 0x10)
+								hadj |= 0xFFF0;
 
-								height += 256 * hadj;
-								h1 = t2 - t1;
-								h2 = t3 - t2;
-							}
-							else
-							{
-								hadj = type >> 5 & 0x1F;
-
-								if (hadj & 0x10)
-									hadj |= 0xFFF0;
-
-								height += 256 * hadj;
-								h1 = t3 - t0;
-								h2 = t0 - t1;
-							}
+							height += 256 * hadj;
+							h1 = t2 - t1;
+							h2 = t3 - t2;
 						}
 						else
 						{
-							if (dx <= dz)
-							{
-								hadj = type >> 10 & 0x1F;
+							hadj = type >> 5 & 0x1F;
 
-								if (hadj & 0x10)
-									hadj |= 0xFFF0;
+							if (hadj & 0x10)
+								hadj |= 0xFFF0;
 
-								height += 256 * hadj;
-								h1 = t2 - t1;
-								h2 = t0 - t1;
-							}
-							else
-							{
-								hadj = type >> 5 & 0x1F;
+							height += 256 * hadj;
+							h1 = t3 - t0;
+							h2 = t0 - t1;
+						}
+					}
+					else
+					{
+						if (dx <= dz)
+						{
+							hadj = type >> 10 & 0x1F;
 
-								if (hadj & 0x10)
-									hadj |= 0xFFF0;
+							if (hadj & 0x10)
+								hadj |= 0xFFF0;
 
-								height += 256 * hadj;
-								h1 = t3 - t0;
-								h2 = t3 - t2;
-							}
+							height += 256 * hadj;
+							h1 = t2 - t1;
+							h2 = t0 - t1;
+						}
+						else
+						{
+							hadj = type >> 5 & 0x1F;
+
+							if (hadj & 0x10)
+								hadj |= 0xFFF0;
+
+							height += 256 * hadj;
+							h1 = t3 - t0;
+							h2 = t3 - t2;
 						}
 					}
 				}
-				else
-				{
-					h1 = *data >> 8;
-					h2 = *(char*) data;
-				}
-
-				if (h1 < 0)
-					height += (z & 0x3FF) * h1 >> 2;
-				else
-					height -= (-1 - z & 0x3FF) * h1 >> 2;
-
-				if (h2 < 0)
-					height += (-1 - x & 0x3FF) * h2 >> 2;
-				else
-					height -= (x & 0x3FF) * h2 >> 2;
 			}
-		}
+			else
+			{
+				h1 = *data >> 8;
+				h2 = *(char*)data;
+			}
 
-		while (floor->pit_room != NO_ROOM)
+			if (h1 < 0)
+				height += (z & 0x3FF) * h1 >> 2;
+			else
+				height -= (-1 - z & 0x3FF) * h1 >> 2;
+
+			if (h2 < 0)
+				height += (-1 - x & 0x3FF) * h2 >> 2;
+			else
+				height -= (x & 0x3FF) * h2 >> 2;
+		}
+	}
+
+	while (floor->pit_room != NO_ROOM)
+	{
+		if (CheckNoColFloorTriangle(floor, x, z) == 1)
+			break;
+
+		r = &room[floor->pit_room];
+		xoff = (z - r->z) >> 10;
+		yoff = (x - r->x) >> 10;
+		floor = &r->floor[xoff + r->x_size * yoff];
+	}
+
+	if (floor->index)
+	{
+		data = &floor_data[floor->index];
+
+		do
 		{
-			if (CheckNoColFloorTriangle(floor, x, z) == 1)
+			type = *data++;
+
+			switch (type & 0x1F)
+			{
+			case DOOR_TYPE:
+			case TILT_TYPE:
+			case ROOF_TYPE:
+			case SPLIT1:
+			case SPLIT2:
+			case SPLIT3:
+			case SPLIT4:
+			case NOCOLF1T:
+			case NOCOLF1B:
+			case NOCOLF2T:
+			case NOCOLF2B:
+			case NOCOLC1T:
+			case NOCOLC1B:
+			case NOCOLC2T:
+			case NOCOLC2B:
+				data++;
 				break;
 
-			r = &room[floor->pit_room];
-			xoff = (z - r->z) >> 10;
-			yoff = (x - r->x) >> 10;
-			floor = &r->floor[xoff + r->x_size * yoff];
-		}
-
-		if (floor->index)
-		{
-			data = &floor_data[floor->index];
-
-			do
-			{
-				type = *data;
+			case TRIGGER_TYPE:
 				data++;
 
-				switch (type & 0x1F)
+				do
 				{
-				case DOOR_TYPE:
-				case TILT_TYPE:
-				case ROOF_TYPE:
-				case SPLIT1:
-				case SPLIT2:
-				case SPLIT3:
-				case SPLIT4:
-				case NOCOLF1T:
-				case NOCOLF1B:
-				case NOCOLF2T:
-				case NOCOLF2B:
-				case NOCOLC1T:
-				case NOCOLC1B:
-				case NOCOLC2T:
-				case NOCOLC2B:
-					data++;
-					break;
-
-				case TRIGGER_TYPE:
+					trigger = *data;
 					data++;
 
-					do
+					if ((trigger & 0x3C00) != (TO_OBJECT << 10))
 					{
-						trigger = *data;
-						data++;
+						if ((trigger & 0x3C00) == (TO_CAMERA << 10) || (trigger & 0x3C00) == (TO_FLYBY << 10))
+							trigger = *data++;
+					}
+					else
+					{
+						item = &items[trigger & 0x3FF];
 
-						if (trigger & 0x3C00)
-						{
-							if ((trigger & 0x3C00) == 1024 || (trigger & 0x3C00) == 12288)
-							{
-								trigger = *data;
-								data++;
-							}
-						}
-						else
-						{
-							item = &items[trigger & 0x3FF];
+						if (objects[item->object_number].ceiling && !(item->flags & 0x8000))
+							objects[item->object_number].ceiling(item, x, y, z, &height);
+					}
 
-							if (objects[item->object_number].ceiling && !(item->flags & 0x8000))
-								objects[item->object_number].ceiling(item, x, y, z, &height);
-						}
-					} while (!(trigger & 0x8000));
-					break;
+				} while (!(trigger & 0x8000));
+				break;
 
-				default:
-					S_ExitSystem("GetCeiling(): Unknown type");
-					break;
-				}
-			} while (!(type & 0x8000));
-		}
+			case LAVA_TYPE:
+			case CLIMB_TYPE:
+			case MONKEY_TYPE:
+			case TRIGTRIGGER_TYPE:
+				break;
+
+			default:
+				S_ExitSystem("GetCeiling(): Unknown type");
+				break;
+			}
+		} while (!(type & 0x8000));
 	}
 
 	return height;
@@ -2513,7 +2513,7 @@ void FlipMap(long FlipNumber)
 		}
 	}
 
-	flip_stats[FlipNumber] = flip_stats[FlipNumber] == 0;
+	flip_stats[FlipNumber] = !flip_stats[FlipNumber];
 	flip_status = flip_stats[FlipNumber];
 
 	for (short slot = 0; slot < 5; slot++)
@@ -2574,7 +2574,7 @@ void RefreshCamera(short type, short* data)
 
 		if (((trigger >> 10) & 0xF) == TO_CAMERA)
 		{
-			++data;
+			data++;
 
 			if (value == camera.last)
 			{
@@ -2600,8 +2600,11 @@ void RefreshCamera(short type, short* data)
 
 	} while (!(trigger & 0x8000));
 
-	if (camera.item && (!target_ok || (target_ok == 2 && camera.item->looked_at && camera.item != camera.last_item)))
-		camera.item = 0;
+	if (camera.item)
+	{
+		if (!target_ok || target_ok == 2 && camera.item->looked_at && camera.item != camera.last_item)
+			camera.item = 0;
+	}
 
 	if (camera.number == -1 && camera.timer > 0)
 		camera.timer = -1;
