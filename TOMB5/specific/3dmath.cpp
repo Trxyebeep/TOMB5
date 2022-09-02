@@ -952,6 +952,52 @@ ulong phd_sqrt(ulong num)
 	return result;
 }
 
+ulong mGetAngle(long x, long z, long x1, long z1)
+{
+	long dx, dz, octant, swap, angle;
+
+	dx = x1 - x;
+	dz = z1 - z;
+
+	if (!dx && !dz)
+		return 0;
+
+	octant = 0;
+
+	if (dx < 0)
+	{
+		octant = 4;
+		dx = -dx;
+	}
+
+	if (dz < 0)
+	{
+		octant += 2;
+		dz = -dz;
+	}
+
+	if (dz > dx)
+	{
+		octant++;
+		swap = dx;
+		dx = dz;
+		dz = swap;
+	}
+
+	while (short(dz) != dz)
+	{
+		dx >>= 1;
+		dz >>= 1;
+	}
+
+	angle = phdtan2[octant] + phdtantab[(dz << 11) / dx];
+
+	if (angle < 0)
+		angle = -angle;
+
+	return -angle & 0xFFFF;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -993,4 +1039,5 @@ void inject_3dmath(bool replace)
 	INJECT(0x0048F0E0, InitWindow, replace);
 	INJECT(0x0048F8A0, phd_atan, replace);
 	INJECT(0x0048F980, phd_sqrt, replace);
+	INJECT(0x0048F290, mGetAngle, replace);
 }

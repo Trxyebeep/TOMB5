@@ -42,6 +42,6 @@ void SetupZRange(long znear, long zfar);
 void InitWindow(long x, long y, long w, long h, long znear, long zfar, long fov, long a, long b);
 long phd_atan(long x, long y);
 ulong phd_sqrt(ulong num);
+ulong mGetAngle(long x, long z, long x1, long z1);
 
-#define mGetAngle	( (long(__cdecl*)(long, long, long, long)) 0x0048F290 )
 #define phd_GenerateW2V	( (void(__cdecl*)(PHD_3DPOS*)) 0x0048F330 )
