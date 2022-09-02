@@ -836,6 +836,23 @@ void ScaleCurrentMatrix(PHD_VECTOR* vec)
 	phd_mxptr[M22] = (phd_mxptr[M22] * vec->z) >> 14;
 }
 
+void SetupZRange(long znear, long zfar)
+{
+	phd_znear = znear;
+	phd_zfar = zfar;
+	f_zfar = (float)zfar;
+	f_znear = (float)znear;
+	f_perspoznear = f_persp / f_znear;
+	f_mznear = float(znear >> 14);
+	f_mzfar = float(zfar >> 14);
+	f_mperspoznear = f_mpersp / f_mznear;
+	f_moneoznear = mone / f_mznear;
+	f_b = f_mzfar * f_mznear * 0.99F / (f_mznear - f_mzfar);
+	f_a = 0.005F - f_b / f_mznear;
+	f_b = -f_b;
+	f_boo = f_b / mone;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -873,4 +890,5 @@ void inject_3dmath(bool replace)
 	INJECT(0x00490F30, aPointCamera, replace);
 	INJECT(0x00490B40, aScaleCurrentMatrix, replace);
 	INJECT(0x0048EFF0, ScaleCurrentMatrix, replace);
+	INJECT(0x0048EEE0, SetupZRange, replace);
 }

@@ -1587,7 +1587,7 @@ x for functions decompiled but not injected, for one reason or another.
 		specific/3dmath.cpp
 
 0x0048EDC0	+	AlterFOV
-0x0048EEE0		SetupZRange
+0x0048EEE0	+	SetupZRange
 0x0048EFF0	+	ScaleCurrentMatrix
 0x0048F0E0		InitWindow
 0x0048F290		mGetAngle

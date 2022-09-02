@@ -333,6 +333,7 @@
 #define f_centerx	VAR_U_(0x0055D22C, float)
 #define f_centery	VAR_U_(0x0055D230, float)
 #define f_a	VAR_U_(0x0051D150, float)
+#define f_b	VAR_U_(0x0051D154, float)
 #define f_boo	VAR_U_(0x0055D220, float)
 #define f_moneoznear	VAR_U_(0x0055D25C, float)
 /*************************************************/

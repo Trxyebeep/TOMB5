@@ -38,6 +38,7 @@ void aPointCameraByVector(float* mx, FCAMERA* cam);
 void aPointCamera(FCAMERA* cam);
 void aScaleCurrentMatrix(PHD_VECTOR* vec);
 void ScaleCurrentMatrix(PHD_VECTOR* vec);
+void SetupZRange(long znear, long zfar);
 
 #define mGetAngle	( (long(__cdecl*)(long, long, long, long)) 0x0048F290 )
 #define phd_GenerateW2V	( (void(__cdecl*)(PHD_3DPOS*)) 0x0048F330 )
