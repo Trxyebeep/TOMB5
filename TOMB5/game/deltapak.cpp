@@ -864,7 +864,7 @@ void richcut3_control()
 		cutseq_meshbits[1] |= 0x80000000;
 		cutseq_removelara_hk();
 		lara.back_gun = WEAPON_NONE;
-		lara.hk_type_carried = WTYPE_MISSING;
+		lara.hk_type_carried = W_NONE;
 		lara.last_gun_type = WEAPON_NONE;
 	}
 }
@@ -2290,16 +2290,16 @@ void handle_cutseq_triggering(long name)
 #ifndef GENERAL_FIXES // Fixes drawing pistols regardless of last weapon after cutscenes
 			lara.last_gun_type = WEAPON_PISTOLS;
 
-			if (!objects[PISTOLS_ITEM].loaded || lara.pistols_type_carried == WTYPE_MISSING)
+			if (!objects[PISTOLS_ITEM].loaded || lara.pistols_type_carried == W_NONE)
 				lara.last_gun_type = WEAPON_NONE;
 
-			if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & WTYPE_PRESENT)
+			if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & W_PRESENT)
 				lara.last_gun_type = WEAPON_HK;
 #endif
 
 #ifdef GENERAL_FIXES
 			old_lara_LHolster = tomb5_save.LHolster;
-			tomb5_save.LHolster = lara.pistols_type_carried == WTYPE_MISSING ? LARA_HOLSTERS : LARA_HOLSTERS_PISTOLS;
+			tomb5_save.LHolster = lara.pistols_type_carried == W_NONE ? LARA_HOLSTERS : LARA_HOLSTERS_PISTOLS;
 			old_lara_holster = lara.holster;
 			lara.holster = tomb5_save.LHolster;
 #endif
@@ -3892,7 +3892,7 @@ void do_cutseq_skipper_shit()
 		{
 			cutseq_removelara_hk();
 			lara.back_gun = WEAPON_NONE;
-			lara.hk_type_carried = WTYPE_MISSING;
+			lara.hk_type_carried = W_NONE;
 			lara.last_gun_type = WEAPON_NONE;
 		}
 

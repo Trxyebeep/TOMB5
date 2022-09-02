@@ -137,7 +137,7 @@ void FireShotgun()
 
 	fired = 0;
 
-	if (lara.shotgun_type_carried & WTYPE_AMMO_1)
+	if (lara.shotgun_type_carried & W_AMMO1)
 		scatter = 1820;
 	else
 		scatter = 5460;
@@ -183,9 +183,9 @@ void FireHK(long running)
 {
 	short angles[2];
 
-	if (lara.hk_type_carried & WTYPE_AMMO_1)
+	if (lara.hk_type_carried & W_AMMO1)
 		HKTimer = 12;
-	else if (lara.hk_type_carried & WTYPE_AMMO_2)
+	else if (lara.hk_type_carried & W_AMMO2)
 	{
 		HKShotsFired++;
 
@@ -454,7 +454,7 @@ void AnimateShotgun(long weapon_type)
 						}
 						else if (weapon_type == WEAPON_HK)
 						{
-							if ((lara.hk_type_carried & (WTYPE_AMMO_1 | WTYPE_AMMO_2)) && HKTimer)
+							if ((lara.hk_type_carried & (W_AMMO1 | W_AMMO2)) && HKTimer)
 								item->goal_anim_state = 0;
 							else
 							{
@@ -462,7 +462,7 @@ void AnimateShotgun(long weapon_type)
 								m16_firing = 1;
 								item->goal_anim_state = 2;
 
-								if (lara.hk_type_carried & WTYPE_SILENCER)
+								if (lara.hk_type_carried & W_SILENCER)
 									SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 								else
 								{
@@ -482,7 +482,7 @@ void AnimateShotgun(long weapon_type)
 					item->goal_anim_state = 0;
 			}
 
-			if (item->goal_anim_state != 2 && m16_firing && !(lara.hk_type_carried & WTYPE_SILENCER))
+			if (item->goal_anim_state != 2 && m16_firing && !(lara.hk_type_carried & W_SILENCER))
 			{
 				StopSoundEffect(SFX_HK_FIRE);
 				SoundEffect(SFX_HK_STOP, &lara_item->pos, SFX_DEFAULT);
@@ -491,7 +491,7 @@ void AnimateShotgun(long weapon_type)
 		}
 		else if (m16_firing)
 		{
-			if (lara.hk_type_carried & WTYPE_SILENCER)
+			if (lara.hk_type_carried & W_SILENCER)
 				SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 			else
 			{
@@ -533,7 +533,7 @@ void AnimateShotgun(long weapon_type)
 				{
 					if (!lara.target || lara.left_arm.lock)
 					{
-						if ((lara.hk_type_carried & (WTYPE_AMMO_1 | WTYPE_AMMO_2)) && HKTimer)
+						if ((lara.hk_type_carried & (W_AMMO1 | W_AMMO2)) && HKTimer)
 							item->goal_anim_state = 6;
 						else
 						{
@@ -541,7 +541,7 @@ void AnimateShotgun(long weapon_type)
 							m16_firing = 1;
 							item->goal_anim_state = 8;
 
-							if (lara.hk_type_carried & WTYPE_SILENCER)
+							if (lara.hk_type_carried & W_SILENCER)
 								SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 							else
 							{
@@ -555,7 +555,7 @@ void AnimateShotgun(long weapon_type)
 					item->goal_anim_state = 6;
 			}
 
-			if (item->goal_anim_state != 8 && m16_firing && !(lara.hk_type_carried & WTYPE_SILENCER))
+			if (item->goal_anim_state != 8 && m16_firing && !(lara.hk_type_carried & W_SILENCER))
 			{
 				StopSoundEffect(SFX_HK_FIRE);
 				SoundEffect(SFX_HK_STOP, &lara_item->pos, SFX_DEFAULT);
@@ -564,7 +564,7 @@ void AnimateShotgun(long weapon_type)
 		}
 		else if (m16_firing)
 		{
-			if (lara.hk_type_carried & WTYPE_SILENCER)
+			if (lara.hk_type_carried & W_SILENCER)
 				SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 			else
 			{

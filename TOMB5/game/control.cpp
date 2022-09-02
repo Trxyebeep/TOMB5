@@ -221,7 +221,7 @@ long ControlPhase(long _nframes, long demo_mode)
 				{
 				case WEAPON_REVOLVER:
 
-					if (lara.sixshooter_type_carried & WTYPE_LASERSIGHT && lara.gun_status == LG_READY)
+					if (lara.sixshooter_type_carried & W_LASERSIGHT && lara.gun_status == LG_READY)
 					{
 						BinocularRange = 128;
 						BinocularOldCamera = camera.old_type;
@@ -233,7 +233,7 @@ long ControlPhase(long _nframes, long demo_mode)
 
 				case WEAPON_CROSSBOW:
 
-					if (lara.crossbow_type_carried & WTYPE_LASERSIGHT && lara.gun_status == LG_READY)
+					if (lara.crossbow_type_carried & W_LASERSIGHT && lara.gun_status == LG_READY)
 					{
 						BinocularRange = 128;
 						BinocularOldCamera = camera.old_type;

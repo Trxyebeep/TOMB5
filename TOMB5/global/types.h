@@ -282,13 +282,13 @@ enum floor_types
 
 enum weapon_type_carried 
 {
-	WTYPE_MISSING =			0x0,
-	WTYPE_PRESENT =			0x1,
-	WTYPE_SILENCER =		0x2,
-	WTYPE_LASERSIGHT =		0x4,
-	WTYPE_AMMO_1 =			0x8,
-	WTYPE_AMMO_2 =			0x10,
-	WTYPE_AMMO_3 =			0x20,
+	W_NONE =		0x0,
+	W_PRESENT =		0x1,
+	W_SILENCER =	0x2,
+	W_LASERSIGHT =	0x4,
+	W_AMMO1 =		0x8,
+	W_AMMO2 =		0x10,
+	W_AMMO3 =		0x20,
 };
 
 enum zone_type

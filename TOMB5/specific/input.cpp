@@ -35,7 +35,7 @@ static void DoWeaponHotkey()
 	{
 		if (gfCurrentLevel < LVL5_THIRTEENTH_FLOOR)
 		{
-			if (!(lara.pistols_type_carried & WTYPE_PRESENT))
+			if (!(lara.pistols_type_carried & W_PRESENT))
 				return;
 
 			lara.request_gun_type = WEAPON_PISTOLS;
@@ -45,7 +45,7 @@ static void DoWeaponHotkey()
 		}
 		else
 		{
-			if (!(lara.hk_type_carried & WTYPE_PRESENT))
+			if (!(lara.hk_type_carried & W_PRESENT))
 				return;
 
 			lara.request_gun_type = WEAPON_HK;
@@ -61,24 +61,24 @@ static void DoWeaponHotkey()
 
 					memset(ammo_change_buf, 0, sizeof(ammo_change_buf));
 
-					if (lara.hk_type_carried & WTYPE_AMMO_3)
+					if (lara.hk_type_carried & W_AMMO3)
 					{
-						lara.hk_type_carried &= ~WTYPE_AMMO_3;
-						lara.hk_type_carried |= WTYPE_AMMO_2;
+						lara.hk_type_carried &= ~W_AMMO3;
+						lara.hk_type_carried |= W_AMMO2;
 						ammo_change_timer = 30;
 						sprintf(ammo_change_buf, "Burst");
 					}
-					else if (lara.hk_type_carried & WTYPE_AMMO_2)
+					else if (lara.hk_type_carried & W_AMMO2)
 					{
-						lara.hk_type_carried &= ~WTYPE_AMMO_2;
-						lara.hk_type_carried |= WTYPE_AMMO_1;
+						lara.hk_type_carried &= ~W_AMMO2;
+						lara.hk_type_carried |= W_AMMO1;
 						ammo_change_timer = 30;
 						sprintf(ammo_change_buf, "Sniper");
 					}
-					else if (lara.hk_type_carried & WTYPE_AMMO_1)
+					else if (lara.hk_type_carried & W_AMMO1)
 					{
-						lara.hk_type_carried &= ~WTYPE_AMMO_1;
-						lara.hk_type_carried |= WTYPE_AMMO_3;
+						lara.hk_type_carried &= ~W_AMMO1;
+						lara.hk_type_carried |= W_AMMO3;
 						ammo_change_timer = 30;
 						sprintf(ammo_change_buf, "Rapid");
 					}
@@ -90,7 +90,7 @@ static void DoWeaponHotkey()
 	{
 		if (gfCurrentLevel < LVL5_THIRTEENTH_FLOOR)
 		{
-			if (!(lara.shotgun_type_carried & WTYPE_PRESENT))
+			if (!(lara.shotgun_type_carried & W_PRESENT))
 				return;
 
 			lara.request_gun_type = WEAPON_SHOTGUN;
@@ -106,17 +106,17 @@ static void DoWeaponHotkey()
 
 					memset(ammo_change_buf, 0, sizeof(ammo_change_buf));
 
-					if (lara.shotgun_type_carried & WTYPE_AMMO_2)
+					if (lara.shotgun_type_carried & W_AMMO2)
 					{
-						lara.shotgun_type_carried &= ~WTYPE_AMMO_2;
-						lara.shotgun_type_carried |= WTYPE_AMMO_1;
+						lara.shotgun_type_carried &= ~W_AMMO2;
+						lara.shotgun_type_carried |= W_AMMO1;
 						ammo_change_timer = 30;
 						sprintf(ammo_change_buf, "Normal");
 					}
-					else if (lara.shotgun_type_carried & WTYPE_AMMO_1)
+					else if (lara.shotgun_type_carried & W_AMMO1)
 					{
-						lara.shotgun_type_carried &= ~WTYPE_AMMO_1;
-						lara.shotgun_type_carried |= WTYPE_AMMO_2;
+						lara.shotgun_type_carried &= ~W_AMMO1;
+						lara.shotgun_type_carried |= W_AMMO2;
 						ammo_change_timer = 30;
 						sprintf(ammo_change_buf, "Wideshot");
 					}
@@ -125,7 +125,7 @@ static void DoWeaponHotkey()
 		}
 		else
 		{
-			if (!(lara.crossbow_type_carried & WTYPE_PRESENT))
+			if (!(lara.crossbow_type_carried & W_PRESENT))
 				return;
 
 			lara.request_gun_type = WEAPON_CROSSBOW;
@@ -136,7 +136,7 @@ static void DoWeaponHotkey()
 	}
 	else if (keymap[DIK_3])
 	{
-		if (!(lara.uzis_type_carried & WTYPE_PRESENT))
+		if (!(lara.uzis_type_carried & W_PRESENT))
 			return;
 
 		lara.request_gun_type = WEAPON_UZI;
@@ -146,7 +146,7 @@ static void DoWeaponHotkey()
 	}
 	else if (keymap[DIK_4])
 	{
-		if (!(lara.sixshooter_type_carried & WTYPE_PRESENT))
+		if (!(lara.sixshooter_type_carried & W_PRESENT))
 			return;
 
 		lara.request_gun_type = WEAPON_REVOLVER;
