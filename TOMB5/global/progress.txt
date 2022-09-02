@@ -1617,7 +1617,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004909B0	+	aRotZ
 0x00490A80	+	aRotYXZPack
 0x00490AF0	+	aRotYXZ
-0x00490B40		aScaleCurrentMatrix
+0x00490B40	+	aScaleCurrentMatrix
 0x00490BE0	+	aSetViewMatrix
 0x00490C20	+	aLookAt
 0x00490F30	+	aPointCamera

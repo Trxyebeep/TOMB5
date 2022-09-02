@@ -800,6 +800,27 @@ void aPointCamera(FCAMERA* cam)
 	aPointCameraByVector(cam->matrix, cam);
 }
 
+void aScaleCurrentMatrix(PHD_VECTOR* vec)
+{
+	float x, y, z;
+
+	x = vec->x * (1.0F / float(1 << 14));
+	y = vec->y * (1.0F / float(1 << 14));
+	z = vec->z * (1.0F / float(1 << 14));
+
+	aMXPtr[M00] = aMXPtr[M00] * x;
+	aMXPtr[M10] = aMXPtr[M10] * x;
+	aMXPtr[M20] = aMXPtr[M20] * x;
+
+	aMXPtr[M01] = aMXPtr[M01] * y;
+	aMXPtr[M11] = aMXPtr[M11] * y;
+	aMXPtr[M21] = aMXPtr[M21] * y;
+
+	aMXPtr[M02] = aMXPtr[M02] * z;
+	aMXPtr[M12] = aMXPtr[M12] * z;
+	aMXPtr[M22] = aMXPtr[M22] * z;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -835,4 +856,5 @@ void inject_3dmath(bool replace)
 	INJECT(0x00491170, aPerpVectors, replace);
 	INJECT(0x00490FA0, aPointCameraByVector, replace);
 	INJECT(0x00490F30, aPointCamera, replace);
+	INJECT(0x00490B40, aScaleCurrentMatrix, replace);
 }

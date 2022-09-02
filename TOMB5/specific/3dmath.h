@@ -36,6 +36,7 @@ void aVectorNormal(FVECTOR* s, FVECTOR* v);
 void aPerpVectors(FVECTOR* a, FVECTOR* b, FVECTOR* c);
 void aPointCameraByVector(float* mx, FCAMERA* cam);
 void aPointCamera(FCAMERA* cam);
+void aScaleCurrentMatrix(PHD_VECTOR* vec);
 
 #define ScaleCurrentMatrix	( (void(__cdecl*)(VECTOR*)) 0x0048EFF0 )
 #define mGetAngle	( (long(__cdecl*)(long, long, long, long)) 0x0048F290 )
