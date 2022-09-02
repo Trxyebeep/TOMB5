@@ -784,6 +784,18 @@ void aPointCameraByVector(float* mx, FCAMERA* cam)
 	mx[M23] = mx[M20] * cam->pos.x + mx[M21] * cam->pos.y + mx[M22] * cam->pos.z;
 }
 
+void aPointCamera(FCAMERA* cam)
+{
+	cam->k.x = 0;
+	cam->k.y = -1;
+	cam->k.z = 0;
+	cam->i.x = cam->pos.x - cam->tar.x;
+	cam->i.y = cam->pos.y - cam->tar.y;
+	cam->i.z = cam->pos.z - cam->tar.z;
+	aPerpVectors(&cam->i, &cam->j, &cam->k);
+	aPointCameraByVector(cam->matrix, cam);
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -818,4 +830,5 @@ void inject_3dmath(bool replace)
 	INJECT(0x004910D0, aVectorNormal, replace);
 	INJECT(0x00491170, aPerpVectors, replace);
 	INJECT(0x00490FA0, aPointCameraByVector, replace);
+	INJECT(0x00490F30, aPointCamera, replace);
 }
