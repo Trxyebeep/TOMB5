@@ -759,6 +759,31 @@ void aPerpVectors(FVECTOR* a, FVECTOR* b, FVECTOR* c)
 	c->z = vC.z;
 }
 
+void aPointCameraByVector(float* mx, FCAMERA* cam)
+{
+	float m1[indices_count];
+	float m2[indices_count];
+
+	aUnitMatrixByMat(m1);
+	aUnitMatrixByMat(m2);	//hello?
+
+	mx[M00] = cam->j.x;
+	mx[M01] = cam->j.y;
+	mx[M02] = cam->j.z;
+
+	mx[M10] = -cam->k.x;
+	mx[M11] = -cam->k.y;
+	mx[M12] = -cam->k.z;
+
+	mx[M20] = -cam->i.x;
+	mx[M21] = -cam->i.y;
+	mx[M22] = -cam->i.z;
+
+	mx[M03] = mx[M00] * cam->pos.x + mx[M01] * cam->pos.y + mx[M02] * cam->pos.z;
+	mx[M13] = mx[M10] * cam->pos.x + mx[M11] * cam->pos.y + mx[M12] * cam->pos.z;
+	mx[M23] = mx[M20] * cam->pos.x + mx[M21] * cam->pos.y + mx[M22] * cam->pos.z;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -792,4 +817,5 @@ void inject_3dmath(bool replace)
 	INJECT(0x00491120, aOuterProduct, replace);
 	INJECT(0x004910D0, aVectorNormal, replace);
 	INJECT(0x00491170, aPerpVectors, replace);
+	INJECT(0x00490FA0, aPointCameraByVector, replace);
 }

@@ -1621,7 +1621,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00490BE0	+	aSetViewMatrix
 0x00490C20	+	aLookAt
 0x00490F30		aPointCamera
-0x00490FA0		aPointCameraByVector
+0x00490FA0	+	aPointCameraByVector
 0x004910D0	+	aVectorNormal
 0x00491120	+	aOuterProduct
 0x00491170	+	aPerpVectors
