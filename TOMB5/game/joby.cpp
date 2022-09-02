@@ -478,7 +478,7 @@ void DrawWreckingBall(ITEM_INFO* item)//actually only draws the shadow it seems?
 {
 	ITEM_INFO* baseitem;
 	FLOOR_INFO* floor;
-	VECTOR v;
+	PHD_VECTOR v;
 	short** meshpp;
 	short* frmptr[2];
 	long height, ceiling, shade, y;
@@ -510,9 +510,9 @@ void DrawWreckingBall(ITEM_INFO* item)//actually only draws the shadow it seems?
 		phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 		meshpp = &meshes[objects[ANIMATING16_MIP].mesh_index];
 		y = item->pos.y_pos - baseitem->pos.y_pos - 1664;
-		v.vz = 16384;
-		v.vy = 4 * (y + ((21846 * y) >> 16));
-		v.vx = 16384;
+		v.z = 16384;
+		v.y = 4 * (y + ((21846 * y) >> 16));
+		v.x = 16384;
 		ScaleCurrentMatrix(&v);
 		CalculateObjectLighting(item, *frmptr);
 		phd_PutPolygons(*meshpp, -1);

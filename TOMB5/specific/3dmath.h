@@ -37,8 +37,8 @@ void aPerpVectors(FVECTOR* a, FVECTOR* b, FVECTOR* c);
 void aPointCameraByVector(float* mx, FCAMERA* cam);
 void aPointCamera(FCAMERA* cam);
 void aScaleCurrentMatrix(PHD_VECTOR* vec);
+void ScaleCurrentMatrix(PHD_VECTOR* vec);
 
-#define ScaleCurrentMatrix	( (void(__cdecl*)(VECTOR*)) 0x0048EFF0 )
 #define mGetAngle	( (long(__cdecl*)(long, long, long, long)) 0x0048F290 )
 #define phd_GenerateW2V	( (void(__cdecl*)(PHD_3DPOS*)) 0x0048F330 )
 #define phd_atan	( (long(__cdecl*)(long, long)) 0x0048F8A0 )

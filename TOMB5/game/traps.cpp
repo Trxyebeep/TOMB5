@@ -1114,8 +1114,7 @@ void DrawScaledSpike(ITEM_INFO* item)
 {
 	OBJECT_INFO* object;
 	ROOM_INFO* r;
-	VECTOR v;
-//	CVECTOR c;
+	PHD_VECTOR v;
 	short** meshpp;
 	short* frmptr[2];
 	long clip, rate;//, scale;
@@ -1143,15 +1142,15 @@ void DrawScaledSpike(ITEM_INFO* item)
 
 		if (item->object_number == CUTSCENE_ROPE)
 		{
-			v.vx = 16384;
-			v.vy = 16384;
-			v.vz = item->item_flags[1] << 2;
+			v.x = 16384;
+			v.y = 16384;
+			v.z = item->item_flags[1] << 2;
 		}
 		else
 		{
-			v.vx = 16384;
-			v.vy = item->item_flags[1] << 2;
-			v.vz = 16384;
+			v.x = 16384;
+			v.y = item->item_flags[1] << 2;
+			v.z = 16384;
 		}
 
 		ScaleCurrentMatrix(&v);

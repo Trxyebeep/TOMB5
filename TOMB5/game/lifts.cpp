@@ -12,7 +12,7 @@
 
 void DrawLiftDoors(ITEM_INFO* item)
 {
-	VECTOR v;
+	PHD_VECTOR v;
 	short** meshpp;
 	short* frmptr[2];
 	long clip, rate;
@@ -33,9 +33,9 @@ void DrawLiftDoors(ITEM_INFO* item)
 		{
 			meshpp = &meshes[objects[item->object_number].mesh_index];
 			phd_TranslateRel(frmptr[0][6], frmptr[0][7], frmptr[0][8]);
-			v.vx = item->item_flags[0] << 2;
-			v.vy = 16384;
-			v.vz = 16384;
+			v.x = item->item_flags[0] << 2;
+			v.y = 16384;
+			v.z = 16384;
 			ScaleCurrentMatrix(&v);
 			CalculateObjectLighting(item, frmptr[0]);
 			phd_PutPolygons(*meshpp, clip);

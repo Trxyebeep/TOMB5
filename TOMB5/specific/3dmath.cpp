@@ -821,6 +821,21 @@ void aScaleCurrentMatrix(PHD_VECTOR* vec)
 	aMXPtr[M22] = aMXPtr[M22] * z;
 }
 
+void ScaleCurrentMatrix(PHD_VECTOR* vec)
+{
+	phd_mxptr[M00] = (phd_mxptr[M00] * vec->x) >> 14;
+	phd_mxptr[M10] = (phd_mxptr[M10] * vec->x) >> 14;
+	phd_mxptr[M20] = (phd_mxptr[M20] * vec->x) >> 14;
+
+	phd_mxptr[M01] = (phd_mxptr[M01] * vec->y) >> 14;
+	phd_mxptr[M11] = (phd_mxptr[M11] * vec->y) >> 14;
+	phd_mxptr[M21] = (phd_mxptr[M21] * vec->y) >> 14;
+
+	phd_mxptr[M02] = (phd_mxptr[M02] * vec->z) >> 14;
+	phd_mxptr[M12] = (phd_mxptr[M12] * vec->z) >> 14;
+	phd_mxptr[M22] = (phd_mxptr[M22] * vec->z) >> 14;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -857,4 +872,5 @@ void inject_3dmath(bool replace)
 	INJECT(0x00490FA0, aPointCameraByVector, replace);
 	INJECT(0x00490F30, aPointCamera, replace);
 	INJECT(0x00490B40, aScaleCurrentMatrix, replace);
+	INJECT(0x0048EFF0, ScaleCurrentMatrix, replace);
 }

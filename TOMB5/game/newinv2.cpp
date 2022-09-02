@@ -521,7 +521,7 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, long overlay, long shagfla
 {
 	ANIM_STRUCT* anim;
 	OBJECT_INFO* object;
-	VECTOR vec;
+	PHD_VECTOR vec;
 	short** meshpp;
 	long* bone;
 	short* rotation1;
@@ -552,9 +552,9 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, long overlay, long shagfla
 
 	if (item->object_number == PUZZLE_HOLE8 && GLOBAL_invkeypadmode)
 	{
-		vec.vx = 24576;
-		vec.vy = 16384;
-		vec.vz = 4096;
+		vec.x = 24576;
+		vec.y = 16384;
+		vec.z = 4096;
 		ScaleCurrentMatrix(&vec);
 	}
 
