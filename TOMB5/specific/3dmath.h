@@ -43,5 +43,4 @@ void InitWindow(long x, long y, long w, long h, long znear, long zfar, long fov,
 long phd_atan(long x, long y);
 ulong phd_sqrt(ulong num);
 ulong mGetAngle(long x, long z, long x1, long z1);
-
-#define phd_GenerateW2V	( (void(__cdecl*)(PHD_3DPOS*)) 0x0048F330 )
+void phd_GenerateW2V(PHD_3DPOS* viewPos);

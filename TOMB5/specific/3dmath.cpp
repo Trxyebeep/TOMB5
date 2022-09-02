@@ -998,6 +998,80 @@ ulong mGetAngle(long x, long z, long x1, long z1)
 	return -angle & 0xFFFF;
 }
 
+void phd_GenerateW2V(PHD_3DPOS* viewPos)
+{
+	PHD_VECTOR scalar;
+	long sx, cx, sy, cy, sz, cz;
+
+	sx = phd_sin(viewPos->x_rot);
+	cx = phd_cos(viewPos->x_rot);
+	sy = phd_sin(viewPos->y_rot);
+	cy = phd_cos(viewPos->y_rot);
+	sz = phd_sin(viewPos->z_rot);
+	cz = phd_cos(viewPos->z_rot);
+	phd_mxptr = matrix_stack;
+
+	w2v_matrix[M00] = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
+	w2v_matrix[M01] = TRIGMULT2(cx, sz);
+	w2v_matrix[M02] = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
+	phd_mxptr[M00] = w2v_matrix[M00];
+	phd_mxptr[M01] = w2v_matrix[M01];
+	phd_mxptr[M02] = w2v_matrix[M02];
+
+	w2v_matrix[M10] = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
+	w2v_matrix[M11] = TRIGMULT2(cx, cz);
+	w2v_matrix[M12] = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
+	phd_mxptr[M10] = w2v_matrix[M10];
+	phd_mxptr[M11] = w2v_matrix[M11];
+	phd_mxptr[M12] = w2v_matrix[M12];
+
+	w2v_matrix[M20] = TRIGMULT2(cx, sy);
+	w2v_matrix[M21] = -sx;
+	w2v_matrix[M22] = TRIGMULT2(cx, cy);
+	phd_mxptr[M20] = w2v_matrix[M20];
+	phd_mxptr[M21] = w2v_matrix[M21];
+	phd_mxptr[M22] = w2v_matrix[M22];
+
+	if (lara.dpoisoned != lara.poisoned)
+	{
+		lara.poisoned += (lara.dpoisoned - lara.poisoned) >> 4;
+
+		if (abs(lara.dpoisoned - lara.poisoned) < 16)
+			lara.poisoned = lara.dpoisoned;
+	}
+
+	if (lara.poisoned >= 256)
+	{
+		scalar.x = (lara.poisoned - 256) * ((phd_sin(XSoff1) + phd_sin(XSoff2)) >> 2);
+		scalar.y = (lara.poisoned - 256) * ((phd_sin(YSoff1) + phd_sin(YSoff2)) >> 2);
+		scalar.z = (lara.poisoned - 256) * ((phd_sin(ZSoff1) + phd_sin(ZSoff2)) >> 2);
+
+		if (scalar.x || scalar.y || scalar.z)
+		{
+			scalar.x = (scalar.x >> 12) + 0x4000;
+			scalar.y = (scalar.y >> 12) + 0x4000;
+			scalar.z = (scalar.z >> 12) + 0x4000;
+			ScaleCurrentMatrix(&scalar);
+		}
+	}
+
+	w2v_matrix[M03] = viewPos->x_pos;;
+	w2v_matrix[M13] = viewPos->y_pos;
+	w2v_matrix[M23] = viewPos->z_pos;
+	phd_mxptr[M03] = w2v_matrix[M03];
+	phd_mxptr[M13] = w2v_matrix[M13];
+	phd_mxptr[M23] = w2v_matrix[M23];
+
+	w2v_matrix[M10] = long(LfAspectCorrection * float(phd_mxptr[M10]));
+	w2v_matrix[M11] = long(LfAspectCorrection * float(phd_mxptr[M11]));
+	w2v_matrix[M12] = long(LfAspectCorrection * float(phd_mxptr[M12]));
+	phd_mxptr[M10] = w2v_matrix[M10];
+	phd_mxptr[M11] = w2v_matrix[M11];
+	phd_mxptr[M12] = w2v_matrix[M12];
+
+	SetD3DMatrix(&D3DMW2VMatrix, w2v_matrix);
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -1040,4 +1114,5 @@ void inject_3dmath(bool replace)
 	INJECT(0x0048F8A0, phd_atan, replace);
 	INJECT(0x0048F980, phd_sqrt, replace);
 	INJECT(0x0048F290, mGetAngle, replace);
+	INJECT(0x0048F330, phd_GenerateW2V, replace);
 }

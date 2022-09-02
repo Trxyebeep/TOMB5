@@ -564,6 +564,7 @@
 #define NumLevelFogBulbs	VAR_U_(0x007DFFD8, long)
 #define NumActiveFogBulbs	VAR_U_(0x007EE0C4, long)
 #define D3DCameraMatrix	VAR_U_(0x0057A0B0, D3DMATRIX)
+#define D3DMW2VMatrix	VAR_U_(0x0057A0F0, D3DMATRIX)
 #define DEL_playingamefmv	VAR_U_(0x0051CE24, char)
 #define num_level_meshes	VAR_U_(0x007DFFE4, long)
 #define mesh_vtxbuf	VAR_U_(0x007DFFE0, MESH_DATA**)

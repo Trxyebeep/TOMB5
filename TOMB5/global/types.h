@@ -25,6 +25,8 @@ do \
 } while (false)
 
 /*macros*/
+#define	TRIGMULT2(a,b)		(((a) * (b)) >> 14)
+#define	TRIGMULT3(a,b,c)	(TRIGMULT2((TRIGMULT2(a, b)), c))
 #define ABS(x) (((x)<0) ? (-(x)) : (x))
 #define phd_sin(x) (4 * rcossin_tbl[((long)(x) >> 3) & 0x1FFE])
 #define phd_cos(x) (4 * rcossin_tbl[(((long)(x) >> 3) & 0x1FFE) + 1])

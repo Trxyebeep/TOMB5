@@ -1591,7 +1591,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048EFF0	+	ScaleCurrentMatrix
 0x0048F0E0	+	InitWindow
 0x0048F290	+	mGetAngle
-0x0048F330		phd_GenerateW2V
+0x0048F330	+	phd_GenerateW2V
 0x0048F760	+	phd_LookAt
 0x0048F8A0	+	phd_atan
 0x0048F980	+	phd_sqrt
