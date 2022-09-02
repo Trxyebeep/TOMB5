@@ -3,9 +3,158 @@
 #include "dxshell.h"
 #include "../game/lara_states.h"
 #include "../game/sound.h"
-#ifdef WEP_HOTKEYS
+#ifdef GENERAL_FIXES
 #include "../game/gameflow.h"
 #include "../game/newinv2.h"
+#include "../tomb5/tomb5.h"
+#endif
+
+#ifdef GENERAL_FIXES
+short ammo_change_timer = 0;
+char ammo_change_buf[12];
+
+static void DoWeaponHotkey()
+{
+	short state;
+	bool goin;
+
+	if (!lara_item)
+		goin = 0;
+	else
+	{
+		state = lara_item->current_anim_state;
+		goin = !(gfLevelFlags & GF_YOUNGLARA) && (lara.water_status == LW_ABOVE_WATER || lara.water_status == LW_WADE) && !bDisableLaraControl &&
+			(state != AS_ALL4S && state != AS_CRAWL && state != AS_ALL4TURNL && state != AS_ALL4TURNR && state != AS_CRAWLBACK &&
+				state != AS_CRAWL2HANG && state != AS_DUCK && state != AS_DUCKROTL && state != AS_DUCKROTR);
+	}
+
+	if (!goin)
+		return;
+	
+	if (keymap[DIK_1])
+	{
+		if (gfCurrentLevel < LVL5_THIRTEENTH_FLOOR)
+		{
+			if (!(lara.pistols_type_carried & WTYPE_PRESENT))
+				return;
+
+			lara.request_gun_type = WEAPON_PISTOLS;
+
+			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_PISTOLS)
+				lara.gun_status = LG_DRAW_GUNS;
+		}
+		else
+		{
+			if (!(lara.hk_type_carried & WTYPE_PRESENT))
+				return;
+
+			lara.request_gun_type = WEAPON_HK;
+
+			if (lara.gun_type == WEAPON_HK)
+			{
+				if (lara.gun_status == LG_NO_ARMS)
+					lara.gun_status = LG_DRAW_GUNS;
+				else if (lara.gun_status == LG_READY && !ammo_change_timer)
+				{
+					if (!tomb5.ammotype_hotkeys)
+						return;
+
+					memset(ammo_change_buf, 0, sizeof(ammo_change_buf));
+
+					if (lara.hk_type_carried & WTYPE_AMMO_3)
+					{
+						lara.hk_type_carried &= ~WTYPE_AMMO_3;
+						lara.hk_type_carried |= WTYPE_AMMO_2;
+						ammo_change_timer = 30;
+						sprintf(ammo_change_buf, "Burst");
+					}
+					else if (lara.hk_type_carried & WTYPE_AMMO_2)
+					{
+						lara.hk_type_carried &= ~WTYPE_AMMO_2;
+						lara.hk_type_carried |= WTYPE_AMMO_1;
+						ammo_change_timer = 30;
+						sprintf(ammo_change_buf, "Sniper");
+					}
+					else if (lara.hk_type_carried & WTYPE_AMMO_1)
+					{
+						lara.hk_type_carried &= ~WTYPE_AMMO_1;
+						lara.hk_type_carried |= WTYPE_AMMO_3;
+						ammo_change_timer = 30;
+						sprintf(ammo_change_buf, "Rapid");
+					}
+				}
+			}
+		}
+	}
+	else if (keymap[DIK_2])
+	{
+		if (gfCurrentLevel < LVL5_THIRTEENTH_FLOOR)
+		{
+			if (!(lara.shotgun_type_carried & WTYPE_PRESENT))
+				return;
+
+			lara.request_gun_type = WEAPON_SHOTGUN;
+
+			if (lara.gun_type == WEAPON_SHOTGUN)
+			{
+				if (lara.gun_status == LG_NO_ARMS)
+					lara.gun_status = LG_DRAW_GUNS;
+				else if (lara.gun_status == LG_READY && !ammo_change_timer)
+				{
+					if (!tomb5.ammotype_hotkeys)
+						return;
+
+					memset(ammo_change_buf, 0, sizeof(ammo_change_buf));
+
+					if (lara.shotgun_type_carried & WTYPE_AMMO_2)
+					{
+						lara.shotgun_type_carried &= ~WTYPE_AMMO_2;
+						lara.shotgun_type_carried |= WTYPE_AMMO_1;
+						ammo_change_timer = 30;
+						sprintf(ammo_change_buf, "Normal");
+					}
+					else if (lara.shotgun_type_carried & WTYPE_AMMO_1)
+					{
+						lara.shotgun_type_carried &= ~WTYPE_AMMO_1;
+						lara.shotgun_type_carried |= WTYPE_AMMO_2;
+						ammo_change_timer = 30;
+						sprintf(ammo_change_buf, "Wideshot");
+					}
+				}
+			}
+		}
+		else
+		{
+			if (!(lara.crossbow_type_carried & WTYPE_PRESENT))
+				return;
+
+			lara.request_gun_type = WEAPON_CROSSBOW;
+
+			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_CROSSBOW)
+				lara.gun_status = LG_DRAW_GUNS;
+		}
+	}
+	else if (keymap[DIK_3])
+	{
+		if (!(lara.uzis_type_carried & WTYPE_PRESENT))
+			return;
+
+		lara.request_gun_type = WEAPON_UZI;
+
+		if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_UZI)
+			lara.gun_status = LG_DRAW_GUNS;
+	}
+	else if (keymap[DIK_4])
+	{
+		if (!(lara.sixshooter_type_carried & WTYPE_PRESENT))
+			return;
+
+		lara.request_gun_type = WEAPON_REVOLVER;
+
+		if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_REVOLVER)
+			lara.gun_status = LG_DRAW_GUNS;
+	}
+}
 #endif
 
 long Key(long number)
@@ -232,6 +381,10 @@ long S_UpdateInput()
 		}
 	}
 
+#ifdef GENERAL_FIXES
+	DoWeaponHotkey();
+#endif
+
 	if (keymap[DIK_0])
 	{
 		if (!med_hotkey_timer)
@@ -334,74 +487,6 @@ long S_UpdateInput()
 	}
 	else if (med_hotkey_timer)
 		med_hotkey_timer--;
-
-#ifdef WEP_HOTKEYS	//decompiled from TR4, accomodated for TR5!
-
-	if (!(gfLevelFlags & LARA_YOUNG) && (lara.water_status == LW_ABOVE_WATER || lara.water_status == LW_WADE) && !bDisableLaraControl)//Note: TR4 only checks for young lara.
-	{
-		if (keymap[DIK_1])
-		{
-			if (lara.pistols_type_carried & WTYPE_PRESENT)
-			{
-				lara.request_gun_type = WEAPON_PISTOLS;
-
-				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_PISTOLS)
-					lara.gun_status = LG_DRAW_GUNS;
-			}
-		}
-		else if (keymap[DIK_2])
-		{
-			if (lara.shotgun_type_carried & WTYPE_PRESENT)
-			{
-				lara.request_gun_type = WEAPON_SHOTGUN;
-
-				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_SHOTGUN)
-					lara.gun_status = LG_DRAW_GUNS;
-			}
-		}
-		else if (keymap[DIK_3])
-		{
-			if (lara.uzis_type_carried & WTYPE_PRESENT)
-			{
-				lara.request_gun_type = WEAPON_UZI;
-
-				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_UZI)
-					lara.gun_status = LG_DRAW_GUNS;
-			}
-		}
-		else if (keymap[DIK_4])
-		{
-			if (lara.sixshooter_type_carried & WTYPE_PRESENT)
-			{
-				lara.request_gun_type = WEAPON_REVOLVER;
-
-				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_REVOLVER)
-					lara.gun_status = LG_DRAW_GUNS;
-			}
-		}
-		else if (keymap[DIK_5])	//TR4 has grenade gun here
-		{
-			if (lara.hk_type_carried & WTYPE_PRESENT)
-			{
-				lara.request_gun_type = WEAPON_HK;
-
-				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_HK)
-					lara.gun_status = LG_DRAW_GUNS;
-			}
-		}
-		else if (keymap[DIK_6])
-		{
-			if (lara.crossbow_type_carried & WTYPE_PRESENT)
-			{
-				lara.request_gun_type = WEAPON_CROSSBOW;
-
-				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_CROSSBOW)
-					lara.gun_status = LG_DRAW_GUNS;
-			}
-		}
-	}
-
-#endif
 
 	if (keymap[DIK_F10])
 		linput |= IN_E;

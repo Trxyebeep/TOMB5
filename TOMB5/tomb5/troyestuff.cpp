@@ -5,7 +5,7 @@
 #include "tomb5.h"
 
 #define PAGE0_NUM	14
-#define PAGE1_NUM	8
+#define PAGE1_NUM	9
 
 #pragma warning(push)
 #pragma warning(disable : 4244)
@@ -371,6 +371,7 @@ bool Page1(long& num, long textY, ulong selection)
 	PrintString(phd_centerx >> 2, ushort(textY + 7 * font_height), selection & 0x20 ? 1 : 2, "Loading text", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 8 * font_height), selection & 0x40 ? 1 : 2, "Shimmer", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 9 * font_height), selection & 0x80 ? 1 : 2, "distance fog", 0);
+	PrintString(phd_centerx >> 2, ushort(textY + 10 * font_height), selection & 0x100 ? 1 : 2, "ammotype hotkeys", 0);
 
 	strcpy(buffer, tomb5.crawltilt ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 2 * font_height), selection & 1 ? 1 : 6, buffer, 0);
@@ -395,6 +396,9 @@ bool Page1(long& num, long textY, ulong selection)
 
 	sprintf(buffer, "%i", tomb5.distance_fog);
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 9 * font_height), selection & 0x80 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.ammotype_hotkeys ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 10 * font_height), selection & 0x100 ? 1 : 6, buffer, 0);
 
 	switch (selection)
 	{
@@ -515,6 +519,17 @@ bool Page1(long& num, long textY, ulong selection)
 			if (tomb5.distance_fog < 3.0F)
 				tomb5.distance_fog = 3.0F;
 
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 8:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.ammotype_hotkeys = !tomb5.ammotype_hotkeys;
 			changed = 1;
 		}
 

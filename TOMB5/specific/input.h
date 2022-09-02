@@ -8,6 +8,11 @@ long S_UpdateInput();
 
 #define ReadJoystick	( (long(__cdecl*)(long&, long&)) 0x004A9280 )
 
+#ifdef GENERAL_FIXES
+extern short ammo_change_timer;
+extern char ammo_change_buf[12];
+#endif
+
 enum IKEYS
 {
 	KEY_FORWARD = 0,
