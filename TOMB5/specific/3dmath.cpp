@@ -761,6 +761,7 @@ void aPerpVectors(FVECTOR* a, FVECTOR* b, FVECTOR* c)
 
 void aPointCameraByVector(float* mx, FCAMERA* cam)
 {
+	float x, y, z;
 	float m1[indices_count];
 	float m2[indices_count];
 
@@ -779,9 +780,12 @@ void aPointCameraByVector(float* mx, FCAMERA* cam)
 	mx[M21] = -cam->i.y;
 	mx[M22] = -cam->i.z;
 
-	mx[M03] = mx[M00] * cam->pos.x + mx[M01] * cam->pos.y + mx[M02] * cam->pos.z;
-	mx[M13] = mx[M10] * cam->pos.x + mx[M11] * cam->pos.y + mx[M12] * cam->pos.z;
-	mx[M23] = mx[M20] * cam->pos.x + mx[M21] * cam->pos.y + mx[M22] * cam->pos.z;
+	x = -cam->pos.x;
+	y = -cam->pos.y;
+	z = -cam->pos.z;
+	mx[M03] = mx[M00] * x + mx[M01] * y + mx[M02] * z;
+	mx[M13] = mx[M10] * x + mx[M11] * y + mx[M12] * z;
+	mx[M23] = mx[M20] * x + mx[M21] * y + mx[M22] * z;
 }
 
 void aPointCamera(FCAMERA* cam)
