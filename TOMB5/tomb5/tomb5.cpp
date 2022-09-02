@@ -96,8 +96,8 @@ void init_tomb5_stuff()
 		REG_WriteBool(buf, tomb5.loadingtxt);
 
 		sprintf(buf, "shimmer");
-		tomb5.shimmer = 2;								//on
-		REG_WriteLong(buf, tomb5.shimmer);
+		tomb5.shimmer = 1;								//on
+		REG_WriteBool(buf, tomb5.shimmer);
 
 		sprintf(buf, "distance_fog");
 		tomb5.distance_fog = 12;						//default on PSX is 12
@@ -170,7 +170,7 @@ void init_tomb5_stuff()
 		REG_ReadBool(buf, tomb5.loadingtxt, 1);
 
 		sprintf(buf, "shimmer");
-		REG_ReadLong(buf, tomb5.shimmer, 3);
+		REG_ReadBool(buf, tomb5.shimmer, 1);
 
 		sprintf(buf, "distance_fog");
 		REG_ReadLong(buf, tomb5.distance_fog, 12);
@@ -248,7 +248,7 @@ void save_new_tomb5_settings()
 	REG_WriteBool(buf, tomb5.loadingtxt);
 
 	sprintf(buf, "shimmer");
-	REG_WriteLong(buf, tomb5.shimmer);
+	REG_WriteBool(buf, tomb5.shimmer);
 
 	sprintf(buf, "distance_fog");
 	REG_WriteLong(buf, tomb5.distance_fog);

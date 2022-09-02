@@ -391,7 +391,7 @@ bool Page1(long& num, long textY, ulong selection)
 	strcpy(buffer, tomb5.loadingtxt ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 7 * font_height), selection & 0x20 ? 1 : 6, buffer, 0);
 
-	strcpy(buffer, tomb5.shimmer == 1 ? "off" : "on");
+	strcpy(buffer, tomb5.shimmer ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 8 * font_height), selection & 0x40 ? 1 : 6, buffer, 0);
 
 	sprintf(buffer, "%i", tomb5.distance_fog);
@@ -488,11 +488,7 @@ bool Page1(long& num, long textY, ulong selection)
 		if (dbinput & IN_RIGHT || dbinput & IN_LEFT)
 		{
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-			tomb5.shimmer++;
-
-			if (tomb5.shimmer > 2)
-				tomb5.shimmer = 1;
-
+			tomb5.shimmer = !tomb5.shimmer;
 			changed = 1;
 		}
 

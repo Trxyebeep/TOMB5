@@ -2475,7 +2475,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool tr4_loadbar;			//on off
 	ulong inv_bg_mode;			//1-> original, 2->TR4, 3-> clear
 	bool loadingtxt;			//on off
-	ulong shimmer;				//1-> off, 2-> original, 3->improved
+	bool shimmer;				//on off
 	ulong distance_fog;			//value in blocks
 	bool ammotype_hotkeys;		//on off
 };

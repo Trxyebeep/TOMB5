@@ -513,7 +513,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 #ifdef GENERAL_FIXES
 		flags = 0;
 
-		if (tomb5.shimmer != 1)
+		if (tomb5.shimmer)
 		{
 			if (current_room_ptr->flags & ROOM_REFLECT && current_room_ptr->flags & ROOM_REFLECT_CEILING)
 			{
