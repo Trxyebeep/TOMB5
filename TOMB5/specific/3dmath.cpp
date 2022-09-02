@@ -853,6 +853,105 @@ void SetupZRange(long znear, long zfar)
 	f_boo = f_b / mone;
 }
 
+void InitWindow(long x, long y, long w, long h, long znear, long zfar, long fov, long a, long b)
+{
+	phd_winwidth = w;
+	phd_winxmax = short(w - 1);
+	phd_winxmin = (short)x;
+	phd_winheight = h;
+	phd_winymax = short(h - 1);
+	phd_winymin = (short)y;
+	phd_centerx = w / 2;
+	phd_centery = h / 2;
+	phd_znear = znear << 14;
+	f_centerx = float(w / 2);
+	phd_zfar = zfar << 14;
+	f_centery = float(h / 2);
+	AlterFOV(short(182 * fov));
+	SetupZRange(phd_znear, phd_zfar);
+	phd_right = phd_winxmax;
+	phd_bottom = phd_winymax;
+	phd_left = x;
+	phd_top = y;
+	f_right = float(phd_winxmax + 1);
+	f_bottom = float(phd_winymax + 1);
+	f_top = (float)phd_winymin;
+	f_left = (float)phd_winxmin;
+	phd_mxptr = matrix_stack;
+}
+
+long phd_atan(long x, long y)
+{
+	long octant, n, result;
+
+	result = 0;
+	octant = 0;
+
+	if (x || y)
+	{
+		if (x < 0)
+		{
+			octant += 4;
+			x = -x;
+		}
+
+		if (y < 0)
+		{
+			octant += 2;
+			y = -y;
+		}
+
+		if (y > x)
+		{
+			octant++;
+			n = x;
+			x = y;
+			y = n;
+		}
+
+		while ((short)y != y)
+		{
+			x >>= 1;
+			y >>= 1;
+		}
+
+		result = phdtan2[octant] + phdtantab[(y << 11) / x];
+
+		if (result < 0)
+			result = -result;
+	}
+
+	return result;
+}
+
+ulong phd_sqrt(ulong num)
+{
+	ulong base, result, tmp;
+
+	base = 0x40000000;
+	result = 0;
+
+	do
+	{
+		tmp = result;
+		result += base;
+		tmp >>= 1;
+
+		if (result > num)
+			result = tmp;
+		else
+		{
+			num -= result;
+			result = base | tmp;
+		}
+
+		base >>= 2;
+
+	} while (base);
+
+	return result;
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -891,4 +990,7 @@ void inject_3dmath(bool replace)
 	INJECT(0x00490B40, aScaleCurrentMatrix, replace);
 	INJECT(0x0048EFF0, ScaleCurrentMatrix, replace);
 	INJECT(0x0048EEE0, SetupZRange, replace);
+	INJECT(0x0048F0E0, InitWindow, replace);
+	INJECT(0x0048F8A0, phd_atan, replace);
+	INJECT(0x0048F980, phd_sqrt, replace);
 }

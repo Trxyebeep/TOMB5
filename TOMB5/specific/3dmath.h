@@ -39,9 +39,9 @@ void aPointCamera(FCAMERA* cam);
 void aScaleCurrentMatrix(PHD_VECTOR* vec);
 void ScaleCurrentMatrix(PHD_VECTOR* vec);
 void SetupZRange(long znear, long zfar);
+void InitWindow(long x, long y, long w, long h, long znear, long zfar, long fov, long a, long b);
+long phd_atan(long x, long y);
+ulong phd_sqrt(ulong num);
 
 #define mGetAngle	( (long(__cdecl*)(long, long, long, long)) 0x0048F290 )
 #define phd_GenerateW2V	( (void(__cdecl*)(PHD_3DPOS*)) 0x0048F330 )
-#define phd_atan	( (long(__cdecl*)(long, long)) 0x0048F8A0 )
-#define phd_sqrt	( (long(__cdecl*)(long)) 0x0048F980 )
-#define InitWindow	(  (void(__cdecl*)(long, long, long, long, long, long, long, long, long)) 0x0048F0E0 )
