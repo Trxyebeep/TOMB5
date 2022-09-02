@@ -443,39 +443,36 @@ void AnimateShotgun(long weapon_type)
 
 			if (lara.water_status != LW_UNDERWATER && !running)
 			{
-				if (input & IN_ACTION)
+				if (input & IN_ACTION && (!lara.target || lara.left_arm.lock))
 				{
-					if (!lara.target || lara.left_arm.lock)
+					if (weapon_type == WEAPON_CROSSBOW)
 					{
-						if (weapon_type == WEAPON_CROSSBOW)
-						{
-							FireCrossbow(0);
-							item->goal_anim_state = 2;
-						}
-						else if (weapon_type == WEAPON_HK)
-						{
-							if ((lara.hk_type_carried & (W_AMMO1 | W_AMMO2)) && HKTimer)
-								item->goal_anim_state = 0;
-							else
-							{
-								FireHK(0);
-								m16_firing = 1;
-								item->goal_anim_state = 2;
-
-								if (lara.hk_type_carried & W_SILENCER)
-									SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-								else
-								{
-									SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
-									SoundEffect(SFX_HK_FIRE, &lara_item->pos, SFX_DEFAULT);
-								}
-							}
-						}
+						FireCrossbow(0);
+						item->goal_anim_state = 2;
+					}
+					else if (weapon_type == WEAPON_HK)
+					{
+						if ((lara.hk_type_carried & (W_AMMO1 | W_AMMO2)) && HKTimer)
+							item->goal_anim_state = 0;
 						else
 						{
-							FireShotgun();
+							FireHK(0);
+							m16_firing = 1;
 							item->goal_anim_state = 2;
+
+							if (lara.hk_type_carried & W_SILENCER)
+								SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
+							else
+							{
+								SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+								SoundEffect(SFX_HK_FIRE, &lara_item->pos, SFX_DEFAULT);
+							}
 						}
+					}
+					else
+					{
+						FireShotgun();
+						item->goal_anim_state = 2;
 					}
 				}
 				else if (lara.left_arm.lock)
@@ -529,25 +526,22 @@ void AnimateShotgun(long weapon_type)
 
 			if (running)
 			{
-				if (input & IN_ACTION)
+				if (input & IN_ACTION && (!lara.target || lara.left_arm.lock))
 				{
-					if (!lara.target || lara.left_arm.lock)
+					if ((lara.hk_type_carried & (W_AMMO1 | W_AMMO2)) && HKTimer)
+						item->goal_anim_state = 6;
+					else
 					{
-						if ((lara.hk_type_carried & (W_AMMO1 | W_AMMO2)) && HKTimer)
-							item->goal_anim_state = 6;
+						FireHK(1);
+						m16_firing = 1;
+						item->goal_anim_state = 8;
+
+						if (lara.hk_type_carried & W_SILENCER)
+							SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 						else
 						{
-							FireHK(1);
-							m16_firing = 1;
-							item->goal_anim_state = 8;
-
-							if (lara.hk_type_carried & W_SILENCER)
-								SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-							else
-							{
-								SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
-								SoundEffect(SFX_HK_FIRE, &lara_item->pos, SFX_DEFAULT);
-							}
+							SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+							SoundEffect(SFX_HK_FIRE, &lara_item->pos, SFX_DEFAULT);
 						}
 					}
 				}
