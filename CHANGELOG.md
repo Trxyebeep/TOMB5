@@ -6,6 +6,7 @@
 
 - Fix broken distance fog formula for room vertices.
 - Fix the game hanging when trying to launch multiple instances.
+- Fix issues with the window border.
 
 ### tomb5 bug fixes
 
