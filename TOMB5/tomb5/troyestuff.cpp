@@ -5,7 +5,7 @@
 #include "tomb5.h"
 
 #define PAGE0_NUM	14
-#define PAGE1_NUM	9
+#define PAGE1_NUM	10
 
 #pragma warning(push)
 #pragma warning(disable : 4244)
@@ -372,6 +372,7 @@ bool Page1(long& num, long textY, ulong selection)
 	PrintString(phd_centerx >> 2, ushort(textY + 8 * font_height), selection & 0x40 ? 1 : 2, "Shimmer", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 9 * font_height), selection & 0x80 ? 1 : 2, "distance fog", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 10 * font_height), selection & 0x100 ? 1 : 2, "ammotype hotkeys", 0);
+	PrintString(phd_centerx >> 2, ushort(textY + 11 * font_height), selection & 0x200 ? 1 : 2, "look transparency", 0);
 
 	strcpy(buffer, tomb5.crawltilt ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 2 * font_height), selection & 1 ? 1 : 6, buffer, 0);
@@ -399,6 +400,9 @@ bool Page1(long& num, long textY, ulong selection)
 
 	strcpy(buffer, tomb5.ammotype_hotkeys ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 10 * font_height), selection & 0x100 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.look_transparency ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 11 * font_height), selection & 0x200 ? 1 : 6, buffer, 0);
 
 	switch (selection)
 	{
@@ -526,6 +530,17 @@ bool Page1(long& num, long textY, ulong selection)
 		{
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 			tomb5.ammotype_hotkeys = !tomb5.ammotype_hotkeys;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 9:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.look_transparency = !tomb5.look_transparency;
 			changed = 1;
 		}
 

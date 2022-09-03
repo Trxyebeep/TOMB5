@@ -106,6 +106,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "ammotype_hotkeys");
 		tomb5.ammotype_hotkeys = 1;						//on
 		REG_WriteBool(buf, tomb5.ammotype_hotkeys);
+
+		sprintf(buf, "ltransparency");
+		tomb5.look_transparency = 0;					//off
+		REG_WriteBool(buf, tomb5.look_transparency);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -177,6 +181,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "ammotype_hotkeys");
 		REG_ReadBool(buf, tomb5.ammotype_hotkeys, 1);
+
+		sprintf(buf, "ltransparency");
+		REG_ReadBool(buf, tomb5.look_transparency, 1);
 	}
 
 	CloseRegistry();
@@ -255,6 +262,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "ammotype_hotkeys");
 	REG_WriteBool(buf, tomb5.ammotype_hotkeys);
+
+	sprintf(buf, "ltransparency");
+	REG_WriteBool(buf, tomb5.look_transparency);
 
 	CloseRegistry();
 }

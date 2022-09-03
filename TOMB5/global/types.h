@@ -2478,6 +2478,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool shimmer;				//on off
 	ulong distance_fog;			//value in blocks
 	bool ammotype_hotkeys;		//on off
+	bool look_transparency;		//on off
 };
 #endif
 #pragma pack(pop)
