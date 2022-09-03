@@ -4,6 +4,10 @@
 #include "function_stubs.h"
 #include "d3dmatrix.h"
 #include "alexstuff.h"
+#ifdef GENERAL_FIXES
+#include "../tomb5/tomb5.h"
+#include "../game/gameflow.h"
+#endif
 
 void DrawBoundsRectangle(float left, float top, float right, float bottom)
 {
@@ -182,6 +186,190 @@ void RoomTestThing()
 
 }
 
+#ifdef GENERAL_FIXES
+bool has_water_neighbor;
+
+static bool IsMistVert(FVECTOR* v)
+{
+	PORTAL* p;
+	ROOM_INFO* r;
+	ROOMLET* rlet;
+	float* verts;
+	short* door;
+	float x, y, z;
+	short drn;
+
+	door = current_room_ptr->door;
+
+	if (!door)
+		return 0;
+
+	x = v->x + current_room_ptr->x;
+	y = v->y;
+	z = v->z + current_room_ptr->z;
+	drn = *door++;
+
+	for (p = (PORTAL*)door; drn > 0; drn--, p++)
+	{
+		r = &room[p->rn];
+
+		if (p->normal[1] != -1 || v->x < p->v1[0] || v->x > p->v3[0] || v->z < p->v1[2] || v->z > p->v2[2])
+			continue;
+
+		rlet = r->pRoomlets;
+
+		for (int i = 0; i < r->nRoomlets; i++, rlet++)
+		{
+			verts = rlet->pSVtx;
+
+			for (int n = 0; n < rlet->nVtx; n++, verts += 7)
+			{
+				if (x == verts[0] + r->x && y == verts[1] && z == verts[2] + r->z)
+					return 0;
+			}
+		}
+	}
+
+	return 1;
+}
+
+static bool IsReflectionVert(FVECTOR* v)
+{
+	PORTAL* p;
+	PORTAL* np;
+	ROOM_INFO* r;
+	ROOM_INFO* nr;
+	ROOMLET* rlet;
+	float* verts;
+	short* door;
+	short* ndoor;
+	float x, y, z;
+	short drn, ndrn, cont;
+
+	has_water_neighbor = 0;
+	door = current_room_ptr->door;
+
+	if (!door)
+		return 0;
+
+	cont = 0;
+	x = v->x + current_room_ptr->x;
+	y = v->y;
+	z = v->z + current_room_ptr->z;
+	drn = *door++;
+
+	for (p = (PORTAL*)door; drn > 0; drn--, p++)
+	{
+		r = &room[p->rn];
+
+		if (p->normal[1] != -1 || v->x < p->v1[0] || v->x > p->v3[0] || v->z < p->v1[2] || v->z > p->v2[2])
+			continue;
+
+		if (r->flags & ROOM_UNDERWATER)
+			cont = 1;
+
+		rlet = r->pRoomlets;
+
+		for (int i = 0; i < r->nRoomlets; i++, rlet++)
+		{
+			verts = rlet->pSVtx;
+
+			for (int n = 0; n < rlet->nVtx; n++, verts += 7)
+			{
+				if (x == verts[0] + r->x && y == verts[1] && z == verts[2] + r->z)
+					return 0;
+			}
+		}
+	}
+
+	if (cont)
+	{
+		has_water_neighbor = 1;
+		door = current_room_ptr->door;
+
+		if (door)
+		{
+			drn = *door++;
+
+			for (p = (PORTAL*)door; drn > 0; drn--, p++)
+			{
+				r = &room[p->rn];
+
+				ndoor = r->door;
+				ndrn = *ndoor++;
+
+				for (np = (PORTAL*)ndoor; ndrn > 0; ndrn--, np++)
+				{
+					nr = &room[np->rn];
+
+					if (!(nr->flags & ROOM_UNDERWATER))
+						continue;
+
+					rlet = nr->pRoomlets;
+
+					for (int i = 0; i < nr->nRoomlets; i++, rlet++)
+					{
+						verts = rlet->pSVtx;
+
+						for (int n = 0; n < rlet->nVtx; n++, verts += 7)
+						{
+							if (x == verts[0] + nr->x && y == verts[1] && z == verts[2] + nr->z)
+								return 0;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return cont;
+}
+
+static bool IsShoreVertex(FVECTOR* v)
+{
+	PORTAL* p;
+	ROOM_INFO* r;
+	ROOMLET* rlet;
+	float* verts;
+	short* door;
+	float x, y, z;
+	short drn;
+
+	door = current_room_ptr->door;
+
+	if (!door)
+		return 0;
+
+	x = v->x + current_room_ptr->x;
+	y = v->y;
+	z = v->z + current_room_ptr->z;
+	drn = *door++;
+
+	for (p = (PORTAL*)door; drn > 0; drn--, p++)
+	{
+		r = &room[p->rn];
+
+		if (!(r->flags & ROOM_UNDERWATER) || !p->normal[1] || v->x < p->v1[0] || v->x > p->v3[0] || v->z < p->v1[2] || v->z > p->v2[2])
+			continue;
+
+		rlet = r->pRoomlets;
+
+		for (int i = 0; i < r->nRoomlets; i++, rlet++)
+		{
+			verts = rlet->pSVtx;
+
+			for (int n = 0; n < rlet->nVtx; n++, verts += 7)
+			{
+				if (x == verts[0] + r->x && y == verts[1] && z == verts[2] + r->z)
+					return 1;
+			}
+		}
+	}
+
+	return 0;
+}
+#endif
+
 void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWaterVerts, long nShoreVerts)
 {
 	ROOMLET_LIGHT* light;
@@ -197,16 +385,24 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	static float iDistanceFogStart = 1.0F / DistanceFogStart;
 	static float DistanceFogEnd = 20.0F * 1024.0F;
 	float num, zbak, zv, zv2, fR, fG, fB, val, val2, val3, fCol;
-	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal, n;
+	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal;
 	short clip_distance;
-	uchar rnd;
-	char choppy;
+	uchar rnd, abs;
+#ifdef GENERAL_FIXES
+	uchar flags;
+#endif
+	char choppy, shimmer;
 
 	clip = clipflags;
 	cam_underwater = camera.underwater;
 
 	if (!(App.dx.Flags & 0x80))	//no wibble on software mode?
 		cam_underwater = 0;
+
+#ifdef GENERAL_FIXES
+	DistanceFogStart = tomb5.distance_fog * 1024.0F;
+	iDistanceFogStart = 1.0F / DistanceFogStart;
+#endif
 
 	num = iDistanceFogStart * 255.0F;
 
@@ -314,6 +510,39 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		cG = (long)fG;
 		cB = (long)fB;
 
+#ifdef GENERAL_FIXES
+		flags = 0;
+
+		if (tomb5.shimmer)
+		{
+			if (current_room_ptr->flags & ROOM_REFLECT && current_room_ptr->flags & ROOM_REFLECT_CEILING)
+			{
+				if (gfCurrentLevel == LVL5_RED_ALERT)
+				{
+					if (xyz.y != current_room_ptr->minfloor)
+						flags |= 2;
+				}
+				else if (!IsMistVert(&xyz) || ABS(xyz.y - current_room_ptr->minfloor) > 1536)
+					flags |= 1;
+			}
+			else if (xyz.y == current_room_ptr->minfloor)
+			{
+				if (current_room_ptr->flags & ROOM_MIST)
+				{
+					if (IsMistVert(&xyz))
+						flags |= 1;
+				}
+				else if (current_room_ptr->flags & ROOM_REFLECT)
+				{
+					if (IsReflectionVert(&xyz))
+						flags |= 1;
+					else if (IsShoreVertex(&xyz) || has_water_neighbor)
+						flags |= 1;
+				}
+			}
+		}
+#endif
+
 		if (current_room_underwater)
 		{
 			wx = long(xyz.x * 0.015625F);
@@ -326,18 +555,46 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			cG += iVal;
 			cB += iVal;
 		}
+#ifdef GENERAL_FIXES
+		else if (flags & 1)
+		{
+			wx = long(xyz.x * 0.015625F);
+			wy = long(xyz.y * 0.015625F);
+			wz = long(xyz.z * 0.0078125F);
+			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
+			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
+			abs = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
+			iVal = (shimmer + abs) << 3;
+			cR += iVal;
+			cG += iVal;
+			cB += iVal;
+		}
+		else if (flags & 2)	//special Red Alert! gas rooms wibble (slower and green only)
+		{
+			wx = long(xyz.x * 0.015625F);
+			wy = long(xyz.y * 0.015625F);
+			wz = long(xyz.z * 0.0078125F);
+			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
+			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].shimmer;
+			abs = WaterTable[current_room_ptr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].abs;
+			iVal = (shimmer + abs) << 3;
+			cG += ABS(iVal);
+		}
+#else
 		else if (nShoreVerts && i > nWaterVerts && i < nShoreVerts + nWaterVerts)
 		{
 			wx = long(xyz.x * 0.015625F);
 			wy = long(xyz.y * 0.015625F);
 			wz = long(xyz.z * 0.0078125F);
 			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
-			n = (current_room_ptr->MeshEffect << 6) + (((wibble >> 2) + rnd) & 0x3F);
-			iVal = WaterTable[0][n].shimmer + WaterTable[0][n].abs;
+			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
+			abs = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
+			iVal = shimmer + abs;
 			cR += iVal;
 			cG += iVal;
 			cB += iVal;
 		}
+#endif
 
 #ifdef GENERAL_FIXES
 		if (zbak > DistanceFogStart)
@@ -836,6 +1093,116 @@ void DrawRoomletBounds(ROOMLET* r)
 	}
 }
 
+long aBuildRoomletLights(ROOMLET* r)
+{
+	ROOMLET_LIGHT* light;
+	DYNAMIC* dynamic;
+	FOGBULB_STRUCT* fogbulb;
+	FOGBULB_STRUCT* rFog;
+	FVECTOR dPos;
+	FVECTOR fPos;
+	FVECTOR box;
+	float* bbox;
+	float falloff, sqr, val;
+	long numLights;
+
+	light = RoomletLights;
+	numLights = 0;
+
+	for (int i = 0; i < 32; i++)
+	{
+		dynamic = &dynamics[i];
+
+		if (!dynamic->on)
+			continue;
+
+		dPos.x = dynamic->x - current_room_ptr->posx;
+		dPos.y = dynamic->y - current_room_ptr->posy;
+		dPos.z = dynamic->z - current_room_ptr->posz;
+		falloff = float((dynamic->falloff >> 1) + (dynamic->falloff >> 3));
+
+		if (dPos.x - falloff <= r->bBox[3] && falloff + dPos.x >= r->bBox[0] &&
+			dPos.z - falloff <= r->bBox[5] && falloff + dPos.z >= r->bBox[2])
+		{
+			light->type = 0;
+			light->x = dPos.x;
+			light->y = dPos.y;
+			light->z = dPos.z;
+			light->r = (float)dynamic->r * (1.0F / 255.0F);
+			light->g = (float)dynamic->g * (1.0F / 255.0F);
+			light->b = (float)dynamic->b * (1.0F / 255.0F);
+			light->falloff = falloff;
+			light->inv_falloff = 1.0F / light->falloff;
+			light->sqr_falloff = SQUARE(light->falloff);
+			light++;
+			numLights++;
+		}
+	}
+
+	nRoomletFogBulbs = 0;
+	rFog = RoomletFogBulbs;
+
+	for (int i = 0; i < NumActiveFogBulbs; i++)
+	{
+		fogbulb = &ActiveFogBulbs[i];
+
+		if (!fogbulb->visible)
+			continue;
+
+		if (fogbulb->sqlen >= fogbulb->sqrad)	//this block does nothing <3
+		{
+			bbox = aBoundingBox;
+
+			for (int j = 0; j < 8; j++)
+			{
+				box.x = *bbox++;
+				box.y = *bbox++;
+				box.z = *bbox++;
+				fPos.x = fogbulb->pos.x - box.x;
+				fPos.y = fogbulb->pos.y - box.y;
+				fPos.z = fogbulb->pos.z - box.z;
+
+				if (SQUARE(fPos.x) + SQUARE(fPos.y) + SQUARE(fPos.y) < fogbulb->sqrad)
+					break;
+
+				sqr = SQUARE(box.x) + SQUARE(box.y) + SQUARE(box.z);
+				val = 1.0F / sqrt(sqr);
+				fPos.x = box.x * val;
+				fPos.y = box.y * val;
+				fPos.z = box.z * val;
+				val = fogbulb->pos.x * fPos.x + fogbulb->pos.y * fPos.y + fogbulb->pos.z * fPos.z;
+
+				if (val > 0)
+				{
+					val = SQUARE(val);
+
+					if (sqr > val && fogbulb->sqlen - val < fogbulb->sqrad)
+						break;
+				}
+			}
+		}
+
+		rFog->pos.x = fogbulb->pos.x;
+		rFog->pos.y = fogbulb->pos.y;
+		rFog->pos.z = fogbulb->pos.z;
+		rFog->world.x = fogbulb->world.x;
+		rFog->world.y = fogbulb->world.y;
+		rFog->world.z = fogbulb->world.z;
+		rFog->r = fogbulb->r;
+		rFog->g = fogbulb->g;
+		rFog->b = fogbulb->b;
+		rFog->sqlen = fogbulb->sqlen;
+		rFog->d = fogbulb->d;
+		rFog->rad = fogbulb->rad;
+		rFog->sqrad = fogbulb->sqrad;
+		rFog++;
+		nRoomletFogBulbs++;
+		numLights |= 0x80000000;
+	}
+
+	return numLights;
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -848,4 +1215,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049AFB0, aBuildFogBulbList, replace);
 	INJECT(0x0049A3D0, ProcessMeshData, replace);
 	INJECT(0x0049CEB0, DrawRoomletBounds, replace);
+	INJECT(0x0049B390, aBuildRoomletLights, replace);
 }

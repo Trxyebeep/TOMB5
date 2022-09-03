@@ -10,6 +10,8 @@ void DoTitle(uchar name, uchar audio);
 void do_dels_cutseq_selector();
 void DoLevel(uchar name, uchar audio);
 
+#define LoadGameflow	( (void(__cdecl*)()) 0x00434800 )
+
 enum gf_languages
 {
 	LNG_ENGLISH,

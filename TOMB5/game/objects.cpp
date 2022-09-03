@@ -703,7 +703,7 @@ void ControlXRayMachine(short item_number)
 		
 		if (lara.skelebob)
 		{
-			if (lara.hk_type_carried & WTYPE_PRESENT)
+			if (lara.hk_type_carried & W_PRESENT)
 			{
 				TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
 				item->item_flags[0] = 666;

@@ -3,6 +3,7 @@
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 // Windows Header Files
 #include <windows.h>
+#include <windowsx.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <mmeapi.h>
@@ -13,3 +14,7 @@
 #include <dinput.h>
 #include <dsound.h>
 #include <cmath>
+#include <time.h>
+#include <mmreg.h>
+#include <mmiscapi.h>
+#include <msacm.h>

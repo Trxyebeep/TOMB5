@@ -72,7 +72,7 @@ void CalcLaraMatrices(long flag)
 void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 {
 	MATRIX3D* matrices;
-	VECTOR vec;
+	PHD_VECTOR vec;
 	float* matricesF;
 	float* Fmatrix;
 	long* matrix;
@@ -104,9 +104,9 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 
 	if (flag == 2)
 	{
-		vec.vz = -16384;
-		vec.vy = -16384;
-		vec.vx = -16384;
+		vec.z = -16384;
+		vec.y = -16384;
+		vec.x = -16384;
 		ScaleCurrentMatrix(&vec);
 	}
 
@@ -515,7 +515,7 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 void Rich_CalcLaraMatrices_Interpolated(short* frame1, short* frame2, long frac, long rate, long* bone, long flag)
 {
 	MATRIX3D* matrices;
-	VECTOR vec;
+	PHD_VECTOR vec;
 	float* matricesF;
 	float* Fmatrix;
 	float* armsF;
@@ -553,9 +553,9 @@ void Rich_CalcLaraMatrices_Interpolated(short* frame1, short* frame2, long frac,
 
 	if (flag == 2)
 	{
-		vec.vz = -16384;
-		vec.vy = -16384;
-		vec.vx = -16384;
+		vec.z = -16384;
+		vec.y = -16384;
+		vec.x = -16384;
 		ScaleCurrentMatrix(&vec);
 	}
 

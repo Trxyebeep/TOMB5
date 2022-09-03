@@ -3,6 +3,10 @@
 #include "dxshell.h"
 #include "drawroom.h"
 
+static long rgb80h = 0x808080;
+static long rgbmask = 0xFFFFFFFF;
+static long zero = 0;
+
 void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, short type)
 {
 	switch (type)
@@ -410,8 +414,359 @@ void DrawSortList()
 	InitBuckets();
 }
 
+void CalcColorSplit(D3DCOLOR s, D3DCOLOR* d)
+{
+	long r, g, b, sr, sg, sb;
+
+	sr = 0;
+	sg = 0;
+	sb = 0;
+	r = CLRR(s);
+	g = CLRG(s);
+	b = CLRB(s);
+	r -= 128;
+	g -= 128;
+	b -= 128;
+
+	if (r <= 0)
+		r = CLRR(s) << 1;
+	else
+	{
+		sr = r;
+		r = 255;
+	}
+
+	if (g <= 0)
+		g = CLRG(s) << 1;
+	else
+	{
+		sg = g;
+		g = 255;
+	}
+
+	if (b <= 0)
+		b = CLRB(s) << 1;
+	else
+	{
+		sb = b;
+		b = 255;
+	}
+
+	if (r > 255)
+		r = 255;
+
+	if (g > 255)
+		g = 255;
+
+	if (b > 255)
+		b = 255;
+
+	d[0] = (d[0] & 0xFF000000) | RGBONLY(r, g, b);		//color
+	d[0] &= 0xFFFFFF;
+	d[0] |= GlobalAlpha;
+
+	sr >>= 1;
+	sg >>= 1;
+	sb >>= 1;
+	d[1] = (d[1] & 0xFF000000) | RGBONLY(sr, sg, sb);	//specular
+}
+
+void InitialiseSortList()
+{
+	pSortBuffer = SortBuffer;
+	pSortList = SortList;
+	SortCount = 0;
+}
+
+void DoSort(long left, long right, SORTLIST** list)
+{
+	SORTLIST* swap;
+	float z;
+	long l, r;
+
+	l = left;
+	r = right;
+	z = list[(left + right) / 2]->zVal;
+
+	do
+	{
+		while (l < right && list[l]->zVal > z)
+			l++;
+
+		while (r > left && list[r]->zVal < z)
+			r--;
+
+		if (l <= r)
+		{
+			swap = list[l];
+			list[l] = list[r];
+			list[r] = swap;
+			l++;
+			r--;
+		}
+
+	} while (l <= r);
+
+	if (r > left)
+		DoSort(left, r, list);
+
+	if (l < right)
+		DoSort(l, right, list);
+}
+
+void SortPolyList(long count, SORTLIST** list)
+{
+	if (!count)
+		return;
+
+	for (int i = 0; i < count; i++)
+		list[i]->zVal -= (float)i * 0.1F;
+
+	DoSort(0, count - 1, list);
+}
+
+void ClearFXFogBulbs()
+{
+
+}
+
+void ControlFXBulb()
+{
+
+}
+
+void CreateFXBulbs()
+{
+
+}
+
+void TriggerFXFogBulb()
+{
+
+}
+
+long IsVolumetric()
+{
+	return App.Volumetric;
+}
+
+void mD3DTransform(FVECTOR* vec, D3DMATRIX* mx)
+{
+	float x, y, z;
+
+	x = vec->x * mx->_11 + mx->_21 * vec->y + mx->_31 * vec->z + mx->_41;
+	y = vec->x * mx->_12 + mx->_22 * vec->y + mx->_32 * vec->z + mx->_42;
+	z = vec->x * mx->_13 + mx->_23 * vec->y + mx->_33 * vec->z + mx->_43;
+	vec->x = x;
+	vec->y = y;
+	vec->z = z;
+}
+
+void CreateFogPos()
+{
+
+}
+
+long DistCompare()
+{
+	return 0;
+}
+
+void InitialiseFogBulbs()
+{
+
+}
+
+void OmniEffect()
+{
+
+}
+
+void OmniFog()
+{
+
+}
+
+#pragma warning(push)
+#pragma warning(disable : 4799)
+void AddPrelitMMX(long prelight, D3DCOLOR* color)
+{
+	long c;
+
+	c = color[0];
+
+	__asm
+	{
+		xor eax, eax
+		movd mm3, rgbmask
+		movd mm4, prelight
+		movd mm0, c
+		paddusb mm0, mm4
+		movd ecx, mm0
+		movd mm1, rgb80h
+		psubusb mm0, mm1
+		movd mm2, eax
+		movd mm5, zero
+		punpcklbw mm5, mm0
+		psrlw mm5, 9
+		packuswb mm0, mm5
+		psrlq mm0, 0x20
+		movd ebx, mm0
+		pcmpgtb mm0, mm2
+		movd eax, mm0
+		pandn mm0, mm3
+		movd mm1, ecx
+		pand mm1, mm0
+		paddusb mm1, mm1
+		movd ecx, mm1
+		mov edx, color
+		or ecx, eax
+		mov[edx], ecx
+		mov ecx, [edx + 4]
+		and ebx, 0xFFFFFF
+		or ecx, ebx
+		mov[edx + 4], ecx
+	}
+
+	//caller does the emms
+}
+
+void AddPrelitMeshMMX(MESH_DATA* m, long p, D3DCOLOR* color)
+{
+	long prelight;
+	long c;
+
+	prelight = m->prelight[p];
+	c = color[0];
+
+	__asm
+	{
+		xor eax, eax
+		movd mm3, rgbmask
+		movd mm4, prelight
+		movd mm0, c
+		paddusb mm0, mm4
+		movd ecx, mm0
+		movd mm1, rgb80h
+		psubusb mm0, mm1
+		movd mm2, eax
+		movd mm5, zero
+		punpcklbw mm5, mm0
+		psrlw mm5, 9
+		packuswb mm0, mm5
+		psrlq mm0, 0x20
+		movd ebx, mm0
+		pcmpgtb mm0, mm2
+		movd eax, mm0
+		pandn mm0, mm3
+		movd mm1, ecx
+		pand mm1, mm0
+		paddusb mm1, mm1
+		movd ecx, mm1
+		mov edx, color
+		or ecx, eax
+		mov[edx], ecx
+		mov ecx, [edx + 4]
+		and ebx, 0xFFFFFF
+		or ecx, ebx
+		mov[edx + 4], ecx
+	}
+
+	//caller does the emms
+}
+
+void CalcColorSplitMMX(D3DCOLOR s, D3DCOLOR* d)
+{
+	__asm
+	{
+		xor eax, eax
+		mov ecx, s
+		movd mm3, rgbmask
+		movd mm0, ecx
+		movd mm1, rgb80h
+		psubusb mm0, mm1
+		movd mm2, eax
+		movd mm5, zero
+		punpcklbw mm5, mm0
+		psrlw mm5, 9
+		packuswb mm0, mm5
+		psrlq mm0, 0x20
+		movd ebx, mm0
+		pcmpgtb mm0, mm2
+		movd eax, mm0
+		pandn mm0, mm3
+		movd mm1, ecx
+		pand mm1, mm0
+		paddusb mm1, mm1
+		movd ecx, mm1
+		mov edx, d
+		or ecx, eax
+		mov[edx], ecx
+		mov ecx, [edx + 4]
+		and ebx, 0xFFFFFF
+		or ecx, ebx
+		mov[edx + 4], ecx
+	}
+
+	//caller does the emms
+
+	d[0] &= 0xFFFFFF;
+	d[0] |= GlobalAlpha;
+}
+#pragma warning(pop)
+
+void S_DrawLine(long nVtx, D3DTLVERTEX* v)
+{
+	float zv;
+
+	for (int i = 0; i < nVtx; i++)
+	{
+		zv = f_persp / v[i].sz;
+		v[i].rhw = zv * f_oneopersp;
+		v[i].sz = f_a - v[i].rhw * f_boo;
+	}
+
+	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, 0));
+	App.dx.lpD3DDevice->DrawPrimitive(D3DPT_LINESTRIP, D3DFVF_TLVERTEX, v, nVtx, D3DDP_DONOTUPDATEEXTENTS);
+}
+
+void S_DrawTriFan(long nVtx, D3DTLVERTEX* v)
+{
+	float zv;
+
+	for (int i = 0; i < nVtx; i++)
+	{
+		zv = f_persp / v[i].sz;
+		v[i].rhw = zv * f_oneopersp;
+		v[i].sz = f_a - v[i].rhw * f_boo;
+	}
+
+	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[0].tex));
+	App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, v, nVtx, D3DDP_DONOTUPDATEEXTENTS);
+}
+
 void inject_polyinsert(bool replace)
 {
 	INJECT(0x004B98E0, HWR_DrawSortList, replace);
 	INJECT(0x004B8DB0, DrawSortList, replace);
+	INJECT(0x004BD150, CalcColorSplit, replace);
+	INJECT(0x004BA100, InitialiseSortList, replace);
+	INJECT(0x004B9FB0, DoSort, replace);
+	INJECT(0x004BA090, SortPolyList, replace);
+	INJECT(0x004BA130, ClearFXFogBulbs, replace);
+	INJECT(0x004BA150, ControlFXBulb, replace);
+	INJECT(0x004BA170, CreateFXBulbs, replace);
+	INJECT(0x004BA190, TriggerFXFogBulb, replace);
+	INJECT(0x004BA1B0, IsVolumetric, replace);
+	INJECT(0x004BA1D0, mD3DTransform, replace);
+	INJECT(0x004BA260, CreateFogPos, replace);
+	INJECT(0x004BA280, DistCompare, replace);
+	INJECT(0x004BA2A0, InitialiseFogBulbs, replace);
+	INJECT(0x004BA2C0, OmniEffect, replace);
+	INJECT(0x004BA2E0, OmniFog, replace);
+	INJECT(0x004BCFD0, AddPrelitMMX, replace);
+	INJECT(0x004BD070, AddPrelitMeshMMX, replace);
+	INJECT(0x004BCF30, CalcColorSplitMMX, replace);
+	INJECT(0x004BD270, S_DrawLine, replace);
+	INJECT(0x004BD300, S_DrawTriFan, replace);
 }

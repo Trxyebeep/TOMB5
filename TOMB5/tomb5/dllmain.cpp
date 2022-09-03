@@ -97,6 +97,12 @@
 #include "../game/lara2gun.h"
 #include "../game/debris.h"
 #include "../specific/gamemain.h"
+#include "../specific/dxsound.h"
+#include "../specific/winmain.h"
+#include "../specific/time.h"
+#include "../specific/texture.h"
+#include "../specific/profiler.h"
+#include "../specific/cmdline.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -213,6 +219,12 @@ void inject_all(bool replace)
 	inject_lara2gun(replace);
 	inject_debris(replace);
 	inject_gamemain(replace);
+	inject_dxsound(replace);
+	inject_winmain(replace);
+	inject_time(replace);
+	inject_texture(replace);
+	inject_profiler(replace);
+	inject_cmdline(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)

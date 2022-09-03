@@ -4,6 +4,8 @@
 #include "function_stubs.h"
 #include "dxshell.h"
 
+static long CurrentFog;
+
 void InitialiseFunctionTable()
 {
 	_BeginScene = HWBeginScene;
@@ -107,10 +109,44 @@ HRESULT HWEndScene()
 	return App.dx.lpD3DDevice->EndScene();
 }
 
+bool _NVisible(D3DTLVERTEX* v0, D3DTLVERTEX* v1, D3DTLVERTEX* v2)
+{
+	return (v0->sy - v1->sy) * (v2->sx - v1->sx) - (v2->sy - v1->sy) * (v0->sx - v1->sx) < 0;
+}
+
+bool _Visible(D3DTLVERTEX* v0, D3DTLVERTEX* v1, D3DTLVERTEX* v2)
+{
+	return (v0->sy - v1->sy) * (v2->sx - v1->sx) - (v2->sy - v1->sy) * (v0->sx - v1->sx) > 0;
+}
+
+void SetCullCW()
+{
+	IsVisible = _Visible;
+}
+
+void SetCullCCW()
+{
+	IsVisible = _NVisible;
+}
+
+void SetFogColor(long r, long g, long b)
+{
+	r &= 0xFF;
+	g &= 0xFF;
+	b &= 0xFF;
+	CurrentFog = RGBA(r, g, b, 0xFF);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, CurrentFog);
+}
+
 void inject_functbl(bool replace)
 {
 	INJECT(0x004A7EE0, InitialiseFunctionTable, replace);
 	INJECT(0x004A8040, HWInitialise, replace);
 	INJECT(0x004A7FA0, HWBeginScene, replace);
 	INJECT(0x004A8010, HWEndScene, replace);
+	INJECT(0x004A7E00, _NVisible, replace);
+	INJECT(0x004A7E50, _Visible, replace);
+	INJECT(0x004A7EA0, SetCullCW, replace);
+	INJECT(0x004A7EC0, SetCullCCW, replace);
+	INJECT(0x004A84A0, SetFogColor, replace);
 }

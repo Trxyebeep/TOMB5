@@ -34,26 +34,29 @@ void undraw_shotgun_meshes(long weapon_type)
 void ready_shotgun(long weapon_type)
 {
 	lara.gun_status = LG_READY;
-	lara.left_arm.z_rot = 0;
-	lara.left_arm.y_rot = 0;
-	lara.left_arm.x_rot = 0;
-	lara.right_arm.z_rot = 0;
-	lara.right_arm.y_rot = 0;
-	lara.right_arm.x_rot = 0;
-	lara.right_arm.frame_number = 0;
-	lara.left_arm.frame_number = 0;
-	lara.right_arm.lock = 0;
-	lara.left_arm.lock = 0;
 	lara.target = 0;
-	lara.right_arm.frame_base = objects[WeaponObject(weapon_type)].frame_base;
+
+	lara.left_arm.x_rot = 0;
+	lara.left_arm.y_rot = 0;
+	lara.left_arm.z_rot = 0;
+	lara.left_arm.frame_number = 0;
+	lara.left_arm.lock = 0;
 	lara.left_arm.frame_base = objects[WeaponObject(weapon_type)].frame_base;
+
+	lara.right_arm.x_rot = 0;
+	lara.right_arm.y_rot = 0;
+	lara.right_arm.z_rot = 0;
+	lara.right_arm.frame_number = 0;
+	lara.right_arm.lock = 0;
+	lara.right_arm.frame_base = lara.left_arm.frame_base;
 }
 
 void RifleHandler(long weapon_type)
 {
 	WEAPON_INFO* winfo;
 	PHD_VECTOR pos;
-	
+	long r, g, b;
+
 	winfo = &weapons[weapon_type];
 
 	if (lara.gun_type != WEAPON_CROSSBOW || LaserSight)
@@ -85,22 +88,20 @@ void RifleHandler(long weapon_type)
 
 	if (lara.right_arm.flash_gun)
 	{
+		r = (GetRandomControl() & 0x3F) + 192;
+		g = (GetRandomControl() & 0x1F) + 128;
+		b = GetRandomControl() & 63;
+
 		if (weapon_type == WEAPON_SHOTGUN || weapon_type == WEAPON_HK)
 		{
+			pos.x = (GetRandomControl() & 0xFF) + (phd_sin(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos;
+			pos.y = ((GetRandomControl() & 0x7F) - 575) + lara_item->pos.y_pos;
+			pos.z = (GetRandomControl() & 0xFF) + (phd_cos(lara_item->pos.y_rot) >> 4) + lara_item->pos.z_pos;
+
 			if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
-			{
-					TriggerDynamic_MIRROR((GetRandomControl() & 0xFF) + (phd_sin(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos,
-						((GetRandomControl() & 0x7F) - 0x23F) + lara_item->pos.y_pos,
-						(GetRandomControl() & 0xFF) + (phd_cos(lara_item->pos.y_rot) >> 4) + lara_item->pos.z_pos,
-						12, (GetRandomControl() & 0x3F) + 0xC0, (GetRandomControl() & 0x1F) + 0x80, GetRandomControl() & 0x3F);
-			}
+				TriggerDynamic_MIRROR(pos.x, pos.y, pos.z, 12, r, g, b);
 			else
-			{
-				TriggerDynamic((GetRandomControl() & 0xFF) + (phd_sin(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos,
-					((GetRandomControl() & 0x7F) - 0x23F) + lara_item->pos.y_pos,
-					(GetRandomControl() & 0xFF) + (phd_cos(lara_item->pos.y_rot) >> 4) + lara_item->pos.z_pos,
-					12, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 63);
-			}
+				TriggerDynamic(pos.x, pos.y, pos.z, 12, r, g, b);
 		}
 		else if(weapon_type == WEAPON_REVOLVER)
 		{
@@ -110,9 +111,9 @@ void RifleHandler(long weapon_type)
 			GetLaraJointPos(&pos, 11);
 
 			if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
-				TriggerDynamic_MIRROR(pos.x, pos.y, pos.z, 12, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 0x3F);
+				TriggerDynamic_MIRROR(pos.x, pos.y, pos.z, 12, r, g, b);
 			else
-				TriggerDynamic(pos.x, pos.y, pos.z, 12, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 0x3F);
+				TriggerDynamic(pos.x, pos.y, pos.z, 12, r, g, b);
 		}
 	}
 }
@@ -120,12 +121,13 @@ void RifleHandler(long weapon_type)
 void FireShotgun()
 {
 	PHD_VECTOR pos;
-	long r, fired, x, y, z, scatter;
+	PHD_VECTOR pos2;
+	long fired, scatter;
 	short angles[2];
 	short dangles[2];
 
-	angles[1] = lara.left_arm.x_rot;
 	angles[0] = lara.left_arm.y_rot + lara_item->pos.y_rot;
+	angles[1] = lara.left_arm.x_rot;
 
 	if (!lara.left_arm.lock)
 	{
@@ -135,25 +137,15 @@ void FireShotgun()
 
 	fired = 0;
 
-	if (lara.shotgun_type_carried & 8)
+	if (lara.shotgun_type_carried & W_AMMO1)
 		scatter = 1820;
 	else
 		scatter = 5460;
 
 	for (int i = 0; i < 6; i++)
 	{
-		r = (GetRandomControl() - 16384) * scatter;
-
-		if (r < 0)
-			r += 65535;
-
-		dangles[0] = angles[0] + (r >> 16);
-		r = (GetRandomControl() - 16384) * scatter;
-
-		if (r < 0)
-			r += 65535;
-
-		dangles[1] = angles[1] + (r >> 16);
+		dangles[0] = short(angles[0] + scatter * (GetRandomControl() - 0x4000) / 0x10000);
+		dangles[1] = short(angles[1] + scatter * (GetRandomControl() - 0x4000) / 0x10000);
 
 		if (FireWeapon(WEAPON_SHOTGUN, lara.target, lara_item, &dangles[0]))
 			fired = 1;
@@ -165,22 +157,23 @@ void FireShotgun()
 		pos.y = 228;
 		pos.z = 32;
 		GetLaraJointPos(&pos, 11);
-		x = pos.x;
-		y = pos.y;
-		z = pos.z;
-		pos.x = 0;
-		pos.y = 1508;
-		pos.z = 32;
-		GetLaraJointPos(&pos, 11);
+
+		pos2.x = 0;
+		pos2.y = 1508;
+		pos2.z = 32;
+		GetLaraJointPos(&pos2, 11);
+
 		SmokeCountL = 32;
 		SmokeWeapon = WEAPON_SHOTGUN;
 
-		if (lara_item->mesh_bits != 0)
+		if (lara_item->mesh_bits)
+		{
 			for (int i = 0; i < 7; i++)
-				TriggerGunSmoke(x, y, z, pos.x - x, pos.y - y, pos.z - z, 1, SmokeWeapon, 32);
+				TriggerGunSmoke(pos.x, pos.y, pos.z, pos2.x - pos.x, pos2.y - pos.y, pos2.z - pos.z, 1, SmokeWeapon, 32);
+		}
 
 		lara.right_arm.flash_gun = weapons[WEAPON_SHOTGUN].flash_time;
-		SoundEffect(SFX_EXPLOSION1, &lara_item->pos, (0x14000 << 8) | SFX_SETPITCH);
+		SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 0x1400000 | SFX_SETPITCH);
 		SoundEffect(weapons[WEAPON_SHOTGUN].sample_num, &lara_item->pos, SFX_DEFAULT);
 		savegame.Game.AmmoUsed++;
 	}
@@ -190,13 +183,13 @@ void FireHK(long running)
 {
 	short angles[2];
 
-	if (lara.hk_type_carried & WTYPE_AMMO_1)
+	if (lara.hk_type_carried & W_AMMO1)
 		HKTimer = 12;
-	else if (lara.hk_type_carried & WTYPE_AMMO_2)
+	else if (lara.hk_type_carried & W_AMMO2)
 	{
 		HKShotsFired++;
 
-		if ((HKShotsFired & 0xFF) == 5)
+		if (HKShotsFired == 5)
 		{
 			HKShotsFired = 0;
 			HKTimer = 12;
@@ -227,6 +220,7 @@ void FireHK(long running)
 	{
 		SmokeCountL = 12;
 		SmokeWeapon = WEAPON_HK;
+		TriggerGunShell(1, GUNSHELL, WEAPON_HK);
 		lara.right_arm.flash_gun = weapons[WEAPON_HK].flash_time;
 	}
 }
@@ -239,34 +233,34 @@ void FireCrossbow(PHD_3DPOS* Start)
 
 	ammo = get_current_ammo_pointer(WEAPON_CROSSBOW);
 
-	if (*ammo)
+	if (!*ammo)
+		return;
+
+	lara.has_fired = 1;
+	lara.Fired = 1;
+	item_number = CreateItem();
+
+	if (item_number != NO_ITEM)
 	{
-		lara.has_fired = 1;
-		lara.Fired = 1;
-		item_number = CreateItem();
+		item = &items[item_number];
+		item->object_number = CROSSBOW_BOLT;
+		item->shade = -0x3DF0;
+		item->room_number = lara_item->room_number;
+		item->pos.x_pos = Start->x_pos;
+		item->pos.y_pos = Start->y_pos;
+		item->pos.z_pos = Start->z_pos;
+		InitialiseItem(item_number);
+		item->pos.x_rot = Start->x_rot;
+		item->pos.y_rot = Start->y_rot;
+		item->pos.z_rot = Start->z_rot;
+		item->speed = 512;
+		AddActiveItem(item_number);
 
-		if (item_number != NO_ITEM)
-		{
-			item = &items[item_number];
-			item->object_number = CROSSBOW_BOLT;
-			item->shade = -15856;
-			item->room_number = lara_item->room_number;
-			item->pos.x_pos = Start->x_pos;
-			item->pos.y_pos = Start->y_pos;
-			item->pos.z_pos = Start->z_pos;
-			InitialiseItem(item_number);
-			item->pos.x_rot = Start->x_rot;
-			item->pos.y_rot = Start->y_rot;
-			item->pos.z_rot = Start->z_rot;
-			item->speed = 512;
-			AddActiveItem(item_number);
+		if (*ammo != -1)
+			--*ammo;
 
-			if (*ammo != -1)
-				*ammo -= 1;
-
-			SoundEffect(SFX_LARA_CROSSBOW, 0, SFX_DEFAULT);
-			savegame.Game.AmmoUsed++;
-		}
+		SoundEffect(SFX_LARA_CROSSBOW, 0, SFX_DEFAULT);
+		savegame.Game.AmmoUsed++;
 	}
 }
 
@@ -328,8 +322,8 @@ void draw_shotgun(long weapon_type)
 		item->anim_number = objects[item->object_number].anim_index + 1;
 		item->frame_number = anims[item->anim_number].frame_base;
 		item->status = ITEM_ACTIVE;
-		item->goal_anim_state = 1;
 		item->current_anim_state = 1;
+		item->goal_anim_state = 1;
 		item->room_number = NO_ROOM;
 		lara.left_arm.frame_base = objects[item->object_number].frame_base; 
 		lara.right_arm.frame_base = objects[item->object_number].frame_base;
@@ -339,15 +333,12 @@ void draw_shotgun(long weapon_type)
 
 	AnimateItem(item);
 
-	if (item->current_anim_state != 0 && item->current_anim_state != 6)
-	{
-		if (item->frame_number - anims[item->anim_number].frame_base == weapons[weapon_type].draw_frame)
-			draw_shotgun_meshes(weapon_type);
-		else if (lara.water_status == LW_UNDERWATER)
-			item->goal_anim_state = 6;
-	}
-	else
+	if (!item->current_anim_state || item->current_anim_state == 6)
 		ready_shotgun(weapon_type);
+	else if (item->frame_number - anims[item->anim_number].frame_base == weapons[weapon_type].draw_frame)
+		draw_shotgun_meshes(weapon_type);
+	else if (lara.water_status == LW_UNDERWATER)
+		item->goal_anim_state = 6;
 
 	lara.left_arm.frame_base = anims[item->anim_number].frame_ptr; 
 	lara.right_arm.frame_base = anims[item->anim_number].frame_ptr;
@@ -376,11 +367,8 @@ void undraw_shotgun(long weapon_type)
 		lara.right_arm.frame_number = 0;
 		lara.left_arm.frame_number = 0;
 	}
-	else if (item->current_anim_state == 3)
-	{	
-		if (anims[item->anim_number].frame_base == item->frame_number - 21)
-			undraw_shotgun_meshes(weapon_type);
-	}
+	else if (item->current_anim_state == 3 && anims[item->anim_number].frame_base == item->frame_number - 21)
+		undraw_shotgun_meshes(weapon_type);
 
 	lara.right_arm.frame_base = anims[item->anim_number].frame_ptr;
 	lara.left_arm.frame_base = anims[item->anim_number].frame_ptr;
@@ -426,7 +414,7 @@ void AnimateShotgun(long weapon_type)
 
 	item = &items[lara.weapon_item];
 
-	if (weapon_type == WEAPON_HK && lara_item->speed != 0)
+	if (weapon_type == WEAPON_HK && lara_item->speed)
 		running = 1;
 	else
 		running = 0;
@@ -440,7 +428,7 @@ void AnimateShotgun(long weapon_type)
 
 		if (lara.water_status == LW_UNDERWATER || running)
 			item->goal_anim_state = 6;
-		else if (input & IN_ACTION && lara.target == 0 || lara.left_arm.lock)
+		else if (input & IN_ACTION && !lara.target || lara.left_arm.lock)
 			item->goal_anim_state = 2;
 		else
 			item->goal_anim_state = 4;
@@ -455,62 +443,56 @@ void AnimateShotgun(long weapon_type)
 
 			if (lara.water_status != LW_UNDERWATER && !running)
 			{
-				if ((input & IN_ACTION) && (lara.target == 0 || lara.left_arm.lock))
+				if (input & IN_ACTION && (!lara.target || lara.left_arm.lock))
 				{
 					if (weapon_type == WEAPON_CROSSBOW)
 					{
 						FireCrossbow(0);
 						item->goal_anim_state = 2;
 					}
-					else
+					else if (weapon_type == WEAPON_HK)
 					{
-						if (weapon_type == WEAPON_HK)
-						{
-							if (!(lara.hk_type_carried & (WTYPE_AMMO_1 | WTYPE_AMMO_2)) || !HKTimer)
-							{
-								FireHK(0);
-								m16_firing = 1;
-								item->goal_anim_state = 2;
-
-								if (lara.hk_type_carried & WTYPE_SILENCER)
-									SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-								else
-								{
-									SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 83888140);
-									SoundEffect(SFX_HK_FIRE, &lara_item->pos, SFX_DEFAULT);
-								}
-							}
-							else
-								item->goal_anim_state = 0;
-						}
+						if ((lara.hk_type_carried & (W_AMMO1 | W_AMMO2)) && HKTimer)
+							item->goal_anim_state = 0;
 						else
 						{
-							FireShotgun();
+							FireHK(0);
+							m16_firing = 1;
 							item->goal_anim_state = 2;
+
+							if (lara.hk_type_carried & W_SILENCER)
+								SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
+							else
+							{
+								SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+								SoundEffect(SFX_HK_FIRE, &lara_item->pos, SFX_DEFAULT);
+							}
 						}
+					}
+					else
+					{
+						FireShotgun();
+						item->goal_anim_state = 2;
 					}
 				}
 				else if (lara.left_arm.lock)
 					item->goal_anim_state = 0;
 			}
 
-			if (item->goal_anim_state != 2 && m16_firing && !(lara.hk_type_carried & WTYPE_SILENCER))
+			if (item->goal_anim_state != 2 && m16_firing && !(lara.hk_type_carried & W_SILENCER))
 			{
 				StopSoundEffect(SFX_HK_FIRE);
 				SoundEffect(SFX_HK_STOP, &lara_item->pos, SFX_DEFAULT);
 				m16_firing = 0;
 			}
-
-			if (item->frame_number - anims[item->anim_number].frame_base == 12 && weapon_type == WEAPON_SHOTGUN)
-				TriggerGunShell(1, SHOTGUNSHELL, WEAPON_SHOTGUN);
 		}
 		else if (m16_firing)
 		{
-			if (lara.hk_type_carried & WTYPE_SILENCER)
+			if (lara.hk_type_carried & W_SILENCER)
 				SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 			else
 			{
-				SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 83888140);
+				SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
 				SoundEffect(SFX_HK_FIRE, &lara_item->pos, SFX_DEFAULT);
 			}
 		}
@@ -527,15 +509,12 @@ void AnimateShotgun(long weapon_type)
 		HKTimer = 0;
 		HKShotsFired = 0;
 
-		if (lara.water_status == LW_UNDERWATER || running)
-		{
-			if (input & IN_ACTION && lara.target == 0 || lara.left_arm.lock)
-				item->goal_anim_state = 8;
-			else
-				item->goal_anim_state = 7;
-		}
-		else
+		if (lara.water_status != LW_UNDERWATER && !running)
 			item->goal_anim_state = 0;
+		else if (input & IN_ACTION && !lara.target || lara.left_arm.lock)
+			item->goal_anim_state = 8;
+		else
+			item->goal_anim_state = 7;
 
 		break;
 
@@ -547,33 +526,30 @@ void AnimateShotgun(long weapon_type)
 
 			if (running)
 			{
-				if (input & IN_ACTION)
+				if (input & IN_ACTION && (!lara.target || lara.left_arm.lock))
 				{
-					if (lara.target == 0 || lara.left_arm.lock)
+					if ((lara.hk_type_carried & (W_AMMO1 | W_AMMO2)) && HKTimer)
+						item->goal_anim_state = 6;
+					else
 					{
-						if (!(lara.hk_type_carried & (WTYPE_AMMO_1 | WTYPE_AMMO_2)) || !HKTimer)
-						{
-							FireHK(1);
-							m16_firing = 1;
-							item->goal_anim_state = 8;
+						FireHK(1);
+						m16_firing = 1;
+						item->goal_anim_state = 8;
 
-							if (lara.hk_type_carried & WTYPE_SILENCER)
-								SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-							else
-							{
-								SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 83888140);
-								SoundEffect(SFX_HK_FIRE, &lara_item->pos, SFX_DEFAULT);
-							}
-						}
+						if (lara.hk_type_carried & W_SILENCER)
+							SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 						else
-							item->goal_anim_state = 6;
+						{
+							SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+							SoundEffect(SFX_HK_FIRE, &lara_item->pos, SFX_DEFAULT);
+						}
 					}
 				}
 				else if (lara.left_arm.lock)
 					item->goal_anim_state = 6;
 			}
 
-			if (item->goal_anim_state != 8 && m16_firing && !(lara.hk_type_carried & WTYPE_SILENCER))
+			if (item->goal_anim_state != 8 && m16_firing && !(lara.hk_type_carried & W_SILENCER))
 			{
 				StopSoundEffect(SFX_HK_FIRE);
 				SoundEffect(SFX_HK_STOP, &lara_item->pos, SFX_DEFAULT);
@@ -582,11 +558,11 @@ void AnimateShotgun(long weapon_type)
 		}
 		else if (m16_firing)
 		{
-			if (lara.hk_type_carried & WTYPE_SILENCER)
+			if (lara.hk_type_carried & W_SILENCER)
 				SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 			else
 			{
-				SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 83888140);
+				SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
 				SoundEffect(SFX_HK_FIRE, &lara_item->pos, SFX_DEFAULT);
 			}
 		}
@@ -595,45 +571,42 @@ void AnimateShotgun(long weapon_type)
 	}
 
 	AnimateItem(item);
-	lara.left_arm.frame_base = anims[item->anim_number].frame_ptr; 
 	lara.right_arm.frame_base = anims[item->anim_number].frame_ptr;
-	lara.left_arm.frame_number = item->frame_number - anims[item->anim_number].frame_base; 
 	lara.right_arm.frame_number = item->frame_number - anims[item->anim_number].frame_base;
-	lara.left_arm.anim_number = item->anim_number; 
 	lara.right_arm.anim_number = item->anim_number;
+	lara.left_arm.frame_base = lara.right_arm.frame_base;
+	lara.left_arm.frame_number = lara.right_arm.frame_number;
+	lara.left_arm.anim_number = lara.right_arm.anim_number;
 }
 
 void DoGrenadeDamageOnBaddie(ITEM_INFO* baddie, ITEM_INFO* item)
 {
-	if (!(baddie->flags & 0x8000))
+	if (baddie->flags & 0x8000)
+		return;
+
+	if (baddie == lara_item && lara_item->hit_points > 0)
 	{
-		if (baddie == lara_item && lara_item->hit_points > 0)
-		{
-			lara_item->hit_points -= 50;
+		lara_item->hit_points -= 50;
 
-			if (!(room[item->room_number].flags & ROOM_UNDERWATER) && baddie->hit_points < 51)
-				LaraBurn();
-		}
-		else
+		if (!(room[item->room_number].flags & ROOM_UNDERWATER) && lara_item->hit_points <= 50)
+			LaraBurn();
+	}
+	else if (!item->item_flags[2])
+	{
+		baddie->hit_status = 1;
+
+		if (!objects[baddie->object_number].undead)
 		{
-			if (item->item_flags[2] == 0)
+			HitTarget(baddie, 0, 30, 1);
+
+			if (baddie != lara_item)
 			{
-				baddie->hit_status = 1;
+				savegame.Game.AmmoHits++;
 
-				if (!objects[baddie->object_number].undead)
+				if (baddie->hit_points <= 0)
 				{
-					HitTarget(baddie, NULL, 30, 1);
-
-					if (baddie != lara_item)
-					{
-						savegame.Game.AmmoHits++;
-
-						if (baddie->hit_points <= 0)
-						{
-							savegame.Level.Kills++;
-							CreatureDie(baddie - items, 1);
-						}
-					}
+					savegame.Level.Kills++;
+					CreatureDie(baddie - items, 1);
 				}
 			}
 		}
@@ -653,17 +626,18 @@ void TriggerGrapplingEffect(long x, long y, long z)
 		sptr->dShade = (GetRandomControl() & 0xF) + 64;
 		sptr->ColFadeSpeed = 4;
 		sptr->FadeToBlack = 16;
-		sptr->Life = sptr->sLife = (GetRandomControl() & 3) + 40;
+		sptr->Life = (GetRandomControl() & 3) + 40;
+		sptr->sLife = sptr->Life;
 		sptr->TransType = 2;
 		sptr->x = x + (GetRandomControl() & 0x1F) - 16;
 		sptr->y = y + (GetRandomControl() & 0x1F) - 16;
 		sptr->z = z + (GetRandomControl() & 0x1F) - 16;
-		sptr->Xvel = ((GetRandomControl() & 0x1FF) - 256) << 1;
-		sptr->Zvel = ((GetRandomControl() & 0x1FF) - 256) << 1;
+		sptr->Xvel = 2 * (GetRandomControl() & 0x1FF) - 512;
+		sptr->Zvel = 2 * (GetRandomControl() & 0x1FF) - 512;
 
 		if (i < 12)
 		{
-			sptr->Yvel = (GetRandomControl() & 0x1F);
+			sptr->Yvel = GetRandomControl() & 0x1F;
 			sptr->Friction = 64;
 		}
 		else
@@ -677,11 +651,11 @@ void TriggerGrapplingEffect(long x, long y, long z)
 		sptr->RotAdd = (GetRandomControl() & 0x40) - 32;
 		sptr->MaxYvel = 0;
 		sptr->Gravity = 0;
-		size = (GetRandomControl() & 0xF) + 48;
-		sptr->dSize = (uchar)(size >> 1);
-		sptr->sSize = (uchar)(size >> 2);
-		sptr->Size = (uchar)(size >> 2);
 		sptr->mirror = 0;
+		size = (GetRandomControl() & 0xF) + 48;
+		sptr->Size = uchar(size >> 2);
+		sptr->sSize = sptr->Size;
+		sptr->dSize = uchar(size << 1);
 	}
 }
 
@@ -692,64 +666,64 @@ void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, long MustHitLas
 	short TriggerItems[8];
 	short NumTrigs, room_number;
 
-	if (!(target->flags & IFL_SWITCH_ONESHOT))
+	if (target->flags & IFL_SWITCH_ONESHOT)
+		return;
+
+	if (!MustHitLastNode)
 	{
-		if (!MustHitLastNode)
+		num1 = objects[target->object_number].nmeshes;
+		cs = num1 - 1;
+	}
+	else
+	{
+		num1 = GetSpheres(target, Slist, 1);
+		cs = -1;
+		cd = 0x7FFFFFFF;
+		ptr1 = Slist;
+
+		for (int i = 0; i < num1; i++)
 		{
-			num1 = objects[target->object_number].nmeshes;
-			cs = num1 - 1;
+			dx = ptr1->x - item->pos.x_pos;
+			dy = ptr1->y - item->pos.y_pos;
+			dz = ptr1->z - item->pos.z_pos;
+			dy = SQUARE(dx) + SQUARE(dy) + SQUARE(dz) - SQUARE(ptr1->r);
+
+			if (dy < cd)
+			{
+				cd = dy;
+				cs = i;
+			}
+
+			ptr1++;
+		}
+	}
+
+	if (cs == num1 - 1)
+	{
+		if (target->flags & IFL_CODEBITS && (target->flags & IFL_CODEBITS) != IFL_CODEBITS)
+		{
+			room_number = target->room_number;
+			GetHeight(GetFloor(target->pos.x_pos, target->pos.y_pos - 256, target->pos.z_pos, &room_number), target->pos.x_pos, target->pos.y_pos - 256, target->pos.z_pos);
+			TestTriggers(trigger_index, 1, target->flags & IFL_CODEBITS);
 		}
 		else
 		{
-			num1 = GetSpheres(target, Slist, 1);
-			cs = -1;
-			cd = 0x7FFFFFFF;
-			ptr1 = Slist;
+			NumTrigs = (short)GetSwitchTrigger(target, TriggerItems, 1);
 
-			for (int i = 0; i < num1; i++)
+			for (int i = 0; i < NumTrigs; i++)
 			{
-				dx = ptr1->x - item->pos.x_pos;
-				dy = ptr1->y - item->pos.y_pos;
-				dz = ptr1->z - item->pos.z_pos;
-				dy = SQUARE(dx) + SQUARE(dy) + SQUARE(dz) - SQUARE(ptr1->r);
-
-				if (dy < cd)
-				{
-					cd = dy;
-					cs = i;
-				}
-
-				ptr1++;
+				AddActiveItem(TriggerItems[i]);
+				items[TriggerItems[i]].status = ITEM_ACTIVE;
+				items[TriggerItems[i]].flags |= IFL_CODEBITS;
 			}
 		}
 
-		if (cs == num1 - 1)
-		{
-			if (target->flags & IFL_CODEBITS && (target->flags & IFL_CODEBITS) != IFL_CODEBITS)
-			{
-				room_number = target->room_number;
-				GetHeight(GetFloor(target->pos.x_pos, target->pos.y_pos - 256, target->pos.z_pos, &room_number), target->pos.x_pos, target->pos.y_pos - 256, target->pos.z_pos);
-				TestTriggers(trigger_index, 1, target->flags & IFL_CODEBITS);
-			}
-			else
-			{
-				NumTrigs = (short)GetSwitchTrigger(target, TriggerItems, 1);
+		if (target->object_number == SWITCH_TYPE7)
+			ExplodeItemNode(target, objects[SWITCH_TYPE7].nmeshes - 1, 0, 64);
 
-				for (int i = 0; i < NumTrigs; i++)
-				{
-					AddActiveItem(TriggerItems[i]);
-					items[TriggerItems[i]].status = ITEM_ACTIVE;
-					items[TriggerItems[i]].flags |= IFL_CODEBITS;
-				}
-			}
-
-			if (target->object_number == SWITCH_TYPE7)
-				ExplodeItemNode(target, objects[SWITCH_TYPE7].nmeshes - 1, 0, 64);
-
-			AddActiveItem(target - items);
-			target->flags |= IFL_CODEBITS | IFL_SWITCH_ONESHOT;
-			target->status = ITEM_ACTIVE;
-		}
+		AddActiveItem(target - items);
+		target->flags |= IFL_CODEBITS | IFL_SWITCH_ONESHOT;
+		target->status = ITEM_ACTIVE;
 	}
 }
 

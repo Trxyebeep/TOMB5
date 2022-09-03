@@ -19,3 +19,6 @@ bool REG_ReadBool(char* SubKeyname, bool& value, bool defaultValue);
 bool REG_ReadString(char* SubKeyName, char* value, long length, char* defaultValue);
 bool REG_ReadDouble(char* SubKeyName, double& value, double defaultValue);
 bool REG_ReadVoid(char* SubKeyName, void* value, long size, void* defaultValue);
+
+#define SaveSettings	( (void(__cdecl*)()) 0x004BE7E0 )
+#define LoadSettings	( (bool(__cdecl*)()) 0x004BDE20 )

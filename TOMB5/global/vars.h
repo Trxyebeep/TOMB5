@@ -333,6 +333,7 @@
 #define f_centerx	VAR_U_(0x0055D22C, float)
 #define f_centery	VAR_U_(0x0055D230, float)
 #define f_a	VAR_U_(0x0051D150, float)
+#define f_b	VAR_U_(0x0051D154, float)
 #define f_boo	VAR_U_(0x0055D220, float)
 #define f_moneoznear	VAR_U_(0x0055D25C, float)
 /*************************************************/
@@ -366,6 +367,8 @@
 #define lGlobalMeshPos	VAR_U_(0x0091F3B8, FVECTOR)
 #define GlobalAmbient	VAR_U_(0x0092167C, long)
 #define App	VAR_U_(0x00D9AB38, WINAPP)
+#define dbm_command	VAR_U_(0x00E4ACB4, ulong)
+#define dbm_clearlog	VAR_U_(0x00E4ACAC, ulong)
 #define aAmbientR	VAR_U_(0x0087AD0C, long)
 #define aAmbientG	VAR_U_(0x0087AD08, long)
 #define aAmbientB	VAR_U_(0x0087AD04, long)
@@ -540,7 +543,6 @@
 #define skelly_rhandbak	VAR_U_(0x00E6D840, short*)
 #define skelly_lhandbak	VAR_U_(0x00E6D828, short*)
 #define StaticMeshShade	VAR_U_(0x0087B0DC, long)
-#define G_dxptr	VAR_U_(0x0086BD94, DXPTR*)
 #define StaticMeshLightItem	VAR_U_(0x008796C8, ITEM_INFO)
 #define D3DLights	VAR_U_(0x0087B0F0, D3DLIGHT_STRUCT*)
 #define D3DDynamics	VAR_U_(0x0087B0F4, D3DLIGHT_STRUCT*)
@@ -562,6 +564,7 @@
 #define NumLevelFogBulbs	VAR_U_(0x007DFFD8, long)
 #define NumActiveFogBulbs	VAR_U_(0x007EE0C4, long)
 #define D3DCameraMatrix	VAR_U_(0x0057A0B0, D3DMATRIX)
+#define D3DMW2VMatrix	VAR_U_(0x0057A0F0, D3DMATRIX)
 #define DEL_playingamefmv	VAR_U_(0x0051CE24, char)
 #define num_level_meshes	VAR_U_(0x007DFFE4, long)
 #define mesh_vtxbuf	VAR_U_(0x007DFFE0, MESH_DATA**)
@@ -585,6 +588,40 @@
 #define gfScriptFile	VAR_U_(0x00E5C2EC, uchar*)
 #define gfLanguageFile	VAR_U_(0x00E5C2AC, uchar*)
 #define screen_surface	VAR_U_(0x0087BD58, LPDIRECTDRAWSURFACE4)
+#define G_dxinfo	VAR_U_(0x0086B9AC, DXINFO*)
+#define G_dxptr	VAR_U_(0x0086BD94, DXPTR*)
+#define G_ddraw	VAR_U_(0x0086B9A8, LPDIRECTDRAW4)
+#define G_hwnd	VAR_U_(0x0086B9A4, HWND)
+#define G_d3d	VAR_U_(0x0086BA30, LPDIRECT3D3)
+#define t_frequency	VAR_U_(0x00D9AAB0, __int64)
+#define pSortBuffer	VAR_U_(0x00BA4388, char*)
+#define pSortList	VAR_U_(0x00923FA8, SORTLIST**)
+#define audio_stream_fp	VAR_U_(0x0057A010, FILE*)
+#define DSBuffer	VAR_U_(0x00579FFC, LPDIRECTSOUNDBUFFER)
+#define reading_audio_file	VAR_U_(0x0057A01C, volatile bool)
+#define continue_reading_audio_file	VAR_U_(0x00579FE4, volatile bool)
+#define XAFlag	VAR_U_(0x00510B18, long)
+#define audio_cs	VAR_U_(0x00579FB0, CRITICAL_SECTION)
+#define audio_fp_write_ptr	VAR_U_(0x00579FD4, uchar*)
+#define audio_play_mode	VAR_U_(0x00579E30, long)
+#define XAReqTrack	VAR_U_(0x0057A014, long)
+#define audio_buffer_size	VAR_U_(0x00579FF8, long)
+#define hACMStream	VAR_U_(0x00579FF0, HACMSTREAM)
+#define pAudioWrite	VAR_U_(0x00579FE0, uchar*)
+#define AudioBytes	VAR_U_(0x00579FE8, ulong)
+#define CurrentNotify	VAR_U_(0x00579E4C, long)
+#define NextWriteOffset	VAR_U_(0x00579FD8, long)
+#define NotifySize	VAR_U_(0x00579FD0, long)
+#define hACMDriverID	VAR_U_(0x00579FCC, HACMDRIVERID)
+#define NotificationThreadHandle	VAR_U_(0x00579FA8, HANDLE)
+#define DSNotify	VAR_U_(0x0057A000, LPDIRECTSOUNDNOTIFY)
+#define hACMDriver	VAR_U_(0x00579FF4, HACMDRIVER)
+#define resChangeCounter	VAR_U_(0x00D9AD9C, long)
+#define start_setup	VAR_U_(0x0057A098, bool)
+#define fmvs_disabled	VAR_U_(0x0057A099, bool)
+#define level_fp	VAR_U_(0x00875164, FILE*)
+#define CompressedData	VAR_U_(0x00875148, char*)
+#define FileCompressed	VAR_U_(0x005165C8, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -727,6 +764,10 @@
 #define ActiveFogBulbs	ARRAY_(0x007E7FF0, FOGBULB_STRUCT, [64])
 #define fog_bulbs	ARRAY_(0x007ED0F8, FOGBULB, [64])
 #define MonoScreen	ARRAY_(0x008BBD68, MONOSCREEN_STRUCT, [5])
+#define aBoundingBox	ARRAY_(0x00921618, float, [24])
+#define SortBuffer	ARRAY_(0x00923FAC, char, [])
+#define StreamHeaders	ARRAY_(0x00579E50, ACMSTREAMHEADER, [4])
+#define NotifyEventHandles	ARRAY_(0x00579FA0, HANDLE, [2])
 
 /****************/
 //registry
@@ -744,6 +785,8 @@
 #define MAX_ITEMS	256
 #define MAX_SAMPLES	450
 #define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
+#define MALLOC_SIZE	5000000		//5MB
+#define WINDOW_STYLE	(WS_OVERLAPPED | WS_BORDER | WS_CAPTION)
 
 //unknowns
 #define UNK_00E916F0	VAR_U_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init

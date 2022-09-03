@@ -732,6 +732,118 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 	return !item->mesh_bits;
 }
 
+void SetGunFlash(short weapon)
+{
+	GUNFLASH_STRUCT* flash;
+	long num;
+	short xrot, y, z;
+
+	switch (weapon)
+	{
+	case WEAPON_FLARE:
+	case WEAPON_SHOTGUN:
+	case WEAPON_CROSSBOW:
+		return;
+
+	case WEAPON_REVOLVER:
+		xrot = -0x38E0;
+		y = 192;
+		z = 68;
+		break;
+
+	case WEAPON_UZI:
+		xrot = -0x3FFC;
+		y = 190;
+		z = 50;
+		break;
+
+	case WEAPON_HK:
+		xrot = -0x38E0;
+		y = 300;
+		z = 92;
+		break;
+
+	default:
+		xrot = -0x3FFC;
+		y = 180;
+		z = 40;
+		break;
+	}
+
+	num = 0;
+	flash = Gunflashes;
+
+	while (flash->on)
+	{
+		flash++;
+		num++;
+
+		if (num >= 4)
+			return;
+	}
+	
+	flash->on = 1;
+	phd_TranslateRel(0, y, z);
+	phd_RotX(xrot);
+	*(float*)(flash->mx + M00) = aMXPtr[M00];
+	*(float*)(flash->mx + M01) = aMXPtr[M01];
+	*(float*)(flash->mx + M02) = aMXPtr[M02];
+	*(float*)(flash->mx + M03) = aMXPtr[M03];
+	*(float*)(flash->mx + M10) = aMXPtr[M10];
+	*(float*)(flash->mx + M11) = aMXPtr[M11];
+	*(float*)(flash->mx + M12) = aMXPtr[M12];
+	*(float*)(flash->mx + M13) = aMXPtr[M13];
+	*(float*)(flash->mx + M20) = aMXPtr[M20];
+	*(float*)(flash->mx + M21) = aMXPtr[M21];
+	*(float*)(flash->mx + M22) = aMXPtr[M22];
+	*(float*)(flash->mx + M23) = aMXPtr[M23];
+}
+
+void DrawGunflashes()
+{
+	GUNFLASH_STRUCT* flash;
+
+	if (!Gunflashes[0].on)
+		return;
+
+	phd_top = 0;
+	phd_left = 0;
+	phd_right = phd_winwidth;
+	phd_bottom = phd_winheight;
+	phd_PushMatrix();
+	GetRandomDraw();
+	GetRandomDraw();
+	GetRandomDraw();
+	GetRandomDraw();
+
+	for (int i = 0; i < 4; i++)
+	{
+		flash = &Gunflashes[i];
+
+		if (!flash->on)
+			break;
+
+		aMXPtr[M00] = *(float*)(flash->mx + M00);
+		aMXPtr[M01] = *(float*)(flash->mx + M01);
+		aMXPtr[M02] = *(float*)(flash->mx + M02);
+		aMXPtr[M03] = *(float*)(flash->mx + M03);
+		aMXPtr[M10] = *(float*)(flash->mx + M10);
+		aMXPtr[M11] = *(float*)(flash->mx + M11);
+		aMXPtr[M12] = *(float*)(flash->mx + M12);
+		aMXPtr[M13] = *(float*)(flash->mx + M13);
+		aMXPtr[M20] = *(float*)(flash->mx + M20);
+		aMXPtr[M21] = *(float*)(flash->mx + M21);
+		aMXPtr[M22] = *(float*)(flash->mx + M22);
+		aMXPtr[M23] = *(float*)(flash->mx + M23);
+		phd_RotZ(short(GetRandomDraw() << 1));
+		GlobalAmbient = 0xFF2F2F00;
+		phd_PutPolygons(meshes[objects[GUN_FLASH].mesh_index], -1);
+		flash->on = 0;
+	}
+
+	phd_PopMatrix();
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -745,4 +857,6 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x004852E0, DrawWeaponMissile, replace);
 	INJECT(0x00485290, DrawLensFlares, replace);
 	INJECT(0x00484080, ExplodingDeath2, replace);
+	INJECT(0x004837B0, SetGunFlash, replace);
+	INJECT(0x004838E0, DrawGunflashes, replace);
 }

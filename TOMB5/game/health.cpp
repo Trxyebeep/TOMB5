@@ -6,10 +6,11 @@
 #include "../specific/output.h"
 #include "../specific/LoadSave.h"
 #include "text.h"
-#ifdef AMMO_COUNTER
+#ifdef GENERAL_FIXES
 #include "larafire.h"
-#endif
+#include "../specific/input.h"
 #include "../tomb5/tomb5.h"
+#endif
 
 long FlashIt()
 {
@@ -31,7 +32,7 @@ void DrawGameInfo(long timed)
 {
 	long flash_state, seconds;
 	char buf[80];
-#ifdef AMMO_COUNTER
+#ifdef GENERAL_FIXES
 	short ammo, btm;
 #endif
 
@@ -66,23 +67,35 @@ void DrawGameInfo(long timed)
 			PrintString(92, 24, 0, buf, 0);
 		}
 
-#ifdef AMMO_COUNTER
+#ifdef GENERAL_FIXES
 		if (tomb5.ammo_counter)
 		{
 			if (lara.gun_status == LG_READY)
 			{
 				ammo = *get_current_ammo_pointer(lara.gun_type);
 
-				if (ammo == -1)
-					return;
+				if (ammo != -1)
+				{
 
-				if (lara.gun_type == WEAPON_SHOTGUN)
-					ammo /= 6;
+					if (lara.gun_type == WEAPON_SHOTGUN)
+						ammo /= 6;
 
-				sprintf(&buf[0], "%i", ammo);
-				GetStringLength(buf, 0, &btm);
-				PrintString(LaserSight ? ushort(phd_centerx + 30) : ushort(phd_winxmax - GetStringLength(buf, 0, 0) - 80), phd_winymax - btm - 70, 0, &buf[0], 0);
+					sprintf(&buf[0], "%i", ammo);
+					GetStringLength(buf, 0, &btm);
+					PrintString(LaserSight ? ushort(phd_centerx + 30) : ushort(phd_winxmax - GetStringLength(buf, 0, 0) - 80), phd_winymax - btm - 70, 0, &buf[0], 0);
+				}
 			}
+		}
+#endif
+
+#ifdef GENERAL_FIXES	//Ammotype change tings
+		if (ammo_change_timer)
+		{
+			ammo_change_timer--;
+			PrintString(ushort(phd_winwidth >> 1), (ushort)font_height, 5, ammo_change_buf, 0x8000);
+
+			if (ammo_change_timer <= 0)
+				ammo_change_timer = 0;
 		}
 #endif
 	}

@@ -20,22 +20,47 @@ static PISTOL_DEF PistolTable[4] =
 	{ UZI_ANIM, 4, 5, 13, 24 }
 };
 
+static void set_arm_info(LARA_ARM* arm, long frame)
+{
+	PISTOL_DEF* p;
+	long anim_base;
+
+	p = &PistolTable[lara.gun_type];
+	anim_base = objects[p->ObjectNum].anim_index;
+
+	if (frame >= p->Draw1Anim)
+	{
+		if (frame < p->Draw2Anim)
+			anim_base++;
+		else if (frame < p->RecoilAnim)
+			anim_base += 2;
+		else
+			anim_base += 3;
+	}
+
+	arm->anim_number = (short)anim_base;
+	arm->frame_number = (short)frame;
+	arm->frame_base = anims[anim_base].frame_ptr;
+}
+
 void ready_pistols(long weapon_type)
 {
 	lara.gun_status = LG_READY;
+	lara.target = 0;
+
 	lara.left_arm.x_rot = 0;
 	lara.left_arm.y_rot = 0;
 	lara.left_arm.z_rot = 0;
+	lara.left_arm.frame_number = 0;
+	lara.left_arm.lock = 0;
+	lara.left_arm.frame_base = objects[WeaponObject(weapon_type)].frame_base;
+
 	lara.right_arm.x_rot = 0;
 	lara.right_arm.y_rot = 0;
 	lara.right_arm.z_rot = 0;
 	lara.right_arm.frame_number = 0;
-	lara.left_arm.frame_number = 0;
-	lara.target = 0;
 	lara.right_arm.lock = 0;
-	lara.left_arm.lock = 0;
-	lara.right_arm.frame_base = objects[WeaponObject(weapon_type)].frame_base;
-	lara.left_arm.frame_base = lara.right_arm.frame_base;
+	lara.right_arm.frame_base = lara.left_arm.frame_base;
 }
 
 void draw_pistol_meshes(long weapon_type)
@@ -58,7 +83,7 @@ void draw_pistol_meshes(long weapon_type)
 
 void undraw_pistol_mesh_left(long weapon_type)
 {
-	WeaponObject(weapon_type);	//ok core
+	WeaponObject(weapon_type);
 	lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + LM_LHAND * 2];
 
 #ifdef GENERAL_FIXES
@@ -177,7 +202,7 @@ void AnimatePistols(long weapon_type)
 					{
 						SmokeCountR = 28;
 						SmokeWeapon = weapon_type;
-						TriggerGunShell(1, 369, weapon_type);
+						TriggerGunShell(1, GUNSHELL, weapon_type);
 						lara.right_arm.flash_gun = winfo->flash_time;
 						SoundEffect(SFX_EXPLOSION1, &lara_item->pos, 0x2000000 | SFX_SETPITCH);
 						SoundEffect(winfo->sample_num, &lara_item->pos, SFX_DEFAULT);
@@ -252,7 +277,7 @@ void AnimatePistols(long weapon_type)
 					{
 						SmokeCountL = 28;
 						SmokeWeapon = weapon_type;
-						TriggerGunShell(0, 369, weapon_type);
+						TriggerGunShell(0, GUNSHELL, weapon_type);
 						lara.left_arm.flash_gun = winfo->flash_time;
 					}
 
@@ -306,6 +331,7 @@ void PistolHandler(long weapon_type)
 {
 	WEAPON_INFO* winfo;
 	PHD_VECTOR pos;
+	long r, g, b;
 
 	winfo = &weapons[weapon_type];
 	LaraGetNewTarget(winfo);
@@ -363,12 +389,14 @@ void PistolHandler(long weapon_type)
 		else
 			GetLaraJointPos(&pos, 14);
 
+		r = (GetRandomControl() & 0x3F) + 192;
+		g = (GetRandomControl() & 0x1F) + 128;
+		b = GetRandomControl() & 0x3F;
+
 		if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
-			TriggerDynamic_MIRROR(pos.x, pos.y, pos.z, 10,
-				(GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 0x3F);
+			TriggerDynamic_MIRROR(pos.x, pos.y, pos.z, 10, r, g, b);
 		else
-			TriggerDynamic(pos.x, pos.y, pos.z, 10,
-				(GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 0x3F);
+			TriggerDynamic(pos.x, pos.y, pos.z, 10, r, g, b);
 	}
 }
 
@@ -479,32 +507,6 @@ void undraw_pistols(long weapon_type)
 		lara.head_y_rot = (lara.left_arm.y_rot + lara.right_arm.y_rot) >> 2;
 		lara.torso_y_rot = lara.head_y_rot;
 	}
-}
-
-static void set_arm_info(LARA_ARM* arm, long frame)
-{
-	PISTOL_DEF* p;
-	long anim_base;
-
-	p = &PistolTable[lara.gun_type];
-	anim_base = objects[p->ObjectNum].anim_index;
-
-	if (frame >= p->Draw1Anim)
-	{
-		if (frame >= p->Draw2Anim)
-		{
-			if (frame < p->RecoilAnim)
-				anim_base += 2;
-			else
-				anim_base += 3;
-		}
-		else
-			anim_base++;
-	}
-
-	arm->anim_number = (short)anim_base;
-	arm->frame_number = (short)frame;
-	arm->frame_base = anims[anim_base].frame_ptr;
 }
 
 void inject_lara2gun(bool replace)

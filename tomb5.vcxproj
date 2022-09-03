@@ -103,6 +103,7 @@
     <ClCompile Include="TOMB5\specific\3dmath.cpp" />
     <ClCompile Include="TOMB5\specific\alexstuff.cpp" />
     <ClCompile Include="TOMB5\specific\audio.cpp" />
+    <ClCompile Include="TOMB5\specific\cmdline.cpp" />
     <ClCompile Include="TOMB5\specific\d3dmatrix.cpp" />
     <ClCompile Include="TOMB5\specific\drawlara.cpp" />
     <ClCompile Include="TOMB5\specific\drawroom.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="TOMB5\specific\3dmath.h" />
     <ClInclude Include="TOMB5\specific\alexstuff.h" />
     <ClInclude Include="TOMB5\specific\audio.h" />
+    <ClInclude Include="TOMB5\specific\cmdline.h" />
     <ClInclude Include="TOMB5\specific\drawlara.h" />
     <ClInclude Include="TOMB5\specific\drawroom.h" />
     <ClInclude Include="TOMB5\specific\dxshell.h" />
@@ -342,7 +344,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;AMMO_COUNTER;IMPROVED_BARS;DISCORD_RPC;NO_CD;GENERAL_FIXES;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;IMPROVED_BARS;DISCORD_RPC;NO_CD;GENERAL_FIXES;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
@@ -354,8 +356,8 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalOptions>/SECTION:.text,RWE /IGNORE:4099 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>dxguid.lib;discord-rpcd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/SECTION:.text,RWE /IGNORE:4099 %(AdditionalOptions) /pdbaltpath:%_PDB%</AdditionalOptions>
+      <AdditionalDependencies>dxguid.lib;Dsound.lib;Msacm32.lib;Ddraw.lib;discord-rpcd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)TOMB5\tomb5\libs\discordRPC;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -369,7 +371,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;WEP_HOTKEYS;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;AMMO_COUNTER;IMPROVED_BARS;DISCORD_RPC;GENERAL_FIXES;NO_CD;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;FOOTPRINTS;SMOOTH_SHADOWS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;IMPROVED_BARS;DISCORD_RPC;GENERAL_FIXES;NO_CD;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
@@ -383,8 +385,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalOptions>/SECTION:.text,RWE %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>dxguid.lib;discord-rpc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/SECTION:.text,RWE %(AdditionalOptions) /pdbaltpath:%_PDB%</AdditionalOptions>
+      <AdditionalDependencies>dxguid.lib;Dsound.lib;Msacm32.lib;Ddraw.lib;discord-rpc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)TOMB5\tomb5\libs\discordRPC;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

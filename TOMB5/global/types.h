@@ -25,6 +25,8 @@ do \
 } while (false)
 
 /*macros*/
+#define	TRIGMULT2(a,b)		(((a) * (b)) >> 14)
+#define	TRIGMULT3(a,b,c)	(TRIGMULT2((TRIGMULT2(a, b)), c))
 #define ABS(x) (((x)<0) ? (-(x)) : (x))
 #define phd_sin(x) (4 * rcossin_tbl[((long)(x) >> 3) & 0x1FFE])
 #define phd_cos(x) (4 * rcossin_tbl[(((long)(x) >> 3) & 0x1FFE) + 1])
@@ -35,6 +37,7 @@ do \
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
 #define RGBA(r, g, b, a) (RGBONLY(r, g, b) | ((a) << 24))
 #define ARGB(r, g, b, a) (RGBA(b, g, r, a))
+#define	CLRA(clr)	((clr >> 24) & 0xFF)	//shift r, g, and b out of the way and 0xFF
 #define	CLRR(clr)	((clr >> 16) & 0xFF)	//shift g and b out of the way and 0xFF
 #define	CLRG(clr)	((clr >> 8) & 0xFF)		//shift b out of the way and 0xFF
 #define	CLRB(clr)	((clr) & 0xFF)			//and 0xFF
@@ -49,7 +52,12 @@ do \
 #define SEEK	( (int(__cdecl*)(FILE*, int, int)) 0x004E1F30 )
 #define READ	( (size_t(__cdecl*)(void*, size_t, size_t, FILE*)) 0x004E1D20 )
 #define TELL	( (int(__cdecl*)(FILE*)) 0x004E4700 )
+#define WRITE	( (size_t(__cdecl*)(const void*, size_t, size_t, FILE*)) 0x004E4380 )
 #define CLOSE	( (int(__cdecl*)(FILE*)) 0x004E20D0 )
+
+#define MALLOC	( (void*(__cdecl*)(size_t)) 0x004E2220 )
+#define REALLOC	( (void*(__cdecl*)(void*, size_t)) 0x004E26B0 )
+#define FREE	( (void(__cdecl*)(void*)) 0x004E2C90 )
 	/**********************************/
 
 /*typedefs*/
@@ -58,6 +66,25 @@ typedef unsigned short ushort;
 typedef unsigned long ulong;
 
 /*enums*/
+
+enum languages
+{
+	ENGLISH,
+	FRENCH,
+	GERMAN,
+	ITALIAN,
+	SPANISH,
+	US,
+	JAPAN,
+	DUTCH
+};
+
+enum win_commands
+{
+	KA_ALTENTER = 8,
+	KA_ALTP = 40001,
+	KA_ALTM = 40002
+};
 
 enum LightTypes
 {
@@ -161,7 +188,12 @@ enum room_flags
 	ROOM_DYNAMIC_LIT =		0x10,
 	ROOM_NOT_INSIDE =		0x20,
 	ROOM_INSIDE =			0x40,
-	ROOM_NO_LENSFLARE =		0x80
+	ROOM_NO_LENSFLARE =		0x80,
+	ROOM_MIST =				0x100,
+	ROOM_REFLECT =			0x200,
+	ROOM_UNK1 =				0x400,
+	ROOM_UNK2 =				0x800,
+	ROOM_REFLECT_CEILING =	0x1000
 };
 
 enum collision_types
@@ -250,13 +282,13 @@ enum floor_types
 
 enum weapon_type_carried 
 {
-	WTYPE_MISSING =			0x0,
-	WTYPE_PRESENT =			0x1,
-	WTYPE_SILENCER =		0x2,
-	WTYPE_LASERSIGHT =		0x4,
-	WTYPE_AMMO_1 =			0x8,
-	WTYPE_AMMO_2 =			0x10,
-	WTYPE_AMMO_3 =			0x20,
+	W_NONE =		0x0,
+	W_PRESENT =		0x1,
+	W_SILENCER =	0x2,
+	W_LASERSIGHT =	0x4,
+	W_AMMO1 =		0x8,
+	W_AMMO2 =		0x10,
+	W_AMMO3 =		0x20,
 };
 
 enum zone_type
@@ -1860,7 +1892,7 @@ struct BUBBLE_STRUCT
 
 struct GUNFLASH_STRUCT
 {
-	MATRIX3D matrix;
+	long mx[12];
 	short on;
 };
 
@@ -2349,6 +2381,21 @@ struct MONOSCREEN_STRUCT
 	LPDIRECTDRAWSURFACE4 surface;
 };
 
+struct DS_SAMPLE
+{
+	LPDIRECTSOUNDBUFFER buffer;
+	long frequency;
+	long playing;
+};
+
+struct COMMANDLINES
+{
+	char command[20];
+	bool needs_parameter;
+	void (*code)(char*);
+	char parameter[20];
+};
+
 #ifdef IMPROVED_BARS
 struct GouraudBarColourSet
 {
@@ -2396,6 +2443,16 @@ struct STARS
 	long col;
 };
 
+struct PORTAL
+{
+	short rn;
+	short normal[3];
+	short v1[3];
+	short v2[3];
+	short v3[3];
+	short v4[3];
+};
+
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
 	bool footprints;			//on off
@@ -2418,6 +2475,11 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool tr4_loadbar;			//on off
 	ulong inv_bg_mode;			//1-> original, 2->TR4, 3-> clear
 	bool loadingtxt;			//on off
+	bool shimmer;				//on off
+	ulong distance_fog;			//value in blocks
+	bool ammotype_hotkeys;		//on off
+	bool look_transparency;		//on off
+	bool static_lighting;		//on off
 };
 #endif
 #pragma pack(pop)

@@ -1457,12 +1457,12 @@ void BinocularCamera(ITEM_INFO* item)
 			}
 			else
 			{
-				if (lara.hk_type_carried & WTYPE_AMMO_1)//sniper mode!
+				if (lara.hk_type_carried & W_AMMO1)//sniper mode!
 				{
 					WeaponDelay = 12;
 					Fire = 1;
 
-					if (lara.hk_type_carried & WTYPE_SILENCER)
+					if (lara.hk_type_carried & W_SILENCER)
 						SoundEffect(14, 0, 0);
 					else
 					{
@@ -1473,13 +1473,13 @@ void BinocularCamera(ITEM_INFO* item)
 					if (ammo[0] != -1)
 						ammo[0]--;
 				}
-				else if (lara.hk_type_carried & WTYPE_AMMO_2)//burst mode!
+				else if (lara.hk_type_carried & W_AMMO2)//burst mode!
 				{
 					if (LSHKTimer)
 					{
 						camera.bounce = -16 - (GetRandomControl() & 0x1F);
 
-						if (lara.hk_type_carried & WTYPE_SILENCER)
+						if (lara.hk_type_carried & W_SILENCER)
 							SoundEffect(14, 0, 0);
 						else
 						{
@@ -1500,7 +1500,7 @@ void BinocularCamera(ITEM_INFO* item)
 						LSHKTimer = 4;
 						Fire = 1;
 
-						if (lara.hk_type_carried & WTYPE_SILENCER)
+						if (lara.hk_type_carried & W_SILENCER)
 							SoundEffect(14, 0, 0);
 						else
 						{
@@ -1513,7 +1513,7 @@ void BinocularCamera(ITEM_INFO* item)
 				{
 					if (LSHKTimer)
 					{
-						if (lara.hk_type_carried & WTYPE_SILENCER)
+						if (lara.hk_type_carried & W_SILENCER)
 							SoundEffect(14, 0, 0);
 						else
 						{
@@ -1526,7 +1526,7 @@ void BinocularCamera(ITEM_INFO* item)
 						LSHKTimer = 4;
 						Fire = 1;
 
-						if (lara.hk_type_carried & WTYPE_SILENCER)
+						if (lara.hk_type_carried & W_SILENCER)
 							SoundEffect(14, 0, 0);
 						else
 						{

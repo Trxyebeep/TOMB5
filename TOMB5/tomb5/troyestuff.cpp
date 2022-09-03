@@ -5,7 +5,7 @@
 #include "tomb5.h"
 
 #define PAGE0_NUM	14
-#define PAGE1_NUM	6
+#define PAGE1_NUM	11
 
 #pragma warning(push)
 #pragma warning(disable : 4244)
@@ -39,8 +39,8 @@ void TroyeMenu(long textY, long& menu, ulong& selection, ulong selection_bak)
 		break;
 	}
 	
-	PrintString(phd_centerx - (phd_centerx >> 3), (ushort)(textY + (num + 2) * font_height), selection & (1 << num) ? 1 : 6, "\x19", 0);
-	PrintString(phd_centerx + (phd_centerx >> 3), (ushort)(textY + (num + 2) * font_height), selection & (1 << num) ? 1 : 6, "\x1B", 0);
+	PrintString(phd_centerx - (phd_centerx >> 3), ushort(textY + (num + 2) * font_height), selection & (1 << num) ? 1 : 6, "\x19", 0);
+	PrintString(phd_centerx + (phd_centerx >> 3), ushort(textY + (num + 2) * font_height), selection & (1 << num) ? 1 : 6, "\x1B", 0);
 
 	if (dbinput & IN_FORWARD)
 	{
@@ -369,6 +369,11 @@ bool Page1(long& num, long textY, ulong selection)
 	PrintString(phd_centerx >> 2, ushort(textY + 5 * font_height), selection & 8 ? 1 : 2, "loadbar style", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 6 * font_height), selection & 0x10 ? 1 : 2, "mono screen style", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 7 * font_height), selection & 0x20 ? 1 : 2, "Loading text", 0);
+	PrintString(phd_centerx >> 2, ushort(textY + 8 * font_height), selection & 0x40 ? 1 : 2, "Shimmer", 0);
+	PrintString(phd_centerx >> 2, ushort(textY + 9 * font_height), selection & 0x80 ? 1 : 2, "distance fog", 0);
+	PrintString(phd_centerx >> 2, ushort(textY + 10 * font_height), selection & 0x100 ? 1 : 2, "ammotype hotkeys", 0);
+	PrintString(phd_centerx >> 2, ushort(textY + 11 * font_height), selection & 0x200 ? 1 : 2, "look transparency", 0);
+	PrintString(phd_centerx >> 2, ushort(textY + 12 * font_height), selection & 0x400 ? 1 : 2, "static lighting", 0);
 
 	strcpy(buffer, tomb5.crawltilt ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 2 * font_height), selection & 1 ? 1 : 6, buffer, 0);
@@ -387,6 +392,21 @@ bool Page1(long& num, long textY, ulong selection)
 
 	strcpy(buffer, tomb5.loadingtxt ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 7 * font_height), selection & 0x20 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.shimmer ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 8 * font_height), selection & 0x40 ? 1 : 6, buffer, 0);
+
+	sprintf(buffer, "%i", tomb5.distance_fog);
+	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 9 * font_height), selection & 0x80 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.ammotype_hotkeys ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 10 * font_height), selection & 0x100 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.look_transparency ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 11 * font_height), selection & 0x200 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.static_lighting ? "on" : "off");
+	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 12 * font_height), selection & 0x400 ? 1 : 6, buffer, 0);
 
 	switch (selection)
 	{
@@ -466,6 +486,76 @@ bool Page1(long& num, long textY, ulong selection)
 		{
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 			tomb5.loadingtxt = !tomb5.loadingtxt;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 6:
+
+		if (dbinput & IN_RIGHT || dbinput & IN_LEFT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.shimmer = !tomb5.shimmer;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 7:
+
+		if (dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.distance_fog++;
+
+			if (tomb5.distance_fog > 30.0F)
+				tomb5.distance_fog = 30.0F;
+
+			changed = 1;
+		}
+
+		if (dbinput & IN_LEFT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.distance_fog--;
+
+			if (tomb5.distance_fog < 3.0F)
+				tomb5.distance_fog = 3.0F;
+
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 8:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.ammotype_hotkeys = !tomb5.ammotype_hotkeys;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 9:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.look_transparency = !tomb5.look_transparency;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 10:
+
+		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.static_lighting = !tomb5.static_lighting;
 			changed = 1;
 		}
 

@@ -5,9 +5,28 @@ void inject_polyinsert(bool replace);
 
 void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, short type);
 void DrawSortList();
+void CalcColorSplit(D3DCOLOR s, D3DCOLOR* d);
+void InitialiseSortList();
+void DoSort(long left, long right, SORTLIST** list);
+void SortPolyList(long count, SORTLIST** list);
+void ClearFXFogBulbs();
+void ControlFXBulb();
+void CreateFXBulbs();
+void TriggerFXFogBulb();
+long IsVolumetric();
+void mD3DTransform(FVECTOR* vec, D3DMATRIX* mx);
+void CreateFogPos();
+long DistCompare();
+void InitialiseFogBulbs();
+void OmniEffect();
+void OmniFog();
+void AddPrelitMMX(long prelight, D3DCOLOR* color);
+void AddPrelitMeshMMX(MESH_DATA* m, long p, D3DCOLOR* color);
+void CalcColorSplitMMX(D3DCOLOR s, D3DCOLOR* d);
+void S_DrawLine(long nVtx, D3DTLVERTEX* v);
+void S_DrawTriFan(long nVtx, D3DTLVERTEX* v);
 
 #define AddQuadClippedSorted	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, long)) 0x004BC7F0 )
-#define IsVolumetric	( (char(__cdecl*)()) 0x004BA1B0 )
 #define AddQuadClippedSorted	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, long)) 0x004BC7F0 )
 #define AddQuadSubdivide	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, long)) 0x004BBFA0 )
 #define AddTriSubdivide	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, TEXTURESTRUCT*, long)) 0x004BBE40 )
@@ -15,9 +34,3 @@ void DrawSortList();
 #define AddTriClippedZBuffer	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, TEXTURESTRUCT*, long)) 0x004BA960 )
 #define AddQuadClippedZBuffer	( (void(__cdecl*)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, long)) 0x004BA300 )
 #define AddLineClippedSorted	( (void(__cdecl*)(D3DTLVERTEX*, D3DTLVERTEX*, long)) 0x004BCE20 )
-#define CalcColorSplit	( (void(__cdecl*)(ulong, D3DCOLOR*)) 0x004BD150 )
-#define InitialiseFogBulbs	( (void(__cdecl*)()) 0x004BA2A0 )
-#define CreateFXBulbs	( (void(__cdecl*)()) 0x004BA170 )
-#define SortPolyList	( (void(__cdecl*)(long, SORTLIST**)) 0x004BA090 )
-#define InitialiseSortList	( (void(__cdecl*)()) 0x004BA100 )
-#define ClearFXFogBulbs	( (void(__cdecl*)()) 0x004BA130 )

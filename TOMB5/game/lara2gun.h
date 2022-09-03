@@ -11,4 +11,3 @@ void AnimatePistols(long weapon_type);
 void PistolHandler(long weapon_type);
 void draw_pistols(long weapon_type);
 void undraw_pistols(long weapon_type);
-static void set_arm_info(LARA_ARM* arm, long frame);

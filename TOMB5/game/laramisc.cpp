@@ -158,32 +158,32 @@ void LaraCheatGetStuff()
 
 	if (objects[UZI_ITEM].loaded)
 	{
-		lara.uzis_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
+		lara.uzis_type_carried = W_PRESENT | W_AMMO1;
 		lara.num_uzi_ammo = -1;
 	}
 
 	if (objects[SHOTGUN_ITEM].loaded)
 	{
-		lara.shotgun_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
+		lara.shotgun_type_carried = W_PRESENT | W_AMMO1;
 		lara.num_shotgun_ammo1 = -1;
 		lara.num_shotgun_ammo2 = -1;
 	}
 
 	if (objects[REVOLVER_ITEM].loaded)
 	{
-		lara.sixshooter_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
+		lara.sixshooter_type_carried = W_PRESENT | W_AMMO1;
 		lara.num_revolver_ammo = -1;
 	}
 	
 	if (objects[HK_ITEM].loaded)
 	{
-		lara.hk_type_carried = WTYPE_PRESENT | WTYPE_AMMO_3;
+		lara.hk_type_carried = W_PRESENT | W_AMMO3;
 		lara.num_hk_ammo1 = -1;
 	}
 
 	if (objects[CROSSBOW_ITEM].loaded)
 	{
-		lara.crossbow_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1 | WTYPE_LASERSIGHT;
+		lara.crossbow_type_carried = W_PRESENT | W_AMMO1 | W_LASERSIGHT;
 		lara.num_crossbow_ammo1 = -1;
 		lara.num_crossbow_ammo2 = 0;
 	}

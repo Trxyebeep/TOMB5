@@ -58,7 +58,7 @@ long CheckSumValid(char* buffer)	//unused
 	return !checksum;
 }
 
-static void SaveLaraData()
+void SaveLaraData()
 {
 	ITEM_INFO* item;
 
@@ -95,7 +95,7 @@ static void SaveLaraData()
 #endif
 }
 
-static void RestoreLaraData(long FullSave)
+void RestoreLaraData(long FullSave)
 {
 	ITEM_INFO* item;
 	char flag;
@@ -164,7 +164,7 @@ static void RestoreLaraData(long FullSave)
 	_CutSceneTriggered2 = savegame.CutSceneTriggered2;
 }
 
-static void SaveLevelData(long FullSave)	//write all the bs to the savegame buffer
+void SaveLevelData(long FullSave)	//write all the bs to the savegame buffer
 {
 	ITEM_INFO* item;
 	ROOM_INFO* r;
@@ -618,7 +618,7 @@ static void SaveLevelData(long FullSave)	//write all the bs to the savegame buff
 	}
 }
 
-static void RestoreLevelData(long FullSave)
+void RestoreLevelData(long FullSave)
 {
 	ROOM_INFO* r;
 	ITEM_INFO* item;

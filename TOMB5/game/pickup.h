@@ -3,7 +3,7 @@
 
 void inject_pickup(bool replace);
 
-static void PuzzleDone(ITEM_INFO* item, short item_num);
+void PuzzleDone(ITEM_INFO* item, short item_num);
 void RegeneratePickups();
 long KeyTrigger(short item_num);
 long PickupTrigger(short item_num);

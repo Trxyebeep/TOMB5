@@ -53,20 +53,12 @@ void KlaxonTremor()
 
 static long CheckCableBox(PHD_VECTOR* pos, short size)
 {
-	long ret;
-	
-	ret = 0;
+	if (pos->x + size >= DeadlyBounds[0] && pos->x - size <= DeadlyBounds[1] &&
+		pos->y + size >= DeadlyBounds[2] && pos->y - size <= DeadlyBounds[3] &&
+		pos->z + size >= DeadlyBounds[4] && pos->z - size <= DeadlyBounds[5])
+		return 1;
 
-	if (pos->x + size >= DeadlyBounds[0] && pos->x - size <= DeadlyBounds[1])
-	{
-		if (pos->y + size >= DeadlyBounds[2] && pos->y - size <= DeadlyBounds[3])
-		{
-			if (pos->z + size >= DeadlyBounds[4] && pos->z - size <= DeadlyBounds[5])
-				ret = 1;
-		}
-	}
-
-	return ret;
+	return 0;
 }
 
 void ControlElectricalCables(short item_number)
@@ -486,7 +478,7 @@ void DrawWreckingBall(ITEM_INFO* item)//actually only draws the shadow it seems?
 {
 	ITEM_INFO* baseitem;
 	FLOOR_INFO* floor;
-	VECTOR v;
+	PHD_VECTOR v;
 	short** meshpp;
 	short* frmptr[2];
 	long height, ceiling, shade, y;
@@ -518,9 +510,9 @@ void DrawWreckingBall(ITEM_INFO* item)//actually only draws the shadow it seems?
 		phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 		meshpp = &meshes[objects[ANIMATING16_MIP].mesh_index];
 		y = item->pos.y_pos - baseitem->pos.y_pos - 1664;
-		v.vz = 16384;
-		v.vy = 4 * (y + ((21846 * y) >> 16));
-		v.vx = 16384;
+		v.z = 16384;
+		v.y = 4 * (y + ((21846 * y) >> 16));
+		v.x = 16384;
 		ScaleCurrentMatrix(&v);
 		CalculateObjectLighting(item, *frmptr);
 		phd_PutPolygons(*meshpp, -1);

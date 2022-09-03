@@ -109,7 +109,7 @@ void InitialiseLara(long restore)
 	else
 		gun = WEAPON_NONE;
 
-	if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & WTYPE_PRESENT)
+	if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & W_PRESENT)
 		gun = WEAPON_HK;
 
 	lara.gun_status = LG_NO_ARMS;
@@ -120,7 +120,7 @@ void InitialiseLara(long restore)
 	lara.skelebob = 0;
 
 	if (objects[PISTOLS_ITEM].loaded)
-		lara.pistols_type_carried = WTYPE_PRESENT | WTYPE_AMMO_1;
+		lara.pistols_type_carried = W_PRESENT | W_AMMO1;
 
 	lara.binoculars = 1;
 

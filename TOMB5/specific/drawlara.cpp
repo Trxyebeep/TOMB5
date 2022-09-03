@@ -11,6 +11,7 @@
 #include "../game/delstuff.h"
 #ifdef GENERAL_FIXES
 #include "../game/savegame.h"
+#include "../tomb5/tomb5.h"
 #endif
 
 char lara_underwater_skin_sweetness_table[15] =
@@ -126,33 +127,38 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
 
-	if (input & IN_LOOK)
+#ifdef GENERAL_FIXES
+	if (tomb5.look_transparency)
+#endif
 	{
-		dx = lara_item->pos.x_pos - CamPos.x;
-		dy = lara_item->pos.y_pos - CamPos.y - 512;
-		dz = lara_item->pos.z_pos - CamPos.z;
-		dist = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
-		trans_lara = dist >> 2;
-
-		if (trans_lara < 0)
-			trans_lara = 0;
-
-		if (trans_lara > 255)
-			trans_lara = 255;
-
-		GlobalAlpha = trans_lara << 24;
-	}
-	else
-	{
-		if (trans_lara < 255)
+		if (input & IN_LOOK)
 		{
-			trans_lara += 8;
+			dx = lara_item->pos.x_pos - CamPos.x;
+			dy = lara_item->pos.y_pos - CamPos.y - 512;
+			dz = lara_item->pos.z_pos - CamPos.z;
+			dist = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+			trans_lara = dist >> 2;
+
+			if (trans_lara < 0)
+				trans_lara = 0;
 
 			if (trans_lara > 255)
 				trans_lara = 255;
-		}
 
-		GlobalAlpha = trans_lara << 24;
+			GlobalAlpha = trans_lara << 24;
+		}
+		else
+		{
+			if (trans_lara < 255)
+			{
+				trans_lara += 8;
+
+				if (trans_lara > 255)
+					trans_lara = 255;
+			}
+
+			GlobalAlpha = trans_lara << 24;
+		}
 	}
 
 	if (!mirror)
@@ -399,33 +405,38 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
 
-	if (input & IN_LOOK)
+#ifdef GENERAL_FIXES
+	if (tomb5.look_transparency)
+#endif
 	{
-		dx = lara_item->pos.x_pos - CamPos.x;
-		dy = lara_item->pos.y_pos - CamPos.y - 512;
-		dz = lara_item->pos.z_pos - CamPos.z;
-		dist = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
-		trans_lara = dist >> 2;
-
-		if (trans_lara < 0)
-			trans_lara = 0;
-
-		if (trans_lara > 255)
-			trans_lara = 255;
-
-		GlobalAlpha = trans_lara << 24;
-	}
-	else
-	{
-		if (trans_lara < 255)
+		if (input & IN_LOOK)
 		{
-			trans_lara += 8;
+			dx = lara_item->pos.x_pos - CamPos.x;
+			dy = lara_item->pos.y_pos - CamPos.y - 512;
+			dz = lara_item->pos.z_pos - CamPos.z;
+			dist = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+			trans_lara = dist >> 2;
+
+			if (trans_lara < 0)
+				trans_lara = 0;
 
 			if (trans_lara > 255)
 				trans_lara = 255;
-		}
 
-		GlobalAlpha = trans_lara << 24;
+			GlobalAlpha = trans_lara << 24;
+		}
+		else
+		{
+			if (trans_lara < 255)
+			{
+				trans_lara += 8;
+
+				if (trans_lara > 255)
+					trans_lara = 255;
+			}
+
+			GlobalAlpha = trans_lara << 24;
+		}
 	}
 
 	if (!mirror)
@@ -587,33 +598,38 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
 
-	if (input & IN_LOOK)
+#ifdef GENERAL_FIXES
+	if (tomb5.look_transparency)
+#endif
 	{
-		dx = lara_item->pos.x_pos - CamPos.x;
-		dy = lara_item->pos.y_pos - CamPos.y - 512;
-		dz = lara_item->pos.z_pos - CamPos.z;
-		dist = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
-		trans_lara = dist >> 2;
-
-		if (trans_lara < 0)
-			trans_lara = 0;
-
-		if (trans_lara > 255)
-			trans_lara = 255;
-
-		GlobalAlpha = trans_lara << 24;
-	}
-	else
-	{
-		if (trans_lara < 255)
+		if (input & IN_LOOK)
 		{
-			trans_lara += 8;
+			dx = lara_item->pos.x_pos - CamPos.x;
+			dy = lara_item->pos.y_pos - CamPos.y - 512;
+			dz = lara_item->pos.z_pos - CamPos.z;
+			dist = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+			trans_lara = dist >> 2;
+
+			if (trans_lara < 0)
+				trans_lara = 0;
 
 			if (trans_lara > 255)
 				trans_lara = 255;
-		}
 
-		GlobalAlpha = trans_lara << 24;
+			GlobalAlpha = trans_lara << 24;
+		}
+		else
+		{
+			if (trans_lara < 255)
+			{
+				trans_lara += 8;
+
+				if (trans_lara > 255)
+					trans_lara = 255;
+			}
+
+			GlobalAlpha = trans_lara << 24;
+		}
 	}
 
 	CalculateObjectLightingLara();

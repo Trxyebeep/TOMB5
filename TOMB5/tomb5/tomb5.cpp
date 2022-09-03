@@ -94,6 +94,26 @@ void init_tomb5_stuff()
 		sprintf(buf, "loadtxt");
 		tomb5.loadingtxt = 1;							//on
 		REG_WriteBool(buf, tomb5.loadingtxt);
+
+		sprintf(buf, "shimmer");
+		tomb5.shimmer = 1;								//on
+		REG_WriteBool(buf, tomb5.shimmer);
+
+		sprintf(buf, "distance_fog");
+		tomb5.distance_fog = 12;						//default on PSX is 12
+		REG_WriteLong(buf, tomb5.distance_fog);
+
+		sprintf(buf, "ammotype_hotkeys");
+		tomb5.ammotype_hotkeys = 1;						//on
+		REG_WriteBool(buf, tomb5.ammotype_hotkeys);
+
+		sprintf(buf, "ltransparency");
+		tomb5.look_transparency = 0;					//off
+		REG_WriteBool(buf, tomb5.look_transparency);
+
+		sprintf(buf, "static_lighting");
+		tomb5.static_lighting = 1;						//on
+		REG_WriteBool(buf, tomb5.static_lighting);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -156,6 +176,21 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "loadtxt");
 		REG_ReadBool(buf, tomb5.loadingtxt, 1);
+
+		sprintf(buf, "shimmer");
+		REG_ReadBool(buf, tomb5.shimmer, 1);
+
+		sprintf(buf, "distance_fog");
+		REG_ReadLong(buf, tomb5.distance_fog, 12);
+
+		sprintf(buf, "ammotype_hotkeys");
+		REG_ReadBool(buf, tomb5.ammotype_hotkeys, 1);
+
+		sprintf(buf, "ltransparency");
+		REG_ReadBool(buf, tomb5.look_transparency, 1);
+
+		sprintf(buf, "static_lighting");
+		REG_ReadBool(buf, tomb5.static_lighting, 1);
 	}
 
 	CloseRegistry();
@@ -225,6 +260,21 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "loadtxt");
 	REG_WriteBool(buf, tomb5.loadingtxt);
+
+	sprintf(buf, "shimmer");
+	REG_WriteBool(buf, tomb5.shimmer);
+
+	sprintf(buf, "distance_fog");
+	REG_WriteLong(buf, tomb5.distance_fog);
+
+	sprintf(buf, "ammotype_hotkeys");
+	REG_WriteBool(buf, tomb5.ammotype_hotkeys);
+
+	sprintf(buf, "ltransparency");
+	REG_WriteBool(buf, tomb5.look_transparency);
+
+	sprintf(buf, "static_lighting");
+	REG_WriteBool(buf, tomb5.static_lighting);
 
 	CloseRegistry();
 }

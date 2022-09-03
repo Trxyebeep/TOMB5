@@ -31,11 +31,16 @@ void phd_GetVectorAngles(long x, long y, long z, short* angles);
 void phd_TransposeMatrix();
 void phd_LookAt(long xsrc, long ysrc, long zsec, long xtar, long ytar, long ztar, short roll);
 void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float ztar, long roll);
-
-#define ScaleCurrentMatrix	( (void(__cdecl*)(VECTOR*)) 0x0048EFF0 )
-#define mGetAngle	( (long(__cdecl*)(long, long, long, long)) 0x0048F290 )
-#define phd_GenerateW2V	( (void(__cdecl*)(PHD_3DPOS*)) 0x0048F330 )
-#define phd_atan	( (long(__cdecl*)(long, long)) 0x0048F8A0 )
-#define phd_sqrt	( (long(__cdecl*)(long)) 0x0048F980 )
-#define aPointCamera	( (void(__cdecl*)(FCAMERA*)) 0x00490F30 )
-#define InitWindow	(  (void(__cdecl*)(long, long, long, long, long, long, long, long, long)) 0x0048F0E0 )
+void aOuterProduct(FVECTOR* v1, FVECTOR* v2, FVECTOR* dest);
+void aVectorNormal(FVECTOR* s, FVECTOR* v);
+void aPerpVectors(FVECTOR* a, FVECTOR* b, FVECTOR* c);
+void aPointCameraByVector(float* mx, FCAMERA* cam);
+void aPointCamera(FCAMERA* cam);
+void aScaleCurrentMatrix(PHD_VECTOR* vec);
+void ScaleCurrentMatrix(PHD_VECTOR* vec);
+void SetupZRange(long znear, long zfar);
+void InitWindow(long x, long y, long w, long h, long znear, long zfar, long fov, long a, long b);
+long phd_atan(long x, long y);
+ulong phd_sqrt(ulong num);
+ulong mGetAngle(long x, long z, long x1, long z1);
+void phd_GenerateW2V(PHD_3DPOS* viewPos);

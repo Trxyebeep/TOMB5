@@ -343,10 +343,20 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 	FVECTOR vec4;
 	short* clip;
 	float fR, fG, fB, val, val2, val3, zv, fCol, fCol2;
+#ifdef GENERAL_FIXES
+	static float DistanceFogStart, iDistanceFogStart;
+	float fNum, fZ;
+#endif
 	long sR, sG, sB, cR, cG, cB;
 	short clip_distance;
 
 	clip = clipflags;
+
+#ifdef GENERAL_FIXES
+	DistanceFogStart = tomb5.distance_fog * 1024.0F;
+	iDistanceFogStart = 1.0F / DistanceFogStart;
+	fNum = iDistanceFogStart * 255.0F;
+#endif
 
 	for (int i = 0; i < mesh->nVerts; i++)
 	{
@@ -356,6 +366,9 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 		vec.x = (mesh->aVtx[i].x * D3DMView._11) + (mesh->aVtx[i].y * D3DMView._21) + (mesh->aVtx[i].z * D3DMView._31) + D3DMView._41;
 		vec.y = (mesh->aVtx[i].x * D3DMView._12) + (mesh->aVtx[i].y * D3DMView._22) + (mesh->aVtx[i].z * D3DMView._32) + D3DMView._42;
 		vec.z = (mesh->aVtx[i].x * D3DMView._13) + (mesh->aVtx[i].y * D3DMView._23) + (mesh->aVtx[i].z * D3DMView._33) + D3DMView._43;
+#ifdef GENERAL_FIXES
+		fZ = vec.z;
+#endif
 
 		if (TotalNumLights)
 		{
@@ -443,6 +456,16 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 			cG = aAmbientG;
 			cB = aAmbientB;
 		}
+
+#ifdef GENERAL_FIXES
+		if (fZ > DistanceFogStart)
+		{
+			val = fNum * (fZ - DistanceFogStart);
+			cR -= (long)val;
+			cG -= (long)val;
+			cB -= (long)val;
+		}
+#endif
 
 		if (cR - 128 <= 0)
 			cR <<= 1;
@@ -860,6 +883,10 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 	FVECTOR vec4;
 	short* clip;
 	float val, val2, val3, zv, fCol, fCol2;
+#ifdef GENERAL_FIXES
+	static float DistanceFogStart, iDistanceFogStart;
+	float fNum, fZ;
+#endif
 	long sR, sG, sB, cR, cG, cB, pR, pG, pB;
 	short clip_distance;
 
@@ -867,6 +894,12 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 	pR = (StaticMeshShade & 0x1F) << 3;
 	pG = ((StaticMeshShade >> 5) & 0x1F) << 3;
 	pB = ((StaticMeshShade >> 10) & 0x1F) << 3;
+
+#ifdef GENERAL_FIXES
+	DistanceFogStart = tomb5.distance_fog * 1024.0F;
+	iDistanceFogStart = 1.0F / DistanceFogStart;
+	fNum = iDistanceFogStart * 255.0F;
+#endif
 
 	for (int i = 0; i < mesh->nVerts; i++)
 	{
@@ -876,6 +909,9 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 		vec.x = (mesh->aVtx[i].x * D3DMView._11) + (mesh->aVtx[i].y * D3DMView._21) + (mesh->aVtx[i].z * D3DMView._31) + D3DMView._41;
 		vec.y = (mesh->aVtx[i].x * D3DMView._12) + (mesh->aVtx[i].y * D3DMView._22) + (mesh->aVtx[i].z * D3DMView._32) + D3DMView._42;
 		vec.z = (mesh->aVtx[i].x * D3DMView._13) + (mesh->aVtx[i].y * D3DMView._23) + (mesh->aVtx[i].z * D3DMView._33) + D3DMView._43;
+#ifdef GENERAL_FIXES
+		fZ = vec.z;
+#endif
 		cR = CLRR(mesh->aVtx[i].prelight);
 		cG = CLRG(mesh->aVtx[i].prelight);
 		cB = CLRB(mesh->aVtx[i].prelight);
@@ -884,28 +920,39 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 		cB = (cB * pB) >> 8;
 
 #ifdef GENERAL_FIXES
-		for (int j = 0; j < 32; j++)
+		if (tomb5.static_lighting)
 		{
-			light = &dynamics[j];
-
-			if (light->on)
+			for (int j = 0; j < 32; j++)
 			{
-				vec2.x = light->x - lGlobalMeshPos.x;
-				vec2.y = light->y - lGlobalMeshPos.y;
-				vec2.z = light->z - lGlobalMeshPos.z;
-				vec3.x = (aLightMatrix._11 * vec2.x + aLightMatrix._12 * vec2.y + aLightMatrix._13 * vec2.z);
-				vec3.y = (aLightMatrix._21 * vec2.x + aLightMatrix._22 * vec2.y + aLightMatrix._23 * vec2.z);
-				vec3.z = (aLightMatrix._31 * vec2.x + aLightMatrix._32 * vec2.y + aLightMatrix._33 * vec2.z);
-				val = sqrt(SQUARE(vec3.x - mesh->aVtx[i].x) + SQUARE(vec3.y - mesh->aVtx[i].y) + SQUARE(vec3.z - mesh->aVtx[i].z)) * 1.7F;
+				light = &dynamics[j];
 
-				if (val <= light->falloff)
+				if (light->on)
 				{
-					val2 = (light->falloff - val) / light->falloff;
-					cR += long(val2 * light->r);
-					cG += long(val2 * light->g);
-					cB += long(val2 * light->b);
+					vec2.x = light->x - lGlobalMeshPos.x;
+					vec2.y = light->y - lGlobalMeshPos.y;
+					vec2.z = light->z - lGlobalMeshPos.z;
+					vec3.x = (aLightMatrix._11 * vec2.x + aLightMatrix._12 * vec2.y + aLightMatrix._13 * vec2.z);
+					vec3.y = (aLightMatrix._21 * vec2.x + aLightMatrix._22 * vec2.y + aLightMatrix._23 * vec2.z);
+					vec3.z = (aLightMatrix._31 * vec2.x + aLightMatrix._32 * vec2.y + aLightMatrix._33 * vec2.z);
+					val = sqrt(SQUARE(vec3.x - mesh->aVtx[i].x) + SQUARE(vec3.y - mesh->aVtx[i].y) + SQUARE(vec3.z - mesh->aVtx[i].z)) * 1.7F;
+
+					if (val <= light->falloff)
+					{
+						val2 = (light->falloff - val) / light->falloff;
+						cR += long(val2 * light->r);
+						cG += long(val2 * light->g);
+						cB += long(val2 * light->b);
+					}
 				}
 			}
+		}
+
+		if (fZ > DistanceFogStart)
+		{
+			val = fNum * (fZ - DistanceFogStart);
+			cR -= (long)val;
+			cG -= (long)val;
+			cB -= (long)val;
 		}
 #endif
 

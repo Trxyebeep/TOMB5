@@ -706,6 +706,372 @@ void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float z
 	D3DInvCameraMatrix._44 = mx._44;
 }
 
+void aOuterProduct(FVECTOR* v1, FVECTOR* v2, FVECTOR* dest)
+{
+	dest->x = v1->y * v2->z - v1->z * v2->y;
+	dest->y = v1->z * v2->x - v1->x * v2->z;
+	dest->z = v1->x * v2->y - v1->y * v2->x;
+}
+
+void aVectorNormal(FVECTOR* v, FVECTOR* a)
+{
+	float m;
+
+	m = sqrt(SQUARE(v->x) + SQUARE(v->y) + SQUARE(v->z));
+	v->x = 1.0F / m * v->x;
+	v->y = 1.0F / m * v->y;
+	v->z = 1.0F / m * v->z;
+}
+
+void aPerpVectors(FVECTOR* a, FVECTOR* b, FVECTOR* c)
+{
+	FVECTOR vA, vB, vC;
+
+	vA.x = a->x;
+	vA.y = a->y;
+	vA.z = a->z;
+	vC.x = c->x;
+	vC.y = c->y;
+	vC.z = c->z;
+	aVectorNormal(&vA, &vA);
+
+	if (!vA.x && !vA.y)
+	{
+		vB.x = b->x;
+		vB.y = b->y;
+		vB.z = b->z;
+	}
+	else
+		aOuterProduct(&vC, &vA, &vB);
+
+	aOuterProduct(&vA, &vB, &vC);
+	aVectorNormal(&vB, &vB);
+	aVectorNormal(&vC, &vC);
+
+	a->x = vA.x;
+	a->y = vA.y;
+	a->z = vA.z;
+	b->x = vB.x;
+	b->y = vB.y;
+	b->z = vB.z;
+	c->x = vC.x;
+	c->y = vC.y;
+	c->z = vC.z;
+}
+
+void aPointCameraByVector(float* mx, FCAMERA* cam)
+{
+	float x, y, z;
+	float m1[indices_count];
+	float m2[indices_count];
+
+	aUnitMatrixByMat(m1);
+	aUnitMatrixByMat(m2);	//hello?
+
+	mx[M00] = cam->j.x;
+	mx[M01] = cam->j.y;
+	mx[M02] = cam->j.z;
+
+	mx[M10] = -cam->k.x;
+	mx[M11] = -cam->k.y;
+	mx[M12] = -cam->k.z;
+
+	mx[M20] = -cam->i.x;
+	mx[M21] = -cam->i.y;
+	mx[M22] = -cam->i.z;
+
+	x = -cam->pos.x;
+	y = -cam->pos.y;
+	z = -cam->pos.z;
+	mx[M03] = mx[M00] * x + mx[M01] * y + mx[M02] * z;
+	mx[M13] = mx[M10] * x + mx[M11] * y + mx[M12] * z;
+	mx[M23] = mx[M20] * x + mx[M21] * y + mx[M22] * z;
+}
+
+void aPointCamera(FCAMERA* cam)
+{
+	cam->k.x = 0;
+	cam->k.y = -1;
+	cam->k.z = 0;
+	cam->i.x = cam->pos.x - cam->tar.x;
+	cam->i.y = cam->pos.y - cam->tar.y;
+	cam->i.z = cam->pos.z - cam->tar.z;
+	aPerpVectors(&cam->i, &cam->j, &cam->k);
+	aPointCameraByVector(cam->matrix, cam);
+}
+
+void aScaleCurrentMatrix(PHD_VECTOR* vec)
+{
+	float x, y, z;
+
+	x = vec->x * (1.0F / float(1 << 14));
+	y = vec->y * (1.0F / float(1 << 14));
+	z = vec->z * (1.0F / float(1 << 14));
+
+	aMXPtr[M00] = aMXPtr[M00] * x;
+	aMXPtr[M10] = aMXPtr[M10] * x;
+	aMXPtr[M20] = aMXPtr[M20] * x;
+
+	aMXPtr[M01] = aMXPtr[M01] * y;
+	aMXPtr[M11] = aMXPtr[M11] * y;
+	aMXPtr[M21] = aMXPtr[M21] * y;
+
+	aMXPtr[M02] = aMXPtr[M02] * z;
+	aMXPtr[M12] = aMXPtr[M12] * z;
+	aMXPtr[M22] = aMXPtr[M22] * z;
+}
+
+void ScaleCurrentMatrix(PHD_VECTOR* vec)
+{
+	phd_mxptr[M00] = (phd_mxptr[M00] * vec->x) >> 14;
+	phd_mxptr[M10] = (phd_mxptr[M10] * vec->x) >> 14;
+	phd_mxptr[M20] = (phd_mxptr[M20] * vec->x) >> 14;
+
+	phd_mxptr[M01] = (phd_mxptr[M01] * vec->y) >> 14;
+	phd_mxptr[M11] = (phd_mxptr[M11] * vec->y) >> 14;
+	phd_mxptr[M21] = (phd_mxptr[M21] * vec->y) >> 14;
+
+	phd_mxptr[M02] = (phd_mxptr[M02] * vec->z) >> 14;
+	phd_mxptr[M12] = (phd_mxptr[M12] * vec->z) >> 14;
+	phd_mxptr[M22] = (phd_mxptr[M22] * vec->z) >> 14;
+}
+
+void SetupZRange(long znear, long zfar)
+{
+	phd_znear = znear;
+	phd_zfar = zfar;
+	f_zfar = (float)zfar;
+	f_znear = (float)znear;
+	f_perspoznear = f_persp / f_znear;
+	f_mznear = float(znear >> 14);
+	f_mzfar = float(zfar >> 14);
+	f_mperspoznear = f_mpersp / f_mznear;
+	f_moneoznear = mone / f_mznear;
+	f_b = f_mzfar * f_mznear * 0.99F / (f_mznear - f_mzfar);
+	f_a = 0.005F - f_b / f_mznear;
+	f_b = -f_b;
+	f_boo = f_b / mone;
+}
+
+void InitWindow(long x, long y, long w, long h, long znear, long zfar, long fov, long a, long b)
+{
+	phd_winwidth = w;
+	phd_winxmax = short(w - 1);
+	phd_winxmin = (short)x;
+	phd_winheight = h;
+	phd_winymax = short(h - 1);
+	phd_winymin = (short)y;
+	phd_centerx = w / 2;
+	phd_centery = h / 2;
+	phd_znear = znear << 14;
+	f_centerx = float(w / 2);
+	phd_zfar = zfar << 14;
+	f_centery = float(h / 2);
+	AlterFOV(short(182 * fov));
+	SetupZRange(phd_znear, phd_zfar);
+	phd_right = phd_winxmax;
+	phd_bottom = phd_winymax;
+	phd_left = x;
+	phd_top = y;
+	f_right = float(phd_winxmax + 1);
+	f_bottom = float(phd_winymax + 1);
+	f_top = (float)phd_winymin;
+	f_left = (float)phd_winxmin;
+	phd_mxptr = matrix_stack;
+}
+
+long phd_atan(long x, long y)
+{
+	long octant, n, result;
+
+	result = 0;
+	octant = 0;
+
+	if (x || y)
+	{
+		if (x < 0)
+		{
+			octant += 4;
+			x = -x;
+		}
+
+		if (y < 0)
+		{
+			octant += 2;
+			y = -y;
+		}
+
+		if (y > x)
+		{
+			octant++;
+			n = x;
+			x = y;
+			y = n;
+		}
+
+		while ((short)y != y)
+		{
+			x >>= 1;
+			y >>= 1;
+		}
+
+		result = phdtan2[octant] + phdtantab[(y << 11) / x];
+
+		if (result < 0)
+			result = -result;
+	}
+
+	return result;
+}
+
+ulong phd_sqrt(ulong num)
+{
+	ulong base, result, tmp;
+
+	base = 0x40000000;
+	result = 0;
+
+	do
+	{
+		tmp = result;
+		result += base;
+		tmp >>= 1;
+
+		if (result > num)
+			result = tmp;
+		else
+		{
+			num -= result;
+			result = base | tmp;
+		}
+
+		base >>= 2;
+
+	} while (base);
+
+	return result;
+}
+
+ulong mGetAngle(long x, long z, long x1, long z1)
+{
+	long dx, dz, octant, swap, angle;
+
+	dx = x1 - x;
+	dz = z1 - z;
+
+	if (!dx && !dz)
+		return 0;
+
+	octant = 0;
+
+	if (dx < 0)
+	{
+		octant = 4;
+		dx = -dx;
+	}
+
+	if (dz < 0)
+	{
+		octant += 2;
+		dz = -dz;
+	}
+
+	if (dz > dx)
+	{
+		octant++;
+		swap = dx;
+		dx = dz;
+		dz = swap;
+	}
+
+	while (short(dz) != dz)
+	{
+		dx >>= 1;
+		dz >>= 1;
+	}
+
+	angle = phdtan2[octant] + phdtantab[(dz << 11) / dx];
+
+	if (angle < 0)
+		angle = -angle;
+
+	return -angle & 0xFFFF;
+}
+
+void phd_GenerateW2V(PHD_3DPOS* viewPos)
+{
+	PHD_VECTOR scalar;
+	long sx, cx, sy, cy, sz, cz;
+
+	sx = phd_sin(viewPos->x_rot);
+	cx = phd_cos(viewPos->x_rot);
+	sy = phd_sin(viewPos->y_rot);
+	cy = phd_cos(viewPos->y_rot);
+	sz = phd_sin(viewPos->z_rot);
+	cz = phd_cos(viewPos->z_rot);
+	phd_mxptr = matrix_stack;
+
+	w2v_matrix[M00] = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
+	w2v_matrix[M01] = TRIGMULT2(cx, sz);
+	w2v_matrix[M02] = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
+	phd_mxptr[M00] = w2v_matrix[M00];
+	phd_mxptr[M01] = w2v_matrix[M01];
+	phd_mxptr[M02] = w2v_matrix[M02];
+
+	w2v_matrix[M10] = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
+	w2v_matrix[M11] = TRIGMULT2(cx, cz);
+	w2v_matrix[M12] = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
+	phd_mxptr[M10] = w2v_matrix[M10];
+	phd_mxptr[M11] = w2v_matrix[M11];
+	phd_mxptr[M12] = w2v_matrix[M12];
+
+	w2v_matrix[M20] = TRIGMULT2(cx, sy);
+	w2v_matrix[M21] = -sx;
+	w2v_matrix[M22] = TRIGMULT2(cx, cy);
+	phd_mxptr[M20] = w2v_matrix[M20];
+	phd_mxptr[M21] = w2v_matrix[M21];
+	phd_mxptr[M22] = w2v_matrix[M22];
+
+	if (lara.dpoisoned != lara.poisoned)
+	{
+		lara.poisoned += (lara.dpoisoned - lara.poisoned) >> 4;
+
+		if (abs(lara.dpoisoned - lara.poisoned) < 16)
+			lara.poisoned = lara.dpoisoned;
+	}
+
+	if (lara.poisoned >= 256)
+	{
+		scalar.x = (lara.poisoned - 256) * ((phd_sin(XSoff1) + phd_sin(XSoff2)) >> 2);
+		scalar.y = (lara.poisoned - 256) * ((phd_sin(YSoff1) + phd_sin(YSoff2)) >> 2);
+		scalar.z = (lara.poisoned - 256) * ((phd_sin(ZSoff1) + phd_sin(ZSoff2)) >> 2);
+
+		if (scalar.x || scalar.y || scalar.z)
+		{
+			scalar.x = (scalar.x >> 12) + 0x4000;
+			scalar.y = (scalar.y >> 12) + 0x4000;
+			scalar.z = (scalar.z >> 12) + 0x4000;
+			ScaleCurrentMatrix(&scalar);
+		}
+	}
+
+	w2v_matrix[M03] = viewPos->x_pos;;
+	w2v_matrix[M13] = viewPos->y_pos;
+	w2v_matrix[M23] = viewPos->z_pos;
+	phd_mxptr[M03] = w2v_matrix[M03];
+	phd_mxptr[M13] = w2v_matrix[M13];
+	phd_mxptr[M23] = w2v_matrix[M23];
+
+	w2v_matrix[M10] = long(LfAspectCorrection * float(phd_mxptr[M10]));
+	w2v_matrix[M11] = long(LfAspectCorrection * float(phd_mxptr[M11]));
+	w2v_matrix[M12] = long(LfAspectCorrection * float(phd_mxptr[M12]));
+	phd_mxptr[M10] = w2v_matrix[M10];
+	phd_mxptr[M11] = w2v_matrix[M11];
+	phd_mxptr[M12] = w2v_matrix[M12];
+
+	SetD3DMatrix(&D3DMW2VMatrix, w2v_matrix);
+}
+
 void inject_3dmath(bool replace)
 {
 	INJECT(0x0048EDC0, AlterFOV, replace);
@@ -736,4 +1102,17 @@ void inject_3dmath(bool replace)
 	INJECT(0x00490550, phd_TransposeMatrix, replace);
 	INJECT(0x0048F760, phd_LookAt, replace);
 	INJECT(0x00490C20, aLookAt, replace);
+	INJECT(0x00491120, aOuterProduct, replace);
+	INJECT(0x004910D0, aVectorNormal, replace);
+	INJECT(0x00491170, aPerpVectors, replace);
+	INJECT(0x00490FA0, aPointCameraByVector, replace);
+	INJECT(0x00490F30, aPointCamera, replace);
+	INJECT(0x00490B40, aScaleCurrentMatrix, replace);
+	INJECT(0x0048EFF0, ScaleCurrentMatrix, replace);
+	INJECT(0x0048EEE0, SetupZRange, replace);
+	INJECT(0x0048F0E0, InitWindow, replace);
+	INJECT(0x0048F8A0, phd_atan, replace);
+	INJECT(0x0048F980, phd_sqrt, replace);
+	INJECT(0x0048F290, mGetAngle, replace);
+	INJECT(0x0048F330, phd_GenerateW2V, replace);
 }

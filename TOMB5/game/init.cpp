@@ -1096,27 +1096,34 @@ void InitialisePortalDoor(short item_number)
 	portal = (PORTAL_STRUCT*)game_malloc(sizeof(PORTAL_STRUCT), 0);
 	item->pos.x_pos -= 512;
 	item->data = portal;
-	portal->v4.vx = 0;
-	portal->v3.vx = 0;
-	portal->v2.vx = 0;
+
 	portal->v1.vx = 0;
-	portal->v4.vy = 0;
-	portal->v3.vy = 0;
-	portal->v2.vy = -1024;
 	portal->v1.vy = -1024;
-	portal->v3.vz = -512;
 	portal->v1.vz = -512;
-	portal->v4.vz = 512;
+
+	portal->v2.vx = 0;
+	portal->v2.vy = -1024;
 	portal->v2.vz = 512;
+
+	portal->v3.vx = 0;
+	portal->v3.vy = 0;
+	portal->v3.vz = -512;
+
+	portal->v4.vx = 0;
+	portal->v4.vy = 0;
+	portal->v4.vz = 512;
+	
 
 	for (int i = 0; i < 64; i++)
 	{
 		portal->Rand[i] = (GetRandomControl() & 0x7F) - 64;
+
 		portal->rgb[i].r = (GetRandomControl() & 0x7F) + 64;
-		portal->orgb[i].r = portal->rgb[i].r;
 		portal->rgb[i].g = (GetRandomControl() & 0x7F) + 64;
-		portal->orgb[i].g = portal->rgb[i].g;
 		portal->rgb[i].b = (GetRandomControl() & 0x7F) + 64;
+
+		portal->orgb[i].r = portal->rgb[i].r;
+		portal->orgb[i].g = portal->rgb[i].g;
 		portal->orgb[i].b = portal->rgb[i].b;
 	}
 }

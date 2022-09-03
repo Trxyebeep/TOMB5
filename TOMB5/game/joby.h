@@ -4,7 +4,6 @@
 void inject_joby(bool replace);
 
 void KlaxonTremor();
-static long CheckCableBox(PHD_VECTOR* pos, short size);
 void ControlElectricalCables(short item_number);
 void WreckingBallCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll);
 void ControlWreckingBall(short item_number);

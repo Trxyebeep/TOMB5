@@ -4,7 +4,6 @@
 void inject_larafire(bool replace);
 
 void LaraGun();
-static long CheckForHoldingState(long state);
 void InitialiseNewWeapon();
 void LaraTargetInfo(WEAPON_INFO* winfo);
 void LaraGetNewTarget(WEAPON_INFO* winfo);
