@@ -15,6 +15,11 @@
 #include "sphere.h"
 #include "collide.h"
 #include "camera.h"
+#ifdef GENERAL_FIXES
+#include "../specific/specificfx.h"
+#include "../specific/function_table.h"
+#include "../specific/3dmath.h"
+#endif
 
 short SplashOffsets[18] = { 1072, 48, 1072, 48, 650, 280, 200, 320, -300, 320, -800, 320, -1200, 320, -1650, 280, -2112, 48 };
 
@@ -706,12 +711,73 @@ void ControlSteelDoor(short item_number)
 
 void DrawSprite2(long x, long y, long slot, long col, long size, long z)
 {
+#ifdef GENERAL_FIXES
+	D3DTLVERTEX v[4];
+	SPRITESTRUCT* sprite;
+	TEXTURESTRUCT tex;
+	long x1, y1, x2, y2;
 
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + slot];
+	x1 = x - size;
+	y1 = y - size;
+	x2 = x + size;
+	y2 = y + size;
+	setXY4(v, x1, y1, x2, y1, x1, y2, x2, y2, z, clipflags);
+	
+	for (int i = 0; i < 4; i++)
+	{
+		v[i].color = col;
+		v[i].specular = 0xFF000000;
+	}
+
+	tex.drawtype = 2;
+	tex.flag = 0;
+	tex.tpage = sprite->tpage;
+	tex.u1 = sprite->x1;
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x2;
+	tex.v2 = sprite->y1;
+	tex.u3 = sprite->x2;
+	tex.v3 = sprite->y2;
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y2;
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
+#endif
 }
 
 void DrawSteelDoorLensFlare(ITEM_INFO* item)
 {
+#ifdef GENERAL_FIXES
+	FVECTOR pos;
+	long dx, dy, dz;
+	long x, y, z, r, g, b;
+	float zv;
 
+	if (item->item_flags[0] != 1 || !item->item_flags[3])
+		return;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	dx = SteelDoorLensPos.x - item->pos.x_pos;
+	dy = SteelDoorLensPos.y - item->pos.y_pos;
+	dz = SteelDoorLensPos.z - item->pos.z_pos;
+	pos.x = aMXPtr[M00] * dx + aMXPtr[M01] * dy + aMXPtr[M02] * dz + aMXPtr[M03];
+	pos.y = aMXPtr[M10] * dx + aMXPtr[M11] * dy + aMXPtr[M12] * dz + aMXPtr[M13];
+	pos.z = aMXPtr[M20] * dx + aMXPtr[M21] * dy + aMXPtr[M22] * dz + aMXPtr[M23];
+	zv = f_persp / pos.z;
+	x = long(pos.x * zv + f_centerx);
+	y = long(pos.y * zv + f_centery);
+	z = long(pos.z - 256);
+
+	if (z < 0)
+		z = 0;
+
+	phd_PopMatrix();
+	r = (GetRandomControl() & 0x3F) + 128;
+	g = (GetRandomControl() & 0x3F) + 128;
+	b = (GetRandomControl() & 0x3F) + 128;
+	DrawSprite2(x, y, 32, RGBA(r, g, b, 128), (GetRandomControl() & 0xF) + 32, z);
+#endif
 }
 
 void inject_tower2(bool replace)
