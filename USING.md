@@ -130,3 +130,19 @@ Determines the style of the inventory/pause menu background.
 ### 19. Loading text:
 - Toggles the "Loading" text in loading screens.
 Note: TR5 loadbar style will ignore this option and never show the text. This is intentional and will not change.
+
+### 20. Shimmer:
+- Toggles the vertex shimmer effect.
+
+### 21. Distance Fog:
+- Controls the distance at which vertices start to fade to black.
+Note: this value is in blocks/squares, meaning a value of 12 makes the distance fog start 12 game blocks away from the current camera position.
+
+### 22. ammotype hotkeys:
+- Toggles the ability to switch ammo types through keyboard hotkeys.
+
+### 23. look transparency:
+- Toggles Lara going transparent when looking around.
+
+### 24. static lighting:
+- Toggles static lighting.

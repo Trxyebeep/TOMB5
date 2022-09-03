@@ -1,5 +1,29 @@
 # tomb5 changelog
 
+## [3.1.0](https://github.com/Trxyebeep/TOMB5/tree/V3.1.0) (Sep. 3 2022)
+
+### Original bug fixes
+
+- Fix broken distance fog formula for room vertices.
+- Fix the game hanging when trying to launch multiple instances.
+
+### tomb5 bug fixes
+
+- Fix crane cutscene crash in The Base.
+- Fix Pause Menu deadlock while using the binoculars.
+- Fix HK Gun not spawning gunshells.
+
+### tomb5 additions
+
+- Improve the dynamic lighting formula on statics.
+- Add distance fog for object and static mesh vertices.
+- Make the distance fog starting point customizable.
+- Restore PSX Vertex shimmer effects.
+- Restore the sprite on the steel door in Escape with the Iris.
+- Add flyby skipper.
+- Add ammotype hotkeys.
+- Make look transparency customizable.
+
 ## [3.0.0](https://github.com/Trxyebeep/TOMB5/tree/V3.0.0) (Apr. 6 2022)
 
 ### Original bug fixes
