@@ -1520,6 +1520,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00486BE0	+	ControlSteelDoor
 0x004870B0		TriggerWeldingEffects
 0x004877E0		TriggerSteelDoorSmoke
+0x00487A90	+	DrawSprite2
 0x00487AB0	+	DrawSteelDoorLensFlare
 0x00487AD0	+	SteelDoorCollision
 0x00487B60		TriggerLiftBrakeSparks

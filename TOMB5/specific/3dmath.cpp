@@ -834,6 +834,8 @@ void ScaleCurrentMatrix(PHD_VECTOR* vec)
 	phd_mxptr[M02] = (phd_mxptr[M02] * vec->z) >> 14;
 	phd_mxptr[M12] = (phd_mxptr[M12] * vec->z) >> 14;
 	phd_mxptr[M22] = (phd_mxptr[M22] * vec->z) >> 14;
+
+	aScaleCurrentMatrix(vec);
 }
 
 void SetupZRange(long znear, long zfar)
