@@ -172,11 +172,6 @@ void ControlGunship(short item_number)
 	}
 }
 
-void DrawSteelDoorLensFlare(ITEM_INFO* item)
-{
-
-}
-
 void ControlIris(short item_number)
 {
 	ITEM_INFO* item;
@@ -709,14 +704,25 @@ void ControlSteelDoor(short item_number)
 	}
 }
 
+void DrawSprite2(long x, long y, long slot, long col, long size, long z)
+{
+
+}
+
+void DrawSteelDoorLensFlare(ITEM_INFO* item)
+{
+
+}
+
 void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
-	INJECT(0x00487AB0, DrawSteelDoorLensFlare, replace);
 	INJECT(0x00486050, ControlIris, replace);
 	INJECT(0x004868B0, ControlFishtank, replace);
 	INJECT(0x00486450, ControlArea51Laser, replace);
 	INJECT(0x00488710, ControlGasCloud, replace);
 	INJECT(0x00487AD0, SteelDoorCollision, replace);
 	INJECT(0x00486BE0, ControlSteelDoor, replace);
+	INJECT(0x00487A90, DrawSprite2, replace);
+	INJECT(0x00487AB0, DrawSteelDoorLensFlare, replace);
 }
