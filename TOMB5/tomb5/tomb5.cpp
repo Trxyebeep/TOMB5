@@ -110,6 +110,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "ltransparency");
 		tomb5.look_transparency = 0;					//off
 		REG_WriteBool(buf, tomb5.look_transparency);
+
+		sprintf(buf, "static_lighting");
+		tomb5.static_lighting = 1;						//on
+		REG_WriteBool(buf, tomb5.static_lighting);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -184,6 +188,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "ltransparency");
 		REG_ReadBool(buf, tomb5.look_transparency, 1);
+
+		sprintf(buf, "static_lighting");
+		REG_ReadBool(buf, tomb5.static_lighting, 1);
 	}
 
 	CloseRegistry();
@@ -265,6 +272,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "ltransparency");
 	REG_WriteBool(buf, tomb5.look_transparency);
+
+	sprintf(buf, "static_lighting");
+	REG_WriteBool(buf, tomb5.static_lighting);
 
 	CloseRegistry();
 }

@@ -920,26 +920,29 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 		cB = (cB * pB) >> 8;
 
 #ifdef GENERAL_FIXES
-		for (int j = 0; j < 32; j++)
+		if (tomb5.static_lighting)
 		{
-			light = &dynamics[j];
-
-			if (light->on)
+			for (int j = 0; j < 32; j++)
 			{
-				vec2.x = light->x - lGlobalMeshPos.x;
-				vec2.y = light->y - lGlobalMeshPos.y;
-				vec2.z = light->z - lGlobalMeshPos.z;
-				vec3.x = (aLightMatrix._11 * vec2.x + aLightMatrix._12 * vec2.y + aLightMatrix._13 * vec2.z);
-				vec3.y = (aLightMatrix._21 * vec2.x + aLightMatrix._22 * vec2.y + aLightMatrix._23 * vec2.z);
-				vec3.z = (aLightMatrix._31 * vec2.x + aLightMatrix._32 * vec2.y + aLightMatrix._33 * vec2.z);
-				val = sqrt(SQUARE(vec3.x - mesh->aVtx[i].x) + SQUARE(vec3.y - mesh->aVtx[i].y) + SQUARE(vec3.z - mesh->aVtx[i].z)) * 1.7F;
+				light = &dynamics[j];
 
-				if (val <= light->falloff)
+				if (light->on)
 				{
-					val2 = (light->falloff - val) / light->falloff;
-					cR += long(val2 * light->r);
-					cG += long(val2 * light->g);
-					cB += long(val2 * light->b);
+					vec2.x = light->x - lGlobalMeshPos.x;
+					vec2.y = light->y - lGlobalMeshPos.y;
+					vec2.z = light->z - lGlobalMeshPos.z;
+					vec3.x = (aLightMatrix._11 * vec2.x + aLightMatrix._12 * vec2.y + aLightMatrix._13 * vec2.z);
+					vec3.y = (aLightMatrix._21 * vec2.x + aLightMatrix._22 * vec2.y + aLightMatrix._23 * vec2.z);
+					vec3.z = (aLightMatrix._31 * vec2.x + aLightMatrix._32 * vec2.y + aLightMatrix._33 * vec2.z);
+					val = sqrt(SQUARE(vec3.x - mesh->aVtx[i].x) + SQUARE(vec3.y - mesh->aVtx[i].y) + SQUARE(vec3.z - mesh->aVtx[i].z)) * 1.7F;
+
+					if (val <= light->falloff)
+					{
+						val2 = (light->falloff - val) / light->falloff;
+						cR += long(val2 * light->r);
+						cG += long(val2 * light->g);
+						cB += long(val2 * light->b);
+					}
 				}
 			}
 		}

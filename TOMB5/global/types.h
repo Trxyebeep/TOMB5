@@ -2479,6 +2479,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	ulong distance_fog;			//value in blocks
 	bool ammotype_hotkeys;		//on off
 	bool look_transparency;		//on off
+	bool static_lighting;		//on off
 };
 #endif
 #pragma pack(pop)
