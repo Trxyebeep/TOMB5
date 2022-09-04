@@ -268,6 +268,15 @@ void InitialiseDoor(short item_number)
 
 	item = &items[item_number];
 
+#ifdef GENERAL_FIXES
+	if (!gfCurrentLevel)	//core thought it was an incredible idea to place two doors in the same place <3
+							//this fixes the random lighting shift in the home title flyby sequence
+	{
+		if (item_number == 6)
+			item->room_number = items[5].room_number;
+	}
+#endif
+
 	if (item->object_number == SEQUENCE_DOOR1)
 		item->flags &= 0xBFFF;
 
