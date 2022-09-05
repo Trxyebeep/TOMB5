@@ -1243,6 +1243,11 @@ void aRoomInit()
 	NumLevelFogBulbs = nBulbs;
 }
 
+void aResetFogBulbList()
+{
+	NumActiveFogBulbs = 0;
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1257,4 +1262,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049CEB0, DrawRoomletBounds, replace);
 	INJECT(0x0049B390, aBuildRoomletLights, replace);
 	INJECT(0x0049AD90, aRoomInit, replace);
+	INJECT(0x0049AD70, aResetFogBulbList, replace);
 }

@@ -1733,7 +1733,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0049A9B0	+	RoomTestThing
 0x0049A9D0	+	InsertRoom
 0x0049ABF0	+	InsertRoomlet
-0x0049AD70		aResetFogBulbList
+0x0049AD70	+	aResetFogBulbList
 0x0049AD90	+	aRoomInit
 0x0049AEF0		TriggerFogBulbFX
 0x0049AFB0	+	aBuildFogBulbList
