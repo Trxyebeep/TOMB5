@@ -1257,16 +1257,57 @@ void TriggerFogBulbFX(long r, long g, long b, long x, long y, long z, long rad, 
 		bulb = &FXFogBulbs[nFXFogBulbs];
 		nFXFogBulbs++;
 
-		bulb->pos.x = x;
-		bulb->pos.y = y;
-		bulb->pos.z = z;
-		bulb->rad = rad;
-		bulb->sqrad = SQUARE(rad);
+		bulb->pos.x = (float)x;
+		bulb->pos.y = (float)y;
+		bulb->pos.z = (float)z;
+		bulb->rad = (float)rad;
+		bulb->sqrad = SQUARE(bulb->rad);
 		bulb->d = 1.0F / den;
-		bulb->r = r;
-		bulb->g = g;
-		bulb->b = b;
+		bulb->r = (float)r;
+		bulb->g = (float)g;
+		bulb->b = (float)b;
 	}
+}
+
+void aBuildFXFogBulbList()
+{
+	FOGBULB_STRUCT* bulb;
+	FOGBULB_STRUCT* fxBulb;
+	FVECTOR pos;
+	long nBulbs;
+
+	if (!nFXFogBulbs)
+		return;
+
+	bulb = &ActiveFogBulbs[NumActiveFogBulbs];
+	nBulbs = NumActiveFogBulbs;
+
+	for (int i = 0; i < nFXFogBulbs; i++)
+	{
+		fxBulb = &FXFogBulbs[i];
+		pos.x = fxBulb->pos.x;
+		pos.y = fxBulb->pos.y;
+		pos.z = fxBulb->pos.z;
+		bulb->world.x = pos.x;
+		bulb->world.y = pos.y;
+		bulb->world.y = pos.z;
+		bulb->pos.x = pos.x * D3DCameraMatrix._11 + pos.y * D3DCameraMatrix._21 + pos.z * D3DCameraMatrix._31 + D3DCameraMatrix._41;
+		bulb->pos.y = pos.x * D3DCameraMatrix._12 + pos.y * D3DCameraMatrix._22 + pos.z * D3DCameraMatrix._32 + D3DCameraMatrix._42;
+		bulb->pos.z = pos.x * D3DCameraMatrix._13 + pos.y * D3DCameraMatrix._23 + pos.z * D3DCameraMatrix._33 + D3DCameraMatrix._43;
+		bulb->rad = fxBulb->rad;
+		bulb->sqrad = fxBulb->sqrad;
+		bulb->sqlen = SQUARE(bulb->pos.x) + SQUARE(bulb->pos.y) + SQUARE(bulb->pos.z);
+		bulb->visible = 1;
+		bulb->d = fxBulb->d;
+		bulb->r = fxBulb->r / 255.0F;
+		bulb->g = fxBulb->g / 255.0F;
+		bulb->b = fxBulb->b / 255.0F;
+		bulb++;
+		nBulbs++;
+	}
+
+	NumActiveFogBulbs = nBulbs;
+	nFXFogBulbs = 0;
 }
 
 void inject_drawroom(bool replace)
@@ -1285,4 +1326,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049AD90, aRoomInit, replace);
 	INJECT(0x0049AD70, aResetFogBulbList, replace);
 	INJECT(0x0049AEF0, TriggerFogBulbFX, replace);
+	INJECT(0x0049B1C0, aBuildFXFogBulbList, replace);
 }
