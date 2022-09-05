@@ -325,7 +325,7 @@ static bool IsReflectionVert(FVECTOR* v)
 	return cont;
 }
 
-static bool IsShoreVertex(FVECTOR* v)
+static bool IsShoreVert(FVECTOR* v)
 {
 	PORTAL* p;
 	ROOM_INFO* r;
@@ -444,7 +444,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 			if (cam_underwater)
 			{
-				zv2 = 1.0F / (vec.z * (1.0F / 512.0F));
+				zv2 = 1.0F / (vec.z / 512.0F);
 				vec.x = vec.x * zv + f_centerx + vert_wibble_table[((wibble + long(zv2 * vec.y)) >> 3) & 0x1F];
 				vec.y = vec.y * zv + f_centery + vert_wibble_table[((wibble + long(zv2 * vec.x)) >> 3) & 0x1F];
 			}
@@ -536,7 +536,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 				{
 					if (IsReflectionVert(&xyz))
 						flags |= 1;
-					else if (IsShoreVertex(&xyz) || has_water_neighbor)
+					else if (IsShoreVert(&xyz) || has_water_neighbor)
 						flags |= 1;
 				}
 			}
@@ -545,10 +545,10 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 		if (current_room_underwater)
 		{
-			wx = long(xyz.x * 0.015625F);
-			wy = long(xyz.y * 0.015625F);
-			wz = long(xyz.z * 0.0078125F);
-			rnd = WaterTable[current_room_ptr->MeshEffect][((wx + wy) + wz) & 0x3F].random;
+			wx = long(xyz.x / 64.0F);
+			wy = long(xyz.y / 64.0F);
+			wz = long(xyz.z / 128.0F);
+			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
 			choppy = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
 			iVal = -2 * choppy;
 			cR += iVal;
@@ -558,9 +558,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 #ifdef GENERAL_FIXES
 		else if (flags & 1)
 		{
-			wx = long(xyz.x * 0.015625F);
-			wy = long(xyz.y * 0.015625F);
-			wz = long(xyz.z * 0.0078125F);
+			wx = long(xyz.x / 64.0F);
+			wy = long(xyz.y / 64.0F);
+			wz = long(xyz.z / 128.0F);
 			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
 			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
 			abs = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
@@ -571,9 +571,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		}
 		else if (flags & 2)	//special Red Alert! gas rooms wibble (slower and green only)
 		{
-			wx = long(xyz.x * 0.015625F);
-			wy = long(xyz.y * 0.015625F);
-			wz = long(xyz.z * 0.0078125F);
+			wx = long(xyz.x / 64.0F);
+			wy = long(xyz.y / 64.0F);
+			wz = long(xyz.z / 128.0F);
 			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
 			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].shimmer;
 			abs = WaterTable[current_room_ptr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].abs;
