@@ -1203,6 +1203,46 @@ long aBuildRoomletLights(ROOMLET* r)
 	return numLights;
 }
 
+void aRoomInit()
+{
+	ROOM_INFO* r;
+	FOGBULB* bulb;
+	long nBulbs;
+
+	nBulbs = 0;
+
+	for (int i = 0; i < number_rooms; i++)
+	{
+		r = &room[i];
+
+		if (!r->nFogBulbs)
+			continue;
+
+		for (int j = 0; j < r->nFogBulbs; j++)
+		{
+			bulb = &fog_bulbs[nBulbs];
+			memcpy(bulb, &r->fogbulb[j], sizeof(FOGBULB));
+
+			if (gfCurrentLevel == 2 || gfCurrentLevel == 3)
+			{
+				bulb->den -= bulb->den * 0.5F;
+
+				if (bulb->den < 0)
+					bulb->den = 0;
+			}
+
+			bulb->den = (90.0F - bulb->den / 1024.0F) * 0.8F + 0.2F;
+
+			if (bulb->den < 14)
+				bulb->den = 14;
+
+			nBulbs++;
+		}
+	}
+
+	NumLevelFogBulbs = nBulbs;
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1216,4 +1256,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049A3D0, ProcessMeshData, replace);
 	INJECT(0x0049CEB0, DrawRoomletBounds, replace);
 	INJECT(0x0049B390, aBuildRoomletLights, replace);
+	INJECT(0x0049AD90, aRoomInit, replace);
 }

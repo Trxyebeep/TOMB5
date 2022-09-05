@@ -14,6 +14,7 @@ void aBuildFogBulbList();
 void ProcessMeshData(long num_meshes);
 void DrawRoomletBounds(ROOMLET* r);
 long aBuildRoomletLights(ROOMLET* r);
+void aRoomInit();
 
 #define DrawBuckets	( (void(__cdecl*)()) 0x0049D750 )
 #define TriggerFogBulbFX	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x0049AEF0 )
