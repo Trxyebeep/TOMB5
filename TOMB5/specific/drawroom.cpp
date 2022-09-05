@@ -1248,6 +1248,27 @@ void aResetFogBulbList()
 	NumActiveFogBulbs = 0;
 }
 
+void TriggerFogBulbFX(long r, long g, long b, long x, long y, long z, long rad, long den)
+{
+	FOGBULB_STRUCT* bulb;
+
+	if (nFXFogBulbs < 3)
+	{
+		bulb = &FXFogBulbs[nFXFogBulbs];
+		nFXFogBulbs++;
+
+		bulb->pos.x = x;
+		bulb->pos.y = y;
+		bulb->pos.z = z;
+		bulb->rad = rad;
+		bulb->sqrad = SQUARE(rad);
+		bulb->d = 1.0F / den;
+		bulb->r = r;
+		bulb->g = g;
+		bulb->b = b;
+	}
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1263,4 +1284,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049B390, aBuildRoomletLights, replace);
 	INJECT(0x0049AD90, aRoomInit, replace);
 	INJECT(0x0049AD70, aResetFogBulbList, replace);
+	INJECT(0x0049AEF0, TriggerFogBulbFX, replace);
 }
