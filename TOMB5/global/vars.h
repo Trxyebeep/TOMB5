@@ -623,6 +623,8 @@
 #define level_fp	VAR_U_(0x00875164, FILE*)
 #define CompressedData	VAR_U_(0x00875148, char*)
 #define FileCompressed	VAR_U_(0x005165C8, long)
+#define aranges	VAR_U_(0x00D9ADA0, short*)
+#define AnimatingTexturesVOffset	VAR_U_(0x008751BC, short)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -770,6 +772,7 @@
 #define SortBuffer	ARRAY_(0x00923FAC, char, [])
 #define StreamHeaders	ARRAY_(0x00579E50, ACMSTREAMHEADER, [4])
 #define NotifyEventHandles	ARRAY_(0x00579FA0, HANDLE, [2])
+#define AnimatingTexturesV	ARRAY_(0x0087435C, float, [16][8][3])
 
 /****************/
 //registry
