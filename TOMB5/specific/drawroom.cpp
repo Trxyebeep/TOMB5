@@ -1315,7 +1315,7 @@ void InitBuckets()
 {
 	TEXTUREBUCKET* bucket;
 
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < 30; i++)
 	{
 		bucket = &Bucket[i];
 		bucket->tpage = -1;
@@ -1404,7 +1404,7 @@ void DrawBuckets()
 		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
 		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 30; i++)
 		{
 			bucket = &Bucket[i];
 
@@ -1426,7 +1426,7 @@ void DrawBuckets()
 		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
 		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
 
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 30; i++)
 		{
 			bucket = &Bucket[i];
 
@@ -1442,7 +1442,7 @@ void DrawBuckets()
 
 		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
 
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 30; i++)
 		{
 			bucket = &Bucket[i];
 
@@ -1458,7 +1458,7 @@ void DrawBuckets()
 	}
 	else
 	{
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < 30; i++)
 		{
 			bucket = &Bucket[i];
 			DrawBucket(bucket);
