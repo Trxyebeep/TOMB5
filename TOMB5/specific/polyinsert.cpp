@@ -1050,6 +1050,49 @@ void SubdivideTri(D3DTLVERTEX* v0, D3DTLVERTEX* v1, D3DTLVERTEX* v2, TEXTURESTRU
 	SubdivideQuad(&v[2], v, &v[1], v2, &tex2, double_sided, steps - 1, bclip);
 }
 
+void AddTriSubdivide(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURESTRUCT* tex, long double_sided)
+{
+	long steps;
+	short c[4];
+
+	if (nPolyType || v[v2].sz >= 3500)
+		AddTriClippedSorted(v, v0, v1, v2, tex, double_sided);
+	else
+	{
+		steps = 1;
+
+		if (v[v2].sz < 2000)
+			steps = 2;
+
+		c[0] = clipflags[v0];
+		c[1] = clipflags[v1];
+		c[2] = clipflags[v2];
+		SubdivideTri(&v[v0], &v[v1], &v[v2], tex, double_sided, steps, c);
+	}
+}
+
+void AddQuadSubdivide(D3DTLVERTEX* v, short v0, short v1, short v2, short v3, TEXTURESTRUCT* tex, long double_sided)
+{
+	long steps;
+	short c[4];
+
+	if (nPolyType || v[v3].sz >= 3500)
+		AddQuadClippedSorted(v, v0, v1, v2, v3, tex, double_sided);
+	else
+	{
+		steps = 1;
+
+		if (v[v3].sz < 2000)
+			steps = 2;
+
+		c[0] = clipflags[v0];
+		c[1] = clipflags[v1];
+		c[2] = clipflags[v2];
+		c[3] = clipflags[v3];
+		SubdivideQuad(&v[v0], &v[v1], &v[v2], &v[v3], tex, double_sided, steps, c);
+	}
+}
+
 void inject_polyinsert(bool replace)
 {
 	INJECT(0x004B98E0, HWR_DrawSortList, replace);
@@ -1078,4 +1121,6 @@ void inject_polyinsert(bool replace)
 	INJECT(0x004BB0D0, SubdivideEdge, replace);
 	INJECT(0x004BB7D0, SubdivideQuad, replace);
 	INJECT(0x004BB390, SubdivideTri, replace);
+	INJECT(0x004BBE40, AddTriSubdivide, replace);
+	INJECT(0x004BBFA0, AddQuadSubdivide, replace);
 }
