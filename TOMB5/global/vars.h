@@ -531,7 +531,6 @@
 #define acm_ready   VAR_U_(0x0057A00C, bool)
 #define audio_counter   VAR_U_(0x0057A018, long)
 #define num_items	VAR_U_(0x00874250, long)
-#define AnimTextureRanges	VAR_U_(0x00D9ADA0, short*)
 #define nAnimUVRanges	VAR_U_(0x0087495C, long)
 #define LevelFILEptr	VAR_U_(0x00875164, FILE*)
 #define samples_buffer	VAR_U_(0x0086BEDC, char*)

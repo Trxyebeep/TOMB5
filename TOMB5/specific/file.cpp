@@ -374,8 +374,8 @@ bool LoadAnimatedTextures()
 
 	num_anim_ranges = *(long*)FileData;
 	FileData += 4;
-	AnimTextureRanges = (short*)game_malloc(num_anim_ranges * 2, 0);
-	memcpy(AnimTextureRanges, FileData, num_anim_ranges * 2);
+	aranges = (short*)game_malloc(num_anim_ranges * 2, 0);
+	memcpy(aranges, FileData, num_anim_ranges * 2);
 	FileData += num_anim_ranges * sizeof(short);
 	nAnimUVRanges = *(char*)FileData;
 	FileData += 1;
