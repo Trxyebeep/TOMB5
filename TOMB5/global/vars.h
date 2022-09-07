@@ -625,6 +625,7 @@
 #define FileCompressed	VAR_U_(0x005165C8, long)
 #define aranges	VAR_U_(0x00D9ADA0, short*)
 #define AnimatingTexturesVOffset	VAR_U_(0x008751BC, short)
+#define nClippedPolys	VAR_U_(0x00D9AB10, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

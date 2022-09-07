@@ -745,6 +745,68 @@ void S_DrawTriFan(long nVtx, D3DTLVERTEX* v)
 	App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, v, nVtx, D3DDP_DONOTUPDATEEXTENTS);
 }
 
+void AddClippedPoly(D3DTLBUMPVERTEX* dest, long nPoints, D3DTLBUMPVERTEX* v, TEXTURESTRUCT* pTex)
+{
+	D3DTLBUMPVERTEX* p;
+	float z;
+
+	p = dest;
+
+	for (int i = 0; i < 3; i++, v++, p++)
+	{
+		p->sx = v->sx;
+		p->sy = v->sy;
+		p->sz = f_a - f_boo * v->rhw;
+		p->rhw = v->rhw;
+		p->color = v->color;
+		p->specular = v->specular;
+		z = 1.0F / v->rhw;
+		p->tu = z * v->tu;
+		p->tv = z * v->tv;
+	}
+
+	nPoints -= 3;
+	nClippedPolys++;
+	v--;
+
+	for (int i = nPoints; i > 0; i--)
+	{
+		v++;
+		p->sx = dest->sx;
+		p->sy = dest->sy;
+		p->sz = dest->sz;
+		p->rhw = dest->rhw;
+		p->color = dest->color;
+		p->specular = dest->specular;
+		p->tu = dest->tu;
+		p->tv = dest->tv;
+		p++;
+
+		p->sx = p[-2].sx;
+		p->sy = p[-2].sy;
+		p->sz = p[-2].sz;
+		p->rhw = p[-2].rhw;
+		p->color = p[-2].color;
+		p->specular = p[-2].specular;
+		p->tu = p[-2].tu;
+		p->tv = p[-2].tv;
+		p++;
+
+		p->sx = v->sx;
+		p->sy = v->sy;
+		p->sz = f_a - f_boo * v->rhw;
+		p->rhw = v->rhw;
+		p->color = v->color;
+		p->specular = v->specular;
+		z = 1.0F / v->rhw;
+		p->tu = z * v->tu;
+		p->tv = z * v->tv;
+		p++;
+
+		nClippedPolys++;
+	}
+}
+
 void inject_polyinsert(bool replace)
 {
 	INJECT(0x004B98E0, HWR_DrawSortList, replace);
@@ -769,4 +831,5 @@ void inject_polyinsert(bool replace)
 	INJECT(0x004BCF30, CalcColorSplitMMX, replace);
 	INJECT(0x004BD270, S_DrawLine, replace);
 	INJECT(0x004BD300, S_DrawTriFan, replace);
+	INJECT(0x004BAF20, AddClippedPoly, replace);
 }
