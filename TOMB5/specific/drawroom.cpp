@@ -1466,6 +1466,63 @@ void DrawBuckets()
 	}
 }
 
+void FindBucket(long tpage, D3DTLBUMPVERTEX** Vpp, long** nVtxpp)
+{
+	TEXTUREBUCKET* bucket;
+	long nVtx, biggest;
+
+	for (int i = 0; i < 30; i++)
+	{
+		bucket = &Bucket[i];
+
+		if (bucket->tpage == tpage && bucket->nVtx < 2048)
+		{
+			*Vpp = &bucket->vtx[bucket->nVtx];
+			*nVtxpp = &bucket->nVtx;
+			return;
+		}
+
+		if (bucket->nVtx > 2048)
+		{
+			DrawBucket(bucket);
+			bucket->tpage = tpage;
+			bucket->nVtx = 0;
+			*Vpp = bucket->vtx;
+			*nVtxpp = &bucket->nVtx;
+			return;
+		}
+	}
+
+	nVtx = 0;
+	biggest = 0;
+
+	for (int i = 0; i < 30; i++)
+	{
+		bucket = &Bucket[i];
+
+		if (bucket->tpage == -1)
+		{
+			bucket->tpage = tpage;
+			*Vpp = bucket->vtx;
+			*nVtxpp = &bucket->nVtx;
+			return;
+		}
+
+		if (bucket->nVtx > nVtx)
+		{
+			nVtx = bucket->nVtx;
+			biggest = i;
+		}
+	}
+
+	bucket = &Bucket[biggest];
+	DrawBucket(bucket);
+	bucket->tpage = tpage;
+	bucket->nVtx = 0;
+	*Vpp = bucket->vtx;
+	*nVtxpp = &bucket->nVtx;
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1488,4 +1545,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049D420, aResetBumpComponent, replace);
 	INJECT(0x0049D460, DrawBucket, replace);
 	INJECT(0x0049D750, DrawBuckets, replace);
+	INJECT(0x0049D250, FindBucket, replace);
 }
