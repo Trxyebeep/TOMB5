@@ -757,6 +757,7 @@
 #define Textures	ARRAY_(0x00D99DA8, TEXTURE, [64])
 #define SortList	ARRAY_(0x00BA4390, SORTLIST*, [65536])
 #define Bucket	ARRAY_(0x0057A510, TEXTUREBUCKET, [30])
+#define BucketSpecular	ARRAY_(0x007EB068, long, [2080])
 #define UWdust	ARRAY_(0x00C717E8, UWEFFECTS, [256])
 #define Rain	ARRAY_(0x00C72BE8, RAINDROPS, [2048])
 #define Snow	ARRAY_(0x00C7CBE8, SNOWFLAKE, [2048])

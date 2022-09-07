@@ -1322,6 +1322,29 @@ void InitBuckets()
 	}
 }
 
+void aSetBumpComponent(TEXTUREBUCKET* bucket)
+{
+	for (int i = 0; i < bucket->nVtx; i++)
+	{
+		if (bucket->vtx[i].specular & 0xFFFFFF)
+		{
+			BucketSpecular[i] = bucket->vtx[i].specular;
+			bucket->vtx[i].specular = 0;
+		}
+		else
+			BucketSpecular[i] = 0;
+	}
+}
+
+void aResetBumpComponent(TEXTUREBUCKET* bucket)
+{
+	for (int i = 0; i < bucket->nVtx; i++)
+	{
+		if (BucketSpecular[i])
+			bucket->vtx[i].specular = BucketSpecular[i];
+	}
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1340,4 +1363,6 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049AEF0, TriggerFogBulbFX, replace);
 	INJECT(0x0049B1C0, aBuildFXFogBulbList, replace);
 	INJECT(0x0049D220, InitBuckets, replace);
+	INJECT(0x0049D3B0, aSetBumpComponent, replace);
+	INJECT(0x0049D420, aResetBumpComponent, replace);
 }
