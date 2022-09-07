@@ -1310,6 +1310,18 @@ void aBuildFXFogBulbList()
 	nFXFogBulbs = 0;
 }
 
+void InitBuckets()
+{
+	TEXTUREBUCKET* bucket;
+
+	for (int i = 0; i < 20; i++)
+	{
+		bucket = &Bucket[i];
+		bucket->tpage = -1;
+		bucket->nVtx = 0;
+	}
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1327,4 +1339,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049AD70, aResetFogBulbList, replace);
 	INJECT(0x0049AEF0, TriggerFogBulbFX, replace);
 	INJECT(0x0049B1C0, aBuildFXFogBulbList, replace);
+	INJECT(0x0049D220, InitBuckets, replace);
 }

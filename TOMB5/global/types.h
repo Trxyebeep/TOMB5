@@ -2325,8 +2325,8 @@ struct SORTLIST
 struct TEXTUREBUCKET
 {
 	long tpage;
-	long cnt;
-	D3DTLBUMPVERTEX Vertex[2080];
+	long nVtx;
+	D3DTLBUMPVERTEX vtx[2080];
 };
 
 struct D3DLIGHT_STRUCT

@@ -1747,7 +1747,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0049CEB0	+	DrawRoomletBounds
 0x0049D0E0		PrelightVertsMMXByRoomlet
 0x0049D130		PrelightVertsNonMMXByRoomlet
-0x0049D220		InitBuckets
+0x0049D220	+	InitBuckets
 0x0049D250		FindBucket
 0x0049D3B0		aSetBumpComponent
 0x0049D420		aResetBumpComponent
