@@ -2048,7 +2048,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004BAF20	+	AddClippedPoly
 0x004BB0D0	+	SubdivideEdge
 0x004BB390		SubdivideTri
-0x004BB7D0		SubdivideQuad
+0x004BB7D0	+	SubdivideQuad
 0x004BBE40		AddTriSubdivide
 0x004BBFA0		AddQuadSubdivide
 0x004BC120		AddTriClippedSorted
