@@ -21,6 +21,7 @@ void aBuildFXFogBulbList();
 void InitBuckets();
 void aSetBumpComponent(TEXTUREBUCKET* bucket);
 void aResetBumpComponent(TEXTUREBUCKET* bucket);
+void DrawBucket(TEXTUREBUCKET* bucket);
 
 #define DrawBuckets	( (void(__cdecl*)()) 0x0049D750 )
 #define CheckBoundsClip	( (long(__cdecl*)(float*)) 0x0049C6B0 )

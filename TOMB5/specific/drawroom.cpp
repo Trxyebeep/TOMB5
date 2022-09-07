@@ -4,6 +4,7 @@
 #include "function_stubs.h"
 #include "d3dmatrix.h"
 #include "alexstuff.h"
+#include "dxshell.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../game/gameflow.h"
@@ -1345,6 +1346,49 @@ void aResetBumpComponent(TEXTUREBUCKET* bucket)
 	}
 }
 
+void DrawBucket(TEXTUREBUCKET* bucket)
+{
+	if (bucket->tpage == 1)
+		bucket->tpage = 1;
+
+	if (!bucket->nVtx)
+		return;
+
+	if (Textures[bucket->tpage].bump && App.BumpMapping)
+	{
+		aSetBumpComponent(bucket);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, 0);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+		DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[Textures[bucket->tpage].bumptpage].tex));
+		App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, bucket->vtx, bucket->nVtx, D3DDP_DONOTCLIP);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, 1);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 1);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_DESTCOLOR);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+		DrawPrimitiveCnt++;
+		aResetBumpComponent(bucket);
+	}
+
+	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[bucket->tpage].tex));
+	App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, bucket->vtx, bucket->nVtx, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP);
+
+	if (App.BumpMapping)
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
+
+	bucket->nVtx = 0;
+	bucket->tpage = -1;
+	DrawPrimitiveCnt++;
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1365,4 +1409,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049D220, InitBuckets, replace);
 	INJECT(0x0049D3B0, aSetBumpComponent, replace);
 	INJECT(0x0049D420, aResetBumpComponent, replace);
+	INJECT(0x0049D460, DrawBucket, replace);
 }
