@@ -316,6 +316,54 @@ bool LoadSettings()
 	return REG_Setup;
 }
 
+void SaveSettings()
+{
+	OpenRegistry("Game");
+	REG_WriteLong((char*)"Key0", layout[1][0]);
+	REG_WriteLong((char*)"Key1", layout[1][1]);
+	REG_WriteLong((char*)"Key2", layout[1][2]);
+	REG_WriteLong((char*)"Key3", layout[1][3]);
+	REG_WriteLong((char*)"Key4", layout[1][4]);
+	REG_WriteLong((char*)"Key5", layout[1][5]);
+	REG_WriteLong((char*)"Key6", layout[1][6]);
+	REG_WriteLong((char*)"Key7", layout[1][7]);
+	REG_WriteLong((char*)"Key8", layout[1][8]);
+	REG_WriteLong((char*)"Key9", layout[1][9]);
+	REG_WriteLong((char*)"Key10", layout[1][10]);
+	REG_WriteLong((char*)"Key11", layout[1][11]);
+	REG_WriteLong((char*)"Key12", layout[1][12]);
+	REG_WriteLong((char*)"Key13", layout[1][13]);
+	REG_WriteLong((char*)"Key14", layout[1][14]);
+	REG_WriteLong((char*)"Key15", layout[1][15]);
+	REG_WriteLong((char*)"Key16", layout[1][16]);
+	REG_WriteLong((char*)"Key17", layout[1][17]);
+
+	REG_WriteLong((char*)"JDck", jLayout[0]);
+	REG_WriteLong((char*)"JDsh", jLayout[1]);
+	REG_WriteLong((char*)"JWlk", jLayout[2]);
+	REG_WriteLong((char*)"JJmp", jLayout[3]);
+	REG_WriteLong((char*)"JAct", jLayout[4]);
+	REG_WriteLong((char*)"JDrw", jLayout[5]);
+	REG_WriteLong((char*)"JFlr", jLayout[6]);
+	REG_WriteLong((char*)"JLok", jLayout[7]);
+	REG_WriteLong((char*)"JRol", jLayout[8]);
+	REG_WriteLong((char*)"JInv", jLayout[9]);
+
+	REG_WriteLong((char*)"ControlMethod", ControlMethod);
+	REG_WriteLong((char*)"MusicVolume", MusicVolume);
+	REG_WriteLong((char*)"SFXVolume", SFXVolume);
+	REG_WriteLong((char*)"SoundQuality", SoundQuality);
+	REG_WriteLong((char*)"AutoTarget", App.AutoTarget);
+	REG_WriteLong((char*)"WindowX", App.dx.rScreen.left);
+	REG_WriteLong((char*)"WindowY", App.dx.rScreen.top);
+	CloseRegistry();
+
+	OpenRegistry("System");
+	REG_WriteLong((char*)"VMode", App.DXInfo.nDisplayMode);
+	REG_WriteBool((char*)"Window", (App.dx.Flags & 2) != 0);
+	CloseRegistry();
+}
+
 void inject_registry(bool replace)
 {
 	INJECT(0x004BD860, REG_OpenKey, replace);
@@ -335,4 +383,5 @@ void inject_registry(bool replace)
 	INJECT(0x004BDBA0, REG_ReadDouble, replace);
 	INJECT(0x004BDC20, REG_ReadVoid, replace);
 	INJECT(0x004BDE20, LoadSettings, replace);
+	INJECT(0x004BE7E0, SaveSettings, replace);
 }
