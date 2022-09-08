@@ -20,6 +20,7 @@ bool LoadSamples();
 bool LoadAIInfo();
 long S_LoadLevelFile(long num);
 bool LoadTextures(long RTPages, long OTPages, long BTPages);
+void S_GetUVRotateTextures();
 
 #define	AdjustUV	( (void(__cdecl*)(long)) 0x004A5430 )
 #define DoMonitorScreen	( (void(__cdecl*)()) 0x004A7020 )

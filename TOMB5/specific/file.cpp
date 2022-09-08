@@ -374,8 +374,8 @@ bool LoadAnimatedTextures()
 
 	num_anim_ranges = *(long*)FileData;
 	FileData += 4;
-	AnimTextureRanges = (short*)game_malloc(num_anim_ranges * 2, 0);
-	memcpy(AnimTextureRanges, FileData, num_anim_ranges * 2);
+	aranges = (short*)game_malloc(num_anim_ranges * 2, 0);
+	memcpy(aranges, FileData, num_anim_ranges * 2);
 	FileData += num_anim_ranges * sizeof(short);
 	nAnimUVRanges = *(char*)FileData;
 	FileData += 1;
@@ -1005,6 +1005,25 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 	return 1;
 }
 
+void S_GetUVRotateTextures()
+{
+	TEXTURESTRUCT* tex;
+	short* pRange;
+
+	pRange = aranges + 1;
+
+	for (int i = 0; i < nAnimUVRanges; i++, pRange++)
+	{
+		for (int j = (int)*(pRange++); j >= 0; j--, pRange++)
+		{
+			tex = &textinfo[*pRange];
+			AnimatingTexturesV[i][j][0] = tex->v1;
+		}
+
+		pRange--;
+	}
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A6B30, LoadLevel, 0);
@@ -1026,4 +1045,5 @@ void inject_file(bool replace)
 	INJECT(0x004A67F0, LoadAIInfo, replace);
 	INJECT(0x004A72B0, S_LoadLevelFile, replace);
 	INJECT(0x004A3FC0, LoadTextures, replace);
+	INJECT(0x004A6AB0, S_GetUVRotateTextures, replace);
 }

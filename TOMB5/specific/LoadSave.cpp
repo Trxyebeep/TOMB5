@@ -964,34 +964,34 @@ void DoOptions()
 				PrintString((phd_centerx >> 3) + phd_centerx + (phd_centerx >> 1), (ushort)(textY2 + font_height * (i + 5)), 5, quality_buffer, 0);
 			}
 
-			text = (waiting_for_key && (controls_selection & 2)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[MappedControls[0]];
+			text = (waiting_for_key && (controls_selection & 2)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[jLayout[0]];
 			clr = (waiting_for_key && (selection & 2)) ? 1 : 6;
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY2 + 5 * font_height), clr, text, 0);
-			text = (waiting_for_key && (controls_selection & 4)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[MappedControls[1]];
+			text = (waiting_for_key && (controls_selection & 4)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[jLayout[1]];
 			clr = (waiting_for_key && (selection & 4)) ? 1 : 6;
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY2 + 6 * font_height), clr, text, 0);
-			text = (waiting_for_key && (controls_selection & 8)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[MappedControls[2]];
+			text = (waiting_for_key && (controls_selection & 8)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[jLayout[2]];
 			clr = (waiting_for_key && (selection & 8)) ? 1 : 6;
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY2 + 7 * font_height), clr, text, 0);
-			text = (waiting_for_key && (controls_selection & 0x10)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[MappedControls[3]];
+			text = (waiting_for_key && (controls_selection & 0x10)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[jLayout[3]];
 			clr = (waiting_for_key && (selection & 0x10)) ? 1 : 6;
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY2 + 8 * font_height), clr, text, 0);
-			text = (waiting_for_key && (controls_selection & 0x20)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[MappedControls[4]];
+			text = (waiting_for_key && (controls_selection & 0x20)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[jLayout[4]];
 			clr = (waiting_for_key && (selection & 0x20)) ? 1 : 6;
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY2 + 9 * font_height), clr, text, 0);
-			text = (waiting_for_key && (controls_selection & 0x40)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[MappedControls[5]];
+			text = (waiting_for_key && (controls_selection & 0x40)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[jLayout[5]];
 			clr = (waiting_for_key && (selection & 0x40)) ? 1 : 6;
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY2 + 10 * font_height), clr, text, 0);
-			text = (waiting_for_key && (controls_selection & 0x80)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[MappedControls[6]];
+			text = (waiting_for_key && (controls_selection & 0x80)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[jLayout[6]];
 			clr = (waiting_for_key && (selection & 0x80)) ? 1 : 6;
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY2 + 11 * font_height), clr, text, 0);
-			text = (waiting_for_key && (controls_selection & 0x100)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[MappedControls[7]];
+			text = (waiting_for_key && (controls_selection & 0x100)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[jLayout[7]];
 			clr = (waiting_for_key && (selection & 0x100)) ? 1 : 6;
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY2 + 12 * font_height), clr, text, 0);
-			text = (waiting_for_key && (controls_selection & 0x200)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[MappedControls[8]];
+			text = (waiting_for_key && (controls_selection & 0x200)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[jLayout[8]];
 			clr = (waiting_for_key && (selection & 0x200)) ? 1 : 6;
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY2 + 13 * font_height), clr, text, 0);
-			text = (waiting_for_key && (controls_selection & 0x400)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[MappedControls[9]];
+			text = (waiting_for_key && (controls_selection & 0x400)) ? SCRIPT_TEXT_bis(STR_WAITING) : JoyStickButtons[jLayout[9]];
 			clr = (waiting_for_key && (selection & 0x400)) ? 1 : 6;
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY2 + 14 * font_height), clr, text, 0);
 		}
@@ -1080,7 +1080,7 @@ void DoOptions()
 						joy3++;
 					}
 
-					MappedControls[joy2] = joy3;
+					jLayout[joy2] = joy3;
 					waiting_for_key = 0;
 				}
 			}
@@ -1102,7 +1102,7 @@ void DoOptions()
 			SoundEffect(SFX_MENU_SELECT, 0, 2);
 			memcpy(layout[1], layout, 72);
 			ControlMethod = 0;
-			memcpy(MappedControls, DefaultControls, 32);
+			memcpy(jLayout, defaultJLayout, 32);
 		}
 
 		if (selection & 1)

@@ -4,6 +4,7 @@
 #include "function_stubs.h"
 #include "d3dmatrix.h"
 #include "alexstuff.h"
+#include "dxshell.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../game/gameflow.h"
@@ -325,7 +326,7 @@ static bool IsReflectionVert(FVECTOR* v)
 	return cont;
 }
 
-static bool IsShoreVertex(FVECTOR* v)
+static bool IsShoreVert(FVECTOR* v)
 {
 	PORTAL* p;
 	ROOM_INFO* r;
@@ -444,7 +445,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 			if (cam_underwater)
 			{
-				zv2 = 1.0F / (vec.z * (1.0F / 512.0F));
+				zv2 = 1.0F / (vec.z / 512.0F);
 				vec.x = vec.x * zv + f_centerx + vert_wibble_table[((wibble + long(zv2 * vec.y)) >> 3) & 0x1F];
 				vec.y = vec.y * zv + f_centery + vert_wibble_table[((wibble + long(zv2 * vec.x)) >> 3) & 0x1F];
 			}
@@ -536,7 +537,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 				{
 					if (IsReflectionVert(&xyz))
 						flags |= 1;
-					else if (IsShoreVertex(&xyz) || has_water_neighbor)
+					else if (IsShoreVert(&xyz) || has_water_neighbor)
 						flags |= 1;
 				}
 			}
@@ -545,10 +546,10 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 		if (current_room_underwater)
 		{
-			wx = long(xyz.x * 0.015625F);
-			wy = long(xyz.y * 0.015625F);
-			wz = long(xyz.z * 0.0078125F);
-			rnd = WaterTable[current_room_ptr->MeshEffect][((wx + wy) + wz) & 0x3F].random;
+			wx = long(xyz.x / 64.0F);
+			wy = long(xyz.y / 64.0F);
+			wz = long(xyz.z / 128.0F);
+			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
 			choppy = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
 			iVal = -2 * choppy;
 			cR += iVal;
@@ -558,9 +559,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 #ifdef GENERAL_FIXES
 		else if (flags & 1)
 		{
-			wx = long(xyz.x * 0.015625F);
-			wy = long(xyz.y * 0.015625F);
-			wz = long(xyz.z * 0.0078125F);
+			wx = long(xyz.x / 64.0F);
+			wy = long(xyz.y / 64.0F);
+			wz = long(xyz.z / 128.0F);
 			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
 			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
 			abs = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
@@ -571,9 +572,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		}
 		else if (flags & 2)	//special Red Alert! gas rooms wibble (slower and green only)
 		{
-			wx = long(xyz.x * 0.015625F);
-			wy = long(xyz.y * 0.015625F);
-			wz = long(xyz.z * 0.0078125F);
+			wx = long(xyz.x / 64.0F);
+			wy = long(xyz.y / 64.0F);
+			wz = long(xyz.z / 128.0F);
 			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
 			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].shimmer;
 			abs = WaterTable[current_room_ptr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].abs;
@@ -1203,6 +1204,325 @@ long aBuildRoomletLights(ROOMLET* r)
 	return numLights;
 }
 
+void aRoomInit()
+{
+	ROOM_INFO* r;
+	FOGBULB* bulb;
+	long nBulbs;
+
+	nBulbs = 0;
+
+	for (int i = 0; i < number_rooms; i++)
+	{
+		r = &room[i];
+
+		if (!r->nFogBulbs)
+			continue;
+
+		for (int j = 0; j < r->nFogBulbs; j++)
+		{
+			bulb = &fog_bulbs[nBulbs];
+			memcpy(bulb, &r->fogbulb[j], sizeof(FOGBULB));
+
+			if (gfCurrentLevel == 2 || gfCurrentLevel == 3)
+			{
+				bulb->den -= bulb->den * 0.5F;
+
+				if (bulb->den < 0)
+					bulb->den = 0;
+			}
+
+			bulb->den = (90.0F - bulb->den / 1024.0F) * 0.8F + 0.2F;
+
+			if (bulb->den < 14)
+				bulb->den = 14;
+
+			nBulbs++;
+		}
+	}
+
+	NumLevelFogBulbs = nBulbs;
+}
+
+void aResetFogBulbList()
+{
+	NumActiveFogBulbs = 0;
+}
+
+void TriggerFogBulbFX(long r, long g, long b, long x, long y, long z, long rad, long den)
+{
+	FOGBULB_STRUCT* bulb;
+
+	if (nFXFogBulbs < 3)
+	{
+		bulb = &FXFogBulbs[nFXFogBulbs];
+		nFXFogBulbs++;
+
+		bulb->pos.x = (float)x;
+		bulb->pos.y = (float)y;
+		bulb->pos.z = (float)z;
+		bulb->rad = (float)rad;
+		bulb->sqrad = SQUARE(bulb->rad);
+		bulb->d = 1.0F / den;
+		bulb->r = (float)r;
+		bulb->g = (float)g;
+		bulb->b = (float)b;
+	}
+}
+
+void aBuildFXFogBulbList()
+{
+	FOGBULB_STRUCT* bulb;
+	FOGBULB_STRUCT* fxBulb;
+	FVECTOR pos;
+	long nBulbs;
+
+	if (!nFXFogBulbs)
+		return;
+
+	bulb = &ActiveFogBulbs[NumActiveFogBulbs];
+	nBulbs = NumActiveFogBulbs;
+
+	for (int i = 0; i < nFXFogBulbs; i++)
+	{
+		fxBulb = &FXFogBulbs[i];
+		pos.x = fxBulb->pos.x;
+		pos.y = fxBulb->pos.y;
+		pos.z = fxBulb->pos.z;
+		bulb->world.x = pos.x;
+		bulb->world.y = pos.y;
+		bulb->world.y = pos.z;
+		bulb->pos.x = pos.x * D3DCameraMatrix._11 + pos.y * D3DCameraMatrix._21 + pos.z * D3DCameraMatrix._31 + D3DCameraMatrix._41;
+		bulb->pos.y = pos.x * D3DCameraMatrix._12 + pos.y * D3DCameraMatrix._22 + pos.z * D3DCameraMatrix._32 + D3DCameraMatrix._42;
+		bulb->pos.z = pos.x * D3DCameraMatrix._13 + pos.y * D3DCameraMatrix._23 + pos.z * D3DCameraMatrix._33 + D3DCameraMatrix._43;
+		bulb->rad = fxBulb->rad;
+		bulb->sqrad = fxBulb->sqrad;
+		bulb->sqlen = SQUARE(bulb->pos.x) + SQUARE(bulb->pos.y) + SQUARE(bulb->pos.z);
+		bulb->visible = 1;
+		bulb->d = fxBulb->d;
+		bulb->r = fxBulb->r / 255.0F;
+		bulb->g = fxBulb->g / 255.0F;
+		bulb->b = fxBulb->b / 255.0F;
+		bulb++;
+		nBulbs++;
+	}
+
+	NumActiveFogBulbs = nBulbs;
+	nFXFogBulbs = 0;
+}
+
+void InitBuckets()
+{
+	TEXTUREBUCKET* bucket;
+
+	for (int i = 0; i < 30; i++)
+	{
+		bucket = &Bucket[i];
+		bucket->tpage = -1;
+		bucket->nVtx = 0;
+	}
+}
+
+void aSetBumpComponent(TEXTUREBUCKET* bucket)
+{
+	for (int i = 0; i < bucket->nVtx; i++)
+	{
+		if (bucket->vtx[i].specular & 0xFFFFFF)
+		{
+			BucketSpecular[i] = bucket->vtx[i].specular;
+			bucket->vtx[i].specular = 0;
+		}
+		else
+			BucketSpecular[i] = 0;
+	}
+}
+
+void aResetBumpComponent(TEXTUREBUCKET* bucket)
+{
+	for (int i = 0; i < bucket->nVtx; i++)
+	{
+		if (BucketSpecular[i])
+			bucket->vtx[i].specular = BucketSpecular[i];
+	}
+}
+
+void DrawBucket(TEXTUREBUCKET* bucket)
+{
+	if (bucket->tpage == 1)
+		bucket->tpage = 1;
+
+	if (!bucket->nVtx)
+		return;
+
+	if (Textures[bucket->tpage].bump && App.BumpMapping)
+	{
+		aSetBumpComponent(bucket);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, 0);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+		DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[Textures[bucket->tpage].bumptpage].tex));
+		App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, bucket->vtx, bucket->nVtx, D3DDP_DONOTCLIP);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, 1);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 1);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_DESTCOLOR);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+		DrawPrimitiveCnt++;
+		aResetBumpComponent(bucket);
+	}
+
+	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[bucket->tpage].tex));
+	App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, bucket->vtx, bucket->nVtx, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP);
+
+	if (App.BumpMapping)
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
+
+	bucket->nVtx = 0;
+	bucket->tpage = -1;
+	DrawPrimitiveCnt++;
+}
+
+void DrawBuckets()
+{
+	TEXTUREBUCKET* bucket;
+
+	if (App.BumpMapping)
+	{
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, 0);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_CURRENT);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
+
+		for (int i = 0; i < 30; i++)
+		{
+			bucket = &Bucket[i];
+
+			if (Textures[bucket->tpage].bump && bucket->nVtx)
+			{
+				aSetBumpComponent(bucket);
+				DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[Textures[bucket->tpage].bumptpage].tex));
+				App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, bucket->vtx, bucket->nVtx, D3DDP_DONOTCLIP);
+				DrawPrimitiveCnt++;
+				aResetBumpComponent(bucket);
+			}
+		}
+
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, 1);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 1);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_DESTCOLOR);
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_SRCCOLOR);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+
+		for (int i = 0; i < 30; i++)
+		{
+			bucket = &Bucket[i];
+
+			if (Textures[bucket->tpage].bump && bucket->nVtx)
+			{
+				DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[bucket->tpage].tex));
+				App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, bucket->vtx, bucket->nVtx, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP);
+				bucket->nVtx = 0;
+				bucket->tpage = -1;
+				DrawPrimitiveCnt++;
+			}
+		}
+
+		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
+
+		for (int i = 0; i < 30; i++)
+		{
+			bucket = &Bucket[i];
+
+			if (!Textures[bucket->tpage].bump && bucket->nVtx)
+			{
+				DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[bucket->tpage].tex));
+				App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, bucket->vtx, bucket->nVtx, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP);
+				bucket->nVtx = 0;
+				bucket->tpage = -1;
+				DrawPrimitiveCnt++;
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i < 30; i++)
+		{
+			bucket = &Bucket[i];
+			DrawBucket(bucket);
+		}
+	}
+}
+
+void FindBucket(long tpage, D3DTLBUMPVERTEX** Vpp, long** nVtxpp)
+{
+	TEXTUREBUCKET* bucket;
+	long nVtx, biggest;
+
+	for (int i = 0; i < 30; i++)
+	{
+		bucket = &Bucket[i];
+
+		if (bucket->tpage == tpage && bucket->nVtx < 2048)
+		{
+			*Vpp = &bucket->vtx[bucket->nVtx];
+			*nVtxpp = &bucket->nVtx;
+			return;
+		}
+
+		if (bucket->nVtx > 2048)
+		{
+			DrawBucket(bucket);
+			bucket->tpage = tpage;
+			bucket->nVtx = 0;
+			*Vpp = bucket->vtx;
+			*nVtxpp = &bucket->nVtx;
+			return;
+		}
+	}
+
+	nVtx = 0;
+	biggest = 0;
+
+	for (int i = 0; i < 30; i++)
+	{
+		bucket = &Bucket[i];
+
+		if (bucket->tpage == -1)
+		{
+			bucket->tpage = tpage;
+			*Vpp = bucket->vtx;
+			*nVtxpp = &bucket->nVtx;
+			return;
+		}
+
+		if (bucket->nVtx > nVtx)
+		{
+			nVtx = bucket->nVtx;
+			biggest = i;
+		}
+	}
+
+	bucket = &Bucket[biggest];
+	DrawBucket(bucket);
+	bucket->tpage = tpage;
+	bucket->nVtx = 0;
+	*Vpp = bucket->vtx;
+	*nVtxpp = &bucket->nVtx;
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1216,4 +1536,14 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049A3D0, ProcessMeshData, replace);
 	INJECT(0x0049CEB0, DrawRoomletBounds, replace);
 	INJECT(0x0049B390, aBuildRoomletLights, replace);
+	INJECT(0x0049AD90, aRoomInit, replace);
+	INJECT(0x0049AD70, aResetFogBulbList, replace);
+	INJECT(0x0049AEF0, TriggerFogBulbFX, replace);
+	INJECT(0x0049B1C0, aBuildFXFogBulbList, replace);
+	INJECT(0x0049D220, InitBuckets, replace);
+	INJECT(0x0049D3B0, aSetBumpComponent, replace);
+	INJECT(0x0049D420, aResetBumpComponent, replace);
+	INJECT(0x0049D460, DrawBucket, replace);
+	INJECT(0x0049D750, DrawBuckets, replace);
+	INJECT(0x0049D250, FindBucket, replace);
 }

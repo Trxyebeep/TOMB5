@@ -1463,11 +1463,11 @@ void BinocularCamera(ITEM_INFO* item)
 					Fire = 1;
 
 					if (lara.hk_type_carried & W_SILENCER)
-						SoundEffect(14, 0, 0);
+						SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 					else
 					{
-						SoundEffect(105, 0, 83888140);
-						SoundEffect(68, 0, 0);
+						SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+						SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
 					}
 
 					if (ammo[0] != -1)
@@ -1480,11 +1480,11 @@ void BinocularCamera(ITEM_INFO* item)
 						camera.bounce = -16 - (GetRandomControl() & 0x1F);
 
 						if (lara.hk_type_carried & W_SILENCER)
-							SoundEffect(14, 0, 0);
+							SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 						else
 						{
-							SoundEffect(105, 0, 83888140);
-							SoundEffect(68, 0, 0);
+							SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+							SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
 						}
 					}
 					else
@@ -1501,12 +1501,15 @@ void BinocularCamera(ITEM_INFO* item)
 						Fire = 1;
 
 						if (lara.hk_type_carried & W_SILENCER)
-							SoundEffect(14, 0, 0);
+							SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 						else
 						{
-							SoundEffect(105, 0, 83888140);
-							SoundEffect(68, 0, 0);
+							SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+							SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
 						}
+
+						if (ammo[0] != -1)
+							ammo[0]--;
 					}
 				}
 				else//rapid mode!
@@ -1514,11 +1517,11 @@ void BinocularCamera(ITEM_INFO* item)
 					if (LSHKTimer)
 					{
 						if (lara.hk_type_carried & W_SILENCER)
-							SoundEffect(14, 0, 0);
+							SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 						else
 						{
-							SoundEffect(105, 0, 83888140);
-							SoundEffect(68, 0, 0);
+							SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+							SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
 						}
 					}
 					else
@@ -1527,11 +1530,11 @@ void BinocularCamera(ITEM_INFO* item)
 						Fire = 1;
 
 						if (lara.hk_type_carried & W_SILENCER)
-							SoundEffect(14, 0, 0);
+							SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 						else
 						{
-							SoundEffect(105, 0, 83888140);
-							SoundEffect(68, 0, 0);
+							SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+							SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
 						}
 
 						if (ammo[0] != -1)

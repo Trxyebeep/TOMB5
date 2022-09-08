@@ -644,78 +644,178 @@ void ControlRaisingPlinth(short item_number)
 
 void DrawPortalDoor(ITEM_INFO* item)
 {
-	return;	//what's left: color and pos changing/rotation
-	SPRITESTRUCT* sprite;
+#ifdef GENERAL_FIXES
 	PORTAL_STRUCT* portal;
-	D3DTLVERTEX v[4];
-	TEXTURESTRUCT Tex;
-	SVECTOR pos;
-	float x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
-	float u1, u2, v1, v2;
+	FVECTOR* p;
+	CVECTOR* rgb;
+	CVECTOR* orgb;
+	SPRITESTRUCT* sprite;
+	TEXTURESTRUCT tex;
+	D3DTLVERTEX v[64];
+	D3DTLVERTEX vtx[4];
+	FVECTOR points[64];
+	short* rand;
+	float fx, fy, fz, zv, y, z, s;
+	long r, g, b;
+	short clip[64];
+	short c;
+
+	if (!TriggerActive(item))
+		return;
+
+	portal = (PORTAL_STRUCT*)item->data;
+	rand = portal->Rand;
+	rgb = portal->rgb;
+	orgb = portal->orgb;
+	p = points;
+
+	for (int i = 0; i < 8; i++)
+	{
+		y = float(i * 146 - 1024);
+
+		for (int j = 0; j < 8; j++)
+		{
+			s = fSin((rand[0] << 11) + (GlobalCounter << 11)) * 32;
+			z = float(j * 146 - 512);
+
+			if (!i || i == 7 || !j || j == 7)
+			{
+				//edge vertices
+				p->x = 0;
+				p->y = y;
+				p->z = z;
+				r = 0;
+				g = 0;
+				b = 0;
+			}
+			else
+			{
+				p->x = s;
+
+				if ((i & 1) != (j & 1))
+				{
+					p->y = y - (s / 2);
+					p->z = z + s;
+				}
+				else
+				{
+					p->y = y + (s / 2);
+					p->z = z - s;
+				}
+
+				r = orgb->r - (long)s;
+				g = orgb->g;
+				b = orgb->b + (long)s;
+
+				r -= r >> 2;
+				g -= g >> 2;
+				b -= b >> 2;
+
+				if (r < 0)
+					r = 0;
+
+				if (g < 0)
+					g = 0;
+
+				if (b < 0)
+					b = 0;
+			}
+
+			rgb->r = (char)r;
+			rgb->g = (char)g;
+			rgb->b = (char)b;
+
+			p++;
+			rand++;
+			rgb++;
+			orgb++;
+		}
+	}
 
 	phd_PushMatrix();
 	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
-	portal = (PORTAL_STRUCT*)item->data;
 
-	pos.vx = portal->v1.vx;
-	pos.vy = portal->v1.vy;
-	pos.vz = portal->v1.vz;
-	x1 = aMXPtr[M00] * pos.vx + aMXPtr[M01] * pos.vy + aMXPtr[M02] * pos.vz + aMXPtr[M03];
-	y1 = aMXPtr[M10] * pos.vx + aMXPtr[M11] * pos.vy + aMXPtr[M12] * pos.vz + aMXPtr[M13];
-	z1 = aMXPtr[M20] * pos.vx + aMXPtr[M21] * pos.vy + aMXPtr[M22] * pos.vz + aMXPtr[M23];
+	for (int i = 0; i < 64; i++)
+	{
+		p = &points[i];
+		rgb = &portal->rgb[i];
 
-	pos.vx = portal->v2.vx;
-	pos.vy = portal->v2.vy;
-	pos.vz = portal->v2.vz;
-	x2 = aMXPtr[M00] * pos.vx + aMXPtr[M01] * pos.vy + aMXPtr[M02] * pos.vz + aMXPtr[M03];
-	y2 = aMXPtr[M10] * pos.vx + aMXPtr[M11] * pos.vy + aMXPtr[M12] * pos.vz + aMXPtr[M13];
-	z2 = aMXPtr[M20] * pos.vx + aMXPtr[M21] * pos.vy + aMXPtr[M22] * pos.vz + aMXPtr[M23];
+		fx = aMXPtr[M00] * p->x + aMXPtr[M01] * p->y + aMXPtr[M02] * p->z + aMXPtr[M03];
+		fy = aMXPtr[M10] * p->x + aMXPtr[M11] * p->y + aMXPtr[M12] * p->z + aMXPtr[M13];
+		fz = aMXPtr[M20] * p->x + aMXPtr[M21] * p->y + aMXPtr[M22] * p->z + aMXPtr[M23];
 
-	pos.vx = portal->v3.vx;
-	pos.vy = portal->v3.vy;
-	pos.vz = portal->v3.vz;
-	x3 = aMXPtr[M00] * pos.vx + aMXPtr[M01] * pos.vy + aMXPtr[M02] * pos.vz + aMXPtr[M03];
-	y3 = aMXPtr[M10] * pos.vx + aMXPtr[M11] * pos.vy + aMXPtr[M12] * pos.vz + aMXPtr[M13];
-	z3 = aMXPtr[M20] * pos.vx + aMXPtr[M21] * pos.vy + aMXPtr[M22] * pos.vz + aMXPtr[M23];
+		zv = f_persp / fz;
+		v[i].sx = fx * zv + f_centerx;
+		v[i].sy = fy * zv + f_centery;
+		v[i].sz = fz;
+		v[i].rhw = f_mpersp / fz * f_moneopersp;
+		v[i].color = RGBA(rgb->r, rgb->g, rgb->b, 0xFF);
+		v[i].specular = 0xFF000000;
 
-	pos.vx = portal->v4.vx;
-	pos.vy = portal->v4.vy;
-	pos.vz = portal->v4.vz;
-	x4 = aMXPtr[M00] * pos.vx + aMXPtr[M01] * pos.vy + aMXPtr[M02] * pos.vz + aMXPtr[M03];
-	y4 = aMXPtr[M10] * pos.vx + aMXPtr[M11] * pos.vy + aMXPtr[M12] * pos.vz + aMXPtr[M13];
-	z4 = aMXPtr[M20] * pos.vx + aMXPtr[M21] * pos.vy + aMXPtr[M22] * pos.vz + aMXPtr[M23];
+		if (v[i].sz < f_mznear)
+			c = -128;
+		else
+		{
+			c = 0;
+
+			if (v[i].sx < f_left)
+				c++;
+			else if (v[i].sx > f_right)
+				c += 2;
+
+			if (v[i].sy < f_top)
+				c += 4;
+			else if (v[i].sy > f_bottom)
+				c += 8;
+		}
+
+		clip[i] = c;
+	}
+
 	phd_PopMatrix();
 
-	setXYZ4(v, (long)x1, (long)y1, (long)z1, (long)x2, (long)y2, (long)z2, (long)x3, (long)y3, (long)z3, (long)x4, (long)y4, (long)z4, clipflags);
-
 	sprite = &spriteinfo[objects[MISC_SPRITES].mesh_index + 1];
+	tex.drawtype = 2;
+	tex.flag = 0;
+	tex.tpage = sprite->tpage;
+	
+	tex.u1 = sprite->x1;
+	tex.v1 = sprite->y1;
 
-	v[0].color = 0xFFFFFFFF;
-	v[1].color = 0xFFFFFFFF;
-	v[2].color = 0xFFFFFFFF;
-	v[3].color = 0xFFFFFFFF;
-	v[0].specular = 0xFF000000;
-	v[1].specular = 0xFF000000;
-	v[2].specular = 0xFF000000;
-	v[3].specular = 0xFF000000;
-	Tex.drawtype = 2;
-	Tex.flag = 0;
-	Tex.tpage = sprite->tpage;
+	tex.u2 = sprite->x2;
+	tex.v2 = sprite->y1;
 
-	u1 = sprite->x1;
-	u2 = sprite->x2;
-	v1 = sprite->y1;
-	v2 = sprite->y2;
-	Tex.u1 = u1;
-	Tex.v1 = v1;
-	Tex.u2 = u1;
-	Tex.v2 = v2;
-	Tex.u3 = u2;
-	Tex.v3 = v2;
-	Tex.u4 = u2;
-	Tex.v4 = v1;
+	tex.u3 = sprite->x2;
+	tex.v3 = sprite->y2;
 
-	AddQuadSorted(v, 0, 1, 3, 2, &Tex, 1);
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y2;
+
+	for (int i = 0; i < 64; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			if (!j)
+				c = 0;
+			else if (j == 1)
+				c = 1;
+			else if (j == 2)
+				c = 9;
+			else if (j == 3)
+				c = 8;
+
+			vtx[j].sx = v[i + c].sx;
+			vtx[j].sy = v[i + c].sy;
+			vtx[j].sz = v[i + c].sz;
+			vtx[j].rhw = v[i + c].rhw;
+			vtx[j].color = v[i + c].color;
+			vtx[j].specular = v[i + c].specular;
+			clipflags[j] = clip[i + c];
+		}
+
+		AddQuadSorted(vtx, 0, 1, 2, 3, &tex, 1);
+	}
+#endif
 }
 
 void inject_andrea(bool replace)

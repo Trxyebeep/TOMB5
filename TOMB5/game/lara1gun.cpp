@@ -103,7 +103,7 @@ void RifleHandler(long weapon_type)
 			else
 				TriggerDynamic(pos.x, pos.y, pos.z, 12, r, g, b);
 		}
-		else if(weapon_type == WEAPON_REVOLVER)
+		else if (weapon_type == WEAPON_REVOLVER)
 		{
 			pos.x = (GetRandomControl() & 0xFF) - 128;
 			pos.y = (GetRandomControl() & 0x7F) - 63;

@@ -531,7 +531,6 @@
 #define acm_ready   VAR_U_(0x0057A00C, bool)
 #define audio_counter   VAR_U_(0x0057A018, long)
 #define num_items	VAR_U_(0x00874250, long)
-#define AnimTextureRanges	VAR_U_(0x00D9ADA0, short*)
 #define nAnimUVRanges	VAR_U_(0x0087495C, long)
 #define LevelFILEptr	VAR_U_(0x00875164, FILE*)
 #define samples_buffer	VAR_U_(0x0086BEDC, char*)
@@ -563,6 +562,7 @@
 #define save_counter	VAR_U_(0x008786EC, long)
 #define NumLevelFogBulbs	VAR_U_(0x007DFFD8, long)
 #define NumActiveFogBulbs	VAR_U_(0x007EE0C4, long)
+#define nFXFogBulbs	VAR_U_(0x007EE0D8, long)
 #define D3DCameraMatrix	VAR_U_(0x0057A0B0, D3DMATRIX)
 #define D3DMW2VMatrix	VAR_U_(0x0057A0F0, D3DMATRIX)
 #define DEL_playingamefmv	VAR_U_(0x0051CE24, char)
@@ -622,6 +622,9 @@
 #define level_fp	VAR_U_(0x00875164, FILE*)
 #define CompressedData	VAR_U_(0x00875148, char*)
 #define FileCompressed	VAR_U_(0x005165C8, long)
+#define aranges	VAR_U_(0x00D9ADA0, short*)
+#define AnimatingTexturesVOffset	VAR_U_(0x008751BC, short)
+#define nClippedPolys	VAR_U_(0x00D9AB10, long)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -737,7 +740,7 @@
 #define StarFieldColors	ARRAY_(0x00C713E4, long, [256])
 #define draw_room_list	ARRAY_(0x0051CB5C, long, [128])
 #define draw_rooms	ARRAY_(0x00E6D760, short, [100])
-#define MappedControls	ARRAY_(0x00516AF0, long, [32])
+#define jLayout	ARRAY_(0x00516AF0, long, [32])
 #define SunLights	ARRAY_(0x00879538, SUNLIGHT_STRUCT, [16])
 #define PointLights	ARRAY_(0x00878E28, POINTLIGHT_STRUCT, [64])
 #define FogBulbs	ARRAY_(0x0087AD18, FOGBULB_STRUCT, [16])
@@ -747,12 +750,13 @@
 #define GermanKeyboard	ARRAY_(0x00516C84, char*, [272])
 #define KeyboardButtons	ARRAY_(0x005170C4, char*, [272])
 #define JoyStickButtons	ARRAY_(0x00517504, char*, [16])
-#define DefaultControls	ARRAY_(0x00516B70, long, [32])
+#define defaultJLayout	ARRAY_(0x00516B70, long, [32])
 #define cd_flags	ARRAY_(0x00EEEA40, char, [136])
 #define water_buffer	ARRAY_(0x0056ED14, float, [8712])
 #define Textures	ARRAY_(0x00D99DA8, TEXTURE, [64])
 #define SortList	ARRAY_(0x00BA4390, SORTLIST*, [65536])
 #define Bucket	ARRAY_(0x0057A510, TEXTUREBUCKET, [30])
+#define BucketSpecular	ARRAY_(0x007EB068, long, [2080])
 #define UWdust	ARRAY_(0x00C717E8, UWEFFECTS, [256])
 #define Rain	ARRAY_(0x00C72BE8, RAINDROPS, [2048])
 #define Snow	ARRAY_(0x00C7CBE8, SNOWFLAKE, [2048])
@@ -763,11 +767,13 @@
 #define RoomletFogBulbs	ARRAY_(0x007DFC18, FOGBULB_STRUCT, [16])
 #define ActiveFogBulbs	ARRAY_(0x007E7FF0, FOGBULB_STRUCT, [64])
 #define fog_bulbs	ARRAY_(0x007ED0F8, FOGBULB, [64])
+#define FXFogBulbs	ARRAY_(0x007EAF78, FOGBULB_STRUCT, [4])
 #define MonoScreen	ARRAY_(0x008BBD68, MONOSCREEN_STRUCT, [5])
 #define aBoundingBox	ARRAY_(0x00921618, float, [24])
 #define SortBuffer	ARRAY_(0x00923FAC, char, [])
 #define StreamHeaders	ARRAY_(0x00579E50, ACMSTREAMHEADER, [4])
 #define NotifyEventHandles	ARRAY_(0x00579FA0, HANDLE, [2])
+#define AnimatingTexturesV	ARRAY_(0x0087435C, float, [16][8][3])
 
 /****************/
 //registry
