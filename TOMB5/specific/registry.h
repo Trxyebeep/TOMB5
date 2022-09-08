@@ -21,3 +21,4 @@ bool REG_ReadDouble(char* SubKeyName, double& value, double defaultValue);
 bool REG_ReadVoid(char* SubKeyName, void* value, long size, void* defaultValue);
 bool LoadSettings();
 void SaveSettings();
+bool SaveSetup(HWND hDlg);
