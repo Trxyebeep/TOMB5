@@ -278,25 +278,25 @@ long S_UpdateInput()
 
 	if (ControlMethod == 1)
 	{
-		if (Key(MappedControls[3] + 256))
+		if (Key(jLayout[3] + 256))
 			linput |= IN_JUMP;
 
-		if (Key(MappedControls[4] + 256))
+		if (Key(jLayout[4] + 256))
 			linput |= IN_SELECT | IN_ACTION;
 
-		if (Key(MappedControls[5] + 256))
+		if (Key(jLayout[5] + 256))
 			linput |= IN_DRAW;
 
-		if (Key(MappedControls[1] + 256))
+		if (Key(jLayout[1] + 256))
 			linput |= IN_SPRINT;
 
-		if (Key(MappedControls[2] + 256))
+		if (Key(jLayout[2] + 256))
 			linput |= IN_WALK;
 
-		if (Key(MappedControls[0] + 256))
+		if (Key(jLayout[0] + 256))
 			linput |= IN_DUCK;
 
-		if (Key(MappedControls[6] + 256))
+		if (Key(jLayout[6] + 256))
 			flag = 1;
 	}
 
@@ -345,13 +345,13 @@ long S_UpdateInput()
 
 	if (ControlMethod == 1)
 	{
-		if (Key(MappedControls[7] + 256))
+		if (Key(jLayout[7] + 256))
 			linput |= IN_LOOK;
 
-		if (Key(MappedControls[8] + 256))
+		if (Key(jLayout[8] + 256))
 			linput |= IN_ROLL;
 
-		if (Key(MappedControls[9] + 256))
+		if (Key(jLayout[9] + 256))
 			linput |= IN_OPTION;
 	}
 

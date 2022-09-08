@@ -2092,7 +2092,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004BDCC0	+	REG_ReadString
 0x004BDD90	+	OpenRegistry
 0x004BDE00	+	CloseRegistry
-0x004BDE20		LoadSettings
+0x004BDE20	+	LoadSettings
 0x004BE4E0		SaveSetup
 0x004BE7E0		SaveSettings
 
