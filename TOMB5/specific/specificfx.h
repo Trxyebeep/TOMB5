@@ -20,6 +20,7 @@ void OutputSky();
 void DoScreenFade();
 void ClipCheckPoint(D3DTLVERTEX* v, float x, float y, float z, short* clip);
 void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long col);
+void DrawBinoculars();
 
 #define aDrawWreckingBall	( (void(__cdecl*)(ITEM_INFO*, long)) 0x004CF1B0 )
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )

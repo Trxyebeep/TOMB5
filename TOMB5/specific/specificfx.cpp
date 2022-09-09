@@ -64,6 +64,26 @@ long ShadowTable[NUM_TRIS * 3] =	//num of triangles * 3 points
 14, 10, 11
 };
 
+uchar TargetGraphColTab[48] =
+{
+	0, 0, 255,
+	0, 0, 255,
+	255, 255, 0,
+	255, 255, 0,
+	0, 0, 255,
+	0, 0, 255,
+	255, 255, 0,
+	255, 255, 0,
+	0, 0, 255,
+	0, 0, 255,
+	0, 0, 255,
+	0, 0, 255,
+	255, 255, 0,
+	255, 255, 0,
+	255, 255, 0,
+	255, 255, 0
+};
+
 #ifdef SMOOTH_SHADOWS
 static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 {
@@ -2290,6 +2310,215 @@ void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long c
 	}
 }
 
+#define targetMeshP	VAR_U_(0x00E6E460, MESH_DATA*)
+#define binocsMeshP	VAR_U_(0x00E6D744, MESH_DATA*)
+
+void DrawBinoculars()
+{
+	MESH_DATA* mesh;
+	D3DTLVERTEX* v;
+	TEXTURESTRUCT* tex;
+	D3DTLVERTEX vtx[256];
+	D3DTLVERTEX irVtx[4];
+	TEXTURESTRUCT irTex;
+	short* clip;
+	short* quad;
+	short* tri;
+	ushort drawbak;
+	short c;
+
+	if (LaserSight)
+		mesh = targetMeshP;
+	else
+		mesh = binocsMeshP;
+
+	v = (D3DTLVERTEX*)mesh->aVtx;
+	clip = clipflags;
+
+	for (int i = 0; i < mesh->nVerts; i++)
+	{
+		c = 0;
+		vtx[i] = v[i];
+		vtx[i].sx = (vtx[i].sx * float(phd_winxmax / 512.0F)) + f_centerx;
+		vtx[i].sy = (vtx[i].sy * float(phd_winymax / 240.0F)) + f_centery;
+
+		if (vtx[i].sx < f_left)
+			c = 1;
+		else if (vtx[i].sx > f_right)
+			c = 2;
+
+		if (vtx[i].sy < f_top)
+			c += 4;
+		else if (vtx[i].sy > f_bottom)
+			c += 8;
+
+		*clip++ = c;
+	}
+
+	quad = mesh->gt4;
+	tri = mesh->gt3;
+
+	if (LaserSight || SniperOverlay)
+	{
+		for (int i = 0; i < mesh->ngt4; i++, quad += 6)
+		{
+			tex = &textinfo[quad[4] & 0x7FFF];
+			drawbak = tex->drawtype;
+			tex->drawtype = 0;
+
+			if (quad[5] & 1)
+			{
+				vtx[quad[0]].color = 0xFF000000;
+				vtx[quad[1]].color = 0xFF000000;
+				vtx[quad[2]].color = 0;
+				vtx[quad[3]].color = 0;
+				tex->drawtype = 3;
+			}
+
+			AddQuadSorted(vtx, quad[0], quad[1], quad[2], quad[3], tex, 1);
+			tex->drawtype = drawbak;
+		}
+
+		for (int i = 0, j = 0; i < mesh->ngt3; i++, tri += 5)
+		{
+			tex = &textinfo[tri[3] & 0x7FFF];
+			drawbak = tex->drawtype;
+			tex->drawtype = 0;
+
+			if (tri[4] & 1)
+			{
+				vtx[tri[0]].color = TargetGraphColTab[j] << 24;
+				vtx[tri[1]].color = TargetGraphColTab[j + 1] << 24;
+				vtx[tri[2]].color = TargetGraphColTab[j + 2] << 24;
+				tex->drawtype = 3;
+				j += 3;
+			}
+
+			AddTriSorted(vtx, tri[0], tri[1], tri[2], tex, 1);
+			tex->drawtype = drawbak;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < mesh->ngt4; i++, quad += 6)
+		{
+			tex = &textinfo[quad[4] & 0x7FFF];
+			drawbak = tex->drawtype;
+			tex->drawtype = 0;
+
+			if (gfCurrentLevel == 9)
+			{
+				if (i < 14)
+				{
+					if (quad[5] & 1)
+					{
+						vtx[quad[0]].color = 0xFF000000;
+						vtx[quad[1]].color = 0xFF000000;
+						vtx[quad[2]].color = 0xFF000000;
+						vtx[quad[3]].color = 0xFF000000;
+						tex->drawtype = 3;
+					}
+				}
+				else
+				{
+					if (quad[5] & 1)
+					{
+						vtx[quad[0]].color = 0;
+						vtx[quad[1]].color = 0;
+						vtx[quad[2]].color = 0xFF000000;
+						vtx[quad[3]].color = 0xFF000000;
+						tex->drawtype = 3;
+					}
+				}
+			}
+			else
+			{
+				if (quad[5] & 1)
+				{
+					vtx[quad[0]].color = 0xFF000000;
+					vtx[quad[1]].color = 0xFF000000;
+					vtx[quad[2]].color = 0;
+					vtx[quad[3]].color = 0;
+					tex->drawtype = 3;
+				}
+			}
+
+			AddQuadSorted(vtx, quad[0], quad[1], quad[2], quad[3], tex, 1);
+			tex->drawtype = drawbak;
+		}
+
+		for (int i = 0; i < mesh->ngt3; i++, tri += 5)
+		{
+			tex = &textinfo[tri[3] & 0x7FFF];
+			drawbak = tex->drawtype;
+			tex->drawtype = 0;
+
+			if (gfCurrentLevel < 11)
+			{
+				if (tri[4] & 1)
+				{
+					vtx[tri[0]].color = 0;
+					vtx[tri[1]].color = 0xFF000000;
+					vtx[tri[2]].color = 0;
+					tex->drawtype = 3;
+				}
+			}
+			else
+			{
+				if (i < mesh->ngt3 - 2)
+				{
+					if (tri[4] & 1)
+					{
+						vtx[tri[0]].color = 0xFF000000;
+						vtx[tri[1]].color = 0xFF000000;
+						vtx[tri[2]].color = 0;
+						tex->drawtype = 3;
+					}
+				}
+				else if (i == mesh->ngt3 - 2)
+				{
+					if (tri[4] & 1)
+					{
+						vtx[tri[0]].color = 0;
+						vtx[tri[1]].color = 0;
+						vtx[tri[2]].color = 0xFF000000;
+						tex->drawtype = 3;
+					}
+				}
+				else
+				{
+					if (tri[4] & 1)
+					{
+						vtx[tri[0]].color = 0;
+						vtx[tri[1]].color = 0xFF000000;
+						vtx[tri[2]].color = 0;
+						tex->drawtype = 3;
+					}
+				}
+			}
+
+			AddTriSorted(vtx, tri[0], tri[1], tri[2], tex, 1);
+			tex->drawtype = drawbak;
+		}
+
+		if (InfraRed)
+		{
+			aSetXY4(irVtx, 0, 0, phd_winxmax, 0, 0, phd_winymax, phd_winxmax, phd_winymax, f_mznear + 1, clipflags);
+			irVtx[0].color = 0x64FF0000;
+			irVtx[1].color = 0x64FF0000;
+			irVtx[2].color = 0x64FF0000;
+			irVtx[3].color = 0x64FF0000;
+			irVtx[0].specular = 0xFF000000;
+			irVtx[1].specular = 0xFF000000;
+			irVtx[2].specular = 0xFF000000;
+			irVtx[3].specular = 0xFF000000;
+			irTex.drawtype = 3;
+			irTex.tpage = 0;
+			AddQuadSorted(irVtx, 0, 1, 3, 2, &irTex, 1);
+		}
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2309,4 +2538,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CA770, DoScreenFade, replace);
 	INJECT(0x004C6BA0, ClipCheckPoint, replace);
 	INJECT(0x004CD750, aTransformPerspSV, replace);
+	INJECT(0x004C36B0, DrawBinoculars, replace);
 }
