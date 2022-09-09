@@ -717,6 +717,7 @@
 #define first_hair	ARRAY_(0x00E5BF60, long, [2])
 #define aMappedEnvUV	ARRAY_(0x00920E18, ENVUV, [256])
 #define aVertexBuffer	ARRAY_(0x007DFFE8, D3DTLVERTEX, [1024])
+#define scratchpad	ARRAY_(0x00E912E0, char, [1024])
 #define old_status_flags	ARRAY_(0x00E7F000, char, [32])
 #define old_status_flags2	ARRAY_(0x00E7F040, ushort, [32])
 #define cutseq_resident_addresses	ARRAY_(0x00E7EF20, char*, [47])

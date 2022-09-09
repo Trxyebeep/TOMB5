@@ -2519,6 +2519,54 @@ void DrawBinoculars()
 	}
 }
 
+void aDrawWreckingBall(ITEM_INFO* item, long shade)
+{
+	SPRITESTRUCT* sprite;
+	SVECTOR* vec;
+	TEXTURESTRUCT tex;
+	long x, z, s;
+
+	aSetViewMatrix();
+	vec = (SVECTOR*)&scratchpad[0];
+	s = (400 * shade) >> 7;
+	x = -s;
+
+	for (int i = 0; i < 3; i++)
+	{
+		z = -s;
+
+		for (int j = 0; j < 3; j++)
+		{
+			vec->vx = (short)x;
+			vec->vy = -2;
+			vec->vz = (short)z;
+			vec++;
+			z += s;
+		}
+
+		x += s;
+	}
+
+	if (shade < 100)
+		shade = 100;
+
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 11];
+	vec = (SVECTOR*)&scratchpad[0];
+	aTransformPerspSV(vec, aVertexBuffer, clipflags, 9, shade << 24);
+
+	tex.drawtype = 3;
+	tex.tpage = sprite->tpage;
+	tex.u1 = sprite->x1;
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x2;
+	tex.v2 = sprite->y1;
+	tex.u3 = sprite->x2;
+	tex.v3 = sprite->y2;
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y2;
+	AddQuadSorted(aVertexBuffer, 0, 2, 8, 6, &tex, 1);
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2539,4 +2587,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C6BA0, ClipCheckPoint, replace);
 	INJECT(0x004CD750, aTransformPerspSV, replace);
 	INJECT(0x004C36B0, DrawBinoculars, replace);
+	INJECT(0x004CF1B0, aDrawWreckingBall, replace);
 }

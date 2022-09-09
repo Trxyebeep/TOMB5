@@ -21,8 +21,8 @@ void DoScreenFade();
 void ClipCheckPoint(D3DTLVERTEX* v, float x, float y, float z, short* clip);
 void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long col);
 void DrawBinoculars();
+void aDrawWreckingBall(ITEM_INFO* item, long shade);
 
-#define aDrawWreckingBall	( (void(__cdecl*)(ITEM_INFO*, long)) 0x004CF1B0 )
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
