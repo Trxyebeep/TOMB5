@@ -160,6 +160,28 @@ void aTransformClip_D3DV(D3DVECTOR* vec, D3DTLVERTEX* v, long nVtx, long nClip)
 	}
 }
 
+void aTransform_D3DV(D3DVECTOR* vec, D3DTLVERTEX* v, long nVtx)
+{
+	D3DMATRIX mx;
+	float x, y, z, zv;
+
+	mx = D3DMView;
+
+	for (int i = 0; i < nVtx; i++)
+	{
+		x = mx._11 * vec->x + mx._21 * vec->y + mx._31 * vec->z + mx._41;
+		y = mx._12 * vec->x + mx._22 * vec->y + mx._32 * vec->z + mx._42;
+		z = mx._13 * vec->x + mx._23 * vec->y + mx._33 * vec->z + mx._43;
+		zv = f_mpersp / z;
+		v->sx = zv * x + f_centerx;
+		v->sy = zv * y + f_centery;
+		v->sz = z;
+		v->rhw = zv * f_moneopersp;
+		vec++;
+		v++;
+	}
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -167,4 +189,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x00491BE0, aUpdate, replace);
 	INJECT(0x00491950, aInitWater, replace);
 	INJECT(0x004914C0, aTransformClip_D3DV, replace);
+	INJECT(0x004913B0, aTransform_D3DV, replace);
 }

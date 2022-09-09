@@ -1634,7 +1634,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00491360		aInit
 0x00491380		aWinString
-0x004913B0		aTransform_D3DV
+0x004913B0	+	aTransform_D3DV
 0x004914C0	+	aTransformClip_D3DV
 0x004916C0	+	aLoadRoomStream
 0x004917D0	+	aFixUpRoom
