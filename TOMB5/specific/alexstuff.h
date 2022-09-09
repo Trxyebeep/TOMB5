@@ -7,7 +7,7 @@ void aLoadRoomStream();
 void aFixUpRoom(ROOM_INFO* r, char* s);
 void aUpdate();
 void aInitWater();
+void aTransformClip_D3DV(D3DVECTOR* vec, D3DTLVERTEX* v, long nVtx, long nClip);
 
 #define aFetchCutData	( (char*(__cdecl*)(long)) 0x00491F60 )
 #define DoCredits	( (long(__cdecl*)()) 0x004927C0 )
-#define aTransformClip_D3DV	( (void(__cdecl*)(D3DVECTOR*, D3DTLVERTEX*, long, long)) 0x004914C0 )

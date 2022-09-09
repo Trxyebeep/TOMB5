@@ -625,6 +625,8 @@
 #define aranges	VAR_U_(0x00D9ADA0, short*)
 #define AnimatingTexturesVOffset	VAR_U_(0x008751BC, short)
 #define nClippedPolys	VAR_U_(0x00D9AB10, long)
+#define targetMeshP	VAR_U_(0x00E6E460, MESH_DATA*)
+#define binocsMeshP	VAR_U_(0x00E6D744, MESH_DATA*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 

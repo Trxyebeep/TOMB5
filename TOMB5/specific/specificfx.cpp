@@ -2310,9 +2310,6 @@ void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long c
 	}
 }
 
-#define targetMeshP	VAR_U_(0x00E6E460, MESH_DATA*)
-#define binocsMeshP	VAR_U_(0x00E6D744, MESH_DATA*)
-
 void DrawBinoculars()
 {
 	MESH_DATA* mesh;

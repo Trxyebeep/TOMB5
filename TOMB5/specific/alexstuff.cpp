@@ -109,10 +109,62 @@ void aInitWater()
 	water_buffer_calced = 0;
 }
 
+void aTransformClip_D3DV(D3DVECTOR* vec, D3DTLVERTEX* v, long nVtx, long nClip)
+{
+	D3DMATRIX mx;
+	short* clip;
+	float x, y, z, zv;
+	short c;
+
+	mx = D3DMView;
+	clip = &clipflags[nClip];
+
+	for (int i = 0; i < nVtx; i++)
+	{
+		c = 0;
+		x = mx._11 * vec->x + mx._21 * vec->y + mx._31 * vec->z + mx._41;
+		y = mx._12 * vec->x + mx._22 * vec->y + mx._32 * vec->z + mx._42;
+		z = mx._13 * vec->x + mx._23 * vec->y + mx._33 * vec->z + mx._43;
+
+		if (z < f_mznear)
+			c = -128;
+		else
+		{
+			zv = f_mpersp / z;
+
+			if (v->sz > FogEnd)
+			{
+				v->sz = f_zfar;
+				c = 256;
+			}
+
+			v->sx = zv * x + f_centerx;
+			v->sy = zv * y + f_centery;
+			v->sz = z;
+			v->rhw = zv * f_moneopersp;
+
+			if (v->sx < phd_winxmin)
+				c++;
+			else if (v->sx > phd_winxmax)
+				c += 2;
+
+			if (v->sy < phd_winymin)
+				c += 4;
+			else if (v->sy > phd_winymax)
+				c += 8;
+		}
+
+		*clip++ = c;
+		vec++;
+		v++;
+	}
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
 	INJECT(0x004917D0, aFixUpRoom, replace);
 	INJECT(0x00491BE0, aUpdate, replace);
 	INJECT(0x00491950, aInitWater, replace);
+	INJECT(0x004914C0, aTransformClip_D3DV, replace);
 }
