@@ -478,37 +478,51 @@ void DrawLaserSightSprite()
 {
 	SPRITESTRUCT* sprite;
 	D3DTLVERTEX v[4];
-	TEXTURESTRUCT Tex;
-	long* TempIDK;
-	short* TempDist;
-	short* TempXY;
-	float zv, u1, u2, v1, v2;
-	long results[3];
+	TEXTURESTRUCT tex;
 #ifdef GENERAL_FIXES
-	short size;
+	FVECTOR vec;
+#else
+	PHD_VECTOR vec;
 #endif
+	long* Z;
+	short* pos;
+	short* XY;
+	float zv;
+	short size;
 
+	XY = (short*)&scratchpad[0];
+	Z = (long*)&scratchpad[256];
+	pos = (short*)&scratchpad[512];
 	phd_PushMatrix();
 	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
-	TempDist = (short*)&UNK_EffectDistance;
-	TempXY = (short*)&UNK_EffectXY;
-	TempIDK = (long*)&UNK_00E913E0;
-	TempDist[0] = (short)(LaserSightX - lara_item->pos.x_pos);
-	TempDist[1] = (short)(LaserSightY - lara_item->pos.y_pos);
-	TempDist[2] = (short)(LaserSightZ - lara_item->pos.z_pos);
-	results[0] = phd_mxptr[M00] * TempDist[0] + phd_mxptr[M01] * TempDist[1] + phd_mxptr[M02] * TempDist[2] + phd_mxptr[M03];
-	results[1] = phd_mxptr[M10] * TempDist[0] + phd_mxptr[M11] * TempDist[1] + phd_mxptr[M12] * TempDist[2] + phd_mxptr[M13];
-	results[2] = phd_mxptr[M20] * TempDist[0] + phd_mxptr[M21] * TempDist[1] + phd_mxptr[M22] * TempDist[2] + phd_mxptr[M23];
-	zv = f_persp / (float)results[2];
-	TempXY[0] = short(float(results[0] * zv + f_centerx));
-	TempXY[1] = short(float(results[1] * zv + f_centery));
-	TempIDK[0] = results[2] >> 14;
+	pos[0] = short(LaserSightX - lara_item->pos.x_pos);
+	pos[1] = short(LaserSightY - lara_item->pos.y_pos);
+	pos[2] = short(LaserSightZ - lara_item->pos.z_pos);
+
+#ifdef GENERAL_FIXES
+	vec.x = aMXPtr[M00] * pos[0] + aMXPtr[M01] * pos[1] + aMXPtr[M02] * pos[2] + aMXPtr[M03];
+	vec.y = aMXPtr[M10] * pos[0] + aMXPtr[M11] * pos[1] + aMXPtr[M12] * pos[2] + aMXPtr[M13];
+	vec.z = aMXPtr[M20] * pos[0] + aMXPtr[M21] * pos[1] + aMXPtr[M22] * pos[2] + aMXPtr[M23];
+	zv = f_persp / vec.z;
+	XY[0] = short(float(vec.x * zv + f_centerx));
+	XY[1] = short(float(vec.y * zv + f_centery));
+	Z[0] = (long)vec.z;
+#else
+	vec.x = phd_mxptr[M00] * pos[0] + phd_mxptr[M01] * pos[1] + phd_mxptr[M02] * pos[2] + phd_mxptr[M03];
+	vec.y = phd_mxptr[M10] * pos[0] + phd_mxptr[M11] * pos[1] + phd_mxptr[M12] * pos[2] + phd_mxptr[M13];
+	vec.z = phd_mxptr[M20] * pos[0] + phd_mxptr[M21] * pos[1] + phd_mxptr[M22] * pos[2] + phd_mxptr[M23];
+	zv = f_persp / (float)vec.z;
+	XY[0] = short(float(vec.x * zv + f_centerx));
+	XY[1] = short(float(vec.y * zv + f_centery));
+	Z[0] = vec.z >> 14;
+#endif
+
 	phd_PopMatrix();
 
 #ifdef GENERAL_FIXES	//restore the target sprite
 	if (LaserSightCol)
 	{
-		size = (GlobalCounter & 7) + 16;// PSX ASM does + 8, but it's way too small
+		size = (GlobalCounter & 7) + 16;
 		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 18];
 	}
 	else
@@ -516,16 +530,15 @@ void DrawLaserSightSprite()
 		size = 4;
 		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
 	}
-
-	setXY4(v, TempXY[0] - size, TempXY[1] - size, TempXY[0] + size, TempXY[1] - size, TempXY[0] - size,
-		TempXY[1] + size, TempXY[0] + size, TempXY[1] + size, (long)f_mznear, clipflags);
 #else
+	size = 2;
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
-	setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2,
-		TempXY[0] + 2, TempXY[1] + 2, (long)f_mznear, clipflags);
 #endif
 
-	v[0].color = LaserSightCol ? 0x0000FF00 : 0x00FF0000;//if LaserSightCol is on, it turns green
+	setXY4(v, XY[0] - size, XY[1] - size, XY[0] + size, XY[1] - size, XY[0] - size,
+		XY[1] + size, XY[0] + size, XY[1] + size, (long)f_mznear, clipflags);
+
+	v[0].color = LaserSightCol ? 0x0000FF00 : 0x00FF0000;
 	v[1].color = v[0].color;
 	v[2].color = v[0].color;
 	v[3].color = v[0].color;
@@ -533,25 +546,22 @@ void DrawLaserSightSprite()
 	v[1].specular = 0xFF000000;
 	v[2].specular = 0xFF000000;
 	v[3].specular = 0xFF000000;
-	u1 = sprite->x2;
-	u2 = sprite->x1;
-	v1 = sprite->y2;
-	v2 = sprite->y1;
-	Tex.drawtype = 2;
-	Tex.flag = 0;
-	Tex.tpage = sprite->tpage;
-	Tex.u1 = u1;
-	Tex.v1 = v1;
-	Tex.u2 = u2;
-	Tex.v2 = v1;
-	Tex.u3 = u2;
-	Tex.v3 = v2;
-	Tex.u4 = u1;
-	Tex.v4 = v2;
+
+	tex.drawtype = 2;
+	tex.flag = 0;
+	tex.tpage = sprite->tpage;
+	tex.u1 = sprite->x2;
+	tex.v1 = sprite->y2;
+	tex.u2 = sprite->x1;
+	tex.v2 = sprite->y2;
+	tex.u3 = sprite->x1;
+	tex.v3 = sprite->y1;
+	tex.u4 = sprite->x2;
+	tex.v4 = sprite->y1;
 #ifdef GENERAL_FIXES
-	AddQuadSorted(v, 0, 1, 3, 2, &Tex, 0);
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 0);
 #else
-	AddQuadSorted(v, 0, 1, 2, 3, &Tex, 0);
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
 #endif
 	LaserSightCol = 0;
 	LaserSightActive = 0;

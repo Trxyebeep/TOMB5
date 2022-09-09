@@ -799,6 +799,3 @@
 
 //unknowns
 #define UNK_00E916F0	VAR_U_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init
-#define UNK_EffectDistance	VAR_U_(0x00E914E0, short*)//used in a bunch of effect draw functions, seems to hold effect pos - lara pos values.
-#define UNK_EffectXY	VAR_U_(0x00E912E0, short*)//has X and Y values for drawing effects???
-#define UNK_00E913E0	VAR_U_(0x00E913E0, long*)
