@@ -3,6 +3,10 @@
 
 void inject_lara2gun(bool replace);
 
+#ifdef GENERAL_FIXES
+extern ushort LHolster;
+#endif
+
 void ready_pistols(long weapon_type);
 void draw_pistol_meshes(long weapon_type);
 void undraw_pistol_mesh_left(long weapon_type);

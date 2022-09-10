@@ -58,6 +58,7 @@
 #include "items.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
+#include "lara2gun.h"
 #endif
 
 void InitialiseLara(long restore)
@@ -91,7 +92,7 @@ void InitialiseLara(long restore)
 	lara.poisoned = 0;
 	lara.water_surface_dist = 100;
 #ifdef GENERAL_FIXES
-	tomb5_save.LHolster = LARA_HOLSTERS_PISTOLS;
+	LHolster = LARA_HOLSTERS_PISTOLS;
 #endif
 	lara.holster = LARA_HOLSTERS_PISTOLS;
 	lara.location = -1;
