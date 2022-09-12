@@ -4,6 +4,7 @@
 #include "profiler.h"
 #include "drawroom.h"
 #include "winmain.h"
+#include "file.h"
 
 void aLoadRoomStream()
 {
@@ -203,7 +204,7 @@ char* aReadCutData(long n, FILE* file)
 	if (!n)
 		return 0;
 
-	//cutseq file is put in tsv_buffer beforehand!
+	//cutseq file header is put in tsv_buffer beforehand!
 	offset = *(long*)&tsv_buffer[n * 2 * sizeof(long)];
 	size = *(long*)&tsv_buffer[n * 2 * sizeof(long) + 4];
 	SEEK(file, offset, SEEK_SET);
@@ -225,6 +226,58 @@ long aCalcDepackBufferSz(char* data)
 	return size + (sizeof(PACKNODE) * 2);
 }
 
+void aMakeCutsceneResident(long n1, long n2, long n3, long n4)
+{
+	FILE* file;
+	char* d1;
+	char* d2;
+	char* d3;
+	char* d4;
+
+	if (!n1 && !n2 && !n3 && !n4)
+		return;
+
+	file = FileOpen("DATA\\CUTSEQ.BIN");
+
+	if (!file)
+		return;
+
+	READ(tsv_buffer, 1, 2048, file);	//whole header in tsv_buffer
+	memset(cutseq_resident_addresses, 0, sizeof(cutseq_resident_addresses));
+	lastcamnum = -1;
+	GLOBAL_playing_cutseq = 0;
+	cutseq_trig = 0;
+	d1 = aReadCutData(n1, file);
+	d2 = aReadCutData(n2, file);
+	d3 = aReadCutData(n3, file);
+	d4 = aReadCutData(n4, file);
+	CLOSE(file);
+
+	if (d1)
+		aCalcDepackBufferSz(d1);
+
+	if (d2)
+		aCalcDepackBufferSz(d2);
+
+	if (d3)
+		aCalcDepackBufferSz(d3);
+
+	if (d4)
+		aCalcDepackBufferSz(d4);
+
+	if (n1)
+		cutseq_resident_addresses[n1] = d1;
+
+	if (n2)
+		cutseq_resident_addresses[n2] = d2;
+
+	if (n3)
+		cutseq_resident_addresses[n3] = d3;
+
+	if (n4)
+		cutseq_resident_addresses[n4] = d4;
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -237,4 +290,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x00491380, aWinString, replace);
 	INJECT(0x00491CC0, aReadCutData, replace);
 	INJECT(0x00491D30, aCalcDepackBufferSz, replace);
+	INJECT(0x00491DA0, aMakeCutsceneResident, replace);
 }

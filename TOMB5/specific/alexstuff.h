@@ -13,6 +13,7 @@ void aInit();
 void aWinString(long x, long y, char* string);
 char* aReadCutData(long n, FILE* file);
 long aCalcDepackBufferSz(char* data);
+void aMakeCutsceneResident(long n1, long n2, long n3, long n4);
 
 #define aFetchCutData	( (char*(__cdecl*)(long)) 0x00491F60 )
 #define DoCredits	( (long(__cdecl*)()) 0x004927C0 )
