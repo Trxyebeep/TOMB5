@@ -10,6 +10,9 @@
 
 const char* CreditNames[] =
 {
+#ifdef GENERAL_FIXES
+	"nobody",
+#endif
 	"Derek Leigh-Gilchrist",
 	"Martin Gibbins",
 	"Tom Scutt",
@@ -44,6 +47,71 @@ const char* CreditNames[] =
 #pragma warning(push)
 #pragma warning(disable : 4838)
 #pragma warning(disable : 4309)
+#ifdef GENERAL_FIXES
+short CreditGroups[15] =
+{
+	0,
+	STR_PROGRAMMERS,
+	STR_AI_PROGRAMMERS,
+	STR_ADDITIONAL_PROGRAMMERS,
+	STR_ANIMATORS,
+	STR_LEVEL_DESIGNERS,
+	STR_FMV_SEQUENCES,
+	STR_MUSIC_AND_SOUND_FX,
+	STR_ADDITIONAL_SOUND_FX,
+	STR_ORIGINAL_STORY,
+	STR_SCRIPT,
+	STR_PRODUCER,
+	STR_QA,
+	STR_EXECUTIVE_PRODUCERS,
+	0
+};
+
+const char* CreditsTable[] =
+{
+	"%01",
+	"!05", "!02", "!01", "0",
+
+	"%02",
+	"!03", "0",
+
+	"%03",
+	"!04", "!06", "!07", "0",
+
+	"%04",
+	"!09", "!08", "0",
+
+	"%05",
+	"!11", "!12", "!13", "!10", "0",
+
+	"%06",
+	"!26", "0",
+
+	"%07",
+	"!14", "0",
+
+	"%08",
+	"!15", "0",
+
+	"%09",
+	"!12", "!13", "0",
+
+	"%10",
+	"!13", "0",
+
+	"%11",
+	"!16", "0",
+
+	"%12",
+	"!28", "!29", "!17", "!18", "!19", "!20", "!21", "!22", "!25", "0",
+
+	"%13",
+	"!23", "!24", "0",
+
+	"Tomb Raider V Community Edition",
+	"Troye", "ChocolateFan"
+};
+#else
 //0x8000 = "category"/use string, otherwise use index from above names^
 //-1 = empty space
 //-2 = end of list
@@ -106,6 +174,7 @@ short CreditsTable[] =
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 	-2
 };
+#endif
 #pragma warning(pop)
 
 void aLoadRoomStream()
@@ -404,9 +473,67 @@ char* aFetchCutData(long n)
 
 #pragma warning(push)
 #pragma warning(disable : 4244)
+#ifdef GENERAL_FIXES
+
+long DoCredits()
+{
+	const char* s;
+	static ulong StartPos = 0;
+	static long init = 0;
+	long y, num_drawn;
+
+	num_drawn = 0;
+
+	if (!init)
+	{
+		StartPos = font_height + phd_winheight;
+		init = 1;
+	}
+
+	y = StartPos;
+
+	for (int i = 0; i < sizeof(CreditsTable) / 4; i++)
+	{
+		s = CreditsTable[i];
+
+		if (y < font_height + phd_winheight + 1 && y > -font_height)
+		{
+			if (*s == '%')
+			{
+				PrintString(phd_winwidth >> 1, y, 6, SCRIPT_TEXT(CreditGroups[atoi(s + 1)]), FF_CENTER);
+			//	PrintBigString(phd_winwidth >> 1, y << 1, 6, SCRIPT_TEXT(CreditGroups[atoi(s + 1)]), FF_CENTER);
+			}
+			else if (*s != '0')
+			{
+				if (i >= 57)
+				{
+					PrintString(phd_winwidth >> 1, y, 2 + (i == 57 ? 4 : 0), s, FF_CENTER);
+				//	PrintBigString(phd_winwidth >> 1, y << 1, 2 + (i == 57 ? 4 : 0), s, FF_CENTER);
+				}
+				else
+				{
+					PrintString(phd_winwidth >> 1, y, 2, CreditNames[atoi(s + 1)], FF_CENTER);
+				//	PrintBigString(phd_winwidth >> 1, y << 1, 2, CreditNames[atoi(s + 1)], FF_CENTER);
+				}
+			}
+
+			num_drawn++;
+		}
+
+		y += font_height;
+	}
+
+	StartPos--;
+
+	if (!num_drawn)
+		init = 0;
+
+	return num_drawn;
+}
+
+#else
 
 #define CREDIT_FONT_HEIGHT	34
-
 long DoCredits()
 {
 	short* c;
@@ -453,6 +580,8 @@ long DoCredits()
 	pos++;
 	return 1;
 }
+
+#endif
 #pragma warning(pop)
 
 void inject_alexstuff(bool replace)
