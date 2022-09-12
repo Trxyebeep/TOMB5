@@ -1,5 +1,22 @@
 # tomb5 changelog
 
+## [3.1.1](https://github.com/Trxyebeep/TOMB5/tree/V3.1.1) (Sep. 12 2022)
+
+### Original bug fixes
+
+- Fix wrong lighting on the mansion door in the title.
+- Completely reword the credits, fixing many issues such as text overlap.
+
+### tomb5 bug fixes
+
+- Fix HK ammo not decreasing in lasersight burst mode.
+- Fix TR4 camera deadlock.
+- Fix left holster reloading in some places.
+
+### tomb5 additions
+
+- Implement the portal effect in Trajan's Markets.
+
 ## [3.1.0](https://github.com/Trxyebeep/TOMB5/tree/V3.1.0) (Sep. 3 2022)
 
 ### Original bug fixes
