@@ -9,7 +9,7 @@
 #include "../specific/3dmath.h"
 #include "../specific/function_stubs.h"
 
-char iswappedit;
+char iswappedit = 0;
 
 ushort special2_pistols_info[13] =
 {
@@ -74,7 +74,7 @@ void _special2_control()
 		break;
 
 	case 201:
-		triggerwindowsmash(50);
+		triggerwindowsmash(MAFIA_MIP);
 		break;
 
 	case 207:
@@ -83,7 +83,7 @@ void _special2_control()
 		break;
 
 	case 209:
-		triggerwindowsmash(52);
+		triggerwindowsmash(MAFIA2_MIP);
 		break;
 
 	case 221:
@@ -92,15 +92,15 @@ void _special2_control()
 		break;
 
 	case 224:
-		triggerwindowsmash(54);
+		triggerwindowsmash(SAILOR_MIP);
 		break;
 
 	case 229:
-		Cutanimate(446);
+		Cutanimate(ANIMATING16);
 		break;
 
 	case 245:
-		triggerwindowsmash(56);
+		triggerwindowsmash(CRANE_GUY_MIP);
 		break;
 
 	case 261:
@@ -109,7 +109,7 @@ void _special2_control()
 		break;
 
 	case 269:
-		triggerwindowsmash(58);
+		triggerwindowsmash(LION_MIP);
 		break;
 
 	case 280:
@@ -127,7 +127,7 @@ void _special2_control()
 		break;
 
 	case 291:
-		triggerwindowsmash(60);
+		triggerwindowsmash(GLADIATOR_MIP);
 		break;
 	}
 }
@@ -149,6 +149,7 @@ void _special3_control()
 	SPARKS* sptr;
 	PHD_VECTOR pos;
 	PHD_VECTOR pos2;
+	long g, b, f, a1, a2;
 
 	pos.x = 12;
 	pos.y = 200;
@@ -216,30 +217,36 @@ void _special3_control()
 		pos2.y = 0;
 		pos2.z = 0;
 		GetActorJointAbsPosition(1, 0, &pos2);
-
-		TriggerDynamic(pos2.x, pos2.y, pos2.z, (GetRandomControl() & 3) + 8, 0,
-			(((GetRandomControl() & 0x3F) + 64) * (642 - GLOBAL_cutseq_frame)) >> 5,
-			((642 - GLOBAL_cutseq_frame) * ((GetRandomControl() & 0x3F) + 180)) >> 5);
+		f = 642 - GLOBAL_cutseq_frame;
+		g = (((GetRandomControl() & 0x3F) + 64) * f) >> 5;
+		b = (((GetRandomControl() & 0x3F) + 180) * f) >> 5;
+		TriggerDynamic(pos2.x, pos2.y, pos2.z, (GetRandomControl() & 3) + 8, 0, g, b);
 
 		sptr = &spark[GetFreeSpark()];
 		sptr->On = 1;
-		sptr->dR = 0;
 		sptr->sB = (16 * ((GetRandomControl() & 0x7F) + 128)) >> 4;
 		sptr->sR = sptr->sB - (sptr->sB >> 2);
 		sptr->sG = sptr->sB - (sptr->sB >> 2);
+		sptr->dR = 0;
 		sptr->dB = (16 * ((GetRandomControl() & 0x7F) + 32)) >> 4;
-		sptr->dG = (uchar)sptr->dB >> 2;
+		sptr->dG = sptr->dB >> 2;
+
 		sptr->FadeToBlack = 8;
 		sptr->ColFadeSpeed = (GetRandomControl() & 3) + 8;
 		sptr->TransType = 2;
 		sptr->Life = (GetRandomControl() & 3) + 24;
-		sptr->sLife = (GetRandomControl() & 3) + 24;
+		sptr->sLife = sptr->Life;
 		sptr->x = pos2.x;
 		sptr->y = pos2.y;
 		sptr->z = pos2.z;
-		sptr->Xvel = ((phd_cos(2 * GetRandomControl()) >> 2) * phd_sin(GetRandomControl() * 2)) >> 14;
-		sptr->Zvel = ((phd_cos(2 * GetRandomControl()) >> 2) * phd_cos(GetRandomControl() * 2)) >> 14;
-		sptr->Yvel = phd_sin(-GetRandomControl() * 2) >> 4;
+
+		a1 = GetRandomControl() << 1;
+		a2 = GetRandomControl() << 1;
+		f = (1024 * phd_cos(a1)) >> 14;
+		sptr->Xvel = short((f * phd_sin(a2)) >> 14);
+		sptr->Yvel = 256 * phd_sin(-a1) >> 14;
+		sptr->Zvel = short((f * phd_cos(a2)) >> 14);
+
 		sptr->Friction = 0;
 		sptr->Flags = 538;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
@@ -247,9 +254,9 @@ void _special3_control()
 		sptr->MaxYvel = 0;
 		sptr->Scalar = 2;
 		sptr->Gravity = (GetRandomControl() & 0x1F) + 32;
-		sptr->dSize = 1;
-		sptr->sSize = (GetRandomControl() & 0x3F) + 16;
 		sptr->Size = (GetRandomControl() & 0x3F) + 16;
+		sptr->sSize = sptr->Size;
+		sptr->dSize = 1;
 	}
 }
 
@@ -268,6 +275,7 @@ void _special3_end()
 void _special4_control()
 {
 	PHD_VECTOR pos;
+	long r, g, b;
 
 	pos.x = 85834;
 	pos.z = 72300;
@@ -282,9 +290,18 @@ void _special4_control()
 		FlamingHell(&pos);
 
 	if (GLOBAL_cutseq_frame < 470)
-		TriggerDynamic(pos.x, pos.y, pos.z, 10, (GetRandomControl() & 0x3F) + 31, (GetRandomControl() & 0xF) + 31, GetRandomControl() & 0x3F);
+	{
+		r = (GetRandomControl() & 0x3F) + 31;
+		g = (GetRandomControl() & 0xF) + 31;
+	}
 	else
-		TriggerDynamic(pos.x, pos.y, pos.z, 10, (GetRandomControl() & 0x7F) + 127, (GetRandomControl() & 0x7F) + 127, GetRandomControl() & 0x3F);
+	{
+		r = (GetRandomControl() & 0x7F) + 127;
+		g = (GetRandomControl() & 0x7F) + 127;
+	}
+
+	b = GetRandomControl() & 0x3F;
+	TriggerDynamic(pos.x, pos.y, pos.z, 10, r, g, b);
 
 	if (GLOBAL_cutseq_frame == 390)
 		Cutanimate(STROBE_LIGHT);
@@ -292,6 +309,8 @@ void _special4_control()
 
 void _special4_end()
 {
+	ResetCutanimate(STROBE_LIGHT);
+
 	if (!bDoCredits)
 	{
 		trigger_title_spotcam(1);
@@ -324,8 +343,11 @@ void triggerwindowsmash(long item_num)
 void FlamingHell(PHD_VECTOR* pos)
 {
 	SPARKS* sptr;
-	long r;
+	long x, y, z, r;
 
+	x = pos->x;
+	y = pos->y - 128;
+	z = pos->z;
 	r = (GetRandomControl() & 0x1FF) - 128;
 
 	if (r < 512)
@@ -334,7 +356,7 @@ void FlamingHell(PHD_VECTOR* pos)
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
 	sptr->sR = (GetRandomControl() & 0x1F) + 48;
-	sptr->sG = (GetRandomControl() & 0x1F) + 48;
+	sptr->sG = sptr->sR;
 	sptr->sB = (GetRandomControl() & 0x3F) - 64;
 	sptr->dR = (GetRandomControl() & 0x3F) - 64;
 	sptr->dB = 32;
@@ -343,10 +365,10 @@ void FlamingHell(PHD_VECTOR* pos)
 	sptr->FadeToBlack = 8;
 	sptr->TransType = 2;
 	sptr->Life = (GetRandomControl() & 0x3F) + 90;
-	sptr->sLife = (GetRandomControl() & 0x3F) + 90;
-	sptr->x = (GetRandomControl() & 0xFF) + pos->x - 128;
-	sptr->y = (GetRandomControl() & 0xFF) + (pos->y - 128) - 128;
-	sptr->z = (GetRandomControl() & 0xFF) + pos->z - 128;
+	sptr->sLife = sptr->Life;
+	sptr->x = (GetRandomControl() & 0xFF) + x - 128;
+	sptr->y = (GetRandomControl() & 0xFF) + y - 128;
+	sptr->z = (GetRandomControl() & 0xFF) + z - 128;
 	sptr->Friction = 51;
 	sptr->MaxYvel = 0;
 	sptr->Flags = 538;
@@ -356,7 +378,7 @@ void FlamingHell(PHD_VECTOR* pos)
 	sptr->Size = sptr->dSize >> 1;
 	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
 	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
-	sptr->Yvel = -(short)r;
+	sptr->Yvel = (short)-r;
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->dSize += sptr->dSize >> 2;
 }
@@ -379,18 +401,19 @@ void FireTwoGunTitleWeapon(PHD_VECTOR* pos1, PHD_VECTOR* pos2)
 	gun->pos.x_pos = pos1->x;
 	gun->pos.y_pos = pos1->y;
 	gun->pos.z_pos = pos1->z;
-	gun->pos.y_rot = angles[0];
 	gun->pos.x_rot = angles[1];
+	gun->pos.y_rot = angles[0];
 	gun->pos.z_rot = 0;
 	gun->life = 17;
-	gun->spin = (short)(GetRandomControl() << 11);
+	gun->spin = short(GetRandomControl() << 11);
 	gun->dlength = 4096;
 	gun->r = 0;
 	gun->g = 96;
 	gun->b = -1;
 	gun->fadein = 8;
-	TriggerLightningGlow(gun->pos.x_pos, gun->pos.y_pos, gun->pos.z_pos, ((GetRandomControl() & 3) + 64) << 24 | ((uchar)gun->g << 7) | ((uchar)gun->b >> 1));
-	TriggerLightning(pos1, pos2, (GetRandomControl() & 7) + 8, ((uchar)gun->g | 0x160000) << 8 | (uchar)gun->b, 12, 80, 5);
+	TriggerLightningGlow(gun->pos.x_pos, gun->pos.y_pos, gun->pos.z_pos,
+		RGBA(0, gun->g >> 1, gun->b >> 1, ((GetRandomControl() & 3) + 64) << 24));
+	TriggerLightning(pos1, pos2, (GetRandomControl() & 7) + 8, RGBA(0, gun->g, gun->b, 22), 12, 80, 5);
 }
 
 void inject_cutseq(bool replace)

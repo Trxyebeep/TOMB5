@@ -2148,7 +2148,7 @@ void joby10_end()
 void special1_init()
 {
 	cutrot = 0;
-	lara_item->mesh_bits = 1;
+	lara_item->mesh_bits = -1;
 	Chris_Menu = 0;
 }
 
@@ -2174,12 +2174,12 @@ void special2_init()
 	ResetCutItem(ANIMATING5_MIP);
 	ResetCutItem(ANIMATING6_MIP);
 	ResetCutItem(ANIMATING7_MIP);
-	resetwindowsmash(50);
-	resetwindowsmash(52);
-	resetwindowsmash(54);
-	resetwindowsmash(56);
-	resetwindowsmash(58);
-	resetwindowsmash(60);
+	resetwindowsmash(MAFIA_MIP);
+	resetwindowsmash(MAFIA2_MIP);
+	resetwindowsmash(SAILOR_MIP);
+	resetwindowsmash(CRANE_GUY_MIP);
+	resetwindowsmash(LION_MIP);
+	resetwindowsmash(GLADIATOR_MIP);
 	ResetCutanimate(ANIMATING16);
 	ResetCutanimate(ANIMATING5);
 	UNK_00E916F0 = 2;
