@@ -1641,7 +1641,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00491950	+	aInitWater
 0x00491980		aProcessWater
 0x00491BE0	+	aUpdate
-0x00491CC0		aReadCutData
+0x00491CC0	+	aReadCutData
 0x00491D30		aCalcDepackBufferSz
 0x00491DA0		aMakeCutsceneResident
 0x00491F60		aFetchCutData

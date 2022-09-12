@@ -195,6 +195,23 @@ void aWinString(long x, long y, char* string)
 	WinDisplayString(x, y, string);
 }
 
+char* aReadCutData(long n, FILE* file)
+{
+	char* data;
+	long offset, size;
+
+	if (!n)
+		return 0;
+
+	//cutseq file is put in tsv_buffer beforehand!
+	offset = *(long*)&tsv_buffer[n * 2 * sizeof(long)];
+	size = *(long*)&tsv_buffer[n * 2 * sizeof(long) + 4];
+	SEEK(file, offset, SEEK_SET);
+	data = (char*)game_malloc(size, 0);
+	READ(data, size, 1, file);
+	return data;
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -205,4 +222,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x004913B0, aTransform_D3DV, replace);
 	INJECT(0x00491360, aInit, replace);
 	INJECT(0x00491380, aWinString, replace);
+	INJECT(0x00491CC0, aReadCutData, replace);
 }
