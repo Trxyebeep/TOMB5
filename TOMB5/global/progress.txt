@@ -1632,24 +1632,24 @@ x for functions decompiled but not injected, for one reason or another.
 	
 		specific/alexstuff.cpp
 
-0x00491360		aInit
-0x00491380		aWinString
-0x004913B0		aTransform_D3DV
-0x004914C0		aTransformClip_D3DV
+0x00491360	+	aInit
+0x00491380	+	aWinString
+0x004913B0	+	aTransform_D3DV
+0x004914C0	+	aTransformClip_D3DV
 0x004916C0	+	aLoadRoomStream
 0x004917D0	+	aFixUpRoom
 0x00491950	+	aInitWater
 0x00491980		aProcessWater
 0x00491BE0	+	aUpdate
-0x00491CC0		aReadCutData
-0x00491D30		aCalcDepackBufferSz
-0x00491DA0		aMakeCutsceneResident
-0x00491F60		aFetchCutData
+0x00491CC0	+	aReadCutData
+0x00491D30	+	aCalcDepackBufferSz
+0x00491DA0	+	aMakeCutsceneResident
+0x00491F60	+	aFetchCutData
 0x00491FE0		DrawBigChar
 0x004922A0		_0x004922A0
 0x004922E0		GetBigStringLength
 0x004924B0		PrintBigString
-0x004927C0		DoCredits
+0x004927C0	+	DoCredits
 
 
 		specific/audio.cpp
@@ -2117,7 +2117,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004C2F10	+	S_PrintShadow
 0x004C34F0		InitTarget
 0x004C35D0		InitBinoculars
-0x004C36B0		DrawBinoculars
+0x004C36B0	+	DrawBinoculars
 0x004C3EB0		aSetXY4
 0x004C4130		S_DrawDrawSparks
 0x004C4790	+	S_DrawDrawSparksNEW
@@ -2154,8 +2154,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004CD750	+	aTransformPerspSV
 0x004CD960		DrawLasers
 0x004CE610		DrawSteamLasers
-0x004CF191		_0x004CF191
-0x004CF1B0		aDrawWreckingBall
+0x004CF1B0	+	aDrawWreckingBall
 0x004CF2F0	+	DrawMoon
 0x004CF550		DrawTwogunLaser
 0x004CFD20		SuperDrawBox

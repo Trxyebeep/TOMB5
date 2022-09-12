@@ -64,6 +64,26 @@ long ShadowTable[NUM_TRIS * 3] =	//num of triangles * 3 points
 14, 10, 11
 };
 
+uchar TargetGraphColTab[48] =
+{
+	0, 0, 255,
+	0, 0, 255,
+	255, 255, 0,
+	255, 255, 0,
+	0, 0, 255,
+	0, 0, 255,
+	255, 255, 0,
+	255, 255, 0,
+	0, 0, 255,
+	0, 0, 255,
+	0, 0, 255,
+	0, 0, 255,
+	255, 255, 0,
+	255, 255, 0,
+	255, 255, 0,
+	255, 255, 0
+};
+
 #ifdef SMOOTH_SHADOWS
 static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 {
@@ -458,37 +478,51 @@ void DrawLaserSightSprite()
 {
 	SPRITESTRUCT* sprite;
 	D3DTLVERTEX v[4];
-	TEXTURESTRUCT Tex;
-	long* TempIDK;
-	short* TempDist;
-	short* TempXY;
-	float zv, u1, u2, v1, v2;
-	long results[3];
+	TEXTURESTRUCT tex;
 #ifdef GENERAL_FIXES
-	short size;
+	FVECTOR vec;
+#else
+	PHD_VECTOR vec;
 #endif
+	long* Z;
+	short* pos;
+	short* XY;
+	float zv;
+	short size;
 
+	XY = (short*)&scratchpad[0];
+	Z = (long*)&scratchpad[256];
+	pos = (short*)&scratchpad[512];
 	phd_PushMatrix();
 	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
-	TempDist = (short*)&UNK_EffectDistance;
-	TempXY = (short*)&UNK_EffectXY;
-	TempIDK = (long*)&UNK_00E913E0;
-	TempDist[0] = (short)(LaserSightX - lara_item->pos.x_pos);
-	TempDist[1] = (short)(LaserSightY - lara_item->pos.y_pos);
-	TempDist[2] = (short)(LaserSightZ - lara_item->pos.z_pos);
-	results[0] = phd_mxptr[M00] * TempDist[0] + phd_mxptr[M01] * TempDist[1] + phd_mxptr[M02] * TempDist[2] + phd_mxptr[M03];
-	results[1] = phd_mxptr[M10] * TempDist[0] + phd_mxptr[M11] * TempDist[1] + phd_mxptr[M12] * TempDist[2] + phd_mxptr[M13];
-	results[2] = phd_mxptr[M20] * TempDist[0] + phd_mxptr[M21] * TempDist[1] + phd_mxptr[M22] * TempDist[2] + phd_mxptr[M23];
-	zv = f_persp / (float)results[2];
-	TempXY[0] = short(float(results[0] * zv + f_centerx));
-	TempXY[1] = short(float(results[1] * zv + f_centery));
-	TempIDK[0] = results[2] >> 14;
+	pos[0] = short(LaserSightX - lara_item->pos.x_pos);
+	pos[1] = short(LaserSightY - lara_item->pos.y_pos);
+	pos[2] = short(LaserSightZ - lara_item->pos.z_pos);
+
+#ifdef GENERAL_FIXES
+	vec.x = aMXPtr[M00] * pos[0] + aMXPtr[M01] * pos[1] + aMXPtr[M02] * pos[2] + aMXPtr[M03];
+	vec.y = aMXPtr[M10] * pos[0] + aMXPtr[M11] * pos[1] + aMXPtr[M12] * pos[2] + aMXPtr[M13];
+	vec.z = aMXPtr[M20] * pos[0] + aMXPtr[M21] * pos[1] + aMXPtr[M22] * pos[2] + aMXPtr[M23];
+	zv = f_persp / vec.z;
+	XY[0] = short(float(vec.x * zv + f_centerx));
+	XY[1] = short(float(vec.y * zv + f_centery));
+	Z[0] = (long)vec.z;
+#else
+	vec.x = phd_mxptr[M00] * pos[0] + phd_mxptr[M01] * pos[1] + phd_mxptr[M02] * pos[2] + phd_mxptr[M03];
+	vec.y = phd_mxptr[M10] * pos[0] + phd_mxptr[M11] * pos[1] + phd_mxptr[M12] * pos[2] + phd_mxptr[M13];
+	vec.z = phd_mxptr[M20] * pos[0] + phd_mxptr[M21] * pos[1] + phd_mxptr[M22] * pos[2] + phd_mxptr[M23];
+	zv = f_persp / (float)vec.z;
+	XY[0] = short(float(vec.x * zv + f_centerx));
+	XY[1] = short(float(vec.y * zv + f_centery));
+	Z[0] = vec.z >> 14;
+#endif
+
 	phd_PopMatrix();
 
 #ifdef GENERAL_FIXES	//restore the target sprite
 	if (LaserSightCol)
 	{
-		size = (GlobalCounter & 7) + 16;// PSX ASM does + 8, but it's way too small
+		size = (GlobalCounter & 7) + 16;
 		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 18];
 	}
 	else
@@ -496,16 +530,15 @@ void DrawLaserSightSprite()
 		size = 4;
 		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
 	}
-
-	setXY4(v, TempXY[0] - size, TempXY[1] - size, TempXY[0] + size, TempXY[1] - size, TempXY[0] - size,
-		TempXY[1] + size, TempXY[0] + size, TempXY[1] + size, (long)f_mznear, clipflags);
 #else
+	size = 2;
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
-	setXY4(v, TempXY[0] - 2, TempXY[1] - 2, TempXY[0] + 2, TempXY[1] - 2, TempXY[0] - 2, TempXY[1] + 2,
-		TempXY[0] + 2, TempXY[1] + 2, (long)f_mznear, clipflags);
 #endif
 
-	v[0].color = LaserSightCol ? 0x0000FF00 : 0x00FF0000;//if LaserSightCol is on, it turns green
+	setXY4(v, XY[0] - size, XY[1] - size, XY[0] + size, XY[1] - size, XY[0] - size,
+		XY[1] + size, XY[0] + size, XY[1] + size, (long)f_mznear, clipflags);
+
+	v[0].color = LaserSightCol ? 0x0000FF00 : 0x00FF0000;
 	v[1].color = v[0].color;
 	v[2].color = v[0].color;
 	v[3].color = v[0].color;
@@ -513,25 +546,22 @@ void DrawLaserSightSprite()
 	v[1].specular = 0xFF000000;
 	v[2].specular = 0xFF000000;
 	v[3].specular = 0xFF000000;
-	u1 = sprite->x2;
-	u2 = sprite->x1;
-	v1 = sprite->y2;
-	v2 = sprite->y1;
-	Tex.drawtype = 2;
-	Tex.flag = 0;
-	Tex.tpage = sprite->tpage;
-	Tex.u1 = u1;
-	Tex.v1 = v1;
-	Tex.u2 = u2;
-	Tex.v2 = v1;
-	Tex.u3 = u2;
-	Tex.v3 = v2;
-	Tex.u4 = u1;
-	Tex.v4 = v2;
+
+	tex.drawtype = 2;
+	tex.flag = 0;
+	tex.tpage = sprite->tpage;
+	tex.u1 = sprite->x2;
+	tex.v1 = sprite->y2;
+	tex.u2 = sprite->x1;
+	tex.v2 = sprite->y2;
+	tex.u3 = sprite->x1;
+	tex.v3 = sprite->y1;
+	tex.u4 = sprite->x2;
+	tex.v4 = sprite->y1;
 #ifdef GENERAL_FIXES
-	AddQuadSorted(v, 0, 1, 3, 2, &Tex, 0);
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 0);
 #else
-	AddQuadSorted(v, 0, 1, 2, 3, &Tex, 0);
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
 #endif
 	LaserSightCol = 0;
 	LaserSightActive = 0;
@@ -2290,6 +2320,260 @@ void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long c
 	}
 }
 
+void DrawBinoculars()
+{
+	MESH_DATA* mesh;
+	D3DTLVERTEX* v;
+	TEXTURESTRUCT* tex;
+	D3DTLVERTEX vtx[256];
+	D3DTLVERTEX irVtx[4];
+	TEXTURESTRUCT irTex;
+	short* clip;
+	short* quad;
+	short* tri;
+	ushort drawbak;
+	short c;
+
+	if (LaserSight)
+		mesh = targetMeshP;
+	else
+		mesh = binocsMeshP;
+
+	v = (D3DTLVERTEX*)mesh->aVtx;
+	clip = clipflags;
+
+	for (int i = 0; i < mesh->nVerts; i++)
+	{
+		c = 0;
+		vtx[i] = v[i];
+		vtx[i].sx = (vtx[i].sx * float(phd_winxmax / 512.0F)) + f_centerx;
+		vtx[i].sy = (vtx[i].sy * float(phd_winymax / 240.0F)) + f_centery;
+
+		if (vtx[i].sx < f_left)
+			c = 1;
+		else if (vtx[i].sx > f_right)
+			c = 2;
+
+		if (vtx[i].sy < f_top)
+			c += 4;
+		else if (vtx[i].sy > f_bottom)
+			c += 8;
+
+		*clip++ = c;
+	}
+
+	quad = mesh->gt4;
+	tri = mesh->gt3;
+
+	if (LaserSight || SniperOverlay)
+	{
+		for (int i = 0; i < mesh->ngt4; i++, quad += 6)
+		{
+			tex = &textinfo[quad[4] & 0x7FFF];
+			drawbak = tex->drawtype;
+			tex->drawtype = 0;
+
+			if (quad[5] & 1)
+			{
+				vtx[quad[0]].color = 0xFF000000;
+				vtx[quad[1]].color = 0xFF000000;
+				vtx[quad[2]].color = 0;
+				vtx[quad[3]].color = 0;
+				tex->drawtype = 3;
+			}
+
+			AddQuadSorted(vtx, quad[0], quad[1], quad[2], quad[3], tex, 1);
+			tex->drawtype = drawbak;
+		}
+
+		for (int i = 0, j = 0; i < mesh->ngt3; i++, tri += 5)
+		{
+			tex = &textinfo[tri[3] & 0x7FFF];
+			drawbak = tex->drawtype;
+			tex->drawtype = 0;
+
+			if (tri[4] & 1)
+			{
+				vtx[tri[0]].color = TargetGraphColTab[j] << 24;
+				vtx[tri[1]].color = TargetGraphColTab[j + 1] << 24;
+				vtx[tri[2]].color = TargetGraphColTab[j + 2] << 24;
+				tex->drawtype = 3;
+				j += 3;
+			}
+
+			AddTriSorted(vtx, tri[0], tri[1], tri[2], tex, 1);
+			tex->drawtype = drawbak;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < mesh->ngt4; i++, quad += 6)
+		{
+			tex = &textinfo[quad[4] & 0x7FFF];
+			drawbak = tex->drawtype;
+			tex->drawtype = 0;
+
+			if (gfCurrentLevel == 9)
+			{
+				if (i < 14)
+				{
+					if (quad[5] & 1)
+					{
+						vtx[quad[0]].color = 0xFF000000;
+						vtx[quad[1]].color = 0xFF000000;
+						vtx[quad[2]].color = 0xFF000000;
+						vtx[quad[3]].color = 0xFF000000;
+						tex->drawtype = 3;
+					}
+				}
+				else
+				{
+					if (quad[5] & 1)
+					{
+						vtx[quad[0]].color = 0;
+						vtx[quad[1]].color = 0;
+						vtx[quad[2]].color = 0xFF000000;
+						vtx[quad[3]].color = 0xFF000000;
+						tex->drawtype = 3;
+					}
+				}
+			}
+			else
+			{
+				if (quad[5] & 1)
+				{
+					vtx[quad[0]].color = 0xFF000000;
+					vtx[quad[1]].color = 0xFF000000;
+					vtx[quad[2]].color = 0;
+					vtx[quad[3]].color = 0;
+					tex->drawtype = 3;
+				}
+			}
+
+			AddQuadSorted(vtx, quad[0], quad[1], quad[2], quad[3], tex, 1);
+			tex->drawtype = drawbak;
+		}
+
+		for (int i = 0; i < mesh->ngt3; i++, tri += 5)
+		{
+			tex = &textinfo[tri[3] & 0x7FFF];
+			drawbak = tex->drawtype;
+			tex->drawtype = 0;
+
+			if (gfCurrentLevel < 11)
+			{
+				if (tri[4] & 1)
+				{
+					vtx[tri[0]].color = 0;
+					vtx[tri[1]].color = 0xFF000000;
+					vtx[tri[2]].color = 0;
+					tex->drawtype = 3;
+				}
+			}
+			else
+			{
+				if (i < mesh->ngt3 - 2)
+				{
+					if (tri[4] & 1)
+					{
+						vtx[tri[0]].color = 0xFF000000;
+						vtx[tri[1]].color = 0xFF000000;
+						vtx[tri[2]].color = 0;
+						tex->drawtype = 3;
+					}
+				}
+				else if (i == mesh->ngt3 - 2)
+				{
+					if (tri[4] & 1)
+					{
+						vtx[tri[0]].color = 0;
+						vtx[tri[1]].color = 0;
+						vtx[tri[2]].color = 0xFF000000;
+						tex->drawtype = 3;
+					}
+				}
+				else
+				{
+					if (tri[4] & 1)
+					{
+						vtx[tri[0]].color = 0;
+						vtx[tri[1]].color = 0xFF000000;
+						vtx[tri[2]].color = 0;
+						tex->drawtype = 3;
+					}
+				}
+			}
+
+			AddTriSorted(vtx, tri[0], tri[1], tri[2], tex, 1);
+			tex->drawtype = drawbak;
+		}
+
+		if (InfraRed)
+		{
+			aSetXY4(irVtx, 0, 0, phd_winxmax, 0, 0, phd_winymax, phd_winxmax, phd_winymax, f_mznear + 1, clipflags);
+			irVtx[0].color = 0x64FF0000;
+			irVtx[1].color = 0x64FF0000;
+			irVtx[2].color = 0x64FF0000;
+			irVtx[3].color = 0x64FF0000;
+			irVtx[0].specular = 0xFF000000;
+			irVtx[1].specular = 0xFF000000;
+			irVtx[2].specular = 0xFF000000;
+			irVtx[3].specular = 0xFF000000;
+			irTex.drawtype = 3;
+			irTex.tpage = 0;
+			AddQuadSorted(irVtx, 0, 1, 3, 2, &irTex, 1);
+		}
+	}
+}
+
+void aDrawWreckingBall(ITEM_INFO* item, long shade)
+{
+	SPRITESTRUCT* sprite;
+	SVECTOR* vec;
+	TEXTURESTRUCT tex;
+	long x, z, s;
+
+	aSetViewMatrix();
+	vec = (SVECTOR*)&scratchpad[0];
+	s = (400 * shade) >> 7;
+	x = -s;
+
+	for (int i = 0; i < 3; i++)
+	{
+		z = -s;
+
+		for (int j = 0; j < 3; j++)
+		{
+			vec->vx = (short)x;
+			vec->vy = -2;
+			vec->vz = (short)z;
+			vec++;
+			z += s;
+		}
+
+		x += s;
+	}
+
+	if (shade < 100)
+		shade = 100;
+
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 11];
+	vec = (SVECTOR*)&scratchpad[0];
+	aTransformPerspSV(vec, aVertexBuffer, clipflags, 9, shade << 24);
+
+	tex.drawtype = 3;
+	tex.tpage = sprite->tpage;
+	tex.u1 = sprite->x1;
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x2;
+	tex.v2 = sprite->y1;
+	tex.u3 = sprite->x2;
+	tex.v3 = sprite->y2;
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y2;
+	AddQuadSorted(aVertexBuffer, 0, 2, 8, 6, &tex, 1);
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2309,4 +2593,6 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CA770, DoScreenFade, replace);
 	INJECT(0x004C6BA0, ClipCheckPoint, replace);
 	INJECT(0x004CD750, aTransformPerspSV, replace);
+	INJECT(0x004C36B0, DrawBinoculars, replace);
+	INJECT(0x004CF1B0, aDrawWreckingBall, replace);
 }

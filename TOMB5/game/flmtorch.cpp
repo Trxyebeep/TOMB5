@@ -271,8 +271,8 @@ void GetFlameTorch()
 
 void FlameTorchControl(short item_number)
 {
-	ITEM_INFO** _itemlist;
-	MESH_INFO** _meshlist;
+	ITEM_INFO** itemlist;
+	MESH_INFO** meshlist;
 	ITEM_INFO* item;
 	STATIC_INFO* sinfo;
 	PHD_3DPOS pos;
@@ -310,17 +310,17 @@ void FlameTorchControl(short item_number)
 	yv = item->fallspeed;
 	item->pos.y_pos += yv;
 	DoProperDetection(item_number, x, y, z, xv, yv, zv);
-	_itemlist = itemlist;
-	_meshlist = meshlist;
+	itemlist = (ITEM_INFO**)&tsv_buffer[0];
+	meshlist = (MESH_INFO**)&tsv_buffer[1024];
 
-	if (GetCollidedObjects(item, 0, 1, _itemlist, _meshlist, 0))
+	if (GetCollidedObjects(item, 0, 1, itemlist, meshlist, 0))
 	{
 		mycoll.enable_baddie_push = 1;
 
-		if (_itemlist[0])
+		if (itemlist[0])
 		{
-			if (!objects[_itemlist[0]->object_number].intelligent)
-				ObjectCollision(_itemlist[0] - items, item, &mycoll);
+			if (!objects[itemlist[0]->object_number].intelligent)
+				ObjectCollision(itemlist[0] - items, item, &mycoll);
 		}
 		else
 		{

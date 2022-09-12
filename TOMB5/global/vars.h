@@ -625,6 +625,8 @@
 #define aranges	VAR_U_(0x00D9ADA0, short*)
 #define AnimatingTexturesVOffset	VAR_U_(0x008751BC, short)
 #define nClippedPolys	VAR_U_(0x00D9AB10, long)
+#define targetMeshP	VAR_U_(0x00E6E460, MESH_DATA*)
+#define binocsMeshP	VAR_U_(0x00E6D744, MESH_DATA*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -675,9 +677,6 @@
 #define LightningRGB	ARRAY_(0x00E6CAF0, ushort, [3])
 #define gfMips	ARRAY_(0x00E5C2C0, uchar, [8])
 #define inventry_objects_list	ARRAY_(0x00508E38, INVOBJ, [100])
-#define itemlist	ARRAY_(0x00E88EA0, ITEM_INFO*, [1024])//what the fucking fuck
-#define meshlist	ARRAY_(0x00E872A0, MESH_INFO*, [1024])//what the fucking fuck
-#define staticlist	ARRAY_(0x00E89EA0, MESH_INFO*, [1024])//what the fucking fuck
 #define	FootPrint	ARRAY_(0x00E5C3E0, FOOTPRINT, [32])
 #define	gfLevelNames	ARRAY_(0x00E5C320, uchar, [40])
 #define	dynamics	ARRAY_(0x00E6C3E0, DYNAMIC, [64])
@@ -717,6 +716,8 @@
 #define first_hair	ARRAY_(0x00E5BF60, long, [2])
 #define aMappedEnvUV	ARRAY_(0x00920E18, ENVUV, [256])
 #define aVertexBuffer	ARRAY_(0x007DFFE8, D3DTLVERTEX, [1024])
+#define scratchpad	ARRAY_(0x00E912E0, char, [1024])
+#define tsv_buffer	ARRAY_(0x00E86EA0, char, [16384])
 #define old_status_flags	ARRAY_(0x00E7F000, char, [32])
 #define old_status_flags2	ARRAY_(0x00E7F040, ushort, [32])
 #define cutseq_resident_addresses	ARRAY_(0x00E7EF20, char*, [47])
@@ -796,6 +797,3 @@
 
 //unknowns
 #define UNK_00E916F0	VAR_U_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init
-#define UNK_EffectDistance	VAR_U_(0x00E914E0, short*)//used in a bunch of effect draw functions, seems to hold effect pos - lara pos values.
-#define UNK_EffectXY	VAR_U_(0x00E912E0, short*)//has X and Y values for drawing effects???
-#define UNK_00E913E0	VAR_U_(0x00E913E0, long*)
