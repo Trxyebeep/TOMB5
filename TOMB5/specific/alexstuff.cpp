@@ -2,6 +2,7 @@
 #include "alexstuff.h"
 #include "function_stubs.h"
 #include "profiler.h"
+#include "drawroom.h"
 
 void aLoadRoomStream()
 {
@@ -182,6 +183,12 @@ void aTransform_D3DV(D3DVECTOR* vec, D3DTLVERTEX* v, long nVtx)
 	}
 }
 
+void aInit()
+{
+	aInitWater();
+	aRoomInit();
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -190,4 +197,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x00491950, aInitWater, replace);
 	INJECT(0x004914C0, aTransformClip_D3DV, replace);
 	INJECT(0x004913B0, aTransform_D3DV, replace);
+	INJECT(0x00491360, aInit, replace);
 }
