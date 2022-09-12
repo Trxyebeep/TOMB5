@@ -7,6 +7,9 @@
 #include "control.h"
 #include "pickup.h"
 #include "lot.h"
+#ifdef GENERAL_FIXES
+#include "lara2gun.h"
+#endif
 
 #ifdef GENERAL_FIXES
 tomb5_save_info tomb5_save;
@@ -91,6 +94,7 @@ void SaveLaraData()
 	savegame.CutSceneTriggered2 = _CutSceneTriggered2;
 
 #ifdef GENERAL_FIXES
+	tomb5_save.LHolster = LHolster;
 	tomb5_save.dash_timer = DashTimer;
 #endif
 }
@@ -115,7 +119,9 @@ void RestoreLaraData(long FullSave)
 
 #ifdef GENERAL_FIXES
 	if (tomb5_save_size <= offsetof(tomb5_save_info, LHolster))
-		tomb5_save.LHolster = lara.holster;
+		LHolster = lara.holster;
+	else
+		LHolster = tomb5_save.LHolster;
 
 	if (tomb5_save_size > offsetof(tomb5_save_info, dash_timer))
 		DashTimer = tomb5_save.dash_timer;

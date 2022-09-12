@@ -12,6 +12,10 @@
 #include "savegame.h"
 #endif
 
+#ifdef GENERAL_FIXES
+ushort LHolster;
+#endif
+
 static PISTOL_DEF PistolTable[4] =
 {
 	{ LARA, 0, 0, 0, 0 },
@@ -71,7 +75,7 @@ void draw_pistol_meshes(long weapon_type)
 
 #ifdef GENERAL_FIXES
 	if (weapon_type != WEAPON_REVOLVER)
-		tomb5_save.LHolster = LARA_HOLSTERS;
+		LHolster = LARA_HOLSTERS;
 #endif
 
 	lara.holster = LARA_HOLSTERS;
@@ -88,9 +92,9 @@ void undraw_pistol_mesh_left(long weapon_type)
 
 #ifdef GENERAL_FIXES
 	if (weapon_type == WEAPON_PISTOLS)
-		tomb5_save.LHolster = LARA_HOLSTERS_PISTOLS;
+		LHolster = LARA_HOLSTERS_PISTOLS;
 	else if (weapon_type == WEAPON_UZI)
-		tomb5_save.LHolster = LARA_HOLSTERS_UZIS;
+		LHolster = LARA_HOLSTERS_UZIS;
 #else
 	if (weapon_type == WEAPON_PISTOLS)
 		lara.holster = LARA_HOLSTERS_PISTOLS;

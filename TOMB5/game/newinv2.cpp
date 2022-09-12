@@ -2519,7 +2519,7 @@ void NailInvItem(short objnum)
 
 	case PISTOLS_ITEM:
 #ifdef GENERAL_FIXES
-		tomb5_save.LHolster = LARA_HOLSTERS;
+		LHolster = LARA_HOLSTERS;
 #endif
 		lara.holster = LARA_HOLSTERS;
 		lara.pistols_type_carried = W_NONE;
