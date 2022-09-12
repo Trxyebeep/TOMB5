@@ -212,6 +212,19 @@ char* aReadCutData(long n, FILE* file)
 	return data;
 }
 
+long aCalcDepackBufferSz(char* data)
+{
+	long size;
+
+	GLOBAL_cutme = (NEW_CUTSCENE*)data;
+	size = 0;
+
+	for (int i = 0; i < GLOBAL_cutme->numactors; i++)
+		size += sizeof(PACKNODE) * (GLOBAL_cutme->actor_data[i].nodes + 1);
+
+	return size + (sizeof(PACKNODE) * 2);
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -223,4 +236,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x00491360, aInit, replace);
 	INJECT(0x00491380, aWinString, replace);
 	INJECT(0x00491CC0, aReadCutData, replace);
+	INJECT(0x00491D30, aCalcDepackBufferSz, replace);
 }
