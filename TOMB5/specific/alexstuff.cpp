@@ -5,6 +5,108 @@
 #include "drawroom.h"
 #include "winmain.h"
 #include "file.h"
+#include "../game/gameflow.h"
+#include "../game/text.h"
+
+const char* CreditNames[] =
+{
+	"Derek Leigh-Gilchrist",
+	"Martin Gibbins",
+	"Tom Scutt",
+	"Chris Coupe",
+	"Alex Davis",
+	"Richard Flower",
+	"Martin Jensen",
+	"Phil Chapman",
+	"Jerr O'Carroll",
+	"Joby Wood",
+	"Andrea Cordella",
+	"Richard Morton",
+	"Andy Sandham",
+	"Peter Connelly",
+	"Martin Iveson",
+	"Andy Watt",
+	"Nick Connolly",
+	"Hayos Fatunmbi",
+	"Paul Field",
+	"Steve Wakeman",
+	"Dave Ward",
+	"Jason Churchman",
+	"Jeremy H. Smith",
+	"Adrian Smith",
+	"Benjamin Twose",
+	"Ex Machina",
+	"Ray Tran",
+	"Stuart Abrahart",
+	"Richard Apperley"
+};
+
+#pragma warning(push)
+#pragma warning(disable : 4838)
+#pragma warning(disable : 4309)
+//0x8000 = "category"/use string, otherwise use index from above names^
+//-1 = empty space
+//-2 = end of list
+short CreditsTable[] =
+{
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+
+	0x8000 | STR_PROGRAMMERS, -1,
+	4, 1, 0,		//Alex, Martin (gibby), Del
+	-1, -1, -1, -1,
+
+	0x8000 | STR_AI_PROGRAMMERS, -1,
+	2,				//Tom
+	-1, -1, -1, -1,
+
+	0x8000 | STR_ADDITIONAL_PROGRAMMERS, -1,
+	3, 5, 6,		//Chris, Richard, Martin (jensen)
+	-1, -1, -1, -1,
+
+	0x8000 | STR_ANIMATORS, -1,
+	8, 7,			//Jerr, Phil
+	-1, -1, -1, -1,
+
+	0x8000 | STR_LEVEL_DESIGNERS, -1,
+	10, 11, 12, 9,	//Andrea, Richard, Andy, Joby
+	-1, -1, -1, -1,
+
+	0x8000 | STR_FMV_SEQUENCES, -1,
+	25,				//"Ex Machina" (who?)
+	-1, -1, -1, -1,
+
+	0x8000 | STR_MUSIC_AND_SOUND_FX, -1,
+	13,				//Peter
+	-1, -1, -1, -1,
+
+	0x8000 | STR_ADDITIONAL_SOUND_FX, -1,
+	14,				//Martin (Iveson)
+	-1, -1, -1, -1,
+
+	0x8000 | STR_ORIGINAL_STORY, -1,
+	11, 12,			//Richard, Andy
+	-1, -1, -1, -1,
+
+	0x8000 | STR_SCRIPT, -1,
+	12,				//Andy
+	-1, -1, -1, -1,
+
+	0x8000 | STR_PRODUCER, -1,
+	15,				//Andy Watt
+	-1, -1, -1, -1,
+
+	0x8000 | STR_QA, -1,
+	27, 28, 16, 17, 18, 19, 20, 21, 24,	//buncha people
+	-1, -1, -1, -1,
+
+	0x8000 | STR_EXECUTIVE_PRODUCERS, -1,
+	22, 23,			//Jeremy, Adrian
+	-1, -1, -1, -1,
+
+	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+	-2
+};
+#pragma warning(pop)
 
 void aLoadRoomStream()
 {
@@ -300,6 +402,59 @@ char* aFetchCutData(long n)
 	return data;
 }
 
+#pragma warning(push)
+#pragma warning(disable : 4244)
+
+#define CREDIT_FONT_HEIGHT	34
+
+long DoCredits()
+{
+	short* c;
+	long n, l, y, y2;
+	static long pos = 1;
+
+	n = pos / CREDIT_FONT_HEIGHT;
+	l = n + 26;							//todo: what's 26?
+	y = phd_winymax / -2 - pos % CREDIT_FONT_HEIGHT;
+	y2 = y * 2;
+
+	for (; n < l; n++)
+	{
+		c = &CreditsTable[n];
+
+		if (*c == -2)
+		{
+			//done
+			pos = 1;
+			return 0;
+		}
+
+		if (*c == -1)	//empty line
+		{
+			y += CREDIT_FONT_HEIGHT;
+			y2 += CREDIT_FONT_HEIGHT * 2;
+			continue;
+		}
+
+		if (*c & 0x8000)
+			PrintString(phd_winwidth >> 1, y + phd_centery, 6, SCRIPT_TEXT_bis(*c & 0x7FFF), FF_CENTER);
+		else
+			PrintString(phd_winwidth >> 1, y + phd_centery, 2, CreditNames[*c], FF_CENTER);
+
+		if (*c & 0x8000)
+			PrintBigString(phd_winwidth >> 1, y2 + phd_centery, 6, SCRIPT_TEXT_bis(*c & 0x7FFF), FF_CENTER);
+		else
+			PrintBigString(phd_winwidth >> 1, y2 + phd_centery, 2, CreditNames[*c], FF_CENTER);
+
+		y += CREDIT_FONT_HEIGHT;
+		y2 += CREDIT_FONT_HEIGHT * 2;
+	}
+
+	pos++;
+	return 1;
+}
+#pragma warning(pop)
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -314,4 +469,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x00491D30, aCalcDepackBufferSz, replace);
 	INJECT(0x00491DA0, aMakeCutsceneResident, replace);
 	INJECT(0x00491F60, aFetchCutData, replace);
+	INJECT(0x004927C0, DoCredits, replace);
 }
