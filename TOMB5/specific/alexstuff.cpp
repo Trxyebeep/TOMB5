@@ -3,6 +3,7 @@
 #include "function_stubs.h"
 #include "profiler.h"
 #include "drawroom.h"
+#include "winmain.h"
 
 void aLoadRoomStream()
 {
@@ -189,6 +190,11 @@ void aInit()
 	aRoomInit();
 }
 
+void aWinString(long x, long y, char* string)
+{
+	WinDisplayString(x, y, string);
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -198,4 +204,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x004914C0, aTransformClip_D3DV, replace);
 	INJECT(0x004913B0, aTransform_D3DV, replace);
 	INJECT(0x00491360, aInit, replace);
+	INJECT(0x00491380, aWinString, replace);
 }
