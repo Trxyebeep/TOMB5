@@ -215,7 +215,8 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 	long offset;
 
 	pR = (ROOM_INFO*)s;
-	offset = (long)(s + sizeof(ROOM_INFO));
+	offset = long(s + sizeof(ROOM_INFO));
+
 	pR->fogbulb = (FOGBULB*)((char*)pR->fogbulb + offset);
 	pR->pclight = (PCLIGHT_INFO*)((char*)pR->pclight + offset);
 	pR->floor = (FLOOR_INFO*)((char*)pR->floor + offset);
@@ -242,7 +243,8 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 		pRm[i].pFac = (short*)pFac;
 		pRm[i].pPrelight = pPre;
 		pRm[i].pSVtx = (float*)pVtx;
-		pFac += 5 * pRm[i].nTri + 2 * 3 * pRm[i].nQuad;;
+
+		pFac += (5 * pRm[i].nTri) + (6 * pRm[i].nQuad);
 		pPre += pRm[i].nVtx;
 		pVtx += 7 * pRm[i].nVtx;
 	}
@@ -267,12 +269,9 @@ void aUpdate()
 	mAddProfilerEvent();
 
 	if (aCamDir.y >= 0)
-	{
-		alphamaybe = (long)(95 - ((1 - aCamDir.y) * -144));
-		alphamaybe <<= 24;
-	}
+		alphamaybe = long(95 - ((1 - aCamDir.y) * -144)) << 24;
 	else
-		alphamaybe = -0x11000000;
+		alphamaybe = 0xEF000000;
 
 	mAddProfilerEvent();
 }
