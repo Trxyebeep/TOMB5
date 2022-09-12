@@ -677,9 +677,6 @@
 #define LightningRGB	ARRAY_(0x00E6CAF0, ushort, [3])
 #define gfMips	ARRAY_(0x00E5C2C0, uchar, [8])
 #define inventry_objects_list	ARRAY_(0x00508E38, INVOBJ, [100])
-#define itemlist	ARRAY_(0x00E88EA0, ITEM_INFO*, [1024])//what the fucking fuck
-#define meshlist	ARRAY_(0x00E872A0, MESH_INFO*, [1024])//what the fucking fuck
-#define staticlist	ARRAY_(0x00E89EA0, MESH_INFO*, [1024])//what the fucking fuck
 #define	FootPrint	ARRAY_(0x00E5C3E0, FOOTPRINT, [32])
 #define	gfLevelNames	ARRAY_(0x00E5C320, uchar, [40])
 #define	dynamics	ARRAY_(0x00E6C3E0, DYNAMIC, [64])

@@ -266,8 +266,8 @@ void FireCrossbow(PHD_3DPOS* Start)
 
 void ControlCrossbow(short item_number)
 {
-	ITEM_INFO** itemslist;
-	MESH_INFO** staticslist;
+	ITEM_INFO** itemlist;
+	MESH_INFO** meshlist;
 	ITEM_INFO* item;
 	ITEM_INFO* target;
 	long speed;
@@ -284,18 +284,18 @@ void ControlCrossbow(short item_number)
 	if (item->room_number != room_number)
 		ItemNewRoom(item_number, room_number);
 
-	itemslist = itemlist;
-	staticslist = staticlist;
-	GetCollidedObjects(item, 128, 1, itemslist, staticslist, 1);
+	itemlist = (ITEM_INFO**)&tsv_buffer[0x2000];
+	meshlist = (MESH_INFO**)&tsv_buffer[0x3000];
+	GetCollidedObjects(item, 128, 1, itemlist, meshlist, 1);
 
-	if (*itemslist)
+	if (*itemlist)
 	{
-		target = *itemslist;
+		target = *itemlist;
 
 		while (!(gfLevelFlags & GF_OFFICE) || target->object_number != GRAPPLING_TARGET)
 		{
-			itemslist++;
-			target = *itemslist;
+			itemlist++;
+			target = *itemlist;
 
 			if (!target)
 				return;

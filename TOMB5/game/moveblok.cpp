@@ -310,6 +310,7 @@ void MovableBlockCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* co
 
 long TestBlockPush(ITEM_INFO* item, long height, ushort quadrant)
 {
+	ITEM_INFO** itemlist;
 	FLOOR_INFO* floor;
 	ROOM_INFO* r;
 	long x, y, z, rx, rz;
@@ -365,6 +366,7 @@ long TestBlockPush(ITEM_INFO* item, long height, ushort quadrant)
 	rz = item->pos.z_pos;
 	item->pos.x_pos = x;
 	item->pos.z_pos = z;
+	itemlist = (ITEM_INFO**)&tsv_buffer[0];
 	GetCollidedObjects(item, 256, 1, itemlist, 0, 0);
 	item->pos.x_pos = rx;
 	item->pos.z_pos = rz;
@@ -373,6 +375,7 @@ long TestBlockPush(ITEM_INFO* item, long height, ushort quadrant)
 
 long TestBlockPull(ITEM_INFO* item, long height, ushort quadrant)
 {
+	ITEM_INFO** itemlist;
 	FLOOR_INFO* floor;
 	ROOM_INFO* r;
 	long x, y, z, destx, destz, rx, rz;
@@ -422,6 +425,7 @@ long TestBlockPull(ITEM_INFO* item, long height, ushort quadrant)
 
 	rx = item->pos.x_pos;
 	rz = item->pos.z_pos;
+	itemlist = (ITEM_INFO**)&tsv_buffer[0];
 	GetCollidedObjects(item, 256, 1, itemlist, 0, 0);
 	item->pos.x_pos = rx;
 	item->pos.z_pos = rz;
@@ -458,6 +462,7 @@ long TestBlockPull(ITEM_INFO* item, long height, ushort quadrant)
 	rz = lara_item->pos.z_pos;
 	lara_item->pos.x_pos = x;
 	lara_item->pos.z_pos = z;
+	itemlist = (ITEM_INFO**)&tsv_buffer[0];
 	GetCollidedObjects(lara_item, 256, 1, itemlist, 0, 0);
 	lara_item->pos.x_pos = rx;
 	lara_item->pos.z_pos = rz;

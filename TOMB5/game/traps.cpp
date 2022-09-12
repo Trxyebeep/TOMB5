@@ -92,8 +92,8 @@ void LavaBurn(ITEM_INFO* item)
 
 void ControlExplosion(short item_number)
 {
-	ITEM_INFO** _itemlist;
-	MESH_INFO** _staticlist;
+	ITEM_INFO** itemlist;
+	MESH_INFO** meshlist;
 	ITEM_INFO* item;
 	ITEM_INFO* target;
 	ITEM_INFO* switem;
@@ -156,13 +156,13 @@ void ControlExplosion(short item_number)
 				}
 			}
 
-			_itemlist = itemlist;
-			_staticlist = staticlist;
-			GetCollidedObjects(item, 2048, 1, _itemlist, _staticlist, 1);
+			itemlist = (ITEM_INFO**)&tsv_buffer[0x2000];
+			meshlist = (MESH_INFO**)&tsv_buffer[0x3000];
+			GetCollidedObjects(item, 2048, 1, itemlist, meshlist, 1);
 
-			if (*_itemlist || *_staticlist)
+			if (*itemlist || *meshlist)
 			{
-				target = *_itemlist;
+				target = *itemlist;
 
 				while (target)
 				{
@@ -184,11 +184,11 @@ void ControlExplosion(short item_number)
 					else
 						CrossbowHitSwitchType78(item, target, 0);
 
-					_itemlist++;
-					target = *_itemlist;
+					itemlist++;
+					target = *itemlist;
 				}
 
-				staticp = *_staticlist;
+				staticp = *meshlist;
 
 				while (staticp)
 				{
@@ -206,8 +206,8 @@ void ControlExplosion(short item_number)
 						staticp->Flags &= ~0x1;
 					}
 
-					_staticlist++;
-					staticp = *_staticlist;
+					meshlist++;
+					staticp = *meshlist;
 				}
 
 				AlertNearbyGuards(item);
