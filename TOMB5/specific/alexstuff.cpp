@@ -278,6 +278,28 @@ void aMakeCutsceneResident(long n1, long n2, long n3, long n4)
 		cutseq_resident_addresses[n4] = d4;
 }
 
+char* aFetchCutData(long n)
+{
+	FILE* file;
+	char* data;
+
+	data = cutseq_resident_addresses[n];
+
+	if (!data)
+	{
+		file = FileOpen("DATA\\CUTSEQ.BIN");
+
+		if (file)
+		{
+			READ(tsv_buffer, 1, 2048, file);
+			data = aReadCutData(n, file);
+			CLOSE(file);
+		}
+	}
+
+	return data;
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -291,4 +313,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x00491CC0, aReadCutData, replace);
 	INJECT(0x00491D30, aCalcDepackBufferSz, replace);
 	INJECT(0x00491DA0, aMakeCutsceneResident, replace);
+	INJECT(0x00491F60, aFetchCutData, replace);
 }
