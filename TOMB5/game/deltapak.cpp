@@ -2298,10 +2298,10 @@ void handle_cutseq_triggering(long name)
 #endif
 
 #ifdef GENERAL_FIXES
-			old_lara_LHolster = tomb5_save.LHolster;
-			tomb5_save.LHolster = lara.pistols_type_carried == W_NONE ? LARA_HOLSTERS : LARA_HOLSTERS_PISTOLS;
+			old_lara_LHolster = LHolster;
+			LHolster = lara.pistols_type_carried == W_NONE ? LARA_HOLSTERS : LARA_HOLSTERS_PISTOLS;
 			old_lara_holster = lara.holster;
-			lara.holster = tomb5_save.LHolster;
+			lara.holster = LHolster;
 #endif
 			lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + (2 * LM_LHAND)];
 			lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA].mesh_index + (2 * LM_RHAND)];
@@ -2373,7 +2373,7 @@ void handle_cutseq_triggering(long name)
 			cutseq_control_routines[fuck].end_func();
 
 #ifdef GENERAL_FIXES
-		tomb5_save.LHolster = old_lara_LHolster;
+		LHolster = old_lara_LHolster;
 		lara.holster = old_lara_holster;
 #endif
 
@@ -2463,7 +2463,7 @@ void handle_cutseq_triggering(long name)
 void cutseq_givelara_pistols()
 {
 #ifdef GENERAL_FIXES
-	tomb5_save.LHolster = LARA_HOLSTERS;
+	LHolster = LARA_HOLSTERS;
 #else
 	old_lara_holster = lara.holster;
 #endif

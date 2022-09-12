@@ -12,6 +12,7 @@
 #ifdef GENERAL_FIXES
 #include "../game/savegame.h"
 #include "../tomb5/tomb5.h"
+#include "../game/lara2gun.h"
 #endif
 
 char lara_underwater_skin_sweetness_table[15] =
@@ -267,7 +268,7 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
 #ifdef GENERAL_FIXES
-		obj = &objects[tomb5_save.LHolster];
+		obj = &objects[LHolster];
 		meshpp = &meshes[obj->mesh_index];
 		meshpp += 8;
 		aMXPtr[M00] = lara_matricesF[1 * 12 + M00];
