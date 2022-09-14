@@ -35,6 +35,7 @@
 #endif
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
+#include "../tomb5/dynamicshadows.h"
 #endif
 
 short no_rotation[12] = { 0,0,0,0,0,0,0,0,0,0,0,0 };
@@ -518,7 +519,7 @@ void DrawAnimatingItem(ITEM_INFO* item)
 	obj = &objects[item->object_number];
 
 #ifdef GENERAL_FIXES
-	if (obj->shadow_size)
+	if (obj->shadow_size || DoIDynamicShadow(item))
 		S_PrintShadow(obj->shadow_size, frm[0], item);
 #endif
 

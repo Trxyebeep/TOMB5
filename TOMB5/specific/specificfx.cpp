@@ -13,8 +13,9 @@
 #include "winmain.h"
 #include "mmx.h"
 
-#ifdef SMOOTH_SHADOWS
+#ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
+#include "../tomb5/dynamicshadows.h"
 
 #define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
 #endif
@@ -84,7 +85,7 @@ uchar TargetGraphColTab[48] =
 	255, 255, 0
 };
 
-#ifdef SMOOTH_SHADOWS
+#ifdef GENERAL_FIXES
 static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 {
 	TEXTURESTRUCT Tex;
@@ -329,10 +330,12 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 	long x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, xSize, zSize, xDist, zDist;
 	short room_number;
 
-#ifdef SMOOTH_SHADOWS
+#ifdef GENERAL_FIXES
 	if (tomb5.shadow_mode != 1)
 	{
-		if (tomb5.shadow_mode == 4)
+		if (tomb5.shadow_mode == 5)
+			DrawDynamicShadow(item);
+		else if (tomb5.shadow_mode == 4)
 			S_PrintSpriteShadow(size, box, item);
 		else
 			S_PrintCircleShadow(size, box, item);
