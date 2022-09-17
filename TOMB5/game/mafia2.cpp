@@ -23,8 +23,7 @@ void InitialiseMafia(short item_number)
 }
 
 #pragma warning(push)
-#pragma warning(disable : 4700)//"HEY LET'S WRITE CODE THAT DOESN'T FUCKING COMPILE" said some Core employee
-//for future reference, info is used in a block where it isn't initialised and so VS throws a fit
+#pragma warning(disable : 4700)	//info is used in a block where it isn't initialised and so VS throws a fit
 void MafiaControl(short item_number)
 {
 	ITEM_INFO* item;

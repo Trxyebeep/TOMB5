@@ -1403,7 +1403,7 @@ void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 	float zv;
 	short clip_distance;
 
-	clip_distance = 0;	//Should've been a goddamn for loop but whatever core wants happens.
+	clip_distance = 0;
 	v->tu = (float)x1;
 	v->tv = (float)y1;
 	v->sz = (float)z1;
@@ -1866,7 +1866,7 @@ void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz)
 			}
 
 			sprite = &spriteinfo[sptr->Def];
-			v[0].color = RGBA(sptr->R, sptr->G, sptr->B, 0xFF);//sptr->B | ((sptr->G | ((sptr->R | 0xFFFFFF00) << 8)) << 8);
+			v[0].color = RGBA(sptr->R, sptr->G, sptr->B, 0xFF);
 			v[1].color = v[0].color;
 			v[2].color = v[0].color;
 			v[3].color = v[0].color;

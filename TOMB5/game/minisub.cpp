@@ -434,7 +434,7 @@ void MinisubControl(short item_number)
 	{
 		lara_info.angle = info.angle;
 		lara_info.distance = info.distance;
-#ifdef GENERAL_FIXES//fixes dumb bug of the minisub not shooting that depends on luck and a little bit of idiocy from whoever wrote this function
+#ifdef GENERAL_FIXES	//uninitialized
 		lara_info.ahead = 1;
 #endif
 	}

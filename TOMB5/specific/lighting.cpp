@@ -79,7 +79,7 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		x = light->nx;
 		y = light->ny;
 		z = light->nz;
-		num = -1.0F / sqrt(SQUARE(z) + SQUARE(y) + SQUARE(x));	//MINUS one because [redacted] winroomedit inverted direction
+		num = -1.0F / sqrt(SQUARE(z) + SQUARE(y) + SQUARE(x));	//MINUS one because level files have inverted direction
 #else
 		x = (float)light->inx;
 		y = (float)light->iny;
@@ -274,7 +274,7 @@ void CreateLightList(ITEM_INFO* item)
 		dy = current_lights[i].iy - item->il.item_pos.y;
 		dz = current_lights[i].iz - item->il.item_pos.z;
 
-#ifdef GENERAL_FIXES	//stupid uninitialized var
+#ifdef GENERAL_FIXES	//uninitialized
 		range = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
 #endif
 
@@ -491,7 +491,7 @@ void SuperSetupDynamicLight(DYNAMIC* light, ITEM_INFO* item)
 
 void InitDynamicLighting_noparams()
 {
-	//dope
+
 }
 
 void InitDynamicLighting(ITEM_INFO* item)

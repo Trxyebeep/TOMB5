@@ -1117,7 +1117,7 @@ void DrawScaledSpike(ITEM_INFO* item)
 	PHD_VECTOR v;
 	short** meshpp;
 	short* frmptr[2];
-	long clip, rate;//, scale;
+	long clip, rate;
 
 	if ((item->object_number == TEETH_SPIKES && !item->item_flags[1]) || item->object_number == RAISING_BLOCK1 && item->trigger_flags <= -1)
 		return;

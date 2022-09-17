@@ -710,7 +710,7 @@ void phd_PutPolygonsPickup(short* objptr, float x, float y, long color)
 	SunLights[0].g = (float)CLRG(color);
 	SunLights[0].b = (float)CLRB(color);
 	val = 1.0F / sqrt(12500.0F);
-	SunLights[0].vec.x = (D3DMView._12 * -50.0F + D3DMView._13 * -100.0F) * val;	//x must be 0
+	SunLights[0].vec.x = (D3DMView._12 * -50.0F + D3DMView._13 * -100.0F) * val;	//x is 0
 	SunLights[0].vec.y = (D3DMView._22 * -50.0F + D3DMView._23 * -100.0F) * val;
 	SunLights[0].vec.z = (D3DMView._32 * -50.0F + D3DMView._33 * -100.0F) * val;
 	NumSunLights = 1;
@@ -1167,7 +1167,7 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 
 void phd_PutPolygons_train(short* objptr, long x)
 {
-	phd_PutPolygons(objptr, x);	//thanks alex
+	phd_PutPolygons(objptr, x);
 }
 
 #ifdef GENERAL_FIXES

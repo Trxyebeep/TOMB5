@@ -269,7 +269,7 @@ void InitialiseDoor(short item_number)
 	item = &items[item_number];
 
 #ifdef GENERAL_FIXES
-	if (!gfCurrentLevel)	//core thought it was an incredible idea to place two doors in the same place <3
+	if (!gfCurrentLevel)	//someone thought it was an incredible idea to place two doors in the same place <3
 							//this fixes the random lighting shift in the home title flyby sequence
 	{
 		if (item_number == 6)
@@ -412,7 +412,7 @@ void InitialiseDoor(short item_number)
 				dptr = door->dptr2;
 
 				if (!dptr)
-					*(long*)0x00000001 = 1;//good job
+					*(long*)0x00000001 = 1;
 
 				dptr[0] = 0;
 				dptr[1] = 0;
@@ -1203,7 +1203,7 @@ void InitialiseGasCloud(short item_number)
 {
 	ITEM_INFO* item;
 	GAS_CLOUD* cloud;
-	AIOBJECT* ai;//why the fuck are they ai objects, core.
+	AIOBJECT* ai;
 	short clouds[8];
 
 	item = &items[item_number];
@@ -1226,7 +1226,7 @@ void InitialiseGasCloud(short item_number)
 	}
 	else
 	{
-		cloud = (GAS_CLOUD*)game_malloc(1632, 0);//well, size of GAS_CLOUD is 204. 1632 = 204 * 8, so max gas clouds is 8? idk
+		cloud = (GAS_CLOUD*)game_malloc(sizeof(GAS_CLOUD) * 8, 0);
 		item->data = cloud;
 		memset(clouds, NO_ITEM, sizeof(clouds));
 

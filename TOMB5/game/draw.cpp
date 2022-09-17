@@ -206,7 +206,6 @@ void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, long skip)
 void gar_RotYXZsuperpack(short** pprot, long skip)
 {
 	ushort* prot;
-//	long packed;
 
 	while (skip)
 	{
@@ -854,7 +853,7 @@ void DrawRooms(short current_room)
 
 #ifdef GENERAL_FIXES
 	if (!tomb5.fog)
-		aResetFogBulbList();	//do this properly when fog stuff are decompiled
+		aResetFogBulbList();
 #endif
 
 	mAddProfilerEvent();

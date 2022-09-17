@@ -774,7 +774,7 @@ long GetCampaignCheatValue()
 	{
 	case 0:
 
-		if (keymap[33])//F
+		if (keymap[DIK_F])
 		{
 			timer = 450;
 			counter = 1;
@@ -783,46 +783,46 @@ long GetCampaignCheatValue()
 		break;
 
 	case 1:
-		if (keymap[23])//I
+		if (keymap[DIK_I])
 			counter = 2;
 
 		break;
 
 	case 2:
-		if (keymap[38])//L
+		if (keymap[DIK_L])
 			counter = 3;
 
 		break;
 
 	case 3:
-		if (keymap[20])//T
+		if (keymap[DIK_T])
 			counter = 4;
 
 		break;
 
 	case 4:
-		if (keymap[35])//H
+		if (keymap[DIK_H])
 			counter = 5;
 
 		break;
 
 	case 5:
-		if (keymap[21])//Y
+		if (keymap[DIK_Y])
 			counter = 6;
 
 		break;
 
 	case 6:
-		if (keymap[2])//1, not the numpad
+		if (keymap[DIK_1])
 			jump = LVL5_STREETS_OF_ROME;
 
-		if (keymap[3])//2, not the numpad
+		if (keymap[DIK_2])
 			jump = LVL5_BASE;
 
-		if (keymap[4])//3, not the numpad
+		if (keymap[DIK_3])
 			jump = LVL5_GALLOWS_TREE;
 
-		if (keymap[5])//4, not the numpad
+		if (keymap[DIK_4])
 			jump = LVL5_THIRTEENTH_FLOOR;
 
 		if (jump)
@@ -1493,13 +1493,13 @@ void DoBar(long x, long y, long width, long height, long pos, long clr1, long cl
 	lr = (long)r1;
 	lg = (long)g1;
 	lb = (long)b1;
-	clr_11 = RGBONLY(lr >> 1, lg >> 1, lb >> 1);	//clr1 is taken as is
+	clr_11 = RGBONLY(lr >> 1, lg >> 1, lb >> 1);
 	clr_12 = RGBONLY(lr, lg, lb);
 
 	lr = (long)r;
 	lg = (long)g;
 	lb = (long)b;
-	clr_21 = RGBONLY(lr >> 1, lg >> 1, lb >> 1);	//clr2 is the mix
+	clr_21 = RGBONLY(lr >> 1, lg >> 1, lb >> 1);
 	clr_22 = RGBONLY(lr, lg, lb);
 
 	v[0].color = clr_11;
@@ -2246,9 +2246,9 @@ void LoadScreen(long screen, long pathNum)
 	if (DXCreateSurface(G_dxptr->lpDD, &surf, &screen_surface) && file)
 	{
 		pic = malloc(0x96000);
-		SEEK(file, 0x96000 * screen, SEEK_SET);//fseek(file, 0x96000 * screen, SEEK_SET);
-		READ(pic, 0x96000, 1, file);//fread(pic, 0x96000, 1, file);
-		CLOSE(file);//fclose(file);
+		SEEK(file, 0x96000 * screen, SEEK_SET);
+		READ(pic, 0x96000, 1, file);
+		CLOSE(file);
 		memset(&surf, 0, sizeof(surf));
 		surf.dwSize = sizeof(DDSURFACEDESC2);
 		screen_surface->Lock(0, &surf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
@@ -2304,7 +2304,7 @@ void DrawLoadingScreen()
 	long w, h, val;
 	ushort sVal;
 
-	if (!(App.dx.Flags & 0x80))	//software mode bs
+	if (!(App.dx.Flags & 0x80))	//software
 	{
 		memset(&surf, 0, sizeof(surf));
 		surf.dwSize = sizeof(DDSURFACEDESC2);

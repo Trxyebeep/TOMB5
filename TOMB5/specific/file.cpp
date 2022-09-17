@@ -111,13 +111,13 @@ FILE* FileOpen(const char* Filename)
 	memset(cdFilename, 0, 80);
 #ifndef NO_CD
 	cdFilename[0] = cd_drive;
-	cdFilename[1] = ':';//original code
+	cdFilename[1] = ':';
 	cdFilename[2] = '\\';
 #endif
 
 	strcat(cdFilename, Filename);
 	Log(5, "FileOpen - %s", cdFilename);
-	fp = OPEN(cdFilename, "rb");//fp = fopen(cdFilename, "rb");
+	fp = OPEN(cdFilename, "rb");
 
 	if (!fp)
 		Log(1, "Unable To Open %s", cdFilename);
@@ -168,16 +168,16 @@ bool FindCDDrive()
 void FileClose(FILE* fp)
 {
 	Log(2, "FileClose");
-	CLOSE(fp);//fclose(fp);
+	CLOSE(fp);
 }
 
 long FileSize(FILE* fp)
 {
 	long size;
 
-	SEEK(fp, 0, SEEK_END);//fseek(fp, 0, SEEK_END);
-	size = TELL(fp);//ftell(fp);
-	SEEK(fp, 0, SEEK_SET);//fseek(fp, 0, SEEK_SET);
+	SEEK(fp, 0, SEEK_END);
+	size = TELL(fp);
+	SEEK(fp, 0, SEEK_SET);
 	return size;
 }
 
@@ -309,7 +309,7 @@ bool LoadSprites()
 			stat = &static_objects[slot];
 			stat->mesh_number = *(short*)FileData;
 			FileData += 2;
-			stat->mesh_number = *(short*)FileData;	//what the hell
+			stat->mesh_number = *(short*)FileData;
 			FileData += 2;
 		}
 		else
@@ -396,7 +396,7 @@ bool LoadObjects()
 	memset(objects, 0, NUMBER_OBJECTS * sizeof(OBJECT_INFO));
 	memset(static_objects, 0, 70 * sizeof(STATIC_INFO));
 
-	num = *(long*)FileData;	//load mesh mess
+	num = *(long*)FileData;	//meshes
 	FileData += 4;
 	mesh_base = (short*)game_malloc(num * 2, 0);
 	memcpy(mesh_base, FileData, num * 2);
@@ -413,7 +413,7 @@ bool LoadObjects()
 
 	num_meshes = num;
 
-	num_anims = *(long*)FileData;	//load anims
+	num_anims = *(long*)FileData;	//anims
 	FileData += 4;
 	anims = (ANIM_STRUCT*)game_malloc(num_anims * sizeof(ANIM_STRUCT), 0);
 	memcpy(anims, FileData, num_anims * sizeof(ANIM_STRUCT));
@@ -477,7 +477,7 @@ bool LoadObjects()
 		FileData += 2;
 
 		obj->loaded = 1;
-		slot = *(short*)FileData;	//I think some alignment padding?
+		slot = *(short*)FileData;	//pad?
 		FileData += 2;
 	}
 

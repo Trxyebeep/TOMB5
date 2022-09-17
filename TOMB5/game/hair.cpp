@@ -158,7 +158,7 @@ void HairControl(long in_cutscene, long pigtail, short* cutscenething)
 		phd_PushMatrix_I();
 		objptr = lara.mesh_ptrs[LM_TORSO];
 
-		if (gfCurrentLevel >= LVL5_BASE && gfCurrentLevel <= LVL5_SINKING_SUBMARINE)//fucking joby sphere is even worse
+		if (gfCurrentLevel >= LVL5_BASE && gfCurrentLevel <= LVL5_SINKING_SUBMARINE)//joby sphere is even worse
 			phd_TranslateRel_I(*objptr - 11, objptr[1] - 16, objptr[2] + 25);
 		else
 			phd_TranslateRel_I(*objptr - 9, objptr[1], objptr[2] + 25);//repositioned to avoid floaty hair
@@ -886,7 +886,7 @@ void InitialiseHair()
 	}
 }
 
-void GetCorrectStashPoints(long pigtail, long hair_node, long skin_node)//something about how skin parts connect to each other
+void GetCorrectStashPoints(long pigtail, long hair_node, long skin_node)
 {
 	HAIR_STRUCT* hair;
 	ushort num, rot1, rot2;

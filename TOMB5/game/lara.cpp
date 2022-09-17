@@ -1048,15 +1048,14 @@ void lara_col_walk(ITEM_INFO* item, COLL_INFO* coll)
 	{
 		if (LaraDeflectEdge(item, coll))
 		{
-			if (item->frame_number >= 29 && item->frame_number <= 47)//because frame_base + x is overrated
+			if (item->frame_number >= 29 && item->frame_number <= 47)
 			{
 				item->anim_number = ANIM_WALK_STOP_RIGHT;
 				item->frame_number = anims[ANIM_WALK_STOP_RIGHT].frame_base;
 			}
 			else
 			{
-				if (item->frame_number >= 22 && item->frame_number <= 28 ||
-					item->frame_number >= 48 && item->frame_number <= 57)//"oh what's wrong with hardcoding frame numbers that don't even work properly?", says Core employee
+				if (item->frame_number >= 22 && item->frame_number <= 28 || item->frame_number >= 48 && item->frame_number <= 57)
 				{
 					item->anim_number = ANIM_WALK_STOP_LEFT;
 					item->frame_number = anims[ANIM_WALK_STOP_LEFT].frame_base;
@@ -4288,8 +4287,6 @@ void lara_as_waterout(ITEM_INFO* item, COLL_INFO* coll)
 	coll->enable_spaz = 0;
 	camera.flags = 1;
 #ifdef GENERAL_FIXES 
-	// when lara_node is -1 by default, it takes Lara's game position and (i think) the average of her bounding box (ChaseCamera()). the average of bbox however is partly underground in this animation.
-	// So set Camera's follow-node to Lara's hips instead - it is less jerky than head and torso but moves smoothly!
 	camera.lara_node = LM_HIPS;
 #endif
 }

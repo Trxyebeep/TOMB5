@@ -510,7 +510,6 @@ void AlignLaraToRope(ITEM_INFO* l)
 	ROPE_STRUCT* rope;
 	PHD_VECTOR n;
 	long x, y, z, x1, y1, z1;
-	//SVECTOR pos;
 
 	up.x = 4096;
 	up.y = 0;
@@ -643,7 +642,6 @@ void DrawRopeList()
 
 void ProjectRopePoints(ROPE_STRUCT* Rope)
 {
-	//PHD_VECTOR* s;
 	D3DVECTOR Output;
 	PHD_VECTOR t;
 	float zv;

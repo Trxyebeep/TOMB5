@@ -338,7 +338,7 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 		{
 			phd_PushMatrix();
 
-#ifdef GENERAL_FIXES	//fixes the original bug where Lara's back weapon wouldn't draw.
+#ifdef GENERAL_FIXES	//fixes back weapons not drawing
 			aMXPtr[M00] = lara_matricesF[84 + M00];
 			aMXPtr[M01] = lara_matricesF[84 + M01];
 			aMXPtr[M02] = lara_matricesF[84 + M02];

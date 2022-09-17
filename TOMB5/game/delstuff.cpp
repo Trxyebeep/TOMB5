@@ -240,7 +240,7 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 		phd_PopMatrix();
 
 		phd_PushMatrix();
-		phd_TranslateRel(bone[41], bone[42], bone[43]);//this must be left arm I guess
+		phd_TranslateRel(bone[41], bone[42], bone[43]);
 
 		if (lara.flare_control_left)
 		{

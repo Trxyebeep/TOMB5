@@ -37,9 +37,9 @@ char available_levels[40] =
 
 struct cutseq_selector_item
 {
-	short string;//string to show
-	short lvl;//level the cutscene takes place in
-	short num;//cutseq num
+	short string;
+	short lvl;
+	short num;
 };
 
 cutseq_selector_item cutseq_selector_data[] =

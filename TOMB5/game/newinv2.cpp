@@ -108,14 +108,14 @@ long S_CallInventory2()
 	inventry_objects_list[INV_HK_ITEM1].meshbits = -1;
 
 	if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
-	{//fucked up inv HK in this level why core
+	{
 		inventry_objects_list[INV_HK_ITEM1].xrot = 8448;
 		inventry_objects_list[INV_HK_ITEM1].yrot = 16384;
 		inventry_objects_list[INV_HK_ITEM1].zrot = 16384;
 		inventry_objects_list[INV_HK_ITEM1].flags = 10;
 		inventry_objects_list[INV_HK_ITEM1].yoff = -40;
 	}
-	else//original values, for 13th floor and Red Alert
+	else
 	{
 		inventry_objects_list[INV_HK_ITEM1].xrot = -16384;
 		inventry_objects_list[INV_HK_ITEM1].yrot = 0;
