@@ -61,7 +61,7 @@ void InitSpotCamSequences()
 void InitialiseSpotCam(short Sequence)
 {
 	SPOTCAM* s;
-	long next_spline_camera, cunt;
+	long next_spline_camera, n;
 
 	if (bTrackCamInit && Sequence == LastSequence)
 	{
@@ -122,43 +122,43 @@ void InitialiseSpotCam(short Sequence)
 	if (s->flags & SP_TRACKCAMERA)
 	{
 		spline_from_camera = 0;
-		cunt = 0;
-		camera_xposition[cunt] = SpotCam[first_camera].x;
-		camera_yposition[cunt] = SpotCam[first_camera].y;
-		camera_zposition[cunt] = SpotCam[first_camera].z;
-		camera_xtarget[cunt] = SpotCam[first_camera].tx;
-		camera_ytarget[cunt] = SpotCam[first_camera].ty;
-		camera_ztarget[cunt] = SpotCam[first_camera].tz;
-		camera_roll[cunt] = SpotCam[first_camera].roll;
-		camera_fov[cunt] = SpotCam[first_camera].fov;
-		camera_speed[cunt] = SpotCam[first_camera].speed;
+		n = 0;
+		camera_xposition[n] = SpotCam[first_camera].x;
+		camera_yposition[n] = SpotCam[first_camera].y;
+		camera_zposition[n] = SpotCam[first_camera].z;
+		camera_xtarget[n] = SpotCam[first_camera].tx;
+		camera_ytarget[n] = SpotCam[first_camera].ty;
+		camera_ztarget[n] = SpotCam[first_camera].tz;
+		camera_roll[n] = SpotCam[first_camera].roll;
+		camera_fov[n] = SpotCam[first_camera].fov;
+		camera_speed[n] = SpotCam[first_camera].speed;
 		next_spline_camera = first_camera;
-		cunt++;
+		n++;
 
 		for (int i = 0; i < current_camera_cnt; i++)
 		{
-			camera_xposition[cunt] = SpotCam[next_spline_camera].x;
-			camera_yposition[cunt] = SpotCam[next_spline_camera].y;
-			camera_zposition[cunt] = SpotCam[next_spline_camera].z;
-			camera_xtarget[cunt] = SpotCam[next_spline_camera].tx;
-			camera_ytarget[cunt] = SpotCam[next_spline_camera].ty;
-			camera_ztarget[cunt] = SpotCam[next_spline_camera].tz;
-			camera_roll[cunt] = SpotCam[next_spline_camera].roll;
-			camera_fov[cunt] = SpotCam[next_spline_camera].fov;
-			camera_speed[cunt] = SpotCam[next_spline_camera].speed;
-			cunt++;
+			camera_xposition[n] = SpotCam[next_spline_camera].x;
+			camera_yposition[n] = SpotCam[next_spline_camera].y;
+			camera_zposition[n] = SpotCam[next_spline_camera].z;
+			camera_xtarget[n] = SpotCam[next_spline_camera].tx;
+			camera_ytarget[n] = SpotCam[next_spline_camera].ty;
+			camera_ztarget[n] = SpotCam[next_spline_camera].tz;
+			camera_roll[n] = SpotCam[next_spline_camera].roll;
+			camera_fov[n] = SpotCam[next_spline_camera].fov;
+			camera_speed[n] = SpotCam[next_spline_camera].speed;
+			n++;
 			next_spline_camera++;
 		}
 
-		camera_xposition[cunt] = SpotCam[last_camera].x;
-		camera_yposition[cunt] = SpotCam[last_camera].y;
-		camera_zposition[cunt] = SpotCam[last_camera].z;
-		camera_xtarget[cunt] = SpotCam[last_camera].tx;
-		camera_ytarget[cunt] = SpotCam[last_camera].ty;
-		camera_ztarget[cunt] = SpotCam[last_camera].tz;
-		camera_roll[cunt] = SpotCam[last_camera].roll;
-		camera_fov[cunt] = SpotCam[last_camera].fov;
-		camera_speed[cunt] = SpotCam[last_camera].speed;
+		camera_xposition[n] = SpotCam[last_camera].x;
+		camera_yposition[n] = SpotCam[last_camera].y;
+		camera_zposition[n] = SpotCam[last_camera].z;
+		camera_xtarget[n] = SpotCam[last_camera].tx;
+		camera_ytarget[n] = SpotCam[last_camera].ty;
+		camera_ztarget[n] = SpotCam[last_camera].tz;
+		camera_roll[n] = SpotCam[last_camera].roll;
+		camera_fov[n] = SpotCam[last_camera].fov;
+		camera_speed[n] = SpotCam[last_camera].speed;
 	}
 	else
 	{
@@ -233,30 +233,30 @@ void InitialiseSpotCam(short Sequence)
 			camera_roll[1] = camera_roll[0];
 			camera_fov[1] = camera_fov[0];
 			camera_speed[1] = camera_speed[0];
-			cunt = current_spline_camera;
-			camera_xposition[2] = SpotCam[cunt].x;
-			camera_yposition[2] = SpotCam[cunt].y;
-			camera_zposition[2] = SpotCam[cunt].z;
-			camera_xtarget[2] = SpotCam[cunt].tx;
-			camera_ytarget[2] = SpotCam[cunt].ty;
-			camera_ztarget[2] = SpotCam[cunt].tz;
-			camera_roll[2] = SpotCam[cunt].roll;
-			camera_fov[2] = SpotCam[cunt].fov;
-			camera_speed[2] = SpotCam[cunt].speed;
-			cunt++;
+			n = current_spline_camera;
+			camera_xposition[2] = SpotCam[n].x;
+			camera_yposition[2] = SpotCam[n].y;
+			camera_zposition[2] = SpotCam[n].z;
+			camera_xtarget[2] = SpotCam[n].tx;
+			camera_ytarget[2] = SpotCam[n].ty;
+			camera_ztarget[2] = SpotCam[n].tz;
+			camera_roll[2] = SpotCam[n].roll;
+			camera_fov[2] = SpotCam[n].fov;
+			camera_speed[2] = SpotCam[n].speed;
+			n++;
 
-			if (cunt > last_camera)
-				cunt = first_camera;
+			if (n > last_camera)
+				n = first_camera;
 
-			camera_xposition[3] = SpotCam[cunt].x;
-			camera_yposition[3] = SpotCam[cunt].y;
-			camera_zposition[3] = SpotCam[cunt].z;
-			camera_xtarget[3] = SpotCam[cunt].tx;
-			camera_ytarget[3] = SpotCam[cunt].ty;
-			camera_ztarget[3] = SpotCam[cunt].tz;
-			camera_roll[3] = SpotCam[cunt].roll;
-			camera_fov[3] = SpotCam[cunt].fov;
-			camera_speed[3] = SpotCam[cunt].speed;
+			camera_xposition[3] = SpotCam[n].x;
+			camera_yposition[3] = SpotCam[n].y;
+			camera_zposition[3] = SpotCam[n].z;
+			camera_xtarget[3] = SpotCam[n].tx;
+			camera_ytarget[3] = SpotCam[n].ty;
+			camera_ztarget[3] = SpotCam[n].tz;
+			camera_roll[3] = SpotCam[n].roll;
+			camera_fov[3] = SpotCam[n].fov;
+			camera_speed[3] = SpotCam[n].speed;
 		}
 	}
 

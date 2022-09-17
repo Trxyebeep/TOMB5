@@ -643,7 +643,7 @@ void ObjectObjects()
 
 	obj = &objects[BUBBLES];
 	obj->control = ControlEnemyMissile;
-	obj->draw_routine = (void(*)(ITEM_INFO*))1;	//what the fuck
+	obj->draw_routine = (void(*)(ITEM_INFO*))1;
 	obj->nmeshes = 0;
 	obj->loaded = 1;
 
@@ -752,7 +752,7 @@ void ObjectObjects()
 
 	obj = &objects[BODY_PART];
 	obj->control = ControlBodyPart;
-	obj->draw_routine = (void(*)(ITEM_INFO*))1;	//what the fuck
+	obj->draw_routine = (void(*)(ITEM_INFO*))1;
 	obj->nmeshes = 0;
 	obj->loaded = 1;
 }

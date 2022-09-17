@@ -994,14 +994,10 @@ void CombatCamera(ITEM_INFO* item)
 
 	UpdateCameraElevation();
 	camera.target_distance = 1536;
-	distance = 1536 * phd_cos(camera.actual_elevation) >> 14;
-
-	//I think both distance and the for loop for the ideals.y used camera.target_distance
-	//but the compiler optimized it to 1536 since that's what target_distance is, at this point. Keeping it like this anyway.
-	//but if we wanna change the distance in the future, we should keep this in mind :]
+	distance = camera.target_distance * phd_cos(camera.actual_elevation) >> 14;
 
 	for (int i = 0; i < 5; i++)
-		ideals[i].y = (1536 * phd_sin(camera.actual_elevation) >> 14) + camera.target.y;
+		ideals[i].y = (camera.target_distance * phd_sin(camera.actual_elevation) >> 14) + camera.target.y;
 
 	farthest = 0x7FFFFFFF;
 	farthestnum = 0;
@@ -1088,7 +1084,6 @@ void CombatCamera(ITEM_INFO* item)
 void MoveCamera(GAME_VECTOR* ideal, long speed)
 {
 	FLOOR_INFO* floor;
-//	GAME_VECTOR tcp;//unused
 	GAME_VECTOR temp1;
 	GAME_VECTOR temp2;
 	long height, ceiling, shake, rndval, wx, wy, wz, dx, dy, dz;

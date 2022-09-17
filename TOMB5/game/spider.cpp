@@ -101,7 +101,6 @@ void UpdateSpiders()
 	SPIDER_STRUCT* fx;
 	FLOOR_INFO* floor;
 	long h, dx, dy, dz, oldx, oldy, oldz;
-	//long lp;
 	short angle;
 
 	if (objects[SPIDER].loaded)
@@ -207,7 +206,6 @@ void DrawSpiders()
 {
 	SPIDER_STRUCT* fx;
 	short** meshpp;
-	//long lp;
 
 	if (objects[SPIDER].loaded)
 	{

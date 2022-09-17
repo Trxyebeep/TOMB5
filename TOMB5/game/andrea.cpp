@@ -124,7 +124,7 @@ void ControlPropeller(short item_number)
 			b[1] = item->pos.x_pos + bptr[1];
 			b[4] = item->pos.z_pos + bptr[4];
 			b[5] = item->pos.z_pos + bptr[5];
-			Xaxis = 1;//some [redacted] [redacted] decided to set this to 1 at the beginning of the function. moved here where it [redacted] belongs.. :)
+			Xaxis = 1;
 			Zaxis = 0;
 			break;
 		}

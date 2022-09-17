@@ -179,10 +179,10 @@ void GetProperFootPos(PHD_VECTOR* pos)
 	frame = lara_item->frame_number;
 	base = anims[lara_item->anim_number].frame_base;
 
-	switch (lara_item->anim_number)	//thank u core
+	switch (lara_item->anim_number)
 	{
 	case 7:	//run to walk right
-		pos->x = right_foot.x;	//right foot winer!
+		pos->x = right_foot.x;
 		pos->y = right_foot.y;
 		pos->z = right_foot.z;
 		break;
@@ -191,13 +191,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 7)
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
 		else if (frame == base + 12)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
@@ -208,13 +208,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 3)
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
 		else if (frame == base + 17)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
@@ -225,13 +225,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 13)
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
 		else if (frame == base + 27)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
@@ -242,13 +242,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 34)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
 		else if (frame == base + 39)
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
@@ -259,13 +259,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 15)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
 		else if (frame == base + 19)
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
@@ -273,13 +273,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 		break;
 
 	case 38:	//walk back end right
-		pos->x = right_foot.x;	//right foot winer!
+		pos->x = right_foot.x;	//right foot
 		pos->y = right_foot.y;
 		pos->z = right_foot.z;
 		break;
 
 	case 39:	//walk back end left
-		pos->x = left_foot.x;	//left foot winer!
+		pos->x = left_foot.x;	//left foot
 		pos->y = left_foot.y;
 		pos->z = left_foot.z;
 		break;
@@ -288,13 +288,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 14)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
 		else if (frame == base + 44)
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
@@ -305,13 +305,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 9)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
 		else if (frame == base + 20)
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
@@ -322,13 +322,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 1)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
 		else if (frame == base + 17)
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
@@ -339,13 +339,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 14)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
 		else if (frame == base + 24)
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
@@ -356,20 +356,20 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 12)
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
 		else if (frame == base + 20)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
 
 		break;
 
-	case 82:	//soft land, both feet winer!
+	case 82:	//soft land, both feet
 		pos->x = right_foot.x;
 		pos->y = right_foot.y;
 		pos->z = right_foot.z;
@@ -396,20 +396,20 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 52)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 			
 		}
 		else if (frame == base + 69)
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
 		else if (frame == base + 73)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
@@ -420,13 +420,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (frame == base + 157)
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
 		else
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}
@@ -440,13 +440,13 @@ void GetProperFootPos(PHD_VECTOR* pos)
 
 		if (ABS(left_foot.y - height) < ABS(right_foot.y - height))
 		{
-			pos->x = left_foot.x;	//left foot winer!
+			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;
 			pos->z = left_foot.z;
 		}
 		else
 		{
-			pos->x = right_foot.x;	//right foot winer!
+			pos->x = right_foot.x;	//right foot
 			pos->y = right_foot.y;
 			pos->z = right_foot.z;
 		}

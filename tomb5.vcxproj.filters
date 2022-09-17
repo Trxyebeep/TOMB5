@@ -345,6 +345,7 @@
     <ClCompile Include="TOMB5\specific\time.cpp" />
     <ClCompile Include="TOMB5\tomb5\troyestuff.cpp" />
     <ClCompile Include="TOMB5\specific\cmdline.cpp" />
+    <ClCompile Include="TOMB5\tomb5\dynamicshadows.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -692,6 +693,7 @@
     <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_register.h" />
     <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_rpc.h" />
     <ClInclude Include="TOMB5\specific\cmdline.h" />
+    <ClInclude Include="TOMB5\tomb5\dynamicshadows.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TOMB5\global\progress.txt">

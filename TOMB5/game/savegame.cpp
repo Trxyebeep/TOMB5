@@ -170,15 +170,15 @@ void RestoreLaraData(long FullSave)
 	_CutSceneTriggered2 = savegame.CutSceneTriggered2;
 }
 
-void SaveLevelData(long FullSave)	//write all the bs to the savegame buffer
+void SaveLevelData(long FullSave)
 {
 	ITEM_INFO* item;
 	ROOM_INFO* r;
 	OBJECT_INFO* obj;
 	RAT_STRUCT* rat;
 	BAT_STRUCT* bat;
-	MESH_INFO* mesh;	//not in symbols
-	CREATURE_INFO* creature;	//neither is this
+	MESH_INFO* mesh;
+	CREATURE_INFO* creature;
 	ulong flags;
 	long k, flare_age;
 	ushort packed;
@@ -188,7 +188,7 @@ void SaveLevelData(long FullSave)	//write all the bs to the savegame buffer
 
 	WriteSG(&FmvSceneTriggered, sizeof(long));
 	WriteSG(&GLOBAL_lastinvitem, sizeof(long));
-	word = 0;//used to write 2 bytes
+	word = 0;
 
 #ifdef GENERAL_FIXES	//fix Red Alert flip bugs, word was being overwritten on high numbers
 	for (int i = 0; i < 16; i++)
@@ -345,7 +345,7 @@ void SaveLevelData(long FullSave)	//write all the bs to the savegame buffer
 
 				if (obj->save_anim)
 				{
-					byte = (uchar)(item->current_anim_state);	//save anim state etc.... but why in 1 byte!! THEY'RE SHORTS CORE
+					byte = (uchar)(item->current_anim_state);
 					WriteSG(&byte, sizeof(uchar));
 					byte = (uchar)(item->goal_anim_state);
 					WriteSG(&byte, sizeof(uchar));
@@ -604,12 +604,12 @@ void SaveLevelData(long FullSave)	//write all the bs to the savegame buffer
 
 					WriteSG(&word, sizeof(short));	//what have we saved?
 					pos = (short)(bat[i].pos.x_pos >> 1);
-					WriteSG(&pos, sizeof(short));	//save xpos
+					WriteSG(&pos, sizeof(short));
 					pos = (short)(bat[i].pos.y_pos >> 1);
-					WriteSG(&pos, sizeof(short));	//ypos
+					WriteSG(&pos, sizeof(short));
 					pos = (short)(bat[i].pos.z_pos >> 1);
-					WriteSG(&pos, sizeof(short));	//zpos
-					WriteSG(&bat[i].pos.y_rot, sizeof(short));	//yrot
+					WriteSG(&pos, sizeof(short));
+					WriteSG(&bat[i].pos.y_rot, sizeof(short));
 
 					if (word & 8)
 						WriteSG(&bat[i].pos.x_rot, sizeof(short));
@@ -633,7 +633,7 @@ void RestoreLevelData(long FullSave)
 	OBJECT_INFO* obj;
 	RAT_STRUCT* rat;
 	BAT_STRUCT* bat;
-	MESH_INFO* mesh;//not in symbols
+	MESH_INFO* mesh;
 	ulong flags;
 	long k, flare_age;
 	ushort word, packed, uroom_number, uword;

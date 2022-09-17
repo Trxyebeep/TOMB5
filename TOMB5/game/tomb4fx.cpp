@@ -83,8 +83,8 @@ void TriggerBlood(long x, long y, long z, long angle, long num)
 
 		ang &= 0xFFF;
 		speed = GetRandomControl() & 0xF;
-		Blood->Xvel = (short)(-(speed * rcossin_tbl[ang << 1]) >> 7);//sin
-		Blood->Zvel = (short)(speed * rcossin_tbl[(ang << 1) + 1] >> 7);//cos
+		Blood->Xvel = short(-(speed * rcossin_tbl[ang << 1]) >> 7);//sin
+		Blood->Zvel = short(speed * rcossin_tbl[(ang << 1) + 1] >> 7);//cos
 		Blood->Friction = 4;
 		Blood->Yvel = -128 - (GetRandomControl() & 0xFF);
 		Blood->RotAng = GetRandomControl() & 0xFFF;
@@ -255,7 +255,6 @@ void ControlElectricFence(short item_number)
 {
 	ITEM_INFO* item;
 	long tx, ty, tz, xand, zand, cnt;
-	//long x, lp;
 
 	item = &items[item_number];
 

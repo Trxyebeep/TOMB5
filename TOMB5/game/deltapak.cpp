@@ -31,6 +31,8 @@
 #include "../specific/alexstuff.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
+#include "../tomb5/dynamicshadows.h"
+#include "../tomb5/tomb5.h"
 #endif
 
 #ifdef GENERAL_FIXES
@@ -2148,7 +2150,7 @@ void joby10_end()
 void special1_init()
 {
 	cutrot = 0;
-	lara_item->mesh_bits = 1;
+	lara_item->mesh_bits = -1;
 	Chris_Menu = 0;
 }
 
@@ -2174,12 +2176,12 @@ void special2_init()
 	ResetCutItem(ANIMATING5_MIP);
 	ResetCutItem(ANIMATING6_MIP);
 	ResetCutItem(ANIMATING7_MIP);
-	resetwindowsmash(50);
-	resetwindowsmash(52);
-	resetwindowsmash(54);
-	resetwindowsmash(56);
-	resetwindowsmash(58);
-	resetwindowsmash(60);
+	resetwindowsmash(MAFIA_MIP);
+	resetwindowsmash(MAFIA2_MIP);
+	resetwindowsmash(SAILOR_MIP);
+	resetwindowsmash(CRANE_GUY_MIP);
+	resetwindowsmash(LION_MIP);
+	resetwindowsmash(GLADIATOR_MIP);
 	ResetCutanimate(ANIMATING16);
 	ResetCutanimate(ANIMATING5);
 	UNK_00E916F0 = 2;
@@ -3518,8 +3520,20 @@ void frigup_lara()
 #endif
 
 	Rich_CalcLaraMatrices_Normal(frame, bone, 0);
+
+#ifdef GENERAL_FIXES
+	if (tomb5.shadow_mode == 5)
+		CalcShadowMatrices_Normal(frame, bone, 0);
+#endif
+
 	phd_PushUnitMatrix();
 	Rich_CalcLaraMatrices_Normal(frame, bone, 1);
+
+#ifdef GENERAL_FIXES
+	if (tomb5.shadow_mode == 5)
+		CalcShadowMatrices_Normal(frame, bone, 1);
+#endif
+
 	phd_PopMatrix();
 	HairControl(0, 0, frame);
 

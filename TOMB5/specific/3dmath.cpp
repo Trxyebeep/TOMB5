@@ -193,24 +193,24 @@ void aRotZ(short angle)
 	}
 }
 
-void aRotYXZPack(long angles)//angles is XYZ, not YXZ as the name suggests, ty core
+void aRotYXZPack(long angles)	//angles is XYZ
 {
 	short angle;
 
 	angle = (angles >> 10) & 0x3FF;//second ten bits, Y
-	angle <<= 6;//* 64
+	angle <<= 6;
 
 	if (angle)
 		aRotY(angle);
 
-	angle = (angles >> 20) & 0x3FF;//firrst ten bits, X
-	angle <<= 6;//* 64
+	angle = (angles >> 20) & 0x3FF;//first ten bits, X
+	angle <<= 6;
 
 	if (angle)
 		aRotX(angle);
 
 	angle = angles & 0x3FF;//last ten, Z
-	angle <<= 6;//* 64
+	angle <<= 6;
 
 	if (angle)
 		aRotZ(angle);
@@ -395,14 +395,14 @@ void phd_RotZ(short angle)
 	aRotZ(angle);
 }
 
-void phd_RotYXZpack(long angles)//angles is XYZ, not YXZ as the name suggests, ty core
+void phd_RotYXZpack(long angles)	//angles is XYZ
 {
 	long sin, cos, mx1, mx2;
 	short angle;
 
 	aRotYXZPack(angles);
 	angle = (angles >> 10) & 0x3FF;//second ten bits, Y
-	angle <<= 6;//* 64
+	angle <<= 6;
 
 	if (angle)
 	{
@@ -426,7 +426,7 @@ void phd_RotYXZpack(long angles)//angles is XYZ, not YXZ as the name suggests, t
 	}
 
 	angle = (angles >> 20) & 0x3FF;//firrst ten bits, X
-	angle <<= 6;//* 64
+	angle <<= 6;
 
 	if (angle)
 	{
@@ -450,7 +450,7 @@ void phd_RotYXZpack(long angles)//angles is XYZ, not YXZ as the name suggests, t
 	}
 
 	angle = angles & 0x3FF;//last ten, Z
-	angle <<= 6;//* 64
+	angle <<= 6;
 
 	if (angle)
 	{
@@ -766,7 +766,7 @@ void aPointCameraByVector(float* mx, FCAMERA* cam)
 	float m2[indices_count];
 
 	aUnitMatrixByMat(m1);
-	aUnitMatrixByMat(m2);	//hello?
+	aUnitMatrixByMat(m2);
 
 	mx[M00] = cam->j.x;
 	mx[M01] = cam->j.y;

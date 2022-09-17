@@ -165,7 +165,7 @@ void TriggerFontFire(ITEM_INFO* item, long num, long loop)
 	if (!num || num > 32)
 		num = 32;
 
-#ifdef GENERAL_FIXES	//can compile without, but VS complains about uninitialized var
+#ifdef GENERAL_FIXES	//uninitialized
 	pos.x = 0;
 	pos.y = 0;
 	pos.z = 0;

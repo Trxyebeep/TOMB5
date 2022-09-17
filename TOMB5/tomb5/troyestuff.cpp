@@ -114,7 +114,8 @@ bool Page0(long& num, long textY, ulong selection)
 	strcpy(buffer, tomb5.tr4_point_lights ? "TR4" : "TR5");
 	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 3 * font_height), selection & 2 ? 1 : 6, buffer, 0);
 
-	strcpy(buffer, tomb5.shadow_mode == 1 ? "original" : tomb5.shadow_mode == 2 ? "circle" : tomb5.shadow_mode == 3 ? "improved PSX" : "PSX");
+	strcpy(buffer, tomb5.shadow_mode == 1 ? "original" : tomb5.shadow_mode == 2 ? "circle" : tomb5.shadow_mode == 3 ? "improved PSX" :
+		tomb5.shadow_mode == 4 ? "PSX" : "Dynamic");
 	PrintString(phd_centerx + (phd_centerx >> 2), (ushort)(textY + 4 * font_height), selection & 4 ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.fix_climb_up_delay ? "on" : "off");
@@ -181,7 +182,7 @@ bool Page0(long& num, long textY, ulong selection)
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 			tomb5.shadow_mode++;
 
-			if (tomb5.shadow_mode > 4)
+			if (tomb5.shadow_mode > 5)
 				tomb5.shadow_mode = 1;
 
 			changed = 1;
@@ -193,7 +194,7 @@ bool Page0(long& num, long textY, ulong selection)
 			tomb5.shadow_mode--;
 
 			if (tomb5.shadow_mode < 1)
-				tomb5.shadow_mode = 4;
+				tomb5.shadow_mode = 5;
 
 			changed = 1;
 		}

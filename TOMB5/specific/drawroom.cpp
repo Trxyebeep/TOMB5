@@ -397,7 +397,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	clip = clipflags;
 	cam_underwater = camera.underwater;
 
-	if (!(App.dx.Flags & 0x80))	//no wibble on software mode?
+	if (!(App.dx.Flags & 0x80))	//no wibble on software mode
 		cam_underwater = 0;
 
 #ifdef GENERAL_FIXES
@@ -858,7 +858,7 @@ void ProcessMeshData(long num_meshes)
 	mesh_vtxbuf = (MESH_DATA**)game_malloc(4 * num_meshes, 0);
 	mesh_base = (short*)malloc_ptr;
 	no_mesh = 0;
-#ifdef GENERAL_FIXES	//fucking stupid fuck uninitialized var why core
+#ifdef GENERAL_FIXES	//uninitialized
 	data = 0;
 #endif
 
@@ -1150,7 +1150,7 @@ long aBuildRoomletLights(ROOMLET* r)
 		if (!fogbulb->visible)
 			continue;
 
-		if (fogbulb->sqlen >= fogbulb->sqrad)	//this block does nothing <3
+		if (fogbulb->sqlen >= fogbulb->sqrad)	//this block does nothing
 		{
 			bbox = aBoundingBox;
 

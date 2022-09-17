@@ -13,8 +13,9 @@
 #include "winmain.h"
 #include "mmx.h"
 
-#ifdef SMOOTH_SHADOWS
+#ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
+#include "../tomb5/dynamicshadows.h"
 
 #define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
 #endif
@@ -84,7 +85,7 @@ uchar TargetGraphColTab[48] =
 	255, 255, 0
 };
 
-#ifdef SMOOTH_SHADOWS
+#ifdef GENERAL_FIXES
 static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 {
 	TEXTURESTRUCT Tex;
@@ -329,10 +330,12 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 	long x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, xSize, zSize, xDist, zDist;
 	short room_number;
 
-#ifdef SMOOTH_SHADOWS
+#ifdef GENERAL_FIXES
 	if (tomb5.shadow_mode != 1)
 	{
-		if (tomb5.shadow_mode == 4)
+		if (tomb5.shadow_mode == 5)
+			DrawDynamicShadow(item);
+		else if (tomb5.shadow_mode == 4)
 			S_PrintSpriteShadow(size, box, item);
 		else
 			S_PrintCircleShadow(size, box, item);
@@ -1400,7 +1403,7 @@ void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 	float zv;
 	short clip_distance;
 
-	clip_distance = 0;	//Should've been a goddamn for loop but whatever core wants happens.
+	clip_distance = 0;
 	v->tu = (float)x1;
 	v->tv = (float)y1;
 	v->sz = (float)z1;
@@ -1863,7 +1866,7 @@ void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz)
 			}
 
 			sprite = &spriteinfo[sptr->Def];
-			v[0].color = RGBA(sptr->R, sptr->G, sptr->B, 0xFF);//sptr->B | ((sptr->G | ((sptr->R | 0xFFFFFF00) << 8)) << 8);
+			v[0].color = RGBA(sptr->R, sptr->G, sptr->B, 0xFF);
 			v[1].color = v[0].color;
 			v[2].color = v[0].color;
 			v[3].color = v[0].color;

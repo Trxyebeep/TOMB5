@@ -33,7 +33,6 @@ void InitialiseGuardian(short item_number)
 	ITEM_INFO* item;
 	short* aptr;
 	short* bptr;
-	//long lp, lp1;
 	short angle;
 
 	item = &items[item_number];
@@ -87,7 +86,6 @@ void TriggerGuardianSparks(GAME_VECTOR* pos, long size, long rgb, long power)
 {
 	SPARKS* sptr;
 	long rnd;
-	//long lp1;
 
 	for (int i = 0; i < size; i++)
 	{
@@ -123,9 +121,7 @@ void TriggerBaseLightning(ITEM_INFO *item)
 	LIGHTNING_STRUCT* lptr;
 	PHD_VECTOR s, d;
 	short* bptr;
-	//short angles[2];
 	short g, b, fade;
-	//short lp;
 
 	g = (GetRandomControl() & 0x1F) + 128;
 	b = (GetRandomControl() & 0x1F) + 64;

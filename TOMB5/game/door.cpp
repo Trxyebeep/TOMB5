@@ -108,9 +108,7 @@ void OpenThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 
 	if (d->floor)
 	{
-	//	memcpy(d->floor, &d->data, sizeof(FLOOR_INFO));
-		*d->floor = d->data;//this is a S_MemCpy call on PSX, and probably in original PC too but the compiler was smart.
-		//anyway, matching PC assmbly for now :)
+		*d->floor = d->data;
 
 		if (d->block != 2047)
 		{
@@ -177,7 +175,7 @@ void DoorControl(short item_number)
 {
 	ITEM_INFO* item;
 	DOOR_DATA* door;
-	long bound;//not in symbols
+	long bound;
 
 	item = &items[item_number];
 	door = (DOOR_DATA*)item->data;
@@ -188,8 +186,7 @@ void DoorControl(short item_number)
 		{
 			item->item_flags[0]--;
 			item->pos.y_pos -= 12;
-			bound = GetBoundsAccurate(item)[2] + *(long*)&item->item_flags[2] - 256;//'bound' isn't in the symbols but,
-			//GetBoundsAccurate is only called once in the asm, but is used twice
+			bound = GetBoundsAccurate(item)[2] + *(long*)&item->item_flags[2] - 256;
 
 			if (item->pos.y_pos < bound)
 			{
@@ -426,7 +423,7 @@ void PushPullKickDoorControl(short item_number)
 void PushPullKickDoorCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 {
 	ITEM_INFO* item;
-	long flag;//, pull;//idk where to use it
+	long flag;
 
 	item = &items[item_num];
 

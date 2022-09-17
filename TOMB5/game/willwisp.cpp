@@ -37,7 +37,6 @@ void WillOWispControl(short item_number)
 	AI_INFO info, lara_info;
 	long lara_dx, lara_dz, height, ceiling;
 	short angle, tilt, room_number, lightlevel, x;
-	//short torso_y, torso_x, head;
 
 	if (CreatureActive(item_number))
 	{
