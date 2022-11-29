@@ -636,6 +636,67 @@ void DrawBigChar(short x, short y, ushort col, CHARDEF* c, long scale)
 	AddQuadSorted(v, 0, 1, 2, 3, &tex, 1);
 }
 
+long GetBigStringLength(const char* string, short* top, short* bottom)
+{
+	CHARDEF* def;
+	long s, length;
+	short lowest, highest, y;
+
+	s = *string++;
+	length = 0;
+	lowest = -1024;
+	highest = 1024;
+
+	while (s)
+	{
+		if (s == '\n')
+			break;
+
+		if (s == ' ')
+			length += long((float(phd_winxmax + 1) / 640.0F) * 8.0F) * 3;
+		else if (s == '\t')
+		{
+			length += 40;
+
+			if (top && highest > -12)
+				highest = -12;
+
+			if (bottom && lowest < 2)
+				lowest = 2;
+		}
+		else if (s >= 20)
+		{
+			if (s < ' ')
+				def = &CharDef[s + 74];
+			else
+				def = &CharDef[s - '!'];
+
+			if (ScaleFlag)
+				length += def->w - def->w / 4;
+			else
+				length += def->w * 3;
+
+			y = def->YOffset;
+
+			if (top && y < highest)
+				highest = def->YOffset;
+
+			if (bottom && def->h + y > lowest)
+				lowest = def->h + y;
+		}
+
+		s = *string++;
+	}
+
+	if (top)
+		*top = highest;
+
+	if (bottom)
+		*bottom = lowest;
+
+	return length;
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -652,4 +713,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x00491F60, aFetchCutData, replace);
 	INJECT(0x004927C0, DoCredits, replace);
 	INJECT(0x00491FE0, DrawBigChar, replace);
+	INJECT(0x004922E0, GetBigStringLength, replace);
 }

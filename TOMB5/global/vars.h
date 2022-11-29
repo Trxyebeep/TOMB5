@@ -627,6 +627,7 @@
 #define nClippedPolys	VAR_U_(0x00D9AB10, long)
 #define targetMeshP	VAR_U_(0x00E6E460, MESH_DATA*)
 #define binocsMeshP	VAR_U_(0x00E6D744, MESH_DATA*)
+#define ScaleFlag	VAR_U_(0x00E4EA60, char)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -776,6 +777,7 @@
 #define NotifyEventHandles	ARRAY_(0x00579FA0, HANDLE, [2])
 #define AnimatingTexturesV	ARRAY_(0x0087435C, float, [16][8][3])
 #define FontShades	ARRAY_(0x00E4E560, CVECTOR, [10][32])
+#define CharDef	ARRAY_(0x00507AB8, CHARDEF, [106])
 
 /****************/
 //registry
