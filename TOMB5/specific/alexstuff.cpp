@@ -7,6 +7,8 @@
 #include "file.h"
 #include "../game/gameflow.h"
 #include "../game/text.h"
+#include "specificfx.h"
+#include "function_table.h"
 
 const char* CreditNames[] =
 {
@@ -583,6 +585,57 @@ long DoCredits()
 #endif
 #pragma warning(pop)
 
+void DrawBigChar(short x, short y, ushort col, CHARDEF* c, long scale)
+{
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	float u1, v1, u2, v2;
+	long x1, y1, x2, y2, tc, bc;
+
+	x += phd_winxmin;
+	y += phd_winymin;
+
+	x1 = x;
+	y1 = y + scale * c->YOffset;
+
+	x2 = x + scale * c->w;
+	y2 = scale * (c->YOffset + c->h - big_char_height) + y;
+
+	if (y2 < 0 || y1 > phd_winymax)
+		return;
+
+	setXY4(v, x1, y1, x2, y1, x2, y2, x1, y2, long(f_mznear + 1.0F), clipflags);
+
+	tc = *(long*)&FontShades[col][2 * c->TopShade];
+	bc = *(long*)&FontShades[col][2 * c->BottomShade];
+	v[0].color = tc & 0xFFFFFF | 0x20000000;
+	v[1].color = tc & 0xFFFFFF | 0x20000000;
+	v[2].color = bc & 0xFFFFFF | 0x20000000;
+	v[3].color = bc & 0xFFFFFF | 0x20000000;
+	v[0].specular = 0xFF000000;
+	v[1].specular = 0xFF000000;
+	v[2].specular = 0xFF000000;
+	v[3].specular = 0xFF000000;
+
+	u1 = c->u + (1.0F / 512.0F);
+	v1 = c->v + (1.0F / 512.0F);
+	u2 = 512.0F / float(phd_winxmax + 1) * (float)c->w * (1.0F / 256.0F) + c->u - (1.0F / 512.0F);
+	v2 = 240.0F / float(phd_winymax + 1) * (float)c->h * (1.0F / 256.0F) + c->v - (1.0F / 512.0F);
+	tex.drawtype = 3;
+	tex.flag = 0;
+	tex.tpage = ushort(nTextures - 2);
+	tex.u1 = u1;
+	tex.v1 = v1;
+	tex.u2 = u2;
+	tex.v2 = v1;
+	tex.u3 = u2;
+	tex.v3 = v2;
+	tex.u4 = u1;
+	tex.v4 = v2;
+	nPolyType = 4;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 1);
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -598,4 +651,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x00491DA0, aMakeCutsceneResident, replace);
 	INJECT(0x00491F60, aFetchCutData, replace);
 	INJECT(0x004927C0, DoCredits, replace);
+	INJECT(0x00491FE0, DrawBigChar, replace);
 }

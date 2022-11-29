@@ -2396,6 +2396,17 @@ struct COMMANDLINES
 	char parameter[20];
 };
 
+struct CHARDEF
+{
+	float u;
+	float v;
+	short w;
+	short h;
+	short YOffset;
+	char TopShade;
+	char BottomShade;
+};
+
 #ifdef IMPROVED_BARS
 struct GouraudBarColourSet
 {

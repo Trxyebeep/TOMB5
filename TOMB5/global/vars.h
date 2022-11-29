@@ -775,6 +775,7 @@
 #define StreamHeaders	ARRAY_(0x00579E50, ACMSTREAMHEADER, [4])
 #define NotifyEventHandles	ARRAY_(0x00579FA0, HANDLE, [2])
 #define AnimatingTexturesV	ARRAY_(0x0087435C, float, [16][8][3])
+#define FontShades	ARRAY_(0x00E4E560, CVECTOR, [10][32])
 
 /****************/
 //registry
