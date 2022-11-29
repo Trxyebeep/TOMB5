@@ -1646,9 +1646,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x00491DA0	+	aMakeCutsceneResident
 0x00491F60	+	aFetchCutData
 0x00491FE0	+	DrawBigChar
-0x004922A0		_0x004922A0
 0x004922E0	+	GetBigStringLength
-0x004924B0		PrintBigString
+0x004924B0	+	PrintBigString
 0x004927C0	+	DoCredits
 
 

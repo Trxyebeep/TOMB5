@@ -697,6 +697,95 @@ long GetBigStringLength(const char* string, short* top, short* bottom)
 	return length;
 }
 
+void PrintBigString(ushort x, ushort y, uchar col, const char* string, ushort flags)
+{
+	CHARDEF* def;
+	short x2, bottom, l, top, bottom2;
+	uchar s;
+
+	ScaleFlag = (flags & FF_SMALL) != 0;
+	x2 = (short)GetBigStringLength(string, 0, &bottom);
+
+	if (flags & FF_CENTER)
+		x2 = x - (x2 >> 1);
+	else if (flags & FF_RJUSTIFY)
+		x2 = x - x2;
+	else
+		x2 = x;
+
+	s = *string++;
+
+	while (s)
+	{
+		if (s == '\n')
+		{
+			if (*string == '\n')
+			{
+				bottom = 0;
+				y += 16;
+			}
+			else
+			{
+				l = (short)GetBigStringLength(string, &top, &bottom2);
+
+				if (flags & FF_CENTER)
+					x2 = x - (l >> 1);
+				else if (flags & FF_RJUSTIFY)
+					x2 = x - l;
+				else
+					x2 = x;
+
+				y += bottom - top + 2;
+				bottom = bottom2;
+			}
+
+			s = *string++;
+			continue;
+		}
+
+		if (s == ' ')
+		{
+			if (ScaleFlag)
+				x2 += 6;
+			else
+				x2 += short(float(phd_winxmax + 1) / 640.0F * 8.0F) * 3;
+
+			s = *string++;
+			continue;
+		}
+
+		if (s == '\t')
+		{
+			x2 += 40;
+			s = *string++;
+			continue;
+		}
+
+		if (s < 20)
+		{
+			col = s - 1;
+			s = *string++;
+			continue;
+		}
+
+		if (s < ' ')
+			def = &CharDef[s + 74];
+		else
+			def = &CharDef[s - '!'];
+
+		DrawBigChar(x2, y, col, def, 3);
+
+		if (ScaleFlag)
+			x2 += def->w - def->w / 4;
+		else
+			x2 += def->w * 3;
+
+		s = *string++;
+	}
+
+	ScaleFlag = 0;
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -714,4 +803,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x004927C0, DoCredits, replace);
 	INJECT(0x00491FE0, DrawBigChar, replace);
 	INJECT(0x004922E0, GetBigStringLength, replace);
+	INJECT(0x004924B0, PrintBigString, replace);
 }
