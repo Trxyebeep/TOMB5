@@ -152,7 +152,19 @@ void HairControl(long in_cutscene, long pigtail, short* cutscenething)
 		phd_PopMatrix_I();
 
 		phd_TranslateRel_I(bone[25], bone[26], bone[27]);
-		gar_RotYXZsuperpack_I(&rot[0], &rot[1], 6);
+
+		if (lara.weapon_item != NO_ITEM && lara.gun_type == WEAPON_HK &&
+			(items[lara.weapon_item].current_anim_state == 0 || items[lara.weapon_item].current_anim_state == 1 ||
+				items[lara.weapon_item].current_anim_state == 2 || items[lara.weapon_item].current_anim_state == 3 ||
+				items[lara.weapon_item].current_anim_state == 4))
+		{
+			rot[0] = &lara.right_arm.frame_base[lara.right_arm.frame_number * (anims[lara.right_arm.anim_number].interpolation >> 8) + 9];
+			rot[1] = rot[0];
+			gar_RotYXZsuperpack_I(&rot[0], &rot[1], 7);
+		}
+		else
+			gar_RotYXZsuperpack_I(&rot[0], &rot[1], 6);
+
 		phd_RotYXZ_I(lara.torso_y_rot, lara.torso_x_rot, lara.torso_z_rot);
 
 		phd_PushMatrix_I();
@@ -260,7 +272,18 @@ void HairControl(long in_cutscene, long pigtail, short* cutscenething)
 		phd_PopMatrix();
 
 		phd_TranslateRel(bone[25], bone[26], bone[27]);
-		gar_RotYXZsuperpack(&rot[0], 6);
+
+		if (lara.weapon_item != NO_ITEM && lara.gun_type == WEAPON_HK &&
+			(items[lara.weapon_item].current_anim_state == 0 || items[lara.weapon_item].current_anim_state == 1 ||
+				items[lara.weapon_item].current_anim_state == 2 || items[lara.weapon_item].current_anim_state == 3 ||
+				items[lara.weapon_item].current_anim_state == 4))
+		{
+			rot[0] = lara.right_arm.frame_base + lara.right_arm.frame_number * (anims[lara.right_arm.anim_number].interpolation >> 8) + 9;
+			gar_RotYXZsuperpack(&rot[0], 7);
+		}
+		else
+			gar_RotYXZsuperpack(&rot[0], 6);
+
 		phd_RotYXZ(lara.torso_y_rot, lara.torso_x_rot, lara.torso_z_rot);
 
 		phd_PushMatrix();
