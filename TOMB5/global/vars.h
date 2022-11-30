@@ -632,6 +632,8 @@
 #define MonitorScreenU	VAR_U_(0x00874980, float)
 #define LoadLevelName	VAR_U_(0x00D9AC48, LOADLEVELNAME)
 #define MapData	VAR_U_(0x00874254, char*)
+#define num_boxes	VAR_U_(0x00EEFB68, long)
+#define overlap	VAR_U_(0x00EEFB5C, ushort*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
@@ -782,6 +784,7 @@
 #define AnimatingTexturesV	ARRAY_(0x0087435C, float, [16][8][3])
 #define FontShades	ARRAY_(0x00E4E560, CVECTOR, [10][32])
 #define CharDef	ARRAY_(0x00507AB8, CHARDEF, [106])
+#define ground_zone	ARRAY_(0x00EEFB20, short*, [5][2])
 
 /****************/
 //registry

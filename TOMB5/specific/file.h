@@ -24,6 +24,7 @@ void S_GetUVRotateTextures();
 void DoMonitorScreen();
 void S_LoadLevel();
 void LoadMapFile();
+bool LoadBoxes();
 
 #define	AdjustUV	( (void(__cdecl*)(long)) 0x004A5430 )
 #define FreeLevel	( (void(__cdecl*)()) 0x004A7130 )
