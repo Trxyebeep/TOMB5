@@ -2577,6 +2577,15 @@ void aDrawWreckingBall(ITEM_INFO* item, long shade)
 	AddQuadSorted(aVertexBuffer, 0, 2, 8, 6, &tex, 1);
 }
 
+void ClearFX()
+{
+	for (int i = 0; i < 2048; i++)
+	{
+		Rain[i].x = 0;
+		Snow[i].x = 0;
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2598,4 +2607,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CD750, aTransformPerspSV, replace);
 	INJECT(0x004C36B0, DrawBinoculars, replace);
 	INJECT(0x004CF1B0, aDrawWreckingBall, replace);
+	INJECT(0x004BFD70, ClearFX, replace);
 }
