@@ -20,6 +20,7 @@
 #endif
 #include "texture.h"
 #include "dxshell.h"
+#include "lighting.h"
 
 bool LoadTextureInfos()
 {
@@ -1281,6 +1282,34 @@ long LoadFile(const char* name, char** dest)
 	return size;
 }
 
+void FreeLevel()
+{
+	MESH_DATA** vbuf;
+	MESH_DATA* mesh;
+
+	Log(2, "FreeLevel");
+
+	for (int i = 0; i < num_level_meshes; i++)
+	{
+		vbuf = &mesh_vtxbuf[i];
+		mesh = *vbuf;
+
+		if (mesh->SourceVB)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mesh VB", mesh->SourceVB, mesh->SourceVB->Release());
+			mesh->SourceVB = 0;
+		}
+	}
+
+	Log(5, "Free Textures");
+	FreeTextures();
+	Log(5, "Free Lights");
+	FreeD3DLights();
+	DXFreeSounds();
+	malloc_ptr = malloc_buffer;
+	malloc_free = malloc_size;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A6B30, LoadLevel, 0);
@@ -1309,4 +1338,5 @@ void inject_file(bool replace)
 	INJECT(0x004A5E50, LoadBoxes, replace);
 	INJECT(0x004A5430, AdjustUV, replace);
 	INJECT(0x004A3E10, LoadFile, replace);
+	INJECT(0x004A7130, FreeLevel, replace);
 }
