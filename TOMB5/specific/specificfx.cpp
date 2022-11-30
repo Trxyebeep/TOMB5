@@ -2586,6 +2586,77 @@ void ClearFX()
 	}
 }
 
+void AddPolyLine(D3DTLVERTEX* vtx, TEXTURESTRUCT* tex)
+{
+	D3DTLVERTEX v[4];
+	float x0, y0, x1, y1, x2, y2, x3, y3;
+	short cf0, cf1;
+
+	x0 = vtx->sx;
+	y0 = vtx->sy;
+	x1 = vtx[1].sx;
+	y1 = vtx[1].sy;
+	cf0 = clipflags[0];
+	cf1 = clipflags[1];
+
+	if (fabs(x1 - x0) <= fabs(y1 - y0))
+	{
+		x2 = x0 + 2.0F;
+		y2 = y0;
+		x3 = x1 + 2.0F;
+		y3 = y1;
+	}
+	else
+	{
+		x2 = x0;
+		y2 = y0 + 2.0F;
+		x3 = x1;
+		y3 = y1 + 2.0F;
+	}
+
+	v[0].sx = x0;
+	v[0].sy = y0;
+	v[0].rhw = vtx->rhw;
+	v[0].tu = vtx->tu;
+	v[0].tv = vtx->tv;
+	v[0].color = vtx->color;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = x2;
+	v[1].sy = y2;
+	v[1].rhw = vtx->rhw;
+	v[1].tu = vtx->tu;
+	v[1].tv = vtx->tv;
+	v[1].color = vtx->color;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = x1;
+	v[2].sy = y1;
+	v[2].rhw = vtx->rhw;
+	v[2].tu = vtx[1].tu;
+	v[2].tv = vtx[1].tv;
+	v[2].color = vtx[1].color;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = x3;
+	v[3].sy = y3;
+	v[3].rhw = vtx->rhw;
+	v[3].tu = vtx[1].tu;
+	v[3].tv = vtx[1].tv;
+	v[3].color = vtx[1].color;
+	v[3].specular = 0xFF000000;
+
+	clipflags[0] = cf0;
+	clipflags[1] = cf0;
+	clipflags[2] = cf1;
+	clipflags[3] = cf1;
+
+	if (tex->drawtype == 3 || tex->drawtype == 2)
+		AddQuadSorted(v, 0, 1, 2, 3, tex, 0);
+	else
+		AddQuadZBuffer(v, 0, 1, 2, 3, tex, 0);
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2608,4 +2679,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C36B0, DrawBinoculars, replace);
 	INJECT(0x004CF1B0, aDrawWreckingBall, replace);
 	INJECT(0x004BFD70, ClearFX, replace);
+	INJECT(0x004BFDA0, AddPolyLine, replace);
 }

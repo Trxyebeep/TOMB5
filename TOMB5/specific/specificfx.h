@@ -23,6 +23,7 @@ void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long c
 void DrawBinoculars();
 void aDrawWreckingBall(ITEM_INFO* item, long shade);
 void ClearFX();
+void AddPolyLine(D3DTLVERTEX* vtx, TEXTURESTRUCT* tex);
 
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
@@ -44,4 +45,3 @@ void ClearFX();
 #define DrawShockwaves	( (void(__cdecl*)()) 0x004CB280 )
 #define DrawLightning	( (void(__cdecl*)()) 0x004CC0B0 )
 #define OldDrawLightning	( (void(__cdecl*)()) 0x004CCBA0 )
-#define AddPolyLine	( (void(__cdecl*)(D3DTLVERTEX*, TEXTURESTRUCT*)) 0x004BFDA0 )
