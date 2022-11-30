@@ -74,6 +74,7 @@
 #define ZSoff2	VAR_U_(0x0055D248, short)
 #define PoisonFlag	VAR_U_(0x00E5BF3E, char)
 #define LaraDrawType	VAR_U_(0x00EEEAD0, char)
+#define WeatherType	VAR_U_(0x00EEF4A0, char)
 #define CamRot	VAR_U_(0x00E4B0E0, SVECTOR)
 #define SmashedMeshCount	VAR_U_(0x0051CA5C, short)
 #define health_bar_timer	VAR_U_(0x0051CEA8, long)
