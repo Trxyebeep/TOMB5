@@ -1024,6 +1024,31 @@ void S_GetUVRotateTextures()
 	}
 }
 
+void DoMonitorScreen()
+{
+	float s;
+	static long pos, reset;
+
+	if (!MonitorScreenTex)
+		return;
+
+	s = (fSin(pos) * 47.0F + 47.0F);
+	MonitorScreenTex->u1 = MonitorScreenU + s * (1.0F / 256.0F);
+	MonitorScreenTex->u2 = MonitorScreenU + s * (1.0F / 256.0F) + 0.125F;
+	MonitorScreenTex->u4 = MonitorScreenU + s * (1.0F / 256.0F);
+	MonitorScreenTex->u3 = MonitorScreenU + s * (1.0F / 256.0F) + 0.125F;
+
+	if (reset)
+		reset--;
+	else
+	{
+		if (s >= 94 || s <= 0)
+			reset = 65;
+
+		pos += 128;
+	}
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A6B30, LoadLevel, 0);
@@ -1046,4 +1071,5 @@ void inject_file(bool replace)
 	INJECT(0x004A72B0, S_LoadLevelFile, replace);
 	INJECT(0x004A3FC0, LoadTextures, replace);
 	INJECT(0x004A6AB0, S_GetUVRotateTextures, replace);
+	INJECT(0x004A7020, DoMonitorScreen, replace);
 }

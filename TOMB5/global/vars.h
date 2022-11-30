@@ -628,6 +628,8 @@
 #define targetMeshP	VAR_U_(0x00E6E460, MESH_DATA*)
 #define binocsMeshP	VAR_U_(0x00E6D744, MESH_DATA*)
 #define ScaleFlag	VAR_U_(0x00E4EA60, char)
+#define MonitorScreenTex	VAR_U_(0x0087497C, TEXTURESTRUCT*)
+#define MonitorScreenU	VAR_U_(0x00874980, float)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
