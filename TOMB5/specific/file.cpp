@@ -1068,7 +1068,7 @@ void LoadMapFile()
 
 	size = *(long*)FileData;
 	FileData += sizeof(long);
-	MapData = (char*)game_malloc(size);
+	MapData = (char*)game_malloc(size, 0);
 	memcpy(MapData, FileData, size);
 	FileData += size;
 }
@@ -1082,13 +1082,13 @@ bool LoadBoxes()
 	num_boxes = *(long*)FileData;
 	FileData += sizeof(long);
 
-	boxes = (BOX_INFO*)game_malloc(sizeof(BOX_INFO) * num_boxes);
+	boxes = (BOX_INFO*)game_malloc(sizeof(BOX_INFO) * num_boxes, 0);
 	memcpy(boxes, FileData, sizeof(BOX_INFO) * num_boxes);
 	FileData += sizeof(BOX_INFO) * num_boxes;
 
 	size = *(long*)FileData;
 	FileData += sizeof(long);
-	overlap = (ushort*)game_malloc(sizeof(ushort) * size);
+	overlap = (ushort*)game_malloc(sizeof(ushort) * size, 0);
 	memcpy(overlap, FileData, sizeof(ushort) * size);
 	FileData += sizeof(ushort) * size;
 
@@ -1096,12 +1096,12 @@ bool LoadBoxes()
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			ground_zone[j][i] = (short*)game_malloc(sizeof(short) * num_boxes);
+			ground_zone[j][i] = (short*)game_malloc(sizeof(short) * num_boxes, 0);
 			memcpy(ground_zone[j][i], FileData, sizeof(short) * num_boxes);
 			FileData += sizeof(short) * num_boxes;
 		}
 
-		ground_zone[4][i] = (short*)game_malloc(sizeof(short) * num_boxes);
+		ground_zone[4][i] = (short*)game_malloc(sizeof(short) * num_boxes, 0);
 		memcpy(ground_zone[4][i], FileData, sizeof(short) * num_boxes);
 		FileData += sizeof(short) * num_boxes;
 	}
@@ -1115,6 +1115,138 @@ bool LoadBoxes()
 	}
 
 	return 1;
+}
+
+void AdjustUV(long num)
+{
+	TEXTURESTRUCT* tex;
+	float u, v;
+	ushort type;
+
+	Log(2, "AdjustUV");
+
+	for (int i = 0; i < num; i++)
+	{
+		tex = &textinfo[i];
+		Textures[tex->tpage].tpage++;
+		tex->tpage++;
+		u = 1.0F / float(Textures[tex->tpage].width << 1);
+		v = 1.0F / float(Textures[tex->tpage].height << 1);
+		type = tex->flag & 7;
+
+		if (tex->flag & 0x8000)
+		{
+			switch (type)
+			{
+			case 0:
+				tex->u1 += u;
+				tex->v1 += v;
+				tex->u2 -= u;
+				tex->v2 += v;
+				tex->u3 += u;
+				tex->v3 -= v;
+				break;
+
+			case 1:
+				tex->u1 -= u;
+				tex->v1 += v;
+				tex->u2 -= u;
+				tex->v2 -= v;
+				tex->u3 += u;
+				tex->v3 += v;
+				break;
+
+			case 2:
+				tex->u1 -= u;
+				tex->v1 -= v;
+				tex->u2 += u;
+				tex->v2 -= v;
+				tex->u3 -= u;
+				tex->v3 += v;
+				break;
+
+			case 3:
+				tex->u1 += u;
+				tex->v1 -= v;
+				tex->u2 += u;
+				tex->v2 += v;
+				tex->u3 -= u;
+				tex->v3 -= v;
+				break;
+
+			case 4:
+				tex->u1 -= u;
+				tex->v1 += v;
+				tex->u2 += u;
+				tex->v2 += v;
+				tex->u3 -= u;
+				tex->v3 -= v;
+				break;
+
+			case 5:
+				tex->u1 += u;
+				tex->v1 += v;
+				tex->u2 += u;
+				tex->v2 -= v;
+				tex->u3 -= u;
+				tex->v3 += v;
+				break;
+
+			case 6:
+				tex->u1 += u;
+				tex->v1 -= v;
+				tex->u2 -= u;
+				tex->v2 -= v;
+				tex->u3 += u;
+				tex->v3 += v;
+				break;
+
+			case 7:
+				tex->u1 -= u;
+				tex->v1 -= v;
+				tex->u2 -= u;
+				tex->v2 += v;
+				tex->u3 += u;
+				tex->v3 -= v;
+				break;
+
+			default:
+				Log(1, "TextureInfo Type %d Not Found", type);
+				break;
+			}
+		}
+		else
+		{
+			switch (type)
+			{
+			case 0:
+				tex->u1 += u;
+				tex->v1 += v;
+				tex->u2 -= u;
+				tex->v2 += v;
+				tex->u3 -= u;
+				tex->v3 -= v;
+				tex->u4 += u;
+				tex->v4 -= v;
+				break;
+
+			case 1:
+				tex->u1 -= u;
+				tex->v1 += v;
+				tex->u2 += u;
+				tex->v2 += v;
+				tex->u3 += u;
+				tex->v3 -= v;
+				tex->u4 -= u;
+				tex->v4 -= v;
+				break;
+
+			default:
+				Log(1, "TextureInfo Type %d Not Found", type);
+				break;
+			}
+		}
+	}
 }
 
 void inject_file(bool replace)
@@ -1143,4 +1275,5 @@ void inject_file(bool replace)
 	INJECT(0x004A7210, S_LoadLevelFile, replace);
 	INJECT(0x004A6760, LoadMapFile, replace);
 	INJECT(0x004A5E50, LoadBoxes, replace);
+	INJECT(0x004A5430, AdjustUV, replace);
 }

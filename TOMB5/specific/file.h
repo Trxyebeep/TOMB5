@@ -25,8 +25,8 @@ void DoMonitorScreen();
 void S_LoadLevel();
 void LoadMapFile();
 bool LoadBoxes();
+void AdjustUV(long num);
 
-#define	AdjustUV	( (void(__cdecl*)(long)) 0x004A5430 )
 #define FreeLevel	( (void(__cdecl*)()) 0x004A7130 )
 #define Decompress	( (bool(__cdecl*)(char*, char*, long, long)) 0x004A3EF0 )
 #define LoadFile	( (long(__cdecl*)(const char*, char**)) 0x004A3E10 )
