@@ -1049,6 +1049,19 @@ void DoMonitorScreen()
 	}
 }
 
+void S_LoadLevel()
+{
+	Log(2, "S_LoadLevel");
+	LevelLoadingThread.active = 1;
+	LevelLoadingThread.ended = 0;
+	LevelLoadingThread.handle = _beginthreadex(0, 0, LoadLevel, LoadLevelName.name, 0, (unsigned int*)&LevelLoadingThread.address);
+
+	if (App.fmv && !SetThreadPriority((LPVOID)LevelLoadingThread.handle, THREAD_PRIORITY_LOWEST))
+		Log(1, "Error Setting Thread Priority");
+
+	while (LevelLoadingThread.active);
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A6B30, LoadLevel, 0);
@@ -1072,4 +1085,5 @@ void inject_file(bool replace)
 	INJECT(0x004A3FC0, LoadTextures, replace);
 	INJECT(0x004A6AB0, S_GetUVRotateTextures, replace);
 	INJECT(0x004A7020, DoMonitorScreen, replace);
+	INJECT(0x004A7210, S_LoadLevelFile, replace);
 }

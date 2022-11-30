@@ -2407,6 +2407,12 @@ struct CHARDEF
 	char BottomShade;
 };
 
+struct LOADLEVELNAME
+{
+	char unk;
+	char name[256];
+};
+
 #ifdef IMPROVED_BARS
 struct GouraudBarColourSet
 {
