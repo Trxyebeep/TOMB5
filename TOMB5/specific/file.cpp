@@ -1249,6 +1249,38 @@ void AdjustUV(long num)
 	}
 }
 
+long LoadFile(const char* name, char** dest)
+{
+	FILE* file;
+	long size, count;
+
+	Log(2, "LoadFile");
+	Log(5, "File - %s", name);
+	file = FileOpen(name);
+
+	if (!file)
+		return 0;
+
+	size = FileSize(file);
+
+	if (!*dest)
+		*dest = (char*)MALLOC(size);
+
+	count = READ(*dest, 1, size, file);
+	Log(5, "Read - %d FileSize - %d", count, size);
+
+	if (count != size)
+	{
+		Log(1, "Error Reading File");
+		FileClose(file);
+		FREE(*dest);
+		return 0;
+	}
+
+	FileClose(file);
+	return size;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A6B30, LoadLevel, 0);
@@ -1276,4 +1308,5 @@ void inject_file(bool replace)
 	INJECT(0x004A6760, LoadMapFile, replace);
 	INJECT(0x004A5E50, LoadBoxes, replace);
 	INJECT(0x004A5430, AdjustUV, replace);
+	INJECT(0x004A3E10, LoadFile, replace);
 }

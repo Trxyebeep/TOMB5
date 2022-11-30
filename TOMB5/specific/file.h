@@ -26,7 +26,7 @@ void S_LoadLevel();
 void LoadMapFile();
 bool LoadBoxes();
 void AdjustUV(long num);
+long LoadFile(const char* name, char** dest);
 
 #define FreeLevel	( (void(__cdecl*)()) 0x004A7130 )
 #define Decompress	( (bool(__cdecl*)(char*, char*, long, long)) 0x004A3EF0 )
-#define LoadFile	( (long(__cdecl*)(const char*, char**)) 0x004A3E10 )
