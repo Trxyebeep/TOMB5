@@ -1062,6 +1062,17 @@ void S_LoadLevel()
 	while (LevelLoadingThread.active);
 }
 
+void LoadMapFile()
+{
+	long size;
+
+	size = *(long*)FileData;
+	FileData += sizeof(long);
+	MapData = (char*)game_malloc(size);
+	memcpy(MapData, FileData, size);
+	FileData += size;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A6B30, LoadLevel, 0);
@@ -1086,4 +1097,5 @@ void inject_file(bool replace)
 	INJECT(0x004A6AB0, S_GetUVRotateTextures, replace);
 	INJECT(0x004A7020, DoMonitorScreen, replace);
 	INJECT(0x004A7210, S_LoadLevelFile, replace);
+	INJECT(0x004A6760, LoadMapFile, replace);
 }

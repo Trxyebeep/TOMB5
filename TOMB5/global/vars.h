@@ -631,6 +631,7 @@
 #define MonitorScreenTex	VAR_U_(0x0087497C, TEXTURESTRUCT*)
 #define MonitorScreenU	VAR_U_(0x00874980, float)
 #define LoadLevelName	VAR_U_(0x00D9AC48, LOADLEVELNAME)
+#define MapData	VAR_U_(0x00874254, char*)
 
 /*title shit*/
 #define sound_cut_flag	VAR_U_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
