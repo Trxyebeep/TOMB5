@@ -9,6 +9,7 @@
 #include "../tomb5/tomb5.h"
 #include "../game/gameflow.h"
 #endif
+#include "polyinsert.h"
 
 short CheckClipBox[8 * 3] = { 0, 1, 2, 3, 1, 2, 0, 1, 5, 3, 1, 5, 0, 4, 2, 3, 4, 2, 0, 4, 5, 3, 4, 5 };
 
@@ -1600,6 +1601,21 @@ long CheckBoundsClip(float* box)
 	return 1;
 }
 
+void PrelightVertsMMXByRoomlet(D3DTLVERTEX* v, ROOMLET* r)
+{
+	long* prelight;
+
+	prelight = r->pPrelight;
+
+	for (int i = 0; i < r->nVtx; i++)
+		AddPrelitMMX(prelight[i], &v[i].color);
+
+	__asm
+	{
+		emms
+	}
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1624,4 +1640,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049D750, DrawBuckets, replace);
 	INJECT(0x0049D250, FindBucket, replace);
 	INJECT(0x0049C6B0, CheckBoundsClip, replace);
+	INJECT(0x0049D0E0, PrelightVertsMMXByRoomlet, replace);
 }
