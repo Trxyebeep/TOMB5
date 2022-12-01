@@ -13,6 +13,7 @@ void phd_PutPolygons_train(short* lol, long x);
 void RenderLoadPic(long unused);
 long S_GetObjectBounds(short* bounds);
 void S_AnimateTextures(long n);
+long aCheckMeshClip(MESH_DATA* mesh);
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
@@ -24,6 +25,5 @@ void S_AnimateTextures(long n);
 #define SkinNormalsToScratch	( (void(__cdecl*)(long)) 0x004B2480 )
 #define S_OutputPolyList	( (void(__cdecl*)()) 0x004B79A0 )
 #define S_DumpScreen	( (long(__cdecl*)()) 0x004B7DA0 )
-#define aCheckMeshClip	( (long(__cdecl*)(MESH_DATA*)) 0x004B2800 )
 #define do_boot_screen	( (void(__cdecl*)(long)) 0x004B8A80 )
 #define S_DumpScreenFrame	( (void(__cdecl*)()) 0x004B7E40 )

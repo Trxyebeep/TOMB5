@@ -14,6 +14,7 @@
 #include "../game/health.h"
 #include "../game/text.h"
 #endif
+#include "drawroom.h"
 
 void S_DrawPickup(short object_number)
 {
@@ -1437,6 +1438,105 @@ void S_AnimateTextures(long n)
 	}
 }
 
+long aCheckMeshClip(MESH_DATA* mesh)
+{
+	float* stash;
+	short* checkBox;
+	float left, right, top, bottom, front, back;
+	float x, y, z, bx, by, bz, zv;
+	long tooNear, offScreen;
+
+	if (aGlobalSkinMesh)
+		return 2;
+
+	left = 10000.0F;
+	right = -10000.0F;
+	top = 10000.0F;
+	bottom = -10000.0F;
+	front = 10000.0F;
+	back = -10000.0F;
+	stash = aBoundingBox;
+	checkBox = CheckClipBox;
+	tooNear = 0;
+	offScreen = 0;
+
+	for (int i = 0; i < 8; i++)
+	{
+		bx = mesh->bbox[checkBox[0]];
+		by = mesh->bbox[checkBox[1]];
+		bz = mesh->bbox[checkBox[2]];
+		checkBox += 3;
+
+		x = bx * D3DMView._11 + by * D3DMView._21 + bz * D3DMView._31 + D3DMView._41;
+		y = bx * D3DMView._12 + by * D3DMView._22 + bz * D3DMView._32 + D3DMView._42;
+		z = bx * D3DMView._13 + by * D3DMView._23 + bz * D3DMView._33 + D3DMView._43;
+		stash[0] = x;
+		stash[1] = y;
+		stash[2] = z;
+		stash += 3;
+
+		if (z < f_mznear)
+		{
+			tooNear++;
+			z = f_mznear;
+		}
+
+		zv = f_mpersp / z;
+		x = zv * x + f_centerx;
+		y = zv * y + f_centery;
+
+		if (x < left)
+			left = x;
+
+		if (x > right)
+			right = x;
+
+		if (y < top)
+			top = y;
+
+		if (y > bottom)
+			bottom = y;
+
+		if (z < front)
+			front = z;
+
+		if (z > back)
+			back = z;
+
+		if (left < f_left)
+		{
+			left = f_left;
+			offScreen++;
+		}
+
+		if (right > f_right)
+		{
+			right = f_right;
+			offScreen++;
+		}
+
+		if (top < f_top)
+		{
+			top = f_top;
+			offScreen++;
+		}
+
+		if (bottom > f_bottom)
+		{
+			bottom = f_bottom;
+			offScreen++;
+		}
+	}
+
+	if (tooNear == 8 || left > f_right || right < f_left || top > f_bottom || bottom < f_top)
+		return 0;
+
+	if (tooNear || offScreen)
+		return 1;
+
+	return 2;
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1449,5 +1549,6 @@ void inject_output(bool replace)
 	INJECT(0x004B8660, RenderLoadPic, replace);
 	INJECT(0x004B7EB0, S_GetObjectBounds, replace);
 	INJECT(0x004B8310, S_AnimateTextures, replace);
+	INJECT(0x004B2800, aCheckMeshClip, replace);
 }
 

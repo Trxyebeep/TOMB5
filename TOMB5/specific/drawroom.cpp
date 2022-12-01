@@ -10,6 +10,8 @@
 #include "../game/gameflow.h"
 #endif
 
+short CheckClipBox[8 * 3] = { 0, 1, 2, 3, 1, 2, 0, 1, 5, 3, 1, 5, 0, 4, 2, 3, 4, 2, 0, 4, 5, 3, 4, 5 };
+
 void DrawBoundsRectangle(float left, float top, float right, float bottom)
 {
 	D3DTLVERTEX v[8];
