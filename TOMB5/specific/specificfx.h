@@ -28,6 +28,7 @@ void DoSnow();
 void aInitFX();
 void DoWeather();
 void aSetXY4(D3DTLVERTEX* v, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float z, short* clip);
+void InitTarget();
 
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )

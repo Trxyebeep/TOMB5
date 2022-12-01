@@ -2114,7 +2114,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004C23C0		S_DrawFireSparks
 0x004C2980		S_DrawSmokeSparks
 0x004C2F10	+	S_PrintShadow
-0x004C34F0		InitTarget
+0x004C34F0	+	InitTarget
 0x004C35D0		InitBinoculars
 0x004C36B0	+	DrawBinoculars
 0x004C3EB0	+	aSetXY4

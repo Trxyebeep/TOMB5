@@ -2973,6 +2973,33 @@ void aSetXY4(D3DTLVERTEX* v, float x1, float y1, float x2, float y2, float x3, f
 	v[3].rhw = zv;
 }
 
+void InitTarget()
+{
+	OBJECT_INFO* obj;
+	ACMESHVERTEX* p;
+	D3DTLVERTEX* v;
+
+	obj = &objects[TARGET_GRAPHICS];
+
+	if (!obj->loaded)
+		return;
+
+	targetMeshP = (MESH_DATA*)meshes[objects[TARGET_GRAPHICS].mesh_index];
+	p = targetMeshP->aVtx;
+	targetMeshP->aVtx = (ACMESHVERTEX*)game_malloc(targetMeshP->nVerts * sizeof(ACMESHVERTEX), 0);
+	v = (D3DTLVERTEX*)targetMeshP->aVtx;	//makes no sense otherwise
+
+	for (int i = 0; i < targetMeshP->nVerts; i++)
+	{
+		v[i].sx = (p[i].x * 80.0F) / 96.0F;
+		v[i].sy = (p[i].y * 60.0F) / 224.0F;
+		v[i].sz = 0;
+		v[i].rhw = f_mpersp / f_mznear * f_moneopersp;
+		v[i].color = 0xFF000000;
+		v[i].specular = 0xFF000000;
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -3000,4 +3027,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004BEB50, aInitFX, replace);
 	INJECT(0x004C0580, DoWeather, replace);
 	INJECT(0x004C3EB0, aSetXY4, replace);
+	INJECT(0x004C34F0, InitTarget, replace);
 }
