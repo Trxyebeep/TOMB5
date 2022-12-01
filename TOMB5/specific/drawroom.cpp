@@ -1664,6 +1664,133 @@ void CalcTriFaceNormal(D3DVECTOR* p1, D3DVECTOR* p2, D3DVECTOR* p3, D3DVECTOR* n
 	n->z = v.y * u.x - v.x * u.y;
 }
 
+void CreateVertexNormals(MESH_DATA* mesh)
+{
+	LPD3DVERTEX v;
+	LPD3DVECTOR fnormals;
+	D3DVECTOR p1;
+	D3DVECTOR p2;
+	D3DVECTOR p3;
+	D3DVECTOR n1;
+	D3DVECTOR n2;
+	short* quad;
+	short* tri;
+
+	fnormals = (LPD3DVECTOR)malloc(sizeof(D3DVECTOR) * (mesh->ngt3 + mesh->ngt4));
+	mesh->SourceVB->Lock(0, (LPVOID*)&v, 0);
+	quad = mesh->gt4;
+
+	for (int i = 0; i < mesh->ngt4; i++)
+	{
+		p1.x = v[quad[0]].x;
+		p1.y = v[quad[0]].y;
+		p1.z = v[quad[0]].z;
+
+		p2.x = v[quad[1]].x;
+		p2.y = v[quad[1]].y;
+		p2.z = v[quad[1]].z;
+
+		p3.x = v[quad[2]].x;
+		p3.y = v[quad[2]].y;
+		p3.z = v[quad[2]].z;
+
+		CalcTriFaceNormal(&p1, &p2, &p3, &n1);
+
+		p1.x = v[quad[0]].x;
+		p1.y = v[quad[0]].y;
+		p1.z = v[quad[0]].z;
+
+		p2.x = v[quad[2]].x;
+		p2.y = v[quad[2]].y;
+		p2.z = v[quad[2]].z;
+
+		p3.x = v[quad[3]].x;
+		p3.y = v[quad[3]].y;
+		p3.z = v[quad[3]].z;
+
+		CalcTriFaceNormal(&p1, &p2, &p3, &n2);
+
+		n1.x += n2.x;
+		n1.y += n2.y;
+		n1.z += n2.z;
+		D3DNormalise(&n1);
+
+		n1.x = 0;
+		n1.y = 1.0F;
+		n1.z = 0;
+		fnormals[i] = n1;
+		quad += 6;
+	}
+
+	tri = mesh->gt3;
+
+	for (int i = 0; i < mesh->ngt3; i++)
+	{
+		p1.x = v[tri[0]].x;
+		p1.y = v[tri[0]].y;
+		p1.z = v[tri[0]].z;
+
+		p2.x = v[tri[1]].x;
+		p2.y = v[tri[1]].y;
+		p2.z = v[tri[1]].z;
+
+		p3.x = v[tri[2]].x;
+		p3.y = v[tri[2]].y;
+		p3.z = v[tri[2]].z;
+
+		CalcTriFaceNormal(&p1, &p2, &p3, &n1);
+		D3DNormalise(&n1);
+		fnormals[mesh->ngt4 + i] = n1;
+		tri += 5;
+	}
+
+	for (int i = 0; i < mesh->nVerts; i++)
+	{
+		n1.x = 0;
+		n1.y = 0;
+		n1.z = 0;
+
+		quad = mesh->gt4;
+
+		for (int j = 0; j < mesh->ngt4; j++)
+		{
+			if (quad[0] == i || quad[1] == i || quad[2] == i || quad[3] == i)
+			{
+				n1.x += fnormals[j].x;
+				n1.y += fnormals[j].y;
+				n1.z += fnormals[j].z;
+			}
+
+			quad += 6;
+		}
+
+		tri = mesh->gt3;
+
+		for (int j = 0; j < mesh->ngt3; j++)
+		{
+			if (tri[0] == i || tri[1] == i || tri[2] == i)
+			{
+				n1.x += fnormals[mesh->ngt4 + j].x;
+				n1.y += fnormals[mesh->ngt4 + j].y;
+				n1.z += fnormals[mesh->ngt4 + j].z;
+			}
+
+			tri += 5;
+		}
+
+		D3DNormalise(&n1);
+		n1.x = 0;
+		n1.y = 1.0F;
+		n1.z = 0;
+		v[i].nx = n1.x;
+		v[i].ny = n1.y;
+		v[i].nz = n1.z;
+	}
+
+	mesh->SourceVB->Unlock();
+	free(fnormals);
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1691,4 +1818,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049D0E0, PrelightVertsMMXByRoomlet, replace);
 	INJECT(0x0049D130, PrelightVertsNonMMXByRoomlet, replace);
 	INJECT(0x0049DB10, CalcTriFaceNormal, replace);
+	INJECT(0x0049DBA0, CreateVertexNormals, replace);
 }

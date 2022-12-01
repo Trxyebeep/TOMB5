@@ -1753,7 +1753,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0049D460	+	DrawBucket
 0x0049D750	+	DrawBuckets
 0x0049DB10	+	CalcTriFaceNormal
-0x0049DBA0		CreateVertexNormals
+0x0049DBA0	+	CreateVertexNormals
 
 
 		specific/dxshell.cpp
@@ -1851,7 +1851,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A67F0	+	LoadAIInfo
 0x004A6880	+	LoadSamples
 0x004A6AB0	+	S_GetUVRotateTextures
-0x004A6B30		LoadLevel
+0x004A6B30	+	LoadLevel
 0x004A7020	+	DoMonitorScreen
 0x004A7130	+	FreeLevel
 0x004A7210	+	S_LoadLevel

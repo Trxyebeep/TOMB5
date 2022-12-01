@@ -28,5 +28,6 @@ long CheckBoundsClip(float* box);
 void PrelightVertsMMXByRoomlet(D3DTLVERTEX* v, ROOMLET* r);
 void PrelightVertsNonMMXByRoomlet(D3DTLVERTEX* v, ROOMLET* r);
 void CalcTriFaceNormal(D3DVECTOR* p1, D3DVECTOR* p2, D3DVECTOR* p3, D3DVECTOR* n);
+void CreateVertexNormals(MESH_DATA* mesh);
 
 extern short CheckClipBox[8 * 3];
