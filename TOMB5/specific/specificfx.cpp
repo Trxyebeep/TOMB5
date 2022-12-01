@@ -19,6 +19,7 @@
 
 #define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
 #endif
+#include "profiler.h"
 
 #define LINE_POINTS	4	//number of points in each grid line
 #define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
@@ -83,6 +84,12 @@ uchar TargetGraphColTab[48] =
 	255, 255, 0,
 	255, 255, 0,
 	255, 255, 0
+};
+
+float SnowSizes[32]
+{
+	-24.0F, -24.0F, -24.0F, 24.0F, 24.0F, -24.0F, 24.0F, 24.0F, -12.0F, -12.0F, -12.0F, 12.0F, 12.0F, -12.0F, 12.0F, 12.0F,
+	-8.0F, -8.0F, -8.0F, 8.0F, 8.0F, -8.0F, 8.0F, 8.0F, -6.0F, -6.0F, -6.0F, 6.0F, 6.0F, -6.0F, 6.0F, 6.0F
 };
 
 #ifdef GENERAL_FIXES
@@ -2657,6 +2664,209 @@ void AddPolyLine(D3DTLVERTEX* vtx, TEXTURESTRUCT* tex)
 		AddQuadZBuffer(v, 0, 1, 2, 3, tex, 0);
 }
 
+void DoSnow()
+{
+	SNOWFLAKE* snow;
+	ROOM_INFO* r;
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	float* pSize;
+	float x, y, z, xv, yv, zv, vx, vy, xSize, ySize;
+	long num_alive, rad, angle, ox, oy, oz, col;
+	short room_number, clipFlag;
+
+	num_alive = 0;
+
+	for (int i = 0; i < snow_count; i++)
+	{
+		snow = &Snow[i];
+
+		if (!snow->x)
+		{
+			if (!snow_outside || num_alive >= max_snow)
+				continue;
+
+			num_alive++;
+			rad = GetRandomDraw() & 0x1FFF;
+			angle = (GetRandomDraw() & 0xFFF) << 1;
+			snow->x = camera.pos.x + (rad * rcossin_tbl[angle] >> 12);
+			snow->y = camera.pos.y - 1024 - (GetRandomDraw() & 0x7FF);
+			snow->z = camera.pos.z + (rad * rcossin_tbl[angle + 1] >> 12);
+
+			if (IsRoomOutside(snow->x, snow->y, snow->z) < 0)
+			{
+				snow->x = 0;
+				continue;
+			}
+
+			if (room[IsRoomOutsideNo].flags & ROOM_UNDERWATER)
+			{
+				snow->x = 0;
+				continue;
+			}
+
+			snow->stopped = 0;
+			snow->xv = (GetRandomDraw() & 7) - 4;
+			snow->yv = ((GetRandomDraw() & 0xF) + 8) << 3;
+			snow->zv = (GetRandomDraw() & 7) - 4;
+			snow->room_number = IsRoomOutsideNo;
+			snow->life = 112 - (snow->yv >> 2);
+		}
+
+		ox = snow->x;
+		oy = snow->y;
+		oz = snow->z;
+
+		if (!snow->stopped)
+		{
+			snow->x += snow->xv;
+			snow->y += (snow->yv >> 1) & 0xFC;
+			snow->z += snow->zv;
+			r = &room[snow->room_number];
+
+			if (snow->y <= r->maxceiling || snow->y >= r->minfloor ||
+				snow->z <= r->z + 1024 || snow->z >= (r->x_size << 10) + r->z - 1024 ||
+				snow->x <= r->x + 1024 || snow->x >= (r->y_size << 10) + r->x - 1024)
+			{
+				room_number = snow->room_number;
+				GetFloor(snow->x, snow->y, snow->z, &room_number);
+
+				if (room_number == snow->room_number)
+				{
+					snow->x = 0;
+					continue;
+				}
+
+				if (room[room_number].flags & ROOM_UNDERWATER)
+				{
+					snow->stopped = 1;
+					snow->x = ox;
+					snow->y = oy;
+					snow->z = oz;
+
+					if (snow->life > 16)
+						snow->life = 16;
+				}
+				else
+					snow->room_number = room_number;
+			}
+		}
+
+		if (!snow->life)
+		{
+			snow->x = 0;
+			continue;
+		}
+
+		if ((abs(CamPos.x - snow->x) > 6000 || abs(CamPos.z - snow->z) > 6000) && snow->life > 16)
+			snow->life = 16;
+
+		if (snow->xv < SmokeWindX << 2)
+			snow->xv += 2;
+		else if (snow->xv > SmokeWindX << 2)
+			snow->xv -= 2;
+
+		if (snow->zv < SmokeWindZ << 2)
+			snow->zv += 2;
+		else if (snow->zv > SmokeWindZ << 2)
+			snow->zv -= 2;
+
+		snow->life -= 2;
+
+		if ((snow->yv & 7) != 7)
+			snow->yv++;
+	}
+
+	mAddProfilerEvent();
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 10];
+	tex.tpage = sprite->tpage;
+	tex.drawtype = 2;
+	tex.flag = 0;
+	tex.u1 = sprite->x2;
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x2;
+	tex.v2 = sprite->y2;
+	tex.v3 = sprite->y2;
+	tex.u3 = sprite->x1;
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y2;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
+	SetD3DViewMatrix();
+
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+
+	for (int i = 0; i < snow_count; i++)
+	{
+		snow = &Snow[i];
+
+		if (!snow->x)
+			continue;
+
+		x = float(snow->x - camera.pos.x);
+		y = float(snow->y - camera.pos.y);
+		z = float(snow->z - camera.pos.z);
+		zv = x * D3DMView._13 + y * D3DMView._23 + z * D3DMView._33 + D3DMView._43;
+
+		if (zv < f_mznear)
+			continue;
+
+		col = 0;
+
+		if ((snow->yv & 7) != 7)
+			col = (snow->yv & 7) << 4;
+		else if (snow->life > 32)
+			col = 130;
+		else
+			col = snow->life << 3;
+
+		col = RGBA(col, col, col, 0xFF);
+		pSize = &SnowSizes[snow->yv & 24];
+		xv = x * D3DMView._11 + y * D3DMView._21 + z * D3DMView._31 + D3DMView._41;
+		yv = x * D3DMView._12 + y * D3DMView._22 + z * D3DMView._32 + D3DMView._42;
+		zv = f_mpersp / zv;
+
+		for (int j = 0; j < 4; j++)
+		{
+			xSize = pSize[0] * zv;
+			ySize = pSize[1] * zv;
+			pSize += 2;
+
+			vx = xv * zv + xSize + f_centerx;
+			vy = yv * zv + ySize + f_centery;
+			clipFlag = 0;
+
+			if (vx < f_left)
+				clipFlag++;
+			else if (vx > f_right)
+				clipFlag += 2;
+
+			if (vy < f_top)
+				clipFlag += 4;
+			else if (vy > f_bottom)
+				clipFlag += 8;
+
+			clipflags[j] = clipFlag;
+			v[j].sx = vx;
+			v[j].sy = vy;
+			v[j].rhw = zv * f_moneopersp;
+			v[j].tu = 0;
+			v[j].tv = 0;
+			v[j].color = col;
+			v[j].specular = 0xFF000000;
+		}
+
+		AddTriSorted(v, 2, 0, 1, &tex, 1);
+	}
+
+	phd_PopMatrix();
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2680,4 +2890,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CF1B0, aDrawWreckingBall, replace);
 	INJECT(0x004BFD70, ClearFX, replace);
 	INJECT(0x004BFDA0, AddPolyLine, replace);
+	INJECT(0x004BEBD0, DoSnow, replace);
 }

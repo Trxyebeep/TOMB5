@@ -24,6 +24,7 @@ void DrawBinoculars();
 void aDrawWreckingBall(ITEM_INFO* item, long shade);
 void ClearFX();
 void AddPolyLine(D3DTLVERTEX* vtx, TEXTURESTRUCT* tex);
+void DoSnow();
 
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
