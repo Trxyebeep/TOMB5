@@ -26,5 +26,6 @@ void DrawBuckets();
 void FindBucket(long tpage, D3DTLBUMPVERTEX** Vpp, long** nVtxpp);
 long CheckBoundsClip(float* box);
 void PrelightVertsMMXByRoomlet(D3DTLVERTEX* v, ROOMLET* r);
+void PrelightVertsNonMMXByRoomlet(D3DTLVERTEX* v, ROOMLET* r);
 
 extern short CheckClipBox[8 * 3];

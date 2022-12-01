@@ -1616,6 +1616,39 @@ void PrelightVertsMMXByRoomlet(D3DTLVERTEX* v, ROOMLET* r)
 	}
 }
 
+void PrelightVertsNonMMXByRoomlet(D3DTLVERTEX* v, ROOMLET* r)
+{
+	long* prelight;
+	long pr, pg, pb, vr, vg, vb;
+
+	prelight = r->pPrelight;
+
+	for (int i = 0; i < r->nVtx; i++)
+	{
+		pr = prelight[i] & 0xFF0000;
+		pg = prelight[i] & 0x00FF00;
+		pb = prelight[i] & 0x0000FF;
+		vr = v[i].color & 0xFF0000;
+		vg = v[i].color & 0x00FF00;
+		vb = v[i].color & 0x0000FF;
+		pr += vr;
+		pg += vg;
+		pb += vb;
+
+		if (pr > 0xFF0000)
+			pr = 0xFF0000;
+
+		if (pg > 0x00FF00)
+			pg = 0x00FF00;
+
+		if (pb > 0x0000FF)
+			pb = 0x0000FF;
+
+		v[i].color = (v[i].color & 0xFF000000) | pr | pg | pb;
+		CalcColorSplit(v[i].color, &v[i].color);
+	}
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1641,4 +1674,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049D250, FindBucket, replace);
 	INJECT(0x0049C6B0, CheckBoundsClip, replace);
 	INJECT(0x0049D0E0, PrelightVertsMMXByRoomlet, replace);
+	INJECT(0x0049D130, PrelightVertsNonMMXByRoomlet, replace);
 }
