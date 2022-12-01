@@ -2885,6 +2885,14 @@ void aInitFX()
 	}
 }
 
+void DoWeather()
+{
+	if (WeatherType == 1)
+		DoRain();
+	else if (WeatherType == 2)
+		DoSnow();
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2910,4 +2918,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004BFDA0, AddPolyLine, replace);
 	INJECT(0x004BEBD0, DoSnow, replace);
 	INJECT(0x004BEB50, aInitFX, replace);
+	INJECT(0x004C0580, DoWeather, replace);
 }

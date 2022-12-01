@@ -26,6 +26,7 @@ void ClearFX();
 void AddPolyLine(D3DTLVERTEX* vtx, TEXTURESTRUCT* tex);
 void DoSnow();
 void aInitFX();
+void DoWeather();
 
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
@@ -36,7 +37,6 @@ void aInitFX();
 #define DrawLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CD960 )
 #define DrawSteamLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CE610 )
 #define S_DrawSparks	( (void(__cdecl*)()) 0x004C4C60 )
-#define DoWeather	( (void(__cdecl*)()) 0x004C0580 )
 #define DoUwEffect	( (void(__cdecl*)()) 0x004C8650 )
 #define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
 #define S_DrawSplashes	( (void(__cdecl*)()) 0x004C1790 )
