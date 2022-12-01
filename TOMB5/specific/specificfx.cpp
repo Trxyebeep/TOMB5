@@ -2984,7 +2984,7 @@ void InitTarget()
 	if (!obj->loaded)
 		return;
 
-	targetMeshP = (MESH_DATA*)meshes[objects[TARGET_GRAPHICS].mesh_index];
+	targetMeshP = (MESH_DATA*)meshes[obj->mesh_index];
 	p = targetMeshP->aVtx;
 	targetMeshP->aVtx = (ACMESHVERTEX*)game_malloc(targetMeshP->nVerts * sizeof(ACMESHVERTEX), 0);
 	v = (D3DTLVERTEX*)targetMeshP->aVtx;	//makes no sense otherwise
@@ -2993,6 +2993,33 @@ void InitTarget()
 	{
 		v[i].sx = (p[i].x * 80.0F) / 96.0F;
 		v[i].sy = (p[i].y * 60.0F) / 224.0F;
+		v[i].sz = 0;
+		v[i].rhw = f_mpersp / f_mznear * f_moneopersp;
+		v[i].color = 0xFF000000;
+		v[i].specular = 0xFF000000;
+	}
+}
+
+void InitBinoculars()
+{
+	OBJECT_INFO* obj;
+	ACMESHVERTEX* p;
+	D3DTLVERTEX* v;
+
+	obj = &objects[BINOCULAR_GRAPHICS];
+
+	if (!obj->loaded)
+		return;
+
+	binocsMeshP = (MESH_DATA*)meshes[obj->mesh_index];
+	p = binocsMeshP->aVtx;
+	binocsMeshP->aVtx = (ACMESHVERTEX*)game_malloc(binocsMeshP->nVerts * sizeof(ACMESHVERTEX), 0);
+	v = (D3DTLVERTEX*)binocsMeshP->aVtx;	//makes no sense otherwise
+
+	for (int i = 0; i < binocsMeshP->nVerts; i++)
+	{
+		v[i].sx = (p[i].x * 32.0F) / 96.0F;
+		v[i].sy = (p[i].y * 30.0F) / 224.0F;
 		v[i].sz = 0;
 		v[i].rhw = f_mpersp / f_mznear * f_moneopersp;
 		v[i].color = 0xFF000000;
@@ -3028,4 +3055,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C0580, DoWeather, replace);
 	INJECT(0x004C3EB0, aSetXY4, replace);
 	INJECT(0x004C34F0, InitTarget, replace);
+	INJECT(0x004C35D0, InitBinoculars, replace);
 }
