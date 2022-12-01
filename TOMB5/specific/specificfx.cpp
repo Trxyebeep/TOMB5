@@ -2893,6 +2893,86 @@ void DoWeather()
 		DoSnow();
 }
 
+void aSetXY4(D3DTLVERTEX* v, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float z, short* clip)
+{
+	float zv;
+	short clipFlag;
+
+	zv = f_mpersp / z * f_moneopersp;
+
+	clipFlag = 0;
+
+	if (x1 < f_left)
+		clipFlag++;
+	else if (x1 > f_right)
+		clipFlag += 2;
+
+	if (y1 < f_top)
+		clipFlag += 4;
+	else if (y1 > f_bottom)
+		clipFlag += 8;
+
+	clip[0] = clipFlag;
+	v[0].sx = x1;
+	v[0].sy = y1;
+	v[0].sz = z;
+	v[0].rhw = zv;
+
+	clipFlag = 0;
+
+	if (x2 < f_left)
+		clipFlag++;
+	else if (x2 > f_right)
+		clipFlag += 2;
+
+	if (y2 < f_top)
+		clipFlag += 4;
+	else if (y2 > f_bottom)
+		clipFlag += 8;
+
+	clip[1] = clipFlag;
+	v[1].sx = x2;
+	v[1].sy = y2;
+	v[1].sz = z;
+	v[1].rhw = zv;
+
+	clipFlag = 0;
+
+	if (x3 < f_left)
+		clipFlag++;
+	else if (x3 > f_right)
+		clipFlag += 2;
+
+	if (y3 < f_top)
+		clipFlag += 4;
+	else if (y3 > f_bottom)
+		clipFlag += 8;
+
+	clip[2] = clipFlag;
+	v[2].sx = x3;
+	v[2].sy = y3;
+	v[2].sz = z;
+	v[2].rhw = zv;
+
+	clipFlag = 0;
+
+	if (x4 < f_left)
+		clipFlag++;
+	else if (x4 > f_right)
+		clipFlag += 2;
+
+	if (y4 < f_top)
+		clipFlag += 4;
+	else if (y4 > f_bottom)
+		clipFlag += 8;
+
+	clip[3] = clipFlag;
+	v[3].sx = x4;
+	v[3].sy = y4;
+	v[3].sz = z;
+	v[3].rhw = zv;
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2919,4 +2999,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004BEBD0, DoSnow, replace);
 	INJECT(0x004BEB50, aInitFX, replace);
 	INJECT(0x004C0580, DoWeather, replace);
+	INJECT(0x004C3EB0, aSetXY4, replace);
 }
