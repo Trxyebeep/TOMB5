@@ -1525,6 +1525,81 @@ void FindBucket(long tpage, D3DTLBUMPVERTEX** Vpp, long** nVtxpp)
 	*nVtxpp = &bucket->nVtx;
 }
 
+long CheckBoundsClip(float* box)
+{
+	float* stash;
+	short* checkBox;
+	float left, right, top, bottom, front, back;
+	float x, y, z, bx, by, bz, zv;
+
+	left = 10000.0F;
+	right = -10000.0F;
+	top = 10000.0F;
+	bottom = -10000.0F;
+	front = 10000.0F;
+	back = -10000.0F;
+	stash = aBoundingBox;
+	checkBox = CheckClipBox;
+
+	for (int i = 0; i < 8; i++)
+	{
+		bx = box[checkBox[0]];
+		by = box[checkBox[1]];
+		bz = box[checkBox[2]];
+		checkBox += 3;
+
+		x = bx * D3DMView._11 + by * D3DMView._21 + bz * D3DMView._31 + D3DMView._41;
+		y = bx * D3DMView._12 + by * D3DMView._22 + bz * D3DMView._32 + D3DMView._42;
+		z = bx * D3DMView._13 + by * D3DMView._23 + bz * D3DMView._33 + D3DMView._43;
+		stash[0] = x;
+		stash[1] = y;
+		stash[2] = z;
+		stash += 3;
+
+		if (z < f_mznear)
+			z = f_mznear;
+
+		zv = f_mpersp / z;
+		x = zv * x + f_centerx;
+		y = zv * y + f_centery;
+
+		if (x < left)
+			left = x;
+
+		if (x > right)
+			right = x;
+
+		if (y < top)
+			top = y;
+
+		if (y > bottom)
+			bottom = y;
+
+		if (z < front)
+			front = z;
+
+		if (z > back)
+			back = z;
+
+		if (left < f_left)
+			left = f_left;
+
+		if (right > f_right)
+			right = f_right;
+
+		if (top < f_top)
+			top = f_top;
+
+		if (bottom > f_bottom)
+			bottom = f_bottom;
+	}
+
+	if (left > room_clip_right || right < room_clip_left || top > room_clip_bottom || bottom < room_clip_top)
+		return 0;
+
+	return 1;
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1548,4 +1623,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049D460, DrawBucket, replace);
 	INJECT(0x0049D750, DrawBuckets, replace);
 	INJECT(0x0049D250, FindBucket, replace);
+	INJECT(0x0049C6B0, CheckBoundsClip, replace);
 }

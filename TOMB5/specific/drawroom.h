@@ -24,7 +24,6 @@ void aResetBumpComponent(TEXTUREBUCKET* bucket);
 void DrawBucket(TEXTUREBUCKET* bucket);
 void DrawBuckets();
 void FindBucket(long tpage, D3DTLBUMPVERTEX** Vpp, long** nVtxpp);
-
-#define CheckBoundsClip	( (long(__cdecl*)(float*)) 0x0049C6B0 )
+long CheckBoundsClip(float* box);
 
 extern short CheckClipBox[8 * 3];
