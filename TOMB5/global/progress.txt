@@ -1904,7 +1904,7 @@ x for functions decompiled but not injected, for one reason or another.
 		specific/gamemain.cpp
 
 0x004A84F0	+	GameMain
-0x004A8610		GameInitialise
+0x004A8610	+	GameInitialise
 0x004A8790	+	GameClose
 0x004A8880	+	init_water_table
 0x004A8B70	+	GetRandom
