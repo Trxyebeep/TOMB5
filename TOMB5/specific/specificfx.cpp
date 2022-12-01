@@ -2778,7 +2778,7 @@ void DoSnow()
 			snow->yv++;
 	}
 
-	mAddProfilerEvent();
+	mAddProfilerEvent(0xFF0000FF);
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 10];
 	tex.tpage = sprite->tpage;
 	tex.drawtype = 2;

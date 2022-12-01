@@ -265,17 +265,17 @@ void aUpdate()
 
 	spec_wibble++;
 	znear = f_mznear;
-	mAddProfilerEvent();
-	mAddProfilerEvent();
+	mAddProfilerEvent(0xFF00FF00);
+	mAddProfilerEvent(0xFF0000FF);
 	zero = 0;
-	mAddProfilerEvent();
+	mAddProfilerEvent(0xFFFFFFFF);
 
 	if (aCamDir.y >= 0)
 		alphamaybe = long(95 - ((1 - aCamDir.y) * -144)) << 24;
 	else
 		alphamaybe = 0xEF000000;
 
-	mAddProfilerEvent();
+	mAddProfilerEvent(0xFFFF00);
 }
 
 void aInitWater()
