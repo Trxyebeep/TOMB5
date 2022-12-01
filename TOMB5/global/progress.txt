@@ -2098,7 +2098,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/specificfx.cpp
 
-0x004BEB50		aInitFX
+0x004BEB50	+	aInitFX
 0x004BEBD0	+	DoSnow
 0x004BF3C0	+	DoRain
 0x004BFD70	+	ClearFX

@@ -2867,6 +2867,24 @@ void DoSnow()
 	phd_PopMatrix();
 }
 
+void aInitFX()
+{
+	if (G_dxptr->Flags & 0x80)
+	{
+		snow_count = 2048;
+		rain_count = 2048;
+		max_snow = 128;
+		max_rain = 128;
+	}
+	else
+	{
+		snow_count = 256;
+		rain_count = 256;
+		max_snow = 8;
+		max_rain = 8;
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2891,4 +2909,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004BFD70, ClearFX, replace);
 	INJECT(0x004BFDA0, AddPolyLine, replace);
 	INJECT(0x004BEBD0, DoSnow, replace);
+	INJECT(0x004BEB50, aInitFX, replace);
 }
