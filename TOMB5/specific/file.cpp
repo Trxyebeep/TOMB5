@@ -671,7 +671,7 @@ unsigned int __stdcall LoadLevel(void* name)
 
 		READ(&size, 1, 4, level_fp);
 		READ(&compressedSize, 1, 4, level_fp);
-		FileData = (char*)malloc(size);
+		FileData = (char*)MALLOC(size);
 		READ(FileData, size, 1, level_fp);
 
 		pData = FileData;
@@ -722,7 +722,7 @@ unsigned int __stdcall LoadLevel(void* name)
 		if (acm_ready && !App.SoundDisabled)
 			LoadSamples();
 
-		free(pData);
+		FREE(pData);
 		S_LoadBar();
 
 		for (int i = 0; i < 6; i++)
