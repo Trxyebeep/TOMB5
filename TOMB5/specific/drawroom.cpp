@@ -1649,6 +1649,21 @@ void PrelightVertsNonMMXByRoomlet(D3DTLVERTEX* v, ROOMLET* r)
 	}
 }
 
+void CalcTriFaceNormal(D3DVECTOR* p1, D3DVECTOR* p2, D3DVECTOR* p3, D3DVECTOR* n)
+{
+	FVECTOR u, v;
+
+	u.x = p1->x - p2->x;
+	u.y = p1->y - p2->y;
+	u.z = p1->z - p2->z;
+	v.x = p3->x - p2->x;
+	v.y = p3->y - p2->y;
+	v.z = p3->z - p2->z;
+	n->x = v.z * u.y - v.y * u.z;
+	n->y = v.x * u.z - v.z * u.x;
+	n->z = v.y * u.x - v.x * u.y;
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1675,4 +1690,5 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049C6B0, CheckBoundsClip, replace);
 	INJECT(0x0049D0E0, PrelightVertsMMXByRoomlet, replace);
 	INJECT(0x0049D130, PrelightVertsNonMMXByRoomlet, replace);
+	INJECT(0x0049DB10, CalcTriFaceNormal, replace);
 }

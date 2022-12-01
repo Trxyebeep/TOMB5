@@ -1752,7 +1752,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0049D420	+	aResetBumpComponent
 0x0049D460	+	DrawBucket
 0x0049D750	+	DrawBuckets
-0x0049DB10		CalcTriFaceNormal
+0x0049DB10	+	CalcTriFaceNormal
 0x0049DBA0		CreateVertexNormals
 
 
