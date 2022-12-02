@@ -38,8 +38,8 @@ long S_LoadSave(long load_or_save, long mono);
 void LoadScreen(long screen, long pathNum);
 void ReleaseScreen();
 void DrawLoadingScreen();
+long GetSaveLoadFiles();
 
-#define GetSaveLoadFiles	( (void(__cdecl*)()) 0x004AD290 )
 #define S_PauseMenu	( (long(__cdecl*)()) 0x004B1030 )
 #define DoSpecialFeaturesServer	( (void(__cdecl*)()) 0x004B1D90 )
 #define DoFrontEndOneShotStuff	( (void(__cdecl*)()) 0x004B2090 )

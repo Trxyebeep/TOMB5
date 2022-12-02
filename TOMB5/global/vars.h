@@ -741,7 +741,7 @@
 #define Drips	ARRAY_(0x00E4D740, DRIP_STRUCT, [32])
 #define ShockWaves	ARRAY_(0x00E4C1A0, SHOCKWAVE_STRUCT, [16])
 #define ItemNewRooms	ARRAY_(0x00EEF4C0, short, [256][2])
-#define SaveGames	ARRAY_(0x0087B828, SAVEGAMES, [15])
+#define SaveGames	ARRAY_(0x0087B828, SAVEFILE_INFO, [15])
 #define Lightning	ARRAY_(0x00E4C360, LIGHTNING_STRUCT, [16])
 #define GlobalCollisionBounds ARRAY_(0x00EEF910, short, [6])
 #define HairRotScratchVertNums	ARRAY_(0x00506D40, char, [5][12])

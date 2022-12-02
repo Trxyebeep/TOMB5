@@ -2035,15 +2035,15 @@ struct SPOTCAM
 	short pad;
 };
 
-struct SAVEGAMES
+struct SAVEFILE_INFO
 {
-	char SaveName[75];
-	char bValid;
-	short Hour;
-	short Min;
-	short Sec;
-	short Day;
-	long Count;
+	char name[75];
+	char valid;
+	short hours;
+	short minutes;
+	short seconds;
+	short days;
+	long num;
 };
 
 struct PHDSPRITESTRUCT

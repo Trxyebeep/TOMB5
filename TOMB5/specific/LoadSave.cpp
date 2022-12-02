@@ -2345,6 +2345,52 @@ void DrawLoadingScreen()
 #endif
 }
 
+long GetSaveLoadFiles()
+{
+	FILE* file;
+	SAVEFILE_INFO* pSave;
+	SAVEGAME_INFO save_info;
+	static long nSaves;
+	char name[75];
+
+	save_counter = 0;
+
+	for (int i = 0; i < 15; i++)
+	{
+		pSave = &SaveGames[i];
+		wsprintf(name, "savegame.%d", i);
+		file = fopen(name, "rb");
+		Log(0, "Attempting to open %s", name);
+
+		if (!file)
+		{
+			pSave->valid = 0;
+			strcpy(pSave->name, SCRIPT_TEXT(STR_EMPTY_SLOT));
+			continue;
+		}
+
+		Log(0, "Opened OK");
+		fread(&pSave->name, sizeof(char), 75, file);
+		fread(&pSave->num, sizeof(long), 1, file);
+		fread(&pSave->days, sizeof(short), 1, file);
+		fread(&pSave->hours, sizeof(short), 1, file);
+		fread(&pSave->minutes, sizeof(short), 1, file);
+		fread(&pSave->seconds, sizeof(short), 1, file);
+		fread(&save_info, 1, sizeof(SAVEGAME_INFO), file);
+		fclose(file);
+
+		if (pSave->num > save_counter)
+			save_counter = pSave->num;
+
+		pSave->valid = 1;
+		nSaves++;
+		Log(0, "Validated savegame");
+	}
+
+	save_counter++;
+	return nSaves;
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2374,4 +2420,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004AC810, LoadScreen, replace);
 	INJECT(0x004ACA30, ReleaseScreen, replace);
 	INJECT(0x004ACAB0, DrawLoadingScreen, replace);
+	INJECT(0x004AD290, GetSaveLoadFiles, replace);
 }

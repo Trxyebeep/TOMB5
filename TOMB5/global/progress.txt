@@ -1959,7 +1959,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004ACAB0	+	DrawLoadingScreen
 0x004ACC70	+	S_DrawTile
 0x004AD010	+	S_DisplayMonoScreen
-0x004AD290		GetSaveLoadFiles
+0x004AD290	+	GetSaveLoadFiles
 0x004AD460	+	DoLoadSave
 0x004AD820		DoSlider
 0x004ADF40	+	CheckKeyConflicts
