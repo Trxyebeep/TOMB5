@@ -18,6 +18,7 @@ void ProjectTrainVerts(short nVerts, D3DTLVERTEX* v, short* clip, long x);
 HRESULT DDCopyBitmap(LPDIRECTDRAWSURFACE4 surf, HBITMAP hbm, long x, long y, long dx, long dy);
 HRESULT _LoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name);
 HRESULT aLoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name);
+void do_boot_screen(long language);
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
@@ -29,5 +30,4 @@ HRESULT aLoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name);
 #define SkinNormalsToScratch	( (void(__cdecl*)(long)) 0x004B2480 )
 #define S_OutputPolyList	( (void(__cdecl*)()) 0x004B79A0 )
 #define S_DumpScreen	( (long(__cdecl*)()) 0x004B7DA0 )
-#define do_boot_screen	( (void(__cdecl*)(long)) 0x004B8A80 )
 #define S_DumpScreenFrame	( (void(__cdecl*)()) 0x004B7E40 )

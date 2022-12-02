@@ -1683,6 +1683,57 @@ HRESULT aLoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name)
 	return E_FAIL;
 }
 
+void do_boot_screen(long language)
+{
+	Log(2, "do_boot_screen");
+
+	switch (language)
+	{
+	case ENGLISH:
+	case DUTCH:
+		_LoadBitmap(App.dx.lpBackBuffer, "uk.bmp");
+		S_DumpScreen();
+		_LoadBitmap(App.dx.lpBackBuffer, "uk.bmp");
+		break;
+
+	case FRENCH:
+		_LoadBitmap(App.dx.lpBackBuffer, "france.bmp");
+		S_DumpScreen();
+		_LoadBitmap(App.dx.lpBackBuffer, "france.bmp");
+		break;
+
+	case GERMAN:
+		_LoadBitmap(App.dx.lpBackBuffer, "germany.bmp");
+		S_DumpScreen();
+		_LoadBitmap(App.dx.lpBackBuffer, "germany.bmp");
+		break;
+
+	case ITALIAN:
+		_LoadBitmap(App.dx.lpBackBuffer, "italy.bmp");
+		S_DumpScreen();
+		_LoadBitmap(App.dx.lpBackBuffer, "italy.bmp");
+		break;
+
+	case SPANISH:
+		_LoadBitmap(App.dx.lpBackBuffer, "spain.bmp");
+		S_DumpScreen();
+		_LoadBitmap(App.dx.lpBackBuffer, "spain.bmp");
+		break;
+
+	case US:
+		_LoadBitmap(App.dx.lpBackBuffer, "usa.bmp");
+		S_DumpScreen();
+		_LoadBitmap(App.dx.lpBackBuffer, "usa.bmp");
+		break;
+
+	case JAPAN:
+		_LoadBitmap(App.dx.lpBackBuffer, "japan.bmp");
+		S_DumpScreen();
+		_LoadBitmap(App.dx.lpBackBuffer, "japan.bmp");
+		break;
+	}
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1700,5 +1751,6 @@ void inject_output(bool replace)
 	INJECT(0x004B8780, DDCopyBitmap, replace);
 	INJECT(0x004B8930, _LoadBitmap, replace);
 	INJECT(0x004B89F0, aLoadBitmap, replace);
+	INJECT(0x004B8A80, do_boot_screen, replace);
 }
 
