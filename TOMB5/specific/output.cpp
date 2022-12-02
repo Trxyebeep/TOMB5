@@ -21,6 +21,9 @@
 #include "profiler.h"
 #include "polyinsert.h"
 
+static D3DTLVERTEX SkinVerts[40][12];
+static short SkinClip[40][12];
+
 static long water_color_R = 128;
 static long water_color_G = 224;
 static long water_color_B = 255;
@@ -1931,6 +1934,37 @@ void CalcVertsColorSplitMMX(long nVerts, D3DTLVERTEX* v)
 	}
 }
 
+void StashSkinVertices(long node)
+{
+	D3DTLVERTEX* v;
+	D3DTLVERTEX* d;
+	short* cf;
+	char* vns;
+
+	vns = (char*)&SkinVertNums[node];
+	cf = (short*)&SkinClip[node];
+	d = (D3DTLVERTEX*)&SkinVerts[node];
+	v = aVertexBuffer;
+
+	while (1)
+	{
+		if (*vns < 0)
+			break;
+
+		d->sx = v[*vns].sx;
+		d->sy = v[*vns].sy;
+		d->sz = v[*vns].sz;
+		d->rhw = v[*vns].rhw;
+		d->color = v[*vns].color;
+		d->specular = v[*vns].specular;
+		d->tu = v[*vns].tu;
+		d->tv = v[*vns].tv;
+		*cf++ = clipflags[*vns];
+		d++;
+		vns++;
+	}
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1955,5 +1989,6 @@ void inject_output(bool replace)
 	INJECT(0x004B27E0, SetGlobalAmbient, replace);
 	INJECT(0x004B2620, PrelightVerts, replace);
 	INJECT(0x004B24F0, CalcVertsColorSplitMMX, replace);
+	INJECT(0x004B2270, StashSkinVertices, replace);
 }
 

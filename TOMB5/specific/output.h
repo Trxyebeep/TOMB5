@@ -25,9 +25,9 @@ long S_DumpScreenFrame();
 void SetGlobalAmbient(long ambient);
 void PrelightVerts(long nVerts, D3DTLVERTEX* v, MESH_DATA* mesh);
 void CalcVertsColorSplitMMX(long nVerts, D3DTLVERTEX* v);
+void StashSkinVertices(long node);
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
-#define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
 #define StashSkinNormals	( (void(__cdecl*)(long)) 0x004B2410 )
 #define SkinVerticesToScratch	( (void(__cdecl*)(long)) 0x004B2340 )
 #define phd_PutPolygons_seethrough	( (void(__cdecl*)(short*, long)) 0x004B4F10 )
