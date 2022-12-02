@@ -1965,6 +1965,37 @@ void StashSkinVertices(long node)
 	}
 }
 
+void SkinVerticesToScratch(long node)
+{
+	D3DTLVERTEX* v;
+	D3DTLVERTEX* d;
+	short* cf;
+	char* vns;
+
+	vns = (char*)&ScratchVertNums[node];
+	cf = (short*)&SkinClip[node];
+	d = (D3DTLVERTEX*)&SkinVerts[node];
+	v = aVertexBuffer;
+
+	while (1)
+	{
+		if (*vns < 0)
+			break;
+
+		v[*vns].sx = d->sx;
+		v[*vns].sy = d->sy;
+		v[*vns].sz = d->sz;
+		v[*vns].rhw = d->rhw;
+		v[*vns].color = d->color;
+		v[*vns].specular = d->specular;
+		v[*vns].tu = d->tu;
+		v[*vns].tv = d->tv;
+		clipflags[*vns] = *cf++;
+		d++;
+		vns++;
+	}
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1990,5 +2021,6 @@ void inject_output(bool replace)
 	INJECT(0x004B2620, PrelightVerts, replace);
 	INJECT(0x004B24F0, CalcVertsColorSplitMMX, replace);
 	INJECT(0x004B2270, StashSkinVertices, replace);
+	INJECT(0x004B2340, SkinVerticesToScratch, replace);
 }
 

@@ -1992,7 +1992,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B20D0		DebugString
 0x004B2110		S_InitialisePolyList
 0x004B2270	+	StashSkinVertices
-0x004B2340		SkinVerticesToScratch
+0x004B2340	+	SkinVerticesToScratch
 0x004B2410		StashSkinNormals
 0x004B2480		SkinNormalsToScratch
 0x004B24F0	+	CalcVertsColorSplitMMX
