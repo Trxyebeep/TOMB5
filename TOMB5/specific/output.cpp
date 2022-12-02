@@ -1537,6 +1537,50 @@ long aCheckMeshClip(MESH_DATA* mesh)
 	return 2;
 }
 
+void ProjectTrainVerts(short nVerts, D3DTLVERTEX* v, short* clip, long x)
+{
+	float zv;
+	short clipFlag;
+
+	for (int i = 0; i < nVerts; i++)
+	{
+		clipFlag = 0;
+		v->tu = v->sx;
+		v->tv = v->sy;
+
+		if (v->sz < f_mznear)
+			clipFlag = -128;
+		else
+		{
+			zv = f_mpersp / v->sz;
+
+			if (v->sz > FogEnd)
+			{
+				v->sz = f_zfar;
+				clipFlag = 256;
+			}
+
+			v->sx = zv * v->sx + f_centerx;
+			v->sy = zv * v->sy + f_centery;
+			v->rhw = f_moneopersp * zv;
+
+			if (v->sx < clip_left)
+				clipFlag++;
+			else if (v->sx > clip_right)
+				clipFlag += 2;
+
+			if (v->sy < clip_top)
+				clipFlag += 4;
+			else if (v->sy > clip_bottom)
+				clipFlag += 8;
+		}
+
+		clip[0] = clipFlag;
+		clip++;
+		v++;
+	}
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1550,5 +1594,6 @@ void inject_output(bool replace)
 	INJECT(0x004B7EB0, S_GetObjectBounds, replace);
 	INJECT(0x004B8310, S_AnimateTextures, replace);
 	INJECT(0x004B2800, aCheckMeshClip, replace);
+	INJECT(0x004B8530, ProjectTrainVerts, replace);
 }
 
