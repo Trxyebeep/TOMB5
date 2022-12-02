@@ -1994,7 +1994,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B2270	+	StashSkinVertices
 0x004B2340	+	SkinVerticesToScratch
 0x004B2410	+	StashSkinNormals
-0x004B2480		SkinNormalsToScratch
+0x004B2480	+	SkinNormalsToScratch
 0x004B24F0	+	CalcVertsColorSplitMMX
 0x004B2620	+	PrelightVerts
 0x004B27E0	+	SetGlobalAmbient

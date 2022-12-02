@@ -2017,6 +2017,26 @@ void StashSkinNormals(long node)
 	}
 }
 
+void SkinNormalsToScratch(long node)
+{
+	ENVUV* s;
+	char* vns;
+
+	vns = (char*)&ScratchVertNums[node];
+	s = &SkinENVUV[node][0];
+
+	while (1)
+	{
+		if (*vns < 0)
+			break;
+
+		aMappedEnvUV[*vns].u = s->u;
+		aMappedEnvUV[*vns].v = s->v;
+		s++;
+		vns++;
+	}
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -2044,5 +2064,6 @@ void inject_output(bool replace)
 	INJECT(0x004B2270, StashSkinVertices, replace);
 	INJECT(0x004B2340, SkinVerticesToScratch, replace);
 	INJECT(0x004B2410, StashSkinNormals, replace);
+	INJECT(0x004B2480, SkinNormalsToScratch, replace);
 }
 
