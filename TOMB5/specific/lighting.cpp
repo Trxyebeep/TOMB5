@@ -555,6 +555,86 @@ void MallocD3DLights()
 	D3DDynamics = (D3DLIGHT_STRUCT*)game_malloc(sizeof(D3DLIGHT_STRUCT) * 32, 0);
 }
 
+void InitObjectFogBulbs()
+{
+	FOGBULB_STRUCT* fogbulb;
+	FOGBULB_STRUCT* objbulb;
+	FVECTOR box;
+	FVECTOR fPos;
+	float* bbox;
+	float sqr, val;
+	long goin;
+
+	NumFogBulbs = 0;
+	objbulb = FogBulbs;
+
+	for (int i = 0; i < NumActiveFogBulbs; i++)
+	{
+		fogbulb = &ActiveFogBulbs[i];
+
+		if (!fogbulb->visible)
+			continue;
+		
+		goin = 1;
+
+		if (fogbulb->sqlen >= fogbulb->sqrad)
+		{
+			goin = 0;
+			bbox = aBoundingBox;
+
+			for (int j = 0; j < 8; j++)
+			{
+				box.x = *bbox++;
+				box.y = *bbox++;
+				box.z = *bbox++;
+				fPos.x = fogbulb->world.x - box.x;
+				fPos.y = fogbulb->world.y - box.y;
+				fPos.z = fogbulb->world.z - box.z;
+
+				if (SQUARE(fPos.x) + SQUARE(fPos.y) + SQUARE(fPos.y) < fogbulb->sqrad)
+				{
+					goin = 1;
+					break;
+				}
+
+				sqr = SQUARE(box.x) + SQUARE(box.y) + SQUARE(box.z);
+				val = 1.0F / sqrt(sqr);
+				fPos.x = box.x * val;
+				fPos.y = box.y * val;
+				fPos.z = box.z * val;
+				val = fogbulb->pos.x * fPos.x + fogbulb->pos.y * fPos.y + fogbulb->pos.z * fPos.z;
+
+				if (val > 0)
+				{
+					val = SQUARE(val);
+
+					if (sqr > val && fogbulb->sqlen - val < fogbulb->sqrad)
+					{
+						goin = 1;
+						break;
+					}
+				}
+			}
+		}
+
+		if (goin)
+		{
+			objbulb->pos.x = fogbulb->pos.x;
+			objbulb->pos.y = fogbulb->pos.y;
+			objbulb->pos.z = fogbulb->pos.z;
+			objbulb->sqlen = fogbulb->sqlen;
+			objbulb->rad = fogbulb->rad;
+			objbulb->sqrad = fogbulb->sqrad;
+			objbulb->r = fogbulb->r;
+			objbulb->g = fogbulb->g;
+			objbulb->b = fogbulb->b;
+			objbulb->d = fogbulb->d;
+			objbulb++;
+			NumFogBulbs++;
+		}
+	}
+}
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
@@ -574,4 +654,5 @@ void inject_lighting(bool replace)
 	INJECT(0x004A9C90, CreateD3DLights, replace);
 	INJECT(0x004A9CB0, FreeD3DLights, replace);
 	INJECT(0x004A9C10, MallocD3DLights, replace);
+	INJECT(0x004AB580, InitObjectFogBulbs, replace);
 }
