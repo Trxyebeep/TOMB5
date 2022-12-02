@@ -15,6 +15,7 @@
 #include "../game/text.h"
 #endif
 #include "drawroom.h"
+#include "function_stubs.h"
 
 void S_DrawPickup(short object_number)
 {
@@ -1662,6 +1663,26 @@ HRESULT _LoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name)
 	return result;
 }
 
+HRESULT aLoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name)
+{
+	HBITMAP hBitmap;
+	HRESULT result;
+
+	hBitmap = (HBITMAP)LoadImage(0, name, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
+
+	if (hBitmap)
+	{
+		result = DDCopyBitmap(surf, hBitmap, 0, 0, 0, 0);
+		DeleteObject(hBitmap);
+
+		if (result == DD_OK)
+			return result;
+	}
+
+	Log(1, "LoadBitmap FAILED");
+	return E_FAIL;
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1678,5 +1699,6 @@ void inject_output(bool replace)
 	INJECT(0x004B8530, ProjectTrainVerts, replace);
 	INJECT(0x004B8780, DDCopyBitmap, replace);
 	INJECT(0x004B8930, _LoadBitmap, replace);
+	INJECT(0x004B89F0, aLoadBitmap, replace);
 }
 
