@@ -1931,7 +1931,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A9DF0	+	S_CalculateStaticMeshLight
 0x004A9E60	+	CalcAmbientLight
 0x004A9FE0	+	FadeLightList
-0x004AA0C0		ShowOmni
+0x004AA0C0	+	ShowOmni
 0x004AA5A0	+	CreateLightList
 0x004AAAC0	+	SetupLight
 0x004AAF00	+	SuperResetLights

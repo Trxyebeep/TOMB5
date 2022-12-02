@@ -9,6 +9,7 @@
 #ifdef GENERAL_FIXES
 SPOTLIGHT_STRUCT SpotLights[64];
 #endif
+#include "polyinsert.h"
 
 void InitObjectLighting(ITEM_INFO* item)
 {
@@ -761,6 +762,86 @@ void SetupLight(D3DLIGHT_STRUCT* d3dlight, PCLIGHT* light, long* ambient)
 	DXAttempt(d3dlight->D3DLight->SetLight((LPD3DLIGHT)&d3dlight->D3DLight2));
 }
 
+#pragma warning(push)
+#pragma warning(disable : 4244)
+void ShowOmni(long x, long y, long z, long rad)
+{
+	PHD_VECTOR pos;
+	FVECTOR p;
+	D3DTLVERTEX v[64];
+	float ang, zv, step;
+
+	x -= camera.pos.x;
+	y -= camera.pos.y;
+	z -= camera.pos.z;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
+
+	step = float(2 * M_PI) / float(64 - 1);	//2pi / (nVtx - 1)
+	ang = 0;
+
+	for (int i = 0; i < 64; i++)
+	{
+		p.x = sin(ang) * rad + x;
+		p.y = y;
+		p.z = cos(ang) * rad + z;
+		pos.x = p.x * phd_mxptr[M00] + p.y * phd_mxptr[M01] + p.z * phd_mxptr[M02] + phd_mxptr[M03];
+		pos.y = p.x * phd_mxptr[M10] + p.y * phd_mxptr[M11] + p.z * phd_mxptr[M12] + phd_mxptr[M13];
+		pos.z = p.x * phd_mxptr[M20] + p.y * phd_mxptr[M21] + p.z * phd_mxptr[M22] + phd_mxptr[M23];
+		zv = (float)phd_persp / (float)pos.z;
+		v[i].sx = pos.x * zv + f_centerx;
+		v[i].sy = pos.y * zv + f_centery;
+		v[i].sz = pos.z;
+		v[i].color = 0xFF00FF00;
+		v[i].specular = 0xFF000000;
+		ang += step;
+	}
+
+	S_DrawLine(64, v);
+
+	for (int i = 0; i < 64; i++)
+	{
+		p.x = cos(ang) * rad + x;
+		p.y = sin(ang) * rad + y;
+		p.z = z;
+		pos.x = p.x * phd_mxptr[M00] + p.y * phd_mxptr[M01] + p.z * phd_mxptr[M02] + phd_mxptr[M03];
+		pos.y = p.x * phd_mxptr[M10] + p.y * phd_mxptr[M11] + p.z * phd_mxptr[M12] + phd_mxptr[M13];
+		pos.z = p.x * phd_mxptr[M20] + p.y * phd_mxptr[M21] + p.z * phd_mxptr[M22] + phd_mxptr[M23];
+		zv = (float)phd_persp / (float)pos.z;
+		v[i].sx = pos.x * zv + f_centerx;
+		v[i].sy = pos.y * zv + f_centery;
+		v[i].sz = pos.z;
+		v[i].color = 0xFFFF0000;
+		v[i].specular = 0xFF000000;
+		ang += step;
+	}
+
+	S_DrawLine(64, v);
+
+	for (int i = 0; i < 64; i++)
+	{
+		p.x = x;
+		p.y = sin(ang) * rad + y;
+		p.z = cos(ang) * rad + z;
+		pos.x = p.x * phd_mxptr[M00] + p.y * phd_mxptr[M01] + p.z * phd_mxptr[M02] + phd_mxptr[M03];
+		pos.y = p.x * phd_mxptr[M10] + p.y * phd_mxptr[M11] + p.z * phd_mxptr[M12] + phd_mxptr[M13];
+		pos.z = p.x * phd_mxptr[M20] + p.y * phd_mxptr[M21] + p.z * phd_mxptr[M22] + phd_mxptr[M23];
+		zv = (float)phd_persp / (float)pos.z;
+		v[i].sx = pos.x * zv + f_centerx;
+		v[i].sy = pos.y * zv + f_centery;
+		v[i].sz = pos.z;
+		v[i].color = 0xFFFF0000;
+		v[i].specular = 0xFF000000;
+		ang += step;
+	}
+
+	S_DrawLine(64, v);
+
+	phd_PopMatrix();
+}
+#pragma warning(pop)
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
@@ -782,4 +863,5 @@ void inject_lighting(bool replace)
 	INJECT(0x004A9C10, MallocD3DLights, replace);
 	INJECT(0x004AB580, InitObjectFogBulbs, replace);
 	INJECT(0x004AAAC0, SetupLight, replace);
+	INJECT(0x004AA0C0, ShowOmni, replace);
 }
