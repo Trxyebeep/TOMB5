@@ -2742,6 +2742,25 @@ long FindSFCursor(long in, long selection)
 	return 1 << num;
 }
 
+void CalculateNumSpecialFeatures()
+{
+	SpecialFeaturesPage[0] = 0;
+	SpecialFeaturesPage[1] = 0;
+	SpecialFeaturesPage[2] = 0;
+	SpecialFeaturesPage[3] = 0;
+	SpecialFeaturesPage[4] = 0;
+	NumSpecialFeatures = 0;
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (savegame.CampaignSecrets[i] >= 9)
+		{
+			SpecialFeaturesPage[i] = 1;
+			NumSpecialFeatures++;
+		}
+	}
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2779,4 +2798,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004B1EB0, IsSuperLowRes, replace);
 	INJECT(0x004B2090, DoFrontEndOneShotStuff, replace);
 	INJECT(0x004ABA60, FindSFCursor, replace);
+	INJECT(0x004AB9F0, CalculateNumSpecialFeatures, replace);
 }
