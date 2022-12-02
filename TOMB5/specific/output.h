@@ -20,6 +20,7 @@ HRESULT _LoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name);
 HRESULT aLoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name);
 void do_boot_screen(long language);
 void aCalcColorSplit(long col, long* pC, long* pS);
+long S_DumpScreen();
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
@@ -30,5 +31,4 @@ void aCalcColorSplit(long col, long* pC, long* pS);
 #define phd_PutPolygonsSpcXLU	( (void(__cdecl*)(short*, long)) 0x004B4CA0 )
 #define SkinNormalsToScratch	( (void(__cdecl*)(long)) 0x004B2480 )
 #define S_OutputPolyList	( (void(__cdecl*)()) 0x004B79A0 )
-#define S_DumpScreen	( (long(__cdecl*)()) 0x004B7DA0 )
 #define S_DumpScreenFrame	( (void(__cdecl*)()) 0x004B7E40 )

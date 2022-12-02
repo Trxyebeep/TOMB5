@@ -16,6 +16,9 @@
 #endif
 #include "drawroom.h"
 #include "function_stubs.h"
+#include "time.h"
+#include "dxshell.h"
+#include "profiler.h"
 
 void S_DrawPickup(short object_number)
 {
@@ -1803,6 +1806,28 @@ void aCalcColorSplit(long col, long* pC, long* pS)
 	*pS = RGBONLY(sR, sG, sB);
 }
 
+long S_DumpScreen()
+{
+	long n;
+
+	mAddProfilerEvent(0);
+	mDrawProfiler(0, 64, App.dx.dwRenderHeight - 32);
+	n = Sync();
+
+	while (n < 2)
+	{
+		while (!Sync());	//wait for sync
+		n++;
+	}
+
+	GnFrameCounter++;
+	_EndScene();
+	DXShowFrame();
+	mAddProfilerEvent(0x805C805C);
+	App.dx.DoneBlit = 1;
+	return n;
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1822,5 +1847,6 @@ void inject_output(bool replace)
 	INJECT(0x004B89F0, aLoadBitmap, replace);
 	INJECT(0x004B8A80, do_boot_screen, replace);
 	INJECT(0x004B8C50, aCalcColorSplit, replace);
+	INJECT(0x004B7DA0, S_DumpScreen, replace);
 }
 
