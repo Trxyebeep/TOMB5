@@ -47,5 +47,6 @@ long IsSuperLowRes();
 void DoFrontEndOneShotStuff();
 long FindSFCursor(long in, long selection);
 void CalculateNumSpecialFeatures();
+void SpecialFeaturesDisplayScreens(long num);
 
 #define DoSpecialFeaturesServer	( (void(__cdecl*)()) 0x004B1D90 )

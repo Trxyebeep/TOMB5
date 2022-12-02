@@ -2761,6 +2761,69 @@ void CalculateNumSpecialFeatures()
 	}
 }
 
+#pragma warning(push)
+#pragma warning(disable : 4244)
+void SpecialFeaturesDisplayScreens(long num)
+{
+	static long start[4] = { 0, 0, 0, 0 };
+	static long nPics[4] = { 12, 11, 12, 23 };
+	long first, max, pos, count;
+
+	first = start[num];
+	max = nPics[num];
+	pos = 0;
+	count = 0;
+	LoadScreen(first, num);
+
+	while (!MainThread.ended && !(dbinput & IN_DESELECT))
+	{
+		_BeginScene();
+		InitBuckets();
+		InitialiseSortList();
+		S_UpdateInput();
+		SetDebounce = 1;
+
+		if (count < 2)
+		{
+			count++;
+			DrawLoadingScreen();
+		}
+		else if (count == 2)
+		{
+			count = 3;
+			ReleaseScreen();
+		}
+
+		if (!pos)
+			PrintString(font_height, phd_winymax - font_height, 6, "Next \x1B", 0);
+		else if (pos < max)
+			PrintString(font_height, phd_winymax - font_height, 6, "\x19 Previous / Next \x1b", 0);
+		else
+			PrintString(font_height, phd_winymax - font_height, 6, "\x19 Previous", 0);
+
+		UpdatePulseColour();
+		S_OutputPolyList();
+		S_DumpScreen();
+
+		if (dbinput & IN_LEFT && pos)
+		{
+			pos--;
+			LoadScreen(pos + first, num);
+			count = 0;
+		}
+		if (dbinput & IN_RIGHT && pos < max)
+		{
+			pos++;
+			LoadScreen(pos + first, num);
+			count = 0;
+		}
+	}
+
+	dbinput &= ~IN_DESELECT;
+	ReleaseScreen();
+}
+#pragma warning (pop)
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2799,4 +2862,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004B2090, DoFrontEndOneShotStuff, replace);
 	INJECT(0x004ABA60, FindSFCursor, replace);
 	INJECT(0x004AB9F0, CalculateNumSpecialFeatures, replace);
+	INJECT(0x004B1C00, SpecialFeaturesDisplayScreens, replace);
 }
