@@ -930,7 +930,7 @@ struct OBJECT_INFO
 	ulong padfuck;
 };
 
-struct FOGBULB
+struct FOGBULB_INFO	//fog data stored in room data
 {
 	float px;
 	float py;
@@ -1021,7 +1021,7 @@ struct ROOM_INFO
 	long gt3cnt;
 	long gt4cnt;
 	PCLIGHT_INFO* pclight;
-	FOGBULB* fogbulb;
+	FOGBULB_INFO* fogbulb;
 	long nPCLight;
 	long nFogBulbs;
 	float cy0;
@@ -2245,7 +2245,7 @@ struct POINTLIGHT_STRUCT
 	float rad;
 };
 
-struct FOGBULB_STRUCT
+struct FOGBULB_STRUCT	//fog data used to apply fog on vertices
 {
 	FVECTOR pos;
 	FVECTOR world;

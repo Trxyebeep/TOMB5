@@ -793,7 +793,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 void aBuildFogBulbList()
 {
 	FOGBULB_STRUCT* ActiveFog;
-	FOGBULB* Fog;
+	FOGBULB_INFO* Fog;
 	FVECTOR vec;
 	FVECTOR vec2;
 	static float unused1 = 0.025F;
@@ -807,7 +807,7 @@ void aBuildFogBulbList()
 
 		for (int i = 0; i < NumLevelFogBulbs; i++)
 		{
-			Fog = &fog_bulbs[i];
+			Fog = &LevelFogBulbs[i];
 			vec.x = Fog->px;
 			vec.y = Fog->py;
 			vec.z = Fog->pz;
@@ -1210,7 +1210,7 @@ long aBuildRoomletLights(ROOMLET* r)
 void aRoomInit()
 {
 	ROOM_INFO* r;
-	FOGBULB* bulb;
+	FOGBULB_INFO* bulb;
 	long nBulbs;
 
 	nBulbs = 0;
@@ -1224,8 +1224,8 @@ void aRoomInit()
 
 		for (int j = 0; j < r->nFogBulbs; j++)
 		{
-			bulb = &fog_bulbs[nBulbs];
-			memcpy(bulb, &r->fogbulb[j], sizeof(FOGBULB));
+			bulb = &LevelFogBulbs[nBulbs];
+			memcpy(bulb, &r->fogbulb[j], sizeof(FOGBULB_INFO));
 
 			if (gfCurrentLevel == 2 || gfCurrentLevel == 3)
 			{

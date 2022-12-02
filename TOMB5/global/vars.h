@@ -753,7 +753,6 @@
 #define jLayout	ARRAY_(0x00516AF0, long, [32])
 #define SunLights	ARRAY_(0x00879538, SUNLIGHT_STRUCT, [16])
 #define PointLights	ARRAY_(0x00878E28, POINTLIGHT_STRUCT, [64])
-#define FogBulbs	ARRAY_(0x0087AD18, FOGBULB_STRUCT, [16])
 #define w2v_matrix	ARRAY_(0x0055D26C, long, [12])
 #define SpecialFeaturesPage	ARRAY_(0x0087BD50, char, [5])
 #define sfx_frequencies	ARRAY_(0x00517B5C, long, [3])
@@ -774,10 +773,13 @@
 #define vert_wibble_table	ARRAY_(0x00878658, float, [32])
 #define unused_vert_wibble_table	ARRAY_(0x00878254, float, [128])
 #define RoomletLights	ARRAY_(0x007ED6B0, ROOMLET_LIGHT, [64])
-#define RoomletFogBulbs	ARRAY_(0x007DFC18, FOGBULB_STRUCT, [16])
-#define ActiveFogBulbs	ARRAY_(0x007E7FF0, FOGBULB_STRUCT, [64])
-#define fog_bulbs	ARRAY_(0x007ED0F8, FOGBULB, [64])
-#define FXFogBulbs	ARRAY_(0x007EAF78, FOGBULB_STRUCT, [4])
+
+#define	LevelFogBulbs	ARRAY_(0x007ED0F8, FOGBULB_INFO, [64])		//list of all fogbulbs in the level (copied from room data)
+#define FogBulbs	ARRAY_(0x0087AD18, FOGBULB_STRUCT, [16])		//to apply on object vertices
+#define RoomletFogBulbs	ARRAY_(0x007DFC18, FOGBULB_STRUCT, [16])	//to apply on roomlet vertices
+#define ActiveFogBulbs	ARRAY_(0x007E7FF0, FOGBULB_STRUCT, [64])	//list of active fog bulbs
+#define FXFogBulbs	ARRAY_(0x007EAF78, FOGBULB_STRUCT, [4])			//list of fx fog bulbs (only used for Red Alert gas clouds)
+
 #define MonoScreen	ARRAY_(0x008BBD68, MONOSCREEN_STRUCT, [5])
 #define aBoundingBox	ARRAY_(0x00921618, float, [24])
 #define SortBuffer	ARRAY_(0x00923FAC, char, [])
