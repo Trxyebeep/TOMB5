@@ -1847,6 +1847,11 @@ long S_DumpScreenFrame()
 	return n;
 }
 
+void SetGlobalAmbient(long ambient)
+{
+	GlobalAmbient = ambient;
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1868,5 +1873,6 @@ void inject_output(bool replace)
 	INJECT(0x004B8C50, aCalcColorSplit, replace);
 	INJECT(0x004B7DA0, S_DumpScreen, replace);
 	INJECT(0x004B7E40, S_DumpScreenFrame, replace);
+	INJECT(0x004B27E0, SetGlobalAmbient, replace);
 }
 

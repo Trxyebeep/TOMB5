@@ -22,6 +22,7 @@ void do_boot_screen(long language);
 void aCalcColorSplit(long col, long* pC, long* pS);
 long S_DumpScreen();
 long S_DumpScreenFrame();
+void SetGlobalAmbient(long ambient);
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
