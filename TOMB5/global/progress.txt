@@ -1982,7 +1982,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B1E30	+	S_MemSet
 0x004B1E70	+	DisplayStatsUCunt
 0x004B1E90	+	IsHardware
-0x004B1EB0		IsSuperLowRes
+0x004B1EB0	+	IsSuperLowRes
 0x004B1F00	+	GetCampaignCheatValue
 0x004B2090		DoFrontEndOneShotStuff
 

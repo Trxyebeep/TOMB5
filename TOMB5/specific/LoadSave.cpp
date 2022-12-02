@@ -2688,6 +2688,21 @@ long IsHardware()
 	return App.dx.Flags & 0x80;
 }
 
+long IsSuperLowRes()
+{
+	long w, h;
+
+	MMXGetBackSurfWH(w, h);
+
+	if (w < 400)
+		return 1;
+
+	if (w <= 512)
+		return 2;
+
+	return 0;
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2722,4 +2737,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004B0D60, S_DisplayPauseMenu, replace);
 	INJECT(0x004B1030, S_PauseMenu, replace);
 	INJECT(0x004B1E90, IsHardware, replace);
+	INJECT(0x004B1EB0, IsSuperLowRes, replace);
 }
