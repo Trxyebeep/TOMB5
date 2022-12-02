@@ -2552,6 +2552,8 @@ void DoSlider(long x, long y, long width, long height, long pos, long c1, long c
 	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
 }
 
+#pragma warning(push)
+#pragma warning(disable : 4244)
 long S_DisplayPauseMenu(long reset)
 {
 	static long menu, selection = 1;
@@ -2630,6 +2632,56 @@ long S_DisplayPauseMenu(long reset)
 
 	return 0;
 }
+#pragma warning (pop)
+
+long S_PauseMenu()
+{
+	long fade, ret;
+
+	fade = 0;
+	CreateMonoScreen();
+	S_DisplayPauseMenu(1);
+	InventoryActive = 1;
+
+	do
+	{
+		S_InitialisePolyList();
+
+		if (fade)
+			dbinput = 0;
+		else
+			S_UpdateInput();
+
+		SetDebounce = 1;
+		S_DisplayMonoScreen();
+		ret = S_DisplayPauseMenu(0);
+		UpdatePulseColour();
+		S_OutputPolyList();
+		S_DumpScreen();
+
+		if (ret == 1)
+			break;
+
+		if (ret == 8)
+		{
+			fade = 8;
+			ret = 0;
+			SetFade(0, 255);
+		}
+
+		if (fade && DoFade == 2)
+		{
+			ret = fade;
+			break;
+		}
+
+	} while (!MainThread.ended);
+
+	TIME_Init();
+	FreeMonoScreen();
+	InventoryActive = 0;
+	return ret;
+}
 
 void inject_LoadSave(bool replace)
 {
@@ -2663,4 +2715,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004AD290, GetSaveLoadFiles, replace);
 	INJECT(0x004AD820, DoSlider, replace);
 	INJECT(0x004B0D60, S_DisplayPauseMenu, replace);
+	INJECT(0x004B1030, S_PauseMenu, replace);
 }

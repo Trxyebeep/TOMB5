@@ -41,8 +41,8 @@ void DrawLoadingScreen();
 long GetSaveLoadFiles();
 void DoSlider(long x, long y, long width, long height, long pos, long c1, long c2, long c3);
 long S_DisplayPauseMenu(long reset);
+long S_PauseMenu();
 
-#define S_PauseMenu	( (long(__cdecl*)()) 0x004B1030 )
 #define DoSpecialFeaturesServer	( (void(__cdecl*)()) 0x004B1D90 )
 #define DoFrontEndOneShotStuff	( (void(__cdecl*)()) 0x004B2090 )
 #define IsHardware	( (long(__cdecl*)()) 0x004B1E90 )
