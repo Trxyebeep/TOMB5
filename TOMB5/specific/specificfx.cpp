@@ -1408,22 +1408,22 @@ void DrawStarField()
 void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, short* clip)
 {
 	float zv;
-	short clip_distance;
+	short clipFlag;
 
-	clip_distance = 0;
+	clipFlag = 0;
 	v->tu = (float)x1;
 	v->tv = (float)y1;
 	v->sz = (float)z1;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1432,32 +1432,32 @@ void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
 	v++;
-	clip[0] = clip_distance;
-	clip_distance = 0;
+	clip[0] = clipFlag;
+	clipFlag = 0;
 	v->tu = (float)x2;
 	v->tv = (float)y2;
 	v->sz = (float)z2;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1466,32 +1466,32 @@ void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
 	v++;
-	clip[1] = clip_distance;
-	clip_distance = 0;
+	clip[1] = clipFlag;
+	clipFlag = 0;
 	v->tu = (float)x3;
 	v->tv = (float)y3;
 	v->sz = (float)z3;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1500,38 +1500,38 @@ void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
-	clip[2] = clip_distance;
+	clip[2] = clipFlag;
 }
 
 void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, long x4, long y4, long z4, short* clip)
 {
 	float zv;
-	short clip_distance;
+	short clipFlag;
 
-	clip_distance = 0;
+	clipFlag = 0;
 	v->tu = (float)x1;
 	v->tv = (float)y1;
 	v->sz = (float)z1;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv= f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1540,32 +1540,32 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
 	v++;
-	clip[0] = clip_distance;
-	clip_distance = 0;
+	clip[0] = clipFlag;
+	clipFlag = 0;
 	v->tu = (float)x2;
 	v->tv = (float)y2;
 	v->sz = (float)z2;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1574,32 +1574,32 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
 	v++;
-	clip[1] = clip_distance;
-	clip_distance = 0;
+	clip[1] = clipFlag;
+	clipFlag = 0;
 	v->tu = (float)x3;
 	v->tv = (float)y3;
 	v->sz = (float)z3;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1608,32 +1608,32 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
 	v++;
-	clip[2] = clip_distance;
-	clip_distance = 0;
+	clip[2] = clipFlag;
+	clipFlag = 0;
 	v->tu = (float)x4;
 	v->tv = (float)y4;
 	v->sz = (float)z4;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1642,25 +1642,25 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
-	clip[3] = clip_distance;
+	clip[3] = clipFlag;
 }
 
 void setXY3(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3, long z, short* clip)
 {
 	float zv;
-	short clip_distance;
+	short clipFlag;
 
-	clip_distance = 0;
+	clipFlag = 0;
 	zv = f_mpersp / (float)z;
 	v->sx = (float)x1;
 	v->sy = (float)y1;
@@ -1668,60 +1668,60 @@ void setXY3(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[0] = clip_distance;
+	clip[0] = clipFlag;
 	v++;
-	clip_distance = 0;
+	clipFlag = 0;
 	v->sx = (float)x2;
 	v->sy = (float)y2;
 	v->sz = (float)z;
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[1] = clip_distance;
+	clip[1] = clipFlag;
 	v++;
-	clip_distance = 0;
+	clipFlag = 0;
 	v->sx = (float)x3;
 	v->sy = (float)y3;
 	v->sz = (float)z;
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[2] = clip_distance;
+	clip[2] = clipFlag;
 }
 
 void setXY4(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3, long x4, long y4, long z, short* clip)
 {
 	float zv;
-	short clip_distance;
+	short clipFlag;
 
-	clip_distance = 0;
+	clipFlag = 0;
 	zv = f_mpersp / (float)z;
 	v->sx = (float)x1;
 	v->sy = (float)y1;
@@ -1729,70 +1729,70 @@ void setXY4(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[0] = clip_distance;
+	clip[0] = clipFlag;
 	v++;
-	clip_distance = 0;
+	clipFlag = 0;
 	v->sx = (float)x2;
 	v->sy = (float)y2;
 	v->sz = (float)z;
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[1] = clip_distance;
+	clip[1] = clipFlag;
 	v++;
-	clip_distance = 0;
+	clipFlag = 0;
 	v->sx = (float)x3;
 	v->sy = (float)y3;
 	v->sz = (float)z;
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[2] = clip_distance;
+	clip[2] = clipFlag;
 	v++;
-	clip_distance = 0;
+	clipFlag = 0;
 	v->sx = (float)x4;
 	v->sy = (float)y4;
 	v->sz = (float)z;
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[3] = clip_distance;
+	clip[3] = clipFlag;
 }
 
 void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz)
@@ -1924,7 +1924,7 @@ void DoRain()
 	short* clip;
 	float ctop, cbottom, cright, cleft, zv, zz;
 	long num_alive, rad, angle, rnd, x, z, x_size, y_size, clr;
-	short room_number, clip_distance;
+	short room_number, clipFlag;
 
 	num_alive = 0;
 
@@ -2059,7 +2059,7 @@ void DoRain()
 
 		if (rptr->x)
 		{
-			clip_distance = 0;
+			clipFlag = 0;
 			clip = clipflags;
 			vec.x = (float)(rptr->x - lara_item->pos.x_pos - 2 * SmokeWindX);
 			vec.y = (float)(rptr->y - 8 * rptr->yv - lara_item->pos.y_pos);
@@ -2075,13 +2075,13 @@ void DoRain()
 			v[0].tv = vec2.y;
 
 			if (vec2.z < f_mznear)
-				clip_distance = -128;
+				clipFlag = -128;
 			else
 			{
 				if (vec2.z > FogEnd)
 				{
 					zz = f_zfar;
-					clip_distance = 16;
+					clipFlag = 16;
 				}
 
 				zv = f_mpersp / zz;
@@ -2090,19 +2090,19 @@ void DoRain()
 				v[0].rhw = f_moneopersp * zv;
 
 				if (v[0].sx < cleft)
-					clip_distance++;
+					clipFlag++;
 				else if (v[0].sx > cright)
-					clip_distance += 2;
+					clipFlag += 2;
 
 				if (v[0].sy < ctop)
-					clip_distance += 4;
+					clipFlag += 4;
 				else if (v[0].sy > cbottom)
-					clip_distance += 8;
+					clipFlag += 8;
 			}
 
 			v[0].sz = zz;
-			clip[0] = clip_distance;
-			clip_distance = 0;
+			clip[0] = clipFlag;
+			clipFlag = 0;
 			clip++;
 
 			vec.x = (float)(rptr->x - lara_item->pos.x_pos);
@@ -2118,13 +2118,13 @@ void DoRain()
 			v[1].tv = vec2.y;
 
 			if (vec2.z < f_mznear)
-				clip_distance = -128;
+				clipFlag = -128;
 			else
 			{
 				if (vec2.z > FogEnd)
 				{
 					zz = f_zfar;
-					clip_distance = 16;
+					clipFlag = 16;
 				}
 
 				zv = f_mpersp / zz;
@@ -2133,18 +2133,18 @@ void DoRain()
 				v[1].rhw = f_moneopersp * zv;
 
 				if (v[1].sx < cleft)
-					clip_distance++;
+					clipFlag++;
 				else if (v[1].sx > cright)
-					clip_distance += 2;
+					clipFlag += 2;
 
 				if (v[1].sy < ctop)
-					clip_distance += 4;
+					clipFlag += 4;
 				else if (v[1].sy > cbottom)
-					clip_distance += 8;
+					clipFlag += 8;
 			}
 
 			v[1].sz = zz;
-			clip[0] = clip_distance;
+			clip[0] = clipFlag;
 
 			if (!clipflags[0] && !clipflags[1])
 				AddPolyLine(v, &tex);

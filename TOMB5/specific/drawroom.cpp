@@ -390,7 +390,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	static float DistanceFogEnd = 20.0F * 1024.0F;
 	float num, zbak, zv, zv2, fR, fG, fB, val, val2, val3, fCol;
 	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal;
-	short clip_distance;
+	short clipFlag;
 	uchar rnd, abs;
 #ifdef GENERAL_FIXES
 	uchar flags;
@@ -438,10 +438,10 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		zbak = vec.z;
 		aVertexBuffer[i].tu = vec.x;
 		aVertexBuffer[i].tv = vec.y;
-		clip_distance = 0;
+		clipFlag = 0;
 
 		if (vec.z < f_mznear)
-			clip_distance = -128;
+			clipFlag = -128;
 		else
 		{
 			zv = f_mpersp / vec.z;
@@ -461,17 +461,17 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			aVertexBuffer[i].rhw = zv * f_moneopersp;
 
 			if (vec.x < clip_left)
-				clip_distance = 1;
+				clipFlag++;
 			else if (vec.x > clip_right)
-				clip_distance = 2;
+				clipFlag += 2;
 
 			if (vec.y < clip_top)
-				clip_distance += 4;
+				clipFlag += 4;
 			else if (vec.y > clip_bottom)
-				clip_distance += 8;
+				clipFlag += 8;
 		}
 
-		clip[0] = clip_distance;
+		clip[0] = clipFlag;
 		clip++;
 		aVertexBuffer[i].sx = vec.x;
 		aVertexBuffer[i].sy = vec.y;

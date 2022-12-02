@@ -349,7 +349,7 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 	float fNum, fZ;
 #endif
 	long sR, sG, sB, cR, cG, cB;
-	short clip_distance;
+	short clipFlag;
 
 	clip = clipflags;
 
@@ -497,10 +497,10 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 		vec2.z = vec.z;
 		aVertexBuffer[i].tu = vec.x;
 		aVertexBuffer[i].tv = vec.y;
-		clip_distance = 0;
+		clipFlag = 0;
 
 		if (vec.z < f_mznear)
-			clip_distance = -128;
+			clipFlag = -128;
 		else
 		{
 			zv = f_mpersp / vec.z;
@@ -509,17 +509,17 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 			aVertexBuffer[i].rhw = f_moneopersp * zv;
 
 			if (vec.x < clip_left)
-				clip_distance = 1;
+				clipFlag++;
 			else if (vec.x > clip_right)
-				clip_distance = 2;
+				clipFlag += 2;
 
 			if (vec.y < clip_top)
-				clip_distance += 4;
+				clipFlag += 4;
 			else if (vec.y > clip_bottom)
-				clip_distance += 8;
+				clipFlag += 8;
 		}
 
-		clip[0] = clip_distance;
+		clip[0] = clipFlag;
 		clip++;
 
 		aVertexBuffer[i].sx = vec.x;
@@ -889,7 +889,7 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 	float fNum, fZ;
 #endif
 	long sR, sG, sB, cR, cG, cB, pR, pG, pB;
-	short clip_distance;
+	short clipFlag;
 
 	clip = clipflags;
 	pR = (StaticMeshShade & 0x1F) << 3;
@@ -986,10 +986,10 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 		vec2.z = vec.z;
 		aVertexBuffer[i].tu = vec.x;
 		aVertexBuffer[i].tv = vec.y;
-		clip_distance = 0;
+		clipFlag = 0;
 
 		if (vec.z < f_mznear)
-			clip_distance = -128;
+			clipFlag = -128;
 		else
 		{
 			zv = f_mpersp / vec.z;
@@ -998,17 +998,17 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 			aVertexBuffer[i].rhw = f_moneopersp * zv;
 
 			if (vec.x < clip_left)
-				clip_distance = 1;
+				clipFlag++;
 			else if (vec.x > clip_right)
-				clip_distance = 2;
+				clipFlag += 2;
 
 			if (vec.y < clip_top)
-				clip_distance += 4;
+				clipFlag += 4;
 			else if (vec.y > clip_bottom)
-				clip_distance += 8;
+				clipFlag += 8;
 		}
 
-		clip[0] = clip_distance;
+		clip[0] = clipFlag;
 		clip++;
 
 		aVertexBuffer[i].sx = vec.x;

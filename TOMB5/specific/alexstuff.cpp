@@ -219,7 +219,7 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 	pR = (ROOM_INFO*)s;
 	offset = long(s + sizeof(ROOM_INFO));
 
-	pR->fogbulb = (FOGBULB*)((char*)pR->fogbulb + offset);
+	pR->fogbulb = (FOGBULB_INFO*)((char*)pR->fogbulb + offset);
 	pR->pclight = (PCLIGHT_INFO*)((char*)pR->pclight + offset);
 	pR->floor = (FLOOR_INFO*)((char*)pR->floor + offset);
 	pR->door = (short*)((char*)pR->door + offset);
