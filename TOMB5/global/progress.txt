@@ -2018,7 +2018,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B8530	+	ProjectTrainVerts
 0x004B8660	+	RenderLoadPic
 0x004B8780	+	DDCopyBitmap
-0x004B8930		LoadBitmap
+0x004B8930	+	_LoadBitmap
 0x004B89F0		aLoadBitmap
 0x004B8A80		do_boot_screen
 0x004B8C50		aCalcColorSplit

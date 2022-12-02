@@ -16,6 +16,7 @@ void S_AnimateTextures(long n);
 long aCheckMeshClip(MESH_DATA* mesh);
 void ProjectTrainVerts(short nVerts, D3DTLVERTEX* v, short* clip, long x);
 HRESULT DDCopyBitmap(LPDIRECTDRAWSURFACE4 surf, HBITMAP hbm, long x, long y, long dx, long dy);
+HRESULT _LoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name);
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
