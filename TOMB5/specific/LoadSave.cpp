@@ -677,75 +677,78 @@ void S_DrawEnemyBar(long pos)
 #pragma warning(disable : 4244)
 long DoLoadSave(long LoadSave)
 {
-	long String, color, n;
-	char SaveInfo[80];
-	char string[41];
+	SAVEFILE_INFO* pSave;
+	static long selection;
+	long txt, color, l;
+	char string[80];
+	char name[41];
 
 	if (LoadSave & IN_SAVE)
-		String = gfStringOffset_bis[STR_SAVE_GAME_BIS_BIS];
+		txt = STR_SAVE_GAME_BIS_BIS;
 	else
-		String = gfStringOffset_bis[STR_LOAD_GAME_BIS];
+		txt = STR_LOAD_GAME_BIS;
 
-	PrintString(phd_centerx, font_height, 6, &gfStringWad[String], FF_CENTER);
+	PrintString(phd_centerx, font_height, 6, SCRIPT_TEXT_bis(txt), FF_CENTER);
 
 	for (int i = 0; i < 15; i++)
 	{
+		pSave = &SaveGames[i];
 		color = 2;
 
-		if (i == cSaveGameSelect)
+		if (i == selection)
 			color = 1;
 
-		memset(string, 32, 40);
-		n = strlen(SaveGames[i].SaveName);
+		memset(name, ' ', 40);
+		l = strlen(pSave->name);
 
-		if (n > 40)
-			n = 40;
+		if (l > 40)
+			l = 40;
 
-		strncpy(string, SaveGames[i].SaveName, n);
-		string[40] = 0;
-		tqFontHeight = 1;
+		strncpy(name, pSave->name, l);
+		name[40] = 0;
+		small_font = 1;
 
-		if (SaveGames[i].bValid)
+		if (pSave->valid)
 		{
-			wsprintf(SaveInfo, "%03d", SaveGames[i].Count);
-			PrintString(phd_centerx - long((310.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, SaveInfo, 0);
-			PrintString(phd_centerx - long((270.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, string, 0);
-			wsprintf(SaveInfo, "%d %s %02d:%02d:%02d", SaveGames[i].Day, SCRIPT_TEXT_bis(STR_DAYS), SaveGames[i].Hour, SaveGames[i].Min, SaveGames[i].Sec);
-			PrintString(phd_centerx + long((135.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, SaveInfo, 0);
+			wsprintf(string, "%03d", pSave->num);
+			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * 310.0F), font_height + font_height * (i + 2), color, string, 0);
+			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * 270.0F), font_height + font_height * (i + 2), color, name, 0);
+			wsprintf(string, "%d %s %02d:%02d:%02d", pSave->days, SCRIPT_TEXT_bis(STR_DAYS), pSave->hours, pSave->minutes, pSave->seconds);
+			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * -135.0F), font_height + font_height * (i + 2), color, string, 0);
 		}
 		else
 		{
-			wsprintf(SaveInfo, "%s", SaveGames[i].SaveName);
-			PrintString(phd_centerx, font_height + ((i + 2) * font_height), color, SaveInfo, FF_CENTER);
+			wsprintf(string, "%s", pSave->name);
+			PrintString(phd_centerx, font_height + font_height * (i + 2), color, string, FF_CENTER);
 		}
 
-		tqFontHeight = 0;
+		small_font = 0;
 	}
 
 	if (dbinput & IN_FORWARD)
 	{
-		cSaveGameSelect--;
-		SoundEffect(SFX_MENU_CHOOSE, 0, 0);
+		selection--;
+		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_DEFAULT);
 	}
 
 	if (dbinput & IN_BACK)
 	{
-		cSaveGameSelect++;
-		SoundEffect(SFX_MENU_CHOOSE, 0, 0);
+		selection++;
+		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_DEFAULT);
 	}
 
-	if (cSaveGameSelect < 0)
-		cSaveGameSelect = 0;
+	if (selection < 0)
+		selection = 0;
 
-	if (cSaveGameSelect > 14)
-		cSaveGameSelect = 14;
+	if (selection > 14)
+		selection = 14;
 
 	if (dbinput & IN_SELECT)
 	{
-		if (SaveGames[cSaveGameSelect].bValid || LoadSave == IN_SAVE)
-			return cSaveGameSelect;
+		if (SaveGames[selection].valid || LoadSave == IN_SAVE)
+			return selection;
 		else
-			SoundEffect(SFX_LARA_NO, 0, 0);
+			SoundEffect(SFX_LARA_NO, 0, SFX_DEFAULT);
 	}
 
 	return -1;
