@@ -21,6 +21,7 @@
 #include "profiler.h"
 #include "polyinsert.h"
 
+static ENVUV SkinENVUV[40][12];
 static D3DTLVERTEX SkinVerts[40][12];
 static short SkinClip[40][12];
 
@@ -1996,6 +1997,26 @@ void SkinVerticesToScratch(long node)
 	}
 }
 
+void StashSkinNormals(long node)
+{
+	ENVUV* d;
+	char* vns;
+
+	vns = (char*)&SkinVertNums[node];
+	d = &SkinENVUV[node][0];
+
+	while (1)
+	{
+		if (*vns < 0)
+			break;
+
+		d->u = aMappedEnvUV[*vns].u;
+		d->v = aMappedEnvUV[*vns].v;
+		d++;
+		vns++;
+	}
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -2022,5 +2043,6 @@ void inject_output(bool replace)
 	INJECT(0x004B24F0, CalcVertsColorSplitMMX, replace);
 	INJECT(0x004B2270, StashSkinVertices, replace);
 	INJECT(0x004B2340, SkinVerticesToScratch, replace);
+	INJECT(0x004B2410, StashSkinNormals, replace);
 }
 
