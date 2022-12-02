@@ -1895,6 +1895,42 @@ void PrelightVerts(long nVerts, D3DTLVERTEX* v, MESH_DATA* mesh)
 	}
 }
 
+void CalcVertsColorSplitMMX(long nVerts, D3DTLVERTEX* v)
+{
+	D3DTLVERTEX* waterVtx;
+	short r, g, b;
+
+	if (old_lighting_water && !(room[current_item->room_number].flags & ROOM_UNDERWATER))
+	{
+		waterVtx = v;
+
+		for (int i = 0; i < nVerts; i++, waterVtx++)
+		{
+			r = short(water_color_R * CLRR(waterVtx->color) >> 8);
+			g = short(water_color_G * CLRG(waterVtx->color) >> 8);
+			b = short(water_color_B * CLRB(waterVtx->color) >> 8);
+			waterVtx->color &= 0xFF000000;
+			waterVtx->color |= RGBONLY(r, g, b);
+		}
+	}
+
+	if (App.mmx)
+	{
+		for (int i = 0; i < nVerts; i++, v++)
+			CalcColorSplitMMX(v->color, &v->color);
+
+		__asm
+		{
+			emms
+		}
+	}
+	else
+	{
+		for (int i = 0; i < nVerts; i++, v++)
+			CalcColorSplit(v->color, &v->color);
+	}
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1918,5 +1954,6 @@ void inject_output(bool replace)
 	INJECT(0x004B7E40, S_DumpScreenFrame, replace);
 	INJECT(0x004B27E0, SetGlobalAmbient, replace);
 	INJECT(0x004B2620, PrelightVerts, replace);
+	INJECT(0x004B24F0, CalcVertsColorSplitMMX, replace);
 }
 

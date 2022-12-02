@@ -24,6 +24,7 @@ long S_DumpScreen();
 long S_DumpScreenFrame();
 void SetGlobalAmbient(long ambient);
 void PrelightVerts(long nVerts, D3DTLVERTEX* v, MESH_DATA* mesh);
+void CalcVertsColorSplitMMX(long nVerts, D3DTLVERTEX* v);
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )
