@@ -2716,6 +2716,32 @@ void DoFrontEndOneShotStuff()
 	}
 }
 
+long FindSFCursor(long in, long selection)
+{
+	long num, bak;
+
+	num = 0;
+
+	while (selection != 1)
+	{
+		selection >>= 1;
+		num++;
+	}
+
+	bak = num;
+
+	if (in & IN_FORWARD && num)
+		do num--; while (num && !SpecialFeaturesPage[num]);
+
+	if (in & IN_BACK && num < 4)
+		do num++; while (num < 4 && !SpecialFeaturesPage[num]);
+
+	if (!SpecialFeaturesPage[num])
+		num = bak;
+
+	return 1 << num;
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2752,4 +2778,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004B1E90, IsHardware, replace);
 	INJECT(0x004B1EB0, IsSuperLowRes, replace);
 	INJECT(0x004B2090, DoFrontEndOneShotStuff, replace);
+	INJECT(0x004ABA60, FindSFCursor, replace);
 }

@@ -45,7 +45,7 @@ long S_PauseMenu();
 long IsHardware();
 long IsSuperLowRes();
 void DoFrontEndOneShotStuff();
+long FindSFCursor(long in, long selection);
 
 #define DoSpecialFeaturesServer	( (void(__cdecl*)()) 0x004B1D90 )
-#define FindSFCursor	( (long(__cdecl*)(long, long)) 0x004ABA60 )
 #define CalculateNumSpecialFeatures	( (void(__cdecl*)()) 0x004AB9F0 )
