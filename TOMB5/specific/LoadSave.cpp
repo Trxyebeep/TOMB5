@@ -2683,6 +2683,11 @@ long S_PauseMenu()
 	return ret;
 }
 
+long IsHardware()
+{
+	return App.dx.Flags & 0x80;
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2716,4 +2721,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004AD820, DoSlider, replace);
 	INJECT(0x004B0D60, S_DisplayPauseMenu, replace);
 	INJECT(0x004B1030, S_PauseMenu, replace);
+	INJECT(0x004B1E90, IsHardware, replace);
 }
