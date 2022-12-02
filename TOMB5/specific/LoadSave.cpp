@@ -2552,6 +2552,85 @@ void DoSlider(long x, long y, long width, long height, long pos, long c1, long c
 	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
 }
 
+long S_DisplayPauseMenu(long reset)
+{
+	static long menu, selection = 1;
+	long y;
+
+	if (!menu)
+	{
+		if (reset)
+		{
+			selection = reset;
+			menu = 0;
+		}
+		else
+		{
+			y = phd_centery - font_height;
+			PrintString(phd_centerx, y - ((3 * font_height) >> 1), 6, SCRIPT_TEXT_bis(STR_PAUSED), FF_CENTER);
+			PrintString(phd_centerx, y, selection & 1 ? 1 : 2, SCRIPT_TEXT_bis(STR_STATISTICS), FF_CENTER);
+			PrintString(phd_centerx, y + font_height, selection & 2 ? 1 : 2, SCRIPT_TEXT_bis(STR_OPTIONS), FF_CENTER);
+			PrintString(phd_centerx, y + 2 * font_height, selection & 4 ? 1 : 2, SCRIPT_TEXT_bis(STR_EXIT_TO_TITLE), FF_CENTER);
+
+			if (dbinput & IN_FORWARD)
+			{
+				if (selection > 1)
+					selection >>= 1;
+
+				SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+			}
+
+			if (dbinput & IN_BACK)
+			{
+				if (selection < 4)
+					selection <<= 1;
+
+				SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+			}
+
+			if (dbinput & IN_DESELECT)
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+				return 1;
+			}
+
+			if (dbinput & IN_SELECT && !keymap[DIK_LALT])
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_DEFAULT);
+
+				if (selection & 1)
+					menu = 2;
+				else if (selection & 2)
+					menu = 1;
+				else if (selection & 4)
+					return 8;
+			}
+		}
+	}
+	else if (menu == 1)
+	{
+		DoOptions();
+
+		if (dbinput & IN_DESELECT)
+		{
+			menu = 0;
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+		}
+	}
+	else if (menu == 2)
+	{
+		DoStatScreen();
+
+		if (dbinput & IN_DESELECT)
+		{
+			menu = 0;
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+		}
+	}
+
+	return 0;
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2583,4 +2662,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004ACAB0, DrawLoadingScreen, replace);
 	INJECT(0x004AD290, GetSaveLoadFiles, replace);
 	INJECT(0x004AD820, DoSlider, replace);
+	INJECT(0x004B0D60, S_DisplayPauseMenu, replace);
 }

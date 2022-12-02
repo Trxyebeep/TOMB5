@@ -1965,7 +1965,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004ADF40	+	CheckKeyConflicts
 0x004ADF90	+	DoOptions
 0x004B0910	+	DoStatScreen
-0x004B0D60		S_DisplayPauseMenu
+0x004B0D60	+	S_DisplayPauseMenu
 0x004B1030		S_PauseMenu
 0x004B1120	+	S_LoadSave
 0x004B1250	+	DoBar
