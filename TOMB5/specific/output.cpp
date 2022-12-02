@@ -1581,6 +1581,62 @@ void ProjectTrainVerts(short nVerts, D3DTLVERTEX* v, short* clip, long x)
 	}
 }
 
+HRESULT DDCopyBitmap(LPDIRECTDRAWSURFACE4 surf, HBITMAP hbm, long x, long y, long dx, long dy)
+{
+	HDC hdc;
+	HDC hdc2;
+	BITMAP bitmap;
+	DDSURFACEDESC2 desc;
+	HRESULT result;
+	long l, t;
+
+	if (!hbm || !surf)
+		return E_FAIL;
+
+	surf->Restore();
+	hdc = CreateCompatibleDC(0);
+
+	if (!hdc)
+		OutputDebugString("createcompatible dc failed\n");
+
+	SelectObject(hdc, hbm);
+	GetObject(hbm, sizeof(BITMAP), &bitmap);
+
+	if (!dx)
+		dx = bitmap.bmWidth;
+
+	if (!dy)
+		dy = bitmap.bmHeight;
+
+	desc.dwSize = sizeof(DDSURFACEDESC2);
+	desc.dwFlags = DDSD_WIDTH | DDSD_HEIGHT;
+	surf->GetSurfaceDesc(&desc);
+	l = 0;
+	t = 0;
+
+	if (!(App.dx.Flags & 0x80))
+	{
+		surf = App.dx.lpPrimaryBuffer;
+
+		if (App.dx.Flags & 2)
+		{
+			l = App.dx.rScreen.left;
+			t = App.dx.rScreen.top;
+		}
+	}
+
+	result = surf->GetDC(&hdc2);
+
+	if (!result)
+	{
+		StretchBlt(hdc2, l, t, desc.dwWidth, desc.dwHeight, hdc, x, y, dx, dy, SRCCOPY);
+		surf->ReleaseDC(hdc2);
+	}
+
+	DeleteDC(hdc);
+	return result;
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1595,5 +1651,6 @@ void inject_output(bool replace)
 	INJECT(0x004B8310, S_AnimateTextures, replace);
 	INJECT(0x004B2800, aCheckMeshClip, replace);
 	INJECT(0x004B8530, ProjectTrainVerts, replace);
+	INJECT(0x004B8780, DDCopyBitmap, replace);
 }
 
