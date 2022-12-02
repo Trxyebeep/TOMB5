@@ -1828,6 +1828,25 @@ long S_DumpScreen()
 	return n;
 }
 
+long S_DumpScreenFrame()
+{
+	long n;
+
+	n = Sync();
+
+	while (n < 1)
+	{
+		while (!Sync());	//wait for sync
+		n++;
+	}
+
+	GnFrameCounter++;
+	_EndScene();
+	DXShowFrame();
+	App.dx.DoneBlit = 1;
+	return n;
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1848,5 +1867,6 @@ void inject_output(bool replace)
 	INJECT(0x004B8A80, do_boot_screen, replace);
 	INJECT(0x004B8C50, aCalcColorSplit, replace);
 	INJECT(0x004B7DA0, S_DumpScreen, replace);
+	INJECT(0x004B7E40, S_DumpScreenFrame, replace);
 }
 
