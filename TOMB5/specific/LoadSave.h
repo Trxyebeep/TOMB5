@@ -39,6 +39,7 @@ void LoadScreen(long screen, long pathNum);
 void ReleaseScreen();
 void DrawLoadingScreen();
 long GetSaveLoadFiles();
+void DoSlider(long x, long y, long width, long height, long pos, long c1, long c2, long c3);
 
 #define S_PauseMenu	( (long(__cdecl*)()) 0x004B1030 )
 #define DoSpecialFeaturesServer	( (void(__cdecl*)()) 0x004B1D90 )
@@ -46,5 +47,4 @@ long GetSaveLoadFiles();
 #define IsHardware	( (long(__cdecl*)()) 0x004B1E90 )
 #define IsSuperLowRes	( (long(__cdecl*)()) 0x004B1EB0 )
 #define FindSFCursor	( (long(__cdecl*)(long, long)) 0x004ABA60 )
-#define DoSlider	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x004AD820 )
 #define CalculateNumSpecialFeatures	( (void(__cdecl*)()) 0x004AB9F0 )
