@@ -4,6 +4,7 @@
 #include "d3dmatrix.h"
 #include "../game/control.h"
 #include "function_stubs.h"
+#include "dxshell.h"
 
 #ifdef GENERAL_FIXES
 SPOTLIGHT_STRUCT SpotLights[64];
@@ -635,6 +636,131 @@ void InitObjectFogBulbs()
 	}
 }
 
+void SetupLight(D3DLIGHT_STRUCT* d3dlight, PCLIGHT* light, long* ambient)
+{
+	PHD_VECTOR d;
+	PHD_VECTOR vec;
+	PHD_VECTOR l;
+	float fVal;
+	long r, g, b, val, val2;;
+
+	d.x = light->rlp.x;
+	d.y = light->rlp.y;
+	d.z = light->rlp.z;
+	d3dlight->D3DLight2.dcvColor.r = light->r;
+	d3dlight->D3DLight2.dcvColor.g = light->g;
+	d3dlight->D3DLight2.dcvColor.b = light->b;
+	ApplyMatrix(w2v_matrix, &d, &vec);
+	ApplyTransposeMatrix(phd_mxptr, &vec, &d);
+	d3dlight->D3DLight2.dvPosition.x = (float)d.x;
+	d3dlight->D3DLight2.dvPosition.y = (float)d.y;
+	d3dlight->D3DLight2.dvPosition.z = (float)d.z;
+
+	if (light->Type == LIGHT_SUN || light->Type == LIGHT_SPOT)
+	{
+		d.x = light->inx;
+		d.y = light->iny;
+		d.z = light->inz;
+		ApplyMatrix(w2v_matrix, &d, &vec);
+		ApplyTransposeMatrix(phd_mxptr, &vec, &d);
+		l.x = d.x;
+		l.y = d.y;
+		l.z = d.z;
+	}
+
+	d3dlight->D3DLight2.dwFlags = D3DLIGHT_ALL;
+
+	switch (light->Type)
+	{
+	case LIGHT_SUN:
+		d3dlight->D3DLight2.dltType = D3DLIGHT_DIRECTIONAL;
+		d3dlight->D3DLight2.dvDirection.x = (float)l.x;
+		d3dlight->D3DLight2.dvDirection.y = (float)l.y;
+		d3dlight->D3DLight2.dvDirection.z = (float)l.z;
+		break;
+
+	case LIGHT_POINT:
+		d3dlight->D3DLight2.dltType = D3DLIGHT_POINT;
+		d3dlight->D3DLight2.dvAttenuation1 = 2;
+		d3dlight->D3DLight2.dvRange = light->Outer;
+
+		if (SetupLight_thing)
+		{
+			fVal = (light->Outer - phd_sqrt(light->Range)) / light->Outer;
+
+			if (fVal < 1)
+			{
+				r = long(CLRR(*ambient) + (fVal * light->r * 255));
+				g = long(CLRG(*ambient) + (fVal * light->g * 255));
+				b = long(CLRB(*ambient) + (fVal * light->b * 255));
+
+				if (r > 255)
+					r = 255;
+
+				if (g > 255)
+					g = 255;
+
+				if (b > 255)
+					b = 255;
+
+				*ambient = RGBONLY(r, g, b);
+			}
+		}
+
+		break;
+
+	case LIGHT_SPOT:
+		d3dlight->D3DLight2.dltType = D3DLIGHT_SPOT;
+		d3dlight->D3DLight2.dvDirection.x = (float)l.x;
+		d3dlight->D3DLight2.dvDirection.y = (float)l.y;
+		d3dlight->D3DLight2.dvDirection.z = (float)l.z;
+		d3dlight->D3DLight2.dvFalloff = 1;
+
+		if (SetupLight_thing)
+			d3dlight->D3DLight2.dvAttenuation1 = 2;
+		else
+			d3dlight->D3DLight2.dvAttenuation1 = 1;
+
+		d3dlight->D3DLight2.dvRange = light->Cutoff;
+		d3dlight->D3DLight2.dvTheta = light->OuterAngle;
+		d3dlight->D3DLight2.dvPhi = light->OuterAngle;
+		break;
+
+	case LIGHT_SHADOW:
+		r = CLRR(*ambient);
+		g = CLRG(*ambient);
+		b = CLRB(*ambient);
+		val = phd_sqrt(light->Range);
+		val2 = light->shadow >> 3;
+
+		if (val >= light->Inner)
+			val2 = long((val - light->Outer) / ((light->Outer - light->Inner) / -val2));
+
+		if (val2 < 0)
+			val2 = 0;
+
+		r -= val2;
+		g -= val2;
+		b -= val2;
+
+		if (r < 0)
+			r = 0;
+
+		if (g < 0)
+			g = 0;
+
+		if (b < 0)
+			b = 0;
+
+		*ambient = RGBONLY(r, g, b);
+		d3dlight->D3DLight2.dwFlags = D3DLIGHT_NO_SPECULAR;
+		d3dlight->D3DLight2.dltType = D3DLIGHT_POINT;
+		break;
+	}
+
+	DXAttempt(d3dlight->D3DLight->SetLight((LPD3DLIGHT)&d3dlight->D3DLight2));
+}
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
@@ -655,4 +781,5 @@ void inject_lighting(bool replace)
 	INJECT(0x004A9CB0, FreeD3DLights, replace);
 	INJECT(0x004A9C10, MallocD3DLights, replace);
 	INJECT(0x004AB580, InitObjectFogBulbs, replace);
+	INJECT(0x004AAAC0, SetupLight, replace);
 }

@@ -21,6 +21,7 @@ void CreateD3DLights();
 void FreeD3DLights();
 void MallocD3DLights();
 void InitObjectFogBulbs();
+void SetupLight(D3DLIGHT_STRUCT* d3dlight, PCLIGHT* light, long* ambient);
 
 #ifdef GENERAL_FIXES
 extern SPOTLIGHT_STRUCT SpotLights[64];
