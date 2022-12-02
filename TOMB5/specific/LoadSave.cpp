@@ -2824,6 +2824,30 @@ void SpecialFeaturesDisplayScreens(long num)
 }
 #pragma warning (pop)
 
+void DoSpecialFeaturesServer()
+{
+	switch (SpecialFeaturesNum)
+	{
+	case 0:
+		SpecialFeaturesDisplayScreens(0);
+		break;
+
+	case 1:
+		SpecialFeaturesDisplayScreens(1);
+		break;
+
+	case 2:
+		SpecialFeaturesDisplayScreens(2);
+		break;
+
+	case 3:
+		SpecialFeaturesDisplayScreens(3);
+		break;
+	}
+
+	SpecialFeaturesNum = -1;
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2863,4 +2887,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004ABA60, FindSFCursor, replace);
 	INJECT(0x004AB9F0, CalculateNumSpecialFeatures, replace);
 	INJECT(0x004B1C00, SpecialFeaturesDisplayScreens, replace);
+	INJECT(0x004B1D90, DoSpecialFeaturesServer, replace);
 }

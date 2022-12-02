@@ -1978,7 +1978,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B1AB0	+	S_DrawLoadBar
 0x004B1BE0	+	S_LoadBar
 0x004B1C00	+	SpecialFeaturesDisplayScreens
-0x004B1D90		DoSpecialFeaturesServer
+0x004B1D90	+	DoSpecialFeaturesServer
 0x004B1E30	+	S_MemSet
 0x004B1E70	+	DisplayStatsUCunt
 0x004B1E90	+	IsHardware
