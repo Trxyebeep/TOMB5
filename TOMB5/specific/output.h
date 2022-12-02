@@ -19,6 +19,7 @@ HRESULT DDCopyBitmap(LPDIRECTDRAWSURFACE4 surf, HBITMAP hbm, long x, long y, lon
 HRESULT _LoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name);
 HRESULT aLoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name);
 void do_boot_screen(long language);
+void aCalcColorSplit(long col, long* pC, long* pS);
 
 #define S_InitialisePolyList	( (void(__cdecl*)()) 0x004B2110 )
 #define	StashSkinVertices	( (void(__cdecl*)(long)) 0x004B2270 )

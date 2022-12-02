@@ -1734,6 +1734,75 @@ void do_boot_screen(long language)
 	}
 }
 
+void aCalcColorSplit(long col, long* pC, long* pS)
+{
+	long cR, cG, cB, sR, sG, sB;
+
+	sR = 0;
+	sG = 0;
+	sB = 0;
+	cR = CLRR(col);
+	cG = CLRG(col);
+	cB = CLRB(col);
+
+	if (cR - 128 <= 0)
+		cR <<= 1;
+	else
+	{
+		sR = (cR - 128) >> 1;
+		cR = 255;
+	}
+
+	if (cG - 128 <= 0)
+		cG <<= 1;
+	else
+	{
+		sG = (cG - 128) >> 1;
+		cG = 255;
+	}
+
+	if (cB - 128 <= 0)
+		cB <<= 1;
+	else
+	{
+		sB = (cB - 128) >> 1;
+		cB = 255;
+	}
+
+	if (cR < 0)
+		cR = 0;
+	else if (cR > 255)
+		cR = 255;
+
+	if (cG < 0)
+		cG = 0;
+	else if (cG > 255)
+		cG = 255;
+
+	if (cB < 0)
+		cB = 0;
+	else if (cB > 255)
+		cB = 255;
+
+	if (sR < 0)
+		sR = 0;
+	else if (sR > 255)
+		sR = 255;
+
+	if (sG < 0)
+		sG = 0;
+	else if (sG > 255)
+		sG = 255;
+
+	if (sB < 0)
+		sB = 0;
+	else if (sB > 255)
+		sB = 255;
+
+	*pC = RGBONLY(cR, cG, cB);
+	*pS = RGBONLY(sR, sG, sB);
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1752,5 +1821,6 @@ void inject_output(bool replace)
 	INJECT(0x004B8930, _LoadBitmap, replace);
 	INJECT(0x004B89F0, aLoadBitmap, replace);
 	INJECT(0x004B8A80, do_boot_screen, replace);
+	INJECT(0x004B8C50, aCalcColorSplit, replace);
 }
 
