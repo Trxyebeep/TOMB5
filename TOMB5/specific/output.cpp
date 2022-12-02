@@ -19,6 +19,11 @@
 #include "time.h"
 #include "dxshell.h"
 #include "profiler.h"
+#include "polyinsert.h"
+
+static long water_color_R = 128;
+static long water_color_G = 224;
+static long water_color_B = 255;
 
 void S_DrawPickup(short object_number)
 {
@@ -1852,6 +1857,44 @@ void SetGlobalAmbient(long ambient)
 	GlobalAmbient = ambient;
 }
 
+void PrelightVerts(long nVerts, D3DTLVERTEX* v, MESH_DATA* mesh)
+{
+	D3DVERTEX* vtx;
+	long r, g, b, sr, sg, sb;
+
+	sr = (StaticMeshShade & 0x1F) << 3;
+	sg = ((StaticMeshShade >> 5) & 0x1F) << 3;
+	sb = ((StaticMeshShade >> 10) & 0x1F) << 3;
+	vtx = 0;
+
+	for (int i = 0; i < nVerts; i++)
+	{
+		r = CLRR(v->color) + ((sr * (mesh->prelight[i] & 0xFF)) >> 8);
+		g = CLRG(v->color) + ((sg * (mesh->prelight[i] & 0xFF)) >> 8);
+		b = CLRB(v->color) + ((sb * (mesh->prelight[i] & 0xFF)) >> 8);
+
+		if (r > 255)
+			r = 255;
+
+		if (g > 255)
+			g = 255;
+
+		if (b > 255)
+			b = 255;
+
+		if (!(room[current_item->room_number].flags & ROOM_UNDERWATER) && old_lighting_water)
+		{
+			r = (r * water_color_R) >> 8;
+			g = (g * water_color_G) >> 8;
+			b = (b * water_color_B) >> 8;
+		}
+
+		v->color = RGBA(r, g, b, 0xFF);
+		CalcColorSplit(v->color, &v->color);
+		v++;
+	}
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -1874,5 +1917,6 @@ void inject_output(bool replace)
 	INJECT(0x004B7DA0, S_DumpScreen, replace);
 	INJECT(0x004B7E40, S_DumpScreenFrame, replace);
 	INJECT(0x004B27E0, SetGlobalAmbient, replace);
+	INJECT(0x004B2620, PrelightVerts, replace);
 }
 
