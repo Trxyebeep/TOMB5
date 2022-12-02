@@ -44,8 +44,8 @@ long S_DisplayPauseMenu(long reset);
 long S_PauseMenu();
 long IsHardware();
 long IsSuperLowRes();
+void DoFrontEndOneShotStuff();
 
 #define DoSpecialFeaturesServer	( (void(__cdecl*)()) 0x004B1D90 )
-#define DoFrontEndOneShotStuff	( (void(__cdecl*)()) 0x004B2090 )
 #define FindSFCursor	( (long(__cdecl*)(long, long)) 0x004ABA60 )
 #define CalculateNumSpecialFeatures	( (void(__cdecl*)()) 0x004AB9F0 )

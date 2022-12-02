@@ -24,6 +24,7 @@
 #include "../tomb5/troyestuff.h"
 #endif
 #include "mmx.h"
+#include "fmv.h"
 
 static long MonoScreenX[4] = { 0, 256, 512, 640 };
 static long MonoScreenY[3] = { 0, 256, 480 };
@@ -2703,6 +2704,18 @@ long IsSuperLowRes()
 	return 0;
 }
 
+void DoFrontEndOneShotStuff()
+{
+	static long done;
+
+	if (!done)
+	{
+		PlayFmvNow(0, 0);
+		PlayFmvNow(1, 0);
+		done = 1;
+	}
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2738,4 +2751,5 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004B1030, S_PauseMenu, replace);
 	INJECT(0x004B1E90, IsHardware, replace);
 	INJECT(0x004B1EB0, IsSuperLowRes, replace);
+	INJECT(0x004B2090, DoFrontEndOneShotStuff, replace);
 }

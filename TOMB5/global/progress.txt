@@ -1984,7 +1984,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004B1E90	+	IsHardware
 0x004B1EB0	+	IsSuperLowRes
 0x004B1F00	+	GetCampaignCheatValue
-0x004B2090		DoFrontEndOneShotStuff
+0x004B2090	+	DoFrontEndOneShotStuff
 
 
 		specific/output.cpp
