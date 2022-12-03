@@ -536,7 +536,9 @@
 #define samples_buffer	VAR_U_(0x0086BEDC, char*)
 #define slots_used	VAR_U_(0x0051CEE8, long)
 #define number_boxes	VAR_U_(0x00EEFB68, long)
-#define DrawPrimitiveCnt    VAR_U_(0x00D9AD98, long)
+#define DrawPrimitiveCnt    VAR_U_(0x00D9AD94, long)
+#define DrawSortedCnt	VAR_U_(0x00D9AD98, long)
+#define nDebugStrings	VAR_U_(0x00921678, long)
 #define SortCount	VAR_U_(0x00BA4384, long)
 #define skelly_backgunbak	VAR_U_(0x00E6D732, short)
 #define skelly_rhandbak	VAR_U_(0x00E6D840, short*)
@@ -627,6 +629,7 @@
 #define aranges	VAR_U_(0x00D9ADA0, short*)
 #define AnimatingTexturesVOffset	VAR_U_(0x008751BC, short)
 #define nClippedPolys	VAR_U_(0x00D9AB10, long)
+#define nPolys	VAR_U_(0x00D9AB1C, long)
 #define targetMeshP	VAR_U_(0x00E6E460, MESH_DATA*)
 #define binocsMeshP	VAR_U_(0x00E6D744, MESH_DATA*)
 #define ScaleFlag	VAR_U_(0x00E4EA60, char)
@@ -789,6 +792,7 @@
 #define FontShades	ARRAY_(0x00E4E560, CVECTOR, [10][32])
 #define CharDef	ARRAY_(0x00507AB8, CHARDEF, [106])
 #define ground_zone	ARRAY_(0x00EEFB20, short*, [5][2])
+#define DebugStrings	ARRAY_(0x009158AC, char, [256][80])
 
 /****************/
 //registry

@@ -133,7 +133,7 @@ void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, sho
 		break;
 	}
 
-	DrawPrimitiveCnt++;
+	DrawSortedCnt++;
 }
 
 void DrawSortList()

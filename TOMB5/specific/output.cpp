@@ -20,6 +20,8 @@
 #include "dxshell.h"
 #include "profiler.h"
 #include "polyinsert.h"
+#include "winmain.h"
+#include "../game/tomb4fx.h"
 
 static ENVUV SkinENVUV[40][12];
 static D3DTLVERTEX SkinVerts[40][12];
@@ -2056,6 +2058,122 @@ void S_InitialisePolyList()
 	InitialiseSortList();
 }
 
+void S_OutputPolyList()
+{
+	D3DRECT r;
+	static long c;
+	long h;
+
+	RestoreFPCW(FPCW);
+	WinFrameRate();
+	nPolys = 0;
+	nClippedPolys = 0;
+	DrawPrimitiveCnt = 0;
+	DrawSortedCnt = 0;
+
+	for (int i = 0; i < nDebugStrings; i++)
+		WinDisplayString(0, font_height * (i + 1), DebugStrings[i]);
+
+	nDebugStrings = 0;
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
+
+	if (resChangeCounter)
+	{
+		WinDisplayString(8, App.dx.dwRenderHeight - 8, (char*)"%dx%d", App.dx.dwRenderWidth, App.dx.dwRenderHeight);
+		resChangeCounter -= long(30 / App.fps);
+
+		if (resChangeCounter < 0)
+			resChangeCounter = 0;
+	}
+
+	if (App.dx.lpZBuffer)
+		DrawBuckets();
+
+	if (!gfCurrentLevel)
+	{
+		Fade();
+
+		if (App.dx.lpZBuffer)
+			DrawSortList();
+	}
+
+	mAddProfilerEvent(0xFFFF0000);
+	SortPolyList(SortCount, SortList);
+	mAddProfilerEvent(0xFF00FF00);
+	DrawSortList();
+	mAddProfilerEvent(0xFF0000FF);
+
+	if (App.dx.lpZBuffer)
+	{
+		r.x1 = App.dx.rViewport.left;
+		r.y1 = App.dx.rViewport.top;
+		r.x2 = App.dx.rViewport.left + App.dx.rViewport.right;
+		r.y2 = App.dx.rViewport.top + App.dx.rViewport.bottom;
+		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
+	}
+
+	if ((BinocularRange || SCOverlay || SniperOverlay) && !MonoScreenOn)
+	{
+		InitialiseSortList();
+		DrawBinoculars();
+		DrawSortList();
+	}
+
+	if (pickups[CurrentPickup].life != -1 && !MonoScreenOn && !GLOBAL_playing_cutseq)
+	{
+		old_lighting_water = 0;
+		InitialiseSortList();
+		S_DrawPickup(pickups[CurrentPickup].object_number);
+		SortPolyList(SortCount, SortList);
+		DrawSortList();
+	}
+
+	InitialiseSortList();
+
+	if (FadeScreenHeight)
+	{
+		h = long((float)phd_winymax / 256.0F) * FadeScreenHeight;
+		DrawPsxTile(0, phd_winwidth | (h << 16), 0x62FFFFFF, 0, 0);
+		DrawPsxTile(phd_winheight - h, phd_winwidth | (h << 16), 0x62FFFFFF, 0, 0);
+	}
+
+	if (gfCurrentLevel)
+	{
+		Fade();
+
+		if (FlashFader)
+		{
+			DrawFlash();
+
+			if (FlashFader)
+				FlashFader -= 2;
+		}
+
+		DrawSortList();
+	}
+
+	if (DoFade == 1)
+	{
+		InitialiseSortList();
+		DoScreenFade();
+		DrawSortList();
+	}
+
+	c++;
+
+	if (c == 2)
+	{
+		if (keymap[DIK_F12])
+			App.BumpMapping = App.BumpMapping != 1;
+
+		c = 0;
+	}
+
+	MungeFPCW(&FPCW);
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -2085,5 +2203,6 @@ void inject_output(bool replace)
 	INJECT(0x004B2410, StashSkinNormals, replace);
 	INJECT(0x004B2480, SkinNormalsToScratch, replace);
 	INJECT(0x004B2110, S_InitialisePolyList, replace);
+	INJECT(0x004B79A0, S_OutputPolyList, replace);
 }
 

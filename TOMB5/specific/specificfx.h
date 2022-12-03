@@ -49,3 +49,5 @@ void InitBinoculars();
 #define DrawShockwaves	( (void(__cdecl*)()) 0x004CB280 )
 #define DrawLightning	( (void(__cdecl*)()) 0x004CC0B0 )
 #define OldDrawLightning	( (void(__cdecl*)()) 0x004CCBA0 )
+#define DrawPsxTile	( (void(__cdecl*)(long, long, long, long, long)) 0x004CA7F0 )
+#define DrawFlash	( (void(__cdecl*)()) 0x004CAC90 )
