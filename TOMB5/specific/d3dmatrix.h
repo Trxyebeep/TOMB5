@@ -16,5 +16,6 @@ D3DVECTOR* D3DCrossProduct(D3DVECTOR* out, D3DVECTOR* a, D3DVECTOR* b);
 float D3DDotProduct(D3DVECTOR* a, D3DVECTOR* b);
 D3DMATRIX* D3DSetTranslate(D3DMATRIX* mx, float x, float y, float z);
 D3DMATRIX* D3DSetRotateX(D3DMATRIX* mx, float ang);
+D3DMATRIX* D3DSetRotateY(D3DMATRIX* mx, float ang);
 
 #define D3DMultMatrix	( (LPD3DMATRIX(__cdecl*)(LPD3DMATRIX, LPD3DMATRIX, LPD3DMATRIX)) 0x00497CA0 )
