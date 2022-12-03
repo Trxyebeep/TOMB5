@@ -258,6 +258,21 @@ D3DMATRIX* D3DViewMatrix(D3DMATRIX* mx, D3DVECTOR* eye, D3DVECTOR* target, D3DVE
 	return mx;
 }
 
+D3DMATRIX* D3DProjectionMatrix(D3DMATRIX* mx, float hFov, float vFov, float nPlane, float fPlane)
+{
+	float s, c, n;
+
+	s = sin(vFov * 0.5F);
+	c = cos(hFov * 0.5F);
+	n = s / (1.0F - nPlane / fPlane);
+	mx->_11 = c;
+	mx->_22 = -c;
+	mx->_33 = n;
+	mx->_34 = s;
+	mx->_43 = -(n * nPlane);
+	return mx;
+}
+
 void inject_d3dmatrix(bool replace)
 {
 	INJECT(0x00497550, SetD3DMatrixF, replace);
@@ -278,4 +293,5 @@ void inject_d3dmatrix(bool replace)
 	INJECT(0x004978E0, D3DSetScale, replace);
 	INJECT(0x00497960, D3DZeroMatrix, replace);
 	INJECT(0x004979B0, D3DViewMatrix, replace);
+	INJECT(0x00497AE0, D3DProjectionMatrix, replace);
 }

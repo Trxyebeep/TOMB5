@@ -21,5 +21,6 @@ D3DMATRIX* D3DSetRotateZ(D3DMATRIX* mx, float ang);
 D3DMATRIX* D3DSetScale(D3DMATRIX* mx, float scale);
 D3DMATRIX* D3DZeroMatrix(D3DMATRIX* mx);
 D3DMATRIX* D3DViewMatrix(D3DMATRIX* mx, D3DVECTOR* eye, D3DVECTOR* target, D3DVECTOR* up);
+D3DMATRIX* D3DProjectionMatrix(D3DMATRIX* mx, float hFov, float vFov, float nPlane, float fPlane);
 
 #define D3DMultMatrix	( (LPD3DMATRIX(__cdecl*)(LPD3DMATRIX, LPD3DMATRIX, LPD3DMATRIX)) 0x00497CA0 )
