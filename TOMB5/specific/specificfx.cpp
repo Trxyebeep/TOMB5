@@ -3411,6 +3411,68 @@ void DrawPsxTile(long x_y, long height_width, long color, long u0, long u1)
 	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
 }
 
+void DrawRedTile(long x_y, long height_width)
+{
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	float x, y, z, rhw, w, h;
+
+	nPolyType = 6;
+
+	if (!gfCurrentLevel)
+	{
+		z = f_znear + 10;
+		rhw = f_moneoznear + 50;
+	}
+	else
+	{
+		z = f_znear;
+		rhw = f_moneoznear;
+	}
+
+	x = float(x_y >> 16);
+	y = float(x_y & 0xFFFF);
+	w = float(height_width & 0xFFFF);
+	h = float(height_width >> 16);
+
+	v[0].sx = x;
+	v[0].sy = y;
+	v[0].sz = z;
+	v[0].rhw = rhw;
+	v[0].color = 0xFFFF0000;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = x + w + 1;
+	v[1].sy = y;
+	v[1].sz = z;
+	v[1].rhw = rhw;
+	v[1].color = 0xFFFF0000;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = x + w + 1;
+	v[2].sy = y + h + 1;
+	v[2].sz = z;
+	v[2].rhw = rhw;
+	v[2].color = 0xFFFF0000;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = x;
+	v[3].sy = y + h + 1;
+	v[3].sz = z;
+	v[3].rhw = rhw;
+	v[3].color = 0xFFFF0000;
+	v[3].specular = 0xFF000000;
+
+	tex.drawtype = 0;
+	tex.flag = 0;
+	tex.tpage = 0;
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -3445,4 +3507,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CADA0, DrawBikeSpeedo, replace);
 	INJECT(0x004CB280, DrawShockwaves, replace);
 	INJECT(0x004CA7F0, DrawPsxTile, replace);
+	INJECT(0x004CAA60, DrawRedTile, replace);
 }
