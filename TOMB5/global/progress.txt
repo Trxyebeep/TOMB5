@@ -1711,7 +1711,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00497960	+	D3DZeroMatrix
 0x004979B0	+	D3DViewMatrix
 0x00497AE0	+	D3DProjectionMatrix
-0x00497B80		D3DTransform
+0x00497B80	+	D3DTransform
 0x00497C10		D3DTranspose
 0x00497CA0		D3DMultMatrix
 		
