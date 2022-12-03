@@ -35,5 +35,4 @@ void phd_PutPolygonsSkyMesh(short* objptr, long clipstatus);
 void phd_PutPolygonsPickup(short* objptr, float x, float y, long color);
 void phd_PutPolygons_seethrough(short* objptr, long fade);
 void phd_PutPolygonsSpcXLU(short* objptr, long clipstatus);
-
-#define phd_PutPolygonsSpcEnvmap	( (void(__cdecl*)(short*, long)) 0x004B5190 )
+void phd_PutPolygonsSpcEnvmap(short* objptr, long clipstatus);
