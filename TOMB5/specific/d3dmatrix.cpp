@@ -148,6 +148,14 @@ float D3DDotProduct(D3DVECTOR* a, D3DVECTOR* b)
 	return a->x * b->x + a->y * b->y + a->z * b->z;
 }
 
+D3DMATRIX* D3DSetTranslate(D3DMATRIX* mx, float x, float y, float z)
+{
+	mx->_41 = x;
+	mx->_42 = y;
+	mx->_43 = z;
+	return mx;
+}
+
 void inject_d3dmatrix(bool replace)
 {
 	INJECT(0x00497550, SetD3DMatrixF, replace);
@@ -161,4 +169,5 @@ void inject_d3dmatrix(bool replace)
 	INJECT(0x00497730, D3DVAdd, replace);
 	INJECT(0x00497770, D3DCrossProduct, replace);
 	INJECT(0x004977C0, D3DDotProduct, replace);
+	INJECT(0x004977F0, D3DSetTranslate, replace);
 }
