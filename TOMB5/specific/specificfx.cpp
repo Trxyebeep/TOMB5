@@ -3484,6 +3484,104 @@ void DrawFlash()
 	DrawPsxTile(0, phd_winwidth | (phd_winheight << 16), RGBA(r, g, b, 0xFF), 2, 0);
 }
 
+void SuperShowLogo()
+{
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	long x, y, w;
+
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+	nPolyType = 4;
+	x = long(phd_winxmin - float((phd_winxmax / 640.0F) * -64));
+	w = long(float((phd_winxmax / 640.0F) * 256));
+	y = long(phd_winymin + float((phd_winymax / 480.0F) * 256));
+
+	v[0].sx = (float)x;
+	v[0].sy = (float)phd_winymin;
+	v[0].sz = 0;
+	v[0].rhw = f_moneoznear;
+	v[0].color = 0xFFFFFFFF;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = float(w + x);
+	v[1].sy = (float)phd_winymin;
+	v[1].sz = 0;
+	v[1].rhw = f_moneoznear;
+	v[1].color = 0xFFFFFFFF;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = float(w + x);
+	v[2].sy = (float)y;
+	v[2].sz = 0;
+	v[2].rhw = f_moneoznear;
+	v[2].color = 0xFFFFFFFF;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = (float)x;
+	v[3].sy = (float)y;
+	v[3].sz = 0;
+	v[3].rhw = f_moneoznear;
+	v[3].color = 0xFFFFFFFF;
+	v[3].specular = 0xFF000000;
+
+	tex.drawtype = 1;
+	tex.flag = 0;
+	tex.tpage = ushort(nTextures - 5);
+	tex.u1 = 0.00390625F;
+	tex.v1 = 0.00390625F;
+	tex.u2 = 0.99609375F;
+	tex.v2 = 0.00390625F;
+	tex.u3 = 0.99609375F;
+	tex.v3 = 0.99609375F;
+	tex.u4 = 0.00390625F;
+	tex.v4 = 0.99609375F;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+
+	v[0].sx = float(w + x);
+	v[0].sy = (float)phd_winymin;
+	v[0].sz = 0;
+	v[0].rhw = f_moneoznear;
+	v[0].color = 0xFFFFFFFF;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = float(2 * w + x);
+	v[1].sy = (float)phd_winymin;
+	v[1].sz = 0;
+	v[1].rhw = f_moneoznear;
+	v[1].color = 0xFFFFFFFF;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = float(2 * w + x);
+	v[2].sy = (float)y;
+	v[2].sz = 0;
+	v[2].rhw = f_moneoznear;
+	v[2].color = 0xFFFFFFFF;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = float(w + x);
+	v[3].sy = (float)y;
+	v[3].sz = 0;
+	v[3].rhw = f_moneoznear;
+	v[3].color = 0xFFFFFFFF;
+	v[3].specular = 0xFF000000;
+
+	tex.drawtype = 1;
+	tex.flag = 0;
+	tex.tpage = ushort(nTextures - 4);
+	tex.u1 = 0.00390625F;
+	tex.v1 = 0.00390625F;
+	tex.u2 = 0.99609375F;
+	tex.v2 = 0.00390625F;
+	tex.u3 = 0.99609375F;
+	tex.v3 = 0.99609375F;
+	tex.u4 = 0.00390625F;
+	tex.v4 = 0.99609375F;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 1);
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -3520,4 +3618,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CA7F0, DrawPsxTile, replace);
 	INJECT(0x004CAA60, DrawRedTile, replace);
 	INJECT(0x004CAC90, DrawFlash, replace);
+	INJECT(0x004C9190, SuperShowLogo, replace);
 }
