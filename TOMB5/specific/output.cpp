@@ -8,12 +8,6 @@
 #include "../game/gameflow.h"
 #include "../game/effects.h"
 #include "specificfx.h"
-#ifdef GENERAL_FIXES
-#include "../tomb5/tomb5.h"
-#include "../game/draw.h"
-#include "../game/health.h"
-#include "../game/text.h"
-#endif
 #include "drawroom.h"
 #include "function_stubs.h"
 #include "time.h"
@@ -22,6 +16,12 @@
 #include "polyinsert.h"
 #include "winmain.h"
 #include "../game/tomb4fx.h"
+#ifdef GENERAL_FIXES
+#include "../tomb5/tomb5.h"
+#include "../game/draw.h"
+#include "../game/health.h"
+#include "../game/text.h"
+#endif
 
 static ENVUV SkinENVUV[40][12];
 static D3DTLVERTEX SkinVerts[40][12];
@@ -2276,6 +2276,84 @@ void phd_PutPolygons_seethrough(short* objptr, long fade)
 	}
 }
 
+void phd_PutPolygonsSpcXLU(short* objptr, long clipstatus)
+{
+	MESH_DATA* mesh;
+	TEXTURESTRUCT* pTex;
+	short* quad;
+	short* tri;
+	ushort drawbak;
+
+	aSetViewMatrix();
+	mesh = (MESH_DATA*)objptr;
+
+	if (!objptr)
+		return;
+
+	clip_left = f_left;
+	clip_top = f_top;
+	clip_right = f_right;
+	clip_bottom = f_bottom;
+
+	if (!aCheckMeshClip(mesh))
+		return;
+
+	lGlobalMeshPos.x = mesh->bbox[3] - mesh->bbox[0];
+	lGlobalMeshPos.y = mesh->bbox[4] - mesh->bbox[1];
+	lGlobalMeshPos.z = mesh->bbox[5] - mesh->bbox[2];
+	SuperResetLights();
+
+	if (GlobalAmbient)
+	{
+		ClearObjectLighting();
+		ClearDynamicLighting();
+		App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_AMBIENT, GlobalAmbient);
+		aAmbientR = CLRR(GlobalAmbient);
+		aAmbientG = CLRG(GlobalAmbient);
+		aAmbientB = CLRB(GlobalAmbient);
+		GlobalAmbient = 0;
+	}
+	else
+	{
+		if (mesh->prelight)
+		{
+			ClearObjectLighting();
+			InitDynamicLighting(current_item);
+		}
+		else
+			InitObjectLighting(current_item);
+
+		InitObjectFogBulbs();
+	}
+
+	if (mesh->aFlags & 2)
+		aTransformLightPrelightClipMesh(mesh);
+	else
+		aTransformLightClipMesh(mesh);
+
+	quad = mesh->gt4;
+
+	for (int i = 0; i < mesh->ngt4; i++, quad += 6)
+	{
+		pTex = &textinfo[quad[4] & 0x7FFF];
+		drawbak = pTex->drawtype;
+		pTex->drawtype = 2;
+		AddQuadSorted(aVertexBuffer, quad[0], quad[1], quad[2], quad[3], pTex, 0);
+		pTex->drawtype = drawbak;
+	}
+
+	tri = mesh->gt3;
+
+	for (int i = 0; i < mesh->ngt3; i++, tri += 5)
+	{
+		pTex = &textinfo[tri[3] & 0x7FFF];
+		drawbak = pTex->drawtype;
+		pTex->drawtype = 2;
+		AddTriSorted(aVertexBuffer, tri[0], tri[1], tri[2], pTex, 0);
+		pTex->drawtype = drawbak;
+	}
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -2309,5 +2387,6 @@ void inject_output(bool replace)
 	INJECT(0x004B66B0, phd_PutPolygonsPickup, replace);
 	INJECT(0x004B74A0, phd_PutPolygons_train, replace);
 	INJECT(0x004B4F10, phd_PutPolygons_seethrough, replace);
+	INJECT(0x004B4CA0, phd_PutPolygonsSpcXLU, replace);
 }
 
