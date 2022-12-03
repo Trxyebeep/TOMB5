@@ -2273,11 +2273,11 @@ struct SPOTLIGHT_STRUCT
 
 struct FCAMERA
 {
-	FVECTOR i;
-	FVECTOR j;
-	FVECTOR k;
-	FVECTOR pos;
-	FVECTOR tar;
+	FVECTOR i;			//forward
+	FVECTOR j;			//right
+	FVECTOR k;			//up
+	FVECTOR pos;		//eye
+	FVECTOR tar;		//look at
 	float matrix[12];
 	float invmatrix[12];
 };

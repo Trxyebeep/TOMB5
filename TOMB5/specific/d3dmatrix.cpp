@@ -285,6 +285,18 @@ void D3DTransform(D3DVECTOR* vec, D3DMATRIX* mx)
 	vec->z = z;
 }
 
+void D3DTranspose(D3DVECTOR* vec, D3DMATRIX* mx)
+{
+	float x, y, z;
+
+	x = mx->_11 * vec->x + mx->_12 * vec->y + mx->_13 * vec->z;
+	y = mx->_21 * vec->x + mx->_22 * vec->y + mx->_23 * vec->z;
+	z = mx->_31 * vec->x + mx->_32 * vec->y + mx->_33 * vec->z;
+	vec->x = x;
+	vec->y = y;
+	vec->z = z;
+}
+
 void inject_d3dmatrix(bool replace)
 {
 	INJECT(0x00497550, SetD3DMatrixF, replace);
@@ -307,4 +319,5 @@ void inject_d3dmatrix(bool replace)
 	INJECT(0x004979B0, D3DViewMatrix, replace);
 	INJECT(0x00497AE0, D3DProjectionMatrix, replace);
 	INJECT(0x00497B80, D3DTransform, replace);
+	INJECT(0x00497C10, D3DTranspose, replace);
 }
