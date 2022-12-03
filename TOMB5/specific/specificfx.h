@@ -44,6 +44,7 @@ void DrawDrips();
 void DoUwEffect();
 void DrawWraithTrail(ITEM_INFO* item);
 void DrawTrainFloorStrip(long x, long z, TEXTURESTRUCT* tex, long y_and_flags);
+void DrawTrainStrips();
 void DrawBubbles();
 
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )

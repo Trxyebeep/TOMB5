@@ -4294,6 +4294,17 @@ void DrawTrainFloorStrip(long x, long z, TEXTURESTRUCT* tex, long y_and_flags)
 	}
 }
 
+void DrawTrainStrips()
+{
+	DrawTrainFloorStrip(-20480, -5120, &textinfo[aranges[7]], 0x1101010);
+	DrawTrainFloorStrip(-20480, 3072, &textinfo[aranges[7]], 0x1101010);
+	DrawTrainFloorStrip(-20480, -2048, &textinfo[aranges[5]], 0x100800);
+	DrawTrainFloorStrip(-20480, 2048, &textinfo[aranges[6]], 0x810);
+	DrawTrainFloorStrip(-20480, -1024, &textinfo[aranges[3]], 0);
+	DrawTrainFloorStrip(-20480, 1024, &textinfo[aranges[4]], 0);
+	DrawTrainFloorStrip(-20480, 0, &textinfo[aranges[2]], 0);
+}
+
 void DrawBubbles()
 {
 	BUBBLE_STRUCT* bubble;
@@ -4453,5 +4464,6 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C8650, DoUwEffect, replace);
 	INJECT(0x004C8CB0, DrawWraithTrail, replace);
 	INJECT(0x004C95C0, DrawTrainFloorStrip, replace);
+	INJECT(0x004C9C20, DrawTrainStrips, replace);
 	INJECT(0x004C1340, DrawBubbles, replace);
 }
