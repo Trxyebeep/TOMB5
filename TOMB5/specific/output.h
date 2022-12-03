@@ -4,10 +4,7 @@
 void inject_output(bool replace);
 
 void S_DrawPickup(short object_number);
-void phd_PutPolygons(short* objptr, long clipstatus);
-void phd_PutPolygonSkyMesh(short* objptr, long clipstatus);
 void aTransformLightClipMesh(MESH_DATA* mesh);
-void phd_PutPolygonsPickup(short* objptr, float x, float y, long color);
 void aTransformLightPrelightClipMesh(MESH_DATA* mesh);
 void phd_PutPolygons_train(short* lol, long x);
 void RenderLoadPic(long unused);
@@ -33,6 +30,9 @@ void S_InitialisePolyList();
 void S_OutputPolyList();
 void DebugString(char* txt, ...);
 void S_InsertRoom(ROOM_INFO* r, long a);
+void phd_PutPolygons(short* objptr, long clipstatus);
+void phd_PutPolygonSkyMesh(short* objptr, long clipstatus);
+void phd_PutPolygonsPickup(short* objptr, float x, float y, long color);
 
 #define phd_PutPolygons_seethrough	( (void(__cdecl*)(short*, long)) 0x004B4F10 )
 #define phd_PutPolygonsSpcEnvmap	( (void(__cdecl*)(short*, long)) 0x004B5190 )
