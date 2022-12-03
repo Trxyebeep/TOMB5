@@ -47,10 +47,10 @@ void DrawTrainFloorStrip(long x, long z, TEXTURESTRUCT* tex, long y_and_flags);
 void DrawTrainStrips();
 void DrawBubbles();
 void DrawSprite(long x, long y, long slot, long col, long size, long z);
+void SetUpLensFlare(long x, long y, long z, GAME_VECTOR* lfobj);
 
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
-#define SetUpLensFlare	( (void(__cdecl*)(long, long, long, GAME_VECTOR*)) 0x004C9F70 )
 #define ClipLine	( (bool(__cdecl*)(long&, long&, long, long&, long&, long, long, long, long, long)) 0x004C5B10 )
 #define DrawLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CD960 )
 #define DrawSteamLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CE610 )
