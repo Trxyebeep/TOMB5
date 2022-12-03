@@ -127,6 +127,14 @@ D3DVECTOR* D3DVSubtract(D3DVECTOR* out, D3DVECTOR* a, D3DVECTOR* b)
 	return out;
 }
 
+D3DVECTOR* D3DVAdd(D3DVECTOR* out, D3DVECTOR* a, D3DVECTOR* b)
+{
+	out->x = a->x + b->x;
+	out->y = a->y + b->y;
+	out->z = a->z + b->z;
+	return out;
+}
+
 void inject_d3dmatrix(bool replace)
 {
 	INJECT(0x00497550, SetD3DMatrixF, replace);
@@ -137,4 +145,5 @@ void inject_d3dmatrix(bool replace)
 	INJECT(0x004975D0, S_InitD3DMatrix, replace);
 	INJECT(0x00497650, D3DNormalise, replace);
 	INJECT(0x004976F0, D3DVSubtract, replace);
+	INJECT(0x00497730, D3DVAdd, replace);
 }
