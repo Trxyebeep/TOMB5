@@ -39,6 +39,7 @@ void DrawRedTile(long x_y, long height_width);
 void DrawFlash();
 void SuperShowLogo();
 void DrawDebris();
+void DrawBlood();
 
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
@@ -51,7 +52,6 @@ void DrawDebris();
 #define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
 #define S_DrawSplashes	( (void(__cdecl*)()) 0x004C1790 )
 #define DrawBubbles	( (void(__cdecl*)()) 0x004C1340 )
-#define DrawBlood	( (void(__cdecl*)()) 0x004C7CB0 )
 #define DrawDrips	( (void(__cdecl*)()) 0x004C8110 )
 #define DrawLightning	( (void(__cdecl*)()) 0x004CC0B0 )
 #define OldDrawLightning	( (void(__cdecl*)()) 0x004CCBA0 )
