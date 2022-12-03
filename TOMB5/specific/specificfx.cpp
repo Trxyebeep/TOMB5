@@ -3473,6 +3473,17 @@ void DrawRedTile(long x_y, long height_width)
 	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
 }
 
+void DrawFlash()
+{
+	long r, g, b;
+
+	r = ((FlashFadeR * FlashFader) >> 5) & 0xFF;
+	g = ((FlashFadeG * FlashFader) >> 5) & 0xFF;
+	b = ((FlashFadeB * FlashFader) >> 5) & 0xFF;
+	DrawPsxTile(0, phd_winwidth | (phd_winheight << 16), RGBA(r, g, b, 0x62), 1, 0);
+	DrawPsxTile(0, phd_winwidth | (phd_winheight << 16), RGBA(r, g, b, 0xFF), 2, 0);
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -3508,4 +3519,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CB280, DrawShockwaves, replace);
 	INJECT(0x004CA7F0, DrawPsxTile, replace);
 	INJECT(0x004CAA60, DrawRedTile, replace);
+	INJECT(0x004CAC90, DrawFlash, replace);
 }

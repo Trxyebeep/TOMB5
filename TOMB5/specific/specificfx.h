@@ -36,6 +36,7 @@ void DrawBikeSpeedo(long ux, long uy, long vel, long maxVel, long turboVel, long
 void DrawShockwaves();
 void DrawPsxTile(long x_y, long height_width, long color, long u0, long u1);
 void DrawRedTile(long x_y, long height_width);
+void DrawFlash();
 
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
@@ -54,4 +55,3 @@ void DrawRedTile(long x_y, long height_width);
 #define DrawDrips	( (void(__cdecl*)()) 0x004C8110 )
 #define DrawLightning	( (void(__cdecl*)()) 0x004CC0B0 )
 #define OldDrawLightning	( (void(__cdecl*)()) 0x004CCBA0 )
-#define DrawFlash	( (void(__cdecl*)()) 0x004CAC90 )
