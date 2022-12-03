@@ -610,18 +610,18 @@ void InitialiseLasers(short item_number)
 	for (int i = 0; i < 3; i++)
 	{
 		Hadd = (Lh >> 1) * (i - 1);
-		ls->v1[i].vx = short(Xadd);
-		ls->v1[i].vy = short(height - Lh + Hadd);
-		ls->v1[i].vz = short(Zadd);
-		ls->v2[i].vx = short(-Xadd);
-		ls->v2[i].vy = short(height - Lh + Hadd);
-		ls->v2[i].vz = short(-Zadd);
-		ls->v3[i].vx = short(Xadd);
-		ls->v3[i].vy = short(height + Lh + Hadd);
-		ls->v3[i].vz = short(Zadd);
-		ls->v4[i].vx = short(-Xadd);
-		ls->v4[i].vy = short(height + Lh + Hadd);
-		ls->v4[i].vz = short(-Zadd);
+		ls->v1[i].x = short(Xadd);
+		ls->v1[i].y = short(height - Lh + Hadd);
+		ls->v1[i].z = short(Zadd);
+		ls->v2[i].x = short(-Xadd);
+		ls->v2[i].y = short(height - Lh + Hadd);
+		ls->v2[i].z = short(-Zadd);
+		ls->v3[i].x = short(Xadd);
+		ls->v3[i].y = short(height + Lh + Hadd);
+		ls->v3[i].z = short(Zadd);
+		ls->v4[i].x = short(-Xadd);
+		ls->v4[i].y = short(height + Lh + Hadd);
+		ls->v4[i].z = short(-Zadd);
 		height -= Yadd * 3;
 	}
 
@@ -655,18 +655,18 @@ void InitialiseSteamLasers(short item_number)
 
 	for (int i = 0; i < 2; i++)
 	{
-		ls->v1[i].vx = (short)Xadd;
-		ls->v1[i].vy = (short)(height - 64);
-		ls->v1[i].vz = (short)Zadd;
-		ls->v2[i].vx = (short)-Xadd;
-		ls->v2[i].vy = (short)(height - 64);
-		ls->v2[i].vz = (short)-Zadd;
-		ls->v3[i].vx = (short)Xadd;
-		ls->v3[i].vy = (short)(height + 64);
-		ls->v3[i].vz = (short)Zadd;
-		ls->v4[i].vx = (short)-Xadd;
-		ls->v4[i].vy = (short)(height + 64);
-		ls->v4[i].vz = (short)-Zadd;
+		ls->v1[i].x = (short)Xadd;
+		ls->v1[i].y = (short)(height - 64);
+		ls->v1[i].z = (short)Zadd;
+		ls->v2[i].x = (short)-Xadd;
+		ls->v2[i].y = (short)(height - 64);
+		ls->v2[i].z = (short)-Zadd;
+		ls->v3[i].x = (short)Xadd;
+		ls->v3[i].y = (short)(height + 64);
+		ls->v3[i].z = (short)Zadd;
+		ls->v4[i].x = (short)-Xadd;
+		ls->v4[i].y = (short)(height + 64);
+		ls->v4[i].z = (short)-Zadd;
 		height -= Yadd;
 	}
 
@@ -685,18 +685,18 @@ void InitialiseFloorLasers(short item_number)
 	ls = (FLOORLASER_STRUCT*)item->data;
 	width = item->trigger_flags % 10;
 	height = item->trigger_flags / 10;
-	ls->v1.vx = -512;
-	ls->v1.vy = -128;
-	ls->v1.vz = -512;
-	ls->v2.vx = -512;
-	ls->v2.vy = -128;
-	ls->v2.vz = (short)((width << 10) - 512);
-	ls->v3.vx = (short)((height << 10) - 512);
-	ls->v3.vy = -128;
-	ls->v3.vz = -512;
-	ls->v4.vx = (short)((height << 10) - 512);
-	ls->v4.vy = -128;
-	ls->v4.vz = (short)((width << 10) - 512);
+	ls->v1.x = -512;
+	ls->v1.y = -128;
+	ls->v1.z = -512;
+	ls->v2.x = -512;
+	ls->v2.y = -128;
+	ls->v2.z = (short)((width << 10) - 512);
+	ls->v3.x = (short)((height << 10) - 512);
+	ls->v3.y = -128;
+	ls->v3.z = -512;
+	ls->v4.x = (short)((height << 10) - 512);
+	ls->v4.y = -128;
+	ls->v4.z = (short)((width << 10) - 512);
 	item->item_flags[0] = (short)width;
 	item->item_flags[1] = (short)height;
 	width = (width << 1) + 1;
@@ -1106,21 +1106,21 @@ void InitialisePortalDoor(short item_number)
 	item->pos.x_pos -= 512;
 	item->data = portal;
 
-	portal->v1.vx = 0;
-	portal->v1.vy = -1024;
-	portal->v1.vz = -512;
+	portal->v1.x = 0;
+	portal->v1.y = -1024;
+	portal->v1.z = -512;
 
-	portal->v2.vx = 0;
-	portal->v2.vy = -1024;
-	portal->v2.vz = 512;
+	portal->v2.x = 0;
+	portal->v2.y = -1024;
+	portal->v2.z = 512;
 
-	portal->v3.vx = 0;
-	portal->v3.vy = 0;
-	portal->v3.vz = -512;
+	portal->v3.x = 0;
+	portal->v3.y = 0;
+	portal->v3.z = -512;
 
-	portal->v4.vx = 0;
-	portal->v4.vy = 0;
-	portal->v4.vz = 512;
+	portal->v4.x = 0;
+	portal->v4.y = 0;
+	portal->v4.z = 512;
 	
 
 	for (int i = 0; i < 64; i++)
@@ -1248,34 +1248,34 @@ void InitialiseGasCloud(short item_number)
 		{
 			if (!i)
 			{
-				cloud->t.vx = 0;
-				cloud->t.vy = 0;
-				cloud->t.vz = 0;
+				cloud->t.x = 0;
+				cloud->t.y = 0;
+				cloud->t.z = 0;
 			}
 			else if (clouds[i] == NO_ITEM)
 			{
-				cloud->t.vx = short(AIObjects[clouds[i]].x - item->pos.x_pos);
-				cloud->t.vy = short(AIObjects[clouds[i]].y - item->pos.y_pos);
-				cloud->t.vz = short(AIObjects[clouds[i]].z - item->pos.z_pos);
+				cloud->t.x = short(AIObjects[clouds[i]].x - item->pos.x_pos);
+				cloud->t.y = short(AIObjects[clouds[i]].y - item->pos.y_pos);
+				cloud->t.z = short(AIObjects[clouds[i]].z - item->pos.z_pos);
 			}
 			else
 			{
-				cloud->t.vx = -1;
+				cloud->t.x = -1;
 				break;
 			}
 
-			cloud->v1.vx = -512;
-			cloud->v1.vy = 0;
-			cloud->v1.vz = -512;
-			cloud->v2.vx = -512;
-			cloud->v2.vy = 0;
-			cloud->v2.vz = 512;
-			cloud->v3.vx = 512;
-			cloud->v3.vy = 0;
-			cloud->v3.vz = -512;
-			cloud->v4.vx = 512;
-			cloud->v4.vy = 0;
-			cloud->v4.vz = 512;
+			cloud->v1.x = -512;
+			cloud->v1.y = 0;
+			cloud->v1.z = -512;
+			cloud->v2.x = -512;
+			cloud->v2.y = 0;
+			cloud->v2.z = 512;
+			cloud->v3.x = 512;
+			cloud->v3.y = 0;
+			cloud->v3.z = -512;
+			cloud->v4.x = 512;
+			cloud->v4.y = 0;
+			cloud->v4.z = 512;
 
 			for (int j = 0; j < 36; j++)
 				cloud->Rand[j] = short(GetRandomControl() << 1);

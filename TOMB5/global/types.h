@@ -457,9 +457,9 @@ struct PHD_3DPOS
 
 struct SVECTOR
 {
-	short vx;
-	short vy;
-	short vz;
+	short x;
+	short y;
+	short z;
 	short pad;
 };
 

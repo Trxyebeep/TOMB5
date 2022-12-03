@@ -44,12 +44,12 @@ void ControlLasers(short item_number)
 	if (item->room_number == lara_item->room_number)
 	{
 		laser = (LASER_STRUCT*)item->data;
-		bbox[0] = item->pos.x_pos + laser->v1[0].vx;
-		bbox[1] = item->pos.x_pos + laser->v4[0].vx;
+		bbox[0] = item->pos.x_pos + laser->v1[0].x;
+		bbox[1] = item->pos.x_pos + laser->v4[0].x;
 		bbox[2] = item->pos.y_pos - item->item_flags[0];
 		bbox[3] = item->pos.y_pos;
-		bbox[4] = item->pos.z_pos + laser->v1[0].vz;
-		bbox[5] = item->pos.z_pos + laser->v4[0].vz;
+		bbox[4] = item->pos.z_pos + laser->v1[0].z;
+		bbox[5] = item->pos.z_pos + laser->v4[0].z;
 
 		if (CheckLaserBox(bbox))
 		{
@@ -89,12 +89,12 @@ void ControlSteamLasers(short item_number)
 	if (item->room_number == lara_item->room_number)
 	{
 		laser = (STEAMLASER_STRUCT*)item->data;
-		bbox[0] = item->pos.x_pos + laser->v1[0].vx;
-		bbox[1] = item->pos.x_pos + laser->v4[0].vx;
+		bbox[0] = item->pos.x_pos + laser->v1[0].x;
+		bbox[1] = item->pos.x_pos + laser->v4[0].x;
 		bbox[2] = item->pos.y_pos - 2048;
 		bbox[3] = item->pos.y_pos;
-		bbox[4] = item->pos.z_pos + laser->v1[0].vz;
-		bbox[5] = item->pos.z_pos + laser->v4[0].vz;
+		bbox[4] = item->pos.z_pos + laser->v1[0].z;
+		bbox[5] = item->pos.z_pos + laser->v4[0].z;
 
 		if (SteamLasers[(GlobalCounter >> 5) & 7][item->trigger_flags])
 		{
@@ -136,29 +136,29 @@ void ControlFloorLasers(short item_number)
 
 		if (item->trigger_flags > 8)
 		{
-			sparkPos.y = item->pos.y_pos + laser->v1.vy;
+			sparkPos.y = item->pos.y_pos + laser->v1.y;
 
 			if (GlobalCounter & 1)
 			{
-				sparkPos.z = laser->v1.vz + item->pos.z_pos;
+				sparkPos.z = laser->v1.z + item->pos.z_pos;
 
 				if (GetRandomControl() & 1)
-					sparkPos.x = item->pos.x_pos + laser->v1.vx;
+					sparkPos.x = item->pos.x_pos + laser->v1.x;
 				else
-					sparkPos.x = item->pos.x_pos + laser->v4.vx;
+					sparkPos.x = item->pos.x_pos + laser->v4.x;
 
-				sparkPos.z += GetRandomControl() % (laser->v4.vz - laser->v1.vz);
+				sparkPos.z += GetRandomControl() % (laser->v4.z - laser->v1.z);
 			}
 			else
 			{
-				sparkPos.x = item->pos.x_pos + laser->v1.vx;
+				sparkPos.x = item->pos.x_pos + laser->v1.x;
 
 				if (GetRandomControl() & 1)
-					sparkPos.z = item->pos.z_pos + laser->v1.vz;
+					sparkPos.z = item->pos.z_pos + laser->v1.z;
 				else
-					sparkPos.z = item->pos.z_pos + laser->v4.vz;
+					sparkPos.z = item->pos.z_pos + laser->v4.z;
 
-				sparkPos.x += GetRandomControl() % (laser->v4.vx - laser->v1.vx);
+				sparkPos.x += GetRandomControl() % (laser->v4.x - laser->v1.x);
 			}
 
 			TriggerRicochetSpark(&sparkPos, GetRandomControl() << 1, 2, 0);
@@ -189,12 +189,12 @@ void ControlFloorLasers(short item_number)
 
 		if (item->room_number == lara_item->room_number)
 		{
-			bbox[0] = item->pos.x_pos + laser->v1.vx;
-			bbox[1] = item->pos.x_pos + laser->v4.vx;
+			bbox[0] = item->pos.x_pos + laser->v1.x;
+			bbox[1] = item->pos.x_pos + laser->v4.x;
 			bbox[2] = item->pos.y_pos;
 			bbox[3] = item->pos.y_pos;
-			bbox[4] = item->pos.z_pos + laser->v1.vz;
-			bbox[5] = item->pos.z_pos + laser->v4.vz;
+			bbox[4] = item->pos.z_pos + laser->v1.z;
+			bbox[5] = item->pos.z_pos + laser->v4.z;
 
 			if (CheckLaserBox(bbox) && !lara.burn)
 			{

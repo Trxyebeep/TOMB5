@@ -217,10 +217,10 @@ void TriggerCoinGlow(short item_number)
 
 	item = &items[item_number];
 
-	if (((CamRot.vy + 1256) & 0x7FF) > 1024)
+	if (((CamRot.y + 1256) & 0x7FF) > 1024)
 		return;
 
-	shade = phd_sin(((CamRot.vy + 1256) & 2047) << 5);
+	shade = phd_sin(((CamRot.y + 1256) & 2047) << 5);
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
 	sptr->sR = (GetRandomControl() & 0x1F) - 32;
@@ -237,9 +237,9 @@ void TriggerCoinGlow(short item_number)
 	sptr->Life = 2;
 	sptr->sLife = 2;
 	sptr->TransType = 2;
-	sptr->x = item->pos.x_pos + ((phd_sin(((CamRot.vy + 1256) & 0xFFF) << 4) << 5) >> 14);
+	sptr->x = item->pos.x_pos + ((phd_sin(((CamRot.y + 1256) & 0xFFF) << 4) << 5) >> 14);
 	sptr->y = item->pos.y_pos - 16;
-	sptr->z = item->pos.z_pos + ((phd_cos(((CamRot.vy + 1256) & 0xFFF) << 4) << 5) >> 14);
+	sptr->z = item->pos.z_pos + ((phd_cos(((CamRot.y + 1256) & 0xFFF) << 4) << 5) >> 14);
 	sptr->Xvel = 0;
 	sptr->Yvel = 0;
 	sptr->Zvel = 0;

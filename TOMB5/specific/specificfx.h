@@ -43,6 +43,7 @@ void DrawBlood();
 void DrawDrips();
 void DoUwEffect();
 void DrawWraithTrail(ITEM_INFO* item);
+void DrawTrainFloorStrip(long x, long z, TEXTURESTRUCT* tex, long y_and_flags);
 
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
