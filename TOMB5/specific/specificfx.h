@@ -44,6 +44,7 @@ void DrawDrips();
 void DoUwEffect();
 void DrawWraithTrail(ITEM_INFO* item);
 void DrawTrainFloorStrip(long x, long z, TEXTURESTRUCT* tex, long y_and_flags);
+void DrawBubbles();
 
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
@@ -54,6 +55,5 @@ void DrawTrainFloorStrip(long x, long z, TEXTURESTRUCT* tex, long y_and_flags);
 #define S_DrawSparks	( (void(__cdecl*)()) 0x004C4C60 )
 #define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
 #define S_DrawSplashes	( (void(__cdecl*)()) 0x004C1790 )
-#define DrawBubbles	( (void(__cdecl*)()) 0x004C1340 )
 #define DrawLightning	( (void(__cdecl*)()) 0x004CC0B0 )
 #define OldDrawLightning	( (void(__cdecl*)()) 0x004CCBA0 )
