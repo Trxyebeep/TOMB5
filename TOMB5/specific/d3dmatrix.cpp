@@ -182,6 +182,19 @@ D3DMATRIX* D3DSetRotateY(D3DMATRIX* mx, float ang)
 	return mx;
 }
 
+D3DMATRIX* D3DSetRotateZ(D3DMATRIX* mx, float ang)
+{
+	float s, c;
+
+	s = sin(ang);
+	c = cos(ang);
+	mx->_11 = c;
+	mx->_12 = -s;
+	mx->_21 = s;
+	mx->_22 = c;
+	return mx;
+}
+
 void inject_d3dmatrix(bool replace)
 {
 	INJECT(0x00497550, SetD3DMatrixF, replace);
@@ -198,4 +211,5 @@ void inject_d3dmatrix(bool replace)
 	INJECT(0x004977F0, D3DSetTranslate, replace);
 	INJECT(0x00497820, D3DSetRotateX, replace);
 	INJECT(0x00497860, D3DSetRotateY, replace);
+	INJECT(0x004978A0, D3DSetRotateZ, replace);
 }
