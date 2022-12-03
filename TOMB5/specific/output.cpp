@@ -2184,6 +2184,11 @@ void DebugString(char* txt, ...)
 	nDebugStrings++;
 }
 
+void S_InsertRoom(ROOM_INFO* r, long a)
+{
+	InsertRoom(r);
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -2215,5 +2220,6 @@ void inject_output(bool replace)
 	INJECT(0x004B2110, S_InitialisePolyList, replace);
 	INJECT(0x004B79A0, S_OutputPolyList, replace);
 	INJECT(0x004B20D0, DebugString, replace);
+	INJECT(0x004B78B0, S_InsertRoom, replace);
 }
 

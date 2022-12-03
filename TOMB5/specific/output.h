@@ -32,6 +32,7 @@ void SkinNormalsToScratch(long node);
 void S_InitialisePolyList();
 void S_OutputPolyList();
 void DebugString(char* txt, ...);
+void S_InsertRoom(ROOM_INFO* r, long a);
 
 #define phd_PutPolygons_seethrough	( (void(__cdecl*)(short*, long)) 0x004B4F10 )
 #define phd_PutPolygonsSpcEnvmap	( (void(__cdecl*)(short*, long)) 0x004B5190 )
