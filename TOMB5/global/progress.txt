@@ -1708,7 +1708,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004978A0	+	D3DSetRotateZ
 0x004978E0	+	D3DSetScale
 0x00497910	+	D3DIdentityMatrix
-0x00497960		D3DZeroMatrix
+0x00497960	+	D3DZeroMatrix
 0x004979B0		D3DViewMatrix
 0x00497AE0		D3DProjectionMatrix
 0x00497B80		D3DTransform
