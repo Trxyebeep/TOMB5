@@ -31,6 +31,7 @@ void aSetXY4(D3DTLVERTEX* v, float x1, float y1, float x2, float y2, float x3, f
 void InitTarget();
 void InitBinoculars();
 void SuperDrawBox(long* box);
+void Draw2DSprite(long x, long y, long slot, long unused, long unused2);
 
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )

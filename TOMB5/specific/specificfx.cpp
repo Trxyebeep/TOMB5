@@ -3087,6 +3087,39 @@ void SuperDrawBox(long* box)
 	}
 }
 
+void Draw2DSprite(long x, long y, long slot, long unused, long unused2)
+{
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	long x0, y0;
+
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + slot];
+	x0 = long(x + (sprite->width >> 8) * ((float)phd_centerx / 320.0F));
+	y0 = long(y + 1 + (sprite->height >> 8) * ((float)phd_centery / 240.0F));
+	setXY4(v, x, y, x0, y, x0, y0, x, y0, (long)f_mznear, clipflags);
+	v[0].specular = 0xFF000000;
+	v[1].specular = 0xFF000000;
+	v[2].specular = 0xFF000000;
+	v[3].specular = 0xFF000000;
+	v[0].color = 0xFFFFFFFF;
+	v[1].color = 0xFFFFFFFF;
+	v[2].color = 0xFFFFFFFF;
+	v[3].color = 0xFFFFFFFF;
+	tex.drawtype = 1;
+	tex.flag = 0;
+	tex.tpage = sprite->tpage;
+	tex.u1 = sprite->x1;
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x2;
+	tex.v2 = sprite->y1;
+	tex.u3 = sprite->x2;
+	tex.v3 = sprite->y2;
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y2;
+	AddQuadClippedSorted(v, 0, 1, 2, 3, &tex, 0);
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -3117,4 +3150,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C34F0, InitTarget, replace);
 	INJECT(0x004C35D0, InitBinoculars, replace);
 	INJECT(0x004CFD20, SuperDrawBox, replace);
+	INJECT(0x004CBE50, Draw2DSprite, replace);
 }
