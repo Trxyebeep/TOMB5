@@ -224,6 +224,40 @@ D3DMATRIX* D3DZeroMatrix(D3DMATRIX* mx)
 	return mx;
 }
 
+D3DMATRIX* D3DViewMatrix(D3DMATRIX* mx, D3DVECTOR* eye, D3DVECTOR* target, D3DVECTOR* GlobalUp)
+{
+	D3DVECTOR f;	//forward vector
+	D3DVECTOR r;	//right vector
+	D3DVECTOR u;	//up vector
+
+	D3DIdentityMatrix(mx);
+
+	D3DVSubtract(&f, target, eye);
+	D3DNormalise(&f);
+	D3DCrossProduct(&r, GlobalUp, &f);
+	D3DCrossProduct(&u, &f, &r);
+	D3DNormalise(&r);
+	D3DNormalise(&u);
+
+	mx->_11 = r.x;
+	mx->_21 = -r.y;
+	mx->_31 = r.z;
+
+	mx->_12 = u.x;
+	mx->_22 = -u.y;
+	mx->_32 = u.z;
+
+	mx->_13 = f.x;
+	mx->_23 = -f.y;
+	mx->_33 = f.z;
+
+	mx->_41 = D3DDotProduct(&r, eye);
+	mx->_42 = D3DDotProduct(&u, eye);
+	mx->_43 = D3DDotProduct(&f, eye);
+
+	return mx;
+}
+
 void inject_d3dmatrix(bool replace)
 {
 	INJECT(0x00497550, SetD3DMatrixF, replace);
@@ -243,4 +277,5 @@ void inject_d3dmatrix(bool replace)
 	INJECT(0x004978A0, D3DSetRotateZ, replace);
 	INJECT(0x004978E0, D3DSetScale, replace);
 	INJECT(0x00497960, D3DZeroMatrix, replace);
+	INJECT(0x004979B0, D3DViewMatrix, replace);
 }
