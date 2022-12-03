@@ -2145,7 +2145,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004CAA60		_0x004CAA60
 0x004CAC90		DrawFlash
 0x004CADA0	+	DrawBikeSpeedo
-0x004CB280		DrawShockwaves
+0x004CB280	+	DrawShockwaves
 0x004CBB10	+	S_DrawDarts
 0x004CBE50	+	Draw2DSprite
 0x004CC0B0		DrawLightning

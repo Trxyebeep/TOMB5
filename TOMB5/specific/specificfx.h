@@ -33,6 +33,7 @@ void InitBinoculars();
 void SuperDrawBox(long* box);
 void Draw2DSprite(long x, long y, long slot, long unused, long unused2);
 void DrawBikeSpeedo(long ux, long uy, long vel, long maxVel, long turboVel, long size, long unk);
+void DrawShockwaves();
 
 #define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
@@ -49,7 +50,6 @@ void DrawBikeSpeedo(long ux, long uy, long vel, long maxVel, long turboVel, long
 #define DrawDebris	( (void(__cdecl*)()) 0x004C7620 )
 #define DrawBlood	( (void(__cdecl*)()) 0x004C7CB0 )
 #define DrawDrips	( (void(__cdecl*)()) 0x004C8110 )
-#define DrawShockwaves	( (void(__cdecl*)()) 0x004CB280 )
 #define DrawLightning	( (void(__cdecl*)()) 0x004CC0B0 )
 #define OldDrawLightning	( (void(__cdecl*)()) 0x004CCBA0 )
 #define DrawPsxTile	( (void(__cdecl*)(long, long, long, long, long)) 0x004CA7F0 )
