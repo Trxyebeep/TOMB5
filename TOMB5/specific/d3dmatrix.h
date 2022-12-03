@@ -10,5 +10,6 @@ void SetD3DViewMatrix();
 void SetD3DMatrix(D3DMATRIX* mx, long* imx);
 void S_InitD3DMatrix();
 D3DVECTOR* D3DNormalise(D3DVECTOR* vec);
+D3DVECTOR* D3DVSubtract(D3DVECTOR* out, D3DVECTOR* a, D3DVECTOR* b);
 
 #define D3DMultMatrix	( (LPD3DMATRIX(__cdecl*)(LPD3DMATRIX, LPD3DMATRIX, LPD3DMATRIX)) 0x00497CA0 )
