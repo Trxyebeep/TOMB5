@@ -18,5 +18,6 @@ D3DMATRIX* D3DSetTranslate(D3DMATRIX* mx, float x, float y, float z);
 D3DMATRIX* D3DSetRotateX(D3DMATRIX* mx, float ang);
 D3DMATRIX* D3DSetRotateY(D3DMATRIX* mx, float ang);
 D3DMATRIX* D3DSetRotateZ(D3DMATRIX* mx, float ang);
+D3DMATRIX* D3DSetScale(D3DMATRIX* mx, float scale);
 
 #define D3DMultMatrix	( (LPD3DMATRIX(__cdecl*)(LPD3DMATRIX, LPD3DMATRIX, LPD3DMATRIX)) 0x00497CA0 )

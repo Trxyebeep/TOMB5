@@ -195,6 +195,14 @@ D3DMATRIX* D3DSetRotateZ(D3DMATRIX* mx, float ang)
 	return mx;
 }
 
+D3DMATRIX* D3DSetScale(D3DMATRIX* mx, float scale)
+{
+	mx->_11 = scale;
+	mx->_22 = scale;
+	mx->_33 = scale;
+	return mx;
+}
+
 void inject_d3dmatrix(bool replace)
 {
 	INJECT(0x00497550, SetD3DMatrixF, replace);
@@ -212,4 +220,5 @@ void inject_d3dmatrix(bool replace)
 	INJECT(0x00497820, D3DSetRotateX, replace);
 	INJECT(0x00497860, D3DSetRotateY, replace);
 	INJECT(0x004978A0, D3DSetRotateZ, replace);
+	INJECT(0x004978E0, D3DSetScale, replace);
 }
