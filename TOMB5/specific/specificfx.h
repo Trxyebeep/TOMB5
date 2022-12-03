@@ -41,6 +41,7 @@ void SuperShowLogo();
 void DrawDebris();
 void DrawBlood();
 void DrawDrips();
+void DoUwEffect();
 
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
@@ -49,7 +50,6 @@ void DrawDrips();
 #define DrawLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CD960 )
 #define DrawSteamLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CE610 )
 #define S_DrawSparks	( (void(__cdecl*)()) 0x004C4C60 )
-#define DoUwEffect	( (void(__cdecl*)()) 0x004C8650 )
 #define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
 #define S_DrawSplashes	( (void(__cdecl*)()) 0x004C1790 )
 #define DrawBubbles	( (void(__cdecl*)()) 0x004C1340 )

@@ -2132,7 +2132,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004C7620	+	DrawDebris
 0x004C7CB0	+	DrawBlood
 0x004C8110	+	DrawDrips
-0x004C8650		DoUwEffect
+0x004C8650	+	DoUwEffect
 0x004C8CB0		DrawWraithTrail
 0x004C9190	+	SuperShowLogo
 0x004C95C0		DrawTrainFloorStrip
