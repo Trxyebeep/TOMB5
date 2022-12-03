@@ -143,6 +143,11 @@ D3DVECTOR* D3DCrossProduct(D3DVECTOR* out, D3DVECTOR* a, D3DVECTOR* b)
 	return out;
 }
 
+float D3DDotProduct(D3DVECTOR* a, D3DVECTOR* b)
+{
+	return a->x * b->x + a->y * b->y + a->z * b->z;
+}
+
 void inject_d3dmatrix(bool replace)
 {
 	INJECT(0x00497550, SetD3DMatrixF, replace);
@@ -155,4 +160,5 @@ void inject_d3dmatrix(bool replace)
 	INJECT(0x004976F0, D3DVSubtract, replace);
 	INJECT(0x00497730, D3DVAdd, replace);
 	INJECT(0x00497770, D3DCrossProduct, replace);
+	INJECT(0x004977C0, D3DDotProduct, replace);
 }
