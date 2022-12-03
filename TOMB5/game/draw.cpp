@@ -430,9 +430,9 @@ void SkyDrawPhase()
 		if (gfLevelFlags & GF_HORIZON)
 		{
 			if (gfCurrentLevel == LVL5_TITLE && jobyfrigger)
-				phd_PutPolygonSkyMesh(meshes[objects[CHEF_MIP].mesh_index], -1);
+				phd_PutPolygonsSkyMesh(meshes[objects[CHEF_MIP].mesh_index], -1);
 			else
-				phd_PutPolygonSkyMesh(meshes[objects[HORIZON].mesh_index], -1);
+				phd_PutPolygonsSkyMesh(meshes[objects[HORIZON].mesh_index], -1);
 
 			OutputSky();
 		}

@@ -1103,7 +1103,7 @@ void andy5_init()
 void andy5_control()
 {
 	PHD_VECTOR pos;
-	long f; 
+	long f;
 	
 	if (GLOBAL_cutseq_frame >= 310)
 	{
@@ -1126,6 +1126,7 @@ void andy5_control()
 	else if (GLOBAL_cutseq_frame >= 1100)
 	{
 		cut_seethrough -= 4;
+
 		if (cut_seethrough < 0)
 			cut_seethrough = 0;
 	}
@@ -3404,14 +3405,14 @@ void DrawCutSeqActors()
 				if (cutseq_meshswapbits[i] & 1)
 				{
 					if (i != 1 || cut_seethrough == 128)
-						phd_PutPolygons(*(mesh + 1), -1);
+						phd_PutPolygons(mesh[1], -1);
 					else
-						phd_PutPolygons_seethrough(*(mesh + 1), cut_seethrough);
+						phd_PutPolygons_seethrough(mesh[1], cut_seethrough);
 				}
 				else if (i != 1 || cut_seethrough == 128)
-					phd_PutPolygons(*mesh, -1);
+					phd_PutPolygons(mesh[0], -1);
 				else
-					phd_PutPolygons_seethrough(*mesh, cut_seethrough);
+					phd_PutPolygons_seethrough(mesh[0], cut_seethrough);
 			}
 
 			mesh += 2;
@@ -3433,14 +3434,14 @@ void DrawCutSeqActors()
 					if (n & cutseq_meshswapbits[i])
 					{
 						if (i != 1 || cut_seethrough == 128)
-							phd_PutPolygons(*(mesh + 1), -1);
+							phd_PutPolygons(mesh[1], -1);
 						else
-							phd_PutPolygons_seethrough(*(mesh + 1), cut_seethrough);
+							phd_PutPolygons_seethrough(mesh[1], cut_seethrough);
 					}
 					else if (i != 1 || cut_seethrough == 128)
-						phd_PutPolygons(*mesh, -1);
+						phd_PutPolygons(mesh[0], -1);
 					else
-						phd_PutPolygons_seethrough(*mesh, cut_seethrough);
+						phd_PutPolygons_seethrough(mesh[0], cut_seethrough);
 				}
 			}
 		}

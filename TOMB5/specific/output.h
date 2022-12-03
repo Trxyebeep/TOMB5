@@ -31,9 +31,9 @@ void S_OutputPolyList();
 void DebugString(char* txt, ...);
 void S_InsertRoom(ROOM_INFO* r, long a);
 void phd_PutPolygons(short* objptr, long clipstatus);
-void phd_PutPolygonSkyMesh(short* objptr, long clipstatus);
+void phd_PutPolygonsSkyMesh(short* objptr, long clipstatus);
 void phd_PutPolygonsPickup(short* objptr, float x, float y, long color);
+void phd_PutPolygons_seethrough(short* objptr, long fade);
 
-#define phd_PutPolygons_seethrough	( (void(__cdecl*)(short*, long)) 0x004B4F10 )
 #define phd_PutPolygonsSpcEnvmap	( (void(__cdecl*)(short*, long)) 0x004B5190 )
 #define phd_PutPolygonsSpcXLU	( (void(__cdecl*)(short*, long)) 0x004B4CA0 )
