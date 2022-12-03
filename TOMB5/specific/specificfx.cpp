@@ -20,6 +20,7 @@
 #define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
 #endif
 #include "profiler.h"
+#include "alexstuff.h"
 
 #define LINE_POINTS	4	//number of points in each grid line
 #define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
@@ -3027,6 +3028,65 @@ void InitBinoculars()
 	}
 }
 
+void SuperDrawBox(long* box)
+{
+	D3DVECTOR bounds[8];
+	D3DTLVERTEX v[32];
+
+	bounds[0].x = box[0];
+	bounds[0].y = box[2] + 32;
+	bounds[0].z = box[4];
+
+	bounds[1].x = box[1];
+	bounds[1].y = box[2] + 32;
+	bounds[1].z = box[4];
+
+	bounds[2].x = box[0];
+	bounds[2].y = box[2] + 32;
+	bounds[2].z = box[5];
+
+	bounds[3].x = box[1];
+	bounds[3].y = box[2] + 32;
+	bounds[3].z = box[5];
+
+	bounds[4].x = box[0];
+	bounds[4].y = box[3] + 32;
+	bounds[4].z = box[4];
+
+	bounds[5].x = box[1];
+	bounds[5].y = box[3] + 32;
+	bounds[5].z = box[4];
+
+	bounds[6].x = box[0];
+	bounds[6].y = box[3] + 32;
+	bounds[6].z = box[5];
+
+	bounds[7].x = box[1];
+	bounds[7].y = box[3] + 32;
+	bounds[7].z = box[5];
+
+	aTransformClip_D3DV(bounds, &v[0], 8, 0);
+	aTransformClip_D3DV(bounds, &v[8], 8, 8);
+	aTransformClip_D3DV(bounds, &v[16], 8, 16);
+	aTransformClip_D3DV(bounds, &v[24], 8, 24);
+
+	for (int i = 0; i < 32; i++)
+	{
+		v[i].rhw = f_mpersp / f_mznear * f_moneopersp;
+		v[i].color = 0xFFFF0000;
+		v[i].specular = 0xFF000000;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		v[i + 8].sx += 8.0F;
+		v[i + 24].sx += 8.0F;
+		v[i + 12].sx += 8.0F;
+		v[i + 28].sx += 8.0F;
+		AddQuadZBuffer(v, i, i + 8, i + 28, i + 20, textinfo, 1);
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -3056,4 +3116,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C3EB0, aSetXY4, replace);
 	INJECT(0x004C34F0, InitTarget, replace);
 	INJECT(0x004C35D0, InitBinoculars, replace);
+	INJECT(0x004CFD20, SuperDrawBox, replace);
 }
