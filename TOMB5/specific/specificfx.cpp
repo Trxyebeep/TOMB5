@@ -3811,6 +3811,111 @@ void DrawBlood()
 	phd_PopMatrix();
 }
 
+void DrawDrips()
+{
+	DRIP_STRUCT* drip;
+	PHD_VECTOR vec;
+	D3DTLVERTEX v[3];
+	long* Z;
+	short* XY;
+	short* pos;
+	float perspz;
+	long x0, y0, z0, x1, y1, z1, r, g, b;
+
+	XY = (short*)&scratchpad[0];
+	Z = (long*)&scratchpad[256];
+	pos = (short*)&scratchpad[512];
+
+	phd_PushMatrix();
+	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+
+	for (int i = 0; i < 32; i++)
+	{
+		drip = &Drips[i];
+
+		if (!drip->On)
+			continue;
+
+		pos[0] = short(drip->x - lara_item->pos.x_pos);
+		pos[1] = short(drip->y - lara_item->pos.y_pos);
+		pos[2] = short(drip->z - lara_item->pos.z_pos);
+
+		if (pos[0] < -0x5000 || pos[0] > 0x5000 || pos[1] < -0x5000 || pos[1] > 0x5000 || pos[2] < -0x5000 || pos[2] > 0x5000)
+			continue;
+
+		vec.x = pos[0] * phd_mxptr[M00] + pos[1] * phd_mxptr[M01] + pos[2] * phd_mxptr[M02] + phd_mxptr[M03];
+		vec.y = pos[0] * phd_mxptr[M10] + pos[1] * phd_mxptr[M11] + pos[2] * phd_mxptr[M12] + phd_mxptr[M13];
+		vec.z = pos[0] * phd_mxptr[M20] + pos[1] * phd_mxptr[M21] + pos[2] * phd_mxptr[M22] + phd_mxptr[M23];
+
+		perspz = f_persp / (float)vec.z;
+		XY[0] = short(float(vec.x * perspz + f_centerx));
+		XY[1] = short(float(vec.y * perspz + f_centery));
+		Z[0] = vec.z >> 14;
+
+		pos[1] -= drip->Yvel >> 6;
+
+		if (room[drip->RoomNumber].flags & ROOM_NOT_INSIDE)
+		{
+			pos[0] -= short(SmokeWindX >> 1);
+			pos[1] -= short(SmokeWindZ >> 1);
+		}
+
+		vec.x = pos[0] * phd_mxptr[M00] + pos[1] * phd_mxptr[M01] + pos[2] * phd_mxptr[M02] + phd_mxptr[M03];
+		vec.y = pos[0] * phd_mxptr[M10] + pos[1] * phd_mxptr[M11] + pos[2] * phd_mxptr[M12] + phd_mxptr[M13];
+		vec.z = pos[0] * phd_mxptr[M20] + pos[1] * phd_mxptr[M21] + pos[2] * phd_mxptr[M22] + phd_mxptr[M23];
+
+		perspz = f_persp / (float)vec.z;
+		XY[2] = short(float(vec.x * perspz + f_centerx));
+		XY[3] = short(float(vec.y * perspz + f_centery));
+		Z[1] = vec.z >> 14;
+
+		if (!Z[0])
+			continue;
+
+		if (Z[0] > 0x5000)
+		{
+			drip->On = 0;
+			continue;
+		}
+
+		x0 = XY[0];
+		y0 = XY[1];
+		z0 = Z[0];
+		x1 = XY[2];
+		y1 = XY[3];
+		z1 = Z[1];
+
+		if (ClipLine(x0, y0, z0, x1, y1, z1, phd_winxmin, phd_winymin, phd_winxmax, phd_winymax))
+		{
+			r = drip->R << 2;
+			g = drip->G << 2;
+			b = drip->B << 2;
+
+			v[0].sx = (float)x0;
+			v[0].sy = (float)y0;
+			v[0].sz = (float)z0;
+			v[0].rhw = f_mpersp / v[0].sz * f_moneopersp;
+			v[0].color = RGBA(r, g, b, 0xFF);
+			v[0].specular = 0xFF000000;
+
+			r >>= 1;
+			g >>= 1;
+			b >>= 1;
+
+			v[1].sx = (float)x1;
+			v[1].sy = (float)y1;
+			v[1].sz = (float)z1;
+			v[1].rhw = f_mpersp / v[1].sz * f_moneopersp;
+			v[1].color = RGBA(r, g, b, 0xFF);
+			v[1].specular = 0xFF000000;
+
+			AddLineSorted(v, &v[1], 6);
+		}
+	}
+
+	phd_PopMatrix();
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -3850,4 +3955,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C9190, SuperShowLogo, replace);
 	INJECT(0x004C7620, DrawDebris, replace);
 	INJECT(0x004C7CB0, DrawBlood, replace);
+	INJECT(0x004C8110, DrawDrips, replace);
 }
