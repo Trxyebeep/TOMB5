@@ -1700,7 +1700,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00497650	+	D3DNormalise
 0x004976F0	+	D3DVSubtract
 0x00497730	+	D3DVAdd
-0x00497770		D3DCrossProduct
+0x00497770	+	D3DCrossProduct
 0x004977C0		D3DDotProduct
 0x004977F0		D3DSetTranslate
 0x00497820		D3DSetRotateX
