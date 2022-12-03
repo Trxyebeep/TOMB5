@@ -2037,6 +2037,25 @@ void SkinNormalsToScratch(long node)
 	}
 }
 
+void S_InitialisePolyList()
+{
+	D3DRECT r;
+
+	r.x1 = App.dx.rViewport.left;
+	r.y1 = App.dx.rViewport.top;
+	r.y2 = App.dx.rViewport.top + App.dx.rViewport.bottom;
+	r.x2 = App.dx.rViewport.left + App.dx.rViewport.right;
+
+	if (App.dx.Flags & 0x80)
+		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0));
+	else
+		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
+
+	_BeginScene();
+	InitBuckets();
+	InitialiseSortList();
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -2065,5 +2084,6 @@ void inject_output(bool replace)
 	INJECT(0x004B2340, SkinVerticesToScratch, replace);
 	INJECT(0x004B2410, StashSkinNormals, replace);
 	INJECT(0x004B2480, SkinNormalsToScratch, replace);
+	INJECT(0x004B2110, S_InitialisePolyList, replace);
 }
 
