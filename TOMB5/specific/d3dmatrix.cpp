@@ -39,8 +39,26 @@ LPD3DMATRIX D3DIdentityMatrix(LPD3DMATRIX matrix)
 	return matrix;
 }
 
+void SaveD3DCameraMatrix()
+{
+	D3DIdentityMatrix(&D3DCameraMatrix);
+	D3DCameraMatrix._11 = aMXPtr[M00];
+	D3DCameraMatrix._12 = aMXPtr[M10];
+	D3DCameraMatrix._13 = aMXPtr[M20];
+	D3DCameraMatrix._21 = aMXPtr[M01];
+	D3DCameraMatrix._22 = aMXPtr[M11];
+	D3DCameraMatrix._23 = aMXPtr[M21];
+	D3DCameraMatrix._31 = aMXPtr[M02];
+	D3DCameraMatrix._32 = aMXPtr[M12];
+	D3DCameraMatrix._33 = aMXPtr[M22];
+	D3DCameraMatrix._41 = aMXPtr[M03];
+	D3DCameraMatrix._42 = aMXPtr[M13];
+	D3DCameraMatrix._43 = aMXPtr[M23];
+}
+
 void inject_d3dmatrix(bool replace)
 {
 	INJECT(0x00497550, SetD3DMatrixF, replace);
 	INJECT(0x00497910, D3DIdentityMatrix, replace);
+	INJECT(0x00497280, SaveD3DCameraMatrix, replace);
 }
