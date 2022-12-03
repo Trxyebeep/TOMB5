@@ -2,6 +2,9 @@
 #include "d3dmatrix.h"
 #include "dxshell.h"
 
+static D3DMATRIX D3DMWorld;
+static D3DMATRIX D3DMProjection;
+
 void SetD3DMatrixF(LPD3DMATRIX dest, float* src)
 {
 	D3DIdentityMatrix(dest);
@@ -92,6 +95,15 @@ void SetD3DMatrix(D3DMATRIX* mx, long* imx)
 	mx->_43 = float(imx[M23] >> 14);
 }
 
+void S_InitD3DMatrix()
+{
+	D3DIdentityMatrix(&D3DMWorld);
+	D3DIdentityMatrix(&D3DMProjection);
+	D3DMProjection._22 = -1;
+	DXAttempt(App.dx.lpD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &D3DMWorld));
+	DXAttempt(App.dx.lpD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &D3DMProjection));
+}
+
 void inject_d3dmatrix(bool replace)
 {
 	INJECT(0x00497550, SetD3DMatrixF, replace);
@@ -99,4 +111,5 @@ void inject_d3dmatrix(bool replace)
 	INJECT(0x00497280, SaveD3DCameraMatrix, replace);
 	INJECT(0x00497320, SetD3DViewMatrix, replace);
 	INJECT(0x00497460, SetD3DMatrix, replace);
+	INJECT(0x004975D0, S_InitD3DMatrix, replace);
 }
