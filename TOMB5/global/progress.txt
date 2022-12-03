@@ -1697,7 +1697,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00497460	+	SetD3DMatrix
 0x00497550	+	SetD3DMatrixF
 0x004975D0	+	S_InitD3DMatrix
-0x00497650		D3DNormalise
+0x00497650	+	D3DNormalise
 0x004976F0		D3DVSubtract
 0x00497730		D3DVAdd
 0x00497770		D3DCrossProduct

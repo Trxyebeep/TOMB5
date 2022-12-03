@@ -104,6 +104,21 @@ void S_InitD3DMatrix()
 	DXAttempt(App.dx.lpD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &D3DMProjection));
 }
 
+D3DVECTOR* D3DNormalise(D3DVECTOR* vec)
+{
+	float val;
+
+	if (vec->x != 0 || vec->y != 0 || vec->z != 0)
+	{
+		val = 1.0F / sqrt(SQUARE(vec->x) + SQUARE(vec->y) + SQUARE(vec->z));
+		vec->x = val * vec->x;
+		vec->y = val * vec->y;
+		vec->z = val * vec->z;
+	}
+
+	return vec;
+}
+
 void inject_d3dmatrix(bool replace)
 {
 	INJECT(0x00497550, SetD3DMatrixF, replace);
@@ -112,4 +127,5 @@ void inject_d3dmatrix(bool replace)
 	INJECT(0x00497320, SetD3DViewMatrix, replace);
 	INJECT(0x00497460, SetD3DMatrix, replace);
 	INJECT(0x004975D0, S_InitD3DMatrix, replace);
+	INJECT(0x00497650, D3DNormalise, replace);
 }

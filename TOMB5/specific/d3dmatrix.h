@@ -9,6 +9,6 @@ void SaveD3DCameraMatrix();
 void SetD3DViewMatrix();
 void SetD3DMatrix(D3DMATRIX* mx, long* imx);
 void S_InitD3DMatrix();
+D3DVECTOR* D3DNormalise(D3DVECTOR* vec);
 
-#define D3DNormalise	( (void(__cdecl*)(D3DVECTOR*)) 0x00497650 )
 #define D3DMultMatrix	( (LPD3DMATRIX(__cdecl*)(LPD3DMATRIX, LPD3DMATRIX, LPD3DMATRIX)) 0x00497CA0 )
