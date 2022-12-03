@@ -42,6 +42,7 @@ void DrawDebris();
 void DrawBlood();
 void DrawDrips();
 void DoUwEffect();
+void DrawWraithTrail(ITEM_INFO* item);
 
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
