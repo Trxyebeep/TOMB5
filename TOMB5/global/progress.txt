@@ -1989,7 +1989,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/output.cpp
 
-0x004B20D0		DebugString
+0x004B20D0	+	DebugString
 0x004B2110	+	S_InitialisePolyList
 0x004B2270	+	StashSkinVertices
 0x004B2340	+	SkinVerticesToScratch

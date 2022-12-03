@@ -2174,6 +2174,16 @@ void S_OutputPolyList()
 	MungeFPCW(&FPCW);
 }
 
+void DebugString(char* txt, ...)
+{
+	va_list list;
+
+	va_start(list, txt);
+	vsprintf(&DebugStrings[nDebugStrings][0], txt, list);
+	va_end(list);
+	nDebugStrings++;
+}
+
 void inject_output(bool replace)
 {
 	INJECT(0x004B78D0, S_DrawPickup, replace);
@@ -2204,5 +2214,6 @@ void inject_output(bool replace)
 	INJECT(0x004B2480, SkinNormalsToScratch, replace);
 	INJECT(0x004B2110, S_InitialisePolyList, replace);
 	INJECT(0x004B79A0, S_OutputPolyList, replace);
+	INJECT(0x004B20D0, DebugString, replace);
 }
 

@@ -31,6 +31,7 @@ void StashSkinNormals(long node);
 void SkinNormalsToScratch(long node);
 void S_InitialisePolyList();
 void S_OutputPolyList();
+void DebugString(char* txt, ...);
 
 #define phd_PutPolygons_seethrough	( (void(__cdecl*)(short*, long)) 0x004B4F10 )
 #define phd_PutPolygonsSpcEnvmap	( (void(__cdecl*)(short*, long)) 0x004B5190 )
