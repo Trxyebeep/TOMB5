@@ -21,7 +21,7 @@
 
 void draw_shotgun_meshes(long weapon_type)
 {
-	lara.back_gun = WEAPON_NONE;
+	lara.back_gun = 0;
 	lara.mesh_ptrs[LM_RHAND] = meshes[objects[WeaponObjectMesh(weapon_type)].mesh_index + 2 * LM_RHAND];
 }
 

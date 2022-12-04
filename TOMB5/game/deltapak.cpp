@@ -865,7 +865,7 @@ void richcut3_control()
 	{
 		cutseq_meshbits[1] |= 0x80000000;
 		cutseq_removelara_hk();
-		lara.back_gun = WEAPON_NONE;
+		lara.back_gun = 0;
 		lara.hk_type_carried = W_NONE;
 		lara.last_gun_type = WEAPON_NONE;
 	}
@@ -3906,7 +3906,7 @@ void do_cutseq_skipper_shit()
 		if (GLOBAL_cutseq_frame < 320)
 		{
 			cutseq_removelara_hk();
-			lara.back_gun = WEAPON_NONE;
+			lara.back_gun = 0;
 			lara.hk_type_carried = W_NONE;
 			lara.last_gun_type = WEAPON_NONE;
 		}
