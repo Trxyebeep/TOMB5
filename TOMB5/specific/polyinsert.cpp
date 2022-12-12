@@ -3,6 +3,7 @@
 #include "dxshell.h"
 #include "drawroom.h"
 #include "function_table.h"
+#include "clipping.h"
 
 static long rgb80h = 0x808080;
 static long rgbmask = 0xFFFFFFFF;
@@ -1153,6 +1154,210 @@ void AddQuadClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, short v3
 	nPolys += 2;
 }
 
+void AddTriClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURESTRUCT* tex, long double_sided)
+{
+	D3DTLBUMPVERTEX* p;
+	D3DTLVERTEX* pV;
+	SORTLIST* sl;
+	TEXTURESTRUCT tex2;
+	short* c;
+	float z;
+	long num;
+	short swap;
+	bool clip, clipZ;
+
+	c = clipflags;
+	clipZ = 0;
+	clip = 1;
+	sl = 0;
+
+	if (c[v0] & c[v1] & c[v2])
+		return;
+
+	if ((c[v0] | c[v1] | c[v2]) & 0x8000)
+	{
+		if (!visible_zclip(&v[v0], &v[v1], &v[v2]))
+		{
+			if (!double_sided)
+				return;
+
+			swap = v1;
+			v1 = v2;
+			v2 = swap;
+
+			if (!visible_zclip(&v[v0], &v[v1], &v[v2]))
+				return;
+
+			tex2.drawtype = tex->drawtype;
+			tex2.flag = tex->flag;
+			tex2.tpage = tex->tpage;
+			tex2.u1 = tex->u1;
+			tex2.v1 = tex->v1;
+			tex2.u2 = tex->u3;
+			tex2.v2 = tex->v3;
+			tex2.u3 = tex->u2;
+			tex2.v3 = tex->v2;
+			tex = &tex2;
+		}
+
+		clipZ = 1;
+		p = zClipperBuffer;
+	}
+	else
+	{
+		if (!double_sided && IsVisible(&v[v0], &v[v1], &v[v2]))
+			return;
+
+		if (IsVisible(&v[v0], &v[v1], &v[v2]))
+		{
+			if (!double_sided)
+				return;
+
+			swap = v1;
+			v1 = v2;
+			v2 = swap;
+
+			tex2.drawtype = tex->drawtype;
+			tex2.flag = tex->flag;
+			tex2.tpage = tex->tpage;
+			tex2.u1 = tex->u1;
+			tex2.v1 = tex->v1;
+			tex2.u2 = tex->u3;
+			tex2.v2 = tex->v3;
+			tex2.u3 = tex->u2;
+			tex2.v3 = tex->v2;
+			tex = &tex2;
+		}
+
+		if (c[v0] | c[v1] | c[v2])
+			p = XYUVClipperBuffer;
+		else
+		{
+			clip = 0;
+			p = (D3DTLBUMPVERTEX*)(sizeof(SORTLIST) + pSortBuffer);
+			sl = (SORTLIST*)pSortBuffer;
+			sl->tpage = tex->tpage;
+			sl->drawtype = tex->drawtype;
+			sl->nVtx = 3;
+			sl->polytype = (short)nPolyType;
+			pSortBuffer += sl->nVtx * sizeof(D3DTLBUMPVERTEX) + sizeof(SORTLIST);
+			*pSortList++ = sl;
+		}
+	}
+
+	z = 0;
+
+	pV = &v[v0];
+	p->sx = pV->sx;
+	p->sy = pV->sy;
+	p->sz = pV->sz;
+	p->rhw = pV->rhw;
+	p->color = pV->color;
+	p->specular = pV->specular;
+	p->tu = tex->u1;
+	p->tv = tex->v1;
+	p->tx = pV->tu;
+	p->ty = pV->tv;
+
+	if (nPolyType)
+		z += pV->sz;
+	else if (pV->sz > z)
+		z = pV->sz;
+
+	pV = &v[v1];
+	p[1].sx = pV->sx;
+	p[1].sy = pV->sy;
+	p[1].sz = pV->sz;
+	p[1].rhw = pV->rhw;
+	p[1].color = pV->color;
+	p[1].specular = pV->specular;
+	p[1].tu = tex->u2;
+	p[1].tv = tex->v2;
+	p[1].tx = pV->tu;
+	p[1].ty = pV->tv;
+
+	if (nPolyType)
+		z += pV->sz;
+	else if (pV->sz > z)
+		z = pV->sz;
+
+	pV = &v[v2];
+	p[2].sx = pV->sx;
+	p[2].sy = pV->sy;
+	p[2].sz = pV->sz;
+	p[2].rhw = pV->rhw;
+	p[2].color = pV->color;
+	p[2].specular = pV->specular;
+	p[2].tu = tex->u3;
+	p[2].tv = tex->v3;
+	p[2].tx = pV->tu;
+	p[2].ty = pV->tv;
+
+	if (nPolyType)
+		z += pV->sz;
+	else if (pV->sz > z)
+		z = pV->sz;
+
+	if (clip)
+	{
+		num = 3;
+
+		if (clipZ)
+		{
+			num = ZClipper(3, zClipperBuffer, XYUVClipperBuffer);
+
+			if (!num)
+				return;
+		}
+		else
+		{
+			p = XYUVClipperBuffer;
+
+			for (int i = 0; i < 3; i++, p++)
+			{
+				p->tu *= p->rhw;
+				p->tv *= p->rhw;
+			}
+		}
+
+		num = XYUVGClipper(num, XYUVClipperBuffer);
+
+		if (num)
+		{
+			p = (D3DTLBUMPVERTEX*)(sizeof(SORTLIST) + pSortBuffer);
+			sl = (SORTLIST*)pSortBuffer;
+			sl->drawtype = tex->drawtype;
+			sl->nVtx = short(3 * num - 6);
+
+			if (nPolyType)
+				sl->zVal = z * 0.333333F;
+			else
+				sl->zVal = z;
+
+			sl->tpage = tex->tpage;
+			sl->polytype = (short)nPolyType;
+			pSortBuffer += sl->nVtx * sizeof(D3DTLBUMPVERTEX) + sizeof(SORTLIST);
+			*pSortList++ = sl;
+			SortCount++;
+			AddClippedPoly(p, num, XYUVClipperBuffer, tex);
+		}
+	}
+	else
+	{
+		p->sz = f_a - f_boo * p->rhw;
+		p[1].sz = f_a - f_boo * p[1].rhw;
+		p[2].sz = f_a - f_boo * p[2].rhw;
+
+		if (nPolyType)
+			sl->zVal = z * 0.333333F;
+		else
+			sl->zVal = z;
+
+		SortCount++;
+		nPolys++;
+	}
+}
+
 void inject_polyinsert(bool replace)
 {
 	INJECT(0x004B98E0, HWR_DrawSortList, replace);
@@ -1184,4 +1389,5 @@ void inject_polyinsert(bool replace)
 	INJECT(0x004BBE40, AddTriSubdivide, replace);
 	INJECT(0x004BBFA0, AddQuadSubdivide, replace);
 	INJECT(0x004BC7F0, AddQuadClippedSorted, replace);
+	INJECT(0x004BC120, AddTriClippedSorted, replace);
 }

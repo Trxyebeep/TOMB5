@@ -794,6 +794,8 @@
 #define CharDef	ARRAY_(0x00507AB8, CHARDEF, [106])
 #define ground_zone	ARRAY_(0x00EEFB20, short*, [5][2])
 #define DebugStrings	ARRAY_(0x009158AC, char, [256][80])
+#define XYUVClipperBuffer	ARRAY_(0x00BA3FB0, D3DTLBUMPVERTEX, [20])
+#define zClipperBuffer	ARRAY_(0x00923C88, D3DTLBUMPVERTEX, [20])
 
 /****************/
 //registry
