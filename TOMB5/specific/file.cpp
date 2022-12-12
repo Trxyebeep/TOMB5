@@ -376,6 +376,12 @@ bool LoadAnimatedTextures()
 	FileData += 4;
 	aranges = (short*)game_malloc(num_anim_ranges * 2, 0);
 	memcpy(aranges, FileData, num_anim_ranges * 2);
+
+#ifdef GENERAL_FIXES
+	if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS) // Fixes UVRotate in lift cutscene
+		aranges[2] = 2076;
+#endif
+
 	FileData += num_anim_ranges * sizeof(short);
 	nAnimUVRanges = *(char*)FileData;
 	FileData += 1;
