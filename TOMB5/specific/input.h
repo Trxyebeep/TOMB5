@@ -6,6 +6,8 @@ void inject_input(bool replace);
 long Key(long number);
 long S_UpdateInput();
 long ReadJoystick(long& x, long& y);
+void IncreaseScreenSize();
+void DecreaseScreenSize();
 
 #ifdef GENERAL_FIXES
 extern short ammo_change_timer;
