@@ -1386,6 +1386,146 @@ void AddLineClippedSorted(D3DTLVERTEX* v0, D3DTLVERTEX* v1, short drawtype)
 	v[1].specular = v1->specular;
 }
 
+void AddQuadClippedZBuffer(D3DTLVERTEX* v, short v0, short v1, short v2, short v3, TEXTURESTRUCT* tex, long double_sided)
+{
+	D3DTLBUMPVERTEX* p;
+	D3DTLBUMPVERTEX* bp;
+	D3DTLVERTEX* vtx;
+	TEXTURESTRUCT tex2;
+	long* nVtx;
+	short* c;
+	short swap;
+
+	c = clipflags;
+
+	if (c[v0] & c[v1] & c[v2] & c[v3])
+		return;
+
+	if ((c[v0] | c[v1] | c[v2] | c[v3]) < 0)
+	{
+		AddTriClippedZBuffer(v, v0, v1, v2, tex, double_sided);
+		tex2.drawtype = tex->drawtype;
+		tex2.flag = tex->flag;
+		tex2.tpage = tex->tpage;
+		tex2.u1 = tex->u1;
+		tex2.v1 = tex->v1;
+		tex2.u2 = tex->u3;
+		tex2.v2 = tex->v3;
+		tex2.u3 = tex->u4;
+		tex2.v3 = tex->v4;
+		AddTriClippedZBuffer(v, v0, v2, v3, &tex2, double_sided);
+		return;
+	}
+
+	if (!double_sided && IsVisible(&v[v0], &v[v1], &v[v2]))
+		return;
+
+	if (IsVisible(&v[v0], &v[v1], &v[v2]))
+	{
+		if (!double_sided)
+			return;
+
+		swap = v0;
+		v0 = v2;
+		v2 = swap;
+		tex2.drawtype = tex->drawtype;
+		tex2.flag = tex->flag;
+		tex2.tpage = tex->tpage;
+		tex2.u1 = tex->u3;
+		tex2.v1 = tex->v3;
+		tex2.u2 = tex->u2;
+		tex2.v2 = tex->v2;
+		tex2.u3 = tex->u1;
+		tex2.v3 = tex->v1;
+		tex2.u4 = tex->u4;
+		tex2.v4 = tex->v4;
+		tex = &tex2;
+	}
+
+	if (c[v0] | c[v1] | c[v2] | c[v3])
+	{
+		AddTriClippedZBuffer(v, v0, v1, v2, tex, double_sided);
+		tex2.drawtype = tex->drawtype;
+		tex2.flag = tex->flag;
+		tex2.tpage = tex->tpage;
+		tex2.u1 = tex->u1;
+		tex2.v1 = tex->v1;
+		tex2.u2 = tex->u3;
+		tex2.v2 = tex->v3;
+		tex2.u3 = tex->u4;
+		tex2.v3 = tex->v4;
+		AddTriClippedZBuffer(v, v0, v2, v3, &tex2, double_sided);
+		return;
+	}
+
+	FindBucket(tex->tpage, &p, &nVtx);
+	*nVtx += 6;
+	bp = p;
+
+	vtx = &v[v0];
+	p->sx = vtx->sx;
+	p->sy = vtx->sy;
+	p->sz = f_a - f_boo * vtx->rhw;
+	p->rhw = vtx->rhw;
+	p->color = vtx->color;
+	p->specular = vtx->specular;
+	p->tu = tex->u1;
+	p->tv = tex->v1;
+
+	p[3].sx = p->sx;
+	p[3].sy = p->sy;
+	p[3].sz = p->sz;
+	p[3].rhw = p->rhw;
+	p[3].color = p->color;
+	p[3].specular = p->specular;
+	p[3].tu = p->tu;
+	p[3].tv = p->tv;
+	p++;
+
+	vtx = &v[v1];
+	p->sx = vtx->sx;
+	p->sy = vtx->sy;
+	p->sz = f_a - f_boo * vtx->rhw;
+	p->rhw = vtx->rhw;
+	p->color = vtx->color;
+	p->specular = vtx->specular;
+	p->tu = tex->u2;
+	p->tv = tex->v2;
+	p++;
+
+	vtx = &v[v2];
+	p->sx = vtx->sx;
+	p->sy = vtx->sy;
+	p->sz = f_a - f_boo * vtx->rhw;
+	p->rhw = vtx->rhw;
+	p->color = vtx->color;
+	p->specular = vtx->specular;
+	p->tu = tex->u3;
+	p->tv = tex->v3;
+
+	p[2].sx = p->sx;
+	p[2].sy = p->sy;
+	p[2].sz = p->sz;
+	p[2].rhw = p->rhw;
+	p[2].color = p->color;
+	p[2].specular = p->specular;
+	p[2].tu = p->tu;
+	p[2].tv = p->tv;
+
+	p += 3;
+	vtx = &v[v3];
+	p->sx = vtx->sx;
+	p->sy = vtx->sy;
+	p->sz = f_a - f_boo * vtx->rhw;
+	p->rhw = vtx->rhw;
+	p->color = vtx->color;
+	p->specular = vtx->specular;
+	p->tu = tex->u4;
+	p->tv = tex->v4;
+
+	nPolys += 2;
+}
+
 void inject_polyinsert(bool replace)
 {
 	INJECT(0x004B98E0, HWR_DrawSortList, replace);
@@ -1419,4 +1559,5 @@ void inject_polyinsert(bool replace)
 	INJECT(0x004BC7F0, AddQuadClippedSorted, replace);
 	INJECT(0x004BC120, AddTriClippedSorted, replace);
 	INJECT(0x004BCE20, AddLineClippedSorted, replace);
+	INJECT(0x004BA300, AddQuadClippedZBuffer, replace);
 }
