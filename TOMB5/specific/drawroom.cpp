@@ -9,6 +9,9 @@
 #include "../tomb5/tomb5.h"
 #include "../game/gameflow.h"
 #endif
+#include "polyinsert.h"
+
+short CheckClipBox[8 * 3] = { 0, 1, 2, 3, 1, 2, 0, 1, 5, 3, 1, 5, 0, 4, 2, 3, 4, 2, 0, 4, 5, 3, 4, 5 };
 
 void DrawBoundsRectangle(float left, float top, float right, float bottom)
 {
@@ -387,7 +390,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	static float DistanceFogEnd = 20.0F * 1024.0F;
 	float num, zbak, zv, zv2, fR, fG, fB, val, val2, val3, fCol;
 	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal;
-	short clip_distance;
+	short clipFlag;
 	uchar rnd, abs;
 #ifdef GENERAL_FIXES
 	uchar flags;
@@ -435,10 +438,10 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		zbak = vec.z;
 		aVertexBuffer[i].tu = vec.x;
 		aVertexBuffer[i].tv = vec.y;
-		clip_distance = 0;
+		clipFlag = 0;
 
 		if (vec.z < f_mznear)
-			clip_distance = -128;
+			clipFlag = -128;
 		else
 		{
 			zv = f_mpersp / vec.z;
@@ -458,17 +461,17 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			aVertexBuffer[i].rhw = zv * f_moneopersp;
 
 			if (vec.x < clip_left)
-				clip_distance = 1;
+				clipFlag++;
 			else if (vec.x > clip_right)
-				clip_distance = 2;
+				clipFlag += 2;
 
 			if (vec.y < clip_top)
-				clip_distance += 4;
+				clipFlag += 4;
 			else if (vec.y > clip_bottom)
-				clip_distance += 8;
+				clipFlag += 8;
 		}
 
-		clip[0] = clip_distance;
+		clip[0] = clipFlag;
 		clip++;
 		aVertexBuffer[i].sx = vec.x;
 		aVertexBuffer[i].sy = vec.y;
@@ -790,7 +793,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 void aBuildFogBulbList()
 {
 	FOGBULB_STRUCT* ActiveFog;
-	FOGBULB* Fog;
+	FOGBULB_INFO* Fog;
 	FVECTOR vec;
 	FVECTOR vec2;
 	static float unused1 = 0.025F;
@@ -804,7 +807,7 @@ void aBuildFogBulbList()
 
 		for (int i = 0; i < NumLevelFogBulbs; i++)
 		{
-			Fog = &fog_bulbs[i];
+			Fog = &LevelFogBulbs[i];
 			vec.x = Fog->px;
 			vec.y = Fog->py;
 			vec.z = Fog->pz;
@@ -1207,7 +1210,7 @@ long aBuildRoomletLights(ROOMLET* r)
 void aRoomInit()
 {
 	ROOM_INFO* r;
-	FOGBULB* bulb;
+	FOGBULB_INFO* bulb;
 	long nBulbs;
 
 	nBulbs = 0;
@@ -1221,8 +1224,8 @@ void aRoomInit()
 
 		for (int j = 0; j < r->nFogBulbs; j++)
 		{
-			bulb = &fog_bulbs[nBulbs];
-			memcpy(bulb, &r->fogbulb[j], sizeof(FOGBULB));
+			bulb = &LevelFogBulbs[nBulbs];
+			memcpy(bulb, &r->fogbulb[j], sizeof(FOGBULB_INFO));
 
 			if (gfCurrentLevel == 2 || gfCurrentLevel == 3)
 			{
@@ -1523,6 +1526,271 @@ void FindBucket(long tpage, D3DTLBUMPVERTEX** Vpp, long** nVtxpp)
 	*nVtxpp = &bucket->nVtx;
 }
 
+long CheckBoundsClip(float* box)
+{
+	float* stash;
+	short* checkBox;
+	float left, right, top, bottom, front, back;
+	float x, y, z, bx, by, bz, zv;
+
+	left = 10000.0F;
+	right = -10000.0F;
+	top = 10000.0F;
+	bottom = -10000.0F;
+	front = 10000.0F;
+	back = -10000.0F;
+	stash = aBoundingBox;
+	checkBox = CheckClipBox;
+
+	for (int i = 0; i < 8; i++)
+	{
+		bx = box[checkBox[0]];
+		by = box[checkBox[1]];
+		bz = box[checkBox[2]];
+		checkBox += 3;
+
+		x = bx * D3DMView._11 + by * D3DMView._21 + bz * D3DMView._31 + D3DMView._41;
+		y = bx * D3DMView._12 + by * D3DMView._22 + bz * D3DMView._32 + D3DMView._42;
+		z = bx * D3DMView._13 + by * D3DMView._23 + bz * D3DMView._33 + D3DMView._43;
+		stash[0] = x;
+		stash[1] = y;
+		stash[2] = z;
+		stash += 3;
+
+		if (z < f_mznear)
+			z = f_mznear;
+
+		zv = f_mpersp / z;
+		x = zv * x + f_centerx;
+		y = zv * y + f_centery;
+
+		if (x < left)
+			left = x;
+
+		if (x > right)
+			right = x;
+
+		if (y < top)
+			top = y;
+
+		if (y > bottom)
+			bottom = y;
+
+		if (z < front)
+			front = z;
+
+		if (z > back)
+			back = z;
+
+		if (left < f_left)
+			left = f_left;
+
+		if (right > f_right)
+			right = f_right;
+
+		if (top < f_top)
+			top = f_top;
+
+		if (bottom > f_bottom)
+			bottom = f_bottom;
+	}
+
+	if (left > room_clip_right || right < room_clip_left || top > room_clip_bottom || bottom < room_clip_top)
+		return 0;
+
+	return 1;
+}
+
+void PrelightVertsMMXByRoomlet(D3DTLVERTEX* v, ROOMLET* r)
+{
+	long* prelight;
+
+	prelight = r->pPrelight;
+
+	for (int i = 0; i < r->nVtx; i++)
+		AddPrelitMMX(prelight[i], &v[i].color);
+
+	__asm
+	{
+		emms
+	}
+}
+
+void PrelightVertsNonMMXByRoomlet(D3DTLVERTEX* v, ROOMLET* r)
+{
+	long* prelight;
+	long pr, pg, pb, vr, vg, vb;
+
+	prelight = r->pPrelight;
+
+	for (int i = 0; i < r->nVtx; i++)
+	{
+		pr = prelight[i] & 0xFF0000;
+		pg = prelight[i] & 0x00FF00;
+		pb = prelight[i] & 0x0000FF;
+		vr = v[i].color & 0xFF0000;
+		vg = v[i].color & 0x00FF00;
+		vb = v[i].color & 0x0000FF;
+		pr += vr;
+		pg += vg;
+		pb += vb;
+
+		if (pr > 0xFF0000)
+			pr = 0xFF0000;
+
+		if (pg > 0x00FF00)
+			pg = 0x00FF00;
+
+		if (pb > 0x0000FF)
+			pb = 0x0000FF;
+
+		v[i].color = (v[i].color & 0xFF000000) | pr | pg | pb;
+		CalcColorSplit(v[i].color, &v[i].color);
+	}
+}
+
+void CalcTriFaceNormal(D3DVECTOR* p1, D3DVECTOR* p2, D3DVECTOR* p3, D3DVECTOR* n)
+{
+	FVECTOR u, v;
+
+	u.x = p1->x - p2->x;
+	u.y = p1->y - p2->y;
+	u.z = p1->z - p2->z;
+	v.x = p3->x - p2->x;
+	v.y = p3->y - p2->y;
+	v.z = p3->z - p2->z;
+	n->x = v.z * u.y - v.y * u.z;
+	n->y = v.x * u.z - v.z * u.x;
+	n->z = v.y * u.x - v.x * u.y;
+}
+
+void CreateVertexNormals(MESH_DATA* mesh)
+{
+	LPD3DVERTEX v;
+	LPD3DVECTOR fnormals;
+	D3DVECTOR p1;
+	D3DVECTOR p2;
+	D3DVECTOR p3;
+	D3DVECTOR n1;
+	D3DVECTOR n2;
+	short* quad;
+	short* tri;
+
+	fnormals = (LPD3DVECTOR)malloc(sizeof(D3DVECTOR) * (mesh->ngt3 + mesh->ngt4));
+	mesh->SourceVB->Lock(0, (LPVOID*)&v, 0);
+	quad = mesh->gt4;
+
+	for (int i = 0; i < mesh->ngt4; i++)
+	{
+		p1.x = v[quad[0]].x;
+		p1.y = v[quad[0]].y;
+		p1.z = v[quad[0]].z;
+
+		p2.x = v[quad[1]].x;
+		p2.y = v[quad[1]].y;
+		p2.z = v[quad[1]].z;
+
+		p3.x = v[quad[2]].x;
+		p3.y = v[quad[2]].y;
+		p3.z = v[quad[2]].z;
+
+		CalcTriFaceNormal(&p1, &p2, &p3, &n1);
+
+		p1.x = v[quad[0]].x;
+		p1.y = v[quad[0]].y;
+		p1.z = v[quad[0]].z;
+
+		p2.x = v[quad[2]].x;
+		p2.y = v[quad[2]].y;
+		p2.z = v[quad[2]].z;
+
+		p3.x = v[quad[3]].x;
+		p3.y = v[quad[3]].y;
+		p3.z = v[quad[3]].z;
+
+		CalcTriFaceNormal(&p1, &p2, &p3, &n2);
+
+		n1.x += n2.x;
+		n1.y += n2.y;
+		n1.z += n2.z;
+		D3DNormalise(&n1);
+
+		n1.x = 0;
+		n1.y = 1.0F;
+		n1.z = 0;
+		fnormals[i] = n1;
+		quad += 6;
+	}
+
+	tri = mesh->gt3;
+
+	for (int i = 0; i < mesh->ngt3; i++)
+	{
+		p1.x = v[tri[0]].x;
+		p1.y = v[tri[0]].y;
+		p1.z = v[tri[0]].z;
+
+		p2.x = v[tri[1]].x;
+		p2.y = v[tri[1]].y;
+		p2.z = v[tri[1]].z;
+
+		p3.x = v[tri[2]].x;
+		p3.y = v[tri[2]].y;
+		p3.z = v[tri[2]].z;
+
+		CalcTriFaceNormal(&p1, &p2, &p3, &n1);
+		D3DNormalise(&n1);
+		fnormals[mesh->ngt4 + i] = n1;
+		tri += 5;
+	}
+
+	for (int i = 0; i < mesh->nVerts; i++)
+	{
+		n1.x = 0;
+		n1.y = 0;
+		n1.z = 0;
+
+		quad = mesh->gt4;
+
+		for (int j = 0; j < mesh->ngt4; j++)
+		{
+			if (quad[0] == i || quad[1] == i || quad[2] == i || quad[3] == i)
+			{
+				n1.x += fnormals[j].x;
+				n1.y += fnormals[j].y;
+				n1.z += fnormals[j].z;
+			}
+
+			quad += 6;
+		}
+
+		tri = mesh->gt3;
+
+		for (int j = 0; j < mesh->ngt3; j++)
+		{
+			if (tri[0] == i || tri[1] == i || tri[2] == i)
+			{
+				n1.x += fnormals[mesh->ngt4 + j].x;
+				n1.y += fnormals[mesh->ngt4 + j].y;
+				n1.z += fnormals[mesh->ngt4 + j].z;
+			}
+
+			tri += 5;
+		}
+
+		D3DNormalise(&n1);
+		n1.x = 0;
+		n1.y = 1.0F;
+		n1.z = 0;
+		v[i].nx = n1.x;
+		v[i].ny = n1.y;
+		v[i].nz = n1.z;
+	}
+
+	mesh->SourceVB->Unlock();
+	free(fnormals);
+}
+
 void inject_drawroom(bool replace)
 {
 	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
@@ -1546,4 +1814,9 @@ void inject_drawroom(bool replace)
 	INJECT(0x0049D460, DrawBucket, replace);
 	INJECT(0x0049D750, DrawBuckets, replace);
 	INJECT(0x0049D250, FindBucket, replace);
+	INJECT(0x0049C6B0, CheckBoundsClip, replace);
+	INJECT(0x0049D0E0, PrelightVertsMMXByRoomlet, replace);
+	INJECT(0x0049D130, PrelightVertsNonMMXByRoomlet, replace);
+	INJECT(0x0049DB10, CalcTriFaceNormal, replace);
+	INJECT(0x0049DBA0, CreateVertexNormals, replace);
 }

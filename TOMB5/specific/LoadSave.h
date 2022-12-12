@@ -38,13 +38,14 @@ long S_LoadSave(long load_or_save, long mono);
 void LoadScreen(long screen, long pathNum);
 void ReleaseScreen();
 void DrawLoadingScreen();
-
-#define GetSaveLoadFiles	( (void(__cdecl*)()) 0x004AD290 )
-#define S_PauseMenu	( (long(__cdecl*)()) 0x004B1030 )
-#define DoSpecialFeaturesServer	( (void(__cdecl*)()) 0x004B1D90 )
-#define DoFrontEndOneShotStuff	( (void(__cdecl*)()) 0x004B2090 )
-#define IsHardware	( (long(__cdecl*)()) 0x004B1E90 )
-#define IsSuperLowRes	( (long(__cdecl*)()) 0x004B1EB0 )
-#define FindSFCursor	( (long(__cdecl*)(long, long)) 0x004ABA60 )
-#define DoSlider	( (void(__cdecl*)(long, long, long, long, long, long, long, long)) 0x004AD820 )
-#define CalculateNumSpecialFeatures	( (void(__cdecl*)()) 0x004AB9F0 )
+long GetSaveLoadFiles();
+void DoSlider(long x, long y, long width, long height, long pos, long c1, long c2, long c3);
+long S_DisplayPauseMenu(long reset);
+long S_PauseMenu();
+long IsHardware();
+long IsSuperLowRes();
+void DoFrontEndOneShotStuff();
+long FindSFCursor(long in, long selection);
+void CalculateNumSpecialFeatures();
+void SpecialFeaturesDisplayScreens(long num);
+void DoSpecialFeaturesServer();

@@ -43,3 +43,4 @@ void DrawGunflashes();
 #define DrawGunshells	( (void(__cdecl*)()) 0x00483090 )
 #define S_DrawFires	( (void(__cdecl*)()) 0x00481BB0 )
 #define TriggerShatterSmoke	( (void(__cdecl*)(long, long, long)) 0x004823A0 )
+#define Fade	( (void(__cdecl*)()) 0x00483BF0 )

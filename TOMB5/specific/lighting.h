@@ -20,10 +20,10 @@ void ApplyTransposeMatrix(long* matrix, PHD_VECTOR* start, PHD_VECTOR* dest);
 void CreateD3DLights();
 void FreeD3DLights();
 void MallocD3DLights();
+void InitObjectFogBulbs();
+void SetupLight(D3DLIGHT_STRUCT* d3dlight, PCLIGHT* light, long* ambient);
+void ShowOmni(long x, long y, long z, long rad);
 
 #ifdef GENERAL_FIXES
 extern SPOTLIGHT_STRUCT SpotLights[64];
 #endif
-
-#define InitObjectFogBulbs	( (void(__cdecl*)()) 0x004AB580 )
-#define ShowOmni	( (void(__cdecl*)(long, long, long, long)) 0x004AA0C0 )

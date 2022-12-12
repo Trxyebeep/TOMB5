@@ -96,7 +96,7 @@ void GetPanVolume(SoundSlot* slot)
 				else
 					distance = 0;
 
-				nPan = (CamRot.vy << 4) + phd_atan(dz, dx);
+				nPan = (CamRot.y << 4) + phd_atan(dz, dx);
 				nVolume = slot->OrigVolume;
 
 				if (distance)
@@ -225,7 +225,7 @@ long SoundEffect(long sfx, PHD_3DPOS* pos, long flags)
 			distance = 0;
 
 		if (!(info->flags & 0x1000))
-			pan = (CamRot.vy << 4) + phd_atan(dz, dx);
+			pan = (CamRot.y << 4) + phd_atan(dz, dx);
 	}
 	else
 	{

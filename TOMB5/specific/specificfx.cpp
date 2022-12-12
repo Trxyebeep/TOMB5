@@ -19,6 +19,8 @@
 
 #define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
 #endif
+#include "profiler.h"
+#include "alexstuff.h"
 
 #define LINE_POINTS	4	//number of points in each grid line
 #define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
@@ -83,6 +85,38 @@ uchar TargetGraphColTab[48] =
 	255, 255, 0,
 	255, 255, 0,
 	255, 255, 0
+};
+
+float SnowSizes[32]
+{
+	-24.0F, -24.0F, -24.0F, 24.0F, 24.0F, -24.0F, 24.0F, 24.0F, -12.0F, -12.0F, -12.0F, 12.0F, 12.0F, -12.0F, 12.0F, 12.0F,
+	-8.0F, -8.0F, -8.0F, 8.0F, 8.0F, -8.0F, 8.0F, 8.0F, -6.0F, -6.0F, -6.0F, 6.0F, 6.0F, -6.0F, 6.0F, 6.0F
+};
+
+char flare_table[121] =
+{
+	//	r, g, b, size, XY?, sprite
+	96, 80, 0, 6, 0, 31,
+	48, 32, 32, 10, -6, 31,
+	32, 24, 24, 18, -1, 31,
+	80, 104, 64, 5, -3, 30,
+	64, 64, 64, 20, 0, 32,
+	96, 56, 56, 14, 0, 11,
+	80, 40, 32, 9, 0, 29,
+	16, 24, 40, 2, 5, 31,
+	8, 8, 24, 7, 8, 31,
+	8, 16, 32, 4, 10, 31,
+	48, 24, 0, 2, 13, 31,
+	40, 96, 72, 1, 16, 11,
+	40, 96, 72, 3, 20, 11,
+	32, 16, 0, 6, 22, 31,
+	32, 16, 0, 9, 23, 30,
+	32, 16, 0, 3, 24, 31,
+	32, 48, 24, 4, 26, 31,
+	8, 40, 112, 3, 27, 11,
+	8, 16, 0, 10, 29, 30,
+	16, 16, 24, 17, 31, 29,
+	-1
 };
 
 #ifdef GENERAL_FIXES
@@ -1037,9 +1071,9 @@ void DrawMoon()
 	D3DMView._41 = 0;
 	D3DMView._42 = 0;
 	D3DMView._43 = 0;
-	vec.vx = 0;
-	vec.vy = -1024;
-	vec.vz = 1920;
+	vec.x = 0;
+	vec.y = -1024;
+	vec.z = 1920;
 	aTransformPerspSV(&vec, v, c, 1, 0);
 
 	if (*c >= 0)
@@ -1124,8 +1158,8 @@ void DrawGasCloud(ITEM_INFO* item)
 				if (num < 64)
 					num = 64;
 
-				TriggerFogBulbFX(0, 255, 0, item->pos.x_pos + cloud[cloud->num].t.vx, item->pos.y_pos + cloud[cloud->num].t.vy,
-					item->pos.z_pos + cloud[cloud->num].t.vz, 1024, num);
+				TriggerFogBulbFX(0, 255, 0, item->pos.x_pos + cloud[cloud->num].t.x, item->pos.y_pos + cloud[cloud->num].t.y,
+					item->pos.z_pos + cloud[cloud->num].t.z, 1024, num);
 			}
 
 			cloud->sTime++;
@@ -1138,8 +1172,8 @@ void DrawGasCloud(ITEM_INFO* item)
 		for (int i = 0; i < 8; i++, cloud++)//what's the point of this loop
 		{
 			phd_PushMatrix();
-			phd_TranslateAbs(item->pos.x_pos + cloud->t.vx, item->pos.y_pos + cloud->t.vy, item->pos.z_pos + cloud->t.vz);
-			phd_RotY(-CamRot.vy << 4);
+			phd_TranslateAbs(item->pos.x_pos + cloud->t.x, item->pos.y_pos + cloud->t.y, item->pos.z_pos + cloud->t.z);
+			phd_RotY(-CamRot.y << 4);
 			phd_RotX(-4096);
 			phd_PopMatrix();
 		}
@@ -1401,22 +1435,22 @@ void DrawStarField()
 void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, short* clip)
 {
 	float zv;
-	short clip_distance;
+	short clipFlag;
 
-	clip_distance = 0;
+	clipFlag = 0;
 	v->tu = (float)x1;
 	v->tv = (float)y1;
 	v->sz = (float)z1;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1425,32 +1459,32 @@ void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
 	v++;
-	clip[0] = clip_distance;
-	clip_distance = 0;
+	clip[0] = clipFlag;
+	clipFlag = 0;
 	v->tu = (float)x2;
 	v->tv = (float)y2;
 	v->sz = (float)z2;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1459,32 +1493,32 @@ void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
 	v++;
-	clip[1] = clip_distance;
-	clip_distance = 0;
+	clip[1] = clipFlag;
+	clipFlag = 0;
 	v->tu = (float)x3;
 	v->tv = (float)y3;
 	v->sz = (float)z3;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1493,38 +1527,38 @@ void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
-	clip[2] = clip_distance;
+	clip[2] = clipFlag;
 }
 
 void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, long x4, long y4, long z4, short* clip)
 {
 	float zv;
-	short clip_distance;
+	short clipFlag;
 
-	clip_distance = 0;
+	clipFlag = 0;
 	v->tu = (float)x1;
 	v->tv = (float)y1;
 	v->sz = (float)z1;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv= f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1533,32 +1567,32 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
 	v++;
-	clip[0] = clip_distance;
-	clip_distance = 0;
+	clip[0] = clipFlag;
+	clipFlag = 0;
 	v->tu = (float)x2;
 	v->tv = (float)y2;
 	v->sz = (float)z2;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1567,32 +1601,32 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
 	v++;
-	clip[1] = clip_distance;
-	clip_distance = 0;
+	clip[1] = clipFlag;
+	clipFlag = 0;
 	v->tu = (float)x3;
 	v->tv = (float)y3;
 	v->sz = (float)z3;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1601,32 +1635,32 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
 	v++;
-	clip[2] = clip_distance;
-	clip_distance = 0;
+	clip[2] = clipFlag;
+	clipFlag = 0;
 	v->tu = (float)x4;
 	v->tv = (float)y4;
 	v->sz = (float)z4;
 
 	if (v->sz < f_mznear)
-		clip_distance = -128;
+		clipFlag = -128;
 	else
 	{
 		zv = f_mpersp / v->sz;
 
 		if (v->sz > FogEnd)
 		{
-			clip_distance = 256;
+			clipFlag = 256;
 			v->sz = f_zfar;
 		}
 
@@ -1635,25 +1669,25 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 		v->rhw = f_moneopersp * zv;
 
 		if (phd_winxmin > v->sx)
-			clip_distance++;
+			clipFlag++;
 		else if (phd_winxmax < v->sx)
-			clip_distance += 2;
+			clipFlag += 2;
 
 		if (phd_winymin > v->sy)
-			clip_distance += 4;
+			clipFlag += 4;
 		else if (phd_winymax < v->sy)
-			clip_distance += 8;
+			clipFlag += 8;
 	}
 
-	clip[3] = clip_distance;
+	clip[3] = clipFlag;
 }
 
 void setXY3(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3, long z, short* clip)
 {
 	float zv;
-	short clip_distance;
+	short clipFlag;
 
-	clip_distance = 0;
+	clipFlag = 0;
 	zv = f_mpersp / (float)z;
 	v->sx = (float)x1;
 	v->sy = (float)y1;
@@ -1661,60 +1695,60 @@ void setXY3(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[0] = clip_distance;
+	clip[0] = clipFlag;
 	v++;
-	clip_distance = 0;
+	clipFlag = 0;
 	v->sx = (float)x2;
 	v->sy = (float)y2;
 	v->sz = (float)z;
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[1] = clip_distance;
+	clip[1] = clipFlag;
 	v++;
-	clip_distance = 0;
+	clipFlag = 0;
 	v->sx = (float)x3;
 	v->sy = (float)y3;
 	v->sz = (float)z;
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[2] = clip_distance;
+	clip[2] = clipFlag;
 }
 
 void setXY4(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3, long x4, long y4, long z, short* clip)
 {
 	float zv;
-	short clip_distance;
+	short clipFlag;
 
-	clip_distance = 0;
+	clipFlag = 0;
 	zv = f_mpersp / (float)z;
 	v->sx = (float)x1;
 	v->sy = (float)y1;
@@ -1722,70 +1756,70 @@ void setXY4(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[0] = clip_distance;
+	clip[0] = clipFlag;
 	v++;
-	clip_distance = 0;
+	clipFlag = 0;
 	v->sx = (float)x2;
 	v->sy = (float)y2;
 	v->sz = (float)z;
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[1] = clip_distance;
+	clip[1] = clipFlag;
 	v++;
-	clip_distance = 0;
+	clipFlag = 0;
 	v->sx = (float)x3;
 	v->sy = (float)y3;
 	v->sz = (float)z;
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[2] = clip_distance;
+	clip[2] = clipFlag;
 	v++;
-	clip_distance = 0;
+	clipFlag = 0;
 	v->sx = (float)x4;
 	v->sy = (float)y4;
 	v->sz = (float)z;
 	v->rhw = f_moneopersp * zv;
 
 	if (phd_winxmin > v->sx)
-		clip_distance = 1;
+		clipFlag++;
 	else if (phd_winxmax < v->sx)
-		clip_distance = 2;
+		clipFlag += 2;
 
 	if (phd_winymin > v->sy)
-		clip_distance += 4;
+		clipFlag += 4;
 	else if (phd_winymax < v->sy)
-		clip_distance += 8;
+		clipFlag += 8;
 
-	clip[3] = clip_distance;
+	clip[3] = clipFlag;
 }
 
 void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz)
@@ -1917,7 +1951,7 @@ void DoRain()
 	short* clip;
 	float ctop, cbottom, cright, cleft, zv, zz;
 	long num_alive, rad, angle, rnd, x, z, x_size, y_size, clr;
-	short room_number, clip_distance;
+	short room_number, clipFlag;
 
 	num_alive = 0;
 
@@ -2052,7 +2086,7 @@ void DoRain()
 
 		if (rptr->x)
 		{
-			clip_distance = 0;
+			clipFlag = 0;
 			clip = clipflags;
 			vec.x = (float)(rptr->x - lara_item->pos.x_pos - 2 * SmokeWindX);
 			vec.y = (float)(rptr->y - 8 * rptr->yv - lara_item->pos.y_pos);
@@ -2068,13 +2102,13 @@ void DoRain()
 			v[0].tv = vec2.y;
 
 			if (vec2.z < f_mznear)
-				clip_distance = -128;
+				clipFlag = -128;
 			else
 			{
 				if (vec2.z > FogEnd)
 				{
 					zz = f_zfar;
-					clip_distance = 16;
+					clipFlag = 16;
 				}
 
 				zv = f_mpersp / zz;
@@ -2083,19 +2117,19 @@ void DoRain()
 				v[0].rhw = f_moneopersp * zv;
 
 				if (v[0].sx < cleft)
-					clip_distance++;
+					clipFlag++;
 				else if (v[0].sx > cright)
-					clip_distance += 2;
+					clipFlag += 2;
 
 				if (v[0].sy < ctop)
-					clip_distance += 4;
+					clipFlag += 4;
 				else if (v[0].sy > cbottom)
-					clip_distance += 8;
+					clipFlag += 8;
 			}
 
 			v[0].sz = zz;
-			clip[0] = clip_distance;
-			clip_distance = 0;
+			clip[0] = clipFlag;
+			clipFlag = 0;
 			clip++;
 
 			vec.x = (float)(rptr->x - lara_item->pos.x_pos);
@@ -2111,13 +2145,13 @@ void DoRain()
 			v[1].tv = vec2.y;
 
 			if (vec2.z < f_mznear)
-				clip_distance = -128;
+				clipFlag = -128;
 			else
 			{
 				if (vec2.z > FogEnd)
 				{
 					zz = f_zfar;
-					clip_distance = 16;
+					clipFlag = 16;
 				}
 
 				zv = f_mpersp / zz;
@@ -2126,18 +2160,18 @@ void DoRain()
 				v[1].rhw = f_moneopersp * zv;
 
 				if (v[1].sx < cleft)
-					clip_distance++;
+					clipFlag++;
 				else if (v[1].sx > cright)
-					clip_distance += 2;
+					clipFlag += 2;
 
 				if (v[1].sy < ctop)
-					clip_distance += 4;
+					clipFlag += 4;
 				else if (v[1].sy > cbottom)
-					clip_distance += 8;
+					clipFlag += 8;
 			}
 
 			v[1].sz = zz;
-			clip[0] = clip_distance;
+			clip[0] = clipFlag;
 
 			if (!clipflags[0] && !clipflags[1])
 				AddPolyLine(v, &tex);
@@ -2282,9 +2316,9 @@ void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long c
 	for (int i = 0; i < nVtx; i++)
 	{
 		clip = 0;
-		vx = vec->vx;
-		vy = vec->vy;
-		vz = vec->vz;
+		vx = vec->x;
+		vy = vec->y;
+		vz = vec->z;
 		x = D3DMView._11 * vx + D3DMView._21 * vy + D3DMView._31 * vz + D3DMView._41;
 		y = D3DMView._12 * vx + D3DMView._22 * vy + D3DMView._32 * vz + D3DMView._42;
 		z = D3DMView._13 * vx + D3DMView._23 * vy + D3DMView._33 * vz + D3DMView._43;
@@ -2547,9 +2581,9 @@ void aDrawWreckingBall(ITEM_INFO* item, long shade)
 
 		for (int j = 0; j < 3; j++)
 		{
-			vec->vx = (short)x;
-			vec->vy = -2;
-			vec->vz = (short)z;
+			vec->x = (short)x;
+			vec->y = -2;
+			vec->z = (short)z;
 			vec++;
 			z += s;
 		}
@@ -2577,6 +2611,2082 @@ void aDrawWreckingBall(ITEM_INFO* item, long shade)
 	AddQuadSorted(aVertexBuffer, 0, 2, 8, 6, &tex, 1);
 }
 
+void ClearFX()
+{
+	for (int i = 0; i < 2048; i++)
+	{
+		Rain[i].x = 0;
+		Snow[i].x = 0;
+	}
+}
+
+void AddPolyLine(D3DTLVERTEX* vtx, TEXTURESTRUCT* tex)
+{
+	D3DTLVERTEX v[4];
+	float x0, y0, x1, y1, x2, y2, x3, y3;
+	short cf0, cf1;
+
+	x0 = vtx->sx;
+	y0 = vtx->sy;
+	x1 = vtx[1].sx;
+	y1 = vtx[1].sy;
+	cf0 = clipflags[0];
+	cf1 = clipflags[1];
+
+	if (fabs(x1 - x0) <= fabs(y1 - y0))
+	{
+		x2 = x0 + 2.0F;
+		y2 = y0;
+		x3 = x1 + 2.0F;
+		y3 = y1;
+	}
+	else
+	{
+		x2 = x0;
+		y2 = y0 + 2.0F;
+		x3 = x1;
+		y3 = y1 + 2.0F;
+	}
+
+	v[0].sx = x0;
+	v[0].sy = y0;
+	v[0].rhw = vtx->rhw;
+	v[0].tu = vtx->tu;
+	v[0].tv = vtx->tv;
+	v[0].color = vtx->color;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = x2;
+	v[1].sy = y2;
+	v[1].rhw = vtx->rhw;
+	v[1].tu = vtx->tu;
+	v[1].tv = vtx->tv;
+	v[1].color = vtx->color;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = x1;
+	v[2].sy = y1;
+	v[2].rhw = vtx->rhw;
+	v[2].tu = vtx[1].tu;
+	v[2].tv = vtx[1].tv;
+	v[2].color = vtx[1].color;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = x3;
+	v[3].sy = y3;
+	v[3].rhw = vtx->rhw;
+	v[3].tu = vtx[1].tu;
+	v[3].tv = vtx[1].tv;
+	v[3].color = vtx[1].color;
+	v[3].specular = 0xFF000000;
+
+	clipflags[0] = cf0;
+	clipflags[1] = cf0;
+	clipflags[2] = cf1;
+	clipflags[3] = cf1;
+
+	if (tex->drawtype == 3 || tex->drawtype == 2)
+		AddQuadSorted(v, 0, 1, 2, 3, tex, 0);
+	else
+		AddQuadZBuffer(v, 0, 1, 2, 3, tex, 0);
+}
+
+void DoSnow()
+{
+	SNOWFLAKE* snow;
+	ROOM_INFO* r;
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	float* pSize;
+	float x, y, z, xv, yv, zv, vx, vy, xSize, ySize;
+	long num_alive, rad, angle, ox, oy, oz, col;
+	short room_number, clipFlag;
+
+	num_alive = 0;
+
+	for (int i = 0; i < snow_count; i++)
+	{
+		snow = &Snow[i];
+
+		if (!snow->x)
+		{
+			if (!snow_outside || num_alive >= max_snow)
+				continue;
+
+			num_alive++;
+			rad = GetRandomDraw() & 0x1FFF;
+			angle = (GetRandomDraw() & 0xFFF) << 1;
+			snow->x = camera.pos.x + (rad * rcossin_tbl[angle] >> 12);
+			snow->y = camera.pos.y - 1024 - (GetRandomDraw() & 0x7FF);
+			snow->z = camera.pos.z + (rad * rcossin_tbl[angle + 1] >> 12);
+
+			if (IsRoomOutside(snow->x, snow->y, snow->z) < 0)
+			{
+				snow->x = 0;
+				continue;
+			}
+
+			if (room[IsRoomOutsideNo].flags & ROOM_UNDERWATER)
+			{
+				snow->x = 0;
+				continue;
+			}
+
+			snow->stopped = 0;
+			snow->xv = (GetRandomDraw() & 7) - 4;
+			snow->yv = ((GetRandomDraw() & 0xF) + 8) << 3;
+			snow->zv = (GetRandomDraw() & 7) - 4;
+			snow->room_number = IsRoomOutsideNo;
+			snow->life = 112 - (snow->yv >> 2);
+		}
+
+		ox = snow->x;
+		oy = snow->y;
+		oz = snow->z;
+
+		if (!snow->stopped)
+		{
+			snow->x += snow->xv;
+			snow->y += (snow->yv >> 1) & 0xFC;
+			snow->z += snow->zv;
+			r = &room[snow->room_number];
+
+			if (snow->y <= r->maxceiling || snow->y >= r->minfloor ||
+				snow->z <= r->z + 1024 || snow->z >= (r->x_size << 10) + r->z - 1024 ||
+				snow->x <= r->x + 1024 || snow->x >= (r->y_size << 10) + r->x - 1024)
+			{
+				room_number = snow->room_number;
+				GetFloor(snow->x, snow->y, snow->z, &room_number);
+
+				if (room_number == snow->room_number)
+				{
+					snow->x = 0;
+					continue;
+				}
+
+				if (room[room_number].flags & ROOM_UNDERWATER)
+				{
+					snow->stopped = 1;
+					snow->x = ox;
+					snow->y = oy;
+					snow->z = oz;
+
+					if (snow->life > 16)
+						snow->life = 16;
+				}
+				else
+					snow->room_number = room_number;
+			}
+		}
+
+		if (!snow->life)
+		{
+			snow->x = 0;
+			continue;
+		}
+
+		if ((abs(CamPos.x - snow->x) > 6000 || abs(CamPos.z - snow->z) > 6000) && snow->life > 16)
+			snow->life = 16;
+
+		if (snow->xv < SmokeWindX << 2)
+			snow->xv += 2;
+		else if (snow->xv > SmokeWindX << 2)
+			snow->xv -= 2;
+
+		if (snow->zv < SmokeWindZ << 2)
+			snow->zv += 2;
+		else if (snow->zv > SmokeWindZ << 2)
+			snow->zv -= 2;
+
+		snow->life -= 2;
+
+		if ((snow->yv & 7) != 7)
+			snow->yv++;
+	}
+
+	mAddProfilerEvent(0xFF0000FF);
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 10];
+	tex.tpage = sprite->tpage;
+	tex.drawtype = 2;
+	tex.flag = 0;
+	tex.u1 = sprite->x2;
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x2;
+	tex.v2 = sprite->y2;
+	tex.v3 = sprite->y2;
+	tex.u3 = sprite->x1;
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y2;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
+	SetD3DViewMatrix();
+
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+
+	for (int i = 0; i < snow_count; i++)
+	{
+		snow = &Snow[i];
+
+		if (!snow->x)
+			continue;
+
+		x = float(snow->x - camera.pos.x);
+		y = float(snow->y - camera.pos.y);
+		z = float(snow->z - camera.pos.z);
+		zv = x * D3DMView._13 + y * D3DMView._23 + z * D3DMView._33 + D3DMView._43;
+
+		if (zv < f_mznear)
+			continue;
+
+		col = 0;
+
+		if ((snow->yv & 7) != 7)
+			col = (snow->yv & 7) << 4;
+		else if (snow->life > 32)
+			col = 130;
+		else
+			col = snow->life << 3;
+
+		col = RGBA(col, col, col, 0xFF);
+		pSize = &SnowSizes[snow->yv & 24];
+		xv = x * D3DMView._11 + y * D3DMView._21 + z * D3DMView._31 + D3DMView._41;
+		yv = x * D3DMView._12 + y * D3DMView._22 + z * D3DMView._32 + D3DMView._42;
+		zv = f_mpersp / zv;
+
+		for (int j = 0; j < 4; j++)
+		{
+			xSize = pSize[0] * zv;
+			ySize = pSize[1] * zv;
+			pSize += 2;
+
+			vx = xv * zv + xSize + f_centerx;
+			vy = yv * zv + ySize + f_centery;
+			clipFlag = 0;
+
+			if (vx < f_left)
+				clipFlag++;
+			else if (vx > f_right)
+				clipFlag += 2;
+
+			if (vy < f_top)
+				clipFlag += 4;
+			else if (vy > f_bottom)
+				clipFlag += 8;
+
+			clipflags[j] = clipFlag;
+			v[j].sx = vx;
+			v[j].sy = vy;
+			v[j].rhw = zv * f_moneopersp;
+			v[j].tu = 0;
+			v[j].tv = 0;
+			v[j].color = col;
+			v[j].specular = 0xFF000000;
+		}
+
+		AddTriSorted(v, 2, 0, 1, &tex, 1);
+	}
+
+	phd_PopMatrix();
+}
+
+void aInitFX()
+{
+	if (G_dxptr->Flags & 0x80)
+	{
+		snow_count = 2048;
+		rain_count = 2048;
+		max_snow = 128;
+		max_rain = 128;
+	}
+	else
+	{
+		snow_count = 256;
+		rain_count = 256;
+		max_snow = 8;
+		max_rain = 8;
+	}
+}
+
+void DoWeather()
+{
+	if (WeatherType == 1)
+		DoRain();
+	else if (WeatherType == 2)
+		DoSnow();
+}
+
+void aSetXY4(D3DTLVERTEX* v, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float z, short* clip)
+{
+	float zv;
+	short clipFlag;
+
+	zv = f_mpersp / z * f_moneopersp;
+
+	clipFlag = 0;
+
+	if (x1 < f_left)
+		clipFlag++;
+	else if (x1 > f_right)
+		clipFlag += 2;
+
+	if (y1 < f_top)
+		clipFlag += 4;
+	else if (y1 > f_bottom)
+		clipFlag += 8;
+
+	clip[0] = clipFlag;
+	v[0].sx = x1;
+	v[0].sy = y1;
+	v[0].sz = z;
+	v[0].rhw = zv;
+
+	clipFlag = 0;
+
+	if (x2 < f_left)
+		clipFlag++;
+	else if (x2 > f_right)
+		clipFlag += 2;
+
+	if (y2 < f_top)
+		clipFlag += 4;
+	else if (y2 > f_bottom)
+		clipFlag += 8;
+
+	clip[1] = clipFlag;
+	v[1].sx = x2;
+	v[1].sy = y2;
+	v[1].sz = z;
+	v[1].rhw = zv;
+
+	clipFlag = 0;
+
+	if (x3 < f_left)
+		clipFlag++;
+	else if (x3 > f_right)
+		clipFlag += 2;
+
+	if (y3 < f_top)
+		clipFlag += 4;
+	else if (y3 > f_bottom)
+		clipFlag += 8;
+
+	clip[2] = clipFlag;
+	v[2].sx = x3;
+	v[2].sy = y3;
+	v[2].sz = z;
+	v[2].rhw = zv;
+
+	clipFlag = 0;
+
+	if (x4 < f_left)
+		clipFlag++;
+	else if (x4 > f_right)
+		clipFlag += 2;
+
+	if (y4 < f_top)
+		clipFlag += 4;
+	else if (y4 > f_bottom)
+		clipFlag += 8;
+
+	clip[3] = clipFlag;
+	v[3].sx = x4;
+	v[3].sy = y4;
+	v[3].sz = z;
+	v[3].rhw = zv;
+}
+
+void InitTarget()
+{
+	OBJECT_INFO* obj;
+	ACMESHVERTEX* p;
+	D3DTLVERTEX* v;
+
+	obj = &objects[TARGET_GRAPHICS];
+
+	if (!obj->loaded)
+		return;
+
+	targetMeshP = (MESH_DATA*)meshes[obj->mesh_index];
+	p = targetMeshP->aVtx;
+	targetMeshP->aVtx = (ACMESHVERTEX*)game_malloc(targetMeshP->nVerts * sizeof(ACMESHVERTEX), 0);
+	v = (D3DTLVERTEX*)targetMeshP->aVtx;	//makes no sense otherwise
+
+	for (int i = 0; i < targetMeshP->nVerts; i++)
+	{
+		v[i].sx = (p[i].x * 80.0F) / 96.0F;
+		v[i].sy = (p[i].y * 60.0F) / 224.0F;
+		v[i].sz = 0;
+		v[i].rhw = f_mpersp / f_mznear * f_moneopersp;
+		v[i].color = 0xFF000000;
+		v[i].specular = 0xFF000000;
+	}
+}
+
+void InitBinoculars()
+{
+	OBJECT_INFO* obj;
+	ACMESHVERTEX* p;
+	D3DTLVERTEX* v;
+
+	obj = &objects[BINOCULAR_GRAPHICS];
+
+	if (!obj->loaded)
+		return;
+
+	binocsMeshP = (MESH_DATA*)meshes[obj->mesh_index];
+	p = binocsMeshP->aVtx;
+	binocsMeshP->aVtx = (ACMESHVERTEX*)game_malloc(binocsMeshP->nVerts * sizeof(ACMESHVERTEX), 0);
+	v = (D3DTLVERTEX*)binocsMeshP->aVtx;	//makes no sense otherwise
+
+	for (int i = 0; i < binocsMeshP->nVerts; i++)
+	{
+		v[i].sx = (p[i].x * 32.0F) / 96.0F;
+		v[i].sy = (p[i].y * 30.0F) / 224.0F;
+		v[i].sz = 0;
+		v[i].rhw = f_mpersp / f_mznear * f_moneopersp;
+		v[i].color = 0xFF000000;
+		v[i].specular = 0xFF000000;
+	}
+}
+
+void SuperDrawBox(long* box)
+{
+	D3DVECTOR bounds[8];
+	D3DTLVERTEX v[32];
+
+	bounds[0].x = (float)box[0];
+	bounds[0].y = (float)box[2] + 32;
+	bounds[0].z = (float)box[4];
+
+	bounds[1].x = (float)box[1];
+	bounds[1].y = (float)box[2] + 32;
+	bounds[1].z = (float)box[4];
+
+	bounds[2].x = (float)box[0];
+	bounds[2].y = (float)box[2] + 32;
+	bounds[2].z = (float)box[5];
+
+	bounds[3].x = (float)box[1];
+	bounds[3].y = (float)box[2] + 32;
+	bounds[3].z = (float)box[5];
+
+	bounds[4].x = (float)box[0];
+	bounds[4].y = (float)box[3] + 32;
+	bounds[4].z = (float)box[4];
+
+	bounds[5].x = (float)box[1];
+	bounds[5].y = (float)box[3] + 32;
+	bounds[5].z = (float)box[4];
+
+	bounds[6].x = (float)box[0];
+	bounds[6].y = (float)box[3] + 32;
+	bounds[6].z = (float)box[5];
+
+	bounds[7].x = (float)box[1];
+	bounds[7].y = (float)box[3] + 32;
+	bounds[7].z = (float)box[5];
+
+	aTransformClip_D3DV(bounds, &v[0], 8, 0);
+	aTransformClip_D3DV(bounds, &v[8], 8, 8);
+	aTransformClip_D3DV(bounds, &v[16], 8, 16);
+	aTransformClip_D3DV(bounds, &v[24], 8, 24);
+
+	for (int i = 0; i < 32; i++)
+	{
+		v[i].rhw = f_mpersp / f_mznear * f_moneopersp;
+		v[i].color = 0xFFFF0000;
+		v[i].specular = 0xFF000000;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		v[i + 8].sx += 8.0F;
+		v[i + 24].sx += 8.0F;
+		v[i + 12].sx += 8.0F;
+		v[i + 28].sx += 8.0F;
+		AddQuadZBuffer(v, i, i + 8, i + 28, i + 20, textinfo, 1);
+	}
+}
+
+void Draw2DSprite(long x, long y, long slot, long unused, long unused2)
+{
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	long x0, y0;
+
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + slot];
+	x0 = long(x + (sprite->width >> 8) * ((float)phd_centerx / 320.0F));
+	y0 = long(y + 1 + (sprite->height >> 8) * ((float)phd_centery / 240.0F));
+	setXY4(v, x, y, x0, y, x0, y0, x, y0, (long)f_mznear, clipflags);
+	v[0].specular = 0xFF000000;
+	v[1].specular = 0xFF000000;
+	v[2].specular = 0xFF000000;
+	v[3].specular = 0xFF000000;
+	v[0].color = 0xFFFFFFFF;
+	v[1].color = 0xFFFFFFFF;
+	v[2].color = 0xFFFFFFFF;
+	v[3].color = 0xFFFFFFFF;
+	tex.drawtype = 1;
+	tex.flag = 0;
+	tex.tpage = sprite->tpage;
+	tex.u1 = sprite->x1;
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x2;
+	tex.v2 = sprite->y1;
+	tex.u3 = sprite->x2;
+	tex.v3 = sprite->y2;
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y2;
+	AddQuadClippedSorted(v, 0, 1, 2, 3, &tex, 0);
+}
+
+void DrawBikeSpeedo(long ux, long uy, long vel, long maxVel, long turboVel, long size, long unk)
+{
+	D3DTLVERTEX v[2];
+	float x, y, x0, y0, x1, y1;
+	long rSize, rVel, rMVel, rTVel, angle;
+
+	x = (float)phd_winxmax / 512.0F * 448.0F;
+	y = (float)phd_winymax / 240.0F * 224.0F;
+	rSize = (7 * size) >> 3;
+	rVel = ABS(vel >> 1);
+
+	if (rVel)
+	{
+		rVel += (((rVel - 4096) >> 5) * phd_sin((GlobalCounter & 7) << 13)) >> 14;
+
+		if (rVel < 0)
+			rVel = 0;
+	}
+
+	rMVel = maxVel >> 1;
+	rTVel = turboVel >> 1;
+	angle = -0x4000;
+
+	for (int i = 0; i <= rTVel; i += 2048)
+	{
+		x0 = ((rSize * (phd_sin(angle + i)) >> 13) - ((rSize * phd_sin(angle + i)) >> 15)) * ((float)phd_winxmax / 512.0F);
+		y0 = (-(rSize * phd_cos(angle + i)) >> 14) * (float)phd_winymax / 240.0F;
+		x1 = ((size * (phd_sin(angle + i)) >> 13) - ((size * phd_sin(angle + i)) >> 15)) * ((float)phd_winxmax / 512.0F);
+		y1 = (-(size * phd_cos(angle + i)) >> 14) * (float)phd_winymax / 240.0F;
+
+		v[0].sx = x + x0;
+		v[0].sy = y + y0;
+		v[0].sz = f_mznear;
+		v[0].rhw = f_moneoznear;
+
+		v[1].sx = x + x1;
+		v[1].sy = y + y1;
+		v[1].sz = f_mznear;
+		v[1].rhw = f_moneoznear;
+
+		if (i > rMVel)
+		{
+			v[0].color = 0xFFFF0000;
+			v[1].color = 0xFFFF0000;
+		}
+		else
+		{
+			v[0].color = 0xFFFFFFFF;
+			v[1].color = 0xFFFFFFFF;
+		}
+
+		v[1].specular = v[0].specular;
+		AddLineSorted(v, &v[1], 6);
+	}
+
+	size -= size >> 4;
+	x0 = ((-4 * (phd_sin(angle + rVel)) >> 13) - ((-4 * phd_sin(angle + rVel)) >> 15)) * ((float)phd_winxmax / 512.0F);
+	y0 = (-(-4 * phd_cos(angle + rVel)) >> 14) * (float)phd_winymax / 240.0F;
+	x1 = ((size * (phd_sin(angle + rVel)) >> 13) - ((size * phd_sin(angle + rVel)) >> 15)) * ((float)phd_winxmax / 512.0F);
+	y1 = (-(size * phd_cos(angle + rVel)) >> 14) * (float)phd_winymax / 240.0F;
+
+	v[0].sx = x + x0;
+	v[0].sy = y + y0;
+	v[0].sz = f_mznear;
+	v[0].rhw = f_moneoznear;
+
+	v[1].sx = x + x1;
+	v[1].sy = y + y1;
+	v[1].sz = f_mznear;
+	v[1].rhw = f_moneoznear;
+
+	v[1].color = v[0].color;
+	v[1].specular = v[0].specular;
+	AddLineSorted(v, &v[1], 6);
+}
+
+void DrawShockwaves()
+{
+	SHOCKWAVE_STRUCT* wave;
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX vtx[4];
+	TEXTURESTRUCT tex;
+	PHD_VECTOR p1, p2, p3;
+	long* Z;
+	short* XY;
+	short* offsets;
+	long v, x1, y1, x2, y2, x3, y3, x4, y4, r, g, b, c;
+	short rad;
+
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 8];
+	offsets = (short*)&scratchpad[768];
+
+	for (int i = 0; i < 16; i++)
+	{
+		wave = &ShockWaves[i];
+
+		if (!wave->life)
+			continue;
+
+		XY = (short*)&scratchpad[0];
+		Z = (long*)&scratchpad[256];
+		phd_PushMatrix();
+		phd_TranslateAbs(wave->x, wave->y, wave->z);
+		phd_RotX(wave->XRot);
+		offsets[1] = 0;
+		offsets[5] = 0;
+		offsets[9] = 0;
+		rad = wave->OuterRad;
+
+		for (int j = 0; j < 2; j++)
+		{
+			offsets[0] = (rad * phd_sin(0)) >> 14;
+			offsets[2] = (rad * phd_cos(0)) >> 14;
+			offsets[4] = (rad * phd_sin(0x1000)) >> 14;
+			offsets[6] = (rad * phd_cos(0x1000)) >> 14;
+			offsets[8] = (rad * phd_sin(0x2000)) >> 14;
+			offsets[10] = (rad * phd_cos(0x2000)) >> 14;
+
+			for (int k = 1; k < 7; k++)
+			{
+				v = k * 0x3000;
+
+				p1.x = (offsets[0] * phd_mxptr[M00] + offsets[1] * phd_mxptr[M01] + offsets[2] * phd_mxptr[M02] + phd_mxptr[M03]) >> 14;
+				p1.y = (offsets[0] * phd_mxptr[M10] + offsets[1] * phd_mxptr[M11] + offsets[2] * phd_mxptr[M12] + phd_mxptr[M13]) >> 14;
+				p1.z = (offsets[0] * phd_mxptr[M20] + offsets[1] * phd_mxptr[M21] + offsets[2] * phd_mxptr[M22] + phd_mxptr[M23]) >> 14;
+
+				p2.x = (offsets[4] * phd_mxptr[M00] + offsets[5] * phd_mxptr[M01] + offsets[6] * phd_mxptr[M02] + phd_mxptr[M03]) >> 14;
+				p2.y = (offsets[4] * phd_mxptr[M10] + offsets[5] * phd_mxptr[M11] + offsets[6] * phd_mxptr[M12] + phd_mxptr[M13]) >> 14;
+				p2.z = (offsets[4] * phd_mxptr[M20] + offsets[5] * phd_mxptr[M21] + offsets[6] * phd_mxptr[M22] + phd_mxptr[M23]) >> 14;
+
+				p3.x = (offsets[8] * phd_mxptr[M00] + offsets[9] * phd_mxptr[M01] + offsets[10] * phd_mxptr[M02] + phd_mxptr[M03]) >> 14;
+				p3.y = (offsets[8] * phd_mxptr[M10] + offsets[9] * phd_mxptr[M11] + offsets[10] * phd_mxptr[M12] + phd_mxptr[M13]) >> 14;
+				p3.z = (offsets[8] * phd_mxptr[M20] + offsets[9] * phd_mxptr[M21] + offsets[10] * phd_mxptr[M22] + phd_mxptr[M23]) >> 14;
+
+				offsets[0] = (rad * phd_sin(v)) >> 14;
+				offsets[2] = (rad * phd_cos(v)) >> 14;
+				offsets[4] = (rad * phd_sin(v + 0x1000)) >> 14;
+				offsets[6] = (rad * phd_cos(v + 0x1000)) >> 14;
+				offsets[8] = (rad * phd_sin(v + 0x2000)) >> 14;
+				offsets[10] = (rad * phd_cos(v + 0x2000)) >> 14;
+
+				XY[0] = (short)p1.x;
+				XY[1] = (short)p1.y;
+				Z[0] = p1.z;
+
+				XY[2] = (short)p2.x;
+				XY[3] = (short)p2.y;
+				Z[1] = p2.z;
+
+				XY[4] = (short)p3.x;
+				XY[5] = (short)p3.y;
+				Z[2] = p3.z;
+
+				XY += 6;
+				Z += 3;
+			}
+
+			rad = wave->InnerRad;
+		}
+
+		phd_PopMatrix();
+		XY = (short*)&scratchpad[0];
+		Z = (long*)&scratchpad[256];
+
+		for (int j = 0; j < 16; j++)
+		{
+			x1 = XY[0];
+			y1 = XY[1];
+			x2 = XY[2];
+			y2 = XY[3];
+			x3 = XY[36];
+			y3 = XY[37];
+			x4 = XY[38];
+			y4 = XY[39];
+			setXYZ4(vtx, x1, y1, Z[0], x2, y2, Z[1], x4, y4, Z[19], x3, y3, Z[18], clipflags);
+
+			r = wave->r;
+			g = wave->g;
+			b = wave->b;
+
+			if (wave->life < 8)
+			{
+				r = (r * wave->life) >> 3;
+				g = (g * wave->life) >> 3;
+				b = (b * wave->life) >> 3;
+			}
+
+			c = RGBA(b, g, r, 0xFF);
+			vtx[0].color = c;
+			vtx[1].color = c;
+			vtx[2].color = c;
+			vtx[3].color = c;
+			vtx[0].specular = 0xFF000000;
+			vtx[1].specular = 0xFF000000;
+			vtx[2].specular = 0xFF000000;
+			vtx[3].specular = 0xFF000000;
+
+			tex.drawtype = 2;
+			tex.flag = 0;
+			tex.tpage = sprite->tpage;
+			tex.u1 = sprite->x1;
+			tex.v1 = sprite->y2;
+			tex.u2 = sprite->x2;
+			tex.v2 = sprite->y2;
+			tex.u3 = sprite->x2;
+			tex.v3 = sprite->y1;
+			tex.u4 = sprite->x1;
+			tex.v4 = sprite->y1;
+			AddQuadSorted(vtx, 0, 1, 2, 3, &tex, 1);
+
+			XY += 2;
+			Z++;
+		}
+	}
+}
+
+void DrawPsxTile(long x_y, long height_width, long color, long u0, long u1)
+{
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	float x, y, z, rhw, w, h;
+	long col;
+	ushort drawtype;
+
+	nPolyType = 6;
+
+	if ((color & 0xFF000000) == 0x62000000)
+	{
+		drawtype = 3;
+		col = color << 24;
+	}
+	else
+	{
+		drawtype = 2;
+		col = color | 0xFF000000;
+	}
+
+	if (!gfCurrentLevel)
+	{
+		z = f_znear + 10;
+		rhw = f_moneoznear + 50;
+	}
+	else
+	{
+		z = f_znear;
+		rhw = f_moneoznear;
+	}
+
+	x = float(x_y >> 16);
+	y = float(x_y & 0xFFFF);
+	w = float(height_width & 0xFFFF);
+	h = float(height_width >> 16);
+
+	v[0].sx = x;
+	v[0].sy = y;
+	v[0].sz = z;
+	v[0].rhw = rhw;
+	v[0].color = col;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = x + w + 1;
+	v[1].sy = y;
+	v[1].sz = z;
+	v[1].rhw = rhw;
+	v[1].color = col;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = x + w + 1;
+	v[2].sy = y + h + 1;
+	v[2].sz = z;
+	v[2].rhw = rhw;
+	v[2].color = col;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = x;
+	v[3].sy = y + h + 1;
+	v[3].sz = z;
+	v[3].rhw = rhw;
+	v[3].color = col;
+	v[3].specular = 0xFF000000;
+
+	tex.drawtype = drawtype;
+	tex.flag = 0;
+	tex.tpage = 0;
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+}
+
+void DrawRedTile(long x_y, long height_width)
+{
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	float x, y, z, rhw, w, h;
+
+	nPolyType = 6;
+
+	if (!gfCurrentLevel)
+	{
+		z = f_znear + 10;
+		rhw = f_moneoznear + 50;
+	}
+	else
+	{
+		z = f_znear;
+		rhw = f_moneoznear;
+	}
+
+	x = float(x_y >> 16);
+	y = float(x_y & 0xFFFF);
+	w = float(height_width & 0xFFFF);
+	h = float(height_width >> 16);
+
+	v[0].sx = x;
+	v[0].sy = y;
+	v[0].sz = z;
+	v[0].rhw = rhw;
+	v[0].color = 0xFFFF0000;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = x + w + 1;
+	v[1].sy = y;
+	v[1].sz = z;
+	v[1].rhw = rhw;
+	v[1].color = 0xFFFF0000;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = x + w + 1;
+	v[2].sy = y + h + 1;
+	v[2].sz = z;
+	v[2].rhw = rhw;
+	v[2].color = 0xFFFF0000;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = x;
+	v[3].sy = y + h + 1;
+	v[3].sz = z;
+	v[3].rhw = rhw;
+	v[3].color = 0xFFFF0000;
+	v[3].specular = 0xFF000000;
+
+	tex.drawtype = 0;
+	tex.flag = 0;
+	tex.tpage = 0;
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+}
+
+void DrawFlash()
+{
+	long r, g, b;
+
+	r = ((FlashFadeR * FlashFader) >> 5) & 0xFF;
+	g = ((FlashFadeG * FlashFader) >> 5) & 0xFF;
+	b = ((FlashFadeB * FlashFader) >> 5) & 0xFF;
+	DrawPsxTile(0, phd_winwidth | (phd_winheight << 16), RGBA(r, g, b, 0x62), 1, 0);
+	DrawPsxTile(0, phd_winwidth | (phd_winheight << 16), RGBA(r, g, b, 0xFF), 2, 0);
+}
+
+void SuperShowLogo()
+{
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	long x, y, w;
+
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+	nPolyType = 4;
+	x = long(phd_winxmin - float((phd_winxmax / 640.0F) * -64));
+	w = long(float((phd_winxmax / 640.0F) * 256));
+	y = long(phd_winymin + float((phd_winymax / 480.0F) * 256));
+
+	v[0].sx = (float)x;
+	v[0].sy = (float)phd_winymin;
+	v[0].sz = 0;
+	v[0].rhw = f_moneoznear;
+	v[0].color = 0xFFFFFFFF;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = float(w + x);
+	v[1].sy = (float)phd_winymin;
+	v[1].sz = 0;
+	v[1].rhw = f_moneoznear;
+	v[1].color = 0xFFFFFFFF;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = float(w + x);
+	v[2].sy = (float)y;
+	v[2].sz = 0;
+	v[2].rhw = f_moneoznear;
+	v[2].color = 0xFFFFFFFF;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = (float)x;
+	v[3].sy = (float)y;
+	v[3].sz = 0;
+	v[3].rhw = f_moneoznear;
+	v[3].color = 0xFFFFFFFF;
+	v[3].specular = 0xFF000000;
+
+	tex.drawtype = 1;
+	tex.flag = 0;
+	tex.tpage = ushort(nTextures - 5);
+	tex.u1 = 0.00390625F;
+	tex.v1 = 0.00390625F;
+	tex.u2 = 0.99609375F;
+	tex.v2 = 0.00390625F;
+	tex.u3 = 0.99609375F;
+	tex.v3 = 0.99609375F;
+	tex.u4 = 0.00390625F;
+	tex.v4 = 0.99609375F;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+
+	v[0].sx = float(w + x);
+	v[0].sy = (float)phd_winymin;
+	v[0].sz = 0;
+	v[0].rhw = f_moneoznear;
+	v[0].color = 0xFFFFFFFF;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = float(2 * w + x);
+	v[1].sy = (float)phd_winymin;
+	v[1].sz = 0;
+	v[1].rhw = f_moneoznear;
+	v[1].color = 0xFFFFFFFF;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = float(2 * w + x);
+	v[2].sy = (float)y;
+	v[2].sz = 0;
+	v[2].rhw = f_moneoznear;
+	v[2].color = 0xFFFFFFFF;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = float(w + x);
+	v[3].sy = (float)y;
+	v[3].sz = 0;
+	v[3].rhw = f_moneoznear;
+	v[3].color = 0xFFFFFFFF;
+	v[3].specular = 0xFF000000;
+
+	tex.drawtype = 1;
+	tex.flag = 0;
+	tex.tpage = ushort(nTextures - 4);
+	tex.u1 = 0.00390625F;
+	tex.v1 = 0.00390625F;
+	tex.u2 = 0.99609375F;
+	tex.v2 = 0.00390625F;
+	tex.u3 = 0.99609375F;
+	tex.v3 = 0.99609375F;
+	tex.u4 = 0.00390625F;
+	tex.v4 = 0.99609375F;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 1);
+}
+
+void DrawDebris()
+{
+	DEBRIS_STRUCT* dptr;
+	TEXTURESTRUCT* tex;
+	D3DTLVERTEX v[3];
+	long* Z;
+	short* XY;
+	short* offsets;
+	long r, g, b, c;
+	ushort drawbak;
+
+	XY = (short*)&scratchpad[0];
+	Z = (long*)&scratchpad[256];
+	offsets = (short*)&scratchpad[512];
+
+	for (int i = 0; i < 256; i++)
+	{
+		dptr = &debris[i];
+
+		if (!dptr->On)
+			continue;
+
+		phd_PushMatrix();
+		phd_TranslateAbs(dptr->x, dptr->y, dptr->z);
+		phd_RotY(dptr->YRot << 8);
+		phd_RotX(dptr->XRot << 8);
+
+		offsets[0] = dptr->XYZOffsets1[0];
+		offsets[1] = dptr->XYZOffsets1[1];
+		offsets[2] = dptr->XYZOffsets1[2];
+		XY[0] = short((phd_mxptr[M03] + phd_mxptr[M00] * offsets[0] + phd_mxptr[M01] * offsets[1] + phd_mxptr[M02] * offsets[2]) >> 14);
+		XY[1] = short((phd_mxptr[M13] + phd_mxptr[M10] * offsets[0] + phd_mxptr[M11] * offsets[1] + phd_mxptr[M12] * offsets[2]) >> 14);
+		Z[0] = (phd_mxptr[M23] + phd_mxptr[M20] * offsets[0] + phd_mxptr[M21] * offsets[1] + phd_mxptr[M22] * offsets[2]) >> 14;
+
+		offsets[0] = dptr->XYZOffsets2[0];
+		offsets[1] = dptr->XYZOffsets2[1];
+		offsets[2] = dptr->XYZOffsets2[2];
+		XY[2] = short((phd_mxptr[M03] + phd_mxptr[M00] * offsets[0] + phd_mxptr[M01] * offsets[1] + phd_mxptr[M02] * offsets[2]) >> 14);
+		XY[3] = short((phd_mxptr[M13] + phd_mxptr[M10] * offsets[0] + phd_mxptr[M11] * offsets[1] + phd_mxptr[M12] * offsets[2]) >> 14);
+		Z[1] = (phd_mxptr[M23] + phd_mxptr[M20] * offsets[0] + phd_mxptr[M21] * offsets[1] + phd_mxptr[M22] * offsets[2]) >> 14;
+
+		offsets[0] = dptr->XYZOffsets3[0];
+		offsets[1] = dptr->XYZOffsets3[1];
+		offsets[2] = dptr->XYZOffsets3[2];
+		XY[4] = short((phd_mxptr[M03] + phd_mxptr[M00] * offsets[0] + phd_mxptr[M01] * offsets[1] + phd_mxptr[M02] * offsets[2]) >> 14);
+		XY[5] = short((phd_mxptr[M13] + phd_mxptr[M10] * offsets[0] + phd_mxptr[M11] * offsets[1] + phd_mxptr[M12] * offsets[2]) >> 14);
+		Z[2] = (phd_mxptr[M23] + phd_mxptr[M20] * offsets[0] + phd_mxptr[M21] * offsets[1] + phd_mxptr[M22] * offsets[2]) >> 14;
+
+		setXYZ3(v, XY[0], XY[1], Z[0], XY[2], XY[3], Z[1], XY[4], XY[5], Z[2], clipflags);
+		phd_PopMatrix();
+
+		c = dptr->color1 & 0xFF;
+		r = ((c * dptr->r) >> 8) + CLRR(dptr->ambient);
+		g = ((c * dptr->g) >> 8) + CLRG(dptr->ambient);
+		b = ((c * dptr->b) >> 8) + CLRB(dptr->ambient);
+
+		if (r > 255)
+			r = 255;
+
+		if (g > 255)
+			g = 255;
+
+		if (b > 255)
+			b = 255;
+
+		c = RGBONLY(r, g, b);
+		CalcColorSplit(c, &v[0].color);
+
+		c = dptr->color2 & 0xFF;
+		r = ((c * dptr->r) >> 8) + CLRR(dptr->ambient);
+		g = ((c * dptr->g) >> 8) + CLRG(dptr->ambient);
+		b = ((c * dptr->b) >> 8) + CLRB(dptr->ambient);
+
+		if (r > 255)
+			r = 255;
+
+		if (g > 255)
+			g = 255;
+
+		if (b > 255)
+			b = 255;
+
+		c = RGBONLY(r, g, b);
+		CalcColorSplit(c, &v[1].color);
+
+		c = dptr->color3 & 0xFF;
+		r = ((c * dptr->r) >> 8) + CLRR(dptr->ambient);
+		g = ((c * dptr->g) >> 8) + CLRG(dptr->ambient);
+		b = ((c * dptr->b) >> 8) + CLRB(dptr->ambient);
+
+		if (r > 255)
+			r = 255;
+
+		if (g > 255)
+			g = 255;
+
+		if (b > 255)
+			b = 255;
+
+		c = RGBONLY(r, g, b);
+		CalcColorSplit(c, &v[2].color);
+
+		v[0].color |= 0xFF000000;
+		v[1].color |= 0xFF000000;
+		v[2].color |= 0xFF000000;
+		v[0].specular |= 0xFF000000;
+		v[1].specular |= 0xFF000000;
+		v[2].specular |= 0xFF000000;
+
+		tex = &textinfo[(long)dptr->TextInfo & 0x7FFF];
+		drawbak = tex->drawtype;
+
+		if (dptr->flags & 1)
+			tex->drawtype = 2;
+
+		if (!tex->drawtype)
+			AddTriZBuffer(v, 0, 1, 2, tex, 1);
+		else if (tex->drawtype <= 2)
+			AddTriSorted(v, 0, 1, 2, tex, 1);
+
+		tex->drawtype = drawbak;
+	}
+}
+
+void DrawBlood()
+{
+	BLOOD_STRUCT* bptr;
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	PHD_VECTOR pos;
+	long* Z;
+	short* XY;
+	short* offsets;
+	float perspz;
+	ulong r, col;
+	long size, s, c;
+	long dx, dy, dz, x1, y1, x2, y2, x3, y3, x4, y4;
+	short ang;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 15];
+	XY = (short*)&scratchpad[0];
+	Z = (long*)&scratchpad[256];
+	offsets = (short*)&scratchpad[512];
+
+	for (int i = 0; i < 32; i++)
+	{
+		bptr = &blood[i];
+
+		if (!bptr->On)
+			continue;
+
+		dx = bptr->x - lara_item->pos.x_pos;
+		dy = bptr->y - lara_item->pos.y_pos;
+		dz = bptr->z - lara_item->pos.z_pos;
+
+		if (dx < -0x5000 || dx > 0x5000 || dy < -0x5000 || dy > 0x5000 || dz < -0x5000 || dz > 0x5000)
+			continue;
+
+		offsets[0] = (short)dx;
+		offsets[1] = (short)dy;
+		offsets[2] = (short)dz;
+		pos.x = offsets[0] * phd_mxptr[M00] + offsets[1] * phd_mxptr[M01] + offsets[2] * phd_mxptr[M02] + phd_mxptr[M03];
+		pos.y = offsets[0] * phd_mxptr[M10] + offsets[1] * phd_mxptr[M11] + offsets[2] * phd_mxptr[M12] + phd_mxptr[M13];
+		pos.z = offsets[0] * phd_mxptr[M20] + offsets[1] * phd_mxptr[M21] + offsets[2] * phd_mxptr[M22] + phd_mxptr[M23];
+		perspz = f_persp / (float)pos.z;
+		XY[0] = short(float(pos.x * perspz + f_centerx));
+		XY[1] = short(float(pos.y * perspz + f_centery));
+		Z[0] = pos.z >> 14;
+
+		if (Z[0] <= 0 || Z[0] >= 0x5000)
+			continue;
+
+		size = ((phd_persp * bptr->Size) << 1) / Z[0];
+
+		if (size > (bptr->Size << 1))
+			size = (bptr->Size << 1);
+		else if (size < 4)
+			size = 4;
+
+		size <<= 1;
+		ang = bptr->RotAng << 1;
+		s = (size * rcossin_tbl[ang]) >> 12;
+		c = (size * rcossin_tbl[ang + 1]) >> 12;
+		x1 = c + XY[0] - s;
+		y1 = XY[1] - c - s;
+		x2 = s + c + XY[0];
+		y2 = c + XY[1] - s;
+		x3 = s + XY[0] - c;
+		y3 = s + XY[1] + c;
+		x4 = XY[0] - c - s;
+		y4 = XY[1] - c + s;
+		setXY4(v, x1, y1, x2, y2, x3, y3, x4, y4, Z[0], clipflags);
+
+		if (Z[0] <= 0x3000)
+			col = RGBA(bptr->Shade, 0, 0, 0xFF);
+		else
+		{
+			r = ((0x5000 - Z[0]) * bptr->Shade) >> 13;
+			col = RGBA(r, 0, 0, 0xFF);
+		}
+
+		v[0].color = col;
+		v[1].color = col;
+		v[2].color = col;
+		v[3].color = col;
+		v[0].specular = 0xFF000000;
+		v[1].specular = 0xFF000000;
+		v[2].specular = 0xFF000000;
+		v[3].specular = 0xFF000000;
+		tex.drawtype = 2;
+		tex.flag = 0;
+		tex.tpage = sprite->tpage;
+		tex.u1 = sprite->x1;
+		tex.v1 = sprite->y1;
+		tex.u2 = sprite->x2;
+		tex.v2 = sprite->y1;
+		tex.u3 = sprite->x2;
+		tex.v3 = sprite->y2;
+		tex.u4 = sprite->x1;
+		tex.v4 = sprite->y2;
+		AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+	}
+
+	phd_PopMatrix();
+}
+
+void DrawDrips()
+{
+	DRIP_STRUCT* drip;
+	PHD_VECTOR vec;
+	D3DTLVERTEX v[3];
+	long* Z;
+	short* XY;
+	short* pos;
+	float perspz;
+	long x0, y0, z0, x1, y1, z1, r, g, b;
+
+	XY = (short*)&scratchpad[0];
+	Z = (long*)&scratchpad[256];
+	pos = (short*)&scratchpad[512];
+
+	phd_PushMatrix();
+	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+
+	for (int i = 0; i < 32; i++)
+	{
+		drip = &Drips[i];
+
+		if (!drip->On)
+			continue;
+
+		pos[0] = short(drip->x - lara_item->pos.x_pos);
+		pos[1] = short(drip->y - lara_item->pos.y_pos);
+		pos[2] = short(drip->z - lara_item->pos.z_pos);
+
+		if (pos[0] < -0x5000 || pos[0] > 0x5000 || pos[1] < -0x5000 || pos[1] > 0x5000 || pos[2] < -0x5000 || pos[2] > 0x5000)
+			continue;
+
+		vec.x = pos[0] * phd_mxptr[M00] + pos[1] * phd_mxptr[M01] + pos[2] * phd_mxptr[M02] + phd_mxptr[M03];
+		vec.y = pos[0] * phd_mxptr[M10] + pos[1] * phd_mxptr[M11] + pos[2] * phd_mxptr[M12] + phd_mxptr[M13];
+		vec.z = pos[0] * phd_mxptr[M20] + pos[1] * phd_mxptr[M21] + pos[2] * phd_mxptr[M22] + phd_mxptr[M23];
+
+		perspz = f_persp / (float)vec.z;
+		XY[0] = short(float(vec.x * perspz + f_centerx));
+		XY[1] = short(float(vec.y * perspz + f_centery));
+		Z[0] = vec.z >> 14;
+
+		pos[1] -= drip->Yvel >> 6;
+
+		if (room[drip->RoomNumber].flags & ROOM_NOT_INSIDE)
+		{
+			pos[0] -= short(SmokeWindX >> 1);
+			pos[1] -= short(SmokeWindZ >> 1);
+		}
+
+		vec.x = pos[0] * phd_mxptr[M00] + pos[1] * phd_mxptr[M01] + pos[2] * phd_mxptr[M02] + phd_mxptr[M03];
+		vec.y = pos[0] * phd_mxptr[M10] + pos[1] * phd_mxptr[M11] + pos[2] * phd_mxptr[M12] + phd_mxptr[M13];
+		vec.z = pos[0] * phd_mxptr[M20] + pos[1] * phd_mxptr[M21] + pos[2] * phd_mxptr[M22] + phd_mxptr[M23];
+
+		perspz = f_persp / (float)vec.z;
+		XY[2] = short(float(vec.x * perspz + f_centerx));
+		XY[3] = short(float(vec.y * perspz + f_centery));
+		Z[1] = vec.z >> 14;
+
+		if (!Z[0])
+			continue;
+
+		if (Z[0] > 0x5000)
+		{
+			drip->On = 0;
+			continue;
+		}
+
+		x0 = XY[0];
+		y0 = XY[1];
+		z0 = Z[0];
+		x1 = XY[2];
+		y1 = XY[3];
+		z1 = Z[1];
+
+		if (ClipLine(x0, y0, z0, x1, y1, z1, phd_winxmin, phd_winymin, phd_winxmax, phd_winymax))
+		{
+			r = drip->R << 2;
+			g = drip->G << 2;
+			b = drip->B << 2;
+
+			v[0].sx = (float)x0;
+			v[0].sy = (float)y0;
+			v[0].sz = (float)z0;
+			v[0].rhw = f_mpersp / v[0].sz * f_moneopersp;
+			v[0].color = RGBA(r, g, b, 0xFF);
+			v[0].specular = 0xFF000000;
+
+			r >>= 1;
+			g >>= 1;
+			b >>= 1;
+
+			v[1].sx = (float)x1;
+			v[1].sy = (float)y1;
+			v[1].sz = (float)z1;
+			v[1].rhw = f_mpersp / v[1].sz * f_moneopersp;
+			v[1].color = RGBA(r, g, b, 0xFF);
+			v[1].specular = 0xFF000000;
+
+			AddLineSorted(v, &v[1], 6);
+		}
+	}
+
+	phd_PopMatrix();
+}
+
+void DoUwEffect()
+{
+	UWEFFECTS* p;
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[3];
+	TEXTURESTRUCT tex;
+	PHD_VECTOR pos;
+	long* Z;
+	short* XY;
+	short* offsets;
+	float perspz;
+	long num_alive, rad, ang, x, y, z, size, col, yv;
+
+	num_alive = 0;
+
+	for (int i = 0; i < 256; i++)
+	{
+		p = &uwdust[i];
+
+		if (!p->x && num_alive < 16)
+		{
+			num_alive++;
+			rad = GetRandomDraw() & 0xFFF;
+			ang = GetRandomDraw() & 0x1FFE;
+			x = (rad * rcossin_tbl[ang]) >> 12;
+			y = (GetRandomDraw() & 0x7FF) - 1024;
+			z = (rad * rcossin_tbl[ang + 1]) >> 12;
+			p->x = lara_item->pos.x_pos + x;
+			p->y = lara_item->pos.y_pos + y;
+			p->z = lara_item->pos.z_pos + z;
+
+			if (IsRoomOutside(p->x, p->y, p->z) < 0 || !(room[IsRoomOutsideNo].flags & ROOM_UNDERWATER))
+			{
+				p->x = 0;
+				continue;
+			}
+
+			p->stopped = 1;
+			p->life = (GetRandomDraw() & 7) + 16;
+			p->xv = GetRandomDraw() & 3;
+
+			if (p->xv == 2)
+				p->xv = -1;
+
+			p->yv = ((GetRandomDraw() & 7) + 8) << 3;
+			p->zv = GetRandomDraw() & 3;
+
+			if (p->zv == 2)
+				p->zv = -1;
+		}
+
+		p->x += p->xv;
+		p->y += (p->yv & ~7) >> 6;
+		p->z += p->zv;
+
+		if (!p->life)
+		{
+			p->x = 0;
+			continue;
+		}
+
+		p->life--;
+
+		if ((p->yv & 7) < 7)
+			p->yv++;
+	}
+
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 15];
+	XY = (short*)&scratchpad[0];
+	Z = (long*)&scratchpad[256];
+	offsets = (short*)&scratchpad[512];
+	phd_PushMatrix();
+	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+
+	for (int i = 0; i < 256; i++)
+	{
+		p = &uwdust[i];
+
+		if (!p->x)
+			continue;
+
+		x = p->x - lara_item->pos.x_pos;
+		y = p->y - lara_item->pos.y_pos;
+		z = p->z - lara_item->pos.z_pos;
+		offsets[0] = (short)x;
+		offsets[1] = (short)y;
+		offsets[2] = (short)z;
+		pos.x = offsets[0] * phd_mxptr[M00] + offsets[1] * phd_mxptr[M01] + offsets[2] * phd_mxptr[M02] + phd_mxptr[M03];
+		pos.y = offsets[0] * phd_mxptr[M10] + offsets[1] * phd_mxptr[M11] + offsets[2] * phd_mxptr[M12] + phd_mxptr[M13];
+		pos.z = offsets[0] * phd_mxptr[M20] + offsets[1] * phd_mxptr[M21] + offsets[2] * phd_mxptr[M22] + phd_mxptr[M23];
+		perspz = f_persp / (float)pos.z;
+		XY[0] = short(float(pos.x * perspz + f_centerx));
+		XY[1] = short(float(pos.y * perspz + f_centery));
+		Z[0] = pos.z >> 14;
+
+		if (Z[0] < 32)
+		{
+			if (p->life > 16)
+				p->life = 16;
+
+			continue;
+		}
+
+		if (XY[0] < phd_winxmin || XY[0] > phd_winxmax || XY[1] < phd_winymin || XY[1] > phd_winymax)
+			continue;
+
+		size = (phd_persp * (p->yv >> 3)) / (Z[0] >> 4);
+
+		if (size < 1)
+			size = 6;
+		else if (size > 12)
+			size = 12;
+
+		size = (0x5556 * size) >> 16;
+
+		if (phd_winwidth > 512)
+			size = long(float(phd_winwidth / 512.0F) * (float)size);
+
+		if ((p->yv & 7) == 7)
+		{
+			if (p->life > 18)
+				col = 0xFF404040;
+			else
+				col = (p->life | ((p->life | ((p->life | 0xFFFFFFC0) << 8)) << 8)) << 2;	//decipher me
+		}
+		else
+		{
+			yv = (p->yv & 7) << 2;
+			col = (yv | ((yv | ((yv | 0xFFFFFF80) << 8)) << 8)) << 1;	//decipher me
+		}
+
+		setXY3(v, XY[0] + size, XY[1] - (size << 1), XY[0] + size, XY[1] + size, XY[0] - (size << 1), XY[1] + size, Z[0], clipflags);
+		v[0].color = col;
+		v[1].color = col;
+		v[2].color = col;
+		v[0].specular = 0xFF000000;
+		v[1].specular = 0xFF000000;
+		v[2].specular = 0xFF000000;
+		tex.drawtype = 2;
+		tex.flag = 0;
+		tex.tpage = sprite->tpage;
+		tex.u1 = sprite->x2;
+		tex.v1 = sprite->y1;
+		tex.u2 = sprite->x2;
+		tex.v2 = sprite->y2;
+		tex.u3 = sprite->x1;
+		tex.v3 = sprite->y2;
+		AddTriSorted(v, 0, 1, 2, &tex, 0);
+	}
+
+	phd_PopMatrix();
+}
+
+void DrawWraithTrail(ITEM_INFO* item)
+{
+	WRAITH_STRUCT* wraith;
+	PHD_VECTOR pos;
+	D3DTLVERTEX v[2];
+	long* Z;
+	short* XY;
+	short* offsets;
+	float perspz;
+	ulong r, g, b;
+	long c0, c1, x0, y0, z0, x1, y1, z1;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+
+	for (int i = 0; i < 5; i++)
+	{
+		if (!i)
+			phd_RotY(-1092);
+		else if (i == 2)
+			phd_RotY(1092);
+		else if (i == 3)
+			phd_RotZ(-1092);
+		else if (i == 4)
+			phd_RotZ(1092);
+
+		XY = (short*)&scratchpad[0];
+		Z = (long*)&scratchpad[256];
+		offsets = (short*)&scratchpad[512];
+		wraith = (WRAITH_STRUCT*)item->data;
+
+		for (int j = 0; j < 8; j++, XY += 2, Z += 2, wraith++)
+		{
+			offsets[0] = short(wraith->pos.x - item->pos.x_pos);
+			offsets[1] = short(wraith->pos.y - item->pos.y_pos);
+			offsets[2] = short(wraith->pos.z - item->pos.z_pos);
+			pos.x = offsets[0] * phd_mxptr[M00] + offsets[1] * phd_mxptr[M01] + offsets[2] * phd_mxptr[M02] + phd_mxptr[M03];
+			pos.y = offsets[0] * phd_mxptr[M10] + offsets[1] * phd_mxptr[M11] + offsets[2] * phd_mxptr[M12] + phd_mxptr[M13];
+			pos.z = offsets[0] * phd_mxptr[M20] + offsets[1] * phd_mxptr[M21] + offsets[2] * phd_mxptr[M22] + phd_mxptr[M23];
+			perspz = f_persp / (float)pos.z;
+			XY[0] = short(float(pos.x * perspz + f_centerx));
+			XY[1] = short(float(pos.y * perspz + f_centery));
+			Z[0] = pos.z >> 14;
+
+			if (!j || j == 7)
+				Z[1] = 0;
+			else
+				Z[1] = RGBONLY(wraith->r, wraith->g, wraith->b);
+		}
+
+		XY = (short*)&scratchpad[0];
+		Z = (long*)&scratchpad[256];
+
+		for (int j = 0; j < 7; j++, XY += 2, Z += 2)
+		{
+			if (Z[0] <= f_mznear || Z[0] >= 0x5000)
+				continue;
+
+			if (Z[0] > 0x3000)
+			{
+				r = ((Z[1] & 0xFF) * (0x3000 - Z[0])) >> 13;
+				g = (((Z[1] >> 8) & 0xFF) * (0x3000 - Z[0])) >> 13;
+				b = (((Z[1] >> 16) & 0xFF) * (0x3000 - Z[0])) >> 13;
+				c0 = RGBA(r, g, b, 0xFF);
+				r = ((Z[3] & 0xFF) * (0x3000 - Z[0])) >> 13;
+				g = (((Z[3] >> 8) & 0xFF) * (0x3000 - Z[0])) >> 13;
+				b = (((Z[3] >> 16) & 0xFF) * (0x3000 - Z[0])) >> 13;
+				c1 = RGBA(r, g, b, 0xFF);
+			}
+			else
+			{
+				c0 = Z[1];
+				c1 = Z[3];
+			}
+
+			x0 = XY[0];
+			y0 = XY[1];
+			z0 = Z[0];
+			x1 = XY[2];
+			y1 = XY[3];
+			z1 = Z[2];
+
+			if (ClipLine(x0, y0, z0, x1, y1, z1, phd_winxmin, phd_winymin, phd_winxmax, phd_winymax))
+			{
+				v[0].sx = (float)x0;
+				v[0].sy = (float)y0;
+				v[0].sz = (float)z0;
+				v[0].rhw = f_mpersp / v[0].sz * f_moneopersp;
+				v[0].color = c0;
+				v[0].specular = 0xFF000000;
+
+				v[1].sx = (float)x1;
+				v[1].sy = (float)y1;
+				v[1].sz = (float)z1;
+				v[1].rhw = f_mpersp / v[1].sz * f_moneopersp;
+				v[1].color = c1;
+				v[1].specular = 0xFF000000;
+
+				AddLineSorted(v, &v[1], 6);
+			}
+		}
+	}
+
+	phd_PopMatrix();
+}
+
+void DrawTrainFloorStrip(long x, long z, TEXTURESTRUCT* tex, long y_and_flags)
+{
+	SVECTOR* offsets;
+	D3DTLVERTEX v[4];
+	PHD_VECTOR p1, p2, p3;
+	long* Z;
+	short* XY;
+	long num, z1, z2, z3, z4, spec;
+	short x1, y1, x2, y2, x3, y3, x4, y4;
+
+	num = 0;
+	offsets = (SVECTOR*)&scratchpad[984];
+	offsets[0].z = (short)z;
+	offsets[1].z = short(z + 512);
+	offsets[2].z = short(z + 1024);
+
+	if (y_and_flags & 0x1000000)
+	{
+		offsets[1].z += 1024;
+		offsets[2].z += 2048;
+	}
+
+	offsets[0].y = ((y_and_flags >> 16) & 0xFF) << 4;
+	offsets[1].y = ((y_and_flags >> 8) & 0xFF) << 4;
+	offsets[2].y = (y_and_flags & 0xFF) << 4;
+
+	offsets[0].x = (short)x;
+	offsets[1].x = (short)x;
+	offsets[2].x = (short)x;
+
+	for (int i = 0; i < 2; i++)
+	{
+		XY = (short*)&scratchpad[0];
+		Z = (long*)&scratchpad[492];
+		XY -= 6;
+		Z -= 3;
+
+		for (int j = 0; j < 41; j++)
+		{
+			p1.x = (offsets[0].x * phd_mxptr[M00] + offsets[0].y * phd_mxptr[M01] + offsets[0].z * phd_mxptr[M02] + phd_mxptr[M03]) >> 14;
+			p1.y = (offsets[0].x * phd_mxptr[M10] + offsets[0].y * phd_mxptr[M11] + offsets[0].z * phd_mxptr[M12] + phd_mxptr[M13]) >> 14;
+			p1.z = (offsets[0].x * phd_mxptr[M20] + offsets[0].y * phd_mxptr[M21] + offsets[0].z * phd_mxptr[M22] + phd_mxptr[M23]) >> 14;
+
+			p2.x = (offsets[1].x * phd_mxptr[M00] + offsets[1].y * phd_mxptr[M01] + offsets[1].z * phd_mxptr[M02] + phd_mxptr[M03]) >> 14;
+			p2.y = (offsets[1].x * phd_mxptr[M10] + offsets[1].y * phd_mxptr[M11] + offsets[1].z * phd_mxptr[M12] + phd_mxptr[M13]) >> 14;
+			p2.z = (offsets[1].x * phd_mxptr[M20] + offsets[1].y * phd_mxptr[M21] + offsets[1].z * phd_mxptr[M22] + phd_mxptr[M23]) >> 14;
+
+			p3.x = (offsets[2].x * phd_mxptr[M00] + offsets[2].y * phd_mxptr[M01] + offsets[2].z * phd_mxptr[M02] + phd_mxptr[M03]) >> 14;
+			p3.y = (offsets[2].x * phd_mxptr[M10] + offsets[2].y * phd_mxptr[M11] + offsets[2].z * phd_mxptr[M12] + phd_mxptr[M13]) >> 14;
+			p3.z = (offsets[2].x * phd_mxptr[M20] + offsets[2].y * phd_mxptr[M21] + offsets[2].z * phd_mxptr[M22] + phd_mxptr[M23]) >> 14;
+
+			offsets[0].x += 512;
+			offsets[1].x += 512;
+			offsets[2].x += 512;
+			XY += 6;
+			Z += 3;
+
+			XY[0] = (short)p1.x;
+			XY[1] = (short)p1.y;
+			Z[0] = p1.z;
+
+			XY[2] = (short)p2.x;
+			XY[3] = (short)p2.y;
+			Z[1] = p2.z;
+
+			XY[4] = (short)p3.x;
+			XY[5] = (short)p3.y;
+			Z[2] = p3.z;
+		}
+
+		offsets[0].x -= 512;
+		offsets[1].x -= 512;
+		offsets[2].x -= 512;
+		XY = (short*)&scratchpad[0];
+		Z = (long*)&scratchpad[492];
+
+		for (int j = num; j < num + 20; j++, XY += 12, Z += 6)
+		{
+			z1 = Z[0];
+			z2 = Z[2];
+			z3 = Z[6];
+			z4 = Z[8];
+
+			if (!(z1 | z2 | z3 | z4))
+				continue;
+
+			x1 = XY[0];
+			y1 = XY[1];
+			x2 = XY[4];
+			y2 = XY[5];
+			x3 = XY[12];
+			y3 = XY[13];
+			x4 = XY[16];
+			y4 = XY[17];
+
+			if (j < 7)
+				spec = (j + 1) * 0x101010;
+			else if (j >= 33)
+				spec = (40 - j) * 0x101010;
+			else
+				spec = 0x808080;
+
+			setXYZ4(v, x1, y1, z1, x2, y2, z2, x4, y4, z4, x3, y3, z3, clipflags);
+			spec = ((spec & 0xFF) - 1) << 25;
+			v[0].color = 0xFFFFFFFF;
+			v[1].color = 0xFFFFFFFF;
+			v[2].color = 0xFFFFFFFF;
+			v[3].color = 0xFFFFFFFF;
+			v[0].specular = spec;
+			v[1].specular = spec;
+			v[2].specular = spec;
+			v[3].specular = spec;
+			AddQuadSorted(v, 0, 1, 2, 3, tex, 0);
+		}
+
+		num += 20;
+	}
+}
+
+void DrawTrainStrips()
+{
+	DrawTrainFloorStrip(-20480, -5120, &textinfo[aranges[7]], 0x1101010);
+	DrawTrainFloorStrip(-20480, 3072, &textinfo[aranges[7]], 0x1101010);
+	DrawTrainFloorStrip(-20480, -2048, &textinfo[aranges[5]], 0x100800);
+	DrawTrainFloorStrip(-20480, 2048, &textinfo[aranges[6]], 0x810);
+	DrawTrainFloorStrip(-20480, -1024, &textinfo[aranges[3]], 0);
+	DrawTrainFloorStrip(-20480, 1024, &textinfo[aranges[4]], 0);
+	DrawTrainFloorStrip(-20480, 0, &textinfo[aranges[2]], 0);
+}
+
+void DrawBubbles()
+{
+	BUBBLE_STRUCT* bubble;
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	PHD_VECTOR pos;
+	long* Z;
+	short* XY;
+	short* offsets;
+	float perspz;
+	long dx, dy, dz, size, x1, y1, x2, y2;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+	bubble = Bubbles;
+
+	XY = (short*)&scratchpad[0];
+	Z = (long*)&scratchpad[256];
+	offsets = (short*)&scratchpad[512];
+
+	for (int i = 0; i < 40; i++)
+	{
+		if (!bubble->size)
+		{
+			bubble++;
+			continue;
+		}
+
+		dx = bubble->pos.x - lara_item->pos.x_pos;
+		dy = bubble->pos.y - lara_item->pos.y_pos;
+		dz = bubble->pos.z - lara_item->pos.z_pos;
+
+		if (dx < -0x5000 || dx > 0x5000 || dy < -0x5000 || dy > 0x5000 || dz < -0x5000 || dz > 0x5000)
+		{
+			bubble->size = 0;
+			bubble++;
+			continue;
+		}
+
+		offsets[0] = (short)dx;
+		offsets[1] = (short)dy;
+		offsets[2] = (short)dz;
+		pos.x = offsets[0] * phd_mxptr[M00] + offsets[1] * phd_mxptr[M01] + offsets[2] * phd_mxptr[M02] + phd_mxptr[M03];
+		pos.y = offsets[0] * phd_mxptr[M10] + offsets[1] * phd_mxptr[M11] + offsets[2] * phd_mxptr[M12] + phd_mxptr[M13];
+		pos.z = offsets[0] * phd_mxptr[M20] + offsets[1] * phd_mxptr[M21] + offsets[2] * phd_mxptr[M22] + phd_mxptr[M23];
+		perspz = f_persp / (float)pos.z;
+		XY[0] = short(float(pos.x * perspz + f_centerx));
+		XY[1] = short(float(pos.y * perspz + f_centery));
+		Z[0] = pos.z >> 14;
+
+		if (Z[0] < 32)
+		{
+			bubble++;
+			continue;
+		}
+
+		if (Z[0] > 0x5000)
+		{
+			bubble->size = 0;
+			bubble++;
+			continue;
+		}
+
+		size = phd_persp * (bubble->size >> 1) / Z[0];
+
+		if (size > 128)
+		{
+			bubble->size = 0;
+			continue;
+		}
+
+		if (size < 4)
+			size = 4;
+
+		size >>= 1;
+
+		x1 = XY[0] - size;
+		y1 = XY[1] - size;
+		x2 = XY[0] + size;
+		y2 = XY[1] + size;
+
+		if (x2 < phd_winxmin || x1 >= phd_winxmax || y2 < phd_winymin || y1 >= phd_winymax)
+		{
+			bubble++;
+			continue;
+		}
+
+		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 13];
+		setXY4(v, x1, y1, x2, y1, x2, y2, x1, y2, Z[0], clipflags);
+		v[0].color = RGBA(bubble->shade, bubble->shade, bubble->shade, 0xFF);
+		v[1].color = RGBA(bubble->shade, bubble->shade, bubble->shade, 0xFF);
+		v[2].color = RGBA(bubble->shade, bubble->shade, bubble->shade, 0xFF);
+		v[3].color = RGBA(bubble->shade, bubble->shade, bubble->shade, 0xFF);
+		v[0].specular = 0xFF000000;
+		v[1].specular = 0xFF000000;
+		v[2].specular = 0xFF000000;
+		v[3].specular = 0xFF000000;
+		tex.drawtype = 2;
+		tex.flag = 0;
+		tex.tpage = sprite->tpage;
+		tex.u1 = sprite->x1;
+		tex.v1 = sprite->y1;
+		tex.u2 = sprite->x2;
+		tex.v3 = sprite->y2;
+		tex.v2 = sprite->y1;
+		tex.u3 = sprite->x2;
+		tex.u4 = sprite->x1;
+		tex.v4 = sprite->y2;
+		AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+		bubble++;
+	}
+
+	phd_PopMatrix();
+}
+
+void DrawSprite(long x, long y, long slot, long col, long size, long z)
+{
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	long s;
+
+	s = long(float(phd_winwidth / 640.0F) * (size << 1));
+
+	if (z)
+		setXY4(v, x - s, y - s, x + s, y - s, x - s, y + s, x + s, y + s, long(z + f_mznear), clipflags);
+	else
+		setXY4(v, x - s, y - s, x + s, y - s, x - s, y + s, x + s, y + s, (long)f_mzfar, clipflags);
+
+	sprite = &spriteinfo[slot + objects[DEFAULT_SPRITES].mesh_index];
+	v[0].specular = 0xFF000000;
+	v[1].specular = 0xFF000000;
+	v[2].specular = 0xFF000000;
+	v[3].specular = 0xFF000000;
+	CalcColorSplit(col, &v[0].color);
+	v[1].color = v[0].color | 0xFF000000;
+	v[2].color = v[0].color | 0xFF000000;
+	v[3].color = v[0].color | 0xFF000000;
+	tex.drawtype = 2;
+	tex.flag = 0;
+	tex.tpage = sprite->tpage;
+	tex.u1 = sprite->x1;
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x2;
+	tex.v2 = sprite->y1;
+	tex.u3 = sprite->x2;
+	tex.v3 = sprite->y2;
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y2;
+	AddQuadSorted(v, 0, 1, 3, 2, &tex, 0);
+}
+
+void SetUpLensFlare(long x, long y, long z, GAME_VECTOR* lfobj)
+{
+	PHD_VECTOR pos;
+	GAME_VECTOR start;
+	GAME_VECTOR target;
+	long* Z;
+	short* vec;
+	short* XY;
+	float perspz;
+	long dx, dy, dz, r, g, b, r2, g2, b2, los, num, flash;
+	short rn;
+
+	los = 0;
+
+	if (lfobj)
+	{
+		pos.x = lfobj->x;
+		pos.y = lfobj->y;
+		pos.z = lfobj->z;
+		dx = abs(pos.x - lara_item->pos.x_pos);
+		dy = abs(pos.y - lara_item->pos.y_pos);
+		dz = abs(pos.z - lara_item->pos.z_pos);
+
+		if (dx > 0x8000 || dy > 0x8000 || dz > 0x8000)
+			return;
+
+		r = 255;
+		g = 255;
+		b = 255;
+		rn = lfobj->room_number;
+	}
+	else
+	{
+		if (room[camera.pos.room_number].flags & ROOM_NO_LENSFLARE)
+			return;
+
+		r = (uchar)gfLensFlareColour.r;
+		g = (uchar)gfLensFlareColour.g;
+		b = (uchar)gfLensFlareColour.b;
+		pos.x = x;
+		pos.y = y;
+		pos.z = z;
+
+		while (abs(pos.x) > 0x36000 || abs(pos.y) > 0x36000 || abs(pos.z) > 0x36000)
+		{
+			pos.x -= (x - camera.pos.x) >> 4;
+			pos.y -= (y - camera.pos.y) >> 4;
+			pos.z -= (z - camera.pos.z) >> 4;
+		}
+
+		dx = (pos.x - camera.pos.x) >> 4;
+		dy = (pos.y - camera.pos.y) >> 4;
+		dz = (pos.z - camera.pos.z) >> 4;
+
+		while (abs(pos.x - camera.pos.x) > 0x8000 || abs(pos.y - camera.pos.y) > 0x8000 || abs(pos.z - camera.pos.z) > 0x8000)
+		{
+			pos.x -= dx;
+			pos.y -= dy;
+			pos.z -= dz;
+		}
+
+		dx = (pos.x - camera.pos.x) >> 4;
+		dy = (pos.y - camera.pos.y) >> 4;
+		dz = (pos.z - camera.pos.z) >> 4;
+
+		for (int i = 0; i < 16; i++)
+		{
+			IsRoomOutsideNo = 255;
+			IsRoomOutside(pos.x, pos.y, pos.z);
+			rn = IsRoomOutsideNo;
+
+			if (rn != 255)
+				break;
+
+			pos.x -= dx;
+			pos.y -= dy;
+			pos.z -= dz;
+		}
+	}
+
+	if (rn != 255)
+	{
+		if (room[rn].flags & ROOM_NOT_INSIDE || lfobj)
+		{
+			start.y = camera.pos.y;
+			start.z = camera.pos.z;
+			start.x = camera.pos.x;
+			start.room_number = camera.pos.room_number;
+			target.x = pos.x;
+			target.y = pos.y;
+			target.z = pos.z;
+			los = LOS(&start, &target);
+		}
+	}
+
+	if (!los && lfobj)	//can't see object, don't bother
+		return;
+
+	vec = (short*)&scratchpad[0];
+	XY = (short*)&scratchpad[16];
+	Z = (long*)&scratchpad[32];
+
+	phd_PushMatrix();
+	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+
+	if (lfobj)
+	{
+		vec[0] = short(pos.x - lara_item->pos.x_pos);
+		vec[1] = short(pos.y - lara_item->pos.y_pos);
+		vec[2] = short(pos.z - lara_item->pos.z_pos);
+	}
+	else
+	{
+		pos.x = x - lara_item->pos.x_pos;
+		pos.y = y - lara_item->pos.y_pos;
+		pos.z = z - lara_item->pos.z_pos;
+
+		while (pos.x > 0x7F00 || pos.x < -0x7F00 || pos.y > 0x7F00 || pos.y < -0x7F00 || pos.z > 0x7F00 || pos.z < -0x7F00)
+		{
+			pos.x >>= 1;
+			pos.y >>= 1;
+			pos.z >>= 1;
+		}
+
+		vec[0] = (short)pos.x;
+		vec[1] = (short)pos.y;
+		vec[2] = (short)pos.z;
+	}
+
+	pos.x = phd_mxptr[M00] * vec[0] + phd_mxptr[M01] * vec[1] + phd_mxptr[M02] * vec[2] + phd_mxptr[M03];
+	pos.y = phd_mxptr[M10] * vec[0] + phd_mxptr[M11] * vec[1] + phd_mxptr[M12] * vec[2] + phd_mxptr[M13];
+	pos.z = phd_mxptr[M20] * vec[0] + phd_mxptr[M21] * vec[1] + phd_mxptr[M22] * vec[2] + phd_mxptr[M23];
+	perspz = f_persp / (float)pos.z;
+	XY[0] = short(float(pos.x * perspz + f_centerx));
+	XY[1] = short(float(pos.y * perspz + f_centery));
+	Z[0] = pos.z >> 14;
+	phd_PopMatrix();
+	num = 0;
+
+	if (lfobj)
+		num += 6;
+
+	if (Z[0] > 0)
+	{
+		dx = XY[0] - phd_centerx;
+		dy = XY[1] - phd_centery;
+		dz = phd_sqrt(SQUARE(dx) + SQUARE(dy));
+
+		if (dz < 640)
+		{
+			dz = 640 - dz;
+
+			if (los)
+			{
+				flash = dz - 544;
+
+				if (flash > 0)
+				{
+					FlashFader = 32;
+					FlashFadeR = short((r * flash) / 640);
+					FlashFadeG = short((g * flash) / 640);
+					FlashFadeB = short((b * flash) / 640);
+				}
+			}
+
+			while (flare_table[num] != -1)
+			{
+				if (num)
+				{
+					r2 = dz * flare_table[num] / 640;
+					g2 = dz * flare_table[num + 1] / 640;
+					b2 = dz * flare_table[num + 2] / 640;
+				}
+				else
+				{
+					if (lfobj)
+						continue;
+
+					r2 = flare_table[0] + (GetRandomDraw() & 8);
+					g2 = flare_table[1];
+					b2 = flare_table[2] + (GetRandomDraw() & 8);
+				}
+
+				r2 = (r * r2) >> 8;
+				g2 = (g * g2) >> 8;
+				b2 = (b * b2) >> 8;
+
+				if (r2 | g2 | b2)
+				{
+					pos.x = XY[0] - ((dx * flare_table[num + 4]) >> 4);
+					pos.y = XY[1] - ((dy * flare_table[num + 4]) >> 4);
+					DrawSprite(pos.x, pos.y, flare_table[num + 5], RGBONLY(r2, g2, b2), flare_table[num + 3] << 1, num);
+				}
+
+				if (!los)
+					return;
+
+				num += 6;
+			}
+		}
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -2598,4 +4708,30 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CD750, aTransformPerspSV, replace);
 	INJECT(0x004C36B0, DrawBinoculars, replace);
 	INJECT(0x004CF1B0, aDrawWreckingBall, replace);
+	INJECT(0x004BFD70, ClearFX, replace);
+	INJECT(0x004BFDA0, AddPolyLine, replace);
+	INJECT(0x004BEBD0, DoSnow, replace);
+	INJECT(0x004BEB50, aInitFX, replace);
+	INJECT(0x004C0580, DoWeather, replace);
+	INJECT(0x004C3EB0, aSetXY4, replace);
+	INJECT(0x004C34F0, InitTarget, replace);
+	INJECT(0x004C35D0, InitBinoculars, replace);
+	INJECT(0x004CFD20, SuperDrawBox, replace);
+	INJECT(0x004CBE50, Draw2DSprite, replace);
+	INJECT(0x004CADA0, DrawBikeSpeedo, replace);
+	INJECT(0x004CB280, DrawShockwaves, replace);
+	INJECT(0x004CA7F0, DrawPsxTile, replace);
+	INJECT(0x004CAA60, DrawRedTile, replace);
+	INJECT(0x004CAC90, DrawFlash, replace);
+	INJECT(0x004C9190, SuperShowLogo, replace);
+	INJECT(0x004C7620, DrawDebris, replace);
+	INJECT(0x004C7CB0, DrawBlood, replace);
+	INJECT(0x004C8110, DrawDrips, replace);
+	INJECT(0x004C8650, DoUwEffect, replace);
+	INJECT(0x004C8CB0, DrawWraithTrail, replace);
+	INJECT(0x004C95C0, DrawTrainFloorStrip, replace);
+	INJECT(0x004C9C20, DrawTrainStrips, replace);
+	INJECT(0x004C1340, DrawBubbles, replace);
+	INJECT(0x004C9D90, DrawSprite, replace);
+	INJECT(0x004C9F70, SetUpLensFlare, replace);
 }

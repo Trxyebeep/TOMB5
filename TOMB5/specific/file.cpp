@@ -15,11 +15,16 @@
 #include "polyinsert.h"
 #include "winmain.h"
 #include "output.h"
+#include "texture.h"
+#include "dxshell.h"
+#include "lighting.h"
+#include "../game/tomb4fx.h"
+#include "../game/deltapak.h"
+#include "3dmath.h"
+#include "specificfx.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
-#include "texture.h"
-#include "dxshell.h"
 
 bool LoadTextureInfos()
 {
@@ -631,6 +636,159 @@ bool LoadAIInfo()
 
 unsigned int __stdcall LoadLevel(void* name)
 {
+	OBJECT_INFO* obj;
+	TEXTURESTRUCT* tex;
+	MESH_DATA* mesh;
+	char* pData;
+	char* pBefore;
+	char* pAfter;
+	long version, size, compressedSize;
+	short RTPages, OTPages, BTPages;
+	short data[16];
+
+	Log(5, "Begin LoadLevel");
+	FreeLevel();
+	nTextures = 1;
+	Textures[0].tex = 0;
+	Textures[0].surface = 0;
+	Textures[0].width = 0;
+	Textures[0].height = 0;
+	Textures[0].bump = 0;
+	CompressedData = 0;
+	FileData = 0;
+	level_fp = 0;
+	level_fp = FileOpen((const char*)name);
+
+	if (level_fp)
+	{
+		READ(&version, 1, 4, level_fp);
+		READ(&RTPages, 1, 2, level_fp);
+		READ(&OTPages, 1, 2, level_fp);
+		READ(&BTPages, 1, 2, level_fp);
+		S_InitLoadBar(OTPages + BTPages + RTPages + 20);
+		S_LoadBar();
+
+		Log(7, "Process Level Data");
+		LoadTextures(RTPages, OTPages, BTPages);
+
+		READ(data, 1, 32, level_fp);
+		LaraDrawType = data[0] + LARA_NORMAL;
+		WeatherType = (char)data[1];
+
+		READ(&size, 1, 4, level_fp);
+		READ(&compressedSize, 1, 4, level_fp);
+		FileData = (char*)MALLOC(size);
+		READ(FileData, size, 1, level_fp);
+
+		pData = FileData;
+
+		Log(5, "Rooms");
+		LoadRooms();
+		S_LoadBar();
+
+		Log(5, "Objects");
+		LoadObjects();
+		S_LoadBar();
+
+		LoadSprites();
+		S_LoadBar();
+
+		LoadCameras();
+		S_LoadBar();
+
+		LoadSoundEffects();
+		S_LoadBar();
+
+		LoadBoxes();
+		S_LoadBar();
+
+		LoadAnimatedTextures();
+		S_LoadBar();
+
+		LoadTextureInfos();
+		S_LoadBar();
+
+		pBefore = FileData;
+
+		FileData += 24 * *(long*)FileData + 4;
+		LoadAIInfo();
+
+		pAfter = FileData;
+		FileData = pBefore;
+
+		LoadItems();
+		FileData = pAfter;
+
+		S_LoadBar();
+		S_LoadBar();
+
+		LoadCinematic();
+		S_LoadBar();
+
+		if (acm_ready && !App.SoundDisabled)
+			LoadSamples();
+
+		FREE(pData);
+		S_LoadBar();
+
+		for (int i = 0; i < 6; i++)
+		{
+			obj = &objects[WATERFALL1 + i];
+
+			if (obj->loaded)
+			{
+				tex = &textinfo[mesh_vtxbuf[obj->mesh_index]->gt4[4] & 0x7FFF];
+				AnimatingWaterfalls[i] = tex;
+				AnimatingWaterfallsV[i] = tex->v1;
+			}
+		}
+
+		S_LoadBar();
+
+		S_GetUVRotateTextures();
+		S_LoadBar();
+
+		MallocD3DLights();
+		CreateD3DLights();
+		SetupGame();
+		S_LoadBar();
+		SetFadeClip(0, 1);
+		reset_cutseq_vars();
+
+		if (gfCurrentLevel == LVL5_STREETS_OF_ROME)
+			find_a_fucking_item(ANIMATING10)->mesh_bits = 11;
+
+		if (gfCurrentLevel == LVL5_OLD_MILL)
+			find_a_fucking_item(ANIMATING16)->mesh_bits = 1;
+
+		MonitorScreenTex = 0;
+		obj = &objects[MONITOR_SCREEN];
+
+		if (obj->loaded)
+		{
+			mesh = (MESH_DATA*)meshes[objects[MONITOR_SCREEN].mesh_index];
+
+			for (int i = 0; i < mesh->ngt4; i++)
+			{
+				if (mesh->gt4[i * 6 + 5] & 1)	//semitrans quad
+				{
+					mesh->gt4[i * 6 + 5] &= ~1;	//no more
+					MonitorScreenTex = &textinfo[mesh->gt4[i * 6 + 4] & 0x7FFF];
+					MonitorScreenU = MonitorScreenTex->u1;
+					break;
+				}
+			}
+		}
+
+		FileClose(level_fp);
+		aInit();
+		aInitMatrix();
+		ClearFX();
+	}
+
+	aMakeCutsceneResident(gfResidentCut[0], gfResidentCut[1], gfResidentCut[2], gfResidentCut[3]);
+	LevelLoadingThread.active = 0;
+	_endthreadex(1);
 	return 1;
 }
 
@@ -1030,10 +1188,293 @@ void S_GetUVRotateTextures()
 	}
 }
 
+void DoMonitorScreen()
+{
+	float s;
+	static long pos, reset;
+
+	if (!MonitorScreenTex)
+		return;
+
+	s = (fSin(pos) * 47.0F + 47.0F);
+	MonitorScreenTex->u1 = MonitorScreenU + s * (1.0F / 256.0F);
+	MonitorScreenTex->u2 = MonitorScreenU + s * (1.0F / 256.0F) + 0.125F;
+	MonitorScreenTex->u4 = MonitorScreenU + s * (1.0F / 256.0F);
+	MonitorScreenTex->u3 = MonitorScreenU + s * (1.0F / 256.0F) + 0.125F;
+
+	if (reset)
+		reset--;
+	else
+	{
+		if (s >= 94 || s <= 0)
+			reset = 65;
+
+		pos += 128;
+	}
+}
+
+void S_LoadLevel()
+{
+	Log(2, "S_LoadLevel");
+	LevelLoadingThread.active = 1;
+	LevelLoadingThread.ended = 0;
+	LevelLoadingThread.handle = _beginthreadex(0, 0, LoadLevel, LoadLevelName.name, 0, (unsigned int*)&LevelLoadingThread.address);
+
+	if (App.fmv && !SetThreadPriority((LPVOID)LevelLoadingThread.handle, THREAD_PRIORITY_LOWEST))
+		Log(1, "Error Setting Thread Priority");
+
+	while (LevelLoadingThread.active);
+}
+
+void LoadMapFile()
+{
+	long size;
+
+	size = *(long*)FileData;
+	FileData += sizeof(long);
+	MapData = (char*)game_malloc(size, 0);
+	memcpy(MapData, FileData, size);
+	FileData += size;
+}
+
+bool LoadBoxes()
+{
+	BOX_INFO* box;
+	long size;
+
+	Log(2, "LoadBoxes");
+	num_boxes = *(long*)FileData;
+	FileData += sizeof(long);
+
+	boxes = (BOX_INFO*)game_malloc(sizeof(BOX_INFO) * num_boxes, 0);
+	memcpy(boxes, FileData, sizeof(BOX_INFO) * num_boxes);
+	FileData += sizeof(BOX_INFO) * num_boxes;
+
+	size = *(long*)FileData;
+	FileData += sizeof(long);
+	overlap = (ushort*)game_malloc(sizeof(ushort) * size, 0);
+	memcpy(overlap, FileData, sizeof(ushort) * size);
+	FileData += sizeof(ushort) * size;
+
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			ground_zone[j][i] = (short*)game_malloc(sizeof(short) * num_boxes, 0);
+			memcpy(ground_zone[j][i], FileData, sizeof(short) * num_boxes);
+			FileData += sizeof(short) * num_boxes;
+		}
+
+		ground_zone[4][i] = (short*)game_malloc(sizeof(short) * num_boxes, 0);
+		memcpy(ground_zone[4][i], FileData, sizeof(short) * num_boxes);
+		FileData += sizeof(short) * num_boxes;
+	}
+
+	for (int i = 0; i < num_boxes; i++)
+	{
+		box = &boxes[i];
+
+		if (box->overlap_index & 0x8000)
+			box->overlap_index |= 0x4000;
+	}
+
+	return 1;
+}
+
+void AdjustUV(long num)
+{
+	TEXTURESTRUCT* tex;
+	float u, v;
+	ushort type;
+
+	Log(2, "AdjustUV");
+
+	for (int i = 0; i < num; i++)
+	{
+		tex = &textinfo[i];
+		Textures[tex->tpage].tpage++;
+		tex->tpage++;
+		u = 1.0F / float(Textures[tex->tpage].width << 1);
+		v = 1.0F / float(Textures[tex->tpage].height << 1);
+		type = tex->flag & 7;
+
+		if (tex->flag & 0x8000)
+		{
+			switch (type)
+			{
+			case 0:
+				tex->u1 += u;
+				tex->v1 += v;
+				tex->u2 -= u;
+				tex->v2 += v;
+				tex->u3 += u;
+				tex->v3 -= v;
+				break;
+
+			case 1:
+				tex->u1 -= u;
+				tex->v1 += v;
+				tex->u2 -= u;
+				tex->v2 -= v;
+				tex->u3 += u;
+				tex->v3 += v;
+				break;
+
+			case 2:
+				tex->u1 -= u;
+				tex->v1 -= v;
+				tex->u2 += u;
+				tex->v2 -= v;
+				tex->u3 -= u;
+				tex->v3 += v;
+				break;
+
+			case 3:
+				tex->u1 += u;
+				tex->v1 -= v;
+				tex->u2 += u;
+				tex->v2 += v;
+				tex->u3 -= u;
+				tex->v3 -= v;
+				break;
+
+			case 4:
+				tex->u1 -= u;
+				tex->v1 += v;
+				tex->u2 += u;
+				tex->v2 += v;
+				tex->u3 -= u;
+				tex->v3 -= v;
+				break;
+
+			case 5:
+				tex->u1 += u;
+				tex->v1 += v;
+				tex->u2 += u;
+				tex->v2 -= v;
+				tex->u3 -= u;
+				tex->v3 += v;
+				break;
+
+			case 6:
+				tex->u1 += u;
+				tex->v1 -= v;
+				tex->u2 -= u;
+				tex->v2 -= v;
+				tex->u3 += u;
+				tex->v3 += v;
+				break;
+
+			case 7:
+				tex->u1 -= u;
+				tex->v1 -= v;
+				tex->u2 -= u;
+				tex->v2 += v;
+				tex->u3 += u;
+				tex->v3 -= v;
+				break;
+
+			default:
+				Log(1, "TextureInfo Type %d Not Found", type);
+				break;
+			}
+		}
+		else
+		{
+			switch (type)
+			{
+			case 0:
+				tex->u1 += u;
+				tex->v1 += v;
+				tex->u2 -= u;
+				tex->v2 += v;
+				tex->u3 -= u;
+				tex->v3 -= v;
+				tex->u4 += u;
+				tex->v4 -= v;
+				break;
+
+			case 1:
+				tex->u1 -= u;
+				tex->v1 += v;
+				tex->u2 += u;
+				tex->v2 += v;
+				tex->u3 += u;
+				tex->v3 -= v;
+				tex->u4 -= u;
+				tex->v4 -= v;
+				break;
+
+			default:
+				Log(1, "TextureInfo Type %d Not Found", type);
+				break;
+			}
+		}
+	}
+}
+
+long LoadFile(const char* name, char** dest)
+{
+	FILE* file;
+	long size, count;
+
+	Log(2, "LoadFile");
+	Log(5, "File - %s", name);
+	file = FileOpen(name);
+
+	if (!file)
+		return 0;
+
+	size = FileSize(file);
+
+	if (!*dest)
+		*dest = (char*)MALLOC(size);
+
+	count = READ(*dest, 1, size, file);
+	Log(5, "Read - %d FileSize - %d", count, size);
+
+	if (count != size)
+	{
+		Log(1, "Error Reading File");
+		FileClose(file);
+		FREE(*dest);
+		return 0;
+	}
+
+	FileClose(file);
+	return size;
+}
+
+void FreeLevel()
+{
+	MESH_DATA** vbuf;
+	MESH_DATA* mesh;
+
+	Log(2, "FreeLevel");
+
+	for (int i = 0; i < num_level_meshes; i++)
+	{
+		vbuf = &mesh_vtxbuf[i];
+		mesh = *vbuf;
+
+		if (mesh->SourceVB)
+		{
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mesh VB", mesh->SourceVB, mesh->SourceVB->Release());
+			mesh->SourceVB = 0;
+		}
+	}
+
+	Log(5, "Free Textures");
+	FreeTextures();
+	Log(5, "Free Lights");
+	FreeD3DLights();
+	DXFreeSounds();
+	malloc_ptr = malloc_buffer;
+	malloc_free = malloc_size;
+}
+
 void inject_file(bool replace)
 {
-	INJECT(0x004A6B30, LoadLevel, 0);
-
 	INJECT(0x004A60E0, LoadTextureInfos, replace);
 	INJECT(0x004A4DA0, LoadRooms, replace);
 	INJECT(0x004A3CD0, FileOpen, replace);
@@ -1049,7 +1490,15 @@ void inject_file(bool replace)
 	INJECT(0x004A67D0, LoadCinematic, replace);
 	INJECT(0x004A6880, LoadSamples, replace);
 	INJECT(0x004A67F0, LoadAIInfo, replace);
+	INJECT(0x004A6B30, LoadLevel, replace);
 	INJECT(0x004A72B0, S_LoadLevelFile, replace);
 	INJECT(0x004A3FC0, LoadTextures, replace);
 	INJECT(0x004A6AB0, S_GetUVRotateTextures, replace);
+	INJECT(0x004A7020, DoMonitorScreen, replace);
+	INJECT(0x004A7210, S_LoadLevel, replace);
+	INJECT(0x004A6760, LoadMapFile, replace);
+	INJECT(0x004A5E50, LoadBoxes, replace);
+	INJECT(0x004A5430, AdjustUV, replace);
+	INJECT(0x004A3E10, LoadFile, replace);
+	INJECT(0x004A7130, FreeLevel, replace);
 }

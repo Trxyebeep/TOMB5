@@ -105,34 +105,18 @@ void LaraInitialiseMeshes()
 		lara.mesh_ptrs[LM_TORSO] = meshes[objects[ANIMATING6_MIP].mesh_index + (2 * LM_TORSO)];
 
 	if (lara.gun_type == WEAPON_HK)
-	{
-		lara.gun_status = LG_NO_ARMS;
-		lara.back_gun = WEAPON_HK;
-		lara.target = 0;
-		lara.left_arm.frame_number = 0;
-		lara.left_arm.lock = 0;
-		lara.right_arm.frame_number = 0;
-		lara.right_arm.lock = 0;
-	}
-	else if (lara.shotgun_type_carried)
-	{
-		lara.gun_status = LG_NO_ARMS;
-		lara.back_gun = WEAPON_UZI;
-		lara.target = 0;
-		lara.left_arm.frame_number = 0;
-		lara.left_arm.lock = 0;
-		lara.right_arm.frame_number = 0;
-		lara.right_arm.lock = 0;
-	}
-	else if (!lara.hk_type_carried)
-	{
-		lara.gun_status = LG_NO_ARMS;
-		lara.target = 0;
-		lara.left_arm.frame_number = 0;
-		lara.left_arm.lock = 0;
-		lara.right_arm.frame_number = 0;
-		lara.right_arm.lock = 0;
-	}
+		lara.back_gun = HK_ANIM;
+	else if (lara.shotgun_type_carried != W_NONE)
+		lara.back_gun = SHOTGUN_ANIM;
+	else if (lara.hk_type_carried != W_NONE)
+		lara.back_gun = HK_ANIM;
+
+	lara.gun_status = LG_NO_ARMS;
+	lara.target = 0;
+	lara.left_arm.frame_number = 0;
+	lara.left_arm.lock = 0;
+	lara.right_arm.frame_number = 0;
+	lara.right_arm.lock = 0;
 }
 
 void LaraCheatGetStuff()

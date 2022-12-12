@@ -457,9 +457,9 @@ struct PHD_3DPOS
 
 struct SVECTOR
 {
-	short vx;
-	short vy;
-	short vz;
+	short x;
+	short y;
+	short z;
 	short pad;
 };
 
@@ -930,7 +930,7 @@ struct OBJECT_INFO
 	ulong padfuck;
 };
 
-struct FOGBULB
+struct FOGBULB_INFO	//fog data stored in room data
 {
 	float px;
 	float py;
@@ -1021,7 +1021,7 @@ struct ROOM_INFO
 	long gt3cnt;
 	long gt4cnt;
 	PCLIGHT_INFO* pclight;
-	FOGBULB* fogbulb;
+	FOGBULB_INFO* fogbulb;
 	long nPCLight;
 	long nFogBulbs;
 	float cy0;
@@ -2035,15 +2035,15 @@ struct SPOTCAM
 	short pad;
 };
 
-struct SAVEGAMES
+struct SAVEFILE_INFO
 {
-	char SaveName[75];
-	char bValid;
-	short Hour;
-	short Min;
-	short Sec;
-	short Day;
-	long Count;
+	char name[75];
+	char valid;
+	short hours;
+	short minutes;
+	short seconds;
+	short days;
+	long num;
 };
 
 struct PHDSPRITESTRUCT
@@ -2245,7 +2245,7 @@ struct POINTLIGHT_STRUCT
 	float rad;
 };
 
-struct FOGBULB_STRUCT
+struct FOGBULB_STRUCT	//fog data used to apply fog on vertices
 {
 	FVECTOR pos;
 	FVECTOR world;
@@ -2273,11 +2273,11 @@ struct SPOTLIGHT_STRUCT
 
 struct FCAMERA
 {
-	FVECTOR i;
-	FVECTOR j;
-	FVECTOR k;
-	FVECTOR pos;
-	FVECTOR tar;
+	FVECTOR i;			//forward
+	FVECTOR j;			//right
+	FVECTOR k;			//up
+	FVECTOR pos;		//eye
+	FVECTOR tar;		//look at
 	float matrix[12];
 	float invmatrix[12];
 };
@@ -2394,6 +2394,35 @@ struct COMMANDLINES
 	bool needs_parameter;
 	void (*code)(char*);
 	char parameter[20];
+};
+
+struct CHARDEF
+{
+	float u;
+	float v;
+	short w;
+	short h;
+	short YOffset;
+	char TopShade;
+	char BottomShade;
+};
+
+struct LOADLEVELNAME
+{
+	char unk;
+	char name[256];
+};
+
+struct WRAITH_STRUCT
+{
+	PHD_VECTOR pos;
+	short xv;
+	short yv;
+	short zv;
+	uchar r;
+	uchar g;
+	uchar b;
+	uchar pad[3];
 };
 
 #ifdef IMPROVED_BARS

@@ -24,6 +24,7 @@
 #include "../tomb5/troyestuff.h"
 #endif
 #include "mmx.h"
+#include "fmv.h"
 
 static long MonoScreenX[4] = { 0, 256, 512, 640 };
 static long MonoScreenY[3] = { 0, 256, 480 };
@@ -677,75 +678,78 @@ void S_DrawEnemyBar(long pos)
 #pragma warning(disable : 4244)
 long DoLoadSave(long LoadSave)
 {
-	long String, color, n;
-	char SaveInfo[80];
-	char string[41];
+	SAVEFILE_INFO* pSave;
+	static long selection;
+	long txt, color, l;
+	char string[80];
+	char name[41];
 
 	if (LoadSave & IN_SAVE)
-		String = gfStringOffset_bis[STR_SAVE_GAME_BIS_BIS];
+		txt = STR_SAVE_GAME_BIS_BIS;
 	else
-		String = gfStringOffset_bis[STR_LOAD_GAME_BIS];
+		txt = STR_LOAD_GAME_BIS;
 
-	PrintString(phd_centerx, font_height, 6, &gfStringWad[String], FF_CENTER);
+	PrintString(phd_centerx, font_height, 6, SCRIPT_TEXT_bis(txt), FF_CENTER);
 
 	for (int i = 0; i < 15; i++)
 	{
+		pSave = &SaveGames[i];
 		color = 2;
 
-		if (i == cSaveGameSelect)
+		if (i == selection)
 			color = 1;
 
-		memset(string, 32, 40);
-		n = strlen(SaveGames[i].SaveName);
+		memset(name, ' ', 40);
+		l = strlen(pSave->name);
 
-		if (n > 40)
-			n = 40;
+		if (l > 40)
+			l = 40;
 
-		strncpy(string, SaveGames[i].SaveName, n);
-		string[40] = 0;
-		tqFontHeight = 1;
+		strncpy(name, pSave->name, l);
+		name[40] = 0;
+		small_font = 1;
 
-		if (SaveGames[i].bValid)
+		if (pSave->valid)
 		{
-			wsprintf(SaveInfo, "%03d", SaveGames[i].Count);
-			PrintString(phd_centerx - long((310.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, SaveInfo, 0);
-			PrintString(phd_centerx - long((270.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, string, 0);
-			wsprintf(SaveInfo, "%d %s %02d:%02d:%02d", SaveGames[i].Day, SCRIPT_TEXT_bis(STR_DAYS), SaveGames[i].Hour, SaveGames[i].Min, SaveGames[i].Sec);
-			PrintString(phd_centerx + long((135.0f * (phd_winwidth / 640.0f))), font_height + ((i + 2) * font_height), color, SaveInfo, 0);
+			wsprintf(string, "%03d", pSave->num);
+			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * 310.0F), font_height + font_height * (i + 2), color, string, 0);
+			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * 270.0F), font_height + font_height * (i + 2), color, name, 0);
+			wsprintf(string, "%d %s %02d:%02d:%02d", pSave->days, SCRIPT_TEXT_bis(STR_DAYS), pSave->hours, pSave->minutes, pSave->seconds);
+			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * -135.0F), font_height + font_height * (i + 2), color, string, 0);
 		}
 		else
 		{
-			wsprintf(SaveInfo, "%s", SaveGames[i].SaveName);
-			PrintString(phd_centerx, font_height + ((i + 2) * font_height), color, SaveInfo, FF_CENTER);
+			wsprintf(string, "%s", pSave->name);
+			PrintString(phd_centerx, font_height + font_height * (i + 2), color, string, FF_CENTER);
 		}
 
-		tqFontHeight = 0;
+		small_font = 0;
 	}
 
 	if (dbinput & IN_FORWARD)
 	{
-		cSaveGameSelect--;
-		SoundEffect(SFX_MENU_CHOOSE, 0, 0);
+		selection--;
+		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_DEFAULT);
 	}
 
 	if (dbinput & IN_BACK)
 	{
-		cSaveGameSelect++;
-		SoundEffect(SFX_MENU_CHOOSE, 0, 0);
+		selection++;
+		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_DEFAULT);
 	}
 
-	if (cSaveGameSelect < 0)
-		cSaveGameSelect = 0;
+	if (selection < 0)
+		selection = 0;
 
-	if (cSaveGameSelect > 14)
-		cSaveGameSelect = 14;
+	if (selection > 14)
+		selection = 14;
 
 	if (dbinput & IN_SELECT)
 	{
-		if (SaveGames[cSaveGameSelect].bValid || LoadSave == IN_SAVE)
-			return cSaveGameSelect;
+		if (SaveGames[selection].valid || LoadSave == IN_SAVE)
+			return selection;
 		else
-			SoundEffect(SFX_LARA_NO, 0, 0);
+			SoundEffect(SFX_LARA_NO, 0, SFX_DEFAULT);
 	}
 
 	return -1;
@@ -2345,6 +2349,505 @@ void DrawLoadingScreen()
 #endif
 }
 
+long GetSaveLoadFiles()
+{
+	FILE* file;
+	SAVEFILE_INFO* pSave;
+	SAVEGAME_INFO save_info;
+	static long nSaves;
+	char name[75];
+
+	save_counter = 0;
+
+	for (int i = 0; i < 15; i++)
+	{
+		pSave = &SaveGames[i];
+		wsprintf(name, "savegame.%d", i);
+		file = fopen(name, "rb");
+		Log(0, "Attempting to open %s", name);
+
+		if (!file)
+		{
+			pSave->valid = 0;
+			strcpy(pSave->name, SCRIPT_TEXT(STR_EMPTY_SLOT));
+			continue;
+		}
+
+		Log(0, "Opened OK");
+		fread(&pSave->name, sizeof(char), 75, file);
+		fread(&pSave->num, sizeof(long), 1, file);
+		fread(&pSave->days, sizeof(short), 1, file);
+		fread(&pSave->hours, sizeof(short), 1, file);
+		fread(&pSave->minutes, sizeof(short), 1, file);
+		fread(&pSave->seconds, sizeof(short), 1, file);
+		fread(&save_info, 1, sizeof(SAVEGAME_INFO), file);
+		fclose(file);
+
+		if (pSave->num > save_counter)
+			save_counter = pSave->num;
+
+		pSave->valid = 1;
+		nSaves++;
+		Log(0, "Validated savegame");
+	}
+
+	save_counter++;
+	return nSaves;
+}
+
+void DoSlider(long x, long y, long width, long height, long pos, long c1, long c2, long c3)
+{
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	float x2, sx, sy;
+	static float V;
+
+	nPolyType = 4;
+	V += 0.0099999998F;
+
+	if (V > 0.99000001F)
+		V = 0;
+
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+	x2 = (float)phd_winxmax / 640.0F;
+	sx = width * x2;
+	sy = ((float)phd_winymax / 480.0F) * (height >> 1);
+	x2 *= x;
+
+	v[0].sx = x2;
+	v[0].sy = (float)y;
+	v[0].sz = f_mznear;
+	v[0].rhw = f_moneoznear - 2.0F;
+	v[0].color = c1;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = sx + x2;
+	v[1].sy = (float)y;
+	v[1].sz = f_mznear;
+	v[1].rhw = f_moneoznear - 2.0F;
+	v[1].color = c1;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = sx + x2;
+	v[2].sy = (float)y + sy;
+	v[2].sz = f_mznear;
+	v[2].rhw = f_moneoznear - 2.0F;
+	v[2].color = c2;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = x2;
+	v[3].sy = (float)y + sy;
+	v[3].sz = f_mznear;
+	v[3].rhw = f_moneoznear - 2.0F;
+	v[3].color = c2;
+	v[3].specular = 0xFF000000;
+
+	tex.tpage = ushort(nTextures - 1);
+	tex.drawtype = 0;
+	tex.flag = 0;
+	tex.u1 = 0;
+	tex.v1 = V;
+	tex.u2 = 1;
+	tex.v2 = V;
+	tex.u3 = 1;
+	tex.v3 = V + 0.0099999998F;
+	tex.u4 = 0;
+	tex.v4 = V + 0.0099999998F;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+
+	v[0].sx = x2;
+	v[0].sy = (float)y + sy;
+	v[0].sz = f_mznear;
+	v[0].rhw = f_moneoznear - 2.0F;
+	v[0].color = c2;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = sx + x2;
+	v[1].sy = (float)y + sy;
+	v[1].sz = f_mznear;
+	v[1].rhw = f_moneoznear - 2.0F;
+	v[1].color = c2;
+	v[1].specular = 0xFF000000;
+
+
+	v[2].sx = sx + x2;
+	v[2].sy = (float)y + 2 * sy;
+	v[2].sz = f_mznear;
+	v[2].rhw = f_moneoznear - 2.0F;
+	v[2].color = c1;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = x2;
+	v[3].sy = (float)y + 2 * sy;
+	v[3].sz = f_moneoznear - 2.0F;
+	v[3].rhw = v[0].rhw;
+	v[3].color = c1;
+	v[3].specular = 0xFF000000;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+
+	v[0].sx = x2 - 1;
+	v[0].sy = float(y - 1);
+	v[0].sz = f_mznear + 2.0F;
+	v[0].rhw = f_moneoznear - 3.0F;
+	v[0].color = 0xFFFFFFFF;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = sx + x2 + 1;
+	v[1].sy = float(y - 1);
+	v[1].sz = f_mznear + 2.0F;
+	v[1].rhw = f_moneoznear - 3.0F;
+	v[1].color = 0xFFFFFFFF;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = sx + x2 + 1;
+	v[2].sy = ((float)y + 2 * sy) + 1;
+	v[2].sz = f_mznear + 2.0F;
+	v[2].rhw = f_moneoznear - 3.0F;
+	v[2].color = 0xFFFFFFFF;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = x2 - 1;
+	v[3].sy = ((float)y + 2 * sy) + 1;
+	v[3].sz = f_mznear + 2.0F;
+	v[3].rhw = f_moneoznear - 3.0F;
+	v[3].color = 0xFFFFFFFF;
+	v[3].specular = 0xFF000000;
+	tex.tpage = 0;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+
+	sx = pos * sx / 100 + x2;
+
+	v[0].sx = x2;
+	v[0].sy = (float)y;
+	v[0].sz = f_mznear - 1.0F;
+	v[0].rhw = f_moneoznear - 1.0F;
+	v[0].color = c3;
+	v[0].specular = 0xFF000000;
+
+	v[1].sx = sx + 1;
+	v[1].sy = (float)y;
+	v[1].sz = f_mznear - 1.0F;
+	v[1].rhw = f_moneoznear - 1.0F;
+	v[1].color = c3;
+	v[1].specular = 0xFF000000;
+
+	v[2].sx = sx;
+	v[2].sy = (float)y + 2 * sy;
+	v[2].sz = f_mznear - 1.0F;
+	v[2].rhw = f_moneoznear - 1.0F;
+	v[2].color = c3;
+	v[2].specular = 0xFF000000;
+
+	v[3].sx = x2 - 1;
+	v[3].sy = (float)y + 2 * sy;
+	v[3].sz = f_mznear - 1.0F;
+	v[3].rhw = f_moneoznear - 1.0F;
+	v[3].color = c3;
+	v[3].specular = 0xFF000000;
+
+	tex.tpage = 0;
+	tex.drawtype = 2;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+}
+
+#pragma warning(push)
+#pragma warning(disable : 4244)
+long S_DisplayPauseMenu(long reset)
+{
+	static long menu, selection = 1;
+	long y;
+
+	if (!menu)
+	{
+		if (reset)
+		{
+			selection = reset;
+			menu = 0;
+		}
+		else
+		{
+			y = phd_centery - font_height;
+			PrintString(phd_centerx, y - ((3 * font_height) >> 1), 6, SCRIPT_TEXT_bis(STR_PAUSED), FF_CENTER);
+			PrintString(phd_centerx, y, selection & 1 ? 1 : 2, SCRIPT_TEXT_bis(STR_STATISTICS), FF_CENTER);
+			PrintString(phd_centerx, y + font_height, selection & 2 ? 1 : 2, SCRIPT_TEXT_bis(STR_OPTIONS), FF_CENTER);
+			PrintString(phd_centerx, y + 2 * font_height, selection & 4 ? 1 : 2, SCRIPT_TEXT_bis(STR_EXIT_TO_TITLE), FF_CENTER);
+
+			if (dbinput & IN_FORWARD)
+			{
+				if (selection > 1)
+					selection >>= 1;
+
+				SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+			}
+
+			if (dbinput & IN_BACK)
+			{
+				if (selection < 4)
+					selection <<= 1;
+
+				SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+			}
+
+			if (dbinput & IN_DESELECT)
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+				return 1;
+			}
+
+			if (dbinput & IN_SELECT && !keymap[DIK_LALT])
+			{
+				SoundEffect(SFX_MENU_SELECT, 0, SFX_DEFAULT);
+
+				if (selection & 1)
+					menu = 2;
+				else if (selection & 2)
+					menu = 1;
+				else if (selection & 4)
+					return 8;
+			}
+		}
+	}
+	else if (menu == 1)
+	{
+		DoOptions();
+
+		if (dbinput & IN_DESELECT)
+		{
+			menu = 0;
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+		}
+	}
+	else if (menu == 2)
+	{
+		DoStatScreen();
+
+		if (dbinput & IN_DESELECT)
+		{
+			menu = 0;
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+		}
+	}
+
+	return 0;
+}
+#pragma warning (pop)
+
+long S_PauseMenu()
+{
+	long fade, ret;
+
+	fade = 0;
+	CreateMonoScreen();
+	S_DisplayPauseMenu(1);
+	InventoryActive = 1;
+
+	do
+	{
+		S_InitialisePolyList();
+
+		if (fade)
+			dbinput = 0;
+		else
+			S_UpdateInput();
+
+		SetDebounce = 1;
+		S_DisplayMonoScreen();
+		ret = S_DisplayPauseMenu(0);
+		UpdatePulseColour();
+		S_OutputPolyList();
+		S_DumpScreen();
+
+		if (ret == 1)
+			break;
+
+		if (ret == 8)
+		{
+			fade = 8;
+			ret = 0;
+			SetFade(0, 255);
+		}
+
+		if (fade && DoFade == 2)
+		{
+			ret = fade;
+			break;
+		}
+
+	} while (!MainThread.ended);
+
+	TIME_Init();
+	FreeMonoScreen();
+	InventoryActive = 0;
+	return ret;
+}
+
+long IsHardware()
+{
+	return App.dx.Flags & 0x80;
+}
+
+long IsSuperLowRes()
+{
+	long w, h;
+
+	MMXGetBackSurfWH(w, h);
+
+	if (w < 400)
+		return 1;
+
+	if (w <= 512)
+		return 2;
+
+	return 0;
+}
+
+void DoFrontEndOneShotStuff()
+{
+	static long done;
+
+	if (!done)
+	{
+		PlayFmvNow(0, 0);
+		PlayFmvNow(1, 0);
+		done = 1;
+	}
+}
+
+long FindSFCursor(long in, long selection)
+{
+	long num, bak;
+
+	num = 0;
+
+	while (selection != 1)
+	{
+		selection >>= 1;
+		num++;
+	}
+
+	bak = num;
+
+	if (in & IN_FORWARD && num)
+		do num--; while (num && !SpecialFeaturesPage[num]);
+
+	if (in & IN_BACK && num < 4)
+		do num++; while (num < 4 && !SpecialFeaturesPage[num]);
+
+	if (!SpecialFeaturesPage[num])
+		num = bak;
+
+	return 1 << num;
+}
+
+void CalculateNumSpecialFeatures()
+{
+	SpecialFeaturesPage[0] = 0;
+	SpecialFeaturesPage[1] = 0;
+	SpecialFeaturesPage[2] = 0;
+	SpecialFeaturesPage[3] = 0;
+	SpecialFeaturesPage[4] = 0;
+	NumSpecialFeatures = 0;
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (savegame.CampaignSecrets[i] >= 9)
+		{
+			SpecialFeaturesPage[i] = 1;
+			NumSpecialFeatures++;
+		}
+	}
+}
+
+#pragma warning(push)
+#pragma warning(disable : 4244)
+void SpecialFeaturesDisplayScreens(long num)
+{
+	static long start[4] = { 0, 0, 0, 0 };
+	static long nPics[4] = { 12, 11, 12, 23 };
+	long first, max, pos, count;
+
+	first = start[num];
+	max = nPics[num];
+	pos = 0;
+	count = 0;
+	LoadScreen(first, num);
+
+	while (!MainThread.ended && !(dbinput & IN_DESELECT))
+	{
+		_BeginScene();
+		InitBuckets();
+		InitialiseSortList();
+		S_UpdateInput();
+		SetDebounce = 1;
+
+		if (count < 2)
+		{
+			count++;
+			DrawLoadingScreen();
+		}
+		else if (count == 2)
+		{
+			count = 3;
+			ReleaseScreen();
+		}
+
+		if (!pos)
+			PrintString(font_height, phd_winymax - font_height, 6, "Next \x1B", 0);
+		else if (pos < max)
+			PrintString(font_height, phd_winymax - font_height, 6, "\x19 Previous / Next \x1b", 0);
+		else
+			PrintString(font_height, phd_winymax - font_height, 6, "\x19 Previous", 0);
+
+		UpdatePulseColour();
+		S_OutputPolyList();
+		S_DumpScreen();
+
+		if (dbinput & IN_LEFT && pos)
+		{
+			pos--;
+			LoadScreen(pos + first, num);
+			count = 0;
+		}
+		if (dbinput & IN_RIGHT && pos < max)
+		{
+			pos++;
+			LoadScreen(pos + first, num);
+			count = 0;
+		}
+	}
+
+	dbinput &= ~IN_DESELECT;
+	ReleaseScreen();
+}
+#pragma warning (pop)
+
+void DoSpecialFeaturesServer()
+{
+	switch (SpecialFeaturesNum)
+	{
+	case 0:
+		SpecialFeaturesDisplayScreens(0);
+		break;
+
+	case 1:
+		SpecialFeaturesDisplayScreens(1);
+		break;
+
+	case 2:
+		SpecialFeaturesDisplayScreens(2);
+		break;
+
+	case 3:
+		SpecialFeaturesDisplayScreens(3);
+		break;
+	}
+
+	SpecialFeaturesNum = -1;
+}
+
 void inject_LoadSave(bool replace)
 {
 	INJECT(0x004ADF40, CheckKeyConflicts, replace);
@@ -2374,4 +2877,15 @@ void inject_LoadSave(bool replace)
 	INJECT(0x004AC810, LoadScreen, replace);
 	INJECT(0x004ACA30, ReleaseScreen, replace);
 	INJECT(0x004ACAB0, DrawLoadingScreen, replace);
+	INJECT(0x004AD290, GetSaveLoadFiles, replace);
+	INJECT(0x004AD820, DoSlider, replace);
+	INJECT(0x004B0D60, S_DisplayPauseMenu, replace);
+	INJECT(0x004B1030, S_PauseMenu, replace);
+	INJECT(0x004B1E90, IsHardware, replace);
+	INJECT(0x004B1EB0, IsSuperLowRes, replace);
+	INJECT(0x004B2090, DoFrontEndOneShotStuff, replace);
+	INJECT(0x004ABA60, FindSFCursor, replace);
+	INJECT(0x004AB9F0, CalculateNumSpecialFeatures, replace);
+	INJECT(0x004B1C00, SpecialFeaturesDisplayScreens, replace);
+	INJECT(0x004B1D90, DoSpecialFeaturesServer, replace);
 }

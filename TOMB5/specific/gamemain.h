@@ -9,5 +9,4 @@ long S_SaveGame(long slot_num);
 long S_LoadGame(long slot_num);
 void GameClose();
 unsigned int __stdcall GameMain(void* ptr);
-
-#define GameInitialise	( (bool(__cdecl*)()) 0x004A8610 )
+bool GameInitialise();

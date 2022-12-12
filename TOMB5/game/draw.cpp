@@ -430,9 +430,9 @@ void SkyDrawPhase()
 		if (gfLevelFlags & GF_HORIZON)
 		{
 			if (gfCurrentLevel == LVL5_TITLE && jobyfrigger)
-				phd_PutPolygonSkyMesh(meshes[objects[CHEF_MIP].mesh_index], -1);
+				phd_PutPolygonsSkyMesh(meshes[objects[CHEF_MIP].mesh_index], -1);
 			else
-				phd_PutPolygonSkyMesh(meshes[objects[HORIZON].mesh_index], -1);
+				phd_PutPolygonsSkyMesh(meshes[objects[HORIZON].mesh_index], -1);
 
 			OutputSky();
 		}
@@ -514,6 +514,7 @@ void DrawAnimatingItem(ITEM_INFO* item)
 	short* rot2;
 	long frac, rate, clip, bit;
 
+	mAddProfilerEvent(0xFF0000);
 	frac = GetFrames(item, frm, &rate);
 	obj = &objects[item->object_number];
 
@@ -654,6 +655,7 @@ void DrawAnimatingItem(ITEM_INFO* item)
 	phd_top = 0;
 	phd_bottom = phd_winheight;
 	phd_PopMatrix();
+	mAddProfilerEvent(0xFF);
 }
 
 void PrintObjects(short room_number)
@@ -856,7 +858,7 @@ void DrawRooms(short current_room)
 		aResetFogBulbList();
 #endif
 
-	mAddProfilerEvent();
+	mAddProfilerEvent(0xFF00FF00);
 
 	for (int i = 0; i < number_draw_rooms; i++)
 	{
@@ -873,7 +875,7 @@ void DrawRooms(short current_room)
 		phd_PopMatrix();
 	}
 
-	mAddProfilerEvent();
+	mAddProfilerEvent(0xFFFF0000);
 	DrawGunshells();
 	nPolyType = 3;
 
@@ -894,7 +896,7 @@ void DrawRooms(short current_room)
 	lara_item->pos.z_pos = camera.pos.z;
 	lara_item->room_number = camera.pos.room_number;
 	DoWeather();
-	mAddProfilerEvent();
+	mAddProfilerEvent(0xFFFFFFFF);
 	DoUwEffect();
 	S_DrawFires();
 	S_DrawSmokeSparks();
@@ -913,7 +915,7 @@ void DrawRooms(short current_room)
 	lara_item->pos.y_pos = ly;
 	lara_item->pos.z_pos = lz;
 	lara_item->room_number = lr;
-	mAddProfilerEvent();
+	mAddProfilerEvent(0xFF00FF00);
 
 	if (gfLevelFlags & GF_LENSFLARE)
 		SetUpLensFlare(gfLensFlare.x, gfLensFlare.y - 4096, gfLensFlare.z, 0);

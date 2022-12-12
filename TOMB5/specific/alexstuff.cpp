@@ -7,6 +7,8 @@
 #include "file.h"
 #include "../game/gameflow.h"
 #include "../game/text.h"
+#include "specificfx.h"
+#include "function_table.h"
 
 const char* CreditNames[] =
 {
@@ -217,7 +219,7 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 	pR = (ROOM_INFO*)s;
 	offset = long(s + sizeof(ROOM_INFO));
 
-	pR->fogbulb = (FOGBULB*)((char*)pR->fogbulb + offset);
+	pR->fogbulb = (FOGBULB_INFO*)((char*)pR->fogbulb + offset);
 	pR->pclight = (PCLIGHT_INFO*)((char*)pR->pclight + offset);
 	pR->floor = (FLOOR_INFO*)((char*)pR->floor + offset);
 	pR->door = (short*)((char*)pR->door + offset);
@@ -263,17 +265,17 @@ void aUpdate()
 
 	spec_wibble++;
 	znear = f_mznear;
-	mAddProfilerEvent();
-	mAddProfilerEvent();
+	mAddProfilerEvent(0xFF00FF00);
+	mAddProfilerEvent(0xFF0000FF);
 	zero = 0;
-	mAddProfilerEvent();
+	mAddProfilerEvent(0xFFFFFFFF);
 
 	if (aCamDir.y >= 0)
 		alphamaybe = long(95 - ((1 - aCamDir.y) * -144)) << 24;
 	else
 		alphamaybe = 0xEF000000;
 
-	mAddProfilerEvent();
+	mAddProfilerEvent(0xFFFF00);
 }
 
 void aInitWater()
@@ -583,6 +585,207 @@ long DoCredits()
 #endif
 #pragma warning(pop)
 
+void DrawBigChar(short x, short y, ushort col, CHARDEF* c, long scale)
+{
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	float u1, v1, u2, v2;
+	long x1, y1, x2, y2, tc, bc;
+
+	x += phd_winxmin;
+	y += phd_winymin;
+
+	x1 = x;
+	y1 = y + scale * c->YOffset;
+
+	x2 = x + scale * c->w;
+	y2 = scale * (c->YOffset + c->h - big_char_height) + y;
+
+	if (y2 < 0 || y1 > phd_winymax)
+		return;
+
+	setXY4(v, x1, y1, x2, y1, x2, y2, x1, y2, long(f_mznear + 1.0F), clipflags);
+
+	tc = *(long*)&FontShades[col][2 * c->TopShade];
+	bc = *(long*)&FontShades[col][2 * c->BottomShade];
+	v[0].color = tc & 0xFFFFFF | 0x20000000;
+	v[1].color = tc & 0xFFFFFF | 0x20000000;
+	v[2].color = bc & 0xFFFFFF | 0x20000000;
+	v[3].color = bc & 0xFFFFFF | 0x20000000;
+	v[0].specular = 0xFF000000;
+	v[1].specular = 0xFF000000;
+	v[2].specular = 0xFF000000;
+	v[3].specular = 0xFF000000;
+
+	u1 = c->u + (1.0F / 512.0F);
+	v1 = c->v + (1.0F / 512.0F);
+	u2 = 512.0F / float(phd_winxmax + 1) * (float)c->w * (1.0F / 256.0F) + c->u - (1.0F / 512.0F);
+	v2 = 240.0F / float(phd_winymax + 1) * (float)c->h * (1.0F / 256.0F) + c->v - (1.0F / 512.0F);
+	tex.drawtype = 3;
+	tex.flag = 0;
+	tex.tpage = ushort(nTextures - 2);
+	tex.u1 = u1;
+	tex.v1 = v1;
+	tex.u2 = u2;
+	tex.v2 = v1;
+	tex.u3 = u2;
+	tex.v3 = v2;
+	tex.u4 = u1;
+	tex.v4 = v2;
+	nPolyType = 4;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 1);
+}
+
+long GetBigStringLength(const char* string, short* top, short* bottom)
+{
+	CHARDEF* def;
+	long s, length;
+	short lowest, highest, y;
+
+	s = *string++;
+	length = 0;
+	lowest = -1024;
+	highest = 1024;
+
+	while (s)
+	{
+		if (s == '\n')
+			break;
+
+		if (s == ' ')
+			length += long((float(phd_winxmax + 1) / 640.0F) * 8.0F) * 3;
+		else if (s == '\t')
+		{
+			length += 40;
+
+			if (top && highest > -12)
+				highest = -12;
+
+			if (bottom && lowest < 2)
+				lowest = 2;
+		}
+		else if (s >= 20)
+		{
+			if (s < ' ')
+				def = &CharDef[s + 74];
+			else
+				def = &CharDef[s - '!'];
+
+			if (ScaleFlag)
+				length += def->w - def->w / 4;
+			else
+				length += def->w * 3;
+
+			y = def->YOffset;
+
+			if (top && y < highest)
+				highest = def->YOffset;
+
+			if (bottom && def->h + y > lowest)
+				lowest = def->h + y;
+		}
+
+		s = *string++;
+	}
+
+	if (top)
+		*top = highest;
+
+	if (bottom)
+		*bottom = lowest;
+
+	return length;
+}
+
+void PrintBigString(ushort x, ushort y, uchar col, const char* string, ushort flags)
+{
+	CHARDEF* def;
+	short x2, bottom, l, top, bottom2;
+	uchar s;
+
+	ScaleFlag = (flags & FF_SMALL) != 0;
+	x2 = (short)GetBigStringLength(string, 0, &bottom);
+
+	if (flags & FF_CENTER)
+		x2 = x - (x2 >> 1);
+	else if (flags & FF_RJUSTIFY)
+		x2 = x - x2;
+	else
+		x2 = x;
+
+	s = *string++;
+
+	while (s)
+	{
+		if (s == '\n')
+		{
+			if (*string == '\n')
+			{
+				bottom = 0;
+				y += 16;
+			}
+			else
+			{
+				l = (short)GetBigStringLength(string, &top, &bottom2);
+
+				if (flags & FF_CENTER)
+					x2 = x - (l >> 1);
+				else if (flags & FF_RJUSTIFY)
+					x2 = x - l;
+				else
+					x2 = x;
+
+				y += bottom - top + 2;
+				bottom = bottom2;
+			}
+
+			s = *string++;
+			continue;
+		}
+
+		if (s == ' ')
+		{
+			if (ScaleFlag)
+				x2 += 6;
+			else
+				x2 += short(float(phd_winxmax + 1) / 640.0F * 8.0F) * 3;
+
+			s = *string++;
+			continue;
+		}
+
+		if (s == '\t')
+		{
+			x2 += 40;
+			s = *string++;
+			continue;
+		}
+
+		if (s < 20)
+		{
+			col = s - 1;
+			s = *string++;
+			continue;
+		}
+
+		if (s < ' ')
+			def = &CharDef[s + 74];
+		else
+			def = &CharDef[s - '!'];
+
+		DrawBigChar(x2, y, col, def, 3);
+
+		if (ScaleFlag)
+			x2 += def->w - def->w / 4;
+		else
+			x2 += def->w * 3;
+
+		s = *string++;
+	}
+
+	ScaleFlag = 0;
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -598,4 +801,7 @@ void inject_alexstuff(bool replace)
 	INJECT(0x00491DA0, aMakeCutsceneResident, replace);
 	INJECT(0x00491F60, aFetchCutData, replace);
 	INJECT(0x004927C0, DoCredits, replace);
+	INJECT(0x00491FE0, DrawBigChar, replace);
+	INJECT(0x004922E0, GetBigStringLength, replace);
+	INJECT(0x004924B0, PrintBigString, replace);
 }

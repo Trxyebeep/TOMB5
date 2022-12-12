@@ -16,5 +16,6 @@ long aCalcDepackBufferSz(char* data);
 void aMakeCutsceneResident(long n1, long n2, long n3, long n4);
 char* aFetchCutData(long n);
 long DoCredits();
-
-#define	PrintBigString	( (void(__cdecl*)(ushort, ushort, uchar, const char*, ushort)) 0x004924B0 )
+void DrawBigChar(short x, short y, ushort col, CHARDEF* c, long scale);
+long GetBigStringLength(const char* string, short* top, short* bottom);
+void PrintBigString(ushort x, ushort y, uchar col, const char* string, ushort flags);

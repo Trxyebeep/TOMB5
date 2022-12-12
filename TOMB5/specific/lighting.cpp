@@ -4,10 +4,12 @@
 #include "d3dmatrix.h"
 #include "../game/control.h"
 #include "function_stubs.h"
+#include "dxshell.h"
 
 #ifdef GENERAL_FIXES
 SPOTLIGHT_STRUCT SpotLights[64];
 #endif
+#include "polyinsert.h"
 
 void InitObjectLighting(ITEM_INFO* item)
 {
@@ -555,6 +557,291 @@ void MallocD3DLights()
 	D3DDynamics = (D3DLIGHT_STRUCT*)game_malloc(sizeof(D3DLIGHT_STRUCT) * 32, 0);
 }
 
+void InitObjectFogBulbs()
+{
+	FOGBULB_STRUCT* fogbulb;
+	FOGBULB_STRUCT* objbulb;
+	FVECTOR box;
+	FVECTOR fPos;
+	float* bbox;
+	float sqr, val;
+	long goin;
+
+	NumFogBulbs = 0;
+	objbulb = FogBulbs;
+
+	for (int i = 0; i < NumActiveFogBulbs; i++)
+	{
+		fogbulb = &ActiveFogBulbs[i];
+
+		if (!fogbulb->visible)
+			continue;
+		
+		goin = 1;
+
+		if (fogbulb->sqlen >= fogbulb->sqrad)
+		{
+			goin = 0;
+			bbox = aBoundingBox;
+
+			for (int j = 0; j < 8; j++)
+			{
+				box.x = *bbox++;
+				box.y = *bbox++;
+				box.z = *bbox++;
+				fPos.x = fogbulb->world.x - box.x;
+				fPos.y = fogbulb->world.y - box.y;
+				fPos.z = fogbulb->world.z - box.z;
+
+				if (SQUARE(fPos.x) + SQUARE(fPos.y) + SQUARE(fPos.y) < fogbulb->sqrad)
+				{
+					goin = 1;
+					break;
+				}
+
+				sqr = SQUARE(box.x) + SQUARE(box.y) + SQUARE(box.z);
+				val = 1.0F / sqrt(sqr);
+				fPos.x = box.x * val;
+				fPos.y = box.y * val;
+				fPos.z = box.z * val;
+				val = fogbulb->pos.x * fPos.x + fogbulb->pos.y * fPos.y + fogbulb->pos.z * fPos.z;
+
+				if (val > 0)
+				{
+					val = SQUARE(val);
+
+					if (sqr > val && fogbulb->sqlen - val < fogbulb->sqrad)
+					{
+						goin = 1;
+						break;
+					}
+				}
+			}
+		}
+
+		if (goin)
+		{
+			objbulb->pos.x = fogbulb->pos.x;
+			objbulb->pos.y = fogbulb->pos.y;
+			objbulb->pos.z = fogbulb->pos.z;
+			objbulb->sqlen = fogbulb->sqlen;
+			objbulb->rad = fogbulb->rad;
+			objbulb->sqrad = fogbulb->sqrad;
+			objbulb->r = fogbulb->r;
+			objbulb->g = fogbulb->g;
+			objbulb->b = fogbulb->b;
+			objbulb->d = fogbulb->d;
+			objbulb++;
+			NumFogBulbs++;
+		}
+	}
+}
+
+void SetupLight(D3DLIGHT_STRUCT* d3dlight, PCLIGHT* light, long* ambient)
+{
+	PHD_VECTOR d;
+	PHD_VECTOR vec;
+	PHD_VECTOR l;
+	float fVal;
+	long r, g, b, val, val2;;
+
+	d.x = light->rlp.x;
+	d.y = light->rlp.y;
+	d.z = light->rlp.z;
+	d3dlight->D3DLight2.dcvColor.r = light->r;
+	d3dlight->D3DLight2.dcvColor.g = light->g;
+	d3dlight->D3DLight2.dcvColor.b = light->b;
+	ApplyMatrix(w2v_matrix, &d, &vec);
+	ApplyTransposeMatrix(phd_mxptr, &vec, &d);
+	d3dlight->D3DLight2.dvPosition.x = (float)d.x;
+	d3dlight->D3DLight2.dvPosition.y = (float)d.y;
+	d3dlight->D3DLight2.dvPosition.z = (float)d.z;
+
+	if (light->Type == LIGHT_SUN || light->Type == LIGHT_SPOT)
+	{
+		d.x = light->inx;
+		d.y = light->iny;
+		d.z = light->inz;
+		ApplyMatrix(w2v_matrix, &d, &vec);
+		ApplyTransposeMatrix(phd_mxptr, &vec, &d);
+		l.x = d.x;
+		l.y = d.y;
+		l.z = d.z;
+	}
+
+	d3dlight->D3DLight2.dwFlags = D3DLIGHT_ALL;
+
+	switch (light->Type)
+	{
+	case LIGHT_SUN:
+		d3dlight->D3DLight2.dltType = D3DLIGHT_DIRECTIONAL;
+		d3dlight->D3DLight2.dvDirection.x = (float)l.x;
+		d3dlight->D3DLight2.dvDirection.y = (float)l.y;
+		d3dlight->D3DLight2.dvDirection.z = (float)l.z;
+		break;
+
+	case LIGHT_POINT:
+		d3dlight->D3DLight2.dltType = D3DLIGHT_POINT;
+		d3dlight->D3DLight2.dvAttenuation1 = 2;
+		d3dlight->D3DLight2.dvRange = light->Outer;
+
+		if (SetupLight_thing)
+		{
+			fVal = (light->Outer - phd_sqrt(light->Range)) / light->Outer;
+
+			if (fVal < 1)
+			{
+				r = long(CLRR(*ambient) + (fVal * light->r * 255));
+				g = long(CLRG(*ambient) + (fVal * light->g * 255));
+				b = long(CLRB(*ambient) + (fVal * light->b * 255));
+
+				if (r > 255)
+					r = 255;
+
+				if (g > 255)
+					g = 255;
+
+				if (b > 255)
+					b = 255;
+
+				*ambient = RGBONLY(r, g, b);
+			}
+		}
+
+		break;
+
+	case LIGHT_SPOT:
+		d3dlight->D3DLight2.dltType = D3DLIGHT_SPOT;
+		d3dlight->D3DLight2.dvDirection.x = (float)l.x;
+		d3dlight->D3DLight2.dvDirection.y = (float)l.y;
+		d3dlight->D3DLight2.dvDirection.z = (float)l.z;
+		d3dlight->D3DLight2.dvFalloff = 1;
+
+		if (SetupLight_thing)
+			d3dlight->D3DLight2.dvAttenuation1 = 2;
+		else
+			d3dlight->D3DLight2.dvAttenuation1 = 1;
+
+		d3dlight->D3DLight2.dvRange = light->Cutoff;
+		d3dlight->D3DLight2.dvTheta = light->OuterAngle;
+		d3dlight->D3DLight2.dvPhi = light->OuterAngle;
+		break;
+
+	case LIGHT_SHADOW:
+		r = CLRR(*ambient);
+		g = CLRG(*ambient);
+		b = CLRB(*ambient);
+		val = phd_sqrt(light->Range);
+		val2 = light->shadow >> 3;
+
+		if (val >= light->Inner)
+			val2 = long((val - light->Outer) / ((light->Outer - light->Inner) / -val2));
+
+		if (val2 < 0)
+			val2 = 0;
+
+		r -= val2;
+		g -= val2;
+		b -= val2;
+
+		if (r < 0)
+			r = 0;
+
+		if (g < 0)
+			g = 0;
+
+		if (b < 0)
+			b = 0;
+
+		*ambient = RGBONLY(r, g, b);
+		d3dlight->D3DLight2.dwFlags = D3DLIGHT_NO_SPECULAR;
+		d3dlight->D3DLight2.dltType = D3DLIGHT_POINT;
+		break;
+	}
+
+	DXAttempt(d3dlight->D3DLight->SetLight((LPD3DLIGHT)&d3dlight->D3DLight2));
+}
+
+#pragma warning(push)
+#pragma warning(disable : 4244)
+void ShowOmni(long x, long y, long z, long rad)
+{
+	PHD_VECTOR pos;
+	FVECTOR p;
+	D3DTLVERTEX v[64];
+	float ang, zv, step;
+
+	x -= camera.pos.x;
+	y -= camera.pos.y;
+	z -= camera.pos.z;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
+
+	step = float(2 * M_PI) / float(64 - 1);	//2pi / (nVtx - 1)
+	ang = 0;
+
+	for (int i = 0; i < 64; i++)
+	{
+		p.x = sin(ang) * rad + x;
+		p.y = y;
+		p.z = cos(ang) * rad + z;
+		pos.x = p.x * phd_mxptr[M00] + p.y * phd_mxptr[M01] + p.z * phd_mxptr[M02] + phd_mxptr[M03];
+		pos.y = p.x * phd_mxptr[M10] + p.y * phd_mxptr[M11] + p.z * phd_mxptr[M12] + phd_mxptr[M13];
+		pos.z = p.x * phd_mxptr[M20] + p.y * phd_mxptr[M21] + p.z * phd_mxptr[M22] + phd_mxptr[M23];
+		zv = (float)phd_persp / (float)pos.z;
+		v[i].sx = pos.x * zv + f_centerx;
+		v[i].sy = pos.y * zv + f_centery;
+		v[i].sz = pos.z;
+		v[i].color = 0xFF00FF00;
+		v[i].specular = 0xFF000000;
+		ang += step;
+	}
+
+	S_DrawLine(64, v);
+
+	for (int i = 0; i < 64; i++)
+	{
+		p.x = cos(ang) * rad + x;
+		p.y = sin(ang) * rad + y;
+		p.z = z;
+		pos.x = p.x * phd_mxptr[M00] + p.y * phd_mxptr[M01] + p.z * phd_mxptr[M02] + phd_mxptr[M03];
+		pos.y = p.x * phd_mxptr[M10] + p.y * phd_mxptr[M11] + p.z * phd_mxptr[M12] + phd_mxptr[M13];
+		pos.z = p.x * phd_mxptr[M20] + p.y * phd_mxptr[M21] + p.z * phd_mxptr[M22] + phd_mxptr[M23];
+		zv = (float)phd_persp / (float)pos.z;
+		v[i].sx = pos.x * zv + f_centerx;
+		v[i].sy = pos.y * zv + f_centery;
+		v[i].sz = pos.z;
+		v[i].color = 0xFFFF0000;
+		v[i].specular = 0xFF000000;
+		ang += step;
+	}
+
+	S_DrawLine(64, v);
+
+	for (int i = 0; i < 64; i++)
+	{
+		p.x = x;
+		p.y = sin(ang) * rad + y;
+		p.z = cos(ang) * rad + z;
+		pos.x = p.x * phd_mxptr[M00] + p.y * phd_mxptr[M01] + p.z * phd_mxptr[M02] + phd_mxptr[M03];
+		pos.y = p.x * phd_mxptr[M10] + p.y * phd_mxptr[M11] + p.z * phd_mxptr[M12] + phd_mxptr[M13];
+		pos.z = p.x * phd_mxptr[M20] + p.y * phd_mxptr[M21] + p.z * phd_mxptr[M22] + phd_mxptr[M23];
+		zv = (float)phd_persp / (float)pos.z;
+		v[i].sx = pos.x * zv + f_centerx;
+		v[i].sy = pos.y * zv + f_centery;
+		v[i].sz = pos.z;
+		v[i].color = 0xFFFF0000;
+		v[i].specular = 0xFF000000;
+		ang += step;
+	}
+
+	S_DrawLine(64, v);
+
+	phd_PopMatrix();
+}
+#pragma warning(pop)
+
 void inject_lighting(bool replace)
 {
 	INJECT(0x004AB7A0, InitObjectLighting, replace);
@@ -574,4 +861,7 @@ void inject_lighting(bool replace)
 	INJECT(0x004A9C90, CreateD3DLights, replace);
 	INJECT(0x004A9CB0, FreeD3DLights, replace);
 	INJECT(0x004A9C10, MallocD3DLights, replace);
+	INJECT(0x004AB580, InitObjectFogBulbs, replace);
+	INJECT(0x004AAAC0, SetupLight, replace);
+	INJECT(0x004AA0C0, ShowOmni, replace);
 }

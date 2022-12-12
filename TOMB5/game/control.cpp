@@ -436,7 +436,7 @@ long ControlPhase(long _nframes, long demo_mode)
 				CalculateSpotCams();
 		}
 
-		CamRot.vy = (mGetAngle(camera.pos.z, camera.pos.x, camera.target.z, camera.target.x) >> 4) & 0xFFF;
+		CamRot.y = (mGetAngle(camera.pos.z, camera.pos.x, camera.target.z, camera.target.x) >> 4) & 0xFFF;
 		wibble = (wibble + 4) & 0xFC;
 		TriggerLaraDrips();	
 

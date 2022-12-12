@@ -612,12 +612,12 @@ void phd_LookAt(long xsrc, long ysrc, long zsrc, long xtar, long ytar, long ztar
 	dy = ysrc - ytar;
 	dz = zsrc - ztar;
 #ifdef GENERAL_FIXES
-	CamRot.vx = (mGetAngle(0, 0, (long)phd_sqrt(SQUARE(dx) + SQUARE(dz)), dy) >> 4) & 0xFFF;
+	CamRot.x = (mGetAngle(0, 0, (long)phd_sqrt(SQUARE(dx) + SQUARE(dz)), dy) >> 4) & 0xFFF;
 #else
-	CamRot.vx = (mGetAngle(0, 0, (long)sqrt(SQUARE(dx) + SQUARE(dz)), dy) >> 4) & 0xFFF;
+	CamRot.x = (mGetAngle(0, 0, (long)sqrt(SQUARE(dx) + SQUARE(dz)), dy) >> 4) & 0xFFF;
 #endif
-	CamRot.vy = (mGetAngle(zsrc, xsrc, ztar, xtar) >> 4) & 0xFFF;
-	CamRot.vz = 0;
+	CamRot.y = (mGetAngle(zsrc, xsrc, ztar, xtar) >> 4) & 0xFFF;
+	CamRot.z = 0;
 	CamPos.x = xsrc;
 	CamPos.y = ysrc;
 	CamPos.z = zsrc;

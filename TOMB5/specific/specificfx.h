@@ -22,25 +22,40 @@ void ClipCheckPoint(D3DTLVERTEX* v, float x, float y, float z, short* clip);
 void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long col);
 void DrawBinoculars();
 void aDrawWreckingBall(ITEM_INFO* item, long shade);
+void ClearFX();
+void AddPolyLine(D3DTLVERTEX* vtx, TEXTURESTRUCT* tex);
+void DoSnow();
+void aInitFX();
+void DoWeather();
+void aSetXY4(D3DTLVERTEX* v, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4, float z, short* clip);
+void InitTarget();
+void InitBinoculars();
+void SuperDrawBox(long* box);
+void Draw2DSprite(long x, long y, long slot, long unused, long unused2);
+void DrawBikeSpeedo(long ux, long uy, long vel, long maxVel, long turboVel, long size, long unk);
+void DrawShockwaves();
+void DrawPsxTile(long x_y, long height_width, long color, long u0, long u1);
+void DrawRedTile(long x_y, long height_width);
+void DrawFlash();
+void SuperShowLogo();
+void DrawDebris();
+void DrawBlood();
+void DrawDrips();
+void DoUwEffect();
+void DrawWraithTrail(ITEM_INFO* item);
+void DrawTrainFloorStrip(long x, long z, TEXTURESTRUCT* tex, long y_and_flags);
+void DrawTrainStrips();
+void DrawBubbles();
+void DrawSprite(long x, long y, long slot, long col, long size, long z);
+void SetUpLensFlare(long x, long y, long z, GAME_VECTOR* lfobj);
 
-#define SuperShowLogo	( (void(__cdecl*)()) 0x004C9190 )
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
-#define SetUpLensFlare	( (void(__cdecl*)(long, long, long, GAME_VECTOR*)) 0x004C9F70 )
 #define ClipLine	( (bool(__cdecl*)(long&, long&, long, long&, long&, long, long, long, long, long)) 0x004C5B10 )
-#define aSetXY4	( (void(__cdecl*)(LPD3DTLVERTEX, float, float, float, float, float, float, float, float, float, short*)) 0x004C3EB0 )
 #define DrawLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CD960 )
 #define DrawSteamLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CE610 )
 #define S_DrawSparks	( (void(__cdecl*)()) 0x004C4C60 )
-#define DoWeather	( (void(__cdecl*)()) 0x004C0580 )
-#define DoUwEffect	( (void(__cdecl*)()) 0x004C8650 )
 #define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
 #define S_DrawSplashes	( (void(__cdecl*)()) 0x004C1790 )
-#define DrawBubbles	( (void(__cdecl*)()) 0x004C1340 )
-#define DrawDebris	( (void(__cdecl*)()) 0x004C7620 )
-#define DrawBlood	( (void(__cdecl*)()) 0x004C7CB0 )
-#define DrawDrips	( (void(__cdecl*)()) 0x004C8110 )
-#define DrawShockwaves	( (void(__cdecl*)()) 0x004CB280 )
 #define DrawLightning	( (void(__cdecl*)()) 0x004CC0B0 )
 #define OldDrawLightning	( (void(__cdecl*)()) 0x004CCBA0 )
-#define AddPolyLine	( (void(__cdecl*)(D3DTLVERTEX*, TEXTURESTRUCT*)) 0x004BFDA0 )
