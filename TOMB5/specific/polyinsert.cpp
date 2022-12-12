@@ -1358,6 +1358,34 @@ void AddTriClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTUREST
 	}
 }
 
+void AddLineClippedSorted(D3DTLVERTEX* v0, D3DTLVERTEX* v1, short drawtype)
+{
+	D3DTLBUMPVERTEX* v;
+	SORTLIST* sl;
+
+	v = (D3DTLBUMPVERTEX*)(sizeof(SORTLIST) + pSortBuffer);
+	sl = (SORTLIST*)pSortBuffer;
+	sl->tpage = 0;
+	sl->drawtype = drawtype;
+	sl->nVtx = 2;
+	pSortBuffer += sl->nVtx * sizeof(D3DTLBUMPVERTEX) + sizeof(SORTLIST);
+	*pSortList++ = sl;
+	sl->zVal = v0->sz;
+	SortCount++;
+	v->sx = v0->sx;
+	v->sy = v0->sy;
+	v->sz = f_a - f_boo * v0->rhw;
+	v->rhw = v0->rhw;
+	v->color = v0->color;
+	v->specular = v0->specular;
+	v[1].sx = v1->sx;
+	v[1].sy = v1->sy;
+	v[1].sz = f_a - f_boo * v1->rhw;
+	v[1].rhw = v1->rhw;
+	v[1].color = v1->color;
+	v[1].specular = v1->specular;
+}
+
 void inject_polyinsert(bool replace)
 {
 	INJECT(0x004B98E0, HWR_DrawSortList, replace);
@@ -1390,4 +1418,5 @@ void inject_polyinsert(bool replace)
 	INJECT(0x004BBFA0, AddQuadSubdivide, replace);
 	INJECT(0x004BC7F0, AddQuadClippedSorted, replace);
 	INJECT(0x004BC120, AddTriClippedSorted, replace);
+	INJECT(0x004BCE20, AddLineClippedSorted, replace);
 }
