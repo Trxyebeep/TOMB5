@@ -5,8 +5,7 @@ void inject_input(bool replace);
 
 long Key(long number);
 long S_UpdateInput();
-
-#define ReadJoystick	( (long(__cdecl*)(long&, long&)) 0x004A9280 )
+long ReadJoystick(long& x, long& y);
 
 #ifdef GENERAL_FIXES
 extern short ammo_change_timer;

@@ -217,6 +217,7 @@ long S_UpdateInput()
 	static long med_hotkey_timer;
 	static long cheat_code;
 	static long weird = 0;
+	static long joy_x, joy_y;
 	long flag;
 	short state;
 	static bool flare_no_db = 0;
@@ -581,8 +582,23 @@ long S_UpdateInput()
 	return 1;
 }
 
+long ReadJoystick(long& x, long& y)
+{
+	if (joystick_read)
+	{
+		x = joystick_read_x;
+		y = joystick_read_y;
+		return joystick_read_fire;
+	}
+
+	x = 0;
+	y = 0;
+	return 0;
+}
+
 void inject_input(bool replace)
 {
 	INJECT(0x004A9110, Key, replace);
 	INJECT(0x004A92D0, S_UpdateInput, replace);
+	INJECT(0x004A9280, ReadJoystick, replace);
 }
