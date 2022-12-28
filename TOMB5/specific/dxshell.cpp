@@ -1199,6 +1199,48 @@ BOOL CALLBACK EnumJoysticksCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
 	return DIENUM_CONTINUE;
 }
 
+long DXUpdateJoystick()
+{
+	DIJOYSTATE state;
+	HRESULT hr;
+	long b;
+
+	joystick_read = 0;
+	joystick_read_x = 0;
+	joystick_read_y = 0;
+	joystick_read_fire = 0;
+
+	if (!G_dxptr->Joystick)
+		return 0;
+
+	do
+	{
+		G_dxptr->Joystick->Poll();
+		hr = G_dxptr->Joystick->GetDeviceState(sizeof(DIJOYSTATE), &state);
+
+		if (hr == DIERR_INPUTLOST)
+			hr = G_dxptr->Joystick->Acquire();
+
+	} while (hr == DIERR_INPUTLOST);
+
+	if (FAILED(hr))
+		return 0;
+
+	joystick_read = 1;
+	joystick_read_x = state.lX;
+	joystick_read_y = state.lY;
+	b = 0;
+	
+	for (int i = 0; i < 32; i++)
+	{
+		if (state.rgbButtons[i] & 0x80)
+			b |= 1 << i;
+	}
+
+	joystick_read_fire = b;
+	return 1;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1236,4 +1278,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A0CB0, DXFindDevice, replace);
 	INJECT(0x004A2C80, EnumAxesCallback, replace);
 	INJECT(0x004A2C40, EnumJoysticksCallback, replace);
+	INJECT(0x004A2D00, DXUpdateJoystick, replace);
 }
