@@ -1107,6 +1107,27 @@ long DXFindTextureFormat(long r, long g, long b, long a)
 	return -1;
 }
 
+void FlashLEDs()
+{
+	DIDEVICEOBJECTDATA obj[3];
+	static long data[4] = { 1, 2, 4, 2 };
+	static long a, b, c, lp;
+	ulong nOf;
+	long n;
+
+	nOf = 3;
+	memset(obj, 0, sizeof(obj));
+	obj[0].dwOfs = a;
+	obj[1].dwOfs = b;
+	obj[2].dwOfs = c;
+	n = data[lp];
+	obj[0].dwData = (n & 1) << 7;
+	obj[1].dwData = (n & 2) << 6;
+	obj[2].dwData = (n & 4) << 5;
+	lp = (lp + 1) % 4;
+	DXAttempt(G_dxptr->Keyboard->SendDeviceData(sizeof(DIDEVICEOBJECTDATA), obj, &nOf, 0));
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1140,4 +1161,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A2DF0, DXJoyAcquisition, replace);
 	INJECT(0x004A2220, DXSize, replace);
 	INJECT(0x004A2290, DXFindTextureFormat, replace);
+	INJECT(0x004A27A0, FlashLEDs, replace);
 }
