@@ -1069,6 +1069,20 @@ void DXJoyAcquisition(long acquire)
 		G_dxptr->Joystick->Unacquire();
 }
 
+void DXSize(long x, long y)
+{
+	Log(2, "DXSize : x %d y %d", x, y);
+
+	if (G_dxptr)
+	{
+		if (!(G_dxptr->Flags & 1))
+		{
+			G_dxptr->rScreen.right = x + G_dxptr->rScreen.left;
+			G_dxptr->rScreen.bottom = y + G_dxptr->rScreen.top;
+		}
+	}
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1100,4 +1114,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x0049F240, DXGetInfo, replace);
 	INJECT(0x0049F390, DXFreeInfo, replace);
 	INJECT(0x004A2DF0, DXJoyAcquisition, replace);
+	INJECT(0x004A2220, DXSize, replace);
 }
