@@ -1128,6 +1128,52 @@ void FlashLEDs()
 	DXAttempt(G_dxptr->Keyboard->SendDeviceData(sizeof(DIDEVICEOBJECTDATA), obj, &nOf, 0));
 }
 
+long DXFindDevice(long w, long h, long bpp, long hw)
+{
+	DXDISPLAYMODE* dm;
+	bool flag;
+
+	for (int i = G_dxinfo->nDDInfo - 1; i >= 0; i--)
+	{
+		for (int j = 0; j < G_dxinfo->DDInfo[i].nD3DDevices; j++)
+		{
+			if (G_dxinfo->DDInfo[i].D3DDevices[j].bHardware == hw)
+			{
+				for (int k = 0; k < G_dxinfo->DDInfo[i].D3DDevices[j].nDisplayModes; k++)
+				{
+					dm = &G_dxinfo->DDInfo[i].D3DDevices[j].DisplayModes[k];
+
+					if (dm->w == w && dm->h == h && dm->bpp == bpp)
+					{
+						flag = 1;
+
+						if (G_dxptr->Flags & 2)
+							flag = G_dxinfo->DDInfo[i].DDCaps.dwCaps2 & DDCAPS2_CANRENDERWINDOWED;
+
+						if (flag)
+						{
+							G_dxinfo->nDD = i;
+							G_dxinfo->nD3D = j;
+							G_dxinfo->nDisplayMode = k;
+							Log(5, "Matching Device Found\n%s\n%s\n%dx%dx%d",
+								G_dxinfo->DDInfo[G_dxinfo->nDD].DDIdentifier.szDescription,
+								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].About,
+								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode].w,
+								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode].h,
+								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode].bpp);
+							G_dxinfo->bHardware = hw != 0;
+							return 1;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	Log(1, "No Matching Device Found");
+	return 0;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1162,4 +1208,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A2220, DXSize, replace);
 	INJECT(0x004A2290, DXFindTextureFormat, replace);
 	INJECT(0x004A27A0, FlashLEDs, replace);
+	INJECT(0x004A0CB0, DXFindDevice, replace);
 }

@@ -35,6 +35,7 @@ void DXJoyAcquisition(long acquire);
 void DXSize(long x, long y);
 long DXFindTextureFormat(long r, long g, long b, long a);
 void FlashLEDs();
+long DXFindDevice(long w, long h, long bpp, long hw);
 
 #define DXUpdateJoystick	( (void(__cdecl*)()) 0x004A2D00 )
 #define DXGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049E050 )
