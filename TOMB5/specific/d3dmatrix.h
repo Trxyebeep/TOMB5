@@ -24,5 +24,4 @@ D3DMATRIX* D3DViewMatrix(D3DMATRIX* mx, D3DVECTOR* eye, D3DVECTOR* target, D3DVE
 D3DMATRIX* D3DProjectionMatrix(D3DMATRIX* mx, float hFov, float vFov, float nPlane, float fPlane);
 void D3DTransform(D3DVECTOR* vec, D3DMATRIX* mx);
 void D3DTranspose(D3DVECTOR* vec, D3DMATRIX* mx);
-
-#define D3DMultMatrix	( (LPD3DMATRIX(__cdecl*)(LPD3DMATRIX, LPD3DMATRIX, LPD3DMATRIX)) 0x00497CA0 )
+LPD3DMATRIX D3DMultMatrix(LPD3DMATRIX d, LPD3DMATRIX a, LPD3DMATRIX b);
