@@ -33,6 +33,7 @@ long DXGetInfo(DXINFO* dxinfo, HWND hwnd);
 void DXFreeInfo(DXINFO* dxinfo);
 void DXJoyAcquisition(long acquire);
 void DXSize(long x, long y);
+long DXFindTextureFormat(long r, long g, long b, long a);
 
 #define DXUpdateJoystick	( (void(__cdecl*)()) 0x004A2D00 )
 #define DXGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049E050 )

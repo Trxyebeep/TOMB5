@@ -1083,6 +1083,30 @@ void DXSize(long x, long y)
 	}
 }
 
+long DXFindTextureFormat(long r, long g, long b, long a)
+{
+	DXD3DDEVICE* d;
+	DXTEXTUREINFO* t;
+
+	Log(5, "DXFindTextureFormat %d%d%d%d", r, g, b, a);
+
+	d = &G_dxinfo->DDInfo[G_dxinfo->nDDInfo].D3DDevices[G_dxinfo->nD3D];
+
+	for (int i = 0; i < d->nTextureInfos; i++)
+	{
+		t = &d->TextureInfos[i];
+
+		if (t->rbpp == r && t->gbpp == g && t->bbpp == b && t->abpp == a)
+		{
+			Log(5, "Found Format");
+			return i;
+		}
+	}
+
+	Log(1, "Format Not Found");
+	return -1;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1115,4 +1139,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x0049F390, DXFreeInfo, replace);
 	INJECT(0x004A2DF0, DXJoyAcquisition, replace);
 	INJECT(0x004A2220, DXSize, replace);
+	INJECT(0x004A2290, DXFindTextureFormat, replace);
 }
