@@ -1184,7 +1184,19 @@ BOOL CALLBACK EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef)
 	range.diph.dwObj = lpddoi->dwOfs;
 	range.lMin = -1000;
 	range.lMax = 1000;
-	return SUCCEEDED(G_dxptr->Joystick->SetProperty(DIPROP_RANGE, &range.diph));
+
+	if (SUCCEEDED(G_dxptr->Joystick->SetProperty(DIPROP_RANGE, &range.diph)))
+		return DIENUM_CONTINUE;
+
+	return DIENUM_STOP;
+}
+
+BOOL CALLBACK EnumJoysticksCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
+{
+	if (SUCCEEDED(G_dxptr->lpDirectInput->CreateDeviceEx(lpddi->guidInstance, IID_IDirectInputDevice2, (LPVOID*)G_dxptr->Joystick, 0)))
+		return DIENUM_STOP;
+
+	return DIENUM_CONTINUE;
 }
 
 void inject_dxshell(bool replace)
@@ -1223,4 +1235,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A27A0, FlashLEDs, replace);
 	INJECT(0x004A0CB0, DXFindDevice, replace);
 	INJECT(0x004A2C80, EnumAxesCallback, replace);
+	INJECT(0x004A2C40, EnumJoysticksCallback, replace);
 }
