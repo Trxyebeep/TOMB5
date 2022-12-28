@@ -1913,15 +1913,13 @@ void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz)
 			if (sptr->TransType == 3)
 				tex.drawtype = 5;
 			else
-			{
 #endif
+			{
 				if (sptr->TransType)
 					tex.drawtype = 2;
 				else
 					tex.drawtype = 1;
-#ifdef GENERAL_FIXES
 			}
-#endif
 
 			tex.tpage = sprite->tpage;
 			tex.u1 = sprite->x1;
@@ -4687,6 +4685,78 @@ void SetUpLensFlare(long x, long y, long z, GAME_VECTOR* lfobj)
 	}
 }
 
+bool ClipLine(long& x1, long& y1, long z1, long& x2, long& y2, long z2, long xMin, long yMin, long w, long h)
+{
+	float clip;
+
+	if (z1 < 20 || z2 < 20)
+		return 0;
+
+	if (x1 < xMin && x2 < xMin || y1 < yMin && y2 < yMin)
+		return 0;
+
+	if (x1 > w && x2 > w || y1 > h && y2 > h)
+		return 0;
+
+	if (x1 > w)
+	{
+		clip = ((float)w - x2) / float(x1 - x2);
+		x1 = w;
+		y1 = long((y1 - y2) * clip + y2);
+	}
+
+	if (x2 > w)
+	{
+		clip = ((float)w - x1) / float(x2 - x1);
+		x2 = w;
+		y2 = long((y2 - y1) * clip + y1);
+	}
+
+	if (x1 < xMin)
+	{
+		clip = ((float)xMin - x1) / float(x2 - x1);
+		x1 = xMin;
+		y1 = long((y2 - y1) * clip + y1);
+	}
+
+	if (x2 < xMin)
+	{
+		clip = ((float)xMin - x2) / float(x1 - x2);
+		x2 = xMin;
+		y2 = long((y1 - y2) * clip + y2);
+	}
+
+	if (y1 > h)
+	{
+		clip = ((float)h - y2) / float(y1 - y2);
+		y1 = h;
+		x1 = long((x1 - x2) * clip + x2);
+	}
+
+	if (y2 > h)
+	{
+		clip = ((float)h - y1) / float(y2 - y1);
+		y2 = h;
+		x2 = long((x2 - x1) * clip + x1);
+	}
+
+	if (y1 < yMin)
+	{
+		clip = ((float)yMin - y1) / float(y2 - y1);
+		y1 = yMin;
+		x1 = long((x2 - x1) * clip + x1);
+	}
+
+	if (y2 < yMin)
+	{
+		clip = ((float)yMin - y2) / float(y1 - y2);
+		y2 = yMin;
+		x2 = long((x1 - x2) * clip + x2);
+	}
+
+	return 1;
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -4734,4 +4804,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C1340, DrawBubbles, replace);
 	INJECT(0x004C9D90, DrawSprite, replace);
 	INJECT(0x004C9F70, SetUpLensFlare, replace);
+	INJECT(0x004C5B10, ClipLine, replace);
 }
