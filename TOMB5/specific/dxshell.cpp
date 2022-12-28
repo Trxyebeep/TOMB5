@@ -1174,6 +1174,19 @@ long DXFindDevice(long w, long h, long bpp, long hw)
 	return 0;
 }
 
+BOOL CALLBACK EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef)
+{
+	DIPROPRANGE range;
+
+	range.diph.dwSize = sizeof(DIPROPRANGE);
+	range.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+	range.diph.dwHow = DIPH_BYOFFSET;
+	range.diph.dwObj = lpddoi->dwOfs;
+	range.lMin = -1000;
+	range.lMax = 1000;
+	return SUCCEEDED(G_dxptr->Joystick->SetProperty(DIPROP_RANGE, &range.diph));
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1209,4 +1222,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A2290, DXFindTextureFormat, replace);
 	INJECT(0x004A27A0, FlashLEDs, replace);
 	INJECT(0x004A0CB0, DXFindDevice, replace);
+	INJECT(0x004A2C80, EnumAxesCallback, replace);
 }
