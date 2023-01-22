@@ -15,7 +15,6 @@
 
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
-#include "../tomb5/dynamicshadows.h"
 
 #define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
 #endif
@@ -367,9 +366,7 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 #ifdef GENERAL_FIXES
 	if (tomb5.shadow_mode != 1)
 	{
-		if (tomb5.shadow_mode == 5)
-			DrawDynamicShadow(item);
-		else if (tomb5.shadow_mode == 4)
+		if (tomb5.shadow_mode == 4)
 			S_PrintSpriteShadow(size, box, item);
 		else
 			S_PrintCircleShadow(size, box, item);

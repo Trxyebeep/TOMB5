@@ -4,7 +4,6 @@
 #include "draw.h"
 #include "lara_states.h"
 #ifdef GENERAL_FIXES
-#include "../tomb5/dynamicshadows.h"
 #include "../tomb5/tomb5.h"
 #endif
 
@@ -40,11 +39,6 @@ void CalcLaraMatrices(long flag)
 	short* frmptr[2];
 	long rate, frac;
 	short jerk;
-
-#ifdef GENERAL_FIXES
-	if (tomb5.shadow_mode == 5)
-		CalcShadowMatrices(flag);
-#endif
 	
 	bone = &bones[objects[lara_item->object_number].bone_index];
 	frac = GetFrames(lara_item, frmptr, &rate);

@@ -2486,7 +2486,7 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
 	bool footprints;			//on off
 	bool tr4_point_lights;		//on off (1 -> TR4, 0 -> fixed TR5)
-	ulong shadow_mode;			//1-> original, 2-> circle, 3-> PSX color like circle, 4-> PSX sprite, 5-> dynamic
+	ulong shadow_mode;			//1-> original, 2-> circle, 3-> PSX color like circle, 4-> PSX sprite
 	bool fix_climb_up_delay;	//on off 
 	bool flexible_crawling;		//on off
 	bool cutseq_skipper;		//on off
