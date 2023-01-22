@@ -38,7 +38,7 @@ static const char* screen_paths[5] =
 	"SCREENS\\SCREENS.STR"
 };
 
-#ifdef IMPROVED_BARS
+#ifdef GENERAL_FIXES
 static GouraudBarColourSet healthBarColourSet =
 {
 	{ 64, 96, 128, 96, 64 },
@@ -480,7 +480,7 @@ void S_DrawAirBar(long pos)
 				y = (font_height >> 1) + (font_height >> 2);
 		}
 
-#ifdef IMPROVED_BARS
+#ifdef GENERAL_FIXES
 		if (tomb5.bar_mode == 3)
 			S_DrawGouraudBar(x, y, 150, 12, pos, &airBarColourSet);
 		else if (tomb5.bar_mode == 2)
@@ -528,7 +528,7 @@ void S_DrawHealthBar(long pos)
 			y = font_height >> 2;
 		}
 
-#ifdef IMPROVED_BARS
+#ifdef GENERAL_FIXES
 		if (tomb5.bar_mode == 3)
 			S_DrawGouraudBar(x, y, 150, 12, pos, lara.poisoned || lara.Gassed ? &poisonBarColourSet : &healthBarColourSet);
 		else if (tomb5.bar_mode == 2)
@@ -566,7 +566,7 @@ void S_DrawHealthBar2(long pos)//same as above just different screen position
 		else
 			color = 0xA000;
 
-#ifdef IMPROVED_BARS
+#ifdef GENERAL_FIXES
 		if (tomb5.bar_mode == 3)
 			S_DrawGouraudBar(245, (font_height >> 1) + 32, 150, 12, pos, lara.poisoned || lara.Gassed ? &poisonBarColourSet : &healthBarColourSet);
 		else if (tomb5.bar_mode == 2)
@@ -617,13 +617,13 @@ void S_DrawDashBar(long pos)
 
 	if (gfCurrentLevel != LVL5_TITLE)
 	{
-#ifdef IMPROVED_BARS
+#ifdef GENERAL_FIXES
 		if (tomb5.bar_mode == 3)
 			S_DrawGouraudBar(x, y, 150, 12, pos, &dashBarColourSet);
 		else if (tomb5.bar_mode == 2)
 			S_DoTR4Bar(x, y, 150, 12, pos, 0xFF000000, 0xFF00FF00);
 		else
-#endif	//IMPROVED_BARS
+#endif	//GENERAL_FIXES
 			DoBar(x, y, 150, 12, pos, 0xA0A000, 0x00A000);
 	}
 #else	//GENERAL_FIXES
@@ -632,7 +632,7 @@ void S_DrawDashBar(long pos)
 #endif	//GENERAL_FIXES
 }
 
-#ifdef ENEMY_BARS
+#ifdef GENERAL_FIXES
 void S_DrawEnemyBar(long pos)
 {
 	long x, y;

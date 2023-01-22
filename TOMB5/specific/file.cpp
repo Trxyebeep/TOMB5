@@ -114,7 +114,7 @@ FILE* FileOpen(const char* Filename)
 	char cdFilename[80];
 
 	memset(cdFilename, 0, 80);
-#ifndef NO_CD
+#ifndef GENERAL_FIXES
 	cdFilename[0] = cd_drive;
 	cdFilename[1] = ':';
 	cdFilename[2] = '\\';

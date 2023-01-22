@@ -170,7 +170,7 @@ void ApplyVelocityToRope(long node, ushort angle, ushort n);
 void JumpOffRope(ITEM_INFO* item);
 long LaraHangTest(ITEM_INFO* item, COLL_INFO* coll);
 
-#ifdef DUCKROLL
+#ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 #endif

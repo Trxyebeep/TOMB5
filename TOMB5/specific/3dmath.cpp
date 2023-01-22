@@ -15,7 +15,7 @@ void AlterFOV(short fov)
 	CurrentFov = fov;
 	fov /= 2;
 
-#ifdef TR2MAIN_WIDESCREEN	//by Arsunt
+#ifdef GENERAL_FIXES	//by Arsunt
 	long fov_width;
 
 	fov_width = phd_winheight * 320 / 240;
@@ -29,7 +29,7 @@ void AlterFOV(short fov)
 	f_oneopersp = one / f_persp;
 	f_perspoznear = f_persp / f_znear;
 
-#ifndef TR2MAIN_WIDESCREEN
+#ifndef GENERAL_FIXES
 	LfAspectCorrection = (4.0F / 3.0F) / (float(phd_winwidth) / float(phd_winheight));
 #endif
 

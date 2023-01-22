@@ -2,6 +2,8 @@
 #include "polyinsert.h"
 #include "dxshell.h"
 #include "drawroom.h"
+#include "function_table.h"
+#include "clipping.h"
 
 static long rgb80h = 0x808080;
 static long rgbmask = 0xFFFFFFFF;
@@ -984,6 +986,712 @@ void AddQuadSubdivide(D3DTLVERTEX* v, short v0, short v1, short v2, short v3, TE
 	}
 }
 
+void AddQuadClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, short v3, TEXTURESTRUCT* tex, long double_sided)
+{
+	D3DTLBUMPVERTEX* p;
+	D3DTLVERTEX* pV;
+	SORTLIST* sl;
+	TEXTURESTRUCT tex2;
+	short* c;
+	float z;
+	short swap;
+
+	c = clipflags;
+
+	if (c[v0] & c[v1] & c[v2] & c[v3])
+		return;
+
+	if ((c[v0] | c[v1] | c[v2] | c[v3]) & 0x8000)
+	{
+		AddTriClippedSorted(v, v0, v1, v2, tex, double_sided);
+		tex2.drawtype = tex->drawtype;
+		tex2.flag = tex->flag;
+		tex2.tpage = tex->tpage;
+		tex2.u1 = tex->u1;
+		tex2.v1 = tex->v1;
+		tex2.u2 = tex->u3;
+		tex2.v2 = tex->v3;
+		tex2.u3 = tex->u4;
+		tex2.v3 = tex->v4;
+		AddTriClippedSorted(v, v0, v2, v3, &tex2, double_sided);
+		return;
+	}
+
+	if (IsVisible(&v[v0], &v[v1], &v[v2]))
+	{
+		if (!double_sided)
+			return;
+
+		swap = v0;
+		v0 = v2;
+		v2 = swap;
+		tex2.drawtype = tex->drawtype;
+		tex2.flag = tex->flag;
+		tex2.tpage = tex->tpage;
+		tex2.u1 = tex->u3;
+		tex2.v1 = tex->v3;
+		tex2.u2 = tex->u2;
+		tex2.v2 = tex->v2;
+		tex2.u3 = tex->u1;
+		tex2.v3 = tex->v1;
+		tex2.u4 = tex->u4;
+		tex2.v4 = tex->v4;
+		tex = &tex2;
+	}
+
+	if (!double_sided && IsVisible(&v[v0], &v[v1], &v[v2]))		//redundant
+		return;
+
+	if (c[v0] | c[v1] | c[v2] | c[v3])
+	{
+		AddTriClippedSorted(v, v0, v1, v2, tex, double_sided);
+		tex2.drawtype = tex->drawtype;
+		tex2.flag = tex->flag;
+		tex2.tpage = tex->tpage;
+		tex2.u1 = tex->u1;
+		tex2.v1 = tex->v1;
+		tex2.u2 = tex->u3;
+		tex2.v2 = tex->v3;
+		tex2.u3 = tex->u4;
+		tex2.v3 = tex->v4;
+		AddTriClippedSorted(v, v0, v2, v3, &tex2, double_sided);
+		return;
+	}
+
+	p = (D3DTLBUMPVERTEX*)(sizeof(SORTLIST) + pSortBuffer);
+	sl = (SORTLIST*)pSortBuffer;
+	sl->drawtype = tex->drawtype;
+	sl->tpage = tex->tpage;
+	sl->nVtx = 6;
+	sl->polytype = (short)nPolyType;
+	pSortBuffer += 6 * sizeof(D3DTLBUMPVERTEX) + sizeof(SORTLIST);
+	*pSortList++ = sl;
+	SortCount++;
+	z = 0;
+
+	pV = &v[v0];
+	p->sx = pV->sx;
+	p->sy = pV->sy;
+	p->sz = f_a - f_boo * pV->rhw;
+	p->rhw = pV->rhw;
+	p->color = pV->color;
+	p->specular = pV->specular;
+	p->tu = tex->u1;
+	p->tv = tex->v1;
+
+	if (nPolyType)
+		z += pV->sz;
+	else if (pV->sz > z)
+		z = pV->sz;
+
+	p[3].sx = p->sx;
+	p[3].sy = p->sy;
+	p[3].sz = p->sz;
+	p[3].rhw = p->rhw;
+	p[3].color = p->color;
+	p[3].specular = p->specular;
+	p[3].tu = p->tu;
+	p[3].tv = p->tv;
+
+	pV = &v[v1];
+	p[1].sx = pV->sx;
+	p[1].sy = pV->sy;
+	p[1].sz = f_a - f_boo * pV->rhw;
+	p[1].rhw = pV->rhw;
+	p[1].color = pV->color;
+	p[1].specular = pV->specular;
+	p[1].tu = tex->u2;
+	p[1].tv = tex->v2;
+
+	if (nPolyType)
+		z += pV->sz;
+	else if (pV->sz > z)
+		z = pV->sz;
+
+	pV = &v[v2];
+	p[2].sx = pV->sx;
+	p[2].sy = pV->sy;
+	p[2].sz = f_a - f_boo * pV->rhw;
+	p[2].rhw = pV->rhw;
+	p[2].color = pV->color;
+	p[2].specular = pV->specular;
+	p[2].tu = tex->u3;
+	p[2].tv = tex->v3;
+
+	if (nPolyType)
+		z += pV->sz;
+	else if (pV->sz > z)
+		z = pV->sz;
+
+	p[4].sx = p[2].sx;
+	p[4].sy = p[2].sy;
+	p[4].sz = p[2].sz;
+	p[4].rhw = p[2].rhw;
+	p[4].color = p[2].color;
+	p[4].specular = p[2].specular;
+	p[4].tu = p[2].tu;
+	p[4].tv = p[2].tv;
+
+	pV = &v[v3];
+	p[5].sx = pV->sx;
+	p[5].sy = pV->sy;
+	p[5].sz = f_a - f_boo * pV->rhw;
+	p[5].rhw = pV->rhw;
+	p[5].color = pV->color;
+	p[5].specular = pV->specular;
+	p[5].tu = tex->u4;
+	p[5].tv = tex->v4;
+
+	if (nPolyType)
+		z += pV->sz;
+	else if (pV->sz > z)
+		z = pV->sz;
+
+	if (nPolyType)
+		z *= 0.25F;
+
+	sl->zVal = z;
+	nPolys += 2;
+}
+
+void AddTriClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURESTRUCT* tex, long double_sided)
+{
+	D3DTLBUMPVERTEX* p;
+	D3DTLVERTEX* pV;
+	SORTLIST* sl;
+	TEXTURESTRUCT tex2;
+	short* c;
+	float z;
+	long num;
+	short swap;
+	bool clip, clipZ;
+
+	c = clipflags;
+	clipZ = 0;
+	clip = 1;
+	sl = 0;
+
+	if (c[v0] & c[v1] & c[v2])
+		return;
+
+	if ((c[v0] | c[v1] | c[v2]) & 0x8000)
+	{
+		if (!visible_zclip(&v[v0], &v[v1], &v[v2]))
+		{
+			if (!double_sided)
+				return;
+
+			swap = v1;
+			v1 = v2;
+			v2 = swap;
+
+			if (!visible_zclip(&v[v0], &v[v1], &v[v2]))
+				return;
+
+			tex2.drawtype = tex->drawtype;
+			tex2.flag = tex->flag;
+			tex2.tpage = tex->tpage;
+			tex2.u1 = tex->u1;
+			tex2.v1 = tex->v1;
+			tex2.u2 = tex->u3;
+			tex2.v2 = tex->v3;
+			tex2.u3 = tex->u2;
+			tex2.v3 = tex->v2;
+			tex = &tex2;
+		}
+
+		clipZ = 1;
+		p = zClipperBuffer;
+	}
+	else
+	{
+		if (!double_sided && IsVisible(&v[v0], &v[v1], &v[v2]))
+			return;
+
+		if (IsVisible(&v[v0], &v[v1], &v[v2]))
+		{
+			if (!double_sided)
+				return;
+
+			swap = v1;
+			v1 = v2;
+			v2 = swap;
+
+			tex2.drawtype = tex->drawtype;
+			tex2.flag = tex->flag;
+			tex2.tpage = tex->tpage;
+			tex2.u1 = tex->u1;
+			tex2.v1 = tex->v1;
+			tex2.u2 = tex->u3;
+			tex2.v2 = tex->v3;
+			tex2.u3 = tex->u2;
+			tex2.v3 = tex->v2;
+			tex = &tex2;
+		}
+
+		if (c[v0] | c[v1] | c[v2])
+			p = XYUVClipperBuffer;
+		else
+		{
+			clip = 0;
+			p = (D3DTLBUMPVERTEX*)(sizeof(SORTLIST) + pSortBuffer);
+			sl = (SORTLIST*)pSortBuffer;
+			sl->tpage = tex->tpage;
+			sl->drawtype = tex->drawtype;
+			sl->nVtx = 3;
+			sl->polytype = (short)nPolyType;
+			pSortBuffer += sl->nVtx * sizeof(D3DTLBUMPVERTEX) + sizeof(SORTLIST);
+			*pSortList++ = sl;
+		}
+	}
+
+	z = 0;
+
+	pV = &v[v0];
+	p->sx = pV->sx;
+	p->sy = pV->sy;
+	p->sz = pV->sz;
+	p->rhw = pV->rhw;
+	p->color = pV->color;
+	p->specular = pV->specular;
+	p->tu = tex->u1;
+	p->tv = tex->v1;
+	p->tx = pV->tu;
+	p->ty = pV->tv;
+
+	if (nPolyType)
+		z += pV->sz;
+	else if (pV->sz > z)
+		z = pV->sz;
+
+	pV = &v[v1];
+	p[1].sx = pV->sx;
+	p[1].sy = pV->sy;
+	p[1].sz = pV->sz;
+	p[1].rhw = pV->rhw;
+	p[1].color = pV->color;
+	p[1].specular = pV->specular;
+	p[1].tu = tex->u2;
+	p[1].tv = tex->v2;
+	p[1].tx = pV->tu;
+	p[1].ty = pV->tv;
+
+	if (nPolyType)
+		z += pV->sz;
+	else if (pV->sz > z)
+		z = pV->sz;
+
+	pV = &v[v2];
+	p[2].sx = pV->sx;
+	p[2].sy = pV->sy;
+	p[2].sz = pV->sz;
+	p[2].rhw = pV->rhw;
+	p[2].color = pV->color;
+	p[2].specular = pV->specular;
+	p[2].tu = tex->u3;
+	p[2].tv = tex->v3;
+	p[2].tx = pV->tu;
+	p[2].ty = pV->tv;
+
+	if (nPolyType)
+		z += pV->sz;
+	else if (pV->sz > z)
+		z = pV->sz;
+
+	if (clip)
+	{
+		num = 3;
+
+		if (clipZ)
+		{
+			num = ZClipper(3, zClipperBuffer, XYUVClipperBuffer);
+
+			if (!num)
+				return;
+		}
+		else
+		{
+			p = XYUVClipperBuffer;
+
+			for (int i = 0; i < 3; i++, p++)
+			{
+				p->tu *= p->rhw;
+				p->tv *= p->rhw;
+			}
+		}
+
+		num = XYUVGClipper(num, XYUVClipperBuffer);
+
+		if (num)
+		{
+			p = (D3DTLBUMPVERTEX*)(sizeof(SORTLIST) + pSortBuffer);
+			sl = (SORTLIST*)pSortBuffer;
+			sl->drawtype = tex->drawtype;
+			sl->nVtx = short(3 * num - 6);
+
+			if (nPolyType)
+				sl->zVal = z * 0.333333F;
+			else
+				sl->zVal = z;
+
+			sl->tpage = tex->tpage;
+			sl->polytype = (short)nPolyType;
+			pSortBuffer += sl->nVtx * sizeof(D3DTLBUMPVERTEX) + sizeof(SORTLIST);
+			*pSortList++ = sl;
+			SortCount++;
+			AddClippedPoly(p, num, XYUVClipperBuffer, tex);
+		}
+	}
+	else
+	{
+		p->sz = f_a - f_boo * p->rhw;
+		p[1].sz = f_a - f_boo * p[1].rhw;
+		p[2].sz = f_a - f_boo * p[2].rhw;
+
+		if (nPolyType)
+			sl->zVal = z * 0.333333F;
+		else
+			sl->zVal = z;
+
+		SortCount++;
+		nPolys++;
+	}
+}
+
+void AddLineClippedSorted(D3DTLVERTEX* v0, D3DTLVERTEX* v1, short drawtype)
+{
+	D3DTLBUMPVERTEX* v;
+	SORTLIST* sl;
+
+	v = (D3DTLBUMPVERTEX*)(sizeof(SORTLIST) + pSortBuffer);
+	sl = (SORTLIST*)pSortBuffer;
+	sl->tpage = 0;
+	sl->drawtype = drawtype;
+	sl->nVtx = 2;
+	pSortBuffer += sl->nVtx * sizeof(D3DTLBUMPVERTEX) + sizeof(SORTLIST);
+	*pSortList++ = sl;
+	sl->zVal = v0->sz;
+	SortCount++;
+	v->sx = v0->sx;
+	v->sy = v0->sy;
+	v->sz = f_a - f_boo * v0->rhw;
+	v->rhw = v0->rhw;
+	v->color = v0->color;
+	v->specular = v0->specular;
+	v[1].sx = v1->sx;
+	v[1].sy = v1->sy;
+	v[1].sz = f_a - f_boo * v1->rhw;
+	v[1].rhw = v1->rhw;
+	v[1].color = v1->color;
+	v[1].specular = v1->specular;
+}
+
+void AddQuadClippedZBuffer(D3DTLVERTEX* v, short v0, short v1, short v2, short v3, TEXTURESTRUCT* tex, long double_sided)
+{
+	D3DTLBUMPVERTEX* p;
+	D3DTLBUMPVERTEX* bp;
+	D3DTLVERTEX* vtx;
+	TEXTURESTRUCT tex2;
+	long* nVtx;
+	short* c;
+	short swap;
+
+	c = clipflags;
+
+	if (c[v0] & c[v1] & c[v2] & c[v3])
+		return;
+
+	if ((c[v0] | c[v1] | c[v2] | c[v3]) < 0)
+	{
+		AddTriClippedZBuffer(v, v0, v1, v2, tex, double_sided);
+		tex2.drawtype = tex->drawtype;
+		tex2.flag = tex->flag;
+		tex2.tpage = tex->tpage;
+		tex2.u1 = tex->u1;
+		tex2.v1 = tex->v1;
+		tex2.u2 = tex->u3;
+		tex2.v2 = tex->v3;
+		tex2.u3 = tex->u4;
+		tex2.v3 = tex->v4;
+		AddTriClippedZBuffer(v, v0, v2, v3, &tex2, double_sided);
+		return;
+	}
+
+	if (!double_sided && IsVisible(&v[v0], &v[v1], &v[v2]))
+		return;
+
+	if (IsVisible(&v[v0], &v[v1], &v[v2]))
+	{
+		if (!double_sided)
+			return;
+
+		swap = v0;
+		v0 = v2;
+		v2 = swap;
+		tex2.drawtype = tex->drawtype;
+		tex2.flag = tex->flag;
+		tex2.tpage = tex->tpage;
+		tex2.u1 = tex->u3;
+		tex2.v1 = tex->v3;
+		tex2.u2 = tex->u2;
+		tex2.v2 = tex->v2;
+		tex2.u3 = tex->u1;
+		tex2.v3 = tex->v1;
+		tex2.u4 = tex->u4;
+		tex2.v4 = tex->v4;
+		tex = &tex2;
+	}
+
+	if (c[v0] | c[v1] | c[v2] | c[v3])
+	{
+		AddTriClippedZBuffer(v, v0, v1, v2, tex, double_sided);
+		tex2.drawtype = tex->drawtype;
+		tex2.flag = tex->flag;
+		tex2.tpage = tex->tpage;
+		tex2.u1 = tex->u1;
+		tex2.v1 = tex->v1;
+		tex2.u2 = tex->u3;
+		tex2.v2 = tex->v3;
+		tex2.u3 = tex->u4;
+		tex2.v3 = tex->v4;
+		AddTriClippedZBuffer(v, v0, v2, v3, &tex2, double_sided);
+		return;
+	}
+
+	FindBucket(tex->tpage, &p, &nVtx);
+	*nVtx += 6;
+	bp = p;
+
+	vtx = &v[v0];
+	p->sx = vtx->sx;
+	p->sy = vtx->sy;
+	p->sz = f_a - f_boo * vtx->rhw;
+	p->rhw = vtx->rhw;
+	p->color = vtx->color;
+	p->specular = vtx->specular;
+	p->tu = tex->u1;
+	p->tv = tex->v1;
+
+	p[3].sx = p->sx;
+	p[3].sy = p->sy;
+	p[3].sz = p->sz;
+	p[3].rhw = p->rhw;
+	p[3].color = p->color;
+	p[3].specular = p->specular;
+	p[3].tu = p->tu;
+	p[3].tv = p->tv;
+	p++;
+
+	vtx = &v[v1];
+	p->sx = vtx->sx;
+	p->sy = vtx->sy;
+	p->sz = f_a - f_boo * vtx->rhw;
+	p->rhw = vtx->rhw;
+	p->color = vtx->color;
+	p->specular = vtx->specular;
+	p->tu = tex->u2;
+	p->tv = tex->v2;
+	p++;
+
+	vtx = &v[v2];
+	p->sx = vtx->sx;
+	p->sy = vtx->sy;
+	p->sz = f_a - f_boo * vtx->rhw;
+	p->rhw = vtx->rhw;
+	p->color = vtx->color;
+	p->specular = vtx->specular;
+	p->tu = tex->u3;
+	p->tv = tex->v3;
+
+	p[2].sx = p->sx;
+	p[2].sy = p->sy;
+	p[2].sz = p->sz;
+	p[2].rhw = p->rhw;
+	p[2].color = p->color;
+	p[2].specular = p->specular;
+	p[2].tu = p->tu;
+	p[2].tv = p->tv;
+
+	p += 3;
+	vtx = &v[v3];
+	p->sx = vtx->sx;
+	p->sy = vtx->sy;
+	p->sz = f_a - f_boo * vtx->rhw;
+	p->rhw = vtx->rhw;
+	p->color = vtx->color;
+	p->specular = vtx->specular;
+	p->tu = tex->u4;
+	p->tv = tex->v4;
+
+	nPolys += 2;
+}
+
+void AddTriClippedZBuffer(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURESTRUCT* tex, long double_sided)
+{
+	D3DTLVERTEX* vtx;
+	D3DTLBUMPVERTEX* p;
+	D3DTLBUMPVERTEX* bp;
+	TEXTURESTRUCT tex2;
+	long* nVtx;
+	short* c;
+	long nPoints;
+	short swap;
+	bool clip, clipZ;
+
+	c = clipflags;
+	clipZ = 0;
+
+	if (c[v0] & c[v1] & c[v2])
+		return;
+
+	if ((c[v0] | c[v1] | c[v2]) < 0)
+	{
+		if (!visible_zclip(&v[v0], &v[v1], &v[v2]))
+		{
+			if (!double_sided)
+				return;
+
+			swap = v1;
+			v1 = v2;
+			v2 = swap;
+
+			if (!visible_zclip(&v[v0], &v[v1], &v[v2]))
+				return;
+
+			tex2.drawtype = tex->drawtype;
+			tex2.flag = tex->flag;
+			tex2.tpage = tex->tpage;
+			tex2.u1 = tex->u1;
+			tex2.v1 = tex->v1;
+			tex2.u2 = tex->u3;
+			tex2.v2 = tex->v3;
+			tex2.u3 = tex->u2;
+			tex2.v3 = tex->v2;
+			tex = &tex2;
+		}
+
+		clip = 1;
+		clipZ = 1;
+		p = zClipperBuffer;
+	}
+	else
+	{
+		if (IsVisible(&v[v0], &v[v1], &v[v2]))
+		{
+			if (!double_sided)
+				return;
+
+			swap = v1;
+			v1 = v2;
+			v2 = swap;
+			tex2.drawtype = tex->drawtype;
+			tex2.flag = tex->flag;
+			tex2.tpage = tex->tpage;
+			tex2.u1 = tex->u1;
+			tex2.v1 = tex->v1;
+			tex2.u2 = tex->u3;
+			tex2.v2 = tex->v3;
+			tex2.u3 = tex->u2;
+			tex2.v3 = tex->v2;
+			tex = &tex2;
+		}
+
+		if (c[v0] | c[v1] | c[v2])
+		{
+			p = XYUVClipperBuffer;
+			clip = 1;
+		}
+		else
+		{
+			clip = 0;
+			FindBucket(tex->tpage, &p, &nVtx);
+			*nVtx += 3;
+		}
+	}
+
+	bp = p;
+
+	vtx = &v[v0];
+	p->sx = vtx->sx;
+	p->sy = vtx->sy;
+	p->sz = vtx->sz;
+	p->rhw = vtx->rhw;
+	p->color = vtx->color;
+	p->specular = vtx->specular;
+	p->tx = vtx->tu;
+	p->ty = vtx->tv;
+	p->tu = tex->u1;
+	p->tv = tex->v1;
+
+	p++;
+	vtx = &v[v1];
+	p->sx = vtx->sx;
+	p->sy = vtx->sy;
+	p->sz = vtx->sz;
+	p->rhw = vtx->rhw;
+	p->color = vtx->color;
+	p->specular = vtx->specular;
+	p->tx = vtx->tu;
+	p->ty = vtx->tv;
+	p->tu = tex->u2;
+	p->tv = tex->v2;
+
+	p++;
+	vtx = &v[v2];
+	p->sx = vtx->sx;
+	p->sy = vtx->sy;
+	p->sz = vtx->sz;
+	p->rhw = vtx->rhw;
+	p->color = vtx->color;
+	p->specular = vtx->specular;
+	p->tx = vtx->tu;
+	p->ty = vtx->tv;
+	p->tu = tex->u3;
+	p->tv = tex->v3;
+
+	if (clip)
+	{
+		nPoints = 3;
+
+		if (clipZ)
+		{
+			nPoints = ZClipper(3, zClipperBuffer, XYUVClipperBuffer);
+
+			if (!nPoints)
+				return;
+		}
+		else
+		{
+			p = XYUVClipperBuffer;
+
+			for (int i = 0; i < 3; i++, p++)
+			{
+				p->tu *= p->rhw;
+				p->tv *= p->rhw;
+			}
+		}
+
+		nPoints = XYUVGClipper(nPoints, XYUVClipperBuffer);
+
+		if (nPoints)
+		{
+			FindBucket(tex->tpage, &p, &nVtx);
+			*nVtx += 3 * nPoints - 6;
+			AddClippedPoly(p, nPoints, XYUVClipperBuffer, tex);
+		}
+	}
+	else
+	{
+		p = bp;
+		p->sz = f_a - f_boo * p->rhw;
+		p++;
+		p->sz = f_a - f_boo * p->rhw;
+		p++;
+		p->sz = f_a - f_boo * p->rhw;
+		nPolys++;
+	}
+}
+
 void inject_polyinsert(bool replace)
 {
 	INJECT(0x004B98E0, HWR_DrawSortList, replace);
@@ -1014,4 +1722,9 @@ void inject_polyinsert(bool replace)
 	INJECT(0x004BB390, SubdivideTri, replace);
 	INJECT(0x004BBE40, AddTriSubdivide, replace);
 	INJECT(0x004BBFA0, AddQuadSubdivide, replace);
+	INJECT(0x004BC7F0, AddQuadClippedSorted, replace);
+	INJECT(0x004BC120, AddTriClippedSorted, replace);
+	INJECT(0x004BCE20, AddLineClippedSorted, replace);
+	INJECT(0x004BA300, AddQuadClippedZBuffer, replace);
+	INJECT(0x004BA960, AddTriClippedZBuffer, replace);
 }

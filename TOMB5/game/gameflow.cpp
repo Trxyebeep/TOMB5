@@ -562,10 +562,8 @@ long TitleOptions()
 				ret = 3;
 			}
 #ifdef _DEBUG	//not for public releases, doesn't exist in original codebase
-#ifdef CUTSCENE_SELECTOR	//enable the cutscene selector
 			if (keymap[DIK_F] && keymap[DIK_U] && keymap[DIK_C] && keymap[DIK_K])//F U C K because this is fucking shit.
 				dels_cutseq_selector_flag = 1;
-#endif
 #endif
 		}
 

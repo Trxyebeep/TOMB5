@@ -15,7 +15,7 @@ long DoLoadSave(long LoadSave);
 void S_MemSet(void* p, long val, size_t sz);
 long GetCampaignCheatValue();
 void DoOptions();
-#ifdef ENEMY_BARS
+#ifdef GENERAL_FIXES
 void S_DrawEnemyBar(long pos);
 #endif
 void DoBar(long x, long y, long width, long height, long pos, long clr1, long clr2);

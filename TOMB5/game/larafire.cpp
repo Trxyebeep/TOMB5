@@ -112,7 +112,7 @@ void LaraGun()
 		{
 			state = lara_item->current_anim_state;
 
-#ifdef DUCKROLL
+#ifdef GENERAL_FIXES
 			if ((state == AS_DUCK || state == AS_DUCKROTL || state == AS_DUCKROTR || state == AS_DUCKROLL) &&
 
 #else

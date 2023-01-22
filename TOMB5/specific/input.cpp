@@ -3,11 +3,16 @@
 #include "dxshell.h"
 #include "../game/lara_states.h"
 #include "../game/sound.h"
+#include "3dmath.h"
+#include "../game/text.h"
 #ifdef GENERAL_FIXES
 #include "../game/gameflow.h"
 #include "../game/newinv2.h"
 #include "../tomb5/tomb5.h"
 #endif
+
+static double screen_sizer = 1.0;
+static double game_sizer = 1.0;
 
 #ifdef GENERAL_FIXES
 short ammo_change_timer = 0;
@@ -217,6 +222,7 @@ long S_UpdateInput()
 	static long med_hotkey_timer;
 	static long cheat_code;
 	static long weird = 0;
+	static long joy_x, joy_y;
 	long flag;
 	short state;
 	static bool flare_no_db = 0;
@@ -581,8 +587,74 @@ long S_UpdateInput()
 	return 1;
 }
 
+long ReadJoystick(long& x, long& y)
+{
+	if (joystick_read)
+	{
+		x = joystick_read_x;
+		y = joystick_read_y;
+		return joystick_read_fire;
+	}
+
+	x = 0;
+	y = 0;
+	return 0;
+}
+
+static __inline void setup_screen_size()
+{
+	DXDISPLAYMODE* dm;
+	long w, h, sw, sh;
+
+	dm = &G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode];
+	w = dm->w;
+	h = dm->h;
+	sw = long(w * screen_sizer);
+	sh = long(h * screen_sizer);
+
+	if (sw > w)
+		sw = w;
+
+	if (sh > h)
+		sh = h;
+
+	InitWindow((w - sw) / 2, (h - sh) / 2, sw, sh, 20, 20480, 80, w, h);
+	InitFont();
+}
+
+void IncreaseScreenSize()
+{
+	if (screen_sizer != 1.0)
+	{
+		screen_sizer += 0.08;
+
+		if (screen_sizer > 1.0)
+			screen_sizer = 1.0;
+
+		game_sizer = screen_sizer;
+		setup_screen_size();
+	}
+}
+
+void DecreaseScreenSize()
+{
+	if (screen_sizer != 0.44)
+	{
+		screen_sizer -= 0.08;
+
+		if (screen_sizer < 0.44)
+			screen_sizer = 0.44;
+
+		game_sizer = screen_sizer;
+		setup_screen_size();
+	}
+}
+
 void inject_input(bool replace)
 {
 	INJECT(0x004A9110, Key, replace);
 	INJECT(0x004A92D0, S_UpdateInput, replace);
+	INJECT(0x004A9280, ReadJoystick, replace);
+	INJECT(0x004A8F00, IncreaseScreenSize, replace);
+	INJECT(0x004A8F90, DecreaseScreenSize, replace);
 }

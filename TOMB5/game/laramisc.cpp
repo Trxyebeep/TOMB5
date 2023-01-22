@@ -2,9 +2,6 @@
 #include "laramisc.h"
 #include "lara_states.h"
 #include "gameflow.h"
-#ifdef ENABLE_CHEATS
-#include "newinv2.h"
-#endif
 #include "../specific/3dmath.h"
 #include "draw.h"
 #include "control.h"
@@ -18,7 +15,10 @@
 #include "larasurf.h"
 #include "../specific/function_stubs.h"
 #include "../specific/audio.h"
+#ifdef GENERAL_FIXES
+#include "newinv2.h"
 #include "../tomb5/tomb5.h"
+#endif
 
 void GetLaraDeadlyBounds()
 {
@@ -190,7 +190,7 @@ void LaraCheatGetStuff()
 #endif
 }
 
-#if ENABLE_CHEATS
+#ifdef GENERAL_FIXES
 void LaraCheatyBits()
 {
 #ifndef _DEBUG	//public releases have cheats in inventory, except for DOZY
@@ -275,7 +275,7 @@ void LaraCheatyBits()
 
 #endif	//!_DEBUG
 }
-#endif	//ENABLE_CHEATS
+#endif	//GENERAL_FIXES
 
 void AnimateLara(ITEM_INFO* item)
 {
@@ -438,7 +438,7 @@ void LaraControl(short item_number)
 		lara.gun_status = LG_NO_ARMS;
 	}
 
-#ifdef ENABLE_CHEATS
+#ifdef GENERAL_FIXES
 	if (tomb5.enable_cheats)
 		LaraCheatyBits();
 #endif

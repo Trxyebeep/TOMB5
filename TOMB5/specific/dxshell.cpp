@@ -1069,6 +1069,178 @@ void DXJoyAcquisition(long acquire)
 		G_dxptr->Joystick->Unacquire();
 }
 
+void DXSize(long x, long y)
+{
+	Log(2, "DXSize : x %d y %d", x, y);
+
+	if (G_dxptr)
+	{
+		if (!(G_dxptr->Flags & 1))
+		{
+			G_dxptr->rScreen.right = x + G_dxptr->rScreen.left;
+			G_dxptr->rScreen.bottom = y + G_dxptr->rScreen.top;
+		}
+	}
+}
+
+long DXFindTextureFormat(long r, long g, long b, long a)
+{
+	DXD3DDEVICE* d;
+	DXTEXTUREINFO* t;
+
+	Log(5, "DXFindTextureFormat %d%d%d%d", r, g, b, a);
+
+	d = &G_dxinfo->DDInfo[G_dxinfo->nDDInfo].D3DDevices[G_dxinfo->nD3D];
+
+	for (int i = 0; i < d->nTextureInfos; i++)
+	{
+		t = &d->TextureInfos[i];
+
+		if (t->rbpp == r && t->gbpp == g && t->bbpp == b && t->abpp == a)
+		{
+			Log(5, "Found Format");
+			return i;
+		}
+	}
+
+	Log(1, "Format Not Found");
+	return -1;
+}
+
+void FlashLEDs()
+{
+	DIDEVICEOBJECTDATA obj[3];
+	static long data[4] = { 1, 2, 4, 2 };
+	static long a, b, c, lp;
+	ulong nOf;
+	long n;
+
+	nOf = 3;
+	memset(obj, 0, sizeof(obj));
+	obj[0].dwOfs = a;
+	obj[1].dwOfs = b;
+	obj[2].dwOfs = c;
+	n = data[lp];
+	obj[0].dwData = (n & 1) << 7;
+	obj[1].dwData = (n & 2) << 6;
+	obj[2].dwData = (n & 4) << 5;
+	lp = (lp + 1) % 4;
+	DXAttempt(G_dxptr->Keyboard->SendDeviceData(sizeof(DIDEVICEOBJECTDATA), obj, &nOf, 0));
+}
+
+long DXFindDevice(long w, long h, long bpp, long hw)
+{
+	DXDISPLAYMODE* dm;
+	bool flag;
+
+	for (int i = G_dxinfo->nDDInfo - 1; i >= 0; i--)
+	{
+		for (int j = 0; j < G_dxinfo->DDInfo[i].nD3DDevices; j++)
+		{
+			if (G_dxinfo->DDInfo[i].D3DDevices[j].bHardware == hw)
+			{
+				for (int k = 0; k < G_dxinfo->DDInfo[i].D3DDevices[j].nDisplayModes; k++)
+				{
+					dm = &G_dxinfo->DDInfo[i].D3DDevices[j].DisplayModes[k];
+
+					if (dm->w == w && dm->h == h && dm->bpp == bpp)
+					{
+						flag = 1;
+
+						if (G_dxptr->Flags & 2)
+							flag = G_dxinfo->DDInfo[i].DDCaps.dwCaps2 & DDCAPS2_CANRENDERWINDOWED;
+
+						if (flag)
+						{
+							G_dxinfo->nDD = i;
+							G_dxinfo->nD3D = j;
+							G_dxinfo->nDisplayMode = k;
+							Log(5, "Matching Device Found\n%s\n%s\n%dx%dx%d",
+								G_dxinfo->DDInfo[G_dxinfo->nDD].DDIdentifier.szDescription,
+								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].About,
+								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode].w,
+								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode].h,
+								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode].bpp);
+							G_dxinfo->bHardware = hw != 0;
+							return 1;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	Log(1, "No Matching Device Found");
+	return 0;
+}
+
+BOOL CALLBACK EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef)
+{
+	DIPROPRANGE range;
+
+	range.diph.dwSize = sizeof(DIPROPRANGE);
+	range.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+	range.diph.dwHow = DIPH_BYOFFSET;
+	range.diph.dwObj = lpddoi->dwOfs;
+	range.lMin = -1000;
+	range.lMax = 1000;
+
+	if (SUCCEEDED(G_dxptr->Joystick->SetProperty(DIPROP_RANGE, &range.diph)))
+		return DIENUM_CONTINUE;
+
+	return DIENUM_STOP;
+}
+
+BOOL CALLBACK EnumJoysticksCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
+{
+	if (SUCCEEDED(G_dxptr->lpDirectInput->CreateDeviceEx(lpddi->guidInstance, IID_IDirectInputDevice2, (LPVOID*)G_dxptr->Joystick, 0)))
+		return DIENUM_STOP;
+
+	return DIENUM_CONTINUE;
+}
+
+long DXUpdateJoystick()
+{
+	DIJOYSTATE state;
+	HRESULT hr;
+	long b;
+
+	joystick_read = 0;
+	joystick_read_x = 0;
+	joystick_read_y = 0;
+	joystick_read_fire = 0;
+
+	if (!G_dxptr->Joystick)
+		return 0;
+
+	do
+	{
+		G_dxptr->Joystick->Poll();
+		hr = G_dxptr->Joystick->GetDeviceState(sizeof(DIJOYSTATE), &state);
+
+		if (hr == DIERR_INPUTLOST)
+			hr = G_dxptr->Joystick->Acquire();
+
+	} while (hr == DIERR_INPUTLOST);
+
+	if (FAILED(hr))
+		return 0;
+
+	joystick_read = 1;
+	joystick_read_x = state.lX;
+	joystick_read_y = state.lY;
+	b = 0;
+	
+	for (int i = 0; i < 32; i++)
+	{
+		if (state.rgbButtons[i] & 0x80)
+			b |= 1 << i;
+	}
+
+	joystick_read_fire = b;
+	return 1;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1100,4 +1272,11 @@ void inject_dxshell(bool replace)
 	INJECT(0x0049F240, DXGetInfo, replace);
 	INJECT(0x0049F390, DXFreeInfo, replace);
 	INJECT(0x004A2DF0, DXJoyAcquisition, replace);
+	INJECT(0x004A2220, DXSize, replace);
+	INJECT(0x004A2290, DXFindTextureFormat, replace);
+	INJECT(0x004A27A0, FlashLEDs, replace);
+	INJECT(0x004A0CB0, DXFindDevice, replace);
+	INJECT(0x004A2C80, EnumAxesCallback, replace);
+	INJECT(0x004A2C40, EnumJoysticksCallback, replace);
+	INJECT(0x004A2D00, DXUpdateJoystick, replace);
 }

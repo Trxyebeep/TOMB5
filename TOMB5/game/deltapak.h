@@ -174,6 +174,6 @@ void GetActorJointAbsPosition(long actornum, ulong nodenum, PHD_VECTOR* vec);
 void init_cutseq_actors(char* data, long resident);
 void init_resident_cutseq(long num);
 void nail_intelligent_object(short objnum);
-#ifdef CUTSCENE_SKIPPER
-void do_cutseq_skipper_shit();
+#ifdef GENERAL_FIXES
+void do_cutseq_skipper_stuff();
 #endif

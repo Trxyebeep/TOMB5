@@ -20,9 +20,9 @@
 #include "rope.h"
 #include "../specific/function_stubs.h"
 #ifdef FOOTPRINTS
-#include "footprnt.h"
 #endif
 #ifdef GENERAL_FIXES
+#include "footprnt.h"
 #include "../tomb5/tomb5.h"
 #endif
 
@@ -100,7 +100,7 @@ void(*lara_control_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* co
 	lara_void_func,
 	lara_as_deathslide,
 	lara_as_duck,
-#ifdef DUCKROLL
+#ifdef GENERAL_FIXES
 	lara_as_duckroll,
 #else
 	lara_as_duck,
@@ -247,7 +247,7 @@ void(*lara_collision_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* 
 	lara_void_func,
 	lara_void_func,
 	lara_col_duck,
-#ifdef DUCKROLL
+#ifdef GENERAL_FIXES
 	lara_col_duckroll,
 #else
 	lara_col_duck,
@@ -1025,7 +1025,7 @@ void lara_as_walk(ITEM_INFO* item, COLL_INFO* coll)
 	else
 		item->goal_anim_state = AS_STOP;
 
-#ifdef FOOTPRINTS
+#ifdef GENERAL_FIXES
 	if (item->anim_number == 7 && item->frame_number == anims[7].frame_base + 16)
 		AddFootprint(item);
 #endif
@@ -1255,7 +1255,7 @@ void lara_as_null(ITEM_INFO* item, COLL_INFO* coll)
 	coll->enable_baddie_push = 0;
 	coll->enable_spaz = 0;
 
-#ifdef FOOTPRINTS
+#ifdef GENERAL_FIXES
 	if (item->frame_number == anims[97].frame_base + 69)
 		AddFootprint(item);
 #endif
@@ -3281,7 +3281,7 @@ void lara_as_gymnast(ITEM_INFO* item, COLL_INFO* coll)
 	coll->enable_baddie_push = 0;
 	coll->enable_spaz = 0;
 
-#ifdef FOOTPRINTS
+#ifdef GENERAL_FIXES
 	if (item->frame_number == anims[159].frame_base + 157 ||
 		item->frame_number == anims[159].frame_base + 188)
 		AddFootprint(item);
@@ -3330,7 +3330,7 @@ void lara_as_duck(ITEM_INFO* item, COLL_INFO* coll)
 		}
 	}
 
-#ifdef DUCKROLL
+#ifdef GENERAL_FIXES
 	if (input & IN_SPRINT)
 	{
 		if (LaraFloorFront(item, item->pos.y_rot, 512) < 384 && LaraFloorFront(item, item->pos.y_rot, 256) >= -384)
@@ -5301,7 +5301,7 @@ long LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
 	return 0;
 }
 
-#ifdef DUCKROLL
+#ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 {
 	camera.target_elevation = -3640;

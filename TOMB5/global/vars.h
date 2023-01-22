@@ -173,8 +173,10 @@
 #define HKTimer	VAR_U_(0x0051CEC9, char)
 #define HKShotsFired	VAR_U_(0x0051CEC8, char)
 #define joy_fire	VAR_U_(0x00878D9C, long)
-#define joy_x	VAR_U_(0x00878DA0, long)
-#define joy_y	VAR_U_(0x00878DA4, long)
+#define joystick_read	VAR_U_(0x0086BA34, long)
+#define joystick_read_x	VAR_U_(0x0086BA3C, long)
+#define joystick_read_y	VAR_U_(0x0086BA40, long)
+#define joystick_read_fire	VAR_U_(0x0086BA44, long)
 #define XATrack	VAR_U_(0x00510B14, long)
 #define old_MusicVolume	VAR_U_(0x00E4B0EC, long)	//no one writes to it, CalculateCamera reads it, useless
 #define TargetSnaps	VAR_U_(0x0051CA2D, char)
@@ -520,7 +522,6 @@
 #define big_char_height	VAR_U_(0x00E4DEA4, long)
 #define load_save_options_unk	VAR_U_(0x00E4DEAC, long)
 #define default_font_height	VAR_U_(0x00E4DC40, long)
-#define joystick_read	VAR_U_(0x0086BA34, long)
 #define SGcount	VAR_U_(0x0051CFFC, long)
 #define SGpoint	VAR_U_(0x0051CFF8, char*)
 #define mesh_base	VAR_U_(0x0087516C, short*)
@@ -793,6 +794,8 @@
 #define CharDef	ARRAY_(0x00507AB8, CHARDEF, [106])
 #define ground_zone	ARRAY_(0x00EEFB20, short*, [5][2])
 #define DebugStrings	ARRAY_(0x009158AC, char, [256][80])
+#define XYUVClipperBuffer	ARRAY_(0x00BA3FB0, D3DTLBUMPVERTEX, [20])
+#define zClipperBuffer	ARRAY_(0x00923C88, D3DTLBUMPVERTEX, [20])
 
 /****************/
 //registry

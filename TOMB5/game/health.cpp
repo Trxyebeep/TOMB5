@@ -46,7 +46,7 @@ void DrawGameInfo(long timed)
 		if (DashTimer < 120)
 			S_DrawDashBar(100 * DashTimer / 120);
 
-#ifdef ENEMY_BARS
+#ifdef GENERAL_FIXES
 		if (lara.target)
 		{
 			if (tomb5.enemy_bars && lara.target->hit_points > 0)

@@ -31,7 +31,6 @@
 #include "../specific/alexstuff.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
-#include "../tomb5/dynamicshadows.h"
 #include "../tomb5/tomb5.h"
 #endif
 
@@ -3521,19 +3520,8 @@ void frigup_lara()
 #endif
 
 	Rich_CalcLaraMatrices_Normal(frame, bone, 0);
-
-#ifdef GENERAL_FIXES
-	if (tomb5.shadow_mode == 5)
-		CalcShadowMatrices_Normal(frame, bone, 0);
-#endif
-
 	phd_PushUnitMatrix();
 	Rich_CalcLaraMatrices_Normal(frame, bone, 1);
-
-#ifdef GENERAL_FIXES
-	if (tomb5.shadow_mode == 5)
-		CalcShadowMatrices_Normal(frame, bone, 1);
-#endif
 
 	phd_PopMatrix();
 	HairControl(0, 0, frame);
@@ -3858,9 +3846,8 @@ void nail_intelligent_object(short objnum)
 	}
 }
 
-#ifdef CUTSCENE_SKIPPER
-
-void do_cutseq_skipper_shit()
+#ifdef GENERAL_FIXES
+void do_cutseq_skipper_stuff()
 {
 	ITEM_INFO* item;
 	short room_num;

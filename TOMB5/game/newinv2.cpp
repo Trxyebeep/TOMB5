@@ -2742,12 +2742,10 @@ void do_keypad_mode()
 
 	if (keypadpause)
 	{
-#ifdef KEYPAD_SOUNDS
-		long combination;
+#ifdef GENERAL_FIXES
+		n = keypadinputs[3] + 10 * (keypadinputs[2] + 10 * (keypadinputs[1] + 10 * keypadinputs[0]));
 
-		combination = keypadinputs[3] + 10 * (keypadinputs[2] + 10 * (keypadinputs[1] + 10 * keypadinputs[0]));
-
-		if (GLOBAL_invkeypadcombination == combination)
+		if (GLOBAL_invkeypadcombination == n)
 		{
 			if (keypadpause == 30 || keypadpause == 20 || keypadpause == 10)
 				SoundEffect(SFX_KEYPAD_ENTRY_YES, 0, SFX_ALWAYS);
@@ -2755,7 +2753,7 @@ void do_keypad_mode()
 		else
 		{
 			if (keypadpause == 30 || keypadpause == 25 || keypadpause == 20 || keypadpause == 15 || keypadpause == 10 || keypadpause == 5)
-				SoundEffect(SFX_KEYPAD_ENTRY_NO, 0, SFX_ALWAYS | 0x1000 | SFX_SETVOL);
+				SoundEffect(SFX_KEYPAD_ENTRY_NO, 0, SFX_ALWAYS | SFX_SETVOL | 0x1000);
 		}
 #endif
 
@@ -2878,7 +2876,7 @@ void do_stats_mode()
 
 void dels_give_lara_items_cheat()
 {
-#ifdef ENABLE_CHEATS
+#ifdef GENERAL_FIXES
 	long piss;
 
 	if (objects[CROWBAR_ITEM].loaded)
@@ -2922,7 +2920,7 @@ void dels_give_lara_items_cheat()
 
 void dels_give_lara_guns_cheat()
 {
-#ifdef ENABLE_CHEATS
+#ifdef GENERAL_FIXES
 	if (objects[FLARE_INV_ITEM].loaded)
 		lara.num_flares = -1;
 

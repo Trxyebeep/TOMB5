@@ -34,11 +34,9 @@
 #include "twogun.h"
 #include "text.h"
 #include "../specific/dxsound.h"
-#ifdef CUTSCENE_SKIPPER
+#ifdef GENERAL_FIXES
 #include "deltapak.h"
 #include "../tomb5/tomb5.h"
-#endif
-#ifdef GENERAL_FIXES
 #include "../specific/output.h"
 #include "../specific/gamemain.h"
 #endif
@@ -87,7 +85,7 @@ long ControlPhase(long _nframes, long demo_mode)
 	{
 		GlobalCounter++;
 		UpdateSky();
-#ifdef DISCORD_RPC
+#ifdef GENERAL_FIXES
 		RPC_Update();
 #endif
 
@@ -107,11 +105,11 @@ long ControlPhase(long _nframes, long demo_mode)
 
 		if (cutseq_trig)
 		{
-#ifdef CUTSCENE_SKIPPER
+#ifdef GENERAL_FIXES
 			if (tomb5.cutseq_skipper)
 			{
 				if (keymap[DIK_ESCAPE] && !ScreenFading && !bDoCredits)//skip them with esc
-					do_cutseq_skipper_shit();
+					do_cutseq_skipper_stuff();
 			}
 #endif
 			input = 0;

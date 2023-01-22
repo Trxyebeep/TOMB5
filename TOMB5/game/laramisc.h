@@ -10,7 +10,7 @@ void LaraCheat(ITEM_INFO* item, COLL_INFO* coll);
 void LaraInitialiseMeshes();
 void LaraCheatGetStuff();
 void AnimateLara(ITEM_INFO* item);
-#ifdef ENABLE_CHEATS
+#ifdef GENERAL_FIXES
 void LaraCheatyBits();
 #endif
 void LaraControl(short item_number);
