@@ -604,7 +604,7 @@ void DrawLaserSightSprite()
 	LaserSightActive = 0;
 }
 
-#ifdef USE_SKY_SPRITE
+#ifdef GENERAL_FIXES
 void SetSkyCoords(FVECTOR* vec, long segment, long def)
 {
 	if (segment == 1)	//bottom left

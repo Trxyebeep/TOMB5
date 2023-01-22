@@ -348,7 +348,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;FOOTPRINTS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;IMPROVED_BARS;DISCORD_RPC;NO_CD;GENERAL_FIXES;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;GENERAL_FIXES;_DEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>
@@ -375,7 +375,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;KEYPAD_SOUNDS;CUTSCENE_SKIPPER;CUTSCENE_SELECTOR;DUCKROLL;TR2MAIN_WIDESCREEN;USE_SKY_SPRITE;FOOTPRINTS;IRELAND_SKIES;ENABLE_CHEATS;ENEMY_BARS;IMPROVED_BARS;DISCORD_RPC;GENERAL_FIXES;NO_CD;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_CRT_SECURE_NO_WARNINGS;GENERAL_FIXES;NDEBUG;TR4M_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>../tomb5/pch.h</PrecompiledHeaderFile>

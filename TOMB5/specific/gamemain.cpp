@@ -10,14 +10,12 @@
 #include "winmain.h"
 #include "../game/sound.h"
 #include "../game/gameflow.h"
-#ifdef GENERAL_FIXES
-#include "../game/savegame.h"
-#endif
-#ifdef DISCORD_RPC
-#include "../tomb5/tomb5.h"
-#endif
 #include "dxshell.h"
 #include "specificfx.h"
+#ifdef GENERAL_FIXES
+#include "../game/savegame.h"
+#include "../tomb5/tomb5.h"
+#endif
 
 uchar water_abs[4] = { 4, 8, 12, 16 };
 short water_shimmer[4] = { 31, 63, 95, 127 };
@@ -214,11 +212,8 @@ unsigned int __stdcall GameMain(void* ptr)
 		if (!App.SoundDisabled)
 			SOUND_Init();
 
-#ifdef DISCORD_RPC
-		RPC_Init();
-#endif
-
 #ifdef GENERAL_FIXES	//Better here than in DoGameflow
+		RPC_Init();
 		init_tomb5_stuff();
 #endif
 
@@ -226,7 +221,7 @@ unsigned int __stdcall GameMain(void* ptr)
 		GameClose();
 		S_CDStop();
 
-#ifdef DISCORD_RPC
+#ifdef GENERAL_FIXES
 		RPC_close();
 #endif
 

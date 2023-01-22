@@ -515,7 +515,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	HDC hdc;
 	DEVMODE devmode;
 	long dbgflag;
-#ifndef NO_CD
+#ifndef GENERAL_FIXES
 	bool drive;
 #endif
 
@@ -553,14 +553,14 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	if (WinRunCheck((char*)"Tomb Raider Chronicles", (char*)"MainGameWindow", &App.mutex))
 		return 0;
 
-#ifndef NO_CD
+#ifndef GENERAL_FIXES
 	if (!FindCDDrive())
 	{
 		drive = 0;
 
 		while (!drive)
 		{
-			if (MessageBox(0, "Tomb Raider - The Last Revelation CD", "Tomb Raider", MB_RETRYCANCEL | MB_ICONQUESTION) == IDCANCEL)
+			if (MessageBox(0, "Tomb Raider Chronicles CD", "Tomb Raider", MB_RETRYCANCEL | MB_ICONQUESTION) == IDCANCEL)
 				return 0;
 
 			drive = FindCDDrive();

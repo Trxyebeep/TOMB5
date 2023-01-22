@@ -2425,7 +2425,7 @@ struct WRAITH_STRUCT
 	uchar pad[3];
 };
 
-#ifdef IMPROVED_BARS
+#ifdef GENERAL_FIXES
 struct GouraudBarColourSet
 {
 	uchar abLeftRed[5];

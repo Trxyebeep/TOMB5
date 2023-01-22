@@ -30,10 +30,8 @@
 #include "../specific/alexstuff.h"
 #include "lara_states.h"
 #include "control.h"
-#ifdef FOOTPRINTS
-#include "footprnt.h"
-#endif
 #ifdef GENERAL_FIXES
+#include "footprnt.h"
 #include "../tomb5/tomb5.h"
 #include "../tomb5/dynamicshadows.h"
 #endif
@@ -367,12 +365,9 @@ void SkyDrawPhase()
 			return;
 		}
 
-#ifdef IRELAND_SKIES
+#ifdef GENERAL_FIXES
 		if (gfCurrentLevel == LVL5_GALLOWS_TREE || gfCurrentLevel == LVL5_LABYRINTH || gfCurrentLevel == LVL5_OLD_MILL)
-		{
 			DrawMoon();
-			DrawStarField();
-		}
 #endif
 
 		if (BinocularRange)
@@ -436,6 +431,14 @@ void SkyDrawPhase()
 
 			OutputSky();
 		}
+
+#ifdef GENERAL_FIXES
+		if (gfCurrentLevel == LVL5_GALLOWS_TREE || gfCurrentLevel == LVL5_LABYRINTH || gfCurrentLevel == LVL5_OLD_MILL)
+		{
+			DrawStarField();
+			OutputSky();
+		}
+#endif
 
 		phd_PopMatrix();
 
@@ -908,7 +911,7 @@ void DrawRooms(short current_room)
 	DrawShockwaves();
 	DrawLightning();
 	DrawTwogunLasers();
-#ifdef FOOTPRINTS
+#ifdef GENERAL_FIXES
 	S_DrawFootPrints();
 #endif
 	lara_item->pos.x_pos = lx;

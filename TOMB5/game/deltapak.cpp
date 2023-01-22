@@ -3858,9 +3858,8 @@ void nail_intelligent_object(short objnum)
 	}
 }
 
-#ifdef CUTSCENE_SKIPPER
-
-void do_cutseq_skipper_shit()
+#ifdef GENERAL_FIXES
+void do_cutseq_skipper_stuff()
 {
 	ITEM_INFO* item;
 	short room_num;

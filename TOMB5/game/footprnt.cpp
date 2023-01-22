@@ -3,7 +3,7 @@
 #include "delstuff.h"
 #include "control.h"
 #include "sound.h"
-#ifdef FOOTPRINTS
+#ifdef GENERAL_FIXES
 #include "../specific/3dmath.h"
 #include "../specific/specificfx.h"
 #include "objects.h"
@@ -29,7 +29,7 @@ void AddFootprint(ITEM_INFO* item)
 	pos.y = 0;
 	pos.z = 0;
 
-#ifdef FOOTPRINTS
+#ifdef GENERAL_FIXES
 	GetProperFootPos(&pos);
 #else
 	if (FXType == SFX_LANDONLY)
@@ -44,7 +44,7 @@ void AddFootprint(ITEM_INFO* item)
 	if (floor->fx != 6 && floor->fx != 5 && floor->fx != 11)
 		SoundEffect(footsounds[floor->fx] + 288, &lara_item->pos, 0);
 
-#ifdef FOOTPRINTS
+#ifdef GENERAL_FIXES
 	if (tomb5.footprints && floor->fx < 3 && (gfCurrentLevel == 4 || !OnObject))
 #else
 	if (floor->fx < 3 && !OnObject)
@@ -60,7 +60,7 @@ void AddFootprint(ITEM_INFO* item)
 	}
 }
 
-#ifdef FOOTPRINTS
+#ifdef GENERAL_FIXES
 static void ProjectTriPoints(FVECTOR pos, float& x, float& y, float& z)
 {
 	x = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
