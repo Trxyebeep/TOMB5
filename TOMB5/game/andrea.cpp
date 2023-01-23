@@ -747,6 +747,8 @@ void DrawPortalDoor(ITEM_INFO* item)
 		zv = f_persp / fz;
 		v[i].sx = fx * zv + f_centerx;
 		v[i].sy = fy * zv + f_centery;
+		v[i].tu = fx;
+		v[i].tv = fy;
 		v[i].sz = fz;
 		v[i].rhw = f_mpersp / fz * f_moneopersp;
 		v[i].color = RGBA(rgb->r, rgb->g, rgb->b, 0xFF);
@@ -791,8 +793,11 @@ void DrawPortalDoor(ITEM_INFO* item)
 	tex.u4 = sprite->x1;
 	tex.v4 = sprite->y2;
 
-	for (int i = 0; i < 64; i++)
+	for (int i = 0; i < 64 - 9; i++)
 	{
+		if ((i & 7) == 7)
+			continue;
+
 		for (int j = 0; j < 4; j++)
 		{
 			if (!j)
@@ -804,12 +809,7 @@ void DrawPortalDoor(ITEM_INFO* item)
 			else if (j == 3)
 				c = 8;
 
-			vtx[j].sx = v[i + c].sx;
-			vtx[j].sy = v[i + c].sy;
-			vtx[j].sz = v[i + c].sz;
-			vtx[j].rhw = v[i + c].rhw;
-			vtx[j].color = v[i + c].color;
-			vtx[j].specular = v[i + c].specular;
+			vtx[j] = v[i + c];
 			clipflags[j] = clip[i + c];
 		}
 
