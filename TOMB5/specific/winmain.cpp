@@ -629,7 +629,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 
 	if (!DXCreate(dm->w, dm->h, dm->bpp, App.StartFlags, &App.dx, App.hWnd, WINDOW_STYLE))
 	{
-		MessageBox(0, SCRIPT_TEXT_bis(STR_FAILED_TO_SETUP_DIRECTX), "Tomb Raider IV", 0);
+		MessageBox(0, SCRIPT_TEXT(STR_FAILED_TO_SETUP_DIRECTX), "Tomb Raider IV", 0);
 		return 0;
 	}
 

@@ -557,7 +557,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/gameflow.cpp
 
-0x00434800		LoadGameflow
+0x00434800	+	LoadGameflow
 0x00434B60	+	TitleOptions
 0x004354B0	+	DoGameflow
 0x00435C70	+	DoTitle

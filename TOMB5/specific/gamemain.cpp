@@ -113,7 +113,7 @@ long S_SaveGame(long slot_num)
 		for (int i = 0; i < 20; i++)
 			buffer[i] = '\0';
 
-		wsprintf(buffer, "%s", SCRIPT_TEXT_bis(gfLevelNames[gfCurrentLevel]));
+		wsprintf(buffer, "%s", SCRIPT_TEXT(gfLevelNames[gfCurrentLevel]));
 		WriteFile(file, buffer, 75, &bytes, NULL);
 		WriteFile(file, &save_counter, sizeof(long), &bytes, NULL);
 		days = savegame.Game.Timer / 30 / 86400;

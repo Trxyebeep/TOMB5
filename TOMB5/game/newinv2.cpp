@@ -1118,7 +1118,7 @@ void draw_current_object_list(long ringnum)
 					if (nummeup)
 					{
 						if (inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number == PICKUP_ITEM4)
-							sprintf(textbufme, SCRIPT_TEXT_bis(STR_SECRETS_NUM), nummeup, wanky_secrets_table[gfCurrentLevel]);
+							sprintf(textbufme, SCRIPT_TEXT(STR_SECRETS_NUM), nummeup, wanky_secrets_table[gfCurrentLevel]);
 						else if (nummeup == -1)
 							sprintf(textbufme, SCRIPT_TEXT(STR_UNLIMITED), SCRIPT_TEXT(inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname));
 						else
@@ -2727,7 +2727,7 @@ void do_keypad_mode()
 
 	DrawThreeDeeObject2D(long(phd_centerx * 0.00390625 * 256.0 + inventry_xpos), long((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2),
 		INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
-	PrintString(0x100, (ushort)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, SCRIPT_TEXT_bis(STR_ENTER_COMBINATION), FF_CENTER);
+	PrintString(0x100, (ushort)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, SCRIPT_TEXT(STR_ENTER_COMBINATION), FF_CENTER);
 	buf[0] = 45;
 	buf[1] = 45;
 	buf[2] = 45;

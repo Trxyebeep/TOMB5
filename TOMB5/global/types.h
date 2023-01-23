@@ -44,7 +44,6 @@ do \
 #define RGB_M(clr, m)	(clr = (clr & 0xFF000000) | (((CLRR(clr) * m) >> 8) << 16) | (((CLRG(clr) * m) >> 8) << 8) | ((CLRB(clr) * m) >> 8))
 //^ color multiply thingy phd_PutPolygons wants to do
 #define SCRIPT_TEXT(num)		(&gfStringWad[gfStringOffset[num]])
-#define SCRIPT_TEXT_bis(num)	(&gfStringWad[gfStringOffset_bis[num]])
 #define SetVecXYZ(num, X, Y, Z)	 vec[(num)].x = (X); vec[(num)].y = (Y); vec[(num)].z = (Z);
 
 	/**********************************/
@@ -2425,6 +2424,16 @@ struct WRAITH_STRUCT
 	uchar pad[3];
 };
 
+struct STRINGHEADER
+{
+	ushort nStrings;
+	ushort nPSXStrings;
+	ushort nPCStrings;
+	ushort StringWadLen;
+	ushort PSXStringWadLen;
+	ushort PCStringWadLen;
+};
+
 #ifdef GENERAL_FIXES
 struct GouraudBarColourSet
 {
@@ -2435,9 +2444,7 @@ struct GouraudBarColourSet
 	uchar abRightGreen[5];
 	uchar abRightBlue[5];
 };
-#endif
 
-#ifdef GENERAL_FIXES
 struct COLOR_BIT_MASKS
 {
 	ulong dwRBitMask;
