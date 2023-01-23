@@ -2434,6 +2434,15 @@ struct STRINGHEADER
 	ushort PCStringWadLen;
 };
 
+struct NODEOFFSET_INFO
+{
+	short x;
+	short y;
+	short z;
+	char mesh_num;
+	uchar GotIt;
+};
+
 #ifdef GENERAL_FIXES
 struct GouraudBarColourSet
 {

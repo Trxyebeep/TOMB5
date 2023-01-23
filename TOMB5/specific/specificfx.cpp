@@ -12,14 +12,15 @@
 #include "../game/tomb4fx.h"
 #include "winmain.h"
 #include "mmx.h"
+#include "profiler.h"
+#include "alexstuff.h"
+#include "../game/sphere.h"
 
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 
 #define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
 #endif
-#include "profiler.h"
-#include "alexstuff.h"
 
 #define LINE_POINTS	4	//number of points in each grid line
 #define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
@@ -117,6 +118,29 @@ char flare_table[121] =
 	16, 16, 24, 17, 31, 29,
 	-1
 };
+
+static NODEOFFSET_INFO NodeOffsets[16] =
+{
+	{ -16, 40, 160, -14, 0 },
+	{ -16, -8, 160, 0, 0 },
+	{ 0, 0, 256, 8, 0 },
+	{ 0, 0, 256, 17, 0 },
+	{ 0, 0, 256, 26, 0 },
+	{ 0, 144, 40, 10, 0 },
+	{ -40, 64, 360, 14, 0 },
+	{ 0, -600, -40, 0, 0 },
+	{ 0, 32, 16, 9, 0 },
+
+	{ 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0 },
+	{ 0, 0, 0, 0, 0 }
+};
+
+static PHD_VECTOR NodeVectors[16];
 
 #ifdef GENERAL_FIXES
 static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
@@ -4754,6 +4778,198 @@ bool ClipLine(long& x1, long& y1, long z1, long& x2, long& y2, long z2, long xMi
 	return 1;
 }
 
+void S_DrawSparks()
+{
+	SPARKS* sptr;
+	FX_INFO* fx;
+	ITEM_INFO* item;
+	D3DTLVERTEX v[2];
+	TEXTURESTRUCT tex;
+	PHD_VECTOR pos;
+	FVECTOR fpos;
+	float fX, fY, fZ, zv;
+	float p[8];
+	long x, y, z, smallest_size, r, g, b, c0, c1;
+
+	smallest_size = 0;	//uninitialized
+	tex.drawtype = 2;
+	tex.tpage = 0;
+	tex.flag = 0;
+
+	for (int i = 0; i < 16; i++)
+		NodeOffsets[i].GotIt = 0;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+	aSetViewMatrix();
+
+	for (int i = 0; i < 1024; i++)
+	{
+		sptr = &spark[i];
+
+		if (!sptr->On)
+			continue;
+
+		if (sptr->Flags & 0x40)
+		{
+			fx = &effects[sptr->FxObj];
+			x = sptr->x + fx->pos.x_pos;
+			y = sptr->y + fx->pos.y_pos;
+			z = sptr->z + fx->pos.z_pos;
+
+			if (sptr->sLife - sptr->Life > (GetRandomDraw() & 7) + 4)
+			{
+				sptr->x = x;
+				sptr->y = y;
+				sptr->z = z;
+				sptr->Flags &= ~0x40;
+			}
+		}
+		else if (sptr->Flags & 0x80)
+		{
+			item = &items[sptr->FxObj];
+
+			if (sptr->Flags & 0x1000)
+			{
+				if (NodeOffsets[sptr->NodeNumber].GotIt)
+				{
+					pos.x = NodeVectors[sptr->NodeNumber].x;
+					pos.y = NodeVectors[sptr->NodeNumber].y;
+					pos.z = NodeVectors[sptr->NodeNumber].z;
+				}
+				else
+				{
+					pos.x = NodeOffsets[sptr->NodeNumber].x;
+					pos.y = NodeOffsets[sptr->NodeNumber].y;
+					pos.z = NodeOffsets[sptr->NodeNumber].z;
+
+					if (NodeOffsets[sptr->NodeNumber].mesh_num < 0)
+						GetLaraJointPos(&pos, -NodeOffsets[sptr->NodeNumber].mesh_num);
+					else
+						GetJointAbsPosition(item, &pos, NodeOffsets[sptr->NodeNumber].mesh_num);
+
+					NodeOffsets[sptr->NodeNumber].GotIt = 1;
+					NodeVectors[sptr->NodeNumber].x = pos.x;
+					NodeVectors[sptr->NodeNumber].y = pos.y;
+					NodeVectors[sptr->NodeNumber].z = pos.z;
+				}
+
+				x = sptr->x + pos.x;
+				y = sptr->y + pos.y;
+				z = sptr->z + pos.z;
+
+				if (sptr->sLife - sptr->Life > (GetRandomDraw() & 3) + 8)
+				{
+					sptr->x = x;
+					sptr->y = y;
+					sptr->z = z;
+					sptr->Flags &= ~0x1080;
+				}
+			}
+			else
+			{
+				x = sptr->x + item->pos.x_pos;
+				y = sptr->y + item->pos.y_pos;
+				z = sptr->z + item->pos.z_pos;
+			}
+		}
+		else
+		{
+			x = sptr->x;
+			y = sptr->y;
+			z = sptr->z;
+		}
+
+		fX = float(x - lara_item->pos.x_pos);
+		fY = float(y - lara_item->pos.y_pos);
+		fZ = float(z - lara_item->pos.z_pos);
+		fpos.x = fX * D3DMView._11 + fY * D3DMView._21 + D3DMView._31 * fZ + D3DMView._41;
+		fpos.y = fX * D3DMView._12 + fY * D3DMView._22 + D3DMView._32 * fZ + D3DMView._42;
+		fpos.z = fX * D3DMView._13 + fY * D3DMView._23 + D3DMView._33 * fZ + D3DMView._43;
+
+		clipflags[0] = 0;
+		clipflags[1] = 0;
+		clipflags[2] = 0;
+		clipflags[3] = 0;
+
+		if (fpos.z < f_mznear)
+			continue;
+
+		zv = f_mpersp / fpos.z;
+		p[0] = zv * fpos.x + f_centerx;
+		p[1] = zv * fpos.y + f_centery;
+		p[2] = fpos.z;
+		p[3] = f_moneopersp * zv;
+
+		if (p[0] < f_left || p[0] > f_right || p[1] < f_top || p[1] > f_bottom)
+			continue;
+
+		if (sptr->Flags & 8)
+		{
+			if (sptr->Flags & 2)
+				smallest_size = 4;
+
+			S_DrawDrawSparksNEW(sptr, smallest_size, p);
+		}
+		else
+		{
+			fX -= float(sptr->Xvel >> 4);
+			fY -= float(sptr->Yvel >> 4);
+			fZ -= float(sptr->Zvel >> 4);
+			fpos.x = fX * D3DMView._11 + fY * D3DMView._21 + D3DMView._31 * fZ + D3DMView._41;
+			fpos.y = fX * D3DMView._12 + fY * D3DMView._22 + D3DMView._32 * fZ + D3DMView._42;
+			fpos.z = fX * D3DMView._13 + fY * D3DMView._23 + D3DMView._33 * fZ + D3DMView._43;
+
+			if (fpos.z < f_mznear)
+				continue;
+
+			zv = f_mpersp / fpos.z;
+			p[4] = zv * fpos.x + f_centerx;
+			p[5] = zv * fpos.y + f_centery;
+			p[6] = fpos.z;
+			p[7] = f_moneopersp * zv;
+
+			if (p[4] < f_left || p[4] > f_right || p[5] < f_top || p[5] > f_bottom)
+				continue;
+
+			z = (long)fpos.z;
+
+			if (z <= 0x3000)
+			{
+				c0 = RGBA(sptr->R, sptr->G, sptr->B, 0xFF);
+				c1 = c0;
+			}
+			else
+			{
+				z = 0x5000 - z;
+				r = (z * sptr->R) >> 13;
+				g = (z * sptr->G) >> 13;
+				b = (z * sptr->B) >> 13;
+				c0 = RGBA(r, g, b, 0xFF);
+				c1 = RGBA(r >> 1, g >> 1, b >> 1, 0xFF);
+			}
+
+			v[0].sx = p[0];
+			v[0].sy = p[1];
+			v[0].sz = p[2];
+			v[0].rhw = p[3];
+			v[0].color = c0;
+			v[0].specular = 0xFF000000;
+
+			v[1].sx = p[4];
+			v[1].sy = p[5];
+			v[1].sz = p[6];
+			v[1].rhw = p[7];
+			v[1].color = c1;
+			v[1].specular = 0xFF000000;
+
+			AddPolyLine(v, &tex);
+		}
+	}
+
+	phd_PopMatrix();
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -4802,4 +5018,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C9D90, DrawSprite, replace);
 	INJECT(0x004C9F70, SetUpLensFlare, replace);
 	INJECT(0x004C5B10, ClipLine, replace);
+	INJECT(0x004C4C60, S_DrawSparks, replace);
 }
