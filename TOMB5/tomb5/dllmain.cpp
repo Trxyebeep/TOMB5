@@ -104,6 +104,7 @@
 #include "../specific/profiler.h"
 #include "../specific/cmdline.h"
 #include "../specific/clipping.h"
+#include "../game/text.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -227,6 +228,7 @@ void inject_all(bool replace)
 	inject_profiler(replace);
 	inject_cmdline(replace);
 	inject_clipping(replace);
+	inject_text(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
