@@ -32,10 +32,8 @@ do \
 #define	fSin(x)	fcossin_tbl[(ushort)((x))]
 #define	fCos(x)	fcossin_tbl[(ushort)(((x) + 0x4000))]
 #define SQUARE(x) ((x)*(x))
-#define phd_PopMatrix()		{phd_mxptr -= 12; aMXPtr -= 12;}
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
 #define RGBA(r, g, b, a) (RGBONLY(r, g, b) | ((a) << 24))
-#define ARGB(r, g, b, a) (RGBA(b, g, r, a))
 #define	CLRA(clr)	((clr >> 24) & 0xFF)	//shift r, g, and b out of the way and 0xFF
 #define	CLRR(clr)	((clr >> 16) & 0xFF)	//shift g and b out of the way and 0xFF
 #define	CLRG(clr)	((clr >> 8) & 0xFF)		//shift b out of the way and 0xFF

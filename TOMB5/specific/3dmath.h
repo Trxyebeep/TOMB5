@@ -44,3 +44,9 @@ long phd_atan(long x, long y);
 ulong phd_sqrt(ulong num);
 ulong mGetAngle(long x, long z, long x1, long z1);
 void phd_GenerateW2V(PHD_3DPOS* viewPos);
+
+__inline void phd_PopMatrix()
+{
+	phd_mxptr -= indices_count;
+	aMXPtr -= indices_count;
+}
