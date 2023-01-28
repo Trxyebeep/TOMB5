@@ -63,7 +63,7 @@ void FireCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 			if (item->object_number != BURNING_ROOTS)
 			{
 				l->item_flags[3] = 1;
-				l->anim_number = (short) (ANIM_LIGHT_TORCH1 + (ABS(l->pos.y_pos - item->pos.y_pos) >> 8));
+				l->anim_number = (short) (ANIM_LIGHT_TORCH1 + (abs(l->pos.y_pos - item->pos.y_pos) >> 8));
 			}
 			else
 				l->anim_number = ANIM_LIGHT_TORCH5;

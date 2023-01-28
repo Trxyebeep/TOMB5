@@ -138,8 +138,8 @@ void ControlPropeller(short item_number)
 			{
 				if (lara_item->pos.x_pos >= b[0] && lara_item->pos.x_pos <= b[1])
 				{
-					dz1 = ABS(lara_item->pos.z_pos - b[4]);
-					dz2 = ABS(lara_item->pos.z_pos - b[5]);
+					dz1 = abs(lara_item->pos.z_pos - b[4]);
+					dz2 = abs(lara_item->pos.z_pos - b[5]);
 
 					if (dz2 >= dz1)
 						Zaxis = -Zaxis;
@@ -161,8 +161,8 @@ void ControlPropeller(short item_number)
 			{
 				if (lara_item->pos.z_pos >= b[4] && lara_item->pos.z_pos <= b[5])
 				{
-					dx1 = ABS(lara_item->pos.x_pos - b[0]);
-					dx2 = ABS(lara_item->pos.x_pos - b[1]);
+					dx1 = abs(lara_item->pos.x_pos - b[0]);
+					dx2 = abs(lara_item->pos.x_pos - b[1]);
 
 					if (dx2 >= dx1)
 						Xaxis = -Xaxis;
@@ -189,7 +189,7 @@ void TriggerFanEffects(long* b, long y, short angle, long rate)
 	SPARKS* sptr;
 	long dx, dy, dz;
 
-	if (ABS(y) == 1)
+	if (abs(y) == 1)
 	{
 		dx = (b[0] + b[1]) >> 1;
 
@@ -225,7 +225,7 @@ void TriggerFanEffects(long* b, long y, short angle, long rate)
 		}
 	}
 
-	if (ABS(camera.pos.x - dx) <= 7168 && ABS(camera.pos.y - dy) <= 7168 && ABS(camera.pos.z - dz) <= 7168)
+	if (abs(camera.pos.x - dx) <= 7168 && abs(camera.pos.y - dy) <= 7168 && abs(camera.pos.z - dz) <= 7168)
 	{
 		sptr = &spark[GetFreeSpark()];
 		sptr->On = 1;
@@ -241,7 +241,7 @@ void TriggerFanEffects(long* b, long y, short angle, long rate)
 		sptr->Life = (GetRandomControl() & 3) + 20;
 		sptr->sLife = sptr->Life;
 
-		if (ABS(y) == 1)
+		if (abs(y) == 1)
 		{
 			dx = (3 * (b[1] - b[0])) >> 3;
 			dx = GetRandomControl() % dx;

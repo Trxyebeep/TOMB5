@@ -81,7 +81,7 @@ void GladiatorControl(short item_number)
 				dx = lara_item->pos.x_pos - item->pos.x_pos;
 				dz = lara_item->pos.z_pos - item->pos.z_pos;
 				da = (short) (phd_atan(dz, dx) - item->pos.y_rot);
-				front = ABS(da) < 16384;
+				front = abs(da) < 16384;
 				distance = SQUARE(dx) + SQUARE(dz);
 			}
 
@@ -213,7 +213,7 @@ void GladiatorControl(short item_number)
 			case 11:
 				gladiator->maximum_turn = 0;
 
-				if (ABS(info.angle) < 1274)
+				if (abs(info.angle) < 1274)
 					item->pos.y_rot += info.angle;
 				else if (info.angle < 0)
 					item->pos.y_rot -= 1274;

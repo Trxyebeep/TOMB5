@@ -79,7 +79,7 @@ void EarthQuake(short item_number)
 
 		if (!item->item_flags[2])
 		{
-			if (ABS(item->item_flags[0] - item->item_flags[1]) < 16)
+			if (abs(item->item_flags[0] - item->item_flags[1]) < 16)
 			{
 				if (item->item_flags[1] == 20)
 				{
@@ -604,7 +604,7 @@ void TightRopeCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	}
 	else if (l->current_anim_state == AS_TROPEWALK &&
 		l->goal_anim_state != AS_TROPEGETOFF && !lara.TightRopeOff && item->pos.y_rot == l->pos.y_rot &&
-		((ABS(item->pos.x_pos - l->pos.x_pos) + ABS(item->pos.z_pos - l->pos.z_pos)) < 640))
+		((abs(item->pos.x_pos - l->pos.x_pos) + abs(item->pos.z_pos - l->pos.z_pos)) < 640))
 		lara.TightRopeOff = 1;
 }
 
@@ -841,7 +841,7 @@ void DrawBaddieGunFlash(ITEM_INFO* item)
 	
 	for (num = node[0] < 0 ? 1 : 0; num >= 0; num--)
 	{
-		GetJointAbsPositionMatrix(item, m, ABS(node[num]));
+		GetJointAbsPositionMatrix(item, m, abs(node[num]));
 		phd_PushMatrix();
 		aMXPtr[M00] = m[M00];
 		aMXPtr[M01] = m[M01];

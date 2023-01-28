@@ -443,7 +443,7 @@ void InitialisePulley(short item_number)
 
 	item = &items[item_number];
 	item->item_flags[3] = item->trigger_flags;
-	item->trigger_flags = ABS(item->trigger_flags);
+	item->trigger_flags = abs(item->trigger_flags);
 
 	if (item_number == GlobalPulleyFrigItem)
 		item->item_flags[1] = 1;

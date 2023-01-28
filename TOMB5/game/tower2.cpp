@@ -203,7 +203,7 @@ void ControlIris(short item_number)
 			pos.x = 0;
 			GetLaraJointPos(&pos, 0);
 
-			if (ABS(pos.y - item->pos.y_pos) >= 1024 || ABS(pos.x - item->pos.x_pos) >= 2048 || ABS(pos.z - item->pos.z_pos) >= 2048)
+			if (abs(pos.y - item->pos.y_pos) >= 1024 || abs(pos.x - item->pos.x_pos) >= 2048 || abs(pos.z - item->pos.z_pos) >= 2048)
 				item->item_flags[3] = 0;
 			else
 			{
@@ -274,7 +274,7 @@ void ControlFishtank(short item_number)
 
 		if (i && i != 8)
 		{
-			x -= GetRandomControl() % ABS(SplashOffsets[2 * i + 2] - x);
+			x -= short(GetRandomControl() % abs(SplashOffsets[2 * i + 2] - x));
 			dz = SplashOffsets[2 * i + 3] - z;
 
 			if (dz < 0)
@@ -311,11 +311,11 @@ void ControlArea51Laser(short item_number)
 	TriggerDynamic(item->pos.x_pos, item->pos.y_pos - 64, item->pos.z_pos,
 		(GetRandomControl() & 1) + 8, (GetRandomControl() & 3) + 24, GetRandomControl() & 3, GetRandomControl() & 1);
 	item->mesh_bits = -1 - (GetRandomControl() & 0x14);
-	dx = ABS(((item->item_flags[1] & 0xFF) << 9) - item->pos.x_pos);
+	dx = abs(((item->item_flags[1] & 0xFF) << 9) - item->pos.x_pos);
 
 	if (dx < 768)
 	{
-		dz = ABS(((item->item_flags[1] & 0xFF00) << 1) - item->pos.z_pos);
+		dz = abs(((item->item_flags[1] & 0xFF00) << 1) - item->pos.z_pos);
 
 		if (dz < 768)
 		{
@@ -383,7 +383,7 @@ void ControlArea51Laser(short item_number)
 
 	if (item->item_flags[3])
 	{
-		num = ABS(item->item_flags[3] >> 4);
+		num = abs(item->item_flags[3] >> 4);
 
 		if (num > 31)
 			num = 31;

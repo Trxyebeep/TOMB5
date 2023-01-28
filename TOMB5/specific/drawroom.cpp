@@ -391,7 +391,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	float num, zbak, zv, zv2, fR, fG, fB, val, val2, val3, fCol;
 	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal;
 	short clipFlag;
-	uchar rnd, abs;
+	uchar rnd, absval;
 #ifdef GENERAL_FIXES
 	uchar flags;
 #endif
@@ -526,7 +526,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 					if (xyz.y != current_room_ptr->minfloor)
 						flags |= 2;
 				}
-				else if (!IsMistVert(&xyz) || ABS(xyz.y - current_room_ptr->minfloor) > 1536)
+				else if (!IsMistVert(&xyz) || abs(xyz.y - current_room_ptr->minfloor) > 1536)
 					flags |= 1;
 			}
 			else if (xyz.y == current_room_ptr->minfloor)
@@ -567,8 +567,8 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			wz = long(xyz.z / 128.0F);
 			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
 			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
-			abs = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
-			iVal = (shimmer + abs) << 3;
+			absval = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
+			iVal = (shimmer + absval) << 3;
 			cR += iVal;
 			cG += iVal;
 			cB += iVal;
@@ -580,9 +580,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			wz = long(xyz.z / 128.0F);
 			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
 			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].shimmer;
-			abs = WaterTable[current_room_ptr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].abs;
-			iVal = (shimmer + abs) << 3;
-			cG += ABS(iVal);
+			absval = WaterTable[current_room_ptr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].abs;
+			iVal = (shimmer + absval) << 3;
+			cG += abs(iVal);
 		}
 #else
 		else if (nShoreVerts && i > nWaterVerts && i < nShoreVerts + nWaterVerts)
@@ -592,8 +592,8 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			wz = long(xyz.z * 0.0078125F);
 			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
 			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
-			abs = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
-			iVal = shimmer + abs;
+			absval = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
+			iVal = shimmer + absval;
 			cR += iVal;
 			cG += iVal;
 			cB += iVal;

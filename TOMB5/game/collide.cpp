@@ -868,7 +868,7 @@ long MoveLaraPosition(PHD_VECTOR* v, ITEM_INFO* item, ITEM_INFO* laraitem)
 		room_number = laraitem->room_number;
 		height = GetHeight(GetFloor(pos.x_pos, pos.y_pos, pos.z_pos, &room_number), pos.x_pos, pos.y_pos, pos.z_pos);
 
-		if (ABS(height - laraitem->pos.y_pos) > 512)
+		if (abs(height - laraitem->pos.y_pos) > 512)
 		{
 			if (lara.IsMoving)
 			{

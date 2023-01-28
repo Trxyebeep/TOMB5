@@ -540,9 +540,9 @@ long CheckGuardOnTrigger()
 
 			if (room_number == item->room_number && item->current_anim_state == 1)
 			{
-				if (ABS(item->pos.x_pos - lara_item->pos.x_pos) < 1024 &&
-					ABS(item->pos.z_pos - lara_item->pos.z_pos) < 1024 &&
-					ABS(item->pos.y_pos - lara_item->pos.y_pos) < 256)
+				if (abs(item->pos.x_pos - lara_item->pos.x_pos) < 1024 &&
+					abs(item->pos.z_pos - lara_item->pos.z_pos) < 1024 &&
+					abs(item->pos.y_pos - lara_item->pos.y_pos) < 256)
 					return 1;
 			}
 		}
@@ -861,7 +861,7 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			tiltxoff = xoff;
 			tiltyoff = yoff;
 
-			if (ABS(xoff) > 2 || ABS(yoff) > 2)
+			if (abs(xoff) > 2 || abs(yoff) > 2)
 				height_type = BIG_SLOPE;
 			else
 				height_type = SMALL_SLOPE;
@@ -991,7 +991,7 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			tiltxoff = xoff;
 			tiltyoff = yoff;
 
-			if (ABS(xoff) > 2 || ABS(yoff) > 2)
+			if (abs(xoff) > 2 || abs(yoff) > 2)
 				height_type = DIAGONAL;
 
 			if (xoff >= 0)
@@ -1393,7 +1393,7 @@ long LOS(GAME_VECTOR* start, GAME_VECTOR* target)
 
 	target->room_number = start->room_number;
 
-	if (ABS(target->z - start->z) > ABS(target->x - start->x))
+	if (abs(target->z - start->z) > abs(target->x - start->x))
 	{
 		los1 = xLOS(start, target);
 		los2 = zLOS(start, target);
@@ -1794,7 +1794,7 @@ long GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, long DrawTarget, long f
 
 								HitTarget(shotitem, &target, weapons[lara.gun_type].damage, 0);
 							}
-							else if (ABS(phd_atan(lara_item->pos.z_pos - shotitem->pos.z_pos, lara_item->pos.x_pos - shotitem->pos.x_pos) - shotitem->pos.y_rot) < 16384)
+							else if (abs(phd_atan(lara_item->pos.z_pos - shotitem->pos.z_pos, lara_item->pos.x_pos - shotitem->pos.x_pos) - shotitem->pos.y_rot) < 16384)
 							{
 								shotitem->hit_points = 0;
 								HitTarget(shotitem, &target, weapons[lara.gun_type].damage, 0);

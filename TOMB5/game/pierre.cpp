@@ -143,7 +143,7 @@ void PierreControl(short item_number)
 				pierre->maximum_turn = 0;
 				item->goal_anim_state = 1;
 
-				if (ABS(info.angle) < 364)
+				if (abs(info.angle) < 364)
 					item->pos.y_rot += info.angle;
 				else if (info.angle >= 0)
 					item->pos.y_rot += 364;
@@ -238,7 +238,7 @@ void PierreControl(short item_number)
 
 			pierre->maximum_turn = 0;
 
-			if (ABS(info.angle) < 364)
+			if (abs(info.angle) < 364)
 				item->pos.y_rot += info.angle;
 			else if (info.angle >= 0)
 				item->pos.y_rot += 364;
@@ -278,7 +278,7 @@ void PierreControl(short item_number)
 
 			pierre->maximum_turn = 0;
 
-			if (ABS(info.angle) < 364)
+			if (abs(info.angle) < 364)
 				item->pos.y_rot += info.angle;
 			else if (info.angle >= 0)
 				item->pos.y_rot += 364;

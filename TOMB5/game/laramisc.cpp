@@ -600,11 +600,11 @@ void LaraControl(short item_number)
 		room_number = item->room_number;
 		GetFloor(item->pos.x_pos, item->pos.y_pos - 256, item->pos.z_pos, &room_number);
 
-		if (wd == NO_HEIGHT || ABS(hfw) >= 256 || room[room_number].flags & ROOM_UNDERWATER || (item->anim_number == 114 || item->anim_number == 119))
+		if (wd == NO_HEIGHT || abs(hfw) >= 256 || room[room_number].flags & ROOM_UNDERWATER || (item->anim_number == 114 || item->anim_number == 119))
 		{
 			if (!room_water_state)
 			{
-				if (wd != NO_HEIGHT && ABS(hfw) < 256)
+				if (wd != NO_HEIGHT && abs(hfw) < 256)
 				{
 					lara.water_status = LW_SURFACE;
 					item->pos.y_pos = wh;

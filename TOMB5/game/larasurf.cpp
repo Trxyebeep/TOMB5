@@ -51,7 +51,7 @@ long LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
 	long hdif;
 	short angle;
 
-	if (coll->coll_type != CT_FRONT || !(input & IN_ACTION) || ABS(coll->left_floor2 - coll->right_floor2) >= 60 || lara.gun_status != LG_NO_ARMS &&
+	if (coll->coll_type != CT_FRONT || !(input & IN_ACTION) || abs(coll->left_floor2 - coll->right_floor2) >= 60 || lara.gun_status != LG_NO_ARMS &&
 		(lara.gun_status != LG_READY || lara.gun_type != WEAPON_FLARE) || coll->front_ceiling > 0 || coll->mid_ceiling > 0)
 		return 0;
 

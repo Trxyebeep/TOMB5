@@ -172,7 +172,7 @@ void SasControl(short item_number)
 		{
 			if (!(item->ai_bits & 16) && item->object_number != SCIENTIST)
 			{
-				if (ABS(item->pos.y_pos - lara_item->pos.y_pos) < 1280)
+				if (abs(item->pos.y_pos - lara_item->pos.y_pos) < 1280)
 				{
 					sas->enemy = lara_item;
 					AlertAllGuards(item_number);
@@ -286,7 +286,7 @@ void SasControl(short item_number)
 			torso_y = lara_info.angle >> 1;
 			head = lara_info.angle >> 1;
 
-			if (ABS(sasAI.angle) >= 364)
+			if (abs(sasAI.angle) >= 364)
 			{
 				if (sasAI.angle >= 0)
 					item->pos.y_rot += 364;
@@ -323,7 +323,7 @@ void SasControl(short item_number)
 			if (sasAI.ahead)
 				torso_x = sasAI.x_angle;
 
-			if (ABS(sasAI.angle) >= 364)
+			if (abs(sasAI.angle) >= 364)
 			{
 				if (sasAI.angle >= 0)
 					item->pos.y_rot += 364;
@@ -426,7 +426,7 @@ void SasControl(short item_number)
 			else if (item->pos.y_pos >= item->floor - 512)
 				item->goal_anim_state = 4;
 
-			if (ABS(sasAI.angle) >= 364)
+			if (abs(sasAI.angle) >= 364)
 			{
 				if (sasAI.angle >= 0)
 					item->pos.y_rot += 364;

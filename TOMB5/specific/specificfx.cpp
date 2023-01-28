@@ -213,14 +213,14 @@ static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 		room_number = item->room_number;
 		cp[i].y = GetHeight(GetFloor(cp[i].x, item->floor, cp[i].z, &room_number), cp[i].x, item->floor, cp[i].z);
 
-		if (ABS(cp[i].y - item->floor) > POINT_HEIGHT_CORRECTION)
+		if (abs(cp[i].y - item->floor) > POINT_HEIGHT_CORRECTION)
 			cp[i].y = item->floor;
 	}
 
 	room_number = item->room_number;
 	ccp.y = GetHeight(GetFloor(ccp.x, item->floor, ccp.z, &room_number), ccp.x, item->floor, ccp.z);
 
-	if (ABS(ccp.y - item->floor) > POINT_HEIGHT_CORRECTION)
+	if (abs(ccp.y - item->floor) > POINT_HEIGHT_CORRECTION)
 		ccp.y = item->floor;
 
 	phd_PushMatrix();
@@ -465,7 +465,7 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 		room_number = item->room_number;
 		*hY = GetHeight(GetFloor(hXZ[0], item->floor, hXZ[1], &room_number), hXZ[0], item->floor, hXZ[1]);
 
-		if (ABS(*hY - item->floor) > POINT_HEIGHT_CORRECTION)
+		if (abs(*hY - item->floor) > POINT_HEIGHT_CORRECTION)
 			*hY = item->floor;
 	}
 
@@ -2008,7 +2008,7 @@ void DoRain()
 
 		if (rptr->x)
 		{
-			if (rptr->life > 240 || ABS(CamPos.x - rptr->x) > 6000 || ABS(CamPos.z - rptr->z) > 6000)
+			if (rptr->life > 240 || abs(CamPos.x - rptr->x) > 6000 || abs(CamPos.z - rptr->z) > 6000)
 			{
 				rptr->x = 0;
 				continue;
@@ -3174,7 +3174,7 @@ void DrawBikeSpeedo(long ux, long uy, long vel, long maxVel, long turboVel, long
 	x = (float)phd_winxmax / 512.0F * 448.0F;
 	y = (float)phd_winymax / 240.0F * 224.0F;
 	rSize = (7 * size) >> 3;
-	rVel = ABS(vel >> 1);
+	rVel = abs(vel >> 1);
 
 	if (rVel)
 	{

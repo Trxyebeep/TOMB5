@@ -393,7 +393,7 @@ void HitmanControl(short item_number)
 			if (hitmanAI.ahead)
 				torso_x = hitmanAI.x_angle;
 
-			if (ABS(hitmanAI.angle) >= 364)
+			if (abs(hitmanAI.angle) >= 364)
 			{
 				if (hitmanAI.angle >= 0)
 					item->pos.y_rot += 364;
@@ -419,7 +419,7 @@ void HitmanControl(short item_number)
 
 			hitman->maximum_turn = 0;
 
-			if (ABS(hitmanAI.angle) >= 364)
+			if (abs(hitmanAI.angle) >= 364)
 			{
 				if (hitmanAI.angle >= 0)
 					item->pos.y_rot += 364;

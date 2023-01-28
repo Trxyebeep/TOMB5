@@ -393,7 +393,7 @@ void RomangodControl(short item_number)
 
 				if (!(item->ai_bits & 1) && (GetRandomControl() & 0x1F || info.distance <= 1048576 && roman->mood == ATTACK_MOOD))
 				{
-					if (ABS(info.angle) <= 20480)
+					if (abs(info.angle) <= 20480)
 					{
 						if (info.ahead && info.distance < 1048576)
 						{
@@ -523,7 +523,7 @@ void RomangodControl(short item_number)
 			case 9:
 				roman->maximum_turn = 0;
 
-				if (ABS(info.angle) < 364)
+				if (abs(info.angle) < 364)
 					item->pos.y_rot += info.angle;
 				else if (info.angle < 0)
 					item->pos.y_rot -= 364;
@@ -609,7 +609,7 @@ void RomangodControl(short item_number)
 				{
 					roman->maximum_turn = 0;
 
-					if (ABS(info.angle) < 364)
+					if (abs(info.angle) < 364)
 						item->pos.y_rot += info.angle;
 					else if (info.angle < 0)
 						item->pos.y_rot -= 364;

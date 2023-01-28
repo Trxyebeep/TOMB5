@@ -201,7 +201,7 @@ void TwogunControl(short item_number)
 		angle = CreatureTurn(item, _2gun->maximum_turn);
 
 		if (((lara_info.distance < 0x400000 && (lara_info.angle < 0x4000 && lara_info.angle > -16384 || lara_item->speed > 20)) ||
-			item->hit_status || TargetVisible(item, &lara_info)) && ABS(item->pos.y_pos - lara_item->pos.y_pos) < 1536)
+			item->hit_status || TargetVisible(item, &lara_info)) && abs(item->pos.y_pos - lara_item->pos.y_pos) < 1536)
 		{
 			_2gun->enemy = lara_item;
 			AlertAllGuards(item_number);
@@ -215,7 +215,7 @@ void TwogunControl(short item_number)
 
 			if (!(item->ai_bits & 1))
 			{
-				if (ABS(twogunInfo.angle) < 364)
+				if (abs(twogunInfo.angle) < 364)
 					item->pos.y_rot += twogunInfo.angle;
 				else
 				{
@@ -293,7 +293,7 @@ void TwogunControl(short item_number)
 			torso_y = lara_info.angle >> 1;
 			torso_x = twogunInfo.x_angle >> 1;
 
-			if (ABS(twogunInfo.angle) < 364)
+			if (abs(twogunInfo.angle) < 364)
 				item->pos.y_rot += twogunInfo.angle;
 			else if (twogunInfo.angle >= 0)
 				item->pos.y_rot += 364;
@@ -316,7 +316,7 @@ void TwogunControl(short item_number)
 			torso_y = lara_info.angle >> 1;
 			torso_x = twogunInfo.x_angle;
 
-			if (ABS(twogunInfo.angle) < 364)
+			if (abs(twogunInfo.angle) < 364)
 				item->pos.y_rot += twogunInfo.angle;
 			else
 			{

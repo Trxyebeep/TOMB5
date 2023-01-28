@@ -226,7 +226,7 @@ void MafiaControl(short item_number)
 
 			mafia->maximum_turn = 0;
 
-			if (ABS(info.angle) >= 364)
+			if (abs(info.angle) >= 364)
 			{
 				if (info.angle >= 0)
 					item->pos.y_rot += 364;
@@ -254,7 +254,7 @@ void MafiaControl(short item_number)
 			if (info.ahead)
 				torso_x = info.x_angle;
 
-			if (ABS(info.angle) >= 364)
+			if (abs(info.angle) >= 364)
 			{
 				if (info.angle >= 0)
 					item->pos.y_rot += 364;
