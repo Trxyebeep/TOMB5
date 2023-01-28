@@ -11,6 +11,7 @@
 #include "sound.h"
 #include "laraflar.h"
 #include "larafire.h"
+#include "../specific/3dmath.h"
 
 static short FireBounds[12] =
 {

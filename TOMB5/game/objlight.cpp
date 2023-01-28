@@ -5,6 +5,7 @@
 #include "../specific/function_stubs.h"
 #include "sound.h"
 #include "sphere.h"
+#include "../specific/3dmath.h"
 
 void TriggerAlertLight(long x, long y, long z, long r, long g, long b, long angle, long room_no, long falloff)
 {

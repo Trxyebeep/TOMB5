@@ -19,6 +19,7 @@
 #include "../specific/audio.h"
 #include "../specific/function_table.h"
 #include "../specific/polyinsert.h"
+#include "../specific/3dmath.h"
 
 long FogTableColor[] =
 {

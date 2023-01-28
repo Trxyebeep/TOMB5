@@ -18,6 +18,7 @@
 #include "sphere.h"
 #include "objects.h"
 #include "../specific/function_stubs.h"
+#include "../specific/3dmath.h"
 
 void draw_shotgun_meshes(long weapon_type)
 {

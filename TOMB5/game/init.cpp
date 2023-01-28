@@ -14,6 +14,7 @@
 #include "spider.h"
 #include "box.h"
 #include "switch.h"
+#include "../specific/3dmath.h"
 
 void InitialiseTrapDoor(short item_number)
 {

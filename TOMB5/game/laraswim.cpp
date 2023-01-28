@@ -10,6 +10,7 @@
 #include "laramisc.h"
 #include "larafire.h"
 #include "../specific/function_stubs.h"
+#include "../specific/3dmath.h"
 
 void LaraTestWaterDepth(ITEM_INFO* item, COLL_INFO* coll)
 {

@@ -5,6 +5,7 @@
 #include "items.h"
 #include "effects.h"
 #include "sound.h"
+#include "../specific/3dmath.h"
 
 void ControlBodyPart(short fx_number)
 {

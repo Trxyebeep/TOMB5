@@ -7,6 +7,7 @@
 #include "../specific/function_stubs.h"
 #include "items.h"
 #include "effect2.h"
+#include "../specific/3dmath.h"
 
 static char SteamLasers[8][5] =
 {

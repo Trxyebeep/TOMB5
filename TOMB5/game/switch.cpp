@@ -9,6 +9,7 @@
 #include "sphere.h"
 #include "draw.h"
 #include "laramisc.h"
+#include "../specific/3dmath.h"
 
 static PHD_VECTOR PulleyPos = { 0, 0, -148 };
 static PHD_VECTOR SwitchPos = { 0, 0, 0 };

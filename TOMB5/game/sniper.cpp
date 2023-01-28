@@ -6,6 +6,7 @@
 #include "effect2.h"
 #include "people.h"
 #include "../specific/function_stubs.h"
+#include "../specific/3dmath.h"
 
 static BITE_INFO sniper_gun =
 {
