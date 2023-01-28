@@ -37,7 +37,6 @@ do \
 #define RGB_M(clr, m)	(clr = (clr & 0xFF000000) | (((CLRR(clr) * m) >> 8) << 16) | (((CLRG(clr) * m) >> 8) << 8) | ((CLRB(clr) * m) >> 8))
 //^ color multiply thingy phd_PutPolygons wants to do
 #define SCRIPT_TEXT(num)		(&gfStringWad[gfStringOffset[num]])
-#define SetVecXYZ(num, X, Y, Z)	 vec[(num)].x = (X); vec[(num)].y = (Y); vec[(num)].z = (Z);
 
 	/**********************************/
 #define OPEN	( (FILE*(__cdecl*)(const char*, const char*)) 0x004E46E0 )
