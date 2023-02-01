@@ -8,6 +8,7 @@
 #include "items.h"
 #include "effect2.h"
 #include "../specific/3dmath.h"
+#include "objects.h"
 
 static char SteamLasers[8][5] =
 {
@@ -213,10 +214,36 @@ void ControlFloorLasers(short item_number)
 	}
 }
 
+long IsSteamOn(ITEM_INFO* item)
+{
+	ITEM_INFO* steam;
+	short item_number;
+
+	item_number = room[item->room_number].item_number;
+
+	while (item_number != NO_ITEM)
+	{
+		steam = &items[item_number];
+
+		if (steam->object_number == STEAM_EMITTER && steam->trigger_flags > 0)
+		{
+			if (steam->status == ITEM_ACTIVE)
+				return 1;
+
+			break;
+		}
+
+		item_number = steam->next_item;
+	}
+
+	return 0;
+}
+
 void inject_lasers(bool replace)
 {
 	INJECT(0x0045A540, DrawFloorLasers, replace);
 	INJECT(0x00459D30, ControlLasers, replace);
 	INJECT(0x0045A030, ControlSteamLasers, replace);
 	INJECT(0x0045A1E0, ControlFloorLasers, replace);
+	INJECT(0x00459C10, IsSteamOn, replace);
 }
