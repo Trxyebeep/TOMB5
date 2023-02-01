@@ -10,6 +10,7 @@
 #include "../specific/3dmath.h"
 #include "pickup.h"
 #include "lara_states.h"
+#include "items.h"
 
 void TriggerLaraBlood()
 {
@@ -1080,6 +1081,25 @@ long CollideStaticObjects(COLL_INFO* coll, long x, long y, long z, short room_nu
 	return 0;
 }
 
+void UpdateLaraRoom(ITEM_INFO* item, long height)
+{
+	FLOOR_INFO* floor;
+	long x, y, z;
+	short room_number;
+
+	x = item->pos.x_pos;
+	y = item->pos.y_pos + height;
+	z = item->pos.z_pos;
+	room_number = item->room_number;
+	floor = GetFloor(x, y, z, &room_number);
+	item->floor = GetHeight(floor, x, y, z);
+
+	if (item->room_number != room_number)
+		ItemNewRoom(lara.item_number, room_number);
+
+	//map code removed
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -1097,4 +1117,5 @@ void inject_coll(bool replace)
 	INJECT(0x00413840, MoveLaraPosition, replace);
 	INJECT(0x004134E0, Move3DPosTo3DPos, replace);
 	INJECT(0x00411DB0, CollideStaticObjects, replace);
+	INJECT(0x004120F0, UpdateLaraRoom, replace);
 }
