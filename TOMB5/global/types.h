@@ -1979,6 +1979,15 @@ struct RIPPLE_STRUCT
 	uchar init;
 };
 
+struct LASER_VECTOR
+{
+	float x;
+	float y;
+	float z;
+	float num;
+	long color;
+};
+
 struct LASER_STRUCT
 {
 	SVECTOR v1[3];

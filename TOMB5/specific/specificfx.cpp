@@ -4972,6 +4972,314 @@ void S_DrawSparks()
 	phd_PopMatrix();
 }
 
+void DrawLasers(ITEM_INFO* item)
+{
+	LASER_STRUCT* laser;
+	SPRITESTRUCT* sprite;
+	LASER_VECTOR* vtx;
+	LASER_VECTOR* vtx2;
+	D3DTLVERTEX* vbuf;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	TEXTURESTRUCT tex2;
+	short* rand;
+	float val, hStep, fx, fy, fz, mx, my, mz, zv;
+	long lp, lp2, x, y, z, xStep, yStep, zStep, c1, c2, c3, c4;
+	short* c;
+	short clip[36];
+	short clipFlag;
+
+	if (!TriggerActive(item) || (item->trigger_flags & 1 && !InfraRed && !item->item_flags[3]))
+		return;
+
+	laser = (LASER_STRUCT*)item->data;
+	sprite = &spriteinfo[objects[MISC_SPRITES].mesh_index + 3];
+
+	tex.drawtype = 2;
+	tex.tpage = 0;
+
+	tex2.drawtype = 2;
+	tex2.tpage = sprite->tpage;
+
+	val = float((GlobalCounter >> 1) & 0x1F) * (1.0F / 256.0F) + sprite->y1;
+	tex2.u1 = sprite->x1 + (1.0F / 512.0F);
+	tex2.v1 = val;
+	tex2.u2 = sprite->x1 + (31.0F / 256.0F) - (1.0F / 512.0F);
+	tex2.v2 = val;
+	tex2.u3 = sprite->x1 + (31.0F / 256.0F) - (1.0F / 512.0F);
+	tex2.u4 = sprite->x1 + (1.0F / 512.0F);
+	tex2.v4 = val + (1.0F / 512.0F);
+	tex2.v3 = val + (1.0F / 512.0F);
+
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	aSetViewMatrix();
+
+	for (int i = 0; i < 3; i++)
+	{
+		vtx = (LASER_VECTOR*)&scratchpad[0];
+		x = laser->v1[i].x;
+		y = laser->v1[i].y;
+		z = laser->v1[i].z;
+		xStep = (laser->v4[i].x - x) >> 3;
+		yStep = laser->v4[i].y - y;
+		zStep = (laser->v4[i].z - z) >> 3;
+		rand = laser->Rand;
+
+		for (lp = 0; lp < 2; lp++)
+		{
+			for (lp2 = 0; lp2 < 9; lp2++)
+			{
+				vtx->num = 1.0F;
+				vtx->x = (float)x;
+				vtx->y = (float)y;
+				vtx->z = (float)z;
+
+				if (!lp2 || lp2 == 8)
+					vtx->color = 0;
+				else if (!(item->trigger_flags & 1) || InfraRed)
+					vtx->color = (item->item_flags[3] >> 1) + abs(phd_sin((*rand << i) + (GlobalCounter << 9)) >> 8);
+				else
+					vtx->color = (item->item_flags[3] * abs(phd_sin((*rand << i) + (GlobalCounter << 9)) >> 8)) >> 6;
+
+				x += xStep;
+				z += zStep;
+				vtx++;
+				rand++;
+			}
+
+			x = laser->v1[i].x;
+			y += yStep;
+			z = laser->v1[i].z;
+		}
+
+		hStep = float(yStep >> 1);
+		vtx2 = (LASER_VECTOR*)&scratchpad[0];
+
+		for (lp = 0; lp < 9; lp++)
+		{
+			vtx->x = vtx2->x;
+			vtx->y = vtx2->y + hStep;
+			vtx->z = vtx2->z;
+			vtx->num = 1.0F;
+			vtx->color = vtx2->color;
+			vtx++;
+			vtx2++;
+		}
+
+		for (lp = 0; lp < 9; lp++)
+		{
+			vtx->x = vtx2->x;
+			vtx->y = vtx2->y - hStep;
+			vtx->z = vtx2->z;
+			vtx->num = 1.0F;
+			vtx->color = vtx2->color;
+			vtx++;
+			vtx2++;
+		}
+
+		vtx = (LASER_VECTOR*)&scratchpad[0];
+		vbuf = aVertexBuffer;
+
+		for (lp = 0; lp < 36; lp++)
+		{
+			fx = vtx->x;
+			fy = vtx->y;
+			fz = vtx->z;
+
+			mx = fx * D3DMView._11 + fy * D3DMView._21 + fz * D3DMView._31 + D3DMView._41;
+			my = fx * D3DMView._12 + fy * D3DMView._22 + fz * D3DMView._32 + D3DMView._42;
+			mz = fx * D3DMView._13 + fy * D3DMView._23 + fz * D3DMView._33 + D3DMView._43;
+
+			vbuf->tu = mx;
+			vbuf->tv = my;
+
+			clipFlag = 0;
+
+			if (mz < f_mznear)
+				clipFlag = -128;
+			else
+			{
+				zv = f_mpersp / mz;
+				mx = mx * zv + f_centerx;
+				my = my * zv + f_centery;
+				vbuf->rhw = f_moneopersp * zv;
+
+				if (mx < f_left)
+					clipFlag++;
+				else if (mx > f_right)
+					clipFlag += 2;
+
+				if (my < f_top)
+					clipFlag += 4;
+				else if (my > f_bottom)
+					clipFlag += 8;
+
+				vbuf->sx = mx;
+				vbuf->sy = my;
+			}
+
+			vbuf->sz = mz;
+			clip[lp] = clipFlag;
+			vbuf++;
+			vtx++;
+		}
+
+		vtx = (LASER_VECTOR*)&scratchpad[0];
+		vbuf = aVertexBuffer;
+		c = clip;
+
+		for (lp = 0; lp < 8; lp++)
+		{
+			c1 = vtx[0].color;
+			c2 = vtx[1].color;
+			c3 = vtx[9].color;
+			c4 = vtx[10].color;
+
+			v[0].sx = vbuf[0].sx;
+			v[0].sy = vbuf[0].sy;
+			v[0].sz = vbuf[0].sz;
+			v[0].rhw = vbuf[0].rhw;
+			v[0].tu = vbuf[0].tu;
+			v[0].tv = vbuf[0].tv;
+
+			v[1].sx = vbuf[1].sx;
+			v[1].sy = vbuf[1].sy;
+			v[1].sz = vbuf[1].sz;
+			v[1].rhw = vbuf[1].rhw;
+			v[1].tu = vbuf[1].tu;
+			v[1].tv = vbuf[1].tv;
+
+			v[2].sx = vbuf[18].sx;
+			v[2].sy = vbuf[18].sy;
+			v[2].sz = vbuf[18].sz;
+			v[2].rhw = vbuf[18].rhw;
+			v[2].tu = vbuf[18].tu;
+			v[2].tv = vbuf[18].tv;
+
+			v[3].sx = vbuf[19].sx;
+			v[3].sy = vbuf[19].sy;
+			v[3].sz = vbuf[19].sz;
+			v[3].rhw = vbuf[19].rhw;
+			v[3].tu = vbuf[19].tu;
+			v[3].tv = vbuf[19].tv;
+
+			if (item->trigger_flags & 2)
+			{
+				v[0].color = RGBA(c1, 0, 0, 0xFF);
+				v[1].color = RGBA(c2, 0, 0, 0xFF);
+			}
+			else
+			{
+				v[0].color = RGBA(0, c1, 0, 0xFF);
+				v[1].color = RGBA(0, c2, 0, 0xFF);
+			}
+
+			v[2].color = 0;
+			v[3].color = 0;
+
+			v[0].specular = vbuf[0].specular;
+			v[1].specular = vbuf[1].specular;
+			v[2].specular = vbuf[18].specular;
+			v[3].specular = vbuf[19].specular;
+
+			clipflags[0] = c[0];
+			clipflags[1] = c[1];
+			clipflags[2] = c[18];
+			clipflags[3] = c[19];
+
+			AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
+
+			v[0].sx = vbuf[9].sx;
+			v[0].sy = vbuf[9].sy;
+			v[0].sz = vbuf[9].sz;
+			v[0].rhw = vbuf[9].rhw;
+			v[0].tu = vbuf[9].tu;
+			v[0].tv = vbuf[9].tv;
+
+			v[1].sx = vbuf[10].sx;
+			v[1].sy = vbuf[10].sy;
+			v[1].sz = vbuf[10].sz;
+			v[1].rhw = vbuf[10].rhw;
+			v[1].tu = vbuf[10].tu;
+			v[1].tv = vbuf[10].tv;
+
+			v[2].sx = vbuf[27].sx;
+			v[2].sy = vbuf[27].sy;
+			v[2].sz = vbuf[27].sz;
+			v[2].rhw = vbuf[27].rhw;
+			v[2].tu = vbuf[27].tu;
+			v[2].tv = vbuf[27].tv;
+
+			v[3].sx = vbuf[28].sx;
+			v[3].sy = vbuf[28].sy;
+			v[3].sz = vbuf[28].sz;
+			v[3].rhw = vbuf[28].rhw;
+			v[3].tu = vbuf[28].tu;
+			v[3].tv = vbuf[28].tv;
+
+			if (item->trigger_flags & 2)
+			{
+				v[0].color = RGBA(c3, 0, 0, 0xFF);
+				v[1].color = RGBA(c4, 0, 0, 0xFF);
+			}
+			else
+			{
+				v[0].color = RGBA(0, c3, 0, 0xFF);
+				v[1].color = RGBA(0, c4, 0, 0xFF);
+			}
+
+			v[2].color = 0;
+			v[3].color = 0;
+
+			v[0].specular = vbuf[9].specular;
+			v[1].specular = vbuf[10].specular;
+			v[2].specular = vbuf[27].specular;
+			v[3].specular = vbuf[28].specular;
+
+			clipflags[0] = c[9];
+			clipflags[1] = c[10];
+			clipflags[2] = c[27];
+			clipflags[3] = c[28];
+
+			AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
+
+			v[0] = vbuf[0];
+			v[1] = vbuf[1];
+			v[2] = vbuf[9];
+			v[3] = vbuf[10];
+
+			clipflags[0] = c[0];
+			clipflags[1] = c[1];
+			clipflags[2] = c[9];
+			clipflags[3] = c[10];
+
+			if (item->trigger_flags & 2)
+			{
+				v[0].color = RGBA(c1, 0, 0, 0xFF);
+				v[1].color = RGBA(c2, 0, 0, 0xFF);
+				v[2].color = RGBA(c3, 0, 0, 0xFF);
+				v[3].color = RGBA(c4, 0, 0, 0xFF);
+			}
+			else
+			{
+				v[0].color = RGBA(0, c1, 0, 0xFF);
+				v[1].color = RGBA(0, c2, 0, 0xFF);
+				v[2].color = RGBA(0, c3, 0, 0xFF);
+				v[3].color = RGBA(0, c4, 0, 0xFF);
+			}
+
+			AddQuadSorted(v, 0, 1, 3, 2, &tex2, 1);
+
+			vtx++;
+			vbuf++;
+			c++;
+		}
+	}
+
+	phd_PopMatrix();
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -5021,4 +5329,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C9F70, SetUpLensFlare, replace);
 	INJECT(0x004C5B10, ClipLine, replace);
 	INJECT(0x004C4C60, S_DrawSparks, replace);
+	INJECT(0x004CD960, DrawLasers, replace);
 }
