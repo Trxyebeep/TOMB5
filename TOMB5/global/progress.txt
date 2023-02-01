@@ -1048,7 +1048,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/lasers.cpp
 
 0x00459C10	+	IsSteamOn
-0x00459CA0		GetSteamMultiplier
+0x00459CA0	+	GetSteamMultiplier
 0x00459D30	+	ControlLasers
 0x00459EB0		CheckLaserBox
 0x0045A030	+	ControlSteamLasers

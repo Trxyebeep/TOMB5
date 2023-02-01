@@ -239,6 +239,24 @@ long IsSteamOn(ITEM_INFO* item)
 	return 0;
 }
 
+long GetSteamMultiplier(ITEM_INFO* item, long y, long z)
+{
+	long f, d;
+
+	y = -768 - item->item_flags[0] - y;
+	z = 512 - z;
+	f = 96 * item->trigger_flags + 256;
+	d = phd_sqrt(SQUARE(y) + SQUARE(z));
+
+	if (d < f)
+	{
+		d = ((f - d) << 6) / f;
+		return d + ((d * (GetRandomControl() & 0x1F)) >> 5);
+	}
+
+	return 0;
+}
+
 void inject_lasers(bool replace)
 {
 	INJECT(0x0045A540, DrawFloorLasers, replace);
@@ -246,4 +264,5 @@ void inject_lasers(bool replace)
 	INJECT(0x0045A030, ControlSteamLasers, replace);
 	INJECT(0x0045A1E0, ControlFloorLasers, replace);
 	INJECT(0x00459C10, IsSteamOn, replace);
+	INJECT(0x00459CA0, GetSteamMultiplier, replace);
 }
