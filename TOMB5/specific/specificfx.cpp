@@ -21,6 +21,7 @@
 
 #define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
 #endif
+#include "../game/lasers.h"
 
 #define LINE_POINTS	4	//number of points in each grid line
 #define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
@@ -5280,6 +5281,289 @@ void DrawLasers(ITEM_INFO* item)
 	phd_PopMatrix();
 }
 
+void DrawSteamLasers(ITEM_INFO* item)
+{
+	STEAMLASER_STRUCT* laser;
+	SPRITESTRUCT* sprite;
+	LASER_VECTOR* vtx;		//original uses SVECTOR
+	D3DTLVERTEX* vbuf;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	TEXTURESTRUCT tex2;
+	short* rand;
+	short* c;
+	float fx, fy, fz, mx, my, mz, zv, val;
+	long on, x, y, z, xStep, yStep, zStep, col, lp, lp2, c1, c2, c3, c4;
+	short clip[36];
+	short clipFlag;
+
+	if (!TriggerActive(item) || !SteamLasers[(GlobalCounter >> 5) & 7][item->trigger_flags])
+		return;
+
+	on = IsSteamOn(item);
+
+	if (!on && !InfraRed && !item->item_flags[3])
+		return;
+
+	laser = (STEAMLASER_STRUCT*)item->data;
+	sprite = &spriteinfo[objects[MISC_SPRITES].mesh_index + 3];
+
+	tex.drawtype = 2;
+	tex.tpage = 0;
+
+	tex2.drawtype = 2;
+	tex2.tpage = sprite->tpage;
+	tex2.u1 = sprite->x1 + (1.0F / 512.0F);
+	tex2.u2 = sprite->x1 + (31.0F / 256.0F) - (1.0F / 512.0F);
+	tex2.u3 = sprite->x1 + (31.0F / 256.0F) - (1.0F / 512.0F);
+	tex2.u4 = sprite->x1 + (1.0F / 512.0F);
+
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos + item->item_flags[0], item->pos.z_pos);
+	aSetViewMatrix();
+
+	for (int i = 0; i < 2; i++)
+	{
+		vtx = (LASER_VECTOR*)&scratchpad[0];
+		x = laser->v1[i].x;
+		y = laser->v1[i].y;
+		z = laser->v1[i].z;
+		xStep = (laser->v4[i].x - x) >> 3;
+		yStep = (laser->v4[i].y - y) >> 1;
+		zStep = (laser->v4[i].z - z) >> 3;
+		rand = laser->Rand;
+
+		for (lp = 0; lp < 3; lp++)
+		{
+			for (lp2 = 0; lp2 < 9; lp2++)
+			{
+				vtx->x = (float)x;
+				vtx->y = (float)y;
+				vtx->z = (float)z;
+
+				if (!lp2 || lp == 8)
+					vtx->color = 0;
+				else
+					vtx->color = abs(phd_sin(*rand + (GlobalCounter << 9)) >> 8);
+
+				if (on)
+					col = GetSteamMultiplier(item, y, z) << 1;
+				else
+					col = 0;
+
+				col += item->item_flags[3];
+
+				if (InfraRed)
+					col += 64;
+
+				vtx->color = (vtx->color * col) >> 6;
+
+				x += xStep;
+				z += zStep;
+				vtx++;
+				rand++;
+			}
+
+			x = laser->v1[i].x;
+			y += yStep;
+			z = laser->v1[i].z;
+		}
+
+		vbuf = aVertexBuffer;
+		vtx = (LASER_VECTOR*)&scratchpad[0];
+
+		for (lp = 0; lp < 27; lp++)
+		{
+			fx = vtx->x;
+			fy = vtx->y;
+			fz = vtx->z;
+
+			mx = fx * D3DMView._11 + fy * D3DMView._21 + fz * D3DMView._31 + D3DMView._41;
+			my = fx * D3DMView._12 + fy * D3DMView._22 + fz * D3DMView._32 + D3DMView._42;
+			mz = fx * D3DMView._13 + fy * D3DMView._23 + fz * D3DMView._33 + D3DMView._43;
+
+			vbuf->tu = mx;
+			vbuf->tv = my;
+
+			clipFlag = 0;
+
+			if (mz < f_mznear)
+				clipFlag = -128;
+			else
+			{
+				zv = f_mpersp / mz;
+				mx = mx * zv + f_centerx;
+				my = my * zv + f_centery;
+				vbuf->rhw = zv * f_moneopersp;
+
+				if (mx < f_left)
+					clipFlag++;
+				else if (mx > f_right)
+					clipFlag += 2;
+
+				if (my < f_top)
+					clipFlag += 4;
+				else if (my > f_bottom)
+					clipFlag += 8;
+			}
+
+			clip[lp] = clipFlag;
+			vbuf->sx = mx;
+			vbuf->sy = my;
+			vbuf->sz = mz;
+
+			vbuf++;
+			vtx++;
+		}
+
+		vbuf = aVertexBuffer;
+		vtx = (LASER_VECTOR*)&scratchpad[0];
+		c = clip;
+
+		val = float((item->item_flags[0] >> 2) & 0x1F) * (1.0F / 256.0F) + sprite->y1;
+		tex2.v1 = val;
+		tex2.v2 = val;
+		tex2.v3 = val + (31.0F / 256.0F);
+		tex2.v4 = val + (31.0F / 256.0F);
+
+		for (lp = 0; lp < 16; lp++)
+		{
+			c1 = vtx[0].color;
+			c2 = vtx[1].color;
+			c3 = vtx[9].color;
+			c4 = vtx[10].color;
+
+			if (lp < 8)
+			{
+				v[0].sx = vbuf[0].sx;
+				v[0].sy = vbuf[0].sy;
+				v[0].rhw = vbuf[0].rhw;
+				v[0].tu = vbuf[0].tu;
+				v[0].tv = vbuf[0].tv;
+
+				v[1].sx = vbuf[1].sx;
+				v[1].sy = vbuf[1].sy;
+				v[1].rhw = vbuf[1].rhw;
+				v[1].tu = vbuf[1].tu;
+				v[1].tv = vbuf[1].tv;
+
+				v[2].sx = vbuf[9].sx;
+				v[2].sy = (3 * vbuf[0].sy + vbuf[9].sy) * 0.25F;
+				v[2].rhw = vbuf[9].rhw;
+				v[2].tu = vbuf[9].tu;
+				v[2].tv = vbuf[9].tv;
+
+				v[3].sx = vbuf[10].sx;
+				v[3].sy = (3 * vbuf[1].sy + vbuf[10].sy) * 0.25F;
+				v[3].rhw = vbuf[10].rhw;
+				v[3].tu = vbuf[10].tu;
+				v[3].tv = vbuf[10].tv;
+
+				c3 = 0;
+				c4 = 0;
+			}
+			else
+			{
+				v[0].sx = vbuf[0].sx;
+				v[0].sy = vbuf[9].sy;
+				v[0].rhw = vbuf[0].rhw;
+				v[0].tu = vbuf[0].tu;
+				v[0].tv = vbuf[0].tv;
+
+				v[1].sx = vbuf[1].sx;
+				v[1].sy = vbuf[10].sy;
+				v[1].rhw = vbuf[1].rhw;
+				v[1].tu = vbuf[1].tu;
+				v[1].tv = vbuf[1].tv;
+
+				v[2].sx = vbuf[9].sx;
+				v[2].sy = (3 * vbuf[9].sy + vbuf[0].sy) * 0.25F;
+				v[2].rhw = vbuf[9].rhw;
+				v[2].tu = vbuf[9].tu;
+				v[2].tv = vbuf[9].tv;
+
+				v[3].sx = vbuf[10].sx;
+				v[3].sy = (3 * vbuf[10].sy + vbuf[1].sy) * 0.25F;
+				v[3].rhw = vbuf[10].rhw;
+				v[3].tu = vbuf[10].tu;
+				v[3].tv = vbuf[10].tv;
+
+				c1 = 0;
+				c2 = 0;
+			}
+
+			v[0].sz = vbuf[0].sz;
+			v[1].sz = vbuf[1].sz;
+			v[2].sz = vbuf[9].sz;
+			v[3].sz = vbuf[10].sz;
+
+			v[0].color = RGBA(c1, 0, 0, 0xFF);
+			v[1].color = RGBA(c2, 0, 0, 0xFF);
+			v[2].color = RGBA(c3, 0, 0, 0xFF);
+			v[3].color = RGBA(c4, 0, 0, 0xFF);
+
+			v[0].specular = 0xFF000000;
+			v[1].specular = 0xFF000000;
+			v[2].specular = 0xFF000000;
+			v[3].specular = 0xFF000000;
+
+			clipflags[0] = c[0];
+			clipflags[1] = c[1];
+			clipflags[2] = c[9];
+			clipflags[3] = c[10];
+
+			if (App.dx.Flags & 0x80)
+				AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
+
+			v[0].sx = vbuf[0].sx;
+			v[0].sy = vbuf[0].sy;
+			v[0].rhw = vbuf[0].rhw;
+			v[0].tu = vbuf[0].tu;
+			v[0].tv = vbuf[0].tv;
+
+			v[1].sx = vbuf[1].sx;
+			v[1].sy = vbuf[1].sy;
+			v[1].rhw = vbuf[1].rhw;
+			v[1].tu = vbuf[1].tu;
+			v[1].tv = vbuf[1].tv;
+
+			v[2].sx = vbuf[9].sx;
+			v[2].sy = vbuf[9].sy;
+			v[2].rhw = vbuf[9].rhw;
+			v[2].tu = vbuf[9].tu;
+			v[2].tv = vbuf[9].tv;
+
+			v[3].sx = vbuf[10].sx;
+			v[3].sy = vbuf[10].sy;
+			v[3].rhw = vbuf[10].rhw;
+			v[3].tu = vbuf[10].tu;
+			v[3].tv = vbuf[10].tv;
+
+			v[0].color = RGBA(c1, 0, 0, 0xFF);
+			v[1].color = RGBA(c2, 0, 0, 0xFF);
+			v[2].color = RGBA(c3, 0, 0, 0xFF);
+			v[3].color = RGBA(c4, 0, 0, 0xFF);
+
+			AddQuadSorted(v, 0, 1, 3, 2, &tex2, 1);
+
+			if (lp == 7)
+			{
+				vbuf += 2;
+				vtx += 2;
+				c += 2;
+			}
+			else
+			{
+				vbuf++;
+				vtx++;
+				c++;
+			}
+		}
+	}
+
+	phd_PopMatrix();
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -5330,4 +5614,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C5B10, ClipLine, replace);
 	INJECT(0x004C4C60, S_DrawSparks, replace);
 	INJECT(0x004CD960, DrawLasers, replace);
+	INJECT(0x004CE610, DrawSteamLasers, replace);
 }

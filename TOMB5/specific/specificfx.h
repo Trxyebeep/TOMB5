@@ -51,10 +51,10 @@ void SetUpLensFlare(long x, long y, long z, GAME_VECTOR* lfobj);
 bool ClipLine(long& x1, long& y1, long z1, long& x2, long& y2, long z2, long xMin, long yMin, long w, long h);
 void S_DrawSparks();
 void DrawLasers(ITEM_INFO* item);
+void DrawSteamLasers(ITEM_INFO* item);
 
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
-#define DrawSteamLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CE610 )
 #define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
 #define S_DrawSplashes	( (void(__cdecl*)()) 0x004C1790 )
 #define DrawLightning	( (void(__cdecl*)()) 0x004CC0B0 )

@@ -10,7 +10,7 @@
 #include "../specific/3dmath.h"
 #include "objects.h"
 
-static char SteamLasers[8][5] =
+char SteamLasers[8][5] =
 {
 	{ 1, 0, 1, 0, 0 },
 	{ 0, 0, 1, 0, 1 },
