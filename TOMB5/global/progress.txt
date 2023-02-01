@@ -111,7 +111,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00410EF0	+	GetTiltType
 0x00411100	+	GetCollisionInfo
 0x00411D70	+	FindGridShift
-0x00411DB0		CollideStaticObjects
+0x00411DB0	+	CollideStaticObjects
 0x004120A0	+	ShiftItem
 0x004120F0		UpdateLaraRoom
 0x00412170		LaraBaddieCollision

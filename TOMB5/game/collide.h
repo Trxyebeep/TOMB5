@@ -17,8 +17,8 @@ void TestForObjectOnLedge(ITEM_INFO* item, COLL_INFO* coll);
 long GetCollidedObjects(ITEM_INFO* item, long rad, long noInvisible, ITEM_INFO** StoredItems, MESH_INFO** StoredStatics, long StoreLara);
 long MoveLaraPosition(PHD_VECTOR* pos, ITEM_INFO* item, ITEM_INFO* l);
 long Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, long speed, short rotation);
+long CollideStaticObjects(COLL_INFO* coll, long x, long y, long z, short room_number, long hite);
 
-#define CollideStaticObjects ( (long(__cdecl*)(COLL_INFO*, long, long, long, short, long)) 0x00411DB0 )
 #define	UpdateLaraRoom	( (void(__cdecl*)(ITEM_INFO*, long)) 0x004120F0 )
 #define TestLaraPosition	( (long(__cdecl*)(short*, ITEM_INFO*, ITEM_INFO*)) 0x00413210 )
 #define	TestBoundsCollide	( (long(__cdecl*)(ITEM_INFO*, ITEM_INFO*, long)) 0x00412CC0 )
