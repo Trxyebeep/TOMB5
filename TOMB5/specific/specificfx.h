@@ -52,6 +52,9 @@ bool ClipLine(long& x1, long& y1, long z1, long& x2, long& y2, long z2, long xMi
 void S_DrawSparks();
 void DrawLasers(ITEM_INFO* item);
 void DrawSteamLasers(ITEM_INFO* item);
+#ifdef GENERAL_FIXES
+void S_DrawFloorLasers(ITEM_INFO* item);
+#endif
 
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)

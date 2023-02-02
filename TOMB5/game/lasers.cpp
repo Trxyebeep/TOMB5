@@ -9,6 +9,7 @@
 #include "effect2.h"
 #include "../specific/3dmath.h"
 #include "objects.h"
+#include "../specific/specificfx.h"
 
 char SteamLasers[8][5] =
 {
@@ -24,7 +25,9 @@ char SteamLasers[8][5] =
 
 void DrawFloorLasers(ITEM_INFO* item)
 {
-	
+#ifdef GENERAL_FIXES
+	return S_DrawFloorLasers(item);
+#endif
 }
 
 void ControlLasers(short item_number)

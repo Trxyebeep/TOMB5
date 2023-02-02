@@ -684,20 +684,26 @@ void InitialiseFloorLasers(short item_number)
 	item = &items[item_number];
 	item->data = (FLOORLASER_STRUCT*)game_malloc(sizeof(FLOORLASER_STRUCT), 0);
 	ls = (FLOORLASER_STRUCT*)item->data;
+
 	width = item->trigger_flags % 10;
 	height = item->trigger_flags / 10;
+
 	ls->v1.x = -512;
 	ls->v1.y = -128;
 	ls->v1.z = -512;
+
 	ls->v2.x = -512;
 	ls->v2.y = -128;
-	ls->v2.z = (short)((width << 10) - 512);
-	ls->v3.x = (short)((height << 10) - 512);
+	ls->v2.z = short((width << 10) - 512);
+
+	ls->v3.x = short((height << 10) - 512);
 	ls->v3.y = -128;
 	ls->v3.z = -512;
-	ls->v4.x = (short)((height << 10) - 512);
+
+	ls->v4.x = short((height << 10) - 512);
 	ls->v4.y = -128;
-	ls->v4.z = (short)((width << 10) - 512);
+	ls->v4.z = short((width << 10) - 512);
+
 	item->item_flags[0] = (short)width;
 	item->item_flags[1] = (short)height;
 	width = (width << 1) + 1;

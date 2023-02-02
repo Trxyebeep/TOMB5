@@ -2570,10 +2570,17 @@ void DrawBinoculars()
 		if (InfraRed)
 		{
 			aSetXY4(irVtx, 0, 0, phd_winxmax, 0, 0, phd_winymax, phd_winxmax, phd_winymax, f_mznear + 1, clipflags);
+#ifdef GENERAL_FIXES
+			irVtx[0].color = 0x3FFF0000;
+			irVtx[1].color = 0x3FFF0000;
+			irVtx[2].color = 0x3FFF0000;
+			irVtx[3].color = 0x3FFF0000;
+#else
 			irVtx[0].color = 0x64FF0000;
 			irVtx[1].color = 0x64FF0000;
 			irVtx[2].color = 0x64FF0000;
 			irVtx[3].color = 0x64FF0000;
+#endif
 			irVtx[0].specular = 0xFF000000;
 			irVtx[1].specular = 0xFF000000;
 			irVtx[2].specular = 0xFF000000;
@@ -5563,6 +5570,204 @@ void DrawSteamLasers(ITEM_INFO* item)
 
 	phd_PopMatrix();
 }
+
+#ifdef GENERAL_FIXES
+void S_DrawFloorLasers(ITEM_INFO* item)
+{
+	FLOORLASER_STRUCT* laser;
+	SPRITESTRUCT* sprite;
+	FVECTOR* vtx;
+	D3DTLVERTEX* vbuf;
+	TEXTURESTRUCT tex;
+	D3DTLVERTEX v[4];
+	short* rand;
+	short* pulse;
+	short* c;
+	float fx, fy, fz, mx, my, mz, zv, val;
+	long w, h, x, y, z, xStep, zStep, f, lp, lp2, c1, c2, c3, c4;
+	short clip[128];
+	short clipFlag;
+
+	if (!TriggerActive(item) || (!InfraRed && !item->item_flags[3] && item->item_flags[2] <= 0 && !item->trigger_flags))
+		return;
+
+	laser = (FLOORLASER_STRUCT*)item->data;
+	sprite = &spriteinfo[objects[MISC_SPRITES].mesh_index + 3];
+
+	xStep = (laser->v4.x - laser->v1.x) / (item->item_flags[1] << 1);
+	zStep = (laser->v4.z - laser->v1.z) / (item->item_flags[0] << 1);
+
+	vtx = (FVECTOR*)&scratchpad[0];
+	rand = laser->Rand;
+	pulse = laser->Pulse;
+
+	h = (item->item_flags[1] << 1) + 1;
+	w = (item->item_flags[0] << 1) + 1;
+	x = laser->v1.x;
+	y = laser->v1.y;
+
+	for (lp = 0; lp < h; lp++)
+	{
+		z = laser->v1.z;
+
+		for (lp2 = 0; lp2 < w; lp2++)
+		{
+			vtx->x = (float)x;
+			vtx->y = (float)y;
+			vtx->z = (float)z;
+
+			if (item->trigger_flags)
+				*pulse = (GetRandomControl() & item->trigger_flags) << 1;	//contact with water, pulse randomly
+			else
+			{
+				f = *rand + (GlobalCounter << 9);
+
+				if (item->item_flags[3])
+					*pulse = (item->item_flags[3] * (item->item_flags[3] + (phd_sin(f) >> 7) - 64)) >> 4;
+				else
+					*pulse = ((phd_sin(f) >> 7) - 64) << 1;
+
+				if (item->item_flags[2] > 0)
+				{
+					f = abs(item->item_flags[2] - 2048 - z);
+
+					if (InfraRed || item->item_flags[3])
+					{
+						if (f < 2048)
+							*pulse += short((2048 - f) >> 3);
+					}
+					else if (f > 2048)
+						*pulse = 0;
+					else
+						*pulse = short(((2048 - f) * (*pulse + 127)) >> 11);
+				}
+			}
+
+			if (*pulse < 0)
+				*pulse = 0;
+			else if (*pulse > 127)
+				*pulse = 127;
+
+			z += zStep;
+			vtx++;
+			rand++;
+			pulse++;
+		}
+
+		x += xStep;
+	}
+
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	aSetViewMatrix();
+
+	vbuf = aVertexBuffer;
+	vtx = (FVECTOR*)&scratchpad[0];
+
+	for (lp = 0; lp < h * w; lp++)
+	{
+		fx = vtx->x;
+		fy = vtx->y;
+		fz = vtx->z;
+
+		mx = fx * D3DMView._11 + fy * D3DMView._21 + fz * D3DMView._31 + D3DMView._41;
+		my = fx * D3DMView._12 + fy * D3DMView._22 + fz * D3DMView._32 + D3DMView._42;
+		mz = fx * D3DMView._13 + fy * D3DMView._23 + fz * D3DMView._33 + D3DMView._43;
+
+		vbuf->tu = mx;
+		vbuf->tv = my;
+
+		clipFlag = 0;
+
+		if (mz < f_mznear)
+			clipFlag = -128;
+		else
+		{
+			zv = f_mpersp / mz;
+			mx = mx * zv + f_centerx;
+			my = my * zv + f_centery;
+			vbuf->rhw = zv * f_moneopersp;
+
+			if (mx < f_left)
+				clipFlag++;
+			else if (mx > f_right)
+				clipFlag += 2;
+
+			if (my < f_top)
+				clipFlag += 4;
+			else if (my > f_bottom)
+				clipFlag += 8;
+		}
+
+		clip[lp] = clipFlag;
+		vbuf->sx = mx;
+		vbuf->sy = my;
+		vbuf->sz = mz;
+
+		vbuf++;
+		vtx++;
+	}
+
+	val = float((GlobalCounter >> 2) & 0x1F) * (1.0F / 256.0F) + sprite->y1;
+	tex.drawtype = 2;
+	tex.tpage = sprite->tpage;
+	tex.u1 = sprite->x1;
+	tex.v1 = val;
+	tex.u2 = sprite->x1;
+	tex.v2 = val;
+	tex.u3 = sprite->x1;
+	tex.v3 = val + (31.0F / 256.0F);
+	tex.u4 = sprite->x1;
+	tex.v4 = val + (31.0F / 256.0F);
+
+	pulse = laser->Pulse;
+	vbuf = aVertexBuffer;
+	c = clip;
+
+	for (lp = 0; lp < h - 1; lp++)
+	{
+		for (lp2 = 0; lp2 < w - 1; lp2++)
+		{
+			c1 = pulse[0] << 1;
+			c2 = pulse[1] << 1;
+			c3 = pulse[0 + w] << 1;
+			c4 = pulse[1 + w] << 1;
+
+			v[0] = vbuf[0];
+			v[1] = vbuf[1];
+			v[2] = vbuf[0 + w];
+			v[3] = vbuf[1 + w];
+
+			v[0].specular = 0xFF000000;
+			v[1].specular = 0xFF000000;
+			v[2].specular = 0xFF000000;
+			v[3].specular = 0xFF000000;
+
+			v[0].color = RGBA(c1, 0, 0, 0xFF);
+			v[1].color = RGBA(c2, 0, 0, 0xFF);
+			v[2].color = RGBA(c3, 0, 0, 0xFF);
+			v[3].color = RGBA(c4, 0, 0, 0xFF);
+
+			clipflags[0] = c[0];
+			clipflags[1] = c[1];
+			clipflags[2] = c[0 + w];
+			clipflags[3] = c[1 + w];
+
+			AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
+
+			vbuf++;
+			c++;
+			pulse++;
+		}
+
+		vbuf++;
+		c++;
+		pulse++;
+	}
+
+	phd_PopMatrix();
+}
+#endif
 
 void inject_specificfx(bool replace)
 {
