@@ -5769,6 +5769,275 @@ void S_DrawFloorLasers(ITEM_INFO* item)
 }
 #endif
 
+void DrawLightning()
+{
+	LIGHTNING_STRUCT* l;
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX* pV;
+	TEXTURESTRUCT tex;
+	float* pPos;
+	float* pVtx;
+	short* pC;
+	float pos[128];
+	float vtx[256];
+	float px, py, pz, px1, py1, pz1, px2, py2, pz2, px3, py3, pz3, n, nx, ny, nz, xAdd, yAdd, zAdd;
+	float mx, my, mz, zv, size, size2, step, s, c, uAdd;
+	long r1, r2, r3, col, r, g, b, lp;
+	static long rand = 0xD371F947;
+	short clip[32];
+	short clipFlag;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+
+	for (int i = 0; i < 16; i++)
+	{
+		aSetViewMatrix();
+
+		l = &Lightning[i];
+
+		if (!l->Life)
+			continue;
+
+		px = (float)l->Point[0].x;
+		py = (float)l->Point[0].y;
+		pz = (float)l->Point[0].z;
+		
+		px1 = (float)l->Point[1].x - px;
+		py1 = (float)l->Point[1].y - py;
+		pz1 = (float)l->Point[1].z - pz;
+
+		px2 = (float)l->Point[2].x - px;
+		py2 = (float)l->Point[2].y - py;
+		pz2 = (float)l->Point[2].z - pz;
+
+		px3 = (float)l->Point[3].x - px;
+		py3 = (float)l->Point[3].y - py;
+		pz3 = (float)l->Point[3].z - pz;
+
+		px = float(l->Point[0].x - lara_item->pos.x_pos);
+		py = float(l->Point[0].y - lara_item->pos.y_pos);
+		pz = float(l->Point[0].z - lara_item->pos.z_pos);
+
+		r1 = rand;
+		n = 0;
+		pPos = pos;
+
+		for (lp = 0; lp < 32; lp++)
+		{
+			if (!lp || lp == 31)
+			{
+				xAdd = 0;
+				yAdd = 0;
+				zAdd = 0;
+			}
+			else
+			{
+				r2 = 0x41C64E6D * r1 + 0x3039;
+				r3 = 0x41C64E6D * r2 + 0x3039;
+				r1 = 0x41C64E6D * r3 + 0x3039;
+				xAdd = float(((r2 >> 10) & 0xF) - 8);
+				yAdd = float(((r3 >> 10) & 0xF) - 8);
+				zAdd = float(((r1 >> 10) & 0xF) - 8);
+			}
+
+			nx = (1.0F - n) * (1.0F - n) * n * 4.0F;
+			nz = ((n + n) - 1.0F) * (n * n);
+			ny = (1.0F - n) * (n * n) * 4.0F;
+			pPos[0] = ny * px2 + nz * px3 + nx * px1 + xAdd + px;
+			pPos[1] = ny * py2 + nz * py3 + nx * py1 + yAdd + py;
+			pPos[2] = ny * pz2 + nz * pz3 + nx * pz1 + zAdd + pz;
+			pPos[3] = 1.0F;
+
+			n += (1.0F / 32.0F);
+			pPos += 4;
+		}
+
+		rand = r1;
+		pPos = pos;
+		pVtx = vtx;
+		pC = clip;
+
+		for (lp = 0; lp < 32; lp++)
+		{
+			px = pPos[0];
+			py = pPos[1];
+			pz = pPos[2];
+			mx = px * D3DMView._11 + py * D3DMView._21 + pz * D3DMView._31 + D3DMView._41;
+			my = px * D3DMView._12 + py * D3DMView._22 + pz * D3DMView._32 + D3DMView._42;
+			mz = px * D3DMView._13 + py * D3DMView._23 + pz * D3DMView._33 + D3DMView._43;
+
+			clipFlag = 0;
+
+			if (mz < f_mznear + 2.0F)
+				clipFlag = -128;
+
+			zv = f_mpersp / mz;
+
+			pVtx[0] = mx * zv + f_centerx;
+			pVtx[1] = my * zv + f_centery;
+			pVtx[2] = zv * f_moneopersp;
+
+			if (pVtx[0] < phd_winxmin)
+				clipFlag++;
+			else if (pVtx[0] > phd_winxmax)
+				clipFlag += 2;
+
+			if (pVtx[1] < phd_winymin)
+				clipFlag += 4;
+			else if (pVtx[1] > phd_winymax)
+				clipFlag += 8;
+
+			*pC++ = clipFlag;
+			pVtx[3] = mz;
+			pVtx[4] = mx;
+			pVtx[5] = my;
+
+			pPos += 4;
+			pVtx += 8;
+		}
+
+		size = float(l->Size >> 1);
+		step = 0;
+
+		if (l->Flags & 8)
+		{
+			step = size * 0.125F;
+			size = 0;
+		}
+		else if (l->Flags & 4)
+			step = -(size * (1.0F / 32.0F));
+
+		pPos = pos;
+		pVtx = vtx;
+
+		for (lp = 0; lp < 32; lp++)
+		{
+			r = phd_atan(long(pVtx[8] - pVtx[0]), long(pVtx[9] - pVtx[1]));
+			s = fSin(-r);
+			c = fCos(-r);
+
+			if (size <= 0)
+				size2 = 2.0F;
+			else
+				size2 = size;
+
+			zv = f_mpersp / pVtx[3] * size2;
+
+			pPos[0] = zv * s;
+			pPos[1] = zv * c;
+
+			size += step;
+
+			if (l->Flags & 8 && lp == 8)
+			{
+				if (l->Flags & 4)
+					step = float(l->Size >> 1) * (-1.0F / 28.0F);
+				else
+					step = 0;
+
+				l->Flags &= ~8;
+			}
+
+			pPos += 4;
+			pVtx += 8;
+		}
+
+		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 28];
+		tex.drawtype = 2;
+		tex.flag = 0;
+		tex.tpage = sprite->tpage;
+
+		uAdd = float(31 - 4 * (spec_wibble & 7)) * (1.0F / 256.0F);
+
+		if (l->Life < 16)
+		{
+			r = (l->Life * l->r) >> 4;
+			g = (l->Life * l->g) >> 4;
+			b = (l->Life * l->b) >> 4;
+		}
+		else
+		{
+			r = l->r;
+			g = l->g;
+			b = l->b;
+		}
+
+		col = RGBONLY(b, g, r);
+
+		pPos = pos;
+		pVtx = vtx;
+		pC = clip;
+		pV = aVertexBuffer;
+		zv = f_mznear + 128.0F;
+
+		for (lp = 0; lp < 31; lp++)
+		{
+			tex.u1 = (float(lp & 3) * 8.0F * (1.0F / 256.0F) + sprite->x1) + (1.0F / 512.0F) + uAdd;
+			tex.v1 = sprite->y1;
+			tex.u2 = tex.u1;
+			tex.v2 = sprite->y2;
+			tex.u3 = (float(lp & 3) * 8.0F * (1.0F / 256.0F) + sprite->x1) + (8.0F / 256.0F) + uAdd;
+			tex.v3 = sprite->y2;
+			tex.u4 = tex.u3;
+			tex.v4 = sprite->y1;
+
+			if (pVtx[3] >= zv && pVtx[11] >= zv)
+			{
+				pV[0].sx = pVtx[0] - pPos[0];
+				pV[0].sy = pVtx[1] - pPos[1];
+				pV[0].rhw = pVtx[2];
+				pV[0].sz = pVtx[3];
+				pV[0].tu = pVtx[4];
+				pV[0].tv = pVtx[5];
+				pV[0].color = col;
+				pV[0].specular = 0xFF000000;
+
+				pV[1].sx = pVtx[0] + pPos[0];
+				pV[1].sy = pVtx[1] + pPos[1];
+				pV[1].rhw = pVtx[2];
+				pV[1].sz = pVtx[3];
+				pV[1].tu = pVtx[4];
+				pV[1].tv = pVtx[5];
+				pV[1].color = col;
+				pV[1].specular = 0xFF000000;
+
+				pV[2].sx = pVtx[8] - pPos[4];
+				pV[2].sy = pVtx[9] - pPos[5];
+				pV[2].rhw = pVtx[10];
+				pV[2].sz = pVtx[11];
+				pV[2].tu = pVtx[12];
+				pV[2].tv = pVtx[13];
+				pV[2].color = col;
+				pV[2].specular = 0xFF000000;
+
+				pV[3].sx = pVtx[8] + pPos[4];
+				pV[3].sy = pVtx[9] + pPos[5];
+				pV[3].rhw = pVtx[10];
+				pV[3].sz = pVtx[11];
+				pV[3].tu = pVtx[12];
+				pV[3].tv = pVtx[13];
+				pV[3].color = col;
+				pV[3].specular = 0xFF000000;
+
+				clipflags[0] = pC[0];
+				clipflags[1] = pC[0];
+				clipflags[2] = pC[1];
+				clipflags[3] = pC[1];
+
+				AddQuadSorted(pV, 1, 0, 2, 3, &tex, 1);
+				AddQuadSorted(pV, 1, 0, 2, 3, &tex, 1);
+			}
+
+			pPos += 4;
+			pVtx += 8;
+			pC++;
+		}
+	}
+
+	phd_PopMatrix();
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -5820,4 +6089,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C4C60, S_DrawSparks, replace);
 	INJECT(0x004CD960, DrawLasers, replace);
 	INJECT(0x004CE610, DrawSteamLasers, replace);
+	INJECT(0x004CC0B0, DrawLightning, replace);
 }
