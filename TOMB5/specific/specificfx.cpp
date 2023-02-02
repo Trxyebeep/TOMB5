@@ -2394,7 +2394,7 @@ void DrawBinoculars()
 	ushort drawbak;
 	short c;
 
-	if (LaserSight)
+	if (LaserSight || SniperOverlay)
 		mesh = targetMeshP;
 	else
 		mesh = binocsMeshP;
