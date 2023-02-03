@@ -17,6 +17,7 @@ void setXY4(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3
 void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz);
 void DoRain();
 void OutputSky();
+void SetFade(long start, long end);
 void DoScreenFade();
 void ClipCheckPoint(D3DTLVERTEX* v, float x, float y, float z, short* clip);
 void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long col);
@@ -59,7 +60,6 @@ void DrawLightning();
 void OldDrawLightning();
 void DrawTwogunLaser(TWOGUN_INFO* info);
 
-#define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
 #define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
 #define S_DrawSplashes	( (void(__cdecl*)()) 0x004C1790 )

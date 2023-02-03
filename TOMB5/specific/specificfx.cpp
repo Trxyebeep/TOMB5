@@ -2224,6 +2224,15 @@ void OutputSky()
 	InitialiseSortList();
 }
 
+void SetFade(long start, long end)
+{
+	DoFade = 1;
+	FadeVal = start;
+	FadeStep = (end - start) >> 3;
+	FadeCnt = 0;
+	FadeEnd = end;
+}
+
 void DoScreenFade()
 {
 #ifdef GENERAL_FIXES
@@ -6477,6 +6486,7 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C4790, S_DrawDrawSparksNEW, replace);
 	INJECT(0x004BF3C0, DoRain, replace);
 	INJECT(0x004C6D10, OutputSky, replace);
+	INJECT(0x004CA720, SetFade, replace);
 	INJECT(0x004CA770, DoScreenFade, replace);
 	INJECT(0x004C6BA0, ClipCheckPoint, replace);
 	INJECT(0x004CD750, aTransformPerspSV, replace);
