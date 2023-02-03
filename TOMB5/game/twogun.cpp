@@ -12,6 +12,9 @@
 #include "people.h"
 #include "../specific/specificfx.h"
 #include "../specific/function_stubs.h"
+#include "tomb4fx.h"
+#include "draw.h"
+#include "traps.h"
 
 static BITE_INFO Guns[2] =
 {
@@ -477,6 +480,113 @@ void TriggerTwogunPlasma(PHD_VECTOR* pos, short* angles, long life)
 	sptr->dSize = 1;
 }
 
+void FireTwogunWeapon(ITEM_INFO* item, long lr, long plasma)
+{
+	TWOGUN_INFO* info;
+	BITE_INFO* bite;
+	PHD_VECTOR s;
+	PHD_VECTOR d;
+	short* bounds;
+	long x, y, z, dx, dy, dz, xStep, yStep, zStep, dist, hit;
+	short angles[2];
+
+	bite = &Guns[lr];
+
+	s.x = bite->x;
+	s.y = bite->y;
+	s.z = bite->z;
+	GetJointAbsPosition(item, &s, bite->mesh_num);
+
+	d.x = bite->x;
+	d.y = bite->y + 4096;
+	d.z = bite->z;
+	GetJointAbsPosition(item, &d, bite->mesh_num);
+
+	phd_GetVectorAngles(d.x - s.x, d.y - s.y, d.z - s.z, angles);
+
+	if (plasma)
+	{
+		TriggerTwogunPlasma(&s, angles, abs(item->item_flags[lr]));
+		return;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		info = &twogun[i];
+
+		if (!info->life || i == 3)
+			break;
+	}
+
+	info->pos.x_pos = s.x;
+	info->pos.y_pos = s.y;
+	info->pos.z_pos = s.z;
+	info->pos.x_rot = angles[1];
+	info->pos.y_rot = angles[0];
+	info->pos.z_rot = 0;
+	info->life = 17;
+	info->spin = short(GetRandomControl() << 11);
+	info->dlength = 4096;
+	info->r = 0;
+	info->g = 96;
+	info->b = -1;	//255
+	info->fadein = 8;
+	TriggerLightningGlow(info->pos.x_pos, info->pos.y_pos, info->pos.z_pos,
+		RGBA(0, uchar(info->g >> 1), uchar(info->b >> 1), (GetRandomControl() & 3) + 64));
+	TriggerLightning(&s, &d, (GetRandomControl() & 7) + 8, RGBA(0, info->g, info->b, 22), 12, 80, 5);
+
+	item->item_flags[lr] = 16;
+	TriggerTwogunPlasma(&s, angles, 16);
+	TriggerTwogunPlasma(&s, angles, 16);
+	TriggerTwogunPlasma(&s, angles, 16);
+
+	if (lara.burn)
+		return;
+
+	hit = 0;
+	bounds = GetBoundsAccurate(lara_item);
+	x = lara_item->pos.x_pos + ((bounds[0] + bounds[1]) >> 1);
+	y = lara_item->pos.y_pos + ((bounds[2] + bounds[3]) >> 1);
+	z = lara_item->pos.z_pos + ((bounds[4] + bounds[5]) >> 1);
+	dist = phd_sqrt(SQUARE(x - s.x) + SQUARE(y - s.y) + SQUARE(z - s.z));
+
+	if (dist < 4096)
+	{
+		dx = s.x;
+		dy = s.y;
+		dz = s.z;
+		xStep = (d.x - dx) >> 4;
+		yStep = (d.y - dy) >> 4;
+		zStep = (d.z - dz) >> 4;
+
+		for (int i = 0; i < dist; i += 256)
+		{
+			if (abs(x - dx) < 320 && abs(y - dy) < 320 && abs(z - dz) < 320)
+			{
+				hit = 1;
+				break;
+			}
+
+			dx += xStep;
+			dy += yStep;
+			dz += zStep;
+		}
+	}
+
+	if (hit)
+	{
+		if (lara_item->hit_points >= 501)
+			lara_item->hit_points -= 250;
+		else
+		{
+			LaraBurn();
+			lara.BurnBlue = 1;
+			lara.BurnCount = 48;
+			lara_item->hit_points = 0;
+		}
+	}
+}
+
 void inject_twogun(bool replace)
 {
 	INJECT(0x0048E3C0, ControlZipController, replace);
@@ -485,4 +595,5 @@ void inject_twogun(bool replace)
 	INJECT(0x0048D7D0, UpdateTwogunLasers, replace);
 	INJECT(0x0048D900, DrawTwogunLasers, replace);
 	INJECT(0x0048DD80, TriggerTwogunPlasma, replace);
+	INJECT(0x0048DF60, FireTwogunWeapon, replace);
 }
