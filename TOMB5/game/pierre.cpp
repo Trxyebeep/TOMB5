@@ -117,7 +117,7 @@ void PierreControl(short item_number)
 
 		if (info.distance < 0x400000 && lara_item->speed > 20 || item->hit_status || TargetVisible(item, &info))
 		{
-			item->ai_bits &= 0x1E;
+			item->ai_bits &= ~1;
 			pierre->alerted = 1;
 		}
 
@@ -150,15 +150,12 @@ void PierreControl(short item_number)
 				else
 					item->pos.y_rot -= 364;	
 			}
+			else if (pierre->mood == BORED_MOOD)
+				item->goal_anim_state = GetRandomControl() >= 96 ? 2 : 6;
+			else if (pierre->mood == ESCAPE_MOOD)
+				item->goal_anim_state = 3;
 			else
-			{
-				if (pierre->mood == BORED_MOOD)
-					item->goal_anim_state = GetRandomControl() >= 96 ? 2 : 6;
-				else if (pierre->mood == ESCAPE_MOOD)
-					item->goal_anim_state = 3;
-				else
-					item->goal_anim_state = 2;
-			}
+				item->goal_anim_state = 2;
 
 			break;
 
@@ -173,7 +170,6 @@ void PierreControl(short item_number)
 			{
 				item->required_anim_state = 6;
 				item->goal_anim_state = 1;
-				break;
 			}
 			else if (pierre->mood == ESCAPE_MOOD || item->ai_bits == 2)
 			{
@@ -199,11 +195,11 @@ void PierreControl(short item_number)
 				head = info.angle;
 
 			pierre->maximum_turn = 2002;
-			tilt = angle << 1;
+			tilt = angle >> 1;
 
 			if (pierre->reached_goal)
 				item->goal_anim_state = 1;
-			else if (item->ai_bits==2)
+			else if (item->ai_bits == 2)
 				item->goal_anim_state = 3;
 			else if (pierre->mood != BORED_MOOD || GetRandomControl() >= 96)
 			{
@@ -212,13 +208,10 @@ void PierreControl(short item_number)
 					item->required_anim_state = 4;
 					item->goal_anim_state = 1;
 				}
-				if (info.ahead)
+				else if (info.ahead && info.distance < 0x900000)
 				{
-					if (info.distance < 0x900000)
-					{
-						item->required_anim_state = 2;
-						item->goal_anim_state = 1;
-					}
+					item->required_anim_state = 2;
+					item->goal_anim_state = 1;
 				}
 			}
 			else
@@ -297,6 +290,7 @@ void PierreControl(short item_number)
 
 				item->fired_weapon = 2;
 			}
+
 			if (pierre->mood == ESCAPE_MOOD && GetRandomControl() > 0x2000)
 				item->required_anim_state = 1;
 
