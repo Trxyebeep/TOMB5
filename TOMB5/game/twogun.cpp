@@ -115,7 +115,14 @@ void TwogunControl(short item_number)
 					item->item_flags[i]++;
 				else
 				{
-					TriggerDynamic(pos.x, pos.y, pos.z, item->item_flags[i] + 8, 0, (item->item_flags[i] << 4) >> 2, item->item_flags[i] << 4);
+					dx = item->item_flags[i] << 4;
+
+#ifdef GENERAL_FIXES
+					if (dx > 255)
+						dx = 255;
+#endif
+
+					TriggerDynamic(pos.x, pos.y, pos.z, item->item_flags[i] + 8, 0, dx >> 2, dx);
 					item->item_flags[i]--;
 				}
 			}
@@ -197,7 +204,7 @@ void TwogunControl(short item_number)
 		{
 			dx = lara_item->pos.x_pos - item->pos.x_pos;
 			dz = lara_item->pos.z_pos - item->pos.z_pos;
-			lara_info.angle = (short)(phd_atan(dz, dx) - item->pos.y_rot);
+			lara_info.angle = short(phd_atan(dz, dx) - item->pos.y_rot);
 			lara_info.distance = SQUARE(dx) + SQUARE(dz);
 		}
 
@@ -237,22 +244,19 @@ void TwogunControl(short item_number)
 
 			if (item->ai_bits & 1)
 				head = AIGuard(creature);
-			else
+			else if (lara_info.angle > 20480 || lara_info.angle < -20480)
+				item->goal_anim_state = 8;
+			else if (!Targetable(item, &info))
 			{
-				if (lara_info.angle > 20480 || lara_info.angle < -20480)
-					item->goal_anim_state = 8;
-				else if (!Targetable(item, &info))
-				{
-					if (item->trigger_flags != 1)
-						item->goal_anim_state = 2;
-				}
-				else if (info.distance < 0x900000 || info.zone_number != info.enemy_zone)
-					item->goal_anim_state = 5;
-				else if (item->ai_bits != 8)
-				{
-					if (item->trigger_flags != 1)
-						item->goal_anim_state = 2;
-				}
+				if (item->trigger_flags != 1)
+					item->goal_anim_state = 2;
+			}
+			else if (info.distance < 0x900000 || info.zone_number != info.enemy_zone)
+				item->goal_anim_state = 5;
+			else if (item->ai_bits != 8)
+			{
+				if (item->trigger_flags != 1)
+					item->goal_anim_state = 2;
 			}
 
 			break;
@@ -323,13 +327,10 @@ void TwogunControl(short item_number)
 
 			if (abs(info.angle) < 364)
 				item->pos.y_rot += info.angle;
+			else if (info.angle >= 0)
+				item->pos.y_rot += 364;
 			else
-			{
-				if (info.angle >= 0)
-					item->pos.y_rot += 364;
-				else
-					item->pos.y_rot -= 364;
-			}
+				item->pos.y_rot -= 364;
 
 			if (item->frame_number == anims[item->anim_number].frame_base + 17)
 			{
