@@ -1569,7 +1569,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048D7D0	+	UpdateTwogunLasers
 0x0048D900	+	DrawTwogunLasers
 0x0048D940		ControlGunTestStation
-0x0048DD80		TriggerTwogunPlasma
+0x0048DD80	+	TriggerTwogunPlasma
 0x0048DF60		FireTwogunWeapon
 0x0048E3C0	+	ControlZipController
 

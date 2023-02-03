@@ -11,6 +11,7 @@
 #include "../specific/3dmath.h"
 #include "people.h"
 #include "../specific/specificfx.h"
+#include "../specific/function_stubs.h"
 
 static BITE_INFO Guns[2] =
 {
@@ -436,6 +437,46 @@ void DrawTwogunLasers()
 	}
 }
 
+void TriggerTwogunPlasma(PHD_VECTOR* pos, short* angles, long life)
+{
+	SPARKS* sptr;
+	long ang, size;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sB = uchar((life * ((GetRandomControl() & 0x7F) + 128)) >> 4);
+	sptr->sR = sptr->sB - (sptr->sB >> 2);
+	sptr->sG = sptr->sR;
+	sptr->dR = 0;
+	sptr->dB = uchar((life * ((GetRandomControl() & 0x7F) + 32)) >> 4);
+	sptr->dG = sptr->dB >> 2;
+	sptr->FadeToBlack = 8;
+	sptr->ColFadeSpeed = (GetRandomControl() & 3) + 8;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 3) + 24;
+	sptr->sLife = sptr->Life;
+	sptr->x = pos->x;
+	sptr->y = pos->y;
+	sptr->z = pos->z;
+	
+	ang = (GetRandomControl() & 0x7FFF) + angles[0] - 0x4000;
+	size = ((life << 6) * phd_cos(angles[1])) >> 14;
+	sptr->Xvel = short((size * phd_sin(ang)) >> 14);
+	sptr->Yvel = short(((life << 4) * phd_sin(-angles[1])) >> 14);
+	sptr->Zvel = short((size * phd_cos(ang)) >> 14);
+
+	sptr->Friction = 0;
+	sptr->Flags = 538;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0x7F) - 64;
+	sptr->Gravity = (GetRandomControl() & 0x1F) + 32;
+	sptr->MaxYvel = 0;
+	sptr->Scalar = 1;
+	sptr->Size = (GetRandomControl() & 0x3F) + 16;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = 1;
+}
+
 void inject_twogun(bool replace)
 {
 	INJECT(0x0048E3C0, ControlZipController, replace);
@@ -443,4 +484,5 @@ void inject_twogun(bool replace)
 	INJECT(0x0048CDD0, TwogunControl, replace);
 	INJECT(0x0048D7D0, UpdateTwogunLasers, replace);
 	INJECT(0x0048D900, DrawTwogunLasers, replace);
+	INJECT(0x0048DD80, TriggerTwogunPlasma, replace);
 }
