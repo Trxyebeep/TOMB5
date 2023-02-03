@@ -57,6 +57,7 @@ void S_DrawFloorLasers(ITEM_INFO* item);
 #endif
 void DrawLightning();
 void OldDrawLightning();
+void DrawTwogunLaser(TWOGUN_INFO* info);
 
 #define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)

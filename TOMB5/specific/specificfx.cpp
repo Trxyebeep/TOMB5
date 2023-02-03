@@ -6256,6 +6256,211 @@ void OldDrawLightning()
 	phd_PopMatrix();
 }
 
+void DrawTwogunLaser(TWOGUN_INFO* info)
+{
+	SVECTOR* pos;
+	D3DTLVERTEX* v;
+	SPRITESTRUCT* sprite;
+	TEXTURESTRUCT tex;
+	float* pVtx;
+	short* c;
+	float vtx[1024];
+	float x, y, z, mx, my, mz, zv, uAdd;
+	long r, g, b, size, size2, step, col, lp;
+	short angle, pz, clipFlag;
+	short clip[128];
+
+	if (info->fadein < 8)
+	{
+		r = (info->fadein * (uchar)info->r) >> 3;
+		g = (info->fadein * (uchar)info->g) >> 3;
+		b = (info->fadein * (uchar)info->b) >> 3;
+	}
+	else if (info->life < 16)
+	{
+		r = (info->life * (uchar)info->r) >> 4;
+		g = (info->life * (uchar)info->g) >> 4;
+		b = (info->life * (uchar)info->b) >> 4;
+	}
+	else
+	{
+		r = (uchar)info->r;
+		g = (uchar)info->g;
+		b = (uchar)info->b;
+	}
+
+	phd_PushMatrix();
+	phd_TranslateAbs(info->pos.x_pos, info->pos.y_pos, info->pos.z_pos);
+	phd_RotYXZ(info->pos.y_rot, info->pos.x_rot, info->pos.z_rot);
+	aSetViewMatrix();
+
+	pos = (SVECTOR*)&tsv_buffer[0];
+	size = 0;
+	step = info->size << 2;
+	pz = 0;
+	angle = info->spin;
+
+	for (lp = 0; lp < 8; lp++)
+	{
+		size2 = size >> 1;
+
+		if (size2 > 48)
+			size2 = 48;
+
+		pos->x = short((size * phd_sin(angle)) >> 15);
+		pos->y = short((size * phd_cos(angle)) >> 15);
+		pos->z = pz;
+		pos[1].x = short(pos->x - size2);
+		pos[1].y = short(pos->y - size2);
+		pos[1].z = pz;
+
+		size += step;
+		pz += info->length >> 6;
+		angle += info->coil;
+		pos += 2;
+	}
+
+	for (lp = 0; lp < 56; lp++)
+	{
+		size2 = size >> 1;
+
+		if (size2 > 48)
+			size2 = 48;
+
+		pos->x = short((size * phd_sin(angle)) >> 15);
+		pos->y = short((size * phd_cos(angle)) >> 15);
+		pos->z = pz;
+		pos[1].x = short(pos->x - size2);
+		pos[1].y = short(pos->y - size2);
+		pos[1].z = pz;
+
+		if (lp & 1)
+			size -= info->size;
+		
+		if (size < 4)
+			size = 4;
+
+		pz += info->length >> 6;
+		angle += info->coil;
+		pos += 2;
+	}
+
+	pos = (SVECTOR*)&tsv_buffer[0];
+	pVtx = vtx;
+	c = clip;
+
+	for (lp = 0; lp < 128; lp++)
+	{
+		x = pos->x;
+		y = pos->y;
+		z = pos->z;
+		mx = D3DMView._11 * x + D3DMView._21 * y + D3DMView._31 * z + D3DMView._41;
+		my = D3DMView._12 * x + D3DMView._22 * y + D3DMView._32 * z + D3DMView._42;
+		mz = D3DMView._13 * x + D3DMView._23 * y + D3DMView._33 * z + D3DMView._43;
+
+		clipFlag = 0;
+
+		if (mz < f_mznear)
+			clipFlag = -128;
+		else
+		{
+			zv = f_mpersp / mz;
+			pVtx[0] = mx * zv + f_centerx;
+			pVtx[1] = my * zv + f_centery;
+			pVtx[2] = f_moneopersp * zv;
+
+			if (pVtx[0] < phd_winxmin)
+				clipFlag++;
+			else if (pVtx[0] > phd_winxmax)
+				clipFlag += 2;
+
+			if (pVtx[1] < phd_winymin)
+				clipFlag += 4;
+			else if (pVtx[1] > phd_winymax)
+				clipFlag += 8;
+		}
+
+		*c++ = clipFlag;
+		pVtx[3] = mz;
+		pVtx[4] = mx;
+		pVtx[5] = my;
+
+		pVtx += 8;
+		pos++;
+	}
+
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 28];
+	tex.drawtype = 2;
+	tex.flag = 0;
+	tex.tpage = sprite->tpage;
+	uAdd = float(31 - 4 * (spec_wibble & 7)) * (1.0F / 256.0F);
+	col = RGBONLY(r, g, b);
+
+	v = aVertexBuffer;
+	pVtx = vtx;
+	c = clip;
+
+	for (lp = 0; lp < 63; lp++)
+	{
+		tex.u1 = ((lp & 3) * 8.0F * (1.0F / 256.0F) + sprite->x1) + uAdd + (1.0F / 512.0F);
+		tex.u2 = tex.u1;
+		tex.u3 = ((lp & 3) * 8.0F * (1.0F / 256.0F) + sprite->x1) + uAdd + (8.0F / 256.0F);
+		tex.u4 = tex.u3;
+		tex.v1 = sprite->y1;
+		tex.v2 = sprite->y2;
+		tex.v3 = sprite->y2;
+		tex.v4 = sprite->y1;
+
+		v[0].sx = pVtx[0];
+		v[0].sy = pVtx[1];
+		v[0].rhw = pVtx[2];
+		v[0].sz = pVtx[3];
+		v[0].tu = pVtx[4];
+		v[0].tv = pVtx[5];
+		v[0].color = col;
+		v[0].specular = 0xFF000000;
+
+		v[1].sx = pVtx[8];
+		v[1].sy = pVtx[9];
+		v[1].rhw = pVtx[10];
+		v[1].sz = pVtx[11];
+		v[1].tu = pVtx[12];
+		v[1].tv = pVtx[13];
+		v[1].color = col;
+		v[1].specular = 0xFF000000;
+
+		v[2].sx = pVtx[16];
+		v[2].sy = pVtx[17];
+		v[2].rhw = pVtx[18];
+		v[2].sz = pVtx[19];
+		v[2].tu = pVtx[20];
+		v[2].tv = pVtx[21];
+		v[2].color = col;
+		v[2].specular = 0xFF000000;
+
+		v[3].sx = pVtx[24];
+		v[3].sy = pVtx[25];
+		v[3].rhw = pVtx[26];
+		v[3].sz = pVtx[27];
+		v[3].tu = pVtx[28];
+		v[3].tv = pVtx[29];
+		v[3].color = col;
+		v[3].specular = 0xFF000000;
+
+		clipflags[0] = c[0];
+		clipflags[1] = c[1];
+		clipflags[2] = c[2];
+		clipflags[3] = c[3];
+
+		AddQuadSorted(v, 1, 0, 2, 3, &tex, 1);
+
+		c += 2;
+		pVtx += 16;
+	}
+
+	phd_PopMatrix();
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -6309,4 +6514,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CE610, DrawSteamLasers, replace);
 	INJECT(0x004CC0B0, DrawLightning, replace);
 	INJECT(0x004CCBA0, OldDrawLightning, replace);
+	INJECT(0x004CF550, DrawTwogunLaser, replace);
 }
