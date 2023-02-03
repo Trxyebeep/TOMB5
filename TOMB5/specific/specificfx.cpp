@@ -1253,7 +1253,7 @@ static void DrawStars()
 	tex.flag = 0;
 	phd_PushMatrix();
 	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
-	SetD3DViewMatrix();
+	aSetViewMatrix();
 	phd_PopMatrix();
 	clipflags[0] = 0;
 	clipflags[1] = 0;
@@ -2104,7 +2104,11 @@ void DoRain()
 	cright = f_right - 4.0F;
 	phd_PushMatrix();
 	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+#ifdef GENERAL_FIXES
+	aSetViewMatrix();
+#else
 	SetD3DViewMatrix();
+#endif
 
 	for (int i = 0; i < rain_count; i++)
 	{
@@ -2863,7 +2867,11 @@ void DoSnow()
 
 	phd_PushMatrix();
 	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
+#ifdef GENERAL_FIXES
+	aSetViewMatrix();
+#else
 	SetD3DViewMatrix();
+#endif
 
 	clipflags[0] = 0;
 	clipflags[1] = 0;
