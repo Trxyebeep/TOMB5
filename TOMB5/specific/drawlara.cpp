@@ -732,7 +732,10 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 	phd_right = phd_winxmax;
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
+
+#ifndef GENERAL_FIXES
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
+#endif
 
 	if (!mirror)
 		CalculateObjectLightingLara();
