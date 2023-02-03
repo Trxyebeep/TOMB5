@@ -374,9 +374,58 @@ void TwogunControl(short item_number)
 	CreatureAnimation(item_number, angle, 0);
 }
 
+void UpdateTwogunLasers()
+{
+	TWOGUN_INFO* info;
+
+	for (int i = 0; i < 4; i++)
+	{
+		info = &twogun[i];
+
+		if (!info->life)
+			continue;
+
+		info->life--;
+
+		if (info->life < 16)
+		{
+			info->size++;
+			info->spinadd -= info->spinadd >> 3;
+		}
+		else if (info->life == 16)
+		{
+			info->spinadd = 8192;
+			info->coil = 8192;
+			info->length = info->dlength;
+			info->size = 4;
+		}
+		else
+		{
+			info->coil += (8192 - info->coil) >> 3;
+
+			if (info->dlength - info->length > info->dlength >> 2)
+				info->length += (info->dlength - info->length) >> 2;
+			else
+			{
+				info->spinadd += (8192 - info->spinadd) >> 3;
+				info->length = info->dlength;
+			}
+
+			if (info->size < 4)
+				info->size++;
+		}
+
+		if (info->fadein < 8)
+			info->fadein++;
+
+		info->spin -= info->spinadd;
+	}
+}
+
 void inject_twogun(bool replace)
 {
 	INJECT(0x0048E3C0, ControlZipController, replace);
 	INJECT(0x0048CD40, InitialiseTwogun, replace);
 	INJECT(0x0048CDD0, TwogunControl, replace);
+	INJECT(0x0048D7D0, UpdateTwogunLasers, replace);
 }
