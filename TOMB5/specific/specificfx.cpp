@@ -1150,61 +1150,64 @@ void DrawGasCloud(ITEM_INFO* item)
 	if (!TriggerActive(item))
 		return;
 
-	if (item->trigger_flags < 2)
+	if (item->trigger_flags >= 2)
 	{
-		cloud = (GAS_CLOUD*)item->data;
+		item->item_flags[0] = 1;
+		return;
+	}
 
-		if (!cloud->mTime)
-			cloud->yo = -6144.0F;
+	cloud = (GAS_CLOUD*)item->data;
 
-		TriggerFogBulbFX(0, 128, 0, item->pos.x_pos, (long)(item->pos.y_pos + cloud->yo), item->pos.z_pos, 4096, 40);
+	if (!cloud->mTime)
+		cloud->yo = -6144.0F;
 
-		if (cloud->yo >= -3584.0)
+	TriggerFogBulbFX(0, 128, 0, item->pos.x_pos, long(item->pos.y_pos + cloud->yo), item->pos.z_pos, 4096, 40);
+
+	if (cloud->yo >= -3584.0)
+	{
+		if (cloud->sTime == 32)
 		{
-			if (cloud->sTime == 32)
+			do num = rand() & 7; while (num == cloud->num);
+			cloud->num = num;
+		}
+		else if (cloud->sTime > 32)
+		{
+			num = cloud->sTime - 32;
+
+			if (num > 128)
 			{
-				do num = rand() & 7; while (num == cloud->num);
-				cloud->num = num;
-			}
-			else if (cloud->sTime > 32)
-			{
-				num = cloud->sTime - 32;
+				num = 256 - num;
 
-				if (num > 128)
-				{
-					num = 256 - num;
-
-					if (!num)
-						cloud->sTime = 0;
-				}
-
-				num = 255 - (num << 1);
-
-				if (num < 64)
-					num = 64;
-
-				TriggerFogBulbFX(0, 255, 0, item->pos.x_pos + cloud[cloud->num].t.x, item->pos.y_pos + cloud[cloud->num].t.y,
-					item->pos.z_pos + cloud[cloud->num].t.z, 1024, num);
+				if (!num)
+					cloud->sTime = 0;
 			}
 
-			cloud->sTime++;
-		}
-		else
-			cloud->yo += 12.0F;
+			num = 255 - (num << 1);
 
-		cloud->mTime++;
+			if (num < 64)
+				num = 64;
 
-		for (int i = 0; i < 8; i++, cloud++)//what's the point of this loop
-		{
-			phd_PushMatrix();
-			phd_TranslateAbs(item->pos.x_pos + cloud->t.x, item->pos.y_pos + cloud->t.y, item->pos.z_pos + cloud->t.z);
-			phd_RotY(-CamRot.y << 4);
-			phd_RotX(-4096);
-			phd_PopMatrix();
+			TriggerFogBulbFX(0, 255, 0, item->pos.x_pos + cloud[cloud->num].t.x, item->pos.y_pos + cloud[cloud->num].t.y,
+				item->pos.z_pos + cloud[cloud->num].t.z, 1024, num);
 		}
+
+		cloud->sTime++;
 	}
 	else
-		item->item_flags[0] = 1;
+		cloud->yo += 12.0F;
+
+	cloud->mTime++;
+
+#ifndef GENERAL_FIXES
+	for (int i = 0; i < 8; i++, cloud++)
+	{
+		phd_PushMatrix();
+		phd_TranslateAbs(item->pos.x_pos + cloud->t.x, item->pos.y_pos + cloud->t.y, item->pos.z_pos + cloud->t.z);
+		phd_RotY(-CamRot.y << 4);
+		phd_RotX(-4096);
+		phd_PopMatrix();
+	}
+#endif
 }
 
 #ifdef GENERAL_FIXES
