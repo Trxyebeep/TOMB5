@@ -5863,11 +5863,11 @@ void DrawLightning()
 			}
 
 			nx = (1.0F - n) * (1.0F - n) * n * 4.0F;
-			nz = ((n + n) - 1.0F) * (n * n);
 			ny = (1.0F - n) * (n * n) * 4.0F;
-			pPos[0] = ny * px2 + nz * px3 + nx * px1 + xAdd + px;
-			pPos[1] = ny * py2 + nz * py3 + nx * py1 + yAdd + py;
-			pPos[2] = ny * pz2 + nz * pz3 + nx * pz1 + zAdd + pz;
+			nz = ((n + n) - 1.0F) * (n * n);
+			pPos[0] = nx * px1 + ny * px2 + nz * px3 + px + xAdd;
+			pPos[1] = nx * py1 + ny * py2 + nz * py3 + py + yAdd;
+			pPos[2] = nx * pz1 + ny * pz2 + nz * pz3 + pz + zAdd;
 			pPos[3] = 1.0F;
 
 			n += (1.0F / 32.0F);
