@@ -432,17 +432,22 @@ void ControlGasCloud(short item_number)
 	if (!TriggerActive(item))
 		return;
 
-	if (!lara.Gassed)
+#ifdef GENERAL_FIXES
+	if (lara.water_status != LW_FLYCHEAT)
+#endif
 	{
-		pos.x = 0;
-		pos.y = 0;
-		pos.z = 0;
-		GetLaraJointPos(&pos, 8);
-		room_number = lara_item->room_number;
-		GetFloor(pos.x, pos.y, pos.z, &room_number);
+		if (!lara.Gassed)
+		{
+			pos.x = 0;
+			pos.y = 0;
+			pos.z = 0;
+			GetLaraJointPos(&pos, 8);
+			room_number = lara_item->room_number;
+			GetFloor(pos.x, pos.y, pos.z, &room_number);
 
-		if (room[room_number].flags & ROOM_NO_LENSFLARE)
-			lara.Gassed = 1;
+			if (room[room_number].flags & ROOM_NO_LENSFLARE)
+				lara.Gassed = 1;
+		}
 	}
 
 	if (item->trigger_flags < 2)

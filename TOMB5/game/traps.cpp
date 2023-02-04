@@ -663,6 +663,17 @@ void FlameControl(short fx_number)
 
 	fx = &effects[fx_number];
 
+#ifdef GENERAL_FIXES
+	if (lara.water_status == LW_FLYCHEAT)
+	{
+		KillEffect(fx_number);
+		lara.burn = 0;
+		lara.BurnBlue = 0;
+		lara.BurnSmoke = 0;
+		return;
+	}
+#endif
+
 	for (int i = 14; i >= 0; i--)
 	{
 		if (!(wibble & 12))
