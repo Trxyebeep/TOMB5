@@ -2069,7 +2069,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004BD430	+	mGetTime
 0x004BD470	+	mSync
 0x004BD590	+	mAddProfilerEvent
-0x004BD5B0		mDrawProfiler
+0x004BD5B0	+	mDrawProfiler
 0x004BD6A0	+	mInitDrawProfiler
 
 

@@ -10,5 +10,4 @@ __int64 mGetTime();
 void mInitTimer();
 long mSync(long s);
 void mInitDrawProfiler(long x, long y, long f, long w);
-
-#define mDrawProfiler	( (void(__cdecl*)(double, long, long)) 0x004BD5B0 )
+void mDrawProfiler(double sync, long x, long y);

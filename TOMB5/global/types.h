@@ -2444,6 +2444,12 @@ struct NODEOFFSET_INFO
 	uchar GotIt;
 };
 
+struct PROFILER_EVENT
+{
+	__int64 t;
+	long c;
+};
+
 #ifdef GENERAL_FIXES
 struct GouraudBarColourSet
 {
