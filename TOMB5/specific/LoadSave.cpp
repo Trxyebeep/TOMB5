@@ -2766,7 +2766,11 @@ void CalculateNumSpecialFeatures()
 void SpecialFeaturesDisplayScreens(long num)
 {
 	static long start[4] = { 0, 0, 0, 0 };
+#ifdef GENERAL_FIXES
+	static long nPics[4] = { 12, 15, 12, 23 };
+#else
 	static long nPics[4] = { 12, 11, 12, 23 };
+#endif
 	long first, max, pos, count;
 
 	first = start[num];
