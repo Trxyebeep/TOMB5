@@ -1,5 +1,31 @@
 # tomb5 changelog
 
+## [3.2.0](https://github.com/Trxyebeep/TOMB5/tree/V3.2.0) (Feb. 4 2023)
+
+### Original bug fixes
+
+- Fix UV rotate texture in Escape with the Iris elevator scene.
+- Restore support for accented characters. (Fixes Non-English compatibility with the patch)
+- Fix green flash when twogun shoots.
+- Restore missing pictures from the Next Generation Concept Art special features menu.
+
+### tomb5 bug fixes
+
+- Fix multiple little decompilation bugs in title flyby.
+- Many little style and code stability/readability/format fixes.
+- Fix portal effect corruption.
+- Fix sniper overlay.
+- Fix Larson movement.
+
+### tomb5 additions
+
+- make hair follow weapon animations (Fixes hair getting pulled when using the HK)
+- Improve star drawing in the Ireland levels
+- Adjust InfraRed to be less strong.
+- Implement Floor Lasers drawing.
+- Remove fire from lara in DOZY mode.
+- Implement PSX Gas Cloud drawing.
+
 ## [3.1.1](https://github.com/Trxyebeep/TOMB5/tree/V3.1.1) (Sep. 12 2022)
 
 ### Original bug fixes
