@@ -48,7 +48,7 @@ void SkeletonControl(short item_number)
 	CreatureAIInfo(item, &info);
 	angle = CreatureTurn(item, skeleton->maximum_turn);
 
-	if (ABS(info.angle) < 546)
+	if (abs(info.angle) < 546)
 		item->pos.y_rot += info.angle;
 	else if (info.angle >= 0)
 		item->pos.y_rot += 546;

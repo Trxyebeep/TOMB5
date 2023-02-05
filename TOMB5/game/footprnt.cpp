@@ -115,7 +115,7 @@ void S_DrawFootPrints()
 				room_number = lara_item->room_number;
 				pos[j].y = (float)GetHeight(GetFloor(x, print->y, z, &room_number), x, print->y, z) - print->y;
 
-				if (ABS(pos[j].y) > PRINT_HEIGHT_CORRECTION)
+				if (abs(pos[j].y) > PRINT_HEIGHT_CORRECTION)
 					pos[j].y = 0;
 			}
 
@@ -438,7 +438,7 @@ void GetProperFootPos(PHD_VECTOR* pos)
 		floor = GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number);
 		height = GetHeight(floor, lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
 
-		if (ABS(left_foot.y - height) < ABS(right_foot.y - height))
+		if (abs(left_foot.y - height) < abs(right_foot.y - height))
 		{
 			pos->x = left_foot.x;	//left foot
 			pos->y = left_foot.y;

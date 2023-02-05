@@ -1637,9 +1637,9 @@ void stealth3_start()
 		if (item->object_number == CHEF || item->object_number == SAS || item->object_number == BLUE_GUARD ||
 			item->object_number == SWAT_PLUS || item->object_number == SWAT || item->object_number == TWOGUN)
 		{
-			if (ABS(item->pos.x_pos - lara_item->pos.x_pos) < 1024 &&
-				ABS(item->pos.z_pos - lara_item->pos.z_pos) < 1024 &&
-				ABS(item->pos.y_pos - lara_item->pos.y_pos) < 256)
+			if (abs(item->pos.x_pos - lara_item->pos.x_pos) < 1024 &&
+				abs(item->pos.z_pos - lara_item->pos.z_pos) < 1024 &&
+				abs(item->pos.y_pos - lara_item->pos.y_pos) < 256)
 			{
 				GLOBAL_cutme->actor_data[1].objslot = item->object_number;
 				item->status = ITEM_INVISIBLE;
@@ -1668,9 +1668,9 @@ void stealth3_end()
 		if (item->object_number == CHEF || item->object_number == SAS || item->object_number == BLUE_GUARD ||
 			item->object_number == SWAT_PLUS || item->object_number == SWAT || item->object_number == TWOGUN)
 		{
-			if (ABS(item->pos.x_pos - lara_item->pos.x_pos) < 1024 &&
-				ABS(item->pos.z_pos - lara_item->pos.z_pos) < 1024 &&
-				ABS(item->pos.y_pos - lara_item->pos.y_pos) < 256)
+			if (abs(item->pos.x_pos - lara_item->pos.x_pos) < 1024 &&
+				abs(item->pos.z_pos - lara_item->pos.z_pos) < 1024 &&
+				abs(item->pos.y_pos - lara_item->pos.y_pos) < 256)
 			{
 				item->hit_points = 0;
 

@@ -278,9 +278,9 @@ void CalculateCamera()
 		GetFloor(camera.target.x, camera.target.y, camera.target.z, &camera.target.room_number);
 
 #ifdef GENERAL_FIXES
-		if (!tomb5.tr4_camera && ABS(last_target.x - camera.target.x) < 4 && ABS(last_target.y - camera.target.y) < 4 && ABS(last_target.z - camera.target.z) < 4)
+		if (!tomb5.tr4_camera && abs(last_target.x - camera.target.x) < 4 && abs(last_target.y - camera.target.y) < 4 && abs(last_target.z - camera.target.z) < 4)
 #else
-		if (ABS(last_target.x - camera.target.x) < 4 && ABS(last_target.y - camera.target.y) < 4 && ABS(last_target.z - camera.target.z) < 4)
+		if (abs(last_target.x - camera.target.x) < 4 && abs(last_target.y - camera.target.y) < 4 && abs(last_target.z - camera.target.z) < 4)
 #endif
 		{
 			camera.target.x = last_target.x;
@@ -1179,9 +1179,9 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 	if (wy < ceiling || wy > height)
 	{
 		mgLOS(&camera.target, &camera.pos, 0);
-		dx = ABS(camera.pos.x - ideal->x);
-		dy = ABS(camera.pos.y - ideal->y);
-		dz = ABS(camera.pos.z - ideal->z);
+		dx = abs(camera.pos.x - ideal->x);
+		dy = abs(camera.pos.y - ideal->y);
+		dz = abs(camera.pos.z - ideal->z);
 
 		if (dx < 768 && dy < 768 && dz < 768)
 		{
@@ -1591,12 +1591,12 @@ void LookCamera(ITEM_INFO* item)
 	else if (lara.head_y_rot > 14560)
 		lara.head_y_rot = 14560;
 
-	if (ABS(lara.head_x_rot - old_cam.pos.x_rot) >= 16)
+	if (abs(lara.head_x_rot - old_cam.pos.x_rot) >= 16)
 		old_cam.pos.x_rot = (lara.head_x_rot + old_cam.pos.x_rot) >> 1;
 	else
 		old_cam.pos.x_rot = lara.head_x_rot;
 
-	if (ABS(lara.head_y_rot - old_cam.pos.y_rot) >= 16)
+	if (abs(lara.head_y_rot - old_cam.pos.y_rot) >= 16)
 		old_cam.pos.y_rot = (lara.head_y_rot + old_cam.pos.y_rot) >> 1;
 	else
 		old_cam.pos.y_rot = lara.head_y_rot;

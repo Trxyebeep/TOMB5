@@ -357,7 +357,7 @@ void GuardianControl(short item_number)
 		{
 			if (gt.TrackLara)
 			{
-				if (!(GetRandomControl() & 0x1F) && ABS(gt.Xdiff) < 1024 && ABS(gt.Ydiff) < 1024 && !lara_item->fallspeed || !(GetRandomControl() & 0x1FF))
+				if (!(GetRandomControl() & 0x1F) && abs(gt.Xdiff) < 1024 && abs(gt.Ydiff) < 1024 && !lara_item->fallspeed || !(GetRandomControl() & 0x1FF))
 				{
 					item->item_flags[0]++;
 					item->item_flags[3] = 0;
@@ -497,7 +497,7 @@ void GuardianControl(short item_number)
 												break;
 										}
 
-										if (ABS(pos3.x) < 280 && ABS(pos3.y) < 280 && ABS(pos3.z) < 280)
+										if (abs(pos3.x) < 280 && abs(pos3.y) < 280 && abs(pos3.z) < 280)
 											farflag = 2;
 
 										if (x > DB[0] && x < DB[1] && y > DB[2] && y < DB[3] && z > DB[4] && z < DB[5])

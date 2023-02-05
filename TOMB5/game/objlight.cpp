@@ -5,6 +5,7 @@
 #include "../specific/function_stubs.h"
 #include "sound.h"
 #include "sphere.h"
+#include "../specific/3dmath.h"
 
 void TriggerAlertLight(long x, long y, long z, long r, long g, long b, long angle, long room_no, long falloff)
 {
@@ -60,7 +61,7 @@ void ControlPulseLight(short item_number)
 
 	item->item_flags[0] -= 1024;
 	
-	sin = ABS(phd_sin(item->item_flags[0] + ((item->pos.y_pos & 0x3FFF) << 2)) >> 6);
+	sin = abs(phd_sin(item->item_flags[0] + ((item->pos.y_pos & 0x3FFF) << 2)) >> 6);
 
 	if (sin > 255)
 		sin = 255;

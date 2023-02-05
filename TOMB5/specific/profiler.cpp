@@ -4,6 +4,8 @@
 #include "dxshell.h"
 
 static __int64 counter;
+static PROFILER_EVENT ProfilerEvents[30];
+static long nProfilerEvents;
 
 void mDrawTriangle(long x1, long y1, long x2, long y2, long x3, long y3, long c0, long c1, long c2)
 {
@@ -68,6 +70,67 @@ long mSync(long s)
 	return f;
 }
 
+void mInitDrawProfiler(long x, long y, long f, long w)
+{
+	long lp, lp2, tx, ty;
+
+	for (lp = 0; lp < f; lp++)
+	{
+		tx = x;
+		ty = y;
+		mDrawTriangle(tx, ty, tx - 4, ty - 4, tx + 4, ty - 4, 0x80FF8040, 0x80FF8040, 0x80FF8040);
+
+		ty = y + 9;
+		mDrawTriangle(tx, ty, tx - 4, ty + 5, tx + 4, ty + 5, 0x80FF8040, 0x80FF8040, 0x80FF8040);
+
+		x += w / 4;
+
+		for (lp2 = 0; lp2 < 3; lp2++)
+		{
+			tx = x;
+			ty = y;
+			mDrawTriangle(tx, ty, tx - 4, ty - 4, tx + 4, ty - 4, 0x80004080, 0x80004080, 0x80004080);
+
+			ty = y + 9;
+			mDrawTriangle(tx, ty, tx - 4, ty + 4, tx + 4, ty + 4, 0x80004080, 0x80004080, 0x80004080);
+
+			x += w / 4;
+		}
+	}
+
+	tx = x;
+	ty = y;
+	mDrawTriangle(tx, ty, tx - 4, ty - 4, tx + 4, ty - 4, 0x80FF8040, 0x80FF8040, 0x80FF8040);
+
+	ty = y + 9;
+	mDrawTriangle(tx, ty, tx - 4, ty + 4, tx + 4, ty + 4, 0x80FF8040, 0x80FF8040, 0x80FF8040);
+}
+
+void mDrawProfiler(double sync, long x, long y)
+{
+	PROFILER_EVENT* event;
+	long lp, dt;
+
+	if (t_frequency)
+	{
+		mInitDrawProfiler(x, y, 2, 320);
+
+		if (nProfilerEvents > 0)
+		{
+			for (lp = 0; lp < nProfilerEvents - 1; lp++)
+			{
+				event = &ProfilerEvents[lp];
+				dt = long(320 * (event[1].t - event->t) / (long)t_frequency);
+				mDrawTriangle(x, y, x + dt, y, dt, y + 10, event->c, event->c, event->c);
+				mDrawTriangle(x, y, x + dt, y + 10, x, y + 10, event->c, event->c, event->c);
+				x += dt;
+			}
+		}
+	}
+
+	nProfilerEvents = 0;
+}
+
 void inject_profiler(bool replace)
 {
 	INJECT(0x004BD3A0, mDrawTriangle, replace);
@@ -76,4 +139,6 @@ void inject_profiler(bool replace)
 	INJECT(0x004BD430, mGetTime, replace);
 	INJECT(0x004BD3E0, mInitTimer, replace);
 	INJECT(0x004BD470, mSync, replace);
+	INJECT(0x004BD6A0, mInitDrawProfiler, replace);
+	INJECT(0x004BD5B0, mDrawProfiler, replace);
 }

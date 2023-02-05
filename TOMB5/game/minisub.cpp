@@ -203,12 +203,12 @@ void TorpedoControl(short item_number)
 	{
 		y = (ushort)angles[0] - (ushort)item->pos.y_rot;
 
-		if (ABS(y) > 32768)
+		if (abs(y) > 32768)
 			y = (ushort)item->pos.y_rot - (ushort)angles[0];
 
 		x = (ushort)angles[1] - (ushort)item->pos.x_rot;
 
-		if (ABS(x) > 32768)
+		if (abs(x) > 32768)
 			x = (ushort)item->pos.x_rot - (ushort)angles[0];
 
 		y >>= 3;
@@ -456,7 +456,7 @@ void MinisubControl(short item_number)
 
 	item->item_flags[0] = tilt;
 
-	if (ABS(item->item_flags[0]) < 64)
+	if (abs(item->item_flags[0]) < 64)
 		item->item_flags[0] = 0;
 	else
 	{
@@ -495,7 +495,7 @@ void MinisubControl(short item_number)
 		{
 			minisub->maximum_turn = 0;
 
-			if (ABS(lara_info.angle) >= 364)
+			if (abs(lara_info.angle) >= 364)
 			{
 				if (lara_info.angle >= 0)
 					item->pos.y_rot += 364;

@@ -193,7 +193,7 @@ void UpdateBats()
 
 				ox = (ushort)angles[1] - (ushort)fx->pos.x_rot;
 
-				if (ABS(ox) > 32768)
+				if (abs(ox) > 32768)
 					ox = (ushort)fx->pos.x_rot - (ushort)angles[0];
 
 				ox >>= 3;

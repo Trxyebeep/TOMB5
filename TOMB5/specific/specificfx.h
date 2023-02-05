@@ -17,6 +17,7 @@ void setXY4(D3DTLVERTEX* v, long x1, long y1, long x2, long y2, long x3, long y3
 void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz);
 void DoRain();
 void OutputSky();
+void SetFade(long start, long end);
 void DoScreenFade();
 void ClipCheckPoint(D3DTLVERTEX* v, float x, float y, float z, short* clip);
 void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long col);
@@ -49,13 +50,16 @@ void DrawBubbles();
 void DrawSprite(long x, long y, long slot, long col, long size, long z);
 void SetUpLensFlare(long x, long y, long z, GAME_VECTOR* lfobj);
 bool ClipLine(long& x1, long& y1, long z1, long& x2, long& y2, long z2, long xMin, long yMin, long w, long h);
+void S_DrawSparks();
+void DrawLasers(ITEM_INFO* item);
+void DrawSteamLasers(ITEM_INFO* item);
+#ifdef GENERAL_FIXES
+void S_DrawFloorLasers(ITEM_INFO* item);
+#endif
+void DrawLightning();
+void OldDrawLightning();
+void DrawTwogunLaser(TWOGUN_INFO* info);
 
-#define SetFade	( (void(__cdecl*)(long, long)) 0x004CA720 )
 #define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
-#define DrawLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CD960 )
-#define DrawSteamLasers	( (void(__cdecl*)(ITEM_INFO*)) 0x004CE610 )
-#define S_DrawSparks	( (void(__cdecl*)()) 0x004C4C60 )
 #define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
 #define S_DrawSplashes	( (void(__cdecl*)()) 0x004C1790 )
-#define DrawLightning	( (void(__cdecl*)()) 0x004CC0B0 )
-#define OldDrawLightning	( (void(__cdecl*)()) 0x004CCBA0 )

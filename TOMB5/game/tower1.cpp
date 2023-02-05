@@ -2,6 +2,7 @@
 #include "tower1.h"
 #include "gameflow.h"
 #include "control.h"
+#include "../specific/3dmath.h"
 
 long TestBoundsCollideCamera(short* bounds, PHD_3DPOS* pos, long radius)
 {
@@ -104,7 +105,7 @@ void ItemPushCamera(short* bounds, PHD_3DPOS* pos)
 	zmin = bounds[4] - 384;
 	zmax = bounds[5] + 384;
 
-	if (ABS(dx) > 4608 || ABS(dz) > 4608 || x <= xmin || x >= xmax || z <= zmin || z >= zmax)
+	if (abs(dx) > 4608 || abs(dz) > 4608 || x <= xmin || x >= xmax || z <= zmin || z >= zmax)
 		return;
 
 	left = x - xmin;

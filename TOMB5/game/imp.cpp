@@ -259,7 +259,7 @@ void ImpControl(short item_number)
 	{
 		imp->maximum_turn = 0;
 
-		if (ABS(other_angle) < 364)
+		if (abs(other_angle) < 364)
 			item->pos.y_rot += other_angle;
 		else if (other_angle < 0)
 			item->pos.y_rot -= 364;

@@ -14,6 +14,7 @@
 #include "spider.h"
 #include "box.h"
 #include "switch.h"
+#include "../specific/3dmath.h"
 
 void InitialiseTrapDoor(short item_number)
 {
@@ -443,7 +444,7 @@ void InitialisePulley(short item_number)
 
 	item = &items[item_number];
 	item->item_flags[3] = item->trigger_flags;
-	item->trigger_flags = ABS(item->trigger_flags);
+	item->trigger_flags = abs(item->trigger_flags);
 
 	if (item_number == GlobalPulleyFrigItem)
 		item->item_flags[1] = 1;
@@ -683,20 +684,26 @@ void InitialiseFloorLasers(short item_number)
 	item = &items[item_number];
 	item->data = (FLOORLASER_STRUCT*)game_malloc(sizeof(FLOORLASER_STRUCT), 0);
 	ls = (FLOORLASER_STRUCT*)item->data;
+
 	width = item->trigger_flags % 10;
 	height = item->trigger_flags / 10;
+
 	ls->v1.x = -512;
 	ls->v1.y = -128;
 	ls->v1.z = -512;
+
 	ls->v2.x = -512;
 	ls->v2.y = -128;
-	ls->v2.z = (short)((width << 10) - 512);
-	ls->v3.x = (short)((height << 10) - 512);
+	ls->v2.z = short((width << 10) - 512);
+
+	ls->v3.x = short((height << 10) - 512);
 	ls->v3.y = -128;
 	ls->v3.z = -512;
-	ls->v4.x = (short)((height << 10) - 512);
+
+	ls->v4.x = short((height << 10) - 512);
 	ls->v4.y = -128;
-	ls->v4.z = (short)((width << 10) - 512);
+	ls->v4.z = short((width << 10) - 512);
+
 	item->item_flags[0] = (short)width;
 	item->item_flags[1] = (short)height;
 	width = (width << 1) + 1;
@@ -1214,85 +1221,88 @@ void InitialiseGasCloud(short item_number)
 			item->pos.y_pos -= 256;
 		else if (item->trigger_flags == 2)
 		{
-			if (item->pos.y_rot == 0)
+			if (!item->pos.y_rot)
 				item->pos.z_pos += 512;
-			else if (item->pos.y_rot == 16384)
+			else if (item->pos.y_rot == 0x4000)
 				item->pos.x_pos += 512;
-			else if (item->pos.y_rot == -32768)
+			else if (item->pos.y_rot == -0x8000)
 				item->pos.z_pos -= 512;
-			else if (item->pos.y_rot == -16384)
+			else if (item->pos.y_rot == -0x4000)
 				item->pos.x_pos -= 512;
 		}
+
+		return;
 	}
-	else
+
+	cloud = (GAS_CLOUD*)game_malloc(sizeof(GAS_CLOUD) * 8, 0);
+	item->data = cloud;
+	memset(clouds, NO_ITEM, sizeof(clouds));
+
+	for (int i = 0, j = 1; i < nAIObjects; i++)
 	{
-		cloud = (GAS_CLOUD*)game_malloc(sizeof(GAS_CLOUD) * 8, 0);
-		item->data = cloud;
-		memset(clouds, NO_ITEM, sizeof(clouds));
+		ai = &AIObjects[i];
 
-		for (int i = 0, j = 1; i < nAIObjects; i++)
+		if (ai->room_number == item->room_number)
 		{
-			ai = &AIObjects[i];
+			clouds[j] = i;
+			j++;
 
-			if (ai->room_number == item->room_number)
-			{
-				clouds[j] = i;
-				j++;
-
-				if (j > 7)
-					break;
-			}
-		}
-
-		for (int i = 0; i < 8; i++)
-		{
-			if (!i)
-			{
-				cloud->t.x = 0;
-				cloud->t.y = 0;
-				cloud->t.z = 0;
-			}
-			else if (clouds[i] == NO_ITEM)
-			{
-				cloud->t.x = short(AIObjects[clouds[i]].x - item->pos.x_pos);
-				cloud->t.y = short(AIObjects[clouds[i]].y - item->pos.y_pos);
-				cloud->t.z = short(AIObjects[clouds[i]].z - item->pos.z_pos);
-			}
-			else
-			{
-				cloud->t.x = -1;
+			if (j >= 7)
 				break;
-			}
+		}
+	}
 
-			cloud->v1.x = -512;
-			cloud->v1.y = 0;
-			cloud->v1.z = -512;
-			cloud->v2.x = -512;
-			cloud->v2.y = 0;
-			cloud->v2.z = 512;
-			cloud->v3.x = 512;
-			cloud->v3.y = 0;
-			cloud->v3.z = -512;
-			cloud->v4.x = 512;
-			cloud->v4.y = 0;
-			cloud->v4.z = 512;
-
-			for (int j = 0; j < 36; j++)
-				cloud->Rand[j] = short(GetRandomControl() << 1);
-
-			cloud->mTime = 0;
-			cloud->sTime = 0;
-			cloud->num = 0;
-			cloud++;
+	for (int i = 0; i < 8; i++)
+	{
+		if (!i)
+		{
+			cloud->t.x = 0;
+			cloud->t.y = 0;
+			cloud->t.z = 0;
+		}
+		else if (clouds[i] != NO_ITEM)
+		{
+			cloud->t.x = short(AIObjects[clouds[i]].x - item->pos.x_pos);
+			cloud->t.y = short(AIObjects[clouds[i]].y - item->pos.y_pos);
+			cloud->t.z = short(AIObjects[clouds[i]].z - item->pos.z_pos);
+		}
+		else
+		{
+			cloud->t.x = -1;
+			break;
 		}
 
-		item->item_flags[1] = short(item->pos.x_pos >> 1);
-		item->item_flags[2] = short(item->pos.y_pos >> 1);
-		item->item_flags[3] = short(item->pos.z_pos >> 1);
-		item->current_anim_state = short(GetRandomControl() << 1);
-		item->goal_anim_state = short(GetRandomControl() << 1);
-		item->required_anim_state = short(GetRandomControl() << 1);
+		cloud->v1.x = -512;
+		cloud->v1.y = 0;
+		cloud->v1.z = -512;
+
+		cloud->v2.x = -512;
+		cloud->v2.y = 0;
+		cloud->v2.z = 512;
+
+		cloud->v3.x = 512;
+		cloud->v3.y = 0;
+		cloud->v3.z = -512;
+
+		cloud->v4.x = 512;
+		cloud->v4.y = 0;
+		cloud->v4.z = 512;
+
+		for (int j = 0; j < 36; j++)
+			cloud->Rand[j] = short(GetRandomControl() << 1);
+
+		cloud->mTime = 0;
+		cloud->sTime = 0;
+		cloud->num = 0;
+		cloud++;
 	}
+
+	item->item_flags[1] = short(item->pos.x_pos >> 1);
+	item->item_flags[2] = short(item->pos.y_pos >> 1);
+	item->item_flags[3] = short(item->pos.z_pos >> 1);
+	item->current_anim_state = short(GetRandomControl() << 1);
+	item->goal_anim_state = short(GetRandomControl() << 1);
+	item->required_anim_state = short(GetRandomControl() << 1);
 }
 
 void InitialiseSwitch(short item_number)

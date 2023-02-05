@@ -5,6 +5,7 @@
 #include "items.h"
 #include "effects.h"
 #include "sound.h"
+#include "../specific/3dmath.h"
 
 void ControlBodyPart(short fx_number)
 {
@@ -102,7 +103,7 @@ void ControlBodyPart(short fx_number)
 
 			fx->speed -= fx->speed >> 2;
 
-			if (ABS(fx->speed) < 4)
+			if (abs(fx->speed) < 4)
 				fx->speed = 0;
 
 			fx->pos.y_pos = oy;

@@ -368,7 +368,7 @@ void CalculateSpotCams()
 
 		if (s->flags & SP_SNAPCAMERA)
 		{
-			if (ABS(cp - current_spline_position) > 0x8000)
+			if (abs(cp - current_spline_position) > 0x8000)
 				current_spline_position = cp;
 		}
 

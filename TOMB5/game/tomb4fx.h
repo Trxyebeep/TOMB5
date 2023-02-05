@@ -44,3 +44,4 @@ void DrawGunflashes();
 #define S_DrawFires	( (void(__cdecl*)()) 0x00481BB0 )
 #define TriggerShatterSmoke	( (void(__cdecl*)(long, long, long)) 0x004823A0 )
 #define Fade	( (void(__cdecl*)()) 0x00483BF0 )
+#define CalcLightningSpline	( (void(__cdecl*)(PHD_VECTOR*, SVECTOR*, LIGHTNING_STRUCT*)) 0x00484EB0 )

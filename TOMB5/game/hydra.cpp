@@ -67,7 +67,7 @@ void HydraControl(short item_number)
 
 		if (item->current_anim_state != 5 && item->current_anim_state != 10 && item->current_anim_state != 11)
 		{
-			if (ABS(info.angle) < 182)
+			if (abs(info.angle) < 182)
 				item->pos.y_rot += info.angle;
 			else if (info.angle >= 0)
 				item->pos.y_rot += 182;

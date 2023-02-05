@@ -6,6 +6,7 @@
 #include "sphere.h"
 #include "objects.h"
 #include "../specific/function_stubs.h"
+#include "../specific/3dmath.h"
 
 void TriggerRopeFlame(PHD_VECTOR* pos, long size)
 {

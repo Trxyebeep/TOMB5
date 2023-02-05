@@ -203,7 +203,7 @@ void ControlIris(short item_number)
 			pos.x = 0;
 			GetLaraJointPos(&pos, 0);
 
-			if (ABS(pos.y - item->pos.y_pos) >= 1024 || ABS(pos.x - item->pos.x_pos) >= 2048 || ABS(pos.z - item->pos.z_pos) >= 2048)
+			if (abs(pos.y - item->pos.y_pos) >= 1024 || abs(pos.x - item->pos.x_pos) >= 2048 || abs(pos.z - item->pos.z_pos) >= 2048)
 				item->item_flags[3] = 0;
 			else
 			{
@@ -274,7 +274,7 @@ void ControlFishtank(short item_number)
 
 		if (i && i != 8)
 		{
-			x -= GetRandomControl() % ABS(SplashOffsets[2 * i + 2] - x);
+			x -= short(GetRandomControl() % abs(SplashOffsets[2 * i + 2] - x));
 			dz = SplashOffsets[2 * i + 3] - z;
 
 			if (dz < 0)
@@ -311,11 +311,11 @@ void ControlArea51Laser(short item_number)
 	TriggerDynamic(item->pos.x_pos, item->pos.y_pos - 64, item->pos.z_pos,
 		(GetRandomControl() & 1) + 8, (GetRandomControl() & 3) + 24, GetRandomControl() & 3, GetRandomControl() & 1);
 	item->mesh_bits = -1 - (GetRandomControl() & 0x14);
-	dx = ABS(((item->item_flags[1] & 0xFF) << 9) - item->pos.x_pos);
+	dx = abs(((item->item_flags[1] & 0xFF) << 9) - item->pos.x_pos);
 
 	if (dx < 768)
 	{
-		dz = ABS(((item->item_flags[1] & 0xFF00) << 1) - item->pos.z_pos);
+		dz = abs(((item->item_flags[1] & 0xFF00) << 1) - item->pos.z_pos);
 
 		if (dz < 768)
 		{
@@ -383,7 +383,7 @@ void ControlArea51Laser(short item_number)
 
 	if (item->item_flags[3])
 	{
-		num = ABS(item->item_flags[3] >> 4);
+		num = abs(item->item_flags[3] >> 4);
 
 		if (num > 31)
 			num = 31;
@@ -432,22 +432,27 @@ void ControlGasCloud(short item_number)
 	if (!TriggerActive(item))
 		return;
 
-	if (!lara.Gassed)
+#ifdef GENERAL_FIXES
+	if (lara.water_status != LW_FLYCHEAT)
+#endif
 	{
-		pos.x = 0;
-		pos.y = 0;
-		pos.z = 0;
-		GetLaraJointPos(&pos, 8);
-		room_number = lara_item->room_number;
-		GetFloor(pos.x, pos.y, pos.z, &room_number);
+		if (!lara.Gassed)
+		{
+			pos.x = 0;
+			pos.y = 0;
+			pos.z = 0;
+			GetLaraJointPos(&pos, 8);
+			room_number = lara_item->room_number;
+			GetFloor(pos.x, pos.y, pos.z, &room_number);
 
-		if (room[room_number].flags & ROOM_NO_LENSFLARE)
-			lara.Gassed = 1;
+			if (room[room_number].flags & ROOM_NO_LENSFLARE)
+				lara.Gassed = 1;
+		}
 	}
 
 	if (item->trigger_flags < 2)
 	{
-		if (item->item_flags[0])
+		if (item->item_flags[0] < 256)
 			item->item_flags[0]++;
 
 		return;
@@ -465,24 +470,24 @@ void ControlGasCloud(short item_number)
 	sptr->x = (GetRandomControl() & 0x1F) + item->pos.x_pos - 16;
 	sptr->y = (GetRandomControl() & 0x1F) + item->pos.y_pos - 16;
 	sptr->z = (GetRandomControl() & 0x1F) + item->pos.z_pos - 16;
-	rad = ((GetRandomControl() & 0x7F) + 2048);
+	rad = (GetRandomControl() & 0x7F) + 2048;
 
 	if (item->trigger_flags == 2)
 	{
-		sptr->Xvel = (short)((rad * phd_sin(item->pos.y_rot - 32768)) >> 14);
+		sptr->Xvel = short((rad * phd_sin(item->pos.y_rot - 0x8000)) >> 14);
 		sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
-		sptr->Zvel = (short)((rad * phd_cos(item->pos.y_rot - 32768)) >> 14);
+		sptr->Zvel = short((rad * phd_cos(item->pos.y_rot - 0x8000)) >> 14);
 	}
 	else if (item->trigger_flags == 3)
 	{
-		sptr->Xvel = (short)((rad * phd_sin(item->pos.y_rot - 32768)) >> 14);
-		sptr->Yvel = (short)(rad);
-		sptr->Zvel = (short)((rad * phd_cos(item->pos.y_rot - 32768)) >> 14);
+		sptr->Xvel = short((rad * phd_sin(item->pos.y_rot - 0x8000)) >> 14);
+		sptr->Yvel = (short)rad;
+		sptr->Zvel = short((rad * phd_cos(item->pos.y_rot - 0x8000)) >> 14);
 	}
 	else
 	{
 		sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
-		sptr->Yvel = (short)(rad);
+		sptr->Yvel = (short)rad;
 		sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	}
 
@@ -501,8 +506,8 @@ void ControlGasCloud(short item_number)
 	sptr->Life = (GetRandomControl() & 3) + 16;
 	sptr->sLife = sptr->Life;
 	sptr->dSize = (GetRandomControl() & 0x1F) + 64;
-	sptr->sSize = sptr->dSize >> 2;
 	sptr->Size = sptr->dSize >> 2;
+	sptr->sSize = sptr->Size;
 
 	if (GlobalCounter & 1)
 	{
@@ -517,12 +522,12 @@ void ControlGasCloud(short item_number)
 		if (item->trigger_flags == 2)
 		{
 			num = (GetRandomControl() & 0x1FF) - 256;
-			sptr->x = item->pos.x_pos + (GetRandomControl() & 0x1F) + ((num * phd_sin(item->pos.y_rot + 16384)) >> 14) - 16;
+			sptr->x = item->pos.x_pos + (GetRandomControl() & 0x1F) + ((num * phd_sin(item->pos.y_rot + 0x4000)) >> 14) - 16;
 			sptr->y = item->pos.y_pos + (GetRandomControl() & 0x1F) + ((GetRandomControl() & 0x1FF) - 256) - 16;
-			sptr->z = item->pos.z_pos + (GetRandomControl() & 0x1F) + ((num * phd_cos(item->pos.y_rot + 16384)) >> 14) - 16;
-			sptr->Xvel = (short)((rad * phd_sin(item->pos.y_rot - 32768)) >> 14);
+			sptr->z = item->pos.z_pos + (GetRandomControl() & 0x1F) + ((num * phd_cos(item->pos.y_rot + 0x4000)) >> 14) - 16;
+			sptr->Xvel = short((rad * phd_sin(item->pos.y_rot - 32768)) >> 14);
 			sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
-			sptr->Zvel = (short)((rad * phd_cos(item->pos.y_rot - 32768)) >> 14);
+			sptr->Zvel = short((rad * phd_cos(item->pos.y_rot - 32768)) >> 14);
 		}
 		else
 		{
@@ -542,7 +547,7 @@ void ControlGasCloud(short item_number)
 			}
 
 			sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
-			sptr->Yvel = (short)(rad);
+			sptr->Yvel = (short)rad;
 			sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 		}
 
@@ -561,8 +566,8 @@ void ControlGasCloud(short item_number)
 		sptr->Life = (GetRandomControl() & 3) + 16;
 		sptr->sLife = sptr->Life;
 		sptr->dSize = (GetRandomControl() & 0x1F) + 64;
-		sptr->sSize = sptr->dSize >> 2;
 		sptr->Size = sptr->dSize >> 2;
+		sptr->sSize = sptr->Size;
 	}
 
 	item->item_flags[0] = 0;

@@ -10,6 +10,7 @@
 #include "../specific/3dmath.h"
 #include "pickup.h"
 #include "lara_states.h"
+#include "items.h"
 
 void TriggerLaraBlood()
 {
@@ -45,7 +46,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 
 	y = ypos - objheight;
 	yT = y - 160;
-	fspeed = (short)(yT - lara_item->fallspeed);
+	fspeed = short(yT - lara_item->fallspeed);
 	coll->coll_type = CT_NONE;
 	coll->shift.x = 0;
 	coll->shift.y = 0;
@@ -484,20 +485,20 @@ void GenericSphereBoxCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* c
 			dy = item->pos.y_rot;
 			item->pos.y_rot = 0;
 			GetSpheres(item, Slist, 1);
-			item->pos.y_rot = (short) dy;
+			item->pos.y_rot = (short)dy;
 			sptr = Slist;
-			DeadlyBits = *(long*) &item->item_flags[0];
+			DeadlyBits = *(long*)&item->item_flags[0];
 
 			do
 			{
 				if (TouchBits & 1)
 				{
-					GlobalCollisionBounds[0] = (short) (sptr->x - sptr->r - item->pos.x_pos);
-					GlobalCollisionBounds[2] = (short) (sptr->y - sptr->r - item->pos.y_pos);
-					GlobalCollisionBounds[4] = (short) (sptr->z - sptr->r - item->pos.z_pos);
-					GlobalCollisionBounds[1] = (short) (sptr->x + sptr->r - item->pos.x_pos);
-					GlobalCollisionBounds[3] = (short) (sptr->y + sptr->r - item->pos.y_pos);
-					GlobalCollisionBounds[5] = (short) (sptr->z + sptr->r - item->pos.z_pos);
+					GlobalCollisionBounds[0] = short(sptr->x - sptr->r - item->pos.x_pos);
+					GlobalCollisionBounds[2] = short(sptr->y - sptr->r - item->pos.y_pos);
+					GlobalCollisionBounds[4] = short(sptr->z - sptr->r - item->pos.z_pos);
+					GlobalCollisionBounds[1] = short(sptr->x + sptr->r - item->pos.x_pos);
+					GlobalCollisionBounds[3] = short(sptr->y + sptr->r - item->pos.y_pos);
+					GlobalCollisionBounds[5] = short(sptr->z + sptr->r - item->pos.z_pos);
 					dx = laraitem->pos.x_pos;
 					dy = laraitem->pos.y_pos;
 					dz = laraitem->pos.z_pos;
@@ -571,7 +572,7 @@ void CreatureCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll)
 
 					if (bounds[3] - bounds[2] > 256)
 					{
-						lara.hit_direction = (ushort)((laraitem->pos.y_rot - phd_atan(rz, rx) - 24576)) >> 14;
+						lara.hit_direction = ushort((laraitem->pos.y_rot - phd_atan(rz, rx) - 24576)) >> 14;
 						lara.hit_frame++;
 
 						if (lara.hit_frame > 30)
@@ -868,7 +869,7 @@ long MoveLaraPosition(PHD_VECTOR* v, ITEM_INFO* item, ITEM_INFO* laraitem)
 		room_number = laraitem->room_number;
 		height = GetHeight(GetFloor(pos.x_pos, pos.y_pos, pos.z_pos, &room_number), pos.x_pos, pos.y_pos, pos.z_pos);
 
-		if (ABS(height - laraitem->pos.y_pos) > 512)
+		if (abs(height - laraitem->pos.y_pos) > 512)
 		{
 			if (lara.IsMoving)
 			{
@@ -914,7 +915,7 @@ long Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, long speed, short rotatio
 	{
 		if (lara.water_status != LW_UNDERWATER)
 		{
-			switch ((((ulong)(mGetAngle(dest->x_pos, dest->z_pos, pos->x_pos, pos->z_pos) + 8192) >> 14) - ((ushort)(dest->y_rot + 8192) >> 14)) & 0x3)
+			switch (((ulong(mGetAngle(dest->x_pos, dest->z_pos, pos->x_pos, pos->z_pos) + 8192) >> 14) - (ushort(dest->y_rot + 8192) >> 14)) & 3)
 			{
 			case 0:
 				lara_item->anim_number = 65;
@@ -982,6 +983,123 @@ long Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, long speed, short rotatio
 	return pos->x_pos == dest->x_pos && pos->y_pos == dest->y_pos && pos->z_pos == dest->z_pos && pos->x_rot == dest->x_rot && pos->y_rot == dest->y_rot && pos->z_rot == dest->z_rot;
 }
 
+long CollideStaticObjects(COLL_INFO* coll, long x, long y, long z, short room_number, long hite)
+{
+	ROOM_INFO* r;
+	MESH_INFO* mesh;
+	STATIC_INFO* sinfo;
+	short* door;
+	long lxmin, lxmax, lymin, lymax, lzmin, lzmax;
+	long xmin, xmax, ymin, ymax, zmin, zmax;
+	long i, j;
+	short num_nearby_rooms;
+	short nearby_rooms[22];
+
+	coll->hit_static = 0;
+	lxmin = x - coll->radius;
+	lxmax = x + coll->radius;
+	lymin = y - hite;
+	lymax = y;
+	lzmin = z - coll->radius;
+	lzmax = z + coll->radius;
+	num_nearby_rooms = 1;
+	nearby_rooms[0] = room_number;
+	door = room[room_number].door;
+
+	if (door)
+	{
+		for (i = *door++; i > 0; i--)
+		{
+			for (j = 0; j < num_nearby_rooms; j++)
+			{
+				if (nearby_rooms[j] == *door)
+					break;
+			}
+
+			if (j == num_nearby_rooms)
+			{
+				nearby_rooms[num_nearby_rooms] = *door;
+				num_nearby_rooms++;
+			}
+
+			door += 16;
+		}
+	}
+
+	for (i = 0; i < num_nearby_rooms; i++)
+	{
+		r = &room[nearby_rooms[i]];
+		mesh = r->mesh;
+
+		for (j = r->num_meshes; j > 0; j--, mesh++)
+		{
+			sinfo = &static_objects[mesh->static_number];
+
+			if (!(mesh->Flags & 1))
+				continue;
+
+			ymin = mesh->y + sinfo->y_minc;
+			ymax = mesh->y + sinfo->y_maxc;
+
+			if (mesh->y_rot == -0x8000)
+			{
+				xmin = mesh->x - sinfo->x_maxc;
+				xmax = mesh->x - sinfo->x_minc;
+				zmin = mesh->z - sinfo->z_maxc;
+				zmax = mesh->z - sinfo->z_minc;
+			}
+			else if (mesh->y_rot == -0x4000)
+			{
+				xmin = mesh->x - sinfo->z_maxc;
+				xmax = mesh->x - sinfo->z_minc;
+				zmin = mesh->z + sinfo->x_minc;
+				zmax = mesh->z + sinfo->x_maxc;
+			}
+			else if (mesh->y_rot == 0x4000)
+			{
+				xmin = mesh->x + sinfo->z_minc;
+				xmax = mesh->x + sinfo->z_maxc;
+				zmin = mesh->z - sinfo->x_maxc;
+				zmax = mesh->z - sinfo->x_minc;
+			}
+			else
+			{
+				xmin = mesh->x + sinfo->x_minc;
+				xmax = mesh->x + sinfo->x_maxc;
+				zmin = mesh->z + sinfo->z_minc;
+				zmax = mesh->z + sinfo->z_maxc;
+			}
+
+			if (lxmax <= xmin || lxmin >= xmax || lymax <= ymin || lymin >= ymax || lzmax <= zmin || lzmin >= zmax)
+				continue;
+
+			coll->hit_static = 1;
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+void UpdateLaraRoom(ITEM_INFO* item, long height)
+{
+	FLOOR_INFO* floor;
+	long x, y, z;
+	short room_number;
+
+	x = item->pos.x_pos;
+	y = item->pos.y_pos + height;
+	z = item->pos.z_pos;
+	room_number = item->room_number;
+	floor = GetFloor(x, y, z, &room_number);
+	item->floor = GetHeight(floor, x, y, z);
+
+	if (item->room_number != room_number)
+		ItemNewRoom(lara.item_number, room_number);
+
+	//map code removed
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -998,4 +1116,6 @@ void inject_coll(bool replace)
 	INJECT(0x00413CF0, GetCollidedObjects, replace);
 	INJECT(0x00413840, MoveLaraPosition, replace);
 	INJECT(0x004134E0, Move3DPosTo3DPos, replace);
+	INJECT(0x00411DB0, CollideStaticObjects, replace);
+	INJECT(0x004120F0, UpdateLaraRoom, replace);
 }

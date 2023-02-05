@@ -123,7 +123,7 @@ void UpdateSpiders()
 				dz = lara_item->pos.z_pos - fx->pos.z_pos;
 				angle = (short) phd_atan(dz, dx) - fx->pos.y_rot;
 
-				if (ABS(dz) < 85 && ABS(dy) < 85 && ABS(dx) < 85)
+				if (abs(dz) < 85 && abs(dy) < 85 && abs(dx) < 85)
 				{
 					lara_item->hit_points -= 3;
 					lara_item->hit_status = 1;
@@ -132,12 +132,12 @@ void UpdateSpiders()
 
 				if (fx->flags)
 				{
-					if (ABS(dx) + ABS(dz) > 768)
+					if (abs(dx) + abs(dz) > 768)
 					{
 						if (fx->speed < (i & 0x1F) + 24)
 							fx->speed++;
 
-						if (ABS(angle) < 2048)
+						if (abs(angle) < 2048)
 							fx->pos.y_rot += (short) (8 * (wibble - i));
 						else if (angle < 0)
 							fx->pos.y_rot -= 1024;
@@ -147,7 +147,7 @@ void UpdateSpiders()
 					else
 					{
 						fx->pos.y_rot += fx->speed & 1 ? 512 : -512;
-						fx->speed = 48 - (ABS(angle) >> 10);
+						fx->speed = 48 - (abs(angle) >> 10);
 					}
 				}
 

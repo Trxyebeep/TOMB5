@@ -44,3 +44,31 @@ long phd_atan(long x, long y);
 ulong phd_sqrt(ulong num);
 ulong mGetAngle(long x, long z, long x1, long z1);
 void phd_GenerateW2V(PHD_3DPOS* viewPos);
+
+__inline short phd_sin(long angle)
+{
+	angle >>= 3;
+	return 4 * rcossin_tbl[angle & 0x1FFE];
+}
+
+__inline short phd_cos(long angle)
+{
+	angle >>= 3;
+	return 4 * rcossin_tbl[(angle & 0x1FFE) + 1];
+}
+
+__inline float fSin(long angle)
+{
+	return fcossin_tbl[(ushort)angle];
+}
+
+__inline float fCos(long angle)
+{
+	return fcossin_tbl[ushort(angle + 0x4000)];
+}
+
+__inline void phd_PopMatrix()
+{
+	phd_mxptr -= indices_count;
+	aMXPtr -= indices_count;
+}

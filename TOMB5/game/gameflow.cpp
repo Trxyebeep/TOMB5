@@ -386,31 +386,31 @@ long TitleOptions()
 			Chris_Menu = 0;
 
 			if (selected_option & 1)
-				PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, SCRIPT_TEXT_bis(STR_SAVE_GAME_BIS), FF_CENTER);
+				PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
 			else
-				PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, SCRIPT_TEXT_bis(STR_SAVE_GAME_BIS), FF_CENTER);
+				PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
 
 			if (selected_option & 2)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, SCRIPT_TEXT_bis(STR_LOAD_GAME_BIS), FF_CENTER);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
 			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, SCRIPT_TEXT_bis(STR_LOAD_GAME_BIS), FF_CENTER);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
 
 			if (selected_option & 4)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, SCRIPT_TEXT_bis(STR_OPTIONS), FF_CENTER);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
 			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, SCRIPT_TEXT_bis(STR_OPTIONS), FF_CENTER);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
 
 			if (selected_option & 8)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, SCRIPT_TEXT_bis(STR_EXIT), FF_CENTER);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
 			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, SCRIPT_TEXT_bis(STR_EXIT), FF_CENTER);
+				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
 
 			flag = 8;
 
 			break;
 
 		case 1://select level menu
-			PrintString(phd_centerx, font_height + phd_winymin, 6, SCRIPT_TEXT_bis(STR_SELECT_LEVEL), FF_CENTER);
+			PrintString(phd_centerx, font_height + phd_winymin, 6, SCRIPT_TEXT(STR_SELECT_LEVEL), FF_CENTER);
 
 			if (Gameflow->nLevels >= 10)
 			{
@@ -458,9 +458,9 @@ long TitleOptions()
 					height += font_height;
 
 					if (selected_option & (1i64 << n))
-						PrintString(phd_centerx, (ushort)height, 1, SCRIPT_TEXT_bis(gfLevelNames[n + 1]), FF_CENTER);
+						PrintString(phd_centerx, (ushort)height, 1, SCRIPT_TEXT(gfLevelNames[n + 1]), FF_CENTER);
 					else
-						PrintString(phd_centerx, (ushort)height, 3 - (*((char*)&nframes + i + 3) != 0), SCRIPT_TEXT_bis(gfLevelNames[n + 1]), FF_CENTER);
+						PrintString(phd_centerx, (ushort)height, 3 - (*((char*)&nframes + i + 3) != 0), SCRIPT_TEXT(gfLevelNames[n + 1]), FF_CENTER);
 
 					if (selected_option & (1i64 << n))
 						selected_level = n;
@@ -496,24 +496,24 @@ long TitleOptions()
 				Chris_Menu = 0;
 
 				if (selected_option & 1)
-					PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, SCRIPT_TEXT_bis(STR_SAVE_GAME_BIS), FF_CENTER);
+					PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
 				else
-					PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, SCRIPT_TEXT_bis(STR_SAVE_GAME_BIS), FF_CENTER);
+					PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
 
 				if (selected_option & 2)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, SCRIPT_TEXT_bis(STR_LOAD_GAME_BIS), FF_CENTER);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
 				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, SCRIPT_TEXT_bis(STR_LOAD_GAME_BIS), FF_CENTER);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
 
 				if (selected_option & 4)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, SCRIPT_TEXT_bis(STR_OPTIONS), FF_CENTER);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
 				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, SCRIPT_TEXT_bis(STR_OPTIONS), FF_CENTER);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
 
 				if (selected_option & 8)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, SCRIPT_TEXT_bis(STR_EXIT), FF_CENTER);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
 				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, SCRIPT_TEXT_bis(STR_EXIT), FF_CENTER);
+					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
 
 				flag = 8;
 			}
@@ -755,7 +755,7 @@ void do_dels_cutseq_selector()
 	short* name;
 	long num;
 
-	PrintString(256, 102, 6, SCRIPT_TEXT_bis(STR_SELECT_CUTSCENE), FF_CENTER);
+	PrintString(256, 102, 6, SCRIPT_TEXT(STR_SELECT_CUTSCENE), FF_CENTER);
 	num = dels_cutseq_selector_cursorpos - 4;
 
 	if (num < 0)
@@ -770,7 +770,7 @@ void do_dels_cutseq_selector()
 	for (int i = 0; num < 36 && i < 5; i++)
 	{
 		name = &cutseq_selector_data[num + 1].string;
-		PrintString((short)phd_centerx, ushort(i * font_height + 136), (-(dels_cutseq_selector_cursorpos != num) & 4) + 1, SCRIPT_TEXT_bis(*name), FF_CENTER);
+		PrintString((short)phd_centerx, ushort(i * font_height + 136), (-(dels_cutseq_selector_cursorpos != num) & 4) + 1, SCRIPT_TEXT(*name), FF_CENTER);
 		num++;
 	}
 
@@ -889,7 +889,7 @@ void DoLevel(uchar Name, uchar Audio)
 
 		if (gfLegendTime && !DestFadeScreenHeight && !FadeScreenHeight && !cutseq_num)
 		{
-			PrintString(ushort(phd_winwidth >> 1), ushort(phd_winymax - font_height), 2, SCRIPT_TEXT_bis(gfLegend), FF_CENTER);
+			PrintString(ushort(phd_winwidth >> 1), ushort(phd_winymax - font_height), 2, SCRIPT_TEXT(gfLegend), FF_CENTER);
 			gfLegendTime--;
 		}
 
@@ -977,6 +977,125 @@ void DoLevel(uchar Name, uchar Audio)
 	reset_flag = 0;
 }
 
+void LoadGameflow()
+{
+	STRINGHEADER sh;
+	uchar* n;
+	char* s;
+	char* d;
+	long l, end;
+
+	s = 0;
+	LoadFile("SCRIPT.DAT", &s);
+
+	gfScriptFile = (uchar*)s;
+
+	Gameflow = (GAMEFLOW*)s;
+	s += sizeof(GAMEFLOW);
+
+	gfExtensions = s;	//"[PCExtensions]"
+	s += 40;
+
+	gfFilenameOffset = (ushort*)s;
+	s += sizeof(ushort) * Gameflow->nFileNames;
+
+	gfFilenameWad = s;
+	s += Gameflow->FileNameLen;
+
+	gfScriptOffset = (ushort*)s;
+	s += sizeof(ushort) * Gameflow->nLevels;
+
+	gfScriptWad = (uchar*)s;
+	s += Gameflow->ScriptLen;
+
+	for (l = 0;; l++)
+	{
+		d = 0;
+
+		if (LoadFile(s, &d))
+			break;
+
+		s += strlen(s) + 1;
+	}
+
+	gfStringOffset = (ushort*)d;
+	gfLanguageFile = (uchar*)d;
+	Gameflow->Language = l;
+
+	memcpy(&sh, gfStringOffset, sizeof(STRINGHEADER));
+	memcpy(gfStringOffset, gfStringOffset + (sizeof(STRINGHEADER) / sizeof(ushort)), NUM_STRING_ENTRIES * sizeof(ushort));
+	gfStringWad = (char*)(gfStringOffset + NUM_STRING_ENTRIES);
+	memcpy(gfStringOffset + NUM_STRING_ENTRIES,
+		gfStringOffset + NUM_STRING_ENTRIES + (sizeof(STRINGHEADER) / sizeof(ushort)),
+		sh.StringWadLen + sh.PCStringWadLen + sh.PSXStringWadLen);
+
+	for (int i = 0; i < NUM_STRING_ENTRIES - 1; i++)
+	{
+		s = &gfStringWad[gfStringOffset[i]];
+		d = &gfStringWad[gfStringOffset[i + 1]];
+		l = d - s - 1;
+
+		for (int j = 0; j < l; j++)
+			s[j] ^= 0xA5;
+	}
+
+	for (int i = 0; i < Gameflow->nLevels; i++)
+	{
+		end = 0;
+		n = &gfScriptWad[gfScriptOffset[i]];
+
+		while (!end)
+		{
+			switch (*n++)
+			{
+			case CMD_FMV:
+			case CMD_PLAYCUT:
+			case CMD_CUT1:
+			case CMD_CUT2:
+			case CMD_CUT3:
+			case CMD_CUT4:
+			case CMD_UVROT:
+			case CMD_LEGEND:
+			case CMD_ANIMATINGMIP:
+			case CMD_RESETHUB:
+				n++;
+				break;
+
+			case CMD_LEVEL:
+				gfLevelNames[i] = *n;
+				n += 5;
+				break;
+
+			case CMD_TITLE:
+			case CMD_LAYER1:
+			case CMD_LAYER2:
+				n += 4;
+				break;
+
+			case CMD_ENDSEQ:
+				end = 1;
+				break;
+
+			case CMD_LENSFLARE:
+				n += 9;
+				break;
+
+			case CMD_MIRROR:
+				n += 5;
+				break;
+
+			case CMD_FOG:
+				n += 3;
+				break;
+
+			default:
+				n += 2;
+				break;
+			}
+		}
+	}
+}
+
 void inject_gameflow(bool replace)
 {
 	INJECT(0x00434B60, TitleOptions, replace);
@@ -984,4 +1103,5 @@ void inject_gameflow(bool replace)
 	INJECT(0x00435C70, DoTitle, replace);
 	INJECT(0x004364B0, do_dels_cutseq_selector, replace);
 	INJECT(0x00435F60, DoLevel, replace);
+	INJECT(0x00434800, LoadGameflow, replace);
 }

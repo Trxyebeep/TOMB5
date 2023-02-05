@@ -130,7 +130,7 @@ void UpdateRats()
 		else
 			angle = (short)(phd_atan(dz, dx) - fx->pos.y_rot);
 
-		if (ABS(dz) < 85 && ABS(dy) < 85 && ABS(dx) < 85)
+		if (abs(dz) < 85 && abs(dy) < 85 && abs(dx) < 85)
 		{
 			lara_item->hit_points--;
 			lara_item->hit_status = 1;
@@ -145,14 +145,14 @@ void UpdateRats()
 				else
 					fx->pos.y_rot -= 512;
 
-				fx->speed = 48 - (ABS(angle) >> 10);
+				fx->speed = 48 - (abs(angle) >> 10);
 			}
 			else
 			{
 				if (fx->speed < (i & 0x1F) + 24)
 					fx->speed++;
 
-				if (ABS(angle) < 2048)
+				if (abs(angle) < 2048)
 					fx->pos.y_rot += (short)((wibble - i) << 3);
 				else
 				{

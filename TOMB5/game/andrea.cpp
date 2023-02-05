@@ -138,8 +138,8 @@ void ControlPropeller(short item_number)
 			{
 				if (lara_item->pos.x_pos >= b[0] && lara_item->pos.x_pos <= b[1])
 				{
-					dz1 = ABS(lara_item->pos.z_pos - b[4]);
-					dz2 = ABS(lara_item->pos.z_pos - b[5]);
+					dz1 = abs(lara_item->pos.z_pos - b[4]);
+					dz2 = abs(lara_item->pos.z_pos - b[5]);
 
 					if (dz2 >= dz1)
 						Zaxis = -Zaxis;
@@ -161,8 +161,8 @@ void ControlPropeller(short item_number)
 			{
 				if (lara_item->pos.z_pos >= b[4] && lara_item->pos.z_pos <= b[5])
 				{
-					dx1 = ABS(lara_item->pos.x_pos - b[0]);
-					dx2 = ABS(lara_item->pos.x_pos - b[1]);
+					dx1 = abs(lara_item->pos.x_pos - b[0]);
+					dx2 = abs(lara_item->pos.x_pos - b[1]);
 
 					if (dx2 >= dx1)
 						Xaxis = -Xaxis;
@@ -189,7 +189,7 @@ void TriggerFanEffects(long* b, long y, short angle, long rate)
 	SPARKS* sptr;
 	long dx, dy, dz;
 
-	if (ABS(y) == 1)
+	if (abs(y) == 1)
 	{
 		dx = (b[0] + b[1]) >> 1;
 
@@ -225,7 +225,7 @@ void TriggerFanEffects(long* b, long y, short angle, long rate)
 		}
 	}
 
-	if (ABS(camera.pos.x - dx) <= 7168 && ABS(camera.pos.y - dy) <= 7168 && ABS(camera.pos.z - dz) <= 7168)
+	if (abs(camera.pos.x - dx) <= 7168 && abs(camera.pos.y - dy) <= 7168 && abs(camera.pos.z - dz) <= 7168)
 	{
 		sptr = &spark[GetFreeSpark()];
 		sptr->On = 1;
@@ -241,7 +241,7 @@ void TriggerFanEffects(long* b, long y, short angle, long rate)
 		sptr->Life = (GetRandomControl() & 3) + 20;
 		sptr->sLife = sptr->Life;
 
-		if (ABS(y) == 1)
+		if (abs(y) == 1)
 		{
 			dx = (3 * (b[1] - b[0])) >> 3;
 			dx = GetRandomControl() % dx;
@@ -747,6 +747,8 @@ void DrawPortalDoor(ITEM_INFO* item)
 		zv = f_persp / fz;
 		v[i].sx = fx * zv + f_centerx;
 		v[i].sy = fy * zv + f_centery;
+		v[i].tu = fx;
+		v[i].tv = fy;
 		v[i].sz = fz;
 		v[i].rhw = f_mpersp / fz * f_moneopersp;
 		v[i].color = RGBA(rgb->r, rgb->g, rgb->b, 0xFF);
@@ -791,8 +793,11 @@ void DrawPortalDoor(ITEM_INFO* item)
 	tex.u4 = sprite->x1;
 	tex.v4 = sprite->y2;
 
-	for (int i = 0; i < 64; i++)
+	for (int i = 0; i < 64 - 9; i++)
 	{
+		if ((i & 7) == 7)
+			continue;
+
 		for (int j = 0; j < 4; j++)
 		{
 			if (!j)
@@ -804,12 +809,7 @@ void DrawPortalDoor(ITEM_INFO* item)
 			else if (j == 3)
 				c = 8;
 
-			vtx[j].sx = v[i + c].sx;
-			vtx[j].sy = v[i + c].sy;
-			vtx[j].sz = v[i + c].sz;
-			vtx[j].rhw = v[i + c].rhw;
-			vtx[j].color = v[i + c].color;
-			vtx[j].specular = v[i + c].specular;
+			vtx[j] = v[i + c];
 			clipflags[j] = clip[i + c];
 		}
 

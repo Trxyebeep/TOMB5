@@ -10,6 +10,11 @@
 #include "effects.h"
 #include "../specific/3dmath.h"
 #include "people.h"
+#include "../specific/specificfx.h"
+#include "../specific/function_stubs.h"
+#include "tomb4fx.h"
+#include "draw.h"
+#include "traps.h"
 
 static BITE_INFO Guns[2] =
 {
@@ -74,10 +79,10 @@ void InitialiseTwogun(short item_number)
 void TwogunControl(short item_number)
 {
 	ITEM_INFO* item;
-	CREATURE_INFO* _2gun;
+	CREATURE_INFO* creature;
 	BITE_INFO* bite;
 	PHD_VECTOR pos;
-	AI_INFO twogunInfo;
+	AI_INFO info;
 	AI_INFO lara_info;
 	long dx, dz;
 	short angle, head, torso_x, torso_y, frame, base, room_number;
@@ -86,7 +91,7 @@ void TwogunControl(short item_number)
 		return;
 
 	item = &items[item_number];
-	_2gun = (CREATURE_INFO*)item->data;
+	creature = (CREATURE_INFO*)item->data;
 	angle = 0;
 	head = 0;
 	torso_x = 0;
@@ -110,7 +115,14 @@ void TwogunControl(short item_number)
 					item->item_flags[i]++;
 				else
 				{
-					TriggerDynamic(pos.x, pos.y, pos.z, item->item_flags[i] + 8, 0, (item->item_flags[i] << 4) >> 2, item->item_flags[i] << 4);
+					dx = item->item_flags[i] << 4;
+
+#ifdef GENERAL_FIXES
+					if (dx > 255)
+						dx = 255;
+#endif
+
+					TriggerDynamic(pos.x, pos.y, pos.z, item->item_flags[i] + 8, 0, dx >> 2, dx);
 					item->item_flags[i]--;
 				}
 			}
@@ -165,7 +177,7 @@ void TwogunControl(short item_number)
 				item->anim_number = objects[item->object_number].anim_index + 14;
 				item->frame_number = anims[item->anim_number].frame_base;
 				item->current_anim_state = 11;
-				_2gun->LOT.is_jumping = 1;
+				creature->LOT.is_jumping = 1;
 				item->pos.x_pos = room[item->room_number].x + ((item->draw_room & 0xFFFFFF00) << 2) + 512;
 				item->pos.y_pos = room[item->room_number].minfloor + (item->item_flags[2] & 0xFFFFFF00);
 				item->pos.z_pos = ((item->draw_room & 0xFF) << 10) + room[item->room_number].z + 512;
@@ -177,49 +189,49 @@ void TwogunControl(short item_number)
 	else
 	{
 		if (item->ai_bits)
-			GetAITarget(_2gun);
+			GetAITarget(creature);
 		else
-			_2gun->enemy = lara_item;
+			creature->enemy = lara_item;
 
-		CreatureAIInfo(item, &twogunInfo);
+		CreatureAIInfo(item, &info);
 
-		if (_2gun->enemy == lara_item)
+		if (creature->enemy == lara_item)
 		{
-			lara_info.angle = twogunInfo.angle;
-			lara_info.distance = twogunInfo.distance;
+			lara_info.angle = info.angle;
+			lara_info.distance = info.distance;
 		}
 		else
 		{
 			dx = lara_item->pos.x_pos - item->pos.x_pos;
 			dz = lara_item->pos.z_pos - item->pos.z_pos;
-			lara_info.angle = (short)(phd_atan(dz, dx) - item->pos.y_rot);
+			lara_info.angle = short(phd_atan(dz, dx) - item->pos.y_rot);
 			lara_info.distance = SQUARE(dx) + SQUARE(dz);
 		}
 
-		GetCreatureMood(item, &twogunInfo, _2gun->enemy != lara_item);
-		CreatureMood(item, &twogunInfo, _2gun->enemy != lara_item);
-		angle = CreatureTurn(item, _2gun->maximum_turn);
+		GetCreatureMood(item, &info, creature->enemy != lara_item);
+		CreatureMood(item, &info, creature->enemy != lara_item);
+		angle = CreatureTurn(item, creature->maximum_turn);
 
 		if (((lara_info.distance < 0x400000 && (lara_info.angle < 0x4000 && lara_info.angle > -16384 || lara_item->speed > 20)) ||
-			item->hit_status || TargetVisible(item, &lara_info)) && ABS(item->pos.y_pos - lara_item->pos.y_pos) < 1536)
+			item->hit_status || TargetVisible(item, &lara_info)) && abs(item->pos.y_pos - lara_item->pos.y_pos) < 1536)
 		{
-			_2gun->enemy = lara_item;
+			creature->enemy = lara_item;
 			AlertAllGuards(item_number);
 		}
 
 		switch (item->current_anim_state)
 		{
 		case 1:
-			_2gun->flags = 0;
-			_2gun->maximum_turn = 0;
+			creature->flags = 0;
+			creature->maximum_turn = 0;
 
 			if (!(item->ai_bits & 1))
 			{
-				if (ABS(twogunInfo.angle) < 364)
-					item->pos.y_rot += twogunInfo.angle;
+				if (abs(info.angle) < 364)
+					item->pos.y_rot += info.angle;
 				else
 				{
-					if (twogunInfo.angle >= 0)
+					if (info.angle >= 0)
 						item->pos.y_rot += 364;
 					else
 						item->pos.y_rot -= 364;
@@ -227,35 +239,32 @@ void TwogunControl(short item_number)
 
 				head = lara_info.angle >> 1;
 				torso_y = lara_info.angle >> 1;
-				torso_x = twogunInfo.x_angle >> 1;
+				torso_x = info.x_angle >> 1;
 			}
 
 			if (item->ai_bits & 1)
-				head = AIGuard(_2gun);
-			else
+				head = AIGuard(creature);
+			else if (lara_info.angle > 20480 || lara_info.angle < -20480)
+				item->goal_anim_state = 8;
+			else if (!Targetable(item, &info))
 			{
-				if (lara_info.angle > 20480 || lara_info.angle < -20480)
-					item->goal_anim_state = 8;
-				else if (!Targetable(item, &twogunInfo))
-				{
-					if (item->trigger_flags != 1)
-						item->goal_anim_state = 2;
-				}
-				else if (twogunInfo.distance < 0x900000 || twogunInfo.zone_number != twogunInfo.enemy_zone)
-					item->goal_anim_state = 5;
-				else if (item->ai_bits != 8)
-				{
-					if (item->trigger_flags != 1)
-						item->goal_anim_state = 2;
-				}
+				if (item->trigger_flags != 1)
+					item->goal_anim_state = 2;
+			}
+			else if (info.distance < 0x900000 || info.zone_number != info.enemy_zone)
+				item->goal_anim_state = 5;
+			else if (item->ai_bits != 8)
+			{
+				if (item->trigger_flags != 1)
+					item->goal_anim_state = 2;
 			}
 
 			break;
 
 		case 2:
-			_2gun->maximum_turn = 910;
+			creature->maximum_turn = 910;
 
-			if (Targetable(item, &twogunInfo) && lara_info.angle < 6144 && lara_info.angle > -6144)
+			if (Targetable(item, &info) && lara_info.angle < 6144 && lara_info.angle > -6144)
 			{
 				if (item->frame_number >= anims[item->anim_number].frame_base + 29)
 					item->goal_anim_state = 3;
@@ -287,15 +296,15 @@ void TwogunControl(short item_number)
 			break;
 
 		case 5:
-			_2gun->flags = 0;
-			_2gun->maximum_turn = 0;
+			creature->flags = 0;
+			creature->maximum_turn = 0;
 			head = lara_info.angle >> 1;
 			torso_y = lara_info.angle >> 1;
-			torso_x = twogunInfo.x_angle >> 1;
+			torso_x = info.x_angle >> 1;
 
-			if (ABS(twogunInfo.angle) < 364)
-				item->pos.y_rot += twogunInfo.angle;
-			else if (twogunInfo.angle >= 0)
+			if (abs(info.angle) < 364)
+				item->pos.y_rot += info.angle;
+			else if (info.angle >= 0)
 				item->pos.y_rot += 364;
 			else
 				item->pos.y_rot -= 364;
@@ -304,7 +313,7 @@ void TwogunControl(short item_number)
 				item->goal_anim_state = 9;
 			else if (item->trigger_flags == 3)
 				item->goal_anim_state = 10;
-			else if (Targetable(item, &twogunInfo))
+			else if (Targetable(item, &info))
 				item->goal_anim_state = 6;
 			else
 				item->goal_anim_state = 1;
@@ -314,17 +323,14 @@ void TwogunControl(short item_number)
 		case 6:
 			head = lara_info.angle >> 1;
 			torso_y = lara_info.angle >> 1;
-			torso_x = twogunInfo.x_angle;
+			torso_x = info.x_angle;
 
-			if (ABS(twogunInfo.angle) < 364)
-				item->pos.y_rot += twogunInfo.angle;
+			if (abs(info.angle) < 364)
+				item->pos.y_rot += info.angle;
+			else if (info.angle >= 0)
+				item->pos.y_rot += 364;
 			else
-			{
-				if (twogunInfo.angle >= 0)
-					item->pos.y_rot += 364;
-				else
-					item->pos.y_rot -= 364;
-			}
+				item->pos.y_rot -= 364;
 
 			if (item->frame_number == anims[item->anim_number].frame_base + 17)
 			{
@@ -335,10 +341,10 @@ void TwogunControl(short item_number)
 			break;
 
 		case 8:
-			_2gun->flags = 0;
-			_2gun->maximum_turn = 0;
+			creature->flags = 0;
+			creature->maximum_turn = 0;
 
-			if (twogunInfo.angle < 0)
+			if (info.angle < 0)
 				item->pos.y_rot += 364;
 			else
 				item->pos.y_rot -= 364;
@@ -349,7 +355,7 @@ void TwogunControl(short item_number)
 			break;
 
 		case 9:
-			torso_x = twogunInfo.x_angle >> 1;
+			torso_x = info.x_angle >> 1;
 			head = lara_info.angle >> 1;
 			torso_y = lara_info.angle >> 1;
 
@@ -374,9 +380,221 @@ void TwogunControl(short item_number)
 	CreatureAnimation(item_number, angle, 0);
 }
 
+void UpdateTwogunLasers()
+{
+	TWOGUN_INFO* info;
+
+	for (int i = 0; i < 4; i++)
+	{
+		info = &twogun[i];
+
+		if (!info->life)
+			continue;
+
+		info->life--;
+
+		if (info->life < 16)
+		{
+			info->size++;
+			info->spinadd -= info->spinadd >> 3;
+		}
+		else if (info->life == 16)
+		{
+			info->spinadd = 8192;
+			info->coil = 8192;
+			info->length = info->dlength;
+			info->size = 4;
+		}
+		else
+		{
+			info->coil += (8192 - info->coil) >> 3;
+
+			if (info->dlength - info->length > info->dlength >> 2)
+				info->length += (info->dlength - info->length) >> 2;
+			else
+			{
+				info->spinadd += (8192 - info->spinadd) >> 3;
+				info->length = info->dlength;
+			}
+
+			if (info->size < 4)
+				info->size++;
+		}
+
+		if (info->fadein < 8)
+			info->fadein++;
+
+		info->spin -= info->spinadd;
+	}
+}
+
+void DrawTwogunLasers()
+{
+	TWOGUN_INFO* info;
+
+	for (int i = 0; i < 4; i++)
+	{
+		info = &twogun[i];
+
+		if (info->life)
+			DrawTwogunLaser(info);
+	}
+}
+
+void TriggerTwogunPlasma(PHD_VECTOR* pos, short* angles, long life)
+{
+	SPARKS* sptr;
+	long ang, size;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sB = uchar((life * ((GetRandomControl() & 0x7F) + 128)) >> 4);
+	sptr->sR = sptr->sB - (sptr->sB >> 2);
+	sptr->sG = sptr->sR;
+	sptr->dR = 0;
+	sptr->dB = uchar((life * ((GetRandomControl() & 0x7F) + 32)) >> 4);
+	sptr->dG = sptr->dB >> 2;
+	sptr->FadeToBlack = 8;
+	sptr->ColFadeSpeed = (GetRandomControl() & 3) + 8;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 3) + 24;
+	sptr->sLife = sptr->Life;
+	sptr->x = pos->x;
+	sptr->y = pos->y;
+	sptr->z = pos->z;
+	
+	ang = (GetRandomControl() & 0x7FFF) + angles[0] - 0x4000;
+	size = ((life << 6) * phd_cos(angles[1])) >> 14;
+	sptr->Xvel = short((size * phd_sin(ang)) >> 14);
+	sptr->Yvel = short(((life << 4) * phd_sin(-angles[1])) >> 14);
+	sptr->Zvel = short((size * phd_cos(ang)) >> 14);
+
+	sptr->Friction = 0;
+	sptr->Flags = 538;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0x7F) - 64;
+	sptr->Gravity = (GetRandomControl() & 0x1F) + 32;
+	sptr->MaxYvel = 0;
+	sptr->Scalar = 1;
+	sptr->Size = (GetRandomControl() & 0x3F) + 16;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = 1;
+}
+
+void FireTwogunWeapon(ITEM_INFO* item, long lr, long plasma)
+{
+	TWOGUN_INFO* info;
+	BITE_INFO* bite;
+	PHD_VECTOR s;
+	PHD_VECTOR d;
+	short* bounds;
+	long x, y, z, dx, dy, dz, xStep, yStep, zStep, dist, hit;
+	short angles[2];
+
+	bite = &Guns[lr];
+
+	s.x = bite->x;
+	s.y = bite->y;
+	s.z = bite->z;
+	GetJointAbsPosition(item, &s, bite->mesh_num);
+
+	d.x = bite->x;
+	d.y = bite->y + 4096;
+	d.z = bite->z;
+	GetJointAbsPosition(item, &d, bite->mesh_num);
+
+	phd_GetVectorAngles(d.x - s.x, d.y - s.y, d.z - s.z, angles);
+
+	if (plasma)
+	{
+		TriggerTwogunPlasma(&s, angles, abs(item->item_flags[lr]));
+		return;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		info = &twogun[i];
+
+		if (!info->life || i == 3)
+			break;
+	}
+
+	info->pos.x_pos = s.x;
+	info->pos.y_pos = s.y;
+	info->pos.z_pos = s.z;
+	info->pos.x_rot = angles[1];
+	info->pos.y_rot = angles[0];
+	info->pos.z_rot = 0;
+	info->life = 17;
+	info->spin = short(GetRandomControl() << 11);
+	info->dlength = 4096;
+	info->r = 0;
+	info->g = 96;
+	info->b = -1;	//255
+	info->fadein = 8;
+	TriggerLightningGlow(info->pos.x_pos, info->pos.y_pos, info->pos.z_pos,
+		RGBA(0, uchar(info->g >> 1), uchar(info->b >> 1), (GetRandomControl() & 3) + 64));
+	TriggerLightning(&s, &d, (GetRandomControl() & 7) + 8, RGBA(0, info->g, info->b, 22), 12, 80, 5);
+
+	item->item_flags[lr] = 16;
+	TriggerTwogunPlasma(&s, angles, 16);
+	TriggerTwogunPlasma(&s, angles, 16);
+	TriggerTwogunPlasma(&s, angles, 16);
+
+	if (lara.burn)
+		return;
+
+	hit = 0;
+	bounds = GetBoundsAccurate(lara_item);
+	x = lara_item->pos.x_pos + ((bounds[0] + bounds[1]) >> 1);
+	y = lara_item->pos.y_pos + ((bounds[2] + bounds[3]) >> 1);
+	z = lara_item->pos.z_pos + ((bounds[4] + bounds[5]) >> 1);
+	dist = phd_sqrt(SQUARE(x - s.x) + SQUARE(y - s.y) + SQUARE(z - s.z));
+
+	if (dist < 4096)
+	{
+		dx = s.x;
+		dy = s.y;
+		dz = s.z;
+		xStep = (d.x - dx) >> 4;
+		yStep = (d.y - dy) >> 4;
+		zStep = (d.z - dz) >> 4;
+
+		for (int i = 0; i < dist; i += 256)
+		{
+			if (abs(x - dx) < 320 && abs(y - dy) < 320 && abs(z - dz) < 320)
+			{
+				hit = 1;
+				break;
+			}
+
+			dx += xStep;
+			dy += yStep;
+			dz += zStep;
+		}
+	}
+
+	if (hit)
+	{
+		if (lara_item->hit_points >= 501)
+			lara_item->hit_points -= 250;
+		else
+		{
+			LaraBurn();
+			lara.BurnBlue = 1;
+			lara.BurnCount = 48;
+			lara_item->hit_points = 0;
+		}
+	}
+}
+
 void inject_twogun(bool replace)
 {
 	INJECT(0x0048E3C0, ControlZipController, replace);
 	INJECT(0x0048CD40, InitialiseTwogun, replace);
 	INJECT(0x0048CDD0, TwogunControl, replace);
+	INJECT(0x0048D7D0, UpdateTwogunLasers, replace);
+	INJECT(0x0048D900, DrawTwogunLasers, replace);
+	INJECT(0x0048DD80, TriggerTwogunPlasma, replace);
+	INJECT(0x0048DF60, FireTwogunWeapon, replace);
 }

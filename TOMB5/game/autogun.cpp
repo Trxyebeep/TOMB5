@@ -38,7 +38,7 @@ void ControlMotionSensors(short item_number)
 
 		InterpolateAngle(destangle, &item->pos.y_rot, &angdiff, 5);
 
-		if (ABS(angdiff) < 256)
+		if (abs(angdiff) < 256)
 			item->item_flags[0] ^= 1;
 
 		if (lara_item->current_anim_state != AS_WALK &&
@@ -115,7 +115,7 @@ void AutogunControl(short item_number)
 		gun->joint_rotation[1] = item->item_flags[1];
 		gun->joint_rotation[2] += item->item_flags[2];
 
-		if (ABS(y) < 1024 && ABS(x) < 1024 && los)
+		if (abs(y) < 1024 && abs(x) < 1024 && los)
 		{
 			SoundEffect(SFX_HK_FIRE, &item->pos, SFX_SETPITCH | 0xC00000);
 
@@ -148,7 +148,7 @@ void AutogunControl(short item_number)
 						dy <<= 1;
 						dz <<= 1;
 
-					} while (ABS(dx) < 12288 && ABS(dy) < 12288 && ABS(dz) < 12288);
+					} while (abs(dx) < 12288 && abs(dy) < 12288 && abs(dz) < 12288);
 
 					pos3.x += dx + (GetRandomControl() & 0xFF) - 128;
 					pos3.y += dy + (GetRandomControl() & 0xFF) - 128;

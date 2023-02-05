@@ -156,29 +156,29 @@ static char source_wav_format[50] =
 
 void S_CDPlay(long track, long mode)
 {
-    if (acm_ready)
-    {
-        audio_counter = 0;
-        IsAtmospherePlaying = track == CurrentAtmosphere;
-        S_CDStop();
-        ACMEmulateCDPlay(track, mode);
-    }
+	if (acm_ready)
+	{
+		audio_counter = 0;
+		IsAtmospherePlaying = track == CurrentAtmosphere;
+		S_CDStop();
+		ACMEmulateCDPlay(track, mode);
+	}
 }
 
 void S_CDStop()
 {
-    if (acm_ready && audio_stream_fp)
-    {
-        memset(wav_file_buffer, 0, 0x37000);
-        DSBuffer->Stop();
-        DSBuffer->SetCurrentPosition(0);
-        while (reading_audio_file) {};
-        CLOSE(audio_stream_fp);
-        audio_stream_fp = 0;
-        audio_counter = 0;
-        XAFlag = 7;
-        XATrack = -1;
-    }
+	if (acm_ready && audio_stream_fp)
+	{
+		memset(wav_file_buffer, 0, 0x37000);
+		DSBuffer->Stop();
+		DSBuffer->SetCurrentPosition(0);
+		while (reading_audio_file) {};
+		CLOSE(audio_stream_fp);
+		audio_stream_fp = 0;
+		audio_counter = 0;
+		XAFlag = 7;
+		XATrack = -1;
+	}
 }
 
 void S_CDFade(long n)
@@ -188,113 +188,113 @@ void S_CDFade(long n)
 
 void S_StartSyncedAudio(long track)
 {
-    S_CDStop();
-    S_CDPlay(track, 2);
+	S_CDStop();
+	S_CDPlay(track, 2);
 }
 
 void ACMSetVolume()
 {
-    long volume;
+	long volume;
 
-    if (!MusicVolume)
-        volume = -10000;
-    else
-        volume = -4000 * (100 - MusicVolume) / 100;
+	if (!MusicVolume)
+		volume = -10000;
+	else
+		volume = -4000 * (100 - MusicVolume) / 100;
 
-    if (DSBuffer)
-        DSBuffer->SetVolume(volume);
+	if (DSBuffer)
+		DSBuffer->SetVolume(volume);
 }
 
 void OpenStreamFile(char* name)
 {
-    __try
-    {
-        EnterCriticalSection(&audio_cs);
-    }
-    __finally
-    {
-        LeaveCriticalSection(&audio_cs);
-    }
+	__try
+	{
+		EnterCriticalSection(&audio_cs);
+	}
+	__finally
+	{
+		LeaveCriticalSection(&audio_cs);
+	}
 
-    audio_stream_fp = FileOpen(name);
+	audio_stream_fp = FileOpen(name);
 
-    if (!audio_stream_fp)
-    {
-        Log(1, "%s - Not Found", name);
-        return;
-    }
+	if (!audio_stream_fp)
+	{
+		Log(1, "%s - Not Found", name);
+		return;
+	}
 
-    SEEK(audio_stream_fp, 90, SEEK_SET);
-    audio_fp_write_ptr = wav_file_buffer;
-    memset(wav_file_buffer, 0, 0x37000);
+	SEEK(audio_stream_fp, 90, SEEK_SET);
+	audio_fp_write_ptr = wav_file_buffer;
+	memset(wav_file_buffer, 0, 0x37000);
 
-    if (READ(wav_file_buffer, 1, 0x37000, audio_stream_fp) < 0x37000 && audio_play_mode == 1)
-    {
-        SEEK(audio_stream_fp, 90, SEEK_SET);
-        Log(0, "FileReset In OpenStreamFile");
-    }
+	if (READ(wav_file_buffer, 1, 0x37000, audio_stream_fp) < 0x37000 && audio_play_mode == 1)
+	{
+		SEEK(audio_stream_fp, 90, SEEK_SET);
+		Log(0, "FileReset In OpenStreamFile");
+	}
 }
 
 void GetADPCMData()
 {
-    if (!audio_stream_fp)
-        return;
+	if (!audio_stream_fp)
+		return;
 
-    memset(audio_fp_write_ptr, 0, 0x5800);
+	memset(audio_fp_write_ptr, 0, 0x5800);
 
-    if (READ(audio_fp_write_ptr, 1, 0x5800, audio_stream_fp) < 0x5800 && audio_play_mode == 1)
-    {
-        Log(0, "FileReset In GetADPCMData");
-        SEEK(audio_stream_fp, 90, SEEK_SET);
-    }
+	if (READ(audio_fp_write_ptr, 1, 0x5800, audio_stream_fp) < 0x5800 && audio_play_mode == 1)
+	{
+		Log(0, "FileReset In GetADPCMData");
+		SEEK(audio_stream_fp, 90, SEEK_SET);
+	}
 
-    audio_fp_write_ptr += 0x5800;
+	audio_fp_write_ptr += 0x5800;
 
-    if ((long)audio_fp_write_ptr >= long(wav_file_buffer + 0x37000))
-        audio_fp_write_ptr = wav_file_buffer;
+	if ((long)audio_fp_write_ptr >= long(wav_file_buffer + 0x37000))
+		audio_fp_write_ptr = wav_file_buffer;
 }
 
 void ACMEmulateCDPlay(long track, long mode)
 {
-    char name[256];
+	char name[256];
 
-    __try
-    {
-        EnterCriticalSection(&audio_cs);
-    }
-    __finally
-    {
-        LeaveCriticalSection(&audio_cs);
-    }
+	__try
+	{
+		EnterCriticalSection(&audio_cs);
+	}
+	__finally
+	{
+		LeaveCriticalSection(&audio_cs);
+	}
 
-    wsprintf(name, "audio\\%s", TrackFileNames[track]);
+	wsprintf(name, "audio\\%s", TrackFileNames[track]);
 
-    if (mode)
-        Log(8, "Playing %s %s %d", name, "Looped", track);
-    else
-        Log(8, "Playing %s %s %d", name, "", track);
+	if (mode)
+		Log(8, "Playing %s %s %d", name, "Looped", track);
+	else
+		Log(8, "Playing %s %s %d", name, "", track);
 
-    XATrack = track;
-    XAReqTrack = track;
-    XAFlag = 6;
-    audio_play_mode = mode;
-    OpenStreamFile(name);
+	XATrack = track;
+	XAReqTrack = track;
+	XAFlag = 6;
+	audio_play_mode = mode;
+	OpenStreamFile(name);
 
-    if (!audio_stream_fp)
-        return;
+	if (!audio_stream_fp)
+		return;
 
-    memcpy(ADPCMBuffer, audio_fp_write_ptr, 0x5800);
-    GetADPCMData();
-    DXAttempt(DSBuffer->Lock(0, audio_buffer_size, (LPVOID*)&pAudioWrite, &AudioBytes, 0, 0, 0));
-    acmStreamConvert(hACMStream, &StreamHeaders[0], ACM_STREAMCONVERTF_BLOCKALIGN | ACM_STREAMCONVERTF_START);
-    memcpy(ADPCMBuffer, audio_fp_write_ptr, 0x5800);
-    GetADPCMData();
-    acmStreamConvert(hACMStream, &StreamHeaders[1], ACM_STREAMCONVERTF_BLOCKALIGN);
-    DXAttempt(DSBuffer->Unlock(pAudioWrite, audio_buffer_size, 0, 0));
-    CurrentNotify = 2;
-    NextWriteOffset = 2 * NotifySize;
-    ACMSetVolume();
-    DSBuffer->Play(0, 0, DSBPLAY_LOOPING);
+	memcpy(ADPCMBuffer, audio_fp_write_ptr, 0x5800);
+	GetADPCMData();
+	DXAttempt(DSBuffer->Lock(0, audio_buffer_size, (LPVOID*)&pAudioWrite, &AudioBytes, 0, 0, 0));
+	acmStreamConvert(hACMStream, &StreamHeaders[0], ACM_STREAMCONVERTF_BLOCKALIGN | ACM_STREAMCONVERTF_START);
+	memcpy(ADPCMBuffer, audio_fp_write_ptr, 0x5800);
+	GetADPCMData();
+	acmStreamConvert(hACMStream, &StreamHeaders[1], ACM_STREAMCONVERTF_BLOCKALIGN);
+	DXAttempt(DSBuffer->Unlock(pAudioWrite, audio_buffer_size, 0, 0));
+	CurrentNotify = 2;
+	NextWriteOffset = 2 * NotifySize;
+	ACMSetVolume();
+	DSBuffer->Play(0, 0, DSBPLAY_LOOPING);
 }
 
 BOOL __stdcall ACMEnumCallBack(HACMDRIVERID hadid, DWORD_PTR dwInstance, DWORD fdwSupport)
@@ -575,14 +575,14 @@ void ACMClose()
 
 void inject_audio(bool replace)
 {
-    INJECT(0x00492990, S_CDPlay, replace);
-    INJECT(0x004929E0, S_CDStop, replace);
-    INJECT(0x00492AA0, S_CDFade, replace);
-    INJECT(0x00492AC0, S_StartSyncedAudio, replace);
-    INJECT(0x00492AF0, ACMSetVolume, replace);
-    INJECT(0x00493350, OpenStreamFile, replace);
-    INJECT(0x004936A0, GetADPCMData, replace);
-    INJECT(0x00493760, ACMEmulateCDPlay, replace);
+	INJECT(0x00492990, S_CDPlay, replace);
+	INJECT(0x004929E0, S_CDStop, replace);
+	INJECT(0x00492AA0, S_CDFade, replace);
+	INJECT(0x00492AC0, S_StartSyncedAudio, replace);
+	INJECT(0x00492AF0, ACMSetVolume, replace);
+	INJECT(0x00493350, OpenStreamFile, replace);
+	INJECT(0x004936A0, GetADPCMData, replace);
+	INJECT(0x00493760, ACMEmulateCDPlay, replace);
 	INJECT(0x00492B60, ACMEnumCallBack, replace);
 	INJECT(0x00492C20, ACMSetupNotifications, replace);
 	INJECT(0x00493490, FillADPCMBuffer, 0);

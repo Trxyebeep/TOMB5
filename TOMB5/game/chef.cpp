@@ -83,7 +83,7 @@ void ChefControl(short item_number)
 	switch (chef->current_anim_state)
 	{
 	case 1:
-		if (ABS(lara_item->pos.y_pos - chef->pos.y_pos) < 1024 && ai.distance < 2359296 && 
+		if (abs(lara_item->pos.y_pos - chef->pos.y_pos) < 1024 && ai.distance < 2359296 &&
 			(chef->touch_bits || lara_item->speed > 15 || chef->hit_status || TargetVisible(chef, &laraAI)))
 		{
 			chef->goal_anim_state = 2;
@@ -109,7 +109,7 @@ void ChefControl(short item_number)
 	case 3:
 		creature->maximum_turn = 0;
 
-		if (ABS(ai.angle) >= 364)
+		if (abs(ai.angle) >= 364)
 		{
 			if (ai.angle >= 0)
 				chef->pos.y_rot += 364;

@@ -7,8 +7,11 @@
 #include "../specific/function_stubs.h"
 #include "items.h"
 #include "effect2.h"
+#include "../specific/3dmath.h"
+#include "objects.h"
+#include "../specific/specificfx.h"
 
-static char SteamLasers[8][5] =
+char SteamLasers[8][5] =
 {
 	{ 1, 0, 1, 0, 0 },
 	{ 0, 0, 1, 0, 1 },
@@ -22,7 +25,9 @@ static char SteamLasers[8][5] =
 
 void DrawFloorLasers(ITEM_INFO* item)
 {
-	
+#ifdef GENERAL_FIXES
+	return S_DrawFloorLasers(item);
+#endif
 }
 
 void ControlLasers(short item_number)
@@ -212,10 +217,55 @@ void ControlFloorLasers(short item_number)
 	}
 }
 
+long IsSteamOn(ITEM_INFO* item)
+{
+	ITEM_INFO* steam;
+	short item_number;
+
+	item_number = room[item->room_number].item_number;
+
+	while (item_number != NO_ITEM)
+	{
+		steam = &items[item_number];
+
+		if (steam->object_number == STEAM_EMITTER && steam->trigger_flags > 0)
+		{
+			if (steam->status == ITEM_ACTIVE)
+				return 1;
+
+			break;
+		}
+
+		item_number = steam->next_item;
+	}
+
+	return 0;
+}
+
+long GetSteamMultiplier(ITEM_INFO* item, long y, long z)
+{
+	long f, d;
+
+	y = -768 - item->item_flags[0] - y;
+	z = 512 - z;
+	f = 96 * item->trigger_flags + 256;
+	d = phd_sqrt(SQUARE(y) + SQUARE(z));
+
+	if (d < f)
+	{
+		d = ((f - d) << 6) / f;
+		return d + ((d * (GetRandomControl() & 0x1F)) >> 5);
+	}
+
+	return 0;
+}
+
 void inject_lasers(bool replace)
 {
 	INJECT(0x0045A540, DrawFloorLasers, replace);
 	INJECT(0x00459D30, ControlLasers, replace);
 	INJECT(0x0045A030, ControlSteamLasers, replace);
 	INJECT(0x0045A1E0, ControlFloorLasers, replace);
+	INJECT(0x00459C10, IsSteamOn, replace);
+	INJECT(0x00459CA0, GetSteamMultiplier, replace);
 }

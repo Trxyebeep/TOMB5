@@ -41,9 +41,9 @@ void KlaxonTremor()
 
 	if (timer < 0)
 	{
-		if ((long)InGameCnt >= ABS(timer))
+		if ((long)InGameCnt >= abs(timer))
 		{
-			camera.bounce = -(GetRandomControl() % ABS(timer));
+			camera.bounce = -(GetRandomControl() % abs(timer));
 			timer++;
 		}
 		else
@@ -83,9 +83,9 @@ void ControlElectricalCables(short item_number)
 	if (TriggerActive(item))
 	{
 		SoundEffect(SFX_ELECTRIC_WIRES, &item->pos, 0);
-		ffar = ABS(lara_item->pos.x_pos - item->pos.x_pos) > 2048;
-		ffar += ABS(lara_item->pos.y_pos - item->pos.y_pos) > 4096;
-		ffar += ABS(lara_item->pos.z_pos - item->pos.z_pos) > 2048;
+		ffar = abs(lara_item->pos.x_pos - item->pos.x_pos) > 2048;
+		ffar += abs(lara_item->pos.y_pos - item->pos.y_pos) > 4096;
+		ffar += abs(lara_item->pos.z_pos - item->pos.z_pos) > 2048;
 		rand = (GetRandomControl() & 0x1F) - 16;
 
 		for (int i = 0; i < 3; i++)
@@ -324,7 +324,7 @@ void ControlWreckingBall(short item_number)
 
 		if (!item->item_flags[0])
 		{
-			if (xoff <= c && xoff != NO_HEIGHT && Xdiff && (ABS(Xdiff) > ABS(Zdiff) || !(zoff <= c && zoff != NO_HEIGHT) || GetRandomControl() & 1))
+			if (xoff <= c && xoff != NO_HEIGHT && Xdiff && (abs(Xdiff) > abs(Zdiff) || !(zoff <= c && zoff != NO_HEIGHT) || GetRandomControl() & 1))
 				item->item_flags[0] = 1;
 			else if (zoff <= c && zoff != NO_HEIGHT && Zdiff)
 				item->item_flags[0] = 2;
@@ -333,7 +333,7 @@ void ControlWreckingBall(short item_number)
 		if (item->item_flags[0] == 1)
 		{
 			SoundEffect(SFX_J_GRAB_MOTOR_B_LP, &item->pos, 0);
-			speed = ABS(Xdiff);
+			speed = abs(Xdiff);
 
 			if (speed >= 32)
 				speed = 32;
@@ -349,7 +349,7 @@ void ControlWreckingBall(short item_number)
 		if (item->item_flags[0] == 2)
 		{
 			SoundEffect(SFX_J_GRAB_MOTOR_B_LP, &item->pos, 0);
-			speed = ABS(Zdiff);
+			speed = abs(Zdiff);
 
 			if (speed >= 32)
 				speed = 32;
@@ -489,7 +489,7 @@ void DrawWreckingBall(ITEM_INFO* item)//actually only draws the shadow it seems?
 	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_num);
 	height = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 	ceiling = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
-	shade = 192 - (ABS(height - item->pos.y_pos) >> 5);
+	shade = 192 - (abs(height - item->pos.y_pos) >> 5);
 
 	if (shade < 64)
 		shade = 64;
@@ -552,7 +552,7 @@ void CookerFlameControl(short item_number)
 
 	if (TriggerActive(item))
 	{
-		if (!lara.burn && ABS(lara_item->pos.x_pos - item->pos.x_pos) < 256 && ABS(lara_item->pos.z_pos - item->pos.z_pos) < 256 && item->pos.y_pos - lara_item->pos.y_pos < 128)
+		if (!lara.burn && abs(lara_item->pos.x_pos - item->pos.x_pos) < 256 && abs(lara_item->pos.z_pos - item->pos.z_pos) < 256 && item->pos.y_pos - lara_item->pos.y_pos < 128)
 			LaraBurn();
 
 		item->item_flags[0] = (GetRandomControl() + item->item_flags[0]) & 0x1FF;

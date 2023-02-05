@@ -111,9 +111,9 @@ x for functions decompiled but not injected, for one reason or another.
 0x00410EF0	+	GetTiltType
 0x00411100	+	GetCollisionInfo
 0x00411D70	+	FindGridShift
-0x00411DB0		CollideStaticObjects
+0x00411DB0	+	CollideStaticObjects
 0x004120A0	+	ShiftItem
-0x004120F0		UpdateLaraRoom
+0x004120F0	+	UpdateLaraRoom
 0x00412170		LaraBaddieCollision
 0x004124E0	+	CreatureCollision
 0x004126E0	+	ObjectCollision
@@ -557,7 +557,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/gameflow.cpp
 
-0x00434800		LoadGameflow
+0x00434800	+	LoadGameflow
 0x00434B60	+	TitleOptions
 0x004354B0	+	DoGameflow
 0x00435C70	+	DoTitle
@@ -1047,8 +1047,8 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/lasers.cpp
 
-0x00459C10		IsSteamOn
-0x00459CA0		GetSteamMultiplier
+0x00459C10	+	IsSteamOn
+0x00459CA0	+	GetSteamMultiplier
 0x00459D30	+	ControlLasers
 0x00459EB0		CheckLaserBox
 0x0045A030	+	ControlSteamLasers
@@ -1448,11 +1448,11 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/text.cpp
 
-0x004805D0		DrawChar
+0x004805D0	+	DrawChar
 0x00480830		UpdatePulseColour
-0x00480910		GetStringLength
+0x00480910	+	GetStringLength
 0x00480AE0		GetStringDimensions
-0x00480BC0		PrintString
+0x00480BC0	+	PrintString
 0x00480F00		InitFont
 
 
@@ -1566,11 +1566,11 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x0048CD40	+	InitialiseTwogun
 0x0048CDD0	+	TwogunControl
-0x0048D7D0		UpdateTwogunLasers
-0x0048D900		DrawTwogunLasers
+0x0048D7D0	+	UpdateTwogunLasers
+0x0048D900	+	DrawTwogunLasers
 0x0048D940		ControlGunTestStation
-0x0048DD80		TriggerTwogunPlasma
-0x0048DF60		FireTwogunWeapon
+0x0048DD80	+	TriggerTwogunPlasma
+0x0048DF60	+	FireTwogunWeapon
 0x0048E3C0	+	ControlZipController
 
 
@@ -2069,8 +2069,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x004BD430	+	mGetTime
 0x004BD470	+	mSync
 0x004BD590	+	mAddProfilerEvent
-0x004BD5B0		mDrawProfiler
-0x004BD6A0		mInitDrawProfiler
+0x004BD5B0	+	mDrawProfiler
+0x004BD6A0	+	mInitDrawProfiler
 
 
 		specific/registry.cpp
@@ -2120,7 +2120,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004C3EB0	+	aSetXY4
 0x004C4130		S_DrawDrawSparks
 0x004C4790	+	S_DrawDrawSparksNEW
-0x004C4C60		S_DrawSparks
+0x004C4C60	+	S_DrawSparks
 0x004C54F0		_0x004C54F0
 0x004C5590		_0x004C5590
 0x004C5B10	+	ClipLine
@@ -2139,7 +2139,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004C9C20	+	DrawTrainStrips
 0x004C9D90	+	DrawSprite
 0x004C9F70	+	SetUpLensFlare
-0x004CA720		SetFade
+0x004CA720	+	SetFade
 0x004CA770	+	DoScreenFade
 0x004CA7F0	+	DrawPsxTile
 0x004CAA60	+	DrawRedTile
@@ -2148,14 +2148,14 @@ x for functions decompiled but not injected, for one reason or another.
 0x004CB280	+	DrawShockwaves
 0x004CBB10	+	S_DrawDarts
 0x004CBE50	+	Draw2DSprite
-0x004CC0B0		DrawLightning
-0x004CCBA0		OldDrawLightning
+0x004CC0B0	+	DrawLightning
+0x004CCBA0	+	OldDrawLightning
 0x004CD750	+	aTransformPerspSV
-0x004CD960		DrawLasers
-0x004CE610		DrawSteamLasers
+0x004CD960	+	DrawLasers
+0x004CE610	+	DrawSteamLasers
 0x004CF1B0	+	aDrawWreckingBall
 0x004CF2F0	+	DrawMoon
-0x004CF550		DrawTwogunLaser
+0x004CF550	+	DrawTwogunLaser
 0x004CFD20	+	SuperDrawBox
 0x004CFF80	+	DrawGasCloud
 

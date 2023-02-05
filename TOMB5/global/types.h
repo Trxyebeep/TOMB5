@@ -27,16 +27,9 @@ do \
 /*macros*/
 #define	TRIGMULT2(a,b)		(((a) * (b)) >> 14)
 #define	TRIGMULT3(a,b,c)	(TRIGMULT2((TRIGMULT2(a, b)), c))
-#define ABS(x) (((x)<0) ? (-(x)) : (x))
-#define phd_sin(x) (4 * rcossin_tbl[((long)(x) >> 3) & 0x1FFE])
-#define phd_cos(x) (4 * rcossin_tbl[(((long)(x) >> 3) & 0x1FFE) + 1])
-#define	fSin(x)	fcossin_tbl[(ushort)((x))]
-#define	fCos(x)	fcossin_tbl[(ushort)(((x) + 0x4000))]
 #define SQUARE(x) ((x)*(x))
-#define phd_PopMatrix()		{phd_mxptr -= 12; aMXPtr -= 12;}
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
 #define RGBA(r, g, b, a) (RGBONLY(r, g, b) | ((a) << 24))
-#define ARGB(r, g, b, a) (RGBA(b, g, r, a))
 #define	CLRA(clr)	((clr >> 24) & 0xFF)	//shift r, g, and b out of the way and 0xFF
 #define	CLRR(clr)	((clr >> 16) & 0xFF)	//shift g and b out of the way and 0xFF
 #define	CLRG(clr)	((clr >> 8) & 0xFF)		//shift b out of the way and 0xFF
@@ -44,8 +37,6 @@ do \
 #define RGB_M(clr, m)	(clr = (clr & 0xFF000000) | (((CLRR(clr) * m) >> 8) << 16) | (((CLRG(clr) * m) >> 8) << 8) | ((CLRB(clr) * m) >> 8))
 //^ color multiply thingy phd_PutPolygons wants to do
 #define SCRIPT_TEXT(num)		(&gfStringWad[gfStringOffset[num]])
-#define SCRIPT_TEXT_bis(num)	(&gfStringWad[gfStringOffset_bis[num]])
-#define SetVecXYZ(num, X, Y, Z)	 vec[(num)].x = (X); vec[(num)].y = (Y); vec[(num)].z = (Z);
 
 	/**********************************/
 #define OPEN	( (FILE*(__cdecl*)(const char*, const char*)) 0x004E46E0 )
@@ -1988,6 +1979,15 @@ struct RIPPLE_STRUCT
 	uchar init;
 };
 
+struct LASER_VECTOR
+{
+	float x;
+	float y;
+	float z;
+	float num;
+	long color;
+};
+
 struct LASER_STRUCT
 {
 	SVECTOR v1[3];
@@ -2425,6 +2425,31 @@ struct WRAITH_STRUCT
 	uchar pad[3];
 };
 
+struct STRINGHEADER
+{
+	ushort nStrings;
+	ushort nPSXStrings;
+	ushort nPCStrings;
+	ushort StringWadLen;
+	ushort PSXStringWadLen;
+	ushort PCStringWadLen;
+};
+
+struct NODEOFFSET_INFO
+{
+	short x;
+	short y;
+	short z;
+	char mesh_num;
+	uchar GotIt;
+};
+
+struct PROFILER_EVENT
+{
+	__int64 t;
+	long c;
+};
+
 #ifdef GENERAL_FIXES
 struct GouraudBarColourSet
 {
@@ -2435,9 +2460,7 @@ struct GouraudBarColourSet
 	uchar abRightGreen[5];
 	uchar abRightBlue[5];
 };
-#endif
 
-#ifdef GENERAL_FIXES
 struct COLOR_BIT_MASKS
 {
 	ulong dwRBitMask;

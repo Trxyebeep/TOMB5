@@ -10,6 +10,7 @@
 #include "debris.h"
 #include "effects.h"
 #include "../specific/function_stubs.h"
+#include "../specific/3dmath.h"
 
 long TargetVisible(ITEM_INFO* item, AI_INFO* info)
 {

@@ -565,12 +565,12 @@ long DoCredits()
 		}
 
 		if (*c & 0x8000)
-			PrintString(phd_winwidth >> 1, y + phd_centery, 6, SCRIPT_TEXT_bis(*c & 0x7FFF), FF_CENTER);
+			PrintString(phd_winwidth >> 1, y + phd_centery, 6, SCRIPT_TEXT(*c & 0x7FFF), FF_CENTER);
 		else
 			PrintString(phd_winwidth >> 1, y + phd_centery, 2, CreditNames[*c], FF_CENTER);
 
 		if (*c & 0x8000)
-			PrintBigString(phd_winwidth >> 1, y2 + phd_centery, 6, SCRIPT_TEXT_bis(*c & 0x7FFF), FF_CENTER);
+			PrintBigString(phd_winwidth >> 1, y2 + phd_centery, 6, SCRIPT_TEXT(*c & 0x7FFF), FF_CENTER);
 		else
 			PrintBigString(phd_winwidth >> 1, y2 + phd_centery, 2, CreditNames[*c], FF_CENTER);
 

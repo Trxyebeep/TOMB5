@@ -82,7 +82,7 @@ PHD_VECTOR* Normalise(PHD_VECTOR* v)
 	if (!a && !b && !c)
 		return v;
 
-	d = ABS(SQUARE(a) + SQUARE(b) + SQUARE(c));
+	d = abs(SQUARE(a) + SQUARE(b) + SQUARE(c));
 	e = phd_sqrt(d);
 	mod = 65536 / e;
 	v->x = (long long) mod * v->x >> 16;
@@ -458,7 +458,7 @@ void ModelRigidRope(PHD_VECTOR* pa, PHD_VECTOR* pb, PHD_VECTOR* va, PHD_VECTOR* 
 	d.x = a.x + b.x;
 	d.y = a.y + b.y;
 	d.z = a.z + b.z;
-	length = phd_sqrt(ABS(SQUARE(d.x >> 16) + SQUARE(d.y >> 16) + SQUARE(d.z >> 16)));
+	length = phd_sqrt(abs(SQUARE(d.x >> 16) + SQUARE(d.y >> 16) + SQUARE(d.z >> 16)));
 	scale = 65536 * length - rlength;
 	Normalise(&d);
 	delta.x = (long long) scale * d.x >> 16;
@@ -483,7 +483,7 @@ void ModelRigid(PHD_VECTOR* pa, PHD_VECTOR* pb, PHD_VECTOR* va, PHD_VECTOR* vb, 
 	d.x = a.x + b.x;
 	d.y = a.y + b.y;
 	d.z = a.z + b.z;
-	length = phd_sqrt(ABS(SQUARE(d.x >> 16) + SQUARE(d.y >> 16) + SQUARE(d.z >> 16)));
+	length = phd_sqrt(abs(SQUARE(d.x >> 16) + SQUARE(d.y >> 16) + SQUARE(d.z >> 16)));
 	scale = (65536 * length - rlength) >> 1;
 	Normalise(&d);
 	delta.x = (long long) scale * d.x >> 16;

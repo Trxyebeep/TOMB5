@@ -385,35 +385,34 @@ void FlamingHell(PHD_VECTOR* pos)
 
 void FireTwoGunTitleWeapon(PHD_VECTOR* pos1, PHD_VECTOR* pos2)
 {
-	TWOGUN_INFO* gun;
+	TWOGUN_INFO* info;
 	short angles[2];
 
-	phd_GetVectorAngles(pos2->x - pos1->x, pos2->y - pos1->y, pos2->z - pos1->z, &angles[0]);
+	phd_GetVectorAngles(pos2->x - pos1->x, pos2->y - pos1->y, pos2->z - pos1->z, angles);
 
 	for (int i = 0; i < 4; i++)
 	{
-		gun = &twogun[i];
+		info = &twogun[i];
 
-		if (!gun->life || i == 3)
+		if (!info->life || i == 3)
 			break;
 	}
 
-	gun->pos.x_pos = pos1->x;
-	gun->pos.y_pos = pos1->y;
-	gun->pos.z_pos = pos1->z;
-	gun->pos.x_rot = angles[1];
-	gun->pos.y_rot = angles[0];
-	gun->pos.z_rot = 0;
-	gun->life = 17;
-	gun->spin = short(GetRandomControl() << 11);
-	gun->dlength = 4096;
-	gun->r = 0;
-	gun->g = 96;
-	gun->b = -1;
-	gun->fadein = 8;
-	TriggerLightningGlow(gun->pos.x_pos, gun->pos.y_pos, gun->pos.z_pos,
-		RGBA(0, gun->g >> 1, gun->b >> 1, ((GetRandomControl() & 3) + 64) << 24));
-	TriggerLightning(pos1, pos2, (GetRandomControl() & 7) + 8, RGBA(0, gun->g, gun->b, 22), 12, 80, 5);
+	info->pos.x_pos = pos1->x;
+	info->pos.y_pos = pos1->y;
+	info->pos.z_pos = pos1->z;
+	info->pos.x_rot = angles[1];
+	info->pos.y_rot = angles[0];
+	info->pos.z_rot = 0;
+	info->life = 17;
+	info->spin = short(GetRandomControl() << 11);
+	info->dlength = 4096;
+	info->r = 0;
+	info->g = 96;
+	info->b = -1;	//255
+	info->fadein = 8;
+	TriggerLightningGlow(info->pos.x_pos, info->pos.y_pos, info->pos.z_pos, RGBA(0, info->g >> 1, info->b >> 1, (GetRandomControl() & 3) + 64));
+	TriggerLightning(pos1, pos2, (GetRandomControl() & 7) + 8, RGBA(0, info->g, info->b, 22), 12, 80, 5);
 }
 
 void inject_cutseq(bool replace)
