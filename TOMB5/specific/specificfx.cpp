@@ -1142,9 +1142,182 @@ void DrawMoon()
 	phd_PopMatrix();
 }
 
+#ifdef GENERAL_FIXES
+static void S_DrawGasCloud(ITEM_INFO* item, GAS_CLOUD* cloud)
+{
+	FVECTOR* vtx;
+	D3DTLVERTEX* vbuf;
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	short* rand;
+	short* pulse;
+	short* c;
+	float fx, fy, fz, mx, my, mz, zv;
+	long x, y, z, xStep, zStep, c1, c2, c3, c4, lp, lp2;
+	short clip[36];
+	short clipFlag;
+
+	vtx = (FVECTOR*)&scratchpad[0];
+	rand = cloud->Rand;
+	pulse = cloud->Pulse;
+
+	xStep = (cloud->v4.x - cloud->v1.x) / 5;
+	zStep = (cloud->v4.z - cloud->v1.z) / 5;
+	x = cloud->v1.x;
+	y = cloud->v1.y;
+
+	for (lp = 0; lp < 6; lp++)
+	{
+		z = cloud->v1.z;
+
+		for (lp2 = 0; lp2 < 6; lp2++)
+		{
+			vtx->x = (float)x;
+			vtx->y = (float)y;
+			vtx->z = (float)z;
+
+			if (!lp || lp == 5 || !lp2 || lp2 == 5)
+				pulse[0] = 0;
+			else
+			{
+				pulse[0] = ((phd_sin(*rand + (GlobalCounter << 9)) >> 7) - 64) << 1;
+
+				if (item->item_flags[0] < 256)
+					pulse[0] = (pulse[0] * item->item_flags[0]) >> 8;
+
+				if (pulse[0] < 0)
+					pulse[0] = 0;
+				else if (pulse[0] > 127)
+					pulse[0] = 127;
+			}
+
+			rand++;
+			pulse++;
+			vtx++;
+			z += zStep;
+		}
+
+		x += xStep;
+	}
+
+	phd_PushMatrix();
+	phd_TranslateAbs(item->pos.x_pos + cloud->t.x, item->pos.y_pos + cloud->t.y, item->pos.z_pos + cloud->t.z);
+	phd_RotYXZ(-CamRot.y << 4, -4096, 0);
+	aSetViewMatrix();
+
+	vbuf = aVertexBuffer;
+	vtx = (FVECTOR*)&scratchpad[0];
+
+	for (lp = 0; lp < 36; lp++)
+	{
+		fx = vtx->x;
+		fy = vtx->y;
+		fz = vtx->z;
+
+		mx = fx * D3DMView._11 + fy * D3DMView._21 + fz * D3DMView._31 + D3DMView._41;
+		my = fx * D3DMView._12 + fy * D3DMView._22 + fz * D3DMView._32 + D3DMView._42;
+		mz = fx * D3DMView._13 + fy * D3DMView._23 + fz * D3DMView._33 + D3DMView._43;
+
+		vbuf->tu = mx;
+		vbuf->tv = my;
+
+		clipFlag = 0;
+
+		if (mz < f_mznear)
+			clipFlag = -128;
+		else
+		{
+			zv = f_mpersp / mz;
+			mx = mx * zv + f_centerx;
+			my = my * zv + f_centery;
+			vbuf->rhw = zv * f_moneopersp;
+
+			if (mx < f_left)
+				clipFlag++;
+			else if (mx > f_right)
+				clipFlag += 2;
+
+			if (my < f_top)
+				clipFlag += 4;
+			else if (my > f_bottom)
+				clipFlag += 8;
+		}
+
+		clip[lp] = clipFlag;
+		vbuf->sx = mx;
+		vbuf->sy = my;
+		vbuf->sz = mz;
+
+		vbuf++;
+		vtx++;
+	}
+
+	phd_PopMatrix();
+
+	sprite = &spriteinfo[objects[MISC_SPRITES].mesh_index + 3];
+	tex.drawtype = 2;
+	tex.tpage = sprite->tpage;
+	tex.u1 = sprite->x1;
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x1 + (30.0F / 256.0F);
+	tex.v2 = sprite->y1;
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y1 + (32.0F / 256.0F);
+	tex.u3 = sprite->x1 + (30.0F / 256.0F);
+	tex.v3 = sprite->y1 + (32.0F / 256.0F);
+
+	pulse = cloud->Pulse;
+	vbuf = aVertexBuffer;
+	c = clip;
+
+	for (lp = 0; lp < 5; lp++)
+	{
+		for (lp2 = 0; lp2 < 5; lp2++)
+		{
+			c1 = pulse[0];
+			c2 = pulse[1];
+			c3 = pulse[0 + 6];
+			c4 = pulse[1 + 6];
+
+			v[0] = vbuf[0];
+			v[1] = vbuf[1];
+			v[2] = vbuf[0 + 6];
+			v[3] = vbuf[1 + 6];
+
+			v[0].specular = 0xFF000000;
+			v[1].specular = 0xFF000000;
+			v[2].specular = 0xFF000000;
+			v[3].specular = 0xFF000000;
+
+			v[0].color = RGBA(0, c1, 0, 0xFF);
+			v[1].color = RGBA(0, c2, 0, 0xFF);
+			v[2].color = RGBA(0, c3, 0, 0xFF);
+			v[3].color = RGBA(0, c4, 0, 0xFF);
+
+			clipflags[0] = c[0];
+			clipflags[1] = c[1];
+			clipflags[2] = c[0 + 6];
+			clipflags[3] = c[1 + 6];
+
+			AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
+
+			vbuf++;
+			c++;
+			pulse++;
+		}
+
+		vbuf++;
+		c++;
+		pulse++;
+	}
+}
+#endif
+
 void DrawGasCloud(ITEM_INFO* item)
 {
 	GAS_CLOUD* cloud;
+	GAS_CLOUD* sec;
 	long num;
 
 	if (!TriggerActive(item))
@@ -1161,9 +1334,15 @@ void DrawGasCloud(ITEM_INFO* item)
 	if (!cloud->mTime)
 		cloud->yo = -6144.0F;
 
+#ifdef GENERAL_FIXES
+	TriggerFogBulbFX(0, 196, 0, item->pos.x_pos, long(item->pos.y_pos + cloud->yo), item->pos.z_pos, 2048, 40);
+#else
 	TriggerFogBulbFX(0, 128, 0, item->pos.x_pos, long(item->pos.y_pos + cloud->yo), item->pos.z_pos, 4096, 40);
+#endif
 
-	if (cloud->yo >= -3584.0)
+	if (cloud->yo < -3584.0F)
+		cloud->yo += 12.0F;
+	else
 	{
 		if (cloud->sTime == 32)
 		{
@@ -1187,27 +1366,31 @@ void DrawGasCloud(ITEM_INFO* item)
 			if (num < 64)
 				num = 64;
 
-			TriggerFogBulbFX(0, 255, 0, item->pos.x_pos + cloud[cloud->num].t.x, item->pos.y_pos + cloud[cloud->num].t.y,
-				item->pos.z_pos + cloud[cloud->num].t.z, 1024, num);
+			sec = &cloud[cloud->num];
+#ifdef GENERAL_FIXES
+			TriggerFogBulbFX(0, 196, 0, item->pos.x_pos + sec->t.x, item->pos.y_pos + sec->t.y, item->pos.z_pos + sec->t.z, 1536, num);
+#else
+			TriggerFogBulbFX(0, 255, 0, item->pos.x_pos + sec->t.x, item->pos.y_pos + sec->t.y, item->pos.z_pos + sec->t.z, 1024, num);
+#endif
 		}
 
 		cloud->sTime++;
 	}
-	else
-		cloud->yo += 12.0F;
 
 	cloud->mTime++;
 
-#ifndef GENERAL_FIXES
 	for (int i = 0; i < 8; i++, cloud++)
 	{
+#ifdef GENERAL_FIXES
+		S_DrawGasCloud(item, cloud);
+#else
 		phd_PushMatrix();
 		phd_TranslateAbs(item->pos.x_pos + cloud->t.x, item->pos.y_pos + cloud->t.y, item->pos.z_pos + cloud->t.z);
 		phd_RotY(-CamRot.y << 4);
 		phd_RotX(-4096);
 		phd_PopMatrix();
-	}
 #endif
+	}
 }
 
 #ifdef GENERAL_FIXES
@@ -5729,6 +5912,8 @@ void S_DrawFloorLasers(ITEM_INFO* item)
 		vtx++;
 	}
 
+	phd_PopMatrix();
+
 	val = float((GlobalCounter >> 2) & 0x1F) * (1.0F / 256.0F) + sprite->y1;
 	tex.drawtype = 2;
 	tex.tpage = sprite->tpage;
@@ -5785,8 +5970,6 @@ void S_DrawFloorLasers(ITEM_INFO* item)
 		c++;
 		pulse++;
 	}
-
-	phd_PopMatrix();
 }
 #endif
 
