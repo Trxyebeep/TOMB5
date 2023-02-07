@@ -1241,6 +1241,23 @@ long DXUpdateJoystick()
 	return 1;
 }
 
+long DXGetKey()
+{
+	long b;
+	char stash[64];
+
+	if (!KeyCount)
+		return 0;
+
+	b = KeyBuffer[0];
+	KeyCount--;
+
+	memcpy(stash, KeyBuffer, 64);
+	memset(KeyBuffer, 0, sizeof(KeyBuffer));
+	memcpy(KeyBuffer, &stash[1], 63);
+	return b;
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1279,4 +1296,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A2C80, EnumAxesCallback, replace);
 	INJECT(0x004A2C40, EnumJoysticksCallback, replace);
 	INJECT(0x004A2D00, DXUpdateJoystick, replace);
+	INJECT(0x004A28F0, DXGetKey, replace);
 }

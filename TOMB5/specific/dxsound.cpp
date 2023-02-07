@@ -3,10 +3,10 @@
 #include "function_stubs.h"
 #include "dxshell.h"
 
-#define DSPrimary	VAR_U_(0x0086CAF0, LPDIRECTSOUNDBUFFER)
+#define DSPrimary	VAR_(0x0086CAF0, LPDIRECTSOUNDBUFFER)
 #define DS_Samples	ARRAY_(0x0086CAF8, DS_SAMPLE, [32])
 #define DS_Buffers	ARRAY_(0x0086BEF0, DS_SAMPLE, [256])
-#define d_hACMStream	VAR_U_(0x0086BEEC, HACMSTREAM)
+#define d_hACMStream	VAR_(0x0086BEEC, HACMSTREAM)
 
 #pragma warning(push)
 #pragma warning(disable : 4838)
@@ -19,9 +19,9 @@ static char source_pcm_format[50] =
 #pragma warning(pop)
 
 static MMRESULT mmresult;
-#define pcm_format	VAR_U_(0x0086BEC8, WAVEFORMATEX)
-#define ACMStreamHeader	VAR_U_(0x0086BE70, ACMSTREAMHEADER)
-#define decompressed_samples_buffer	VAR_U_(0x0086CC78, char*)
+#define pcm_format	VAR_(0x0086BEC8, WAVEFORMATEX)
+#define ACMStreamHeader	VAR_(0x0086BE70, ACMSTREAMHEADER)
+#define decompressed_samples_buffer	VAR_(0x0086CC78, char*)
 /*
 fix DXCreateSampleADPCM..
 static WAVEFORMATEX pcm_format;

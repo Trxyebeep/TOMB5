@@ -39,6 +39,7 @@ long DXFindDevice(long w, long h, long bpp, long hw);
 BOOL CALLBACK EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
 BOOL CALLBACK EnumJoysticksCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
 long DXUpdateJoystick();
+long DXGetKey();
 
 #define DXGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049E050 )
 #define DIGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049EFA0 )
