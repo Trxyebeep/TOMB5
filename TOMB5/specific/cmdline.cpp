@@ -257,6 +257,21 @@ void InitResolution(HWND dlg, HWND hwnd, bool resetvms)
 		InitTFormats(dlg, GetDlgItem(dlg, 1006));
 }
 
+void InitD3DDevice(HWND dlg, HWND hwnd)
+{
+	DXDIRECTDRAWINFO* ddraw;
+
+	SendMessage(hwnd, CB_RESETCONTENT, 0, 0);
+	ddraw = &App.DXInfo.DDInfo[nDDDevice];
+
+	for (int i = 0; i < ddraw->nD3DDevices; i++)
+		SendMessage(hwnd, CB_ADDSTRING, 0, (LPARAM)ddraw->D3DDevices[i].About);
+
+	SendMessage(hwnd, CB_SETCURSEL, 1, 0);
+	nD3DDevice = 1;
+	InitResolution(dlg, GetDlgItem(dlg, 1004), 1);
+}
+
 void inject_cmdline(bool replace)
 {
 	INJECT(0x00495B70, CLSetup, replace);
@@ -265,4 +280,5 @@ void inject_cmdline(bool replace)
 	INJECT(0x00495D50, InitTFormats, replace);
 	INJECT(0x00496750, MapASCIIToANSI, replace);
 	INJECT(0x00496000, InitResolution, replace);
+	INJECT(0x00496530, InitD3DDevice, replace);
 }
