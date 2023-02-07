@@ -6,6 +6,19 @@
 #define nDDDevice	VAR_(0x0057A094, long)
 #define nD3DDevice	VAR_(0x0057A084, long)
 
+#ifdef GENERAL_FIXES
+char ASCIIToANSITable[7][2] =
+{
+	{'‚', 'é'},
+	{'Š', 'è'},
+	{'ˆ', 'ê'},
+	{'”', 'ö'},
+	{'…', 'à'},
+	{' ', 'á'},
+	{'¢', 'ó'}
+};
+#endif
+
 void CLSetup(char* cmd)
 {
 	Log(2, "CLSetup");
@@ -84,10 +97,52 @@ void InitTFormats(HWND dlg, HWND hwnd)
 	}
 }
 
+char* MapASCIIToANSI(char* s, char* d)
+{
+	char* p;
+	long l;
+	char c;
+	bool found;
+
+	l = strlen(s);
+	p = d;
+
+	for (int i = 0; i < l; i++)
+	{
+		c = *s++;
+
+#ifdef GENERAL_FIXES
+		if (c >= 0x80)
+		{
+			found = 0;
+
+			for (int j = 0; j < 7; j++)
+			{
+				if (c == ASCIIToANSITable[j][0])
+				{
+					c = ASCIIToANSITable[j][1];
+					found = 1;
+					break;
+				}
+			}
+
+			if (!found)
+				Log(1, "Reqd : %x", c);
+		}
+#endif
+
+		*d++ = c;
+	}
+
+	*d = 0;
+	return p;
+}
+
 void inject_cmdline(bool replace)
 {
 	INJECT(0x00495B70, CLSetup, replace);
 	INJECT(0x00495BA0, CLNoFMV, replace);
 	INJECT(0x00495C40, InitDSDevice, replace);
 	INJECT(0x00495D50, InitTFormats, replace);
+	INJECT(0x00496750, MapASCIIToANSI, replace);
 }
