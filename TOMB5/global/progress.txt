@@ -1811,7 +1811,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004A3190	+	DXCreateSample
 0x004A3300	+	InitSampleDecompress
 0x004A3470	+	FreeSampleDecompress
-0x004A3510	x	DXCreateSampleADPCM
+0x004A3510	+	DXCreateSampleADPCM
 0x004A3720	+	DXStopSample
 0x004A3790	+	DSIsChannelPlaying
 0x004A3800	+	DSGetFreeChannel
