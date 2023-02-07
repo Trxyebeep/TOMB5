@@ -472,6 +472,26 @@ BOOL CALLBACK DXSetupDlgProc(HWND dlg, UINT message, WPARAM wParam, LPARAM lPara
 	return 0;
 }
 
+bool DXSetupDialog()
+{
+	long ret;
+
+	ShowCursor(1);
+	ret = DialogBox(App.hInstance, MAKEINTRESOURCE(109), 0, DXSetupDlgProc);
+	ShowCursor(0);
+
+	if (ret == -1)
+	{
+		MessageBox(0, "Unable To Initialise Dialog", "", 0);
+		return 0;
+	}
+
+	if (ret)
+		return 1;
+
+	return 0;
+}
+
 void inject_cmdline(bool replace)
 {
 	INJECT(0x00495B70, CLSetup, replace);
@@ -483,4 +503,5 @@ void inject_cmdline(bool replace)
 	INJECT(0x00496530, InitD3DDevice, replace);
 	INJECT(0x00496620, InitDDDevice, replace);
 	INJECT(0x00496810, DXSetupDlgProc, replace);
+	INJECT(0x00495BD0, DXSetupDialog, replace);
 }

@@ -12,5 +12,4 @@ void InitResolution(HWND dlg, HWND hwnd, bool resetvms);
 void InitD3DDevice(HWND dlg, HWND hwnd);
 void InitDDDevice(HWND dlg, HWND hwnd);
 BOOL CALLBACK DXSetupDlgProc(HWND dlg, UINT message, WPARAM wParam, LPARAM lParam);
-
-#define DXSetupDialog	( (bool(__cdecl*)()) 0x00495BD0 )
+bool DXSetupDialog();
