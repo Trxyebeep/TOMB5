@@ -1687,7 +1687,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00496530	+	InitD3DDevice
 0x00496620	+	InitDDDevice
 0x00496750	+	MapASCIIToANSI
-0x00496810		DXSetupDlgProc
+0x00496810	+	DXSetupDlgProc
 
 
 		specific/d3dmatrix.cpp
