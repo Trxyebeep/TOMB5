@@ -5,6 +5,10 @@
 
 #define nDDDevice	VAR_(0x0057A094, long)
 #define nD3DDevice	VAR_(0x0057A084, long)
+#define Filter	VAR_(0x00511892, bool)
+#define VolumetricFx	VAR_(0x0057A09C, bool)
+#define BumpMap	VAR_(0x0057A09B, bool)
+#define TextLow	VAR_(0x0057A09A, bool)
 
 #ifdef GENERAL_FIXES
 char ASCIIToANSITable[7][2] =
@@ -138,6 +142,121 @@ char* MapASCIIToANSI(char* s, char* d)
 	return p;
 }
 
+void InitResolution(HWND dlg, HWND hwnd, bool resetvms)
+{
+	DXD3DDEVICE* device;
+	DXDISPLAYMODE* dm;
+	long bpp, w, h, n;
+	char buffer[40];
+	bool software;
+
+	n = 0;
+
+	if (nD3DDevice)
+	{
+		SendMessage(GetDlgItem(dlg, 1010), BM_SETCHECK, 1, 0);
+		SendMessage(GetDlgItem(dlg, 1011), BM_SETCHECK, 0, 0);
+	}
+	else
+	{
+		SendMessage(GetDlgItem(dlg, 1010), BM_SETCHECK, 0, 0);
+		SendMessage(GetDlgItem(dlg, 1011), BM_SETCHECK, 1, 0);
+	}
+
+	software = SendMessage(GetDlgItem(dlg, 1011), BM_GETCHECK, 0, 0);
+
+	if (resetvms)
+	{
+		SendMessage(hwnd, CB_RESETCONTENT, 0, 0);
+		device = &App.DXInfo.DDInfo[nDDDevice].D3DDevices[nD3DDevice];
+
+		for (int i = 0; i < device->nDisplayModes; i++)
+		{
+			dm = &device->DisplayModes[i];
+			w = dm->w;
+			h = dm->h;
+			bpp = dm->bpp;
+
+			if (bpp > 8)
+			{
+				wsprintf(buffer, "%dx%d %d %s", w, h, bpp, SCRIPT_TEXT(STR_BIT));
+				SendMessage(hwnd, CB_ADDSTRING, 0, (LPARAM)buffer);
+				SendMessage(hwnd, CB_SETITEMDATA, n, i);
+
+				if (software)
+				{
+					if (w == 320 && h == 240 && bpp == 16)
+						SendMessage(hwnd, CB_SETCURSEL, n, 0);
+				}
+				else if (w == 640 && h == 480 && bpp == 16)
+					SendMessage(hwnd, CB_SETCURSEL, n, 0);
+
+				n++;
+			}
+		}
+	}
+
+	if (App.DXInfo.DDInfo[nDDDevice].DDCaps.dwCaps2 & DDCAPS2_CANRENDERWINDOWED)
+		EnableWindow(GetDlgItem(dlg, 1025), 1);
+	else
+	{
+		EnableWindow(GetDlgItem(dlg, 1025), 0);
+		SendMessage(GetDlgItem(dlg, 1025), BM_SETCHECK, 0, 0);
+	}
+
+	SendMessage(GetDlgItem(dlg, 1012), BM_SETCHECK, Filter, 0);
+
+	if (software)
+	{
+		EnableWindow(GetDlgItem(dlg, 1029), 0);
+		VolumetricFx = 0;
+	}
+	else
+		EnableWindow(GetDlgItem(dlg, 1029), 1);
+
+	SendMessage(GetDlgItem(dlg, 1029), BM_SETCHECK, VolumetricFx, 0);
+
+	if (software)
+	{
+		EnableWindow(GetDlgItem(dlg, 1016), 0);
+		BumpMap = 0;
+	}
+	else
+		EnableWindow(GetDlgItem(dlg, 1016), 1);
+
+	SendMessage(GetDlgItem(dlg, 1016), BM_SETCHECK, BumpMap, 0);
+
+	if (software)
+	{
+		EnableWindow(GetDlgItem(dlg, 1014), 0);
+		TextLow = 0;
+	}
+	else
+		EnableWindow(GetDlgItem(dlg, 1014), 1);
+
+	SendMessage(GetDlgItem(dlg, 1014), BM_SETCHECK, TextLow, 0);
+
+	if (TextLow)
+	{
+		SendMessage(GetDlgItem(dlg, 1015), BM_SETCHECK, 1, 0);
+		EnableWindow(GetDlgItem(dlg, 1015), 0);
+	}
+	else
+	{
+		EnableWindow(GetDlgItem(dlg, 1015), 1);
+		SendMessage(GetDlgItem(dlg, 1015), BM_SETCHECK, 0, 0);
+	}
+
+	if (!BumpMap)
+	{
+		SendMessage(GetDlgItem(dlg, 1015), BM_SETCHECK, 0, 0);
+		EnableWindow(GetDlgItem(dlg, 1015), 0);
+	}
+
+	if (resetvms)
+		InitTFormats(dlg, GetDlgItem(dlg, 1006));
+}
+
 void inject_cmdline(bool replace)
 {
 	INJECT(0x00495B70, CLSetup, replace);
@@ -145,4 +264,5 @@ void inject_cmdline(bool replace)
 	INJECT(0x00495C40, InitDSDevice, replace);
 	INJECT(0x00495D50, InitTFormats, replace);
 	INJECT(0x00496750, MapASCIIToANSI, replace);
+	INJECT(0x00496000, InitResolution, replace);
 }

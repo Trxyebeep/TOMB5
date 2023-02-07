@@ -8,5 +8,6 @@ void CLNoFMV(char* cmd);
 void InitDSDevice(HWND dlg, HWND hwnd);
 void InitTFormats(HWND dlg, HWND hwnd);
 char* MapASCIIToANSI(char* s, char* d);
+void InitResolution(HWND dlg, HWND hwnd, bool resetvms);
 
 #define DXSetupDialog	( (bool(__cdecl*)()) 0x00495BD0 )

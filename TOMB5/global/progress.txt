@@ -1683,7 +1683,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00495BD0		DXSetupDialog
 0x00495C40	+	InitDSDevice
 0x00495D50	+	InitTFormats
-0x00496000		InitResolution
+0x00496000	+	InitResolution
 0x00496530		InitD3DDevice
 0x00496620		InitDDDevice
 0x00496750	+	MapASCIIToANSI
