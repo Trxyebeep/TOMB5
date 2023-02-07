@@ -1,4 +1,11 @@
 #pragma once
 #include "../global/vars.h"
 
-#define PlayFmvNow	( (long(__cdecl*)(long, long)) 0x004A79A0 )
+void inject_fmv(bool replace);
+
+#ifdef GENERAL_FIXES
+bool LoadBinkStuff();
+#endif
+void ShowBinkFrame();
+long PlayFmv(long num);
+long PlayFmvNow(long num, long u);

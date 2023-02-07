@@ -2456,6 +2456,14 @@ struct PROFILER_EVENT
 	long c;
 };
 
+struct BINK_STRUCT
+{
+	long pad;
+	long num;
+	char padfuck[8];
+	long num2;
+};
+
 #ifdef GENERAL_FIXES
 struct GouraudBarColourSet
 {

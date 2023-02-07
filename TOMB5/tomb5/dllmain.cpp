@@ -105,6 +105,7 @@
 #include "../specific/cmdline.h"
 #include "../specific/clipping.h"
 #include "../game/text.h"
+#include "../specific/fmv.h"
 
 HINSTANCE hinstance = NULL;
 
@@ -229,6 +230,7 @@ void inject_all(bool replace)
 	inject_cmdline(replace);
 	inject_clipping(replace);
 	inject_text(replace);
+	inject_fmv(replace);
 }
 
 BOOL APIENTRY DllMain(HINSTANCE hmodule, DWORD ul_reason_for_call, LPVOID lpreserved)
