@@ -6,5 +6,6 @@ void inject_cmdline(bool replace);
 void CLSetup(char* cmd);
 void CLNoFMV(char* cmd);
 void InitDSDevice(HWND dlg, HWND hwnd);
+void InitTFormats(HWND dlg, HWND hwnd);
 
 #define DXSetupDialog	( (bool(__cdecl*)()) 0x00495BD0 )
