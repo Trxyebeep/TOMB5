@@ -1745,9 +1745,15 @@ struct DXPTR
 	long Flags;
 	long WindowStyle;
 	long CoopLevel;
+#if (DIRECTINPUT_VERSION >= 0x800)
+	LPDIRECTINPUT8 lpDirectInput;
+	LPDIRECTINPUTDEVICE8 Keyboard;
+	LPDIRECTINPUTDEVICE8 Joystick;
+#else
 	IDirectInput7* lpDirectInput;
 	IDirectInputDevice7* Keyboard;
 	IDirectInputDevice7* Joystick;
+#endif
 	HWND hWnd;
 	volatile long InScene;
 	volatile long WaitAtBeginScene;

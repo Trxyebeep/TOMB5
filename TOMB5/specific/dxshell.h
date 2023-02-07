@@ -40,7 +40,7 @@ BOOL CALLBACK EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
 BOOL CALLBACK EnumJoysticksCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
 long DXUpdateJoystick();
 long DXGetKey();
+void DXInitInput(HWND hwnd, HINSTANCE hinstance);
 
 #define DXGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049E050 )
 #define DIGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049EFA0 )
-#define DXInitInput	( (void(__cdecl*)(HWND, HINSTANCE)) 0x004A2970 )

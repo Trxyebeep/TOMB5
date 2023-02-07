@@ -1193,8 +1193,13 @@ BOOL CALLBACK EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef)
 
 BOOL CALLBACK EnumJoysticksCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef)
 {
+#if (DIRECTINPUT_VERSION >= 0x800)
+	if (SUCCEEDED(G_dxptr->lpDirectInput->CreateDevice(lpddi->guidInstance, &G_dxptr->Joystick, 0)))
+		return DIENUM_STOP;
+#else
 	if (SUCCEEDED(G_dxptr->lpDirectInput->CreateDeviceEx(lpddi->guidInstance, IID_IDirectInputDevice2, (LPVOID*)G_dxptr->Joystick, 0)))
 		return DIENUM_STOP;
+#endif
 
 	return DIENUM_CONTINUE;
 }
@@ -1258,6 +1263,69 @@ long DXGetKey()
 	return b;
 }
 
+void DXInitInput(HWND hwnd, HINSTANCE hinstance)
+{
+	LPDIRECTINPUT8 dinput;
+	LPDIRECTINPUTDEVICE8 Keyboard;
+	DIDEVCAPS caps;
+
+#if (DIRECTINPUT_VERSION >= 0x800)
+	DXAttempt(DirectInput8Create(hinstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (LPVOID*)&dinput, 0));
+	dinput->QueryInterface(IID_IDirectInput8, (void**)&G_dxptr->lpDirectInput);
+#else
+	DXAttempt(DirectInputCreate(hinstance, DIRECTINPUT_VERSION, &dinput, 0));
+	dinput->QueryInterface(IID_IDirectInput2, (void**)&G_dxptr->lpDirectInput);
+#endif
+
+	if (dinput)
+	{
+		Log(4, "Released %s @ %x - RefCnt = %d", "DirectInput", dinput, dinput->Release());
+		dinput = 0;
+	}
+	else
+		Log(1, "%s Attempt To Release NULL Ptr", "DirectInput");
+
+	DXAttempt(G_dxptr->lpDirectInput->CreateDevice(GUID_SysKeyboard, &Keyboard, 0));
+#if (DIRECTINPUT_VERSION >= 0x800)
+	Keyboard->QueryInterface(IID_IDirectInputDevice8, (void**)&G_dxptr->Keyboard);
+#else
+	Keyboard->QueryInterface(IID_IDirectInputDevice2, (void**)&G_dxptr->Keyboard);
+#endif
+
+	if (Keyboard)
+	{
+		Log(4, "Released %s @ %x - RefCnt = %d", "Keyboard", Keyboard, Keyboard->Release());
+		Keyboard = 0;
+	}
+	else
+		Log(1, "%s Attempt To Release NULL Ptr", "Keyboard");
+
+	DXAttempt(G_dxptr->Keyboard->SetCooperativeLevel(hwnd, DISCL_NONEXCLUSIVE | DISCL_BACKGROUND));
+	DXAttempt(G_dxptr->Keyboard->SetDataFormat(&c_dfDIKeyboard));
+	DXAttempt(G_dxptr->Keyboard->Acquire());
+	memset(keymap, 0, sizeof(keymap));
+
+	memset(KeyBuffer, 0, sizeof(KeyBuffer));
+	KeyCount = 0;
+
+#if (DIRECTINPUT_VERSION >= 0x800)
+	DIAttempt(G_dxptr->lpDirectInput->EnumDevices(DI8DEVCLASS_GAMECTRL, EnumJoysticksCallback, 0, 1));
+#else
+	DIAttempt(G_dxptr->lpDirectInput->EnumDevices(DIDEVTYPE_JOYSTICK, EnumJoysticksCallback, 0, 1));
+#endif
+
+	if (!G_dxptr->Joystick)
+		return;
+
+	DIAttempt(G_dxptr->Joystick->SetDataFormat(&c_dfDIJoystick));
+	DIAttempt(G_dxptr->Joystick->SetCooperativeLevel(hwnd, DISCL_FOREGROUND | DISCL_EXCLUSIVE));
+
+	caps.dwSize = sizeof(DIDEVCAPS);
+	G_dxptr->Joystick->GetCapabilities(&caps);
+	G_dxptr->Joystick->EnumObjects(EnumAxesCallback, hwnd, DIDFT_AXIS);
+	DIAttempt(G_dxptr->Joystick->Acquire());
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1297,4 +1365,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A2C40, EnumJoysticksCallback, replace);
 	INJECT(0x004A2D00, DXUpdateJoystick, replace);
 	INJECT(0x004A28F0, DXGetKey, replace);
+	INJECT(0x004A2970, DXInitInput, replace);
 }
