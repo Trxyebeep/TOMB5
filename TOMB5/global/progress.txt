@@ -1468,7 +1468,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00481B40		AddFire
 0x00481BB0		S_DrawFires
 0x00481D40	+	GetFreeSmokeSpark
-0x00481DD0		UpdateSmokeSparks
+0x00481DD0	+	UpdateSmokeSparks
 0x004820A0	+	TriggerGunSmoke
 0x004823A0	+	TriggerShatterSmoke
 0x00482580	+	GetFreeBlood
