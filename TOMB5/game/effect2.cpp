@@ -785,6 +785,58 @@ void TriggerDynamic_MIRROR(long x, long y, long z, long falloff, long r, long g,
 	}
 }
 
+void TriggerExplosionBubble(long x, long y, long z, short room_number)
+{
+	SPARKS* sptr;
+	PHD_3DPOS pos;
+	long dx, dz;
+	uchar size;
+
+	dx = lara_item->pos.x_pos - x;
+	dz = lara_item->pos.z_pos - z;
+
+	if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000)
+		return;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 128;
+	sptr->sG = 64;
+	sptr->sB = 0;
+	sptr->dR = 128;
+	sptr->dG = 128;
+	sptr->dB = 128;
+	sptr->ColFadeSpeed = 8;
+	sptr->FadeToBlack = 12;
+	sptr->Life = 24;
+	sptr->sLife = 24;
+	sptr->TransType = 2;
+	sptr->x = x;
+	sptr->y = y;
+	sptr->z = z;
+	sptr->Xvel = 0;
+	sptr->Yvel = 0;
+	sptr->Zvel = 0;
+	sptr->Friction = 0;
+	sptr->Flags = 2058;
+	sptr->Scalar = 3;
+	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 13;
+	sptr->Gravity = 0;
+	sptr->MaxYvel = 0;
+	size = (GetRandomControl() & 7) + 63;
+	sptr->Size = size >> 1;
+	sptr->sSize = size >> 1;
+	sptr->dSize = size << 1;
+
+	for (int i = 0; i < 7; i++)
+	{
+		pos.x_pos = (GetRandomControl() & 0x1FF) + x - 256;
+		pos.y_pos = (GetRandomControl() & 0x7F) + y - 64;
+		pos.z_pos = (GetRandomControl() & 0x1FF) + z - 256;
+		CreateBubble(&pos, room_number, 6, 15, 0, 0, 0, 0);
+	}
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -797,4 +849,5 @@ void inject_effect2(bool replace)
 	INJECT(0x00431530, ClearDynamics, replace);
 	INJECT(0x00431240, TriggerDynamic, replace);
 	INJECT(0x00431420, TriggerDynamic_MIRROR, replace);
+	INJECT(0x00431070, TriggerExplosionBubble, replace);
 }

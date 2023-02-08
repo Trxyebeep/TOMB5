@@ -13,6 +13,7 @@ void TriggerExplosionSmokeEnd(long x, long y, long z, long uw);
 void ClearDynamics();
 void TriggerDynamic(long x, long y, long z, long falloff, long r, long g, long b);
 void TriggerDynamic_MIRROR(long x, long y, long z, long falloff, long r, long g, long b);
+void TriggerExplosionBubble(long x, long y, long z, short room_number);
 
 #define UpdateSparks	( (void(__cdecl*)()) 0x0042E8B0 )
 #define UpdateSplashes	( (void(__cdecl*)()) 0x00430710 )
@@ -21,7 +22,6 @@ void TriggerDynamic_MIRROR(long x, long y, long z, long falloff, long r, long g,
 #define SetupRipple	( (void(__cdecl*)(long, long, long, long, long)) 0x00430910 )
 #define TriggerUnderwaterBlood	( (void(__cdecl*)(long, long, long, long)) 0x004309B0 )
 #define TriggerExplosionSparks	( (void(__cdecl*)(long, long, long, long, long, long, short)) 0x0042F610 )
-#define TriggerExplosionBubble	( (void(__cdecl*)(long, long, long, short)) 0x00431070 )
 #define GetFreeSpark	( (long(__cdecl*)()) 0x0042E790 )
 #define TriggerSuperJetFlame	( (void(__cdecl*)(ITEM_INFO*, long, long)) 0x00430350 )
 #define TriggerRicochetSpark	( (void(__cdecl*)(GAME_VECTOR*, long, long, long)) 0x0042F060 )
