@@ -2311,6 +2311,19 @@ void ClearFires()
 	}
 }
 
+void keep_those_fires_burning()
+{
+	TriggerGlobalStaticFlame();
+
+	if (!(wibble & 0xF))
+	{
+		TriggerGlobalFireFlame();
+
+		if (!(wibble & 0x1F))
+			TriggerGlobalFireSmoke();
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -2361,4 +2374,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00481840, TriggerGlobalFireFlame, replace);
 	INJECT(0x00481A00, TriggerGlobalStaticFlame, replace);
 	INJECT(0x00481B10, ClearFires, replace);
+	INJECT(0x00481370, keep_those_fires_burning, replace);
 }
