@@ -280,6 +280,32 @@ void CloseTrapDoor(ITEM_INFO* item)
 	}
 }
 
+void OpenTrapDoor(ITEM_INFO* item)
+{
+	ROOM_INFO* r;
+	FLOOR_INFO* floor;
+	ushort pitsky;
+
+	pitsky = item->item_flags[3];
+	r = &room[item->room_number];
+	floor = &r->floor[((item->pos.z_pos - r->z) >> 10) + r->x_size * ((item->pos.x_pos - r->x) >> 10)];
+
+	if (item->pos.y_pos == r->minfloor)
+	{
+		floor->pit_room = pitsky & 0xFF;
+		r = &room[floor->pit_room];
+		r->floor[((item->pos.z_pos - r->z) >> 10) + r->x_size * ((item->pos.x_pos - r->x) >> 10)].sky_room = pitsky >> 8;
+	}
+	else
+	{
+		floor->sky_room = pitsky >> 8;
+		r = &room[floor->sky_room];
+		r->floor[((item->pos.z_pos - r->z) >> 10) + r->x_size * ((item->pos.x_pos - r->x) >> 10)].pit_room = pitsky & 0xFF;
+	}
+
+	item->item_flags[2] = 0;
+}
+
 void DartEmitterControl(short item_number)
 {
 	ITEM_INFO* item;
@@ -1658,6 +1684,7 @@ void inject_traps(bool replace)
 	INJECT(0x0048ADD0, LavaBurn, replace);
 	INJECT(0x0048C6D0, ControlExplosion, replace);
 	INJECT(0x00488E30, CloseTrapDoor, replace);
+	INJECT(0x004890C0, OpenTrapDoor, replace);
 	INJECT(0x00489B30, DartEmitterControl, replace);
 	INJECT(0x00489D60, DartsControl, replace);
 	INJECT(0x00489F70, FlameEmitterControl, replace);

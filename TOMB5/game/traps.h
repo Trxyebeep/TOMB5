@@ -10,6 +10,7 @@ void LaraBurn();
 void LavaBurn(ITEM_INFO* item);
 void ControlExplosion(short item_number);
 void CloseTrapDoor(ITEM_INFO* item);
+void OpenTrapDoor(ITEM_INFO* item);
 void DartEmitterControl(short item_number);
 void DartsControl(short item_number);
 void FlameEmitterControl(short item_number);
@@ -34,5 +35,3 @@ void TwoBlockPlatformFloor(ITEM_INFO* item, long x, long y, long z, long* height
 void TwoBlockPlatformCeiling(ITEM_INFO* item, long x, long y, long z, long* height);
 void FallingCeiling(short item_number);
 long TestBoundsCollideTeethSpikes(ITEM_INFO* item);
-
-#define OpenTrapDoor	( (void(__cdecl*)(ITEM_INFO*)) 0x004890C0 )
