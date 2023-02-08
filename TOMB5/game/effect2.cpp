@@ -837,6 +837,83 @@ void TriggerExplosionBubble(long x, long y, long z, short room_number)
 	}
 }
 
+void TriggerWaterfallMist(long x, long y, long z, long ang)
+{
+	SPARKS* sptr;
+	long rad, xSize, zSize;
+
+	for (int i = 0; i < 1536; i += 256)
+	{
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->sR = 64;
+		sptr->sG = 64;
+		sptr->sB = 64;
+		sptr->dR = 64;
+		sptr->dG = 64;
+		sptr->dB = 64;
+		sptr->ColFadeSpeed = 1;
+		sptr->TransType = 2;
+		sptr->Life = (GetRandomControl() & 3) + 6;
+		sptr->sLife = sptr->Life;
+		sptr->FadeToBlack = sptr->Life - 4;
+
+		rad = ((i + (GlobalCounter << 6)) % 1536) + (GetRandomControl() & 0x3F) - 32;
+		xSize = rad * phd_sin(ang) >> 14;
+		zSize = rad * phd_cos(ang) >> 14;
+		sptr->x = xSize + (GetRandomControl() & 0xF) + x - 8;
+		sptr->y = (GetRandomControl() & 0xF) + y - 8;
+		sptr->z = zSize + (GetRandomControl() & 0xF) + z - 8;
+		sptr->Xvel = 0;
+		sptr->Yvel = (GetRandomControl() & 0x7F) + 128;
+		sptr->Zvel = 0;
+
+		sptr->Friction = 0;
+		sptr->Flags = 538;
+		sptr->RotAng = GetRandomControl() & 0xFFF;
+		sptr->RotAdd = (GetRandomControl() & 0x1F) - 16;
+		sptr->Scalar = 3;
+		sptr->MaxYvel = 0;
+		sptr->Gravity = -sptr->Yvel >> 2;
+		sptr->Size = (GetRandomControl() & 3) + 16;
+		sptr->sSize = sptr->Size;
+		sptr->dSize = sptr->Size << 1;
+	}
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 96;
+	sptr->sG = 96;
+	sptr->sB = 96;
+	sptr->dR = 96;
+	sptr->dG = 96;
+	sptr->dB = 96;
+	sptr->ColFadeSpeed = 1;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 3) + 6;
+	sptr->sLife = sptr->Life;
+	sptr->FadeToBlack = sptr->Life - 1;
+	rad = GetRandomControl() % 1408 + 64;
+	xSize = rad * phd_sin(ang) >> 14;
+	zSize = rad * phd_cos(ang) >> 14;
+	sptr->x = xSize + (GetRandomControl() & 0x1F) + x - 16;
+	sptr->y = (GetRandomControl() & 0xF) + y - 8;
+	sptr->z = zSize + (GetRandomControl() & 0x1F) + z - 16;
+	sptr->Xvel = 0;
+	sptr->Yvel = (GetRandomControl() & 0x100) + (GetRandomControl() & 0x7F) + 128;
+	sptr->Zvel = 0;
+	
+	sptr->Friction = 0;
+	sptr->Flags = 10;
+	sptr->Scalar = 2;
+	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 17;
+	sptr->Gravity = 0;
+	sptr->MaxYvel = 0;
+	sptr->Size = (GetRandomControl() & 7) + 8;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = sptr->Size << 1;
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -850,4 +927,5 @@ void inject_effect2(bool replace)
 	INJECT(0x00431240, TriggerDynamic, replace);
 	INJECT(0x00431420, TriggerDynamic_MIRROR, replace);
 	INJECT(0x00431070, TriggerExplosionBubble, replace);
+	INJECT(0x00430A40, TriggerWaterfallMist, replace);
 }

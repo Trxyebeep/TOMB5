@@ -14,10 +14,10 @@ void ClearDynamics();
 void TriggerDynamic(long x, long y, long z, long falloff, long r, long g, long b);
 void TriggerDynamic_MIRROR(long x, long y, long z, long falloff, long r, long g, long b);
 void TriggerExplosionBubble(long x, long y, long z, short room_number);
+void TriggerWaterfallMist(long x, long y, long z, long ang);
 
 #define UpdateSparks	( (void(__cdecl*)()) 0x0042E8B0 )
 #define UpdateSplashes	( (void(__cdecl*)()) 0x00430710 )
-#define TriggerWaterfallMist	( (void(__cdecl*)(long, long, long, long)) 0x00430A40 )
 #define TriggerFireFlame	( (void(__cdecl*)(long, long, long, long, signed long)) 0x0042FE20 )
 #define SetupRipple	( (void(__cdecl*)(long, long, long, long, long)) 0x00430910 )
 #define TriggerUnderwaterBlood	( (void(__cdecl*)(long, long, long, long)) 0x004309B0 )
