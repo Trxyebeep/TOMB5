@@ -2225,6 +2225,50 @@ void TriggerGlobalFireSmoke()
 	sptr->Size = sptr->dSize >> 2;
 }
 
+void TriggerGlobalFireFlame()
+{
+	FIRE_SPARKS* sptr;
+
+	sptr = &fire_spark[GetFreeFireSpark()];
+	sptr->On = 1;
+	sptr->sR = 255;
+	sptr->sG = (GetRandomControl() & 0x1F) + 48;
+	sptr->sB = 48;
+	sptr->dR = (GetRandomControl() & 0x3F) + 192;
+	sptr->dG = (GetRandomControl() & 0x3F) + 128;
+	sptr->dB = 32;
+	sptr->FadeToBlack = 8;
+	sptr->ColFadeSpeed = (GetRandomControl() & 3) + 8;
+	sptr->Life = (GetRandomControl() & 7) + 32;
+	sptr->sLife = sptr->Life;
+	sptr->x = 4 * (GetRandomControl() & 0x1F) - 64;
+	sptr->y = 0;
+	sptr->z = 4 * (GetRandomControl() & 0x1F) - 64;
+	sptr->Xvel = 2 * (GetRandomControl() & 0xFF) - 256;
+	sptr->Yvel = -16 - (GetRandomControl() & 0xF);
+	sptr->Zvel = 2 * (GetRandomControl() & 0xFF) - 256;
+	sptr->Friction = 5;
+	sptr->Gravity = -32 - (GetRandomControl() & 0x1F);
+	sptr->MaxYvel = -16 - (GetRandomControl() & 7);
+
+	if (GetRandomControl() & 1)
+	{
+		sptr->Flags = 16;
+		sptr->RotAng = GetRandomControl() & 0xFFF;
+
+		if (GetRandomControl() & 1)
+			sptr->RotAdd = -16 - (GetRandomControl() & 0xF);
+		else
+			sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
+	}
+	else
+		sptr->Flags = 0;
+
+	sptr->Size = (GetRandomControl() & 0x1F) + 128;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = sptr->Size >> 4;
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -2272,4 +2316,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00481B40, AddFire, replace);
 	INJECT(0x004812B0, GetFreeFireSpark, replace);
 	INJECT(0x004816B0, TriggerGlobalFireSmoke, replace);
+	INJECT(0x00481840, TriggerGlobalFireFlame, replace);
 }
