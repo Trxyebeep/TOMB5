@@ -2,6 +2,7 @@
 #include "text.h"
 #include "../specific/specificfx.h"
 #include "../specific/polyinsert.h"
+#include "../specific/output.h"
 
 #ifdef GENERAL_FIXES
 char AccentTable[46][2] =
@@ -54,6 +55,24 @@ char AccentTable[46][2] =
 	{'~', ' '}
 };
 #endif
+
+#pragma warning(push)
+#pragma warning(disable : 4838)
+#pragma warning(disable : 4309)
+static CVECTOR ShadeFromTo[10][2] =
+{
+	{ {128, 128, 128, 0}, {128, 128, 128, 0} },
+	{ {128, 128, 128, 0}, {128, 128, 128, 0} },
+	{ {128, 128, 128, 0}, {128, 128, 128, 0} },
+	{ {128, 0, 0, 0}, {64, 0, 0, 0} },
+	{ {0, 0, 160, 0}, {0, 0, 80, 0} },
+	{ {128, 128, 128, 0}, {16, 16, 16, 0} },
+	{ {192, 128, 64, 0}, {64, 16, 0, 0} },
+	{ {16, 16, 16, 0}, {128, 128, 128, 0} },
+	{ {224, 192, 0, 0}, {64, 32, 0, 0} },
+	{ {128, 0, 0, 0}, {64, 0, 0, 0} },
+};
+#pragma warning(pop)
 
 void DrawChar(short x, short y, ushort col, CHARDEF* def)
 {
@@ -288,9 +307,90 @@ void PrintString(ushort x, ushort y, uchar col, const char* string, ushort flags
 	ScaleFlag = 0;
 }
 
+void InitFont()
+{
+	static CHARDEF copy[106];
+	static long init = 1;
+	long color, specular;
+	ushort r, g, b;
+	short h, w, yoff;
+	uchar fr, fg, fb, tr, tg, tb;
+
+	for (int i = 0; i < 10; i++)
+	{
+		fr = ShadeFromTo[i][0].r;
+		fg = ShadeFromTo[i][0].g;
+		fb = ShadeFromTo[i][0].b;
+		tr = ShadeFromTo[i][1].r;
+		tg = ShadeFromTo[i][1].g;
+		tb = ShadeFromTo[i][1].b;
+
+		for (int j = 0; j < 16; j++)
+		{
+			r = ((tr * j) >> 4) + ((fr * (16 - j)) >> 4);
+			g = ((tg * j) >> 4) + ((fg * (16 - j)) >> 4);
+			b = ((tb * j) >> 4) + ((fb * (16 - j)) >> 4);
+
+			if (r > 255)
+				r = 255;
+
+			if (g > 255)
+				g = 255;
+
+			if (b > 255)
+				b = 255;
+
+			aCalcColorSplit(RGBONLY(b, g, r), &color, &specular);
+
+			r = CLRR(color);
+			g = CLRG(color);
+			b = CLRB(color);
+			FontShades[i][j << 1].r = (uchar)r;
+			FontShades[i][j << 1].g = (uchar)g;
+			FontShades[i][j << 1].b = (uchar)b;
+			FontShades[i][j << 1].a = (uchar)0xFF;
+
+			r = CLRR(specular);
+			g = CLRG(specular);
+			b = CLRB(specular);
+			FontShades[i][(j << 1) + 1].r = (uchar)r;
+			FontShades[i][(j << 1) + 1].g = (uchar)g;
+			FontShades[i][(j << 1) + 1].b = (uchar)b;
+			FontShades[i][(j << 1) + 1].a = (uchar)0xFF;
+		}
+	}
+
+	if (init)
+	{
+		for (int i = 0; i < 106; i++)
+		{
+			copy[i].h = CharDef[i].h;
+			copy[i].w = CharDef[i].w;
+			copy[i].YOffset = CharDef[i].YOffset;
+		}
+
+		init = 0;
+	}
+
+	for (int i = 0; i < 106; i++)
+	{
+		h = short((float)copy[i].h * float(phd_winymax / 240.0F));
+		w = short((float)copy[i].w * float(phd_winxmax / 512.0F));
+		yoff = short((float)copy[i].YOffset * float(phd_winymax / 240.0F));
+		CharDef[i].h = h;
+		CharDef[i].w = w;
+		CharDef[i].YOffset = yoff;
+	}
+
+	font_height = short(float(7.0F * phd_winymax / 120.0F));
+	default_font_height = font_height;
+	big_char_height = 6;
+}
+
 void inject_text(bool replace)
 {
 	INJECT(0x004805D0, DrawChar, replace);
 	INJECT(0x00480910, GetStringLength, replace);
 	INJECT(0x00480BC0, PrintString, replace);
+	INJECT(0x00480F00, InitFont, replace);
 }
