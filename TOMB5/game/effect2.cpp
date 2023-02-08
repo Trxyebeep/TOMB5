@@ -971,6 +971,47 @@ void SetupRipple(long x, long y, long z, long size, long flags)
 	}
 }
 
+void SetupSplash(SPLASH_SETUP* setup)
+{
+	SPLASH_STRUCT* splash;
+	long n;
+
+	splash = splashes;
+	n = 0;
+
+	while (splash->flags & 1)
+	{
+		splash++;
+		n++;
+
+		if (n >= 4)
+		{
+			SoundEffect(SFX_LARA_SPLASH, (PHD_3DPOS*)setup->x, SFX_DEFAULT);
+			return;
+		}
+	}
+
+	splash->flags = 1;
+	splash->x = setup->x;
+	splash->y = setup->y;
+	splash->z = setup->z;
+	splash->life = 62;
+	splash->InnerRad = setup->InnerRad;
+	splash->InnerSize = setup->InnerSize;
+	splash->InnerRadVel = setup->InnerRadVel;
+	splash->InnerYVel = setup->InnerYVel;
+	splash->InnerY = setup->InnerYVel >> 2;
+	splash->MiddleRad = setup->MiddleRad;
+	splash->MiddleSize = setup->MiddleSize;
+	splash->MiddleRadVel = setup->MiddleRadVel;
+	splash->MiddleYVel = setup->MiddleYVel;
+	splash->MiddleY = setup->MiddleYVel >> 2;
+	splash->OuterRad = setup->OuterRad;
+	splash->OuterSize = setup->OuterSize;
+	splash->OuterRadVel = setup->OuterRadVel;
+	SoundEffect(SFX_LARA_SPLASH, (PHD_3DPOS*)setup->x, SFX_DEFAULT);
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -987,4 +1028,5 @@ void inject_effect2(bool replace)
 	INJECT(0x00430A40, TriggerWaterfallMist, replace);
 	INJECT(0x004309B0, TriggerUnderwaterBlood, replace);
 	INJECT(0x00430910, SetupRipple, replace);
+	INJECT(0x00430620, SetupSplash, replace);
 }

@@ -17,6 +17,7 @@ void TriggerExplosionBubble(long x, long y, long z, short room_number);
 void TriggerWaterfallMist(long x, long y, long z, long ang);
 void TriggerUnderwaterBlood(long x, long y, long z, long size);
 void SetupRipple(long x, long y, long z, long size, long flags);
+void SetupSplash(SPLASH_SETUP* setup);
 
 #define UpdateSparks	( (void(__cdecl*)()) 0x0042E8B0 )
 #define UpdateSplashes	( (void(__cdecl*)()) 0x00430710 )
@@ -25,4 +26,3 @@ void SetupRipple(long x, long y, long z, long size, long flags);
 #define GetFreeSpark	( (long(__cdecl*)()) 0x0042E790 )
 #define TriggerSuperJetFlame	( (void(__cdecl*)(ITEM_INFO*, long, long)) 0x00430350 )
 #define TriggerRicochetSpark	( (void(__cdecl*)(GAME_VECTOR*, long, long, long)) 0x0042F060 )
-#define SetupSplash	( (void(__cdecl*)(SPLASH_SETUP*)) 0x00430620 )
