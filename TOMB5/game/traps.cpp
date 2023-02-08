@@ -1528,6 +1528,33 @@ void ControlTwoBlockPlatform(short item_number)
 	}
 }
 
+static long OnTwoBlockPlatform(ITEM_INFO* item, long x, long z)
+{
+	long tx, tz;
+
+	if (!item->mesh_bits)
+		return 0;
+
+	x >>= 10;
+	z >>= 10;
+	tx = item->pos.x_pos >> 10;
+	tz = item->pos.z_pos >> 10;
+
+	if (!item->pos.y_rot && (x == tx || x == tx - 1) && (z == tz || z == tz + 1))
+		return 1;
+
+	if (item->pos.y_rot == 0x8000 && (x == tx || x == tx + 1) && (z == tz || z == tz - 1))
+		return 1;
+
+	if (item->pos.y_rot == 0x4000 && (z == tz || z == tz - 1) && (x == tx || x == tx + 1))
+		return 1;
+
+	if (item->pos.y_rot == -0x4000 && (z == tz || z == tz - 1) && (x == tx || x == tx - 1))
+		return 1;
+
+	return 0;
+}
+
 void TwoBlockPlatformFloor(ITEM_INFO* item, long x, long y, long z, long* height)
 {
 	if (OnTwoBlockPlatform(item, x, z))
@@ -1651,6 +1678,7 @@ void inject_traps(bool replace)
 	INJECT(0x0048BEF0, ControlScaledSpike, replace);
 	INJECT(0x0048C3D0, ControlRaisingBlock, replace);
 	INJECT(0x0048BBB0, ControlTwoBlockPlatform, replace);
+	INJECT(0x0048BAA0, OnTwoBlockPlatform, replace);
 	INJECT(0x0048B9E0, TwoBlockPlatformFloor, replace);
 	INJECT(0x0048BA50, TwoBlockPlatformCeiling, replace);
 	INJECT(0x004899D0, FallingCeiling, replace);

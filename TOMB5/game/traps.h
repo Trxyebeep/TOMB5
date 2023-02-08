@@ -36,4 +36,3 @@ void FallingCeiling(short item_number);
 long TestBoundsCollideTeethSpikes(ITEM_INFO* item);
 
 #define OpenTrapDoor	( (void(__cdecl*)(ITEM_INFO*)) 0x004890C0 )
-#define OnTwoBlockPlatform	( (long(__cdecl*)(ITEM_INFO*, long, long)) 0x0048BAA0 )
