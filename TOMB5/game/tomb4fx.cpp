@@ -891,6 +891,39 @@ void trig_actor_gunflash(long* mx, PHD_VECTOR* pos)
 	phd_PopMatrix();
 }
 
+void TriggerLightningGlow(long x, long y, long z, long rgb)
+{
+	SPARKS* sptr;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = CLRR(rgb);
+	sptr->sG = CLRG(rgb);
+	sptr->sB = CLRB(rgb);
+	sptr->dR = sptr->sR;
+	sptr->dG = sptr->sG;
+	sptr->dB = sptr->sB;
+	sptr->Life = 4;
+	sptr->sLife = 4;
+	sptr->ColFadeSpeed = 2;
+	sptr->FadeToBlack = 0;
+	sptr->TransType = 2;
+	sptr->x = x;
+	sptr->y = y;
+	sptr->z = z;
+	sptr->Xvel = 0;
+	sptr->Yvel = 0;
+	sptr->Zvel = 0;
+	sptr->Flags = 10;
+	sptr->Scalar = 3;
+	sptr->MaxYvel = 0;
+	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 11;
+	sptr->Gravity = 0;
+	sptr->Size = (rgb >> 24) + (GetRandomControl() & 3);
+	sptr->dSize = sptr->Size;
+	sptr->sSize = sptr->Size;
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -907,4 +940,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x004837B0, SetGunFlash, replace);
 	INJECT(0x004838E0, DrawGunflashes, replace);
 	INJECT(0x00485EC0, trig_actor_gunflash, replace);
+	INJECT(0x004851B0, TriggerLightningGlow, replace);
 }
