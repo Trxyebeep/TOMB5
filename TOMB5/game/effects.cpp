@@ -597,6 +597,19 @@ short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room
 	return -1;
 }
 
+void DoLotsOfBlood(long x, long y, long z, short speed, short ang, short room_number, long num)
+{
+	long bx, by, bz;
+
+	for (; num > 0; num--)
+	{
+		bx = x - (GetRandomControl() << 9) / 0x8000 + 256;
+		by = y - (GetRandomControl() << 9) / 0x8000 + 256;
+		bz = z - (GetRandomControl() << 9) / 0x8000 + 256;
+		DoBloodSplat(bx, by, bz, speed, ang, room_number);
+	}
+}
+
 long ItemNearLara(PHD_3DPOS* pos, long rad)
 {
 	short* bounds;
@@ -658,5 +671,6 @@ void inject_effects(bool replace)
 	INJECT(0x00433910, TL_11, replace);
 	INJECT(0x00433950, TL_12, replace);
 	INJECT(0x00432760, DoBloodSplat, replace);
+	INJECT(0x00432800, DoLotsOfBlood, replace);
 	INJECT(0x00432580, ItemNearLara, replace);
 }
