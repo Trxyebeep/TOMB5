@@ -470,7 +470,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042E6A0		DetatchSpark
 0x0042E790		GetFreeSpark
 0x0042E8B0		UpdateSparks
-0x0042F060		TriggerRicochetSpark
+0x0042F060	+	TriggerRicochetSpark
 0x0042F460	+	TriggerFlareSparks
 0x0042F610		TriggerExplosionSparks
 0x0042FA10	+	TriggerExplosionSmokeEnd

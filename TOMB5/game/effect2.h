@@ -19,10 +19,10 @@ void TriggerUnderwaterBlood(long x, long y, long z, long size);
 void SetupRipple(long x, long y, long z, long size, long flags);
 void SetupSplash(SPLASH_SETUP* setup);
 void UpdateSplashes();
+void TriggerRicochetSpark(GAME_VECTOR* pos, long ang, long num, long smoke_only);
 
 #define UpdateSparks	( (void(__cdecl*)()) 0x0042E8B0 )
 #define TriggerFireFlame	( (void(__cdecl*)(long, long, long, long, signed long)) 0x0042FE20 )
 #define TriggerExplosionSparks	( (void(__cdecl*)(long, long, long, long, long, long, short)) 0x0042F610 )
 #define GetFreeSpark	( (long(__cdecl*)()) 0x0042E790 )
 #define TriggerSuperJetFlame	( (void(__cdecl*)(ITEM_INFO*, long, long)) 0x00430350 )
-#define TriggerRicochetSpark	( (void(__cdecl*)(GAME_VECTOR*, long, long, long)) 0x0042F060 )
