@@ -1007,6 +1007,66 @@ void UpdateLightning()
 	}
 }
 
+void TriggerShockwaveHitEffect(long x, long y, long z, long rgb, short dir, long speed)
+{
+	SPARKS* sptr;
+	long dx, dz, xvel, zvel;
+
+	dx = lara_item->pos.x_pos - x;
+	dz = lara_item->pos.z_pos - z;
+
+	if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000)
+		return;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 0;
+	sptr->sG = 0;
+	sptr->sB = 0;
+	sptr->dR = CLRR(rgb);
+	sptr->dG = CLRG(rgb);
+	sptr->dB = CLRB(rgb);
+	sptr->ColFadeSpeed = 4;
+	sptr->FadeToBlack = 8;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 3) + 16;
+	sptr->sLife = sptr->Life;
+	speed += GetRandomControl() & 0xF;
+	xvel = speed * phd_sin(dir) >> 10;
+	zvel = speed * phd_cos(dir) >> 10;
+
+	if (GetRandomControl() & 1)
+		dir += 0x4000;
+	else
+		dir -= 0x4000;
+
+	speed = (GetRandomControl() & 0x1FF) - 256;
+	x += speed * phd_sin(dir) >> 14;
+	z += speed * phd_cos(dir) >> 14;
+	sptr->x = (GetRandomControl() & 0x1F) + x - 16;
+	sptr->y = (GetRandomControl() & 0x1F) + y - 16;
+	sptr->z = (GetRandomControl() & 0x1F) + z - 16;
+	sptr->Xvel = (short)xvel;
+	sptr->Yvel = -512 - (GetRandomControl() & 0x1FF);
+	sptr->Zvel = (short)zvel;
+	sptr->Friction = 3;
+	sptr->Flags = 538;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+
+	if (GetRandomControl() & 1)
+		sptr->RotAdd = -16 - (GetRandomControl() & 0xF);
+	else
+		sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
+
+	sptr->Scalar = 1;
+	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = (GetRandomControl() & 0x3F) + 64;
+	sptr->Size = (GetRandomControl() & 0x1F) + 32;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = sptr->Size >> 2;
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1026,4 +1086,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x004851B0, TriggerLightningGlow, replace);
 	INJECT(0x00484EB0, CalcLightningSpline, replace);
 	INJECT(0x00484CB0, UpdateLightning, replace);
+	INJECT(0x00484700, TriggerShockwaveHitEffect, replace);
 }
