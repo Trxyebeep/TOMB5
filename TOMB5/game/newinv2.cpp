@@ -9,7 +9,6 @@
 #include "lara2gun.h"
 #include "camera.h"
 #include "control.h"
-#include "xatracks.h"
 #include "lara.h"
 #include "larafire.h"
 #include "lara_states.h"
@@ -2447,7 +2446,7 @@ void DEL_picked_up_object(short objnum)
 
 	case PICKUP_ITEM4:
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA1_SECRET, 0);
+		S_CDPlay(6, 0);
 		lara.pickupitems |= 8;
 		savegame.Level.Secrets++;
 		savegame.Game.Secrets++;

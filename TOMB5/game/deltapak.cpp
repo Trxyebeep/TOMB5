@@ -18,7 +18,6 @@
 #include "health.h"
 #include "objects.h"
 #include "newinv2.h"
-#include "xatracks.h"
 #include "spotcam.h"
 #include "cutseq.h"
 #include "../specific/lighting.h"
@@ -2789,7 +2788,7 @@ void trigger_title_spotcam(long num)
 		item->pos.y_pos = 0;
 		item->pos.z_pos = 42496;
 		item->room_number = 0;
-		S_CDPlay(CDA_XA11_FLYBY1, 0);
+		S_CDPlay(83, 0);
 		InitialiseSpotCam(1);
 		return;
 
@@ -2811,17 +2810,17 @@ void trigger_title_spotcam(long num)
 		ResetCutanimate(ANIMATING13);
 		ResetCutanimate(ANIMATING14);
 		ResetCutanimate(ANIMATING15);
-		S_CDPlay(CDA_XA12_FLYBY4, 0);
-		InitialiseSpotCam((short)num);
+		S_CDPlay(91, 0);
+		InitialiseSpotCam(4);
 		return;
 
 	case 2:
-		S_CDPlay(CDA_XA11_FLYBY3, 0);
+		S_CDPlay(86, 0);
 		InitialiseSpotCam(2);
 		return;
 
 	case 3:
-		S_CDPlay(CDA_XA11_FLYBY2, 0);
+		S_CDPlay(87, 0);
 		InitialiseSpotCam(3);
 		return;
 

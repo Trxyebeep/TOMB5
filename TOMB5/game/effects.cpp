@@ -9,7 +9,6 @@
 #include "deltapak.h"
 #include "spider.h"
 #include "lot.h"
-#include "xatracks.h"
 #include "effect2.h"
 #include "objects.h"
 #include "sphere.h"
@@ -378,7 +377,7 @@ void TL_1(ITEM_INFO* item)
 	if (savegame.TLCount < 1)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA2_TL_01, 0);
+		S_CDPlay(9, 0);
 		savegame.TLCount = 1;
 	}
 }
@@ -388,7 +387,7 @@ void TL_2(ITEM_INFO* item)
 	if (savegame.TLCount < 2)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA1_TL_02, 0);
+		S_CDPlay(7, 0);
 		savegame.TLCount = 2;
 	}
 }
@@ -398,7 +397,7 @@ void TL_3(ITEM_INFO* item)
 	if (savegame.TLCount < 3)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA3_TL_03, 0);
+		S_CDPlay(23, 0);
 		savegame.TLCount = 3;
 	}
 }
@@ -408,7 +407,7 @@ void TL_4(ITEM_INFO* item)
 	if (savegame.TLCount < 4)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA5_TL_04, 0);
+		S_CDPlay(39, 0);
 		savegame.TLCount = 4;
 	}
 }
@@ -418,7 +417,7 @@ void TL_5(ITEM_INFO* item)
 	if (savegame.TLCount < 5)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA1_TL_05, 0);
+		S_CDPlay(2, 0);
 		savegame.TLCount = 5;
 	}
 }
@@ -428,7 +427,7 @@ void TL_6(ITEM_INFO* item)
 	if (savegame.TLCount < 6)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA3_TL_06, 0);
+		S_CDPlay(22, 0);
 		savegame.TLCount = 6;
 	}
 }
@@ -438,7 +437,7 @@ void TL_7(ITEM_INFO* item)
 	if (savegame.TLCount < 7)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA7_TL_07, 0);
+		S_CDPlay(51, 0);
 		savegame.TLCount = 7;
 	}
 }
@@ -449,7 +448,7 @@ void TL_8(ITEM_INFO* item)
 	if (savegame.TLCount < 8)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA1_TL_08, 0);
+		S_CDPlay(3, 0);
 		savegame.TLCount = 8;
 	}
 }
@@ -459,7 +458,7 @@ void TL_9(ITEM_INFO* item)
 	if (savegame.TLCount < 9)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA1_TL_11, 0);
+		S_CDPlay(4, 0);
 		savegame.TLCount = 9;
 	}
 }
@@ -469,7 +468,7 @@ void TL_10(ITEM_INFO* item)
 	if (savegame.TLCount == 9)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA2_TL_10A, 0);
+		S_CDPlay(13, 0);
 		savegame.TLCount = 10;
 	}
 }
@@ -479,7 +478,7 @@ void TL_11(ITEM_INFO* item)
 	if (savegame.TLCount == 10)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA1_TL_10B, 0);
+		S_CDPlay(0, 0);
 		savegame.TLCount = 11;
 	}
 }
@@ -489,7 +488,7 @@ void TL_12(ITEM_INFO* item)
 	if (savegame.TLCount == 11)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA5_TL_12, 0);
+		S_CDPlay(35, 0);
 		savegame.TLCount = 12;
 	}
 }

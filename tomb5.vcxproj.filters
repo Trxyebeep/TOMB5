@@ -459,9 +459,6 @@
     <ClInclude Include="TOMB5\game\traps.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\game\xatracks.h">
-      <Filter>TOMB5\game</Filter>
-    </ClInclude>
     <ClInclude Include="TOMB5\global\math_tbls.h">
       <Filter>TOMB5\global</Filter>
     </ClInclude>

@@ -221,7 +221,6 @@
     <ClInclude Include="TOMB5\game\traps.h" />
     <ClInclude Include="TOMB5\game\twogun.h" />
     <ClInclude Include="TOMB5\game\willwisp.h" />
-    <ClInclude Include="TOMB5\game\xatracks.h" />
     <ClInclude Include="TOMB5\global\math_tbls.h" />
     <ClInclude Include="TOMB5\global\types.h" />
     <ClInclude Include="TOMB5\global\vars.h" />

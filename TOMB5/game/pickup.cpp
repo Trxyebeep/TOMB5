@@ -1,7 +1,6 @@
 #include "../tomb5/pch.h"
 #include "pickup.h"
 #include "gameflow.h"
-#include "xatracks.h"
 #include "effects.h"
 #include "sound.h"
 #include "items.h"
@@ -126,7 +125,7 @@ static void PuzzleDone(ITEM_INFO* item, short item_num)
 	if (item->object_number == PUZZLE_HOLE1 && gfCurrentLevel == LVL5_GALLOWS_TREE)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA6_SPOOKY03, 0);
+		S_CDPlay(45, 0);
 		SoundEffect(SFX_HANGMAN_LAUGH_OFFCAM, &item->pos, 0);
 	}
 

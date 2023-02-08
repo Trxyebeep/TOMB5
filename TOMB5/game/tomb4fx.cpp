@@ -8,7 +8,6 @@
 #include "items.h"
 #include "effect2.h"
 #include "objects.h"
-#include "xatracks.h"
 #include "../specific/audio.h"
 #include "../specific/3dmath.h"
 #include "../specific/output.h"
@@ -491,7 +490,7 @@ void ControlTeleporter(short item_number)
 			if (item->item_flags[0] == 15)
 			{
 				IsAtmospherePlaying = 0;
-				S_CDPlay(CDA_XA12_Z_10, 0);
+				S_CDPlay(90, 0);
 			}
 			else if (item->item_flags[0] == 70)
 			{
