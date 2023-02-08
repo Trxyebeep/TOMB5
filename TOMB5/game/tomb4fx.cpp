@@ -2405,6 +2405,39 @@ void UpdateFireSparks()
 	}
 }
 
+void TriggerFenceSparks(long x, long y, long z, long yv, long fric)
+{
+	SPARKS* sptr;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = (GetRandomControl() & 0x3F) + 192;
+	sptr->sG = sptr->sR;
+	sptr->sB = sptr->sR;
+	sptr->dR = (GetRandomControl() & 0x3F) + 192;
+	sptr->dG = sptr->sR >> 1;
+	sptr->dB = sptr->sR >> 2;
+	sptr->TransType = 2;
+	sptr->Dynamic = -1;
+	sptr->Life = (GetRandomControl() & 7) + 24;
+	sptr->sLife = sptr->Life;
+	sptr->x = x;
+	sptr->y = y;
+	sptr->z = z;
+	sptr->Xvel = 4 * (GetRandomControl() & 0xFF) - 512;
+	sptr->Yvel = short((GetRandomControl() & 0xF) + (fric << 4) - (yv << 5) - 8);
+	sptr->Zvel = 4 * (GetRandomControl() & 0xFF) - 512;
+
+	if (fric)
+		sptr->Friction = 5;
+	else
+		sptr->Friction = 4;
+
+	sptr->Flags = 0;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = short(((fric + 1) << 4) + (GetRandomControl() & 0xF));
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -2457,4 +2490,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00481B10, ClearFires, replace);
 	INJECT(0x00481370, keep_those_fires_burning, replace);
 	INJECT(0x004813B0, UpdateFireSparks, replace);
+	INJECT(0x00485D80, TriggerFenceSparks, replace);
 }

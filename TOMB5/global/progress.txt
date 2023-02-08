@@ -1507,7 +1507,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004852E0	+	DrawWeaponMissile
 0x00485380	+	ControlTeleporter
 0x00485AD0	+	ControlElectricFence
-0x00485D80		TriggerFenceSparks
+0x00485D80	+	TriggerFenceSparks
 0x00485EC0	+	trig_actor_gunflash
 
 
