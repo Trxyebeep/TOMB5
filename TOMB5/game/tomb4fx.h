@@ -38,8 +38,8 @@ void UpdateBubbles();
 void TriggerSmallSplash(long x, long y, long z, long num);
 long GetFreeGunshell();
 void TriggerGunShell(short leftright, short objnum, long weapon);
+void UpdateGunShells();
 
-#define UpdateGunShells	( (void(__cdecl*)()) 0x00482D80 )
 #define UpdateFireSparks	( (void(__cdecl*)()) 0x004813B0 )
 #define UpdateSmokeSparks	( (void(__cdecl*)()) 0x00481DD0 )
 #define GetFreeSmokeSpark	( (long(__cdecl*)()) 0x00481D40 )

@@ -1690,6 +1690,100 @@ void TriggerGunShell(short leftright, short objnum, long weapon)
 	}
 }
 
+void UpdateGunShells()
+{
+	GUNSHELL_STRUCT* shell;
+	FLOOR_INFO* floor;
+	long ox, oy, oz, c, h;
+	short oroom;
+
+	for (int i = 0; i < 24; i++)
+	{
+		shell = &Gunshells[i];
+
+		if (!shell->counter)
+			continue;
+
+		ox = shell->pos.x_pos;
+		oy = shell->pos.y_pos;
+		oz = shell->pos.z_pos;
+		oroom = shell->room_number;
+		shell->counter--;
+
+		if (room[oroom].flags & ROOM_UNDERWATER)
+		{
+			shell->fallspeed++;
+
+			if (shell->fallspeed > 8)
+				shell->fallspeed = 8;
+			else if (shell->fallspeed < 0)
+				shell->fallspeed >>= 1;
+
+			shell->speed -= shell->speed >> 1;
+		}
+		else
+			shell->fallspeed += 6;
+
+		shell->pos.x_rot += 182 * ((shell->speed >> 1) + 7);
+		shell->pos.y_rot += 182 * shell->speed;
+		shell->pos.z_rot += 4186;
+		shell->pos.x_pos += shell->speed * phd_sin(shell->DirXrot) >> 15;
+		shell->pos.y_pos += shell->fallspeed;
+		shell->pos.z_pos += shell->speed * phd_cos(shell->DirXrot) >> 15;
+		floor = GetFloor(shell->pos.x_pos, shell->pos.y_pos, shell->pos.z_pos, &shell->room_number);
+
+		if (room[shell->room_number].flags & ROOM_UNDERWATER && !(room[oroom].flags & ROOM_UNDERWATER))
+		{
+			TriggerSmallSplash(shell->pos.x_pos, room[shell->room_number].maxceiling, shell->pos.z_pos, 8);
+			SetupRipple(shell->pos.x_pos, room[shell->room_number].maxceiling, shell->pos.z_pos, (GetRandomControl() & 3) + 8, 2);
+			shell->fallspeed >>= 5;
+			continue;
+		}
+
+		c = GetCeiling(floor, shell->pos.x_pos, shell->pos.y_pos, shell->pos.z_pos);
+
+		if (shell->pos.y_pos < c)
+		{
+			SoundEffect(SFX_LARA_SHOTGUN_SHELL, &shell->pos, SFX_DEFAULT);
+			shell->speed -= 4;
+
+			if (shell->speed < 8)
+			{
+				shell->counter = 0;
+				continue;
+			}
+
+			shell->pos.y_pos = c;
+			shell->fallspeed = -shell->fallspeed;
+		}
+
+		h = GetHeight(floor, shell->pos.x_pos, shell->pos.y_pos, shell->pos.z_pos);
+
+		if (shell->pos.y_pos >= h)
+		{
+			SoundEffect(SFX_LARA_SHOTGUN_SHELL, &shell->pos, SFX_DEFAULT);
+			shell->speed -= 8;
+
+			if (shell->speed < 8)
+			{
+				shell->counter = 0;
+				continue;
+			}
+
+			if (oy <= h)
+				shell->fallspeed = -shell->fallspeed >> 1;
+			else
+			{
+				shell->DirXrot += 0x8000;
+				shell->pos.x_pos = ox;
+				shell->pos.z_pos = oz;
+			}
+
+			shell->pos.y_pos = oy;
+		}
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1727,4 +1821,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00483180, TriggerSmallSplash, replace);
 	INJECT(0x004829A0, GetFreeGunshell, replace);
 	INJECT(0x00482A60, TriggerGunShell, replace);
+	INJECT(0x00482D80, UpdateGunShells, replace);
 }
