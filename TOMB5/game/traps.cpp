@@ -1591,6 +1591,40 @@ void FallingCeiling(short item_number)
 	}
 }
 
+long TestBoundsCollideTeethSpikes(ITEM_INFO* item)
+{
+	short* bounds;
+	long x, y, z, rad, xMin, xMax, zMin, zMax;
+
+	if (item->trigger_flags & 8)
+	{
+		x = item->pos.x_pos & ~0x3FF | 0x200;
+		z = (item->pos.z_pos + SPxzoffs[item->trigger_flags & 7]) & ~0x3FF | 0x200;
+	}
+	else
+	{
+		x = (item->pos.x_pos - SPxzoffs[item->trigger_flags & 7]) & ~0x3FF | 0x200;
+		z = item->pos.z_pos & ~0x3FF | 0x200;
+	}
+
+	if (item->trigger_flags & 1)
+		rad = 300;
+	else
+		rad = 480;
+
+	y = item->pos.y_pos + SPDETyoffs[item->trigger_flags & 7];
+	bounds = GetBestFrame(lara_item);
+
+	if (lara_item->pos.y_pos + bounds[2] > y || lara_item->pos.y_pos + bounds[3] < y - 900)
+		return 0;
+
+	xMin = lara_item->pos.x_pos + bounds[0];
+	xMax = lara_item->pos.x_pos + bounds[1];
+	zMin = lara_item->pos.z_pos + bounds[4];
+	zMax = lara_item->pos.z_pos + bounds[5];
+	return xMin <= x + rad && xMax >= x - rad && zMin <= z + rad && zMax >= z - rad;
+}
+
 void inject_traps(bool replace)
 {
 	INJECT(0x0048AD60, LaraBurn, replace);
@@ -1620,4 +1654,5 @@ void inject_traps(bool replace)
 	INJECT(0x0048B9E0, TwoBlockPlatformFloor, replace);
 	INJECT(0x0048BA50, TwoBlockPlatformCeiling, replace);
 	INJECT(0x004899D0, FallingCeiling, replace);
+	INJECT(0x0048BD90, TestBoundsCollideTeethSpikes, replace);
 }

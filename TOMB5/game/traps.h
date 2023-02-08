@@ -33,7 +33,7 @@ void ControlTwoBlockPlatform(short item_number);
 void TwoBlockPlatformFloor(ITEM_INFO* item, long x, long y, long z, long* height);
 void TwoBlockPlatformCeiling(ITEM_INFO* item, long x, long y, long z, long* height);
 void FallingCeiling(short item_number);
+long TestBoundsCollideTeethSpikes(ITEM_INFO* item);
 
 #define OpenTrapDoor	( (void(__cdecl*)(ITEM_INFO*)) 0x004890C0 )
-#define TestBoundsCollideTeethSpikes	( (long(__cdecl*)(ITEM_INFO*)) 0x0048BD90 )
 #define OnTwoBlockPlatform	( (long(__cdecl*)(ITEM_INFO*, long, long)) 0x0048BAA0 )

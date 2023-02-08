@@ -1556,7 +1556,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0048BA50	+	TwoBlockPlatformCeiling
 0x0048BAA0		OnTwoBlockPlatform
 0x0048BBB0	+	ControlTwoBlockPlatform
-0x0048BD90		TestBoundsCollideTeethSpikes
+0x0048BD90	+	TestBoundsCollideTeethSpikes
 0x0048BEF0	+	ControlScaledSpike
 0x0048C3D0	+	ControlRaisingBlock
 0x0048C6D0	+	ControlExplosion
