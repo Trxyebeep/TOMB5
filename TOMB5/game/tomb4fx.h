@@ -40,6 +40,7 @@ long GetFreeGunshell();
 void TriggerGunShell(short leftright, short objnum, long weapon);
 void UpdateGunShells();
 void DrawGunshells();
+void TriggerShatterSmoke(long x, long y, long z);
 
 #define UpdateFireSparks	( (void(__cdecl*)()) 0x004813B0 )
 #define UpdateSmokeSparks	( (void(__cdecl*)()) 0x00481DD0 )
@@ -49,4 +50,3 @@ void DrawGunshells();
 #define TriggerFenceSparks	( (void(__cdecl*)(long, long, long, long, long)) 0x00485D80 )
 #define AddFire	( (void(__cdecl*)(long, long, long, long, short, short)) 0x00481B40 )
 #define S_DrawFires	( (void(__cdecl*)()) 0x00481BB0 )
-#define TriggerShatterSmoke	( (void(__cdecl*)(long, long, long)) 0x004823A0 )
