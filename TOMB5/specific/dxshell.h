@@ -41,6 +41,6 @@ BOOL CALLBACK EnumJoysticksCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
 long DXUpdateJoystick();
 long DXGetKey();
 void DXInitInput(HWND hwnd, HINSTANCE hinstance);
+const char* DXGetErrorString(HRESULT hr);
 
-#define DXGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049E050 )
 #define DIGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049EFA0 )

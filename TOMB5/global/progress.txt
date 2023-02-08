@@ -1758,7 +1758,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		specific/dxshell.cpp
 
-0x0049E050		DXGetErrorString
+0x0049E050	+	DXGetErrorString
 0x0049EFA0		DIGetErrorString
 0x0049F1C0	+	DXAttempt
 0x0049F200	+	DIAttempt
