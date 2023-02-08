@@ -7576,6 +7576,36 @@ void S_DrawSmokeSparks()
 	phd_PopMatrix();
 }
 
+long MapCompare(MAP_STRUCT* a, MAP_STRUCT* b)
+{
+	static long max = -99999999;
+	static long min = 99999999;
+	long af, bf;
+
+	af = room[a->room_number].minfloor;
+	bf = room[b->room_number].minfloor;
+
+	if (af > max)
+		max = af;
+
+	if (af < min)
+		min = af;
+
+	if (bf > max)
+		max = bf;
+
+	if (bf < min)
+		min = bf;
+
+	if (af > bf)
+		return -1;
+
+	if (af < bf)
+		return 1;
+
+	return 0;
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -7636,4 +7666,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C1790, S_DrawSplashes, replace);
 	INJECT(0x004C23C0, S_DrawFireSparks, replace);
 	INJECT(0x004C2980, S_DrawSmokeSparks, replace);
+	INJECT(0x004C54F0, MapCompare, replace);
 }

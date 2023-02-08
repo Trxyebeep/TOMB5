@@ -64,3 +64,4 @@ void S_DrawDrawSparks(SPARKS* sptr, long smallest_size, short* xyptr, long* zptr
 void S_DrawSplashes();
 void S_DrawFireSparks(long size, long life);
 void S_DrawSmokeSparks();
+long MapCompare(MAP_STRUCT* a, MAP_STRUCT* b);

@@ -2464,6 +2464,13 @@ struct BINK_STRUCT
 	long num2;
 };
 
+struct MAP_STRUCT
+{
+	char unk[3592];
+	short visited;
+	short room_number;
+};
+
 #ifdef GENERAL_FIXES
 struct GouraudBarColourSet
 {
