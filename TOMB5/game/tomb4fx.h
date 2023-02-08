@@ -21,6 +21,7 @@ void TriggerLightningGlow(long x, long y, long z, long rgb);
 void CalcLightningSpline(PHD_VECTOR* pos, SVECTOR* dest, LIGHTNING_STRUCT* lptr);
 void UpdateLightning();
 void TriggerShockwaveHitEffect(long x, long y, long z, long rgb, short dir, long speed);
+long GetFreeShockwave();
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define TriggerLaraDrips	( (void(__cdecl*)()) 0x00483F00 )

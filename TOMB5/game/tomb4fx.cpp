@@ -1067,6 +1067,17 @@ void TriggerShockwaveHitEffect(long x, long y, long z, long rgb, short dir, long
 	sptr->dSize = sptr->Size >> 2;
 }
 
+long GetFreeShockwave()
+{
+	for (int i = 0; i < 16; i++)
+	{
+		if (!ShockWaves[i].life)
+			return i;
+	}
+
+	return -1;
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1087,4 +1098,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00484EB0, CalcLightningSpline, replace);
 	INJECT(0x00484CB0, UpdateLightning, replace);
 	INJECT(0x00484700, TriggerShockwaveHitEffect, replace);
+	INJECT(0x00484640, GetFreeShockwave, replace);
 }
