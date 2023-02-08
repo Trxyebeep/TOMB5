@@ -1147,6 +1147,48 @@ void UpdateShockwaves()
 	}
 }
 
+long GetFreeDrip()
+{
+	DRIP_STRUCT* drip;
+	long min_life, min_life_num, free;
+
+	free = next_drip;
+	drip = &Drips[next_drip];
+	min_life = 4095;
+	min_life_num = 0;
+
+	for (int i = 0; i < 32; i++)
+	{
+		if (drip->On)
+		{
+			if (drip->Life < min_life)
+			{
+				min_life_num = free;
+				min_life = drip->Life;
+			}
+
+			if (free == 31)
+			{
+				drip = &Drips[0];
+				free = 0;
+			}
+			else
+			{
+				free++;
+				drip++;
+			}
+		}
+		else
+		{
+			next_drip = (free + 1) & 0x1F;
+			return free;
+		}
+	}
+
+	next_drip = (min_life_num + 1) & 0x1F;
+	return min_life_num;
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1170,4 +1212,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00484640, GetFreeShockwave, replace);
 	INJECT(0x00484670, TriggerShockwave, replace);
 	INJECT(0x004849A0, UpdateShockwaves, replace);
+	INJECT(0x00483D00, GetFreeDrip, replace);
 }

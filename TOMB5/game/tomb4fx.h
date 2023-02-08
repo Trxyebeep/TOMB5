@@ -24,6 +24,7 @@ void TriggerShockwaveHitEffect(long x, long y, long z, long rgb, short dir, long
 long GetFreeShockwave();
 void TriggerShockwave(PHD_VECTOR* pos, long InnerOuterRads, long speed, long bgrl, long XRotFlags);
 void UpdateShockwaves();
+long GetFreeDrip();
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define TriggerLaraDrips	( (void(__cdecl*)()) 0x00483F00 )
