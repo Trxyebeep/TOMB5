@@ -61,6 +61,6 @@ void OldDrawLightning();
 void DrawTwogunLaser(TWOGUN_INFO* info);
 void DrawRope(ROPE_STRUCT* rope);
 void S_DrawDrawSparks(SPARKS* sptr, long smallest_size, short* xyptr, long* zptr);
+void S_DrawSplashes();
 
 #define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
-#define S_DrawSplashes	( (void(__cdecl*)()) 0x004C1790 )
