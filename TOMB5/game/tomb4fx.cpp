@@ -1549,6 +1549,56 @@ void TriggerSmallSplash(long x, long y, long z, long num)
 	}
 }
 
+long GetFreeGunshell()
+{
+	GUNSHELL_STRUCT* shell;
+	long free, min_life, min_life_num;
+
+	shell = &Gunshells[next_gunshell];
+	min_life = 4095;
+	min_life_num = 0;
+	free = next_gunshell;
+
+	for (int i = 0; i < 24; i++)
+	{
+		if (shell->counter)
+		{
+			if (shell->counter < min_life)
+			{
+				min_life_num = free;
+				min_life = shell->counter;
+			}
+
+			if (free == 23)
+			{
+				shell = &Gunshells[0];
+				free = 0;
+			}
+			else
+			{
+				free++;
+				shell++;
+			}
+		}
+		else
+		{
+			next_gunshell = free + 1;
+
+			if (next_gunshell >= 24)
+				next_gunshell = 0;
+
+			return free;
+		}
+	}
+
+	next_gunshell = min_life_num + 1;
+
+	if (next_gunshell >= 24)
+		next_gunshell = 0;
+
+	return min_life_num;
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1584,4 +1634,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00483350, CreateBubble, replace);
 	INJECT(0x00483540, UpdateBubbles, replace);
 	INJECT(0x00483180, TriggerSmallSplash, replace);
+	INJECT(0x004829A0, GetFreeGunshell, replace);
 }

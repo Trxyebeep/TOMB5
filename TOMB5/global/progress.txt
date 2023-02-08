@@ -1474,7 +1474,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00482580	+	GetFreeBlood
 0x00482610	+	UpdateBlood
 0x004827E0	+	TriggerBlood
-0x004829A0		GetFreeGunshell
+0x004829A0	+	GetFreeGunshell
 0x00482A60		TriggerGunShell
 0x00482D80		UpdateGunShells
 0x00483090		DrawGunshells
