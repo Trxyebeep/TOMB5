@@ -1370,6 +1370,17 @@ struct SPARKS
 	uchar NodeNumber;
 };
 
+struct SP_DYNAMIC
+{
+	uchar On;
+	uchar Falloff;
+	uchar R;
+	uchar G;
+	uchar B;
+	uchar Flags;
+	uchar Pad[2];
+};
+
 struct SHATTER_ITEM
 {
 	SPHERE Sphere;

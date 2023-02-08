@@ -710,6 +710,7 @@
 #define ClosedDoors	ARRAY_(0x0051CAC0, long, [32])
 #define flipmap	ARRAY_(0x00EEEBA0, long, [255])
 #define spark	ARRAY_(0x00E5F380, SPARKS, [1024])
+#define spark_dynamics	ARRAY_(0x00E6C380, SP_DYNAMIC, [8])
 #define pickups	ARRAY_(0x00E5BF40, DISPLAYPU, [8])
 #define twogun	ARRAY_(0x00EEEB00, TWOGUN_INFO, [4])
 #define ammo_object_list	ARRAY_(0x00E598E0, AMMOLIST, [3])

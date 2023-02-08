@@ -1302,6 +1302,166 @@ void TriggerExplosionSmoke(long x, long y, long z, long uw)
 	GetRandomControl();
 }
 
+void TriggerExplosionSparks(long x, long y, long z, long extras, long dynamic, long uw, short room_number)
+{
+	SPARKS* sptr;
+	SP_DYNAMIC* pDL;
+	long scalar, mirror, i;
+	uchar extras_table[4];
+	uchar r, g, b;
+
+	extras_table[0] = 0;
+	extras_table[1] = 4;
+	extras_table[2] = 7;
+	extras_table[3] = 10;
+	scalar = 0;
+	mirror = 0;
+
+	if (room_number < 0)
+	{
+		room_number = -room_number;
+		scalar = 1;
+	}
+
+	if (room_number == gfMirrorRoom && gfLevelFlags & GF_MIRROR)
+		mirror = 1;
+
+	do
+	{
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->sR = 255;
+
+		if (uw == 1)
+		{
+			sptr->sG = (GetRandomControl() & 0x3F) + 128;
+			sptr->sB = 32;
+			sptr->dR = 192;
+			sptr->dG = (GetRandomControl() & 0x1F) + 64;
+			sptr->dB = 0;
+			sptr->ColFadeSpeed = 7;
+			sptr->FadeToBlack = 8;
+			sptr->TransType = 2;
+			sptr->Life = (GetRandomControl() & 7) + 16;
+			sptr->sLife = sptr->Life;
+			sptr->RoomNumber = (uchar)room_number;
+		}
+		else
+		{
+			sptr->sG = (GetRandomControl() & 0xF) + 32;
+			sptr->sB = 0;
+			sptr->dR = (GetRandomControl() & 0x3F) + 192;
+			sptr->dG = (GetRandomControl() & 0x3F) + 128;
+			sptr->dB = 32;
+			sptr->ColFadeSpeed = 8;
+			sptr->FadeToBlack = 16;
+			sptr->TransType = 2;
+			sptr->Life = (GetRandomControl() & 7) + 24;
+			sptr->sLife = sptr->Life;
+		}
+
+		sptr->extras = uchar(extras | ((extras_table[extras] + (GetRandomControl() & 7) + 28) << 3));
+		sptr->Dynamic = (char)dynamic;
+
+		if (dynamic == -2)
+		{
+			for (i = 0; i < 8; i++)
+			{
+				pDL = &spark_dynamics[i];
+
+				if (!pDL->On)
+				{
+					pDL->On = 1;
+					pDL->Falloff = 4;
+
+					if (uw == 1)
+						pDL->Flags = 2;
+					else
+						pDL->Flags = 1;
+
+					sptr->Dynamic = (char)i;
+					break;
+				}
+			}
+
+			if (i == 8)
+				sptr->Dynamic = -1;
+		}
+
+		sptr->Xvel = (GetRandomControl() & 0xFFF) - 2048;
+		sptr->Yvel = (GetRandomControl() & 0xFFF) - 2048;
+		sptr->Zvel = (GetRandomControl() & 0xFFF) - 2048;
+
+		if (dynamic != -2 || uw == 1)
+		{
+			sptr->x = (GetRandomControl() & 0x1F) + x - 16;
+			sptr->y = (GetRandomControl() & 0x1F) + y - 16;
+			sptr->z = (GetRandomControl() & 0x1F) + z - 16;
+		}
+		else
+		{
+			sptr->x = (GetRandomControl() & 0x1FF) + x - 256;
+			sptr->y = (GetRandomControl() & 0x1FF) + y - 256;
+			sptr->z = (GetRandomControl() & 0x1FF) + z - 256;
+		}
+
+		if (uw == 1)
+			sptr->Friction = 17;
+		else
+			sptr->Friction = 51;
+
+		if (GetRandomControl() & 1)
+		{
+			if (uw == 1)
+				sptr->Flags = 2586;
+			else
+				sptr->Flags = 538;
+
+			sptr->RotAng = GetRandomControl() & 0xFFF;
+			sptr->RotAdd = (GetRandomControl() & 0xFF) + 128;
+		}
+		else if (uw == 1)
+			sptr->Flags = 2570;
+		else
+			sptr->Flags = 522;
+
+		sptr->Scalar = 3;
+		sptr->Gravity = 0;
+		sptr->Size = (GetRandomControl() & 0xF) + 40;
+		sptr->sSize = sptr->Size << scalar;
+		sptr->dSize = sptr->Size << (scalar + 1);
+		sptr->Size <<= scalar;
+		sptr->MaxYvel = 0;
+
+		if (uw == 2)
+		{
+			r = sptr->sR;
+			g = sptr->sG;
+			b = sptr->sB;
+			sptr->sR = b;
+			sptr->sG = r;
+			sptr->sB = g;
+
+			r = sptr->dR;
+			g = sptr->dG;
+			b = sptr->dB;
+			sptr->dR = b;
+			sptr->dG = r;
+			sptr->dB = g;
+
+			sptr->Flags |= 0x2000;
+		}
+		else if (extras)
+			TriggerExplosionSmoke(x, y, z, uw);
+		else
+			TriggerExplosionSmokeEnd(x, y, z, uw);
+
+		z = 2 * gfMirrorZPlane - z;
+		mirror--;
+	}
+	while (mirror >= 0);
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -1322,4 +1482,5 @@ void inject_effect2(bool replace)
 	INJECT(0x00430710, UpdateSplashes, replace);
 	INJECT(0x0042F060, TriggerRicochetSpark, replace);
 	INJECT(0x0042FC20, TriggerExplosionSmoke, replace);
+	INJECT(0x0042F610, TriggerExplosionSparks, replace);
 }
