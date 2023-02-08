@@ -974,6 +974,39 @@ void CalcLightningSpline(PHD_VECTOR* pos, SVECTOR* dest, LIGHTNING_STRUCT* lptr)
 	dest->z = (short)pos[5].z;
 }
 
+void UpdateLightning()
+{
+	LIGHTNING_STRUCT* lptr;
+	long* pPoint;
+	char* pVel;
+
+	for (int i = 0; i < 16; i++)
+	{
+		lptr = &Lightning[i];
+
+		if (!lptr->Life)
+			continue;
+
+		lptr->Life -= 2;
+
+		if (!lptr->Life)
+			continue;
+
+		pPoint = &lptr->Point[1].x;
+		pVel = &lptr->Xvel1;
+
+		for (int j = 0; j < 9; j++)
+		{
+			*pPoint++ += *pVel << 1;
+			*pVel -= *pVel >> 4;
+			pVel++;
+		}
+
+		if (GlobalCounter & 2 && lptr->Flags & 0x10 && lptr->Life > 18)
+			TriggerRicochetSpark((GAME_VECTOR*)&lptr->Point[3], GetRandomControl() << 1, 2, 0);
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -992,4 +1025,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00485EC0, trig_actor_gunflash, replace);
 	INJECT(0x004851B0, TriggerLightningGlow, replace);
 	INJECT(0x00484EB0, CalcLightningSpline, replace);
+	INJECT(0x00484CB0, UpdateLightning, replace);
 }

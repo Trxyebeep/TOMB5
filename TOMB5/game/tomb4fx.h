@@ -19,6 +19,7 @@ void DrawGunflashes();
 void trig_actor_gunflash(long* mx, PHD_VECTOR* pos);
 void TriggerLightningGlow(long x, long y, long z, long rgb);
 void CalcLightningSpline(PHD_VECTOR* pos, SVECTOR* dest, LIGHTNING_STRUCT* lptr);
+void UpdateLightning();
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define TriggerLaraDrips	( (void(__cdecl*)()) 0x00483F00 )
@@ -28,7 +29,6 @@ void CalcLightningSpline(PHD_VECTOR* pos, SVECTOR* dest, LIGHTNING_STRUCT* lptr)
 #define UpdateFireSparks	( (void(__cdecl*)()) 0x004813B0 )
 #define UpdateSmokeSparks	( (void(__cdecl*)()) 0x00481DD0 )
 #define UpdateShockwaves	( (void(__cdecl*)()) 0x004849A0 )
-#define UpdateLightning	( (void(__cdecl*)()) 0x00484CB0 )
 #define	SetFadeClip	( (void(__cdecl*)(short, short)) 0x00483A90 )
 #define	SetScreenFadeOut	( (void(__cdecl*)(long, long)) 0x00483B30 )
 #define	SetScreenFadeIn	( (void(__cdecl*)(long)) 0x00483BA0 )
