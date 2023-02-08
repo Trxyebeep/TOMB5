@@ -478,7 +478,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042FE20		TriggerFireFlame
 0x00430350		TriggerSuperJetFlame
 0x00430620	+	SetupSplash
-0x00430710		UpdateSplashes
+0x00430710	+	UpdateSplashes
 0x00430910	+	SetupRipple
 0x004309B0	+	TriggerUnderwaterBlood
 0x00430A40	+	TriggerWaterfallMist

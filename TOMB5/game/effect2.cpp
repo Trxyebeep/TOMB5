@@ -986,7 +986,7 @@ void SetupSplash(SPLASH_SETUP* setup)
 
 		if (n >= 4)
 		{
-			SoundEffect(SFX_LARA_SPLASH, (PHD_3DPOS*)setup->x, SFX_DEFAULT);
+			SoundEffect(SFX_LARA_SPLASH, (PHD_3DPOS*)setup, SFX_DEFAULT);
 			return;
 		}
 	}
@@ -1009,7 +1009,105 @@ void SetupSplash(SPLASH_SETUP* setup)
 	splash->OuterRad = setup->OuterRad;
 	splash->OuterSize = setup->OuterSize;
 	splash->OuterRadVel = setup->OuterRadVel;
-	SoundEffect(SFX_LARA_SPLASH, (PHD_3DPOS*)setup->x, SFX_DEFAULT);
+	SoundEffect(SFX_LARA_SPLASH, (PHD_3DPOS*)setup, SFX_DEFAULT);
+}
+
+void UpdateSplashes()
+{
+	SPLASH_STRUCT* splash;
+	RIPPLE_STRUCT* ripple;
+
+	for (int i = 0; i < 4; i++)
+	{
+		splash = &splashes[i];
+
+		if (!(splash->flags & 1))
+			continue;
+
+		splash->InnerRad += splash->InnerRadVel >> 5;
+		splash->InnerSize += splash->InnerRadVel >> 6;
+		splash->InnerRadVel -= splash->InnerRadVel >> 6;
+		splash->MiddleRad += splash->MiddleRadVel >> 5;
+		splash->MiddleSize += splash->MiddleRadVel >> 6;
+		splash->MiddleRadVel -= splash->MiddleRadVel >> 6;
+		splash->OuterRad += splash->OuterRadVel >> 5;
+		splash->OuterSize += splash->OuterRadVel >> 6;
+		splash->OuterRadVel -= splash->OuterRadVel >> 6;
+		splash->InnerY += splash->InnerYVel >> 4;
+		splash->InnerYVel += 0x400;
+
+		if (splash->InnerYVel > 0x4000)
+			splash->InnerYVel = 0x4000;
+
+		if (splash->InnerY < 0)
+		{
+			if (splash->InnerY < -0x7000)
+				splash->InnerY = -0x7000;
+		}
+		else
+		{
+			splash->InnerY = 0;
+			splash->flags |= 4;
+			splash->life -= 2;
+
+			if (!splash->life)
+				splash->flags = 0;
+		}
+
+		splash->MiddleY += splash->MiddleYVel >> 4;
+		splash->MiddleYVel += 0x380;
+
+		if (splash->MiddleYVel > 0x4000)
+			splash->MiddleYVel = 0x4000;
+
+		if (splash->MiddleY < 0)
+		{
+			if (splash->MiddleY < -0x7000)
+				splash->MiddleY = -0x7000;
+		}
+		else
+		{
+			splash->MiddleY = 0;
+			splash->flags |= 8;
+		}
+	}
+
+	for (int i = 0; i < 32; i++)
+	{
+		ripple = &ripples[i];
+
+		if (!(ripple->flags & 1))
+			continue;
+
+		if (ripple->size < 252)
+		{
+			if (ripple->flags & 2)
+				ripple->size += 2;
+			else
+				ripple->size += 4;
+		}
+
+		if (ripple->init)
+		{
+			if (ripple->init < ripple->life)
+			{
+				if (ripple->flags & 2)
+					ripple->init += 8;
+				else
+					ripple->init += 4;
+
+				if (ripple->init >= ripple->life)
+					ripple->init = 0;
+			}
+		}
+		else
+		{
+			ripple->life -= 3;
+
+			if (ripple->life > 250)
+				ripple->flags = 0;
+		}
+	}
 }
 
 void inject_effect2(bool replace)
@@ -1029,4 +1127,5 @@ void inject_effect2(bool replace)
 	INJECT(0x004309B0, TriggerUnderwaterBlood, replace);
 	INJECT(0x00430910, SetupRipple, replace);
 	INJECT(0x00430620, SetupSplash, replace);
+	INJECT(0x00430710, UpdateSplashes, replace);
 }
