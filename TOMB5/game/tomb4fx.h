@@ -42,10 +42,10 @@ void UpdateGunShells();
 void DrawGunshells();
 void TriggerShatterSmoke(long x, long y, long z);
 void TriggerGunSmoke(long x, long y, long z, long xVel, long yVel, long zVel, long notLara, long weaponType, long shade);
+long GetFreeSmokeSpark();
 
 #define UpdateFireSparks	( (void(__cdecl*)()) 0x004813B0 )
 #define UpdateSmokeSparks	( (void(__cdecl*)()) 0x00481DD0 )
-#define GetFreeSmokeSpark	( (long(__cdecl*)()) 0x00481D40 )
 #define ClearFires	( (void(__cdecl*)()) 0x00481B10 )
 #define TriggerFenceSparks	( (void(__cdecl*)(long, long, long, long, long)) 0x00485D80 )
 #define AddFire	( (void(__cdecl*)(long, long, long, long, short, short)) 0x00481B40 )

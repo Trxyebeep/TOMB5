@@ -1930,6 +1930,47 @@ void TriggerGunSmoke(long x, long y, long z, long xVel, long yVel, long zVel, lo
 	sptr->mirror = gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom;
 }
 
+long GetFreeSmokeSpark()
+{
+	SMOKE_SPARKS* sptr;
+	long min_life, min_life_num;
+
+	sptr = &smoke_spark[next_smoke_spark];
+	min_life = 4095;
+	min_life_num = 0;
+
+	for (int free = next_smoke_spark, i = 0; i < 32; i++)
+	{
+		if (sptr->On)
+		{
+			if (sptr->Life < min_life)
+			{
+				min_life_num = free;
+				min_life = sptr->Life;
+			}
+
+			if (free == 31)
+			{
+				sptr = &smoke_spark[0];
+				free = 0;
+			}
+			else
+			{
+				free++;
+				sptr++;
+			}
+		}
+		else
+		{
+			next_smoke_spark = (free + 1) & 0x1F;
+			return free;
+		}
+	}
+
+	next_smoke_spark = (min_life_num + 1) & 0x1F;
+	return min_life_num;
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1971,4 +2012,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00483090, DrawGunshells, replace);
 	INJECT(0x004823A0, TriggerShatterSmoke, replace);
 	INJECT(0x004820A0, TriggerGunSmoke, replace);
+	INJECT(0x00481D40, GetFreeSmokeSpark, replace);
 }
