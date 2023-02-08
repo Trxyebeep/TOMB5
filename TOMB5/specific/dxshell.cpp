@@ -1925,6 +1925,99 @@ const char* DXGetErrorString(HRESULT hr)
 	return "Undefined Error";
 }
 
+const char* DIGetErrorString(HRESULT hr)
+{
+	switch (hr)
+	{
+	case DD_OK:
+		return "The request completed successfully.";
+
+	case DIERR_OLDDIRECTINPUTVERSION:
+	case DIERR_BETADIRECTINPUTVERSION:
+		return "The application was written for an unsupported prerelease version of DirectInput.";
+
+	case DIERR_BADDRIVERVER:
+		return "The object could not be created due to an incompatible driver version or mismatched or incomplete driver components.";
+
+	case DIERR_DEVICENOTREG:
+		return "The device or device instance or effect is not registered with DirectInput.";
+
+	case DIERR_NOTFOUND:
+		return "The requested object does not exist.";
+
+	case DIERR_INVALIDPARAM:
+		return "An invalid parameter was passed to the returning function,or the object was not in a state that admitted the function to be called.";
+
+	case DIERR_NOINTERFACE:
+		return "The specified interface is not supported by the object";
+
+	case DIERR_GENERIC:
+		return "An undetermined error occured inside the DInput subsystem";
+
+	case DIERR_OUTOFMEMORY:
+		return "The DInput subsystem couldn't allocate sufficient memory to complete the caller's request.";
+
+	case DIERR_UNSUPPORTED:
+		return "The function called is not supported at this time";
+
+	case DIERR_NOTINITIALIZED:
+		return "This object has not been initialized";
+
+	case DIERR_ALREADYINITIALIZED:
+		return "This object is already initialized";
+
+	case DIERR_NOAGGREGATION:
+		return "This object does not support aggregation";
+
+	case DIERR_OTHERAPPHASPRIO:
+		return "Another app has a higher priority level, preventing this call from succeeding.";
+
+	case DIERR_INPUTLOST:
+		return "Access to the device has been lost.  It must be re-acquired.";
+
+	case DIERR_ACQUIRED:
+		return "The operation cannot be performed while the device is acquired.";
+
+	case DIERR_NOTACQUIRED:
+		return "The operation cannot be performed unless the device is acquired.";
+
+	case DIERR_INSUFFICIENTPRIVS:
+		return "Unable to IDirectInputJoyConfig_Acquire because the user does not have sufficient privileges to change the joystick configuration.";
+
+	case DIERR_DEVICEFULL:
+		return "The device is full.";
+
+	case DIERR_MOREDATA:
+		return "Not all the requested information fit into the buffer.";
+
+	case DIERR_NOTDOWNLOADED:
+		return "The effect is not downloaded.";
+
+	case DIERR_HASEFFECTS:
+		return " The device cannot be reinitialized because there are still effects attached to it.";
+
+	case DIERR_NOTEXCLUSIVEACQUIRED:
+		return " The operation cannot be performed unless the device is acquired in DISCL_EXCLUSIVE mode.";
+
+	case DIERR_INCOMPLETEEFFECT:
+		return " The effect could not be downloaded because essential information is missing.";
+
+	case DIERR_NOTBUFFERED:
+		return " Attempted to read buffered device data from a device that is not buffered.";
+
+	case DIERR_EFFECTPLAYING:
+		return " An attempt was made to modify parameters of an effect while it is playing";
+
+	case DIERR_UNPLUGGED:
+		return " The operation could not be completed because the device is not plugged in.";
+
+	case DIERR_REPORTFULL:
+		return " SendDeviceData failed because more information was requested to be sent than can be sent to the device.  Some devices have restrictions on how much data can be sent to them";
+	}
+
+	return "Undefined Error";
+}
+
 void inject_dxshell(bool replace)
 {
 	INJECT(0x004A2880, DXReadKeyboard, replace);
@@ -1966,4 +2059,5 @@ void inject_dxshell(bool replace)
 	INJECT(0x004A28F0, DXGetKey, replace);
 	INJECT(0x004A2970, DXInitInput, replace);
 	INJECT(0x0049E050, DXGetErrorString, replace);
+	INJECT(0x0049EFA0, DIGetErrorString, replace);
 }

@@ -42,5 +42,4 @@ long DXUpdateJoystick();
 long DXGetKey();
 void DXInitInput(HWND hwnd, HINSTANCE hinstance);
 const char* DXGetErrorString(HRESULT hr);
-
-#define DIGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049EFA0 )
+const char* DIGetErrorString(HRESULT hr);
