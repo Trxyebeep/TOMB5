@@ -1413,6 +1413,31 @@ long GetFreeBubble()
 	return free;
 }
 
+void CreateBubble(PHD_3DPOS* pos, short room_number, long size, long biggest, long flags, short xv, short yv, short zv)
+{
+	BUBBLE_STRUCT* bubble;
+
+	GetFloor(pos->x_pos, pos->y_pos, pos->z_pos, &room_number);
+
+	if (room[room_number].flags & ROOM_UNDERWATER)
+	{
+		bubble = &Bubbles[GetFreeBubble()];
+		bubble->pos.x = pos->x_pos;
+		bubble->pos.y = pos->y_pos;
+		bubble->pos.z = pos->z_pos;
+		bubble->room_number = room_number;
+		bubble->speed = (GetRandomControl() & 0xFF) + 64;
+		bubble->shade = 0;
+		bubble->size = short((size + (biggest & GetRandomControl())) << 1);
+		bubble->dsize = bubble->size << 4;
+		bubble->vel = (GetRandomControl() & 0x1F) + 32;
+		bubble->Flags = (char)flags;
+		bubble->Xvel = xv;
+		bubble->Yvel = yv;
+		bubble->Zvel = zv;
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1445,4 +1470,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00483AC0, UpdateFadeClip, replace);
 	INJECT(0x00483A90, SetFadeClip, replace);
 	INJECT(0x004832C0, GetFreeBubble, replace);
+	INJECT(0x00483350, CreateBubble, replace);
 }

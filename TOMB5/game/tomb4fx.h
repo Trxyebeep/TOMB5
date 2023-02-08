@@ -33,12 +33,12 @@ void SetScreenFadeIn(short speed);
 void UpdateFadeClip();
 void SetFadeClip(short height, short speed);
 long GetFreeBubble();
+void CreateBubble(PHD_3DPOS* pos, short room_number, long size, long biggest, long flags, short xv, short yv, short zv);
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define UpdateGunShells	( (void(__cdecl*)()) 0x00482D80 )
 #define UpdateFireSparks	( (void(__cdecl*)()) 0x004813B0 )
 #define UpdateSmokeSparks	( (void(__cdecl*)()) 0x00481DD0 )
-#define	CreateBubble	( (void(__cdecl*)(PHD_3DPOS*, short, long, long, long, long, long , long)) 0x00483350 )
 #define	TriggerGunShell	( (void(__cdecl*)(short, short, long)) 0x00482A60 )
 #define GetFreeSmokeSpark	( (long(__cdecl*)()) 0x00481D40 )
 #define TriggerSmallSplash	( (void(__cdecl*)(long, long, long, long)) 0x00483180 )
