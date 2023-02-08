@@ -1497,7 +1497,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00484640	+	GetFreeShockwave
 0x00484670	+	TriggerShockwave
 0x00484700	+	TriggerShockwaveHitEffect
-0x004849A0		UpdateShockwaves
+0x004849A0	+	UpdateShockwaves
 0x00484B30	+	TriggerLightning
 0x00484CB0	+	UpdateLightning
 0x00484D70	+	LSpline

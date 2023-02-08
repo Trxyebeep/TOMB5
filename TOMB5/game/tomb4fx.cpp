@@ -1104,6 +1104,49 @@ void TriggerShockwave(PHD_VECTOR* pos, long InnerOuterRads, long speed, long bgr
 	}
 }
 
+void UpdateShockwaves()
+{
+	SHOCKWAVE_STRUCT* sw;
+	short* bounds;
+	long dx, dz, dist;
+	short dir;
+
+	for (int i = 0; i < 16; i++)
+	{
+		sw = &ShockWaves[i];
+
+		if (!sw->life)
+			continue;
+
+		sw->life--;
+
+		if (!sw->life)
+			continue;
+
+		sw->OuterRad += sw->Speed;
+		sw->InnerRad += sw->Speed >> 1;
+		sw->Speed -= sw->Speed >> 4;
+
+		if (lara_item->hit_points >= 0 && sw->Flags & 3)
+		{
+			bounds = GetBestFrame(lara_item);
+			dx = lara_item->pos.x_pos - sw->x;
+			dz = lara_item->pos.z_pos - sw->z;
+			dist = phd_sqrt(SQUARE(dx) + SQUARE(dz));
+
+			if (sw->y > lara_item->pos.y_pos + bounds[2] && sw->y < bounds[3] + lara_item->pos.y_pos + 256 &&
+				dist > sw->InnerRad && dist < sw->OuterRad)
+			{
+				dir = (short)phd_atan(dz, dx);
+				TriggerShockwaveHitEffect(lara_item->pos.x_pos, sw->y, lara_item->pos.z_pos, *(long*)&sw->r, dir, sw->Speed);
+				lara_item->hit_points -= sw->Speed >> (((sw->Flags & 2) != 0) + 2);
+			}
+			else
+				sw->Temp = 0;
+		}
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1126,4 +1169,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00484700, TriggerShockwaveHitEffect, replace);
 	INJECT(0x00484640, GetFreeShockwave, replace);
 	INJECT(0x00484670, TriggerShockwave, replace);
+	INJECT(0x004849A0, UpdateShockwaves, replace);
 }

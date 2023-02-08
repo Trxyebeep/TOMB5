@@ -23,6 +23,7 @@ void UpdateLightning();
 void TriggerShockwaveHitEffect(long x, long y, long z, long rgb, short dir, long speed);
 long GetFreeShockwave();
 void TriggerShockwave(PHD_VECTOR* pos, long InnerOuterRads, long speed, long bgrl, long XRotFlags);
+void UpdateShockwaves();
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define TriggerLaraDrips	( (void(__cdecl*)()) 0x00483F00 )
@@ -31,7 +32,6 @@ void TriggerShockwave(PHD_VECTOR* pos, long InnerOuterRads, long speed, long bgr
 #define UpdateGunShells	( (void(__cdecl*)()) 0x00482D80 )
 #define UpdateFireSparks	( (void(__cdecl*)()) 0x004813B0 )
 #define UpdateSmokeSparks	( (void(__cdecl*)()) 0x00481DD0 )
-#define UpdateShockwaves	( (void(__cdecl*)()) 0x004849A0 )
 #define	SetFadeClip	( (void(__cdecl*)(short, short)) 0x00483A90 )
 #define	SetScreenFadeOut	( (void(__cdecl*)(long, long)) 0x00483B30 )
 #define	SetScreenFadeIn	( (void(__cdecl*)(long)) 0x00483BA0 )
