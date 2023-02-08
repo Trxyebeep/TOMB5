@@ -18,6 +18,7 @@ void SetGunFlash(short weapon);
 void DrawGunflashes();
 void trig_actor_gunflash(long* mx, PHD_VECTOR* pos);
 void TriggerLightningGlow(long x, long y, long z, long rgb);
+void CalcLightningSpline(PHD_VECTOR* pos, SVECTOR* dest, LIGHTNING_STRUCT* lptr);
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define TriggerLaraDrips	( (void(__cdecl*)()) 0x00483F00 )
@@ -44,4 +45,3 @@ void TriggerLightningGlow(long x, long y, long z, long rgb);
 #define S_DrawFires	( (void(__cdecl*)()) 0x00481BB0 )
 #define TriggerShatterSmoke	( (void(__cdecl*)(long, long, long)) 0x004823A0 )
 #define Fade	( (void(__cdecl*)()) 0x00483BF0 )
-#define CalcLightningSpline	( (void(__cdecl*)(PHD_VECTOR*, SVECTOR*, LIGHTNING_STRUCT*)) 0x00484EB0 )
