@@ -685,6 +685,14 @@ void TriggerExplosionSmokeEnd(long x, long y, long z, long uw)
 	sptr->Size = sptr->sSize;
 }
 
+void ClearDynamics()
+{
+	number_dynamics = 0;
+
+	for (int i = 0; i < 32; i++)
+		dynamics[i].on = 0;
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -694,4 +702,5 @@ void inject_effect2(bool replace)
 	INJECT(0x00431560, ControlSmokeEmitter, replace);
 	INJECT(0x00431E70, ControlEnemyMissile, replace);
 	INJECT(0x0042FA10, TriggerExplosionSmokeEnd, replace);
+	INJECT(0x00431530, ClearDynamics, replace);
 }
