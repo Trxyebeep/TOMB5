@@ -10,6 +10,7 @@
 #include "draw.h"
 #include "laramisc.h"
 #include "../specific/3dmath.h"
+#include "gameflow.h"
 
 static PHD_VECTOR PulleyPos = { 0, 0, -148 };
 static PHD_VECTOR SwitchPos = { 0, 0, 0 };
@@ -1097,6 +1098,43 @@ long GetSwitchTrigger(ITEM_INFO* item, short* ItemNos, long AttatchedToSwitch)
 	return num;
 }
 
+long GetKeyTrigger(ITEM_INFO* item)
+{
+	FLOOR_INFO* floor;
+	short* data;
+
+	if (item->object_number == PUZZLE_HOLE8 && gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
+		return 1;
+
+	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &item->room_number);
+	GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+
+	if (!trigger_index)
+		return 0;
+
+	data = trigger_index;
+
+	while ((*data & 0x1F) != TRIGGER_TYPE && !(*data & 0x8000)) data++;
+
+	if (!(*data & TRIGGER_TYPE))
+		return 0;
+
+	data += 2;
+
+	while (1)
+	{
+		if ((*data & 0x3C00) == TO_OBJECT && item == &items[*data & 0x3FF])
+			return 1;
+
+		if (*data & 0x8000)
+			break;
+
+		data++;
+	}
+
+	return 0;
+}
+
 void inject_switch(bool replace)
 {
 	INJECT(0x0047FC80, CrowDoveSwitchControl, replace);
@@ -1118,4 +1156,5 @@ void inject_switch(bool replace)
 	INJECT(0x0047FF20, ProcessExplodingSwitchType8, replace);
 	INJECT(0x0047D9D0, TestTriggersAtXYZ, replace);
 	INJECT(0x0047D7B0, GetSwitchTrigger, replace);
+	INJECT(0x0047D8C0, GetKeyTrigger, replace);
 }
