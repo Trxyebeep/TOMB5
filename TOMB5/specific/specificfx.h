@@ -59,7 +59,7 @@ void S_DrawFloorLasers(ITEM_INFO* item);
 void DrawLightning();
 void OldDrawLightning();
 void DrawTwogunLaser(TWOGUN_INFO* info);
+void DrawRope(ROPE_STRUCT* rope);
 
-#define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
 #define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
 #define S_DrawSplashes	( (void(__cdecl*)()) 0x004C1790 )

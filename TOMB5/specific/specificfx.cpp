@@ -6664,6 +6664,129 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 	phd_PopMatrix();
 }
 
+void DrawRope(ROPE_STRUCT* rope)
+{
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	long dx, dy, d, b, w, spec;
+	long x1, y1, z1, x2, y2, z2, x3, y3, x4, y4;
+
+	ProjectRopePoints(rope);
+	dx = rope->Coords[1][0] - rope->Coords[0][0];
+	dy = rope->Coords[1][1] - rope->Coords[0][1];
+	d = SQUARE(dx) + SQUARE(dy);
+	d = phd_sqrt(abs(d));
+
+	dx <<= 16;
+	dy <<= 16;
+	d <<= 16;
+
+	if (d)
+	{
+		d = ((0x1000000 / (d >> 8)) << 8) >> 8;
+		b = dx;
+		dx = ((__int64)-dy * (__int64)d) >> 16;
+		dy = ((__int64)b * (__int64)d) >> 16;
+	}
+
+	w = 0x60000;
+
+	if (rope->Coords[0][2])
+	{
+		w = 0x60000 * phd_persp / rope->Coords[0][2];
+
+		if (w < 1)
+			w = 1;
+	}
+
+	w <<= 16;
+	dx = (((__int64)dx * (__int64)w) >> 16) >> 16;
+	dy = (((__int64)dy * (__int64)w) >> 16) >> 16;
+	x1 = rope->Coords[0][0] - dx;
+	y1 = rope->Coords[0][1] - dy;
+	z1 = rope->Coords[0][2] >> 14;
+	x4 = rope->Coords[0][0] + dx;
+	y4 = rope->Coords[0][1] + dy;
+
+	for (int i = 0; i < 23; i++)
+	{
+		dx = rope->Coords[i + 1][0] - rope->Coords[i][0];
+		dy = rope->Coords[i + 1][1] - rope->Coords[i][1];
+		d = SQUARE(dx) + SQUARE(dy);
+		d = phd_sqrt(abs(d));
+
+		dx <<= 16;
+		dy <<= 16;
+		d <<= 16;
+
+		if (d)
+		{
+			d = ((0x1000000 / (d >> 8)) << 8) >> 8;
+			b = dx;
+			dx = ((__int64)-dy * (__int64)d) >> 16;
+			dy = ((__int64)b * (__int64)d) >> 16;
+		}
+
+		w = 0x60000;
+
+		if (rope->Coords[i][2])
+		{
+			w = 0x60000 * phd_persp / rope->Coords[i][2];
+
+			if (w < 3)
+				w = 3;
+		}
+
+		w <<= 16;
+		dx = (((__int64)dx * (__int64)w) >> 16) >> 16;
+		dy = (((__int64)dy * (__int64)w) >> 16) >> 16;
+		x2 = rope->Coords[i + 1][0] - dx;
+		y2 = rope->Coords[i + 1][1] - dy;
+		z2 = rope->Coords[i + 1][2] >> 14;
+		x3 = rope->Coords[i + 1][0] + dx;
+		y3 = rope->Coords[i + 1][1] + dy;
+
+		if ((double)z1 > f_mznear && (double)z2 > f_mznear)
+		{
+			setXY4(v, x1, y1, x2, y2, x3, y3, x4, y4, z1, clipflags);
+			v[0].color = 0xFF7F7F7F;
+			v[1].color = 0xFF7F7F7F;
+			v[2].color = 0xFF7F7F7F;
+			v[3].color = 0xFF7F7F7F;
+
+			spec = 255;
+
+			if (z1 > 0x3000)
+				spec = (255 * (0x5000 - z1)) >> 13;
+
+			v[0].specular = spec << 24;
+			v[1].specular = spec << 24;
+			v[2].specular = spec << 24;
+			v[3].specular = spec << 24;
+			sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 16];
+			tex.drawtype = 1;
+			tex.flag = 0;
+			tex.tpage = sprite->tpage;
+			tex.u1 = sprite->x1;
+			tex.v1 = sprite->y1;
+			tex.u2 = sprite->x1;
+			tex.v2 = sprite->y2;
+			tex.u3 = sprite->x2;
+			tex.v3 = sprite->y2;
+			tex.u4 = sprite->x2;
+			tex.v4 = sprite->y1;
+			AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+		}
+
+		x1 = x2;
+		y1 = y2;
+		z1 = z2;
+		x4 = x3;
+		y4 = y3;
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -6719,4 +6842,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CC0B0, DrawLightning, replace);
 	INJECT(0x004CCBA0, OldDrawLightning, replace);
 	INJECT(0x004CF550, DrawTwogunLaser, replace);
+	INJECT(0x004C6E00, DrawRope, replace);
 }
