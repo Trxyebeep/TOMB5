@@ -169,6 +169,7 @@ uchar SplashLinks[347]
 };
 
 static PHD_VECTOR NodeVectors[16];
+MAP_STRUCT Map[255];
 
 #ifdef GENERAL_FIXES
 static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
@@ -7606,6 +7607,188 @@ long MapCompare(MAP_STRUCT* a, MAP_STRUCT* b)
 	return 0;
 }
 
+void MapInit()
+{
+	static MAP_VECTOR* xVPs[400];
+	static MAP_VECTOR* yVPs[400];
+	MAP_VECTOR* p;
+	MAP_VECTOR vs[1024];
+	D3DVECTOR v[1024];
+	short* data;
+	long n, nVtx, found, lp, lp2, lp3;
+	long x1, y1, x2, y2;
+	short vList[512];
+
+	data = (short*)MapData;
+
+	for (int i = 0; i < number_rooms; i++)
+	{
+		lp2 = 0;
+
+		while(1)
+		{
+			x1 = *data++;
+			y1 = *data++;
+
+			if (x1 == -1 && y1 == -1)
+				return;
+
+			x2 = *data++;
+			y2 = *data++;
+
+			vs[lp2].x1 = x1;
+			vs[lp2].y1 = y1;
+			vs[lp2].x2 = x2;
+			vs[lp2].y2 = y2;
+			lp2++;
+		}
+
+		memset(xVPs, 0, sizeof(xVPs));
+		memset(yVPs, 0, sizeof(yVPs));
+
+		for (lp = 0; lp < lp2; lp++)
+		{
+			if (vs[lp].y1 == vs[lp].y2)
+				xVPs[(20 * (vs[lp].y1 >> 10)) + (vs[lp].x1 >> 10)] = &vs[lp];
+			else
+				yVPs[(20 * (vs[lp].x1 >> 10)) + (vs[lp].y1 >> 10)] = &vs[lp];
+		}
+
+		n = 0;
+		nVtx = 0;
+
+		for (lp = 0; lp < 20; lp++)
+		{
+			for (lp2 = 0; lp2 < 20; lp2++)
+			{
+				p = xVPs[(20 * lp) + lp2];
+
+				if (!p)
+					continue;
+
+				x1 = p->x1;
+				y1 = p->y1;
+				x2 = p->x2;
+				y2 = p->y2;
+
+				while (lp2 <= 20)
+				{
+					p = yVPs[(20 * lp) + 1 + lp2];
+
+					if (!p)
+						break;
+
+					x2 = p->x2;
+					y2 = p->y2;
+					lp2++;
+				}
+
+				v[n].x = (float)y1;
+				v[n].y = (float)x1;
+				v[n].z = 0;
+				v[n + 1].x = (float)y2;
+				v[n + 1].y = (float)x2;
+				v[n + 1].z = 0;
+				n += 2;
+			}
+		}
+
+		for (lp = 0; lp < 20; lp++)
+		{
+			for (lp2 = 0; lp2 < 20; lp2++)
+			{
+				p = yVPs[(20 * lp) + lp2];
+
+				if (!p)
+					continue;
+
+				x1 = p->x1;
+				y1 = p->y1;
+				x2 = p->x2;
+				y2 = p->y2;
+
+				while (lp2 <= 20)
+				{
+					p = yVPs[(20 * lp) + 1 + lp2];
+
+					if (!p)
+						break;
+
+					x2 = p->x2;
+					y2 = p->y2;
+					lp2++;
+				}
+
+				v[n].x = (float)y1;
+				v[n].y = (float)x1;
+				v[n].z = 0;
+				v[n + 1].x = (float)y2;
+				v[n + 1].y = (float)x2;
+				v[n + 1].z = 0;
+				n += 2;
+			}
+		}
+
+		nVtx = n;
+		Map[i].nLines = n >> 1;
+
+		for (lp = 0; lp < Map[i].nLines; lp++)
+		{
+			Map[i].lines[lp << 1] = short(lp << 1);
+			Map[i].lines[(lp << 1) + 1] = short((lp << 1) + 1);
+		}
+
+		n = 0;
+
+		for (lp = 0; lp < nVtx; lp++)
+		{
+			found = 0;
+
+			for (lp2 = 0; lp2 < n; lp2++)
+			{
+				if (v[lp].x == v[vList[lp2]].x)
+				{
+					found = 1;
+					break;
+				}
+			}
+
+			if (found)
+			{
+				for (lp3 = 0; lp3 < Map[i].nLines << 1; lp3++)
+				{
+					if (Map[i].lines[lp3] == lp)
+						Map[i].lines[lp3] = (short)lp2;
+				}
+			}
+			else
+			{
+				vList[n] = (short)lp;
+
+				for (lp3 = 0; lp3 < 2 * Map[i].nLines; lp3++)
+				{
+					if (Map[i].lines[lp3] == lp)
+						Map[i].lines[lp3] = (short)n;
+				}
+
+				n++;
+			}
+		}
+
+		Map[i].nVtx = n;
+
+		for (lp = 0; lp < n; lp++)
+		{
+			Map[i].vtx[lp].x = (long)v[vList[lp]].x;
+			Map[i].vtx[lp].y = (long)v[vList[lp]].y;
+			Map[i].vtx[lp].z = (long)v[vList[lp]].z;
+		}
+
+		Map[i].visited = 1;
+		Map[i].room_number = i;
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -7667,4 +7850,5 @@ void inject_specificfx(bool replace)
 	INJECT(0x004C23C0, S_DrawFireSparks, replace);
 	INJECT(0x004C2980, S_DrawSmokeSparks, replace);
 	INJECT(0x004C54F0, MapCompare, replace);
+	INJECT(0x004C5590, MapInit, replace);
 }

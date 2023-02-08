@@ -2122,7 +2122,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004C4790	+	S_DrawDrawSparksNEW
 0x004C4C60	+	S_DrawSparks
 0x004C54F0	+	MapCompare
-0x004C5590		MapInit
+0x004C5590	+	MapInit
 0x004C5B10	+	ClipLine
 0x004C5EA0	+	DrawFlatSky
 0x004C6BA0	+	ClipCheckPoint

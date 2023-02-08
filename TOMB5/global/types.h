@@ -2466,9 +2466,20 @@ struct BINK_STRUCT
 
 struct MAP_STRUCT
 {
-	char unk[3592];
+	long nLines;
+	long nVtx;
+	PHD_VECTOR vtx[256];
+	short lines[256];
 	short visited;
 	short room_number;
+};
+
+struct MAP_VECTOR
+{
+	long x1;
+	long y1;
+	long x2;
+	long y2;
 };
 
 #ifdef GENERAL_FIXES

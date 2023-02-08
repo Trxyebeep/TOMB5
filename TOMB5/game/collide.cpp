@@ -11,6 +11,7 @@
 #include "pickup.h"
 #include "lara_states.h"
 #include "items.h"
+#include "../specific/specificfx.h"
 
 void TriggerLaraBlood()
 {
@@ -1081,6 +1082,18 @@ long CollideStaticObjects(COLL_INFO* coll, long x, long y, long z, short room_nu
 	return 0;
 }
 
+static void SetMapRoom()
+{
+	for (int i = 0; i < 255; i++)
+	{
+		if (Map[i].room_number == lara_item->room_number)
+		{
+			Map[i].visited = 1;
+			break;
+		}
+	}
+}
+
 void UpdateLaraRoom(ITEM_INFO* item, long height)
 {
 	FLOOR_INFO* floor;
@@ -1097,7 +1110,7 @@ void UpdateLaraRoom(ITEM_INFO* item, long height)
 	if (item->room_number != room_number)
 		ItemNewRoom(lara.item_number, room_number);
 
-	//map code removed
+	SetMapRoom();
 }
 
 void inject_coll(bool replace)

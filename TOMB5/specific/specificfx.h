@@ -65,3 +65,6 @@ void S_DrawSplashes();
 void S_DrawFireSparks(long size, long life);
 void S_DrawSmokeSparks();
 long MapCompare(MAP_STRUCT* a, MAP_STRUCT* b);
+void MapInit();
+
+extern MAP_STRUCT Map[255];
