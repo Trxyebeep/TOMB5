@@ -8,3 +8,4 @@ long GetStringLength(const char* string, short* top, short* bottom);
 void PrintString(ushort x, ushort y, uchar col, const char* string, ushort flags);
 void InitFont();
 void UpdatePulseColour();
+void GetStringDimensions(const char* string, ushort* w, ushort* h);

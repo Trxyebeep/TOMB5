@@ -421,6 +421,38 @@ void UpdatePulseColour()
 	}
 }
 
+void GetStringDimensions(const char* string, ushort* w, ushort* h)
+{
+	long s, l, l2, y;
+	short top, bottom;
+
+	s = *string++;
+	l = GetStringLength(string, &top, &bottom);
+	y = bottom - top + 2;
+
+	while (s)
+	{
+		if (s == '\n')
+		{
+			if (*string == '\n')
+				y += 16;
+			else if (*string)
+			{
+				l2 = GetStringLength(string, &top, &bottom);
+				y += bottom - top + 2;
+
+				if (l2 > l)
+					l = l2;
+			}
+		}
+
+		s = *string++;
+	}
+
+	*w = (ushort)l;
+	*h = (ushort)y;
+}
+
 void inject_text(bool replace)
 {
 	INJECT(0x004805D0, DrawChar, replace);
@@ -428,4 +460,5 @@ void inject_text(bool replace)
 	INJECT(0x00480BC0, PrintString, replace);
 	INJECT(0x00480F00, InitFont, replace);
 	INJECT(0x00480830, UpdatePulseColour, replace);
+	INJECT(0x00480AE0, GetStringDimensions, replace);
 }
