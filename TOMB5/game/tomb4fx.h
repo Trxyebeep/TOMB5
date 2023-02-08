@@ -37,11 +37,11 @@ void CreateBubble(PHD_3DPOS* pos, short room_number, long size, long biggest, lo
 void UpdateBubbles();
 void TriggerSmallSplash(long x, long y, long z, long num);
 long GetFreeGunshell();
+void TriggerGunShell(short leftright, short objnum, long weapon);
 
 #define UpdateGunShells	( (void(__cdecl*)()) 0x00482D80 )
 #define UpdateFireSparks	( (void(__cdecl*)()) 0x004813B0 )
 #define UpdateSmokeSparks	( (void(__cdecl*)()) 0x00481DD0 )
-#define	TriggerGunShell	( (void(__cdecl*)(short, short, long)) 0x00482A60 )
 #define GetFreeSmokeSpark	( (long(__cdecl*)()) 0x00481D40 )
 #define TriggerGunSmoke	( (void(__cdecl*)(long, long, long, long, long, long, long, long, long)) 0x004820A0 )
 #define ClearFires	( (void(__cdecl*)()) 0x00481B10 )
