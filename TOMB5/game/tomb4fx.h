@@ -32,6 +32,7 @@ void SetScreenFadeOut(short speed, short back);
 void SetScreenFadeIn(short speed);
 void UpdateFadeClip();
 void SetFadeClip(short height, short speed);
+long GetFreeBubble();
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define UpdateGunShells	( (void(__cdecl*)()) 0x00482D80 )

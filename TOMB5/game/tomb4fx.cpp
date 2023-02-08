@@ -1371,6 +1371,48 @@ void SetFadeClip(short height, short speed)
 	FadeClipSpeed = speed;
 }
 
+long GetFreeBubble()
+{
+	BUBBLE_STRUCT* bubble;
+	long free;
+
+	free = next_bubble;
+	bubble = &Bubbles[next_bubble];
+
+	for (int i = 0; i < 40; i++)
+	{
+		if (bubble->size)
+		{
+			if (free == 39)
+			{
+				bubble = &Bubbles[0];
+				free = 0;
+			}
+			else
+			{
+				free++;
+				bubble++;
+			}
+		}
+		else
+		{
+			next_bubble = free + 1;
+
+			if (next_bubble >= 40)
+				next_bubble = 0;
+
+			return free;
+		}
+	}
+
+	next_bubble = free + 1;
+
+	if (next_bubble >= 40)
+		next_bubble = 0;
+
+	return free;
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1402,4 +1444,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00483BA0, SetScreenFadeIn, replace);
 	INJECT(0x00483AC0, UpdateFadeClip, replace);
 	INJECT(0x00483A90, SetFadeClip, replace);
+	INJECT(0x004832C0, GetFreeBubble, replace);
 }
