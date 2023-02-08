@@ -1449,7 +1449,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/text.cpp
 
 0x004805D0	+	DrawChar
-0x00480830		UpdatePulseColour
+0x00480830	+	UpdatePulseColour
 0x00480910	+	GetStringLength
 0x00480AE0		GetStringDimensions
 0x00480BC0	+	PrintString

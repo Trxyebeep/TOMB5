@@ -387,10 +387,45 @@ void InitFont()
 	big_char_height = 6;
 }
 
+void UpdatePulseColour()
+{
+	long color, specular;
+	static uchar PulseCnt = 0;
+	uchar c, r, g, b;
+
+	PulseCnt = (PulseCnt + 1) & 0x1F;
+
+	if (PulseCnt > 16)
+		c = -PulseCnt;
+	else
+		c = PulseCnt;
+
+	c <<= 3;
+	aCalcColorSplit(RGBONLY(c, c, c), &color, &specular);
+
+	for (int i = 0; i < 16; i++)
+	{
+		r = CLRR(color);
+		g = CLRG(color);
+		b = CLRB(color);
+		FontShades[1][i << 1].r = r;
+		FontShades[1][i << 1].g = g;
+		FontShades[1][i << 1].b = b;
+
+		r = CLRR(specular);
+		g = CLRG(specular);
+		b = CLRB(specular);
+		FontShades[1][(i << 1) + 1].r = r;
+		FontShades[1][(i << 1) + 1].g = g;
+		FontShades[1][(i << 1) + 1].b = b;
+	}
+}
+
 void inject_text(bool replace)
 {
 	INJECT(0x004805D0, DrawChar, replace);
 	INJECT(0x00480910, GetStringLength, replace);
 	INJECT(0x00480BC0, PrintString, replace);
 	INJECT(0x00480F00, InitFont, replace);
+	INJECT(0x00480830, UpdatePulseColour, replace);
 }
