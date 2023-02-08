@@ -179,6 +179,10 @@ short CreditsTable[] =
 #endif
 #pragma warning(pop)
 
+static float water_buffer[8712];
+static float water_plot_buffer[4356];
+static long water_buffer_calced;
+
 void aLoadRoomStream()
 {
 	ROOM_INFO* room_data;
@@ -786,6 +790,73 @@ void PrintBigString(ushort x, ushort y, uchar col, const char* string, ushort fl
 	ScaleFlag = 0;
 }
 
+void aProcessWater(long n)
+{
+	float* pPlot;
+	float* pOld;
+	float* pNew;
+	float* pAbove;
+	float* pBelow;
+	float* stash;
+	float num;
+	long rnd, val, lp, lp2;
+
+	pPlot = water_plot_buffer;
+
+	if (water_buffer_calced)
+	{
+		pOld = water_buffer;
+		pNew = &water_buffer[4356];
+	}
+	else
+	{
+		pOld = &water_buffer[4356];
+		pNew = water_buffer;
+	}
+
+	pOld += 67;
+	pNew += 67;
+	pAbove = pOld - 66;
+	pBelow = pOld + 66;
+	stash = pNew;
+
+	for (lp = 0; lp < 64; lp++)
+	{
+		for (lp2 = 0; lp2 < 64; lp2++)
+		{
+			num = (pOld[lp2 + 1] + pOld[lp2 - 1] + pAbove[lp2] + pAbove[lp2 + 1] + pAbove[lp2 - 1] + pBelow[lp2] + pBelow[lp2 + 1] + pBelow[lp2 - 1]) *
+				0.25F - pNew[lp2];
+			num -= num * 0.0125F;
+			pNew[lp2] = num;
+			pPlot[lp2] = -num;
+		}
+
+		pPlot += 66;
+		pOld += 66;
+		pNew += 66;
+		pAbove += 66;
+		pBelow += 66;
+	}
+
+	rnd = rand() & 3;
+
+	for (lp = 0; lp < rnd; lp++)
+	{
+		val = 66 * (rand() % 56 + 4);
+		val += rand() % 56 + 4;
+		num = float(rand() & 7);
+		stash[val] += num;
+
+		num *= 0.5F;
+		stash[val - 66] += num;
+		stash[val + 66] += num;
+		stash[val - 1] += num;
+		stash[val + 1] += num;
+	}
+
+	water_buffer_calced ^= 1;
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -804,4 +875,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x00491FE0, DrawBigChar, replace);
 	INJECT(0x004922E0, GetBigStringLength, replace);
 	INJECT(0x004924B0, PrintBigString, replace);
+	INJECT(0x00491980, aProcessWater, replace);
 }

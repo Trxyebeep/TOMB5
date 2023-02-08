@@ -1639,7 +1639,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004916C0	+	aLoadRoomStream
 0x004917D0	+	aFixUpRoom
 0x00491950	+	aInitWater
-0x00491980		aProcessWater
+0x00491980	+	aProcessWater
 0x00491BE0	+	aUpdate
 0x00491CC0	+	aReadCutData
 0x00491D30	+	aCalcDepackBufferSz

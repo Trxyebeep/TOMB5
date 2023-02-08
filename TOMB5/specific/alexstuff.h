@@ -19,3 +19,4 @@ long DoCredits();
 void DrawBigChar(short x, short y, ushort col, CHARDEF* c, long scale);
 long GetBigStringLength(const char* string, short* top, short* bottom);
 void PrintBigString(ushort x, ushort y, uchar col, const char* string, ushort flags);
+void aProcessWater(long n);
