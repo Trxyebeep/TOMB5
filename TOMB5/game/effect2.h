@@ -20,6 +20,7 @@ void SetupRipple(long x, long y, long z, long size, long flags);
 void SetupSplash(SPLASH_SETUP* setup);
 void UpdateSplashes();
 void TriggerRicochetSpark(GAME_VECTOR* pos, long ang, long num, long smoke_only);
+void TriggerExplosionSmoke(long x, long y, long z, long uw);
 
 #define UpdateSparks	( (void(__cdecl*)()) 0x0042E8B0 )
 #define TriggerFireFlame	( (void(__cdecl*)(long, long, long, long, signed long)) 0x0042FE20 )

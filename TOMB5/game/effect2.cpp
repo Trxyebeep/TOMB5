@@ -1238,6 +1238,70 @@ void TriggerRicochetSpark(GAME_VECTOR* pos, long ang, long num, long smoke_only)
 	}
 }
 
+void TriggerExplosionSmoke(long x, long y, long z, long uw)
+{
+	SPARKS* sptr;
+	long dx, dz;
+
+	dx = lara_item->pos.x_pos - x;
+	dz = lara_item->pos.z_pos - z;
+
+	if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000)
+		return;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+
+#ifdef GENERAL_FIXES
+	if (!uw)
+	{
+		sptr->sR = 196;
+		sptr->sG = 196;
+		sptr->sB = 196;
+		sptr->dR = 128;
+		sptr->dG = 128;
+		sptr->dB = 128;
+	}
+	else
+#endif
+	{
+		sptr->sR = 144;
+		sptr->sG = 144;
+		sptr->sB = 144;
+		sptr->dR = 64;
+		sptr->dG = 64;
+		sptr->dB = 64;
+	}
+
+	sptr->ColFadeSpeed = 2;
+	sptr->FadeToBlack = 8;
+	sptr->TransType = 3;
+	sptr->Life = (GetRandomControl() & 3) + 10;
+	sptr->sLife = sptr->Life;
+	sptr->x = (GetRandomControl() & 0x1FF) + x - 256;
+	sptr->y = (GetRandomControl() & 0x1FF) + y - 256;
+	sptr->z = (GetRandomControl() & 0x1FF) + z - 256;
+	sptr->Xvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
+	sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
+
+	if (uw)
+		sptr->Friction = 2;
+	else
+		sptr->Friction = 6;
+
+	sptr->Flags = 538;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->Scalar = 1;
+	sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
+	sptr->Gravity = -3 - (GetRandomControl() & 3);
+	sptr->MaxYvel = -4 - (GetRandomControl() & 3);
+	sptr->dSize = (GetRandomControl() & 0x1F) + 128;
+	sptr->sSize = sptr->dSize >> 2;
+	sptr->Size = sptr->sSize >> 2;
+	GetRandomControl();
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -1257,4 +1321,5 @@ void inject_effect2(bool replace)
 	INJECT(0x00430620, SetupSplash, replace);
 	INJECT(0x00430710, UpdateSplashes, replace);
 	INJECT(0x0042F060, TriggerRicochetSpark, replace);
+	INJECT(0x0042FC20, TriggerExplosionSmoke, replace);
 }
