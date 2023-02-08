@@ -15,6 +15,7 @@
 #include "tomb4fx.h"
 #include "draw.h"
 #include "traps.h"
+#include "sound.h"
 
 static BITE_INFO Guns[2] =
 {
@@ -588,6 +589,84 @@ void FireTwogunWeapon(ITEM_INFO* item, long lr, long plasma)
 	}
 }
 
+void ControlGunTestStation(ITEM_INFO* item)
+{
+	TWOGUN_INFO* p;
+	PHD_VECTOR pos;
+	PHD_VECTOR pos2;
+	short f, lp;
+	short ang[2];
+
+	f = item->frame_number - anims[item->anim_number].frame_base;
+
+	if (f < 340)
+	{
+		item->mesh_bits = 1;
+		return;
+	}
+
+	if (f > 372)
+		return;
+
+	if (f == 340)
+	{
+		SoundEffect(SFX_SMASH_ROCK, &item->pos, SFX_DEFAULT);
+		SoundEffect(SFX_2GUNTEX_LASER_FIRE, &item->pos, SFX_DEFAULT);
+		ExplodeItemNode(item, 0, 0, 64);
+		item->mesh_bits = 2;
+
+		for (lp = 0; lp < 4; lp++)
+		{
+			if (!twogun[lp].life || lp == 3)
+				break;
+		}
+
+		p = &twogun[lp];
+		p->pos.x_pos = item->pos.x_pos + (512 * phd_sin(item->pos.y_rot) >> 14);
+		p->pos.y_pos = item->pos.y_pos - 628;
+		p->pos.z_pos = item->pos.z_pos + (512 * phd_cos(item->pos.y_rot) >> 14);
+		p->pos.x_rot = -512;
+		p->pos.y_rot = item->pos.y_rot;
+		p->pos.z_rot = 0;
+		p->life = 32;
+		p->coil = 0;
+		p->spin = 0;
+		p->spinadd = 0;
+		p->length = 0;
+		p->dlength = 3072;
+		p->size = 1;
+		p->r = 0;
+		p->g = 96;
+		p->b = -1;	//255
+		p->fadein = 0;
+		item->item_flags[0] = lp;
+	}
+
+	p = &twogun[item->item_flags[0]];
+	pos.x = p->pos.x_pos;
+	pos.y = p->pos.y_pos;
+	pos.z = p->pos.z_pos;
+
+	ang[0] = item->pos.y_rot;
+	ang[1] = 0;
+	TriggerTwogunPlasma(&pos, ang, (373 - f) >> 1);
+	TriggerTwogunPlasma(&pos, ang, (373 - f) >> 1);
+
+	if (f == 340 || GlobalCounter & 1 && f < 356)
+	{
+		p = &twogun[item->item_flags[0]];
+		pos2.x = p->pos.x_pos + (p->dlength * phd_sin(item->pos.y_rot) >> 14);
+		pos2.y = p->pos.y_pos + 128;
+		pos2.z = p->pos.z_pos + (p->dlength * phd_cos(item->pos.y_rot) >> 14);
+
+		if (f == 340)
+			TriggerLightning(&pos, &pos2, (GetRandomControl() & 7) + 8, RGBA(uchar(p->r >> 1), uchar(p->g >> 1), uchar(p->b >> 1), 50), 12, 64, 5);
+
+		TriggerLightningGlow(pos.x, pos.y, pos.z, RGBA(p->r >> 1, p->g >> 1, p->b >> 1, (GetRandomControl() & 3) + 64));
+		TriggerDynamic(pos.x, pos.y, pos.z, (GetRandomControl() & 3) + 20, p->r, p->g, p->b);
+	}
+}
+
 void inject_twogun(bool replace)
 {
 	INJECT(0x0048E3C0, ControlZipController, replace);
@@ -597,4 +676,5 @@ void inject_twogun(bool replace)
 	INJECT(0x0048D900, DrawTwogunLasers, replace);
 	INJECT(0x0048DD80, TriggerTwogunPlasma, replace);
 	INJECT(0x0048DF60, FireTwogunWeapon, replace);
+	INJECT(0x0048D940, ControlGunTestStation, replace);
 }
