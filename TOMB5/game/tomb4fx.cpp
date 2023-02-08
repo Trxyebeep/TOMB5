@@ -1277,6 +1277,49 @@ void UpdateDrips()
 	}
 }
 
+void Fade()
+{
+	long oldfucker;
+
+	oldfucker = ScreenFade;
+
+	if (dScreenFade && dScreenFade >= ScreenFade)
+	{
+		ScreenFade += ScreenFadeSpeed;
+
+		if (ScreenFade > dScreenFade)
+		{
+			ScreenFade = dScreenFade;
+
+			if (oldfucker >= dScreenFade)
+			{
+				ScreenFadedOut = 1;
+
+				if (ScreenFadeBack)
+				{
+					dScreenFade = 0;
+					ScreenFadeBack = 0;
+				}
+				else
+					ScreenFading = 0;
+			}
+		}
+	}
+	else if (dScreenFade < ScreenFade)
+	{
+		ScreenFade -= ScreenFadeSpeed;
+
+		if (ScreenFade < dScreenFade)
+		{
+			ScreenFade = dScreenFade;
+			ScreenFading = 0;
+		}
+	}
+
+	if (ScreenFade || dScreenFade)
+		DrawPsxTile(0, phd_winwidth | (phd_winheight << 16), RGBA(ScreenFade, ScreenFade, ScreenFade, 98), 2, 0);
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1303,4 +1346,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00483D00, GetFreeDrip, replace);
 	INJECT(0x00483F00, TriggerLaraDrips, replace);
 	INJECT(0x00483D90, UpdateDrips, replace);
+	INJECT(0x00483BF0, Fade, replace);
 }

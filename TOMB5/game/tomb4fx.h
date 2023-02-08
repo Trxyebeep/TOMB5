@@ -27,6 +27,7 @@ void UpdateShockwaves();
 long GetFreeDrip();
 void TriggerLaraDrips();
 void UpdateDrips();
+void Fade();
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define UpdateFadeClip	( (void(__cdecl*)()) 0x00483AC0 )
@@ -47,4 +48,3 @@ void UpdateDrips();
 #define DrawGunshells	( (void(__cdecl*)()) 0x00483090 )
 #define S_DrawFires	( (void(__cdecl*)()) 0x00481BB0 )
 #define TriggerShatterSmoke	( (void(__cdecl*)(long, long, long)) 0x004823A0 )
-#define Fade	( (void(__cdecl*)()) 0x00483BF0 )
