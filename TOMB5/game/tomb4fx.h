@@ -50,7 +50,7 @@ long GetFreeFireSpark();
 void TriggerGlobalFireSmoke();
 void TriggerGlobalFireFlame();
 void TriggerGlobalStaticFlame();
+void ClearFires();
 
 #define UpdateFireSparks	( (void(__cdecl*)()) 0x004813B0 )
-#define ClearFires	( (void(__cdecl*)()) 0x00481B10 )
 #define TriggerFenceSparks	( (void(__cdecl*)(long, long, long, long, long)) 0x00485D80 )

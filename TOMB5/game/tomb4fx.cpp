@@ -2300,6 +2300,17 @@ void TriggerGlobalStaticFlame()
 	sptr->Size = sptr->dSize;
 }
 
+void ClearFires()
+{
+	FIRE_LIST* fire;
+
+	for (int i = 0; i < 32; i++)
+	{
+		fire = &fires[i];
+		fire->on = 0;
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -2349,4 +2360,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x004816B0, TriggerGlobalFireSmoke, replace);
 	INJECT(0x00481840, TriggerGlobalFireFlame, replace);
 	INJECT(0x00481A00, TriggerGlobalStaticFlame, replace);
+	INJECT(0x00481B10, ClearFires, replace);
 }
