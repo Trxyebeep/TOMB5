@@ -46,6 +46,7 @@ long GetFreeSmokeSpark();
 void UpdateSmokeSparks();
 void S_DrawFires();
 void AddFire(long x, long y, long z, long size, short room_number, short fade);
+long GetFreeFireSpark();
 
 #define UpdateFireSparks	( (void(__cdecl*)()) 0x004813B0 )
 #define ClearFires	( (void(__cdecl*)()) 0x00481B10 )

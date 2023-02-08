@@ -1458,7 +1458,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/tomb4fx.cpp
 
-0x004812B0		GetFreeFireSpark
+0x004812B0	+	GetFreeFireSpark
 0x00481370		keep_those_fires_burning
 0x004813B0		UpdateFireSparks
 0x004816B0		TriggerGlobalFireSmoke
