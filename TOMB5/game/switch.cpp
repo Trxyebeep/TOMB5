@@ -1039,6 +1039,19 @@ void CogSwitchCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 	ObjectCollision(item_number, l, coll);
 }
 
+void ProcessExplodingSwitchType8(ITEM_INFO* item)
+{
+	PHD_VECTOR pos;
+
+	pos.x = 0;
+	pos.y = 0;
+	pos.z = 0;
+	GetJointAbsPosition(item, &pos, 0);
+	TestTriggersAtXYZ(pos.x, pos.y, pos.z, item->room_number, 1, 0);
+	ExplodeItemNode(item, objects[item->object_number].nmeshes - 1, 0, 64);
+	item->mesh_bits |= 1 << (objects[item->object_number].nmeshes - 2);
+}
+
 void inject_switch(bool replace)
 {
 	INJECT(0x0047FC80, CrowDoveSwitchControl, replace);
@@ -1057,4 +1070,5 @@ void inject_switch(bool replace)
 	INJECT(0x0047F610, FullBlockSwitchCollision, replace);
 	INJECT(0x0047F810, CogSwitchControl, replace);
 	INJECT(0x0047F990, CogSwitchCollision, replace);
+	INJECT(0x0047FF20, ProcessExplodingSwitchType8, replace);
 }

@@ -1436,7 +1436,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047F990	+	CogSwitchCollision
 0x0047FC80	+	CrowDoveSwitchControl
 0x0047FD20	+	CrowDoveSwitchCollision
-0x0047FF20		ProcessExplodingSwitchType8
+0x0047FF20	+	ProcessExplodingSwitchType8
 
 
 		game/tower1.cpp
