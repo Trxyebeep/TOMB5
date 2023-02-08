@@ -1052,6 +1052,51 @@ void ProcessExplodingSwitchType8(ITEM_INFO* item)
 	item->mesh_bits |= 1 << (objects[item->object_number].nmeshes - 2);
 }
 
+void TestTriggersAtXYZ(long x, long y, long z, short room_number, short heavy, short flags)
+{
+	GetHeight(GetFloor(x, y, z, &room_number), x, y, z);
+	TestTriggers(trigger_index, heavy, flags);
+}
+
+long GetSwitchTrigger(ITEM_INFO* item, short* ItemNos, long AttatchedToSwitch)
+{
+	FLOOR_INFO* floor;
+	short* data;
+	long num;
+
+	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &item->room_number);
+	GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+
+	if (!trigger_index)
+		return 0;
+
+	data = trigger_index;
+
+	while ((*data & 0x1F) != TRIGGER_TYPE && !(*data & 0x8000)) data++;
+
+	if (!(*data & TRIGGER_TYPE))
+		return 0;
+
+	data += 2;
+	num = 0;
+
+	while (1)
+	{
+		if ((*data & 0x3C00) == TO_OBJECT && item != &items[*data & 0x3FF])
+		{
+			*ItemNos++ = *data & 0x3FF;
+			num++;
+		}
+
+		if (*data & 0x8000)
+			break;
+
+		data++;
+	}
+
+	return num;
+}
+
 void inject_switch(bool replace)
 {
 	INJECT(0x0047FC80, CrowDoveSwitchControl, replace);
@@ -1071,4 +1116,6 @@ void inject_switch(bool replace)
 	INJECT(0x0047F810, CogSwitchControl, replace);
 	INJECT(0x0047F990, CogSwitchCollision, replace);
 	INJECT(0x0047FF20, ProcessExplodingSwitchType8, replace);
+	INJECT(0x0047D9D0, TestTriggersAtXYZ, replace);
+	INJECT(0x0047D7B0, GetSwitchTrigger, replace);
 }
