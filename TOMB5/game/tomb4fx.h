@@ -25,9 +25,9 @@ long GetFreeShockwave();
 void TriggerShockwave(PHD_VECTOR* pos, long InnerOuterRads, long speed, long bgrl, long XRotFlags);
 void UpdateShockwaves();
 long GetFreeDrip();
+void TriggerLaraDrips();
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
-#define TriggerLaraDrips	( (void(__cdecl*)()) 0x00483F00 )
 #define UpdateFadeClip	( (void(__cdecl*)()) 0x00483AC0 )
 #define UpdateDrips	( (void(__cdecl*)()) 0x00483D90 )
 #define UpdateGunShells	( (void(__cdecl*)()) 0x00482D80 )

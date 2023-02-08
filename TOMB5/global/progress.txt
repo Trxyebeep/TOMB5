@@ -1492,7 +1492,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00483BF0		Fade
 0x00483D00	+	GetFreeDrip
 0x00483D90		UpdateDrips
-0x00483F00		TriggerLaraDrips
+0x00483F00	+	TriggerLaraDrips
 0x00484080	+	ExplodingDeath2
 0x00484640	+	GetFreeShockwave
 0x00484670	+	TriggerShockwave
