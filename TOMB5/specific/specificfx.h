@@ -63,5 +63,4 @@ void DrawRope(ROPE_STRUCT* rope);
 void S_DrawDrawSparks(SPARKS* sptr, long smallest_size, short* xyptr, long* zptr);
 void S_DrawSplashes();
 void S_DrawFireSparks(long size, long life);
-
-#define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
+void S_DrawSmokeSparks();
