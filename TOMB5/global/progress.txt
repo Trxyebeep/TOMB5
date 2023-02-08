@@ -1477,7 +1477,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004829A0	+	GetFreeGunshell
 0x00482A60	+	TriggerGunShell
 0x00482D80	+	UpdateGunShells
-0x00483090		DrawGunshells
+0x00483090	+	DrawGunshells
 0x00483180	+	TriggerSmallSplash
 0x004832C0	+	GetFreeBubble
 0x00483350	+	CreateBubble

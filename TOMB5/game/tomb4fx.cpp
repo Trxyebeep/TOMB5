@@ -1784,6 +1784,32 @@ void UpdateGunShells()
 	}
 }
 
+void DrawGunshells()
+{
+	GUNSHELL_STRUCT* p;
+	OBJECT_INFO* obj;
+
+	phd_left = 0;
+	phd_right = phd_winwidth;
+	phd_top = 0;
+	phd_bottom = phd_winheight;
+
+	for (int i = 0; i < 24; i++)
+	{
+		p = &Gunshells[i];
+
+		if (p->counter)
+		{
+			obj = &objects[p->object_number];
+			phd_PushMatrix();
+			phd_TranslateAbs(p->pos.x_pos, p->pos.y_pos, p->pos.z_pos);
+			phd_RotYXZ(p->pos.y_rot, p->pos.x_rot, p->pos.z_rot);
+			phd_PutPolygons(meshes[obj->mesh_index], -1);
+			phd_PopMatrix();
+		}
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1822,4 +1848,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x004829A0, GetFreeGunshell, replace);
 	INJECT(0x00482A60, TriggerGunShell, replace);
 	INJECT(0x00482D80, UpdateGunShells, replace);
+	INJECT(0x00483090, DrawGunshells, replace);
 }
