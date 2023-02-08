@@ -22,6 +22,7 @@ void CalcLightningSpline(PHD_VECTOR* pos, SVECTOR* dest, LIGHTNING_STRUCT* lptr)
 void UpdateLightning();
 void TriggerShockwaveHitEffect(long x, long y, long z, long rgb, short dir, long speed);
 long GetFreeShockwave();
+void TriggerShockwave(PHD_VECTOR* pos, long InnerOuterRads, long speed, long bgrl, long XRotFlags);
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define TriggerLaraDrips	( (void(__cdecl*)()) 0x00483F00 )
@@ -38,7 +39,6 @@ long GetFreeShockwave();
 #define	TriggerGunShell	( (void(__cdecl*)(short, short, long)) 0x00482A60 )
 #define GetFreeSmokeSpark	( (long(__cdecl*)()) 0x00481D40 )
 #define TriggerSmallSplash	( (void(__cdecl*)(long, long, long, long)) 0x00483180 )
-#define TriggerShockwave	( (void(__cdecl*)(PHD_VECTOR*, long, long, long, long)) 0x00484670 )
 #define TriggerGunSmoke	( (void(__cdecl*)(long, long, long, long, long, long, long, long, long)) 0x004820A0 )
 #define ClearFires	( (void(__cdecl*)()) 0x00481B10 )
 #define TriggerFenceSparks	( (void(__cdecl*)(long, long, long, long, long)) 0x00485D80 )
