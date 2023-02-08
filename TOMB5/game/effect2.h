@@ -11,9 +11,9 @@ void ControlSmokeEmitter(short item_number);
 void ControlEnemyMissile(short fx_number);
 void TriggerExplosionSmokeEnd(long x, long y, long z, long uw);
 void ClearDynamics();
+void TriggerDynamic(long x, long y, long z, long falloff, long r, long g, long b);
 void TriggerDynamic_MIRROR(long x, long y, long z, long falloff, long r, long g, long b);
 
-#define TriggerDynamic	( (void(__cdecl*)(long, long, long, long, long, long, long)) 0x00431240 )
 #define UpdateSparks	( (void(__cdecl*)()) 0x0042E8B0 )
 #define UpdateSplashes	( (void(__cdecl*)()) 0x00430710 )
 #define TriggerWaterfallMist	( (void(__cdecl*)(long, long, long, long)) 0x00430A40 )
