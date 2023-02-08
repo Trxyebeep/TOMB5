@@ -23,5 +23,4 @@ void ProcessExplodingSwitchType8(ITEM_INFO* item);
 void TestTriggersAtXYZ(long x, long y, long z, short room_number, short heavy, short flags);
 long GetSwitchTrigger(ITEM_INFO* item, short* ItemNos, long AttatchedToSwitch);
 long GetKeyTrigger(ITEM_INFO* item);
-
-#define SwitchTrigger	( (long(__cdecl*)(short, short)) 0x0047D670 )
+long SwitchTrigger(short item_number, short timer);

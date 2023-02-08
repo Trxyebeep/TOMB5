@@ -1135,6 +1135,49 @@ long GetKeyTrigger(ITEM_INFO* item)
 	return 0;
 }
 
+long SwitchTrigger(short item_number, short timer)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->status == ITEM_DEACTIVATED)
+	{
+		if ((!item->current_anim_state && item->object_number != JUMP_SWITCH || item->current_anim_state == 1 && item->object_number == JUMP_SWITCH) &&
+			timer > 0)
+		{
+			item->timer = timer;
+			item->status = ITEM_ACTIVE;
+
+			if (timer != 1)
+				item->timer *= 30;
+		}
+		else if (item->trigger_flags == 6 && !item->current_anim_state)
+			item->status = ITEM_ACTIVE;
+		else
+		{
+			RemoveActiveItem(item_number);
+			item->status = ITEM_INACTIVE;
+
+			if (item->item_flags[0])
+				item->flags |= IFL_INVISIBLE;
+
+			if (item->current_anim_state == 1 && (item->trigger_flags == 5 || item->trigger_flags == 6))
+				return 0;
+		}
+
+		return 1;
+	}
+
+	if (item->status != ITEM_INACTIVE)
+	{
+		if (item->flags & IFL_INVISIBLE)
+			return 1;
+	}
+
+	return 0;
+}
+
 void inject_switch(bool replace)
 {
 	INJECT(0x0047FC80, CrowDoveSwitchControl, replace);
@@ -1157,4 +1200,5 @@ void inject_switch(bool replace)
 	INJECT(0x0047D9D0, TestTriggersAtXYZ, replace);
 	INJECT(0x0047D7B0, GetSwitchTrigger, replace);
 	INJECT(0x0047D8C0, GetKeyTrigger, replace);
+	INJECT(0x0047D670, SwitchTrigger, replace);
 }
