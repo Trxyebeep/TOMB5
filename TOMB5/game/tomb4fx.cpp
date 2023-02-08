@@ -842,6 +842,55 @@ void DrawGunflashes()
 	phd_PopMatrix();
 }
 
+void trig_actor_gunflash(long* mx, PHD_VECTOR* pos)
+{
+	GUNFLASH_STRUCT* p;
+	long lp;
+
+	p = Gunflashes;
+	lp = 0;
+
+	while (p->on)
+	{
+		p++;
+		lp++;
+
+		if (lp >= 4)
+			return;
+	}
+
+	p->on = 1;
+
+	phd_PushMatrix();
+	aMXPtr[M00] = *(float*)(mx + M00);
+	aMXPtr[M01] = *(float*)(mx + M01);
+	aMXPtr[M02] = *(float*)(mx + M02);
+	aMXPtr[M03] = *(float*)(mx + M03);
+	aMXPtr[M10] = *(float*)(mx + M10);
+	aMXPtr[M11] = *(float*)(mx + M11);
+	aMXPtr[M12] = *(float*)(mx + M12);
+	aMXPtr[M13] = *(float*)(mx + M13);
+	aMXPtr[M20] = *(float*)(mx + M20);
+	aMXPtr[M21] = *(float*)(mx + M21);
+	aMXPtr[M22] = *(float*)(mx + M22);
+	aMXPtr[M23] = *(float*)(mx + M23);
+	phd_TranslateRel(pos->x, pos->y, pos->z);
+	phd_RotX(-0x4000);
+	*(float*)(p->mx + M00) = aMXPtr[M00];
+	*(float*)(p->mx + M01) = aMXPtr[M01];
+	*(float*)(p->mx + M02) = aMXPtr[M02];
+	*(float*)(p->mx + M03) = aMXPtr[M03];
+	*(float*)(p->mx + M10) = aMXPtr[M10];
+	*(float*)(p->mx + M11) = aMXPtr[M11];
+	*(float*)(p->mx + M12) = aMXPtr[M12];
+	*(float*)(p->mx + M13) = aMXPtr[M13];
+	*(float*)(p->mx + M20) = aMXPtr[M20];
+	*(float*)(p->mx + M21) = aMXPtr[M21];
+	*(float*)(p->mx + M22) = aMXPtr[M22];
+	*(float*)(p->mx + M23) = aMXPtr[M23];
+	phd_PopMatrix();
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -857,4 +906,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00484080, ExplodingDeath2, replace);
 	INJECT(0x004837B0, SetGunFlash, replace);
 	INJECT(0x004838E0, DrawGunflashes, replace);
+	INJECT(0x00485EC0, trig_actor_gunflash, replace);
 }

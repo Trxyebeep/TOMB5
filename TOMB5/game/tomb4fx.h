@@ -16,6 +16,7 @@ void DrawLensFlares(ITEM_INFO* item);
 long ExplodingDeath2(short item_number, long mesh_bits, short Flags);
 void SetGunFlash(short weapon);
 void DrawGunflashes();
+void trig_actor_gunflash(long* mx, PHD_VECTOR* pos);
 
 #define UpdateBubbles	( (void(__cdecl*)()) 0x00483540 )
 #define TriggerLaraDrips	( (void(__cdecl*)()) 0x00483F00 )
@@ -33,7 +34,6 @@ void DrawGunflashes();
 #define	TriggerGunShell	( (void(__cdecl*)(short, short, long)) 0x00482A60 )
 #define GetFreeSmokeSpark	( (long(__cdecl*)()) 0x00481D40 )
 #define TriggerLightningGlow	( (void(__cdecl*)(long, long, long, long)) 0x004851B0 )
-#define trig_actor_gunflash	( (void(__cdecl*)(long*, PHD_VECTOR*)) 0x00485EC0 )
 #define TriggerSmallSplash	( (void(__cdecl*)(long, long, long, long)) 0x00483180 )
 #define TriggerShockwave	( (void(__cdecl*)(PHD_VECTOR*, long, long, long, long)) 0x00484670 )
 #define TriggerGunSmoke	( (void(__cdecl*)(long, long, long, long, long, long, long, long, long)) 0x004820A0 )
