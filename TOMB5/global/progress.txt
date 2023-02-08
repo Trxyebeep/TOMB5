@@ -2111,7 +2111,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004C0F30	+	setXYZ3
 0x004C1340	+	DrawBubbles
 0x004C1790	+	S_DrawSplashes
-0x004C23C0		S_DrawFireSparks
+0x004C23C0	+	S_DrawFireSparks
 0x004C2980		S_DrawSmokeSparks
 0x004C2F10	+	S_PrintShadow
 0x004C34F0	+	InitTarget
