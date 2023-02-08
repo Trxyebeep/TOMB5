@@ -1320,6 +1320,31 @@ void Fade()
 		DrawPsxTile(0, phd_winwidth | (phd_winheight << 16), RGBA(ScreenFade, ScreenFade, ScreenFade, 98), 2, 0);
 }
 
+void SetScreenFadeOut(short speed, short back)
+{
+	if (!ScreenFading)
+	{
+		ScreenFading = 1;
+		ScreenFade = 0;
+		dScreenFade = 255;
+		ScreenFadeSpeed = speed;
+		ScreenFadeBack = back;
+		ScreenFadedOut = 0;
+	}
+}
+
+void SetScreenFadeIn(short speed)
+{
+	if (!ScreenFading)
+	{
+		ScreenFading = 1;
+		ScreenFade = 255;
+		dScreenFade = 0;
+		ScreenFadeSpeed = speed;
+		ScreenFadedOut = 0;
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1347,4 +1372,6 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00483F00, TriggerLaraDrips, replace);
 	INJECT(0x00483D90, UpdateDrips, replace);
 	INJECT(0x00483BF0, Fade, replace);
+	INJECT(0x00483B30, SetScreenFadeOut, replace);
+	INJECT(0x00483BA0, SetScreenFadeIn, replace);
 }
