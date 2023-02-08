@@ -2052,6 +2052,60 @@ void UpdateSmokeSparks()
 	}
 }
 
+void S_DrawFires()
+{
+	FIRE_LIST* fire;
+	ROOM_INFO* r;
+	short* bounds;
+	short size;
+
+	bounds = (short*)&scratchpad[0];
+
+	for (int i = 0; i < 32; i++)
+	{
+		fire = &fires[i];
+
+		if (!fire->on)
+			continue;
+
+		if (fire->size == 2)
+			size = 256;
+		else
+			size = 384;
+
+		bounds[0] = -size;
+		bounds[1] = size;
+		bounds[2] = -size * 6;
+		bounds[3] = size;
+		bounds[4] = -size;
+		bounds[5] = size;
+
+		r = &room[fire->room_number];
+		phd_left = r->left;
+		phd_right = r->right;
+		phd_top = r->top;
+		phd_bottom = r->bottom;
+
+		phd_PushMatrix();
+		phd_TranslateAbs(fire->x, fire->y, fire->z);
+
+		if (S_GetObjectBounds(bounds))
+		{
+			if (fire->on == 1)
+				S_DrawFireSparks((uchar)fire->size, 255);
+			else
+				S_DrawFireSparks((uchar)fire->size, fire->on & 0xFF);
+		}
+
+		phd_PopMatrix();
+	}
+
+	phd_top = 0;
+	phd_left = 0;
+	phd_right = phd_winwidth;
+	phd_bottom = phd_winheight;
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -2095,4 +2149,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x004820A0, TriggerGunSmoke, replace);
 	INJECT(0x00481D40, GetFreeSmokeSpark, replace);
 	INJECT(0x00481DD0, UpdateSmokeSparks, replace);
+	INJECT(0x00481BB0, S_DrawFires, replace);
 }

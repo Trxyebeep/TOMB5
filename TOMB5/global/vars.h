@@ -696,6 +696,7 @@
 #define keypadinputs	ARRAY_(0x00E59778, uchar, [4])
 #define hairs	ARRAY_(0x00E5C000, HAIR_STRUCT, [2][7])
 #define smoke_spark	ARRAY_(0x00E4B940, SMOKE_SPARKS, [32])
+#define fires	ARRAY_(0x00E4C7A0, FIRE_LIST, [32])
 #define layout	ARRAY_(0x00516C3C, short, [2][18])
 #define conflict	ARRAY_(0x00878C4C, long, [18])
 #define reg_class	ARRAY_(0x0057A080, char, [4])
