@@ -480,7 +480,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00430620		SetupSplash
 0x00430710		UpdateSplashes
 0x00430910		SetupRipple
-0x004309B0		TriggerUnderwaterBlood
+0x004309B0	+	TriggerUnderwaterBlood
 0x00430A40	+	TriggerWaterfallMist
 0x00430D90	+	TriggerDartSmoke
 0x00431030	+	KillAllCurrentItems

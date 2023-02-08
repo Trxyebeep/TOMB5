@@ -914,6 +914,32 @@ void TriggerWaterfallMist(long x, long y, long z, long ang)
 	sptr->dSize = sptr->Size << 1;
 }
 
+void TriggerUnderwaterBlood(long x, long y, long z, long size)
+{
+	RIPPLE_STRUCT* ripple;
+	long n;
+
+	ripple = ripples;
+	n = 0;
+
+	while (ripple->flags & 1)
+	{
+		ripple++;
+		n++;
+
+		if (n >= 32)
+			return;
+	}
+
+	ripple->flags = 49;
+	ripple->init = 1;
+	ripple->life = (GetRandomControl() & 7) - 16;
+	ripple->size = (uchar)size;
+	ripple->x = x + (GetRandomControl() & 0x3F) - 32;
+	ripple->y = y;
+	ripple->z = z + (GetRandomControl() & 0x3F) - 32;
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -928,4 +954,5 @@ void inject_effect2(bool replace)
 	INJECT(0x00431420, TriggerDynamic_MIRROR, replace);
 	INJECT(0x00431070, TriggerExplosionBubble, replace);
 	INJECT(0x00430A40, TriggerWaterfallMist, replace);
+	INJECT(0x004309B0, TriggerUnderwaterBlood, replace);
 }

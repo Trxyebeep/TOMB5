@@ -7132,7 +7132,7 @@ void S_DrawSplashes()
 		}
 	}
 
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < 32; i++)
 	{
 		ripple = &ripples[i];
 
