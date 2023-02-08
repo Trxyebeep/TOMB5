@@ -2106,6 +2106,31 @@ void S_DrawFires()
 	phd_bottom = phd_winheight;
 }
 
+void AddFire(long x, long y, long z, long size, short room_number, short fade)
+{
+	FIRE_LIST* fire;
+
+	for (int i = 0; i < 32; i++)
+	{
+		fire = &fires[i];
+
+		if (fire->on)
+			continue;
+
+		if (fade)
+			fire->on = (char)fade;
+		else
+			fire->on = 1;
+
+		fire->x = x;
+		fire->y = y;
+		fire->z = z;
+		fire->size = (char)size;
+		fire->room_number = room_number;
+		break;
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -2150,4 +2175,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x00481D40, GetFreeSmokeSpark, replace);
 	INJECT(0x00481DD0, UpdateSmokeSparks, replace);
 	INJECT(0x00481BB0, S_DrawFires, replace);
+	INJECT(0x00481B40, AddFire, replace);
 }
