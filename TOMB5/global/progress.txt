@@ -1463,7 +1463,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004813B0		UpdateFireSparks
 0x004816B0	+	TriggerGlobalFireSmoke
 0x00481840	+	TriggerGlobalFireFlame
-0x00481A00		TriggerGlobalStaticFlame
+0x00481A00	+	TriggerGlobalStaticFlame
 0x00481B10		ClearFires
 0x00481B40	+	AddFire
 0x00481BB0	+	S_DrawFires

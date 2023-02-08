@@ -49,6 +49,7 @@ void AddFire(long x, long y, long z, long size, short room_number, short fade);
 long GetFreeFireSpark();
 void TriggerGlobalFireSmoke();
 void TriggerGlobalFireFlame();
+void TriggerGlobalStaticFlame();
 
 #define UpdateFireSparks	( (void(__cdecl*)()) 0x004813B0 )
 #define ClearFires	( (void(__cdecl*)()) 0x00481B10 )

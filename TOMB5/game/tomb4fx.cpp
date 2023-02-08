@@ -2269,6 +2269,37 @@ void TriggerGlobalFireFlame()
 	sptr->dSize = sptr->Size >> 4;
 }
 
+void TriggerGlobalStaticFlame()
+{
+	FIRE_SPARKS* sptr;
+
+	sptr = &fire_spark[0];
+	sptr->On = 1;
+	sptr->sR = (GetRandomControl() & 0x3F) - 64;
+	sptr->sG = (GetRandomControl() & 0x3F) + 96;
+	sptr->sB = 64;
+	sptr->dR = sptr->sR;
+	sptr->dG = sptr->sG;
+	sptr->dB = sptr->sB;
+	sptr->ColFadeSpeed = 1;
+	sptr->FadeToBlack = 0;
+	sptr->Life = 8;
+	sptr->sLife = 8;
+	sptr->x = (GetRandomControl() & 7) - 4;
+	sptr->y = 0;
+	sptr->z = (GetRandomControl() & 7) - 4;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = 0;
+	sptr->Friction = 0;
+	sptr->Xvel = 0;
+	sptr->Yvel = 0;
+	sptr->Zvel = 0;
+	sptr->Flags = 0;
+	sptr->dSize = (GetRandomControl() & 0x1F) + 0x80;
+	sptr->sSize = sptr->dSize;
+	sptr->Size = sptr->dSize;
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -2317,4 +2348,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x004812B0, GetFreeFireSpark, replace);
 	INJECT(0x004816B0, TriggerGlobalFireSmoke, replace);
 	INJECT(0x00481840, TriggerGlobalFireFlame, replace);
+	INJECT(0x00481A00, TriggerGlobalStaticFlame, replace);
 }
