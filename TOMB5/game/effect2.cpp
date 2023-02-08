@@ -940,6 +940,37 @@ void TriggerUnderwaterBlood(long x, long y, long z, long size)
 	ripple->z = z + (GetRandomControl() & 0x3F) - 32;
 }
 
+void SetupRipple(long x, long y, long z, long size, long flags)
+{
+	RIPPLE_STRUCT* ripple;
+	long num;
+
+	num = 0;
+
+	while (ripples[num].flags & 1)
+	{
+		num++;
+
+		if (num >= 32)
+			return;
+	}
+
+	ripple = &ripples[num];
+	ripple->flags = (char)flags | 1;
+	ripple->size = (uchar)size;
+	ripple->life = (GetRandomControl() & 0xF) + 48;
+	ripple->init = 1;
+	ripple->x = x;
+	ripple->y = y;
+	ripple->z = z;
+
+	if (flags & 0x40)
+	{
+		ripple->x += (GetRandomControl() & 0x7F) - 64;
+		ripple->z += (GetRandomControl() & 0x7F) - 64;
+	}
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -955,4 +986,5 @@ void inject_effect2(bool replace)
 	INJECT(0x00431070, TriggerExplosionBubble, replace);
 	INJECT(0x00430A40, TriggerWaterfallMist, replace);
 	INJECT(0x004309B0, TriggerUnderwaterBlood, replace);
+	INJECT(0x00430910, SetupRipple, replace);
 }
