@@ -693,6 +693,41 @@ void ClearDynamics()
 		dynamics[i].on = 0;
 }
 
+void TriggerDynamic_MIRROR(long x, long y, long z, long falloff, long r, long g, long b)
+{
+	DYNAMIC* dl;
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (number_dynamics == 32 || !falloff)
+			break;
+
+		dl = &dynamics[number_dynamics];
+		dl->on = 1;
+		dl->x = x;
+		dl->y = y;
+		dl->z = z;
+		dl->falloff = ushort(falloff << 8);
+
+		if (falloff < 8)
+		{
+			dl->r = uchar((r * falloff) >> 3);
+			dl->g = uchar((g * falloff) >> 3);
+			dl->b = uchar((b * falloff) >> 3);
+		}
+		else
+		{
+			dl->r = (uchar)r;
+			dl->g = (uchar)g;
+			dl->b = (uchar)b;
+		}
+
+		dl->FalloffScale = 0x200000 / (falloff << 8);
+		number_dynamics++;
+		z = 2 * gfMirrorZPlane - z;
+	}
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -703,4 +738,5 @@ void inject_effect2(bool replace)
 	INJECT(0x00431E70, ControlEnemyMissile, replace);
 	INJECT(0x0042FA10, TriggerExplosionSmokeEnd, replace);
 	INJECT(0x00431530, ClearDynamics, replace);
+	INJECT(0x00431420, TriggerDynamic_MIRROR, replace);
 }
