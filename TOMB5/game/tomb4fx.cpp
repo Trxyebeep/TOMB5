@@ -1223,6 +1223,60 @@ void TriggerLaraDrips()
 	}
 }
 
+void UpdateDrips()
+{
+	DRIP_STRUCT* drip;
+	FLOOR_INFO* floor;
+	long h;
+
+	for (int i = 0; i < 32; i++)
+	{
+		drip = &Drips[i];
+
+		if (!drip->On)
+			continue;
+
+		drip->Life--;
+
+		if (!drip->Life)
+		{
+			drip->On = 0;
+			continue;
+		}
+
+		if (drip->Life < 16)
+		{
+			drip->R -= drip->R >> 3;
+			drip->G -= drip->G >> 3;
+			drip->B -= drip->B >> 3;
+		}
+
+		drip->Yvel += drip->Gravity;
+
+		if (room[drip->RoomNumber].flags & ROOM_NOT_INSIDE)
+		{
+			drip->x += SmokeWindX >> 1;
+			drip->z += SmokeWindZ >> 1;
+		}
+
+		drip->y += drip->Yvel >> 5;
+		floor = GetFloor(drip->x, drip->y, drip->z, &drip->RoomNumber);
+
+		if (room[drip->RoomNumber].flags & ROOM_UNDERWATER)
+			drip->On = 0;
+
+		h = GetHeight(floor, drip->x, drip->y, drip->z);
+
+		if (drip->y > h)
+		{
+			if (!(i & 1))
+				TriggerSmallSplash(drip->x, h, drip->z, 1);
+
+			drip->On = 0;
+		}
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1248,4 +1302,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x004849A0, UpdateShockwaves, replace);
 	INJECT(0x00483D00, GetFreeDrip, replace);
 	INJECT(0x00483F00, TriggerLaraDrips, replace);
+	INJECT(0x00483D90, UpdateDrips, replace);
 }
