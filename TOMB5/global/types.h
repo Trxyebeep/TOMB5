@@ -1456,13 +1456,6 @@ struct MENUTHANG
 	char* text;
 };
 
-struct VECTOR
-{
-	long vx;
-	long vy;
-	long vz;
-};
-
 struct AI_INFO
 {
 	short zone_number;
@@ -1553,13 +1546,6 @@ struct PENDULUM
 	PHD_VECTOR Velocity;
 	long node;
 	ROPE_STRUCT* Rope;
-};
-
-struct MATRIX3D
-{
-	long m00, m01, m02, m03;
-	long m10, m11, m12, m13;
-	long m20, m21, m22, m23;
 };
 
 struct ACMESHVERTEX

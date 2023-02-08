@@ -10,7 +10,7 @@ void GetRopePos(ROPE_STRUCT* rope, long pos, long* x, long* y, long* z);
 long mDotProduct(PHD_VECTOR* a, PHD_VECTOR* b);
 void vMul(PHD_VECTOR* v, long scale, PHD_VECTOR* d);
 void mCrossProduct(PHD_VECTOR* a, PHD_VECTOR* b, PHD_VECTOR* n);
-void phd_GetMatrixAngles(MATRIX3D* m, short* dest);
+void phd_GetMatrixAngles(long* m, short* dest);
 void RopeControl(short item_number);
 void RopeCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
 void CalculateRope(ROPE_STRUCT* Rope);

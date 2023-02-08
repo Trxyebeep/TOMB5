@@ -166,7 +166,7 @@ void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot);
 void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PHD_VECTOR* pos);
 void frigup_lara();
 void CalculateObjectLightingLaraCutSeq();
-void GrabActorMatrix(long actornum, ulong nodenum, MATRIX3D* matrixstash);
+void GrabActorMatrix(long actornum, ulong nodenum, long* matrixstash);
 long Load_and_Init_Cutseq(long num);
 void cutseq_kill_item(long num);
 ITEM_INFO* cutseq_restore_item(long num);

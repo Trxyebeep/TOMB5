@@ -3036,7 +3036,7 @@ void untrigger_item_in_room(short room_number, long object)
 
 void deal_with_actor_shooting(ushort* shootdata, long actornum, long nodenum, PHD_VECTOR* pos)
 {
-	MATRIX3D arse;
+	long arse[indices_count];
 	long f;
 	ushort dat;
 
@@ -3049,8 +3049,8 @@ void deal_with_actor_shooting(ushort* shootdata, long actornum, long nodenum, PH
 		{
 			if (f == dat || f == dat + 1)
 			{
-				GrabActorMatrix(actornum, nodenum, &arse);
-				trig_actor_gunflash(&arse, pos);
+				GrabActorMatrix(actornum, nodenum, arse);
+				trig_actor_gunflash(arse, pos);
 				GetActorJointAbsPosition(actornum, nodenum, pos);
 				TriggerDynamic(pos->x, pos->y, pos->z, 16, (GetRandomControl() & 0x3F) + 0xC0, (GetRandomControl() & 0x1F) + 0x80, (GetRandomControl() & 0x3F));
 				break;
@@ -3559,7 +3559,7 @@ void CalculateObjectLightingLaraCutSeq()
 	lara_item->room_number = room_num2;
 }
 
-void GrabActorMatrix(long actornum, ulong nodenum, MATRIX3D* matrixstash)
+void GrabActorMatrix(long actornum, ulong nodenum, long* matrixstash)
 {
 	OBJECT_INFO* obj;
 	long* bone;
@@ -3579,18 +3579,18 @@ void GrabActorMatrix(long actornum, ulong nodenum, MATRIX3D* matrixstash)
 
 	if (nodenum == bit)
 	{
-		*(float*)&matrixstash->m00 = aMXPtr[M00];
-		*(float*)&matrixstash->m01 = aMXPtr[M01];
-		*(float*)&matrixstash->m02 = aMXPtr[M02];
-		*(float*)&matrixstash->m03 = aMXPtr[M03];
-		*(float*)&matrixstash->m10 = aMXPtr[M10];
-		*(float*)&matrixstash->m11 = aMXPtr[M11];
-		*(float*)&matrixstash->m12 = aMXPtr[M12];
-		*(float*)&matrixstash->m13 = aMXPtr[M13];
-		*(float*)&matrixstash->m20 = aMXPtr[M20];
-		*(float*)&matrixstash->m21 = aMXPtr[M21];
-		*(float*)&matrixstash->m22 = aMXPtr[M22];
-		*(float*)&matrixstash->m23 = aMXPtr[M23];
+		*(float*)&matrixstash[M00] = aMXPtr[M00];
+		*(float*)&matrixstash[M01] = aMXPtr[M01];
+		*(float*)&matrixstash[M02] = aMXPtr[M02];
+		*(float*)&matrixstash[M03] = aMXPtr[M03];
+		*(float*)&matrixstash[M10] = aMXPtr[M10];
+		*(float*)&matrixstash[M11] = aMXPtr[M11];
+		*(float*)&matrixstash[M12] = aMXPtr[M12];
+		*(float*)&matrixstash[M13] = aMXPtr[M13];
+		*(float*)&matrixstash[M20] = aMXPtr[M20];
+		*(float*)&matrixstash[M21] = aMXPtr[M21];
+		*(float*)&matrixstash[M22] = aMXPtr[M22];
+		*(float*)&matrixstash[M23] = aMXPtr[M23];
 	}
 
 	for (int i = 0; i < obj->nmeshes - 1; i++, bone += 4)
@@ -3607,18 +3607,18 @@ void GrabActorMatrix(long actornum, ulong nodenum, MATRIX3D* matrixstash)
 
 		if (nodenum == bit)
 		{
-			*(float*)&matrixstash->m00 = aMXPtr[M00];
-			*(float*)&matrixstash->m01 = aMXPtr[M01];
-			*(float*)&matrixstash->m02 = aMXPtr[M02];
-			*(float*)&matrixstash->m03 = aMXPtr[M03];
-			*(float*)&matrixstash->m10 = aMXPtr[M10];
-			*(float*)&matrixstash->m11 = aMXPtr[M11];
-			*(float*)&matrixstash->m12 = aMXPtr[M12];
-			*(float*)&matrixstash->m13 = aMXPtr[M13];
-			*(float*)&matrixstash->m20 = aMXPtr[M20];
-			*(float*)&matrixstash->m21 = aMXPtr[M21];
-			*(float*)&matrixstash->m22 = aMXPtr[M22];
-			*(float*)&matrixstash->m23 = aMXPtr[M23];
+			*(float*)&matrixstash[M00] = aMXPtr[M00];
+			*(float*)&matrixstash[M01] = aMXPtr[M01];
+			*(float*)&matrixstash[M02] = aMXPtr[M02];
+			*(float*)&matrixstash[M03] = aMXPtr[M03];
+			*(float*)&matrixstash[M10] = aMXPtr[M10];
+			*(float*)&matrixstash[M11] = aMXPtr[M11];
+			*(float*)&matrixstash[M12] = aMXPtr[M12];
+			*(float*)&matrixstash[M13] = aMXPtr[M13];
+			*(float*)&matrixstash[M20] = aMXPtr[M20];
+			*(float*)&matrixstash[M21] = aMXPtr[M21];
+			*(float*)&matrixstash[M22] = aMXPtr[M22];
+			*(float*)&matrixstash[M23] = aMXPtr[M23];
 		}
 	}
 

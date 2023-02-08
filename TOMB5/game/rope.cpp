@@ -125,20 +125,20 @@ void mCrossProduct(PHD_VECTOR* a, PHD_VECTOR* b, PHD_VECTOR* n)
 	n->z = t.z >> 14;
 }
 
-void phd_GetMatrixAngles(MATRIX3D* m, short* dest)
+void phd_GetMatrixAngles(long* m, short* dest)
 {
 	short roll, pitch, yaw;
 	long sy, cy;
 
-	pitch = (short) phd_atan(phd_sqrt(SQUARE(m->m22) + SQUARE(m->m02)), m->m12);
+	pitch = (short)phd_atan(phd_sqrt(SQUARE(m[M22]) + SQUARE(m[M02])), m[M12]);
 
-	if (m->m12 >= 0 && pitch > 0 || m->m12 < 0 && pitch < 0)
+	if (m[M12] >= 0 && pitch > 0 || m[M12] < 0 && pitch < 0)
 		pitch = -pitch;
 
-	yaw = (short) phd_atan(m->m22, m->m02);
+	yaw = (short)phd_atan(m[M22], m[M02]);
 	sy = phd_sin(yaw);
 	cy = phd_cos(yaw);
-	roll = (short) phd_atan(m->m00 * cy - m->m20 * sy, m->m21 * sy - m->m01 * cy);
+	roll = (short)phd_atan(m[M00] * cy - m[M20] * sy, m[M21] * sy - m[M01] * cy);
 	dest[0] = pitch;
 	dest[1] = yaw;
 	dest[2] = roll;
@@ -501,7 +501,7 @@ void AlignLaraToRope(ITEM_INFO* l)
 {
 	PHD_VECTOR v, u, v1, v2, n2;
 	PHD_VECTOR up;
-	MATRIX3D temp;
+	long temp[indices_count];
 	short xyz[3];
 	short ropeangle;
 	long* mptr;
@@ -557,16 +557,16 @@ void AlignLaraToRope(ITEM_INFO* l)
 	n.x >>= 2;
 	n.y >>= 2;
 	n.z >>= 2;
-	temp.m00 = n.x;
-	temp.m01 = u.x;
-	temp.m02 = v.x;
-	temp.m10 = n.y;
-	temp.m11 = u.y;
-	temp.m12 = v.y;
-	temp.m20 = n.z;
-	temp.m21 = u.z;
-	temp.m22 = v.z;
-	phd_GetMatrixAngles(&temp, xyz);
+	temp[M00] = n.x;
+	temp[M01] = u.x;
+	temp[M02] = v.x;
+	temp[M10] = n.y;
+	temp[M11] = u.y;
+	temp[M12] = v.y;
+	temp[M20] = n.z;
+	temp[M21] = u.z;
+	temp[M22] = v.z;
+	phd_GetMatrixAngles(temp, xyz);
 	l->pos.x_pos = rope->Position.x + (rope->MeshSegment[i].x >> 16);
 	l->pos.y_pos = rope->Position.y + (rope->MeshSegment[i].y >> 16) + lara.RopeOffset;
 	l->pos.z_pos = rope->Position.z + (rope->MeshSegment[i].z >> 16);

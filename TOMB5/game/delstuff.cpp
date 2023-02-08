@@ -10,18 +10,18 @@
 void GetLaraJointPos(PHD_VECTOR* pos, long node)
 {
 	phd_PushMatrix();
-	phd_mxptr[M00] = lara_joint_matrices[node].m00;
-	phd_mxptr[M01] = lara_joint_matrices[node].m01;
-	phd_mxptr[M02] = lara_joint_matrices[node].m02;
-	phd_mxptr[M03] = lara_joint_matrices[node].m03;
-	phd_mxptr[M10] = lara_joint_matrices[node].m10;
-	phd_mxptr[M11] = lara_joint_matrices[node].m11;
-	phd_mxptr[M12] = lara_joint_matrices[node].m12;
-	phd_mxptr[M13] = lara_joint_matrices[node].m13;
-	phd_mxptr[M20] = lara_joint_matrices[node].m20;
-	phd_mxptr[M21] = lara_joint_matrices[node].m21;
-	phd_mxptr[M22] = lara_joint_matrices[node].m22;
-	phd_mxptr[M23] = lara_joint_matrices[node].m23;
+	phd_mxptr[M00] = lara_joint_matrices[node * indices_count + M00];
+	phd_mxptr[M01] = lara_joint_matrices[node * indices_count + M01];
+	phd_mxptr[M02] = lara_joint_matrices[node * indices_count + M02];
+	phd_mxptr[M03] = lara_joint_matrices[node * indices_count + M03];
+	phd_mxptr[M10] = lara_joint_matrices[node * indices_count + M10];
+	phd_mxptr[M11] = lara_joint_matrices[node * indices_count + M11];
+	phd_mxptr[M12] = lara_joint_matrices[node * indices_count + M12];
+	phd_mxptr[M13] = lara_joint_matrices[node * indices_count + M13];
+	phd_mxptr[M20] = lara_joint_matrices[node * indices_count + M20];
+	phd_mxptr[M21] = lara_joint_matrices[node * indices_count + M21];
+	phd_mxptr[M22] = lara_joint_matrices[node * indices_count + M22];
+	phd_mxptr[M23] = lara_joint_matrices[node * indices_count + M23];
 	phd_TranslateRel(pos->x, pos->y, pos->z);
 	pos->x = phd_mxptr[M03] >> 14;
 	pos->y = phd_mxptr[M13] >> 14;
@@ -74,9 +74,7 @@ void CalcLaraMatrices(long flag)
 
 void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 {
-	MATRIX3D* matrices;
 	PHD_VECTOR vec;
-	float* matricesF;
 	float* Fmatrix;
 	long* matrix;
 	short* rot;
@@ -85,17 +83,15 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 
 	if (flag == 1)
 	{
-		matrices = lara_joint_matrices;
-		matricesF = lara_joint_matricesF;
+		matrix = lara_joint_matrices;
+		Fmatrix = lara_joint_matricesF;
 	}
 	else
 	{
-		matrices = lara_matrices;
-		matricesF = lara_matricesF;
+		matrix = lara_matrices;
+		Fmatrix = lara_matricesF;
 	}
 
-	matrix = (long*)matrices;
-	Fmatrix = (float*)matricesF;
 	phd_PushMatrix();
 
 	if (!flag || flag == 2)
@@ -517,9 +513,7 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 
 void Rich_CalcLaraMatrices_Interpolated(short* frame1, short* frame2, long frac, long rate, long* bone, long flag)
 {
-	MATRIX3D* matrices;
 	PHD_VECTOR vec;
-	float* matricesF;
 	float* Fmatrix;
 	float* armsF;
 	long* matrix;
@@ -532,17 +526,15 @@ void Rich_CalcLaraMatrices_Interpolated(short* frame1, short* frame2, long frac,
 
 	if (flag == 1)
 	{
-		matrices = lara_joint_matrices;
-		matricesF = lara_joint_matricesF;
+		matrix = lara_joint_matrices;
+		Fmatrix = lara_joint_matricesF;
 	}
 	else
 	{
-		matrices = lara_matrices;
-		matricesF = lara_matricesF;
+		matrix = lara_matrices;
+		Fmatrix = lara_matricesF;
 	}
 
-	matrix = (long*)matrices;
-	Fmatrix = (float*)matricesF;
 	phd_PushMatrix();
 	arms = phd_mxptr;
 	armsF = aMXPtr;
