@@ -630,6 +630,12 @@ long ItemNearLara(PHD_3DPOS* pos, long rad)
 	return 0;
 }
 
+void Richochet(GAME_VECTOR* pos)
+{
+	TriggerRicochetSpark(pos, mGetAngle(pos->z, pos->x, lara_item->pos.z_pos, lara_item->pos.x_pos) >> 4, 3, 0);
+	SoundEffect(SFX_LARA_RICOCHET, (PHD_3DPOS*)pos, SFX_DEFAULT);
+}
+
 void inject_effects(bool replace)
 {
 	INJECT(0x00432640, SoundEffects, replace);
@@ -673,4 +679,5 @@ void inject_effects(bool replace)
 	INJECT(0x00432760, DoBloodSplat, replace);
 	INJECT(0x00432800, DoLotsOfBlood, replace);
 	INJECT(0x00432580, ItemNearLara, replace);
+	INJECT(0x00432710, Richochet, replace);
 }
