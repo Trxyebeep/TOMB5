@@ -63,6 +63,7 @@
 #define SmokeCountL	VAR_(0x00E6C9E8, long)
 #define SmokeCountR	VAR_(0x00E6C9EC, long)
 #define SplashCount	VAR_(0x0051CDF8, long)
+#define splash_setup	VAR_(0x00E6CAC0, SPLASH_SETUP)
 #define WeaponDelay	VAR_(0x0051CA52, uchar)
 #define wibble	VAR_(0x0051CDF0, long)
 #define XSoff1	VAR_(0x0055D200, short)

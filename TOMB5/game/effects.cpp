@@ -20,6 +20,7 @@
 #include "../specific/polyinsert.h"
 #include "../specific/3dmath.h"
 #include "draw.h"
+#include "lara_states.h"
 
 long FogTableColor[28] =
 {
@@ -636,6 +637,77 @@ void Richochet(GAME_VECTOR* pos)
 	SoundEffect(SFX_LARA_RICOCHET, (PHD_3DPOS*)pos, SFX_DEFAULT);
 }
 
+void WadeSplash(ITEM_INFO* item, long water, long depth)
+{
+	short* bounds;
+	short room_number;
+
+	room_number = item->room_number;
+	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+
+	if (!(room[room_number].flags & ROOM_UNDERWATER))
+		return;
+
+	bounds = GetBestFrame(item);
+
+	if (item->pos.y_pos + bounds[2] > water || item->pos.y_pos + bounds[3] < water)
+		return;
+
+	if (item->fallspeed > 0 && depth < 474 && !SplashCount)
+	{
+		splash_setup.x = item->pos.x_pos;
+		splash_setup.y = water;
+		splash_setup.z = item->pos.z_pos;
+		splash_setup.InnerRad = 16;
+		splash_setup.InnerSize = 12;
+		splash_setup.InnerRadVel = 160;
+		splash_setup.InnerYVel = -72 * item->fallspeed;
+		splash_setup.MiddleRad = 24;
+		splash_setup.MiddleSize = 24;
+		splash_setup.MiddleRadVel = 224;
+		splash_setup.MiddleYVel = -36 * item->fallspeed;
+		splash_setup.OuterRad = 32;
+		splash_setup.OuterSize = 32;
+		splash_setup.OuterRadVel = 272;
+		SetupSplash(&splash_setup);
+		SplashCount = 16;
+	}
+	else if (!(wibble & 0xF) && (!(GetRandomControl() & 0xF) || item->current_anim_state != AS_STOP))
+	{
+		if (item->current_anim_state == AS_STOP)
+			SetupRipple(item->pos.x_pos, water, item->pos.z_pos, (GetRandomControl() & 0xF) + 112, 16);
+		else
+			SetupRipple(item->pos.x_pos, water, item->pos.z_pos, (GetRandomControl() & 0xF) + 112, 18);
+	}
+}
+
+void Splash(ITEM_INFO* item)
+{
+	short room_number;
+
+	room_number = item->room_number;
+	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+
+	if (room[room_number].flags & ROOM_UNDERWATER)
+	{
+		splash_setup.x = item->pos.x_pos;
+		splash_setup.y = GetWaterHeight(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, room_number);
+		splash_setup.z = item->pos.z_pos;
+		splash_setup.InnerRad = 32;
+		splash_setup.InnerSize = 8;
+		splash_setup.InnerRadVel = 320;
+		splash_setup.InnerYVel = -40 * item->fallspeed;
+		splash_setup.MiddleRad = 48;
+		splash_setup.MiddleSize = 32;
+		splash_setup.MiddleRadVel = 480;
+		splash_setup.MiddleYVel = -20 * item->fallspeed;
+		splash_setup.OuterRad = 32;
+		splash_setup.OuterSize = 128;
+		splash_setup.OuterRadVel = 544;
+		SetupSplash(&splash_setup);
+	}
+}
+
 void inject_effects(bool replace)
 {
 	INJECT(0x00432640, SoundEffects, replace);
@@ -680,4 +752,6 @@ void inject_effects(bool replace)
 	INJECT(0x00432800, DoLotsOfBlood, replace);
 	INJECT(0x00432580, ItemNearLara, replace);
 	INJECT(0x00432710, Richochet, replace);
+	INJECT(0x00432A30, WadeSplash, replace);
+	INJECT(0x00432900, Splash, replace);
 }

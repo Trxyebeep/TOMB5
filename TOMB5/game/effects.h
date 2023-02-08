@@ -48,6 +48,5 @@ short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room
 void DoLotsOfBlood(long x, long y, long z, short speed, short ang, short room_number, long num);
 long ItemNearLara(PHD_3DPOS* pos, long rad);
 void Richochet(GAME_VECTOR* pos);
-
-#define WadeSplash	( (void(__cdecl*)(ITEM_INFO*, long, long)) 0x00432A30 )
-#define Splash	( (void(__cdecl*)(ITEM_INFO*)) 0x00432900 )
+void WadeSplash(ITEM_INFO* item, long water, long depth);
+void Splash(ITEM_INFO* item);

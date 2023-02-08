@@ -25,3 +25,4 @@ void TriggerExplosionSmokeEnd(long x, long y, long z, long uw);
 #define GetFreeSpark	( (long(__cdecl*)()) 0x0042E790 )
 #define TriggerSuperJetFlame	( (void(__cdecl*)(ITEM_INFO*, long, long)) 0x00430350 )
 #define TriggerRicochetSpark	( (void(__cdecl*)(GAME_VECTOR*, long, long, long)) 0x0042F060 )
+#define SetupSplash	( (void(__cdecl*)(SPLASH_SETUP*)) 0x00430620 )
