@@ -1514,6 +1514,41 @@ void UpdateBubbles()
 	}
 }
 
+void TriggerSmallSplash(long x, long y, long z, long num)
+{
+	SPARKS* sptr;
+	short ang;
+
+	while (num)
+	{
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->sR = 64;
+		sptr->sG = 64;
+		sptr->sB = 64;
+		sptr->dR = 32;
+		sptr->dG = 32;
+		sptr->dB = 32;
+		sptr->ColFadeSpeed = 4;
+		sptr->FadeToBlack = 8;
+		sptr->Life = 24;
+		sptr->sLife = 24;
+		sptr->TransType = 2;
+		ang = GetRandomControl() & 0xFFF;
+		sptr->Xvel = -rcossin_tbl[ang << 1] >> 5;
+		sptr->Yvel = -640 - (GetRandomControl() & 0xFF);
+		sptr->Zvel = rcossin_tbl[(ang << 1) + 1] >> 5;
+		sptr->x = x + (sptr->Xvel >> 3);
+		sptr->y = y - (sptr->Yvel >> 5);
+		sptr->z = z + (sptr->Zvel >> 3);
+		sptr->Friction = 5;
+		sptr->Flags = 0;
+		sptr->MaxYvel = 0;
+		sptr->Gravity = (GetRandomControl() & 0xF) + 64;
+		num--;
+	}
+}
+
 void inject_tomb4fx(bool replace)
 {
 	INJECT(0x00482580, GetFreeBlood, replace);
@@ -1548,4 +1583,5 @@ void inject_tomb4fx(bool replace)
 	INJECT(0x004832C0, GetFreeBubble, replace);
 	INJECT(0x00483350, CreateBubble, replace);
 	INJECT(0x00483540, UpdateBubbles, replace);
+	INJECT(0x00483180, TriggerSmallSplash, replace);
 }
