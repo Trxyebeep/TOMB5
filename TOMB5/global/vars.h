@@ -59,6 +59,7 @@
 #define next_item_active	VAR_(0x00E5BF22, short)
 #define next_item_free	VAR_(0x00E5BF16, short)
 #define next_fx_active	VAR_(0x00E5C5FC, short)
+#define next_fx_free	VAR_(0x00E5C5F4, short)
 #define KillEverythingFlag	VAR_(0x0051CDF4, long)
 #define SmokeCountL	VAR_(0x00E6C9E8, long)
 #define SmokeCountR	VAR_(0x00E6C9EC, long)
