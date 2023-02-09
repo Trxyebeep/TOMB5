@@ -1451,6 +1451,26 @@ long TestLaraPosition(short* bounds, ITEM_INFO* item, ITEM_INFO* l)
 	return x >= bounds[0] && x <= bounds[1] && y >= bounds[2] && y <= bounds[3] && z >= bounds[4] && z <= bounds[5];
 }
 
+void AlignLaraPosition(PHD_VECTOR* pos, ITEM_INFO* item, ITEM_INFO* l)
+{
+	long x, y, z;
+
+	l->pos.x_rot = item->pos.x_rot;
+	l->pos.y_rot = item->pos.y_rot;
+	l->pos.z_rot = item->pos.z_rot;
+
+	phd_PushUnitMatrix();
+	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+	x = item->pos.x_pos + ((pos->x * phd_mxptr[M00] + pos->y * phd_mxptr[M01] + pos->z * phd_mxptr[M02]) >> 14);
+	y = item->pos.y_pos + ((pos->x * phd_mxptr[M10] + pos->y * phd_mxptr[M11] + pos->z * phd_mxptr[M12]) >> 14);
+	z = item->pos.z_pos + ((pos->x * phd_mxptr[M20] + pos->y * phd_mxptr[M21] + pos->z * phd_mxptr[M22]) >> 14);
+	phd_PopMatrix();
+
+	l->pos.x_pos = x;
+	l->pos.y_pos = y;
+	l->pos.z_pos = z;
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -1475,4 +1495,5 @@ void inject_coll(bool replace)
 	INJECT(0x00412CC0, TestBoundsCollide, replace);
 	INJECT(0x00412DE0, TestBoundsCollideStatic, replace);
 	INJECT(0x00413210, TestLaraPosition, replace);
+	INJECT(0x004133C0, AlignLaraPosition, replace);
 }
