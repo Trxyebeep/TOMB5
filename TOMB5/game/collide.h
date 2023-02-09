@@ -20,10 +20,10 @@ long Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, long speed, short rotatio
 long CollideStaticObjects(COLL_INFO* coll, long x, long y, long z, short room_number, long hite);
 void UpdateLaraRoom(ITEM_INFO* item, long height);
 void LaraBaddieCollision(ITEM_INFO* l, COLL_INFO* coll);
+long ItemPushLara(ITEM_INFO* item, ITEM_INFO* l, COLL_INFO* coll, long spaz, long BigPush);
 
 #define TestLaraPosition	( (long(__cdecl*)(short*, ITEM_INFO*, ITEM_INFO*)) 0x00413210 )
 #define	TestBoundsCollide	( (long(__cdecl*)(ITEM_INFO*, ITEM_INFO*, long)) 0x00412CC0 )
 #define	TestBoundsCollideStatic	( (long(__cdecl*)(short*, PHD_3DPOS*, long)) 0x00412DE0 )
-#define	ItemPushLara	( (long(__cdecl*)(ITEM_INFO*, ITEM_INFO*, COLL_INFO*, long, long)) 0x00412860 )
 #define AlignLaraPosition	( (void(__cdecl*)(PHD_VECTOR*, ITEM_INFO*, ITEM_INFO*)) 0x004133C0 )
 #define ItemPushLaraStatic	( (void(__cdecl*)(ITEM_INFO*, short*, PHD_3DPOS*, COLL_INFO*)) 0x00412F20 )

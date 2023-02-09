@@ -12,6 +12,7 @@
 #include "lara_states.h"
 #include "items.h"
 #include "../specific/specificfx.h"
+#include "sound.h"
 
 void TriggerLaraBlood()
 {
@@ -1214,6 +1215,105 @@ void LaraBaddieCollision(ITEM_INFO* l, COLL_INFO* coll)
 		lara.hit_frame = 0;
 }
 
+long ItemPushLara(ITEM_INFO* item, ITEM_INFO* l, COLL_INFO* coll, long spaz, long BigPush)
+{
+	short* bounds;
+	long dx, dz, s, c, x, z;
+	long xmin, xmax, zmin, zmax, left, top, right, bottom;
+	short facing;
+
+	dx = l->pos.x_pos - item->pos.x_pos;
+	dz = l->pos.z_pos - item->pos.z_pos;
+	s = phd_sin(item->pos.y_rot);
+	c = phd_cos(item->pos.y_rot);
+	x = (dx * c - dz * s) >> 14;
+	z = (dx * s + dz * c) >> 14;
+
+	if (BigPush & 2)
+		bounds = GlobalCollisionBounds;
+	else
+		bounds = GetBestFrame(item);
+
+	xmin = bounds[0];
+	xmax = bounds[1];
+	zmin = bounds[4];
+	zmax = bounds[5];
+
+	if (BigPush & 1)
+	{
+		xmin -= coll->radius;
+		xmax += coll->radius;
+		zmin -= coll->radius;
+		zmax += coll->radius;
+	}
+
+	if (abs(dx) > 4608 || abs(dz) > 4608 || x <= xmin || x >= xmax || z <= zmin || z >= zmax)
+		return 0;
+
+	left = x - xmin;
+	top = zmax - z;
+	right = xmax - x;
+	bottom = z - zmin;
+
+	if (left <= right && left <= top && left <= bottom)
+		x -= left;
+	else if (right <= left && right <= top && right <= bottom)
+		x += right;
+	else if (top <= left && top <= right && top <= bottom)
+		z += top;
+	else
+		z -= bottom;
+
+	l->pos.x_pos = item->pos.x_pos + ((c * x + s * z) >> 14);
+	l->pos.z_pos = item->pos.z_pos + ((c * z - s * x) >> 14);
+
+	if (spaz && bounds[3] - bounds[2] > 256)
+	{
+		x = (bounds[0] + bounds[1]) / 2;
+		z = (bounds[4] + bounds[5]) / 2;
+		dx -= (c * x + s * z) >> 14;
+		dz -= (c * z - s * x) >> 14;
+		lara.hit_direction = ushort(l->pos.y_rot - phd_atan(dz, dx) - 24576) >> 14;
+
+		if (!lara.hit_frame)
+			SoundEffect(SFX_LARA_INJURY_RND, &l->pos, SFX_DEFAULT);
+
+		lara.hit_frame++;
+
+		if (lara.hit_frame > 34)
+			lara.hit_frame = 34;
+	}
+
+	coll->bad_pos = -NO_HEIGHT;
+	coll->bad_neg = -384;
+	coll->bad_ceiling = 0;
+	facing = coll->facing;
+	coll->facing = (short)phd_atan(l->pos.z_pos - coll->old.z, l->pos.x_pos - coll->old.x);
+	GetCollisionInfo(coll, l->pos.x_pos, l->pos.y_pos, l->pos.z_pos, l->room_number, 762);
+	coll->facing = facing;
+
+	if (coll->coll_type == CT_NONE)
+	{
+		coll->old.x = l->pos.x_pos;
+		coll->old.y = l->pos.y_pos;
+		coll->old.z = l->pos.z_pos;
+		UpdateLaraRoom(l, -10);
+	}
+	else
+	{
+		l->pos.x_pos = coll->old.x;
+		l->pos.z_pos = coll->old.z;
+	}
+
+	if (lara.IsMoving && lara.MoveCount > 15)
+	{
+		lara.IsMoving = 0;
+		lara.gun_status = LG_NO_ARMS;
+	}
+
+	return 1;
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -1233,4 +1333,5 @@ void inject_coll(bool replace)
 	INJECT(0x00411DB0, CollideStaticObjects, replace);
 	INJECT(0x004120F0, UpdateLaraRoom, replace);
 	INJECT(0x00412170, LaraBaddieCollision, replace);
+	INJECT(0x00412860, ItemPushLara, replace);
 }
