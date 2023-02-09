@@ -457,7 +457,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042D060	+	DrawStaticObjects
 0x0042D290	+	PrintObjects
 0x0042D4F0		GetRoomBounds
-0x0042D790		SetRoomBounds
+0x0042D790	+	SetRoomBounds
 0x0042DE20	+	RenderIt
 0x0042E1C0	+	PrintRooms
 0x0042E240	+	mRotBoundingBoxNoPersp

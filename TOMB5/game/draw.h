@@ -40,6 +40,7 @@ void aInterpolateArmMatrix(float* mx);
 void DrawEffect(short fx_num);
 void calc_animating_item_clip_window(ITEM_INFO* item, short* bounds);
 void ClipRoom(ROOM_INFO* r);
+void SetRoomBounds(short* door, long rn, ROOM_INFO* actualRoom);
 
 extern short no_rotation[];
 

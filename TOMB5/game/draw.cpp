@@ -1748,6 +1748,150 @@ void ClipRoom(ROOM_INFO* r)
 	}
 }
 
+void SetRoomBounds(short* door, long rn, ROOM_INFO* actualRoom)
+{
+	ROOM_INFO* r;
+	FVECTOR* v;
+	FVECTOR* lastV;
+	static FVECTOR vbuf[4];
+	float x, y, z, tooNear, tL, tR, tT, tB;
+
+	r = &room[rn];
+
+	if (r->left <= actualRoom->test_left && r->right >= actualRoom->test_right && r->top <= actualRoom->test_top && r->bottom >= actualRoom->test_bottom)
+		return;
+
+	tL = (float)actualRoom->test_right;
+	tR = (float)actualRoom->test_left;
+	tB = (float)actualRoom->test_top;
+	tT = (float)actualRoom->test_bottom;
+	door += 3;
+	v = vbuf;
+	tooNear = 0;
+
+	for (int i = 0; i < 4; i++, v++, door += 3)
+	{
+		v->x = aMXPtr[M00] * door[0] + aMXPtr[M01] * door[1] + aMXPtr[M02] * door[2] + aMXPtr[M03];
+		v->y = aMXPtr[M10] * door[0] + aMXPtr[M11] * door[1] + aMXPtr[M12] * door[2] + aMXPtr[M13];
+		v->z = aMXPtr[M20] * door[0] + aMXPtr[M21] * door[1] + aMXPtr[M22] * door[2] + aMXPtr[M23];
+		x = v->x;
+		y = v->y;
+		z = v->z;
+
+		if (z <= 0)
+			tooNear++;
+		else
+		{
+			z /= f_mpersp;
+
+			if (z)
+			{
+				x = x / z + f_centerx;
+				y = y / z + f_centery;
+			}
+			else
+			{
+				if (x < 0)
+					x = (float)phd_left;
+				else
+					x = (float)phd_right;
+
+				if (y < 0)
+					y = (float)phd_top;
+				else
+					y = (float)phd_bottom;
+			}
+
+			if (x - 1 < tL)
+				tL = x - 1;
+
+			if (x + 1 > tR)
+				tR = x + 1;
+
+			if (y - 1 < tT)
+				tT = y - 1;
+
+			if (y + 1 > tB)
+				tB = y + 1;
+		}
+	}
+
+	if (tooNear == 4)
+		return;
+
+	if (tooNear > 0)
+	{
+		v = vbuf;
+		lastV = &vbuf[3];
+
+		for (int i = 0; i < 4; i++, lastV = v, v++)
+		{
+			if (lastV->z <= 0 == v->z <= 0)
+				continue;
+
+			if (v->x < 0 && lastV->x < 0)
+				tL = 0;
+			else if (v->x > 0 && lastV->x > 0)
+				tR = phd_winxmax;
+			else
+			{
+				tL = 0;
+				tR = phd_winxmax;
+			}
+
+			if (v->y < 0 && lastV->y < 0)
+				tT = 0;
+			else if (v->y > 0 && lastV->y > 0)
+				tB = phd_winymax;
+			else
+			{
+				tT = 0;
+				tB = phd_winymax;
+			}
+		}
+	}
+
+	if (tL < actualRoom->test_left)
+		tL = actualRoom->test_left;
+
+	if (tR > actualRoom->test_right)
+		tR = actualRoom->test_right;
+
+	if (tT < actualRoom->test_top)
+		tT = actualRoom->test_top;
+
+	if (tB > actualRoom->test_bottom)
+		tB = actualRoom->test_bottom;
+
+	if (tL >= tR || tT >= tB)
+		return;
+
+	if (r->bound_active & 2)
+	{
+		if (tL < r->test_left)
+			r->test_left = (short)tL;
+
+		if (tT < r->test_top)
+			r->test_top = (short)tT;
+
+		if (tR > r->test_right)
+			r->test_right = (short)tR;
+
+		if (tB > r->test_bottom)
+			r->test_bottom = (short)tB;
+	}
+	else
+	{
+		draw_room_list[room_list_end % 128] = rn;
+		room_list_end++;
+		r->bound_active |= 2;
+		r->test_left = (short)tL;
+		r->test_right = (short)tR;
+		r->test_top = (short)tT;
+		r->test_bottom = (short)tB;
+	}
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -1786,4 +1930,5 @@ void inject_draw(bool replace)
 	INJECT(0x0042B340, DrawEffect, replace);
 	INJECT(0x0042B4C0, calc_animating_item_clip_window, replace);
 	INJECT(0x0042AF50, ClipRoom, replace);
+	INJECT(0x0042D790, SetRoomBounds, replace);
 }
