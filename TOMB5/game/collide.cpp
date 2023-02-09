@@ -1380,6 +1380,27 @@ long ItemPushLaraStatic(ITEM_INFO* l, short* bounds, PHD_3DPOS* pos, COLL_INFO* 
 	return 1;
 }
 
+long TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* l, long rad)
+{
+	short* bounds;
+	short* lbounds;
+	long s, c, dx, dz, x, z;
+
+	bounds = GetBestFrame(item);
+	lbounds = GetBestFrame(l);
+
+	if (item->pos.y_pos + bounds[3] <= l->pos.y_pos + lbounds[2] || item->pos.y_pos + bounds[2] >= l->pos.y_pos + lbounds[3])
+		return 0;
+
+	s = phd_sin(item->pos.y_rot);
+	c = phd_cos(item->pos.y_rot);
+	dx = l->pos.x_pos - item->pos.x_pos;
+	dz = l->pos.z_pos - item->pos.z_pos;
+	x = (dx * c - dz * s) >> 14;
+	z = (dx * s + dz * c) >> 14;
+	return x >= bounds[0] - rad && x <= rad + bounds[1] && z >= bounds[4] - rad && z <= rad + bounds[5];
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -1401,4 +1422,5 @@ void inject_coll(bool replace)
 	INJECT(0x00412170, LaraBaddieCollision, replace);
 	INJECT(0x00412860, ItemPushLara, replace);
 	INJECT(0x00412F20, ItemPushLaraStatic, replace);
+	INJECT(0x00412CC0, TestBoundsCollide, replace);
 }

@@ -120,7 +120,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00412770	+	AIPickupCollision
 0x004127C0	+	TrapCollision
 0x00412860	+	ItemPushLara
-0x00412CC0		TestBoundsCollide
+0x00412CC0	+	TestBoundsCollide
 0x00412DE0		TestBoundsCollideStatic
 0x00412F20	+	ItemPushLaraStatic
 0x00413210		TestLaraPosition
