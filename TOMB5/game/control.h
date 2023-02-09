@@ -43,11 +43,11 @@ long GetWaterHeight(long x, long y, long z, short room_number);
 long TriggerActive(ITEM_INFO* item);
 long CheckNoColFloorTriangle(FLOOR_INFO* floor, long x, long z);
 long CheckNoColCeilingTriangle(FLOOR_INFO* floor, long x, long z);
+void FireCrossBowFromLaserSight(GAME_VECTOR* start, GAME_VECTOR* target);
 
 extern uchar ShatterSounds[18][10];
 
 #define AnimateItem	( (void(__cdecl*)(ITEM_INFO*)) 0x00415300 )
-#define FireCrossBowFromLaserSight	( (void(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*)) 0x0041A0B0 )
 #define DoRayBox	( (long(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, short*, PHD_3DPOS*, PHD_VECTOR*, short)) 0x004193C0 )
 #define TriggerCDTrack	( (void(__cdecl*)(short, short, short)) 0x00418B90 )
 #define ResetGuards	( (void(__cdecl*)()) 0x0041AF10 )

@@ -34,6 +34,7 @@
 #include "twogun.h"
 #include "text.h"
 #include "../specific/dxsound.h"
+#include "lara1gun.h"
 #ifdef GENERAL_FIXES
 #include "deltapak.h"
 #include "../tomb5/tomb5.h"
@@ -3018,6 +3019,23 @@ long CheckNoColCeilingTriangle(FLOOR_INFO* floor, long x, long z)
 	return 0;
 }
 
+void FireCrossBowFromLaserSight(GAME_VECTOR* start, GAME_VECTOR* target)
+{
+	PHD_3DPOS pos;
+	short angles[2];
+
+	target->x = target->x & ~0x3FF | 512;
+	target->z = target->z & ~0x3FF | 512;
+	phd_GetVectorAngles(target->x - start->x, target->y - start->y, target->z - start->z, angles);
+	pos.x_pos = start->x;
+	pos.y_pos = start->y;
+	pos.z_pos = start->z;
+	pos.x_rot = angles[1];
+	pos.y_rot = angles[0];
+	pos.z_rot = 0;
+	FireCrossbow(&pos);
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -3057,4 +3075,5 @@ void inject_control(bool replace)
 	INJECT(0x004175B0, TriggerActive, replace);
 	INJECT(0x00418C80, CheckNoColFloorTriangle, replace);
 	INJECT(0x00418D60, CheckNoColCeilingTriangle, replace);
+	INJECT(0x0041A0B0, FireCrossBowFromLaserSight, replace);
 }
