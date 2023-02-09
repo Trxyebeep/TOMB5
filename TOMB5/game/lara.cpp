@@ -5859,6 +5859,42 @@ long LaraTestClimbStance(ITEM_INFO* item, COLL_INFO* coll)
 	return 1;
 }
 
+long TestHangSwingIn(ITEM_INFO* item, short angle)
+{
+	FLOOR_INFO* floor;
+	long x, y, z, h, c;
+	short room_number;
+
+	x = item->pos.x_pos;
+	y = item->pos.y_pos;
+	z = item->pos.z_pos;
+	room_number = item->room_number;
+
+	switch (angle)
+	{
+	case 0:
+		z += 256;
+		break;
+
+	case 0x4000:
+		x += 256;
+		break;
+
+	case -0x4000:
+		x -= 256;
+		break;
+
+	case -0x8000:
+		z -= 256;
+		break;
+	}
+
+	floor = GetFloor(x, y, z, &room_number);
+	h = GetHeight(floor, x, y, z);
+	c = GetCeiling(floor, x, y, z);
+	return h != NO_HEIGHT && h - y > 0 && c - y < -400 && y - c - 819 > -72;
+}
+
 #ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -6078,5 +6114,6 @@ void inject_lara(bool replace)
 	INJECT(0x00446960, TestMonkeyRight, replace);
 	INJECT(0x004466C0, SnapLaraToEdgeOfBlock, replace);
 	INJECT(0x00445580, LaraTestClimbStance, replace);
+	INJECT(0x00444B30, TestHangSwingIn, replace);
 }
 
