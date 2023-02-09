@@ -35,11 +35,11 @@ void mRotBoundingBoxNoPersp(short* bounds, short* rotatedBounds);
 void PrintRooms(short room_number);
 void DrawStaticObjects(short room_number);
 void InterpolateMatrix();
+void InterpolateArmMatrix(long* mx);
 
 extern short no_rotation[];
 
 #define GetRoomBounds	( (void(__cdecl*)()) 0x0042D4F0 )
-#define InterpolateArmMatrix	( (void(__cdecl*)(long*)) 0x0042CC10 )
 #define aInterpolateArmMatrix	( (void(__cdecl*)(float*)) 0x0042C790 )
 #define calc_animating_item_clip_window	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042B4C0 )
 #define DrawEffect	( (void(__cdecl*)(short)) 0x0042B340 )
