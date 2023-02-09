@@ -47,9 +47,9 @@ void FireCrossBowFromLaserSight(GAME_VECTOR* start, GAME_VECTOR* target);
 void TriggerCDTrack(short value, short flags, short type);
 void TriggerNormalCDTrack(short value, short flags, short type);
 long IsRoomOutside(long x, long y, long z);
+void AnimateItem(ITEM_INFO* item);
 
 extern uchar ShatterSounds[18][10];
 
-#define AnimateItem	( (void(__cdecl*)(ITEM_INFO*)) 0x00415300 )
 #define DoRayBox	( (long(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, short*, PHD_3DPOS*, PHD_VECTOR*, short)) 0x004193C0 )
 #define ResetGuards	( (void(__cdecl*)()) 0x0041AF10 )
