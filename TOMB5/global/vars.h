@@ -92,7 +92,6 @@
 #define	last_target	VAR_(0x00EEFA30, GAME_VECTOR)
 #define	last_ideal	VAR_(0x00EEFA40, GAME_VECTOR)
 #define UseForcedFixedCamera	VAR_(0x00EEFA50, char)
-#define	InGameCnt	VAR_(0x00E5BF0C, uchar)
 #define	cheat_hit_points	VAR_(0x00E5BBF8, short)
 #define	gfNumPickups	VAR_(0x0051CE38, uchar)
 #define gfNumTakeaways	VAR_(0x0051CE39, uchar)
