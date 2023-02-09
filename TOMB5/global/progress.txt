@@ -807,9 +807,9 @@ x for functions decompiled but not injected, for one reason or another.
 0x00449840	+	lara_void_func
 0x00449860	+	lara_as_hang
 0x004498D0	+	lara_col_hang
-0x00449CC0		LaraHangRightCornerTest
+0x00449CC0	+	LaraHangRightCornerTest
 0x0044A190	+	IsValidHangPos
-0x0044A2B0		LaraHangLeftCornerTest
+0x0044A2B0	+	LaraHangLeftCornerTest
 0x0044A780	+	CanLaraHangSideways
 0x0044A840	+	lara_as_hangleft
 0x0044A890	+	lara_col_hangleft
