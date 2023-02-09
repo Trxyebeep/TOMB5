@@ -689,7 +689,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004408B0	+	InitialiseItem
 0x00440B60	+	RemoveActiveItem
 0x00440C40	+	RemoveDrawnItem
-0x00440D10		AddActiveItem
+0x00440D10	+	AddActiveItem
 0x00440DA0	+	ItemNewRoom
 0x00440F00		SpawnItem
 0x00440FC0		GlobalItemReplace

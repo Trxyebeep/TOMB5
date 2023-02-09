@@ -267,6 +267,26 @@ void RemoveDrawnItem(short item_num)
 	}
 }
 
+void AddActiveItem(short item_num)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_num];
+	item->flags |= IFL_TRIGGERED;
+
+	if (objects[item->object_number].control)
+	{
+		if (!item->active)
+		{
+			item->active = 1;
+			item->next_active = next_item_active;
+			next_item_active = item_num;
+		}
+	}
+	else
+		item->status = ITEM_INACTIVE;
+}
+
 void inject_items(bool replace)
 {
 	INJECT(0x00440DA0, ItemNewRoom, replace);
@@ -276,4 +296,5 @@ void inject_items(bool replace)
 	INJECT(0x004408B0, InitialiseItem, replace);
 	INJECT(0x00440B60, RemoveActiveItem, replace);
 	INJECT(0x00440C40, RemoveDrawnItem, replace);
+	INJECT(0x00440D10, AddActiveItem, replace);
 }
