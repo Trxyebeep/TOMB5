@@ -38,8 +38,8 @@ void InterpolateMatrix();
 void InterpolateArmMatrix(long* mx);
 void aInterpolateArmMatrix(float* mx);
 void DrawEffect(short fx_num);
+void calc_animating_item_clip_window(ITEM_INFO* item, short* bounds);
 
 extern short no_rotation[];
 
 #define GetRoomBounds	( (void(__cdecl*)()) 0x0042D4F0 )
-#define calc_animating_item_clip_window	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042B4C0 )
