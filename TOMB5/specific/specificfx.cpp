@@ -2850,11 +2850,18 @@ void aDrawWreckingBall(ITEM_INFO* item, long shade)
 	if (shade < 100)
 		shade = 100;
 
-	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 11];
 	vec = (SVECTOR*)&scratchpad[0];
-	aTransformPerspSV(vec, aVertexBuffer, clipflags, 9, shade << 24);
 
+#ifdef GENERAL_FIXES
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
+	aTransformPerspSV(vec, aVertexBuffer, clipflags, 9, RGBA(shade / 3, shade / 3, shade / 3, shade));
+	tex.drawtype = 5;
+#else
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 11];
+	aTransformPerspSV(vec, aVertexBuffer, clipflags, 9, shade << 24);
 	tex.drawtype = 3;
+#endif
+
 	tex.tpage = sprite->tpage;
 	tex.u1 = sprite->x1;
 	tex.v1 = sprite->y1;
