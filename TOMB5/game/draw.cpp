@@ -1226,9 +1226,9 @@ void mRotBoundingBoxNoPersp(short* bounds, short* rotatedBounds)
 
 	for (int i = 0; i < 8; i++)
 	{
-		x = pos[i].x * phd_mxptr[M00] + pos[i].y * phd_mxptr[M01] + pos[i].z * phd_mxptr[M02] >> 14;
-		y = pos[i].x * phd_mxptr[M10] + pos[i].y * phd_mxptr[M11] + pos[i].z * phd_mxptr[M12] >> 14;
-		z = pos[i].x * phd_mxptr[M20] + pos[i].y * phd_mxptr[M21] + pos[i].z * phd_mxptr[M22] >> 14;
+		x = (pos[i].x * phd_mxptr[M00] + pos[i].y * phd_mxptr[M01] + pos[i].z * phd_mxptr[M02]) >> 14;
+		y = (pos[i].x * phd_mxptr[M10] + pos[i].y * phd_mxptr[M11] + pos[i].z * phd_mxptr[M12]) >> 14;
+		z = (pos[i].x * phd_mxptr[M20] + pos[i].y * phd_mxptr[M21] + pos[i].z * phd_mxptr[M22]) >> 14;
 
 		if (x < xMin)
 			xMin = (short)x;
@@ -1272,6 +1272,59 @@ void PrintRooms(short room_number)
 	S_InsertRoom(r, 1);
 }
 
+void DrawStaticObjects(short room_number)
+{
+	ROOM_INFO* r;
+	MESH_INFO* mesh;
+	STATIC_INFO* sinfo;
+	long clip, mip;
+	short n;
+
+	CurrentRoom = room_number;
+	nPolyType = 1;
+	r = &room[room_number];
+
+	phd_PushMatrix();
+	phd_TranslateAbs(r->x, r->y, r->z);
+	phd_left = r->left;
+	phd_right = r->right;
+	phd_top = r->top;
+	phd_bottom = r->bottom;
+
+	mesh = r->mesh;
+
+	for (int i = r->num_meshes; i > 0; i--, mesh++)
+	{
+		if (mesh->Flags & 1)
+		{
+			phd_PushMatrix();
+			phd_TranslateAbs(mesh->x, mesh->y, mesh->z);
+			phd_RotY(mesh->y_rot);
+			n = mesh->static_number;
+			sinfo = &static_objects[n];
+			clip = S_GetObjectBounds(&sinfo->x_minp);
+
+			if (clip)
+			{
+				mip = sinfo->flags & 0x3C;
+				S_CalculateStaticMeshLight(mesh->x, mesh->y, mesh->z, mesh->shade, r);
+
+				if (mip)
+				{
+					if (phd_mxptr[M23] >> 15 > (mip & 0xFFFC) << 8)
+						n++;
+				}
+
+				phd_PutPolygons(meshes[sinfo->mesh_number], clip);
+			}
+
+			phd_PopMatrix();
+		}
+	}
+
+	phd_PopMatrix();
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -1303,4 +1356,5 @@ void inject_draw(bool replace)
 	INJECT(0x0042DE20, RenderIt, replace);
 	INJECT(0x0042E240, mRotBoundingBoxNoPersp, replace);
 	INJECT(0x0042E1C0, PrintRooms, replace);
+	INJECT(0x0042D060, DrawStaticObjects, replace);
 }

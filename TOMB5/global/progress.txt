@@ -454,7 +454,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042CEB0	+	GetFrames
 0x0042CF80	+	GetBoundsAccurate
 0x0042D020	+	GetBestFrame
-0x0042D060		DrawStaticObjects
+0x0042D060	+	DrawStaticObjects
 0x0042D290	+	PrintObjects
 0x0042D4F0		GetRoomBounds
 0x0042D790		SetRoomBounds
