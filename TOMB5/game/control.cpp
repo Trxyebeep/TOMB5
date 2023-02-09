@@ -42,6 +42,7 @@
 #include "../specific/gamemain.h"
 #endif
 #include "../specific/audio.h"
+#include "rope.h"
 
 uchar ShatterSounds[18][10] =
 {
@@ -3442,6 +3443,175 @@ long RayBoxIntersect(PHD_VECTOR* min, PHD_VECTOR* max, PHD_VECTOR* origin, PHD_V
 	return 1;
 }
 
+long DoRayBox(GAME_VECTOR* start, GAME_VECTOR* target, short* bounds, PHD_3DPOS* ItemPos, PHD_VECTOR* Coord, short item_number)
+{
+	ITEM_INFO* item;
+	OBJECT_INFO* obj;
+	SPHERE* sphere;
+	PHD_VECTOR min, max, origin, dir;
+	PHD_VECTOR spos, tpos, s, t, sp, pos;
+	short** meshpp;
+	short* ClosestMesh;
+	long x, y, z, ClosestNode, ClosestBit, bit, r, r0, r1, dist, max_dist;
+
+	min.x = bounds[0] << 16;
+	min.y = bounds[2] << 16;
+	min.z = bounds[4] << 16;
+
+	max.x = bounds[1] << 16;
+	max.y = bounds[3] << 16;
+	max.z = bounds[5] << 16;
+
+	phd_PushUnitMatrix();
+	phd_RotY(-ItemPos->y_rot);
+
+	x = target->x - ItemPos->x_pos;
+	y = target->y - ItemPos->y_pos;
+	z = target->z - ItemPos->z_pos;
+	tpos.x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z) >> 14;
+	tpos.y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z) >> 14;
+	tpos.z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z) >> 14;
+
+	x = start->x - ItemPos->x_pos;
+	y = start->y - ItemPos->y_pos;
+	z = start->z - ItemPos->z_pos;
+	spos.x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z) >> 14;
+	spos.y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z) >> 14;
+	spos.z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z) >> 14;
+
+	phd_PopMatrix();
+
+	dir.x = (tpos.x - spos.x) << 16;
+	dir.y = (tpos.y - spos.y) << 16;
+	dir.z = (tpos.z - spos.z) << 16;
+	origin.x = spos.x << 16;
+	origin.y = spos.y << 16;
+	origin.z = spos.z << 16;
+	Normalise(&dir);
+	dir.x <<= 8;
+	dir.y <<= 8;
+	dir.z <<= 8;
+
+	if (!RayBoxIntersect(&min, &max, &origin, &dir, Coord))
+		return 0;
+
+	if (Coord->x < bounds[0] || Coord->x > bounds[1] ||
+		Coord->y < bounds[2] || Coord->y > bounds[3] ||
+		Coord->z < bounds[4] || Coord->z > bounds[5])
+		return 0;
+
+	phd_PushUnitMatrix();
+	phd_RotY(ItemPos->y_rot);
+
+	x = (phd_mxptr[M00] * Coord->x + phd_mxptr[M01] * Coord->y + phd_mxptr[M02] * Coord->z) >> 14;
+	y = (phd_mxptr[M10] * Coord->x + phd_mxptr[M11] * Coord->y + phd_mxptr[M12] * Coord->z) >> 14;
+	z = (phd_mxptr[M20] * Coord->x + phd_mxptr[M21] * Coord->y + phd_mxptr[M22] * Coord->z) >> 14;
+	Coord->x = x;
+	Coord->y = y;
+	Coord->z = z;
+
+	phd_PopMatrix();
+	max_dist = 0x7FFFFFFF;
+	ClosestMesh = 0;
+	ClosestBit = 0;
+	item = 0;
+
+	if (item_number < 0)
+		ClosestNode = -1;
+	else
+	{
+		item = &items[item_number];
+		obj = &objects[item->object_number];
+		meshpp = &meshes[obj->mesh_index];
+
+		GetSpheres(item, Slist, 1);
+		bit = 1;
+		ClosestNode = -2;
+
+		for (int i = 0; i < obj->nmeshes; i++, meshpp += 2, bit <<= 1)
+		{
+			if (!(item->mesh_bits & bit))
+				continue;
+
+			sphere = &Slist[i];
+			s.x = start->x;
+			s.y = start->y;
+			s.z = start->z;
+
+			t.x = target->x;
+			t.y = target->y;
+			t.z = target->z;
+
+			sp.x = sphere->x;
+			sp.y = sphere->y;
+			sp.z = sphere->z;
+
+			r0 = ((sp.x - s.x) * (t.x - s.x)) + ((sp.y - s.y) * (t.y - s.y)) + ((sp.z - s.z) * (t.z - s.z));
+			r1 = SQUARE(t.x - s.x) + SQUARE(t.y - s.y) + SQUARE(t.z - s.z);
+
+			if ((r0 >= 0 || r1 >= 0) && (r1 <= 0 || r0 <= 0) || (abs(r0) > abs(r1)))
+				continue;
+
+			r1 >>= 16;
+
+			if (r1)
+				r = r0 / r1;
+			else
+				r = 0;
+
+			pos.x = s.x + ((r * (t.x - s.x)) >> 16);
+			pos.y = s.y + ((r * (t.y - s.y)) >> 16);
+			pos.z = s.z + ((r * (t.z - s.z)) >> 16);
+
+			if (SQUARE(pos.x - sp.x) + SQUARE(pos.y - sp.y) + SQUARE(pos.z - sp.z) < SQUARE(sphere->r))
+			{
+				dist = SQUARE(sphere->x - start->x) + SQUARE(sphere->y - start->y) + SQUARE(sphere->z - start->z);
+
+				if (dist < max_dist)
+				{
+					max_dist = dist;
+					ClosestMesh = *meshpp;
+					ClosestBit = bit;
+					ClosestNode = i;
+				}
+			}
+		}
+	}
+
+	if (ClosestNode >= -1)
+	{
+		dist = SQUARE(Coord->x + ItemPos->x_pos - start->x) +
+			SQUARE(Coord->y + ItemPos->y_pos - start->y) +
+			SQUARE(Coord->z + ItemPos->z_pos - start->z);
+
+		if (dist < ClosestDist)
+		{
+			ClosestCoord.x = Coord->x + ItemPos->x_pos;
+			ClosestCoord.y = Coord->y + ItemPos->y_pos;
+			ClosestCoord.z = Coord->z + ItemPos->z_pos;
+			ClosestItem = item_number;
+			ClosestDist = dist;
+
+			if (ClosestNode >= 0)
+			{
+				GetSpheres(item, Slist, 3);
+				ShatterItem.YRot = item->pos.y_rot;
+				ShatterItem.meshp = ClosestMesh;
+				ShatterItem.Sphere.x = Slist[ClosestNode].x;
+				ShatterItem.Sphere.y = Slist[ClosestNode].y;
+				ShatterItem.Sphere.z = Slist[ClosestNode].z;
+				ShatterItem.Bit = ClosestBit;
+				ShatterItem.il = &item->il;
+				ShatterItem.Flags = 0;
+			}
+
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -3487,4 +3657,5 @@ void inject_control(bool replace)
 	INJECT(0x00418E90, IsRoomOutside, replace);
 	INJECT(0x00415300, AnimateItem, replace);
 	INJECT(0x00419D00, RayBoxIntersect, replace);
+	INJECT(0x004193C0, DoRayBox, replace);
 }

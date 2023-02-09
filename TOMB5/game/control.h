@@ -49,8 +49,8 @@ void TriggerNormalCDTrack(short value, short flags, short type);
 long IsRoomOutside(long x, long y, long z);
 void AnimateItem(ITEM_INFO* item);
 long RayBoxIntersect(PHD_VECTOR* min, PHD_VECTOR* max, PHD_VECTOR* origin, PHD_VECTOR* dir, PHD_VECTOR* Coord);
+long DoRayBox(GAME_VECTOR* start, GAME_VECTOR* target, short* bounds, PHD_3DPOS* ItemPos, PHD_VECTOR* Coord, short item_number);
 
 extern uchar ShatterSounds[18][10];
 
-#define DoRayBox	( (long(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, short*, PHD_3DPOS*, PHD_VECTOR*, short)) 0x004193C0 )
 #define ResetGuards	( (void(__cdecl*)()) 0x0041AF10 )

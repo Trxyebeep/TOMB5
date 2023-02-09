@@ -165,7 +165,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00418D60	+	CheckNoColCeilingTriangle
 0x00418E90	+	IsRoomOutside
 0x00419110	+	ObjectOnLOS2
-0x004193C0		DoRayBox
+0x004193C0	+	DoRayBox
 0x00419D00	+	RayBoxIntersect
 0x0041A0B0	+	FireCrossBowFromLaserSight
 0x0041A170	+	GetTargetOnLOS
