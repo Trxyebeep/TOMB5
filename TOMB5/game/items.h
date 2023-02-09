@@ -15,6 +15,6 @@ short SpawnItem(ITEM_INFO* item, long obj_num);
 long GlobalItemReplace(long in, long out);
 void InitialiseFXArray(long allocmem);
 short CreateEffect(short room_num);
+void KillEffect(short fx_num);
 
 #define EffectNewRoom	( (void(__cdecl*)(short, short)) 0x004412F0 )
-#define KillEffect	( (void(__cdecl*)(short)) 0x00441180 )
