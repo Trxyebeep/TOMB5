@@ -5716,6 +5716,72 @@ long LaraHangLeftCornerTest(ITEM_INFO* item, COLL_INFO* coll)
 	return flag;
 }
 
+short GetDirOctant(long rot)
+{
+	rot = abs(rot);
+	return rot >= 0x2000 && rot <= 0x6000;
+}
+
+short TestMonkeyLeft(ITEM_INFO* item, COLL_INFO* coll)
+{
+	short oct;
+
+	coll->bad_pos = -NO_HEIGHT;
+	coll->bad_neg = NO_HEIGHT;
+	coll->bad_ceiling = 0;
+	lara.move_angle = item->pos.y_rot - 0x4000;
+	coll->facing = lara.move_angle;
+	coll->radius = 100;
+	coll->slopes_are_walls = 0;
+	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 600);
+
+	if (abs(coll->mid_ceiling - coll->front_ceiling) > 50)
+		return 0;
+
+	if (coll->coll_type != CT_NONE)
+	{
+		oct = GetDirOctant(item->pos.y_rot);
+
+		if (!oct && (coll->coll_type == CT_FRONT || coll->coll_type == CT_LEFT))
+			return 0;
+
+		if (oct == 1 && (coll->coll_type == CT_RIGHT || coll->coll_type == CT_LEFT))
+			return 0;
+	}
+
+	return 1;
+}
+
+short TestMonkeyRight(ITEM_INFO* item, COLL_INFO* coll)
+{
+	short oct;
+
+	coll->bad_pos = -NO_HEIGHT;
+	coll->bad_neg = -384;
+	coll->bad_ceiling = 0;
+	lara.move_angle = item->pos.y_rot + 0x4000;
+	coll->facing = lara.move_angle;
+	coll->radius = 100;
+	coll->slopes_are_walls = 0;
+	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 600);
+
+	if (abs(coll->mid_ceiling - coll->front_ceiling) > 50)
+		return 0;
+
+	if (coll->coll_type != CT_NONE)
+	{
+		oct = GetDirOctant(item->pos.y_rot);
+
+		if (!oct && coll->coll_type == CT_FRONT)
+			return 0;
+
+		if (oct == 1 && (coll->coll_type == CT_FRONT || coll->coll_type == CT_RIGHT || coll->coll_type == CT_LEFT))
+			return 0;
+	}
+
+	return 1;
+}
+
 #ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -5930,5 +5996,8 @@ void inject_lara(bool replace)
 	INJECT(0x0044A190, IsValidHangPos, replace);
 	INJECT(0x00449CC0, LaraHangRightCornerTest, replace);
 	INJECT(0x0044A2B0, LaraHangLeftCornerTest, replace);
+	INJECT(0x00446920, GetDirOctant, replace);
+	INJECT(0x00446810, TestMonkeyLeft, replace);
+	INJECT(0x00446960, TestMonkeyRight, replace);
 }
 

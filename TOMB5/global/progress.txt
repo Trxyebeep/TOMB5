@@ -758,9 +758,9 @@ x for functions decompiled but not injected, for one reason or another.
 0x004460F0	+	LaraHangTest
 0x004466C0		SnapLaraToEdgeOfBlock
 0x004467A0	+	MonkeySwingSnap
-0x00446810		TestMonkeyLeft
-0x00446920		GetDirOctant
-0x00446960		TestMonkeyRight
+0x00446810	+	TestMonkeyLeft
+0x00446920	+	GetDirOctant
+0x00446960	+	TestMonkeyRight
 0x00446A70	+	lara_as_monkeyswing
 0x00446B50	+	lara_col_monkeyswing
 0x00446CD0	+	lara_as_monkeyl

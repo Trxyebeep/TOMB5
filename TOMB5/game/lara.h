@@ -172,6 +172,9 @@ long LaraHangTest(ITEM_INFO* item, COLL_INFO* coll);
 void SetCornerAnim(ITEM_INFO* item, COLL_INFO* coll, short rot, short flip);
 long LaraHangRightCornerTest(ITEM_INFO* item, COLL_INFO* coll);
 long LaraHangLeftCornerTest(ITEM_INFO* item, COLL_INFO* coll);
+short GetDirOctant(long rot);
+short TestMonkeyLeft(ITEM_INFO* item, COLL_INFO* coll);
+short TestMonkeyRight(ITEM_INFO* item, COLL_INFO* coll);
 
 #ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll);
@@ -182,6 +185,4 @@ void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 #define LaraTestEdgeCatch	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*, long*)) 0x00444890 )
 #define LaraTestHangOnClimbWall	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00444970 )
 #define TestHangSwingIn	( (long(__cdecl*)(ITEM_INFO*, short)) 0x00444B30 )
-#define TestMonkeyLeft	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446810 )
-#define TestMonkeyRight	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446960 )
 #define SnapLaraToEdgeOfBlock	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, short)) 0x004466C0 )
