@@ -2873,6 +2873,39 @@ long GetWaterHeight(long x, long y, long z, short room_number)
 	return NO_HEIGHT;
 }
 
+long TriggerActive(ITEM_INFO* item)
+{
+	long reverse;
+
+	reverse = (item->flags & IFL_REVERSE) ? 1 : 0;
+
+	if ((item->flags & IFL_CODEBITS) != IFL_CODEBITS)
+		return reverse;
+
+	if (!item->timer)
+		return !reverse;
+
+	if (item->timer > 0)
+	{
+		item->timer--;
+
+		if (!item->timer)
+			item->timer = -1;
+	}
+	else if (item->timer < -1)
+	{
+		item->timer++;
+
+		if (item->timer == -1)
+			item->timer = 0;
+	}
+
+	if (item->timer <= -1)
+		return reverse;
+
+	return !reverse;
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -2909,4 +2942,5 @@ void inject_control(bool replace)
 	INJECT(0x00414720, UpdateSky, replace);
 	INJECT(0x004159F0, AlterFloorHeight, replace);
 	INJECT(0x00415DA0, GetWaterHeight, replace);
+	INJECT(0x004175B0, TriggerActive, replace);
 }

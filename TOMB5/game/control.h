@@ -40,12 +40,12 @@ void KillMoveEffects();
 void UpdateSky();
 void AlterFloorHeight(ITEM_INFO* item, long height);
 long GetWaterHeight(long x, long y, long z, short room_number);
+long TriggerActive(ITEM_INFO* item);
 
 extern uchar ShatterSounds[18][10];
 
 #define	CheckNoColFloorTriangle	( (long(__cdecl*)(FLOOR_INFO*, long, long)) 0x00418C80 )
 #define AnimateItem	( (void(__cdecl*)(ITEM_INFO*)) 0x00415300 )
-#define TriggerActive	( (long(__cdecl*)(ITEM_INFO*)) 0x004175B0 )
 #define CheckNoColCeilingTriangle	( (long(__cdecl*)(FLOOR_INFO*, long, long)) 0x00418D60 )
 #define FireCrossBowFromLaserSight	( (void(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*)) 0x0041A0B0 )
 #define DoRayBox	( (long(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, short*, PHD_3DPOS*, PHD_VECTOR*, short)) 0x004193C0 )
