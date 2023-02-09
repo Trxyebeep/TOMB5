@@ -2725,6 +2725,29 @@ void KillMoveEffects()
 	ItemNewRoomNo = 0;
 }
 
+void UpdateSky()
+{
+	if (gfLevelFlags & GF_LAYER1)
+	{
+		SkyPos += gfLayer1Vel;
+
+		if (SkyPos > 0x2600)
+			SkyPos -= 0x2600;
+		else if (SkyPos < 0)
+			SkyPos += 0x2600;
+	}
+
+	if (gfLevelFlags & GF_LAYER2)
+	{
+		SkyPos2 += gfLayer2Vel;
+
+		if (SkyPos2 > 0x2600)
+			SkyPos2 -= 0x2600;
+		else if (SkyPos2 < 0)
+			SkyPos2 += 0x2600;
+	}
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -2758,4 +2781,5 @@ void inject_control(bool replace)
 	INJECT(0x004165E0, RefreshCamera, replace);
 	INJECT(0x00414620, KillMoveItems, replace);
 	INJECT(0x004146A0, KillMoveEffects, replace);
+	INJECT(0x00414720, UpdateSky, replace);
 }
