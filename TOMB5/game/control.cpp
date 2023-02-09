@@ -41,6 +41,7 @@
 #include "../specific/output.h"
 #include "../specific/gamemain.h"
 #endif
+#include "../specific/audio.h"
 
 uchar ShatterSounds[18][10] =
 {
@@ -3036,6 +3037,39 @@ void FireCrossBowFromLaserSight(GAME_VECTOR* start, GAME_VECTOR* target)
 	FireCrossbow(&pos);
 }
 
+void TriggerCDTrack(short value, short flags, short type)
+{
+	if (value < 136)
+		TriggerNormalCDTrack(value, flags, type);
+}
+
+void TriggerNormalCDTrack(short value, short flags, short type)
+{
+	long code;
+
+	if (value == 117 || value == 118 || value == 121 || value >= 123 && value <= 130)
+	{
+		if (CurrentAtmosphere != value)
+		{
+			CurrentAtmosphere = (uchar)value;
+
+			if (IsAtmospherePlaying)
+				S_CDPlay(value, 1);
+		}
+	}
+	else
+	{
+		code = (flags >> 8) & 0x3F;	//(IFL_CODEBITS | IFL_INVISIBLE)= 0x3F00, then >> 8, 3F
+
+		if ((cd_flags[value] & code) != code)
+		{
+			cd_flags[value] |= code;
+			S_CDPlay(value, 0);
+			IsAtmospherePlaying = 0;
+		}
+	}
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -3076,4 +3110,6 @@ void inject_control(bool replace)
 	INJECT(0x00418C80, CheckNoColFloorTriangle, replace);
 	INJECT(0x00418D60, CheckNoColCeilingTriangle, replace);
 	INJECT(0x0041A0B0, FireCrossBowFromLaserSight, replace);
+	INJECT(0x00418B90, TriggerCDTrack, replace);
+	INJECT(0x00418BC0, TriggerNormalCDTrack, replace);
 }
