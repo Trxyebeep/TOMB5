@@ -23,7 +23,7 @@ void LaraBaddieCollision(ITEM_INFO* l, COLL_INFO* coll);
 long ItemPushLara(ITEM_INFO* item, ITEM_INFO* l, COLL_INFO* coll, long spaz, long BigPush);
 long ItemPushLaraStatic(ITEM_INFO* l, short* bounds, PHD_3DPOS* pos, COLL_INFO* coll);
 long TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* l, long rad);
+long TestBoundsCollideStatic(short* bounds, PHD_3DPOS* pos, long rad);
 
 #define TestLaraPosition	( (long(__cdecl*)(short*, ITEM_INFO*, ITEM_INFO*)) 0x00413210 )
-#define	TestBoundsCollideStatic	( (long(__cdecl*)(short*, PHD_3DPOS*, long)) 0x00412DE0 )
 #define AlignLaraPosition	( (void(__cdecl*)(PHD_VECTOR*, ITEM_INFO*, ITEM_INFO*)) 0x004133C0 )
