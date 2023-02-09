@@ -1325,6 +1325,70 @@ void DrawStaticObjects(short room_number)
 	phd_PopMatrix();
 }
 
+void InterpolateMatrix()
+{
+	if (IM_rate == 2 || (IM_frac == 2 && IM_rate == 4))
+	{
+#ifdef GENERAL_FIXES
+		phd_mxptr[M00] += (IMptr[M00] - phd_mxptr[M00]) >> 1;
+		phd_mxptr[M01] += (IMptr[M01] - phd_mxptr[M01]) >> 1;
+		phd_mxptr[M02] += (IMptr[M02] - phd_mxptr[M02]) >> 1;
+		phd_mxptr[M03] += (IMptr[M03] - phd_mxptr[M03]) >> 1;
+		phd_mxptr[M10] += (IMptr[M10] - phd_mxptr[M10]) >> 1;
+		phd_mxptr[M11] += (IMptr[M11] - phd_mxptr[M11]) >> 1;
+		phd_mxptr[M12] += (IMptr[M12] - phd_mxptr[M12]) >> 1;
+		phd_mxptr[M13] += (IMptr[M13] - phd_mxptr[M13]) >> 1;
+		phd_mxptr[M20] += (IMptr[M20] - phd_mxptr[M20]) >> 1;
+		phd_mxptr[M21] += (IMptr[M21] - phd_mxptr[M21]) >> 1;
+		phd_mxptr[M22] += (IMptr[M22] - phd_mxptr[M22]) >> 1;
+		phd_mxptr[M23] += (IMptr[M23] - phd_mxptr[M23]) >> 1;
+#else
+		phd_mxptr[M00] = (phd_mxptr[M00] + IMptr[M00]) >> 1;
+		phd_mxptr[M01] = (phd_mxptr[M01] + IMptr[M01]) >> 1;
+		phd_mxptr[M02] = (phd_mxptr[M02] + IMptr[M02]) >> 1;
+		phd_mxptr[M03] = (phd_mxptr[M03] + IMptr[M03]) >> 1;
+		phd_mxptr[M10] = (phd_mxptr[M10] + IMptr[M10]) >> 1;
+		phd_mxptr[M11] = (phd_mxptr[M11] + IMptr[M11]) >> 1;
+		phd_mxptr[M12] = (phd_mxptr[M12] + IMptr[M12]) >> 1;
+		phd_mxptr[M13] = (phd_mxptr[M13] + IMptr[M13]) >> 1;
+		phd_mxptr[M20] = (phd_mxptr[M20] + IMptr[M20]) >> 1;
+		phd_mxptr[M21] = (phd_mxptr[M21] + IMptr[M21]) >> 1;
+		phd_mxptr[M22] = (phd_mxptr[M22] + IMptr[M22]) >> 1;
+		phd_mxptr[M23] = (phd_mxptr[M23] + IMptr[M23]) >> 1;
+#endif
+	}
+	else if (IM_frac == 1)
+	{
+		phd_mxptr[M00] += (IMptr[M00] - phd_mxptr[M00]) >> 2;
+		phd_mxptr[M01] += (IMptr[M01] - phd_mxptr[M01]) >> 2;
+		phd_mxptr[M02] += (IMptr[M02] - phd_mxptr[M02]) >> 2;
+		phd_mxptr[M03] += (IMptr[M03] - phd_mxptr[M03]) >> 2;
+		phd_mxptr[M10] += (IMptr[M10] - phd_mxptr[M10]) >> 2;
+		phd_mxptr[M11] += (IMptr[M11] - phd_mxptr[M11]) >> 2;
+		phd_mxptr[M12] += (IMptr[M12] - phd_mxptr[M12]) >> 2;
+		phd_mxptr[M13] += (IMptr[M13] - phd_mxptr[M13]) >> 2;
+		phd_mxptr[M20] += (IMptr[M20] - phd_mxptr[M20]) >> 2;
+		phd_mxptr[M21] += (IMptr[M21] - phd_mxptr[M21]) >> 2;
+		phd_mxptr[M22] += (IMptr[M22] - phd_mxptr[M22]) >> 2;
+		phd_mxptr[M23] += (IMptr[M23] - phd_mxptr[M23]) >> 2;
+	}
+	else
+	{
+		phd_mxptr[M00] = IMptr[M00] - ((IMptr[M00] - phd_mxptr[M00]) >> 2);
+		phd_mxptr[M01] = IMptr[M01] - ((IMptr[M01] - phd_mxptr[M01]) >> 2);
+		phd_mxptr[M02] = IMptr[M02] - ((IMptr[M02] - phd_mxptr[M02]) >> 2);
+		phd_mxptr[M03] = IMptr[M03] - ((IMptr[M03] - phd_mxptr[M03]) >> 2);
+		phd_mxptr[M10] = IMptr[M10] - ((IMptr[M10] - phd_mxptr[M10]) >> 2);
+		phd_mxptr[M11] = IMptr[M11] - ((IMptr[M11] - phd_mxptr[M11]) >> 2);
+		phd_mxptr[M12] = IMptr[M12] - ((IMptr[M12] - phd_mxptr[M12]) >> 2);
+		phd_mxptr[M13] = IMptr[M13] - ((IMptr[M13] - phd_mxptr[M13]) >> 2);
+		phd_mxptr[M20] = IMptr[M20] - ((IMptr[M20] - phd_mxptr[M20]) >> 2);
+		phd_mxptr[M21] = IMptr[M21] - ((IMptr[M21] - phd_mxptr[M21]) >> 2);
+		phd_mxptr[M22] = IMptr[M22] - ((IMptr[M22] - phd_mxptr[M22]) >> 2);
+		phd_mxptr[M23] = IMptr[M23] - ((IMptr[M23] - phd_mxptr[M23]) >> 2);
+	}
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -1357,4 +1421,5 @@ void inject_draw(bool replace)
 	INJECT(0x0042E240, mRotBoundingBoxNoPersp, replace);
 	INJECT(0x0042E1C0, PrintRooms, replace);
 	INJECT(0x0042D060, DrawStaticObjects, replace);
+	INJECT(0x0042C8F0, InterpolateMatrix, replace);
 }

@@ -448,7 +448,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042C3F0	+	phd_PutPolygons_I
 0x0042C440	+	aInterpolateMatrix
 0x0042C790		aInterpolateArmMatrix
-0x0042C8F0		InterpolateMatrix
+0x0042C8F0	+	InterpolateMatrix
 0x0042CC10		InterpolateArmMatrix
 0x0042CD50	+	CalculateObjectLighting
 0x0042CEB0	+	GetFrames
