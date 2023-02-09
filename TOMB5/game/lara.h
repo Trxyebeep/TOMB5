@@ -179,10 +179,9 @@ void SnapLaraToEdgeOfBlock(ITEM_INFO* item, COLL_INFO* coll, short angle);
 long LaraTestClimbStance(ITEM_INFO* item, COLL_INFO* coll);
 long TestHangSwingIn(ITEM_INFO* item, short angle);
 long LaraTestHangOnClimbWall(ITEM_INFO* item, COLL_INFO* coll);
+long LaraTestEdgeCatch(ITEM_INFO* item, COLL_INFO* coll, long* edge);
 
 #ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 #endif
-
-#define LaraTestEdgeCatch	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*, long*)) 0x00444890 )
