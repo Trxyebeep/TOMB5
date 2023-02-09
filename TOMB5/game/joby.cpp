@@ -448,7 +448,7 @@ void ControlWreckingBall(short item_number)
 
 			if (item->fallspeed < -32)
 			{
-				SoundEffect(SFX_J_GRAB_IMPACT, &item->pos, 4104);
+				SoundEffect(SFX_J_GRAB_IMPACT, &item->pos, 4096 | SFX_SETVOL);
 				item->fallspeed = -item->fallspeed >> 3;
 				ScreenShake(item, 16, 8192);
 			}
