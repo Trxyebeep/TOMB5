@@ -1423,6 +1423,34 @@ long TestBoundsCollideStatic(short* bounds, PHD_3DPOS* pos, long rad)
 	return x >= bounds[0] - rad && x <= rad + bounds[1] && z >= bounds[4] - rad && z <= rad + bounds[5];
 }
 
+long TestLaraPosition(short* bounds, ITEM_INFO* item, ITEM_INFO* l)
+{
+	PHD_VECTOR pos;
+	long x, y, z;
+	short xrot, yrot, zrot;
+
+	xrot = l->pos.x_rot - item->pos.x_rot;
+	yrot = l->pos.y_rot - item->pos.y_rot;
+	zrot = l->pos.z_rot - item->pos.z_rot;
+
+	if (xrot < bounds[6] || xrot > bounds[7] ||
+		yrot < bounds[8] || yrot > bounds[9] ||
+		zrot < bounds[10] || zrot > bounds[11])
+		return 0;
+
+	phd_PushUnitMatrix();
+	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+	pos.x = l->pos.x_pos - item->pos.x_pos;
+	pos.y = l->pos.y_pos - item->pos.y_pos;
+	pos.z = l->pos.z_pos - item->pos.z_pos;
+	x = (pos.x * phd_mxptr[M00] + pos.y * phd_mxptr[M10] + pos.z * phd_mxptr[M20]) >> 14;
+	y = (pos.x * phd_mxptr[M01] + pos.y * phd_mxptr[M11] + pos.z * phd_mxptr[M21]) >> 14;
+	z = (pos.x * phd_mxptr[M02] + pos.y * phd_mxptr[M12] + pos.z * phd_mxptr[M22]) >> 14;
+	phd_PopMatrix();
+
+	return x >= bounds[0] && x <= bounds[1] && y >= bounds[2] && y <= bounds[3] && z >= bounds[4] && z <= bounds[5];
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -1446,4 +1474,5 @@ void inject_coll(bool replace)
 	INJECT(0x00412F20, ItemPushLaraStatic, replace);
 	INJECT(0x00412CC0, TestBoundsCollide, replace);
 	INJECT(0x00412DE0, TestBoundsCollideStatic, replace);
+	INJECT(0x00413210, TestLaraPosition, replace);
 }

@@ -24,6 +24,6 @@ long ItemPushLara(ITEM_INFO* item, ITEM_INFO* l, COLL_INFO* coll, long spaz, lon
 long ItemPushLaraStatic(ITEM_INFO* l, short* bounds, PHD_3DPOS* pos, COLL_INFO* coll);
 long TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* l, long rad);
 long TestBoundsCollideStatic(short* bounds, PHD_3DPOS* pos, long rad);
+long TestLaraPosition(short* bounds, ITEM_INFO* item, ITEM_INFO* l);
 
-#define TestLaraPosition	( (long(__cdecl*)(short*, ITEM_INFO*, ITEM_INFO*)) 0x00413210 )
 #define AlignLaraPosition	( (void(__cdecl*)(PHD_VECTOR*, ITEM_INFO*, ITEM_INFO*)) 0x004133C0 )
