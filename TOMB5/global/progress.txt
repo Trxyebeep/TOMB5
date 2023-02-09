@@ -694,7 +694,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00440F00	+	SpawnItem
 0x00440FC0	+	GlobalItemReplace
 0x00441080	+	InitialiseFXArray
-0x004410F0		CreateEffect
+0x004410F0	+	CreateEffect
 0x00441180		KillEffect
 0x004412F0		EffectNewRoom
 
