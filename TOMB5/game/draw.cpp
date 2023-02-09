@@ -1327,6 +1327,8 @@ void DrawStaticObjects(short room_number)
 
 void InterpolateMatrix()
 {
+	aInterpolateMatrix();
+
 	if (IM_rate == 2 || (IM_frac == 2 && IM_rate == 4))
 	{
 #ifdef GENERAL_FIXES
@@ -1421,6 +1423,38 @@ void InterpolateArmMatrix(long* mx)
 	}
 }
 
+void aInterpolateArmMatrix(float* mx)
+{
+	aMXPtr[M00] = mx[M00];
+	aMXPtr[M01] = mx[M01];
+	aMXPtr[M02] = mx[M02];
+	aMXPtr[M10] = mx[M10];
+	aMXPtr[M11] = mx[M11];
+	aMXPtr[M12] = mx[M12];
+	aMXPtr[M20] = mx[M20];
+	aMXPtr[M21] = mx[M21];
+	aMXPtr[M22] = mx[M22];
+
+	if (IM_rate == 2 || (IM_frac == 2 && IM_rate == 4))
+	{
+		aMXPtr[M03] = (aMXPtr[M03] + aIMXPtr[M03]) * 0.5F;
+		aMXPtr[M13] = (aMXPtr[M13] + aIMXPtr[M13]) * 0.5F;
+		aMXPtr[M23] = (aMXPtr[M23] + aIMXPtr[M23]) * 0.5F;
+	}
+	else if (IM_frac == 1)
+	{
+		aMXPtr[M03] += (aIMXPtr[M03] - aMXPtr[M03]) * 0.25F;
+		aMXPtr[M13] += (aIMXPtr[M13] - aMXPtr[M13]) * 0.25F;
+		aMXPtr[M23] += (aIMXPtr[M23] - aMXPtr[M23]) * 0.25F;
+	}
+	else
+	{
+		aMXPtr[M03] = aIMXPtr[M03] - ((aIMXPtr[M03] - aMXPtr[M03]) * 0.25F);
+		aMXPtr[M13] = aIMXPtr[M13] - ((aIMXPtr[M13] - aMXPtr[M13]) * 0.25F);
+		aMXPtr[M23] = aIMXPtr[M23] - ((aIMXPtr[M23] - aMXPtr[M23]) * 0.25F);
+	}
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -1455,4 +1489,5 @@ void inject_draw(bool replace)
 	INJECT(0x0042D060, DrawStaticObjects, replace);
 	INJECT(0x0042C8F0, InterpolateMatrix, replace);
 	INJECT(0x0042CC10, InterpolateArmMatrix, replace);
+	INJECT(0x0042C790, aInterpolateArmMatrix, replace);
 }
