@@ -308,6 +308,34 @@ short SpawnItem(ITEM_INFO* item, long obj_num)
 	return item_number;
 }
 
+long GlobalItemReplace(long in, long out)
+{
+	ITEM_INFO* item;
+	ROOM_INFO* r;
+	long nReplaced;
+	short item_num;
+
+	nReplaced = 0;
+
+	for (int i = 0; i < number_rooms; i++)
+	{
+		r = &room[i];
+
+		for (item_num = r->item_number; item_num != NO_ITEM; item_num = item->next_item)
+		{
+			item = &items[item_num];
+
+			if (item->object_number == in)
+			{
+				item->object_number = (short)out;
+				nReplaced++;
+			}
+		}
+	}
+
+	return nReplaced;
+}
+
 void inject_items(bool replace)
 {
 	INJECT(0x00440DA0, ItemNewRoom, replace);
@@ -319,4 +347,5 @@ void inject_items(bool replace)
 	INJECT(0x00440C40, RemoveDrawnItem, replace);
 	INJECT(0x00440D10, AddActiveItem, replace);
 	INJECT(0x00440F00, SpawnItem, replace);
+	INJECT(0x00440FC0, GlobalItemReplace, replace);
 }
