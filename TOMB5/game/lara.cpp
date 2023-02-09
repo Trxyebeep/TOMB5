@@ -4758,6 +4758,25 @@ void lara_as_roper(ITEM_INFO* item, COLL_INFO* coll)
 		FallFromRope(item);
 }
 
+static void GetTighRopeFallOff(long chance)
+{
+	if (lara_item->hit_points <= 0 || lara_item->hit_status)
+	{
+		lara_item->anim_number = ANIM_TROPEFALLOFF_L;
+		lara_item->frame_number = anims[ANIM_TROPEFALLOFF_L].frame_base;
+		lara_item->current_anim_state = AS_TROPEFALL_L;
+		lara_item->goal_anim_state = AS_TROPEFALL_L;
+	}
+
+	if (!lara.TightRopeFall && !(GetRandomControl() & chance))
+	{
+		if (GetRandomControl() & 0xF)
+			lara.TightRopeFall = 1;
+		else
+			lara.TightRopeFall = 2;
+	}
+}
+
 void lara_as_trpose(ITEM_INFO* item, COLL_INFO* coll)
 {
 	if (input & IN_LOOK)
@@ -5496,6 +5515,7 @@ void inject_lara(bool replace)
 	INJECT(0x00447C60, lara_col_ropefwd, replace);
 	INJECT(0x00447BE0, lara_as_ropel, replace);
 	INJECT(0x00447C20, lara_as_roper, replace);
+	INJECT(0x0044D570, GetTighRopeFallOff, replace);
 	INJECT(0x0044D610, lara_as_trpose, replace);
 	INJECT(0x0044D6E0, lara_as_trwalk, replace);
 	INJECT(0x0044D800, lara_as_trfall, replace);
