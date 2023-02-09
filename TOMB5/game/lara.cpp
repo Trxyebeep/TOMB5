@@ -5367,6 +5367,46 @@ void SetCornerAnim(ITEM_INFO* item, COLL_INFO* coll, short rot, short flip)
 	}
 }
 
+static long IsValidHangPos(ITEM_INFO* item, COLL_INFO* coll)
+{
+	short angle;
+
+	if (LaraFloorFront(item, lara.move_angle, 100) >= 200)
+	{
+		angle = ushort(item->pos.y_rot + 0x2000) / 0x4000;
+
+		switch (angle)
+		{
+		case NORTH:
+			item->pos.z_pos += 4;
+			break;
+
+		case EAST:
+			item->pos.x_pos += 4;
+			break;
+
+		case SOUTH:
+			item->pos.z_pos -= 4;
+			break;
+
+		case WEST:
+			item->pos.x_pos -= 4;
+			break;
+		}
+
+		coll->bad_pos = -NO_HEIGHT;
+		coll->bad_neg = -512;
+		coll->bad_ceiling = 0;
+		lara.move_angle = item->pos.y_rot;
+		GetLaraCollisionInfo(item, coll);
+
+		if (coll->mid_ceiling < 0 && coll->coll_type == CT_FRONT && !coll->hit_static && abs(coll->front_floor - coll->right_floor2) < 60)
+			return 1;
+	}
+
+	return 0;
+}
+
 #ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -5578,5 +5618,6 @@ void inject_lara(bool replace)
 	INJECT(0x0044B9C0, lara_as_controlledl, replace);
 	INJECT(0x0044DA10, lara_as_parallelbars, replace);
 	INJECT(0x0044A980, SetCornerAnim, replace);
+	INJECT(0x0044A190, IsValidHangPos, replace);
 }
 
