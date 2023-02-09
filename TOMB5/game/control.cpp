@@ -2957,6 +2957,67 @@ long CheckNoColFloorTriangle(FLOOR_INFO* floor, long x, long z)
 	return 0;
 }
 
+long CheckNoColCeilingTriangle(FLOOR_INFO* floor, long x, long z)
+{
+	short* data;
+	short type;
+
+	if (!floor->index)
+		return 0;
+
+	data = &floor_data[floor->index];
+	type = *data & 0x1F;
+
+	if (type == TILT_TYPE || type == SPLIT1 || type == SPLIT2 || type == NOCOLF1T || type == NOCOLF1B || type == NOCOLF2T || type == NOCOLF2B)
+	{
+		if (*data & 0x8000)
+			return 0;
+
+		type = data[2] & 0x1F;
+	}
+
+	if (type == NOCOLC1T || type == NOCOLC1B || type == NOCOLC2T || type == NOCOLC2B)
+	{
+		x &= 0x3FF;
+		z &= 0x3FF;
+
+		switch (type)
+		{
+		case NOCOLC1T:
+
+			if (x <= 1024 - z)
+				return -1;
+
+			break;
+
+		case NOCOLC1B:
+
+			if (x > 1024 - z)
+				return -1;
+
+			break;
+
+		case NOCOLC2T:
+
+			if (x <= z)
+				return -1;
+
+			break;
+
+		case NOCOLC2B:
+
+			if (x > z)
+				return -1;
+
+			break;
+		}
+
+		return 1;
+	}
+
+	return 0;
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -2995,4 +3056,5 @@ void inject_control(bool replace)
 	INJECT(0x00415DA0, GetWaterHeight, replace);
 	INJECT(0x004175B0, TriggerActive, replace);
 	INJECT(0x00418C80, CheckNoColFloorTriangle, replace);
+	INJECT(0x00418D60, CheckNoColCeilingTriangle, replace);
 }
