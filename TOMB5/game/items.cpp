@@ -124,9 +124,25 @@ void KillItem(short item_num)
 	}
 }
 
+short CreateItem()
+{
+	short item_num;
+
+	item_num = next_item_free;
+
+	if (item_num != NO_ITEM)
+	{
+		items[item_num].flags = 0;
+		next_item_free = items[item_num].next_item;
+	}
+
+	return item_num;
+}
+
 void inject_items(bool replace)
 {
 	INJECT(0x00440DA0, ItemNewRoom, replace);
 	INJECT(0x00440590, InitialiseItemArray, replace);
 	INJECT(0x00440620, KillItem, replace);
+	INJECT(0x00440840, CreateItem, replace);
 }
