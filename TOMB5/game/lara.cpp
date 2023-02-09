@@ -5895,6 +5895,56 @@ long TestHangSwingIn(ITEM_INFO* item, short angle)
 	return h != NO_HEIGHT && h - y > 0 && c - y < -400 && y - c - 819 > -72;
 }
 
+long LaraTestHangOnClimbWall(ITEM_INFO* item, COLL_INFO* coll)
+{
+	short* bounds;
+	long shift, result;
+	short angle, l, r;
+
+	if (!lara.climb_status || item->fallspeed < 0)
+		return 0;
+
+	angle = ushort(item->pos.y_rot + 0x2000) / 0x4000;
+
+	switch (angle)
+	{
+	case NORTH:
+	case SOUTH:
+		item->pos.z_pos += coll->shift.z;
+		break;
+
+	case EAST:
+	case WEST:
+		item->pos.x_pos += coll->shift.x;
+		break;
+	}
+
+	bounds = GetBoundsAccurate(item);
+
+	if (lara.move_angle != item->pos.y_rot)
+	{
+		r = LaraCeilingFront(item, item->pos.y_rot, 0, 0);
+		l = LaraCeilingFront(item, lara.move_angle, 128, 0);
+
+		if (abs(r - l) > 60)
+			return 0;
+	}
+
+	if (!LaraTestClimbPos(item, coll->radius, coll->radius, bounds[2], bounds[3] - bounds[2], &shift) ||
+		!LaraTestClimbPos(item, coll->radius, -coll->radius, bounds[2], bounds[3] - bounds[2], &shift))
+		return 0;
+
+	result = LaraTestClimbPos(item, coll->radius, 0, bounds[2], bounds[3] - bounds[2], &shift);
+
+	if (!result)
+		return 0;
+
+	if (result != 1)
+		item->pos.y_pos += shift;
+
+	return 1;
+}
+
 #ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -6115,5 +6165,6 @@ void inject_lara(bool replace)
 	INJECT(0x004466C0, SnapLaraToEdgeOfBlock, replace);
 	INJECT(0x00445580, LaraTestClimbStance, replace);
 	INJECT(0x00444B30, TestHangSwingIn, replace);
+	INJECT(0x00444970, LaraTestHangOnClimbWall, replace);
 }
 
