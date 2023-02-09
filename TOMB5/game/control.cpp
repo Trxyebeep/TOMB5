@@ -2712,6 +2712,19 @@ void KillMoveItems()
 	ItemNewRoomNo = 0;
 }
 
+void KillMoveEffects()
+{
+	for (int i = 0; i < ItemNewRoomNo; i++)
+	{
+		if (ItemNewRooms[i][0] & 0x8000)
+			KillEffect(ItemNewRooms[i][0] & 0x7FFF);
+		else
+			EffectNewRoom(ItemNewRooms[i][0], ItemNewRooms[i][1]);
+	}
+
+	ItemNewRoomNo = 0;
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -2744,4 +2757,5 @@ void inject_control(bool replace)
 	INJECT(0x00418AF0, AddRoomFlipItems, replace);
 	INJECT(0x004165E0, RefreshCamera, replace);
 	INJECT(0x00414620, KillMoveItems, replace);
+	INJECT(0x004146A0, KillMoveEffects, replace);
 }

@@ -36,11 +36,11 @@ void RefreshCamera(short type, short* data);
 long S_Death();
 #endif
 void KillMoveItems();
+void KillMoveEffects();
 
 extern uchar ShatterSounds[18][10];
 
 #define UpdateSky	( (void(__cdecl*)()) 0x00414720 )
-#define KillMoveEffects	( (void(__cdecl*)()) 0x004146A0 )
 #define	CheckNoColFloorTriangle	( (long(__cdecl*)(FLOOR_INFO*, long, long)) 0x00418C80 )
 #define AnimateItem	( (void(__cdecl*)(ITEM_INFO*)) 0x00415300 )
 #define	GetWaterHeight	( (long(__cdecl*)(long, long, long, short)) 0x00415DA0 )
