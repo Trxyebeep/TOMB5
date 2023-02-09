@@ -32,6 +32,7 @@ void SetupSkelebobMeshswaps();
 void RestoreLaraMeshswaps();
 void RenderIt(short current_room);
 void mRotBoundingBoxNoPersp(short* bounds, short* rotatedBounds);
+void PrintRooms(short room_number);
 
 extern short no_rotation[];
 
@@ -42,4 +43,3 @@ extern short no_rotation[];
 #define calc_animating_item_clip_window	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042B4C0 )
 #define DrawStaticObjects	( (void(__cdecl*)(short)) 0x0042D060 )
 #define DrawEffect	( (void(__cdecl*)(short)) 0x0042B340 )
-#define PrintRooms	( (void(__cdecl*)(short)) 0x0042E1C0 )

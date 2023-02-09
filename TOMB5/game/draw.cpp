@@ -1257,6 +1257,21 @@ void mRotBoundingBoxNoPersp(short* bounds, short* rotatedBounds)
 	rotatedBounds[5] = zMax;
 }
 
+void PrintRooms(short room_number)
+{
+	ROOM_INFO* r;
+
+	CurrentRoom = room_number;
+	r = &room[room_number];
+	phd_left = r->left;
+	phd_right = r->right;
+	phd_top = r->top;
+	phd_bottom = r->bottom;
+	SetD3DViewMatrix();
+	aSetViewMatrix();
+	S_InsertRoom(r, 1);
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -1287,4 +1302,5 @@ void inject_draw(bool replace)
 	INJECT(0x0042E630, RestoreLaraMeshswaps, replace);
 	INJECT(0x0042DE20, RenderIt, replace);
 	INJECT(0x0042E240, mRotBoundingBoxNoPersp, replace);
+	INJECT(0x0042E1C0, PrintRooms, replace);
 }
