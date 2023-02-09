@@ -430,6 +430,42 @@ void KillEffect(short fx_num)
 	next_fx_free = fx_num;
 }
 
+void EffectNewRoom(short fx_num, short room_num)
+{
+	FX_INFO* fx;
+	ROOM_INFO* r;
+	short linknum;
+
+	if (InItemControlLoop)
+	{
+		ItemNewRooms[ItemNewRoomNo][0] = fx_num;
+		ItemNewRooms[ItemNewRoomNo][1] = room_num;
+		ItemNewRoomNo++;
+		return;
+	}
+
+	fx = &effects[fx_num];
+	r = &room[fx->room_number];
+
+	if (r->fx_number == fx_num)
+		r->fx_number = fx->next_fx;
+	else
+	{
+		for (linknum = r->fx_number; linknum != NO_ITEM; linknum = effects[linknum].next_fx)
+		{
+			if (effects[linknum].next_fx == fx_num)
+			{
+				effects[linknum].next_fx = fx->next_fx;
+				break;
+			}
+		}
+	}
+
+	fx->room_number = room_num;
+	fx->next_fx = room[room_num].fx_number;
+	room[room_num].fx_number = fx_num;
+}
+
 void inject_items(bool replace)
 {
 	INJECT(0x00440DA0, ItemNewRoom, replace);
@@ -445,4 +481,5 @@ void inject_items(bool replace)
 	INJECT(0x00441080, InitialiseFXArray, replace);
 	INJECT(0x004410F0, CreateEffect, replace);
 	INJECT(0x00441180, KillEffect, replace);
+	INJECT(0x004412F0, EffectNewRoom, replace);
 }
