@@ -745,7 +745,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00444FD0	+	LaraHitCeiling
 0x00445060	+	LaraDeflectEdge
 0x00445100	+	TestLaraVault
-0x00445580		LaraTestClimbStance
+0x00445580	+	LaraTestClimbStance
 0x00445670	+	TestWall
 0x004457B0	+	LaraCollideStop
 0x004458A0	+	lara_as_dashdive
