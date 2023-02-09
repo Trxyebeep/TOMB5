@@ -25,5 +25,6 @@ void TriggerExplosionSparks(long x, long y, long z, long extras, long dynamic, l
 void TriggerFireFlame(long x, long y, long z, long body_part, long type);
 void TriggerSuperJetFlame(ITEM_INFO* item, long yvel, long deadly);
 long GetFreeSpark();
+void DetatchSpark(long num, long type);
 
 #define UpdateSparks	( (void(__cdecl*)()) 0x0042E8B0 )

@@ -1778,6 +1778,38 @@ long GetFreeSpark()
 	return free;
 }
 
+void DetatchSpark(long num, long type)
+{
+	SPARKS* sptr;
+	FX_INFO* fx;
+	ITEM_INFO* item;
+
+	for (int i = 0; i < 1024; i++)
+	{
+		sptr = &spark[i];
+
+		if (sptr->On && sptr->Flags & type && sptr->FxObj == num)
+		{
+			if (type == 64)
+			{
+				fx = &effects[num];
+				sptr->x += fx->pos.x_pos;
+				sptr->y += fx->pos.y_pos;
+				sptr->z += fx->pos.z_pos;
+				sptr->Flags &= ~64;
+			}
+			else if (type == 128)
+			{
+				item = &items[num];
+				sptr->x += item->pos.x_pos;
+				sptr->y += item->pos.y_pos;
+				sptr->z += item->pos.z_pos;
+				sptr->Flags &= ~128;
+			}
+		}
+	}
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -1802,4 +1834,5 @@ void inject_effect2(bool replace)
 	INJECT(0x0042FE20, TriggerFireFlame, replace);
 	INJECT(0x00430350, TriggerSuperJetFlame, replace);
 	INJECT(0x0042E790, GetFreeSpark, replace);
+	INJECT(0x0042E6A0, DetatchSpark, replace);
 }
