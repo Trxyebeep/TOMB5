@@ -468,7 +468,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/effect2.cpp
 
 0x0042E6A0		DetatchSpark
-0x0042E790		GetFreeSpark
+0x0042E790	+	GetFreeSpark
 0x0042E8B0		UpdateSparks
 0x0042F060	+	TriggerRicochetSpark
 0x0042F460	+	TriggerFlareSparks

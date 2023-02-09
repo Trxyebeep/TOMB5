@@ -1723,6 +1723,61 @@ void TriggerSuperJetFlame(ITEM_INFO* item, long yvel, long deadly)
 		sptr->Xvel = (short)dy;
 }
 
+long GetFreeSpark()
+{
+	SPARKS* sptr;
+	static long next_spark = 0;
+	long free, min_life, lp;
+
+	free = next_spark;
+	sptr = &spark[next_spark];
+
+	for (lp = 0; lp < 1024; lp++)
+	{
+		if (sptr->On)
+		{
+			if (free == 1023)
+			{
+				sptr = &spark[0];
+				free = 0;
+			}
+			else
+			{
+				free++;
+				sptr++;
+			}
+		}
+		else
+		{
+			next_spark = (free + 1) & 0x3FF;
+			spark[free].extras = 0;
+			spark[free].Dynamic = -1;
+			spark[free].Def = (uchar)objects[DEFAULT_SPRITES].mesh_index;
+			return free;
+		}
+	}
+
+	free = 0;
+	min_life = 4095;
+
+	for (lp = 0; lp < 1024; lp++)
+	{
+		sptr = &spark[lp];
+
+		if (sptr->Life < min_life && sptr->Dynamic == -1 && !(sptr->Flags & 0x20))
+		{
+			free = lp;
+			min_life = sptr->Life;
+		}
+	}
+
+	next_spark = (free + 1) & 0x3FF;
+	spark[free].extras = 0;
+	spark[free].Dynamic = -1;
+	spark[free].Def = (uchar)objects[DEFAULT_SPRITES].mesh_index;
+	return free;
+}
+
 void inject_effect2(bool replace)
 {
 	INJECT(0x0042F460, TriggerFlareSparks, replace);
@@ -1746,4 +1801,5 @@ void inject_effect2(bool replace)
 	INJECT(0x0042F610, TriggerExplosionSparks, replace);
 	INJECT(0x0042FE20, TriggerFireFlame, replace);
 	INJECT(0x00430350, TriggerSuperJetFlame, replace);
+	INJECT(0x0042E790, GetFreeSpark, replace);
 }

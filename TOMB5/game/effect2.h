@@ -24,6 +24,6 @@ void TriggerExplosionSmoke(long x, long y, long z, long uw);
 void TriggerExplosionSparks(long x, long y, long z, long extras, long dynamic, long uw, short room_number);
 void TriggerFireFlame(long x, long y, long z, long body_part, long type);
 void TriggerSuperJetFlame(ITEM_INFO* item, long yvel, long deadly);
+long GetFreeSpark();
 
 #define UpdateSparks	( (void(__cdecl*)()) 0x0042E8B0 )
-#define GetFreeSpark	( (long(__cdecl*)()) 0x0042E790 )
