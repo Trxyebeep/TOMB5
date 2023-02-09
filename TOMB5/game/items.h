@@ -11,6 +11,7 @@ void InitialiseItem(short item_num);
 void RemoveActiveItem(short item_num);
 void RemoveDrawnItem(short item_num);
 void AddActiveItem(short item_num);
+short SpawnItem(ITEM_INFO* item, long obj_num);
 
 #define CreateEffect	( (short(__cdecl*)(short)) 0x004410F0 )
 #define InitialiseFXArray	( (void(__cdecl*)(long)) 0x00441080 )

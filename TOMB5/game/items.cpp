@@ -287,6 +287,27 @@ void AddActiveItem(short item_num)
 		item->status = ITEM_INACTIVE;
 }
 
+short SpawnItem(ITEM_INFO* item, long obj_num)
+{
+	ITEM_INFO* n;
+	short item_number;
+
+	item_number = CreateItem();
+
+	if (item_number != NO_ITEM)
+	{
+		n = &items[item_number];
+		n->object_number = (short)obj_num;
+		n->room_number = item->room_number;
+		n->pos = item->pos;
+		InitialiseItem(item_number);
+		n->status = ITEM_INACTIVE;
+		n->shade = 0x4210;
+	}
+
+	return item_number;
+}
+
 void inject_items(bool replace)
 {
 	INJECT(0x00440DA0, ItemNewRoom, replace);
@@ -297,4 +318,5 @@ void inject_items(bool replace)
 	INJECT(0x00440B60, RemoveActiveItem, replace);
 	INJECT(0x00440C40, RemoveDrawnItem, replace);
 	INJECT(0x00440D10, AddActiveItem, replace);
+	INJECT(0x00440F00, SpawnItem, replace);
 }
