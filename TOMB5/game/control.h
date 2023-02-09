@@ -48,6 +48,7 @@ void TriggerCDTrack(short value, short flags, short type);
 void TriggerNormalCDTrack(short value, short flags, short type);
 long IsRoomOutside(long x, long y, long z);
 void AnimateItem(ITEM_INFO* item);
+long RayBoxIntersect(PHD_VECTOR* min, PHD_VECTOR* max, PHD_VECTOR* origin, PHD_VECTOR* dir, PHD_VECTOR* Coord);
 
 extern uchar ShatterSounds[18][10];
 
