@@ -2906,6 +2906,57 @@ long TriggerActive(ITEM_INFO* item)
 	return !reverse;
 }
 
+long CheckNoColFloorTriangle(FLOOR_INFO* floor, long x, long z)
+{
+	short type;
+
+	if (!floor->index)
+		return 0;
+
+	type = floor_data[floor->index] & 0x1F;
+
+	if (type == NOCOLF1T || type == NOCOLF1B || type == NOCOLF2T || type == NOCOLF2B)
+	{
+		x &= 0x3FF;
+		z &= 0x3FF;
+
+		switch (type)
+		{
+		case NOCOLF1T:
+
+			if (x <= 1024 - z)
+				return -1;
+
+			break;
+
+		case NOCOLF1B:
+
+			if (x > 1024 - z)
+				return -1;
+
+			break;
+
+		case NOCOLF2T:
+
+			if (x <= z)
+				return -1;
+
+			break;
+
+		case NOCOLF2B:
+
+			if (x > z)
+				return -1;
+
+			break;
+		}
+
+		return 1;
+	}
+
+	return 0;
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -2943,4 +2994,5 @@ void inject_control(bool replace)
 	INJECT(0x004159F0, AlterFloorHeight, replace);
 	INJECT(0x00415DA0, GetWaterHeight, replace);
 	INJECT(0x004175B0, TriggerActive, replace);
+	INJECT(0x00418C80, CheckNoColFloorTriangle, replace);
 }
