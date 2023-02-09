@@ -684,7 +684,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/items.cpp
 
 0x00440590	+	InitialiseItemArray
-0x00440620		KillItem
+0x00440620	+	KillItem
 0x00440840		CreateItem
 0x004408B0		InitialiseItem
 0x00440B60		RemoveActiveItem
