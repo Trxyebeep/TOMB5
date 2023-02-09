@@ -815,7 +815,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0044A890	+	lara_col_hangleft
 0x0044A8E0	+	lara_as_hangright
 0x0044A930	+	lara_col_hangright
-0x0044A980		SetCornerAnim
+0x0044A980	+	SetCornerAnim
 0x0044AAE0	+	lara_as_extcornerl
 0x0044AB50	+	lara_as_extcornerr
 0x0044ABC0	+	lara_as_intcornerl

@@ -169,6 +169,7 @@ void UpdateRopeSwing(ITEM_INFO* item);
 void ApplyVelocityToRope(long node, ushort angle, ushort n);
 void JumpOffRope(ITEM_INFO* item);
 long LaraHangTest(ITEM_INFO* item, COLL_INFO* coll);
+void SetCornerAnim(ITEM_INFO* item, COLL_INFO* coll, short rot, short flip);
 
 #ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll);
@@ -183,5 +184,4 @@ void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 #define TestHangSwingIn	( (long(__cdecl*)(ITEM_INFO*, short)) 0x00444B30 )
 #define TestMonkeyLeft	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446810 )
 #define TestMonkeyRight	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446960 )
-#define SetCornerAnim	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, short, short)) 0x0044A980 )
 #define SnapLaraToEdgeOfBlock	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, short)) 0x004466C0 )

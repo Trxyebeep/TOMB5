@@ -5320,6 +5320,53 @@ long LaraHangTest(ITEM_INFO* item, COLL_INFO* coll)
 	return 0;
 }
 
+void SetCornerAnim(ITEM_INFO* item, COLL_INFO* coll, short rot, short flip)
+{
+	lara.look = 0;
+	coll->enable_spaz = 0;
+	coll->enable_baddie_push = 0;
+
+	if (item->hit_points > 0)
+	{
+		if (flip)
+		{
+			if (lara.IsClimbing)
+			{
+				item->anim_number = ANIM_CLIMBSTNC;
+				item->frame_number = anims[ANIM_CLIMBSTNC].frame_base;
+				item->goal_anim_state = AS_CLIMBSTNC;
+				item->current_anim_state = AS_CLIMBSTNC;
+			}
+			else
+			{
+				item->anim_number = ANIM_GRABLEDGE;
+				item->frame_number = anims[ANIM_GRABLEDGE].frame_base + 21;
+				item->goal_anim_state = AS_HANG;
+				item->current_anim_state = AS_HANG;
+			}
+
+			coll->old.x = lara.CornerX;
+			coll->old.z = lara.CornerZ;
+			item->pos.x_pos = lara.CornerX;
+			item->pos.z_pos = lara.CornerZ;
+			item->pos.y_rot += rot;
+		}
+	}
+	else
+	{
+		item->anim_number = ANIM_FALLDOWN;
+		item->frame_number = anims[ANIM_FALLDOWN].frame_base;
+		item->goal_anim_state = AS_FORWARDJUMP;
+		item->current_anim_state = AS_FORWARDJUMP;
+		item->gravity_status = 1;
+		item->speed = 2;
+		item->pos.y_pos += 256;
+		item->fallspeed = 1;
+		lara.gun_status = LG_NO_ARMS;
+		item->pos.y_rot += rot / 2;
+	}
+}
+
 #ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -5530,5 +5577,6 @@ void inject_lara(bool replace)
 	INJECT(0x0044B950, lara_as_controlled, replace);
 	INJECT(0x0044B9C0, lara_as_controlledl, replace);
 	INJECT(0x0044DA10, lara_as_parallelbars, replace);
+	INJECT(0x0044A980, SetCornerAnim, replace);
 }
 
