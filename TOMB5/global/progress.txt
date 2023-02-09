@@ -430,7 +430,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0042A400	+	DrawPhaseGame
 0x0042A4A0	+	SkyDrawPhase
 0x0042A7A0	+	DrawRooms
-0x0042AF50		ClipRoom
+0x0042AF50	+	ClipRoom
 0x0042B340	+	DrawEffect
 0x0042B4C0	+	calc_animating_item_clip_window
 0x0042B900	+	DrawAnimatingItem

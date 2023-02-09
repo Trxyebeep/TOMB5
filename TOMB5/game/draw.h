@@ -39,6 +39,7 @@ void InterpolateArmMatrix(long* mx);
 void aInterpolateArmMatrix(float* mx);
 void DrawEffect(short fx_num);
 void calc_animating_item_clip_window(ITEM_INFO* item, short* bounds);
+void ClipRoom(ROOM_INFO* r);
 
 extern short no_rotation[];
 
