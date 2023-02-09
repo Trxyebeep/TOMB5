@@ -2789,6 +2789,90 @@ void AlterFloorHeight(ITEM_INFO* item, long height)
 	}
 }
 
+long GetWaterHeight(long x, long y, long z, short room_number)
+{
+	ROOM_INFO* r;
+	FLOOR_INFO* floor;
+	long x_floor, y_floor;
+	short data;
+
+	r = &room[room_number];
+
+	do
+	{
+		x_floor = (z - r->z) >> 10;
+		y_floor = (x - r->x) >> 10;
+
+		if (x_floor <= 0)
+		{
+			x_floor = 0;
+
+			if (y_floor < 1)
+				y_floor = 1;
+			else if (y_floor > r->y_size - 2)
+				y_floor = r->y_size - 2;
+		}
+		else if (x_floor >= r->x_size - 1)
+		{
+			x_floor = r->x_size - 1;
+
+			if (y_floor < 1)
+				y_floor = 1;
+			else if (y_floor > r->y_size - 2)
+				y_floor = r->y_size - 2;
+		}
+		else if (y_floor < 0)
+			y_floor = 0;
+		else if (y_floor >= r->y_size)
+			y_floor = r->y_size - 1;
+
+		floor = &r->floor[x_floor + y_floor * r->x_size];
+		data = GetDoor(floor);
+
+		if (data != NO_ROOM)
+		{
+			room_number = data;
+			r = &room[data];
+		}
+
+	} while (data != NO_ROOM);
+
+	if (r->flags & ROOM_UNDERWATER)
+	{
+		while (floor->sky_room != NO_ROOM)
+		{
+			if (CheckNoColCeilingTriangle(floor, x, z) == 1)
+				break;
+
+			r = &room[floor->sky_room];
+
+			if (!(r->flags & ROOM_UNDERWATER))
+				return r->minfloor;
+
+			floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
+		}
+
+		return r->maxceiling;
+	}
+	else
+	{
+		while (floor->pit_room != NO_ROOM)
+		{
+			if (CheckNoColFloorTriangle(floor, x, z) == 1)
+				break;
+
+			r = &room[floor->pit_room];
+
+			if (r->flags & ROOM_UNDERWATER)
+				return r->maxceiling;
+
+			floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
+		}
+	}
+
+	return NO_HEIGHT;
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -2824,4 +2908,5 @@ void inject_control(bool replace)
 	INJECT(0x004146A0, KillMoveEffects, replace);
 	INJECT(0x00414720, UpdateSky, replace);
 	INJECT(0x004159F0, AlterFloorHeight, replace);
+	INJECT(0x00415DA0, GetWaterHeight, replace);
 }
