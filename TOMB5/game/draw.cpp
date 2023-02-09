@@ -1317,6 +1317,7 @@ void DrawStaticObjects(short room_number)
 						n++;
 				}
 
+				sinfo = &static_objects[n];
 				phd_PutPolygons(meshes[sinfo->mesh_number], clip);
 			}
 
