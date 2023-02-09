@@ -5782,6 +5782,52 @@ short TestMonkeyRight(ITEM_INFO* item, COLL_INFO* coll)
 	return 1;
 }
 
+void SnapLaraToEdgeOfBlock(ITEM_INFO* item, COLL_INFO* coll, short angle)
+{
+	if (item->current_anim_state == AS_HANGRIGHT)
+	{
+		switch (angle)
+		{
+		case NORTH:
+			item->pos.x_pos = coll->old.x & ~0x3FF | 0x390;
+			break;
+
+		case EAST:
+			item->pos.z_pos = coll->old.z & ~0x3FF | 0x70;
+			break;
+
+		case SOUTH:
+			item->pos.x_pos = coll->old.x & ~0x3FF | 0x70;
+			break;
+
+		default:
+			item->pos.z_pos = coll->old.z & ~0x3FF | 0x390;
+			break;
+		}
+	}
+	else if (item->current_anim_state == AS_HANGLEFT)
+	{
+		switch (angle)
+		{
+		case NORTH:
+			item->pos.x_pos = coll->old.x & ~0x3FF | 0x70;
+			break;
+
+		case EAST:
+			item->pos.z_pos = coll->old.z & ~0x3FF | 0x390;
+			break;
+
+		case SOUTH:
+			item->pos.x_pos = coll->old.x & ~0x3FF | 0x390;
+			break;
+
+		default:
+			item->pos.z_pos = coll->old.z & ~0x3FF | 0x70;
+			break;
+		}
+	}
+}
+
 #ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 {
@@ -5999,5 +6045,6 @@ void inject_lara(bool replace)
 	INJECT(0x00446920, GetDirOctant, replace);
 	INJECT(0x00446810, TestMonkeyLeft, replace);
 	INJECT(0x00446960, TestMonkeyRight, replace);
+	INJECT(0x004466C0, SnapLaraToEdgeOfBlock, replace);
 }
 
