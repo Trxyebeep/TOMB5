@@ -38,6 +38,7 @@ long S_Death();
 void KillMoveItems();
 void KillMoveEffects();
 void UpdateSky();
+void AlterFloorHeight(ITEM_INFO* item, long height);
 
 extern uchar ShatterSounds[18][10];
 
@@ -51,4 +52,3 @@ extern uchar ShatterSounds[18][10];
 #define TriggerCDTrack	( (void(__cdecl*)(short, short, short)) 0x00418B90 )
 #define ResetGuards	( (void(__cdecl*)()) 0x0041AF10 )
 #define IsRoomOutside	( (long(__cdecl*)(long, long, long)) 0x00418E90 )
-#define AlterFloorHeight	( (void(__cdecl*)(ITEM_INFO*, long)) 0x004159F0 )

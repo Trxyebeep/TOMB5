@@ -142,7 +142,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00415300		AnimateItem
 0x00415890	+	GetChange
 0x00415960	+	TranslateItem
-0x004159F0		AlterFloorHeight
+0x004159F0	+	AlterFloorHeight
 0x00415B20	+	GetFloor
 0x00415DA0		GetWaterHeight
 0x00415FB0	+	GetHeight

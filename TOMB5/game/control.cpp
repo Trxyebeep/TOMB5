@@ -2748,6 +2748,47 @@ void UpdateSky()
 	}
 }
 
+void AlterFloorHeight(ITEM_INFO* item, long height)
+{
+	FLOOR_INFO* floor;
+	FLOOR_INFO* ceiling;
+	short room_num, joby;
+
+	joby = 0;
+
+	if (abs(height) & 0xFF)
+	{
+		joby = 1;
+
+		if (height < 0)
+			height--;
+		else
+			height++;
+	}
+
+	room_num = item->room_number;
+	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_num);
+	ceiling = GetFloor(item->pos.x_pos, item->pos.y_pos + height - 1024, item->pos.z_pos, &room_num);
+
+	if (floor->floor == -127)
+		floor->floor = ceiling->ceiling + char(height >> 8);
+	else
+	{
+		floor->floor += char(height >> 8);
+
+		if (floor->floor == ceiling->ceiling && !joby)
+			floor->floor = -127;
+	}
+
+	if (boxes[floor->box].overlap_index & 0x8000)
+	{
+		if (height >= 0)
+			boxes[floor->box].overlap_index &= ~0x4000;
+		else
+			boxes[floor->box].overlap_index |= 0x4000;
+	}
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -2782,4 +2823,5 @@ void inject_control(bool replace)
 	INJECT(0x00414620, KillMoveItems, replace);
 	INJECT(0x004146A0, KillMoveEffects, replace);
 	INJECT(0x00414720, UpdateSky, replace);
+	INJECT(0x004159F0, AlterFloorHeight, replace);
 }
