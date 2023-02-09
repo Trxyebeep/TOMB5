@@ -3612,6 +3612,63 @@ long DoRayBox(GAME_VECTOR* start, GAME_VECTOR* target, short* bounds, PHD_3DPOS*
 	return 0;
 }
 
+void ResetGuards()
+{
+	ITEM_INFO* item;
+	ROOM_INFO* r;
+	short item_number, room_number, object_number;
+
+	for (item_number = next_item_active; item_number != NO_ITEM; item_number = item->next_active)
+	{
+		item = &items[item_number];
+
+		if (!objects[item->object_number].intelligent)
+			continue;
+
+		item->status = ITEM_INVISIBLE;
+		RemoveActiveItem(item_number);
+		DisableBaddieAI(item_number);
+
+		room_number = item->item_flags[2] & 0xFF;
+		r = &room[room_number];
+		item->pos.x_pos = r->x + ((item->draw_room & 0xFFFFFF00) << 2) + 512;
+		item->pos.y_pos = r->minfloor + (item->item_flags[2] & 0xFFFFFF00);
+		item->pos.z_pos = ((item->draw_room & 0xFF) << 10) + r->z + 512;
+		item->pos.y_rot = item->TOSSPAD & 0xE000;
+		item->ai_bits = item->TOSSPAD >> 8;
+		item->item_flags[3] = item->TOSSPAD & 0xFF;
+
+		object_number = item->object_number;
+
+		if (object_number == CHEF || object_number == MAZE_MONSTER || object_number == WILLOWISP)
+			item->anim_number = objects[object_number].anim_index;
+		else if (object_number == TWOGUN)
+			item->anim_number = objects[object_number].anim_index + 6;
+		else if (objects[SWAT].loaded)
+			item->anim_number = objects[SWAT].anim_index;
+		else if (objects[ATTACK_SUB].loaded)
+			item->anim_number = objects[ATTACK_SUB].anim_index;
+		else
+			item->anim_number = objects[BLUE_GUARD].anim_index;
+
+		if (object_number == MAZE_MONSTER)
+		{
+			item->current_anim_state = 0;
+			item->goal_anim_state = 0;
+		}
+		else
+		{
+			item->current_anim_state = 1;
+			item->goal_anim_state = 1;
+		}
+
+		item->frame_number = anims[item->anim_number].frame_base;
+
+		if (item->room_number != room_number)
+			ItemNewRoom(item_number, room_number);
+	}
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -3658,4 +3715,5 @@ void inject_control(bool replace)
 	INJECT(0x00415300, AnimateItem, replace);
 	INJECT(0x00419D00, RayBoxIntersect, replace);
 	INJECT(0x004193C0, DoRayBox, replace);
+	INJECT(0x0041AF10, ResetGuards, replace);
 }

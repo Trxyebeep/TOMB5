@@ -172,7 +172,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0041ABF0	+	ExplodeItemNode
 0x0041AD60	+	CheckGuardOnTrigger
 0x0041AEA0	+	InterpolateAngle
-0x0041AF10		ResetGuards
+0x0041AF10	+	ResetGuards
 0x0041B180	+	InitCutPlayed
 0x0041B1A0	+	SetCutPlayed
 0x0041B1F0	+	SetCutNotPlayed
