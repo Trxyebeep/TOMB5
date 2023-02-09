@@ -37,9 +37,9 @@ void DrawStaticObjects(short room_number);
 void InterpolateMatrix();
 void InterpolateArmMatrix(long* mx);
 void aInterpolateArmMatrix(float* mx);
+void DrawEffect(short fx_num);
 
 extern short no_rotation[];
 
 #define GetRoomBounds	( (void(__cdecl*)()) 0x0042D4F0 )
 #define calc_animating_item_clip_window	( (void(__cdecl*)(ITEM_INFO*, short*)) 0x0042B4C0 )
-#define DrawEffect	( (void(__cdecl*)(short)) 0x0042B340 )

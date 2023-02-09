@@ -1455,6 +1455,40 @@ void aInterpolateArmMatrix(float* mx)
 	}
 }
 
+void DrawEffect(short fx_num)
+{
+	FX_INFO* fx;
+	OBJECT_INFO* obj;
+	short* meshp;
+
+	fx = &effects[fx_num];
+	obj = &objects[fx->object_number];
+
+	if (obj->draw_routine && obj->loaded)
+	{
+		phd_PushMatrix();
+		phd_TranslateAbs(fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos);
+
+		if (phd_mxptr[M23] > phd_znear && phd_mxptr[M23] < phd_zfar)
+		{
+			phd_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
+
+			if (gfCurrentLevel == 3 && fx->object_number == BODY_PART)
+				SetGlobalAmbient(0xFF282020);
+
+			if (obj->nmeshes)
+				meshp = meshes[obj->mesh_index];
+			else
+				meshp = meshes[fx->frame_number];
+
+			S_CalculateLight(fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos, fx->room_number, &duff_item[0].il);
+			phd_PutPolygons(meshp, -1);
+		}
+
+		phd_PopMatrix();
+	}
+}
+
 void inject_draw(bool replace)
 {
 	INJECT(0x0042CF80, GetBoundsAccurate, replace);
@@ -1490,4 +1524,5 @@ void inject_draw(bool replace)
 	INJECT(0x0042C8F0, InterpolateMatrix, replace);
 	INJECT(0x0042CC10, InterpolateArmMatrix, replace);
 	INJECT(0x0042C790, aInterpolateArmMatrix, replace);
+	INJECT(0x0042B340, DrawEffect, replace);
 }
