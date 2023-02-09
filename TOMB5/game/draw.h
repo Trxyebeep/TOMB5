@@ -41,7 +41,6 @@ void DrawEffect(short fx_num);
 void calc_animating_item_clip_window(ITEM_INFO* item, short* bounds);
 void ClipRoom(ROOM_INFO* r);
 void SetRoomBounds(short* door, long rn, ROOM_INFO* actualRoom);
+void GetRoomBounds();
 
 extern short no_rotation[];
-
-#define GetRoomBounds	( (void(__cdecl*)()) 0x0042D4F0 )
