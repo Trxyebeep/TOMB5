@@ -1113,6 +1113,107 @@ void UpdateLaraRoom(ITEM_INFO* item, long height)
 	SetMapRoom();
 }
 
+void LaraBaddieCollision(ITEM_INFO* l, COLL_INFO* coll)
+{
+	ROOM_INFO* r;
+	ITEM_INFO* item;
+	MESH_INFO* mesh;
+	PHD_3DPOS pos;
+	short* door;
+	short* bounds;
+	long i, j, dx, dy, dz;
+	short num_nearby_rooms, item_number, nex;
+	short nearby_rooms[22];
+
+	l->hit_status = 0;
+	lara.hit_direction = -1;
+
+	if (l->hit_points <= 0)
+		return;
+
+	num_nearby_rooms = 1;
+	nearby_rooms[0] = l->room_number;
+	door = room[nearby_rooms[0]].door;
+
+	if (door)
+	{
+		for (i = *door++; i > 0; i--)
+		{
+			for (j = 0; j < num_nearby_rooms; j++)
+			{
+				if (nearby_rooms[j] == *door)
+					break;
+			}
+
+			if (j == num_nearby_rooms)
+			{
+				nearby_rooms[num_nearby_rooms] = *door;
+				num_nearby_rooms++;
+			}
+
+			door += 16;
+		}
+	}
+
+	for (i = 0; i < num_nearby_rooms; i++)
+	{
+		r = &room[nearby_rooms[i]];
+		item_number = r->item_number;
+
+		while (item_number != NO_ITEM)
+		{
+			item = &items[item_number];
+			nex = item->next_item;
+
+			if (item->collidable && item->status != ITEM_INVISIBLE)
+			{
+				if (objects[item->object_number].collision)
+				{
+					dx = l->pos.x_pos - item->pos.x_pos;
+					dy = l->pos.y_pos - item->pos.y_pos;
+					dz = l->pos.z_pos - item->pos.z_pos;
+
+					if (dx > -3072 && dx < 3072 && dy > -3072 && dy < 3072 && dz > -3072 && dz < 3072)
+						objects[item->object_number].collision(item_number, l, coll);
+				}
+			}
+
+			item_number = nex;
+		}
+
+		if (coll->enable_baddie_push)
+		{
+			r = &room[nearby_rooms[i]];
+			mesh = r->mesh;
+
+			for (j = r->num_meshes; j > 0; j--, mesh++)
+			{
+				if (!(mesh->Flags & 1))
+					continue;
+
+				dx = l->pos.x_pos - mesh->x;
+				dy = l->pos.y_pos - mesh->y;
+				dz = l->pos.z_pos - mesh->z;
+
+				if (dx > -3072 && dx < 3072 && dy > -3072 && dy < 3072 && dz > -3072 && dz < 3072)
+				{
+					bounds = &static_objects[mesh->static_number].x_minc;
+					pos.x_pos = mesh->x;
+					pos.y_pos = mesh->y;
+					pos.z_pos = mesh->z;
+					pos.y_rot = mesh->y_rot;
+
+					if (TestBoundsCollideStatic(bounds, &pos, coll->radius))
+						ItemPushLaraStatic(l, bounds, &pos, coll);
+				}
+			}
+		}
+	}
+
+	if (lara.hit_direction == -1)
+		lara.hit_frame = 0;
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -1131,4 +1232,5 @@ void inject_coll(bool replace)
 	INJECT(0x004134E0, Move3DPosTo3DPos, replace);
 	INJECT(0x00411DB0, CollideStaticObjects, replace);
 	INJECT(0x004120F0, UpdateLaraRoom, replace);
+	INJECT(0x00412170, LaraBaddieCollision, replace);
 }

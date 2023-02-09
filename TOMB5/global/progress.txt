@@ -114,7 +114,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00411DB0	+	CollideStaticObjects
 0x004120A0	+	ShiftItem
 0x004120F0	+	UpdateLaraRoom
-0x00412170		LaraBaddieCollision
+0x00412170	+	LaraBaddieCollision
 0x004124E0	+	CreatureCollision
 0x004126E0	+	ObjectCollision
 0x00412770	+	AIPickupCollision
