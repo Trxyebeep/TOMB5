@@ -1314,6 +1314,72 @@ long ItemPushLara(ITEM_INFO* item, ITEM_INFO* l, COLL_INFO* coll, long spaz, lon
 	return 1;
 }
 
+long ItemPushLaraStatic(ITEM_INFO* l, short* bounds, PHD_3DPOS* pos, COLL_INFO* coll)
+{
+	long dx, dz, s, c, x, z;
+	long xmin, xmax, zmin, zmax, left, top, right, bottom;
+	short facing;
+
+	dx = l->pos.x_pos - pos->x_pos;
+	dz = l->pos.z_pos - pos->z_pos;
+	s = phd_sin(pos->y_rot);
+	c = phd_cos(pos->y_rot);
+	x = (dx * c - dz * s) >> 14;
+	z = (dx * s + dz * c) >> 14;
+	xmin = bounds[0] - coll->radius;
+	xmax = bounds[1] + coll->radius;
+	zmin = bounds[4] - coll->radius;
+	zmax = bounds[5] + coll->radius;
+
+	if (abs(dx) > 4608 || abs(dz) > 4608 || x <= xmin || x >= xmax || z <= zmin || z >= zmax)
+		return 0;
+
+	left = x - xmin;
+	top = zmax - z;
+	right = xmax - x;
+	bottom = z - zmin;
+
+	if (left <= right && left <= top && left <= bottom)
+		x -= left;
+	else if (right <= left && right <= top && right <= bottom)
+		x += right;
+	else if (top <= left && top <= right && top <= bottom)
+		z += top;
+	else
+		z -= bottom;
+
+	l->pos.x_pos = pos->x_pos + ((c * x + s * z) >> 14);
+	l->pos.z_pos = pos->z_pos + ((c * z - s * x) >> 14);
+	coll->bad_pos = -NO_HEIGHT;
+	coll->bad_neg = -384;
+	coll->bad_ceiling = 0;
+	facing = coll->facing;
+	coll->facing = (short)phd_atan(l->pos.z_pos - coll->old.z, l->pos.x_pos - coll->old.x);
+	GetCollisionInfo(coll, l->pos.x_pos, l->pos.y_pos, l->pos.z_pos, l->room_number, 762);
+	coll->facing = facing;
+
+	if (coll->coll_type == CT_NONE)
+	{
+		coll->old.x = l->pos.x_pos;
+		coll->old.y = l->pos.y_pos;
+		coll->old.z = l->pos.z_pos;
+		UpdateLaraRoom(l, -10);
+	}
+	else
+	{
+		l->pos.x_pos = coll->old.x;
+		l->pos.z_pos = coll->old.z;
+	}
+
+	if (l == lara_item && lara.IsMoving && lara.MoveCount > 15)
+	{
+		lara.IsMoving = 0;
+		lara.gun_status = LG_NO_ARMS;
+	}
+
+	return 1;
+}
+
 void inject_coll(bool replace)
 {
 	INJECT(0x00414370, TriggerLaraBlood, replace);
@@ -1334,4 +1400,5 @@ void inject_coll(bool replace)
 	INJECT(0x004120F0, UpdateLaraRoom, replace);
 	INJECT(0x00412170, LaraBaddieCollision, replace);
 	INJECT(0x00412860, ItemPushLara, replace);
+	INJECT(0x00412F20, ItemPushLaraStatic, replace);
 }
