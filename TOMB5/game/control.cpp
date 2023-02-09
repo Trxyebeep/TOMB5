@@ -2699,6 +2699,19 @@ long S_Death()
 }
 #endif
 
+void KillMoveItems()
+{
+	for (int i = 0; i < ItemNewRoomNo; i++)
+	{
+		if (ItemNewRooms[i][0] & 0x8000)
+			KillItem(ItemNewRooms[i][0] & 0x7FFF);
+		else
+			ItemNewRoom(ItemNewRooms[i][0], ItemNewRooms[i][1]);
+	}
+
+	ItemNewRoomNo = 0;
+}
+
 void inject_control(bool replace)
 {
 	INJECT(0x004147C0, ControlPhase, replace);
@@ -2730,4 +2743,5 @@ void inject_control(bool replace)
 	INJECT(0x00418A50, RemoveRoomFlipItems, replace);
 	INJECT(0x00418AF0, AddRoomFlipItems, replace);
 	INJECT(0x004165E0, RefreshCamera, replace);
+	INJECT(0x00414620, KillMoveItems, replace);
 }
