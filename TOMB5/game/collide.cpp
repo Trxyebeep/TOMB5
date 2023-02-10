@@ -39,6 +39,7 @@ void TriggerLaraBlood()
 void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short room_number, long objheight)
 {
 	FLOOR_INFO* floor;
+	static long xfront, zfront;
 	long x, y, yT, z, xright, xleft, zright, zleft, height, ceiling, reset_room;
 	ushort tilt_type;
 	short fspeed, room_num, room_num2;
