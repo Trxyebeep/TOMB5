@@ -23,7 +23,7 @@
 
 short SplashOffsets[18] = { 1072, 48, 1072, 48, 650, 280, 200, 320, -300, 320, -800, 320, -1200, 320, -1650, 280, -2112, 48 };
 
-short SteelDoorPos[4][2] =	//x z offsets for GetJointAbsPosition
+short SteelDoorPos[4][2] =
 { 
 	{ 872, 512 },
 	{ 872, -360 },
@@ -887,6 +887,69 @@ void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
 	sptr->Scalar = 1;
 }
 
+void TriggerSteelDoorSmoke(short angle, short nPos, ITEM_INFO* item)
+{
+	SPARKS* sptr;
+	PHD_VECTOR pos;
+	PHD_VECTOR pos2;
+	long dx, dy, dz, num, v, lp;
+
+	pos.x = SteelDoorPos[nPos][0];
+	pos.y = 0;
+	pos.z = SteelDoorPos[nPos][1] - 512;
+	GetJointAbsPosition(item, &pos, 17);
+
+	pos2.x = SteelDoorPos[nPos + 1][0];
+	pos2.y = 0;
+	pos2.z = SteelDoorPos[nPos + 1][1] - 512;
+	GetJointAbsPosition(item, &pos2, 17);
+
+	dx = pos2.x - pos.x;
+	dy = pos2.y - pos.y;
+	dz = pos2.z - pos.z;
+
+	if (nPos == 1)
+		num = 5;
+	else
+		num = 4;
+
+	for (lp = 0; lp < (1 << num); lp++)
+	{
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->sR = (GetRandomControl() & 0x1F) + 32;
+		sptr->sG = sptr->sR;
+		sptr->sB = sptr->sR;
+		sptr->dR = (GetRandomControl() & 0x1F) + 64;
+		sptr->dG = sptr->dR;
+		sptr->dB = sptr->dR;
+		sptr->ColFadeSpeed = 4;
+		sptr->FadeToBlack = 8;
+		sptr->Life = (GetRandomControl() & 7) + 24;
+		sptr->sLife = sptr->Life;
+		sptr->TransType = 2;
+
+		v = GetRandomControl() & 0x3F;
+		sptr->x = pos.x + (dx * lp >> num);
+		sptr->y = pos.y + (dy * lp >> num);
+		sptr->z = pos.z + (dz * lp >> num);
+		sptr->Xvel = short((v * phd_sin(angle)) >> 10);
+		sptr->Yvel = 0;
+		sptr->Zvel = short((v * phd_cos(angle)) >> 10);
+
+		sptr->Friction = 4;
+		sptr->Flags = 538;
+		sptr->RotAng = GetRandomControl() & 0xFFF;
+		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+		sptr->Gravity = -8 - (GetRandomControl() & 7);
+		sptr->MaxYvel = 0;
+		sptr->Scalar = 3;
+		sptr->dSize = (GetRandomControl() & 7) + 32;
+		sptr->Size = sptr->dSize >> 1;
+		sptr->sSize = sptr->Size;
+	}
+}
+
 void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
@@ -899,4 +962,5 @@ void inject_tower2(bool replace)
 	INJECT(0x00487A90, DrawSprite2, replace);
 	INJECT(0x00487AB0, DrawSteelDoorLensFlare, replace);
 	INJECT(0x00487B60, TriggerLiftBrakeSparks, replace);
+	INJECT(0x004877E0, TriggerSteelDoorSmoke, replace);
 }
