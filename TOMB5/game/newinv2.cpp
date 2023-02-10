@@ -26,6 +26,7 @@
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #endif
+#include "../specific/gamemain.h"
 
 short optmessages[11] =
 {

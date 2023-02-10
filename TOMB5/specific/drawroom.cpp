@@ -5,11 +5,14 @@
 #include "d3dmatrix.h"
 #include "alexstuff.h"
 #include "dxshell.h"
+#include "polyinsert.h"
+#include "output.h"
+#include "winmain.h"
+#include "gamemain.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../game/gameflow.h"
 #endif
-#include "polyinsert.h"
 
 short CheckClipBox[8 * 3] = { 0, 1, 2, 3, 1, 2, 0, 1, 5, 3, 1, 5, 0, 4, 2, 3, 4, 2, 0, 4, 5, 3, 4, 5 };
 

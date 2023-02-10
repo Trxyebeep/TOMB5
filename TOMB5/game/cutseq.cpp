@@ -30,7 +30,7 @@ void _special1_control()
 		iswappedit = 1;
 	}
 
-	UNK_00E916F0 = 1;
+	nSpecialCut = 1;
 }
 
 void _special1_end()

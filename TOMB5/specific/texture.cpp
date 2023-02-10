@@ -3,6 +3,7 @@
 #include "function_stubs.h"
 #include "dxshell.h"
 #include "3dmath.h"
+#include "winmain.h"
 
 static long bBumpMapSupported = 0;
 static DDPIXELFORMAT bumpPF;

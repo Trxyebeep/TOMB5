@@ -20,6 +20,8 @@
 #include "fmv.h"
 #endif
 
+WINAPP App;
+
 static COMMANDLINES commandlines[] =
 {
 	{ "SETUP", 0, &CLSetup },
@@ -189,7 +191,8 @@ void WinProcMsg()
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-	} while (!MainThread.ended && msg.message != WM_QUIT);
+	}
+	while (!MainThread.ended && msg.message != WM_QUIT);
 }
 
 void WinProcessCommands(long cmd)

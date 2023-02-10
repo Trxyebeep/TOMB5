@@ -36,3 +36,8 @@ void phd_PutPolygonsPickup(short* objptr, float x, float y, long color);
 void phd_PutPolygons_seethrough(short* objptr, long fade);
 void phd_PutPolygonsSpcXLU(short* objptr, long clipstatus);
 void phd_PutPolygonsSpcEnvmap(short* objptr, long clipstatus);
+
+extern long nPolys;
+extern long nClippedPolys;
+extern long DrawPrimitiveCnt;
+extern long DrawSortedCnt;

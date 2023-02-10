@@ -1,6 +1,7 @@
 #include "../tomb5/pch.h"
 #include "d3dmatrix.h"
 #include "dxshell.h"
+#include "winmain.h"
 
 static D3DMATRIX D3DMWorld;
 static D3DMATRIX D3DMProjection;

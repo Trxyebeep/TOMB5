@@ -3,6 +3,7 @@
 #include "file.h"
 #include "function_stubs.h"
 #include "dxshell.h"
+#include "winmain.h"
 
 const char* TrackFileNames[136] =
 {
@@ -153,6 +154,9 @@ static char source_wav_format[50] =
 	2, 0, 255, 0, 0, 0, 0, 192, 0, 64, 0, 240, 0, 0, 0, 204, 1, 48, 255, 136, 1, 24, 255
 };
 #pragma warning(pop)
+
+static ACMSTREAMHEADER StreamHeaders[4];
+static HANDLE NotifyEventHandles[2];
 
 void S_CDPlay(long track, long mode)
 {

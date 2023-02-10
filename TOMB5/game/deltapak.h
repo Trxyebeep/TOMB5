@@ -177,3 +177,5 @@ void nail_intelligent_object(short objnum);
 #ifdef GENERAL_FIXES
 void do_cutseq_skipper_stuff();
 #endif
+
+extern long nSpecialCut;

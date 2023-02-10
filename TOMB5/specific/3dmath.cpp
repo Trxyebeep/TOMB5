@@ -2,6 +2,7 @@
 #include "3dmath.h"
 #include "d3dmatrix.h"
 #include "dxshell.h"
+#include "winmain.h"
 
 void AlterFOV(short fov)
 {

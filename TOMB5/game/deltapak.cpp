@@ -37,295 +37,104 @@
 ushort old_lara_LHolster;
 #endif
 
-short frig_shadow_bbox[6] =
-{
-	-165, 150, -777, 1, -87, 78
-};
+long nSpecialCut;
 
-ushort larson_pistols_info1[2] =
-{
-	0x0390, 0xFFFF
-};
+static short frig_shadow_bbox[6] = { -165, 150, -777, 1, -87, 78 };
+static char lara_chat_cnt = 0;
+static char actor_chat_cnt = 0;
 
-short larson_chat_ranges1[12] =
-{
-	0x03AF, 0x03CB, 0x04AC, 0x04C9, 0x04DE, 0x0516, 0x05EC, 0x060C, 0x071A, 0x0762,
-	-1, -1
-};
+ushort larson_pistols_info1[2] = { 912, 0xFFFF };
+ushort andrea3_pistols_info[5] = { 17739, 34126, 34135, 17751, 0xFFFF };
+ushort crane_pistols_info[11] = { 32821, 32829, 33221, 33231, 33258, 16433, 16442, 16841, 16862, 16878, 0xFFFF };
+ushort craneguard_pistols_info[7] = { 106, 117, 240, 247, 260, 274, 0xFFFF };
 
-short larson_chat_ranges2[8] =
-{
-	0x01C2, 0x0255, 0x04DE, 0x0533, 0x082A, 0x0863, -1, -1
-};
+short larson_chat_ranges1[12] = { 943, 971, 1196, 1225, 1246, 1302, 1516, 1548, 1818, 1890, -1, -1 };
+short larson_chat_ranges2[8] = { 450, 597, 1246, 1331, 2090, 2147, -1, -1 };
+short lara_chat_ranges_andrea3[14] = { 40, 94, 260, 321, 428, 447, 483, 527, 706, 829, 858, 940, -1, -1 };
+short larson_chat_ranges3[14] = { 160, 241, 338, 409, 559, 689, 871, 1122, 1138, 1298, 1460, 1523, -1, -1 };
+short lara_chat_ranges_andrea3b[12] = { 522, 539, 547, 568, 702, 736, 745, 770, 792, 978, -1, -1 };
+short larson_chat_ranges3b[4] = { 596, 685, -1, -1 };
+short lara_chat_ranges_andrea4[22] = { 457, 540, 945, 1023, 1611, 1655, 1670, 1684, 1693, 1726, 2115, 2151, 3074, 3085, 3491, 3563, 3582, 3615, 3689, 3754, -1, -1 };
+short lara_chat_ranges_andrea1[4] = { 584, 633, -1, -1 };
+short voncroy_chat_ranges_richcut2[20] = { 481, 501, 656, 684, 695, 759, 768, 830, 927, 970, 983, 1032, 1044, 1091, 1478, 1576, 1592, 1635, -1, -1 };
+short associate_chat_ranges_richcut2[12] = { 1117, 1301, 1665, 1827, 1841, 1857, 1866, 1892, 1906, 1962, -1, -1 };
+short guard_chat_ranges_richcut2[10] = { 54, 176, 517, 647, 847, 914, 1321, 1356, -1, -1 };
+short lara_chat_ranges_andy1[14] = { 786, 819, 1355, 1365, 1389, 1416, 2152, 2173, 3109, 3157,	3178, 3188, -1, -1 };
+short hanged_man_chat_ranges_andy1[18] = { 464, 557, 574, 753, 840, 1322, 1430, 2124, 2192, 3067,3201, 3215, 3228, 3404, 3418, 3862, -1, -1 };
+short lara_chat_ranges_andy2[8] = { 1466, 1490, 1509, 1531, 2009, 2045, -1, -1 };
+short priest_chat_ranges_andy2[24] = { 239, 331, 736, 801, 818, 871, 1293, 1307, 1324, 1437, 1690, 1716, 1736, 1870, 1893, 1976, 2109, 2155, 2173, 2287, 2326, 2432, -1, -1 };
+short lara_chat_ranges_andy6[8] = { 712, 727, 751, 771, 844, 890, -1, -1 };
+short priest_chat_ranges_andy6[18] = { 520, 672, 793, 824, 924, 938, 948, 977, 992, 1137, 1151, 1197, 1220, 1298, 1309, 1381, -1, -1 };
+short lara_chat_ranges_andy7[14] = { 381, 393, 405, 446, 574, 621, 746, 775, 1355, 1380, 1389, 1410, -1, -1 };
+short lara_chat_ranges_andy9[6] = { 1050, 1082, 3884, 3967, -1, -1 };
+short priest_chat_ranges_andy9[20] = { 588, 624, 641, 679, 699, 784, 1657, 1716, 1735, 1841, 1855, 1914, 2723, 2766, 2800, 2872, 3983, 4072, -1, -1 };
+short knight_chat_ranges_andy9[14] = { 304, 552, 798, 905, 1097, 1588, 1956, 2691, 2897, 3854, 4114, 4592, -1, -1 };
+short knight_chat_ranges_andy11[14] = { 436, 958, 1223, 1688, 2192, 2244, 2262, 2370, 4225, 4357, 5097, 5386, -1, -1 };
+short admiral_chat_ranges_joby2[12] = { 280, 340, 348, 373, 380, 413, 719, 886, 1111, 1160, -1, -1 };
+short sergie_chat_ranges_joby2[8] = { 441, 696, 902, 1054, 1954, 2152, -1, -1 };
+short lara_chat_ranges_joby3[6] = { 1323, 1328, 1341, 1366, -1, -1 };
+short lara_chat_ranges_joby4[10] = { 580, 615, 633, 770, 1871, 1926, 1942, 1963, -1, -1 };
+short admiral_chat_ranges_joby4[20] = { 301, 391, 403, 515, 783, 816, 828, 1028, 1038, 1254, 1265, 1414, 1771, 1804, 2028, 2123, 2135, 2170, -1, -1 };
+short admiral_chat_ranges_joby5[18] = { 491, 578, 873, 1113, 1244, 1285, 1304, 1321, 1333, 1518, 1879, 1977, 1987, 2037, 2105, 2244, -1, -1 };
+short sergie_chat_ranges_joby5[20] = { 156, 185, 194, 395, 412, 461, 602, 841, 1129, 1152, 1170, 1228, 1541, 1558, 1575, 1651, 1665, 1784, -1, -1 };
+short lara_chat_ranges_joby7[10] = { 725, 759, 781, 825, 1485, 1501, 1516, 1545, -1, -1 };
+short lara_chat_ranges_joby8[20] = { 956, 1069, 1261, 1338, 1360, 1431, 1451, 1470, 1485, 1504, 1526, 1568, 1804, 1839, 2199, 2255, 2323, 2368, -1, -1 };
+short actor_chat_ranges_joby8[14] = { 691, 936, 1095, 1250, 1615, 1679, 1695, 1773, 1901, 1945, 1958, 2039, -1, -1 };
+short lara_chat_ranges_joby9[12] = { 642, 780, 1418, 1446, 1457, 1499, 1510, 1546, 1561, 1681, -1, -1 };
+short lara_chat_ranges_joby10[12] = { 493, 524, 1300, 1327, 1897, 1933, 2521, 2555, 2980, 3008, -1, -1 };
 
 short pierre_chat_ranges1[30] =
 {
-	0x02B8, 0x02C4, 0x02D5, 0x02E8, 0x03EB, 0x03FC, 0x0414, 0x0423, 0x0438, 0x0499,
-	0x052A, 0x056C, 0x0578, 0x05C0, 0x061B, 0x0630, 0x063A, 0x064A, 0x0668, 0x0706,
-	0x0783, 0x07A7, 0x07B6, 0x07D8, 0x07E2, 0x07ED, 0x07F5, 0x0814, -1, -1
+	696, 708, 725, 744, 1003, 1020, 1044, 1059, 1080, 1177, 1322, 1388, 1400, 1472, 1563,
+	1584, 1594, 1610, 1640, 1798, 1923, 1959, 1974, 2008, 2018, 2029, 2037, 2068, -1, -1
 };
 
 short pierre_chat_ranges2[34] =
 {
-	0x00F2, 0x0121, 0x012E, 0x0155, 0x0348, 0x0352, 0x035F, 0x03B2, 0x041B, 0x0427,
-	0x043A, 0x047F, 0x048F, 0x04C7, 0x0647, 0x065C, 0x066F, 0x067D, 0x0693, 0x06A6,
-	0x06BD, 0x0738, 0x0960, 0x097D, 0x0A80, 0x0AC9, 0x0C60, 0x0C73, 0x0C85, 0x0C9E,
-	0x0D46, 0x0D74, -1, -1
-};
-
-short lara_chat_ranges_andrea1[4] =
-{
-	0x0248, 0x0279, -1, -1
+	242, 289, 302, 341, 840, 850, 863, 946, 1051, 1063, 1082, 1151, 1167, 1223, 1607, 1628, 1647,
+	1661, 1683, 1702, 1725, 1848, 2400, 2429, 2688, 2761, 3168, 3187, 3205, 3230, 3398, 3444, -1, -1
 };
 
 short lara_chat_ranges_andrea2[32] =
 {
-	0x03D6, 0x03E6, 0x03EF, 0x0401, 0x05B1, 0x05E6, 0x077B, 0x07AE, 0x07BA, 0x07F5,
-	0x0803, 0x0817, 0x0881, 0x08D1, 0x08DE, 0x08FD, 0x090B, 0x092A, 0x0AEE, 0x0B07,
-	0x0BFA, 0x0C20, 0x0CBA, 0x0D35, 0x0D8F, 0x0DED, 0x0E01, 0x0E5E, 0x0E9B, 0x0F47,
-	-1, -1
-};
-
-ushort andrea3_pistols_info[5] =
-{
-	0x454B, 0x854E, 0x8557, 0x4557, 0xFFFF
-};
-
-short lara_chat_ranges_andrea3[14] =
-{
-	0x0028, 0x005E, 0x0104, 0x0141, 0x01AC, 0x01BF, 0x01E3, 0x020F, 0x02C2, 0x033D,
-	0x035A, 0x03AC, -1, -1
-};
-
-short larson_chat_ranges3[14] =
-{
-	0x00A0, 0x00F1, 0x0152, 0x0199, 0x022F, 0x02B1, 0x03CB, 0x0462, 0x0472, 0x0512,
-	0x05B4, 0x05F3, -1, -1
-};
-
-short lara_chat_ranges_andrea3b[12] =
-{
-	0x020A, 0x021B, 0x0223, 0x0238, 0x02BE, 0x02E0, 0x02E9, 0x0302, 0x0318, 0x03D2,
-	-1, -1
-};
-
-short larson_chat_ranges3b[4] =
-{
-	0x0254, 0x02AD, -1, -1
-};
-
-short lara_chat_ranges_andrea4[22] =
-{
-	0x01C9, 0x021C, 0x03B1, 0x03FF, 0x064B, 0x0677, 0x0686, 0x0694, 0x069D, 0x06BE,
-	0x0843, 0x0867, 0x0C02, 0x0C0D, 0x0DA3, 0x0DEB, 0x0DFE, 0x0E1F, 0x0E69, 0x0EAA,
-	-1, -1
+	982, 998, 1007, 1025, 1457, 1510, 1915, 1966, 1978, 2037, 2051, 2071, 2177, 2257, 2270, 2301,
+	2315, 2346, 2798, 2823, 3066, 3104, 3258, 3381, 3471, 3565, 3585, 3678, 3739, 3911, -1, -1
 };
 
 short pierre_chat_ranges4[48] =
 {
-	0x014E, 0x015B, 0x0168, 0x01A8, 0x022E, 0x0258, 0x0267, 0x0304, 0x0315, 0x038A,
-	0x0424, 0x042D, 0x0439, 0x045C, 0x046E, 0x04DE, 0x04EC, 0x0504, 0x0511, 0x052B,
-	0x053C, 0x056A, 0x057E, 0x05F5, 0x060F, 0x063C, 0x06E5, 0x0739, 0x074A, 0x0809,
-	0x0A3F, 0x0A50, 0x0A66, 0x0A82, 0x0AC3, 0x0B23, 0x0B67, 0x0BC2, 0x0CE1, 0x0D22,
-	0x0D3E, 0x0D62, 0x0E3A, 0x0E53, 0x0F16, 0x0F1C, -1, -1
-};
-
-ushort crane_pistols_info[11] =
-{
-	0x8035, 0x803D, 0x81C5, 0x81CF, 0x81EA, 0x4031, 0x403A, 0x41C9, 0x41DE, 0x41EE,
-	0xFFFF
-};
-
-ushort craneguard_pistols_info[7] =
-{
-	0x006A, 0x0075, 0x00F0, 0x00F7, 0x0104, 0x0112, 0xFFFF
-};
-
-short voncroy_chat_ranges_richcut2[20] =
-{
-	0x01E1, 0x01F5, 0x0290, 0x02AC, 0x02B7, 0x02F7, 0x0300, 0x033E, 0x039F, 0x03CA,
-	0x03D7, 0x0408, 0x0414, 0x0443, 0x05C6, 0x0628, 0x0638, 0x0663, -1, -1
-};
-
-short associate_chat_ranges_richcut2[12] =
-{
-	0x045D, 0x0515, 0x0681, 0x0723, 0x0731, 0x0741, 0x074A, 0x0764, 0x0772, 0x07AA,
-	-1, -1
-};
-
-short guard_chat_ranges_richcut2[10] =
-{
-	0x0036, 0x00B0, 0x0205, 0x0287, 0x034F, 0x0392, 0x0529, 0x054C, -1, -1
-};
-
-short lara_chat_ranges_andy1[14] =
-{
-	0x0312, 0x0333, 0x054B, 0x0555, 0x056D, 0x0588, 0x0868, 0x087D, 0x0C25, 0x0C55,
-	0x0C6A, 0x0C74, -1, -1
-};
-
-short hanged_man_chat_ranges_andy1[18] =
-{
-	0x01EE, 0x022D, 0x023E, 0x02F1, 0x0348, 0x052A, 0x0596, 0x084C, 0x0890, 0x0BFB,
-	0x0C81, 0x0C8F, 0x0C9C, 0x0D4C, 0x0D5A, 0x0F16, -1, -1
-};
-
-short lara_chat_ranges_andy2[8] =
-{
-	0x05BA, 0x05D2, 0x05E5, 0x05FB, 0x07D9, 0x07FD, -1, -1
-};
-
-short priest_chat_ranges_andy2[24] =
-{
-	0x00EF, 0x014B, 0x02E0, 0x0321, 0x0332, 0x0367, 0x050D, 0x051B, 0x052C, 0x059D,
-	0x069A, 0x06B4, 0x06C8, 0x074E, 0x0765, 0x07B8, 0x083D, 0x086B, 0x087D, 0x08EF,
-	0x0916, 0x0980, -1, -1
-};
-
-short lara_chat_ranges_andy6[8] =
-{
-	0x02C8, 0x02D7, 0x02EF, 0x0303, 0x034C, 0x037A, -1, -1
-};
-
-short priest_chat_ranges_andy6[18] =
-{
-	0x0208, 0x02A0, 0x0319, 0x0338, 0x039C, 0x03AA, 0x03B4, 0x03D1, 0x03E0, 0x0471,
-	0x047F, 0x04AD, 0x04C4, 0x0512, 0x051D, 0x0565, -1, -1
-};
-
-short lara_chat_ranges_andy7[14] =
-{
-	0x017D, 0x0189, 0x0195, 0x01BE, 0x023E, 0x026D, 0x02EA, 0x0307, 0x054B, 0x0564,
-	0x056D, 0x0582, -1, -1
+	334, 347, 360, 424, 558, 600, 615, 772, 789, 906, 1060, 1069, 1081, 1116, 1134, 1246, 1260, 1284, 1297, 1323, 1340, 1386, 1406, 1525, 1551,
+	1596, 1765, 1849, 1866, 2057, 2623, 2640, 2662, 2690, 2755, 2851, 2919, 3010, 2397, 3362, 3390, 3426, 3642, 3667, 3862, 3868, -1, -1
 };
 
 short priest_chat_ranges_andy7[32] =
 {
-	0x0003, 0x0018, 0x0023, 0x0074, 0x0088, 0x00A7, 0x00BB, 0x010F, 0x011A, 0x0159,
-	0x01C9, 0x01FC, 0x0208, 0x0234, 0x0286, 0x02D2, 0x0310, 0x0343, 0x0356, 0x03DD,
-	0x03F1, 0x0404, 0x041C, 0x045C, 0x0477, 0x047F, 0x0487, 0x04D7, 0x04E8, 0x0528,
-	-1, -1
-};
-
-short lara_chat_ranges_andy9[6] =
-{
-	0x041A, 0x043A, 0x0F2C, 0x0F7F, -1, -1
-};
-
-short priest_chat_ranges_andy9[20] =
-{
-	0x024C, 0x0270, 0x0281, 0x02A7, 0x02BB, 0x0310, 0x0679, 0x06B4, 0x06C7, 0x0731,
-	0x073F, 0x077A, 0x0AA3, 0x0ACE, 0x0AF0, 0x0B38, 0x0F8F, 0x0FE8, -1, -1
-};
-
-short knight_chat_ranges_andy9[14] =
-{
-	0x0130, 0x0228, 0x031E, 0x0389, 0x0449, 0x0634, 0x07A4, 0x0A83, 0x0B51, 0x0F0E,
-	0x1012, 0x11F0, -1, -1
+	3, 24, 35, 116, 136, 167, 187, 271, 282, 345, 457, 508, 520, 564, 646, 722, 784,
+	835, 854, 989, 1009, 1028, 1052, 1116, 1143, 1151, 1159, 1239, 1256, 1320, -1, -1
 };
 
 short lara_chat_ranges_andy11[28] =
 {
-	0x083F, 0x0851, 0x0CB0, 0x0CC6, 0x0CD5, 0x0CEA, 0x0CF9, 0x0D15, 0x0D1F, 0x0D35,
-	0x0D3E, 0x0D50, 0x0D6B, 0x0DBE, 0x0E5B, 0x0E6C, 0x0E8B, 0x0EA2, 0x1021, 0x103A,
-	0x12E3, 0x12F7, 0x1510, 0x152F, 0x16F2, 0x1715, -1, -1
+	2111, 2129, 3248, 3270, 3285, 3306, 3321, 3349, 3359, 3381, 3390, 3408, 3435, 3518,
+	3675, 3692, 3723, 3746, 4129, 4154, 4835, 4855, 5392, 5423, 5874, 5909, -1, -1
 };
 
 short priest_chat_ranges_andy11[30] =
 {
-	0x0427, 0x044B, 0x045F, 0x0486, 0x06B6, 0x0734, 0x09DA, 0x0A15, 0x0B4F, 0x0B65,
-	0x0B78, 0x0BB3, 0x0DD6, 0x0E22, 0x1164, 0x11D4, 0x11E5, 0x1271, 0x127C, 0x12AC,
-	0x1311, 0x13C8, 0x1549, 0x15E4, 0x1633, 0x1620, 0x1640, 0x16C0, -1, -1
-};
-short knight_chat_ranges_andy11[14] =
-{
-	0x01B4, 0x03BE, 0x04C7, 0x0698, 0x0890, 0x08C4, 0x08D6, 0x0942, 0x1081, 0x1105,
-	0x13E9, 0x150A, -1, -1
-};
-
-short admiral_chat_ranges_joby2[12] =
-{
-	0x0118, 0x0154, 0x015C, 0x0175, 0x017C, 0x019D, 0x02CF, 0x0376, 0x0457, 0x0488,
-	-1, -1
-};
-
-short sergie_chat_ranges_joby2[8] =
-{
-	0x01B9, 0x02B8, 0x0386, 0x041E, 0x07A2, 0x0868, -1, -1
-};
-
-short lara_chat_ranges_joby3[6] =
-{
-	0x052B, 0x0530, 0x053D, 0x0556, -1, -1
-};
-
-short lara_chat_ranges_joby4[10] =
-{
-	0x0244, 0x0267, 0x0279, 0x0302, 0x074F, 0x0786, 0x0796, 0x07AB, -1, -1
-};
-
-short admiral_chat_ranges_joby4[20] =
-{
-	0x012D, 0x0187, 0x0193, 0x0203, 0x030F, 0x0330, 0x033C, 0x0404, 0x040E, 0x04E6,
-	0x04F1, 0x0586, 0x06EB, 0x070C, 0x07EC, 0x084B, 0x0857, 0x087A, -1, -1
-};
-
-short admiral_chat_ranges_joby5[18] =
-{
-	0x01EB, 0x0242, 0x0369, 0x0459, 0x04DC, 0x0505, 0x0518, 0x0529, 0x0535, 0x05EE,
-	0x0757, 0x07B9, 0x07C3, 0x07F5, 0x0839, 0x08C4, -1, -1
-};
-
-short sergie_chat_ranges_joby5[20] =
-{
-	0x009C, 0x00B9, 0x00C2, 0x018B, 0x019C, 0x01CD, 0x025A, 0x0349, 0x0469, 0x0480,
-	0x0492, 0x04CC, 0x0605, 0x0616, 0x0627, 0x0673, 0x0681, 0x06F8, -1, -1
-};
-
-short lara_chat_ranges_joby7[10] =
-{
-	0x02D5, 0x02F7, 0x030D, 0x0339, 0x05CD, 0x05DD, 0x05EC, 0x0609, -1, -1
-};
-
-short lara_chat_ranges_joby8[20] =
-{
-	0x03BC, 0x042D, 0x04ED, 0x053A, 0x0550, 0x0597, 0x05AB, 0x05BE, 0x05CD, 0x05E0,
-	0x05F6, 0x0620, 0x070C, 0x072F, 0x0897, 0x08CF, 0x0913, 0x0940, -1, -1
-};
-
-short actor_chat_ranges_joby8[14] =
-{
-	0x02B3, 0x03A8, 0x0447, 0x04E2, 0x064F, 0x068F, 0x069F, 0x06ED, 0x076D, 0x0799,
-	0x07A6, 0x07F7, -1, -1
-};
-
-short lara_chat_ranges_joby9[12] =
-{
-	0x0282, 0x030C, 0x058A, 0x05A6, 0x05B1, 0x05DB, 0x05E6, 0x060A, 0x0619, 0x0691,
-	-1, -1
+	1063, 1099, 1119, 1158, 1718, 1844, 2522, 2581, 2895, 2917, 2936, 2995, 3542, 3618, 4452,
+	4564, 4581, 4721, 4732, 4780, 4881, 5064, 5449, 5604, 5683, 5664, 5696, 5824, -1, -1
 };
 
 short admiral_chat_ranges_joby9[36] =
 {
-	0x00B6, 0x015B, 0x0177, 0x0258, 0x033A, 0x04F5, 0x0509, 0x052D, 0x053C, 0x054D,
-	0x055A, 0x057F, 0x06A3, 0x06D2, 0x06E0, 0x076E, 0x077E, 0x07A4, 0x07B6, 0x07F5,
-	0x0807, 0x085C, 0x087A, 0x08AF, 0x08BC, 0x08CF, 0x08DE, 0x08F2, 0x08FE, 0x0977,
-	0x0988, 0x09B4, 0x09C5, 0x09D0, -1, -1
-};
-
-short lara_chat_ranges_joby10[12] =
-{
-	0x01ED, 0x020C, 0x0514, 0x052F, 0x0769, 0x078D, 0x09D9, 0x09FB, 0x0BA4, 0x0BC0,
-	-1, -1
+	182, 347, 375, 600, 826, 1269, 1289, 1325, 1340, 1357, 1370, 1407, 1699, 1746, 1760, 1902, 1918, 1956,
+	1974, 2037, 2055, 2140, 2170, 2223, 2236, 2255, 2270, 2290, 2302, 2423, 2440, 2484, 2501, 2512, -1, -1
 };
 
 short admiral_chat_ranges_joby10[42] =
 {
-	0x0091, 0x00A3, 0x00D0, 0x00F0, 0x00FB, 0x0129, 0x0134, 0x0166, 0x0174, 0x01BD,
-	0x01C8, 0x01D5, 0x0222, 0x0331, 0x0340, 0x0398, 0x03A7, 0x04FD, 0x0539, 0x0563,
-	0x0570, 0x060F, 0x061E, 0x06E8, 0x06F3, 0x0742, 0x07A0, 0x07DC, 0x07EB, 0x08BB,
-	0x08CC, 0x0983, 0x0A3E, 0x0A62, 0x0A74, 0x0A80, 0x0A8F, 0x0AB3, 0x0ABF, 0x0B0D,
-	-1, -1
+	145, 163, 208, 240, 251, 297, 308, 358, 372, 445, 456, 469, 546, 817, 832, 920, 935, 1277, 1337, 1379, 1392, 1551,
+	1566, 1768, 1779, 1858, 1952, 2012, 2027, 2235, 2252, 2435, 2622, 2658, 2676, 2688, 2703, 2739, 2751, 2829, -1, -1
 };
 
 CUTSEQ_ROUTINES cutseq_control_routines[45] =
@@ -379,7 +188,7 @@ CUTSEQ_ROUTINES cutseq_control_routines[45] =
 
 void andrea1_init()
 {
-	return;
+
 }
 
 void andrea1_control()
@@ -392,7 +201,7 @@ void andrea1_control()
 	case 330:
 		item = find_a_fucking_item(ANIMATING10);
 		item->flags |= IFL_TRIGGERED;
-		item->mesh_bits = item->mesh_bits & 0xFFFFFFFD | 4;
+		item->mesh_bits = item->mesh_bits & ~6 | 4;
 		break;
 
 	case 452:
@@ -428,48 +237,48 @@ void andrea1_control()
 void andrea1_end()
 {
 	lara_item->mesh_bits = -1;
-	lara.pickupitems &= 0xFFFE;
+	lara.pickupitems &= ~1;
 }
 
 void andrea2_init()
 {
-	cutseq_meshbits[1] &= 0x7FFFFFFF;
+	cutseq_meshbits[1] &= ~0x80000000;
 }
 
 void andrea2_control()
 {
 	ITEM_INFO* item;
 	PHD_VECTOR pos;
-	long frame;
+	long frame, r, g, b, shift;
 
 	frame = GLOBAL_cutseq_frame;
 
-	if (GLOBAL_cutseq_frame == 410)
+	if (frame == 410)
 		cutseq_meshbits[1] |= 0x80000000;
-	else if (GLOBAL_cutseq_frame == 178)
+	else if (frame == 178)
 		cutseq_givelara_pistols();
-	else if (GLOBAL_cutseq_frame == 667)
+	else if (frame == 667)
 		undraw_pistol_mesh_left(WEAPON_PISTOLS);
-	else if (GLOBAL_cutseq_frame == 678)
+	else if (frame == 678)
 	{
 		undraw_pistol_mesh_right(WEAPON_PISTOLS);
 #ifndef GENERAL_FIXES
 		lara.holster = old_lara_holster;
 #endif
 	}
-	else if (GLOBAL_cutseq_frame == 2500)
+	else if (frame == 2500)
 		lara_item->mesh_bits = 0;
-	else if (GLOBAL_cutseq_frame == 2797)
+	else if (frame == 2797)
 		lara_item->mesh_bits = -1;
-	else if (GLOBAL_cutseq_frame == 2522)
+	else if (frame == 2522)
 	{
 		item = find_a_fucking_item(ANIMATING10);
 		item->flags |= IFL_TRIGGERED;
-		item->mesh_bits = item->mesh_bits & 0xFFFFFFF7 | 16;
+		item->mesh_bits = item->mesh_bits & ~0x18 | 0x10;
 	}
 	else
 	{
-		if (GLOBAL_cutseq_frame > 2934)
+		if (frame > 2934)
 		{
 			pos.x = 0;
 			pos.y = GetRandomControl() & 0x7F;
@@ -495,7 +304,7 @@ void andrea2_control()
 			GetActorJointAbsPosition(1, 6, &pos);
 			DelTorchFlames(&pos);
 
-			if (frame > 3179)
+			if (frame >= 3180)
 			{
 				pos.x = 0;
 				pos.y = 0;
@@ -505,23 +314,22 @@ void andrea2_control()
 			}
 		}
 
-		if (frame > 2933 && frame < 2981)
+		if (frame >= 2934 && frame <= 2980)
 		{
 			pos.x = 0;
 			pos.y = 0;
 			pos.z = 1024;
 			GetActorJointAbsPosition(1, 11, &pos);
 
+			shift = (frame - 2934) >> 4;
+			r = ((GetRandomControl() & 0x3F) + 192) >> shift;
+			g = ((GetRandomControl() & 0x1F) + 128) >> shift;
+			b = (GetRandomControl() & 0x3F) >> shift;
+
 			if (GetRandomControl() & 1)
-				TriggerDynamic(pos.x, pos.y, pos.z, 24,
-					((GetRandomControl() & 0x3F) + 192) >> (((frame - 2934) >> 4) & 0x1F),
-					((GetRandomControl() & 0x1F) + 128) >> (((frame - 2934) >> 4) & 0x1F),
-					(GetRandomControl() & 0x3F) >> (((frame - 2934) >> 4) & 0x1F));
-			else
-				TriggerDynamic(pos.x, pos.y, pos.z, 31,
-					((GetRandomControl() & 0x3F) + 192) >> (((frame - 2934) >> 4) & 0x1F),
-					((GetRandomControl() & 0x1F) + 128) >> (((frame - 2934) >> 4) & 0x1F),
-					(GetRandomControl() & 0x3F) >> (((frame - 2934) >> 4) & 0x1F));
+				TriggerDynamic(pos.x, pos.y, pos.z, 24, r, g, b);
+
+			TriggerDynamic(pos.x, pos.y, pos.z, 31, r, g, b);
 		}
 	}
 
@@ -533,7 +341,7 @@ void andrea2_control()
 
 void andrea2_end()
 {
-	lara.pickupitems &= 0xFFFD;
+	lara.pickupitems &= ~2;
 }
 
 void andrea3_init()
@@ -561,8 +369,8 @@ void andrea3_end()
 	cutseq_removelara_pistols();
 	item = find_a_fucking_item(LARSON);
 	item->anim_number = objects[LARSON].anim_index;
-	item->flags |= IFL_INVISIBLE;
 	item->frame_number = anims[objects[LARSON].anim_index].frame_base;
+	item->flags |= IFL_INVISIBLE;
 	item->status = ITEM_ACTIVE;
 	AddActiveItem(item - items);
 	EnableBaddieAI(item - items, 1);
@@ -592,7 +400,7 @@ void andrea3b_control()
 	
 	f = GLOBAL_cutseq_frame;
 
-	if (GLOBAL_cutseq_frame == 301 || GLOBAL_cutseq_frame == 639 || GLOBAL_cutseq_frame == 781)
+	if (f == 301 || f == 639 || f == 781)
 		lara_item->mesh_bits = 0;
 
 	if (f == 512 || f == 692 || f == 1084)
@@ -600,7 +408,7 @@ void andrea3b_control()
 
 	if (f == 1191)
 	{
-		cutseq_meshbits[1] &= 0x7FFFFFFF;
+		cutseq_meshbits[1] &= ~0x80000000;
 		cutseq_meshbits[2] |= 0x80000000;
 		cutseq_meshbits[3] |= 0x80000000;
 		cutseq_meshbits[4] |= 0x80000000;
@@ -613,9 +421,9 @@ void andrea3b_control()
 	}
 	else if (f == 1150)
 	{
-		cutseq_meshbits[2] &= 0x7FFFFFFF;
-		cutseq_meshbits[3] &= 0x7FFFFFFF;
-		cutseq_meshbits[4] &= 0x7FFFFFFF;
+		cutseq_meshbits[2] &= ~0x80000000;
+		cutseq_meshbits[3] &= ~0x80000000;
+		cutseq_meshbits[4] &= ~0x80000000;
 	}
 
 	handle_lara_chatting(lara_chat_ranges_andrea3b);
@@ -630,19 +438,16 @@ void andrea3b_end()
 	disable_horizon = 0;
 	cutseq_removelara_pistols();
 
-	if (level_items > 0)
+	for (int i = 0; i < level_items; i++)
 	{
-		for (int i = 0; i < level_items; i++)
-		{
-			item = &items[i];
+		item = &items[i];
 
-			if (item->object_number == HYDRA)
-			{
-				item->status = ITEM_ACTIVE;
-				item->flags |= IFL_INVISIBLE;
-				AddActiveItem(item - items);
-				EnableBaddieAI(item - items, 1);
-			}
+		if (item->object_number == HYDRA)
+		{
+			item->status = ITEM_ACTIVE;
+			item->flags |= IFL_INVISIBLE;
+			AddActiveItem(item - items);
+			EnableBaddieAI(item - items, 1);
 		}
 	}
 
@@ -651,7 +456,7 @@ void andrea3b_end()
 
 void andrea4_init()
 {
-	return;
+
 }
 
 void andrea4_control()
@@ -683,8 +488,8 @@ void cranecut_init()
 	cutseq_kill_item(WRECKING_BALL);
 	cutseq_kill_item(ANIMATING4);
 	cutseq_givelara_pistols();
-	meshes[objects[ANIMATING4].mesh_index + (13 * 2)] = meshes[objects[BLUE_GUARD].mesh_index + (13 * 2)];
-	cutseq_meshbits[5] &= 0x7FFFFFFF;
+	meshes[objects[ANIMATING4].mesh_index + 26] = meshes[objects[BLUE_GUARD].mesh_index + 26];
+	cutseq_meshbits[5] &= ~0x80000000;
 }
 
 void cranecut_control()
@@ -701,11 +506,11 @@ void cranecut_control()
 		break;
 
 	case 124:
-		lara_item->mesh_bits = 0xFFFFFFFF;
+		lara_item->mesh_bits = -1;
 		break;
 
 	case 801:
-		cutseq_meshbits[1] &= 0x7FFFFFFF;
+		cutseq_meshbits[1] &= ~0x80000000;
 		break;
 
 	case 850:
@@ -730,6 +535,7 @@ void cranecut_control()
 		pos.y = 0;
 		pos.z = 0;
 		TriggerActorBlood(1, 2, &pos, 0, 1);
+
 		pos.x = 0;
 		pos.y = 0;
 		pos.z = 0;
@@ -744,7 +550,7 @@ void cranecut_control()
 		GetActorJointAbsPosition(5, 0, &pos);
 
 		for (int i = 0; i < 2800; i += 175)
-			TriggerDelSmoke(pos.x, pos.y, i + pos.z, f - 1367);
+			TriggerDelSmoke(pos.x, pos.y, pos.z + i, f - 1367);
 	}
 }
 
@@ -763,28 +569,23 @@ void cranecut_end()
 void richcut1_init()
 {
 	ITEM_INFO* item;
-	short item_num, nex;
+	short item_num;
 
 	item_num = room[lara_item->room_number].item_number;
 
-	if (item_num != NO_ITEM)
+	while (item_num != NO_ITEM)
 	{
-		do
+		item = &items[item_num];
+
+		if (item->object_number == SCIENTIST)
 		{
-			item = &items[item_num];
-			nex = item->next_item;
+			item->status = ITEM_INVISIBLE;
+			RemoveActiveItem(item - items);
+			DisableBaddieAI(item - items);
+			item->flags |= IFL_INVISIBLE;
+		}
 
-			if (item->object_number == SCIENTIST)
-			{
-				item->status = ITEM_INVISIBLE;
-				RemoveActiveItem(item - items);
-				DisableBaddieAI(item - items);
-				item->flags |= IFL_INVISIBLE;
-			}
-
-			item_num = nex;
-
-		} while (nex != NO_ITEM);
+		item_num = item->next_item;
 	}
 
 	cutseq_givelara_hk();
@@ -798,26 +599,18 @@ void richcut1_control()
 	
 	f = GLOBAL_cutseq_frame;
 
-	switch (f)
-	{
-	case 101:
-	case 493:
-	case 673:
+	if (f == 101 || f == 493 || f == 673)
 		lara_item->mesh_bits = 0;
-		break;
 
-	case 208:
-	case 580:
-	case 810:
+	if (f == 208 || f == 580 || f == 810)
 		lara_item->mesh_bits = -1;
-		break;
 
-	case 840:
+	if (f == 840)
+	{
 		item = find_a_fucking_item(CLOSED_DOOR2);
 		AddActiveItem(item - items);
 		item->status = ITEM_INVISIBLE;
 		item->flags |= IFL_CODEBITS;
-		break;
 	}
 }
 
@@ -837,7 +630,7 @@ void richcut2_init()
 void richcut2_control()
 {
 	if (GLOBAL_cutseq_frame == 300)
-		cutseq_meshbits[5] &= 0x7FFFFFFF;
+		cutseq_meshbits[5] &= ~0x80000000;
 
 	handle_actor_chatting(ACTOR2_SPEECH_HEAD1, 11, 1, ANIMATING6, voncroy_chat_ranges_richcut2);
 	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 18, 3, ANIMATING4, associate_chat_ranges_richcut2);
@@ -854,7 +647,7 @@ void richcut3_init()
 {
 	cutseq_givelara_hk();
 	cutrot = 1;
-	cutseq_meshbits[1] &= 0x7FFFFFFF;
+	cutseq_meshbits[1] &= ~0x80000000;
 }
 
 void richcut3_control()
@@ -906,19 +699,21 @@ void richcut4_control()
 
 		if (!(f & 1))
 			item->mesh_bits &= ~(1 << (8 - ((f - 300) >> 1)));
+
+		if (f == 308)
+			cutseq_meshbits[2] |= 4;
 	}
 
-	if (f == 308)
-		cutseq_meshbits[2] |= 4;
-	else if (f == 534)
+	
+	if (f == 534)
 	{
-		cutseq_meshswapbits[1] &= 0xFFFFFEFF;
-		cutseq_meshbits[2] &= 0xFFFFFFDF;
+		cutseq_meshswapbits[1] &= ~0x100;
+		cutseq_meshbits[2] &= ~0x20;
 	}
 	else if (f == 557)
 	{
-		cutseq_meshswapbits[1] &= 0xFFFFFFDF;
-		cutseq_meshbits[2] &= 0xFFFFFFFB;
+		cutseq_meshswapbits[1] &= ~0x20;
+		cutseq_meshbits[2] &= ~4;
 	}
 }
 
@@ -938,7 +733,7 @@ void andy1_control()
 {
 	if (GLOBAL_cutseq_frame == 3750)
 	{
-		cutseq_meshbits[1] &= 0x7FFFFFFF;
+		cutseq_meshbits[1] &= ~0x80000000;
 		cutseq_restore_item(ANIMATING2);
 		FlashFadeR = 255;
 		FlashFadeG = 255;
@@ -1024,16 +819,19 @@ void andy4_control()
 			pos.z = 0;
 			GetActorJointAbsPosition(1, 0, &pos);
 			TriggerDelSmoke(pos.x, pos.y, pos.z, 88);
+
 			pos.x = 0;
 			pos.y = 0;
 			pos.z = 0;
 			GetActorJointAbsPosition(2, 0, &pos);
 			TriggerDelSmoke(pos.x, pos.y, pos.z, 88);
-			GetActorJointAbsPosition(3, 0, &pos);
+
+			GetActorJointAbsPosition(3, 0, &pos);	//fix me (original bug)
 			pos.x = 0;
 			pos.y = 0;
 			pos.z = 0;
 			TriggerDelSmoke(0, 0, 0, 88);
+
 			pos.x = 0;
 			pos.y = 0;
 			pos.z = 0;
@@ -1062,7 +860,7 @@ void andy4b_control()
 
 	f = GLOBAL_cutseq_frame;
 
-	if (GLOBAL_cutseq_frame == 510 || GLOBAL_cutseq_frame == 662)
+	if (f == 510 || f == 662)
 		do_clanger_meshswap();
 
 	if (f == 697 || f == 708 || f == 723 || f == 735)
@@ -1103,14 +901,16 @@ void andy5_control()
 	PHD_VECTOR pos;
 	long f;
 	
-	if (GLOBAL_cutseq_frame >= 310)
+	f = GLOBAL_cutseq_frame;
+
+	if (f >= 310)
 	{
-		if (GLOBAL_cutseq_frame < 350)
+		if (f < 350)
 		{
 			if (cut_seethrough > 32)
 				cut_seethrough -= 4;
 		}
-		else if (GLOBAL_cutseq_frame <= 450)
+		else if (f <= 450)
 		{
 			cut_seethrough += 8;
 
@@ -1119,9 +919,9 @@ void andy5_control()
 		}
 	}
 
-	if (GLOBAL_cutseq_frame == 451)
+	if (f == 451)
 		cut_seethrough = 128;
-	else if (GLOBAL_cutseq_frame >= 1100)
+	else if (f >= 1100)
 	{
 		cut_seethrough -= 4;
 
@@ -1134,7 +934,7 @@ void andy5_control()
 	pos.z = 0;
 	GetActorJointAbsPosition(1, 0, &pos);
 
-	if (GLOBAL_cutseq_frame >= 1100)
+	if (f >= 1100)
 	{
 		if (!cut_seethrough)
 			return;
@@ -1173,6 +973,7 @@ void andy6_control()
 	GetActorJointAbsPosition(1, 8, &pos);
 	TriggerDynamic(pos.x, pos.y, pos.z, 12 - (GetRandomControl() & 1), (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 96, 0);
 	DelTorchFlames(&pos);
+
 	handle_lara_chatting(lara_chat_ranges_andy6);
 	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 1, SAILOR_MIP, priest_chat_ranges_andy6);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
@@ -1180,7 +981,7 @@ void andy6_control()
 
 void andy6_end()
 {
-	return;
+
 }
 
 void andy7_init()
@@ -1202,7 +1003,7 @@ void andy7_end()
 
 void andy8_init()
 {
-	return;
+
 }
 
 void andy8_control()
@@ -1243,8 +1044,8 @@ void andy8_control()
 void andy8_end()
 {
 	SetCutPlayed(36);
-	do_chalk_meshswap();
 	lara.puzzleitems[0] = 0;
+	do_chalk_meshswap();
 }
 
 void andy9_init()
@@ -1284,12 +1085,12 @@ void andy10_init()
 	cutseq_kill_item(ANIMATING4);
 	cutseq_kill_item(ANIMATING5);
 	cutseq_kill_item(ANIMATING14);
-	cutseq_meshbits[1] &= 0x7FFFFFFF;
-	cutseq_meshbits[2] &= 0x7FFFFFFF;
-	cutseq_meshbits[3] &= 0x7FFFFFFF;
-	cutseq_meshbits[4] &= 0x7FFFFFFF;
-	cutseq_meshbits[5] &= 0x7FFFFFFF;
-	cutseq_meshbits[6] &= 0x7FFFFFFF;
+	cutseq_meshbits[1] &= ~0x80000000;
+	cutseq_meshbits[2] &= ~0x80000000;
+	cutseq_meshbits[3] &= ~0x80000000;
+	cutseq_meshbits[4] &= ~0x80000000;
+	cutseq_meshbits[5] &= ~0x80000000;
+	cutseq_meshbits[6] &= ~0x80000000;
 	item = find_a_fucking_item(GREEN_TEETH);
 	item->status = ITEM_INVISIBLE;
 	RemoveActiveItem(item - items);
@@ -1302,14 +1103,14 @@ void andy10_init()
 
 void andy10_control()
 {
-	if (GLOBAL_cutseq_frame == 1250)
-	{
-		cutseq_meshbits[8] &= 0xFFFFFFE0;
-		TriggerDynamic(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, 31, 255, 255, 255);
-		return;
-	}
+	long f;
 
-	if (GLOBAL_cutseq_frame == 902)
+	f = GLOBAL_cutseq_frame;
+
+	if (f == 1250)
+		cutseq_meshbits[8] &= ~0x1F;
+
+	if (f == 902)
 	{
 		cutseq_meshbits[1] |= 0x80000000;
 		cutseq_meshbits[2] |= 0x80000000;
@@ -1317,25 +1118,27 @@ void andy10_control()
 		cutseq_meshbits[5] |= 0x80000000;
 		cutseq_meshbits[6] |= 0x80000000;
 	}
-	else if (GLOBAL_cutseq_frame == 338 || GLOBAL_cutseq_frame == 775)
+	
+	if (f == 338 || f == 775)
 		lara_item->mesh_bits = 0;
-	else if (GLOBAL_cutseq_frame == 747)
-	{
+	
+	if (f == 747)
 		lara_item->mesh_bits = -1;
-		TriggerDynamic(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, 31, 255, 255, 255);
-		return;
-	}
-	else if (GLOBAL_cutseq_frame == 1574)
-		cutseq_meshbits[4] &= 0x7FFFFFFF;
+	
+	if (f == 902 || f == 1574)
+		cutseq_meshbits[4] &= ~0x80000000;
 
-	if (GLOBAL_cutseq_frame == 338 || GLOBAL_cutseq_frame == 1030)
+	if (f == 338 || f == 1030)
 		cutseq_meshbits[4] |= 0x80000000;
-	else if (GLOBAL_cutseq_frame == 1603)
-		cutseq_meshbits[1] &= 0x7FFFFFFF;
-	else if (GLOBAL_cutseq_frame == 1624)
-		cutseq_meshbits[2] &= 0x7FFFFFFF;
-	else if (GLOBAL_cutseq_frame == 854)
-		cutseq_meshbits[7] &= 0x7FFFFFFF;
+	
+	if (f == 1603)
+		cutseq_meshbits[1] &= ~0x80000000;
+	
+	if (f == 1624)
+		cutseq_meshbits[2] &= ~0x80000000;
+	
+	if (f == 854)
+		cutseq_meshbits[7] &= ~0x80000000;
 
 	TriggerDynamic(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, 31, 255, 255, 255);
 }
@@ -1350,10 +1153,10 @@ void andy10_end()
 	DelsHandyTeleportLara(39424, 15360, 48640, 0);
 	lara.water_status = LW_UNDERWATER;
 	lara_item->pos.x_rot = -5278;
-	lara_item->goal_anim_state = AS_TREAD;
-	lara_item->current_anim_state = AS_TREAD;
-	lara_item->frame_number = anims[ANIM_TREAD].frame_base;
 	lara_item->anim_number = ANIM_TREAD;
+	lara_item->frame_number = anims[ANIM_TREAD].frame_base;
+	lara_item->current_anim_state = AS_TREAD;
+	lara_item->goal_anim_state = AS_TREAD;
 	NailInvItem(PUZZLE_ITEM2);
 	disable_horizon = 0;
 }
@@ -1362,8 +1165,8 @@ void andy11_init()
 {
 	cutseq_kill_item(ANIMATING15);
 	lara_item->mesh_bits = 0;
-	cutseq_meshbits[4] &= 0xFFF07FFF;
-	cutseq_meshbits[5] &= 0x7FFFFFFF;
+	cutseq_meshbits[4] &= ~0xF8000;
+	cutseq_meshbits[5] &= ~0x80000000;
 }
 
 void andy11_control()
@@ -1381,7 +1184,7 @@ void andy11_control()
 	if (f == 3082)
 		cutseq_meshbits[5] |= 0x80000000;
 	else if (f == 2660)
-		cutseq_meshbits[2] &= 0x7FFFFFFF;
+		cutseq_meshbits[2] &= ~0x80000000;
 
 	handle_lara_chatting(lara_chat_ranges_andy11);
 	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 4, SAILOR_MIP, priest_chat_ranges_andy11);
@@ -1401,7 +1204,7 @@ void andypew_init()
 
 void andypew_control()
 {
-	return;
+
 }
 
 void andypew_end()
@@ -1412,7 +1215,7 @@ void andypew_end()
 
 void cossack_init()
 {
-	return;
+
 }
 
 void cossack_control()
@@ -1464,6 +1267,7 @@ void cossack_control()
 			GetLaraJointPos(&pos, 14);
 			TriggerDelBrownSmoke(pos.x, pos.y, pos.z);
 		}
+
 		if (f >= 1110 && f <= 1125)
 		{
 			pos.z = 0;
@@ -1472,6 +1276,7 @@ void cossack_control()
 			GetLaraJointPos(&pos, 11);
 			TriggerDelBrownSmoke(pos.x, pos.y, pos.z);
 		}
+
 		if (f >= 1111 && f <= 1126)
 		{
 			pos.z = 0;
@@ -1499,40 +1304,27 @@ void monk2_control()
 	PHD_VECTOR pos;
 	long f;
 
-	if (GLOBAL_cutseq_frame == 70)
+	f = GLOBAL_cutseq_frame;
+
+	if (f == 70)
 		lara_item->mesh_bits = 0;
-	else
+
+	if (f >= 630 && f < 720)
 	{
-		if (GLOBAL_cutseq_frame < 630 || GLOBAL_cutseq_frame >= 720)
-			f = cut_seethrough;
-		else
-		{
-			f = cut_seethrough;
+		if (cut_seethrough > 32)
+			cut_seethrough -= 4;
+	}
 
-			if (cut_seethrough > 32)
-			{
-				f = cut_seethrough - 4;
-				cut_seethrough -= 4;
-			}
-		}
+	if (f == 740)
+		cut_seethrough = 128;
 
-		if (GLOBAL_cutseq_frame == 740)
-			cut_seethrough = 128;
-		else if (GLOBAL_cutseq_frame >= 940)
-		{
-			if (f > 0)
-			{
-				cut_seethrough = f - 4;
+	if (f >= 940)
+	{
+		if (cut_seethrough > 0)
+			cut_seethrough -= 4;
 
-				if (f - 4 < 0)
-					cut_seethrough = 0;
-			}
-			else
-			{
-				if (f < 0)
-					cut_seethrough = 0;
-			}
-		}
+		if (cut_seethrough < 0)
+			cut_seethrough = 0;
 	}
 
 	pos.x = 0;
@@ -1578,10 +1370,10 @@ void swampy_end()
 	DelsHandyTeleportLara(42477, 12456, 55982, 28953);
 	lara.water_status = LW_UNDERWATER;
 	lara_item->pos.x_rot = -5278;
-	lara_item->goal_anim_state = AS_TREAD;
-	lara_item->current_anim_state = AS_TREAD;
-	lara_item->frame_number = anims[ANIM_TREAD].frame_base;
 	lara_item->anim_number = ANIM_TREAD;
+	lara_item->frame_number = anims[ANIM_TREAD].frame_base;
+	lara_item->current_anim_state = AS_TREAD;
+	lara_item->goal_anim_state = AS_TREAD;
 
 	if (lara.air > 200)
 		lara.air = 200;
@@ -1596,7 +1388,7 @@ void hamgate_init()
 	item->flags |= IFL_CODEBITS;
 	item->mesh_bits = 3;
 	item->status = ITEM_INVISIBLE;
-	cutseq_meshbits[2] &= 0xFFFFFFFD;
+	cutseq_meshbits[2] &= ~2;
 	cutrot = 0;
 }
 
@@ -1606,12 +1398,12 @@ void hamgate_control()
 	
 	f = GLOBAL_cutseq_frame;
 
-	if (GLOBAL_cutseq_frame == 14 || GLOBAL_cutseq_frame == 269)
+	if (f == 14 || f == 269)
 		do_hammer_meshswap();
 
 	if (f == 442)
 	{
-		cutseq_meshbits[3] &= 0x7FFFFFFF;
+		cutseq_meshbits[3] &= ~0x80000000;
 		cutseq_meshbits[2] |= 2;
 	}
 }
@@ -1629,7 +1421,7 @@ void stealth3_start()
 {
 	ITEM_INFO* item;
 	
-	for (int i = 0; i < level_items; i++, item++)
+	for (int i = 0; i < level_items; i++)
 	{
 		item = &items[i];
 
@@ -1672,6 +1464,7 @@ void stealth3_end()
 				abs(item->pos.y_pos - lara_item->pos.y_pos) < 256)
 			{
 				item->hit_points = 0;
+				item->current_anim_state = 6;
 
 				if (item->object_number == TWOGUN)
 				{
@@ -1679,20 +1472,11 @@ void stealth3_end()
 					item->current_anim_state = 7;
 				}
 				else if (item->object_number == CHEF)
-				{
 					item->anim_number = objects[CHEF].anim_index + 11;
-					item->current_anim_state = 6;
-				}
 				else if (objects[SWAT].loaded)
-				{
 					item->anim_number = objects[SWAT].anim_index + 11;
-					item->current_anim_state = 6;
-				}
 				else
-				{
 					item->anim_number = objects[BLUE_GUARD].anim_index + 11;
-					item->current_anim_state = 6;
-				}
 
 				item->frame_number = anims[item->anim_number].frame_end;
 				AddActiveItem(i);
@@ -1707,11 +1491,11 @@ void stealth3_end()
 void joby2_init()
 {
 	disable_horizon = 1;
-	cutseq_meshbits[1] &= 0x7FFFFFFF;
-	cutseq_meshbits[2] &= 0x7FFFFFFF;
-	cutseq_meshbits[3] &= 0x7FFFFFFF;
-	cutseq_meshbits[4] &= 0x7FFFFFFF;
-	cutseq_meshbits[6] &= 0x7FFFFFFF;
+	cutseq_meshbits[1] &= ~0x80000000;
+	cutseq_meshbits[2] &= ~0x80000000;
+	cutseq_meshbits[3] &= ~0x80000000;
+	cutseq_meshbits[4] &= ~0x80000000;
+	cutseq_meshbits[6] &= ~0x80000000;
 }
 
 void joby2_control()
@@ -1726,12 +1510,12 @@ void joby2_control()
 
 	case 1622:
 		lara_item->mesh_bits = -1;
-		cutseq_meshbits[1] &= 0x7FFFFFFF;
-		cutseq_meshbits[2] &= 0x7FFFFFFF;
-		cutseq_meshbits[3] &= 0x7FFFFFFF;
-		cutseq_meshbits[4] &= 0x7FFFFFFF;
-		cutseq_meshbits[5] &= 0x7FFFFFFF;
-		cutseq_meshbits[6] &= 0x7FFFFFFF;
+		cutseq_meshbits[1] &= ~0x80000000;
+		cutseq_meshbits[2] &= ~0x80000000;
+		cutseq_meshbits[3] &= ~0x80000000;
+		cutseq_meshbits[4] &= ~0x80000000;
+		cutseq_meshbits[5] &= ~0x80000000;
+		cutseq_meshbits[6] &= ~0x80000000;
 		disable_horizon = 1;
 		break;
 
@@ -1769,7 +1553,7 @@ void joby2_end()
 
 void joby3_init()
 {
-	return;
+
 }
 
 void joby3_control()
@@ -1786,7 +1570,7 @@ void joby3_control()
 
 void joby3_end()
 {
-	return;
+
 }
 
 void joby4_init()
@@ -1799,23 +1583,22 @@ void joby4_init()
 void joby4_control()
 {
 	long f;
-	
+
 	f = GLOBAL_cutseq_frame;
 
 #ifndef GENERAL_FIXES
-	if (GLOBAL_cutseq_frame <= 130)
+	if (f <= 130)
 		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, SCRIPT_TEXT(STR_SEVERAL_HOURS_LATER), FF_CENTER);
 #endif
 
 	if (f == 575)
-		cutseq_meshbits[5] &= 0x7FFFFFFF;
-	else
-	{
-		if (f == 769 || f == 1966)
-			lara_item->mesh_bits = 0;
-		if (f == 1593)
-			lara_item->mesh_bits = -1;
-	}
+		cutseq_meshbits[5] &= ~0x80000000;
+
+	if (f == 769 || f == 1966)
+		lara_item->mesh_bits = 0;
+
+	if (f == 1593)
+		lara_item->mesh_bits = -1;
 
 	handle_lara_chatting(lara_chat_ranges_joby4);
 	handle_actor_chatting(ACTOR1_SPEECH_HEAD1, 2, 3, CRANE_GUY_MIP, admiral_chat_ranges_joby4);
@@ -1834,8 +1617,8 @@ void joby5_init()
 {
 	cutseq_kill_item(ANIMATING3);
 	cutseq_kill_item(ANIMATING4);
-	cutseq_meshbits[2] &= 0x7FFFFFFF;
-	cutseq_meshbits[4] &= 0x7FFFFFFF;
+	cutseq_meshbits[2] &= ~0x80000000;
+	cutseq_meshbits[4] &= ~0x80000000;
 }
 
 void joby5_control()
@@ -1849,9 +1632,9 @@ void joby5_control()
 	else if (f == 436)
 		cutseq_meshbits[2] |= 0x80000000;
 	else if (f == 1796)
-		cutseq_meshbits[4] &= 0x7FFFFFFF;
+		cutseq_meshbits[4] &= ~0x80000000;
 	else if (f == 2175)
-		cutseq_meshbits[1] &= 0x7FFFFFFF;
+		cutseq_meshbits[1] &= ~0x80000000;
 	else if (f == 151 || f == 2330)
 		cutseq_meshbits[4] |= 0x80000000;
 
@@ -1899,36 +1682,43 @@ void joby7_init()
 {
 	lara_item->mesh_bits = 0;
 	cutseq_kill_item(ANIMATING2);
-	cutseq_meshbits[6] &= 0x7FFFFFFF;
+	cutseq_meshbits[6] &= ~0x80000000;
 }
 
 void joby7_control()
 {
 	PHD_VECTOR s;
 	PHD_VECTOR d;
-	long f, brightme, b;
+	long f, b;
 	short room_no;
 
 	f = GLOBAL_cutseq_frame;
 
 	if (f == 750)
 		cutseq_meshbits[6] |= 0x80000000;
-	else if (f >= 650 && f <= 1050)
+	
+	if (f >= 650 && f <= 1050)
 	{
 		s.x = 0;
 		s.y = -100;
 		s.z = 0;
 		GetActorJointAbsPosition(6, 0, &s);
-		b = f - 650 > 220 ? 220 : f - 650;
-		brightme = ((f - 650) >> 5) + 8;
-		TriggerDynamic(s.x, s.y, s.z, brightme, 0, 0, b + 16);
+
+		b = f - 650;
+
+		if (f - 650 > 220)
+			b = 220;
+
+		TriggerDynamic(s.x, s.y, s.z, ((f - 650) >> 5) + 8, 0, 0, b + 16);
 	}
+
 	if (f == 1410)
 	{
 		s.x = 0;
 		s.y = -100;
 		s.z = 0;
 		GetActorJointAbsPosition(1, 0, &s);
+
 		room_no = lara_item->room_number;
 		IsRoomOutsideNo = -1;
 		IsRoomOutside(s.x, s.y, s.z);
@@ -1945,12 +1735,15 @@ void joby7_control()
 	s.y = -1024;
 	s.z = -128;
 	GetActorJointAbsPosition(1, 7, &s);
+
 	d.x = 0;
 	d.y = -20480;
 	d.z = -128;
 	GetActorJointAbsPosition(1, 7, &d);
+
 	LaraTorch(&s, &d, 0, 255);
 	TriggerEngineEffects_CUT();
+
 	handle_actor_chatting(LARA_SPEECH_HEAD1, 14, 1, CROW_MIP, lara_chat_ranges_joby7);
 	actor_chat_cnt = (actor_chat_cnt - 1) & 1;
 }
@@ -1963,33 +1756,38 @@ void joby7_end()
 	DelsHandyTeleportLara(30049, 17583, 69794, 51830);
 	lara.water_status = LW_UNDERWATER;
 	lara_item->pos.x_rot = 1090;
-	lara_item->goal_anim_state = AS_TREAD;
-	lara_item->current_anim_state = AS_TREAD;
-	lara_item->frame_number = anims[ANIM_TREAD].frame_base;
 	lara_item->anim_number = ANIM_TREAD;
+	lara_item->frame_number = anims[ANIM_TREAD].frame_base;
+	lara_item->current_anim_state = AS_TREAD;
+	lara_item->goal_anim_state = AS_TREAD;
 	lara.Anxiety = 80;
 }
 
 void joby8_init()
 {
+	FLOOR_INFO* floor;
 	short room_number;
 
 	cutseq_kill_item(DOOR_TYPE4);
 	cutseq_kill_item(ANIMATING16);
 	lara_item->mesh_bits = 0x81FF01FF;
+
 	room_number = lara_item->room_number;
-	GetHeight(GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number), lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+	floor = GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number);
+	GetHeight(floor, lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
 	TestTriggers(trigger_index, 1, 0);
+
 	cutseq_meshswapbits[7] = 128;
-	cutseq_meshbits[2] &= 0x7FFFFFFF;
-	cutseq_meshbits[3] &= 0x7FFFFFFF;
-	cutseq_meshbits[4] &= 0x7FFFFFFF;
+	cutseq_meshbits[2] &= ~0x80000000;
+	cutseq_meshbits[3] &= ~0x80000000;
+	cutseq_meshbits[4] &= ~0x80000000;
 	cutrot = 0;
 }
 
 void joby8_control()
 {
 	SPARKS* sptr;
+	FLOOR_INFO* floor;
 	PHD_VECTOR s;
 	PHD_VECTOR d;
 	long r, g, b, scale;
@@ -2004,15 +1802,15 @@ void joby8_control()
 		break;
 
 	case 2440:
-		cutseq_meshbits[8] &= 0x7FFFFFFF;
+		cutseq_meshbits[8] &= ~0x80000000;
 		break;
 
 	case 2681:
-		cutseq_meshbits[1] &= 0x7FFFFFFF;
-		cutseq_meshbits[2] &= 0x7FFFFFFF;
-		cutseq_meshbits[3] &= 0x7FFFFFFF;
-		cutseq_meshbits[4] &= 0x7FFFFFFF;
-		cutseq_meshbits[5] &= 0x7FFFFFFF;
+		cutseq_meshbits[1] &= ~0x80000000;
+		cutseq_meshbits[2] &= ~0x80000000;
+		cutseq_meshbits[3] &= ~0x80000000;
+		cutseq_meshbits[4] &= ~0x80000000;
+		cutseq_meshbits[5] &= ~0x80000000;
 		break;
 
 	case 440:
@@ -2025,7 +1823,8 @@ void joby8_control()
 
 	case 2724:
 		room_num = lara_item->room_number;
-		GetHeight(GetFloor(lara_item->pos.x_pos + 1024, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_num), lara_item->pos.x_pos + 1024, lara_item->pos.y_pos, lara_item->pos.z_pos);
+		floor = GetFloor(lara_item->pos.x_pos + 1024, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_num);
+		GetHeight(floor, lara_item->pos.x_pos + 1024, lara_item->pos.y_pos, lara_item->pos.z_pos);
 		TestTriggers(trigger_index, 1, 0);
 		break;
 	}
@@ -2042,15 +1841,15 @@ void joby8_control()
 			s.y = 0;
 			s.z = 0;
 			GetActorJointAbsPosition(1, GetRandomControl() % 20, &s);
+
 			sptr = &spark[GetFreeSpark()];
 			sptr->On = 1;
+			sptr->sR = (GetRandomControl() & 0x3F) + 192;
+			sptr->sG = sptr->sR;
+			sptr->sB = sptr->sR;
 			sptr->dR = (uchar)r;
 			sptr->dG = (uchar)g;
 			sptr->dB = (uchar)b;
-			scale = (GetRandomControl() & 0x3F) - 64;
-			sptr->sR = (uchar)scale;
-			sptr->sB = (uchar)scale;
-			sptr->sG = (uchar)scale;
 			sptr->ColFadeSpeed = 8;
 			sptr->TransType = 2;
 			sptr->FadeToBlack = 4;
@@ -2069,13 +1868,15 @@ void joby8_control()
 			TriggerFireFlame(s.x, s.y, s.z, -1, 254);
 		}
 
-		d.x = s.x + (phd_sin(2 * (GetRandomControl() & 0x7FFF)) >> 3);
+		r = (GetRandomControl() & 0x7FFF) << 1;
+		d.x = s.x + (phd_sin(r) >> 5);
 		d.y = s.y;
-		d.z = s.z + (phd_cos(2 * (GetRandomControl() & 0x7FFF)) >> 3);
+		d.z = s.z + (phd_cos(r) >> 5);
 		TriggerLightning(&s, &d, (GetRandomControl() & 0xF) + 30, RGBA(r, g, b, 16), 15, 40, 5);
 		TriggerDynamic(s.x, s.y, s.z, 10, (GetRandomControl() & 0x7F) + 128, g, b);
 	}
-	else if (GLOBAL_cutseq_frame >= 2681 && GLOBAL_cutseq_frame <= 2724)
+	
+	if (GLOBAL_cutseq_frame >= 2681 && GLOBAL_cutseq_frame <= 2724)
 	{
 		s.x = 512;
 		s.y = 0;
@@ -2183,7 +1984,7 @@ void special2_init()
 	resetwindowsmash(GLADIATOR_MIP);
 	ResetCutanimate(ANIMATING16);
 	ResetCutanimate(ANIMATING5);
-	UNK_00E916F0 = 2;
+	nSpecialCut = 2;
 }
 
 void special2_control()
@@ -2201,7 +2002,7 @@ void special3_init()
 	cutrot = 0;
 	lara_item->mesh_bits = -1;
 	Chris_Menu = 0;
-	UNK_00E916F0 = 3;
+	nSpecialCut = 3;
 }
 
 void special3_control()
@@ -2219,7 +2020,7 @@ void special4_init()
 	lara_item->mesh_bits = -1;
 	Chris_Menu = 0;
 	cutrot = 1;
-	UNK_00E916F0 = 4;
+	nSpecialCut = 4;
 }
 
 void special4_control()
@@ -2244,10 +2045,10 @@ void handle_cutseq_triggering(long name)
 		if (lara.gun_type == WEAPON_FLARE || lara.gun_status != LG_NO_ARMS && lara.gun_status != LG_HANDS_BUSY)
 			lara.gun_status = LG_UNDRAW_GUNS;
 
-		cutseq_trig = 1;
 		memset(cutseq_meshswapbits, 0, sizeof(cutseq_meshswapbits));
-		cutseq_busy_timeout = 50;
 		memset(cutseq_meshbits, -1, sizeof(cutseq_meshbits));
+		cutseq_busy_timeout = 50;
+		cutseq_trig = 1;
 
 		if (gfCurrentLevel != LVL5_TITLE)
 			SetFadeClip(28, 1);
@@ -2273,81 +2074,83 @@ void handle_cutseq_triggering(long name)
 		if (cutseq_busy_timeout <= 0)
 		{
 			cutseq_busy_timeout = 0;
-			return;
+			goin = 1;
 		}
 
-		if (lara.gun_status != LG_HANDS_BUSY && (lara.gun_status != LG_NO_ARMS || lara.flare_control_left) &&
-			n != AS_ALL4S && n != AS_CRAWL && n != AS_ALL4TURNL && n != AS_ALL4TURNR && n != AS_CRAWLBACK)
-			return;
+		if (lara.gun_status == LG_HANDS_BUSY || (lara.gun_status == LG_NO_ARMS && !lara.flare_control_left) ||
+			n == AS_ALL4S || n == AS_CRAWL || n == AS_ALL4TURNL || n == AS_ALL4TURNR || n == AS_CRAWLBACK)
+			goin = 1;
 
-		lara.flare_control_left = 0;
-		lara.flare_age = 0;
-
-		if (!(gfLevelFlags & GF_YOUNGLARA))
+		if (goin)
 		{
-			lara.gun_type = WEAPON_NONE;
-			lara.request_gun_type = WEAPON_NONE;
-			lara.gun_status = LG_NO_ARMS;
+			lara.flare_control_left = 0;
+			lara.flare_age = 0;
+
+			if (!(gfLevelFlags & GF_YOUNGLARA))
+			{
+				lara.gun_type = WEAPON_NONE;
+				lara.request_gun_type = WEAPON_NONE;
+				lara.gun_status = LG_NO_ARMS;
 #ifndef GENERAL_FIXES // Fixes drawing pistols regardless of last weapon after cutscenes
-			lara.last_gun_type = WEAPON_PISTOLS;
+				lara.last_gun_type = WEAPON_PISTOLS;
 
-			if (!objects[PISTOLS_ITEM].loaded || lara.pistols_type_carried == W_NONE)
-				lara.last_gun_type = WEAPON_NONE;
+				if (!objects[PISTOLS_ITEM].loaded || lara.pistols_type_carried == W_NONE)
+					lara.last_gun_type = WEAPON_NONE;
 
-			if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & W_PRESENT)
-				lara.last_gun_type = WEAPON_HK;
+				if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & W_PRESENT)
+					lara.last_gun_type = WEAPON_HK;
 #endif
 
 #ifdef GENERAL_FIXES
-			old_lara_LHolster = LHolster;
-			LHolster = lara.pistols_type_carried == W_NONE ? LARA_HOLSTERS : LARA_HOLSTERS_PISTOLS;
-			old_lara_holster = lara.holster;
-			lara.holster = LHolster;
+				old_lara_LHolster = LHolster;
+				LHolster = lara.pistols_type_carried == W_NONE ? LARA_HOLSTERS : LARA_HOLSTERS_PISTOLS;
+				old_lara_holster = lara.holster;
+				lara.holster = LHolster;
 #endif
-			lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + (2 * LM_LHAND)];
-			lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA].mesh_index + (2 * LM_RHAND)];
-			lara.left_arm.frame_number = 0;
-			lara.right_arm.frame_number = 0;
-			lara.target = 0;
-			lara.right_arm.lock = 0;
-			lara.left_arm.lock = 0;
-			lara_item->goal_anim_state = AS_STOP;
-			lara_item->current_anim_state = AS_STOP;
-			lara_item->frame_number = anims[ANIM_STOP].frame_base;
-			lara_item->anim_number = ANIM_STOP;
-			lara_item->speed = 0;
-			lara_item->fallspeed = 0;
-			lara_item->gravity_status = 0;
-			lara.back_gun = 0;
+				lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + (2 * LM_LHAND)];
+				lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA].mesh_index + (2 * LM_RHAND)];
+				lara.left_arm.frame_number = 0;
+				lara.right_arm.frame_number = 0;
+				lara.target = 0;
+				lara.right_arm.lock = 0;
+				lara.left_arm.lock = 0;
+				lara_item->goal_anim_state = AS_STOP;
+				lara_item->current_anim_state = AS_STOP;
+				lara_item->frame_number = anims[ANIM_STOP].frame_base;
+				lara_item->anim_number = ANIM_STOP;
+				lara_item->speed = 0;
+				lara_item->fallspeed = 0;
+				lara_item->gravity_status = 0;
+				lara.back_gun = 0;
 
-			if (lara.weapon_item != NO_ITEM)
-			{
-				KillItem(lara.weapon_item);
-				lara.weapon_item = NO_ITEM;
+				if (lara.weapon_item != NO_ITEM)
+				{
+					KillItem(lara.weapon_item);
+					lara.weapon_item = NO_ITEM;
+				}
 			}
+
+			lara.water_status = LW_ABOVE_WATER;
+
+			if (gfCurrentLevel != LVL5_TITLE)
+				S_CDStop();
+
+			numnailed = 0;
+			GLOBAL_oldcamtype = camera.type;
+			ScreenFading = 0;
+			SetScreenFadeIn(16);
+			Load_and_Init_Cutseq(cutseq_num);
+			cutseq_trig = 2;
+			cut_seethrough = 128;
+
+			if (cutseq_control_routines[cutseq_num].init_func)
+				cutseq_control_routines[cutseq_num].init_func();
+
+			AlterFOV(11488);
+
+			if (GLOBAL_cutme->audio_track != -1 && !bDoCredits)
+				S_StartSyncedAudio(GLOBAL_cutme->audio_track);
 		}
-
-		lara.water_status = LW_ABOVE_WATER;
-
-		if (gfCurrentLevel != LVL5_TITLE)
-			S_CDStop();
-
-		goin = cutseq_num;
-		numnailed = 0;
-		GLOBAL_oldcamtype = camera.type;
-		ScreenFading = 0;
-		SetScreenFadeIn(16);
-		Load_and_Init_Cutseq(goin);
-		cutseq_trig = 2;
-		cut_seethrough = 128;
-
-		if (cutseq_control_routines[goin].init_func)
-			cutseq_control_routines[goin].init_func();
-
-		AlterFOV(11488);
-
-		if (GLOBAL_cutme->audio_track != -1 && !bDoCredits)
-			S_StartSyncedAudio(GLOBAL_cutme->audio_track);
 	}
 	else if (cutseq_trig == 3)
 	{
@@ -2386,10 +2189,16 @@ void handle_cutseq_triggering(long name)
 
 		if (!bDoCredits)
 		{
-			if (dels_cutseq_player)
+			if (dels_cutseq_player || fuck == 26 || fuck == 22 || fuck == 5 || fuck == 16 || fuck == 33 || fuck == 44 || fuck == 12)
 			{
-				reset_flag = 1;
-				dels_cutseq_player = 0;
+				if (dels_cutseq_player)
+				{
+					reset_flag = 1;
+					dels_cutseq_player = 0;
+				}
+				else
+					gfLevelComplete = gfCurrentLevel + 1;
+
 				gfRequiredStartPos = 0;
 				cutseq_num = 0;
 				GLOBAL_playing_cutseq = 0;
@@ -2401,41 +2210,22 @@ void handle_cutseq_triggering(long name)
 				ScreenFadeBack = 0;
 				ScreenFadedOut = 0;
 				ScreenFading = 0;
+				return;
 			}
-			else
-			{
-				if (fuck == 26 || fuck == 22 || fuck == 5 || fuck == 16 || fuck == 33 || fuck == 44 || fuck == 12)
-				{
-					gfLevelComplete = gfCurrentLevel + 1;
-					gfRequiredStartPos = 0;
-					cutseq_num = 0;
-					GLOBAL_playing_cutseq = 0;
-					cutseq_trig = 0;
-					AlterFOV(14560);
-					ScreenFade = 0;
-					dScreenFade = 0;
-					ScreenFadeSpeed = 8;
-					ScreenFadeBack = 0;
-					ScreenFadedOut = 0;
-					ScreenFading = 0;
-				}
-				else
-				{
-					finish_cutseq(name);
-					cutseq_num = 0;
-					camera.type = GLOBAL_oldcamtype;
 
-					if (gfCurrentLevel != LVL5_TITLE)
-						SetFadeClip(0, 1);
+			finish_cutseq(name);
+			cutseq_num = 0;
+			camera.type = GLOBAL_oldcamtype;
 
-					AlterFOV(14560);
+			if (gfCurrentLevel != LVL5_TITLE)
+				SetFadeClip(0, 1);
 
-					if (gfCurrentLevel != LVL5_TITLE)
-						S_CDPlay(CurrentAtmosphere, 1);
+			AlterFOV(14560);
 
-					IsAtmospherePlaying = 1;
-				}
-			}
+			if (gfCurrentLevel != LVL5_TITLE)
+				S_CDPlay(CurrentAtmosphere, 1);
+
+			IsAtmospherePlaying = 1;
 		}
 		else
 		{
@@ -2456,7 +2246,6 @@ void handle_cutseq_triggering(long name)
 
 			Load_and_Init_Cutseq(fuck);
 			cutseq_trig = 2;
-			cutseq_num = fuck;
 		}
 	}
 }
@@ -2623,50 +2412,48 @@ ITEM_INFO* find_a_fucking_item(long object_number)
 void TriggerDelSmoke(long x, long y, long z, long sizeme)
 {
 	SPARKS* sptr;
-	long size, dx, dz;
+	long dx, dz;
 
 	dx = lara_item->pos.x_pos - x;
 	dz = lara_item->pos.z_pos - z;
 
-	if (dx >= -16384 && dx <= 16384 && dz >= -16384 && dz <= 16384)
-	{
-		sptr = &spark[GetFreeSpark()];
-		sptr->On = 1;
-		sptr->sR = 128;
-		sptr->sG = 128;
-		sptr->sB = 128;
-		sptr->dR = 64;
-		sptr->dG = 64;
-		sptr->dB = 64;
-		sptr->ColFadeSpeed = 2;
-		sptr->FadeToBlack = 8;
-		sptr->TransType = 2;
-		sptr->Life = (GetRandomControl() & 3) + 11;
-		sptr->sLife = (GetRandomControl() & 3) + 11;
-		sptr->x = (GetRandomControl() & 0x1FF) + x - 256;
-		sptr->y = (GetRandomControl() & 0x1FF) + y - 256;
-		sptr->z = (GetRandomControl() & 0x1FF) + z - 256;
-		sptr->Xvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
-		sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
-		sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
-		sptr->Friction = 2;
-		sptr->Flags = 538;
-		sptr->RotAng = GetRandomControl() & 0xFFF;
-		sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
-		sptr->Scalar = 2;
-		sptr->Gravity = -3 - (GetRandomControl() & 3);
-		sptr->MaxYvel = -4 - (GetRandomControl() & 3);
-		size = sizeme + (GetRandomControl() & 0x1F);
-		sptr->dSize = (uchar)size;
-		sptr->sSize = (uchar)(size >> 2);
-		sptr->Size = (uchar)(size >> 2);
-	}
+	if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000)
+		return;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 128;
+	sptr->sG = 128;
+	sptr->sB = 128;
+	sptr->dR = 64;
+	sptr->dG = 64;
+	sptr->dB = 64;
+	sptr->ColFadeSpeed = 2;
+	sptr->FadeToBlack = 8;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 3) + 11;
+	sptr->sLife = sptr->Life;
+	sptr->x = (GetRandomControl() & 0x1FF) + x - 256;
+	sptr->y = (GetRandomControl() & 0x1FF) + y - 256;
+	sptr->z = (GetRandomControl() & 0x1FF) + z - 256;
+	sptr->Xvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
+	sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
+	sptr->Friction = 2;
+	sptr->Flags = 538;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
+	sptr->Scalar = 2;
+	sptr->Gravity = -3 - (GetRandomControl() & 3);
+	sptr->MaxYvel = -4 - (GetRandomControl() & 3);
+	sptr->dSize = uchar(sizeme + (GetRandomControl() & 0x1F));
+	sptr->Size = sptr->dSize >> 2;
+	sptr->sSize = sptr->Size;
 }
 
 void TriggerDelBrownSmoke(long x, long y, long z)
 {
 	SPARKS* sptr;
-	long size;
 
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
@@ -2680,7 +2467,7 @@ void TriggerDelBrownSmoke(long x, long y, long z)
 	sptr->FadeToBlack = 5;
 	sptr->TransType = 2;
 	sptr->Life = (GetRandomControl() & 7) + 20;
-	sptr->sLife = (GetRandomControl() & 7) + 20;
+	sptr->sLife = sptr->Life;
 	sptr->x = (GetRandomControl() & 0x7F) + x - 63;
 	sptr->y = (GetRandomControl() & 0x7F) + y - 63;
 	sptr->z = (GetRandomControl() & 0x7F) + z - 63;
@@ -2694,20 +2481,15 @@ void TriggerDelBrownSmoke(long x, long y, long z)
 	sptr->Scalar = 2;
 	sptr->Gravity = -3 - (GetRandomControl() & 3);
 	sptr->MaxYvel = -4 - (GetRandomControl() & 3);
-	size = (GetRandomControl() & 0x1F) + 40;
-	sptr->dSize = (uchar)size;
-	sptr->sSize = (uchar)(size >> 2);
-	sptr->Size = (uchar)(size >> 2);
+	sptr->dSize = (GetRandomControl() & 0x1F) + 40;
+	sptr->Size = sptr->dSize >> 2;
+	sptr->sSize = sptr->Size;
 }
 
 void DelTorchFlames(PHD_VECTOR* pos)
 {
 	SPARKS* sptr;
-	long x, y, z, size;
-	
-	x = pos->x;
-	y = pos->y;
-	z = pos->z;
+
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
 	sptr->sR = -1;
@@ -2720,10 +2502,10 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->ColFadeSpeed = (GetRandomControl() & 3) + 16;
 	sptr->TransType = 2;
 	sptr->Life = (GetRandomControl() & 7) + 32;
-	sptr->sLife = (GetRandomControl() & 7) + 32;
-	sptr->x = x;
-	sptr->y = y;
-	sptr->z = z;
+	sptr->sLife = sptr->Life;
+	sptr->x = pos->x;
+	sptr->y = pos->y;
+	sptr->z = pos->z;
 	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Yvel = -16 - (GetRandomControl() & 0xF);
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
@@ -2734,10 +2516,10 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0x1F) - 16;
 	sptr->Scalar = 2;
-	size = (GetRandomControl() & 0xF) + 16;
-	sptr->sSize = (uchar)size;
-	sptr->Size = (uchar)size;
-	sptr->dSize = (uchar)(size >> 4);
+	sptr->Size = (GetRandomControl() & 0xF) + 16;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = sptr->Size >> 4;
+
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
 	sptr->sR = (GetRandomControl() & 0x3F) - 64;
@@ -2750,10 +2532,10 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->FadeToBlack = 8;
 	sptr->TransType = 2;
 	sptr->Life = (GetRandomControl() & 0xF) + 24; 
-	sptr->sLife = (GetRandomControl() & 0xF) + 24;
-	sptr->x = (GetRandomControl() & 0x3F) + x - 32;
-	sptr->y = (GetRandomControl() & 0x3F) + y - 32;
-	sptr->z = (GetRandomControl() & 0x3F) + z - 32;
+	sptr->sLife = sptr->Life;
+	sptr->x = (GetRandomControl() & 0x3F) + pos->x - 32;
+	sptr->y = (GetRandomControl() & 0x3F) + pos->y - 32;
+	sptr->z = (GetRandomControl() & 0x3F) + pos->z - 32;
 	sptr->Friction = 51;
 	sptr->MaxYvel = 0;
 	sptr->Flags = -32230;
@@ -2762,10 +2544,9 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Yvel = -22;
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
-	size = (GetRandomControl() & 0xF) + 16;
-	sptr->dSize = (uchar)size;
-	sptr->sSize = (uchar)(size >> 1);
-	sptr->Size = (uchar)(size >> 1);
+	sptr->dSize = (GetRandomControl() & 0xF) + 16;
+	sptr->Size = sptr->dSize >> 1;
+	sptr->sSize = sptr->Size;
 	sptr->dSize += sptr->dSize >> 2;
 }
 
@@ -2783,51 +2564,51 @@ void trigger_title_spotcam(long num)
 		item->pos.y_pos = 0;
 		item->pos.z_pos = 42496;
 		item->room_number = 0;
+
 		item = ResetCutanimate(ANIMATING11);
 		item->pos.x_pos = 59904;
 		item->pos.y_pos = 0;
 		item->pos.z_pos = 42496;
 		item->room_number = 0;
+
 		S_CDPlay(83, 0);
-		InitialiseSpotCam(1);
-		return;
+		break;
+
+	case 2:
+		S_CDPlay(86, 0);
+		break;
+
+	case 3:
+		S_CDPlay(87, 0);
+		break;
 
 	case 4:
 		jobyfrigger = 1;
 		ResetCutanimate(ANIMATING4);
+
 		item = ResetCutanimate(ANIMATING7);
 		item->pos.x_pos = 32256;
 		item->pos.y_pos = 0;
 		item->pos.z_pos = 90624;
 		item->room_number = 104;
+
 		ResetCutanimate(ANIMATING8);
+
 		item = ResetCutanimate(ANIMATING9);
 		item->pos.x_pos = 31232;
 		item->pos.y_pos = 0;
 		item->pos.z_pos = 91648;
 		item->room_number = 61;
+
 		ResetCutanimate(ANIMATING12);
 		ResetCutanimate(ANIMATING13);
 		ResetCutanimate(ANIMATING14);
 		ResetCutanimate(ANIMATING15);
 		S_CDPlay(91, 0);
-		InitialiseSpotCam(4);
-		return;
+		break;
+	}
 
-	case 2:
-		S_CDPlay(86, 0);
-		InitialiseSpotCam(2);
-		return;
-
-	case 3:
-		S_CDPlay(87, 0);
-		InitialiseSpotCam(3);
-		return;
-
-	default:
-		InitialiseSpotCam((short)num);
-		return;
-	}	
+	InitialiseSpotCam((short)num);
 }
 
 void CutLaraBubbles()
@@ -2840,6 +2621,7 @@ void CutLaraBubbles()
 	offset.y = -4;
 	offset.z = 64;
 	GetLaraJointPos(&offset, 8);
+
 	roomnum = camera.pos.room_number;
 	IsRoomOutsideNo = -1;
 	IsRoomOutside(offset.x, offset.y, offset.z);
@@ -2847,7 +2629,7 @@ void CutLaraBubbles()
 	if (IsRoomOutsideNo != -1)
 		roomnum = IsRoomOutsideNo;
 
-	for (int i = 2; i > 0; --i)
+	for (int i = 2; i > 0; i--)
 	{
 		pos.x = (GetRandomControl() & 0x3F) + offset.x - 32;
 		pos.y = (GetRandomControl() & 0x3F) + offset.y - 32;
@@ -2860,16 +2642,15 @@ void deal_with_pistols(ushort* shootdata)
 {
 	PHD_VECTOR pos;
 	long f;
+	ushort dat;
 
 	f = GLOBAL_cutseq_frame;
 
 	while (1)
 	{
-		short dat;
-
 		dat = *shootdata++;
 
-		if (dat == -1)
+		if (dat == 0xFFFF)
 			break;
 
 		if (f == (dat & 0x3FFF))
@@ -2912,6 +2693,7 @@ void deal_with_pistols(ushort* shootdata)
 		lara.left_arm.flash_gun--;
 		trigger_weapon_dynamics(14);
 	}
+
 	if (lara.right_arm.flash_gun)
 	{
 		lara.right_arm.flash_gun--;
@@ -2921,17 +2703,15 @@ void deal_with_pistols(ushort* shootdata)
 
 void handle_lara_chatting(short* _ranges)//short* ranges//until the anim ranges array is moved into the dll.
 {
-	short* poo;
-	long r1, r2, f, rndme;
+	long r1, r2, f;
 
 	f = GLOBAL_cutseq_frame;
 	lara_chat_cnt = (lara_chat_cnt - 1) & 1;
-	poo = _ranges;
 
 	while (1)
 	{
-		r1 = poo[0];
-		r2 = poo[1];
+		r1 = _ranges[0];
+		r2 = _ranges[1];
 
 		if (r1 == -1)
 		{
@@ -2942,14 +2722,11 @@ void handle_lara_chatting(short* _ranges)//short* ranges//until the anim ranges 
 		if (f >= r1 && f <= r2)
 			break;
 
-		poo += 2;
+		_ranges += 2;
 	}
 
 	if (!lara_chat_cnt)
-	{
-		rndme = objects[(GetRandomControl() & 3) + LARA_SPEECH_HEAD1].mesh_index;	
-		lara.mesh_ptrs[14] = meshes[rndme + (14 * 2)];
-	}
+		lara.mesh_ptrs[LM_HEAD] = meshes[objects[(GetRandomControl() & 3) + LARA_SPEECH_HEAD1].mesh_index + LM_HEAD * 2];
 }
 
 void handle_actor_chatting(long speechslot, long node, long slot, long objslot, short* _ranges)//short* ranges//until the anim ranges array is moved into the dll.
@@ -2990,14 +2767,13 @@ void handle_actor_chatting(long speechslot, long node, long slot, long objslot, 
 void trigger_item_in_room(short room_number, long object)
 {
 	ITEM_INFO* item;
-	short num, nex;
+	short num;
 
 	num = room[room_number].item_number;
 
 	while (num != NO_ITEM)
 	{
 		item = &items[num];
-		nex = item->next_item;
 
 		if (item->object_number == object)
 		{
@@ -3006,21 +2782,20 @@ void trigger_item_in_room(short room_number, long object)
 			item->flags |= IFL_CODEBITS;
 		}
 
-		num = nex;
+		num = item->next_item;
 	}
 }
 
 void untrigger_item_in_room(short room_number, long object)
 {
 	ITEM_INFO* item;
-	short num, nex;
+	short num;
 
 	num = room[room_number].item_number;
 
 	while (num != NO_ITEM)
 	{
 		item = &items[num];
-		nex = item->next_item;
 
 		if (item->object_number == object)
 		{
@@ -3029,7 +2804,7 @@ void untrigger_item_in_room(short room_number, long object)
 			item->flags |= ~IFL_CODEBITS;
 		}
 
-		num = nex;
+		num = item->next_item;
 	}
 }
 
@@ -3042,24 +2817,19 @@ void deal_with_actor_shooting(ushort* shootdata, long actornum, long nodenum, PH
 	dat = *shootdata++;
 	f = GLOBAL_cutseq_frame;
 
-	if (dat != -1)
+	while (dat != 0xFFFF)
 	{
-		do
+		if (f == dat || f == dat + 1)
 		{
-			if (f == dat || f == dat + 1)
-			{
-				GrabActorMatrix(actornum, nodenum, arse);
-				trig_actor_gunflash(arse, pos);
-				GetActorJointAbsPosition(actornum, nodenum, pos);
-				TriggerDynamic(pos->x, pos->y, pos->z, 16, (GetRandomControl() & 0x3F) + 0xC0, (GetRandomControl() & 0x1F) + 0x80, (GetRandomControl() & 0x3F));
-				break;
-			}
+			GrabActorMatrix(actornum, nodenum, arse);
+			trig_actor_gunflash(arse, pos);
+			GetActorJointAbsPosition(actornum, nodenum, pos);
+			TriggerDynamic(pos->x, pos->y, pos->z, 16, (GetRandomControl() & 0x3F) + 0xC0, (GetRandomControl() & 0x1F) + 0x80, (GetRandomControl() & 0x3F));
+			return;
+		}
 
-			dat = *shootdata++;
-
-		} while (dat != 0xFFFF);
+		dat = *shootdata++;
 	}
-
 }
 
 void DelsHandyTeleportLara(long x, long y, long z, long yrot)
@@ -3079,10 +2849,10 @@ void DelsHandyTeleportLara(long x, long y, long z, long yrot)
 	if (IsRoomOutsideNo != lara_item->room_number)
 		ItemNewRoom(lara.item_number, IsRoomOutsideNo);
 
-	lara_item->goal_anim_state = AS_STOP;
-	lara_item->current_anim_state = AS_STOP;
-	lara_item->frame_number = anims[ANIM_STOP].frame_base;
 	lara_item->anim_number = ANIM_STOP;
+	lara_item->frame_number = anims[ANIM_STOP].frame_base;
+	lara_item->current_anim_state = AS_STOP;
+	lara_item->goal_anim_state = AS_STOP;
 	lara_item->speed = 0;
 	lara_item->fallspeed = 0;
 	lara_item->gravity_status = 0;
@@ -3096,29 +2866,27 @@ void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, long nu
 
 	offset = ((numnodes << 3) - numnodes) << 1;
 
-	if (numnodes > 0)
+
+	for (int i = 0; i < numnodes; i++)
 	{
-		for (int i = 0; i < numnodes; i++)
-		{
-			pnode->xkey = (ushort)lnode->xkey;
-			pnode->ykey = (ushort)lnode->ykey;
-			pnode->zkey = (ushort)lnode->zkey;
-			pnode->decode_x.packmethod = (lnode->packmethod >> 10) & 0xF;
-			pnode->decode_y.packmethod = (lnode->packmethod >> 5) & 0xF;
-			pnode->decode_z.packmethod = (lnode->packmethod) & 0xF;
-			pnode->xlength = lnode->xlength;
-			pnode->ylength = lnode->ylength;
-			pnode->zlength = lnode->zlength;
-			xoff = ((lnode->xlength * pnode->decode_x.packmethod) >> 3) + 4;
-			yoff = ((lnode->ylength * pnode->decode_y.packmethod) >> 3) + 4;
-			zoff = ((lnode->zlength * pnode->decode_z.packmethod) >> 3) + 4;
-			lnode++;
-			pnode->xpacked = &packed[offset];
-			pnode->ypacked = &packed[offset + xoff];
-			pnode->zpacked = &packed[offset + xoff + yoff];
-			pnode++;
-			offset += xoff + yoff + zoff;
-		}
+		pnode->xkey = (ushort)lnode->xkey;
+		pnode->ykey = (ushort)lnode->ykey;
+		pnode->zkey = (ushort)lnode->zkey;
+		pnode->decode_x.packmethod = (lnode->packmethod >> 10) & 0xF;
+		pnode->decode_y.packmethod = (lnode->packmethod >> 5) & 0xF;
+		pnode->decode_z.packmethod = (lnode->packmethod) & 0xF;
+		pnode->xlength = lnode->xlength;
+		pnode->ylength = lnode->ylength;
+		pnode->zlength = lnode->zlength;
+		xoff = ((lnode->xlength * pnode->decode_x.packmethod) >> 3) + 4;
+		yoff = ((lnode->ylength * pnode->decode_y.packmethod) >> 3) + 4;
+		zoff = ((lnode->zlength * pnode->decode_z.packmethod) >> 3) + 4;
+		lnode++;
+		pnode->xpacked = &packed[offset];
+		pnode->ypacked = &packed[offset + xoff];
+		pnode->zpacked = &packed[offset + xoff + yoff];
+		pnode++;
+		offset += xoff + yoff + zoff;
 	}
 }
 
@@ -3183,7 +2951,9 @@ short DecodeTrack(char* packed, RTDECODE* decode)
 
 	if (decode->decodetype == 2)
 	{
-		if (!--decode->counter)
+		decode->counter--;
+
+		if (!decode->counter)
 			decode->decodetype = 0;
 
 		return decode->data;
@@ -3193,8 +2963,9 @@ short DecodeTrack(char* packed, RTDECODE* decode)
 		word = GetTrackWord(decode->off, packed, decode->packmethod);
 		decode->off++;
 		decode->length--;
+		decode->counter--;
 
-		if (!--decode->counter)
+		if (!decode->counter)
 			decode->decodetype = 0;
 
 		return word;
@@ -3205,7 +2976,7 @@ void DecodeAnim(PACKNODE* node, long num_nodes, long frame, long flags)
 {
 	if (!frame)
 	{
-		for (int i = num_nodes; i; i--, node++)
+		for (int i = num_nodes; i; i--)
 		{
 			node->decode_x.off = 0;
 			node->decode_x.counter = 0;
@@ -3225,6 +2996,7 @@ void DecodeAnim(PACKNODE* node, long num_nodes, long frame, long flags)
 			node->decode_x.length = node->xlength;
 			node->decode_y.length = node->ylength;
 			node->decode_z.length = node->zlength;
+			node++;
 		}
 
 		return;
@@ -3235,7 +3007,7 @@ void DecodeAnim(PACKNODE* node, long num_nodes, long frame, long flags)
 	node->zrot_run += DecodeTrack(node->zpacked, &node->decode_z);
 	node++;
 
-	for (int i = 1; i < num_nodes; i++, node++)
+	for (int i = 1; i < num_nodes; i++)
 	{
 		node->xrot_run += DecodeTrack(node->xpacked, &node->decode_x);
 		node->yrot_run += DecodeTrack(node->ypacked, &node->decode_y);
@@ -3243,6 +3015,7 @@ void DecodeAnim(PACKNODE* node, long num_nodes, long frame, long flags)
 		node->xrot_run &= flags;
 		node->yrot_run &= flags;
 		node->zrot_run &= flags;
+		node++;
 	}
 }
 
@@ -3253,7 +3026,7 @@ void do_new_cutscene_camera()
 	if (cutseq_control_routines[cutseq_num].control_func)
 		cutseq_control_routines[cutseq_num].control_func();
 
-	DecodeAnim(camera_pnodes, 2, GLOBAL_cutseq_frame, 65535);
+	DecodeAnim(camera_pnodes, 2, GLOBAL_cutseq_frame, 0xFFFF);
 	nodes = camera_pnodes;
 	camera.target.y = nodes[0].yrot_run << 1;
 	camera.pos.y = nodes[1].yrot_run << 1;
@@ -3353,7 +3126,7 @@ void updateAnimFrame(PACKNODE* node, long flags, short* frame)
 
 	nex = frame + 9;
 
-	for (int i = 1; i < flags; i++, nex += 2)
+	for (int i = 1; i < flags; i++)
 	{
 		y = node[i].yrot_run;
 
@@ -3362,6 +3135,7 @@ void updateAnimFrame(PACKNODE* node, long flags, short* frame)
 
 		nex[0] = (((node[i].xrot_run << 10 | y) << 10) | node[i].zrot_run) >> 16;
 		nex[1] = ((node[i].xrot_run << 10 | y) << 10) | node[i].zrot_run;
+		nex += 2;
 	}
 }
 
@@ -3374,12 +3148,6 @@ void DrawCutSeqActors()
 	long n;
 
 	phd_PushMatrix();
-
-	if (GLOBAL_cutme->numactors <= 1)
-	{
-		phd_PopMatrix();
-		return;
-	}
 
 	for (int i = 1; i < GLOBAL_cutme->numactors; i++)
 	{
@@ -3521,14 +3289,14 @@ void frigup_lara()
 	Rich_CalcLaraMatrices_Normal(frame, bone, 0);
 	phd_PushUnitMatrix();
 	Rich_CalcLaraMatrices_Normal(frame, bone, 1);
-
 	phd_PopMatrix();
+
 	HairControl(0, 0, frame);
 
 	if ((gfLevelFlags & GF_YOUNGLARA))
 		HairControl(0, 1, frame);
 
-	GLaraShadowframe = &frig_shadow_bbox[0];
+	GLaraShadowframe = frig_shadow_bbox;
 }
 
 void CalculateObjectLightingLaraCutSeq()
@@ -3734,11 +3502,11 @@ void init_cutseq_actors(char* data, long resident)
 	GLOBAL_playing_cutseq = 0;
 
 #ifdef GENERAL_FIXES
-	if (cutseq_num == 26) //restores the ending for the Security Breach cut
-		GLOBAL_cutme->numframes = 1978;//original is 1700 or something
+	if (cutseq_num == 26)				//restores the ending for the Security Breach cut
+		GLOBAL_cutme->numframes = 1978;	//original is 1700 (ish)
 
-	if (cutseq_num == 4)//fixes the wrong audio for this cutscene (see 13th floor twogun chloroform cut)
-		GLOBAL_cutme->audio_track = 19;//original (wrong one) is 40
+	if (cutseq_num == 4)				//fixes the wrong audio for this cutscene (see 13th floor twogun chloroform cut)
+		GLOBAL_cutme->audio_track = 19;	//original is 40
 #endif
 
 	GLOBAL_numcutseq_frames = GLOBAL_cutme->numframes;
@@ -3758,9 +3526,9 @@ void init_cutseq_actors(char* data, long resident)
 		else
 			actor_pnodes[i] = (PACKNODE*)game_malloc(sizeof(PACKNODE) * (pda_nodes + 1), 0);
 
-		if (i == 0)
+		if (!i)
 		{
-			if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
+			if (GLOBAL_cutme->actor_data[i].objslot != NO_ITEM)
 				InitPackNodes(nlheader, actor_pnodes[i], packed, pda_nodes + 1);
 		}
 		else

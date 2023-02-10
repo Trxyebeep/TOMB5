@@ -168,8 +168,12 @@ uchar SplashLinks[347]
 	104, 97, 114, 100, 32, 70, 108, 111, 119, 101, 114, 32, 49, 49, 47, 49, 49, 47, 49, 57, 57, 57, 0, 0, 0, 0
 };
 
-static PHD_VECTOR NodeVectors[16];
 MAP_STRUCT Map[255];
+
+static RAINDROPS Rain[2048];
+static SNOWFLAKE Snow[2048];
+static UWEFFECTS uwdust[256];
+static PHD_VECTOR NodeVectors[16];
 
 #ifdef GENERAL_FIXES
 static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)

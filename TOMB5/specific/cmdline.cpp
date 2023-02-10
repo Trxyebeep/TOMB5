@@ -3,6 +3,7 @@
 #include "function_stubs.h"
 #include "../game/gameflow.h"
 #include "registry.h"
+#include "winmain.h"
 
 #define nDDDevice	VAR_(0x0057A094, long)
 #define nD3DDevice	VAR_(0x0057A084, long)

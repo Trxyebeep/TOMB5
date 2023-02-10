@@ -17,3 +17,5 @@ void WinClose();
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nShowCmd);
 long MungeFPCW(short* fpcw);
 void RestoreFPCW(short fpcw);
+
+extern WINAPP App;

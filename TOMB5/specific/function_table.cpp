@@ -3,6 +3,7 @@
 #include "polyinsert.h"
 #include "function_stubs.h"
 #include "dxshell.h"
+#include "winmain.h"
 
 static long CurrentFog;
 

@@ -11,6 +11,7 @@
 #include "../game/text.h"
 #include "d3dmatrix.h"
 #include "dxsound.h"
+#include "gamemain.h"
 
 #define GET_DLL_PROC(dll, proc, n) \
 { \

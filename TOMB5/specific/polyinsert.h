@@ -36,3 +36,8 @@ void AddTriClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTUREST
 void AddLineClippedSorted(D3DTLVERTEX* v0, D3DTLVERTEX* v1, short drawtype);
 void AddQuadClippedZBuffer(D3DTLVERTEX* v, short v0, short v1, short v2, short v3, TEXTURESTRUCT* tex, long double_sided);
 void AddTriClippedZBuffer(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURESTRUCT* tex, long double_sided);
+
+extern SORTLIST* SortList[65536];
+extern long SortCount;
+extern D3DTLBUMPVERTEX XYUVClipperBuffer[20];
+extern D3DTLBUMPVERTEX zClipperBuffer[20];

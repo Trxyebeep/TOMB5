@@ -24,8 +24,6 @@
 #define trigger_index VAR_(0x00EEEF9C, short*)
 #define GLOBAL_cutseq_frame VAR_(0x00E7F024, long)
 #define old_lara_holster VAR_(0x00E7EFE0, ushort)
-#define actor_chat_cnt VAR_(0x0051CAB6, char)
-#define lara_chat_cnt	VAR_(0x0051CAB5, char)
 #define gfCurrentLevel VAR_(0x00E5C2D0, uchar)
 #define gfLevelComplete VAR_(0x00E5C2F0, uchar)
 #define gfLevelFlags	VAR_(0x00E5C2A0, short)
@@ -372,7 +370,6 @@
 #define hair_wind_angle	VAR_(0x005084D0, long)
 #define lGlobalMeshPos	VAR_(0x0091F3B8, FVECTOR)
 #define GlobalAmbient	VAR_(0x0092167C, long)
-#define App	VAR_(0x00D9AB38, WINAPP)
 #define dbm_command	VAR_(0x00E4ACB4, ulong)
 #define dbm_clearlog	VAR_(0x00E4ACAC, ulong)
 #define aAmbientR	VAR_(0x0087AD0C, long)
@@ -539,10 +536,6 @@
 #define samples_buffer	VAR_(0x0086BEDC, char*)
 #define slots_used	VAR_(0x0051CEE8, long)
 #define number_boxes	VAR_(0x00EEFB68, long)
-#define DrawPrimitiveCnt    VAR_(0x00D9AD94, long)
-#define DrawSortedCnt	VAR_(0x00D9AD98, long)
-#define nDebugStrings	VAR_(0x00921678, long)
-#define SortCount	VAR_(0x00BA4384, long)
 #define skelly_backgunbak	VAR_(0x00E6D732, short)
 #define skelly_rhandbak	VAR_(0x00E6D840, short*)
 #define skelly_lhandbak	VAR_(0x00E6D828, short*)
@@ -579,7 +572,6 @@
 #define loadbar_pos	VAR_(0x008BBD90, float)
 #define loadbar_maxpos	VAR_(0x008BBD64, long)
 #define loadbar_on	VAR_(0x008FBDC0, long)
-#define MainThread	VAR_(0x00876C40, THREAD)
 #define LevelLoadingThread	VAR_(0x00874968, THREAD)
 #define load_cam	VAR_(0x00875198, PHD_VECTOR)
 #define load_target	VAR_(0x008751A4, PHD_VECTOR)
@@ -599,8 +591,6 @@
 #define G_hwnd	VAR_(0x0086B9A4, HWND)
 #define G_d3d	VAR_(0x0086BA30, LPDIRECT3D3)
 #define t_frequency	VAR_(0x00D9AAB0, __int64)
-#define pSortBuffer	VAR_(0x00BA4388, char*)
-#define pSortList	VAR_(0x00923FA8, SORTLIST**)
 #define audio_stream_fp	VAR_(0x0057A010, FILE*)
 #define DSBuffer	VAR_(0x00579FFC, LPDIRECTSOUNDBUFFER)
 #define reading_audio_file	VAR_(0x0057A01C, volatile bool)
@@ -629,8 +619,6 @@
 #define FileCompressed	VAR_(0x005165C8, long)
 #define aranges	VAR_(0x00D9ADA0, short*)
 #define AnimatingTexturesVOffset	VAR_(0x008751BC, short)
-#define nClippedPolys	VAR_(0x00D9AB10, long)
-#define nPolys	VAR_(0x00D9AB1C, long)
 #define targetMeshP	VAR_(0x00E6E460, MESH_DATA*)
 #define binocsMeshP	VAR_(0x00E6D744, MESH_DATA*)
 #define ScaleFlag	VAR_(0x00E4EA60, char)
@@ -767,15 +755,8 @@
 #define defaultJLayout	ARRAY_(0x00516B70, long, [32])
 #define cd_flags	ARRAY_(0x00EEEA40, char, [136])
 #define Textures	ARRAY_(0x00D99DA8, TEXTURE, [64])
-#define SortList	ARRAY_(0x00BA4390, SORTLIST*, [65536])
 #define Bucket	ARRAY_(0x0057A510, TEXTUREBUCKET, [30])
 #define BucketSpecular	ARRAY_(0x007EB068, long, [2080])
-#define uwdust	ARRAY_(0x00C717E8, UWEFFECTS, [256])
-#define Rain	ARRAY_(0x00C72BE8, RAINDROPS, [2048])
-#define Snow	ARRAY_(0x00C7CBE8, SNOWFLAKE, [2048])
-#define WaterTable	ARRAY_(0x00876C54, WATERTAB, [22][64])
-#define vert_wibble_table	ARRAY_(0x00878658, float, [32])
-#define unused_vert_wibble_table	ARRAY_(0x00878254, float, [128])
 #define RoomletLights	ARRAY_(0x007ED6B0, ROOMLET_LIGHT, [64])
 
 #define	LevelFogBulbs	ARRAY_(0x007ED0F8, FOGBULB_INFO, [64])		//list of all fogbulbs in the level (copied from room data)
@@ -786,26 +767,10 @@
 
 #define MonoScreen	ARRAY_(0x008BBD68, MONOSCREEN_STRUCT, [5])
 #define aBoundingBox	ARRAY_(0x00921618, float, [24])
-#define SortBuffer	ARRAY_(0x00923FAC, char, [])
-#define StreamHeaders	ARRAY_(0x00579E50, ACMSTREAMHEADER, [4])
-#define NotifyEventHandles	ARRAY_(0x00579FA0, HANDLE, [2])
 #define AnimatingTexturesV	ARRAY_(0x0087435C, float, [16][8][3])
 #define FontShades	ARRAY_(0x00E4E560, CVECTOR, [10][32])
 #define CharDef	ARRAY_(0x00507AB8, CHARDEF, [106])
 #define ground_zone	ARRAY_(0x00EEFB20, short*, [5][2])
-#define DebugStrings	ARRAY_(0x009158AC, char, [256][80])
-#define XYUVClipperBuffer	ARRAY_(0x00BA3FB0, D3DTLBUMPVERTEX, [20])
-#define zClipperBuffer	ARRAY_(0x00923C88, D3DTLBUMPVERTEX, [20])
-#define KeyBuffer	ARRAY_(0x0086B9B0, short, [32])
-
-/****************/
-//registry
-#define phkResult	VAR_(0x00C713C0, HKEY)
-#define dwDisposition	VAR_(0x00C713C4, DWORD)
-
-
-#define lpClass	ARRAY_(0x0057A080, CHAR, [4])
-/****************/
 
 //defs
 #define NO_HEIGHT -32512
@@ -816,6 +781,3 @@
 #define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
 #define MALLOC_SIZE	5000000		//5MB
 #define WINDOW_STYLE	(WS_OVERLAPPED | WS_BORDER | WS_CAPTION)
-
-//unknowns
-#define UNK_00E916F0	VAR_(0x00E916F0, long)//special 1 control, special 2 init, special 3 init, special 4 init

@@ -5,6 +5,7 @@
 #include "../game/sound.h"
 #include "3dmath.h"
 #include "../game/text.h"
+#include "winmain.h"
 #ifdef GENERAL_FIXES
 #include "../game/gameflow.h"
 #include "../game/newinv2.h"
