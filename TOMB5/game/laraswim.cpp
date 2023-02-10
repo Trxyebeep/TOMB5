@@ -633,6 +633,92 @@ void LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
 	TestTriggers(coll->trigger, 0, 0);
 }
 
+long GetWaterDepth(long x, long y, long z, short room_number)
+{
+	ROOM_INFO* r;
+	FLOOR_INFO* floor;
+	long x_floor, y_floor, h;
+	short door;
+
+	r = &room[room_number];
+
+	do
+	{
+		x_floor = (z - r->z) >> 10;
+		y_floor = (x - r->x) >> 10;
+
+		if (x_floor <= 0)
+		{
+			x_floor = 0;
+
+			if (y_floor < 1)
+				y_floor = 1;
+			else if (y_floor > r->y_size - 2)
+				y_floor = r->y_size - 2;
+		}
+		else if (x_floor >= r->x_size - 1)
+		{
+			x_floor = r->x_size - 1;
+
+			if (y_floor < 1)
+				y_floor = 1;
+			else if (y_floor > r->y_size - 2)
+				y_floor = r->y_size - 2;
+		}
+		else if (y_floor < 0)
+			y_floor = 0;
+		else if (y_floor >= r->y_size)
+			y_floor = r->y_size - 1;
+
+		floor = &r->floor[x_floor + y_floor * r->x_size];
+		door = GetDoor(floor);
+
+		if (door != NO_ROOM)
+		{
+			room_number = door;
+			r = &room[door];
+		}
+
+	} while (door != NO_ROOM);
+
+	if (r->flags & ROOM_UNDERWATER)
+	{
+		while (floor->sky_room != NO_ROOM)
+		{
+			r = &room[floor->sky_room];
+
+			if (!(r->flags & ROOM_UNDERWATER))
+			{
+				h = floor->ceiling << 8;
+				floor = GetFloor(x, y, z, &room_number);
+				return GetHeight(floor, x, y, z) - h;
+			}
+
+			floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
+		}
+
+		return 0x7FFF;
+	}
+	else
+	{
+		while (floor->pit_room != NO_ROOM)
+		{
+			r = &room[floor->pit_room];
+
+			if (r->flags & ROOM_UNDERWATER)
+			{
+				h = floor->floor << 8;
+				floor = GetFloor(x, y, z, &room_number);
+				return GetHeight(floor, x, y, z) - h;
+			}
+
+			floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
+		}
+
+		return NO_HEIGHT;
+	}
+}
+
 void inject_laraswim(bool replace)
 {
 	INJECT(0x00459470, LaraTestWaterDepth, replace);
@@ -654,4 +740,5 @@ void inject_laraswim(bool replace)
 	INJECT(0x004595F0, lara_col_dive, replace);
 	INJECT(0x00459620, lara_col_uwdeath, replace);
 	INJECT(0x004596A0, lara_col_waterroll, replace);
+	INJECT(0x004596D0, GetWaterDepth, replace);
 }

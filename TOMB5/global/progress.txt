@@ -1041,7 +1041,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004595F0	+	lara_col_dive
 0x00459620	+	lara_col_uwdeath
 0x004596A0	+	lara_col_waterroll
-0x004596D0		GetWaterDepth
+0x004596D0	+	GetWaterDepth
 0x004598F0		LaraWaterCurrent
 
 
