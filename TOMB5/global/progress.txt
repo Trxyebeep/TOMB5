@@ -1402,7 +1402,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0047C4D0	+	TriggerAirBubbles
 0x0047C6D0	+	FireChaff
 0x0047C950	+	DoSubsuitStuff
-0x0047CB70		TriggerEngineEffects
+0x0047CB70	+	TriggerEngineEffects
 0x0047CD80	+	TriggerSubMist
 0x0047CF80	+	GetLaraJointPosRot
 0x0047D140		TriggerEngineEffects_CUT
