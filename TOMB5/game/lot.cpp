@@ -1,6 +1,7 @@
 #include "../tomb5/pch.h"
 #include "lot.h"
 #include "../specific/function_stubs.h"
+#include "objects.h"
 
 void InitialiseLOTarray(long allocmem)
 {
@@ -106,10 +107,86 @@ void CreateZone(ITEM_INFO* item)
 	}
 }
 
+void InitialiseSlot(short item_number, long slot)
+{
+	ITEM_INFO* item;
+	CREATURE_INFO* creature;
+
+	creature = &baddie_slots[slot];
+	item = &items[item_number];
+	item->data = creature;
+	creature->item_num = item_number;
+	creature->mood = BORED_MOOD;
+	creature->joint_rotation[0] = 0;
+	creature->joint_rotation[1] = 0;
+	creature->joint_rotation[2] = 0;
+	creature->joint_rotation[3] = 0;
+	creature->alerted = 0;
+	creature->head_left = 0;
+	creature->head_right = 0;
+	creature->reached_goal = 0;
+	creature->hurt_by_lara = 0;
+	creature->patrol2 = 0;
+	creature->jump_ahead = 0;
+	creature->monkey_ahead = 0;
+	creature->LOT.can_jump = 0;
+	creature->LOT.can_monkey = 0;
+	creature->LOT.is_jumping = 0;
+	creature->LOT.is_monkeying = 0;
+	creature->maximum_turn = 182;
+	creature->flags = 0;
+	creature->enemy = 0;
+	creature->LOT.step = 256;
+	creature->LOT.drop = -512;
+	creature->LOT.block_mask = 0x4000;
+	creature->LOT.fly = 0;
+	creature->LOT.zone = BASIC_ZONE;
+
+	switch (item->object_number)
+	{
+	case SAS:
+	case BLUE_GUARD:
+	case MAFIA2:
+	case SAILOR:
+		creature->LOT.step = 1024;
+		creature->LOT.drop = -1024;
+		creature->LOT.can_jump = 1;
+		creature->LOT.zone = HUMAN_ZONE;
+		break;
+
+	case CROW:
+	case WILLOWISP:
+	case REAPER:
+	case GREEN_TEETH:
+	case ATTACK_SUB:
+		creature->LOT.step = 20480;
+		creature->LOT.drop = -20480;
+		creature->LOT.fly = 16;
+		creature->LOT.zone = FLYER_ZONE;
+		break;
+
+	case HITMAN:
+		creature->LOT.step = 1024;
+		creature->LOT.drop = -1024;
+		creature->LOT.can_jump = 1;
+		creature->LOT.can_monkey = 1;
+		creature->LOT.zone = HUMAN_ZONE;
+		break;
+	}
+
+	ClearLOT(&creature->LOT);
+
+	if (item_number != lara.item_number)
+		CreateZone(item);
+
+	slots_used++;
+}
+
 void inject_lot(bool replace)
 {
 	INJECT(0x0045B0C0, InitialiseLOTarray, replace);
 	INJECT(0x0045B150, DisableBaddieAI, replace);
 	INJECT(0x0045B740, ClearLOT, replace);
 	INJECT(0x0045B5E0, CreateZone, replace);
+	INJECT(0x0045B3D0, InitialiseSlot, replace);
 }
