@@ -60,7 +60,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004098B0	+	CalculateTarget
 0x00409E20	+	CreatureCreature
 0x00409FB0	+	BadFloor
-0x0040A090		CreatureDie
+0x0040A090	+	CreatureDie
 0x0040A1D0		CreatureAnimation
 0x0040AE90		CreatureTurn
 0x0040B1B0		CreatureTilt

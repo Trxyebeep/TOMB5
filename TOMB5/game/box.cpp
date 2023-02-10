@@ -7,6 +7,9 @@
 #include "draw.h"
 #include "control.h"
 #include "items.h"
+#include "tomb4fx.h"
+#include "objects.h"
+#include "deltapak.h"
 
 void InitialiseCreature(short item_number)
 {
@@ -843,6 +846,42 @@ void DropBaddyPickups(ITEM_INFO* item)
 	}
 }
 
+void CreatureDie(short item_number, long explode)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+	item->hit_points = -16384;
+	item->collidable = 0;
+
+	if (explode)
+	{
+		if (objects[item->object_number].HitEffect == 1)
+			ExplodingDeath2(item_number, -1, 258);
+		else
+			ExplodingDeath2(item_number, -1, 256);
+
+		KillItem(item_number);
+	}
+	else
+		RemoveActiveItem(item_number);
+
+	DisableBaddieAI(item_number);
+	item->flags |= IFL_INVISIBLE | IFL_CLEARBODY;
+	DropBaddyPickups(item);
+
+	if (item->object_number == SCIENTIST && item->ai_bits == 8)
+	{
+		item = find_a_fucking_item(ROLLINGBALL);
+
+		if (item && !(item->flags & IFL_INVISIBLE))
+		{
+			item->flags |= IFL_CODEBITS;
+			AddActiveItem(item - items);
+		}
+	}
+}
+
 void inject_box(bool replace)
 {
 	INJECT(0x00408550, InitialiseCreature, replace);
@@ -860,4 +899,5 @@ void inject_box(bool replace)
 	INJECT(0x00409E20, CreatureCreature, replace);
 	INJECT(0x00409FB0, BadFloor, replace);
 	INJECT(0x0040C5A0, DropBaddyPickups, replace);
+	INJECT(0x0040A090, CreatureDie, replace);
 }
