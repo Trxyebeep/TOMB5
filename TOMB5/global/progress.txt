@@ -217,7 +217,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0041D170	+	GetFreeDebris
 0x0041D210	+	TriggerDebris
 0x0041D500	+	UpdateDebris
-0x0041D6B0		ShatterObject
+0x0041D6B0	+	ShatterObject
 
 
 		game/delstuff.cpp
