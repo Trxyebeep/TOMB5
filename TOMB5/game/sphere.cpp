@@ -258,9 +258,117 @@ void GetJointAbsPosition(ITEM_INFO* item, PHD_VECTOR* pos, long joint)
 	aIMXPtr = fimx;
 }
 
+long GetSpheres(ITEM_INFO* item, SPHERE* ptr, long WorldSpace)
+{
+	OBJECT_INFO* obj;
+	short** meshpp;
+	long* bone;
+	short* meshp;
+	short* frame;
+	short* rot;
+	short* extra_rot;
+	long x, y, z, poppush;
+
+	if (!item)
+		return 0;
+
+	if (WorldSpace & 1)
+	{
+		x = item->pos.x_pos;
+		y = item->pos.y_pos;
+		z = item->pos.z_pos;
+		phd_PushUnitMatrix();
+		phd_mxptr[M03] = 0;
+		phd_mxptr[M13] = 0;
+		phd_mxptr[M23] = 0;
+	}
+	else
+	{
+		x = 0;
+		y = 0;
+		z = 0;
+		phd_PushMatrix();
+		phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	}
+
+	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+
+	frame = GetBestFrame(item);
+	phd_TranslateRel(frame[6], frame[7], frame[8]);
+
+	rot = frame + 9;
+	gar_RotYXZsuperpack(&rot, 0);
+
+	obj = &objects[item->object_number];
+	meshpp = &meshes[obj->mesh_index];
+	meshp = *meshpp;
+	meshpp += 2;
+	bone = &bones[obj->bone_index];
+
+	phd_PushMatrix();
+
+	if (!(WorldSpace & 2))
+		phd_TranslateRel(meshp[0], meshp[1], meshp[2]);
+
+	ptr->x = x + (phd_mxptr[M03] >> 14);
+	ptr->y = y + (phd_mxptr[M13] >> 14);
+	ptr->z = z + (phd_mxptr[M23] >> 14);
+	ptr->r = meshp[3];
+	ptr++;
+	phd_PopMatrix();
+
+	extra_rot = (short*)item->data;
+
+	for (int i = 0; i < obj->nmeshes - 1; i++)
+	{
+		poppush = *bone++;
+
+		if (poppush & 1)
+			phd_PopMatrix();
+
+		if (poppush & 2)
+			phd_PushMatrix();
+
+		phd_TranslateRel(bone[0], bone[1], bone[2]);
+		gar_RotYXZsuperpack(&rot, 0);
+
+		if (poppush & 0x1C && extra_rot)
+		{
+			if (poppush & 8)
+				phd_RotY(*extra_rot++);
+
+			if (poppush & 4)
+				phd_RotX(*extra_rot++);
+
+			if (poppush & 0x10)
+				phd_RotZ(*extra_rot++);
+		}
+
+		meshp = *meshpp;
+		phd_PushMatrix();
+
+		if (!(WorldSpace & 2))
+			phd_TranslateRel(meshp[0], meshp[1], meshp[2]);
+
+		ptr->x = x + (phd_mxptr[M03] >> 14);
+		ptr->y = y + (phd_mxptr[M13] >> 14);
+		ptr->z = z + (phd_mxptr[M23] >> 14);
+		ptr->r = meshp[3];
+		ptr++;
+		phd_PopMatrix();
+
+		bone += 3;
+		meshpp += 2;
+	}
+
+	phd_PopMatrix();
+	return obj->nmeshes;
+}
+
 void inject_sphere(bool replace)
 {
 	INJECT(0x00479C20, GetJointAbsPositionMatrix, replace);
 	INJECT(0x00479BB0, InitInterpolate2, replace);
 	INJECT(0x00479780, GetJointAbsPosition, replace);
+	INJECT(0x00479380, GetSpheres, replace);
 }
