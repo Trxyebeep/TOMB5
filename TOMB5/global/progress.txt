@@ -927,7 +927,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 		game/laraclmb.cpp
 
-0x00450970		LaraTestClimbPos
+0x00450970	+	LaraTestClimbPos
 0x00450A50	+	LaraTestClimb
 0x00450D40	+	lara_as_climbstnc
 0x00450E20	+	lara_col_climbstnc

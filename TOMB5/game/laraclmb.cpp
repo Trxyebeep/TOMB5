@@ -610,6 +610,44 @@ long LaraTestClimb(long x, long y, long z, long xfront, long zfront, long item_h
 	return 1;
 }
 
+long LaraTestClimbPos(ITEM_INFO* item, long front, long right, long origin, long height, long* shift)
+{
+	long angle, x, z, xfront, zfront;
+
+	xfront = 0;
+	zfront = 0;
+	angle = ushort(item->pos.y_rot + 0x2000) / 0x4000;
+
+	switch (angle)
+	{
+	case NORTH:
+		x = right + item->pos.x_pos;
+		z = front + item->pos.z_pos;
+		zfront = 256;
+		break;
+
+	case EAST:
+		x = front + item->pos.x_pos;
+		z = item->pos.z_pos - right;
+		xfront = 256;
+		break;
+
+	case SOUTH:
+		x = item->pos.x_pos - right;
+		z = item->pos.z_pos - front;
+		zfront = -256;
+		break;
+
+	default:
+		x = item->pos.x_pos - front;
+		z = right + item->pos.z_pos;
+		xfront = -256;
+		break;
+	}
+
+	return LaraTestClimb(x, origin + item->pos.y_pos, z, xfront, zfront, height, item->room_number, shift);
+}
+
 void inject_laraclmb(bool replace)
 {
 	INJECT(0x00450D40, lara_as_climbstnc, replace);
@@ -628,4 +666,5 @@ void inject_laraclmb(bool replace)
 	INJECT(0x004523A0, GetClimbTrigger, replace);
 	INJECT(0x00451200, LaraTestClimbUpPos, replace);
 	INJECT(0x00450A50, LaraTestClimb, replace);
+	INJECT(0x00450970, LaraTestClimbPos, replace);
 }

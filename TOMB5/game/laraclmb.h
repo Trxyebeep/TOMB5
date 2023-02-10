@@ -18,6 +18,6 @@ void lara_col_climbdown(ITEM_INFO* item, COLL_INFO* coll);
 short GetClimbTrigger(long x, long y, long z, short room_number);
 long LaraTestClimbUpPos(ITEM_INFO* item, long front, long right, long* shift, long* ledge);
 long LaraTestClimb(long x, long y, long z, long xfront, long zfront, long item_height, short item_room, long* shift);
+long LaraTestClimbPos(ITEM_INFO* item, long front, long right, long origin, long height, long* shift);
 
 #define	LaraDoClimbLeftRight	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, long, long)) 0x004515A0 )
-#define LaraTestClimbPos	( (long(__cdecl*)(ITEM_INFO*, long, long, long, long, long*)) 0x00450970 )
