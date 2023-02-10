@@ -66,7 +66,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0040B1B0	+	CreatureTilt
 0x0040B240	+	CreatureJoint
 0x0040B2C0	+	CreatureFloat
-0x0040B400		CreatureUnderwater
+0x0040B400	+	CreatureUnderwater
 0x0040B4D0		CreatureEffect
 0x0040B550		CreatureEffectT
 0x0040B5D0		CreatureVault
