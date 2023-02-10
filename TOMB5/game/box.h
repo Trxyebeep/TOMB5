@@ -34,5 +34,4 @@ void AlertAllGuards(short item_number);
 void AlertNearbyGuards(ITEM_INFO* item);
 short AIGuard(CREATURE_INFO* creature);
 void FindAITargetObject(CREATURE_INFO* creature, short obj_num);
-
-#define GetAITarget	( (void(__cdecl*)(CREATURE_INFO*)) 0x0040BCC0 )
+void GetAITarget(CREATURE_INFO* creature);
