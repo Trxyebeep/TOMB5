@@ -843,6 +843,100 @@ long LaraClimbRightCornerTest(ITEM_INFO* item, COLL_INFO* coll)
 	return flag;
 }
 
+void LaraDoClimbLeftRight(ITEM_INFO* item, COLL_INFO* coll, long result, long shift)
+{
+	long flag;
+
+	if (result == 1)
+	{
+		if (input & IN_LEFT)
+			item->goal_anim_state = AS_CLIMBLEFT;
+		else if (input & IN_RIGHT)
+			item->goal_anim_state = AS_CLIMBRIGHT;
+		else
+			item->goal_anim_state = AS_CLIMBSTNC;
+
+		item->pos.y_pos += shift;
+		return;
+	}
+	else if (!result)
+	{
+		item->pos.x_pos = coll->old.x;
+		item->pos.z_pos = coll->old.z;
+		item->current_anim_state = AS_CLIMBSTNC;
+		item->goal_anim_state = AS_CLIMBSTNC;
+
+		if (coll->old_anim_state != AS_CLIMBSTNC)
+		{
+			item->anim_number = ANIM_CLIMBSTNC;
+			item->frame_number = anims[ANIM_CLIMBSTNC].frame_base;
+			return;
+		}
+
+		if (input & IN_LEFT)
+		{
+			flag = LaraClimbLeftCornerTest(item, coll);
+
+			if (flag)
+			{
+				if (flag > 0)
+				{
+					item->anim_number = 363;
+					item->frame_number = anims[363].frame_base;
+					item->current_anim_state = AS_CORNEREXTL;
+					item->goal_anim_state = AS_CORNEREXTL;
+				}
+				else
+				{
+					item->anim_number = 367;
+					item->frame_number = anims[367].frame_base;
+					item->current_anim_state = AS_CORNERINTL;
+					item->goal_anim_state = AS_CORNERINTL;
+				}
+
+				return;
+			}
+		}
+		else if (input & IN_RIGHT)
+		{
+			flag = LaraClimbRightCornerTest(item, coll);
+
+			if (flag)
+			{
+				if (flag > 0)
+				{
+					item->anim_number = 365;
+					item->frame_number = anims[365].frame_base;
+					item->current_anim_state = AS_CORNEREXTR;
+					item->goal_anim_state = AS_CORNEREXTR;
+				}
+				else
+				{
+					item->anim_number = 369;
+					item->frame_number = anims[369].frame_base;
+					item->current_anim_state = AS_CORNERINTR;
+					item->goal_anim_state = AS_CORNERINTR;
+				}
+
+				return;
+			}
+		}
+
+		item->frame_number = coll->old_frame_number;
+		item->anim_number = coll->old_anim_number;
+		AnimateLara(item);
+	}
+	else
+	{
+		item->goal_anim_state = AS_HANG;
+
+		do AnimateItem(item); while (item->current_anim_state != AS_HANG);
+
+		item->pos.x_pos = coll->old.x;
+		item->pos.z_pos = coll->old.z;
+	}
+}
+
 void inject_laraclmb(bool replace)
 {
 	INJECT(0x00450D40, lara_as_climbstnc, replace);
@@ -864,4 +958,5 @@ void inject_laraclmb(bool replace)
 	INJECT(0x00450970, LaraTestClimbPos, replace);
 	INJECT(0x004517D0, LaraClimbLeftCornerTest, replace);
 	INJECT(0x00451AF0, LaraClimbRightCornerTest, replace);
+	INJECT(0x004515A0, LaraDoClimbLeftRight, replace);
 }
