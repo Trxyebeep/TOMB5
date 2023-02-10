@@ -5,6 +5,9 @@
 #include "control.h"
 #include "laramisc.h"
 
+static short LeftIntRightExtTab[4] = { 2048, 256, 512, 1024 };
+static short LeftExtRightIntTab[4] = { 512, 1024, 2048, 256 };
+
 static long LaraCheckForLetGo(ITEM_INFO* item, COLL_INFO* coll)
 {
 	short room_number;
@@ -648,6 +651,198 @@ long LaraTestClimbPos(ITEM_INFO* item, long front, long right, long origin, long
 	return LaraTestClimb(x, origin + item->pos.y_pos, z, xfront, zfront, height, item->room_number, shift);
 }
 
+long LaraClimbLeftCornerTest(ITEM_INFO* item, COLL_INFO* coll)
+{
+	long flag, oldX, oldZ, x, z, shift;
+	short oldY, angle;
+
+	flag = 0;
+
+	if (item->anim_number != 171)
+		return 0;
+
+	oldX = item->pos.x_pos;
+	oldY = item->pos.y_rot;
+	oldZ = item->pos.z_pos;
+	angle = ushort(item->pos.y_rot + 0x2000) / 0x4000;
+
+	switch (angle)
+	{
+	case NORTH:
+	case SOUTH:
+		x = (oldX & ~0x3FF) - (oldZ & 0x3FF) + 1024;
+		z = (oldZ & ~0x3FF) - (oldX & 0x3FF) + 1024;
+		break;
+
+	default:
+		x = (oldX & ~0x3FF) + (oldZ & 0x3FF);
+		z = (oldZ & ~0x3FF) + (oldX & 0x3FF);
+		break;
+	}
+
+	if (GetClimbTrigger(x, item->pos.y_pos, z, item->room_number) & LeftIntRightExtTab[angle])
+	{
+		item->pos.x_pos = x;
+		item->pos.z_pos = z;
+		lara.CornerX = x;
+		lara.CornerZ = z;
+		item->pos.y_rot -= 0x4000;
+		lara.move_angle = item->pos.y_rot;
+		flag = LaraTestClimbPos(item, coll->radius, -120 - coll->radius, -512, 512, &shift);
+		item->item_flags[3] = (short)flag;
+
+		if (flag)
+			flag = -1;
+	}
+
+	if (!flag)
+	{
+		item->pos.x_pos = oldX;
+		item->pos.y_rot = oldY;
+		item->pos.z_pos = oldZ;
+		lara.move_angle = oldY;
+
+		switch (angle)
+		{
+		case NORTH:
+			x = (item->pos.x_pos ^ (((ushort)item->pos.z_pos ^ (ushort)item->pos.x_pos) & 0x3FF)) - 1024;
+			z = (((ushort)item->pos.z_pos ^ (ushort)item->pos.x_pos) & 0x3FF) ^ (item->pos.z_pos + 1024);
+			break;
+
+		case SOUTH:
+			x = (((ushort)item->pos.z_pos ^ (ushort)item->pos.x_pos) & 0x3FF) ^ (item->pos.x_pos + 1024);
+			z = (((ushort)item->pos.z_pos ^ (ushort)item->pos.x_pos) & 0x3FF) ^ (item->pos.z_pos - 1024);
+			break;
+
+		case WEST:
+			x = (item->pos.x_pos & ~0x3FF) - (item->pos.z_pos & 0x3FF);
+			z = (item->pos.z_pos & ~0x3FF) - (item->pos.x_pos & 0x3FF);
+			break;
+
+		default:
+			x = ((item->pos.x_pos + 1024) & ~0x3FF) - (item->pos.z_pos & 0x3FF) + 1024;
+			z = ((item->pos.z_pos + 1024) & ~0x3FF) - (item->pos.x_pos & 0x3FF) + 1024;
+			break;
+		}
+
+		if (GetClimbTrigger(x, item->pos.y_pos, z, item->room_number) & LeftExtRightIntTab[angle])
+		{
+			item->pos.x_pos = x;
+			item->pos.z_pos = z;
+			lara.CornerX = x;
+			lara.CornerZ = z;
+			item->pos.y_rot += 0x4000;
+			lara.move_angle = item->pos.y_rot;
+			flag = LaraTestClimbPos(item, coll->radius, -120 - coll->radius, -512, 512, &shift);
+			item->item_flags[3] = (short)flag;
+
+			if (flag)
+				flag = 1;
+		}
+	}
+
+	item->pos.x_pos = oldX;
+	item->pos.y_rot = oldY;
+	item->pos.z_pos = oldZ;
+	lara.move_angle = oldY;
+	return flag;
+}
+
+long LaraClimbRightCornerTest(ITEM_INFO* item, COLL_INFO* coll)
+{
+	long flag, oldX, oldZ, x, z, shift;
+	short oldY, angle;
+
+	flag = 0;
+
+	if (item->anim_number != 170)
+		return 0;
+
+	oldX = item->pos.x_pos;
+	oldY = item->pos.y_rot;
+	oldZ = item->pos.z_pos;
+	angle = ushort(item->pos.y_rot + 0x2000) / 0x4000;
+
+	switch (angle)
+	{
+	case NORTH:
+	case SOUTH:
+		x = (oldX & ~0x3FF) + (oldZ & 0x3FF);
+		z = (oldZ & ~0x3FF) + (oldX & 0x3FF);
+		break;
+
+	default:
+		x = (oldX & ~0x3FF) - (oldZ & 0x3FF) + 1024;
+		z = (oldZ & ~0x3FF) - (oldX & 0x3FF) + 1024;
+		break;
+	}
+
+	if (GetClimbTrigger(x, item->pos.y_pos, z, item->room_number) & LeftExtRightIntTab[angle])
+	{
+		item->pos.x_pos = x;
+		item->pos.z_pos = z;
+		lara.CornerX = x;
+		lara.CornerZ = z;
+		item->pos.y_rot += 0x4000;
+		lara.move_angle = item->pos.y_rot;
+		flag = LaraTestClimbPos(item, coll->radius, coll->radius + 120, -512, 512, &shift);
+
+		if (flag)
+			flag = -1;
+	}
+
+	if (!flag)
+	{
+		item->pos.x_pos = oldX;
+		item->pos.y_rot = oldY;
+		item->pos.z_pos = oldZ;
+		lara.move_angle = oldY;
+
+		switch (angle)
+		{
+		case NORTH:
+			x = ((item->pos.x_pos + 1024) & ~0x3FF) - (item->pos.z_pos & 0x3FF) + 1024;
+			z = ((item->pos.z_pos + 1024) & ~0x3FF) - (item->pos.x_pos & 0x3FF) + 1024;
+			break;
+
+		case SOUTH:
+			x = ((item->pos.x_pos - 1024) & ~0x3FF) - (item->pos.z_pos & 0x3FF) + 1024;
+			z = ((item->pos.z_pos - 1024) & ~0x3FF) - (item->pos.x_pos & 0x3FF) + 1024;
+			break;
+
+		case WEST:
+			x = (item->pos.x_pos ^ ((ushort)item->pos.z_pos ^ (ushort)item->pos.x_pos) & 0x3FF) - 1024;
+			z = ((ushort)item->pos.z_pos ^ (ushort)item->pos.x_pos) & 0x3FF ^ (item->pos.z_pos + 1024);
+			break;
+
+		default:
+			x = (((ushort)item->pos.z_pos ^ (ushort)item->pos.x_pos) & 0x3FF) ^ (item->pos.x_pos + 1024);
+			z = (item->pos.z_pos ^ (((ushort)item->pos.z_pos ^ (ushort)item->pos.x_pos) & 0x3FF)) - 1024;
+			break;
+		}
+
+		if (GetClimbTrigger(x, item->pos.y_pos, z, item->room_number) & LeftIntRightExtTab[angle])
+		{
+			item->pos.x_pos = x;
+			item->pos.z_pos = z;
+			lara.CornerX = x;
+			lara.CornerZ = z;
+			item->pos.y_rot -= 0x4000;
+			lara.move_angle = item->pos.y_rot;
+			flag = LaraTestClimbPos(item, coll->radius, coll->radius + 120, -512, 512, &shift);
+
+			if (flag)
+				flag = 1;
+		}
+	}
+
+	item->pos.x_pos = oldX;
+	item->pos.y_rot = oldY;
+	item->pos.z_pos = oldZ;
+	lara.move_angle = oldY;
+	return flag;
+}
+
 void inject_laraclmb(bool replace)
 {
 	INJECT(0x00450D40, lara_as_climbstnc, replace);
@@ -667,4 +862,6 @@ void inject_laraclmb(bool replace)
 	INJECT(0x00451200, LaraTestClimbUpPos, replace);
 	INJECT(0x00450A50, LaraTestClimb, replace);
 	INJECT(0x00450970, LaraTestClimbPos, replace);
+	INJECT(0x004517D0, LaraClimbLeftCornerTest, replace);
+	INJECT(0x00451AF0, LaraClimbRightCornerTest, replace);
 }
