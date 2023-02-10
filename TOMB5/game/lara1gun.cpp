@@ -728,6 +728,44 @@ void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, long MustHitLas
 	}
 }
 
+void TriggerUnderwaterExplosion(ITEM_INFO* item)
+{
+	long y, wh;
+
+	TriggerExplosionBubble(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number);
+	TriggerExplosionSparks(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, 2, -2, 1, item->room_number);
+
+	for (int i = 0; i < 3; i++)
+		TriggerExplosionSparks(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, 2, -1, 1, item->room_number);
+
+	wh = GetWaterHeight(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number);
+
+	if (wh != NO_HEIGHT)
+	{
+		y = item->pos.y_pos - wh;
+
+		if (y < 2048)
+		{
+			splash_setup.x = item->pos.x_pos;
+			splash_setup.y = wh;
+			splash_setup.z = item->pos.z_pos;
+			wh = 2048 - y;
+			splash_setup.InnerRadVel = 160;
+			splash_setup.MiddleRadVel = 224;
+			splash_setup.OuterRadVel = 272;
+			splash_setup.InnerRad = short((wh >> 6) + 16);
+			splash_setup.InnerSize = short((wh >> 6) + 12);
+			splash_setup.InnerYVel = short((-512 - wh) << 3);
+			splash_setup.MiddleRad = short((wh >> 6) + 24);
+			splash_setup.MiddleSize = short((wh >> 6) + 24);
+			splash_setup.MiddleYVel = short((-768 - wh) << 2);
+			splash_setup.OuterRad = short((wh >> 6) + 32);
+			splash_setup.OuterSize = short((wh >> 6) + 32);
+			SetupSplash(&splash_setup);
+		}
+	}
+}
+
 void inject_lara1gun(bool replace)
 {
 	INJECT(0x0044DBB0, draw_shotgun_meshes, replace);
@@ -744,4 +782,5 @@ void inject_lara1gun(bool replace)
 	INJECT(0x0044EE00, AnimateShotgun, replace);
 	INJECT(0x0044F690, DoGrenadeDamageOnBaddie, replace);
 	INJECT(0x0044F7C0, TriggerGrapplingEffect, replace);
+	INJECT(0x0044F500, TriggerUnderwaterExplosion, replace);
 }

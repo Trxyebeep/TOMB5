@@ -907,7 +907,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0044EAC0	+	draw_shotgun
 0x0044ECA0	+	undraw_shotgun
 0x0044EE00	+	AnimateShotgun
-0x0044F500		TriggerUnderwaterExplosion
+0x0044F500	+	TriggerUnderwaterExplosion
 0x0044F690	+	DoGrenadeDamageOnBaddie
 0x0044F7C0	+	TriggerGrapplingEffect
 
