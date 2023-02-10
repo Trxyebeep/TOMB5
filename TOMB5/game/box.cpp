@@ -1760,6 +1760,16 @@ short SameZone(CREATURE_INFO* creature, ITEM_INFO* target_item)
 	return zone[item->box_number] == zone[target_item->box_number];
 }
 
+void CreatureYRot(PHD_3DPOS* srcpos, short angle, short angadd)
+{
+	if (angle > angadd)
+		srcpos->y_rot += angadd;
+	else if (angle < -angadd)
+		srcpos->y_rot -= angadd;
+	else
+		srcpos->y_rot += angle;
+}
+
 void inject_box(bool replace)
 {
 	INJECT(0x00408550, InitialiseCreature, replace);
@@ -1794,4 +1804,5 @@ void inject_box(bool replace)
 	INJECT(0x0040C070, FindAITargetObject, replace);
 	INJECT(0x0040BCC0, GetAITarget, replace);
 	INJECT(0x0040C2D0, SameZone, replace);
+	INJECT(0x0040C410, CreatureYRot, replace);
 }

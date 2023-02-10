@@ -36,3 +36,4 @@ short AIGuard(CREATURE_INFO* creature);
 void FindAITargetObject(CREATURE_INFO* creature, short obj_num);
 void GetAITarget(CREATURE_INFO* creature);
 short SameZone(CREATURE_INFO* creature, ITEM_INFO* target_item);
+void CreatureYRot(PHD_3DPOS* srcpos, short angle, short angadd);
