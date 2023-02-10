@@ -32,6 +32,6 @@ long CreatureVault(short item_number, short angle, long vault, long shift);
 void CreatureKill(ITEM_INFO* item, short kill_anim, short kill_state, short lara_anim);
 void AlertAllGuards(short item_number);
 void AlertNearbyGuards(ITEM_INFO* item);
+short AIGuard(CREATURE_INFO* creature);
 
 #define GetAITarget	( (void(__cdecl*)(CREATURE_INFO*)) 0x0040BCC0 )
-#define AIGuard	( (short(__cdecl*)(CREATURE_INFO*)) 0x0040BBE0 )
