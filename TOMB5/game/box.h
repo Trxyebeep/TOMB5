@@ -23,6 +23,7 @@ long CreatureAnimation(short item_number, short angle, short tilt);
 short CreatureTurn(ITEM_INFO* item, short maximum_turn);
 void CreatureTilt(ITEM_INFO* item, short angle);
 void CreatureJoint(ITEM_INFO* item, short joint, short required);
+void CreatureFloat(short item_number);
 
 #define AlertNearbyGuards	( (void(__cdecl*)(ITEM_INFO*)) 0x0040BB10 )
 #define GetAITarget	( (void(__cdecl*)(CREATURE_INFO*)) 0x0040BCC0 )
