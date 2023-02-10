@@ -10,6 +10,7 @@
 #include "effect2.h"
 #include "../specific/function_stubs.h"
 #include "../specific/3dmath.h"
+#include "deltapak.h"
 
 static SVECTOR Eng1 = { 0, 64, 0, 0 };
 static SVECTOR Eng2 = { 0, 0, 0, 0 };
@@ -348,6 +349,43 @@ void TriggerEngineEffects()
 	}
 }
 
+void TriggerEngineEffects_CUT()
+{
+	PHD_VECTOR pos;
+	PHD_VECTOR pos2;
+	short x, lp;
+
+	x = -80;
+
+	for (lp = 0; lp < 2; lp++)
+	{
+		if (subsuit.Vel[lp])
+		{
+			pos.x = x;
+			pos.y = -128;
+			pos.z = -144;
+			GetActorJointAbsPosition(1, 7, &pos);
+
+			Eng2.y = 512;
+			pos2.x = x + (GetRandomControl() % 128 - 64);
+			pos2.y = 320;
+			pos2.z = -144 + (GetRandomControl() % 128 - 64);
+
+			GetActorJointAbsPosition(1, 7, &pos2);
+			TriggerSubMist(&pos, &pos2, Eng2.y >> 8);
+
+			pos2.x = x + (GetRandomControl() % 128 - 64);
+			pos2.y = 320;
+			pos2.z = -144 + (GetRandomControl() % 128 - 64);
+
+			GetActorJointAbsPosition(1, 7, &pos2);
+			TriggerSubMist(&pos, &pos2, -(Eng2.y >> 8));
+		}
+
+		x = 80;
+	}
+}
+
 void inject_subsuit(bool replace)
 {
 	INJECT(0x0047C6D0, FireChaff, replace);
@@ -356,4 +394,5 @@ void inject_subsuit(bool replace)
 	INJECT(0x0047CF80, GetLaraJointPosRot, replace);
 	INJECT(0x0047CD80, TriggerSubMist, replace);
 	INJECT(0x0047CB70, TriggerEngineEffects, replace);
+	INJECT(0x0047D140, TriggerEngineEffects_CUT, replace);
 }

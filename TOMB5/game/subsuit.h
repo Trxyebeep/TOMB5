@@ -9,5 +9,4 @@ void TriggerAirBubbles();
 void GetLaraJointPosRot(PHD_VECTOR* pos, long node, long rot, SVECTOR* sv);
 void TriggerSubMist(PHD_VECTOR* pos, PHD_VECTOR* pos1, long size);
 void TriggerEngineEffects();
-
-#define TriggerEngineEffects_CUT	( (void(__cdecl*)()) 0x0047D140 )
+void TriggerEngineEffects_CUT();
