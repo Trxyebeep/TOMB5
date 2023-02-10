@@ -2018,9 +2018,9 @@ void GetAIPickups()
 void BuildOutsideTable()
 {
 	ROOM_INFO* r;
-	char* pTable;
-	char* oTable;
-	char* cTable;
+	uchar* pTable;
+	uchar* oTable;
+	uchar* cTable;
 	long max_slots, roomx, roomy, cont, offset, z, z2;
 	long x, y, lp;
 	char flipped[256];
@@ -2072,11 +2072,11 @@ void BuildOutsideTable()
 				if (i == 255)
 					printf("ERROR : Room 255 fuckeroony - go tell Chris\n");
 
-				pTable = &OutsideRoomTable[64 * ((x >> 2) + 27 * (y >> 2))];
+				pTable = (uchar*)&OutsideRoomTable[64 * ((x >> 2) + 27 * (y >> 2))];
 
 				for (lp = 0; lp < 64; lp++)
 				{
-					if (pTable[lp] == -1)
+					if (pTable[lp] == 255)
 					{
 						pTable[lp] = i;
 
@@ -2093,7 +2093,7 @@ void BuildOutsideTable()
 		}
 	}
 
-	oTable = OutsideRoomTable;
+	oTable = (uchar*)OutsideRoomTable;
 
 	for (y = 0; y < 27; y++)
 	{
@@ -2101,8 +2101,8 @@ void BuildOutsideTable()
 		{
 			z = 0;
 			offset = x + y * 27;
-			pTable = &OutsideRoomTable[64 * (x + 27 * y)];
-			while (pTable[z] != -1) z++;
+			pTable = (uchar*)&OutsideRoomTable[64 * (x + 27 * y)];
+			while (pTable[z] != 255) z++;
 
 			if (!z)
 				OutsideRoomOffsets[offset] = -1;
@@ -2110,7 +2110,7 @@ void BuildOutsideTable()
 				OutsideRoomOffsets[offset] = *pTable | 0x8000;
 			else
 			{
-				cTable = OutsideRoomTable;
+				cTable = (uchar*)OutsideRoomTable;
 
 				while (cTable < oTable)
 				{
@@ -2121,7 +2121,7 @@ void BuildOutsideTable()
 					}
 
 					z2 = 0;
-					while (cTable[z2] != -1) z2++;
+					while (cTable[z2] != 255) z2++;
 					cTable += z2 + 1;
 				}
 
@@ -2136,7 +2136,7 @@ void BuildOutsideTable()
 
 					} while (z);
 
-					*oTable++ = -1;
+					*oTable++ = 255;
 				}
 			}
 		}
