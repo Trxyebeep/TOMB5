@@ -11,5 +11,4 @@ void DrawWreckingBall(ITEM_INFO* item);
 void ControlSecurityScreens(short item_number);
 void CookerFlameControl(short item_number);
 void TriggerLaraSparks(long smoke);
-
-#define TriggerCableSparks	( (void(__cdecl*)(long, long, short, long, long)) 0x00442480 )
+void TriggerCableSparks(long x, long z, short item_number, long node, long flare);

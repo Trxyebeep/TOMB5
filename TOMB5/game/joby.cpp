@@ -617,6 +617,78 @@ void TriggerLaraSparks(long smoke)
 		TriggerFireFlame(pos.x, pos.y, pos.z, -1, 254);
 }
 
+void TriggerCableSparks(long x, long z, short item_number, long node, long flare)
+{
+	SPARKS* sptr;
+	uchar n;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 255;
+	sptr->sG = 255;
+	sptr->sB = 255;
+	sptr->dR = 0;
+	sptr->dG = (GetRandomControl() & 0x7F) + 64;
+	sptr->dB = 255;
+
+	if (flare)
+	{
+		sptr->ColFadeSpeed = 1;
+		sptr->FadeToBlack = 0;
+		n = 4;
+	}
+	else
+	{
+		sptr->ColFadeSpeed = 3;
+		sptr->FadeToBlack = 4;
+		n = 16;
+	}
+
+	sptr->Life = n;
+	sptr->sLife = n;
+	sptr->FxObj = (uchar)item_number;
+	sptr->TransType = 2;
+	sptr->Flags = 4234;
+	sptr->NodeNumber = (uchar)node;
+	sptr->x = x;
+	sptr->y = 0;
+	sptr->z = z;
+
+	if (flare)
+	{
+		sptr->Xvel = 0;
+		sptr->Yvel = 0;
+		sptr->Zvel = 0;
+	}
+	else
+	{
+		sptr->Xvel = (GetRandomControl() & 0x1FF) - 256;
+		sptr->Yvel = (GetRandomControl() & 0xFF) - 64;
+		sptr->Zvel = (GetRandomControl() & 0x1FF) - 256;
+	}
+
+	sptr->Friction = 51;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = 0;
+
+	if (flare)
+	{
+		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 11;
+		sptr->Scalar = 1;
+		n = (GetRandomControl() & 0x1F) + 160;
+	}
+	else
+	{
+		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
+		sptr->Scalar = 0;
+		n = (GetRandomControl() & 7) + 8;
+	}
+
+	sptr->Size = n;
+	sptr->sSize = n;
+	sptr->dSize = n >> 1;
+}
+
 void inject_joby(bool replace)
 {
 	INJECT(0x00442C90, KlaxonTremor, replace);
@@ -628,4 +700,5 @@ void inject_joby(bool replace)
 	INJECT(0x004421C0, ControlSecurityScreens, replace);
 	INJECT(0x00442250, CookerFlameControl, replace);
 	INJECT(0x00442320, TriggerLaraSparks, replace);
+	INJECT(0x00442480, TriggerCableSparks, replace);
 }

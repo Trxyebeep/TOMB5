@@ -707,7 +707,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x004421C0	+	ControlSecurityScreens
 0x00442250	+	CookerFlameControl
 0x00442320	+	TriggerLaraSparks
-0x00442480		TriggerCableSparks
+0x00442480	+	TriggerCableSparks
 0x00442610	+	ControlElectricalCables
 0x00442BE0	+	CheckCableBox
 0x00442C90	+	KlaxonTremor
