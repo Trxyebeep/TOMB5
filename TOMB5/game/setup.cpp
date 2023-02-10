@@ -1981,6 +1981,40 @@ void reset_cutseq_vars()
 	SetFadeClip(0, 1);
 }
 
+void GetAIPickups()
+{
+	ITEM_INFO* item;
+	AIOBJECT* aiObj;
+	short aiObjNum;
+
+	for (int i = 0; i < level_items; i++)
+	{
+		item = &items[i];
+
+		if (!objects[item->object_number].intelligent)
+			continue;
+
+		item->ai_bits = 0;
+
+		for (aiObjNum = 0; aiObjNum < nAIObjects; aiObjNum++)
+		{
+			aiObj = &AIObjects[aiObjNum];
+
+			if (abs(aiObj->x - item->pos.x_pos) < 512 && abs(aiObj->z - item->pos.z_pos) < 512 &&
+				aiObj->room_number == item->room_number && aiObj->object_number < AI_PATROL2)
+			{
+				item->ai_bits |= 1 << (aiObj->object_number - AI_GUARD);
+				item->item_flags[3] = aiObj->trigger_flags;
+
+				if (aiObj->object_number != AI_GUARD)
+					aiObj->room_number = NO_ROOM;
+			}
+		}
+
+		item->TOSSPAD |= item->ai_bits << 8 | (item->item_flags[3] & 0xFF);
+	}
+}
+
 void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
@@ -1992,4 +2026,5 @@ void inject_setup(bool replace)
 	INJECT(0x00477880, InitialiseGameFlags, replace);
 	INJECT(0x004779B0, ClearFootPrints, replace);
 	INJECT(0x004779E0, reset_cutseq_vars, replace);
+	INJECT(0x00477370, GetAIPickups, replace);
 }
