@@ -1146,6 +1146,48 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 	}
 }
 
+void TriggerFishtankSpray(long x, long y, long z, long c)
+{
+	SPARKS* sptr;
+
+	c >>= 1;
+
+	if (c > 64)
+		c = 64;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 0;
+	sptr->sG = 0;
+	sptr->sB = 0;
+	sptr->dR = (uchar)c;
+	sptr->dG = sptr->dR;
+	sptr->dB = sptr->dR;
+	sptr->ColFadeSpeed = 4;
+	sptr->FadeToBlack = 8;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 3) + 14;
+	sptr->sLife = sptr->Life;
+
+	sptr->x = (GetRandomControl() & 0xF) + x - 8;
+	sptr->y = y;
+	sptr->z = (GetRandomControl() & 0xF) + z - 8;
+	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Yvel = -(GetRandomControl() & 0xF);
+	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
+
+	sptr->Friction = 4;
+	sptr->Flags = 538;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+	sptr->Scalar = 3;
+	sptr->Gravity = -16 - (GetRandomControl() & 0xF);
+	sptr->MaxYvel = -8 - (GetRandomControl() & 7);
+	sptr->dSize = (GetRandomControl() & 0x1F) + 64;
+	sptr->Size = sptr->dSize >> 2;
+	sptr->sSize = sptr->Size;
+}
+
 void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
@@ -1160,4 +1202,5 @@ void inject_tower2(bool replace)
 	INJECT(0x00487B60, TriggerLiftBrakeSparks, replace);
 	INJECT(0x004877E0, TriggerSteelDoorSmoke, replace);
 	INJECT(0x004870B0, TriggerWeldingEffects, replace);
+	INJECT(0x00486A70, TriggerFishtankSpray, replace);
 }

@@ -15,5 +15,4 @@ void DrawSteelDoorLensFlare(ITEM_INFO* item);
 void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot);
 void TriggerSteelDoorSmoke(short angle, short nPos, ITEM_INFO* item);
 void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag);
-
-#define TriggerFishtankSpray	( (void(__cdecl*)(long, long, long, long)) 0x00486A70 )
+void TriggerFishtankSpray(long x, long y, long z, long c);
