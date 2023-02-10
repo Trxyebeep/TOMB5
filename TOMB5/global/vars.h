@@ -344,7 +344,7 @@
 #define f_moneoznear	VAR_(0x0055D25C, float)
 /*************************************************/
 #define IsRoomOutsideNo	VAR_(0x00EEF902, short)
-#define OutsideRoomTable	VAR_(0x00EEF4AC, uchar*)
+#define OutsideRoomTable	VAR_(0x00EEF4AC, char*)
 #define OutsideRoomOffsets	VAR_(0x00EEF040, short*)
 #define _CutSceneTriggered1	VAR_(0x00EEF004, ulong)
 #define _CutSceneTriggered2	VAR_(0x00EEF000, ulong)

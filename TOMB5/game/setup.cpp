@@ -2015,6 +2015,134 @@ void GetAIPickups()
 	}
 }
 
+void BuildOutsideTable()
+{
+	ROOM_INFO* r;
+	char* pTable;
+	char* oTable;
+	char* cTable;
+	long max_slots, roomx, roomy, cont, offset, z, z2;
+	long x, y, lp;
+	char flipped[256];
+
+	max_slots = 0;
+	OutsideRoomOffsets = (short*)game_malloc(0x5B2, 0);
+	OutsideRoomTable = (char*)game_malloc(0xB640, 0);
+	memset(OutsideRoomTable, 0xFF, 0xB640);
+	memset(flipped, 0, 255);
+
+	for (int i = 0; i < number_rooms; i++)
+	{
+		r = &room[i];
+
+		if (r->flipped_room != -1)
+			flipped[r->flipped_room] = 1;
+	}
+
+	for (y = 0; y < 108; y += 4)
+	{
+		for (x = 0; x < 108; x += 4)
+		{
+			for (int i = 0; i < number_rooms; i++)
+			{
+				r = &room[i];
+
+				if (flipped[i])
+					continue;
+
+				roomx = (r->z >> 10) + 1;
+				roomy = (r->x >> 10) + 1;
+				cont = 0;
+
+				for (int ry = 0; ry < 4; ry++)
+				{
+					for (int rx = 0; rx < 4; rx++)
+					{
+						if (x + rx >= roomx && x + rx < roomx + r->x_size - 2 && y + ry >= roomy && y + ry < roomy + r->y_size - 2)
+						{
+							cont = 1;
+							break;
+						}
+					}
+				}
+
+				if (!cont)
+					continue;
+
+				if (i == 255)
+					printf("ERROR : Room 255 fuckeroony - go tell Chris\n");
+
+				pTable = &OutsideRoomTable[64 * ((x >> 2) + 27 * (y >> 2))];
+
+				for (lp = 0; lp < 64; lp++)
+				{
+					if (pTable[lp] == -1)
+					{
+						pTable[lp] = i;
+
+						if (lp > max_slots)
+							max_slots = lp;
+
+						break;
+					}
+				}
+
+				if (lp == 64)
+					printf("ERROR : Buffer shittage - go tell Chris\n");
+			}
+		}
+	}
+
+	oTable = OutsideRoomTable;
+
+	for (y = 0; y < 27; y++)
+	{
+		for (x = 0; x < 27; x++)
+		{
+			z = 0;
+			offset = x + y * 27;
+			pTable = &OutsideRoomTable[64 * (x + 27 * y)];
+			while (pTable[z] != -1) z++;
+
+			if (!z)
+				OutsideRoomOffsets[offset] = -1;
+			else if (z == 1)
+				OutsideRoomOffsets[offset] = *pTable | 0x8000;
+			else
+			{
+				cTable = OutsideRoomTable;
+
+				while (cTable < oTable)
+				{
+					if (!memcmp(cTable, pTable, z))
+					{
+						OutsideRoomOffsets[offset] = short((long)cTable - (long)OutsideRoomTable);
+						break;
+					}
+
+					z2 = 0;
+					while (cTable[z2] != -1) z2++;
+					cTable += z2 + 1;
+				}
+
+				if (cTable >= oTable)
+				{
+					OutsideRoomOffsets[offset] = short((long)oTable - (long)OutsideRoomTable);
+
+					do
+					{
+						*oTable++ = *pTable++;
+						z--;
+
+					} while (z);
+
+					*oTable++ = -1;
+				}
+			}
+		}
+	}
+}
+
 void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
@@ -2027,4 +2155,5 @@ void inject_setup(bool replace)
 	INJECT(0x004779B0, ClearFootPrints, replace);
 	INJECT(0x004779E0, reset_cutseq_vars, replace);
 	INJECT(0x00477370, GetAIPickups, replace);
+	INJECT(0x004774D0, BuildOutsideTable, replace);
 }
