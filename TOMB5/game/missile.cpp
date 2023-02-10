@@ -6,6 +6,7 @@
 #include "effects.h"
 #include "sound.h"
 #include "../specific/3dmath.h"
+#include "draw.h"
 
 void ControlBodyPart(short fx_number)
 {
@@ -129,7 +130,26 @@ void ControlBodyPart(short fx_number)
 		EffectNewRoom(fx_number, room_number);
 }
 
+void ShootAtLara(FX_INFO* fx)
+{
+	short* bounds;
+	long dx, dy, dz, z, x;
+	
+	dx = lara_item->pos.x_pos - fx->pos.x_pos;
+	dy = lara_item->pos.y_pos - fx->pos.y_pos;
+	dz = lara_item->pos.z_pos - fx->pos.z_pos;
+	bounds = GetBoundsAccurate(lara_item);
+
+	z = phd_sqrt(SQUARE(dx) + SQUARE(dz));
+	x = bounds[3] + 3 * (bounds[2] - bounds[3]) / 4 + dy;
+	fx->pos.x_rot = -(short)phd_atan(x, z);
+	fx->pos.y_rot = (short)phd_atan(z, x);
+	fx->pos.x_rot += short((GetRandomControl() - 0x4000) / 64);
+	fx->pos.y_rot += short((GetRandomControl() - 0x4000) / 64);
+}
+
 void inject_missile(bool replace)
 {
 	INJECT(0x0045E380, ControlBodyPart, replace);
+	INJECT(0x0045E2A0, ShootAtLara, replace);
 }
