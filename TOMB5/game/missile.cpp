@@ -7,6 +7,7 @@
 #include "sound.h"
 #include "../specific/3dmath.h"
 #include "draw.h"
+#include "debris.h"
 
 void ControlBodyPart(short fx_number)
 {
@@ -182,9 +183,31 @@ void ControlMissile(short fx_number)
 	}
 }
 
+long ExplodeFX(FX_INFO* fx, long NoXZVel, short Num)
+{
+	short** meshpp;
+
+	meshpp = &meshes[fx->frame_number];
+	ShatterItem.YRot = fx->pos.y_rot;
+	ShatterItem.meshp = *meshpp;
+	ShatterItem.Sphere.x = fx->pos.x_pos;
+	ShatterItem.Sphere.y = fx->pos.y_pos;
+	ShatterItem.Sphere.z = fx->pos.z_pos;
+	ShatterItem.Bit = 0;
+	ShatterItem.Flags = fx->flag2 & 0x1400;
+
+	if (fx->flag2 & 0x2000)
+		DebrisFlags = 1;
+
+	ShatterObject(&ShatterItem, 0, Num, fx->room_number, NoXZVel);
+	DebrisFlags = 0;
+	return 1;
+}
+
 void inject_missile(bool replace)
 {
 	INJECT(0x0045E380, ControlBodyPart, replace);
 	INJECT(0x0045E2A0, ShootAtLara, replace);
 	INJECT(0x0045E0E0, ControlMissile, replace);
+	INJECT(0x0045E010, ExplodeFX, replace);
 }
