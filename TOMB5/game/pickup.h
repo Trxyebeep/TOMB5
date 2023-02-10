@@ -15,5 +15,4 @@ void AnimatingPickUp(short item_number);
 void KeyHoleCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
 short* FindPlinth(ITEM_INFO* item);
 void PickUpCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
-
-#define	CollectCarriedItems	( (void(__cdecl*)(ITEM_INFO*)) 0x00469C90 )
+void CollectCarriedItems(ITEM_INFO* item);

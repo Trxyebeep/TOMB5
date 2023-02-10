@@ -1119,6 +1119,24 @@ void PickUpCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 	}
 }
 
+void CollectCarriedItems(ITEM_INFO* item)
+{
+	ITEM_INFO* pickup;
+	short pickup_number;
+
+	pickup_number = item->carried_item;
+
+	while (pickup_number != NO_ITEM)
+	{
+		pickup = &items[pickup_number];
+		AddDisplayPickup(pickup->object_number);
+		KillItem(pickup_number);
+		pickup_number = pickup->carried_item;
+	}
+
+	item->carried_item = NO_ITEM;
+}
+
 void inject_pickup(bool replace)
 {
 	INJECT(0x00467AF0, RegeneratePickups, replace);
@@ -1134,4 +1152,5 @@ void inject_pickup(bool replace)
 	INJECT(0x00468930, KeyHoleCollision, replace);
 	INJECT(0x00468770, FindPlinth, replace);
 	INJECT(0x00467C00, PickUpCollision, replace);
+	INJECT(0x00469C90, CollectCarriedItems, replace);
 }
