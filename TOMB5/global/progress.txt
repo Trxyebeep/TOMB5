@@ -1107,7 +1107,7 @@ x for functions decompiled but not injected, for one reason or another.
 		game/missile.cpp
 
 0x0045E010		ExplodeFX
-0x0045E0E0		ControlMissile
+0x0045E0E0	+	ControlMissile
 0x0045E2A0	+	ShootAtLara
 0x0045E380	+	ControlBodyPart
 
