@@ -383,9 +383,9 @@ char* aReadCutData(long n, FILE* file)
 	//cutseq file header is put in tsv_buffer beforehand!
 	offset = *(long*)&tsv_buffer[n * 2 * sizeof(long)];
 	size = *(long*)&tsv_buffer[n * 2 * sizeof(long) + 4];
-	SEEK(file, offset, SEEK_SET);
+	fseek(file, offset, SEEK_SET);
 	data = (char*)game_malloc(size, 0);
-	READ(data, size, 1, file);
+	fread(data, size, 1, file);
 	return data;
 }
 
@@ -418,7 +418,7 @@ void aMakeCutsceneResident(long n1, long n2, long n3, long n4)
 	if (!file)
 		return;
 
-	READ(tsv_buffer, 1, 2048, file);	//whole header in tsv_buffer
+	fread(tsv_buffer, 1, 2048, file);	//whole header in tsv_buffer
 	memset(cutseq_resident_addresses, 0, sizeof(cutseq_resident_addresses));
 	lastcamnum = -1;
 	GLOBAL_playing_cutseq = 0;
@@ -427,7 +427,7 @@ void aMakeCutsceneResident(long n1, long n2, long n3, long n4)
 	d2 = aReadCutData(n2, file);
 	d3 = aReadCutData(n3, file);
 	d4 = aReadCutData(n4, file);
-	CLOSE(file);
+	fclose(file);
 
 	if (d1)
 		aCalcDepackBufferSz(d1);
@@ -467,9 +467,9 @@ char* aFetchCutData(long n)
 
 		if (file)
 		{
-			READ(tsv_buffer, 1, 2048, file);
+			fread(tsv_buffer, 1, 2048, file);
 			data = aReadCutData(n, file);
-			CLOSE(file);
+			fclose(file);
 		}
 	}
 

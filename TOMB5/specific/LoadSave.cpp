@@ -2250,9 +2250,9 @@ void LoadScreen(long screen, long pathNum)
 	if (DXCreateSurface(G_dxptr->lpDD, &surf, &screen_surface) && file)
 	{
 		pic = malloc(0x96000);
-		SEEK(file, 0x96000 * screen, SEEK_SET);
-		READ(pic, 0x96000, 1, file);
-		CLOSE(file);
+		fseek(file, 0x96000 * screen, SEEK_SET);
+		fread(pic, 0x96000, 1, file);
+		fclose(file);
 		memset(&surf, 0, sizeof(surf));
 		surf.dwSize = sizeof(DDSURFACEDESC2);
 		screen_surface->Lock(0, &surf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);

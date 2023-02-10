@@ -113,7 +113,7 @@ void PrintDbug()
 
 void init_game_malloc()
 {
-	malloc_buffer = (char*)MALLOC(MALLOC_SIZE);
+	malloc_buffer = (char*)malloc(MALLOC_SIZE);
 	malloc_size = MALLOC_SIZE;
 	malloc_ptr = malloc_buffer;
 	malloc_free = MALLOC_SIZE;

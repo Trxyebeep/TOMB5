@@ -611,8 +611,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	{
 		if (!DXSetupDialog())
 		{
-			FREE(gfScriptFile);
-			FREE(gfLanguageFile);
+			free(gfScriptFile);
+			free(gfLanguageFile);
 			WinClose();
 			return 0;
 		}
