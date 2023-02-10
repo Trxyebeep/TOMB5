@@ -3,6 +3,9 @@
 #include "draw.h"
 #include "../specific/3dmath.h"
 
+static SPHERE LaraSpheres[15];
+static long NumLaraSpheres;
+
 void GetJointAbsPositionMatrix(ITEM_INFO* item, float* matrix, long node)
 {
 	float* aMXPtr_bak;
@@ -365,10 +368,77 @@ long GetSpheres(ITEM_INFO* item, SPHERE* ptr, long WorldSpace)
 	return obj->nmeshes;
 }
 
+long TestCollision(ITEM_INFO* item, ITEM_INFO* l)
+{
+	SPHERE* itemSpheres;
+	SPHERE* laraSpheres;
+	PHD_VECTOR ip;
+	PHD_VECTOR lp;
+	ulong touch_bits;
+	long nItemSpheres, nLaraSpheres, ir, lr;
+
+	touch_bits = 0;
+	nItemSpheres = GetSpheres(item, Slist, 1);
+
+	if (l != lara_item)
+		GotLaraSpheres = 0;
+
+	if (GotLaraSpheres)
+		nLaraSpheres = NumLaraSpheres;
+	else
+	{
+		nLaraSpheres = GetSpheres(l, LaraSpheres, 1);
+		NumLaraSpheres = nLaraSpheres;
+
+		if (l == lara_item)
+			GotLaraSpheres = 1;
+	}
+
+	l->touch_bits = 0;
+
+	for (int i = 0; i < nItemSpheres; i++)
+	{
+		itemSpheres = &Slist[i];
+		ir = itemSpheres->r;
+
+		if (ir > 0)
+		{
+			ip.x = itemSpheres->x;
+			ip.y = itemSpheres->y;
+			ip.z = itemSpheres->z;
+
+			for (int j = 0; j < nLaraSpheres; j++)
+			{
+				laraSpheres = &LaraSpheres[j];
+				lr = laraSpheres->r;
+
+				if (lr > 0)
+				{
+					lp.x = laraSpheres->x - ip.x;
+					lp.y = laraSpheres->y - ip.y;
+					lp.z = laraSpheres->z - ip.z;
+					lr += ir;
+
+					if (SQUARE(lp.x) + SQUARE(lp.y) + SQUARE(lp.z) < SQUARE(lr))
+					{
+						l->touch_bits |= 1 << j;
+						touch_bits |= 1 << i;
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	item->touch_bits = touch_bits;
+	return touch_bits;
+}
+
 void inject_sphere(bool replace)
 {
 	INJECT(0x00479C20, GetJointAbsPositionMatrix, replace);
 	INJECT(0x00479BB0, InitInterpolate2, replace);
 	INJECT(0x00479780, GetJointAbsPosition, replace);
 	INJECT(0x00479380, GetSpheres, replace);
+	INJECT(0x00479170, TestCollision, replace);
 }
