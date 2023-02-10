@@ -58,6 +58,13 @@ typedef unsigned long ulong;
 
 /*enums*/
 
+enum target_type
+{
+	NO_TARGET,
+	PRIME_TARGET,
+	SECONDARY_TARGET
+};
+
 enum languages
 {
 	ENGLISH,
