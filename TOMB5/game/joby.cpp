@@ -579,6 +579,44 @@ void CookerFlameControl(short item_number)
 	}
 }
 
+void TriggerLaraSparks(long smoke)
+{
+	SPARKS* sptr;
+	PHD_VECTOR pos;
+
+	pos.x = 0;
+	pos.y = 0;
+	pos.z = 0;
+	GetLaraJointPos(&pos, GetRandomControl() % 15);
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = (GetRandomControl() & 0x3F) - 64;
+	sptr->sG = sptr->sR;
+	sptr->sB = sptr->sR;
+	sptr->dR = 0;
+	sptr->dG = sptr->sR >> 1;
+	sptr->dB = sptr->sR;
+	sptr->TransType = 2;
+	sptr->ColFadeSpeed = 8;
+	sptr->FadeToBlack = 4;
+	sptr->Life = 12;
+	sptr->sLife = 12;
+	sptr->x = pos.x;
+	sptr->y = pos.y;
+	sptr->z = pos.z;
+	sptr->Xvel = 2 * (GetRandomControl() & 0x1FF) - 512;
+	sptr->Yvel = 2 * (GetRandomControl() & 0x1FF) - 512;
+	sptr->Zvel = 2 * (GetRandomControl() & 0x1FF) - 512;
+	sptr->Friction = 51;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = 0;
+	sptr->Flags = 0;
+
+	if (smoke)
+		TriggerFireFlame(pos.x, pos.y, pos.z, -1, 254);
+}
+
 void inject_joby(bool replace)
 {
 	INJECT(0x00442C90, KlaxonTremor, replace);
@@ -589,4 +627,5 @@ void inject_joby(bool replace)
 	INJECT(0x00441F50, DrawWreckingBall, replace);
 	INJECT(0x004421C0, ControlSecurityScreens, replace);
 	INJECT(0x00442250, CookerFlameControl, replace);
+	INJECT(0x00442320, TriggerLaraSparks, replace);
 }
