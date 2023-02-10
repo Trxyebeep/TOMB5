@@ -54,7 +54,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00408E20	+	TargetBox
 0x00408EF0	+	EscapeBox
 0x00408FD0	+	ValidBox
-0x004090A0		GetCreatureMood
+0x004090A0	+	GetCreatureMood
 0x00409370	+	CreatureMood
 0x00409770	+	StalkBox
 0x004098B0	+	CalculateTarget
