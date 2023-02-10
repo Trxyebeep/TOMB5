@@ -10,6 +10,7 @@
 #include "tomb4fx.h"
 #include "objects.h"
 #include "deltapak.h"
+#include "sphere.h"
 
 void InitialiseCreature(short item_number)
 {
@@ -1368,6 +1369,29 @@ void CreatureUnderwater(ITEM_INFO* item, long depth)
 	}
 }
 
+short CreatureEffect(ITEM_INFO* item, BITE_INFO* bite, short(*generate)(long x, long y, long z, short speed, short yrot, short room_number))
+{
+	PHD_VECTOR pos;
+
+	pos.x = bite->x;
+	pos.y = bite->y;
+	pos.z = bite->z;
+	GetJointAbsPosition(item, &pos, bite->mesh_num);
+	return generate(pos.x, pos.y, pos.z, item->speed, item->pos.y_rot, item->room_number);
+}
+
+short CreatureEffectT(ITEM_INFO* item, BITE_INFO* bite, short damage, short angle,
+	short(*generate)(long x, long y, long z, short damage, short angle, short room_number))
+{
+	PHD_VECTOR pos;
+
+	pos.x = bite->x;
+	pos.y = bite->y;
+	pos.z = bite->z;
+	GetJointAbsPosition(item, &pos, bite->mesh_num);
+	return generate(pos.x, pos.y, pos.z, damage, angle, item->room_number);
+}
+
 void inject_box(bool replace)
 {
 	INJECT(0x00408550, InitialiseCreature, replace);
@@ -1392,4 +1416,6 @@ void inject_box(bool replace)
 	INJECT(0x0040B240, CreatureJoint, replace);
 	INJECT(0x0040B2C0, CreatureFloat, replace);
 	INJECT(0x0040B400, CreatureUnderwater, replace);
+	INJECT(0x0040B4D0, CreatureEffect, replace);
+	INJECT(0x0040B550, CreatureEffectT, replace);
 }

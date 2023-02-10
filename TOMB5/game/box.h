@@ -25,12 +25,12 @@ void CreatureTilt(ITEM_INFO* item, short angle);
 void CreatureJoint(ITEM_INFO* item, short joint, short required);
 void CreatureFloat(short item_number);
 void CreatureUnderwater(ITEM_INFO* item, long depth);
+short CreatureEffect(ITEM_INFO* item, BITE_INFO* bite, short(*generate)(long x, long y, long z, short speed, short yrot, short room_number));
+short CreatureEffectT(ITEM_INFO* item, BITE_INFO* bite, short damage, short angle,
+	short(*generate)(long x, long y, long z, short damage, short angle, short room_number));
 
 #define AlertNearbyGuards	( (void(__cdecl*)(ITEM_INFO*)) 0x0040BB10 )
 #define GetAITarget	( (void(__cdecl*)(CREATURE_INFO*)) 0x0040BCC0 )
-typedef short(__cdecl* generate)(long, long, long, short, short, short);
-#define CreatureEffectT	( (short(__cdecl*)(ITEM_INFO*, BITE_INFO*, short, short, generate)) 0x0040B550 )
-#define CreatureEffect	( (short(__cdecl*)(ITEM_INFO*, BITE_INFO*, generate)) 0x0040B4D0 )
 #define AlertAllGuards	( (void(__cdecl*)(short)) 0x0040BA70 )
 #define AIGuard	( (short(__cdecl*)(CREATURE_INFO*)) 0x0040BBE0 )
 #define CreatureVault	( (long(__cdecl*)(short, short, long, long)) 0x0040B5D0 )
