@@ -3,6 +3,10 @@
 #include "dxshell.h"
 #include "winmain.h"
 
+D3DMATRIX D3DMView;
+D3DMATRIX D3DCameraMatrix;
+D3DMATRIX D3DInvCameraMatrix;
+
 static D3DMATRIX D3DMWorld;
 static D3DMATRIX D3DMProjection;
 

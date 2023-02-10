@@ -22,6 +22,7 @@
 #include "../game/deltapak.h"
 #include "3dmath.h"
 #include "specificfx.h"
+#include "../game/box.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
@@ -96,7 +97,6 @@ bool LoadRooms()
 	Log(2, "LoadRooms");
 	wibble = 0;
 	MaxRoomLights = 0;
-	LevelFogBulbCnt = 0;
 	aLoadRoomStream();
 	BuildOutsideTable();
 	size = *(long*)FileData;

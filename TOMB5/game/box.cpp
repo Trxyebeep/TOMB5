@@ -12,6 +12,8 @@
 #include "deltapak.h"
 #include "sphere.h"
 
+short* ground_zone[5][2];
+
 void InitialiseCreature(short item_number)
 {
 	ITEM_INFO* item;

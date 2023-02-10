@@ -25,3 +25,7 @@ D3DMATRIX* D3DProjectionMatrix(D3DMATRIX* mx, float hFov, float vFov, float nPla
 void D3DTransform(D3DVECTOR* vec, D3DMATRIX* mx);
 void D3DTranspose(D3DVECTOR* vec, D3DMATRIX* mx);
 LPD3DMATRIX D3DMultMatrix(LPD3DMATRIX d, LPD3DMATRIX a, LPD3DMATRIX b);
+
+extern D3DMATRIX D3DMView;
+extern D3DMATRIX D3DCameraMatrix;
+extern D3DMATRIX D3DInvCameraMatrix;

@@ -22,11 +22,14 @@
 #include "../game/health.h"
 #include "../game/text.h"
 #endif
+#include "LoadSave.h"
 
 long nPolys;
 long nClippedPolys;
 long DrawPrimitiveCnt;
 long DrawSortedCnt;
+float AnimatingTexturesV[16][8][3];
+float aBoundingBox[24];
 
 static ENVUV SkinENVUV[40][12];
 static D3DTLVERTEX SkinVerts[40][12];

@@ -9,3 +9,7 @@ void PrintString(ushort x, ushort y, uchar col, const char* string, ushort flags
 void InitFont();
 void UpdatePulseColour();
 void GetStringDimensions(const char* string, ushort* w, ushort* h);
+
+extern CVECTOR FontShades[10][32];
+extern uchar ScaleFlag;
+extern CHARDEF CharDef[106];

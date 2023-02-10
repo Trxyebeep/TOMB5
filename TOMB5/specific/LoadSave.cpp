@@ -26,6 +26,9 @@
 #include "mmx.h"
 #include "fmv.h"
 
+MONOSCREEN_STRUCT MonoScreen[5];
+char MonoScreenOn;
+
 static long MonoScreenX[4] = { 0, 256, 512, 640 };
 static long MonoScreenY[3] = { 0, 256, 480 };
 

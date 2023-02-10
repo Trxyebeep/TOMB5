@@ -1071,8 +1071,6 @@ void phd_GenerateW2V(PHD_3DPOS* viewPos)
 	phd_mxptr[M10] = w2v_matrix[M10];
 	phd_mxptr[M11] = w2v_matrix[M11];
 	phd_mxptr[M12] = w2v_matrix[M12];
-
-	SetD3DMatrix(&D3DMW2VMatrix, w2v_matrix);
 }
 
 void inject_3dmath(bool replace)

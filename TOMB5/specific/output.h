@@ -41,3 +41,5 @@ extern long nPolys;
 extern long nClippedPolys;
 extern long DrawPrimitiveCnt;
 extern long DrawSortedCnt;
+extern float AnimatingTexturesV[16][8][3];
+extern float aBoundingBox[24];

@@ -49,3 +49,6 @@ long FindSFCursor(long in, long selection);
 void CalculateNumSpecialFeatures();
 void SpecialFeaturesDisplayScreens(long num);
 void DoSpecialFeaturesServer();
+
+extern MONOSCREEN_STRUCT MonoScreen[5];
+extern char MonoScreenOn;

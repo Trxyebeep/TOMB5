@@ -9,6 +9,7 @@
 #include "../game/gameflow.h"
 #include "../game/control.h"
 #include "../game/delstuff.h"
+#include "lighting.h"
 #ifdef GENERAL_FIXES
 #include "../game/savegame.h"
 #include "../tomb5/tomb5.h"
@@ -255,7 +256,6 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 	}
 
 	aGlobalSkinMesh = 0;
-	bLaraSkinBits = 0;
 	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;
 
 	if (!(gfLevelFlags & GF_YOUNGLARA))
@@ -536,7 +536,6 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 		meshpp += 2;
 	}
 
-	bLaraSkinBits = 0;
 	aGlobalSkinMesh = 0;
 	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;
 
@@ -771,7 +770,6 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 	}
 
 	phd_PopMatrix();
-	bLaraSkinBits = 1;
 	bLaraUnderWater = LaraNodeUnderwater[8] != 0 ? 8 : -1;
 	phd_PushMatrix();
 	obj = &objects[LARA_SKIN_JOINTS];
@@ -859,7 +857,6 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 	phd_bottom = bottom;
 	GlobalAlpha = 0xFF000000;
 	aGlobalSkinMesh = 0;
-	bLaraSkinBits = 0;
 	bLaraUnderWater = 0;
 }
 

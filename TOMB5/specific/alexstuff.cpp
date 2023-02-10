@@ -9,6 +9,8 @@
 #include "../game/text.h"
 #include "specificfx.h"
 #include "function_table.h"
+#include "lighting.h"
+#include "d3dmatrix.h"
 
 const char* CreditNames[] =
 {
