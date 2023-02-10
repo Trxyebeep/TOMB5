@@ -1343,7 +1343,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00477880	+	InitialiseGameFlags
 0x004778F0		SetupGame
 0x004779B0	+	ClearFootPrints
-0x004779E0		reset_cutseq_vars
+0x004779E0	+	reset_cutseq_vars
 
 
 		game/skeleton.cpp

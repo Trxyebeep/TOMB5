@@ -1972,6 +1972,15 @@ void ClearFootPrints()
 	FootPrintNum = 0;
 }
 
+void reset_cutseq_vars()
+{
+	cutseq_num = 0;
+	cutseq_trig = 0;
+	GLOBAL_playing_cutseq = 0;
+	GLOBAL_cutseq_frame = 0;
+	SetFadeClip(0, 1);
+}
+
 void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
@@ -1982,4 +1991,5 @@ void inject_setup(bool replace)
 	INJECT(0x004771E0, GetCarriedItems, replace);
 	INJECT(0x00477880, InitialiseGameFlags, replace);
 	INJECT(0x004779B0, ClearFootPrints, replace);
+	INJECT(0x004779E0, reset_cutseq_vars, replace);
 }
