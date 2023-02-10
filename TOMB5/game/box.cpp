@@ -119,9 +119,98 @@ void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
 	info->bite = info->ahead && enemy->hit_points > 0 && abs(enemy->pos.y_pos - item->pos.y_pos) <= 512;
 }
 
+long SearchLOT(LOT_INFO* LOT, long expansion)
+{
+	BOX_NODE* node;
+	BOX_NODE* expand;
+	BOX_INFO* box;
+	short* zone;
+	long index, done, box_number, overlap_flags, change;
+	short search_zone;
+
+	zone = ground_zone[LOT->zone][flip_status];
+	search_zone = zone[LOT->head];
+
+	for (int i = 0; i < expansion; i++)
+	{
+		if (LOT->head == 2047)
+		{
+			LOT->tail = 2047;
+			return 0;
+		}
+
+		box = &boxes[LOT->head];
+		node = &LOT->node[LOT->head];
+		index = box->overlap_index & 0x3FFF;
+		done = 0;
+
+		do
+		{
+			box_number = overlap[index];
+			index++;
+			overlap_flags = box_number & ~2047;
+
+			if (box_number & 0x8000)
+				done = 1;
+
+			box_number &= 2047;
+
+			if (!LOT->fly && search_zone != zone[box_number])	//zone isn't in search area + can't fly
+				continue;
+
+			change = boxes[box_number].height - box->height;
+
+			if ((change > LOT->step || change < LOT->drop) && (!(overlap_flags & 0x2000) || !LOT->can_monkey))	//can't traverse block + can't monkey
+				continue;
+
+			if (overlap_flags & 0x800 && !LOT->can_jump)	//can't jump
+				continue;
+
+			expand = &LOT->node[box_number];
+
+			if ((node->search_number & 0x7FFF) < (expand->search_number & 0x7FFF))
+				continue;
+
+			if (node->search_number & 0x8000)
+			{
+				if ((node->search_number & 0x7FFF) == (expand->search_number & 0x7FFF))
+					continue;
+
+				expand->search_number = node->search_number;
+			}
+			else
+			{
+				if ((node->search_number & 0x7FFF) == (expand->search_number & 0x7FFF) && !(expand->search_number & 0x8000))
+					continue;
+
+				if (boxes[box_number].overlap_index & LOT->block_mask)
+					expand->search_number = node->search_number | 0x8000;
+				else
+				{
+					expand->search_number = node->search_number;
+					expand->exit_box = LOT->head;
+				}
+			}
+
+			if (expand->next_expansion == 2047 && box_number != LOT->tail)
+			{
+				LOT->node[LOT->tail].next_expansion = (short)box_number;
+				LOT->tail = (short)box_number;
+			}
+
+		} while (!done);
+
+		LOT->head = node->next_expansion;
+		node->next_expansion = 2047;
+	}
+
+	return 1;
+}
+
 void inject_box(bool replace)
 {
 	INJECT(0x00408550, InitialiseCreature, replace);
 	INJECT(0x00408630, CreatureActive, replace);
 	INJECT(0x004086C0, CreatureAIInfo, replace);
+	INJECT(0x00408BA0, SearchLOT, replace);
 }
