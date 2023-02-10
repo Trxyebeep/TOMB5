@@ -1523,7 +1523,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00487A90	+	DrawSprite2
 0x00487AB0	+	DrawSteelDoorLensFlare
 0x00487AD0	+	SteelDoorCollision
-0x00487B60		TriggerLiftBrakeSparks
+0x00487B60	+	TriggerLiftBrakeSparks
 0x00487FF0	+	ControlGunship
 0x00488710	+	ControlGasCloud
 

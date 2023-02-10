@@ -785,6 +785,108 @@ void DrawSteelDoorLensFlare(ITEM_INFO* item)
 #endif
 }
 
+void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
+{
+	SMOKE_SPARKS* smoke;
+	SPARKS* sptr;
+	long v;
+	short yAdd;
+
+	yrot += 0x8000;
+
+	smoke = &smoke_spark[GetFreeSmokeSpark()];
+	smoke->On = 1;
+	smoke->sShade = 0;
+	smoke->dShade = 64;
+	smoke->ColFadeSpeed = 1;
+	smoke->FadeToBlack = 8;
+	smoke->TransType = 2;
+	smoke->Life = (GetRandomControl() & 3) + 24;
+	smoke->sLife = smoke->Life;
+
+	v = 2 * (GetRandomControl() & 0x7F) + 128;
+	yAdd = short((GetRandomControl() >> 2) - 4096);
+	smoke->x = (GetRandomControl() & 0x1F) + pos->x - 16;
+	smoke->y = pos->y;
+	smoke->z = (GetRandomControl() & 0x1F) + pos->z - 16;
+	smoke->Xvel = short((v * phd_sin(yrot + yAdd)) >> 14);
+	smoke->Yvel = (-128 - (GetRandomControl() & 0x7F)) << 3;
+	smoke->Zvel = short((v * phd_cos(yrot + yAdd)) >> 14);
+
+	smoke->Friction = 84;
+	smoke->Flags = 16;
+	smoke->RotAng = GetRandomControl() & 0xFFF;
+	smoke->RotAdd = (GetRandomControl() & 0x1F) - 16;
+	smoke->MaxYvel = 0;
+	smoke->Gravity = 0;
+	smoke->Size = (GetRandomControl() & 0x1F) + 32;
+	smoke->sSize = smoke->Size;
+	smoke->dSize = smoke->Size + 16;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 255;
+	sptr->sG = 255;
+	sptr->sB = 255;
+	sptr->dR = (GetRandomControl() & 0x3F) - 64;
+	sptr->dG = sptr->dR - (GetRandomControl() & 0x7F);
+	sptr->dB = 0;
+	sptr->ColFadeSpeed = 4;
+	sptr->TransType = 2;
+	sptr->FadeToBlack = 4;
+	sptr->Life = 12;
+	sptr->sLife = 12;
+
+	yAdd = short((GetRandomControl() >> 1) - 8192);
+	v = GetRandomControl() & 0x1FF;
+	sptr->Xvel = short((v * phd_sin(yrot + yAdd)) >> 14);
+	sptr->Yvel = (-512 - (GetRandomControl() & 0x7F)) << 2;
+	sptr->Zvel = short((v * phd_cos(yrot + yAdd)) >> 14);
+	sptr->x = (sptr->Xvel >> 5) + (GetRandomControl() & 0x1F) + pos->x - 16;
+	sptr->y = pos->y + (sptr->Yvel >> 5);
+	sptr->z = (sptr->Zvel >> 5) + (GetRandomControl() & 0x1F) + pos->z - 16;
+
+	sptr->Friction = 84;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = 0;
+	sptr->Flags = 0;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 255;
+	sptr->sG = (GetRandomControl() & 0x1F) + 48;
+	sptr->sB = 16;
+	sptr->dR = (GetRandomControl() & 0x3F) + 192;
+	sptr->dG = (GetRandomControl() & 0x3F) + 128;
+	sptr->dB = 0;
+	sptr->FadeToBlack = 4;
+	sptr->ColFadeSpeed = (GetRandomControl() & 3) + 4;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 3) + 24;
+	sptr->sLife = sptr->Life;
+
+	yAdd = short((GetRandomControl() >> 2) - 4096);
+	v = 2 * (GetRandomControl() & 0x7F) + 128;
+	sptr->x = (GetRandomControl() & 0xF) + pos->x - 8;
+	sptr->y = pos->y;
+	sptr->z = (GetRandomControl() & 0xF) + pos->z - 8;
+	sptr->Xvel = short((v * phd_sin(yrot + yAdd)) >> 14);
+	sptr->Yvel = -512 - (GetRandomControl() & 0x3FF);
+	sptr->Zvel = short((v * phd_cos(yrot + yAdd)) >> 14);
+
+	sptr->Friction = 6;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+	sptr->MaxYvel = 0;
+	sptr->Size = (GetRandomControl() & 0xF) + 12;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = sptr->Size >> 1;
+	sptr->Flags = 10;
+	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
+	sptr->Gravity = (GetRandomControl() & 0xF) + 16;
+	sptr->Scalar = 1;
+}
+
 void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
@@ -796,4 +898,5 @@ void inject_tower2(bool replace)
 	INJECT(0x00486BE0, ControlSteelDoor, replace);
 	INJECT(0x00487A90, DrawSprite2, replace);
 	INJECT(0x00487AB0, DrawSteelDoorLensFlare, replace);
+	INJECT(0x00487B60, TriggerLiftBrakeSparks, replace);
 }
