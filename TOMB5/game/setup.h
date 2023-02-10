@@ -14,5 +14,4 @@ void ClearFootPrints();
 void reset_cutseq_vars();
 void GetAIPickups();
 void BuildOutsideTable();
-
-#define SetupGame	( (void(__cdecl*)()) 0x004778F0 )
+void SetupGame();

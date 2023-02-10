@@ -2143,6 +2143,29 @@ void BuildOutsideTable()
 	}
 }
 
+void SetupGame()
+{
+	SeedRandomDraw(0xD371F947);
+	SeedRandomControl(0xD371F947);
+	wibble = 0;
+	torchroom = NO_ROOM;
+	ClearFootPrints();
+	InitBinoculars();
+	InitTarget();
+	InitialiseGameFlags();
+
+	if (gfCurrentLevel == LVL5_THIRTEENTH_FLOOR || gfCurrentLevel == LVL5_BASE || gfCurrentLevel == LVL5_GALLOWS_TREE ||
+		gfCurrentLevel == LVL5_STREETS_OF_ROME || gfInitialiseGame)
+		InitialiseLara(0);
+	else
+		InitialiseLara(1);
+
+	GetCarriedItems();
+	GetAIPickups();
+	SeedRandomDraw(0xD371F947);
+	SeedRandomControl(0xD371F947);
+}
+
 void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
@@ -2156,4 +2179,5 @@ void inject_setup(bool replace)
 	INJECT(0x004779E0, reset_cutseq_vars, replace);
 	INJECT(0x00477370, GetAIPickups, replace);
 	INJECT(0x004774D0, BuildOutsideTable, replace);
+	INJECT(0x004778F0, SetupGame, replace);
 }
