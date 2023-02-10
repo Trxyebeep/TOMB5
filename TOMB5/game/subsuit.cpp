@@ -226,10 +226,67 @@ void GetLaraJointPosRot(PHD_VECTOR* pos, long node, long rot, SVECTOR* sv)
 	phd_PopMatrix();
 }
 
+void TriggerSubMist(PHD_VECTOR* pos, PHD_VECTOR* pos1, long size)
+{
+	SPARKS* sptr;
+	long n;
+
+	if (size < 0)
+	{
+		size = -size;
+		n = 2;
+	}
+	else
+		n = 0;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 32;
+	sptr->sG = 32;
+	sptr->sB = 32;
+	sptr->dR = 160;
+	sptr->dG = 160;
+	sptr->dB = 160;
+	sptr->ColFadeSpeed = 2;
+	sptr->FadeToBlack = 6;
+	sptr->TransType = 2;
+	sptr->Life = uchar((GetRandomControl() & 7) - size + 16);
+	sptr->sLife = sptr->Life;
+	sptr->x = (GetRandomControl() & 0x1F) + pos->x - 16;
+	sptr->y = (GetRandomControl() & 0x1F) + pos->y - 16;
+	sptr->z = (GetRandomControl() & 0x1F) + pos->z - 16;
+	sptr->Xvel = short(pos1->x + (GetRandomControl() & 0x7F) - pos->x - 64);
+	sptr->Yvel = short(pos1->y + (GetRandomControl() & 0x7F) - pos->y - 64);
+	sptr->Zvel = short(pos1->z + (GetRandomControl() & 0x7F) - pos->z - 64);
+	sptr->Friction = 0;
+	sptr->Def = objects[458].mesh_index + (n != 0 ? 17 : 13);
+	sptr->Gravity = -4 - (GetRandomControl() & 3);
+	sptr->MaxYvel = 0;
+	sptr->Scalar = 1;
+
+	if (n)
+	{
+		sptr->Flags = 26;
+		sptr->RotAng = GetRandomControl() & 0xFFF;
+		sptr->RotAdd = (GetRandomControl() & 0xF) - 8;
+		sptr->Size = uchar((GetRandomControl() & 0xF) + 2 * size + 8);
+		sptr->sSize = sptr->Size;
+		sptr->dSize = sptr->Size << 1;
+	}
+	else
+	{
+		sptr->Flags = 10;
+		sptr->dSize = uchar((GetRandomControl() & 3) + size + 4);
+		sptr->Size = sptr->dSize >> 1;
+		sptr->sSize = sptr->Size >> 1;
+	}
+}
+
 void inject_subsuit(bool replace)
 {
 	INJECT(0x0047C6D0, FireChaff, replace);
 	INJECT(0x0047C950, DoSubsuitStuff, replace);
 	INJECT(0x0047C4D0, TriggerAirBubbles, replace);
 	INJECT(0x0047CF80, GetLaraJointPosRot, replace);
+	INJECT(0x0047CD80, TriggerSubMist, replace);
 }
