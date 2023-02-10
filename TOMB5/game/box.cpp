@@ -6,6 +6,7 @@
 #include "../specific/function_stubs.h"
 #include "draw.h"
 #include "control.h"
+#include "items.h"
 
 void InitialiseCreature(short item_number)
 {
@@ -817,6 +818,31 @@ long BadFloor(long x, long y, long z, long box_height, long next_height, short r
 	return 0;
 }
 
+void DropBaddyPickups(ITEM_INFO* item)
+{
+	ITEM_INFO* pickup;
+	FLOOR_INFO* floor;
+	short pickup_number, room_number;
+
+	pickup_number = item->carried_item;
+
+	while (pickup_number != NO_ITEM)
+	{
+		pickup = &items[pickup_number];
+		pickup->pos.x_pos = (item->pos.x_pos & -512) | 512;
+		pickup->pos.z_pos = (item->pos.z_pos & -512) | 512;
+
+		room_number = item->room_number;
+		floor = GetFloor(pickup->pos.x_pos, item->pos.y_pos, pickup->pos.z_pos, &room_number);
+		pickup->pos.y_pos = GetHeight(floor,pickup->pos.x_pos, item->pos.y_pos, pickup->pos.z_pos);
+		pickup->pos.y_pos -= GetBoundsAccurate(pickup)[3];
+
+		ItemNewRoom(pickup_number, item->room_number);
+		pickup->flags |= IFL_TRIGGERED;
+		pickup_number = pickup->carried_item;
+	}
+}
+
 void inject_box(bool replace)
 {
 	INJECT(0x00408550, InitialiseCreature, replace);
@@ -833,4 +859,5 @@ void inject_box(bool replace)
 	INJECT(0x004090A0, GetCreatureMood, replace);
 	INJECT(0x00409E20, CreatureCreature, replace);
 	INJECT(0x00409FB0, BadFloor, replace);
+	INJECT(0x0040C5A0, DropBaddyPickups, replace);
 }

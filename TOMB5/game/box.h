@@ -17,6 +17,7 @@ void CreatureMood(ITEM_INFO* item, AI_INFO* info, long violent);
 void GetCreatureMood(ITEM_INFO* item, AI_INFO* info, long violent);
 long CreatureCreature(short item_number);
 long BadFloor(long x, long y, long z, long box_height, long next_height, short room_number, LOT_INFO* LOT);
+void DropBaddyPickups(ITEM_INFO* item);
 
 #define AlertNearbyGuards	( (void(__cdecl*)(ITEM_INFO*)) 0x0040BB10 )
 #define CreatureDie	( (void(__cdecl*)(short, long)) 0x0040A090 )
@@ -32,4 +33,3 @@ typedef short(__cdecl* generate)(long, long, long, short, short, short);
 #define AlertAllGuards	( (void(__cdecl*)(short)) 0x0040BA70 )
 #define AIGuard	( (short(__cdecl*)(CREATURE_INFO*)) 0x0040BBE0 )
 #define CreatureVault	( (long(__cdecl*)(short, short, long, long)) 0x0040B5D0 )
-#define DropBaddyPickups	( (void(__cdecl*)(ITEM_INFO*)) 0x0040C5A0 )

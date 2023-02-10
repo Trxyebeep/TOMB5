@@ -79,7 +79,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x0040C2D0		SameZone
 0x0040C410		CreatureYRot
 0x0040C460		MoveCreature3DPos
-0x0040C5A0		DropBaddyPickups
+0x0040C5A0	+	DropBaddyPickups
 
 
 		game/camera.cpp
