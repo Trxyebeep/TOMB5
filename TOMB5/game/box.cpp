@@ -1275,6 +1275,31 @@ void CreatureTilt(ITEM_INFO* item, short angle)
 	item->pos.z_rot += angle;
 }
 
+void CreatureJoint(ITEM_INFO* item, short joint, short required)
+{
+	CREATURE_INFO* creature;
+	short change;
+
+	creature = (CREATURE_INFO*)item->data;
+
+	if (!creature)
+		return;
+
+	change = required - creature->joint_rotation[joint];
+
+	if (change > 546)
+		change = 546;
+	else if (change < -546)
+		change = -546;
+
+	creature->joint_rotation[joint] += change;
+
+	if (creature->joint_rotation[joint] > 0x3000)
+		creature->joint_rotation[joint] = 0x3000;
+	else if (creature->joint_rotation[joint] < -0x3000)
+		creature->joint_rotation[joint] = -0x3000;
+}
+
 void inject_box(bool replace)
 {
 	INJECT(0x00408550, InitialiseCreature, replace);
@@ -1296,4 +1321,5 @@ void inject_box(bool replace)
 	INJECT(0x0040A1D0, CreatureAnimation, replace);
 	INJECT(0x0040AE90, CreatureTurn, replace);
 	INJECT(0x0040B1B0, CreatureTilt, replace);
+	INJECT(0x0040B240, CreatureJoint, replace);
 }
