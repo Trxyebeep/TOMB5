@@ -1480,6 +1480,41 @@ long CreatureVault(short item_number, short angle, long vault, long shift)
 	return vault;
 }
 
+void CreatureKill(ITEM_INFO* item, short kill_anim, short kill_state, short lara_anim)
+{
+	item->anim_number = objects[item->object_number].anim_index + kill_anim;
+	item->frame_number = anims[item->anim_number].frame_base;
+	item->current_anim_state = kill_state;
+	lara_item->anim_number = lara_anim;
+	lara_item->frame_number = anims[lara_item->anim_number].frame_base;
+	lara_item->current_anim_state = AS_DEATH;
+	lara_item->goal_anim_state = AS_DEATH;
+	lara_item->pos.x_pos = item->pos.x_pos;
+	lara_item->pos.y_pos = item->pos.y_pos;
+	lara_item->pos.z_pos = item->pos.z_pos;
+	lara_item->pos.x_rot = item->pos.x_rot;
+	lara_item->pos.y_rot = item->pos.y_rot;
+	lara_item->pos.z_rot = item->pos.z_rot;
+	lara_item->fallspeed = 0;
+	lara_item->gravity_status = 0;
+	lara_item->speed = 0;
+
+	if (lara_item->room_number != item->room_number)
+		ItemNewRoom(lara.item_number, item->room_number);
+
+	AnimateItem(lara_item);
+	lara.gun_status = LG_HANDS_BUSY;
+	lara.gun_type = WEAPON_NONE;
+	lara.hit_direction = -1;
+	lara.air = -1;
+	camera.pos.room_number = lara_item->room_number;
+	ForcedFixedCamera.x = item->pos.x_pos + ((2048 * phd_sin(item->pos.y_rot)) >> 14);
+	ForcedFixedCamera.y = item->pos.y_pos - 1024;
+	ForcedFixedCamera.z = item->pos.z_pos + ((2048 * phd_cos(item->pos.y_rot)) >> 14);
+	ForcedFixedCamera.room_number = item->room_number;
+	UseForcedFixedCamera = 1;
+}
+
 void inject_box(bool replace)
 {
 	INJECT(0x00408550, InitialiseCreature, replace);
@@ -1507,4 +1542,5 @@ void inject_box(bool replace)
 	INJECT(0x0040B4D0, CreatureEffect, replace);
 	INJECT(0x0040B550, CreatureEffectT, replace);
 	INJECT(0x0040B5D0, CreatureVault, replace);
+	INJECT(0x0040B820, CreatureKill, replace);
 }
