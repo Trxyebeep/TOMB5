@@ -946,7 +946,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00452110	+	lara_col_climbdown
 0x00452340	+	lara_as_climbend
 0x00452380	+	lara_col_climbend
-0x004523A0		GetClimbTrigger
+0x004523A0	+	GetClimbTrigger
 
 
 		game/larafire.cpp

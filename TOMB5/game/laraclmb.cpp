@@ -357,6 +357,33 @@ void lara_col_climbdown(ITEM_INFO* item, COLL_INFO* coll)
 		AnimateLara(item);
 }
 
+short GetClimbTrigger(long x, long y, long z, short room_number)
+{
+	FLOOR_INFO* floor;
+	short* data;
+
+	floor = GetFloor(x, y, z, &room_number);
+	GetHeight(floor, x, y, z);
+
+	if (!trigger_index)
+		return 0;
+
+	data = trigger_index;
+
+	if ((*data & 0x1F) == LAVA_TYPE)
+	{
+		if (*data & 0x8000)
+			return 0;
+
+		data++;
+	}
+
+	if ((*data & 0x1F) == CLIMB_TYPE)
+		return *data;
+
+	return 0;
+}
+
 void inject_laraclmb(bool replace)
 {
 	INJECT(0x00450D40, lara_as_climbstnc, replace);
@@ -372,4 +399,5 @@ void inject_laraclmb(bool replace)
 	INJECT(0x00452380, lara_col_climbend, replace);
 	INJECT(0x004520E0, lara_as_climbdown, replace);
 	INJECT(0x00452110, lara_col_climbdown, replace);
+	INJECT(0x004523A0, GetClimbTrigger, replace);
 }
