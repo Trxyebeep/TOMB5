@@ -25,5 +25,4 @@ void lara_col_dive(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_uwdeath(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_waterroll(ITEM_INFO* item, COLL_INFO* coll);
 long GetWaterDepth(long x, long y, long z, short room_number);
-
-#define LaraWaterCurrent	( (void(__cdecl*)(COLL_INFO*)) 0x004598F0 )
+void LaraWaterCurrent(COLL_INFO* coll);
