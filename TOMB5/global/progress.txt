@@ -1375,7 +1375,7 @@ x for functions decompiled but not injected, for one reason or another.
 
 0x00479170		TestCollision
 0x00479380		GetSpheres
-0x00479780		GetJointAbsPosition
+0x00479780	+	GetJointAbsPosition
 0x00479BB0	+	InitInterpolate2
 0x00479C20	+	GetJointAbsPositionMatrix
 
