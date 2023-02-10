@@ -602,11 +602,6 @@
 #define overlap	VAR_(0x00EEFB5C, ushort*)
 
 /*title shit*/
-#define sound_cut_flag	VAR_(0x0051CE58, long)//DoTitle and SoundEffect. flag before and after doing some title cutscene, 
-//if 0 + playing cut menu selections dont make a sound. never seems to be the case though!
-
-#define title_string	ARRAY_(0x0050842C, char, [8])
-
 #define nframes	VAR_(0x005082C4, long)
 
 #define CreditsDone	VAR_(0x00E6D838, uchar)

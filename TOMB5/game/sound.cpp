@@ -4,6 +4,8 @@
 #include "../specific/dxsound.h"
 #include "../specific/3dmath.h"
 
+long sound_cut_flag = 0;
+
 void SoundEffectCS(long sfx, PHD_3DPOS* pos, long flags)
 {
 	long bak;

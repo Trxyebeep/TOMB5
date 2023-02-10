@@ -426,8 +426,8 @@ long TitleOptions()
 				{
 					if (n2 > 1)
 					{
-						PrintString(32, font_height + font_height + phd_winymin + font_height, 6, &title_string[4], 0);
-						PrintString(phd_winxmax - 48, font_height + font_height + phd_winymin + font_height, 6, &title_string[4], 0);
+						PrintString(32, font_height + font_height + phd_winymin + font_height, 6, "\x18", 0);
+						PrintString(phd_winxmax - 48, font_height + font_height + phd_winymin + font_height, 6, "\x18", 0);
 					}
 				}
 				else
@@ -435,8 +435,8 @@ long TitleOptions()
 
 				if (n != Gameflow->nLevels - 1)
 				{
-					PrintString(32, font_height + phd_winymin + font_height + (10 * font_height), 6, &title_string[0], 0);
-					PrintString(phd_winxmax - 48, font_height + phd_winymin + font_height + (10 * font_height), 6, &title_string[0], 0);
+					PrintString(32, font_height + phd_winymin + font_height + (10 * font_height), 6, "\x1a", 0);
+					PrintString(phd_winxmax - 48, font_height + phd_winymin + font_height + (10 * font_height), 6, "\x1a", 0);
 				}
 			}
 			else

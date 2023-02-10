@@ -11,6 +11,8 @@ void StopSoundEffect(long sfx);
 void GetPanVolume(SoundSlot* slot);
 long SoundEffect(long sfx, PHD_3DPOS* pos, long flags);
 
+extern long sound_cut_flag;
+
 enum sfx_types
 {
 	SFX_LANDANDWATER = 0,
