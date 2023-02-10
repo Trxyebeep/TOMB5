@@ -71,8 +71,8 @@ x for functions decompiled but not injected, for one reason or another.
 0x0040B550	+	CreatureEffectT
 0x0040B5D0	+	CreatureVault
 0x0040B820	+	CreatureKill
-0x0040BA70		AlertAllGuards
-0x0040BB10		AlertNearbyGuards
+0x0040BA70	+	AlertAllGuards
+0x0040BB10	+	AlertNearbyGuards
 0x0040BBE0		AIGuard
 0x0040BCC0		GetAITarget
 0x0040C070		FindAITargetObject
