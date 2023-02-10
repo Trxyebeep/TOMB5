@@ -129,7 +129,20 @@ void GetJointAbsPositionMatrix(ITEM_INFO* item, float* matrix, long node)
 	aIMXPtr = aIMXPtr_bak;
 }
 
+void InitInterpolate2(long frac, long rate)
+{
+	IM_rate = rate;
+	IM_frac = frac;
+
+	IMptr = &IMstack[384];
+	memcpy(&IMstack[384], phd_mxptr, 48u);
+
+	aIMXPtr = &aIFMStack[384];
+	memcpy(&aIFMStack[384], aMXPtr, 48u);
+}
+
 void inject_sphere(bool replace)
 {
 	INJECT(0x00479C20, GetJointAbsPositionMatrix, replace);
+	INJECT(0x00479BB0, InitInterpolate2, replace);
 }
