@@ -8,5 +8,4 @@ void DisableBaddieAI(short item_number);
 void ClearLOT(LOT_INFO* lot);
 void CreateZone(ITEM_INFO* item);
 void InitialiseSlot(short item_number, long slot);
-
-#define EnableBaddieAI	( (long(__cdecl*)(short, long)) 0x0045B1A0 )
+long EnableBaddieAI(short item_number, long Always);
