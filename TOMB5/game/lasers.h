@@ -10,7 +10,6 @@ void ControlFloorLasers(short item_number);
 long IsSteamOn(ITEM_INFO* item);
 long GetSteamMultiplier(ITEM_INFO* item, long y, long z);
 long CheckLaserBox(long* bounds);
-
-#define GetFishTank	( (void(__cdecl*)(ITEM_INFO*)) 0x0045A4B0 )
+void GetFishTank(ITEM_INFO* item);
 
 extern char SteamLasers[8][5];

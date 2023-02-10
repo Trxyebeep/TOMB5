@@ -300,6 +300,27 @@ long CheckLaserBox(long* bounds)
 		bounds[5] >= DeadlyBounds[4] && bounds[4] <= DeadlyBounds[5];
 }
 
+void GetFishTank(ITEM_INFO* item)
+{
+	ITEM_INFO* tank;
+	short item_number;
+
+	item_number = room[item->room_number].item_number;
+
+	while (item_number != NO_ITEM)
+	{
+		tank = &items[item_number];
+
+		if (tank->object_number == FISHTANK && tank->status == ITEM_ACTIVE)
+		{
+			item->trigger_flags = 64;
+			return;
+		}
+
+		item_number = tank->next_item;
+	}
+}
+
 void inject_lasers(bool replace)
 {
 	INJECT(0x0045A540, DrawFloorLasers, replace);
@@ -309,4 +330,5 @@ void inject_lasers(bool replace)
 	INJECT(0x00459C10, IsSteamOn, replace);
 	INJECT(0x00459CA0, GetSteamMultiplier, replace);
 	INJECT(0x00459EB0, CheckLaserBox, replace);
+	INJECT(0x0045A4B0, GetFishTank, replace);
 }

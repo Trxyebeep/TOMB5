@@ -1053,7 +1053,7 @@ x for functions decompiled but not injected, for one reason or another.
 0x00459EB0	+	CheckLaserBox
 0x0045A030	+	ControlSteamLasers
 0x0045A1E0	+	ControlFloorLasers
-0x0045A4B0		GetFishTank
+0x0045A4B0	+	GetFishTank
 0x0045A540	+	DrawFloorLasers
 
 
