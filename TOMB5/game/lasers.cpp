@@ -10,6 +10,7 @@
 #include "../specific/3dmath.h"
 #include "objects.h"
 #include "../specific/specificfx.h"
+#include "draw.h"
 
 char SteamLasers[8][5] =
 {
@@ -260,6 +261,45 @@ long GetSteamMultiplier(ITEM_INFO* item, long y, long z)
 	return 0;
 }
 
+long CheckLaserBox(long* bounds)
+{
+	short* lbounds;
+	long swp;
+	short rbounds[6];
+
+	if (bounds[0] > bounds[1])
+	{
+		swp = bounds[0];
+		bounds[0] = bounds[1];
+		bounds[1] = swp;
+	}
+
+	if (bounds[4] > bounds[5])
+	{
+		swp = bounds[4];
+		bounds[4] = bounds[5];
+		bounds[5] = swp;
+	}
+
+	lbounds = GetBoundsAccurate(lara_item);
+	phd_PushUnitMatrix();
+	phd_RotYXZ(lara_item->pos.y_rot, lara_item->pos.x_rot, lara_item->pos.z_rot);
+	phd_SetTrans(0, 0, 0);
+	mRotBoundingBoxNoPersp(lbounds, rbounds);
+	phd_PopMatrix();
+
+	DeadlyBounds[0] = lara_item->pos.x_pos + rbounds[0];
+	DeadlyBounds[1] = lara_item->pos.x_pos + rbounds[1];
+	DeadlyBounds[2] = lara_item->pos.y_pos + rbounds[2];
+	DeadlyBounds[3] = lara_item->pos.y_pos + rbounds[3];
+	DeadlyBounds[4] = lara_item->pos.z_pos + rbounds[4];
+	DeadlyBounds[5] = lara_item->pos.z_pos + rbounds[5];
+
+	return bounds[1] >= DeadlyBounds[0] && bounds[0] <= DeadlyBounds[1] &&
+		bounds[3] >= DeadlyBounds[2] && bounds[2] <= DeadlyBounds[3] &&
+		bounds[5] >= DeadlyBounds[4] && bounds[4] <= DeadlyBounds[5];
+}
+
 void inject_lasers(bool replace)
 {
 	INJECT(0x0045A540, DrawFloorLasers, replace);
@@ -268,4 +308,5 @@ void inject_lasers(bool replace)
 	INJECT(0x0045A1E0, ControlFloorLasers, replace);
 	INJECT(0x00459C10, IsSteamOn, replace);
 	INJECT(0x00459CA0, GetSteamMultiplier, replace);
+	INJECT(0x00459EB0, CheckLaserBox, replace);
 }
