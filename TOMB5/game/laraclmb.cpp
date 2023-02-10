@@ -481,6 +481,135 @@ long LaraTestClimbUpPos(ITEM_INFO* item, long front, long right, long* shift, lo
 	return 0;
 }
 
+long LaraTestClimb(long x, long y, long z, long xfront, long zfront, long item_height, short item_room, long* shift)
+{
+	FLOOR_INFO* floor;
+	long hang, h, c;
+	short room_number;
+
+	*shift = 0;
+	hang = 1;
+
+	if (!lara.climb_status)
+		return 0;
+
+	room_number = item_room;
+	floor = GetFloor(x, y - 128, z, &room_number);
+	h = GetHeight(floor, x, y, z);
+
+	if (h == NO_HEIGHT)
+		return 0;
+
+	h -= 128 + y + item_height;
+
+	if (h < -70)
+		return 0;
+
+	if (h < 0)
+		*shift = h;
+
+	c = GetCeiling(floor, x, y, z) - y;
+
+	if (c > 70)
+		return 0;
+
+	if (c > 0)
+	{
+		if (*shift)
+			return 0;
+
+		*shift = c;
+	}
+
+	if (item_height + h < 900)
+		hang = 0;
+
+	floor = GetFloor(xfront + x, y, zfront + z, &room_number);
+	h = GetHeight(floor, xfront + x, y, zfront + z);
+
+	if (h != NO_HEIGHT)
+		h -= y;
+
+	if (h > 70)
+	{
+		c = GetCeiling(floor, xfront + x, y, zfront + z) - y;
+
+		if (c >= 512)
+			return 1;
+
+		if (c > 442)
+		{
+			if (*shift > 0)
+			{
+				if (hang)
+					return -1;
+				else
+					return 0;
+			}
+
+			*shift = c - 512;
+			return 1;
+		}
+
+		if (c > 0)
+		{
+			if (hang)
+				return -1;
+			else
+				return 0;
+		}
+
+		if (c <= -70 || !hang || *shift > 0)
+			return 0;
+
+		if (*shift > c)
+			*shift = c;
+
+		return -1;
+	}
+
+	if (h > 0)
+	{
+		if (*shift < 0)
+			return 0;
+
+		if (h > *shift)
+			*shift = h;
+	}
+
+	room_number = item_room;
+	GetFloor(x, y + item_height, z, &room_number);
+	floor = GetFloor(xfront + x, y + item_height, zfront + z, &room_number);
+	c = GetCeiling(floor, xfront + x, y + item_height, zfront + z);
+
+	if (c == NO_HEIGHT)
+		return 1;
+
+	c -= y;
+
+	if (c <= h || c >= 512)
+		return 1;
+
+	if (c <= 442)
+	{
+		if (hang)
+			return -1;
+		else
+			return 0;
+	}
+
+	if (*shift > 0)
+	{
+		if (hang)
+			return -1;
+		else
+			return 0;
+	}
+
+	*shift = c - 512;
+	return 1;
+}
+
 void inject_laraclmb(bool replace)
 {
 	INJECT(0x00450D40, lara_as_climbstnc, replace);
@@ -498,4 +627,5 @@ void inject_laraclmb(bool replace)
 	INJECT(0x00452110, lara_col_climbdown, replace);
 	INJECT(0x004523A0, GetClimbTrigger, replace);
 	INJECT(0x00451200, LaraTestClimbUpPos, replace);
+	INJECT(0x00450A50, LaraTestClimb, replace);
 }
