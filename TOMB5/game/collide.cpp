@@ -14,20 +14,25 @@
 #include "../specific/specificfx.h"
 #include "sound.h"
 
+static char LM[15] = { 0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 8 };
+
 void TriggerLaraBlood()
 {
-	PHD_VECTOR vec;
+	PHD_VECTOR pos;
+	long lp, node;
 
-	for (int i = 0, node = 1; i < 15; i++, node <<= 1)
+	for (lp = 0, node = 1; lp < 15; lp++)
 	{
-		if (node & lara_item->touch_bits)
+		if (lara_item->touch_bits & node)
 		{
-			vec.x = (GetRandomControl() & 0x1F) - 16;
-			vec.y = (GetRandomControl() & 0x1F) - 16;
-			vec.z = (GetRandomControl() & 0x1F) - 16;
-			GetLaraJointPos(&vec, LM[i]);
-			DoBloodSplat(vec.x, vec.y, vec.z, (GetRandomControl() & 7) + 8, short(GetRandomControl() << 1), lara_item->room_number);
+			pos.x = (GetRandomControl() & 0x1F) - 16;
+			pos.y = (GetRandomControl() & 0x1F) - 16;
+			pos.z = (GetRandomControl() & 0x1F) - 16;
+			GetLaraJointPos(&pos, LM[lp]);
+			DoBloodSplat(pos.x, pos.y, pos.z, (GetRandomControl() & 7) + 8, short(GetRandomControl() << 1), lara_item->room_number);
 		}
+
+		node <<= 1;
 	}
 }
 

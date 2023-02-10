@@ -679,7 +679,6 @@
 #define AnimatingWaterfalls	ARRAY_(0x00E59720, TEXTURESTRUCT*, [6])
 #define AnimatingWaterfallsV	ARRAY_(0x00E59760, float, [6])
 #define interpolated_bounds	ARRAY_(0x00E6E4D0, short, [6])
-#define LM	ARRAY_(0x00506B94, char, [15])
 #define	keymap	ARRAY_(0x0086BB8C, char, [256])
 #define gfTakeaways	ARRAY_(0x00E5C290, uchar, [16])
 #define gfPickups	ARRAY_(0x00E5C300, uchar, [16])
