@@ -4,6 +4,6 @@
 void inject_lot(bool replace);
 
 void InitialiseLOTarray(long allocmem);
+void DisableBaddieAI(short item_number);
 
 #define EnableBaddieAI	( (long(__cdecl*)(short, long)) 0x0045B1A0 )
-#define	DisableBaddieAI	( (void(__cdecl*)(short)) 0x0045B150 )
