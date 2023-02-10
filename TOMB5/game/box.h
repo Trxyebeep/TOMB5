@@ -21,10 +21,10 @@ void DropBaddyPickups(ITEM_INFO* item);
 void CreatureDie(short item_number, long explode);
 long CreatureAnimation(short item_number, short angle, short tilt);
 short CreatureTurn(ITEM_INFO* item, short maximum_turn);
+void CreatureTilt(ITEM_INFO* item, short angle);
 
 #define AlertNearbyGuards	( (void(__cdecl*)(ITEM_INFO*)) 0x0040BB10 )
 #define GetAITarget	( (void(__cdecl*)(CREATURE_INFO*)) 0x0040BCC0 )
-#define CreatureTilt	( (void(__cdecl*)(ITEM_INFO*, short)) 0x0040B1B0 )
 #define CreatureJoint	( (void(__cdecl*)(ITEM_INFO*, short, short)) 0x0040B240 )
 typedef short(__cdecl* generate)(long, long, long, short, short, short);
 #define CreatureEffectT	( (short(__cdecl*)(ITEM_INFO*, BITE_INFO*, short, short, generate)) 0x0040B550 )
