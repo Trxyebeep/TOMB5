@@ -319,32 +319,31 @@ void DoGameflow()
 #pragma warning(disable : 4244)
 long TitleOptions()
 {
-	long ret, ret2, i, n, n2, load, cheat_jump, colorFlag, flag, height;
+	static __int64 selection = 1;
+	static __int64 selection_bak = 0;
+	__int64 flag, sel;
+	long nLevels, nFirst, lp;
+	long ret, n, load, cheat_jump, y;
 	static long load_or_new;
-	static long always0 = 0;//leftover debug thing? if it's ever 1, the menu and logo don't show.
 	static long gfLevelComplete_bak;
-	static long menu_to_display = 0;//0 main menu, del's cutseq selector. 1 level select. 2 the reload menu. 3 the options menu
+	static long menu = 0;
 	static long selected_level = 0;
-	static __int64 selected_option = 1;
-	static __int64 selected_option_bak = 0;
 
 	ret = 0;
 
 	if (load_or_new)
 	{
-		ret2 = load_or_new;
-
 		if (DoFade == 2)
 		{
+			ret = load_or_new;
 			gfLevelComplete = (uchar)gfLevelComplete_bak;
 			gfLevelComplete_bak = 0;
 			load_or_new = 0;
 #ifndef GENERAL_FIXES
-			always0 = 0;
-			menu_to_display = 0;
-			selected_option = 1;
+			menu = 0;
+			selection = 1;
 #endif
-			return ret2;
+			return ret;
 		}
 
 		input = 0;
@@ -362,271 +361,218 @@ long TitleOptions()
 
 	if (dels_cutseq_selector_flag)
 	{
-		menu_to_display = 0;
-		selected_option = 1;
-		do_dels_cutseq_selector();
-		return load_or_new;
+		menu = 0;
+		selection = 1;
+		return do_dels_cutseq_selector();
 	}
 
-	if (always0 == 0)
+	switch (menu)
 	{
-		switch (menu_to_display)
+	case 1://select level menu
+		PrintString(phd_centerx, font_height + phd_winymin, 6, SCRIPT_TEXT(STR_SELECT_LEVEL), FF_CENTER);
+
+		if (Gameflow->nLevels >= 10)
 		{
-		case 0://main menu
-			SuperShowLogo();
-			Chris_Menu = 0;
-
-			if (selected_option & 1)
-				PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
-			else
-				PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
-
-			if (selected_option & 2)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-
-			if (selected_option & 4)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
-			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
-
-			if (selected_option & 8)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
-			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
-
-			flag = 8;
-
-			break;
-
-		case 1://select level menu
-			PrintString(phd_centerx, font_height + phd_winymin, 6, SCRIPT_TEXT(STR_SELECT_LEVEL), FF_CENTER);
-
-			if (Gameflow->nLevels >= 10)
+			sel = selection;
+			n = 0;
+			nLevels = 10;
+			
+			while (sel)
 			{
-				i = (long)selected_option;
-				n = 0;
+				sel >>= 1;
+				n++;
+			}
 
-				for (colorFlag = 10; i; n++)
-					i >>= 1;
+			nFirst = n - 9;
 
-				n2 = n - 9;
-
-				if (n2 >= 1)
+			if (nFirst >= 1)
+			{
+				if (nFirst > 1)
 				{
-					if (n2 > 1)
-					{
-						PrintString(32, font_height + font_height + phd_winymin + font_height, 6, "\x18", 0);
-						PrintString(phd_winxmax - 48, font_height + font_height + phd_winymin + font_height, 6, "\x18", 0);
-					}
-				}
-				else
-					n2 = 1;
-
-				if (n != Gameflow->nLevels - 1)
-				{
-					PrintString(32, font_height + phd_winymin + font_height + (10 * font_height), 6, "\x1a", 0);
-					PrintString(phd_winxmax - 48, font_height + phd_winymin + font_height + (10 * font_height), 6, "\x1a", 0);
+					PrintString(32, 3 * font_height + phd_winymin, 6, "\x18", 0);
+					PrintString(phd_winxmax - 48, 3 * font_height + phd_winymin, 6, "\x18", 0);
 				}
 			}
 			else
+				nFirst = 1;
+
+			if (n != Gameflow->nLevels - 1)
 			{
-				n2 = 1;
-				colorFlag = Gameflow->nLevels - 1;
+				PrintString(32, 2 * font_height + phd_winymin + (10 * font_height), 6, "\x1a", 0);
+				PrintString(phd_winxmax - 48, 2 * font_height + phd_winymin + (10 * font_height), 6, "\x1a", 0);
 			}
+		}
+		else
+		{
+			nFirst = 1;
+			nLevels = Gameflow->nLevels - 1;
+		}
 
-			i = n2;
+		y = 2 * font_height + phd_winymin;
 
-			if (n2 < colorFlag + n2)
-			{
-				n = n2 - 1;
+		for (lp = nFirst; lp < nFirst + nLevels; lp++)
+		{
+			y += font_height;
 
-				height = font_height + font_height + phd_winymin;
-
-				while (1)
-				{
-					height += font_height;
-
-					if (selected_option & (1i64 << n))
-						PrintString(phd_centerx, (ushort)height, 1, SCRIPT_TEXT(gfLevelNames[n + 1]), FF_CENTER);
-					else
-						PrintString(phd_centerx, (ushort)height, 3 - available_levels[n], SCRIPT_TEXT(gfLevelNames[n + 1]), FF_CENTER);
-
-					if (selected_option & (1i64 << n))
-						selected_level = n;
-
-					n++;
-
-					if (++i >= colorFlag + n2)
-						break;
-				}
-			}
-
-			ret = 0;
-			flag = 1 << (Gameflow->nLevels - 2);
-			break;
-
-		case 2://loading menu
-
-			if (Gameflow->LoadSaveEnabled)
-			{
-				load = DoLoadSave(IN_LOAD);
-
-				if (load >= 0)
-				{
-					S_LoadGame(load);
-					ret = 2;
-				}
-			}
+			if (selection & (1i64 << (lp - 1)))
+				PrintString(phd_centerx, (ushort)y, 1, SCRIPT_TEXT(gfLevelNames[lp]), FF_CENTER);
 			else
+				PrintString(phd_centerx, (ushort)y, available_levels[lp - 1] ? 2 : 3, SCRIPT_TEXT(gfLevelNames[lp]), FF_CENTER);
+
+			if (selection & (1i64 << (lp - 1)))
+				selected_level = lp - 1;
+		}
+
+		flag = 1i64 << (Gameflow->nLevels - 2);
+		break;
+
+	case 2://loading menu
+
+		if (Gameflow->LoadSaveEnabled)
+		{
+			load = DoLoadSave(IN_LOAD);
+
+			if (load >= 0)
 			{
-				SoundEffect(SFX_LARA_NO, 0, SFX_ALWAYS);
-				menu_to_display = 0;
-				SuperShowLogo();
-				Chris_Menu = 0;
-
-				if (selected_option & 1)
-					PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
-				else
-					PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
-
-				if (selected_option & 2)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-
-				if (selected_option & 4)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
-				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
-
-				if (selected_option & 8)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
-				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
-
-				flag = 8;
+				S_LoadGame(load);
+				ret = 2;
 			}
 
-			break;
-
-		case 3://options menu
-			DoOptions();
 			break;
 		}
 
-		if (menu_to_display < 2)
+		SoundEffect(SFX_LARA_NO, 0, SFX_ALWAYS);
+		menu = 0;
+
+	case 0://main menu
+		SuperShowLogo();
+		Chris_Menu = 0;
+
+		if (selection & 1)
+			PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
+		else
+			PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
+
+		if (selection & 2)
+			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
+		else
+			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
+
+		if (selection & 4)
+			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
+		else
+			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
+
+		if (selection & 8)
+			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 3 * font_height, 1, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
+		else
+			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 3 * font_height, 2, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
+
+		flag = 8;
+
+		break;
+
+	case 3://options menu
+		DoOptions();
+		break;
+	}
+
+	if (menu < 2)
+	{
+		if (dbinput & IN_FORWARD)
 		{
-			if (dbinput & IN_FORWARD)
-			{
-				if (selected_option > 1)
-					selected_option >>= 1;
+			if (selection > 1)
+				selection >>= 1;
 
-				SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
-			}
-
-			if (dbinput & IN_BACK)
-			{
-				if (selected_option < flag)
-					selected_option <<= 1;
-
-				SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
-			}
+			SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
 		}
 
-		if (dbinput & IN_DESELECT && menu_to_display > 0)
+		if (dbinput & IN_BACK)
 		{
-			menu_to_display = 0;
-			selected_option = selected_option_bak;
-			S_SoundStopAllSamples();
-			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			if (selection < flag)
+				selection <<= 1;
+
+			SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+		}
+	}
+
+	if (dbinput & IN_DESELECT && menu > 0)
+	{
+		menu = 0;
+		selection = selection_bak;
+		S_SoundStopAllSamples();
+		SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+	}
+
+	if (!menu)
+	{
+		cheat_jump = GetCampaignCheatValue();
+
+		if (cheat_jump)
+		{
+			gfLevelComplete = (uchar)cheat_jump;
+			ret = 3;
 		}
 
-		if (menu_to_display == 0)
-		{
-			cheat_jump = GetCampaignCheatValue();
-
-			if (cheat_jump)
-			{
-				gfLevelComplete = (uchar)cheat_jump;
-				ret = 3;
-			}
-#ifdef _DEBUG	//not for public releases, doesn't exist in original codebase
-			if (keymap[DIK_F] && keymap[DIK_U] && keymap[DIK_C] && keymap[DIK_K])//F U C K because this is fucking shit.
-				dels_cutseq_selector_flag = 1;
+#ifdef _DEBUG	//new code but not for public releases
+		if (keymap[DIK_F] && keymap[DIK_U] && keymap[DIK_C] && keymap[DIK_K])//F U C K because this is fucking shit.
+			dels_cutseq_selector_flag = 1;
 #endif
-		}
+	}
 
-		if (dbinput & IN_SELECT && !keymap[56] && menu_to_display < 2)
+	if (dbinput & IN_SELECT && !keymap[DIK_LALT] && menu < 2)
+	{
+		SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+
+		if (!menu)
 		{
-			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-
-			if (menu_to_display != 0)
+			switch (selection)
 			{
-				if (menu_to_display == 1 && available_levels[selected_level])
+			case 1:
+
+				if (Gameflow->PlayAnyLevel)
 				{
-					gfLevelComplete = 0;
-
-					n = 0;
-					n2 = (long)selected_option;
-
-					if (n2)
-					{
-						do
-						{
-							n2 >>= 1;
-							n++;
-
-						} while (n2);
-
-						gfLevelComplete = (uchar)n;
-					}
-
+					selection_bak = selection;
+					menu = 1;
+				}
+				else
+				{
+					gfLevelComplete = 1;
 					ret = 3;
 				}
+
+				break;
+
+			case 2:
+				GetSaveLoadFiles();
+				selection_bak = selection;
+				menu = 2;
+				break;
+
+			case 4:
+				selection_bak = selection;
+				menu = 3;
+				break;
+
+			case 8:
+				ret = 4;
+				break;
 			}
-			else if (selected_option > 0 && selected_option <= 8)
+		}
+		else if (menu == 1 && available_levels[selected_level])
+		{
+			gfLevelComplete = 0;
+
+			n = 0;
+			sel = selection;
+
+			while (sel)
 			{
-				switch (selected_option)
-				{
-				case 1:
-
-					if (Gameflow->PlayAnyLevel)
-					{
-						selected_option_bak = selected_option;
-						menu_to_display = 1;
-					}
-					else
-					{
-						gfLevelComplete = 1;
-						ret = 3;
-					}
-
-					break;
-
-				case 2:
-					GetSaveLoadFiles();
-					selected_option_bak = selected_option;
-					menu_to_display = 2;
-					break;
-
-				case 3:
-				case 5:
-				case 6:
-				case 7:
-					break;
-
-				case 4:
-					selected_option_bak = selected_option;
-					menu_to_display = 3;
-					break;
-
-				case 8:
-					ret = 4;
-					break;
-				}
+				sel >>= 1;
+				gfLevelComplete++;
 			}
+
+			ret = 3;
 		}
 	}
 
