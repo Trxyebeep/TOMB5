@@ -30,18 +30,10 @@
 
 static long nframes = 1;
 char JustLoaded;
-uchar dels_cutseq_selector_cursorpos = 0;
 
 static char available_levels[40] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-struct cutseq_selector_item
-{
-	short string;
-	short lvl;
-	short num;
-};
-
-cutseq_selector_item cutseq_selector_data[] =
+static CUTSEQ_SELECTOR cutsel[] =
 {
 	{0,0,0},
 #ifdef GENERAL_FIXES
@@ -747,27 +739,32 @@ void DoTitle(uchar name, uchar audio)
 		input = 0;
 }
 
-void do_dels_cutseq_selector()
+long do_dels_cutseq_selector()
 {
-	short* name;
-	long num;
+	long num, ret;
+	static uchar selection = 0;
 
+	ret = 0;
+
+#ifdef GENERAL_FIXES
+	PrintString((ushort)phd_centerx, ushort(font_height + phd_winymin), 6, SCRIPT_TEXT(STR_SELECT_CUTSCENE), FF_CENTER);
+#else
 	PrintString(256, 102, 6, SCRIPT_TEXT(STR_SELECT_CUTSCENE), FF_CENTER);
-	num = dels_cutseq_selector_cursorpos - 4;
+#endif
+	num = selection - 4;
 
 	if (num < 0)
 		num = 0;
 
-	if (dbinput & IN_FORWARD && dels_cutseq_selector_cursorpos)
-		dels_cutseq_selector_cursorpos--;
+	if (dbinput & IN_FORWARD && selection)
+		selection--;
 
-	if (dbinput & IN_BACK && dels_cutseq_selector_cursorpos < 35)
-		dels_cutseq_selector_cursorpos++;
+	if (dbinput & IN_BACK && selection < 35)
+		selection++;
 
 	for (int i = 0; num < 36 && i < 5; i++)
 	{
-		name = &cutseq_selector_data[num + 1].string;
-		PrintString((short)phd_centerx, ushort(i * font_height + 136), (-(dels_cutseq_selector_cursorpos != num) & 4) + 1, SCRIPT_TEXT(*name), FF_CENTER);
+		PrintString((ushort)phd_centerx, ushort(i * font_height + 136), (selection == num) ? 1 : 5, SCRIPT_TEXT(cutsel[num + 1].string), FF_CENTER);
 		num++;
 	}
 
@@ -776,13 +773,16 @@ void do_dels_cutseq_selector()
 		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
 		dels_cutseq_selector_flag = 0;
 		cutrot = 0;
-		gfLevelComplete = (uchar) cutseq_selector_data[dels_cutseq_selector_cursorpos + 1].lvl;
-		dels_cutseq_player = cutseq_selector_data[dels_cutseq_selector_cursorpos + 1].num;
-		dels_cutseq_selector_cursorpos = 0;
+		gfLevelComplete = (uchar)cutsel[selection + 1].lvl;
+		dels_cutseq_player = cutsel[selection + 1].num;
+		selection = 0;
+		ret = 3;
 	}
 
 	if (dbinput & IN_JUMP)
 		dels_cutseq_selector_flag = 0;
+
+	return ret;
 }
 
 void DoLevel(uchar Name, uchar Audio)

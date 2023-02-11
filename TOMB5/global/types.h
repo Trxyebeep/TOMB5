@@ -2466,6 +2466,13 @@ struct MAP_VECTOR
 	long y2;
 };
 
+struct CUTSEQ_SELECTOR
+{
+	short string;
+	short lvl;
+	short num;
+};
+
 #ifdef GENERAL_FIXES
 struct GouraudBarColourSet
 {
