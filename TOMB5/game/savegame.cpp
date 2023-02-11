@@ -10,6 +10,7 @@
 #ifdef GENERAL_FIXES
 #include "lara2gun.h"
 #endif
+#include "gameflow.h"
 
 #ifdef GENERAL_FIXES
 tomb5_save_info tomb5_save;

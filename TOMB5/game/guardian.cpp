@@ -12,6 +12,7 @@
 #include "switch.h"
 #include "draw.h"
 #include "traps.h"
+#include "gameflow.h"
 
 BITE_INFO Base[5] = 
 {

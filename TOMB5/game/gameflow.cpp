@@ -28,12 +28,11 @@
 #include "../tomb5/tomb5.h"
 #endif
 
+static long nframes = 1;
+char JustLoaded;
 uchar dels_cutseq_selector_cursorpos = 0;
 
-char available_levels[40] =
-{
-	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-};
+static char available_levels[40] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 struct cutseq_selector_item
 {
@@ -460,7 +459,7 @@ long TitleOptions()
 					if (selected_option & (1i64 << n))
 						PrintString(phd_centerx, (ushort)height, 1, SCRIPT_TEXT(gfLevelNames[n + 1]), FF_CENTER);
 					else
-						PrintString(phd_centerx, (ushort)height, 3 - (*((char*)&nframes + i + 3) != 0), SCRIPT_TEXT(gfLevelNames[n + 1]), FF_CENTER);
+						PrintString(phd_centerx, (ushort)height, 3 - available_levels[n], SCRIPT_TEXT(gfLevelNames[n + 1]), FF_CENTER);
 
 					if (selected_option & (1i64 << n))
 						selected_level = n;
@@ -657,9 +656,7 @@ long TitleOptions()
 
 void DoTitle(uchar name, uchar audio)
 {
-	CreditsDone = 0;
 	DoFrontEndOneShotStuff();
-	CanLoad = 0;
 	SetFade(255, 0);
 	savegame.Level.Timer = 0;
 	savegame.Game.Timer = 0;

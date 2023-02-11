@@ -23,6 +23,7 @@
 #include "../game/text.h"
 #endif
 #include "LoadSave.h"
+#include "../game/delstuff.h"
 
 long nPolys;
 long nClippedPolys;

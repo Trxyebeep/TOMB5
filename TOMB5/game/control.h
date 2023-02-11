@@ -3,7 +3,7 @@
 
 void inject_control(bool replace);
 
-long ControlPhase(long _nframes, long demo_mode);
+long ControlPhase(long nframes, long demo_mode);
 long GetChange(ITEM_INFO* item, ANIM_STRUCT* anim);
 long CheckGuardOnTrigger();
 void InterpolateAngle(short dest, short* src, short* diff, short speed);

@@ -2196,13 +2196,6 @@ struct GUARDIAN_TARGET
 	short Ydiff;
 };
 
-struct SkinXYZ
-{
-	long x;
-	long y;
-	long z;
-};
-
 struct OLD_CAMERA
 {
 	short current_anim_state;

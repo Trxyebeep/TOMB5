@@ -66,7 +66,7 @@ uchar ShatterSounds[18][10] =
 {SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS}
 };
 
-long ControlPhase(long _nframes, long demo_mode)
+long ControlPhase(long nframes, long demo_mode)
 {
 	ITEM_INFO* item;
 	FX_INFO* fx;
@@ -76,15 +76,15 @@ long ControlPhase(long _nframes, long demo_mode)
 
 	RegeneratePickups();
 
-	if (_nframes > 10)
-		_nframes = 10;
+	if (nframes > 10)
+		nframes = 10;
 
 	if (bTrackCamInit)
 		bUseSpotCam = 0;
 
 	SetDebounce = 1;
 
-	for (framecount += _nframes; framecount > 0; framecount -= 2)
+	for (framecount += nframes; framecount > 0; framecount -= 2)
 	{
 		GlobalCounter++;
 		UpdateSky();

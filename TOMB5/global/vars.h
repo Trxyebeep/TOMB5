@@ -601,27 +601,6 @@
 #define num_boxes	VAR_(0x00EEFB68, long)
 #define overlap	VAR_(0x00EEFB5C, ushort*)
 
-/*title shit*/
-#define nframes	VAR_(0x005082C4, long)
-
-#define CreditsDone	VAR_(0x00E6D838, uchar)
-#define CanLoad	VAR_(0x0051CE54, char)
-#define JustLoaded	VAR_(0x0051D001, char)
-/*title shit*/
-
-/*Skin things*/
-#define SkinXYZPtr	VAR_(0x00E5B918, SkinXYZ*)
-#define BelowMeshXYZ	VAR_(0x00E5B930, SkinXYZ)
-#define JointMeshXYZ	VAR_(0x00E5B920, SkinXYZ)
-#define AboveMeshXYZ	VAR_(0x00E5B870, SkinXYZ)
-#define XYZList	ARRAY_(0x00E5B940, SkinXYZ, [32])
-#define SkinVertNums	ARRAY_(0x00E86100, char, [40][12])
-#define HairSkinVertNums	ARRAY_(0x00508CEC, char, [6][12])
-#define HairScratchVertNums	ARRAY_(0x00508D34, char, [4][12])
-#define SkinJoints ARRAY_(0x00508CB4, uchar, [14][4])
-#define ScratchVertNums ARRAY_(0x00E7F080, char, [40][12])
-#define PointsToCalc ARRAY_(0x00E5BAC0, uchar, [26][12])
-
 //arrays
 #define cutseq_meshbits	ARRAY_(0x00E7EEA0, ulong, [10])
 #define objects	ARRAY_(0x0086CF50, OBJECT_INFO, [460])

@@ -11,6 +11,8 @@ void do_dels_cutseq_selector();
 void DoLevel(uchar name, uchar audio);
 void LoadGameflow();
 
+extern char JustLoaded;
+
 enum gf_languages
 {
 	LNG_ENGLISH,

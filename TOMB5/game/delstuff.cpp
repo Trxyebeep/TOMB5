@@ -7,6 +7,9 @@
 #include "../tomb5/tomb5.h"
 #endif
 
+char SkinVertNums[40][12];
+char ScratchVertNums[40][12];
+
 void GetLaraJointPos(PHD_VECTOR* pos, long node)
 {
 	phd_PushMatrix();
