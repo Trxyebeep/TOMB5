@@ -9,6 +9,7 @@
 #include "output.h"
 #include "drawroom.h"
 #include "../game/delstuff.h"
+#include "../game/camera.h"
 
 long NumSunLights;
 long NumPointLights;

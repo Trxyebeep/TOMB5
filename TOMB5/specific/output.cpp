@@ -21,6 +21,8 @@
 #include "../game/deltapak.h"
 #include "file.h"
 #include "texture.h"
+#include "../game/camera.h"
+#include "../game/spotcam.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../game/draw.h"

@@ -20,10 +20,12 @@
 #include "gameflow.h"
 #include "draw.h"
 #include "../specific/output.h"
+#include "camera.h"
 
 short SPxzoffs[8] = {0, 0, 0x200, 0, 0, 0, -0x200, 0};
 short SPyoffs[8] = {-0x400, 0, -0x200, 0, 0, 0, -0x200, 0};
 short SPDETyoffs[8] = {0x400, 0x200, 0x200, 0x200, 0, 0x200, 0x200, 0x200};
+
 uchar Flame3xzoffs[16][2] =
 {
 	{9, 9},

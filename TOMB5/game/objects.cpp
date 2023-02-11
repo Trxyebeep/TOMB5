@@ -17,6 +17,7 @@
 #include "tower2.h"
 #include "../specific/function_stubs.h"
 #include "../specific/output.h"
+#include "camera.h"
 
 static short ParallelBarsBounds[12] =
 {

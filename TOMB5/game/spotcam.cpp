@@ -6,10 +6,55 @@
 #include "control.h"
 #include "../specific/function_stubs.h"
 #include "switch.h"
+#include "gameflow.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
-#include "gameflow.h"
+
+SPOTCAM SpotCam[256];
+long bTrackCamInit = 0;
+long bUseSpotCam = 0;
+long bDisableLaraControl = 0;
+short SlowMotion = 0;
+short number_spotcams;
+short LastSequence;
+short CurrentFov;
+char SCNoDrawLara;
+char SCOverlay;
+uchar SpotRemap[16];
+uchar CameraCnt[16];
+
+static QUAKE_CAM quakecam;
+
+static PHD_VECTOR LaraFixedPosition;
+static PHD_VECTOR InitialCameraPosition;
+static PHD_VECTOR InitialCameraTarget;
+static short InitialCameraRoom;
+
+static long camera_xposition[18];
+static long camera_yposition[18];
+static long camera_zposition[18];
+static long camera_xtarget[18];
+static long camera_ytarget[18];
+static long camera_ztarget[18];
+static long camera_roll[18];
+static long camera_fov[18];
+static long camera_speed[18];
+static long CameraFade;
+static long LaraHealth;
+static long LaraAir;
+static long spline_to_camera;
+static long spline_from_camera;
+static long bCheckTrigger = 0;
+static long current_spline_position;
+static short current_sequence;
+static short current_spline_camera;
+static short current_camera_cnt;
+static short first_camera;
+static short last_camera;
+static short LastFov;
+static short spotcam_timer;
+static short spotcam_loopcnt;
 
 long Spline(long x, long* knots, long nk)
 {

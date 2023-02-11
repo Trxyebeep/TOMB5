@@ -19,13 +19,12 @@
 #include "../specific/3dmath.h"
 #include "rope.h"
 #include "../specific/function_stubs.h"
-#ifdef FOOTPRINTS
-#endif
+#include "tomb4fx.h"
+#include "camera.h"
 #ifdef GENERAL_FIXES
 #include "footprnt.h"
 #include "../tomb5/tomb5.h"
 #endif
-#include "tomb4fx.h"
 
 void(*lara_control_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* coll) =
 {

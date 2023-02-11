@@ -22,6 +22,7 @@
 #include "draw.h"
 #include "lara_states.h"
 #include "gameflow.h"
+#include "camera.h"
 
 long FogTableColor[28] =
 {
@@ -122,22 +123,23 @@ void WaterFall(short item_number)
 {
 	ITEM_INFO* item;
 	long x, z, ang;
+	static long wf = 256;
 
 	item = &items[item_number];
 	ang = item->pos.y_rot + 0x8000;
-	x = item->pos.x_pos - (phd_sin(ang) * 512 >> 14);
-	z = item->pos.z_pos - (phd_cos(ang) * 512 >> 14);
+	x = item->pos.x_pos - (512 * phd_sin(ang) >> 14);
+	z = item->pos.z_pos - (512 * phd_cos(ang) >> 14);
 
 	switch (ang)
 	{
 	case 0:
-		x += (phd_sin(ang + 0x4000) * _wf >> 14);
-		z += (phd_cos(ang + 0x4000) * _wf >> 14);
+		x += (wf * phd_sin(ang + 0x4000) >> 14);
+		z += (wf * phd_cos(ang + 0x4000) >> 14);
 		break;
 
 	default:
-		x += (phd_sin(ang - 0x4000) * _wf >> 14);
-		z += (phd_cos(ang - 0x4000) * _wf >> 14);
+		x += (wf * phd_sin(ang - 0x4000) >> 14);
+		z += (wf * phd_cos(ang - 0x4000) >> 14);
 		break;
 	}
 

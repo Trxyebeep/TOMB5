@@ -12,6 +12,7 @@
 #include "deltapak.h"
 #include "sphere.h"
 #include "../specific/file.h"
+#include "camera.h"
 
 short* ground_zone[5][2];
 

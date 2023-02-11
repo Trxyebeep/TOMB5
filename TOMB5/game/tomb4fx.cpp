@@ -14,6 +14,8 @@
 #include "../specific/specificfx.h"
 #include "draw.h"
 #include "gameflow.h"
+#include "camera.h"
+#include "spotcam.h"
 
 LIGHTNING_STRUCT Lightning[16];
 SHOCKWAVE_STRUCT ShockWaves[16];

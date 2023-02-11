@@ -6,12 +6,14 @@
 #include "../specific/output.h"
 #include "../specific/LoadSave.h"
 #include "text.h"
+#include "deltapak.h"
+#include "camera.h"
+#include "spotcam.h"
 #ifdef GENERAL_FIXES
 #include "larafire.h"
 #include "../specific/input.h"
 #include "../tomb5/tomb5.h"
 #endif
-#include "deltapak.h"
 
 long FlashIt()
 {

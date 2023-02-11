@@ -14,6 +14,7 @@
 #include "hydra.h"
 #include "romangod.h"
 #include "draw.h"
+#include "camera.h"
 
 void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv)
 {

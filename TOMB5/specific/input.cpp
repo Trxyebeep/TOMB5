@@ -6,6 +6,8 @@
 #include "3dmath.h"
 #include "../game/text.h"
 #include "winmain.h"
+#include "../game/camera.h"
+#include "../game/spotcam.h"
 #ifdef GENERAL_FIXES
 #include "../game/gameflow.h"
 #include "../game/newinv2.h"

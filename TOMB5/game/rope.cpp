@@ -8,6 +8,7 @@
 #include "lara.h"
 #include "../specific/specificfx.h"
 #include "savegame.h"
+#include "camera.h"
 
 void InitialiseRope(short item_number)
 {

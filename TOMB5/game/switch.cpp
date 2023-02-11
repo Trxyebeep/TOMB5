@@ -12,6 +12,8 @@
 #include "../specific/3dmath.h"
 #include "gameflow.h"
 #include "newinv2.h"
+#include "camera.h"
+#include "spotcam.h"
 
 static PHD_VECTOR PulleyPos = { 0, 0, -148 };
 static PHD_VECTOR SwitchPos = { 0, 0, 0 };

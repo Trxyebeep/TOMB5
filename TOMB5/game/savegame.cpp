@@ -10,6 +10,8 @@
 #include "gameflow.h"
 #include "newinv2.h"
 #include "../specific/file.h"
+#include "camera.h"
+#include "spotcam.h"
 #ifdef GENERAL_FIXES
 #include "lara2gun.h"
 #endif

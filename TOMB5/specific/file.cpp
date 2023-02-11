@@ -23,6 +23,9 @@
 #include "3dmath.h"
 #include "specificfx.h"
 #include "../game/box.h"
+#include "../game/camera.h"
+#include "../game/sound.h"
+#include "../game/spotcam.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif

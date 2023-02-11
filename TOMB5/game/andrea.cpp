@@ -18,6 +18,7 @@
 #include "../specific/specificfx.h"
 #include "tomb4fx.h"
 #include "../specific/file.h"
+#include "camera.h"
 
 void ControlPropeller(short item_number)
 {

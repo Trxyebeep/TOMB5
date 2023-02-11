@@ -16,6 +16,8 @@
 #include "../specific/function_stubs.h"
 #include "../specific/audio.h"
 #include "../specific/file.h"
+#include "camera.h"
+#include "spotcam.h"
 #ifdef GENERAL_FIXES
 #include "newinv2.h"
 #include "../tomb5/tomb5.h"

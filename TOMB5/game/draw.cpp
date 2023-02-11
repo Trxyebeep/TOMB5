@@ -30,6 +30,8 @@
 #include "../specific/alexstuff.h"
 #include "lara_states.h"
 #include "control.h"
+#include "camera.h"
+#include "spotcam.h"
 #ifdef GENERAL_FIXES
 #include "footprnt.h"
 #include "../tomb5/tomb5.h"

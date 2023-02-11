@@ -9,6 +9,8 @@
 #include "items.h"
 #include "hair.h"
 #include "sound.h"
+#include "camera.h"
+#include "spotcam.h"
 
 void DrawLiftDoors(ITEM_INFO* item)
 {

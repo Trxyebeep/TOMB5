@@ -20,6 +20,8 @@
 #include "laraflar.h"
 #include "flmtorch.h"
 #include "deltapak.h"
+#include "camera.h"
+#include "spotcam.h"
 
 static PHD_VECTOR SOPos = { 0, 0, 0 };
 static PHD_VECTOR MSPos = { 0, 0, 0 };

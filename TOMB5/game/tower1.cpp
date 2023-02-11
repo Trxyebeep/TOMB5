@@ -3,6 +3,7 @@
 #include "gameflow.h"
 #include "control.h"
 #include "../specific/3dmath.h"
+#include "camera.h"
 
 long TestBoundsCollideCamera(short* bounds, PHD_3DPOS* pos, long radius)
 {

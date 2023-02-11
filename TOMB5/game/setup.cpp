@@ -59,6 +59,7 @@
 #include "control.h"
 #include "deltapak.h"
 #include "../specific/file.h"
+#include "camera.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #include "lara2gun.h"

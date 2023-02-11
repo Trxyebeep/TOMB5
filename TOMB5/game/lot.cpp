@@ -3,6 +3,7 @@
 #include "../specific/function_stubs.h"
 #include "objects.h"
 #include "box.h"
+#include "camera.h"
 
 void InitialiseLOTarray(long allocmem)
 {

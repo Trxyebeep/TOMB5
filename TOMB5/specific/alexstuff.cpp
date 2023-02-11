@@ -184,6 +184,7 @@ short CreditsTable[] =
 #endif
 #pragma warning(pop)
 
+long aWibble;
 static float water_buffer[8712];
 static float water_plot_buffer[4356];
 static long water_buffer_calced;
@@ -272,7 +273,7 @@ void aUpdate()
 	static long zero;
 	static long alphamaybe;
 
-	spec_wibble++;
+	aWibble++;
 	znear = f_mznear;
 	mAddProfilerEvent(0xFF00FF00);
 	mAddProfilerEvent(0xFF0000FF);

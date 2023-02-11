@@ -3,6 +3,7 @@
 #include "d3dmatrix.h"
 #include "dxshell.h"
 #include "winmain.h"
+#include "../game/spotcam.h"
 
 float fcossin_tbl[65536];
 

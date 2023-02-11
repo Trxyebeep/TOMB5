@@ -21,6 +21,7 @@
 #include "output.h"
 #include "file.h"
 #include "texture.h"
+#include "../game/camera.h"
 
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
@@ -6196,7 +6197,7 @@ void DrawLightning()
 		tex.flag = 0;
 		tex.tpage = sprite->tpage;
 
-		uAdd = float(31 - 4 * (spec_wibble & 7)) * (1.0F / 256.0F);
+		uAdd = float(31 - 4 * (aWibble & 7)) * (1.0F / 256.0F);
 
 		if (l->Life < 16)
 		{
@@ -6640,7 +6641,7 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 	tex.drawtype = 2;
 	tex.flag = 0;
 	tex.tpage = sprite->tpage;
-	uAdd = float(31 - 4 * (spec_wibble & 7)) * (1.0F / 256.0F);
+	uAdd = float(31 - 4 * (aWibble & 7)) * (1.0F / 256.0F);
 	col = RGBONLY(r, g, b);
 
 	v = aVertexBuffer;

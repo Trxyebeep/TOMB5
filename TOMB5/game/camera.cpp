@@ -19,21 +19,53 @@
 #include "../tomb5/tomb5.h"
 #endif
 
+CAMERA_INFO camera;
+
+GAME_VECTOR ForcedFixedCamera;
+char UseForcedFixedCamera;
+
+PHD_VECTOR CamOldPos;
+
+camera_type BinocularOldCamera = CHASE_CAMERA;
+long BinocularOn = 0;
+long BinocularRange = 0;
+long ExittingBinos = 0;
+long LaserSight = 0;
+long InfraRed = 0;
+char SniperOverlay = 0;
+char SniperCamActive = 0;
+static char SniperCount = 0;
+
+uchar WeaponDelay = 0;
+
+static long bLaraTorch;
+
+static OLD_CAMERA old_cam;
+static GAME_VECTOR last_target;
+static GAME_VECTOR last_ideal;
+static GAME_VECTOR static_lookcamp;
+static GAME_VECTOR static_lookcamt;
+static char TargetSnaps = 0;
+static char CameraSnaps = 0;
+
 void InitialiseCamera()
 {
 	last_target.x = lara_item->pos.x_pos;
-	camera.target.x = last_target.x;
-	camera.shift = lara_item->pos.y_pos - 1024;
-	last_target.y = camera.shift;
-	camera.target.y = camera.shift;
+	last_target.y = lara_item->pos.y_pos - 1024;
 	last_target.z = lara_item->pos.z_pos;
-	camera.target.z = last_target.z;
-	camera.pos.y = camera.shift;
 	last_target.room_number = lara_item->room_number;
-	camera.target.room_number = lara_item->room_number;
+
 	camera.pos.x = last_target.x;
+	camera.pos.y = last_target.y;
 	camera.pos.z = last_target.z - 100;
 	camera.pos.room_number = lara_item->room_number;
+
+	camera.target.x = last_target.x;
+	camera.target.y = last_target.y;
+	camera.target.z = last_target.z;
+	camera.target.room_number = lara_item->room_number;
+
+	camera.shift = last_target.y;
 	camera.target_distance = 1536;
 	camera.item = 0;
 	camera.number_frames = 1;
@@ -55,7 +87,9 @@ void CalculateCamera()
 	PHD_VECTOR v;
 	short* bounds;
 	long shift, fixed_camera, y, gotit;
+	static long vol;
 	short change, tilt;
+	static char TLFlag = 0;
 
 	CamOldPos.x = camera.pos.x;
 	CamOldPos.y = camera.pos.y;
@@ -85,8 +119,8 @@ void CalculateCamera()
 
 	if (gfCurrentLevel == LVL5_STREETS_OF_ROME && (!XATrack || XATrack == 13))
 	{
-		if (camera.underwater && old_MusicVolume)
-			S_CDVolume(25 * old_MusicVolume + 5);
+		if (camera.underwater && vol)
+			S_CDVolume(25 * vol + 5);
 
 		TLFlag = 1;
 	}
@@ -114,8 +148,8 @@ void CalculateCamera()
 		}
 		else if (camera.underwater)
 		{
-			if (old_MusicVolume)
-				S_CDVolume(25 * old_MusicVolume + 5);
+			if (vol)
+				S_CDVolume(25 * vol + 5);
 
 			camera.underwater = 0;
 		}
@@ -670,7 +704,7 @@ void FixedCamera()
 		ideal.z = fixed->z;
 		ideal.room_number = fixed->data;
 
-		if (fixed->flags & 2)//sniper
+		if (fixed->flags & 2)	//sniper
 		{
 			if (FlashFader > 2)
 				FlashFader = (FlashFader >> 1) & -2;
@@ -1196,15 +1230,15 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 
 			if (!(mgLOS(&temp2, &temp1, 0)))
 			{
-				camerasnaps++;
+				CameraSnaps++;
 
-				if (camerasnaps >= 8)
+				if (CameraSnaps >= 8)
 				{
 					camera.pos.x = ideal->x;
 					camera.pos.y = ideal->y;
 					camera.pos.z = ideal->z;
 					camera.pos.room_number = ideal->room_number;
-					camerasnaps = 0;
+					CameraSnaps = 0;
 				}
 			}
 		}
@@ -1273,6 +1307,8 @@ void BinocularCamera(ITEM_INFO* item)
 	long shake, speed, c, BinocStep, pit, rndval;
 	short room_number, hxrot, hyrot;
 	char Fire;
+	static char LSHKTimer = 0;
+	static char LSHKShotsFired = 0;
 
 	if (LSHKTimer)
 		LSHKTimer--;
@@ -1723,9 +1759,9 @@ void LookCamera(ITEM_INFO* item)
 		camera.pos.x += dx >> 2;
 		camera.pos.y += dy >> 2;
 		camera.pos.z += dz >> 2;
-		camera.fpos.x += (float)(dx >> 2);
-		camera.fpos.y += (float)(dy >> 2);
-		camera.fpos.z += (float)(dz >> 2);
+		camera.fpos.x += float(dx >> 2);
+		camera.fpos.y += float(dy >> 2);
+		camera.fpos.z += float(dz >> 2);
 		dx = pos3.x - camera.target.x;
 		dy = pos3.y - camera.target.y;
 		dz = pos3.z - camera.target.z;

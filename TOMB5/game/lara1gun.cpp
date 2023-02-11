@@ -19,6 +19,7 @@
 #include "objects.h"
 #include "../specific/function_stubs.h"
 #include "../specific/3dmath.h"
+#include "camera.h"
 
 void draw_shotgun_meshes(long weapon_type)
 {

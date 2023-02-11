@@ -25,6 +25,7 @@
 #include "../specific/audio.h"
 #include "../specific/gamemain.h"
 #include "../specific/file.h"
+#include "spotcam.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #endif
