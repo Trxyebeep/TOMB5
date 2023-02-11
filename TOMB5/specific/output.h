@@ -37,6 +37,7 @@ void phd_PutPolygons_seethrough(short* objptr, long fade);
 void phd_PutPolygonsSpcXLU(short* objptr, long clipstatus);
 void phd_PutPolygonsSpcEnvmap(short* objptr, long clipstatus);
 
+extern D3DTLVERTEX aVertexBuffer[1024];
 extern long nPolys;
 extern long nClippedPolys;
 extern long DrawPrimitiveCnt;

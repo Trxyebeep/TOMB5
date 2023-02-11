@@ -15,6 +15,24 @@
 #include "draw.h"
 #include "gameflow.h"
 
+LIGHTNING_STRUCT Lightning[16];
+SHOCKWAVE_STRUCT ShockWaves[16];
+DRIP_STRUCT Drips[32];
+BUBBLE_STRUCT Bubbles[40];
+RIPPLE_STRUCT ripples[32];
+SPLASH_STRUCT splashes[4];
+DEBRIS_STRUCT debris[256];
+GUNFLASH_STRUCT Gunflashes[4];
+GUNSHELL_STRUCT Gunshells[24];
+FIRE_SPARKS fire_spark[20];
+SPARKS spark[1024];
+SP_DYNAMIC spark_dynamics[8];
+FIRE_LIST fires[32];
+SMOKE_SPARKS smoke_spark[32];
+BLOOD_STRUCT blood[32];
+char scratchpad[1024];
+char tsv_buffer[16384];
+
 static short FadeClipSpeed;
 
 long GetFreeBlood()

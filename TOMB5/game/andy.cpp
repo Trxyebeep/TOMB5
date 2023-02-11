@@ -7,6 +7,7 @@
 #include "objects.h"
 #include "../specific/function_stubs.h"
 #include "../specific/3dmath.h"
+#include "tomb4fx.h"
 
 void TriggerRopeFlame(PHD_VECTOR* pos, long size)
 {

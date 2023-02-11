@@ -25,6 +25,7 @@
 #include "footprnt.h"
 #include "../tomb5/tomb5.h"
 #endif
+#include "tomb4fx.h"
 
 void(*lara_control_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* coll) =
 {

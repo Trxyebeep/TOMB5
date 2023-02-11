@@ -31,6 +31,7 @@ long sfx_frequencies[3] = { 11025, 22050, 44100 };
 MONOSCREEN_STRUCT MonoScreen[5];
 char MonoScreenOn;
 
+static SAVEFILE_INFO SaveGames[15];
 static long MonoScreenX[4] = { 0, 256, 512, 640 };
 static long MonoScreenY[3] = { 0, 256, 480 };
 static char SpecialFeaturesPage[5];

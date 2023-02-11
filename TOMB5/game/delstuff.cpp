@@ -7,6 +7,11 @@
 #include "../tomb5/tomb5.h"
 #endif
 
+long lara_matrices[180];
+long lara_joint_matrices[180];
+float lara_matricesF[180];
+float lara_joint_matricesF[180];
+uchar LaraNodeUnderwater[15];
 char SkinVertNums[40][12];
 char ScratchVertNums[40][12];
 

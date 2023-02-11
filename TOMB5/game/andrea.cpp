@@ -16,6 +16,7 @@
 #include "effects.h"
 #include "../specific/function_table.h"
 #include "../specific/specificfx.h"
+#include "tomb4fx.h"
 
 void ControlPropeller(short item_number)
 {

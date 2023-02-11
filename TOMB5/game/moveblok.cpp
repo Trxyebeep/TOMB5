@@ -7,6 +7,7 @@
 #include "items.h"
 #include "draw.h"
 #include "collide.h"
+#include "tomb4fx.h"
 
 static short MovingBlockBounds[12] =
 {

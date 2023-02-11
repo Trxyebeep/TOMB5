@@ -25,6 +25,8 @@
 #include "LoadSave.h"
 #include "../game/delstuff.h"
 
+D3DTLVERTEX aVertexBuffer[1024];
+
 long nPolys;
 long nClippedPolys;
 long DrawPrimitiveCnt;
@@ -32,6 +34,7 @@ long DrawSortedCnt;
 float AnimatingTexturesV[16][8][3];
 float aBoundingBox[24];
 
+static ENVUV aMappedEnvUV[256];
 static ENVUV SkinENVUV[40][12];
 static D3DTLVERTEX SkinVerts[40][12];
 static short SkinClip[40][12];

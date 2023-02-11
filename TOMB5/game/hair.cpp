@@ -10,6 +10,21 @@
 #include "../specific/function_stubs.h"
 #include "delstuff.h"
 
+static char HairRotScratchVertNums[5][12] =
+{
+	{ 4, 5, 6, 7, -1, 0, 0, 0, 0, 0, 0, 0 },
+	{ 5, 6, 7, 4, -1, 0, 0, 0, 0, 0, 0, 0 },
+	{ 6, 7, 4, 5, -1, 0, 0, 0, 0, 0, 0, 0 },
+	{ 7, 4, 5, 6, -1, 0, 0, 0, 0, 0, 0, 0 },
+	{ 4, 5, 6, 7, -1, 0, 0, 0, 0, 0, 0, 0 }
+};
+
+HAIR_STRUCT hairs[2][7];
+static long hair_wind = 0;
+static long hair_wind_angle = 0;
+static long hair_dwind_angle = 0;
+static long first_hair[2];
+
 void DrawHair()
 {
 	HAIR_STRUCT* hair;

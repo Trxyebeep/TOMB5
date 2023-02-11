@@ -456,7 +456,6 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 		else
 			bLaraUnderWater = -1;
 
-		aMappedNormals = ((MESH_DATA*)lara.mesh_ptrs[lara_mesh_sweetness_table[i]])->Normals;
 		aSetViewMatrix();
 		phd_PutPolygonsSpcEnvmap(lara.mesh_ptrs[lara_mesh_sweetness_table[i]], -1);
 
@@ -475,7 +474,6 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 	phd_PopMatrix();
 	bLaraUnderWater = LaraNodeUnderwater[8] != 0 ? 8 : -1;
 	DrawHair();
-	aMappedNormals = aScratchNormals;
 	phd_PushMatrix();
 	obj = &objects[LARA_SKIN_JOINTS];
 	meshpp = &meshes[obj->mesh_index];

@@ -11,6 +11,7 @@
 #include "function_table.h"
 #include "lighting.h"
 #include "d3dmatrix.h"
+#include "../game/tomb4fx.h"
 
 const char* CreditNames[] =
 {

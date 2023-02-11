@@ -11,6 +11,7 @@
 #include "../specific/function_stubs.h"
 #include "../specific/3dmath.h"
 #include "deltapak.h"
+#include "tomb4fx.h"
 
 static SVECTOR Eng1 = { 0, 64, 0, 0 };
 static SVECTOR Eng2 = { 0, 0, 0, 0 };

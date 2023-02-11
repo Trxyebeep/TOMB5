@@ -12,6 +12,7 @@
 #include "laraflar.h"
 #include "larafire.h"
 #include "../specific/3dmath.h"
+#include "tomb4fx.h"
 
 static short FireBounds[12] =
 {

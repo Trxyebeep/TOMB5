@@ -6,6 +6,7 @@
 #include "tomb4fx.h"
 #include "../specific/3dmath.h"
 #include "gameflow.h"
+#include "hair.h"
 
 void Draw_Mirror_Lara()
 {

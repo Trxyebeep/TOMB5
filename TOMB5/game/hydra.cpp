@@ -10,6 +10,7 @@
 #include "items.h"
 #include "effect2.h"
 #include "../specific/function_stubs.h"
+#include "tomb4fx.h"
 
 static BITE_INFO hydra_hit = {0, 0, 0, 11};
 

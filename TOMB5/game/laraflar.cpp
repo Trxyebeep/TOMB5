@@ -17,6 +17,7 @@
 #ifdef GENERAL_FIXES
 #include "draw.h"
 #endif
+#include "tomb4fx.h"
 
 void FlareControl(short item_number)
 {

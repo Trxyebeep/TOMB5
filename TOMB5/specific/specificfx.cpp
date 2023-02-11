@@ -18,6 +18,7 @@
 #include "../game/lasers.h"
 #include "../game/rope.h"
 #include "../game/gameflow.h"
+#include "output.h"
 
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"

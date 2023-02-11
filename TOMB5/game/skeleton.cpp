@@ -8,6 +8,7 @@
 #include "../specific/function_stubs.h"
 #include "effect2.h"
 #include "sphere.h"
+#include "tomb4fx.h"
 
 static BITE_INFO skeleton_hit = {0, 0, 0, 17};
 

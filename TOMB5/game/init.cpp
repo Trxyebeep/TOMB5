@@ -15,6 +15,7 @@
 #include "box.h"
 #include "switch.h"
 #include "../specific/3dmath.h"
+#include "tomb4fx.h"
 
 void InitialiseTrapDoor(short item_number)
 {
