@@ -53,3 +53,4 @@ long DoRayBox(GAME_VECTOR* start, GAME_VECTOR* target, short* bounds, PHD_3DPOS*
 void ResetGuards();
 
 extern uchar ShatterSounds[18][10];
+extern char cd_flags[136];

@@ -12,6 +12,7 @@
 #include "d3dmatrix.h"
 #include "dxsound.h"
 #include "gamemain.h"
+#include "LoadSave.h"
 
 #define GET_DLL_PROC(dll, proc, n) \
 { \

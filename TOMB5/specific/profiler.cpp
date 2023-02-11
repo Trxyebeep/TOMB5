@@ -2,6 +2,7 @@
 #include "profiler.h"
 #include "function_table.h"
 #include "dxshell.h"
+#include "time.h"
 
 static __int64 counter;
 static PROFILER_EVENT ProfilerEvents[30];

@@ -6,6 +6,7 @@
 #include "clipping.h"
 #include "output.h"
 #include "winmain.h"
+#include "texture.h"
 
 static long rgb80h = 0x808080;
 static long rgbmask = 0xFFFFFFFF;

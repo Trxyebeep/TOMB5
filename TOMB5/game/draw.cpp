@@ -37,7 +37,13 @@
 
 static long box_lines[12][2] = { {0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7} };
 
-short no_rotation[12] = { 0,0,0,0,0,0,0,0,0,0,0,0 };
+short no_rotation[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+static long number_draw_rooms;
+static short draw_rooms[100];
+static long room_list_start = 0;
+static long room_list_end = 0;
+static long draw_room_list[128];
 
 short* GetBoundsAccurate(ITEM_INFO* item)
 {

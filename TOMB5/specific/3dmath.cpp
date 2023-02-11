@@ -4,6 +4,8 @@
 #include "dxshell.h"
 #include "winmain.h"
 
+float fcossin_tbl[65536];
+
 void AlterFOV(short fov)
 {
 	static short old_fov = 0;

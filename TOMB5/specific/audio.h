@@ -17,3 +17,6 @@ void FillADPCMBuffer(char* p, long track);
 long ACMHandleNotifications();
 bool ACMInit();
 void ACMClose();
+
+extern uchar* wav_file_buffer;
+extern uchar* ADPCMBuffer;

@@ -155,6 +155,11 @@ static char source_wav_format[50] =
 };
 #pragma warning(pop)
 
+uchar* wav_file_buffer;
+uchar* ADPCMBuffer;
+
+static FILE* audio_stream_fp;
+static LPDIRECTSOUNDBUFFER DSBuffer;
 static ACMSTREAMHEADER StreamHeaders[4];
 static HANDLE NotifyEventHandles[2];
 

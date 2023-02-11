@@ -2,6 +2,7 @@
 #include "registry.h"
 #include "LoadSave.h"
 #include "winmain.h"
+#include "input.h"
 
 static HKEY phkResult;
 static DWORD dwDisposition;

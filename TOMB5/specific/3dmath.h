@@ -45,6 +45,8 @@ ulong phd_sqrt(ulong num);
 ulong mGetAngle(long x, long z, long x1, long z1);
 void phd_GenerateW2V(PHD_3DPOS* viewPos);
 
+extern float fcossin_tbl[65536];
+
 __inline short phd_sin(long angle)
 {
 	angle >>= 3;

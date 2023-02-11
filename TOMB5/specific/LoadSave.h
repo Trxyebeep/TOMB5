@@ -50,5 +50,6 @@ void CalculateNumSpecialFeatures();
 void SpecialFeaturesDisplayScreens(long num);
 void DoSpecialFeaturesServer();
 
+extern long sfx_frequencies[3];
 extern MONOSCREEN_STRUCT MonoScreen[5];
 extern char MonoScreenOn;

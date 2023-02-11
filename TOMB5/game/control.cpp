@@ -66,6 +66,8 @@ uchar ShatterSounds[18][10] =
 {SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS}
 };
 
+char cd_flags[136];
+
 long ControlPhase(long nframes, long demo_mode)
 {
 	ITEM_INFO* item;

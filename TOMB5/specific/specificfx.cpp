@@ -175,6 +175,8 @@ static RAINDROPS Rain[2048];
 static SNOWFLAKE Snow[2048];
 static UWEFFECTS uwdust[256];
 static PHD_VECTOR NodeVectors[16];
+static float StarFieldPositions[1024];
+static long StarFieldColors[256];
 
 #ifdef GENERAL_FIXES
 static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)

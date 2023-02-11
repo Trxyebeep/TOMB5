@@ -16,6 +16,8 @@
 
 static char LM[15] = { 0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 8 };
 
+short GlobalCollisionBounds[6];
+
 void TriggerLaraBlood()
 {
 	PHD_VECTOR pos;

@@ -3,6 +3,7 @@
 #include "function_stubs.h"
 #include "dxshell.h"
 #include "winmain.h"
+#include "LoadSave.h"
 
 #define DSPrimary	VAR_(0x0086CAF0, LPDIRECTSOUNDBUFFER)
 #define DS_Samples	ARRAY_(0x0086CAF8, DS_SAMPLE, [32])

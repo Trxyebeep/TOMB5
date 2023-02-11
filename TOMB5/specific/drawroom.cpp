@@ -13,14 +13,19 @@
 #include "../tomb5/tomb5.h"
 #include "../game/gameflow.h"
 #endif
+#include "texture.h"
 
 FOGBULB_INFO LevelFogBulbs[64];		//list of all fogbulbs in the level (copied from room data)
 FOGBULB_STRUCT ActiveFogBulbs[64];	//list of active fog bulbs
 FOGBULB_STRUCT FXFogBulbs[4];		//list of fx fog bulbs
 FOGBULB_STRUCT FogBulbs[16];		//to apply on object vertices	
 FOGBULB_STRUCT RoomletFogBulbs[16];	//to apply on roomlet vertices
-	
 short CheckClipBox[8 * 3] = { 0, 1, 2, 3, 1, 2, 0, 1, 5, 3, 1, 5, 0, 4, 2, 3, 4, 2, 0, 4, 5, 3, 4, 5 };
+
+TEXTUREBUCKET Bucket[30];
+
+static ROOMLET_LIGHT RoomletLights[64];
+static long BucketSpecular[2080];
 
 void DrawBoundsRectangle(float left, float top, float right, float bottom)
 {

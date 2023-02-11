@@ -26,3 +26,5 @@ long TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* l, long rad);
 long TestBoundsCollideStatic(short* bounds, PHD_3DPOS* pos, long rad);
 long TestLaraPosition(short* bounds, ITEM_INFO* item, ITEM_INFO* l);
 void AlignLaraPosition(PHD_VECTOR* pos, ITEM_INFO* item, ITEM_INFO* l);
+
+extern short GlobalCollisionBounds[6];
