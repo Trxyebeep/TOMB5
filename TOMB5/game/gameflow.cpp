@@ -28,6 +28,47 @@
 #include "../tomb5/tomb5.h"
 #endif
 
+GAMEFLOW* Gameflow;
+PHD_VECTOR gfLensFlare;
+CVECTOR gfLayer1Col;
+CVECTOR gfLayer2Col;
+CVECTOR gfLensFlareColour;
+CVECTOR gfFog = { 0, 0, 0, 0 };
+ushort* gfStringOffset;
+ushort* gfFilenameOffset;
+uchar* gfScriptFile;
+uchar* gfLanguageFile;
+char* gfStringWad;
+char* gfFilenameWad;
+long gfStatus = 0;
+long gfMirrorZPlane;
+short gfLevelFlags;
+uchar gfCurrentLevel;
+uchar gfLevelComplete;
+uchar gfGameMode = 1;
+uchar gfRequiredStartPos;
+uchar gfMirrorRoom;
+uchar gfInitialiseGame;
+uchar gfNumPickups;
+uchar gfNumTakeaways;
+uchar gfNumMips = 0;
+uchar gfPickups[16];
+uchar gfTakeaways[16];
+uchar gfMips[8];
+uchar gfResidentCut[4];
+uchar gfLevelNames[40];
+char gfUVRotate;
+char gfLayer1Vel;
+char gfLayer2Vel;
+
+static ushort* gfScriptOffset;
+static uchar* gfScriptWad;
+static char* gfExtensions;
+static uchar gfLegend;
+static uchar gfLegendTime;
+static uchar gfResetHubDest;
+static uchar gfCutNumber;
+
 static long nframes = 1;
 char JustLoaded;
 

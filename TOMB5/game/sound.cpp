@@ -3,6 +3,7 @@
 #include "../specific/function_stubs.h"
 #include "../specific/dxsound.h"
 #include "../specific/3dmath.h"
+#include "gameflow.h"
 
 long sound_cut_flag = 0;
 

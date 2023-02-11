@@ -13,6 +13,7 @@
 #include "effects.h"
 #include "effect2.h"
 #include "items.h"
+#include "gameflow.h"
 
 static BITE_INFO romangod_hit = {0, 0, 0, 15};
 

@@ -21,6 +21,7 @@
 #include "../specific/3dmath.h"
 #include "draw.h"
 #include "lara_states.h"
+#include "gameflow.h"
 
 long FogTableColor[28] =
 {

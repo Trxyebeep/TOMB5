@@ -11,6 +11,38 @@ long do_dels_cutseq_selector();
 void DoLevel(uchar name, uchar audio);
 void LoadGameflow();
 
+extern GAMEFLOW* Gameflow;
+extern PHD_VECTOR gfLensFlare;
+extern CVECTOR gfLayer1Col;
+extern CVECTOR gfLayer2Col;
+extern CVECTOR gfLensFlareColour;
+extern CVECTOR gfFog;
+extern ushort* gfStringOffset;
+extern ushort* gfFilenameOffset;
+extern uchar* gfScriptFile;
+extern uchar* gfLanguageFile;
+extern char* gfStringWad;
+extern char* gfFilenameWad;
+extern long gfStatus;
+extern long gfMirrorZPlane;
+extern short gfLevelFlags;
+extern uchar gfCurrentLevel;
+extern uchar gfLevelComplete;
+extern uchar gfGameMode;
+extern uchar gfRequiredStartPos;
+extern uchar gfMirrorRoom;
+extern uchar gfInitialiseGame;
+extern uchar gfNumPickups;
+extern uchar gfNumTakeaways;
+extern uchar gfNumMips;
+extern uchar gfPickups[16];
+extern uchar gfTakeaways[16];
+extern uchar gfMips[8];
+extern uchar gfResidentCut[4];
+extern uchar gfLevelNames[40];
+extern char gfUVRotate;
+extern char gfLayer1Vel;
+extern char gfLayer2Vel;
 extern char JustLoaded;
 
 enum gf_languages

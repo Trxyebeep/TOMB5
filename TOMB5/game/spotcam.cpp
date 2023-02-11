@@ -9,6 +9,7 @@
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
+#include "gameflow.h"
 
 long Spline(long x, long* knots, long nk)
 {

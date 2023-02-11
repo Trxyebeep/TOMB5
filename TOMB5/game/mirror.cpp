@@ -5,6 +5,7 @@
 #include "../specific/drawlara.h"
 #include "tomb4fx.h"
 #include "../specific/3dmath.h"
+#include "gameflow.h"
 
 void Draw_Mirror_Lara()
 {

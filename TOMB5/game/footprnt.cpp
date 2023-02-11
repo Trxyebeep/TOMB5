@@ -12,6 +12,7 @@
 
 #define PRINT_HEIGHT_CORRECTION 128 // The maximum difference between the footprint and the floor
 #endif
+#include "gameflow.h"
 
 static char footsounds[14] =
 {
@@ -45,7 +46,7 @@ void AddFootprint(ITEM_INFO* item)
 		SoundEffect(footsounds[floor->fx] + 288, &lara_item->pos, 0);
 
 #ifdef GENERAL_FIXES
-	if (tomb5.footprints && floor->fx < 3 && (gfCurrentLevel == 4 || !OnObject))
+	if (tomb5.footprints && floor->fx < 3 && (gfCurrentLevel == LVL5_BASE || !OnObject))
 #else
 	if (floor->fx < 3 && !OnObject)
 #endif

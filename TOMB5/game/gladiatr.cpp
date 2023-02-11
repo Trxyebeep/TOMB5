@@ -9,6 +9,7 @@
 #include "sound.h"
 #include "control.h"
 #include "effects.h"
+#include "gameflow.h"
 
 static BITE_INFO gladiator_hit = {0, 0, 0, 16};
 
