@@ -57,6 +57,7 @@
 #include "gladiatr.h"
 #include "items.h"
 #include "control.h"
+#include "deltapak.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #include "lara2gun.h"

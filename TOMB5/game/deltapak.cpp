@@ -39,9 +39,30 @@ ushort old_lara_LHolster;
 
 long nSpecialCut;
 
+NEW_CUTSCENE* GLOBAL_cutme;
+char* cutseq_resident_addresses[47];
+ITEM_INFO duff_item[10];
+long GLOBAL_cutseq_frame;
+long GLOBAL_playing_cutseq = 0;
+long GLOBAL_numcutseq_frames;
+long cutrot = 0;
+long cutseq_num = 0;
+long cutseq_trig = 0;
+ushort dels_cutseq_player = 0;
+
+static PACKNODE* actor_pnodes[10];
+static ulong cutseq_meshswapbits[10];
+static ulong cutseq_meshbits[10];
+static long cut_seethrough = 128;
 static short frig_shadow_bbox[6] = { -165, 150, -777, 1, -87, 78 };
+static uchar disable_horizon = 0;
 static char lara_chat_cnt = 0;
 static char actor_chat_cnt = 0;
+static char cutseq_busy_timeout = 0;
+static long numnailed;
+static char old_status_flags[32];
+static ushort old_status_flags2[32];
+static short temp_rotation_buffer[160];
 
 ushort larson_pistols_info1[2] = { 912, 0xFFFF };
 ushort andrea3_pistols_info[5] = { 17739, 34126, 34135, 17751, 0xFFFF };

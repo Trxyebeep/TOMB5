@@ -18,6 +18,7 @@
 #include "../specific/output.h"
 #include "../specific/specificfx.h"
 #include "../specific/function_stubs.h"
+#include "deltapak.h"
 
 void KlaxonTremor()
 {

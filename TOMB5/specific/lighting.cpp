@@ -8,6 +8,7 @@
 #include "polyinsert.h"
 #include "output.h"
 #include "drawroom.h"
+#include "../game/delstuff.h"
 
 long NumSunLights;
 long NumPointLights;

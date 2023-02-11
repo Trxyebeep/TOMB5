@@ -23,20 +23,101 @@
 #include "../specific/polyinsert.h"
 #include "text.h"
 #include "../specific/audio.h"
+#include "../specific/gamemain.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #endif
-#include "../specific/gamemain.h"
+
+static RINGME* rings[2];
+static RINGME pcring1;
+static RINGME pcring2;
+static AMMOLIST ammo_object_list[3];
+static MENUTHANG current_options[3];
+static uchar go_left;
+static uchar go_right;
+static uchar go_up;
+static uchar go_down;
+static uchar go_select;
+static uchar go_deselect;
+static uchar left_repeat;
+static uchar left_debounce;
+static uchar right_repeat;
+static uchar right_debounce;
+static uchar up_debounce;
+static uchar down_debounce;
+static uchar select_debounce;
+static uchar deselect_debounce;
+static uchar friggrimmer;
+static uchar friggrimmer2;
+static char loading_or_saving;
+static char use_the_bitch;
+static short examine_mode = 0;
+static short stats_mode = 0;
+static uchar current_selected_option;
+static char menu_active;
+static char ammo_active;
+static char oldLaraBusy;
+static long xoffset;
+static long yoffset;
+static long OBJLIST_SPACING;
+static long pcbright = 0x7F7F7F;
+static short inventry_xpos = 0;
+static short inventry_ypos = 0;
+static short combine_obj1;
+static short combine_obj2;
+static short ammo_selector_fade_val;
+static short ammo_selector_fade_dir;
+static short combine_ring_fade_val;
+static short combine_ring_fade_dir;
+static short normal_ring_fade_val;
+static short normal_ring_fade_dir;
+static char ammo_selector_flag;
+static char combine_type_flag;
+static char seperate_type_flag;
+
+static char* current_ammo_type;
+static short AmountShotGunAmmo1 = 0;
+static short AmountShotGunAmmo2 = 0;
+static short AmountCrossBowAmmo1 = 0;
+static short AmountCrossBowAmmo2 = 0;
+static short AmountHKAmmo1 = 0;
+static short AmountUziAmmo = 0;
+static short AmountRevolverAmmo = 0;
+static short AmountPistolsAmmo = 0;
+static char CurrentPistolsAmmoType = 0;
+static char CurrentUziAmmoType = 0;
+static char CurrentRevolverAmmoType = 0;
+static char CurrentShotGunAmmoType = 0;
+static char CurrentGrenadeGunAmmoType = 0;
+static char CurrentCrossBowAmmoType = 0;
+static char StashedCurrentPistolsAmmoType = 0;
+static char StashedCurrentUziAmmoType = 0;
+static char StashedCurrentRevolverAmmoType = 0;
+static char StashedCurrentShotGunAmmoType = 0;
+static char StashedCurrentGrenadeGunAmmoType = 0;
+static char StashedCurrentCrossBowAmmoType = 0;
+static char Stashedcurrent_selected_option = 0;
+static char num_ammo_slots;
+
+static uchar keypadx = 0;
+static uchar keypady = 0;
+static uchar keypadnuminputs = 0;
+static uchar keypadpause = 0;
+static uchar keypadinputs[4];
+
+long GLOBAL_enterinventory = NO_ITEM;
+long GLOBAL_inventoryitemchosen = NO_ITEM;
+long GLOBAL_lastinvitem = NO_ITEM;
+long GLOBAL_invkeypadmode = 0;
+long GLOBAL_invkeypadcombination = 0;
+long InventoryActive = 0;
 
 short optmessages[11] =
 {
 	STR_USE, STR_CHOOSE_AMMO, STR_COMBINE, STR_SEPARATE, STR_EQUIP, STR_COMBINE_WITH, STR_LOAD_GAME, STR_SAVE_GAME, STR_EXAMINE, STR_STATISTICS, STR_CHOOSE_WEAPON_MODE
 };
 
-uchar wanky_secrets_table[18] =
-{
-	0, 3, 3, 3, 3, 3, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
-};
+uchar wanky_secrets_table[18] = { 0, 3, 3, 3, 3, 3, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
 
 ushort options_table[99] =
 {
@@ -83,6 +164,7 @@ COMBINELIST dels_handy_combine_table[24] =
 long S_CallInventory2()
 {
 	ITEM_INFO* item;
+	FLOOR_INFO* floor;
 	long return_value, val, flag;
 	short room_number;
 
@@ -294,7 +376,8 @@ long S_CallInventory2()
 		{
 			item = lara_item;
 			room_number = lara_item->room_number;
-			GetHeight(GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number), item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+			floor = GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number);
+			GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 			TestTriggers(trigger_index, 1, 0);
 		}
 	}
@@ -527,7 +610,7 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, long overlay, long shagfla
 	short* rotation1;
 	short* frmptr;
 	ulong bit;
-	long poppush, unk_bak;
+	long poppush, a;
 
 	anim = &anims[item->anim_number];
 	frmptr = anim->frame_ptr;
@@ -574,10 +657,10 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, long overlay, long shagfla
 			phd_PutPolygonsPickup(*meshpp, (float)xoffset, (float)yoffset, pcbright);
 		else
 		{
-			unk_bak = GlobalAlpha;
+			a = GlobalAlpha;
 			GlobalAlpha = 0xFF000000;
 			phd_PutPolygonsPickup(*meshpp, (float)xoffset, (float)yoffset, pcbright);
-			GlobalAlpha = unk_bak;
+			GlobalAlpha = a;
 		}
 	}
 
@@ -603,10 +686,10 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, long overlay, long shagfla
 				phd_PutPolygonsPickup(*meshpp, (float)xoffset, (float)yoffset, pcbright);
 			else
 			{
-				unk_bak = GlobalAlpha;
+				a = GlobalAlpha;
 				GlobalAlpha = 0xFF000000;
 				phd_PutPolygonsPickup(*meshpp, (float)xoffset, (float)yoffset, pcbright);
-				GlobalAlpha = unk_bak;
+				GlobalAlpha = a;
 			}
 		}
 	}
@@ -662,16 +745,22 @@ void construct_combine_object_list()
 	}
 
 	for (int i = 0; i < 16; i++)
+	{
 		if (lara.puzzleitemscombo & (1 << i))
 			insert_object_into_list_v2(INV_PUZZLE_ITEM1_COMBO1 + i);
+	}
 
 	for (int i = 0; i < 16; i++)
+	{
 		if (lara.keyitemscombo & (1 << i))
 			insert_object_into_list_v2(INV_KEY_ITEM1_COMBO1 + i);
+	}
 
 	for (int i = 0; i < 8; i++)
+	{
 		if (lara.pickupitemscombo & (1 << i))
 			insert_object_into_list_v2(INV_PICKUP_ITEM1_COMBO1 + i);
+	}
 
 	if (lara.wetcloth == CLOTH_DRY)
 		insert_object_into_list_v2(INV_CLOTH);
@@ -1179,7 +1268,7 @@ void draw_current_object_list(long ringnum)
 				ymeup = 190;
 
 			DrawThreeDeeObject2D((long)((phd_centerx * 0.00390625 * 256.0 + inventry_xpos) + xoff + i * OBJLIST_SPACING),
-				(long)(phd_centery * 0.0083333338 * ymeup + inventry_ypos),
+				long(phd_centery * 0.0083333338 * ymeup + inventry_ypos),
 				rings[ringnum]->current_object_list[n].invitem,
 				shade, 0, yrot, 0, rings[ringnum]->current_object_list[n].bright, 0);
 
@@ -1826,8 +1915,10 @@ long is_item_currently_combinable(short obj)
 long have_i_got_item(short obj)
 {
 	for (int i = 0; i < 100; i++)
+	{
 		if (rings[RING_INVENTORY]->current_object_list[i].invitem == obj)
 			return 1;
+	}
 
 	return 0;
 }
@@ -1852,12 +1943,10 @@ void combine_these_two_objects(short obj1, short obj2)
 
 	for (n = 0; n < 24; n++)
 	{
-		if (dels_handy_combine_table[n].item1 == obj1 &&
-			dels_handy_combine_table[n].item2 == obj2)
+		if (dels_handy_combine_table[n].item1 == obj1 && dels_handy_combine_table[n].item2 == obj2)
 			break;
 
-		if (dels_handy_combine_table[n].item1 == obj2 &&
-			dels_handy_combine_table[n].item2 == obj1)
+		if (dels_handy_combine_table[n].item1 == obj2 && dels_handy_combine_table[n].item2 == obj1)
 			break;
 	}
 
@@ -1872,8 +1961,10 @@ void seperate_object(short obj)
 	long n;
 
 	for (n = 0; n < 24; n++)
+	{
 		if (dels_handy_combine_table[n].combined_item == obj)
 			break;
+	}
 
 	dels_handy_combine_table[n].combine_routine(1);
 	construct_object_list();
@@ -1937,122 +2028,122 @@ void combine_crossbow_lasersight(long flag)
 
 void combine_PuzzleItem1(long flag)
 {
-	lara.puzzleitemscombo &= 0xFFFC;
+	lara.puzzleitemscombo &= ~3;
 	lara.puzzleitems[0] = 1;
 }
 
 void combine_PuzzleItem2(long flag)
 {
-	lara.puzzleitemscombo &= 0xFFF3;
+	lara.puzzleitemscombo &= ~0xC;
 	lara.puzzleitems[1] = 1;
 }
 
 void combine_PuzzleItem3(long flag)
 {
-	lara.puzzleitemscombo &= 0xFFCF;
+	lara.puzzleitemscombo &= ~0x30;
 	lara.puzzleitems[2] = 1;
 }
 
 void combine_PuzzleItem4(long flag)
 {
-	lara.puzzleitemscombo &= 0xFF3F;
+	lara.puzzleitemscombo &= ~0xC0;
 	lara.puzzleitems[3] = 1;
 }
 
 void combine_PuzzleItem5(long flag)
 {
-	lara.puzzleitemscombo &= 0xFCFF;
+	lara.puzzleitemscombo &= ~0x300;
 	lara.puzzleitems[4] = 1;
 }
 
 void combine_PuzzleItem6(long flag)
 {
-	lara.puzzleitemscombo &= 0xF3FF;
+	lara.puzzleitemscombo &= ~0xC00;
 	lara.puzzleitems[5] = 1;
 }
 
 void combine_PuzzleItem7(long flag)
 {
-	lara.puzzleitemscombo &= 0xCFFF;
+	lara.puzzleitemscombo &= ~0x3000;
 	lara.puzzleitems[6] = 1;
 }
 
 void combine_PuzzleItem8(long flag)
 {
-	lara.puzzleitemscombo &= 0x3FFF;
+	lara.puzzleitemscombo &= ~0xC000;
 	lara.puzzleitems[7] = 1;
 }
 
 void combine_KeyItem1(long flag)
 {
 	lara.keyitems |= 1;
-	lara.keyitemscombo &= 0xFFFC;
+	lara.keyitemscombo &= ~3;
 }
 
 void combine_KeyItem2(long flag)
 {
 	lara.keyitems |= 2;
-	lara.keyitemscombo &= 0xFFF3;
+	lara.keyitemscombo &= ~0xC;
 }
 
 void combine_KeyItem3(long flag)
 {
 	lara.keyitems |= 4;
-	lara.keyitemscombo &= 0xFFCF;
+	lara.keyitemscombo &= ~0x30;
 }
 
 void combine_KeyItem4(long flag)
 {
 	lara.keyitems |= 8;
-	lara.keyitemscombo &= 0xFF3F;
+	lara.keyitemscombo &= ~0xC0;
 }
 
 void combine_KeyItem5(long flag)
 {
 	lara.keyitems |= 16;
-	lara.keyitemscombo &= 0xFCFF;
+	lara.keyitemscombo &= ~0x300;
 }
 
 void combine_KeyItem6(long flag)
 {
 	lara.keyitems |= 32;
-	lara.keyitemscombo &= 0xF3FF;
+	lara.keyitemscombo &= ~0xC00;
 }
 
 void combine_KeyItem7(long flag)
 {
 	lara.keyitems |= 64;
-	lara.keyitemscombo &= 0xCFFF;
+	lara.keyitemscombo &= ~0x3000;
 }
 
 void combine_KeyItem8(long flag)
 {
 	lara.keyitems |= 128;
-	lara.keyitemscombo &= 0x3FFF;
+	lara.keyitemscombo &= ~0xC000;
 }
 
 void combine_PickupItem1(long flag)
 {
 	lara.pickupitems |= 1;
-	lara.pickupitemscombo &= 0xFFFC;
+	lara.pickupitemscombo &= ~3;
 }
 
 void combine_PickupItem2(long flag)
 {
 	lara.pickupitems |= 2;
-	lara.pickupitemscombo &= 0xFFF3;
+	lara.pickupitemscombo &= ~0xC;
 }
 
 void combine_PickupItem3(long flag)
 {
 	lara.pickupitems |= 4;
-	lara.pickupitemscombo &= 0xFFCF;
+	lara.pickupitemscombo &= ~0x30;
 }
 
 void combine_PickupItem4(long flag)
 {
 	lara.pickupitems |= 8;
-	lara.pickupitemscombo &= 0xFF3F;
+	lara.pickupitemscombo &= ~0xC0;
 }
 
 void combine_clothbottle(long flag)
@@ -2064,15 +2155,19 @@ void combine_clothbottle(long flag)
 void setup_objectlist_startposition(short newobj)
 {
 	for (int i = 0; i < 100; i++)
+	{
 		if (rings[RING_INVENTORY]->current_object_list[i].invitem == newobj)
 			rings[RING_INVENTORY]->curobjinlist = i;
+	}
 }
 
 void setup_objectlist_startposition2(short newobj)
 {
 	for (int i = 0; i < 100; i++)
+	{
 		if (inventry_objects_list[rings[RING_INVENTORY]->current_object_list[i].invitem].object_number == newobj)
 			rings[RING_INVENTORY]->curobjinlist = i;
+	}
 }
 
 void use_current_item()
@@ -2673,10 +2768,12 @@ void remove_inventory_item(short object_number)
 long convert_obj_to_invobj(short obj)
 {
 	for (int i = 0; i < 100; i++)
+	{
 		if (inventry_objects_list[i].object_number == obj)
 			return i;
+	}
 
-	return 27;
+	return INV_MEMCARD_LOAD_INV_ITEM;
 }
 
 long convert_invobj_to_obj(long obj)
@@ -2727,7 +2824,7 @@ void do_keypad_mode()
 
 	DrawThreeDeeObject2D(long(phd_centerx * 0.00390625 * 256.0 + inventry_xpos), long((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2),
 		INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
-	PrintString(0x100, (ushort)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, SCRIPT_TEXT(STR_ENTER_COMBINATION), FF_CENTER);
+	PrintString(0x100, ushort((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, SCRIPT_TEXT(STR_ENTER_COMBINATION), FF_CENTER);
 	buf[0] = 45;
 	buf[1] = 45;
 	buf[2] = 45;
@@ -2738,7 +2835,7 @@ void do_keypad_mode()
 		for (int i = 0; i < keypadnuminputs; i++)
 			buf[i] = keypadinputs[i] + 48;
 
-	PrintString(0x100, (ushort)((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 + 64), 1, buf, FF_CENTER);
+	PrintString(0x100, ushort((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 + 64), 1, buf, FF_CENTER);
 
 	if (keypadpause)
 	{
@@ -3000,22 +3097,22 @@ void DelDrawSprite(long x, long y, long def, long z)
 {
 	SPRITESTRUCT* sprite;
 	D3DTLVERTEX v[4];
-	TEXTURESTRUCT Tex;
-	float u1, u2, v1, v2;
-	long x1, y1, x2, y2, x3, y3, x4, y4;
+	TEXTURESTRUCT tex;
+	long x1, y1, x2, y2;
 
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + def];
 
 	if (z >= 200)
-		z = long(f_mzfar - 20.0);
+		z = long(f_mzfar - 20.0F);
 	else
-		z = long(f_mznear + 20.0);
+		z = long(f_mznear + 20.0F);
 
-	x1 = x4 = (long)((float)x * (float)phd_centerx * (1.0f / 256.0f));
-	x2 = x3 = (long)(((float)((sprite->width >> 8) + x + 1)) * (float)phd_centerx * (1.0f / 256.0f));
-	y1 = y2 = (long)((float)y * (float)phd_centery * (1.0f / 120.0f));
-	y3 = y4 = (long)(((float)((sprite->height >> 8) + y + 1)) * (float)phd_centery * (1.0f / 120.0f));
-	setXY4(v, x1, y1, x2, y2, x3, y3, x4, y4, z, clipflags);
+	x1 = long((float)x * (float)phd_centerx * (1.0F / 256.0F));
+	x2 = long((float((sprite->width >> 8) + x + 1)) * (float)phd_centerx * (1.0F / 256.0F));
+	y1 = long((float)y * (float)phd_centery * (1.0F / 120.0F));
+	y2 = long((float((sprite->height >> 8) + y + 1)) * (float)phd_centery * (1.0F / 120.0F));
+	setXY4(v, x1, y1, x2, y1, x2, y2, x1, y2, z, clipflags);
+
 	v[0].specular = 0xFF000000;
 	v[1].specular = 0xFF000000;
 	v[2].specular = 0xFF000000;
@@ -3024,22 +3121,19 @@ void DelDrawSprite(long x, long y, long def, long z)
 	v[1].color = 0xFFFFFFFF;
 	v[2].color = 0xFFFFFFFF;
 	v[3].color = 0xFFFFFFFF;
-	u1 = sprite->x1;
-	v1 = sprite->y1;
-	u2 = sprite->x2;
-	v2 = sprite->y2;
-	Tex.drawtype = 1;
-	Tex.flag = 0;
-	Tex.tpage = sprite->tpage;
-	Tex.u1 = u1;
-	Tex.v1 = v1;
-	Tex.u2 = u2;
-	Tex.v2 = v1;
-	Tex.u3 = u2;
-	Tex.v3 = v2;
-	Tex.u4 = u1;
-	Tex.v4 = v2;
-	AddQuadClippedSorted(v, 0, 1, 2, 3, &Tex, 0);
+
+	tex.drawtype = 1;
+	tex.flag = 0;
+	tex.tpage = sprite->tpage;
+	tex.u1 = sprite->x1;
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x2;
+	tex.v2 = sprite->y1;
+	tex.u3 = sprite->x2;
+	tex.v3 = sprite->y2;
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y2;
+	AddQuadClippedSorted(v, 0, 1, 2, 3, &tex, 0);
 }
 
 void inject_newinv2(bool replace)

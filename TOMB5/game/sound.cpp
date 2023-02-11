@@ -4,6 +4,7 @@
 #include "../specific/dxsound.h"
 #include "../specific/3dmath.h"
 #include "gameflow.h"
+#include "deltapak.h"
 
 long sound_cut_flag = 0;
 

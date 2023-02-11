@@ -11,6 +11,7 @@
 #include "../specific/input.h"
 #include "../tomb5/tomb5.h"
 #endif
+#include "deltapak.h"
 
 long FlashIt()
 {

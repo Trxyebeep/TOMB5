@@ -19,12 +19,13 @@
 #include "specificfx.h"
 #include "time.h"
 #include "file.h"
+#include "mmx.h"
+#include "fmv.h"
+#include "../game/newinv2.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../tomb5/troyestuff.h"
 #endif
-#include "mmx.h"
-#include "fmv.h"
 
 long sfx_frequencies[3] = { 11025, 22050, 44100 };
 

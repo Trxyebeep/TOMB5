@@ -16,14 +16,15 @@
 #include "polyinsert.h"
 #include "winmain.h"
 #include "../game/tomb4fx.h"
+#include "LoadSave.h"
+#include "../game/delstuff.h"
+#include "../game/deltapak.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../game/draw.h"
 #include "../game/health.h"
 #include "../game/text.h"
 #endif
-#include "LoadSave.h"
-#include "../game/delstuff.h"
 
 D3DTLVERTEX aVertexBuffer[1024];
 

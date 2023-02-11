@@ -178,4 +178,14 @@ void nail_intelligent_object(short objnum);
 void do_cutseq_skipper_stuff();
 #endif
 
+extern NEW_CUTSCENE* GLOBAL_cutme;
 extern long nSpecialCut;
+extern char* cutseq_resident_addresses[47];
+extern ITEM_INFO duff_item[10];
+extern long GLOBAL_cutseq_frame;
+extern long GLOBAL_playing_cutseq;
+extern long GLOBAL_numcutseq_frames;
+extern long cutrot;
+extern long cutseq_num;
+extern long cutseq_trig;
+extern ushort dels_cutseq_player;

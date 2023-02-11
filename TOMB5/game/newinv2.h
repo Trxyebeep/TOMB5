@@ -70,6 +70,13 @@ long LoadGame();
 long SaveGame();
 void DelDrawSprite(long x, long y, long def, long z);
 
+extern long GLOBAL_enterinventory;
+extern long GLOBAL_inventoryitemchosen;
+extern long GLOBAL_lastinvitem;
+extern long GLOBAL_invkeypadmode;
+extern long GLOBAL_invkeypadcombination;
+extern long InventoryActive;
+
 enum ring_types
 {
 	RING_INVENTORY,

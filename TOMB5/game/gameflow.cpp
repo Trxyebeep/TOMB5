@@ -24,6 +24,7 @@
 #include "../specific/fmv.h"
 #include "../specific/polyinsert.h"
 #include "savegame.h"
+#include "newinv2.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
@@ -69,6 +70,7 @@ static uchar gfLegendTime;
 static uchar gfResetHubDest;
 static uchar gfCutNumber;
 
+static ushort dels_cutseq_selector_flag = 0;
 static long nframes = 1;
 char JustLoaded;
 
@@ -651,7 +653,7 @@ void DoTitle(uchar name, uchar audio)
 	fmv_to_play[1] = 0;
 	fmv_to_play[0] = 0;
 	S_LoadLevelFile(name);
-	GLOBAL_lastinvitem = -1;
+	GLOBAL_lastinvitem = NO_ITEM;
 	dels_cutseq_player = 0;
 	InitSpotCamSequences();
 	title_controls_locked_out = 0;

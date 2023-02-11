@@ -19,6 +19,7 @@
 #include "larafire.h"
 #include "laraflar.h"
 #include "flmtorch.h"
+#include "deltapak.h"
 
 static PHD_VECTOR SOPos = { 0, 0, 0 };
 static PHD_VECTOR MSPos = { 0, 0, 0 };

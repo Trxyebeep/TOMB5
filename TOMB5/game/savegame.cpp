@@ -7,10 +7,11 @@
 #include "control.h"
 #include "pickup.h"
 #include "lot.h"
+#include "gameflow.h"
+#include "newinv2.h"
 #ifdef GENERAL_FIXES
 #include "lara2gun.h"
 #endif
-#include "gameflow.h"
 
 #ifdef GENERAL_FIXES
 tomb5_save_info tomb5_save;

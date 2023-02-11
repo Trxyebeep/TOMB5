@@ -11,6 +11,7 @@
 #include "laramisc.h"
 #include "../specific/3dmath.h"
 #include "gameflow.h"
+#include "newinv2.h"
 
 static PHD_VECTOR PulleyPos = { 0, 0, -148 };
 static PHD_VECTOR SwitchPos = { 0, 0, 0 };

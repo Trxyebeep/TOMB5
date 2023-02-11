@@ -9,6 +9,7 @@
 #include "control.h"
 #include "../specific/function_stubs.h"
 #include "delstuff.h"
+#include "deltapak.h"
 
 static char HairRotScratchVertNums[5][12] =
 {
