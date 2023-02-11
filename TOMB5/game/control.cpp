@@ -35,14 +35,15 @@
 #include "text.h"
 #include "../specific/dxsound.h"
 #include "lara1gun.h"
+#include "../specific/audio.h"
+#include "rope.h"
+#include "../specific/file.h"
 #ifdef GENERAL_FIXES
 #include "deltapak.h"
 #include "../tomb5/tomb5.h"
 #include "../specific/output.h"
 #include "../specific/gamemain.h"
 #endif
-#include "../specific/audio.h"
-#include "rope.h"
 
 uchar ShatterSounds[18][10] =
 {

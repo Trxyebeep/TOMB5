@@ -58,6 +58,7 @@
 #include "items.h"
 #include "control.h"
 #include "deltapak.h"
+#include "../specific/file.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #include "lara2gun.h"

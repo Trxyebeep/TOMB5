@@ -6,6 +6,8 @@
 #include "winmain.h"
 
 TEXTURE Textures[64];
+long nTextures;
+
 static long bBumpMapSupported = 0;
 static DDPIXELFORMAT bumpPF;
 

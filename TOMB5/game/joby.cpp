@@ -20,6 +20,11 @@
 #include "../specific/function_stubs.h"
 #include "deltapak.h"
 
+short WB_room;
+static ITEM_INFO* WB_item;
+static short wbx;
+static short wbz;
+
 void KlaxonTremor()
 {
 	static short timer = 0;

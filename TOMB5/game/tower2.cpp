@@ -16,6 +16,7 @@
 #include "collide.h"
 #include "camera.h"
 #include "gameflow.h"
+#include "../specific/file.h"
 #ifdef GENERAL_FIXES
 #include "../specific/specificfx.h"
 #include "../specific/function_table.h"

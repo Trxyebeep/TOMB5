@@ -19,6 +19,8 @@
 #include "../game/rope.h"
 #include "../game/gameflow.h"
 #include "output.h"
+#include "file.h"
+#include "texture.h"
 
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"

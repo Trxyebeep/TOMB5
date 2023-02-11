@@ -9,6 +9,7 @@
 #include "lot.h"
 #include "gameflow.h"
 #include "newinv2.h"
+#include "../specific/file.h"
 #ifdef GENERAL_FIXES
 #include "lara2gun.h"
 #endif

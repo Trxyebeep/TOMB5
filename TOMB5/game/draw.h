@@ -43,4 +43,8 @@ void ClipRoom(ROOM_INFO* r);
 void SetRoomBounds(short* door, long rn, ROOM_INFO* actualRoom);
 void GetRoomBounds();
 
-extern short no_rotation[];
+extern short SkyPos;
+extern short SkyPos2;
+extern ushort LightningRGB[3];
+extern  ushort LightningRGBs[3];
+extern short no_rotation[12];

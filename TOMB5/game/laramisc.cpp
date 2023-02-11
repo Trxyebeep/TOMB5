@@ -15,6 +15,7 @@
 #include "larasurf.h"
 #include "../specific/function_stubs.h"
 #include "../specific/audio.h"
+#include "../specific/file.h"
 #ifdef GENERAL_FIXES
 #include "newinv2.h"
 #include "../tomb5/tomb5.h"
@@ -429,6 +430,7 @@ void LaraControl(short item_number)
 	long oldx, oldy, oldz;
 	long wh, wd ,hfw, room_water_state;
 	short room_number;
+	static short SubsuitAir = 0;
 
 	item = lara_item;
 

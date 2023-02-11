@@ -12,3 +12,5 @@ void ControlSecurityScreens(short item_number);
 void CookerFlameControl(short item_number);
 void TriggerLaraSparks(long smoke);
 void TriggerCableSparks(long x, long z, short item_number, long node, long flare);
+
+extern short WB_room;

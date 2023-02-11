@@ -27,6 +27,27 @@
 #include "../tomb5/tomb5.h"
 #endif
 
+TEXTURESTRUCT* textinfo;
+SPRITESTRUCT* spriteinfo;
+AIOBJECT* AIObjects;
+THREAD LevelLoadingThread;
+short* aranges;
+short* frames;
+short* commands;
+short* floor_data;
+short* mesh_base;
+char* FileData;
+long number_cameras;
+long nAnimUVRanges;
+short nAIObjects;
+
+static TEXTURESTRUCT* MonitorScreenTex;
+static FILE* level_fp;
+static char* CompressedData;
+static float MonitorScreenU;
+static long num_items;
+static long FileCompressed = 1;
+
 bool LoadTextureInfos()
 {
 	long val;
@@ -587,9 +608,9 @@ bool LoadSamples()
 	}
 
 	Log(8, "Number Of Samples %d", num_samples);
-	fread(&num_samples, 1, 4, LevelFILEptr);
+	fread(&num_samples, 1, 4, level_fp);
 
-	if (feof(LevelFILEptr))
+	if (feof(level_fp))
 		Log(1, "END OF FILE");
 
 	InitSampleDecompress();
@@ -602,9 +623,9 @@ bool LoadSamples()
 
 	for (int i = 0; i < num_samples; i++)
 	{
-		fread(&uncomp_size, 1, 4, LevelFILEptr);
-		fread(&comp_size, 1, 4, LevelFILEptr);
-		fread(samples_buffer, comp_size, 1, LevelFILEptr);
+		fread(&uncomp_size, 1, 4, level_fp);
+		fread(&comp_size, 1, 4, level_fp);
+		fread(samples_buffer, comp_size, 1, level_fp);
 
 		if (!DXCreateSampleADPCM(samples_buffer, comp_size, uncomp_size, i))
 		{

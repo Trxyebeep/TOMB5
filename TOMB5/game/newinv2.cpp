@@ -24,6 +24,7 @@
 #include "text.h"
 #include "../specific/audio.h"
 #include "../specific/gamemain.h"
+#include "../specific/file.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #endif

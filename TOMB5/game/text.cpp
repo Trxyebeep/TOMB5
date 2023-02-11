@@ -3,6 +3,7 @@
 #include "../specific/specificfx.h"
 #include "../specific/polyinsert.h"
 #include "../specific/output.h"
+#include "../specific/texture.h"
 
 CVECTOR FontShades[10][32];
 uchar ScaleFlag;

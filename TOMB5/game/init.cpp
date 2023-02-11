@@ -16,6 +16,8 @@
 #include "switch.h"
 #include "../specific/3dmath.h"
 #include "tomb4fx.h"
+#include "joby.h"
+#include "../specific/file.h"
 
 void InitialiseTrapDoor(short item_number)
 {

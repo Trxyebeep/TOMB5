@@ -35,9 +35,16 @@
 #include "../tomb5/tomb5.h"
 #endif
 
-static long box_lines[12][2] = { {0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7} };
-
+short SkyPos;
+short SkyPos2;
+ushort LightningRGB[3];
+ushort LightningRGBs[3];
+static short LightningCount;
+static short LightningRand;
+static short dLightningRand;
+static short LightningSFXDelay = 0;
 short no_rotation[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+static long box_lines[12][2] = { {0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7} };
 
 static long number_draw_rooms;
 static short draw_rooms[100];

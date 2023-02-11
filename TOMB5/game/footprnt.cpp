@@ -3,6 +3,8 @@
 #include "delstuff.h"
 #include "control.h"
 #include "sound.h"
+#include "gameflow.h"
+#include "../specific/file.h"
 #ifdef GENERAL_FIXES
 #include "../specific/3dmath.h"
 #include "../specific/specificfx.h"
@@ -12,7 +14,6 @@
 
 #define PRINT_HEIGHT_CORRECTION 128 // The maximum difference between the footprint and the floor
 #endif
-#include "gameflow.h"
 
 static char footsounds[14] =
 {

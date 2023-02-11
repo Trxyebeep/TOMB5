@@ -13,6 +13,7 @@
 #include "d3dmatrix.h"
 #include "../game/tomb4fx.h"
 #include "../game/deltapak.h"
+#include "texture.h"
 
 const char* CreditNames[] =
 {

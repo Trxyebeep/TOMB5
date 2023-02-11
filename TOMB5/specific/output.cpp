@@ -19,6 +19,8 @@
 #include "LoadSave.h"
 #include "../game/delstuff.h"
 #include "../game/deltapak.h"
+#include "file.h"
+#include "texture.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../game/draw.h"

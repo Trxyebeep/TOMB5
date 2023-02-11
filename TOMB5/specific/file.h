@@ -30,3 +30,17 @@ long LoadFile(const char* name, char** dest);
 void FreeLevel();
 
 #define Decompress	( (bool(__cdecl*)(char*, char*, long, long)) 0x004A3EF0 )
+
+extern TEXTURESTRUCT* textinfo;
+extern SPRITESTRUCT* spriteinfo;
+extern AIOBJECT* AIObjects;
+extern THREAD LevelLoadingThread;
+extern short* aranges;
+extern short* frames;
+extern short* commands;
+extern short* floor_data;
+extern short* mesh_base;
+extern char* FileData;
+extern long number_cameras;
+extern long nAnimUVRanges;
+extern short nAIObjects;
