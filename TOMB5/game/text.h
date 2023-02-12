@@ -12,4 +12,6 @@ void GetStringDimensions(const char* string, ushort* w, ushort* h);
 
 extern CVECTOR FontShades[10][32];
 extern uchar ScaleFlag;
+extern long small_font;
+extern long font_height;
 extern CHARDEF CharDef[106];

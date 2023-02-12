@@ -9,6 +9,7 @@
 #include "../game/camera.h"
 #include "../game/spotcam.h"
 #include "../game/control.h"
+#include "LoadSave.h"
 #ifdef GENERAL_FIXES
 #include "../game/gameflow.h"
 #include "../game/newinv2.h"

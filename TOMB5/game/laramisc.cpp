@@ -23,6 +23,10 @@
 #include "../tomb5/tomb5.h"
 #endif
 
+COLL_INFO mycoll;
+
+static COLL_INFO* lara_coll = &mycoll;
+
 void GetLaraDeadlyBounds()
 {
 	short* bounds;

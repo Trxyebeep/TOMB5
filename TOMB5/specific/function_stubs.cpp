@@ -1,6 +1,18 @@
 #include "../tomb5/pch.h"
 #include "function_stubs.h"
 
+char* malloc_buffer;
+char* malloc_ptr;
+long malloc_size;
+long malloc_free;
+
+long nPolyType;
+
+static long malloc_used;
+
+static long rand_1 = 0xD371F947;
+static long rand_2 = 0xD371F947;
+
 void* game_malloc(long size, long type)
 {
 	char* ptr;

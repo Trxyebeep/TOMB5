@@ -23,15 +23,25 @@
 #include "fmv.h"
 #include "../game/newinv2.h"
 #include "../game/control.h"
+#include "3dmath.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../tomb5/troyestuff.h"
 #endif
 
 long sfx_frequencies[3] = { 11025, 22050, 44100 };
+long SoundQuality = 1;
+long MusicVolume = 40;
+long SFXVolume = 80;
+long ControlMethod;
 
 MONOSCREEN_STRUCT MonoScreen[5];
 char MonoScreenOn;
+
+long loadbar_on;
+static float loadbar_steps;
+static float loadbar_pos;
+static long loadbar_maxpos;
 
 static SAVEFILE_INFO SaveGames[15];
 static long MonoScreenX[4] = { 0, 256, 512, 640 };

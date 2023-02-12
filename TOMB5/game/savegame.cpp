@@ -12,6 +12,7 @@
 #include "../specific/file.h"
 #include "camera.h"
 #include "spotcam.h"
+#include "../specific/function_stubs.h"
 #ifdef GENERAL_FIXES
 #include "lara2gun.h"
 #endif

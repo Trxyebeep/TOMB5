@@ -7,6 +7,8 @@
 #include "output.h"
 #include "winmain.h"
 #include "texture.h"
+#include "function_stubs.h"
+#include "3dmath.h"
 
 static long rgb80h = 0x808080;
 static long rgbmask = 0xFFFFFFFF;

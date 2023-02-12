@@ -5,12 +5,12 @@
 #include "registry.h"
 #include "winmain.h"
 
-#define nDDDevice	VAR_(0x0057A094, long)
-#define nD3DDevice	VAR_(0x0057A084, long)
-#define Filter	VAR_(0x00511892, bool)
-#define VolumetricFx	VAR_(0x0057A09C, bool)
-#define BumpMap	VAR_(0x0057A09B, bool)
-#define TextLow	VAR_(0x0057A09A, bool)
+static long nDDDevice;
+static long nD3DDevice;
+static bool Filter = 1;
+static bool VolumetricFx;
+static bool BumpMap;
+static bool TextLow;
 
 #ifdef GENERAL_FIXES
 char ASCIIToANSITable[7][2] =

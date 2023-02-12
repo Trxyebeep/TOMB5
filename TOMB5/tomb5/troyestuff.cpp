@@ -2,6 +2,7 @@
 #include "troyestuff.h"
 #include "../game/text.h"
 #include "../game/sound.h"
+#include "../specific/3dmath.h"
 #include "tomb5.h"
 
 #define PAGE0_NUM	14

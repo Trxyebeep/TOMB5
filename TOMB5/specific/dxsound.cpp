@@ -6,10 +6,10 @@
 #include "LoadSave.h"
 #include "../game/sound.h"
 
-#define DSPrimary	VAR_(0x0086CAF0, LPDIRECTSOUNDBUFFER)
-#define DS_Samples	ARRAY_(0x0086CAF8, DS_SAMPLE, [32])
-#define DS_Buffers	ARRAY_(0x0086BEF0, DS_SAMPLE, [256])
-#define d_hACMStream	VAR_(0x0086BEEC, HACMSTREAM)
+static LPDIRECTSOUNDBUFFER DSPrimary;
+static HACMSTREAM d_hACMStream;
+static DS_SAMPLE DS_Samples[32];
+static DS_SAMPLE DS_Buffers[256];
 
 #pragma warning(push)
 #pragma warning(disable : 4838)

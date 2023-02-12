@@ -15,6 +15,7 @@
 #include "../game/deltapak.h"
 #include "texture.h"
 #include "../game/control.h"
+#include "3dmath.h"
 
 const char* CreditNames[] =
 {

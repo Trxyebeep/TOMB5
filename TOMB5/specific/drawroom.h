@@ -34,3 +34,7 @@ extern FOGBULB_STRUCT ActiveFogBulbs[64];
 extern FOGBULB_STRUCT FogBulbs[16];
 extern short CheckClipBox[8 * 3];
 extern TEXTUREBUCKET Bucket[30];
+extern float clip_left;
+extern float clip_top;
+extern float clip_right;
+extern float clip_bottom;

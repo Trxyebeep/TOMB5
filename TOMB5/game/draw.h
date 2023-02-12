@@ -43,6 +43,13 @@ void ClipRoom(ROOM_INFO* r);
 void SetRoomBounds(short* door, long rn, ROOM_INFO* actualRoom);
 void GetRoomBounds();
 
+extern float* aIMXPtr;
+extern float aIFMStack[768];
+extern long* IMptr;
+extern long IMstack[768];
+extern long IM_rate;
+extern long IM_frac;
+
 extern short SkyPos;
 extern short SkyPos2;
 extern ushort LightningRGB[3];

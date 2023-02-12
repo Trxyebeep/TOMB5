@@ -14,3 +14,5 @@ void AnimateLara(ITEM_INFO* item);
 void LaraCheatyBits();
 #endif
 void LaraControl(short item_number);
+
+extern COLL_INFO mycoll;

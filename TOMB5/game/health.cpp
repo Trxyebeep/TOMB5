@@ -10,6 +10,7 @@
 #include "camera.h"
 #include "spotcam.h"
 #include "control.h"
+#include "../specific/3dmath.h"
 #ifdef GENERAL_FIXES
 #include "larafire.h"
 #include "../specific/input.h"

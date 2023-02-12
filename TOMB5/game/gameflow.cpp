@@ -25,6 +25,7 @@
 #include "../specific/polyinsert.h"
 #include "savegame.h"
 #include "newinv2.h"
+#include "../specific/3dmath.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif

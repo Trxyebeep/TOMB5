@@ -37,6 +37,13 @@
 #include "../tomb5/tomb5.h"
 #endif
 
+float* aIMXPtr;
+float aIFMStack[768];
+long* IMptr;
+long IMstack[768];
+long IM_rate;
+long IM_frac;
+
 short SkyPos;
 short SkyPos2;
 ushort LightningRGB[3];

@@ -2,6 +2,7 @@
 #include "d3dmatrix.h"
 #include "dxshell.h"
 #include "winmain.h"
+#include "3dmath.h"
 
 D3DMATRIX D3DMView;
 D3DMATRIX D3DCameraMatrix;

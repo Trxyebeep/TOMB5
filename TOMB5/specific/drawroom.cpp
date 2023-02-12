@@ -13,6 +13,7 @@
 #include "file.h"
 #include "../game/camera.h"
 #include "../game/control.h"
+#include "3dmath.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../game/gameflow.h"
@@ -26,6 +27,10 @@ FOGBULB_STRUCT RoomletFogBulbs[16];	//to apply on roomlet vertices
 short CheckClipBox[8 * 3] = { 0, 1, 2, 3, 1, 2, 0, 1, 5, 3, 1, 5, 0, 4, 2, 3, 4, 2, 0, 4, 5, 3, 4, 5 };
 
 TEXTUREBUCKET Bucket[30];
+float clip_left;
+float clip_top;
+float clip_right;
+float clip_bottom;
 
 static ROOMLET_LIGHT RoomletLights[64];
 static long BucketSpecular[2080];
