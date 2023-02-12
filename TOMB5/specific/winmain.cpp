@@ -21,6 +21,8 @@
 #endif
 
 WINAPP App;
+short FPCW;
+long resChangeCounter;
 
 static COMMANDLINES commandlines[] =
 {
@@ -520,6 +522,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	HWND dbg;
 	HDC hdc;
 	DEVMODE devmode;
+	static ulong dbm_command;
+	static ulong dbm_clearlog;
 	long dbgflag;
 #ifndef GENERAL_FIXES
 	bool drive;

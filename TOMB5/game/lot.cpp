@@ -7,6 +7,10 @@
 #include "control.h"
 #include "lara.h"
 
+CREATURE_INFO* baddie_slots;
+
+static long slots_used = 0;
+
 void InitialiseLOTarray(long allocmem)
 {
 	CREATURE_INFO* creature;
@@ -20,7 +24,7 @@ void InitialiseLOTarray(long allocmem)
 		creature->item_num = NO_ITEM;
 
 		if (allocmem)
-			creature->LOT.node = (BOX_NODE*)game_malloc(sizeof(BOX_NODE) * number_boxes, 0);
+			creature->LOT.node = (BOX_NODE*)game_malloc(sizeof(BOX_NODE) * num_boxes, 0);
 	}
 
 	slots_used = 0;

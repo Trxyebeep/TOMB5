@@ -49,6 +49,8 @@ long IMstack[768];
 long IM_rate;
 long IM_frac;
 
+long CurrentRoom;
+long outside;
 short SkyPos;
 short SkyPos2;
 ushort LightningRGB[3];
@@ -64,6 +66,10 @@ static long outside_top;
 static long outside_left;
 static long outside_right;
 static long outside_bottom;
+
+static short* skelly_rhandbak;
+static short* skelly_lhandbak;
+static short skelly_backgunbak;
 
 static long number_draw_rooms;
 static short draw_rooms[100];

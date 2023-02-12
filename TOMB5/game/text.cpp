@@ -6,11 +6,14 @@
 #include "../specific/texture.h"
 #include "../specific/function_stubs.h"
 #include "../specific/3dmath.h"
+#include "../specific/gamemain.h"
 
 CVECTOR FontShades[10][32];
 long small_font;
 long font_height;
 long big_char_height;
+long default_font_height;
+long GnFrameCounter;
 uchar ScaleFlag;
 
 #ifdef GENERAL_FIXES

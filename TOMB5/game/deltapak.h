@@ -188,6 +188,7 @@ extern long GLOBAL_numcutseq_frames;
 extern long cutrot;
 extern long cutseq_num;
 extern long cutseq_trig;
+extern long lastcamnum;
 extern ushort dels_cutseq_player;
 extern char jobyfrigger;
 extern char Chris_Menu;

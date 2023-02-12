@@ -22,6 +22,10 @@
 #include "lara2gun.h"
 #endif
 
+SAVEGAME_INFO savegame;
+static char* SGpoint = 0;
+static long SGcount = 0;
+
 #ifdef GENERAL_FIXES
 tomb5_save_info tomb5_save;
 ulong tomb5_save_size;

@@ -40,3 +40,4 @@ extern float clip_top;
 extern float clip_right;
 extern float clip_bottom;
 extern long NumActiveFogBulbs;
+extern long num_level_meshes;

@@ -16,6 +16,7 @@
 #include "texture.h"
 #include "../game/control.h"
 #include "3dmath.h"
+#include "gamemain.h"
 
 const char* CreditNames[] =
 {

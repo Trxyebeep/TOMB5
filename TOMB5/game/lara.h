@@ -189,3 +189,5 @@ void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 extern LARA_INFO lara;
 extern ITEM_INFO* lara_item;
 extern short DashTimer;
+extern char LaraDrawType;
+extern char WeatherType;

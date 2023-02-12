@@ -15,6 +15,9 @@
 #include "../specific/input.h"
 #include "lara.h"
 
+SUBSUIT_INFO subsuit;
+char SubHitCount = 0;
+
 static SVECTOR Eng1 = { 0, 64, 0, 0 };
 static SVECTOR Eng2 = { 0, 0, 0, 0 };
 static char BVols[8] = { 4, 5, 6, 8, 11, 14, 18, 23 };

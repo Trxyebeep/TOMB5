@@ -41,6 +41,7 @@
 #include "../specific/dxshell.h"
 #include "health.h"
 #include "lara.h"
+#include "savegame.h"
 #ifdef GENERAL_FIXES
 #include "deltapak.h"
 #include "../tomb5/tomb5.h"
@@ -102,6 +103,7 @@ long InItemControlLoop = 0;
 short ItemNewRooms[256][2];
 short ItemNewRoomNo = 0;
 
+ulong FmvSceneTriggered;
 ulong _CutSceneTriggered1;
 ulong _CutSceneTriggered2;
 long SetDebounce;

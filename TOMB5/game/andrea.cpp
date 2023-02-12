@@ -20,6 +20,7 @@
 #include "../specific/file.h"
 #include "camera.h"
 #include "lara.h"
+#include "../specific/gamemain.h"
 
 void ControlPropeller(short item_number)
 {

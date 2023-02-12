@@ -7,6 +7,8 @@
 #include "../game/sound.h"
 #include "audio.h"
 
+char* samples_buffer;
+
 static LPDIRECTSOUNDBUFFER DSPrimary;
 static HACMSTREAM d_hACMStream;
 static DS_SAMPLE DS_Samples[32];

@@ -13,6 +13,7 @@
 #include "../specific/3dmath.h"
 #include "camera.h"
 #include "../specific/input.h"
+#include "subsuit.h"
 
 void LaraTestWaterDepth(ITEM_INFO* item, COLL_INFO* coll)
 {

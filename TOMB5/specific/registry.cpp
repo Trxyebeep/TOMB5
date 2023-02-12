@@ -3,6 +3,7 @@
 #include "LoadSave.h"
 #include "winmain.h"
 #include "input.h"
+#include "cmdline.h"
 
 static HKEY phkResult;
 static DWORD dwDisposition;

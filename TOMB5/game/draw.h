@@ -52,6 +52,8 @@ extern long IMstack[768];
 extern long IM_rate;
 extern long IM_frac;
 
+extern long CurrentRoom;
+extern long outside;
 extern short SkyPos;
 extern short SkyPos2;
 extern ushort LightningRGB[3];

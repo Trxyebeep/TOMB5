@@ -31,6 +31,7 @@
 #include "audio.h"
 #include "../game/effects.h"
 #include "../game/effect2.h"
+#include "../game/lara.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
@@ -173,6 +174,7 @@ bool FindCDDrive()
 	char root[5];
 	char file_check[14];
 	HANDLE file;
+	static char cd_drive;
 
 	strcpy(file_check, "c:\\script.dat");
 	drives = GetLogicalDrives();

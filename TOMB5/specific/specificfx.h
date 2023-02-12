@@ -68,3 +68,5 @@ long MapCompare(MAP_STRUCT* a, MAP_STRUCT* b);
 void MapInit();
 
 extern MAP_STRUCT Map[255];
+extern long DoFade;
+extern long snow_outside;

@@ -18,6 +18,7 @@
 #include "lara.h"
 #ifdef GENERAL_FIXES
 #include "draw.h"
+#include "../specific/lighting.h"
 #endif
 
 void FlareControl(short item_number)

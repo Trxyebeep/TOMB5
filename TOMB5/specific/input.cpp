@@ -11,6 +11,7 @@
 #include "../game/control.h"
 #include "LoadSave.h"
 #include "../game/lara.h"
+#include "../game/savegame.h"
 #ifdef GENERAL_FIXES
 #include "../game/gameflow.h"
 #include "../game/newinv2.h"

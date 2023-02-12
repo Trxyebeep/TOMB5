@@ -43,6 +43,9 @@ extern uchar gfLevelNames[40];
 extern char gfUVRotate;
 extern char gfLayer1Vel;
 extern char gfLayer2Vel;
+extern ulong GameTimer;
+extern long GlobalSoftReset;
+extern uchar bDoCredits;
 extern char JustLoaded;
 
 enum gf_languages

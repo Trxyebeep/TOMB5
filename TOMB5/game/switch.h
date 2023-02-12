@@ -25,6 +25,8 @@ long GetSwitchTrigger(ITEM_INFO* item, short* ItemNos, long AttatchedToSwitch);
 long GetKeyTrigger(ITEM_INFO* item);
 long SwitchTrigger(short item_number, short timer);
 
+extern PHD_VECTOR OldPickupPos;
+extern uchar CurrentSequence;
 extern uchar Sequences[3];
 extern uchar SequenceUsed[6];
 extern uchar SequenceResults[3][3][3];

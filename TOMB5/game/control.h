@@ -86,6 +86,7 @@ extern long InItemControlLoop;
 extern short ItemNewRooms[256][2];
 extern short ItemNewRoomNo;
 
+extern ulong FmvSceneTriggered;
 extern ulong _CutSceneTriggered1;
 extern ulong _CutSceneTriggered2;
 extern long SetDebounce;

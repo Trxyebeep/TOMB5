@@ -13,3 +13,6 @@ void InitD3DDevice(HWND dlg, HWND hwnd);
 void InitDDDevice(HWND dlg, HWND hwnd);
 BOOL CALLBACK DXSetupDlgProc(HWND dlg, UINT message, WPARAM wParam, LPARAM lParam);
 bool DXSetupDialog();
+
+extern bool start_setup;
+extern bool fmvs_disabled;

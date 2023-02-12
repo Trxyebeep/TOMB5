@@ -15,4 +15,6 @@ extern uchar ScaleFlag;
 extern long small_font;
 extern long font_height;
 extern long big_char_height;
+extern long default_font_height;
+extern long GnFrameCounter;
 extern CHARDEF CharDef[106];

@@ -12,6 +12,7 @@
 #include "../game/camera.h"
 #include "../game/effect2.h"
 #include "../game/lara.h"
+#include "../game/draw.h"
 
 long NumSunLights;
 long NumPointLights;
@@ -27,6 +28,7 @@ POINTLIGHT_STRUCT PointLights[64];
 SPOTLIGHT_STRUCT SpotLights[64];
 #endif
 
+ITEM_INFO* current_item;
 FVECTOR lGlobalMeshPos;
 long aAmbientR;
 long aAmbientG;

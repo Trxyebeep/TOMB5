@@ -8,3 +8,5 @@ void DoFlameTorch();
 void TriggerTorchFlame(short item_number, long node);
 void GetFlameTorch();
 void FlameTorchControl(short item_number);
+
+extern short torchroom;

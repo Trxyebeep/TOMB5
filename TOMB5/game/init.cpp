@@ -19,6 +19,8 @@
 #include "joby.h"
 #include "../specific/file.h"
 
+static short GlobalPulleyFrigItem;
+
 void InitialiseTrapDoor(short item_number)
 {
 	CloseTrapDoor(&items[item_number]);

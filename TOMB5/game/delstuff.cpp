@@ -10,14 +10,15 @@
 #include "../tomb5/tomb5.h"
 #endif
 
+short* GLaraShadowframe;
 long lara_matrices[180];
 long lara_joint_matrices[180];
 float lara_matricesF[180];
 float lara_joint_matricesF[180];
+long LaraNodeAmbient[2];
 uchar LaraNodeUnderwater[15];
 char SkinVertNums[40][12];
 char ScratchVertNums[40][12];
-long LaraNodeAmbient[2];
 
 void GetLaraJointPos(PHD_VECTOR* pos, long node)
 {

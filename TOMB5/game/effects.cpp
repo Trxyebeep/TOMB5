@@ -25,6 +25,7 @@
 #include "camera.h"
 #include "pickup.h"
 #include "lara.h"
+#include "savegame.h"
 
 long FogTableColor[28] =
 {

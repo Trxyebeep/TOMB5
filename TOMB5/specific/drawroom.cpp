@@ -35,6 +35,7 @@ float clip_right;
 float clip_bottom;
 
 long NumActiveFogBulbs;
+long num_level_meshes;
 
 static ROOMLET_LIGHT RoomletLights[64];
 static long BucketSpecular[2080];

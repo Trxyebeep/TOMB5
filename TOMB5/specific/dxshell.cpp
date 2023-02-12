@@ -41,6 +41,7 @@ LPDIRECT3D3 G_d3d;
 HWND G_hwnd;
 char keymap[256];
 
+static long KeyCount;
 static char tga_header[18] = { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 1, 0, 1, 16, 0 };
 static short KeyBuffer[32];
 

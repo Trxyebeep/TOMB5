@@ -17,6 +17,8 @@
 #include "../specific/input.h"
 #include "lara.h"
 
+PHD_VECTOR OldPickupPos;
+uchar CurrentSequence;
 uchar Sequences[3];
 uchar SequenceUsed[6];
 uchar SequenceResults[3][3][3];

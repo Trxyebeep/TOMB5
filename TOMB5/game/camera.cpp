@@ -19,6 +19,7 @@
 #include "../specific/audio.h"
 #include "lara.h"
 #include "tomb4fx.h"
+#include "savegame.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif

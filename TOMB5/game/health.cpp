@@ -12,6 +12,7 @@
 #include "control.h"
 #include "../specific/3dmath.h"
 #include "lara.h"
+#include "savegame.h"
 #ifdef GENERAL_FIXES
 #include "larafire.h"
 #include "../specific/input.h"

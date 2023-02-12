@@ -76,6 +76,7 @@ extern long next_gunshell;
 extern long next_bubble;
 extern long next_drip;
 extern long next_blood;
+extern long next_debris;
 extern short FlashFadeR;
 extern short FlashFadeG;
 extern short FlashFadeB;

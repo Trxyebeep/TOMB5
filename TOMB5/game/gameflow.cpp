@@ -77,10 +77,15 @@ static uchar gfCutNumber;
 
 static ushort dels_cutseq_selector_flag = 0;
 static long nframes = 1;
+
+ulong GameTimer;
+long GlobalSoftReset;
+uchar bDoCredits = 0;
 char JustLoaded;
 
 static char available_levels[40] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 static char fmv_to_play[2] = { 0, 0 };
+static char num_fmvs = 0;
 static char DEL_playingamefmv = 0;
 
 static CUTSEQ_SELECTOR cutsel[] =

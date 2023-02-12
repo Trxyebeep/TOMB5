@@ -14,3 +14,5 @@ bool GameInitialise();
 extern WATERTAB WaterTable[22][64];
 extern THREAD MainThread;
 extern float vert_wibble_table[32];
+extern short* clipflags;
+extern long SaveCounter;

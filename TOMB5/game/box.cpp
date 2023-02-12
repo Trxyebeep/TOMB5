@@ -15,7 +15,10 @@
 #include "camera.h"
 #include "lara.h"
 
+BOX_INFO* boxes;
 short* ground_zone[5][2];
+ushort* overlap;
+long num_boxes;
 
 void InitialiseCreature(short item_number)
 {

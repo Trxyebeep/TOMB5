@@ -49,11 +49,15 @@ long GLOBAL_numcutseq_frames;
 long cutrot = 0;
 long cutseq_num = 0;
 long cutseq_trig = 0;
+long lastcamnum;
 ushort dels_cutseq_player = 0;
 char jobyfrigger = 0;
 char Chris_Menu = 0;
 
+static PACKNODE* camera_pnodes;
 static PACKNODE* actor_pnodes[10];
+static camera_type GLOBAL_oldcamtype;
+static char* GLOBAL_resident_depack_buffers;
 static ulong cutseq_meshswapbits[10];
 static ulong cutseq_meshbits[10];
 static long cut_seethrough = 128;
@@ -66,6 +70,7 @@ static long numnailed;
 static char old_status_flags[32];
 static ushort old_status_flags2[32];
 static short temp_rotation_buffer[160];
+static short old_lara_holster;
 
 ushort larson_pistols_info1[2] = { 912, 0xFFFF };
 ushort andrea3_pistols_info[5] = { 17739, 34126, 34135, 17751, 0xFFFF };

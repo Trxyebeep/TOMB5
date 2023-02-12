@@ -43,6 +43,8 @@ long loadbar_on;
 static float loadbar_steps;
 static float loadbar_pos;
 static long loadbar_maxpos;
+static long SpecialFeaturesNum = -1;
+static long NumSpecialFeatures;
 
 static LPDIRECTDRAWSURFACE4 screen_surface;
 static SAVEFILE_INFO SaveGames[15];
@@ -2374,7 +2376,7 @@ long GetSaveLoadFiles()
 	static long nSaves;
 	char name[75];
 
-	save_counter = 0;
+	SaveCounter = 0;
 
 	for (int i = 0; i < 15; i++)
 	{
@@ -2400,15 +2402,15 @@ long GetSaveLoadFiles()
 		fread(&save_info, 1, sizeof(SAVEGAME_INFO), file);
 		fclose(file);
 
-		if (pSave->num > save_counter)
-			save_counter = pSave->num;
+		if (pSave->num > SaveCounter)
+			SaveCounter = pSave->num;
 
 		pSave->valid = 1;
 		nSaves++;
 		Log(0, "Validated savegame");
 	}
 
-	save_counter++;
+	SaveCounter++;
 	return nSaves;
 }
 

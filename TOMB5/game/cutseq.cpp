@@ -10,6 +10,7 @@
 #include "../specific/function_stubs.h"
 #include "twogun.h"
 #include "lara.h"
+#include "gameflow.h"
 
 char title_controls_locked_out;
 static char iswappedit = 0;

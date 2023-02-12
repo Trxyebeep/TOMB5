@@ -19,3 +19,5 @@ long MungeFPCW(short* fpcw);
 void RestoreFPCW(short fpcw);
 
 extern WINAPP App;
+extern short FPCW;
+extern long resChangeCounter;

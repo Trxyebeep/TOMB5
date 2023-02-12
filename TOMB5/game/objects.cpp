@@ -21,6 +21,7 @@
 #include "../specific/input.h"
 #include "../specific/file.h"
 #include "lara.h"
+#include "box.h"
 
 OBJECT_INFO objects[NUMBER_OBJECTS];
 static short* GLOBAL_gunflash_meshptr;

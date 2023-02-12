@@ -22,6 +22,10 @@
 #include "camera.h"
 #include "../specific/input.h"
 #include "lara.h"
+#include "savegame.h"
+
+char HKTimer = 0;
+char HKShotsFired = 0;
 
 void draw_shotgun_meshes(long weapon_type)
 {

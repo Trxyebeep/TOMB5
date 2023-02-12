@@ -7,6 +7,7 @@
 #include "lara.h"
 
 SPHERE Slist[34];
+char GotLaraSpheres;
 static SPHERE LaraSpheres[15];
 static long NumLaraSpheres;
 

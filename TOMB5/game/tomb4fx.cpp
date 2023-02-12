@@ -40,6 +40,7 @@ long next_gunshell;
 long next_bubble;
 long next_drip;
 long next_blood;
+long next_debris = 0;
 short FlashFadeR;
 short FlashFadeG;
 short FlashFadeB;

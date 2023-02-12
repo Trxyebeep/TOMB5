@@ -32,6 +32,7 @@ extern long NumFogBulbs;
 extern long TotalNumLights;
 extern long MaxRoomLights;
 extern D3DMATRIX aLightMatrix;
+extern ITEM_INFO* current_item;
 extern FVECTOR lGlobalMeshPos;
 extern long aAmbientR;
 extern long aAmbientG;

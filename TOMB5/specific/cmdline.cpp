@@ -5,6 +5,9 @@
 #include "registry.h"
 #include "winmain.h"
 
+bool start_setup = 0;
+bool fmvs_disabled = 0;
+
 static long nDDDevice;
 static long nD3DDevice;
 static bool Filter = 1;

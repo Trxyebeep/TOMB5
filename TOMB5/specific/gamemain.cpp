@@ -20,6 +20,8 @@
 WATERTAB WaterTable[22][64];
 THREAD MainThread;
 float vert_wibble_table[32];
+short* clipflags;
+long SaveCounter;
 
 static LPDIRECT3DVERTEXBUFFER DestVB;
 static float unused_vert_wibble_table[256];
@@ -121,7 +123,7 @@ long S_SaveGame(long slot_num)
 
 		wsprintf(buffer, "%s", SCRIPT_TEXT(gfLevelNames[gfCurrentLevel]));
 		WriteFile(file, buffer, 75, &bytes, 0);
-		WriteFile(file, &save_counter, sizeof(long), &bytes, 0);
+		WriteFile(file, &SaveCounter, sizeof(long), &bytes, 0);
 		days = savegame.Game.Timer / 30 / 86400;
 		hours = savegame.Game.Timer / 30 % 86400 / 3600;
 		minutes = savegame.Game.Timer / 30 / 60 % 60;
@@ -135,8 +137,8 @@ long S_SaveGame(long slot_num)
 		WriteFile(file, &tomb5_save, sizeof(tomb5_save_info), &bytes, 0);
 #endif
 		CloseHandle(file);
-		wsprintf(counter, "%d", save_counter);
-		save_counter++;
+		wsprintf(counter, "%d", SaveCounter);
+		SaveCounter++;
 		return 1;
 	}
 

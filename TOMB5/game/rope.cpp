@@ -11,7 +11,11 @@
 #include "savegame.h"
 #include "camera.h"
 
+static PENDULUM NullPendulum = { {0, 0, 0}, {0, 0, 0}, 0, 0 };
+
 ROPE_STRUCT RopeList[8];
+PENDULUM CurrentPendulum;
+long nRope = 0;
 
 void InitialiseRope(short item_number)
 {

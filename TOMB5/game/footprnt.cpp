@@ -6,6 +6,7 @@
 #include "gameflow.h"
 #include "../specific/file.h"
 #include "lara.h"
+#include "../specific/gamemain.h"
 #ifdef GENERAL_FIXES
 #include "../specific/3dmath.h"
 #include "../specific/specificfx.h"

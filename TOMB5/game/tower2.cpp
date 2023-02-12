@@ -18,6 +18,7 @@
 #include "gameflow.h"
 #include "../specific/file.h"
 #include "lara.h"
+#include "../specific/gamemain.h"
 #ifdef GENERAL_FIXES
 #include "../specific/specificfx.h"
 #include "../specific/function_table.h"
@@ -37,6 +38,8 @@ short SteelDoorPos[4][2] =
 };
 
 short SteelDoorMeshswaps[16] = { 37, 74, 111, 148, 185, 222, 259, 296, 340, 380, 420, 470, 481, 518, 555, 592 };
+
+static char NotHitLaraCount;
 
 void ControlGunship(short item_number)
 {

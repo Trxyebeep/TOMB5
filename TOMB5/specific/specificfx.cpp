@@ -26,6 +26,8 @@
 #include "../game/lara.h"
 #include "../game/effects.h"
 #include "../game/effect2.h"
+#include "gamemain.h"
+#include "../game/draw.h"
 
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
@@ -178,13 +180,25 @@ uchar SplashLinks[347]
 };
 
 MAP_STRUCT Map[255];
+long DoFade;
+long snow_outside;
 
+static MESH_DATA* targetMeshP;
+static MESH_DATA* binocsMeshP;
 static RAINDROPS Rain[2048];
 static SNOWFLAKE Snow[2048];
 static UWEFFECTS uwdust[256];
 static PHD_VECTOR NodeVectors[16];
 static float StarFieldPositions[1024];
 static long StarFieldColors[256];
+static long FadeVal;
+static long FadeStep;
+static long FadeCnt;
+static long FadeEnd;
+static short rain_count;
+static short snow_count;
+static short max_rain;
+static short max_snow;
 
 #ifdef GENERAL_FIXES
 static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)

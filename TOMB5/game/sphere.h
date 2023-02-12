@@ -10,3 +10,4 @@ long GetSpheres(ITEM_INFO* item, SPHERE* ptr, long WorldSpace);
 long TestCollision(ITEM_INFO* item, ITEM_INFO* l);
 
 extern SPHERE Slist[34];
+extern char GotLaraSpheres;

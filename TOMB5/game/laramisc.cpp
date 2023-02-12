@@ -20,6 +20,7 @@
 #include "spotcam.h"
 #include "effect2.h"
 #include "../specific/input.h"
+#include "savegame.h"
 #ifdef GENERAL_FIXES
 #include "newinv2.h"
 #include "../specific/dxshell.h"
@@ -29,6 +30,7 @@
 COLL_INFO mycoll;
 
 static COLL_INFO* lara_coll = &mycoll;
+static short cheat_hit_points;
 
 void GetLaraDeadlyBounds()
 {

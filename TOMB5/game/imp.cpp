@@ -12,6 +12,7 @@
 #include "control.h"
 #include "lara.h"
 #include "effect2.h"
+#include "flmtorch.h"
 
 static BITE_INFO imp_hit = { 0, 100, 0, 9 };
 

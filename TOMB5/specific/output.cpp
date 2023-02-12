@@ -26,6 +26,7 @@
 #include "../game/control.h"
 #include "../game/effect2.h"
 #include "../game/lara.h"
+#include "gamemain.h"
 #ifdef GENERAL_FIXES
 #include "../game/draw.h"
 #include "../game/health.h"
@@ -39,6 +40,9 @@ long nPolys;
 long nClippedPolys;
 long DrawPrimitiveCnt;
 long DrawSortedCnt;
+long aGlobalSkinMesh;
+long GlobalAlpha = 0xFF000000;
+long GlobalAmbient;
 float AnimatingTexturesV[16][8][3];
 float aBoundingBox[24];
 
