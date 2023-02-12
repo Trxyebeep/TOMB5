@@ -25,6 +25,7 @@
 #include "../game/spotcam.h"
 #include "../game/control.h"
 #include "../game/effect2.h"
+#include "../game/lara.h"
 #ifdef GENERAL_FIXES
 #include "../game/draw.h"
 #include "../game/health.h"
@@ -45,6 +46,10 @@ static ENVUV aMappedEnvUV[256];
 static ENVUV SkinENVUV[40][12];
 static D3DTLVERTEX SkinVerts[40][12];
 static short SkinClip[40][12];
+
+static PHD_VECTOR load_cam;
+static PHD_VECTOR load_target;
+static char load_roomnum = (char)NO_ROOM;
 
 static long nDebugStrings;
 static char DebugStrings[256][80];
@@ -755,7 +760,7 @@ void RenderLoadPic(long unused)
 	camera.target.z = load_target.z;
 	camera.pos.room_number = load_roomnum;
 
-	if (load_roomnum == 255)
+	if (load_roomnum == NO_ROOM)
 		return;
 
 	KillActiveBaddies((ITEM_INFO*)0xABCDEF);
@@ -909,6 +914,7 @@ void S_AnimateTextures(long n)
 	float voff;
 	static long comp;
 	short nRanges, nRangeFrames;
+	static short v;
 
 	for (comp += n; comp > 5; comp -= 5)
 	{
@@ -948,7 +954,7 @@ void S_AnimateTextures(long n)
 	if (gfUVRotate)
 	{
 		range = aranges + 1;
-		AnimatingTexturesVOffset = (AnimatingTexturesVOffset - gfUVRotate * (n >> 1)) & 0x1F;
+		v = (v - gfUVRotate * (n >> 1)) & 0x1F;
 
 		for (int i = 0; i < nAnimUVRanges; i++)
 		{
@@ -957,7 +963,7 @@ void S_AnimateTextures(long n)
 			while (nRangeFrames >= 0)
 			{
 				tex = &textinfo[range[0]];
-				voff = AnimatingTexturesVOffset * (1.0F / 256.0F);
+				voff = v * (1.0F / 256.0F);
 				tex->v1 = voff + AnimatingTexturesV[i][nRangeFrames][0];
 				tex->v2 = voff + AnimatingTexturesV[i][nRangeFrames][0];
 				tex->v3 = voff + AnimatingTexturesV[i][nRangeFrames][0] + 0.125F;
@@ -1703,6 +1709,17 @@ void DebugString(char* txt, ...)
 void S_InsertRoom(ROOM_INFO* r, long a)
 {
 	InsertRoom(r);
+}
+
+static void RGB_M(ulong& c, long m)	//Original was a macro.
+{
+	long r, g, b, a;
+
+	a = CLRA(c);
+	r = (CLRR(c) * m) >> 8;
+	g = (CLRG(c) * m) >> 8;
+	b = (CLRB(c) * m) >> 8;
+	c = RGBA(r, g, b, a);
 }
 
 void phd_PutPolygons(short* objptr, long clipstatus)

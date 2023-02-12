@@ -3,6 +3,7 @@
 #include "../specific/registry.h"
 #include "libs/discordRPC/discord_rpc.h"
 #include "../game/gameflow.h"
+#include "../game/lara.h"
 
 tomb5_options tomb5;
 

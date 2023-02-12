@@ -6,6 +6,7 @@
 #include "../specific/3dmath.h"
 #include "effects.h"
 #include "control.h"
+#include "lara.h"
 
 static BITE_INFO swampy_hitright = { 0, 0, 0, 7 };
 

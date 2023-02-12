@@ -41,6 +41,7 @@ extern short* commands;
 extern short* floor_data;
 extern short* mesh_base;
 extern char* FileData;
+extern char* MapData;
 extern long number_cameras;
 extern long nAnimUVRanges;
 extern short nAIObjects;

@@ -185,3 +185,7 @@ long LaraTestEdgeCatch(ITEM_INFO* item, COLL_INFO* coll, long* edge);
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 #endif
+
+extern LARA_INFO lara;
+extern ITEM_INFO* lara_item;
+extern short DashTimer;

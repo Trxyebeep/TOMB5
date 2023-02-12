@@ -28,6 +28,7 @@
 #include "../specific/function_stubs.h"
 #include "../specific/audio.h"
 #include "../specific/alexstuff.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #include "../tomb5/tomb5.h"

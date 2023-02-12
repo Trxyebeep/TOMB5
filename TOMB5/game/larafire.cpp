@@ -19,6 +19,7 @@
 #include "../specific/function_stubs.h"
 #include "camera.h"
 #include "../specific/input.h"
+#include "lara.h"
 
 PHD_3DPOS bum_view;
 GAME_VECTOR bum_vdest;

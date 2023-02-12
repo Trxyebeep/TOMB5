@@ -33,6 +33,7 @@ void CreateVertexNormals(MESH_DATA* mesh);
 extern FOGBULB_STRUCT ActiveFogBulbs[64];
 extern FOGBULB_STRUCT FogBulbs[16];
 extern short CheckClipBox[8 * 3];
+extern MESH_DATA** mesh_vtxbuf;
 extern TEXTUREBUCKET Bucket[30];
 extern float clip_left;
 extern float clip_top;

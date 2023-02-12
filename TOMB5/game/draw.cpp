@@ -33,6 +33,7 @@
 #include "camera.h"
 #include "spotcam.h"
 #include "effect2.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "footprnt.h"
 #include "../tomb5/tomb5.h"

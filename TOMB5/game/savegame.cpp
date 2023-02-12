@@ -14,6 +14,7 @@
 #include "spotcam.h"
 #include "../specific/function_stubs.h"
 #include "switch.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "lara2gun.h"
 #endif

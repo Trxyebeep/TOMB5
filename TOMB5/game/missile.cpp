@@ -9,6 +9,7 @@
 #include "draw.h"
 #include "debris.h"
 #include "camera.h"
+#include "lara.h"
 
 void ControlBodyPart(short fx_number)
 {

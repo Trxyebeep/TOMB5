@@ -5,6 +5,7 @@
 #include "winmain.h"
 #include "../game/spotcam.h"
 #include "../game/control.h"
+#include "../game/lara.h"
 
 FCAMERA aCamera;
 FVECTOR aCamPos;

@@ -11,6 +11,7 @@
 #include "camera.h"
 #include "control.h"
 #include "../specific/input.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #endif

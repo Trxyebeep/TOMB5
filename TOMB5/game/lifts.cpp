@@ -11,6 +11,7 @@
 #include "sound.h"
 #include "camera.h"
 #include "spotcam.h"
+#include "lara.h"
 
 void DrawLiftDoors(ITEM_INFO* item)
 {

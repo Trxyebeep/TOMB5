@@ -12,6 +12,7 @@
 #include "items.h"
 #include "../specific/function_stubs.h"
 #include "effects.h"
+#include "lara.h"
 
 static BITE_INFO mazemonster_hitright = {0, 0, 0, 22};
 static BITE_INFO mazemonster_hitleft = {0, 0, 0, 16};

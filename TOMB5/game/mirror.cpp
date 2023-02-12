@@ -7,6 +7,7 @@
 #include "../specific/3dmath.h"
 #include "gameflow.h"
 #include "hair.h"
+#include "lara.h"
 
 void Draw_Mirror_Lara()
 {

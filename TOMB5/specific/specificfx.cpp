@@ -22,6 +22,8 @@
 #include "file.h"
 #include "texture.h"
 #include "../game/camera.h"
+#include "dxshell.h"
+#include "../game/lara.h"
 
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"

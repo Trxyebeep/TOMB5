@@ -16,6 +16,7 @@
 #include "gameflow.h"
 #include "camera.h"
 #include "spotcam.h"
+#include "lara.h"
 
 LIGHTNING_STRUCT Lightning[16];
 SHOCKWAVE_STRUCT ShockWaves[16];

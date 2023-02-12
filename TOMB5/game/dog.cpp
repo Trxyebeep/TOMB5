@@ -5,6 +5,7 @@
 #include "effects.h"
 #include "../specific/function_stubs.h"
 #include "control.h"
+#include "lara.h"
 
 static BITE_INFO dog_bite =
 {

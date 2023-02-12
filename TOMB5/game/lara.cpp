@@ -321,6 +321,10 @@ void(*lara_collision_routines[NUM_LARA_STATES + 1])(ITEM_INFO* item, COLL_INFO* 
 	lara_void_func
 };
 
+LARA_INFO lara;
+ITEM_INFO* lara_item;
+short DashTimer;
+
 static short LeftClimbTab[4] = { 512, 1024, 2048, 256 };
 static short RightClimbTab[4] = { 2048, 256, 512, 1024 };
 

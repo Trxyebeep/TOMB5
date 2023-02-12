@@ -13,6 +13,7 @@
 #include "deltapak.h"
 #include "tomb4fx.h"
 #include "../specific/input.h"
+#include "lara.h"
 
 static SVECTOR Eng1 = { 0, 64, 0, 0 };
 static SVECTOR Eng2 = { 0, 0, 0, 0 };

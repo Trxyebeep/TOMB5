@@ -28,6 +28,7 @@
 #include "../game/spotcam.h"
 #include "../game/control.h"
 #include "../game/draw.h"
+#include "audio.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
@@ -42,6 +43,7 @@ short* commands;
 short* floor_data;
 short* mesh_base;
 char* FileData;
+char* MapData;
 long number_cameras;
 long nAnimUVRanges;
 short nAIObjects;
@@ -51,6 +53,7 @@ float AnimatingWaterfallsV[6];
 
 static TEXTURESTRUCT* MonitorScreenTex;
 static FILE* level_fp;
+static LOADLEVELNAME LoadLevelName;
 static char* CompressedData;
 static float MonitorScreenU;
 static long num_items;

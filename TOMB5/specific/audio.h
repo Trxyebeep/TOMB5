@@ -18,5 +18,9 @@ long ACMHandleNotifications();
 bool ACMInit();
 void ACMClose();
 
+extern HACMDRIVER hACMDriver;
 extern uchar* wav_file_buffer;
 extern uchar* ADPCMBuffer;
+extern bool acm_ready;
+extern long XATrack;
+extern long XAFlag;

@@ -5,6 +5,7 @@
 #include "sound.h"
 #include "gameflow.h"
 #include "../specific/file.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "../specific/3dmath.h"
 #include "../specific/specificfx.h"

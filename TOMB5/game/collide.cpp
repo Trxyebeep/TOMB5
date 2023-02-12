@@ -15,6 +15,7 @@
 #include "sound.h"
 #include "../specific/file.h"
 #include "camera.h"
+#include "lara.h"
 
 static char LM[15] = { 0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 8 };
 

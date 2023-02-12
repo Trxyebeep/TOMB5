@@ -12,6 +12,7 @@
 #include "../specific/function_stubs.h"
 #include "effects.h"
 #include "tomb4fx.h"
+#include "lara.h"
 
 void ControlMotionSensors(short item_number)
 {

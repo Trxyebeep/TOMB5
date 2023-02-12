@@ -4,6 +4,13 @@
 #include "objects.h"
 #include "../specific/function_stubs.h"
 #include "control.h"
+#include "lara.h"
+
+short next_fx_active;
+short next_item_active;
+
+static short next_fx_free;
+static short next_item_free;
 
 void ItemNewRoom(short item_num, short room_number)
 {

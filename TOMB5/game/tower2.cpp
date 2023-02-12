@@ -17,6 +17,7 @@
 #include "camera.h"
 #include "gameflow.h"
 #include "../specific/file.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "../specific/specificfx.h"
 #include "../specific/function_table.h"

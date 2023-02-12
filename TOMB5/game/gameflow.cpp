@@ -28,6 +28,7 @@
 #include "../specific/3dmath.h"
 #include "../specific/input.h"
 #include "../specific/dxshell.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif

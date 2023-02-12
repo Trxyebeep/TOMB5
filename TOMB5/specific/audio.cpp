@@ -157,13 +157,35 @@ static char source_wav_format[50] =
 };
 #pragma warning(pop)
 
+HACMDRIVER hACMDriver;
 uchar* wav_file_buffer;
 uchar* ADPCMBuffer;
+bool acm_ready;
+
+long XATrack = -1;
+long XAFlag = 7;
+static long XAReqTrack = 0;
 
 static FILE* audio_stream_fp;
 static LPDIRECTSOUNDBUFFER DSBuffer;
+static LPDIRECTSOUNDNOTIFY DSNotify;
+static HACMSTREAM hACMStream;
+static HACMDRIVERID hACMDriverID;
+static HANDLE NotificationThreadHandle;
+static CRITICAL_SECTION audio_cs;
 static ACMSTREAMHEADER StreamHeaders[4];
 static HANDLE NotifyEventHandles[2];
+static uchar* audio_fp_write_ptr;
+static uchar* pAudioWrite;
+static ulong AudioBytes;
+static long audio_play_mode;
+static long audio_buffer_size;
+static long CurrentNotify;
+static long NextWriteOffset;
+static long NotifySize;
+static long audio_counter;
+static volatile bool reading_audio_file;
+static volatile bool continue_reading_audio_file;
 
 void S_CDPlay(long track, long mode)
 {

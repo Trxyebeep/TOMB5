@@ -14,8 +14,9 @@
 #include "effect2.h"
 #include "items.h"
 #include "gameflow.h"
+#include "lara.h"
 
-static BITE_INFO romangod_hit = {0, 0, 0, 15};
+static BITE_INFO romangod_hit = { 0, 0, 0, 15 };
 
 void TriggerRomanGodSparks(long x, long y, long z, long xv, long yv, long zv, long god)
 {

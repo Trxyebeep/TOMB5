@@ -11,8 +11,9 @@
 #include "effect2.h"
 #include "../specific/function_stubs.h"
 #include "tomb4fx.h"
+#include "lara.h"
 
-static BITE_INFO hydra_hit = {0, 0, 0, 11};
+static BITE_INFO hydra_hit = { 0, 0, 0, 11 };
 
 void InitialiseHydra(short item_number)
 {

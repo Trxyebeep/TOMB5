@@ -10,8 +10,9 @@
 #include "control.h"
 #include "effects.h"
 #include "gameflow.h"
+#include "lara.h"
 
-static BITE_INFO gladiator_hit = {0, 0, 0, 16};
+static BITE_INFO gladiator_hit = { 0, 0, 0, 16 };
 
 void InitialiseGladiator(short item_number)
 {

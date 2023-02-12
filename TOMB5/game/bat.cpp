@@ -10,6 +10,7 @@
 #include "sound.h"
 #include "../specific/output.h"
 #include "../specific/function_stubs.h"
+#include "lara.h"
 
 long GetFreeBat()
 {

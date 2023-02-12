@@ -13,6 +13,7 @@
 #include "sphere.h"
 #include "../specific/file.h"
 #include "camera.h"
+#include "lara.h"
 
 short* ground_zone[5][2];
 

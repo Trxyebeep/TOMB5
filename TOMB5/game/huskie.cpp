@@ -6,6 +6,7 @@
 #include "../specific/function_stubs.h"
 #include "control.h"
 #include "objects.h"
+#include "lara.h"
 
 static BITE_INFO huskie_bite = { 0, 0, 100, 3 };
 static char DeathAnims[4] = { 20, 21, 22, 21 };

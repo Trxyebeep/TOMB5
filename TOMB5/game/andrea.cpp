@@ -19,6 +19,7 @@
 #include "tomb4fx.h"
 #include "../specific/file.h"
 #include "camera.h"
+#include "lara.h"
 
 void ControlPropeller(short item_number)
 {

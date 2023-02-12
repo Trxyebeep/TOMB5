@@ -11,6 +11,7 @@
 #include "../game/delstuff.h"
 #include "../game/camera.h"
 #include "../game/effect2.h"
+#include "../game/lara.h"
 
 long NumSunLights;
 long NumPointLights;

@@ -15,6 +15,7 @@
 #include "romangod.h"
 #include "draw.h"
 #include "camera.h"
+#include "lara.h"
 
 DYNAMIC dynamics[64];
 static long number_dynamics;

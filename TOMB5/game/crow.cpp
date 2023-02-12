@@ -4,6 +4,7 @@
 #include "objects.h"
 #include "effects.h"
 #include "control.h"
+#include "lara.h"
 
 static BITE_INFO crow_bite = {2, 10, 60, 14};
 

@@ -10,6 +10,7 @@
 #include "effects.h"
 #include "../specific/function_stubs.h"
 #include "control.h"
+#include "lara.h"
 
 static BITE_INFO imp_hit = { 0, 100, 0, 9 };
 

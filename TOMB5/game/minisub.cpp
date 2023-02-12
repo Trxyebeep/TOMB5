@@ -14,6 +14,7 @@
 #include "people.h"
 #include "effect2.h"
 #include "../specific/function_stubs.h"
+#include "lara.h"
 
 void TriggerTorpedoSteam(PHD_VECTOR* pos1, PHD_VECTOR* pos2, long chaff)
 {

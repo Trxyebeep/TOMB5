@@ -19,6 +19,7 @@
 #include "../specific/specificfx.h"
 #include "../specific/function_stubs.h"
 #include "deltapak.h"
+#include "lara.h"
 
 short WB_room;
 static ITEM_INFO* WB_item;

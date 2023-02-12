@@ -5,6 +5,7 @@
 #include "winmain.h"
 #include "LoadSave.h"
 #include "../game/sound.h"
+#include "audio.h"
 
 static LPDIRECTSOUNDBUFFER DSPrimary;
 static HACMSTREAM d_hACMStream;

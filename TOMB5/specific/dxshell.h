@@ -44,4 +44,9 @@ void DXInitInput(HWND hwnd, HINSTANCE hinstance);
 const char* DXGetErrorString(HRESULT hr);
 const char* DIGetErrorString(HRESULT hr);
 
+extern DXPTR* G_dxptr;
+extern DXINFO* G_dxinfo;
+extern LPDIRECTDRAW4 G_ddraw;
+extern LPDIRECT3D3 G_d3d;
+extern HWND G_hwnd;
 extern char keymap[256];

@@ -15,6 +15,7 @@
 #include "camera.h"
 #include "spotcam.h"
 #include "../specific/input.h"
+#include "lara.h"
 
 uchar Sequences[3];
 uchar SequenceUsed[6];

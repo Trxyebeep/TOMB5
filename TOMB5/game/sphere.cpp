@@ -4,6 +4,7 @@
 #include "../specific/3dmath.h"
 #include "control.h"
 #include "objects.h"
+#include "lara.h"
 
 SPHERE Slist[34];
 static SPHERE LaraSpheres[15];

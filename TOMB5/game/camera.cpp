@@ -16,6 +16,8 @@
 #include "tower1.h"
 #include "larafire.h"
 #include "../specific/input.h"
+#include "../specific/audio.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif

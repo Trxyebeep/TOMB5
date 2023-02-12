@@ -8,6 +8,7 @@
 #include "switch.h"
 #include "gameflow.h"
 #include "../specific/input.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "../specific/dxshell.h"
 #include "../tomb5/tomb5.h"

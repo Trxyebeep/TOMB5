@@ -24,6 +24,7 @@
 #include "../game/newinv2.h"
 #include "../game/control.h"
 #include "3dmath.h"
+#include "../game/lara.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../tomb5/troyestuff.h"
@@ -43,6 +44,7 @@ static float loadbar_steps;
 static float loadbar_pos;
 static long loadbar_maxpos;
 
+static LPDIRECTDRAWSURFACE4 screen_surface;
 static SAVEFILE_INFO SaveGames[15];
 static long MonoScreenX[4] = { 0, 256, 512, 640 };
 static long MonoScreenY[3] = { 0, 256, 480 };

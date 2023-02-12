@@ -18,6 +18,7 @@
 #include "sound.h"
 #include "spotcam.h"
 #include "objects.h"
+#include "lara.h"
 
 TWOGUN_INFO twogun[4];
 

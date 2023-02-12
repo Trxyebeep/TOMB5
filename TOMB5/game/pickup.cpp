@@ -23,6 +23,7 @@
 #include "camera.h"
 #include "spotcam.h"
 #include "../specific/input.h"
+#include "lara.h"
 
 uchar NumRPickups;
 uchar RPickups[16];

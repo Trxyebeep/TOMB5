@@ -33,6 +33,11 @@ const char* DDSCL_TEXT[11] =
 	"setfocuswindow"
 };
 
+DXPTR* G_dxptr;
+DXINFO* G_dxinfo;
+LPDIRECTDRAW4 G_ddraw;
+LPDIRECT3D3 G_d3d;
+HWND G_hwnd;
 char keymap[256];
 
 static char tga_header[18] = { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 1, 0, 1, 16, 0 };

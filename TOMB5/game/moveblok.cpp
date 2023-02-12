@@ -9,6 +9,7 @@
 #include "collide.h"
 #include "tomb4fx.h"
 #include "../specific/input.h"
+#include "lara.h"
 
 static short MovingBlockBounds[12] =
 {

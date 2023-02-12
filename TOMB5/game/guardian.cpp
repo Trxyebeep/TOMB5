@@ -13,6 +13,7 @@
 #include "draw.h"
 #include "traps.h"
 #include "gameflow.h"
+#include "lara.h"
 
 BITE_INFO Base[5] = 
 {

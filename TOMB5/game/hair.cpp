@@ -10,6 +10,7 @@
 #include "../specific/function_stubs.h"
 #include "delstuff.h"
 #include "deltapak.h"
+#include "lara.h"
 
 static char HairRotScratchVertNums[5][12] =
 {

@@ -20,6 +20,7 @@
 #include "camera.h"
 #include "../specific/input.h"
 #include "../specific/file.h"
+#include "lara.h"
 
 OBJECT_INFO objects[NUMBER_OBJECTS];
 

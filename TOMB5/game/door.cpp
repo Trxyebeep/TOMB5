@@ -13,6 +13,7 @@
 #include "items.h"
 #include "switch.h"
 #include "../specific/input.h"
+#include "lara.h"
 
 long ClosedDoors[32] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 

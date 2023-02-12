@@ -12,6 +12,7 @@
 #include "../specific/function_stubs.h"
 #include "../specific/3dmath.h"
 #include "gameflow.h"
+#include "lara.h"
 
 long TargetVisible(ITEM_INFO* item, AI_INFO* info)
 {

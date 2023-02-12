@@ -61,6 +61,7 @@
 #include "../specific/file.h"
 #include "camera.h"
 #include "footprnt.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #include "lara2gun.h"

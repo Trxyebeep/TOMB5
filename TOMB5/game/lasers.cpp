@@ -11,6 +11,7 @@
 #include "objects.h"
 #include "../specific/specificfx.h"
 #include "draw.h"
+#include "lara.h"
 
 char SteamLasers[8][5] =
 {

@@ -21,6 +21,7 @@
 #include "../specific/3dmath.h"
 #include "camera.h"
 #include "../specific/input.h"
+#include "lara.h"
 
 void draw_shotgun_meshes(long weapon_type)
 {
