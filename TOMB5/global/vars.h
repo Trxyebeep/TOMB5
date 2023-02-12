@@ -211,7 +211,6 @@
 //arrays
 #define	weapons	ARRAY_(0x005085B0, WEAPON_INFO, [9])
 #define inventry_objects_list	ARRAY_(0x00508E38, INVOBJ, [100])
-#define EnemyBites	ARRAY_(0x00509A30, BITE_INFO, [9])
 
 //defs
 #define NO_HEIGHT -32512

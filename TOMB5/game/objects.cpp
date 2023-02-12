@@ -23,6 +23,19 @@
 
 OBJECT_INFO objects[NUMBER_OBJECTS];
 
+static BITE_INFO EnemyBites[9] =
+{
+	{ 20, -95, 240, 13 },
+	{ 48, 0, 180, -11 },
+	{ -48, 0, 180, 14 },
+	{ -55, 5, 225, 14 },
+	{ 15, -60, 195, 13 },
+	{ -30, -65, 250, 18 },
+	{ 0, -110, 480, 13 },
+	{ -20, -80, 190, -10 },
+	{ 10, -60, 200, 13 }
+};
+
 static short ParallelBarsBounds[12] = { -640, 640, 704, 832, -96, 96, -1820, 1820, -5460, 5460, -1820, 1820 };
 static short PoleBounds[12] = { -256, 256, 0, 0, -512, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
 static short TightRopeBounds[12] = { -256, 256, 0, 0, -256, 256, -1820, 1820, -5460, 5460, -1820, 1820 };
@@ -498,7 +511,7 @@ void AnimateWaterfalls()
 {
 	TEXTURESTRUCT* Twaterfall;
 	OBJECT_INFO* obj;
-	float offset;
+	float offset, v;
 	static long vOffset = 0;
 
 	vOffset = (vOffset - 7) & 0x3F;
@@ -513,19 +526,20 @@ void AnimateWaterfalls()
 
 		if (obj->loaded)
 		{
-			Twaterfall = AnimatingWaterfalls[i];
-			Twaterfall->v1 = offset + AnimatingWaterfallsV[i];
-			Twaterfall->v2 = offset + AnimatingWaterfallsV[i];
-			Twaterfall->v3 = offset + AnimatingWaterfallsV[i] + (63.0F / 256.0F);
-			Twaterfall->v4 = offset + AnimatingWaterfallsV[i] + (63.0F / 256.0F);
+			v = AnimatingWaterfallsV[i - WATERFALL1];
+			Twaterfall = AnimatingWaterfalls[i - WATERFALL1];
+			Twaterfall->v1 = offset + v;
+			Twaterfall->v2 = offset + v;
+			Twaterfall->v3 = offset + v + (63.0F / 256.0F);
+			Twaterfall->v4 = offset + v + (63.0F / 256.0F);
 
-			if (i < 4)
+			if (i < WATERFALLSS1)
 			{
 				Twaterfall++;
-				Twaterfall->v1 = offset + AnimatingWaterfallsV[i];
-				Twaterfall->v2 = offset + AnimatingWaterfallsV[i];
-				Twaterfall->v3 = offset + AnimatingWaterfallsV[i] + (63.0F / 256.0F);
-				Twaterfall->v4 = offset + AnimatingWaterfallsV[i] + (63.0F / 256.0F);
+				Twaterfall->v1 = offset + v;
+				Twaterfall->v2 = offset + v;
+				Twaterfall->v3 = offset + v + (63.0F / 256.0F);
+				Twaterfall->v4 = offset + v + (63.0F / 256.0F);
 			}
 		}
 	}
@@ -827,10 +841,12 @@ void DrawBaddieGunFlash(ITEM_INFO* item)
 	GetRandomDraw();
 	bite[0] = objects[item->object_number].bite_offset;
 	bite[1] = objects[item->object_number].bite_offset + 1;
-	node[0] = (short)(EnemyBites[objects[item->object_number].bite_offset].mesh_num);
-	node[1] = (short)(EnemyBites[objects[item->object_number].bite_offset + 1].mesh_num);
+	node[0] = short(EnemyBites[bite[0]].mesh_num);
+	node[1] = short(EnemyBites[bite[1]].mesh_num);
 	
-	for (num = node[0] < 0 ? 1 : 0; num >= 0; num--)
+	num = node[0] < 0 ? 1 : 0;
+
+	while (num >= 0)
 	{
 		GetJointAbsPositionMatrix(item, m, abs(node[num]));
 		phd_PushMatrix();
@@ -851,6 +867,7 @@ void DrawBaddieGunFlash(ITEM_INFO* item)
 		phd_RotZ(short(GetRandomControl() << 1));
 		phd_PutPolygons(GLOBAL_gunflash_meshptr, -1);	//nothing writes to this pointer
 		phd_PopMatrix();
+		num--;
 	}
 }
 
