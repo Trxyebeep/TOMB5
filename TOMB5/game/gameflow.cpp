@@ -90,47 +90,47 @@ static char DEL_playingamefmv = 0;
 
 static CUTSEQ_SELECTOR cutsel[] =
 {
-	{0,0,0},
+	{0, 0, 0},
 #ifdef GENERAL_FIXES
-	{STR_ANDY4B, LVL5_GALLOWS_TREE, 9},
+	{TXT_cut19, LVL5_GALLOWS_TREE, 9},
 #else
-	{STR_ANDY4B, LVL5_SINKING_SUBMARINE, 13},//cmon del this should be gallows, cut 9!
+	{TXT_cut19, LVL5_SINKING_SUBMARINE, 13},//cmon del this should be gallows, cut 9!
 #endif
-	{STR_ANDY11, LVL5_OLD_MILL, 44},
-	{STR_SWAMPY, LVL5_OLD_MILL, 43},
-	{STR_MONK2, LVL5_LABYRINTH, 42},
-	{STR_ANDREA4, LVL5_COLOSSEUM, 41},
-	{STR_JOBY7, LVL5_DEEPSEA_DIVE, 40},
-	{STR_ANDY10, LVL5_OLD_MILL, 39},
-	{STR_ANDY8, LVL5_OLD_MILL, 38},
-	{STR_ANDY9, LVL5_OLD_MILL, 37},
-	{STR_COSSACK, LVL5_OLD_MILL, 36},
-	{STR_JOBY_CUT_2, LVL5_BASE, 25},
-	{STR_JOBY_CRANE_CUT, LVL5_BASE, 27},
-	{STR_RICH_CUT_2, LVL5_SECURITY_BREACH, 26},
-	{STR_RICH_CUT_1, LVL5_THIRTEENTH_FLOOR, 24},
-	{STR_RICH_CUT_3, LVL5_ESCAPE_WITH_THE_IRIS, 23},
-	{STR_JOBY_CUT_3, LVL5_BASE, 22},
-	{STR_ANDY1, LVL5_GALLOWS_TREE, 21},
-	{STR_RICH1, LVL5_THIRTEENTH_FLOOR, 20},
-	{STR_ANDY2, LVL5_GALLOWS_TREE, 19},
-	{STR_JOBY4, LVL5_SUBMARINE, 18},
-	{STR_ANDREA1, LVL5_STREETS_OF_ROME, 17},
-	{STR_ANDREA2, LVL5_STREETS_OF_ROME, 16},
-	{STR_JOBY5, LVL5_SUBMARINE, 15},
-	{STR_ANDY3, LVL5_GALLOWS_TREE, 14},
-	{STR_JOBY9, LVL5_SINKING_SUBMARINE, 13},
-	{STR_JOBY10, LVL5_SINKING_SUBMARINE, 12},
-	{STR_RICHCUT4, LVL5_THIRTEENTH_FLOOR, 11},
-	{STR_ANDY4, LVL5_GALLOWS_TREE, 10},
-	{STR_ANDREA3, LVL5_TRAJAN_MARKETS, 8},
-	{STR_ANDREA3B, LVL5_TRAJAN_MARKETS, 7},
-	{STR_ANDY5, LVL5_LABYRINTH, 6},
-	{STR_JOBY6, LVL5_SUBMARINE, 5},
-	{STR_JOBY8, LVL5_SINKING_SUBMARINE, 32},
-	{STR_ANDY6, LVL5_LABYRINTH, 33},
-	{STR_ANDYPEW, LVL5_LABYRINTH, 34},
-	{STR_ANDY7, LVL5_OLD_MILL, 35},
+	{TXT_cut36, LVL5_OLD_MILL, 44},
+	{TXT_cut35, LVL5_OLD_MILL, 43},
+	{TXT_cut34, LVL5_LABYRINTH, 42},
+	{TXT_cut33, LVL5_COLOSSEUM, 41},
+	{TXT_cut32, LVL5_DEEPSEA_DIVE, 40},
+	{TXT_cut31, LVL5_OLD_MILL, 39},
+	{TXT_cut30, LVL5_OLD_MILL, 38},
+	{TXT_cut29, LVL5_OLD_MILL, 37},
+	{TXT_cut28, LVL5_OLD_MILL, 36},
+	{TXT_cut3, LVL5_BASE, 25},
+	{TXT_cut1, LVL5_BASE, 27},
+	{TXT_cut2, LVL5_SECURITY_BREACH, 26},
+	{TXT_cut4, LVL5_THIRTEENTH_FLOOR, 24},
+	{TXT_cut5, LVL5_ESCAPE_WITH_THE_IRIS, 23},
+	{TXT_cut6, LVL5_BASE, 22},
+	{TXT_cut7, LVL5_GALLOWS_TREE, 21},
+	{TXT_cut8, LVL5_THIRTEENTH_FLOOR, 20},
+	{TXT_cut9, LVL5_GALLOWS_TREE, 19},
+	{TXT_cut10, LVL5_SUBMARINE, 18},
+	{TXT_cut11, LVL5_STREETS_OF_ROME, 17},
+	{TXT_cut12, LVL5_STREETS_OF_ROME, 16},
+	{TXT_cut13, LVL5_SUBMARINE, 15},
+	{TXT_cut14, LVL5_GALLOWS_TREE, 14},
+	{TXT_cut15, LVL5_SINKING_SUBMARINE, 13},
+	{TXT_cut16, LVL5_SINKING_SUBMARINE, 12},
+	{TXT_cut17, LVL5_THIRTEENTH_FLOOR, 11},
+	{TXT_cut18, LVL5_GALLOWS_TREE, 10},
+	{TXT_cut20, LVL5_TRAJAN_MARKETS, 8},
+	{TXT_cut21, LVL5_TRAJAN_MARKETS, 7},
+	{TXT_cut22, LVL5_LABYRINTH, 6},
+	{TXT_cut23, LVL5_SUBMARINE, 5},
+	{TXT_cut24, LVL5_SINKING_SUBMARINE, 32},
+	{TXT_cut25, LVL5_LABYRINTH, 33},
+	{TXT_cut26, LVL5_LABYRINTH, 34},
+	{TXT_cut27, LVL5_OLD_MILL, 35},
 };
 
 void DoGameflow()
@@ -424,7 +424,7 @@ long TitleOptions()
 	switch (menu)
 	{
 	case 1://select level menu
-		PrintString(phd_centerx, font_height + phd_winymin, 6, SCRIPT_TEXT(STR_SELECT_LEVEL), FF_CENTER);
+		PrintString(phd_centerx, font_height + phd_winymin, 6, SCRIPT_TEXT(TXT_Select_Level), FF_CENTER);
 
 		if (Gameflow->nLevels >= 10)
 		{
@@ -503,25 +503,10 @@ long TitleOptions()
 		SuperShowLogo();
 		Chris_Menu = 0;
 
-		if (selection & 1)
-			PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
-		else
-			PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
-
-		if (selection & 2)
-			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-		else
-			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-
-		if (selection & 4)
-			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
-		else
-			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
-
-		if (selection & 8)
-			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 3 * font_height, 1, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
-		else
-			PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 3 * font_height, 2, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
+		PrintString(phd_centerx, phd_winymax - 4 * font_height, (selection & 1) ? 1 : 2, SCRIPT_TEXT(TXT_New_Game), FF_CENTER);
+		PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, (selection & 2) ? 1 : 2, SCRIPT_TEXT(TXT_Load_Game), FF_CENTER);
+		PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, (selection & 4) ? 1 : 2, SCRIPT_TEXT(TXT_Options), FF_CENTER);
+		PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 3 * font_height, (selection & 8) ? 1 : 2, SCRIPT_TEXT(TXT_Exit), FF_CENTER);
 
 		flag = 8;
 
@@ -748,9 +733,9 @@ long do_dels_cutseq_selector()
 	ret = 0;
 
 #ifdef GENERAL_FIXES
-	PrintString((ushort)phd_centerx, ushort(font_height + phd_winymin), 6, SCRIPT_TEXT(STR_SELECT_CUTSCENE), FF_CENTER);
+	PrintString((ushort)phd_centerx, ushort(font_height + phd_winymin), 6, SCRIPT_TEXT(TXT_cut0), FF_CENTER);
 #else
-	PrintString(256, 102, 6, SCRIPT_TEXT(STR_SELECT_CUTSCENE), FF_CENTER);
+	PrintString(256, 102, 6, SCRIPT_TEXT(TXT_cut0), FF_CENTER);
 #endif
 	num = selection - 4;
 
@@ -1021,13 +1006,13 @@ void LoadGameflow()
 	Gameflow->Language = l;
 
 	memcpy(&sh, gfStringOffset, sizeof(STRINGHEADER));
-	memcpy(gfStringOffset, gfStringOffset + (sizeof(STRINGHEADER) / sizeof(ushort)), NUM_STRING_ENTRIES * sizeof(ushort));
-	gfStringWad = (char*)(gfStringOffset + NUM_STRING_ENTRIES);
-	memcpy(gfStringOffset + NUM_STRING_ENTRIES,
-		gfStringOffset + NUM_STRING_ENTRIES + (sizeof(STRINGHEADER) / sizeof(ushort)),
+	memcpy(gfStringOffset, gfStringOffset + (sizeof(STRINGHEADER) / sizeof(ushort)), TXT_NUM_STRINGS * sizeof(ushort));
+	gfStringWad = (char*)(gfStringOffset + TXT_NUM_STRINGS);
+	memcpy(gfStringOffset + TXT_NUM_STRINGS,
+		gfStringOffset + TXT_NUM_STRINGS + (sizeof(STRINGHEADER) / sizeof(ushort)),
 		sh.StringWadLen + sh.PCStringWadLen + sh.PSXStringWadLen);
 
-	for (int i = 0; i < NUM_STRING_ENTRIES - 1; i++)
+	for (int i = 0; i < TXT_NUM_STRINGS - 1; i++)
 	{
 		s = &gfStringWad[gfStringOffset[i]];
 		d = &gfStringWad[gfStringOffset[i + 1]];

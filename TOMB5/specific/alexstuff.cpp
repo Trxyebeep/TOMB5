@@ -61,19 +61,19 @@ const char* CreditNames[] =
 short CreditGroups[15] =
 {
 	0,
-	STR_PROGRAMMERS,
-	STR_AI_PROGRAMMERS,
-	STR_ADDITIONAL_PROGRAMMERS,
-	STR_ANIMATORS,
-	STR_LEVEL_DESIGNERS,
-	STR_FMV_SEQUENCES,
-	STR_MUSIC_AND_SOUND_FX,
-	STR_ADDITIONAL_SOUND_FX,
-	STR_ORIGINAL_STORY,
-	STR_SCRIPT,
-	STR_PRODUCER,
-	STR_QA,
-	STR_EXECUTIVE_PRODUCERS,
+	TXT_Programmers,
+	TXT_AI_Programming,
+	TXT_Additional_Programmers,
+	TXT_Animators,
+	TXT_Level_Designers,
+	TXT_FMV_Sequences,
+	TXT_Music_Sound_FX,
+	TXT_Additional_Sound_FX,
+	TXT_Original_Story,
+	TXT_Script,
+	TXT_Producer,
+	TXT_QA,
+	TXT_Executive_Producers,
 	0
 };
 

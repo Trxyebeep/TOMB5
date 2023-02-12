@@ -2707,9 +2707,9 @@ long S_Death()
 		{
 			if (!menu)	//"main" menu
 			{
-				PrintString((ushort)phd_centerx, (ushort)phd_centery, 3, SCRIPT_TEXT(STR_GAME_OVER), FF_CENTER);
-				PrintString((ushort)phd_centerx, ushort(phd_centery + 2 * font_height), !selection ? 1 : 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-				PrintString((ushort)phd_centerx, ushort(phd_centery + 3 * font_height), selection == 1 ? 1 : 2, SCRIPT_TEXT(STR_EXIT_TO_TITLE), FF_CENTER);
+				PrintString((ushort)phd_centerx, (ushort)phd_centery, 3, SCRIPT_TEXT(TXT_GAME_OVER), FF_CENTER);
+				PrintString((ushort)phd_centerx, ushort(phd_centery + 2 * font_height), !selection ? 1 : 2, SCRIPT_TEXT(TXT_Load_Game), FF_CENTER);
+				PrintString((ushort)phd_centerx, ushort(phd_centery + 3 * font_height), selection == 1 ? 1 : 2, SCRIPT_TEXT(TXT_Exit_to_Title), FF_CENTER);
 
 				if (selection)
 				{
@@ -2760,7 +2760,7 @@ long S_Death()
 		}
 		else
 		{
-			PrintString((ushort)phd_centerx, (ushort)phd_centery, 3, SCRIPT_TEXT(STR_GAME_OVER), FF_CENTER);
+			PrintString((ushort)phd_centerx, (ushort)phd_centery, 3, SCRIPT_TEXT(TXT_GAME_OVER), FF_CENTER);
 
 			if (lara.death_count > 300 || (lara.death_count > 150 && input != IN_NONE))
 				return 1;

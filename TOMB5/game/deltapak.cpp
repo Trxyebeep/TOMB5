@@ -1617,7 +1617,7 @@ void joby4_control()
 
 #ifndef GENERAL_FIXES
 	if (f <= 130)
-		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, SCRIPT_TEXT(STR_SEVERAL_HOURS_LATER), FF_CENTER);
+		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, SCRIPT_TEXT(TXT_cack), FF_CENTER);
 #endif
 
 	if (f == 575)
@@ -3292,7 +3292,7 @@ void frigup_lara()
 
 #ifdef GENERAL_FIXES
 	if (cutseq_num == 18 && GLOBAL_cutseq_frame <= 130)
-		PrintString((ushort)phd_centerx, ushort(phd_winymax - 3 * font_height), 5, SCRIPT_TEXT(STR_SEVERAL_HOURS_LATER), FF_CENTER);
+		PrintString((ushort)phd_centerx, ushort(phd_winymax - 3 * font_height), 5, SCRIPT_TEXT(TXT_cack), FF_CENTER);
 #endif
 
 	lara_item->pos.x_pos = GLOBAL_cutme->orgx;

@@ -115,9 +115,10 @@ long GLOBAL_invkeypadmode = 0;
 long GLOBAL_invkeypadcombination = 0;
 long InventoryActive = 0;
 
-short optmessages[11] =
+static short optmessages[11] =
 {
-	STR_USE, STR_CHOOSE_AMMO, STR_COMBINE, STR_SEPARATE, STR_EQUIP, STR_COMBINE_WITH, STR_LOAD_GAME, STR_SAVE_GAME, STR_EXAMINE, STR_STATISTICS, STR_CHOOSE_WEAPON_MODE
+	TXT_USE, TXT_CHOOSE_AMMO, TXT_COMBINE, TXT_SEPERATE, TXT_EQUIP, TXT_COMBINE_WITH,
+	TXT_LOAD_GAME, TXT_SAVE_GAME, TXT_EXAMINE, TXT_Statistics, TXT_CHOOSE_WEAPON_MODE
 };
 
 uchar wanky_secrets_table[18] = { 0, 3, 3, 3, 3, 3, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
@@ -173,21 +174,21 @@ long S_CallInventory2()
 
 	if (gfCurrentLevel < LVL5_BASE || gfCurrentLevel > LVL5_SINKING_SUBMARINE)
 	{
-		inventry_objects_list[INV_REVOLVER_ITEM1].objname = STR_REVOLVER;
-		inventry_objects_list[INV_REVOLVER_ITEM2].objname = STR_REVOLVER_LASERSIGHT;
-		inventry_objects_list[INV_REVOLVER_AMMO_ITEM].objname = STR_REVOLVER_AMMO;
+		inventry_objects_list[INV_REVOLVER_ITEM1].objname = TXT_DESERT1;
+		inventry_objects_list[INV_REVOLVER_ITEM2].objname = TXT_DESERT2;
+		inventry_objects_list[INV_REVOLVER_AMMO_ITEM].objname = TXT_DESERT3;
 	}
 	else
 	{
-		inventry_objects_list[INV_REVOLVER_ITEM1].objname = STR_DESERTEAGLE;
-		inventry_objects_list[INV_REVOLVER_ITEM2].objname = STR_DESERTEAGLE_LASERSIGHT;
-		inventry_objects_list[INV_REVOLVER_AMMO_ITEM].objname = STR_DESERTEAGLE_AMMO;
+		inventry_objects_list[INV_REVOLVER_ITEM1].objname = TXT_Revolver;
+		inventry_objects_list[INV_REVOLVER_ITEM2].objname = TXT_Revolver_LaserSight;
+		inventry_objects_list[INV_REVOLVER_AMMO_ITEM].objname = TXT_Revolver_Ammo;
 	}
 
 	if (gfCurrentLevel > LVL5_THIRTEENTH_FLOOR && gfCurrentLevel < LVL5_RED_ALERT)
-		inventry_objects_list[INV_BINOCULARS_ITEM].objname = STR_HEADSET;
+		inventry_objects_list[INV_BINOCULARS_ITEM].objname = TXT_Headset;
 	else
-		inventry_objects_list[INV_BINOCULARS_ITEM].objname = STR_BINOCULARS;
+		inventry_objects_list[INV_BINOCULARS_ITEM].objname = TXT_Binoculars;
 
 #ifdef GENERAL_FIXES//restore HK tip, and properly align HK in iris
 	inventry_objects_list[INV_HK_ITEM1].meshbits = -1;
@@ -1210,9 +1211,9 @@ void draw_current_object_list(long ringnum)
 					if (nummeup)
 					{
 						if (inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].object_number == PICKUP_ITEM4)
-							sprintf(textbufme, SCRIPT_TEXT(STR_SECRETS_NUM), nummeup, wanky_secrets_table[gfCurrentLevel]);
+							sprintf(textbufme, SCRIPT_TEXT(TXT_DELSECRET), nummeup, wanky_secrets_table[gfCurrentLevel]);
 						else if (nummeup == -1)
-							sprintf(textbufme, SCRIPT_TEXT(STR_UNLIMITED), SCRIPT_TEXT(inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname));
+							sprintf(textbufme, SCRIPT_TEXT(TXT_Unlimited_s), SCRIPT_TEXT(inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname));
 						else
 							sprintf(textbufme, "%d x %s", nummeup, SCRIPT_TEXT(inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname));
 					}
@@ -1805,7 +1806,7 @@ void draw_ammo_selector()
 			if (i == current_ammo_type[0])
 			{
 				if (ammo_object_list[i].amount == -1)
-					sprintf(cunter, SCRIPT_TEXT(STR_UNLIMITED), SCRIPT_TEXT(inventry_objects_list[ammo_object_list[i].invitem].objname));
+					sprintf(cunter, SCRIPT_TEXT(TXT_Unlimited_s), SCRIPT_TEXT(inventry_objects_list[ammo_object_list[i].invitem].objname));
 				else
 					sprintf(cunter, "%d x %s", ammo_object_list[i].amount, SCRIPT_TEXT(inventry_objects_list[ammo_object_list[i].invitem].objname));
 
@@ -2827,7 +2828,7 @@ void do_keypad_mode()
 
 	DrawThreeDeeObject2D(long(phd_centerx * 0.00390625 * 256.0 + inventry_xpos), long((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2),
 		INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
-	PrintString(0x100, ushort((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, SCRIPT_TEXT(STR_ENTER_COMBINATION), FF_CENTER);
+	PrintString(0x100, ushort((phd_centery * 0.0083333338 * 256.0 + inventry_ypos) / 2 - 64), 6, SCRIPT_TEXT(TXT_keypad), FF_CENTER);
 	buf[0] = 45;
 	buf[1] = 45;
 	buf[2] = 45;

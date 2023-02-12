@@ -790,7 +790,7 @@ void RenderLoadPic(long unused)
 
 		if (tomb5.loadingtxt && tomb5.tr4_loadbar)
 			PrintString((ushort)phd_centerx, ushort((float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1)),
-				5, SCRIPT_TEXT(STR_LOADING), FF_CENTER);
+				5, SCRIPT_TEXT(TXT_LOADING), FF_CENTER);
 
 		S_OutputPolyList();
 		S_DumpScreen();
@@ -803,7 +803,7 @@ void RenderLoadPic(long unused)
 
 	if (tomb5.loadingtxt && tomb5.tr4_loadbar)
 		PrintString((ushort)phd_centerx, ushort((float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1)),
-			5, SCRIPT_TEXT(STR_LOADING), FF_CENTER);
+			5, SCRIPT_TEXT(TXT_LOADING), FF_CENTER);
 
 	S_OutputPolyList();
 	S_DumpScreen();
