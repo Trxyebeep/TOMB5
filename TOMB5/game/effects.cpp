@@ -121,6 +121,11 @@ void(*effect_routines[59])(ITEM_INFO* item) =
 	TL_12,
 };
 
+FX_INFO* effects;
+OBJECT_VECTOR* sound_effects;
+long number_sound_effects;
+long GlobalFogOff = 0;
+
 void WaterFall(short item_number)
 {
 	ITEM_INFO* item;

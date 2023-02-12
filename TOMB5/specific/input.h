@@ -20,6 +20,10 @@ extern long conflict[18];
 extern long input;
 extern long dbinput;
 extern long inputBusy;
+extern long joystick_read;
+extern long joystick_read_x;
+extern long joystick_read_y;
+extern long joystick_read_fire;
 
 #ifdef GENERAL_FIXES
 extern short ammo_change_timer;

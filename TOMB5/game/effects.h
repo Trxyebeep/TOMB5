@@ -50,3 +50,8 @@ long ItemNearLara(PHD_3DPOS* pos, long rad);
 void Richochet(GAME_VECTOR* pos);
 void WadeSplash(ITEM_INFO* item, long water, long depth);
 void Splash(ITEM_INFO* item);
+
+extern FX_INFO* effects;
+extern OBJECT_VECTOR* sound_effects;
+extern long number_sound_effects;
+extern long GlobalFogOff;

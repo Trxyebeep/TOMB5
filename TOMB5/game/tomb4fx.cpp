@@ -17,6 +17,7 @@
 #include "camera.h"
 #include "spotcam.h"
 #include "lara.h"
+#include "effects.h"
 
 LIGHTNING_STRUCT Lightning[16];
 SHOCKWAVE_STRUCT ShockWaves[16];
@@ -33,6 +34,24 @@ SP_DYNAMIC spark_dynamics[8];
 FIRE_LIST fires[32];
 SMOKE_SPARKS smoke_spark[32];
 BLOOD_STRUCT blood[32];
+long next_fire_spark = 1;
+long next_smoke_spark;
+long next_gunshell;
+long next_bubble;
+long next_drip;
+long next_blood;
+short FlashFadeR;
+short FlashFadeG;
+short FlashFadeB;
+short FlashFader;
+short ScreenFade;
+short dScreenFade;
+short ScreenFadeBack;
+short ScreenFadedOut;
+short ScreenFading;
+short FadeScreenHeight;
+short DestFadeScreenHeight;
+short ScreenFadeSpeed = 8;
 char scratchpad[1024];
 char tsv_buffer[16384];
 

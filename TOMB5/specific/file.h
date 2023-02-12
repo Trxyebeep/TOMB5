@@ -33,6 +33,8 @@ void FreeLevel();
 
 extern TEXTURESTRUCT* textinfo;
 extern SPRITESTRUCT* spriteinfo;
+extern CHANGE_STRUCT* changes;
+extern RANGE_STRUCT* ranges;
 extern AIOBJECT* AIObjects;
 extern THREAD LevelLoadingThread;
 extern short* aranges;

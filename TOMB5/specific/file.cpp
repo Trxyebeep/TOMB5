@@ -29,12 +29,16 @@
 #include "../game/control.h"
 #include "../game/draw.h"
 #include "audio.h"
+#include "../game/effects.h"
+#include "../game/effect2.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
 
 TEXTURESTRUCT* textinfo;
 SPRITESTRUCT* spriteinfo;
+CHANGE_STRUCT* changes;
+RANGE_STRUCT* ranges;
 AIOBJECT* AIObjects;
 THREAD LevelLoadingThread;
 short* aranges;

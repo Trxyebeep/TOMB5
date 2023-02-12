@@ -9,3 +9,5 @@ void InitialiseBatEmitter(short item_number);
 void ControlBatEmitter(short item_number);
 void UpdateBats();
 void DrawBats();
+
+extern BAT_STRUCT* Bats;

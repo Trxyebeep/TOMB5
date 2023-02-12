@@ -14,4 +14,5 @@ extern CVECTOR FontShades[10][32];
 extern uchar ScaleFlag;
 extern long small_font;
 extern long font_height;
+extern long big_char_height;
 extern CHARDEF CharDef[106];

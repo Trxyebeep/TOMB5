@@ -91,7 +91,12 @@ long conflict[18];
 long input;
 long dbinput;
 long inputBusy;
+long joystick_read;
+long joystick_read_x;
+long joystick_read_y;
+long joystick_read_fire;
 
+static long joy_fire;
 static double screen_sizer = 1.0;
 static double game_sizer = 1.0;
 

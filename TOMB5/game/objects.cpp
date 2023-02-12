@@ -23,6 +23,7 @@
 #include "lara.h"
 
 OBJECT_INFO objects[NUMBER_OBJECTS];
+static short* GLOBAL_gunflash_meshptr;
 
 static BITE_INFO EnemyBites[9] =
 {

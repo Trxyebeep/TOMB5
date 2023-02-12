@@ -905,8 +905,6 @@ void DoOptions()
 		else
 			keyboard_buttons = KeyboardButtons;
 
-		load_save_options_unk = 1;
-
 		if (ControlMethod)
 			num = 11;
 		else
@@ -1030,8 +1028,6 @@ void DoOptions()
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)textY, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(STR_JOYSTICK), 0);
 		else if (ControlMethod == 2)
 			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)textY, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(STR_RESET), 0);
-
-		load_save_options_unk = 0;
 
 		if (ControlMethod < 2 && !waiting_for_key)
 		{

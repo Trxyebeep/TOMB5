@@ -12,9 +12,12 @@
 #include "../specific/function_stubs.h"
 #include "lara.h"
 
+BAT_STRUCT* Bats;
+
 long GetFreeBat()
 {
 	BAT_STRUCT* fx;
+	static long next_bat = 0;
 
 	fx = &Bats[next_bat];
 

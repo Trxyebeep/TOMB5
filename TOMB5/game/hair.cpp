@@ -11,6 +11,7 @@
 #include "delstuff.h"
 #include "deltapak.h"
 #include "lara.h"
+#include "effect2.h"
 
 static char HairRotScratchVertNums[5][12] =
 {

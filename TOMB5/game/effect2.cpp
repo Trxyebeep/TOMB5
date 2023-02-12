@@ -17,8 +17,17 @@
 #include "camera.h"
 #include "lara.h"
 
-DYNAMIC dynamics[64];
 static long number_dynamics;
+DYNAMIC dynamics[64];
+SPLASH_SETUP splash_setup;
+long wibble = 0;
+long SplashCount = 0;
+long KillEverythingFlag = 0;
+long SmokeCountL;
+long SmokeCountR;
+long SmokeWeapon;
+long SmokeWindX;
+long SmokeWindZ;
 
 long DeadlyBounds[6];
 

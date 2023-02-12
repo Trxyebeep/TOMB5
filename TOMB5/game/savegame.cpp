@@ -15,6 +15,9 @@
 #include "../specific/function_stubs.h"
 #include "switch.h"
 #include "lara.h"
+#include "rat.h"
+#include "bat.h"
+#include "spider.h"
 #ifdef GENERAL_FIXES
 #include "lara2gun.h"
 #endif

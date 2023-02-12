@@ -16,6 +16,7 @@
 #include "gameflow.h"
 #include "lara.h"
 
+static RG_TARGET rgt;
 static BITE_INFO romangod_hit = { 0, 0, 0, 15 };
 
 void TriggerRomanGodSparks(long x, long y, long z, long xv, long yv, long zv, long god)

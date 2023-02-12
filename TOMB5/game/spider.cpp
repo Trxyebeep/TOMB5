@@ -9,6 +9,10 @@
 #include "sound.h"
 #include "../specific/function_stubs.h"
 #include "lara.h"
+#include "effect2.h"
+
+SPIDER_STRUCT* Spiders;
+static long next_spider;
 
 long GetFreeSpider()
 {
@@ -139,7 +143,7 @@ void UpdateSpiders()
 							fx->speed++;
 
 						if (abs(angle) < 2048)
-							fx->pos.y_rot += (short) (8 * (wibble - i));
+							fx->pos.y_rot += short(8 * (wibble - i));
 						else if (angle < 0)
 							fx->pos.y_rot -= 1024;
 						else

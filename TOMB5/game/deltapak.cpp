@@ -50,6 +50,8 @@ long cutrot = 0;
 long cutseq_num = 0;
 long cutseq_trig = 0;
 ushort dels_cutseq_player = 0;
+char jobyfrigger = 0;
+char Chris_Menu = 0;
 
 static PACKNODE* actor_pnodes[10];
 static ulong cutseq_meshswapbits[10];

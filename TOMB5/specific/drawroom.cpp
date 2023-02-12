@@ -34,8 +34,20 @@ float clip_top;
 float clip_right;
 float clip_bottom;
 
+long NumActiveFogBulbs;
+
 static ROOMLET_LIGHT RoomletLights[64];
 static long BucketSpecular[2080];
+static long nRoomletFogBulbs;
+static long nFXFogBulbs;
+static long NumLevelFogBulbs;
+static float rClipTop;
+static float rClipBottom;
+static float rClipLeft;
+static float rClipRight;
+static ROOM_INFO* CurrentRoomPtr;
+static long CurrentRoomUnderwater;
+static ulong GlobalColor;
 
 void DrawBoundsRectangle(float left, float top, float right, float bottom)
 {
@@ -138,10 +150,10 @@ void InsertRoom(ROOM_INFO* r)
 	clip_top = (float)r->top;
 	clip_right = (float)r->right;
 	clip_bottom = (float)r->bottom;
-	room_clip_top = clip_top;
-	room_clip_right = clip_right;
-	room_clip_left = clip_left;
-	room_clip_bottom = clip_bottom;
+	rClipTop = clip_top;
+	rClipRight = clip_right;
+	rClipLeft = clip_left;
+	rClipBottom = clip_bottom;
 	aCamPos.x = (float)camera.pos.x;
 	aCamPos.y = (float)camera.pos.y;
 	aCamPos.z = (float)camera.pos.z;
@@ -158,8 +170,8 @@ void InsertRoom(ROOM_INFO* r)
 
 	if (r->nVerts)
 	{
-		current_room_ptr = r;
-		current_room_underwater = r->flags & ROOM_UNDERWATER;
+		CurrentRoomPtr = r;
+		CurrentRoomUnderwater = r->flags & ROOM_UNDERWATER;
 
 		for (int i = 0; i < r->nRoomlets; i++)
 		{
@@ -167,7 +179,7 @@ void InsertRoom(ROOM_INFO* r)
 				InsertRoomlet(&r->pRoomlets[i]);
 		}
 
-		RoomRGB = 0x00FFFFFF;
+		GlobalColor = 0x00FFFFFF;
 	}
 }
 
@@ -227,14 +239,14 @@ static bool IsMistVert(FVECTOR* v)
 	float x, y, z;
 	short drn;
 
-	door = current_room_ptr->door;
+	door = CurrentRoomPtr->door;
 
 	if (!door)
 		return 0;
 
-	x = v->x + current_room_ptr->x;
+	x = v->x + CurrentRoomPtr->x;
 	y = v->y;
-	z = v->z + current_room_ptr->z;
+	z = v->z + CurrentRoomPtr->z;
 	drn = *door++;
 
 	for (p = (PORTAL*)door; drn > 0; drn--, p++)
@@ -275,15 +287,15 @@ static bool IsReflectionVert(FVECTOR* v)
 	short drn, ndrn, cont;
 
 	has_water_neighbor = 0;
-	door = current_room_ptr->door;
+	door = CurrentRoomPtr->door;
 
 	if (!door)
 		return 0;
 
 	cont = 0;
-	x = v->x + current_room_ptr->x;
+	x = v->x + CurrentRoomPtr->x;
 	y = v->y;
-	z = v->z + current_room_ptr->z;
+	z = v->z + CurrentRoomPtr->z;
 	drn = *door++;
 
 	for (p = (PORTAL*)door; drn > 0; drn--, p++)
@@ -313,7 +325,7 @@ static bool IsReflectionVert(FVECTOR* v)
 	if (cont)
 	{
 		has_water_neighbor = 1;
-		door = current_room_ptr->door;
+		door = CurrentRoomPtr->door;
 
 		if (door)
 		{
@@ -363,14 +375,14 @@ static bool IsShoreVert(FVECTOR* v)
 	float x, y, z;
 	short drn;
 
-	door = current_room_ptr->door;
+	door = CurrentRoomPtr->door;
 
 	if (!door)
 		return 0;
 
-	x = v->x + current_room_ptr->x;
+	x = v->x + CurrentRoomPtr->x;
 	y = v->y;
-	z = v->z + current_room_ptr->z;
+	z = v->z + CurrentRoomPtr->z;
 	drn = *door++;
 
 	for (p = (PORTAL*)door; drn > 0; drn--, p++)
@@ -446,11 +458,11 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 		if (i < nWaterVerts)
 		{
-			wx = (long)(xyz.x + current_room_ptr->x) >> 6;
-			wy = (long)(xyz.y + current_room_ptr->y) >> 6;
-			wz = (long)(xyz.z + current_room_ptr->z) >> 7;
-			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
-			xyz.y += WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
+			wx = long(xyz.x + CurrentRoomPtr->x) >> 6;
+			wy = long(xyz.y + CurrentRoomPtr->y) >> 6;
+			wz = long(xyz.z + CurrentRoomPtr->z) >> 7;
+			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(wx + wy + wz) & 0x3F].random;
+			xyz.y += WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
 		}
 
 		vec.x = xyz.x * D3DMView._11 + xyz.y * D3DMView._21 + xyz.z * D3DMView._31 + D3DMView._41;
@@ -543,24 +555,24 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 		if (tomb5.shimmer)
 		{
-			if (current_room_ptr->flags & ROOM_REFLECT && current_room_ptr->flags & ROOM_REFLECT_CEILING)
+			if (CurrentRoomPtr->flags & ROOM_REFLECT && CurrentRoomPtr->flags & ROOM_REFLECT_CEILING)
 			{
 				if (gfCurrentLevel == LVL5_RED_ALERT)
 				{
-					if (xyz.y != current_room_ptr->minfloor)
+					if (xyz.y != CurrentRoomPtr->minfloor)
 						flags |= 2;
 				}
-				else if (!IsMistVert(&xyz) || abs(xyz.y - current_room_ptr->minfloor) > 1536)
+				else if (!IsMistVert(&xyz) || abs(xyz.y - CurrentRoomPtr->minfloor) > 1536)
 					flags |= 1;
 			}
-			else if (xyz.y == current_room_ptr->minfloor)
+			else if (xyz.y == CurrentRoomPtr->minfloor)
 			{
-				if (current_room_ptr->flags & ROOM_MIST)
+				if (CurrentRoomPtr->flags & ROOM_MIST)
 				{
 					if (IsMistVert(&xyz))
 						flags |= 1;
 				}
-				else if (current_room_ptr->flags & ROOM_REFLECT)
+				else if (CurrentRoomPtr->flags & ROOM_REFLECT)
 				{
 					if (IsReflectionVert(&xyz))
 						flags |= 1;
@@ -571,13 +583,13 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		}
 #endif
 
-		if (current_room_underwater)
+		if (CurrentRoomUnderwater)
 		{
 			wx = long(xyz.x / 64.0F);
 			wy = long(xyz.y / 64.0F);
 			wz = long(xyz.z / 128.0F);
-			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
-			choppy = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
+			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(wx + wy + wz) & 0x3F].random;
+			choppy = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
 			iVal = -2 * choppy;
 			cR += iVal;
 			cG += iVal;
@@ -589,9 +601,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			wx = long(xyz.x / 64.0F);
 			wy = long(xyz.y / 64.0F);
 			wz = long(xyz.z / 128.0F);
-			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
-			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
-			absval = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
+			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(wx + wy + wz) & 0x3F].random;
+			shimmer = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
+			absval = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
 			iVal = (shimmer + absval) << 3;
 			cR += iVal;
 			cG += iVal;
@@ -602,9 +614,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			wx = long(xyz.x / 64.0F);
 			wy = long(xyz.y / 64.0F);
 			wz = long(xyz.z / 128.0F);
-			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
-			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].shimmer;
-			absval = WaterTable[current_room_ptr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].abs;
+			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(wx + wy + wz) & 0x3F].random;
+			shimmer = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].shimmer;
+			absval = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].abs;
 			iVal = (shimmer + absval) << 3;
 			cG += abs(iVal);
 		}
@@ -614,9 +626,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			wx = long(xyz.x * 0.015625F);
 			wy = long(xyz.y * 0.015625F);
 			wz = long(xyz.z * 0.0078125F);
-			rnd = WaterTable[current_room_ptr->MeshEffect][(wx + wy + wz) & 0x3F].random;
-			shimmer = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
-			absval = WaterTable[current_room_ptr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
+			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(wx + wy + wz) & 0x3F].random;
+			shimmer = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
+			absval = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
 			iVal = shimmer + absval;
 			cR += iVal;
 			cG += iVal;
@@ -1101,7 +1113,7 @@ void DrawRoomletBounds(ROOMLET* r)
 	aTransformClip_D3DV(bounds, &v[16], 8, 16);
 	aTransformClip_D3DV(bounds, &v[24], 8, 24);
 
-	col = 0xFF000000 | RoomRGB;
+	col = 0xFF000000 | GlobalColor;
 	zv = f_mpersp / f_mznear * f_moneopersp;
 
 	for (int i = 0; i < 32; i++)
@@ -1144,9 +1156,9 @@ long aBuildRoomletLights(ROOMLET* r)
 		if (!dynamic->on)
 			continue;
 
-		dPos.x = dynamic->x - current_room_ptr->posx;
-		dPos.y = dynamic->y - current_room_ptr->posy;
-		dPos.z = dynamic->z - current_room_ptr->posz;
+		dPos.x = dynamic->x - CurrentRoomPtr->posx;
+		dPos.y = dynamic->y - CurrentRoomPtr->posy;
+		dPos.z = dynamic->z - CurrentRoomPtr->posz;
 		falloff = float((dynamic->falloff >> 1) + (dynamic->falloff >> 3));
 
 		if (dPos.x - falloff <= r->bBox[3] && falloff + dPos.x >= r->bBox[0] &&
@@ -1619,7 +1631,7 @@ long CheckBoundsClip(float* box)
 			bottom = f_bottom;
 	}
 
-	if (left > room_clip_right || right < room_clip_left || top > room_clip_bottom || bottom < room_clip_top)
+	if (left > rClipRight || right < rClipLeft || top > rClipBottom || bottom < rClipTop)
 		return 0;
 
 	return 1;

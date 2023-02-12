@@ -2,6 +2,7 @@
 #include "dxshell.h"
 #include "function_stubs.h"
 #include "winmain.h"
+#include "input.h"
 
 long DDSCL_FLAGS[11] =	// for DXSetCooperativeLevel logging
 {

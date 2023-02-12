@@ -11,6 +11,8 @@ FCAMERA aCamera;
 FVECTOR aCamPos;
 FVECTOR aCamTar;
 FVECTOR aCamDir;
+PHD_VECTOR CamPos;
+SVECTOR CamRot;
 
 float one = 33554432.0F;
 float mone = 2048.0F;

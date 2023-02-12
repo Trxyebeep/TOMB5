@@ -24,6 +24,8 @@
 #include "../specific/3dmath.h"
 #endif
 
+static PHD_VECTOR SteelDoorLensPos;
+
 short SplashOffsets[18] = { 1072, 48, 1072, 48, 650, 280, 200, 320, -300, 320, -800, 320, -1200, 320, -1650, 280, -2112, 48 };
 
 short SteelDoorPos[4][2] =

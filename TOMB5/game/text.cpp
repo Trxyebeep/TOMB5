@@ -10,6 +10,7 @@
 CVECTOR FontShades[10][32];
 long small_font;
 long font_height;
+long big_char_height;
 uchar ScaleFlag;
 
 #ifdef GENERAL_FIXES

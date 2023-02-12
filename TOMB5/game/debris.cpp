@@ -6,6 +6,14 @@
 #include "control.h"
 #include "draw.h"
 
+short DebrisFlags;
+static MESH_DATA* DebrisMesh;
+static long DebrisMeshC1;
+static long DebrisMeshC2;
+static long DebrisMeshC3;
+static long DebrisMeshAmbient;
+static long DebrisMeshFlags;
+
 void TriggerDebris(GAME_VECTOR* pos, void* TextInfo, short* Offsets, long* Vels, short rgb)
 {
 	DEBRIS_STRUCT* dptr;

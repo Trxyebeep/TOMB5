@@ -30,6 +30,8 @@ BITE_INFO Eye[2] =
 	{0, 0, 0, 2}
 };
 
+static GUARDIAN_TARGET gt;
+
 void InitialiseGuardian(short item_number)
 {
 	ITEM_INFO* item;

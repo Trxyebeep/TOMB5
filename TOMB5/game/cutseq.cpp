@@ -11,7 +11,8 @@
 #include "twogun.h"
 #include "lara.h"
 
-char iswappedit = 0;
+char title_controls_locked_out;
+static char iswappedit = 0;
 
 ushort special2_pistols_info[13] =
 {

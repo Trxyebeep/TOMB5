@@ -49,6 +49,8 @@ extern FCAMERA aCamera;
 extern FVECTOR aCamPos;
 extern FVECTOR aCamTar;
 extern FVECTOR aCamDir;
+extern PHD_VECTOR CamPos;
+extern SVECTOR CamRot;
 
 extern float one;
 extern float mone;

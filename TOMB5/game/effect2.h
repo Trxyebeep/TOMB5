@@ -29,5 +29,13 @@ void DetatchSpark(long num, long type);
 void UpdateSparks();
 
 extern DYNAMIC dynamics[64];
-
+extern SPLASH_SETUP splash_setup;
+extern long wibble;
+extern long SplashCount;
+extern long KillEverythingFlag;
+extern long SmokeCountL;
+extern long SmokeCountR;
+extern long SmokeWeapon;
+extern long SmokeWindX;
+extern long SmokeWindZ;
 extern long DeadlyBounds[6];

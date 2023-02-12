@@ -11,6 +11,9 @@
 #include "../specific/function_stubs.h"
 #include "lara.h"
 
+RAT_STRUCT* Rats;
+static long next_rat = 0;
+
 long GetFreeRat()
 {
 	RAT_STRUCT* fx;

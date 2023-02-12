@@ -29,6 +29,7 @@
 #include "../specific/input.h"
 #include "../specific/dxshell.h"
 #include "lara.h"
+#include "cutseq.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
@@ -80,6 +81,7 @@ char JustLoaded;
 
 static char available_levels[40] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 static char fmv_to_play[2] = { 0, 0 };
+static char DEL_playingamefmv = 0;
 
 static CUTSEQ_SELECTOR cutsel[] =
 {

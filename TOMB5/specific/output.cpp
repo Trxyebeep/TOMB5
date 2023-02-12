@@ -56,6 +56,7 @@ static char DebugStrings[256][80];
 static long water_color_R = 128;
 static long water_color_G = 224;
 static long water_color_B = 255;
+static long old_lighting_water;
 
 void S_DrawPickup(short object_number)
 {

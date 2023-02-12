@@ -8,3 +8,5 @@ void ClearSpiders();
 void TriggerSpider(short item_number);
 void UpdateSpiders();
 void DrawSpiders();
+
+extern SPIDER_STRUCT* Spiders;
