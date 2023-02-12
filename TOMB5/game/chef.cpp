@@ -6,6 +6,7 @@
 #include "../specific/3dmath.h"
 #include "sound.h"
 #include "effects.h"
+#include "control.h"
 
 BITE_INFO knife = {0, 200, 0, 13};
 

@@ -22,6 +22,7 @@
 #include "mmx.h"
 #include "fmv.h"
 #include "../game/newinv2.h"
+#include "../game/control.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../tomb5/troyestuff.h"

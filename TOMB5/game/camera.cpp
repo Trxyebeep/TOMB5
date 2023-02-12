@@ -21,6 +21,8 @@
 
 CAMERA_INFO camera;
 
+SHATTER_ITEM ShatterItem;
+
 GAME_VECTOR ForcedFixedCamera;
 char UseForcedFixedCamera;
 

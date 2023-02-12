@@ -67,7 +67,74 @@ uchar ShatterSounds[18][10] =
 {SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS, SFX_SMASH_GLASS}
 };
 
+ITEM_INFO* items;
+ANIM_STRUCT* anims;
+ROOM_INFO* room;
+short** meshes;
+long* bones;
+long level_items;
+short number_rooms;
+
+short* OutsideRoomOffsets;
+char* OutsideRoomTable;
+short IsRoomOutsideNo;
+
+MESH_INFO* SmashedMesh[16];
+short SmashedMeshRoom[16];
+short SmashedMeshCount = 0;
+
+long flipmap[255];
+long flip_stats[255];
+long flip_status;
+long flipeffect = -1;
+long fliptimer = 0;
+
+short* trigger_index;
+long tiltxoff;
+long tiltyoff;
+long OnObject;
+long height_type;
+
+long InItemControlLoop = 0;
+short ItemNewRooms[256][2];
+short ItemNewRoomNo = 0;
+
+ulong _CutSceneTriggered1;
+ulong _CutSceneTriggered2;
+long SetDebounce;
+long framecount = 0;
+long reset_flag = 0;
+long LaserSightX;
+long LaserSightY;
+long LaserSightZ;
+ushort GlobalCounter = 0;
+short XSoff1;
+short XSoff2;
+short YSoff1;
+short YSoff2;
+short ZSoff1;
+short ZSoff2;
+short FXType;
+char PoisonFlag;
+char LaserSightActive;
+char LaserSightCol;
+char TriggerTimer = 0;
+char GetLaraOnLOS = 0;
+
+uchar CurrentAtmosphere;
+uchar IsAtmospherePlaying;
 char cd_flags[136];
+
+static PHD_VECTOR ClosestCoord;
+static long ClosestItem;
+static long ClosestDist;
+
+static long number_los_rooms = 0;
+static short los_rooms[20];
+
+static short cdtrack = -1;
+static char richcutfrigflag = 0;
+static char globoncuttrig;
 
 long ControlPhase(long nframes, long demo_mode)
 {
@@ -452,7 +519,7 @@ long ControlPhase(long nframes, long demo_mode)
 			GetHeight(floor, mesh->x, mesh->y, mesh->z);
 			TestTriggers(trigger_index, 1, 0);
 			floor->stopper = 0;
-			SmashedMesh[SmashedMeshCount] = NULL;
+			SmashedMesh[SmashedMeshCount] = 0;
 		}
 
 		UpdateSparks();
@@ -561,12 +628,12 @@ void InterpolateAngle(short dest, short* src, short* diff, short speed)
 {
 	long adiff;
 
-	adiff = (dest & 0xFFFF) - *src;
+	adiff = (ushort)dest - (ushort)*src;
 
-	if (adiff > 32768)
-		adiff -= 65536;
-	else if (adiff < -32768)
-		adiff += 65536;
+	if (adiff > 0x8000)
+		adiff -= 0x10000;
+	else if (adiff < -0x8000)
+		adiff += 0x10000;
 
 	if (diff)
 		diff[0] = (short)adiff;
@@ -670,14 +737,15 @@ void NeatAndTidyTriggerCutscene(long value, long timer)
 			return;
 		}
 
-		if (GLOBAL_inventoryitemchosen != inv_item_stealth_frigggggs || !CheckGuardOnTrigger())
-			return;
+		if (GLOBAL_inventoryitemchosen == inv_item_stealth_frigggggs && CheckGuardOnTrigger())
+		{
+			if (inv_item_stealth_frigggggs == WET_CLOTH)
+				lara.wetcloth = 1;
 
-		if (inv_item_stealth_frigggggs == WET_CLOTH)
-			lara.wetcloth = 1;
+			GLOBAL_inventoryitemchosen = NO_ITEM;
+			cutseq_num = value;
+		}
 
-		GLOBAL_inventoryitemchosen = NO_ITEM;
-		cutseq_num = value;
 		return;
 	}
 
@@ -735,8 +803,8 @@ void NeatAndTidyTriggerCutscene(long value, long timer)
 		{
 			item = &items[item_num];
 
-			if (item->object_number == SCIENTIST && item->hit_points > 0 &&
-				item->anim_number == objects[BLUE_GUARD].anim_index + 62 && item->frame_number == anims[item->anim_number].frame_end)
+			if (item->object_number == SCIENTIST && item->hit_points > 0 && item->anim_number == objects[BLUE_GUARD].anim_index + 62 &&
+				item->frame_number == anims[item->anim_number].frame_end)
 			{
 				cutseq_num = 24;
 				break;
@@ -803,8 +871,10 @@ long is_object_in_room(long roomnumber, long objnumber)
 long check_xray_machine_trigger()
 {
 	for (int i = 0; i < level_items; i++)
-		if (items[i].object_number == XRAY_CONTROLLER && items[i].trigger_flags == 0 && items[i].item_flags[0] == 666)
+	{
+		if (items[i].object_number == XRAY_CONTROLLER && !items[i].trigger_flags && items[i].item_flags[0] == 666)
 			return 1;
+	}
 
 	return 0;
 }
@@ -1126,10 +1196,10 @@ long ExplodeItemNode(ITEM_INFO* item, long Node, long NoXZVel, long bits)
 	else if (bits == 256)
 		bits = -64;
 
-	GetSpheres(item, Slist, 3);
 	object = &objects[item->object_number];
-	ShatterItem.YRot = item->pos.y_rot;
 	meshpp = &meshes[object->mesh_index + 2 * Node];
+	GetSpheres(item, Slist, 3);
+	ShatterItem.YRot = item->pos.y_rot;
 	ShatterItem.Bit = 1 << Node;
 	ShatterItem.meshp = *meshpp;
 	ShatterItem.Sphere.x = Slist[Node].x;
@@ -1163,13 +1233,8 @@ short GetDoor(FLOOR_INFO* floor)
 		type = *data++;
 	}
 
-	if ((type & 0x1F) == ROOF_TYPE
-		|| (type & 0x1F) == SPLIT3
-		|| (type & 0x1F) == SPLIT4
-		|| (type & 0x1F) == NOCOLC1B
-		|| (type & 0x1F) == NOCOLC1T
-		|| (type & 0x1F) == NOCOLC2B
-		|| (type & 0x1F) == NOCOLC2T)
+	if ((type & 0x1F) == ROOF_TYPE || (type & 0x1F) == SPLIT3 || (type & 0x1F) == SPLIT4 || (type & 0x1F) == NOCOLC1B ||
+		(type & 0x1F) == NOCOLC1T || (type & 0x1F) == NOCOLC2B || (type & 0x1F) == NOCOLC2T)
 	{
 		if (type & 0x8000)
 			return NO_ROOM;
@@ -1375,6 +1440,7 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 					}
 
 				} while (!(trigger & 0x8000));
+
 				break;
 
 			case LAVA_TYPE:
@@ -1387,6 +1453,7 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 				S_ExitSystem("GetCeiling(): Unknown type");
 				break;
 			}
+
 		} while (!(type & 0x8000));
 	}
 
@@ -1742,7 +1809,7 @@ long GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, long DrawTarget, long f
 		lara.Fired = 1;
 
 		if (lara.gun_type == WEAPON_REVOLVER)
-			SoundEffect(SFX_REVOLVER, NULL, 0);
+			SoundEffect(SFX_REVOLVER, 0, SFX_DEFAULT);
 	}
 
 	hit = 0;
@@ -1766,7 +1833,7 @@ long GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, long DrawTarget, long f
 				{
 					if (Mesh->static_number >= 50 && Mesh->static_number < 58)
 					{
-						ShatterObject(NULL, Mesh, 128, target.room_number, 0);
+						ShatterObject(0, Mesh, 128, target.room_number, 0);
 						SmashedMeshRoom[SmashedMeshCount] = target.room_number;
 						SmashedMesh[SmashedMeshCount] = Mesh;
 						SmashedMeshCount++;
@@ -1993,11 +2060,8 @@ void TestTriggers(short* data, long heavy, long HeavyFlags)
 	globoncuttrig = 0;
 	_TestTriggers(data, heavy, HeavyFlags);
 
-	if (!globoncuttrig)
-	{
-		if (richcutfrigflag)
+	if (!globoncuttrig && richcutfrigflag)
 			richcutfrigflag = 0;
-	}
 }
 
 void _TestTriggers(short* data, long heavy, long HeavyFlags)
@@ -2006,6 +2070,7 @@ void _TestTriggers(short* data, long heavy, long HeavyFlags)
 	ITEM_INFO* camera_item;
 	long switch_off, flip, flip_available, neweffect, key, quad;
 	short camera_flags, camera_timer, type, trigger, value, flags, state, CamSeq;
+	static uchar HeavyTriggered;
 	char timer, SwitchOnOnly;
 	
 	switch_off = 0;
@@ -2039,7 +2104,7 @@ void _TestTriggers(short* data, long heavy, long HeavyFlags)
 	{
 		if (!heavy)
 		{
-			quad = (ushort)(lara_item->pos.y_rot + 8192) >> 14;
+			quad = ushort(lara_item->pos.y_rot + 8192) >> 14;
 
 			if ((1 << (quad + 8)) & *data)
 				lara.climb_status = 1;
@@ -2088,6 +2153,7 @@ void _TestTriggers(short* data, long heavy, long HeavyFlags)
 			break;
 
 		case HEAVYSWITCH:
+
 			if (!HeavyFlags)
 				return;
 
@@ -2134,7 +2200,7 @@ void _TestTriggers(short* data, long heavy, long HeavyFlags)
 			if (items[value].object_number >= SWITCH_TYPE1 && items[value].object_number <= SWITCH_TYPE6 && items[value].trigger_flags == 5)
 				SwitchOnOnly = 1;
 
-			switch_off = (items[value].current_anim_state == 1);
+			switch_off = items[value].current_anim_state == 1;
 			break;
 
 		case KEY:
@@ -2158,6 +2224,7 @@ void _TestTriggers(short* data, long heavy, long HeavyFlags)
 		case DUMMY:
 		case HEAVYSWITCH:
 		case HEAVYANTITRIGGER:
+
 #ifdef GENERAL_FIXES
 			if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS && lara_item->pos.x_pos > 37979 && lara_item->pos.x_pos < 38911 &&
 				lara_item->pos.z_pos > 67685 && lara_item->pos.z_pos < 68600 && lara_item->pos.y_pos == -24064)
@@ -2467,11 +2534,9 @@ void _TestTriggers(short* data, long heavy, long HeavyFlags)
 			globoncuttrig = 1;
 			NeatAndTidyTriggerCutscene(value, timer);
 			break;
-
-		default: 
-			break;
 		}
-	} while (!(trigger & 0x8000));
+	}
+	while (!(trigger & 0x8000));
 
 	if (camera_item && (camera.type == FIXED_CAMERA || camera.type == HEAVY_CAMERA))
 		camera.item = camera_item;
@@ -3583,9 +3648,7 @@ long DoRayBox(GAME_VECTOR* start, GAME_VECTOR* target, short* bounds, PHD_3DPOS*
 
 	if (ClosestNode >= -1)
 	{
-		dist = SQUARE(Coord->x + ItemPos->x_pos - start->x) +
-			SQUARE(Coord->y + ItemPos->y_pos - start->y) +
-			SQUARE(Coord->z + ItemPos->z_pos - start->z);
+		dist = SQUARE(Coord->x + ItemPos->x_pos - start->x) + SQUARE(Coord->y + ItemPos->y_pos - start->y) + SQUARE(Coord->z + ItemPos->z_pos - start->z);
 
 		if (dist < ClosestDist)
 		{

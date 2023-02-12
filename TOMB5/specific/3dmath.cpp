@@ -4,6 +4,7 @@
 #include "dxshell.h"
 #include "winmain.h"
 #include "../game/spotcam.h"
+#include "../game/control.h"
 
 float fcossin_tbl[65536];
 

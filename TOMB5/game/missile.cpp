@@ -8,6 +8,7 @@
 #include "../specific/3dmath.h"
 #include "draw.h"
 #include "debris.h"
+#include "camera.h"
 
 void ControlBodyPart(short fx_number)
 {

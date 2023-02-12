@@ -131,7 +131,7 @@ void ControlGunship(short item_number)
 				{
 					if (StaticMesh->static_number >= 50 && StaticMesh->static_number < 59)
 					{
-						ShatterObject(NULL, StaticMesh, 64, pos1.room_number, 0);
+						ShatterObject(0, StaticMesh, 64, pos1.room_number, 0);
 						StaticMesh->Flags &= ~0x1;
 						TestTriggersAtXYZ(StaticMesh->x, StaticMesh->y, StaticMesh->z, pos1.room_number, 1, 0);
 						SoundEffect(ShatterSounds[gfCurrentLevel][StaticMesh->static_number - 50], (PHD_3DPOS*)StaticMesh, 0);

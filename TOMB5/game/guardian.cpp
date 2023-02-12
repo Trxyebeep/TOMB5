@@ -404,7 +404,7 @@ void GuardianControl(short item_number)
 							if (item->item_flags[3] > 90 && gt.elptr[i])
 							{
 								gt.elptr[i]->Life = 0;
-								gt.elptr[i] = NULL;
+								gt.elptr[i] = 0;
 							}
 						}
 						else
@@ -531,8 +531,8 @@ void GuardianControl(short item_number)
 				{
 					if (lptr)
 					{
-						gt.elptr[0] = NULL;
-						gt.elptr[1] = NULL;
+						gt.elptr[0] = 0;
+						gt.elptr[1] = 0;
 					}
 
 					item->item_flags[0] = 1;
@@ -574,8 +574,8 @@ void GuardianControl(short item_number)
 			item->trigger_flags = (GetRandomControl() & 0x1000) - 2048;
 		}
 
-		InterpolateAngle(item->item_flags[3], &item->pos.y_rot, NULL, 2);
-		InterpolateAngle(item->trigger_flags, &item->pos.x_rot, NULL, 2);
+		InterpolateAngle(item->item_flags[3], &item->pos.y_rot, 0, 2);
+		InterpolateAngle(item->trigger_flags, &item->pos.x_rot, 0, 2);
 		item->speed++;
 
 		if (item->speed > 136)
@@ -617,8 +617,8 @@ void GuardianControl(short item_number)
 			if (gt.elptr[1])
 				gt.elptr[1]->Life = 2;
 
-			gt.elptr[0] = NULL;
-			gt.elptr[1] = NULL;
+			gt.elptr[0] = 0;
+			gt.elptr[1] = 0;
 			item->item_flags[0] = 3;
 			item->item_flags[3] = (GetRandomControl() & 0x1000) + item->pos.y_rot - 2048;
 			item->speed = 3;

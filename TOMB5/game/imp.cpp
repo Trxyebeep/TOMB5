@@ -9,8 +9,9 @@
 #include "lara_states.h"
 #include "effects.h"
 #include "../specific/function_stubs.h"
+#include "control.h"
 
-static BITE_INFO imp_hit = {0, 100, 0, 9};
+static BITE_INFO imp_hit = { 0, 100, 0, 9 };
 
 void TriggerImpMissile(ITEM_INFO* item)
 {

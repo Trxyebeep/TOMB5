@@ -5,8 +5,9 @@
 #include "newinv2.h"
 #include "../specific/3dmath.h"
 #include "effects.h"
+#include "control.h"
 
-static BITE_INFO swampy_hitright = {0, 0, 0, 7};
+static BITE_INFO swampy_hitright = { 0, 0, 0, 7 };
 
 void InitialiseSwampy(short item_number)
 {

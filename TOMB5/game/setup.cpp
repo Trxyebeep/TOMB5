@@ -1861,9 +1861,9 @@ void InitialiseObjects()
 {
 	for (int i = 0; i < 460; i++)
 	{
-		objects[i].initialise = NULL;
-		objects[i].collision = NULL;
-		objects[i].control = NULL;
+		objects[i].initialise = 0;
+		objects[i].collision = 0;
+		objects[i].control = 0;
 		objects[i].intelligent = 0;
 		objects[i].save_position = 0;
 		objects[i].save_hitpoints = 0;
@@ -1873,15 +1873,15 @@ void InitialiseObjects()
 		objects[i].using_drawanimating_item = 1;
 		objects[i].save_mesh = 0;
 		objects[i].draw_routine = DrawAnimatingItem;
-		objects[i].ceiling = NULL;
-		objects[i].floor = NULL;
+		objects[i].ceiling = 0;
+		objects[i].floor = 0;
 		objects[i].pivot_length = 0;
 		objects[i].radius = 10;
 		objects[i].shadow_size = 0;
 		objects[i].hit_points = -16384;
 		objects[i].explodable_meshbits = 0;
-		objects[i].draw_routine_extra = NULL;
-		objects[i].frame_base = (short*) ((long) objects[i].frame_base + (char*) frames);
+		objects[i].draw_routine_extra = 0;
+		objects[i].frame_base = (short*)((long) objects[i].frame_base + (char*) frames);
 		objects[i].object_mip = 0;
 	}
 

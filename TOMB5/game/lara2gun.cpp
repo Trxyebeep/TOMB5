@@ -9,6 +9,7 @@
 #include "gameflow.h"
 #include "effect2.h"
 #include "camera.h"
+#include "control.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #endif

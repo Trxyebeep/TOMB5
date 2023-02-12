@@ -2722,7 +2722,7 @@ void deal_with_pistols(ushort* shootdata)
 	}
 }
 
-void handle_lara_chatting(short* _ranges)//short* ranges//until the anim ranges array is moved into the dll.
+void handle_lara_chatting(short* _ranges)
 {
 	long r1, r2, f;
 
@@ -2750,7 +2750,7 @@ void handle_lara_chatting(short* _ranges)//short* ranges//until the anim ranges 
 		lara.mesh_ptrs[LM_HEAD] = meshes[objects[(GetRandomControl() & 3) + LARA_SPEECH_HEAD1].mesh_index + LM_HEAD * 2];
 }
 
-void handle_actor_chatting(long speechslot, long node, long slot, long objslot, short* _ranges)//short* ranges//until the anim ranges array is moved into the dll.
+void handle_actor_chatting(long speechslot, long node, long slot, long objslot, short* _ranges)
 {
 	long r1, r2, f, rnd;
 

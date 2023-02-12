@@ -258,7 +258,7 @@ void CalculateRope(ROPE_STRUCT* Rope)
 			CurrentPendulum.Velocity.y = 0;
 			CurrentPendulum.Velocity.z = 0;
 			CurrentPendulum.node = -1;
-			CurrentPendulum.Rope = NULL;
+			CurrentPendulum.Rope = 0;
 		}
 	}
 

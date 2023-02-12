@@ -546,7 +546,7 @@ void RomangodControl(short item_number)
 						{
 							if (!((r->mesh[i].z ^ s.z) & 0xFFFFFC00) && !((r->mesh[i].x ^ s.x) & 0xFFFFFC00) && r->mesh[i].static_number >= 50 && r->mesh[i].static_number <= 59)
 							{
-								ShatterObject(NULL, &r->mesh[i], -64, lara_item->room_number, 0);
+								ShatterObject(0, &r->mesh[i], -64, lara_item->room_number, 0);
 								SoundEffect(ShatterSounds[gfCurrentLevel][r->mesh[i].static_number - 50], (PHD_3DPOS*) &r->mesh[i].x, SFX_DEFAULT);
 								r->mesh[i].Flags &= ~0x1;
 								floor->stopper = 0;

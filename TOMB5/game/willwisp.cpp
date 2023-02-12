@@ -49,7 +49,7 @@ void WillOWispControl(short item_number)
 		{
 			item->item_flags[3]++;
 			willowisp->reached_goal = 0;
-			willowisp->enemy = NULL;
+			willowisp->enemy = 0;
 		}
 
 		if (item->ai_bits)

@@ -201,7 +201,7 @@ void ControlExplosion(short item_number)
 						TriggerShockwave((PHD_VECTOR*) &staticp->x, 0xB00028, 64, 0x10806000, 0);
 						staticp->y += 128;
 						SoundEffect(ShatterSounds[gfCurrentLevel][staticp->static_number - 50], (PHD_3DPOS*)&staticp->x, 0);
-						ShatterObject(NULL, staticp, -128, item->room_number, 0);
+						ShatterObject(0, staticp, -128, item->room_number, 0);
 						SmashedMeshRoom[SmashedMeshCount] = item->room_number;
 						SmashedMesh[SmashedMeshCount] = staticp;
 						SmashedMeshCount++;

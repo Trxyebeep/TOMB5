@@ -19,6 +19,7 @@ void BinocularCamera(ITEM_INFO* item);
 void LookCamera(ITEM_INFO* item);
 
 extern CAMERA_INFO camera;
+extern SHATTER_ITEM ShatterItem;
 extern GAME_VECTOR ForcedFixedCamera;
 extern char UseForcedFixedCamera;
 extern PHD_VECTOR CamOldPos;

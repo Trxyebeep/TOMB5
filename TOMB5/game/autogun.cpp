@@ -30,7 +30,7 @@ void ControlMotionSensors(short item_number)
 	}
 	else if (!item->item_flags[2])
 	{
-		InterpolateAngle(-2048, &item->pos.x_rot, NULL, 3);
+		InterpolateAngle(-2048, &item->pos.x_rot, 0, 3);
 		destangle = item->item_flags[3];
 
 		if (item->item_flags[0])
@@ -62,8 +62,8 @@ void ControlMotionSensors(short item_number)
 	else
 	{
 		phd_GetVectorAngles(lara_item->pos.x_pos - item->pos.x_pos, lara_item->pos.y_pos - item->pos.y_pos - 384, lara_item->pos.z_pos - item->pos.z_pos, angles);
-		InterpolateAngle(angles[0], &item->pos.y_rot, NULL, 3);
-		InterpolateAngle(angles[1], &item->pos.x_rot, NULL, 3);
+		InterpolateAngle(angles[0], &item->pos.y_rot, 0, 3);
+		InterpolateAngle(angles[1], &item->pos.x_rot, 0, 3);
 	}
 }
 

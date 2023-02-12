@@ -53,4 +53,61 @@ long DoRayBox(GAME_VECTOR* start, GAME_VECTOR* target, short* bounds, PHD_3DPOS*
 void ResetGuards();
 
 extern uchar ShatterSounds[18][10];
+
+extern ITEM_INFO* items;
+extern ANIM_STRUCT* anims;
+extern ROOM_INFO* room;
+extern short** meshes;
+extern long* bones;
+extern long level_items;
+extern short number_rooms;
+
+extern short* OutsideRoomOffsets;
+extern char* OutsideRoomTable;
+extern short IsRoomOutsideNo;
+
+extern MESH_INFO* SmashedMesh[16];
+extern short SmashedMeshRoom[16];
+extern short SmashedMeshCount;
+
+extern long flipmap[255];
+extern long flip_stats[255];
+extern long flip_status;
+extern long flipeffect;
+extern long fliptimer;
+
+extern short* trigger_index;
+extern long tiltxoff;
+extern long tiltyoff;
+extern long OnObject;
+extern long height_type;
+
+extern long InItemControlLoop;
+extern short ItemNewRooms[256][2];
+extern short ItemNewRoomNo;
+
+extern ulong _CutSceneTriggered1;
+extern ulong _CutSceneTriggered2;
+extern long SetDebounce;
+extern long framecount;
+extern long reset_flag;
+extern long LaserSightX;
+extern long LaserSightY;
+extern long LaserSightZ;
+extern ushort GlobalCounter;
+extern short XSoff1;
+extern short XSoff2;
+extern short YSoff1;
+extern short YSoff2;
+extern short ZSoff1;
+extern short ZSoff2;
+extern short FXType;
+extern char PoisonFlag;
+extern char LaserSightActive;
+extern char LaserSightCol;
+extern char TriggerTimer;
+extern char GetLaraOnLOS;
+
+extern uchar CurrentAtmosphere;
+extern uchar IsAtmospherePlaying;
 extern char cd_flags[136];

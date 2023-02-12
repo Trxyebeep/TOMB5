@@ -107,7 +107,7 @@
 #include "../game/text.h"
 #include "../specific/fmv.h"
 
-HINSTANCE hinstance = NULL;
+HINSTANCE hinstance = 0;
 
 #ifndef BUILD_DLL
 #define DLL_EXPORT __declspec(dllexport)

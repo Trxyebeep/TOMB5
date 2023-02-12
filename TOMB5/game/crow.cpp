@@ -3,6 +3,7 @@
 #include "box.h"
 #include "objects.h"
 #include "effects.h"
+#include "control.h"
 
 static BITE_INFO crow_bite = {2, 10, 60, 14};
 

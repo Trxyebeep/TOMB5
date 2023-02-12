@@ -432,7 +432,7 @@ void ControlTeleporter(short item_number)
 						FlashFadeG = item->item_flags[0] - GetRandomControl() % (item->item_flags[0] >> 1);
 						FlashFadeB = item->item_flags[0] >> 2;
 						FlashFader = 32;
-						SoundEffect(SFX_TELEPORT_CRACKLES, NULL, 0);
+						SoundEffect(SFX_TELEPORT_CRACKLES, 0, SFX_DEFAULT);
 					}
 
 					if (!(GlobalCounter & 3))
@@ -496,7 +496,7 @@ void ControlTeleporter(short item_number)
 				FlashFadeB = 64;
 				FlashFader = 32;
 				item->item_flags[2] = 1;
-				SoundEffect(SFX_TELEPORT_FLASH, NULL, 0x800000 | SFX_SETPITCH);
+				SoundEffect(SFX_TELEPORT_FLASH, 0, 0x800000 | SFX_SETPITCH);
 			}
 			else
 			{
@@ -517,8 +517,8 @@ void ControlTeleporter(short item_number)
 			}
 			else if (item->item_flags[0] == 70)
 			{
-				SoundEffect(SFX_LIFT_HIT_FLOOR1, NULL, 0);
-				SoundEffect(SFX_LIFT_HIT_FLOOR2, NULL, 0);
+				SoundEffect(SFX_LIFT_HIT_FLOOR1, 0, SFX_DEFAULT);
+				SoundEffect(SFX_LIFT_HIT_FLOOR2, 0, SFX_DEFAULT);
 			}
 
 			lara_item->anim_number = ANIM_ELEVATOR_RECOVER;

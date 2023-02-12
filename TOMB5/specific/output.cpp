@@ -23,6 +23,7 @@
 #include "texture.h"
 #include "../game/camera.h"
 #include "../game/spotcam.h"
+#include "../game/control.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../game/draw.h"

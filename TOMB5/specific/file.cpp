@@ -26,6 +26,7 @@
 #include "../game/camera.h"
 #include "../game/sound.h"
 #include "../game/spotcam.h"
+#include "../game/control.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
@@ -177,7 +178,7 @@ bool FindCDDrive()
 			if (type == DRIVE_CDROM)
 			{
 				file_check[0] = cd_drive;
-				file = CreateFile(file_check, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+				file = CreateFile(file_check, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 				if (file != INVALID_HANDLE_VALUE)
 				{

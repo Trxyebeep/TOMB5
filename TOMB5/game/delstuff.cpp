@@ -3,6 +3,7 @@
 #include "../specific/3dmath.h"
 #include "draw.h"
 #include "lara_states.h"
+#include "control.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif

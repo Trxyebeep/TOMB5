@@ -14,6 +14,7 @@
 #include "../game/tomb4fx.h"
 #include "../game/deltapak.h"
 #include "texture.h"
+#include "../game/control.h"
 
 const char* CreditNames[] =
 {

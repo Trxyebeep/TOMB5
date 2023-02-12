@@ -507,7 +507,7 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
 		for (slot = 0; slot < 8; ++slot)
 		{
 			if (!TargetList[slot])
-				lara.target = NULL;
+				lara.target = 0;
 
 			if (TargetList[slot] == lara.target)
 				break;
@@ -551,7 +551,7 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
 				if (!lara.target)
 				{
 					lara.target = bestitem;
-					LastTargets[0] = NULL;
+					LastTargets[0] = 0;
 				}
 			}
 		}

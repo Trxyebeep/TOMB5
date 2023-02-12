@@ -11,11 +11,12 @@
 #include "gamemain.h"
 #include "texture.h"
 #include "file.h"
+#include "../game/camera.h"
+#include "../game/control.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../game/gameflow.h"
 #endif
-#include "../game/camera.h"
 
 FOGBULB_INFO LevelFogBulbs[64];		//list of all fogbulbs in the level (copied from room data)
 FOGBULB_STRUCT ActiveFogBulbs[64];	//list of active fog bulbs

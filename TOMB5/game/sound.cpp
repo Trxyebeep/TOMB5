@@ -6,6 +6,7 @@
 #include "gameflow.h"
 #include "deltapak.h"
 #include "camera.h"
+#include "control.h"
 
 SAMPLE_INFO* sample_infos;
 SoundSlot LaSlot[32];

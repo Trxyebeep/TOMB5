@@ -4,6 +4,7 @@
 #include "objects.h"
 #include "effects.h"
 #include "../specific/function_stubs.h"
+#include "control.h"
 
 static BITE_INFO dog_bite =
 {

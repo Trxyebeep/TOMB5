@@ -7,11 +7,9 @@
 #include "people.h"
 #include "../specific/function_stubs.h"
 #include "../specific/3dmath.h"
+#include "control.h"
 
-static BITE_INFO sniper_gun =
-{
-	0, 480, 110, 13
-};
+static BITE_INFO sniper_gun = { 0, 480, 110, 13 };
 
 void InitialiseSniper(short item_number)
 {

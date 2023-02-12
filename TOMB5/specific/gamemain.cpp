@@ -112,7 +112,7 @@ long S_SaveGame(long slot_num)
 		buffer[i] = '\0';
 
 	wsprintf(buffer, "savegame.%d", slot_num);
-	file = CreateFile(buffer, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile(buffer, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 
 	if (file != INVALID_HANDLE_VALUE)
 	{
@@ -120,19 +120,19 @@ long S_SaveGame(long slot_num)
 			buffer[i] = '\0';
 
 		wsprintf(buffer, "%s", SCRIPT_TEXT(gfLevelNames[gfCurrentLevel]));
-		WriteFile(file, buffer, 75, &bytes, NULL);
-		WriteFile(file, &save_counter, sizeof(long), &bytes, NULL);
+		WriteFile(file, buffer, 75, &bytes, 0);
+		WriteFile(file, &save_counter, sizeof(long), &bytes, 0);
 		days = savegame.Game.Timer / 30 / 86400;
 		hours = savegame.Game.Timer / 30 % 86400 / 3600;
 		minutes = savegame.Game.Timer / 30 / 60 % 60;
 		seconds = savegame.Game.Timer / 30 % 60;
-		WriteFile(file, &days, 2, &bytes, NULL);
-		WriteFile(file, &hours, 2, &bytes, NULL);
-		WriteFile(file, &minutes, 2, &bytes, NULL);
-		WriteFile(file, &seconds, 2, &bytes, NULL);
-		WriteFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, NULL);
+		WriteFile(file, &days, 2, &bytes, 0);
+		WriteFile(file, &hours, 2, &bytes, 0);
+		WriteFile(file, &minutes, 2, &bytes, 0);
+		WriteFile(file, &seconds, 2, &bytes, 0);
+		WriteFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, 0);
 #ifdef GENERAL_FIXES
-		WriteFile(file, &tomb5_save, sizeof(tomb5_save_info), &bytes, NULL);
+		WriteFile(file, &tomb5_save, sizeof(tomb5_save_info), &bytes, 0);
 #endif
 		CloseHandle(file);
 		wsprintf(counter, "%d", save_counter);
@@ -151,17 +151,17 @@ long S_LoadGame(long slot_num)
 	char buffer[80];
 
 	wsprintf(buffer, "savegame.%d", slot_num);
-	file = CreateFile(buffer, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile(buffer, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 	if (file != INVALID_HANDLE_VALUE)
 	{
-		ReadFile(file, buffer, 75, &bytes, NULL);
-		ReadFile(file, &value, sizeof(long), &bytes, NULL);
-		ReadFile(file, &value, sizeof(long), &bytes, NULL);
-		ReadFile(file, &value, sizeof(long), &bytes, NULL);
-		ReadFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, NULL);
+		ReadFile(file, buffer, 75, &bytes, 0);
+		ReadFile(file, &value, sizeof(long), &bytes, 0);
+		ReadFile(file, &value, sizeof(long), &bytes, 0);
+		ReadFile(file, &value, sizeof(long), &bytes, 0);
+		ReadFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, 0);
 #ifdef GENERAL_FIXES
-		ReadFile(file, &tomb5_save, sizeof(tomb5_save_info), &tomb5_save_size, NULL);
+		ReadFile(file, &tomb5_save, sizeof(tomb5_save_info), &tomb5_save_size, 0);
 #endif
 		CloseHandle(file);
 		return 1;
