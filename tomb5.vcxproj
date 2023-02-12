@@ -128,6 +128,24 @@
     <ClCompile Include="TOMB5\specific\time.cpp" />
     <ClCompile Include="TOMB5\specific\winmain.cpp" />
     <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
+    <ClCompile Include="TOMB5\tomb5\libs\zlib\adler32.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TOMB5\tomb5\libs\zlib\crc32.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TOMB5\tomb5\libs\zlib\inffast.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TOMB5\tomb5\libs\zlib\inflate.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TOMB5\tomb5\libs\zlib\inftrees.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TOMB5\tomb5\libs\zlib\zutil.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="TOMB5\tomb5\troyestuff.cpp" />
     <ClCompile Include="TOMB5\tomb5\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -254,6 +272,7 @@
     <ClInclude Include="TOMB5\tomb5\framework.h" />
     <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_register.h" />
     <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_rpc.h" />
+    <ClInclude Include="TOMB5\tomb5\libs\zlib\zlib.h" />
     <ClInclude Include="TOMB5\tomb5\troyestuff.h" />
     <ClInclude Include="TOMB5\tomb5\pch.h" />
     <ClInclude Include="TOMB5\tomb5\tomb5.h" />

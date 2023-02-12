@@ -28,8 +28,7 @@ bool LoadBoxes();
 void AdjustUV(long num);
 long LoadFile(const char* name, char** dest);
 void FreeLevel();
-
-#define Decompress	( (bool(__cdecl*)(char*, char*, long, long)) 0x004A3EF0 )
+bool Decompress(char* pDest, char* pCompressed, long compressedSize, long size);
 
 extern TEXTURESTRUCT* textinfo;
 extern SPRITESTRUCT* spriteinfo;

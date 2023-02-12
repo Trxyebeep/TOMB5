@@ -1,4 +1,5 @@
 #include "../tomb5/pch.h"
+#include "../tomb5/libs/zlib/zlib.h"
 #include "file.h"
 #include "function_stubs.h"
 #include "../game/gameflow.h"
@@ -1511,6 +1512,30 @@ void FreeLevel()
 	malloc_free = malloc_size;
 }
 
+bool Decompress(char* pDest, char* pCompressed, long compressedSize, long size)
+{
+	z_stream stream;
+
+	Log(2, "Decompress");
+	memset(&stream, 0, sizeof(z_stream));
+	stream.avail_in = compressedSize;
+	stream.avail_out = size;
+	stream.next_out = (Bytef*)pDest;
+	stream.next_in = (Bytef*)pCompressed;
+	inflateInit(&stream);
+	inflate(&stream, Z_FINISH);
+
+	if (stream.total_out != size)
+	{
+		Log(1, "Error Decompressing Data");
+		return 0;
+	}
+
+	inflateEnd(&stream);
+	Log(5, "Decompression OK");
+	return 1;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A60E0, LoadTextureInfos, replace);
@@ -1539,4 +1564,5 @@ void inject_file(bool replace)
 	INJECT(0x004A5430, AdjustUV, replace);
 	INJECT(0x004A3E10, LoadFile, replace);
 	INJECT(0x004A7130, FreeLevel, replace);
+	INJECT(0x004A3EF0, Decompress, replace);
 }
