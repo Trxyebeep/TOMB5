@@ -7,8 +7,11 @@
 #include "sound.h"
 #include "lara.h"
 #include "../specific/specificfx.h"
+#include "../specific/input.h"
 #include "savegame.h"
 #include "camera.h"
+
+ROPE_STRUCT RopeList[8];
 
 void InitialiseRope(short item_number)
 {

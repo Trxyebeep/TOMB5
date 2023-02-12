@@ -18,6 +18,7 @@
 #include "objects.h"
 #include "../specific/function_stubs.h"
 #include "camera.h"
+#include "../specific/input.h"
 
 PHD_3DPOS bum_view;
 GAME_VECTOR bum_vdest;

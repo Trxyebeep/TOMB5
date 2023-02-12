@@ -22,6 +22,22 @@
 #include "deltapak.h"
 #include "camera.h"
 #include "spotcam.h"
+#include "../specific/input.h"
+
+uchar NumRPickups;
+uchar RPickups[16];
+char KeyTriggerActive = 0;
+
+static short PuzzleBounds[12] = { 0, 0, -256, 256, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short SOBounds[12] = { 0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short MSBounds[12] = { 0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short KeyHoleBounds[12] = { -256, 256, 0, 0, 0, 412, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short PickUpBoundsUW[12] = { -512, 512, -512, 512, -512, 512, -8190, 8190, -8190, 8190, -8190, 8190 };
+static short PickUpBounds[12] = { -256, 256, -200, 200, -256, 256, -1820, 1820, 0, 0, 0, 0 };
+static short HiddenPickUpBounds[12] = { -256, 256, -100, 100, -800, -256, -1820, 1820, -5460, 5460, 0, 0 };
+static short PlinthPickUpBounds[12] = { -256, 256, -640, 640, -511, 0, -1820, 1820, -5460, 5460, 0, 0 };
+static short JobyCrowPickUpBounds[12] = { -512, 0, -100, 100, 0, 512, -1820, 1820, -5460, 5460, 0, 0 };
+static short CrowbarPickUpBounds[12] = { -256, 256, -100, 100, 200, 512, -1820, 1820, -5460, 5460, 0, 0 };
 
 static PHD_VECTOR SOPos = { 0, 0, 0 };
 static PHD_VECTOR MSPos = { 0, 0, 0 };
@@ -35,56 +51,6 @@ static PHD_VECTOR HiddenPickUpPosition = { 0, 0, -690 };
 static PHD_VECTOR PlinthPickUpPosition = { 0, 0, -460 };
 static PHD_VECTOR JobyCrowPickUpPosition = { -224, 0, 240 };
 static PHD_VECTOR CrowbarPickUpPosition = { 0, 0, 215 };
-
-static short PuzzleBounds[12] = 
-{
-	0, 0, -256, 256, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short SOBounds[12] =
-{
-	0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short MSBounds[12] =
-{
-	0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short KeyHoleBounds[12] =
-{
-	-256, 256, 0, 0, 0, 412, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short PickUpBoundsUW[12] =
-{
-	-512, 512, -512, 512, -512, 512, -8190, 8190, -8190, 8190, -8190, 8190
-};
-
-static short PickUpBounds[12] =
-{
-	-256, 256, -200, 200, -256, 256, -1820, 1820, 0, 0, 0, 0
-};
-
-static short HiddenPickUpBounds[12] =
-{
-	-256, 256, -100, 100, -800, -256, -1820, 1820, -5460, 5460, 0, 0
-};
-
-static short PlinthPickUpBounds[12] =
-{
-	-256, 256, -640, 640, -511, 0, -1820, 1820, -5460, 5460, 0, 0
-};
-
-static short JobyCrowPickUpBounds[12] =
-{
-	-512, 0, -100, 100, 0, 512, -1820, 1820, -5460, 5460, 0, 0
-};
-
-static short CrowbarPickUpBounds[12] =
-{
-	-256, 256, -100, 100, 200, 512, -1820, 1820, -5460, 5460, 0, 0
-};
 
 void RegeneratePickups()
 {

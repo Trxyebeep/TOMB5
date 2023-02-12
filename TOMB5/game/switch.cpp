@@ -14,6 +14,11 @@
 #include "newinv2.h"
 #include "camera.h"
 #include "spotcam.h"
+#include "../specific/input.h"
+
+uchar Sequences[3];
+uchar SequenceUsed[6];
+uchar SequenceResults[3][3][3];
 
 static PHD_VECTOR PulleyPos = { 0, 0, -148 };
 static PHD_VECTOR SwitchPos = { 0, 0, 0 };
@@ -31,75 +36,20 @@ static PHD_VECTOR FullBlockSwitchPos = { 0, 0, 0 };
 static PHD_VECTOR CogSwitchPos = { 0, 0, -856 };
 static PHD_VECTOR CrowDovePos = { 0, 0, -400 };
 
-static short PulleyBounds[12] =
-{
-	-256, 256, 0, 0, -512, 512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short SwitchBounds[12] =
-{
-	0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short Switch2Bounds[12] =
-{
-	-1024, 1024, -1024, 1024, -1024, 512, -14560, 14560, -14560, 14560, -14560, 14560
-};
-
-static short UnderwaterSwitchBounds[12] =
-{
-	-256, 256, -1280, -512, -512, 0, -14560, 14560, -14560, 14560, -14560, 14560
-};
-
-static short UnderwaterSwitchBounds2[12] =
-{
-	-256, 256, -1280, -512, 0, 512, -14560, 14560, -14560, 14560, -14560, 14560
-};
-
-static short TurnSwitchBoundsA[12] =
-{
-	512, 896, 0, 0, -512, 0, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short TurnSwitchBoundsC[12] =
-{
-	512, 896, 0, 0, 0, 512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short RailSwitchBounds[12] =
-{
-	-256, 256, 0, 0, -768, -512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short RailSwitchBounds2[12] =
-{
-	-256, 256, 0, 0, 512, 768, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short JumpSwitchBounds[12] =
-{
-	-128, 128, -256, 256, 384, 512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short CrowbarBounds[12] =
-{
-	-256, 256, 0, 0, -512, -256, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short CrowbarBounds2[12] =
-{
-	-256, 256, 0, 0, 256, 512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short FullBlockSwitchBounds[12] =
-{
-	-384, 384, 0, 256, 0, 512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short CogSwitchBounds[12] =
-{
-	-512, 512, 0, 0, -1536, -512, -1820, 1820, -5460, 5460, -1820, 1820
-};
+static short PulleyBounds[12] = { -256, 256, 0, 0, -512, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short SwitchBounds[12] = { 0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short Switch2Bounds[12] = { -1024, 1024, -1024, 1024, -1024, 512, -14560, 14560, -14560, 14560, -14560, 14560 };
+static short UnderwaterSwitchBounds[12] = { -256, 256, -1280, -512, -512, 0, -14560, 14560, -14560, 14560, -14560, 14560 };
+static short UnderwaterSwitchBounds2[12] = { -256, 256, -1280, -512, 0, 512, -14560, 14560, -14560, 14560, -14560, 14560 };
+static short TurnSwitchBoundsA[12] = { 512, 896, 0, 0, -512, 0, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short TurnSwitchBoundsC[12] = { 512, 896, 0, 0, 0, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short RailSwitchBounds[12] = { -256, 256, 0, 0, -768, -512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short RailSwitchBounds2[12] = { -256, 256, 0, 0, 512, 768, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short JumpSwitchBounds[12] = { -128, 128, -256, 256, 384, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short CrowbarBounds[12] = { -256, 256, 0, 0, -512, -256, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short CrowbarBounds2[12] = { -256, 256, 0, 0, 256, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short FullBlockSwitchBounds[12] = { -384, 384, 0, 256, 0, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short CogSwitchBounds[12] = { -512, 512, 0, 0, -1536, -512, -1820, 1820, -5460, 5460, -1820, 1820 };
 
 void CrowDoveSwitchControl(short item_number)
 {

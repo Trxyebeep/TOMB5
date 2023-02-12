@@ -32,10 +32,13 @@
 #include "control.h"
 #include "camera.h"
 #include "spotcam.h"
+#include "effect2.h"
 #ifdef GENERAL_FIXES
 #include "footprnt.h"
 #include "../tomb5/tomb5.h"
 #endif
+
+STATIC_INFO static_objects[70];
 
 float* aIMXPtr;
 float aIFMStack[768];
@@ -66,7 +69,8 @@ short* GetBoundsAccurate(ITEM_INFO* item)
 	short* bptr;
 	short* frmptr[2];
 	long rate, frac;
-	
+	static short interpolated_bounds[6];
+
 	frac = GetFrames(item, frmptr, &rate);
 
 	if (frac == 0)

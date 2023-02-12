@@ -18,8 +18,11 @@
 #include "../specific/file.h"
 #include "camera.h"
 #include "spotcam.h"
+#include "effect2.h"
+#include "../specific/input.h"
 #ifdef GENERAL_FIXES
 #include "newinv2.h"
+#include "../specific/dxshell.h"
 #include "../tomb5/tomb5.h"
 #endif
 

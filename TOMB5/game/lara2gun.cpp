@@ -10,6 +10,7 @@
 #include "effect2.h"
 #include "camera.h"
 #include "control.h"
+#include "../specific/input.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #endif

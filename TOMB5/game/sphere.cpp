@@ -3,7 +3,9 @@
 #include "draw.h"
 #include "../specific/3dmath.h"
 #include "control.h"
+#include "objects.h"
 
+SPHERE Slist[34];
 static SPHERE LaraSpheres[15];
 static long NumLaraSpheres;
 

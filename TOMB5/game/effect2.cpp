@@ -16,6 +16,11 @@
 #include "draw.h"
 #include "camera.h"
 
+DYNAMIC dynamics[64];
+static long number_dynamics;
+
+long DeadlyBounds[6];
+
 void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv)
 {
 	SPARKS* sptr;

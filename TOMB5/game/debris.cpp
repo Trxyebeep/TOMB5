@@ -4,6 +4,7 @@
 #include "tomb4fx.h"
 #include "../specific/3dmath.h"
 #include "control.h"
+#include "draw.h"
 
 void TriggerDebris(GAME_VECTOR* pos, void* TextInfo, short* Offsets, long* Vels, short rgb)
 {

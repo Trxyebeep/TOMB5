@@ -43,3 +43,5 @@ long DXGetKey();
 void DXInitInput(HWND hwnd, HINSTANCE hinstance);
 const char* DXGetErrorString(HRESULT hr);
 const char* DIGetErrorString(HRESULT hr);
+
+extern char keymap[256];

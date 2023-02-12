@@ -9,6 +9,7 @@
 #include "laraswim.h"
 #include "../specific/3dmath.h"
 #include "camera.h"
+#include "../specific/input.h"
 
 long LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll)
 {

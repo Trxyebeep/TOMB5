@@ -4,6 +4,7 @@
 #include "../game/sound.h"
 #include "../specific/3dmath.h"
 #include "tomb5.h"
+#include "../specific/input.h"
 
 #define PAGE0_NUM	14
 #define PAGE1_NUM	11

@@ -1,9 +1,7 @@
 #pragma once
 #include "../global/vars.h"
 
-
 void inject_health(bool replace);
-
 
 long FlashIt();
 void DrawGameInfo(long timed);
@@ -13,3 +11,8 @@ void MakeAmmoString(char* string);
 void InitialisePickUpDisplay();
 void DrawPickups(long timed);
 void AddDisplayPickup(short object_number);
+
+extern DISPLAYPU pickups[8];
+extern short PickupX;
+extern short CurrentPickup;
+extern long health_bar_timer;

@@ -10,6 +10,7 @@
 #include "drawroom.h"
 #include "../game/delstuff.h"
 #include "../game/camera.h"
+#include "../game/effect2.h"
 
 long NumSunLights;
 long NumPointLights;

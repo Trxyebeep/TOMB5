@@ -10,6 +10,7 @@
 #include "../game/control.h"
 #include "../game/delstuff.h"
 #include "lighting.h"
+#include "input.h"
 #ifdef GENERAL_FIXES
 #include "../game/savegame.h"
 #include "../tomb5/tomb5.h"

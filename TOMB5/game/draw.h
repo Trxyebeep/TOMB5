@@ -43,6 +43,8 @@ void ClipRoom(ROOM_INFO* r);
 void SetRoomBounds(short* door, long rn, ROOM_INFO* actualRoom);
 void GetRoomBounds();
 
+extern STATIC_INFO static_objects[70];
+
 extern float* aIMXPtr;
 extern float aIFMStack[768];
 extern long* IMptr;

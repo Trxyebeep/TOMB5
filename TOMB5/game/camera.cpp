@@ -15,6 +15,7 @@
 #include "debris.h"
 #include "tower1.h"
 #include "larafire.h"
+#include "../specific/input.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif

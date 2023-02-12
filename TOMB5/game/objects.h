@@ -275,3 +275,5 @@ enum object_types
 
 	NUMBER_OBJECTS
 };
+
+extern OBJECT_INFO objects[NUMBER_OBJECTS];

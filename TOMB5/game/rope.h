@@ -28,3 +28,5 @@ void SaveRope();
 void LoadRope();
 void StraightenRope(ITEM_INFO* item);
 void _Straighten(ROPE_STRUCT* rope, PHD_VECTOR* pos, PHD_VECTOR* dir, long slength);
+
+extern ROPE_STRUCT RopeList[8];

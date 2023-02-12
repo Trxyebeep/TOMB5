@@ -8,6 +8,7 @@
 #include "delstuff.h"
 #include "../specific/3dmath.h"
 #include "../specific/function_stubs.h"
+#include "twogun.h"
 
 char iswappedit = 0;
 

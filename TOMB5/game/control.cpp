@@ -38,6 +38,8 @@
 #include "../specific/audio.h"
 #include "rope.h"
 #include "../specific/file.h"
+#include "../specific/dxshell.h"
+#include "health.h"
 #ifdef GENERAL_FIXES
 #include "deltapak.h"
 #include "../tomb5/tomb5.h"

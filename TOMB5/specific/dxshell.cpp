@@ -33,6 +33,8 @@ const char* DDSCL_TEXT[11] =
 	"setfocuswindow"
 };
 
+char keymap[256];
+
 static char tga_header[18] = { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 1, 0, 1, 16, 0 };
 static short KeyBuffer[32];
 

@@ -26,6 +26,8 @@
 #include "savegame.h"
 #include "newinv2.h"
 #include "../specific/3dmath.h"
+#include "../specific/input.h"
+#include "../specific/dxshell.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
@@ -76,6 +78,7 @@ static long nframes = 1;
 char JustLoaded;
 
 static char available_levels[40] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+static char fmv_to_play[2] = { 0, 0 };
 
 static CUTSEQ_SELECTOR cutsel[] =
 {
@@ -129,8 +132,8 @@ void DoGameflow()
 
 	do_boot_screen(Gameflow->Language);
 	num_fmvs = 0;
-	fmv_to_play[1] = 0;
 	fmv_to_play[0] = 0;
+	fmv_to_play[1] = 0;
 	gfCurrentLevel = Gameflow->TitleEnabled ? 0 : 1;
 	gf = &gfScriptWad[gfScriptOffset[gfCurrentLevel]];
 

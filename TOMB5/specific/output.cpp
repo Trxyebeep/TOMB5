@@ -24,11 +24,12 @@
 #include "../game/camera.h"
 #include "../game/spotcam.h"
 #include "../game/control.h"
+#include "../game/effect2.h"
 #ifdef GENERAL_FIXES
-#include "../tomb5/tomb5.h"
 #include "../game/draw.h"
 #include "../game/health.h"
 #include "../game/text.h"
+#include "../tomb5/tomb5.h"
 #endif
 
 D3DTLVERTEX aVertexBuffer[1024];

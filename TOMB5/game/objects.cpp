@@ -18,27 +18,18 @@
 #include "../specific/function_stubs.h"
 #include "../specific/output.h"
 #include "camera.h"
+#include "../specific/input.h"
+#include "../specific/file.h"
 
-static short ParallelBarsBounds[12] =
-{
-	-640, 640, 704, 832, -96, 96, -1820, 1820, -5460, 5460, -1820, 1820
-};
+OBJECT_INFO objects[NUMBER_OBJECTS];
+
+static short ParallelBarsBounds[12] = { -640, 640, 704, 832, -96, 96, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short PoleBounds[12] = { -256, 256, 0, 0, -512, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short TightRopeBounds[12] = { -256, 256, 0, 0, -256, 256, -1820, 1820, -5460, 5460, -1820, 1820 };
 
 static PHD_VECTOR PolePos = { 0, 0, -208 };
-
 static PHD_VECTOR PolePosR = { 0, 0, 0 };
-
-static short PoleBounds[12] =
-{
-	-256, 256, 0, 0, -512, 512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
 static PHD_VECTOR TightRopePos = { 0, 0, 0 };
-
-static short TightRopeBounds[12] =
-{
-	-256, 256, 0, 0, -256, 256, -1820, 1820, -5460, 5460, -1820, 1820
-};
 
 void EarthQuake(short item_number)
 {
@@ -507,35 +498,34 @@ void AnimateWaterfalls()
 {
 	TEXTURESTRUCT* Twaterfall;
 	OBJECT_INFO* obj;
-	float offset, vo;
+	float offset;
+	static long vOffset = 0;
 
-	AnimatingWaterfallsVOffset -= 7;
-	AnimatingWaterfallsVOffset &= 63;
-	offset = AnimatingWaterfallsVOffset * (1.0f / 256.0f);
-	vo = 63.0f / 256.0f;
+	vOffset = (vOffset - 7) & 0x3F;
+	offset = vOffset * (1.0F / 256.0F);
 
-	for (int i = 0; i < 6; i++)
+	for (int i = WATERFALL1; i <= WATERFALLSS2; i++)
 	{
-		obj = &objects[WATERFALL1 + i];
+		obj = &objects[i];
 
-		if (gfCurrentLevel != LVL5_RED_ALERT || obj != &objects[WATERFALL2])
+		if (gfCurrentLevel == LVL5_RED_ALERT && i == WATERFALL2)
+			continue;
+
+		if (obj->loaded)
 		{
-			if (obj->loaded & 1)
+			Twaterfall = AnimatingWaterfalls[i];
+			Twaterfall->v1 = offset + AnimatingWaterfallsV[i];
+			Twaterfall->v2 = offset + AnimatingWaterfallsV[i];
+			Twaterfall->v3 = offset + AnimatingWaterfallsV[i] + (63.0F / 256.0F);
+			Twaterfall->v4 = offset + AnimatingWaterfallsV[i] + (63.0F / 256.0F);
+
+			if (i < 4)
 			{
-				Twaterfall = AnimatingWaterfalls[i];
+				Twaterfall++;
 				Twaterfall->v1 = offset + AnimatingWaterfallsV[i];
 				Twaterfall->v2 = offset + AnimatingWaterfallsV[i];
-				Twaterfall->v3 = offset + AnimatingWaterfallsV[i] + vo;
-				Twaterfall->v4 = offset + AnimatingWaterfallsV[i] + vo;
-
-				if (i < 4)
-				{
-					Twaterfall++;
-					Twaterfall->v1 = offset + AnimatingWaterfallsV[i];
-					Twaterfall->v2 = offset + AnimatingWaterfallsV[i];
-					Twaterfall->v3 = offset + AnimatingWaterfallsV[i] + vo;
-					Twaterfall->v4 = offset + AnimatingWaterfallsV[i] + vo;
-				}
+				Twaterfall->v3 = offset + AnimatingWaterfallsV[i] + (63.0F / 256.0F);
+				Twaterfall->v4 = offset + AnimatingWaterfallsV[i] + (63.0F / 256.0F);
 			}
 		}
 	}

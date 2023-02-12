@@ -27,3 +27,7 @@ void TriggerSuperJetFlame(ITEM_INFO* item, long yvel, long deadly);
 long GetFreeSpark();
 void DetatchSpark(long num, long type);
 void UpdateSparks();
+
+extern DYNAMIC dynamics[64];
+
+extern long DeadlyBounds[6];

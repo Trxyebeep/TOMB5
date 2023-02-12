@@ -44,3 +44,6 @@ extern char* FileData;
 extern long number_cameras;
 extern long nAnimUVRanges;
 extern short nAIObjects;
+
+extern TEXTURESTRUCT* AnimatingWaterfalls[6];
+extern float AnimatingWaterfallsV[6];

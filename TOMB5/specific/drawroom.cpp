@@ -14,6 +14,7 @@
 #include "../game/camera.h"
 #include "../game/control.h"
 #include "3dmath.h"
+#include "../game/effect2.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #include "../game/gameflow.h"

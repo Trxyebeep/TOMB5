@@ -7,7 +7,9 @@
 #include "../specific/function_stubs.h"
 #include "switch.h"
 #include "gameflow.h"
+#include "../specific/input.h"
 #ifdef GENERAL_FIXES
+#include "../specific/dxshell.h"
 #include "../tomb5/tomb5.h"
 #endif
 

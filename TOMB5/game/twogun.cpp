@@ -17,6 +17,9 @@
 #include "traps.h"
 #include "sound.h"
 #include "spotcam.h"
+#include "objects.h"
+
+TWOGUN_INFO twogun[4];
 
 static BITE_INFO Guns[2] =
 {

@@ -21,6 +21,7 @@
 #include "../specific/function_stubs.h"
 #include "tomb4fx.h"
 #include "camera.h"
+#include "../specific/input.h"
 #ifdef GENERAL_FIXES
 #include "footprnt.h"
 #include "../tomb5/tomb5.h"

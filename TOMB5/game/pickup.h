@@ -16,3 +16,7 @@ void KeyHoleCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
 short* FindPlinth(ITEM_INFO* item);
 void PickUpCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
 void CollectCarriedItems(ITEM_INFO* item);
+
+extern uchar NumRPickups;
+extern uchar RPickups[16];
+extern char KeyTriggerActive;

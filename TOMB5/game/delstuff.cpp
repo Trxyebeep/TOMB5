@@ -4,6 +4,7 @@
 #include "draw.h"
 #include "lara_states.h"
 #include "control.h"
+#include "objects.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif

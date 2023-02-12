@@ -15,6 +15,12 @@ extern const char* JoyStickButtons[16];
 extern long jLayout[32];
 extern long defaultJLayout[32];
 
+extern short layout[2][18];
+extern long conflict[18];
+extern long input;
+extern long dbinput;
+extern long inputBusy;
+
 #ifdef GENERAL_FIXES
 extern short ammo_change_timer;
 extern char ammo_change_buf[12];

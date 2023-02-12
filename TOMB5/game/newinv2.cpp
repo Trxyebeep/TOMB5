@@ -26,6 +26,7 @@
 #include "../specific/gamemain.h"
 #include "../specific/file.h"
 #include "spotcam.h"
+#include "../specific/dxshell.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #endif
