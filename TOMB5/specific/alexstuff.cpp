@@ -865,24 +865,3 @@ void aProcessWater(long n)
 
 	water_buffer_calced ^= 1;
 }
-
-void inject_alexstuff(bool replace)
-{
-	INJECT(0x004916C0, aLoadRoomStream, replace);
-	INJECT(0x004917D0, aFixUpRoom, replace);
-	INJECT(0x00491BE0, aUpdate, replace);
-	INJECT(0x00491950, aInitWater, replace);
-	INJECT(0x004914C0, aTransformClip_D3DV, replace);
-	INJECT(0x004913B0, aTransform_D3DV, replace);
-	INJECT(0x00491360, aInit, replace);
-	INJECT(0x00491380, aWinString, replace);
-	INJECT(0x00491CC0, aReadCutData, replace);
-	INJECT(0x00491D30, aCalcDepackBufferSz, replace);
-	INJECT(0x00491DA0, aMakeCutsceneResident, replace);
-	INJECT(0x00491F60, aFetchCutData, replace);
-	INJECT(0x004927C0, DoCredits, replace);
-	INJECT(0x00491FE0, DrawBigChar, replace);
-	INJECT(0x004922E0, GetBigStringLength, replace);
-	INJECT(0x004924B0, PrintBigString, replace);
-	INJECT(0x00491980, aProcessWater, replace);
-}

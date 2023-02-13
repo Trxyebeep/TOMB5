@@ -368,12 +368,3 @@ void TriggerHydraPowerupFlames(short item_number, long shade)
 	sptr->sSize = (uchar)((shade * ((GetRandomControl() & 0xF) + 16)) >> 4);
 	sptr->Size = sptr->sSize;
 }
-
-void inject_hydra(bool replace)
-{
-	INJECT(0x0043BEA0, InitialiseHydra, replace);
-	INJECT(0x0043BF70, HydraControl, replace);
-	INJECT(0x0043C6C0, TriggerHydraMissile, replace);
-	INJECT(0x0043C790, TriggerHydraMissileFlame, replace);
-	INJECT(0x0043C910, TriggerHydraPowerupFlames, replace);
-}

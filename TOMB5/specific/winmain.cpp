@@ -41,15 +41,19 @@ void ClearSurfaces()
 
 	if (App.dx.Flags & 0x80)
 		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
+#if 0
 	else
 		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
+#endif
 
 	S_DumpScreen();
 
 	if (App.dx.Flags & 0x80)
 		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
+#if 0
 	else
 		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
+#endif
 
 	S_DumpScreen();
 }
@@ -232,7 +236,11 @@ void WinProcessCommands(long cmd)
 		}
 		else
 		{
+#if 0
 			SetCursor(LoadCursor(App.hInstance, MAKEINTRESOURCE(104)));
+#else
+			SetCursor(LoadCursor(0, IDC_ARROW));
+#endif
 			ShowCursor(1);
 		}
 	}
@@ -519,12 +527,14 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	DXDISPLAYMODE* dm;
 	RECT r;
 	HWND desktop;
-	HWND dbg;
 	HDC hdc;
 	DEVMODE devmode;
+#if 0
+	HWND dbg;
 	static ulong dbm_command;
 	static ulong dbm_clearlog;
 	long dbgflag;
+#endif
 #ifndef GENERAL_FIXES
 	bool drive;
 #endif
@@ -534,6 +544,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	App.SetupComplete = 0;
 	App.AutoTarget = 0;
 
+#if 0
 	Log_Init(1);
 	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
 
@@ -559,6 +570,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	dbgflag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
 	dbgflag |= _CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_LEAK_CHECK_DF;
 	_CrtSetDbgFlag(dbgflag);
+#endif
 
 	if (WinRunCheck((char*)"Tomb Raider Chronicles", (char*)"MainGameWindow", &App.mutex))
 		return 0;
@@ -590,7 +602,11 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	App.WindowClass.lpfnWndProc = WinMainWndProc;
 	App.WindowClass.cbClsExtra = 0;
 	App.WindowClass.cbWndExtra = 0;
+#if 0
 	App.WindowClass.hCursor = LoadCursor(App.hInstance, MAKEINTRESOURCE(104));
+#else
+	App.WindowClass.hCursor = LoadCursor(0, IDC_ARROW);
+#endif
 
 	if (!RegisterClass(&App.WindowClass))
 	{
@@ -673,7 +689,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	}
 
 	DXInitInput(App.hWnd, App.hInstance);
-	App.hAccel = LoadAccelerators(hInstance, MAKEINTRESOURCE(101));
+	App.hAccel = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDR_ACCELERATOR));
 
 	if (!App.SoundDisabled)
 	{
@@ -697,10 +713,12 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	devmode.dmFields = DM_BITSPERPEL;
 	ChangeDisplaySettings(&devmode, 0);
 
+#if 0
 	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
 
 	if (dbg)
 		PostMessageA(dbg, dbm_command, 4, 0);
+#endif
 
 	return 0;
 }
@@ -748,22 +766,4 @@ void RestoreFPCW(short fpcw)
 		fldcw fpcw
 	}
 #endif
-}
-
-void inject_winmain(bool replace)
-{
-	INJECT(0x004D1AD0, ClearSurfaces, replace);
-	INJECT(0x004D22D0, CheckMMXTechnology, replace);
-	INJECT(0x004D2DD0, WinRunCheck, replace);
-	INJECT(0x004D2FD0, WinFrameRate, replace);
-	INJECT(0x004D3070, WinDisplayString, replace);
-	INJECT(0x004D2450, WinGetLastError, replace);
-	INJECT(0x004D24C0, WinProcMsg, replace);
-	INJECT(0x004D2560, WinProcessCommands, replace);
-	INJECT(0x004D2E50, WinProcessCommandLine, replace);
-	INJECT(0x004D2AB0, WinMainWndProc, replace);
-	INJECT(0x004D23E0, WinClose, replace);
-	INJECT(0x004D1C00, WinMain, replace);
-	INJECT(0x004D30E0, MungeFPCW, replace);
-	INJECT(0x004D3150, RestoreFPCW, replace);
 }

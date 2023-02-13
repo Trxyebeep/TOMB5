@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_spotcam(bool replace);
-
 long Spline(long x, long* knots, long nk);
 void InitSpotCamSequences();
 void InitialiseSpotCam(short Sequence);

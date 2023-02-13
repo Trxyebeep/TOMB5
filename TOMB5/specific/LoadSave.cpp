@@ -19,7 +19,6 @@
 #include "specificfx.h"
 #include "time.h"
 #include "file.h"
-#include "mmx.h"
 #include "fmv.h"
 #include "../game/newinv2.h"
 #include "../game/control.h"
@@ -2321,6 +2320,7 @@ void ReleaseScreen()
 
 void DrawLoadingScreen()
 {
+#if 0
 	DDSURFACEDESC2 surf;
 	ushort* pSrc;
 	uchar* pDest;
@@ -2362,11 +2362,14 @@ void DrawLoadingScreen()
 		screen_surface->Unlock(0);
 	}
 	else
+#endif
+	{
 #ifdef GENERAL_FIXES
 		S_DisplayMonoScreen();
 #else
 		G_dxptr->lpBackBuffer->Blt(0, screen_surface, 0, DDBLT_WAIT, 0);
 #endif
+	}
 }
 
 long GetSaveLoadFiles()
@@ -2706,11 +2709,18 @@ long S_PauseMenu()
 
 long IsHardware()
 {
+#if 1
+	return 1;
+#else
 	return App.dx.Flags & 0x80;
+#endif
 }
 
 long IsSuperLowRes()
 {
+#if 1
+	return 0;
+#else
 	long w, h;
 
 	MMXGetBackSurfWH(w, h);
@@ -2722,6 +2732,7 @@ long IsSuperLowRes()
 		return 2;
 
 	return 0;
+#endif
 }
 
 void DoFrontEndOneShotStuff()
@@ -2870,46 +2881,4 @@ void DoSpecialFeaturesServer()
 	}
 
 	SpecialFeaturesNum = -1;
-}
-
-void inject_LoadSave(bool replace)
-{
-	INJECT(0x004ADF40, CheckKeyConflicts, replace);
-	INJECT(0x004B0910, DoStatScreen, replace);
-	INJECT(0x004B1E70, DisplayStatsUCunt, replace);
-	INJECT(0x004B18E0, S_DrawAirBar, replace);
-	INJECT(0x004B1950, S_DrawHealthBar, replace);
-	INJECT(0x004B19C0, S_DrawHealthBar2, replace);
-	INJECT(0x004B1890, S_DrawDashBar, replace);
-	INJECT(0x004AD460, DoLoadSave, replace);
-	INJECT(0x004B1E30, S_MemSet, replace);
-	INJECT(0x004B1F00, GetCampaignCheatValue, replace);
-	INJECT(0x004ADF90, DoOptions, replace);
-	INJECT(0x004B1250, DoBar, replace);
-	INJECT(0x004AC430, CreateMonoScreen, replace);
-	INJECT(0x004B1A40, S_InitLoadBar, replace);
-	INJECT(0x004B1A80, S_UpdateLoadBar, replace);
-	INJECT(0x004B1AB0, S_DrawLoadBar, replace);
-	INJECT(0x004B1BE0, S_LoadBar, replace);
-	INJECT(0x004ABAE0, MemBltSurf, replace);
-	INJECT(0x004AC010, RGBM_Mono, replace);
-	INJECT(0x004AC050, ConvertSurfaceToTextures, replace);
-	INJECT(0x004AC460, FreeMonoScreen, replace);
-	INJECT(0x004ACC70, S_DrawTile, replace);
-	INJECT(0x004AD010, S_DisplayMonoScreen, replace);
-	INJECT(0x004B1120, S_LoadSave, replace);
-	INJECT(0x004AC810, LoadScreen, replace);
-	INJECT(0x004ACA30, ReleaseScreen, replace);
-	INJECT(0x004ACAB0, DrawLoadingScreen, replace);
-	INJECT(0x004AD290, GetSaveLoadFiles, replace);
-	INJECT(0x004AD820, DoSlider, replace);
-	INJECT(0x004B0D60, S_DisplayPauseMenu, replace);
-	INJECT(0x004B1030, S_PauseMenu, replace);
-	INJECT(0x004B1E90, IsHardware, replace);
-	INJECT(0x004B1EB0, IsSuperLowRes, replace);
-	INJECT(0x004B2090, DoFrontEndOneShotStuff, replace);
-	INJECT(0x004ABA60, FindSFCursor, replace);
-	INJECT(0x004AB9F0, CalculateNumSpecialFeatures, replace);
-	INJECT(0x004B1C00, SpecialFeaturesDisplayScreens, replace);
-	INJECT(0x004B1D90, DoSpecialFeaturesServer, replace);
 }

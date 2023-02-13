@@ -474,10 +474,3 @@ long XYUVGClipper(long n, D3DTLBUMPVERTEX* in)
 
 	return nPoints;
 }
-
-void inject_clipping(bool replace)
-{
-	INJECT(0x00493B90, ZClipper, replace);
-	INJECT(0x00495AF0, visible_zclip, replace);
-	INJECT(0x00494090, XYUVGClipper, replace);
-}

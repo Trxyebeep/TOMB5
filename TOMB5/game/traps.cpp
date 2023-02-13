@@ -1681,37 +1681,3 @@ long TestBoundsCollideTeethSpikes(ITEM_INFO* item)
 	zMax = lara_item->pos.z_pos + bounds[5];
 	return xMin <= x + rad && xMax >= x - rad && zMin <= z + rad && zMax >= z - rad;
 }
-
-void inject_traps(bool replace)
-{
-	INJECT(0x0048AD60, LaraBurn, replace);
-	INJECT(0x0048ADD0, LavaBurn, replace);
-	INJECT(0x0048C6D0, ControlExplosion, replace);
-	INJECT(0x00488E30, CloseTrapDoor, replace);
-	INJECT(0x004890C0, OpenTrapDoor, replace);
-	INJECT(0x00489B30, DartEmitterControl, replace);
-	INJECT(0x00489D60, DartsControl, replace);
-	INJECT(0x00489F70, FlameEmitterControl, replace);
-	INJECT(0x0048A3B0, FlameEmitter2Control, replace);
-	INJECT(0x0048A570, FlameEmitter3Control, replace);
-	INJECT(0x0048AB80, FlameControl, replace);
-	INJECT(0x0048B6D0, RollingBallCollision, replace);
-	INJECT(0x0048AE60, ControlRollingBall, replace);
-	INJECT(0x00488FA0, TrapDoorControl, replace);
-	INJECT(0x004891F0, FloorTrapDoorCollision, replace);
-	INJECT(0x00489450, CeilingTrapDoorCollision, replace);
-	INJECT(0x004896D0, TrapDoorCollision, replace);
-	INJECT(0x00489750, FallingBlockCollision, replace);
-	INJECT(0x0048B7E0, DrawScaledSpike, replace);
-	INJECT(0x00489820, FallingBlock, replace);
-	INJECT(0x00489910, FallingBlockFloor, replace);
-	INJECT(0x00489980, FallingBlockCeiling, replace);
-	INJECT(0x0048BEF0, ControlScaledSpike, replace);
-	INJECT(0x0048C3D0, ControlRaisingBlock, replace);
-	INJECT(0x0048BBB0, ControlTwoBlockPlatform, replace);
-	INJECT(0x0048BAA0, OnTwoBlockPlatform, replace);
-	INJECT(0x0048B9E0, TwoBlockPlatformFloor, replace);
-	INJECT(0x0048BA50, TwoBlockPlatformCeiling, replace);
-	INJECT(0x004899D0, FallingCeiling, replace);
-	INJECT(0x0048BD90, TestBoundsCollideTeethSpikes, replace);
-}

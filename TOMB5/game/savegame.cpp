@@ -1111,16 +1111,3 @@ void sgRestoreGame()
 	RestoreLevelData(1);
 	RestoreLaraData(1);
 }
-
-void inject_savegame(bool replace)
-{
-	INJECT(0x00470EC0, WriteSG, replace);
-	INJECT(0x00470F10, ReadSG, replace);
-	INJECT(0x00470F60, CheckSumValid, replace);
-	INJECT(0x00471050, SaveLaraData, replace);
-	INJECT(0x004720B0, RestoreLaraData, replace);
-	INJECT(0x004711E0, SaveLevelData, replace);
-	INJECT(0x00472290, RestoreLevelData, replace);
-	INJECT(0x00470FA0, sgSaveGame, replace);
-	INJECT(0x00472060, sgRestoreGame, replace);
-}

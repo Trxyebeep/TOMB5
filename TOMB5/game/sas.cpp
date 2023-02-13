@@ -713,8 +713,3 @@ void SasControl(short item_number)
 		}
 	}
 }
-
-void inject_sas(bool replace)
-{
-	INJECT(0x0046F5E0, SasControl, replace);
-}

@@ -605,21 +605,3 @@ void ACMClose()
 
 	LeaveCriticalSection(&audio_cs);
 }
-
-void inject_audio(bool replace)
-{
-	INJECT(0x00492990, S_CDPlay, replace);
-	INJECT(0x004929E0, S_CDStop, replace);
-	INJECT(0x00492AA0, S_CDFade, replace);
-	INJECT(0x00492AC0, S_StartSyncedAudio, replace);
-	INJECT(0x00492AF0, ACMSetVolume, replace);
-	INJECT(0x00493350, OpenStreamFile, replace);
-	INJECT(0x004936A0, GetADPCMData, replace);
-	INJECT(0x00493760, ACMEmulateCDPlay, replace);
-	INJECT(0x00492B60, ACMEnumCallBack, replace);
-	INJECT(0x00492C20, ACMSetupNotifications, replace);
-	INJECT(0x00493490, FillADPCMBuffer, replace);
-	INJECT(0x00493990, ACMHandleNotifications, replace);
-	INJECT(0x00492DA0, ACMInit, replace);
-	INJECT(0x004931A0, ACMClose, replace);
-}

@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_larasurf(bool replace);
-
 long LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll);
 long LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll);
 void LaraSurfaceCollision(ITEM_INFO* item, COLL_INFO* coll);

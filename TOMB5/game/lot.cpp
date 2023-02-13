@@ -253,13 +253,3 @@ long EnableBaddieAI(short item_number, long Always)
 
 	return 0;
 }
-
-void inject_lot(bool replace)
-{
-	INJECT(0x0045B0C0, InitialiseLOTarray, replace);
-	INJECT(0x0045B150, DisableBaddieAI, replace);
-	INJECT(0x0045B740, ClearLOT, replace);
-	INJECT(0x0045B5E0, CreateZone, replace);
-	INJECT(0x0045B3D0, InitialiseSlot, replace);
-	INJECT(0x0045B1A0, EnableBaddieAI, replace);
-}

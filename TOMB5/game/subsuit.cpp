@@ -391,14 +391,3 @@ void TriggerEngineEffects_CUT()
 		x = 80;
 	}
 }
-
-void inject_subsuit(bool replace)
-{
-	INJECT(0x0047C6D0, FireChaff, replace);
-	INJECT(0x0047C950, DoSubsuitStuff, replace);
-	INJECT(0x0047C4D0, TriggerAirBubbles, replace);
-	INJECT(0x0047CF80, GetLaraJointPosRot, replace);
-	INJECT(0x0047CD80, TriggerSubMist, replace);
-	INJECT(0x0047CB70, TriggerEngineEffects, replace);
-	INJECT(0x0047D140, TriggerEngineEffects_CUT, replace);
-}

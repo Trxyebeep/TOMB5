@@ -438,12 +438,3 @@ long TestCollision(ITEM_INFO* item, ITEM_INFO* l)
 	item->touch_bits = touch_bits;
 	return touch_bits;
 }
-
-void inject_sphere(bool replace)
-{
-	INJECT(0x00479C20, GetJointAbsPositionMatrix, replace);
-	INJECT(0x00479BB0, InitInterpolate2, replace);
-	INJECT(0x00479780, GetJointAbsPosition, replace);
-	INJECT(0x00479380, GetSpheres, replace);
-	INJECT(0x00479170, TestCollision, replace);
-}

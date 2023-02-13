@@ -629,11 +629,3 @@ void GuardianControl(short item_number)
 		}
 	}
 }
-
-void inject_guardian(bool replace)
-{
-	INJECT(0x00436FE0, InitialiseGuardian, replace);
-	INJECT(0x00437170, TriggerGuardianSparks, replace);
-	INJECT(0x004372E0, TriggerBaseLightning, replace);
-	INJECT(0x00437680, GuardianControl, replace);
-}

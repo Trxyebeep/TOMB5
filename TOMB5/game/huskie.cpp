@@ -263,9 +263,3 @@ void HuskieControl(short item_number)
 		CreatureAnimation(item_number, angle, tilt);
 	}
 }
-
-void inject_huskie(bool replace)
-{
-	INJECT(0x0043B670, InitialiseHuskie, replace);
-	INJECT(0x0043B730, HuskieControl, replace);
-}

@@ -1,9 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-
-void inject_LoadSave(bool replace);
-
 void CheckKeyConflicts();
 void DoStatScreen();
 void DisplayStatsUCunt();

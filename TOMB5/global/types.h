@@ -2,28 +2,6 @@
 #include "math_tbls.h"
 
 #pragma pack(push, 1)
-/*Injection macro, originally by Arsunt, modified by ChocolateFan to allow deinjection*/
-struct JMP
-{
-	BYTE opCode;	// must be 0xE9;
-	DWORD offset;	// jump offset
-};
-
-#define INJECT(from,to,replace) \
-do \
-{ \
-	if (replace) \
-		INJECT_JMP(from,to); \
-	else \
-		INJECT_JMP(to,from); \
-} while (false)
-
-#define INJECT_JMP(from,to) \
-do \
-{ \
-	((JMP*)(from))->opCode = 0xE9; \
-	((JMP*)(from))->offset = (DWORD)(to) - ((DWORD)(from) + sizeof(JMP)); \
-} while (false)
 
 /*macros*/
 #define	TRIGMULT2(a,b)		(((a) * (b)) >> 14)
@@ -72,13 +50,6 @@ enum languages
 	US,
 	JAPAN,
 	DUTCH
-};
-
-enum win_commands
-{
-	KA_ALTENTER = 8,
-	KA_ALTP = 40001,
-	KA_ALTM = 40002
 };
 
 enum LightTypes

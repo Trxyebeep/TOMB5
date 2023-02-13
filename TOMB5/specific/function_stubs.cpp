@@ -1,6 +1,8 @@
 #include "../tomb5/pch.h"
 #include "function_stubs.h"
 
+FILE* logF = 0;
+
 char* malloc_buffer;
 char* malloc_ptr;
 long malloc_size;
@@ -140,25 +142,19 @@ void game_free(long size)
 	malloc_used -= size;
 }
 
-void inject_funcStubs(bool replace)
+void Log(ulong type, const char* s, ...)
 {
-	INJECT(0x004A7D00, game_malloc, replace);
-	INJECT(0x004A7C10, GetRandomControl, replace);
-	INJECT(0x004A7C70, SeedRandomControl, replace);
-	INJECT(0x004A7C40, GetRandomDraw, replace);
-	INJECT(0x004A7C90, SeedRandomDraw, replace);
-	INJECT(0x004A7B30, S_SoundSetMasterVolume, replace);
-	INJECT(0x004A7DE0, deadLog, replace);
-	INJECT(0x004A7A70, DBG_Print, replace);
-	INJECT(0x004A7AC0, exit_message, replace);
-	INJECT(0x004A7AE0, S_ExitSystem, replace);
-	INJECT(0x004A7B10, S_InitialiseScreen, replace);
-	INJECT(0x004A7B50, S_CalculateStaticLight, replace);
-	INJECT(0x004A7B70, S_CalculateLight, replace);
-	INJECT(0x004A7B90, S_SetReverbType, replace);
-	INJECT(0x004A7BB0, S_CDVolume, replace);
-	INJECT(0x004A7BD0, S_CDLoop, replace);
-	INJECT(0x004A7BF0, PrintDbug, replace);
-	INJECT(0x004A7CB0, init_game_malloc, replace);
-	INJECT(0x004A7D90, game_free, replace);
+#ifdef DO_LOG
+	va_list list;
+	char buf[4096];
+
+	if (!logF)
+		logF = fopen("log.txt", "w+");
+
+	va_start(list, s);
+	vsprintf(buf, s, list);
+	strcat(buf, "\n");
+	va_end(list);
+	fwrite(buf, strlen(buf), 1, logF);
+#endif
 }

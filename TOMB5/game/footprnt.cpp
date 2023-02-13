@@ -459,8 +459,3 @@ void GetProperFootPos(PHD_VECTOR* pos)
 	}
 }
 #endif
-
-void inject_footprnt(bool replace)
-{
-	INJECT(0x004346A0, AddFootprint, replace);
-}

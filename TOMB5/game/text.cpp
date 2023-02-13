@@ -574,13 +574,3 @@ void GetStringDimensions(const char* string, ushort* w, ushort* h)
 	*w = (ushort)l;
 	*h = (ushort)y;
 }
-
-void inject_text(bool replace)
-{
-	INJECT(0x004805D0, DrawChar, replace);
-	INJECT(0x00480910, GetStringLength, replace);
-	INJECT(0x00480BC0, PrintString, replace);
-	INJECT(0x00480F00, InitFont, replace);
-	INJECT(0x00480830, UpdatePulseColour, replace);
-	INJECT(0x00480AE0, GetStringDimensions, replace);
-}

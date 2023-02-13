@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_cutseq(bool replace);
-
 void _special1_control();
 void _special1_end();
 void _special2_control();

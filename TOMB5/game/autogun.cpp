@@ -213,10 +213,3 @@ void TriggerAutoGunSmoke(GAME_VECTOR* pos, long shade)
 	sptr->sSize = sptr->dSize >> 2;
 	sptr->Size = sptr->dSize >> 2;
 }
-
-void inject_autogun(bool replace)
-{
-	INJECT(0x00407510, ControlMotionSensors, replace);
-	INJECT(0x004078A0, AutogunControl, replace);
-	INJECT(0x00407780, TriggerAutoGunSmoke, replace);
-}

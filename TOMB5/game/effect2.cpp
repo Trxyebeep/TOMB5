@@ -2015,31 +2015,3 @@ void UpdateSparks()
 		}
 	}
 }
-
-void inject_effect2(bool replace)
-{
-	INJECT(0x0042F460, TriggerFlareSparks, replace);
-	INJECT(0x00430D90, TriggerDartSmoke, replace);
-	INJECT(0x00431030, KillAllCurrentItems, replace);
-	INJECT(0x00431050, KillEverything, replace);
-	INJECT(0x00431560, ControlSmokeEmitter, replace);
-	INJECT(0x00431E70, ControlEnemyMissile, replace);
-	INJECT(0x0042FA10, TriggerExplosionSmokeEnd, replace);
-	INJECT(0x00431530, ClearDynamics, replace);
-	INJECT(0x00431240, TriggerDynamic, replace);
-	INJECT(0x00431420, TriggerDynamic_MIRROR, replace);
-	INJECT(0x00431070, TriggerExplosionBubble, replace);
-	INJECT(0x00430A40, TriggerWaterfallMist, replace);
-	INJECT(0x004309B0, TriggerUnderwaterBlood, replace);
-	INJECT(0x00430910, SetupRipple, replace);
-	INJECT(0x00430620, SetupSplash, replace);
-	INJECT(0x00430710, UpdateSplashes, replace);
-	INJECT(0x0042F060, TriggerRicochetSpark, replace);
-	INJECT(0x0042FC20, TriggerExplosionSmoke, replace);
-	INJECT(0x0042F610, TriggerExplosionSparks, replace);
-	INJECT(0x0042FE20, TriggerFireFlame, replace);
-	INJECT(0x00430350, TriggerSuperJetFlame, replace);
-	INJECT(0x0042E790, GetFreeSpark, replace);
-	INJECT(0x0042E6A0, DetatchSpark, replace);
-	INJECT(0x0042E8B0, UpdateSparks, replace);
-}

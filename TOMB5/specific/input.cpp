@@ -736,12 +736,3 @@ void DecreaseScreenSize()
 		setup_screen_size();
 	}
 }
-
-void inject_input(bool replace)
-{
-	INJECT(0x004A9110, Key, replace);
-	INJECT(0x004A92D0, S_UpdateInput, replace);
-	INJECT(0x004A9280, ReadJoystick, replace);
-	INJECT(0x004A8F00, IncreaseScreenSize, replace);
-	INJECT(0x004A8F90, DecreaseScreenSize, replace);
-}

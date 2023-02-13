@@ -520,18 +520,3 @@ LPDIRECTDRAWSURFACE4 aCreateBumpPage(long w, long h, long* pSrc, long format)
 	DXAttempt(tSurf->Unlock(0));
 	return tSurf;
 }
-
-void inject_texture(bool replace)
-{
-	INJECT(0x004D01D0, AdjustTextInfo, replace);
-	INJECT(0x004D03A0, FindHighestBit, replace);
-	INJECT(0x004D03D0, RGBMDarkMap, replace);
-	INJECT(0x004D0400, RGBMLightMap, replace);
-	INJECT(0x004D0980, aGenerateMipMaps, replace);
-	INJECT(0x004D0450, CreateTexturePage, replace);
-	INJECT(0x004D0B90, FreeTextures, replace);
-	INJECT(0x004D0CC0, ShowTextures, replace);
-	INJECT(0x004D15B0, aBumpTextureCallback, replace);
-	INJECT(0x004D1600, aCheckBumpMappingSupport, replace);
-	INJECT(0x004D1710, aCreateBumpPage, replace);
-}

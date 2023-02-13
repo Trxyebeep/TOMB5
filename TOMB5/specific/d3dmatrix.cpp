@@ -387,29 +387,3 @@ LPD3DMATRIX D3DMultMatrix(LPD3DMATRIX d, LPD3DMATRIX a, LPD3DMATRIX b)
 
 	return d;
 }
-
-void inject_d3dmatrix(bool replace)
-{
-	INJECT(0x00497550, SetD3DMatrixF, replace);
-	INJECT(0x00497910, D3DIdentityMatrix, replace);
-	INJECT(0x00497280, SaveD3DCameraMatrix, replace);
-	INJECT(0x00497320, SetD3DViewMatrix, replace);
-	INJECT(0x00497460, SetD3DMatrix, replace);
-	INJECT(0x004975D0, S_InitD3DMatrix, replace);
-	INJECT(0x00497650, D3DNormalise, replace);
-	INJECT(0x004976F0, D3DVSubtract, replace);
-	INJECT(0x00497730, D3DVAdd, replace);
-	INJECT(0x00497770, D3DCrossProduct, replace);
-	INJECT(0x004977C0, D3DDotProduct, replace);
-	INJECT(0x004977F0, D3DSetTranslate, replace);
-	INJECT(0x00497820, D3DSetRotateX, replace);
-	INJECT(0x00497860, D3DSetRotateY, replace);
-	INJECT(0x004978A0, D3DSetRotateZ, replace);
-	INJECT(0x004978E0, D3DSetScale, replace);
-	INJECT(0x00497960, D3DZeroMatrix, replace);
-	INJECT(0x004979B0, D3DViewMatrix, replace);
-	INJECT(0x00497AE0, D3DProjectionMatrix, replace);
-	INJECT(0x00497B80, D3DTransform, replace);
-	INJECT(0x00497C10, D3DTranspose, replace);
-	INJECT(0x00497CA0, D3DMultMatrix, replace);
-}

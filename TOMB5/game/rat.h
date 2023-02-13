@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_rat(bool replace);
-
 long GetFreeRat();
 void ClearRats();
 void TriggerRat(short item_number);

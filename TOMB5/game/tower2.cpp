@@ -1195,20 +1195,3 @@ void TriggerFishtankSpray(long x, long y, long z, long c)
 	sptr->Size = sptr->dSize >> 2;
 	sptr->sSize = sptr->Size;
 }
-
-void inject_tower2(bool replace)
-{
-	INJECT(0x00487FF0, ControlGunship, replace);
-	INJECT(0x00486050, ControlIris, replace);
-	INJECT(0x004868B0, ControlFishtank, replace);
-	INJECT(0x00486450, ControlArea51Laser, replace);
-	INJECT(0x00488710, ControlGasCloud, replace);
-	INJECT(0x00487AD0, SteelDoorCollision, replace);
-	INJECT(0x00486BE0, ControlSteelDoor, replace);
-	INJECT(0x00487A90, DrawSprite2, replace);
-	INJECT(0x00487AB0, DrawSteelDoorLensFlare, replace);
-	INJECT(0x00487B60, TriggerLiftBrakeSparks, replace);
-	INJECT(0x004877E0, TriggerSteelDoorSmoke, replace);
-	INJECT(0x004870B0, TriggerWeldingEffects, replace);
-	INJECT(0x00486A70, TriggerFishtankSpray, replace);
-}

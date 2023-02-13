@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_setup(bool replace);
-
 void InitialiseLara(long restore);
 void ObjectObjects();
 void TrapObjects();

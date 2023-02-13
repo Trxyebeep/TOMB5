@@ -347,9 +347,3 @@ void PierreControl(short item_number)
 		}
 	}
 }
-
-void inject_pierre(bool replace)
-{
-	INJECT(0x00469F70, InitialisePierre, replace);
-	INJECT(0x0046A080, PierreControl, replace);
-}

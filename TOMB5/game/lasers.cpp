@@ -326,15 +326,3 @@ void GetFishTank(ITEM_INFO* item)
 		item_number = tank->next_item;
 	}
 }
-
-void inject_lasers(bool replace)
-{
-	INJECT(0x0045A540, DrawFloorLasers, replace);
-	INJECT(0x00459D30, ControlLasers, replace);
-	INJECT(0x0045A030, ControlSteamLasers, replace);
-	INJECT(0x0045A1E0, ControlFloorLasers, replace);
-	INJECT(0x00459C10, IsSteamOn, replace);
-	INJECT(0x00459CA0, GetSteamMultiplier, replace);
-	INJECT(0x00459EB0, CheckLaserBox, replace);
-	INJECT(0x0045A4B0, GetFishTank, replace);
-}

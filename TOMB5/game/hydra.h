@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_hydra(bool replace);
-
 void InitialiseHydra(short item_number);
 void HydraControl(short item_number);
 void TriggerHydraMissile(PHD_3DPOS* pos, short room_number, short num);

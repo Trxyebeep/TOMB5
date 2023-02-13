@@ -131,15 +131,3 @@ void mDrawProfiler(double sync, long x, long y)
 
 	nProfilerEvents = 0;
 }
-
-void inject_profiler(bool replace)
-{
-	INJECT(0x004BD3A0, mDrawTriangle, replace);
-	INJECT(0x004BD590, mAddProfilerEvent, replace);
-	INJECT(0x004BD3C0, mResetTime, replace);
-	INJECT(0x004BD430, mGetTime, replace);
-	INJECT(0x004BD3E0, mInitTimer, replace);
-	INJECT(0x004BD470, mSync, replace);
-	INJECT(0x004BD6A0, mInitDrawProfiler, replace);
-	INJECT(0x004BD5B0, mDrawProfiler, replace);
-}

@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_rope(bool replace);
-
 void InitialiseRope(short item_number);
 void CreateRope(ROPE_STRUCT* rope, PHD_VECTOR* pos, PHD_VECTOR* dir, long slength, ITEM_INFO* item);
 PHD_VECTOR* Normalise(PHD_VECTOR* v);

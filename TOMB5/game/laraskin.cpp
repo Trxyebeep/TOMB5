@@ -478,11 +478,3 @@ void CreateSkinningData()
 
 	OptomiseSkinningData();
 }
-
-void inject_laraskin(bool replace)
-{
-	INJECT(0x00457580, OptomiseSkinningData, replace);
-	INJECT(0x00457520, PushXYZ, replace);
-	INJECT(0x00457560, PopXYZ, replace);
-	INJECT(0x00456AE0, CreateSkinningData, replace);
-}

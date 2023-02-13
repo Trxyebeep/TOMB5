@@ -394,26 +394,3 @@ bool SaveSetup(HWND hDlg)
 	CloseRegistry();
 	return 1;
 }
-
-void inject_registry(bool replace)
-{
-	INJECT(0x004BD860, REG_OpenKey, replace);
-	INJECT(0x004BDD90, OpenRegistry, replace);
-	INJECT(0x004BD8C0, REG_CloseKey, replace);
-	INJECT(0x004BDE00, CloseRegistry, replace);
-	INJECT(0x004BD8A0, REG_KeyWasCreated, replace);
-	INJECT(0x004BDA50, REG_DeleteValue, replace);
-	INJECT(0x004BD8E0, REG_WriteLong, replace);
-	INJECT(0x004BD910, REG_WriteBool, replace);
-	INJECT(0x004BD9E0, REG_WriteString, replace);
-	INJECT(0x004BD950, REG_WriteDouble, replace);
-	INJECT(0x004BD990, REG_WriteVoid, replace);
-	INJECT(0x004BDA80, REG_ReadLong, replace);
-	INJECT(0x004BDB00, REG_ReadBool, replace);
-	INJECT(0x004BDCC0, REG_ReadString, replace);
-	INJECT(0x004BDBA0, REG_ReadDouble, replace);
-	INJECT(0x004BDC20, REG_ReadVoid, replace);
-	INJECT(0x004BDE20, LoadSettings, replace);
-	INJECT(0x004BE7E0, SaveSettings, replace);
-	INJECT(0x004BE4E0, SaveSetup, replace);
-}

@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_savegame(bool replace);
-
 void WriteSG(void* pointer, long size);
 void ReadSG(void* pointer, long size);
 long CheckSumValid(char* buffer);

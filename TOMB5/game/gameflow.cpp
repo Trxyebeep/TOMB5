@@ -1078,13 +1078,3 @@ void LoadGameflow()
 		}
 	}
 }
-
-void inject_gameflow(bool replace)
-{
-	INJECT(0x00434B60, TitleOptions, replace);
-	INJECT(0x004354B0, DoGameflow, replace);
-	INJECT(0x00435C70, DoTitle, replace);
-	INJECT(0x004364B0, do_dels_cutseq_selector, replace);
-	INJECT(0x00435F60, DoLevel, replace);
-	INJECT(0x00434800, LoadGameflow, replace);
-}

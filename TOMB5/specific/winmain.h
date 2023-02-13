@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_winmain(bool replace);
-
 void ClearSurfaces();
 long CheckMMXTechnology();
 bool WinRunCheck(LPSTR WindowName, LPSTR ClassName, HANDLE* mutex);

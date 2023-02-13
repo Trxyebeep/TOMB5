@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_tomb4fx(bool replace);
-
 long GetFreeBlood();
 void UpdateBlood();
 void TriggerBlood(long x, long y, long z, long angle, long num);

@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_gamemain(bool replace);
-
 ushort GetRandom(WATERTAB* wt, long lp);
 void init_water_table();
 long S_SaveGame(long slot_num);

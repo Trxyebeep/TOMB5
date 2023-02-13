@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_d3dmatrix(bool replace);
-
 void SetD3DMatrixF(LPD3DMATRIX dest, float* src);
 LPD3DMATRIX D3DIdentityMatrix(LPD3DMATRIX matrix);
 void SaveD3DCameraMatrix();

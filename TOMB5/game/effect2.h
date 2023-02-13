@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_effect2(bool replace);
-
 void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv);
 void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit);
 void KillAllCurrentItems(short item_number);

@@ -135,9 +135,3 @@ void CrowControl(short item_number)
 
 	CreatureAnimation(item_number, angle, 0);
 }
-
-void inject_crow(bool replace)
-{
-	INJECT(0x0041B980, InitialiseCrow, replace);
-	INJECT(0x0041BA00, CrowControl, replace);
-}

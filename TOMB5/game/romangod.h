@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_romangod(bool replace);
-
 void TriggerRomanGodSparks(long x, long y, long z, long xv, long yv, long zv, long god);
 void TriggerRomanGodMissileFlame(PHD_VECTOR* pos, long fxnum);
 void TriggerRomanGodMissile(PHD_3DPOS* pos, short room_number, short num);

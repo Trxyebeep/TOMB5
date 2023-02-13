@@ -430,9 +430,3 @@ void MafiaControl(short item_number)
 	}
 }
 #pragma warning(pop)
-
-void inject_mafia(bool replace)
-{
-	INJECT(0x0045B7B0, InitialiseMafia, replace);
-	INJECT(0x0045B840, MafiaControl, replace);
-}

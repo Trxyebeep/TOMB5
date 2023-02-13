@@ -1404,21 +1404,3 @@ short* get_current_ammo_pointer(long num)
 
 	return ammo;
 }
-
-void inject_larafire(bool replace)
-{
-	INJECT(0x00452430, LaraGun, replace);
-	INJECT(0x00452AF0, CheckForHoldingState, replace);
-	INJECT(0x00452B30, InitialiseNewWeapon, replace);
-	INJECT(0x00452CC0, LaraTargetInfo, replace);
-	INJECT(0x00452ED0, LaraGetNewTarget, replace);
-	INJECT(0x004533A0, find_target_point, replace);
-	INJECT(0x00453490, AimWeapon, replace);
-	INJECT(0x00453580, FireWeapon, replace);
-	INJECT(0x00453930, HitTarget, replace);
-	INJECT(0x00453A90, SmashItem, replace);
-	INJECT(0x00453AE0, WeaponObject, replace);
-	INJECT(0x00453B50, WeaponObjectMesh, replace);
-	INJECT(0x00453BE0, DoProperDetection, replace);
-	INJECT(0x004546C0, get_current_ammo_pointer, replace);
-}

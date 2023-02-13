@@ -909,13 +909,3 @@ void SetLaraUnderwaterNodes()
 		}
 	}
 }
-
-void inject_drawlara(bool replace)
-{
-	INJECT(0x00498030, DrawLara, replace);
-	INJECT(0x00498100, DrawLara__1, replace);
-	INJECT(0x00498C70, DrawLara__4, replace);
-	INJECT(0x004995C0, DrawLara__5, replace);
-	INJECT(0x00499BA0, DrawLara__6, replace);
-	INJECT(0x0049A210, SetLaraUnderwaterNodes, replace);
-}

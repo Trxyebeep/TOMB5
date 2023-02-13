@@ -411,14 +411,3 @@ long SoundEffect(long sfx, PHD_3DPOS* pos, long flags)
 	info->number = -1;
 	return 0;
 }
-
-void inject_sound(bool replace)
-{
-	INJECT(0x00479130, SoundEffectCS, replace);
-	INJECT(0x004790E0, SayNo, replace);
-	INJECT(0x004790A0, SOUND_Init, replace);
-	INJECT(0x00479060, SOUND_Stop, replace);
-	INJECT(0x00478FE0, StopSoundEffect, replace);
-	INJECT(0x00478D30, GetPanVolume, replace);
-	INJECT(0x00478570, SoundEffect, replace);
-}

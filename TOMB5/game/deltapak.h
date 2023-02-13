@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_deltaPak(bool replace);
-
 void andrea1_init();
 void andrea1_control();
 void andrea1_end();

@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_dxshell(bool replace);
-
 void DXReadKeyboard(char* KeyMap);
 void DXBitMask2ShiftCnt(ulong mask, uchar* shift, uchar* count);
 long DXAttempt(HRESULT r);

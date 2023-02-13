@@ -135,9 +135,6 @@
     <ClCompile Include="TOMB5\specific\input.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\tomb5\dllmain.cpp">
-      <Filter>TOMB5\tomb5</Filter>
-    </ClCompile>
     <ClCompile Include="TOMB5\tomb5\pch.cpp">
       <Filter>TOMB5\tomb5</Filter>
     </ClCompile>
@@ -336,9 +333,6 @@
     <ClCompile Include="TOMB5\specific\registry.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\specific\mmx.cpp">
-      <Filter>TOMB5\specific</Filter>
-    </ClCompile>
     <ClCompile Include="TOMB5\specific\winmain.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
@@ -482,9 +476,6 @@
     </ClInclude>
     <ClInclude Include="TOMB5\specific\d3dmatrix.h">
       <Filter>TOMB5\specific</Filter>
-    </ClInclude>
-    <ClInclude Include="TOMB5\tomb5\framework.h">
-      <Filter>TOMB5\tomb5</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\tomb5\pch.h">
       <Filter>TOMB5\tomb5</Filter>
@@ -682,9 +673,6 @@
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="TOMB5\specific\mmx.h">
-      <Filter>TOMB5\specific</Filter>
-    </ClInclude>
     <ClInclude Include="TOMB5\specific\winmain.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
@@ -697,15 +685,13 @@
     <ClInclude Include="TOMB5\tomb5\libs\zlib\zlib.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="TOMB5\global\progress.txt">
-      <Filter>TOMB5\global</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="tomb5.rc" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="TOMB5\tomb5\libs\discordRPC\discord-rpc.lib" />
     <Library Include="TOMB5\tomb5\libs\discordRPC\discord-rpcd.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
   </ItemGroup>
 </Project>

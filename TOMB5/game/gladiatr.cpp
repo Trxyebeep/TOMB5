@@ -268,9 +268,3 @@ void GladiatorControl(short item_number)
 		CreatureAnimation(item_number, angle, 0);
 	}
 }
-
-void inject_gladiator(bool replace)
-{
-	INJECT(0x00436670, InitialiseGladiator, replace);
-	INJECT(0x00436700, GladiatorControl, replace);
-}

@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_door(bool replace);
-
 void ShutThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd);
 void OpenThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd);
 void DoorControl(short item_number);

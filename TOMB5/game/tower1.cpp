@@ -138,10 +138,3 @@ void ItemPushCamera(short* bounds, PHD_3DPOS* pos)
 		GetFloor(CamOldPos.x, CamOldPos.y, CamOldPos.z, &camera.pos.room_number);
 	}
 }
-
-void inject_tower1(bool replace)
-{
-	INJECT(0x00480200, TestBoundsCollideCamera, replace);
-	INJECT(0x0047FFE0, CheckForRichesIllegalDiagonalWalls, replace);
-	INJECT(0x00480310, ItemPushCamera, replace);
-}

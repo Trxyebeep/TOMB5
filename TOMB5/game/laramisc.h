@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_laramisc(bool replace);
-
 void GetLaraDeadlyBounds();
 void InitialiseLaraAnims(ITEM_INFO* item);
 void InitialiseLaraLoad(short item_num);

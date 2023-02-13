@@ -1,10 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-
-void inject_laraswim(bool replace);
-
-
 void LaraTestWaterDepth(ITEM_INFO* item, COLL_INFO* coll);
 void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll);
 void SwimTurn(ITEM_INFO* item);

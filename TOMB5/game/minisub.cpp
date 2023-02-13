@@ -656,17 +656,3 @@ void JellyControl(short item_number)
 	CreatureAnimation(item_number, angle, 0);
 	CreatureUnderwater(item, 1024);
 }
-
-void inject_minisub(bool replace)
-{
-	INJECT(0x0045C5E0, TriggerTorpedoSteam, replace);
-	INJECT(0x0045C760, TriggerMinisubLight, replace);
-	INJECT(0x0045C830, FireTorpedo, replace);
-	INJECT(0x0045C9F0, TorpedoControl, replace);
-	INJECT(0x0045CFB0, ChaffControl, replace);
-	INJECT(0x0045D1D0, TriggerMiniSubMist, replace);
-	INJECT(0x0045D360, InitialiseMinisub, replace);
-	INJECT(0x0045D3F0, MinisubControl, replace);
-	INJECT(0x0045DA70, InitialiseJelly, replace);
-	INJECT(0x0045DAF0, JellyControl, replace);
-}

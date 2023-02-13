@@ -1873,21 +1873,3 @@ void LookCamera(ITEM_INFO* item)
 	lara.torso_x_rot = (short)txrot;
 	lara.torso_y_rot = (short)tyrot;
 }
-
-void inject_camera(bool replace)
-{
-	INJECT(0x0040C690, InitialiseCamera, replace);
-	INJECT(0x0040ED30, CalculateCamera, replace);
-	INJECT(0x00410550, LaraTorch, replace);
-	INJECT(0x004108D0, ScreenShake, replace);
-	INJECT(0x0040FA70, mgLOS, replace);
-	INJECT(0x0040F5C0, CameraCollisionBounds, replace);
-	INJECT(0x004107C0, UpdateCameraElevation, replace);
-	INJECT(0x00410680, ConfirmCameraTargetPos, replace);
-	INJECT(0x0040E890, FixedCamera, replace);
-	INJECT(0x0040D150, ChaseCamera, replace);
-	INJECT(0x0040D640, CombatCamera, replace);
-	INJECT(0x0040C7A0, MoveCamera, replace);
-	INJECT(0x0040FC20, BinocularCamera, replace);
-	INJECT(0x0040DC10, LookCamera, replace);
-}

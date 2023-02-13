@@ -960,11 +960,3 @@ void Rich_CalcLaraMatrices_Interpolated(short* frame1, short* frame2, long frac,
 	phd_PopMatrix();
 	phd_PopMatrix();
 }
-
-void inject_delshit(bool replace)
-{
-	INJECT(0x0041E2A0, GetLaraJointPos, replace);
-	INJECT(0x0041E120, CalcLaraMatrices, replace);
-	INJECT(0x0041E460, Rich_CalcLaraMatrices_Normal, replace);
-	INJECT(0x0041F9C0, Rich_CalcLaraMatrices_Interpolated, replace);
-}

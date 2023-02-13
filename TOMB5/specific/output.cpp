@@ -1577,8 +1577,10 @@ void S_InitialisePolyList()
 
 	if (App.dx.Flags & 0x80)
 		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0));
+#if 0
 	else
 		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
+#endif
 
 	_BeginScene();
 	InitBuckets();
@@ -2665,41 +2667,3 @@ void phd_PutPolygonsSpcEnvmap(short* objptr, long clipstatus)
 		pTex->drawtype = drawbak;
 	}
 }
-
-void inject_output(bool replace)
-{
-	INJECT(0x004B78D0, S_DrawPickup, replace);
-	INJECT(0x004B2BA0, aTransformLightClipMesh, replace);
-	INJECT(0x004B35F0, aTransformLightPrelightClipMesh, replace);
-	INJECT(0x004B8660, RenderLoadPic, replace);
-	INJECT(0x004B7EB0, S_GetObjectBounds, replace);
-	INJECT(0x004B8310, S_AnimateTextures, replace);
-	INJECT(0x004B2800, aCheckMeshClip, replace);
-	INJECT(0x004B8530, ProjectTrainVerts, replace);
-	INJECT(0x004B8780, DDCopyBitmap, replace);
-	INJECT(0x004B8930, _LoadBitmap, replace);
-	INJECT(0x004B89F0, aLoadBitmap, replace);
-	INJECT(0x004B8A80, do_boot_screen, replace);
-	INJECT(0x004B8C50, aCalcColorSplit, replace);
-	INJECT(0x004B7DA0, S_DumpScreen, replace);
-	INJECT(0x004B7E40, S_DumpScreenFrame, replace);
-	INJECT(0x004B27E0, SetGlobalAmbient, replace);
-	INJECT(0x004B2620, PrelightVerts, replace);
-	INJECT(0x004B24F0, CalcVertsColorSplitMMX, replace);
-	INJECT(0x004B2270, StashSkinVertices, replace);
-	INJECT(0x004B2340, SkinVerticesToScratch, replace);
-	INJECT(0x004B2410, StashSkinNormals, replace);
-	INJECT(0x004B2480, SkinNormalsToScratch, replace);
-	INJECT(0x004B2110, S_InitialisePolyList, replace);
-	INJECT(0x004B79A0, S_OutputPolyList, replace);
-	INJECT(0x004B20D0, DebugString, replace);
-	INJECT(0x004B78B0, S_InsertRoom, replace);
-	INJECT(0x004B3F00, phd_PutPolygons, replace);
-	INJECT(0x004B74D0, phd_PutPolygonsSkyMesh, replace);
-	INJECT(0x004B66B0, phd_PutPolygonsPickup, replace);
-	INJECT(0x004B74A0, phd_PutPolygons_train, replace);
-	INJECT(0x004B4F10, phd_PutPolygons_seethrough, replace);
-	INJECT(0x004B4CA0, phd_PutPolygonsSpcXLU, replace);
-	INJECT(0x004B5190, phd_PutPolygonsSpcEnvmap, replace);
-}
-

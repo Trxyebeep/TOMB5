@@ -281,10 +281,3 @@ void ImpControl(short item_number)
 	CreatureJoint(item, 2, head_x);
 	CreatureAnimation(item_number, angle, 0);
 }
-
-void inject_imp(bool replace)
-{
-	INJECT(0x0043CAC0, TriggerImpMissile, replace);
-	INJECT(0x0043CCA0, InitialiseImp, replace);
-	INJECT(0x0043CD80, ImpControl, replace);
-}

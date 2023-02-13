@@ -545,9 +545,3 @@ void HitmanControl(short item_number)
 		}
 	}
 }
-
-void inject_hitman(bool replace)
-{
-	INJECT(0x0043A2C0, InitialiseHitman, replace);
-	INJECT(0x0043A340, HitmanControl, replace);
-}

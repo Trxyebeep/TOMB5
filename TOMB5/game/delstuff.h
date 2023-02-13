@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_delshit(bool replace);
-
 void GetLaraJointPos(PHD_VECTOR* pos, long node);
 void CalcLaraMatrices(long flag);
 void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag);

@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_sound(bool replace);
-
 void SoundEffectCS(long sfx, PHD_3DPOS* pos, long flags);
 void SayNo();
 void SOUND_Init();

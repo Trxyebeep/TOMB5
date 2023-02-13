@@ -753,8 +753,10 @@ long DXCreate(long w, long h, long bpp, long Flags, DXPTR* dxptr, HWND hWnd, lon
 
 	DXAttempt(G_dxptr->lpD3DDevice->SetRenderTarget(G_dxptr->lpBackBuffer, 0));
 
+#if 0
 	if (!(G_dxptr->Flags & 0x80))
 		CreateFakeD3D();
+#endif
 
 	return 1;
 }
@@ -2027,48 +2029,4 @@ const char* DIGetErrorString(HRESULT hr)
 	}
 
 	return "Undefined Error";
-}
-
-void inject_dxshell(bool replace)
-{
-	INJECT(0x004A2880, DXReadKeyboard, replace);
-	INJECT(0x0049F9C0, DXBitMask2ShiftCnt, replace);
-	INJECT(0x0049F1C0, DXAttempt, replace);
-	INJECT(0x0049F200, DIAttempt, replace);
-	INJECT(0x0049F4C0, AddStruct, replace);
-	INJECT(0x0049F530, DXDDCreate, replace);
-	INJECT(0x0049F620, DXD3DCreate, replace);
-	INJECT(0x004A0600, DXSetCooperativeLevel, replace);
-	INJECT(0x0049FA10, DXEnumDisplayModes, replace);
-	INJECT(0x004A0490, DXEnumZBufferFormats, replace);
-	INJECT(0x004A0270, DXEnumTextureFormats, replace);
-	INJECT(0x0049FB80, BPPToDDBD, replace);
-	INJECT(0x004A0C30, DXCreateD3DDevice, replace);
-	INJECT(0x004A0590, DXSetVideoMode, replace);
-	INJECT(0x004A0520, DXCreateSurface, replace);
-	INJECT(0x004A1F50, DXCreateViewport, replace);
-	INJECT(0x004A23A0, DXSaveScreen, replace);
-	INJECT(0x004A2080, DXShowFrame, replace);
-	INJECT(0x004A21B0, DXMove, replace);
-	INJECT(0x004A1C40, DXClose, replace);
-	INJECT(0x004A0EB0, DXCreate, replace);
-	INJECT(0x004A1990, DXChangeVideoMode, replace);
-	INJECT(0x004A1A20, DXToggleFullScreen, replace);
-	INJECT(0x0049FC40, DXEnumDirect3D, replace);
-	INJECT(0x0049F6A0, DXEnumDirectDraw, replace);
-	INJECT(0x0049F2C0, DXEnumDirectSound, replace);
-	INJECT(0x0049F240, DXGetInfo, replace);
-	INJECT(0x0049F390, DXFreeInfo, replace);
-	INJECT(0x004A2DF0, DXJoyAcquisition, replace);
-	INJECT(0x004A2220, DXSize, replace);
-	INJECT(0x004A2290, DXFindTextureFormat, replace);
-	INJECT(0x004A27A0, FlashLEDs, replace);
-	INJECT(0x004A0CB0, DXFindDevice, replace);
-	INJECT(0x004A2C80, EnumAxesCallback, replace);
-	INJECT(0x004A2C40, EnumJoysticksCallback, replace);
-	INJECT(0x004A2D00, DXUpdateJoystick, replace);
-	INJECT(0x004A28F0, DXGetKey, replace);
-	INJECT(0x004A2970, DXInitInput, replace);
-	INJECT(0x0049E050, DXGetErrorString, replace);
-	INJECT(0x0049EFA0, DIGetErrorString, replace);
 }

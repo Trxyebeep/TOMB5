@@ -352,12 +352,3 @@ void FlameTorchControl(short item_number)
 		SoundEffect(SFX_LOOP_FOR_SMALL_FIRES, &item->pos, SFX_DEFAULT);
 	}
 }
-
-void inject_flmtorch(bool replace)
-{
-	INJECT(0x00433B40, FireCollision, replace);
-	INJECT(0x00433EA0, DoFlameTorch, replace);
-	INJECT(0x00433990, TriggerTorchFlame, replace);
-	INJECT(0x004342D0, GetFlameTorch, replace);
-	INJECT(0x00434390, FlameTorchControl, replace);
-}

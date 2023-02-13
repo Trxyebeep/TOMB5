@@ -7,10 +7,7 @@
 #include "control.h"
 #include "lara.h"
 
-static BITE_INFO dog_bite =
-{
-	0, 30, 141, 20
-};
+static BITE_INFO dog_bite = { 0, 30, 141, 20 };
 
 void InitialiseDog(short item_number)
 {
@@ -218,10 +215,4 @@ void DogControl(short item_number)
 		CreatureJoint(item, 2, head_x);
 		CreatureAnimation(item_number, angle, tilt);
 	}
-}
-
-void inject_dog(bool replace)
-{
-	INJECT(0x00428940, InitialiseDog, replace);
-	INJECT(0x00428A10, DogControl, replace);
 }

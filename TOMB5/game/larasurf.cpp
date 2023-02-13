@@ -381,22 +381,3 @@ void lara_col_surftread(ITEM_INFO* item, COLL_INFO* coll)
 	lara.move_angle = item->pos.y_rot;
 	LaraSurfaceCollision(item, coll);
 }
-
-
-void inject_larasurf(bool replace)
-{
-	INJECT(0x00458240, LaraTestWaterStepOut, replace);
-	INJECT(0x00457E50, LaraTestWaterClimbOut, replace);
-	INJECT(0x00458100, LaraSurfaceCollision, replace);
-	INJECT(0x00457940, LaraSurface, replace);
-	INJECT(0x00457B10, lara_as_surfswim, replace);
-	INJECT(0x00457BA0, lara_as_surfback, replace);
-	INJECT(0x00457C20, lara_as_surfleft, replace);
-	INJECT(0x00457CA0, lara_as_surfright, replace);
-	INJECT(0x00457D20, lara_as_surftread, replace);
-	INJECT(0x00457E10, lara_col_surfswim, replace);
-	INJECT(0x00458380, lara_col_surfback, replace);
-	INJECT(0x004583C0, lara_col_surfleft, replace);
-	INJECT(0x00458400, lara_col_surfright, replace);
-	INJECT(0x00458440, lara_col_surftread, replace);
-}

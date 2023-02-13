@@ -395,30 +395,3 @@ bool DXCreateSample(long num, LPWAVEFORMATEX format, LPVOID data, ulong bytes)
 	DS_Buffers[num].frequency = format->nSamplesPerSec;
 	return 1;
 }
-
-void inject_dxsound(bool replace)
-{
-	INJECT(0x004A2E30, DXChangeOutputFormat, replace);
-	INJECT(0x004A2F10, DSChangeVolume, replace);
-	INJECT(0x004A2F40, DSAdjustPitch, replace);
-	INJECT(0x004A2FB0, DSAdjustPan, replace);
-	INJECT(0x004A3030, DXSetOutputFormat, replace);
-	INJECT(0x004A3100, DXDSCreate, replace);
-	INJECT(0x004A3300, InitSampleDecompress, replace);
-	INJECT(0x004A3470, FreeSampleDecompress, replace);
-	INJECT(0x004A3510, DXCreateSampleADPCM, replace);
-	INJECT(0x004A3720, DXStopSample, replace);
-	INJECT(0x004A3790, DSIsChannelPlaying, replace);
-	INJECT(0x004A3800, DSGetFreeChannel, replace);
-	INJECT(0x004A3830, DXStartSample, replace);
-	INJECT(0x004A3950, CalcVolume, replace);
-	INJECT(0x004A39D0, S_SoundStopAllSamples, replace);
-	INJECT(0x004A3A00, S_SoundStopSample, replace);
-	INJECT(0x004A3A20, S_SoundPlaySample, replace);
-	INJECT(0x004A3A60, S_SoundPlaySampleLooped, replace);
-	INJECT(0x004A3AA0, DXFreeSounds, replace);
-	INJECT(0x004A3B10, S_SoundSampleIsPlaying, replace);
-	INJECT(0x004A3B40, S_SoundSetPanAndVolume, replace);
-	INJECT(0x004A3B90, S_SoundSetPitch, replace);
-	INJECT(0x004A3190, DXCreateSample, replace);
-}
