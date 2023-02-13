@@ -135,7 +135,6 @@ static long ClosestDist;
 static long number_los_rooms = 0;
 static short los_rooms[20];
 
-static short cdtrack = -1;
 static char richcutfrigflag = 0;
 static char globoncuttrig;
 
@@ -251,9 +250,6 @@ long ControlPhase(long nframes, long demo_mode)
 		GlobalCounter++;
 		UpdateSky();
 		RPC_Update();
-
-		if (cdtrack > 0)
-			S_CDLoop();
 
 		if (S_UpdateInput() == IN_ALL)
 			return 0;
@@ -1146,7 +1142,7 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			break;
 
 		default:
-			S_ExitSystem("GetHeight(): Unknown type");
+			Log(0, "GetHeight(): Unknown type");
 			break;
 		}
 
@@ -1512,7 +1508,7 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 				break;
 
 			default:
-				S_ExitSystem("GetCeiling(): Unknown type");
+				Log(0, "GetCeiling(): Unknown type");
 				break;
 			}
 

@@ -7,10 +7,6 @@
 #include "../game/control.h"
 #include "../game/lara.h"
 
-FCAMERA aCamera;
-FVECTOR aCamPos;
-FVECTOR aCamTar;
-FVECTOR aCamDir;
 PHD_VECTOR CamPos;
 SVECTOR CamRot;
 
@@ -43,6 +39,7 @@ float f_boo;
 float fcossin_tbl[65536];
 
 float* aMXPtr;
+static float aW2VMx[indices_count];
 float aFMatrixStack[20 * indices_count];
 
 long* phd_mxptr;
@@ -114,7 +111,7 @@ void aInitMatrix()
 
 void aSetViewMatrix()
 {
-	SetD3DMatrixF(&D3DMView, aMXPtr);
+	SetD3DMatrix(&D3DMView, aMXPtr);
 	DXAttempt(App.dx.lpD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &D3DMView));
 }
 
@@ -129,9 +126,9 @@ void aTranslateAbs(long x, long y, long z)
 {
 	float fx, fy, fz;
 
-	fx = x - aCamera.matrix[M03];
-	fy = y - aCamera.matrix[M13];
-	fz = z - aCamera.matrix[M23];
+	fx = x - aW2VMx[M03];
+	fy = y - aW2VMx[M13];
+	fz = z - aW2VMx[M23];
 	aMXPtr[M03] = fx * aMXPtr[M00] + fy * aMXPtr[M01] + fz * aMXPtr[M02];
 	aMXPtr[M13] = fx * aMXPtr[M10] + fy * aMXPtr[M11] + fz * aMXPtr[M12];
 	aMXPtr[M23] = fx * aMXPtr[M20] + fy * aMXPtr[M21] + fz * aMXPtr[M22];
@@ -673,38 +670,21 @@ void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float z
 {
 	D3DMATRIX mx;
 
-	aCamera.pos.x = xsrc;
-	aCamera.pos.y = ysrc;
-	aCamera.pos.z = zsrc;
 	aMXPtr = aFMatrixStack;
-	aCamera.tar.x = xtar;
-	aCamera.tar.y = ytar;
-	aCamera.tar.z = ztar;
-	aCamera.matrix[M00] = (float)phd_mxptr[M00] / 16384;
-	aCamera.matrix[M01] = (float)phd_mxptr[M01] / 16384;
-	aCamera.matrix[M02] = (float)phd_mxptr[M02] / 16384;
-	aCamera.matrix[M10] = (float)phd_mxptr[M10] / 16384;
-	aCamera.matrix[M11] = (float)phd_mxptr[M11] / 16384;
-	aCamera.matrix[M12] = (float)phd_mxptr[M12] / 16384;
-	aCamera.matrix[M20] = (float)phd_mxptr[M20] / 16384;
-	aCamera.matrix[M21] = (float)phd_mxptr[M21] / 16384;
-	aCamera.matrix[M22] = (float)phd_mxptr[M22] / 16384;
-	aCamera.matrix[M03] = xsrc;
-	aCamera.matrix[M13] = ysrc;
-	aCamera.matrix[M23] = zsrc;
-	aMXPtr[M00] = aCamera.matrix[M00];
-	aMXPtr[M01] = aCamera.matrix[M01];
-	aMXPtr[M02] = aCamera.matrix[M02];
-	aMXPtr[M03] = aCamera.matrix[M03];
-	aMXPtr[M10] = aCamera.matrix[M10];
-	aMXPtr[M11] = aCamera.matrix[M11];
-	aMXPtr[M12] = aCamera.matrix[M12];
-	aMXPtr[M13] = aCamera.matrix[M13];
-	aMXPtr[M20] = aCamera.matrix[M20];
-	aMXPtr[M21] = aCamera.matrix[M21];
-	aMXPtr[M22] = aCamera.matrix[M22];
-	aMXPtr[M23] = aCamera.matrix[M23];
-	SetD3DMatrixF(&mx, aCamera.matrix);
+	aMXPtr[M00] = (float)phd_mxptr[M00] / 16384;
+	aMXPtr[M01] = (float)phd_mxptr[M01] / 16384;
+	aMXPtr[M02] = (float)phd_mxptr[M02] / 16384;
+	aMXPtr[M10] = (float)phd_mxptr[M10] / 16384;
+	aMXPtr[M11] = (float)phd_mxptr[M11] / 16384;
+	aMXPtr[M12] = (float)phd_mxptr[M12] / 16384;
+	aMXPtr[M20] = (float)phd_mxptr[M20] / 16384;
+	aMXPtr[M21] = (float)phd_mxptr[M21] / 16384;
+	aMXPtr[M22] = (float)phd_mxptr[M22] / 16384;
+	aMXPtr[M03] = xsrc;
+	aMXPtr[M13] = ysrc;
+	aMXPtr[M23] = zsrc;
+	memcpy(aW2VMx, aMXPtr, sizeof(aW2VMx));
+	SetD3DMatrix(&mx, aMXPtr);
 	D3DInvCameraMatrix._11 = mx._11;
 	D3DInvCameraMatrix._12 = mx._21;
 	D3DInvCameraMatrix._13 = mx._31;
@@ -721,100 +701,6 @@ void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float z
 	D3DInvCameraMatrix._42 = mx._24;
 	D3DInvCameraMatrix._43 = mx._34;
 	D3DInvCameraMatrix._44 = mx._44;
-}
-
-void aOuterProduct(FVECTOR* v1, FVECTOR* v2, FVECTOR* dest)
-{
-	dest->x = v1->y * v2->z - v1->z * v2->y;
-	dest->y = v1->z * v2->x - v1->x * v2->z;
-	dest->z = v1->x * v2->y - v1->y * v2->x;
-}
-
-void aVectorNormal(FVECTOR* v, FVECTOR* a)
-{
-	float m;
-
-	m = sqrt(SQUARE(v->x) + SQUARE(v->y) + SQUARE(v->z));
-	v->x = 1.0F / m * v->x;
-	v->y = 1.0F / m * v->y;
-	v->z = 1.0F / m * v->z;
-}
-
-void aPerpVectors(FVECTOR* a, FVECTOR* b, FVECTOR* c)
-{
-	FVECTOR vA, vB, vC;
-
-	vA.x = a->x;
-	vA.y = a->y;
-	vA.z = a->z;
-	vC.x = c->x;
-	vC.y = c->y;
-	vC.z = c->z;
-	aVectorNormal(&vA, &vA);
-
-	if (!vA.x && !vA.y)
-	{
-		vB.x = b->x;
-		vB.y = b->y;
-		vB.z = b->z;
-	}
-	else
-		aOuterProduct(&vC, &vA, &vB);
-
-	aOuterProduct(&vA, &vB, &vC);
-	aVectorNormal(&vB, &vB);
-	aVectorNormal(&vC, &vC);
-
-	a->x = vA.x;
-	a->y = vA.y;
-	a->z = vA.z;
-	b->x = vB.x;
-	b->y = vB.y;
-	b->z = vB.z;
-	c->x = vC.x;
-	c->y = vC.y;
-	c->z = vC.z;
-}
-
-void aPointCameraByVector(float* mx, FCAMERA* cam)
-{
-	float x, y, z;
-	float m1[indices_count];
-	float m2[indices_count];
-
-	aUnitMatrixByMat(m1);
-	aUnitMatrixByMat(m2);
-
-	mx[M00] = cam->j.x;
-	mx[M01] = cam->j.y;
-	mx[M02] = cam->j.z;
-
-	mx[M10] = -cam->k.x;
-	mx[M11] = -cam->k.y;
-	mx[M12] = -cam->k.z;
-
-	mx[M20] = -cam->i.x;
-	mx[M21] = -cam->i.y;
-	mx[M22] = -cam->i.z;
-
-	x = -cam->pos.x;
-	y = -cam->pos.y;
-	z = -cam->pos.z;
-	mx[M03] = mx[M00] * x + mx[M01] * y + mx[M02] * z;
-	mx[M13] = mx[M10] * x + mx[M11] * y + mx[M12] * z;
-	mx[M23] = mx[M20] * x + mx[M21] * y + mx[M22] * z;
-}
-
-void aPointCamera(FCAMERA* cam)
-{
-	cam->k.x = 0;
-	cam->k.y = -1;
-	cam->k.z = 0;
-	cam->i.x = cam->pos.x - cam->tar.x;
-	cam->i.y = cam->pos.y - cam->tar.y;
-	cam->i.z = cam->pos.z - cam->tar.z;
-	aPerpVectors(&cam->i, &cam->j, &cam->k);
-	aPointCameraByVector(cam->matrix, cam);
 }
 
 void aScaleCurrentMatrix(PHD_VECTOR* vec)

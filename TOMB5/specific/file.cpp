@@ -57,7 +57,6 @@ float AnimatingWaterfallsV[6];
 
 static TEXTURESTRUCT* MonitorScreenTex;
 static FILE* level_fp;
-static LOADLEVELNAME LoadLevelName;
 static char* CompressedData;
 static float MonitorScreenU;
 static long num_items;
@@ -157,47 +156,6 @@ FILE* FileOpen(const char* Filename)
 	return fp;
 }
 
-bool FindCDDrive()
-{
-	ulong drives;
-	ulong type;
-	char root[5];
-	char file_check[14];
-	HANDLE file;
-	static char cd_drive;
-
-	strcpy(file_check, "c:\\script.dat");
-	drives = GetLogicalDrives();
-	cd_drive = 'A';
-	lstrcpy(root, "A:\\");
-
-	while (drives)
-	{
-		if (drives & 1)
-		{
-			root[0] = cd_drive;
-			type = GetDriveType(root);
-
-			if (type == DRIVE_CDROM)
-			{
-				file_check[0] = cd_drive;
-				file = CreateFile(file_check, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-
-				if (file != INVALID_HANDLE_VALUE)
-				{
-					CloseHandle(file);
-					return 1;
-				}
-			}
-		}
-
-		cd_drive++;
-		drives >>= 1;
-	}
-
-	return 0;
-}
-
 void FileClose(FILE* fp)
 {
 	Log(2, "FileClose");
@@ -260,6 +218,7 @@ bool LoadItems()
 	for (int i = 0; i < num_items; i++)
 		InitialiseItem(i);
 
+	//should probably remove this
 	for (int i = 0; i < number_rooms; i++)
 	{
 		r = &room[i];
@@ -773,9 +732,6 @@ unsigned int __stdcall LoadLevel(void* name)
 
 		S_GetUVRotateTextures();
 		S_LoadBar();
-
-		MallocD3DLights();
-		CreateD3DLights();
 		SetupGame();
 		S_LoadBar();
 		SetFadeClip(0, 1);
@@ -1229,30 +1185,6 @@ void DoMonitorScreen()
 	}
 }
 
-void S_LoadLevel()
-{
-	Log(2, "S_LoadLevel");
-	LevelLoadingThread.active = 1;
-	LevelLoadingThread.ended = 0;
-	LevelLoadingThread.handle = _beginthreadex(0, 0, LoadLevel, LoadLevelName.name, 0, (unsigned int*)&LevelLoadingThread.address);
-
-	if (App.fmv && !SetThreadPriority((LPVOID)LevelLoadingThread.handle, THREAD_PRIORITY_LOWEST))
-		Log(1, "Error Setting Thread Priority");
-
-	while (LevelLoadingThread.active);
-}
-
-void LoadMapFile()
-{
-	long size;
-
-	size = *(long*)FileData;
-	FileData += sizeof(long);
-	MapData = (char*)game_malloc(size, 0);
-	memcpy(MapData, FileData, size);
-	FileData += size;
-}
-
 bool LoadBoxes()
 {
 	BOX_INFO* box;
@@ -1482,8 +1414,7 @@ void FreeLevel()
 
 	Log(5, "Free Textures");
 	FreeTextures();
-	Log(5, "Free Lights");
-	FreeD3DLights();
+
 	DXFreeSounds();
 	malloc_ptr = malloc_buffer;
 	malloc_free = malloc_size;

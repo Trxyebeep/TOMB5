@@ -50,7 +50,7 @@ void ClearRats()
 {
 	if (objects[RAT].loaded)
 	{
-		S_MemSet(Rats, 0, 0x340);
+		memset(Rats, 0, 0x340);
 		next_rat = 0;
 		flipeffect = -1;
 	}

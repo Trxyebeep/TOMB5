@@ -2,11 +2,9 @@
 #include "../global/types.h"
 
 void ClearSurfaces();
-long CheckMMXTechnology();
 bool WinRunCheck(LPSTR WindowName, LPSTR ClassName, HANDLE* mutex);
 float WinFrameRate();
 void WinDisplayString(long x, long y, char* string, ...);
-void WinGetLastError();
 void WinProcMsg();
 void WinProcessCommands(long cmd);
 void WinProcessCommandLine(LPSTR cmd);

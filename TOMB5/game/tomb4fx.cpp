@@ -583,17 +583,6 @@ void DrawWeaponMissile(ITEM_INFO* item)
 	phd_PopMatrix();
 }
 
-void DrawLensFlares(ITEM_INFO* item)
-{
-	GAME_VECTOR pos;
-
-	pos.x = item->pos.x_pos;
-	pos.y = item->pos.y_pos;
-	pos.z = item->pos.z_pos;
-	pos.room_number = item->room_number;
-	SetUpLensFlare(0, 0, 0, &pos);
-}
-
 long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 {
 	ITEM_INFO* item;

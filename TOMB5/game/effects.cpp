@@ -278,34 +278,7 @@ void reset_hair(ITEM_INFO* item)
 
 void SetFog(ITEM_INFO* item)
 {
-	ushort rgb;
-	char r, g, b;
 
-	GlobalFogOff = 0;
-	rgb = TriggerTimer;
-
-	if (!IsVolumetric())
-	{
-		flipeffect = -1;
-		return;
-	}
-
-	if (TriggerTimer == 100)
-	{
-		GlobalFogOff = 1;
-		flipeffect = -1;
-		return;
-	}
-
-	r = (FogTableColor[rgb] >> 16) & 0xFF;
-	g = (FogTableColor[rgb] >> 8) & 0xFF;
-	b = FogTableColor[rgb] & 0xFF;
-	SetFogColor(r, g, b);
-	gfFog.r = r;
-	gfFog.g = g;
-	gfFog.b = b;
-	flipeffect = -1;
-	return;
 }
 
 void LaraLocation(ITEM_INFO* item)

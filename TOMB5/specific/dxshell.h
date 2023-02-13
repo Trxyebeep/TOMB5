@@ -30,14 +30,9 @@ BOOL __stdcall DXEnumDirectSound(LPGUID lpGuid, LPCSTR lpcstrDescription, LPCSTR
 long DXGetInfo(DXINFO* dxinfo, HWND hwnd);
 void DXFreeInfo(DXINFO* dxinfo);
 void DXJoyAcquisition(long acquire);
-void DXSize(long x, long y);
-long DXFindTextureFormat(long r, long g, long b, long a);
-void FlashLEDs();
-long DXFindDevice(long w, long h, long bpp, long hw);
 BOOL CALLBACK EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef);
 BOOL CALLBACK EnumJoysticksCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
 long DXUpdateJoystick();
-long DXGetKey();
 void DXInitInput(HWND hwnd, HINSTANCE hinstance);
 const char* DXGetErrorString(HRESULT hr);
 const char* DIGetErrorString(HRESULT hr);

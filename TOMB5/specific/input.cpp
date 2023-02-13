@@ -96,8 +96,6 @@ long joystick_read_y;
 long joystick_read_fire;
 
 static long joy_fire;
-static double screen_sizer = 1.0;
-static double game_sizer = 1.0;
 
 short ammo_change_timer = 0;
 char ammo_change_buf[12];
@@ -640,53 +638,4 @@ long ReadJoystick(long& x, long& y)
 	x = 0;
 	y = 0;
 	return 0;
-}
-
-static __inline void setup_screen_size()
-{
-	DXDISPLAYMODE* dm;
-	long w, h, sw, sh;
-
-	dm = &G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode];
-	w = dm->w;
-	h = dm->h;
-	sw = long(w * screen_sizer);
-	sh = long(h * screen_sizer);
-
-	if (sw > w)
-		sw = w;
-
-	if (sh > h)
-		sh = h;
-
-	InitWindow((w - sw) / 2, (h - sh) / 2, sw, sh, 20, 20480, 80, w, h);
-	InitFont();
-}
-
-void IncreaseScreenSize()
-{
-	if (screen_sizer != 1.0)
-	{
-		screen_sizer += 0.08;
-
-		if (screen_sizer > 1.0)
-			screen_sizer = 1.0;
-
-		game_sizer = screen_sizer;
-		setup_screen_size();
-	}
-}
-
-void DecreaseScreenSize()
-{
-	if (screen_sizer != 0.44)
-	{
-		screen_sizer -= 0.08;
-
-		if (screen_sizer < 0.44)
-			screen_sizer = 0.44;
-
-		game_sizer = screen_sizer;
-		setup_screen_size();
-	}
 }

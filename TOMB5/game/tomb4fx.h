@@ -10,7 +10,6 @@ void LaraBubbles(ITEM_INFO* item);
 void ControlElectricFence(short item_number);
 void ControlTeleporter(short item_number);
 void DrawWeaponMissile(ITEM_INFO* item);
-void DrawLensFlares(ITEM_INFO* item);
 long ExplodingDeath2(short item_number, long mesh_bits, short Flags);
 void SetGunFlash(short weapon);
 void DrawGunflashes();

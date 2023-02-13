@@ -681,7 +681,7 @@ void ObjectObjects()
 	obj->save_flags = 1;
 
 	obj = &objects[LENS_FLARE];
-	obj->draw_routine = DrawLensFlares;
+	obj->draw_routine = 0;
 	obj->using_drawanimating_item = 0;
 
 	obj = &objects[TELEPORTER];

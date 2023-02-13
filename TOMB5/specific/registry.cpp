@@ -40,11 +40,6 @@ bool REG_KeyWasCreated()
 	return dwDisposition == REG_CREATED_NEW_KEY;
 }
 
-void REG_DeleteValue(char* SubKeyName)
-{
-	RegDeleteValue(phkResult, SubKeyName);
-}
-
 void REG_WriteLong(char* SubKeyName, ulong value)
 {
 	RegSetValueEx(phkResult, SubKeyName, 0, REG_DWORD, (CONST BYTE*) & value, sizeof(ulong));
@@ -56,40 +51,6 @@ void REG_WriteBool(char* SubKeyName, bool value)
 
 	Lvalue = (ulong)value;
 	RegSetValueEx(phkResult, SubKeyName, 0, REG_DWORD, (CONST BYTE*) & Lvalue, sizeof(ulong));
-}
-
-void REG_WriteString(char* SubKeyName, char* string, long length)
-{
-	long checkLength;
-
-	if (string)
-	{
-		if (length < 0)
-			checkLength = strlen(string);
-		else
-			checkLength = length;
-
-		RegSetValueEx(phkResult, SubKeyName, 0, REG_SZ, (CONST BYTE*)string, checkLength + 1);
-	}
-	else
-		RegDeleteValue(phkResult, SubKeyName);
-}
-
-void REG_WriteDouble(char* SubKeyName, double value)
-{
-	long length;
-	char buf[64];
-
-	length = sprintf(buf, "%.5f", value);
-	REG_WriteString(SubKeyName, buf, length);
-}
-
-void REG_WriteVoid(char* SubKeyName, void* value, long size)
-{
-	if (value)
-		RegSetValueEx(phkResult, SubKeyName, 0, REG_BINARY, (const BYTE*)value, size);
-	else
-		RegDeleteValue(phkResult, SubKeyName);
 }
 
 bool REG_ReadLong(char* SubKeyName, ulong& value, ulong defaultValue)
@@ -123,69 +84,6 @@ bool REG_ReadBool(char* SubKeyName, bool& value, bool defaultValue)
 
 	REG_WriteBool(SubKeyName, defaultValue);
 	value = defaultValue;
-	return 0;
-}
-
-bool REG_ReadString(char* SubKeyName, char* value, long length, char* defaultValue)
-{
-	ulong type;
-	ulong cbData;
-	long len;
-
-	cbData = length;
-
-	if (RegQueryValueEx(phkResult, SubKeyName, 0, &type, (LPBYTE)value, (LPDWORD)&cbData) == ERROR_SUCCESS && type == REG_SZ)
-		return 1;
-
-	if (defaultValue)
-	{
-		REG_WriteBool(SubKeyName, 1);	//this feels wrong.. probably because of the original overloaded names
-		len = strlen(defaultValue) + 1;
-
-		if (len > length)
-		{
-			len = length - 1;
-			value[len] = 0;
-		}
-
-		memcpy(value, defaultValue, len);
-	}
-	else
-		RegDeleteValue(phkResult, SubKeyName);
-
-	return 0;
-}
-
-bool REG_ReadDouble(char* SubKeyName, double& value, double defaultValue)
-{
-	char buf[64];
-
-	if (REG_ReadString(SubKeyName, buf, sizeof(buf), 0))
-	{
-		value = atof(buf);
-		return 1;
-	}
-
-	REG_WriteDouble(SubKeyName, defaultValue);
-	value = defaultValue;
-	return 0;
-}
-
-bool REG_ReadVoid(char* SubKeyName, void* value, long size, void* defaultValue)
-{
-	ulong type;
-	ulong cbData;
-
-	cbData = size;
-
-	if (RegQueryValueEx(phkResult, SubKeyName, 0, &type, (LPBYTE)value, &cbData) == ERROR_SUCCESS && type == REG_BINARY && size == cbData)
-		return 1;
-
-	if (defaultValue)
-		REG_WriteVoid(SubKeyName, value, size);
-	else
-		RegDeleteValue(phkResult, SubKeyName);
-
 	return 0;
 }
 

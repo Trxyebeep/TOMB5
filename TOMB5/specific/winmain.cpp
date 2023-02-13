@@ -42,53 +42,6 @@ void ClearSurfaces()
 	S_DumpScreen();
 }
 
-long CheckMMXTechnology()
-{
-	ulong _edx;
-	long mmx;
-
-	mmx = 1;
-
-	__try
-	{
-		__asm
-		{
-			pusha
-			mov eax, 1
-			cpuid
-			mov _edx, edx
-			popa
-		}
-
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER)
-	{
-		mmx = 0;
-	}
-
-	if (!mmx)
-		mmx = 0;
-
-	if (_edx & 0x800000)
-	{
-		__try
-		{
-			__asm
-			{
-				emms
-			}
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
-		{
-			mmx = 0;
-		}
-	}
-	else
-		mmx = 0;
-
-	return mmx;
-}
-
 bool WinRunCheck(LPSTR WindowName, LPSTR ClassName, HANDLE* mutex)
 {
 	HWND window;
@@ -152,16 +105,6 @@ void WinDisplayString(long x, long y, char* string, ...)
 	PrintString((ushort)x, (ushort)y, 6, buf, 0);
 }
 
-void WinGetLastError()
-{
-	LPVOID buf;
-
-	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_FROM_SYSTEM, 0,
-		GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&buf, 0, 0);
-	Log(1, "%s", buf);
-	LocalFree(buf);
-}
-
 void WinProcMsg()
 {
 	MSG msg;
@@ -199,12 +142,10 @@ void WinProcessCommands(long cmd)
 		SuspendThread((HANDLE)MainThread.handle);
 		Log(5, "Game Thread Suspended");
 
-		FreeD3DLights();
 		DXToggleFullScreen();
 		HWInitialise();
-		CreateD3DLights();
 		S_InitD3DMatrix();
-		SetD3DViewMatrix();
+		aSetViewMatrix();
 		ResumeThread((HANDLE)MainThread.handle);
 		App.dx.WaitAtBeginScene = 0;
 		Log(5, "Game Thread Resumed");
@@ -278,8 +219,6 @@ void WinProcessCommands(long cmd)
 
 		if (odm != App.DXInfo.nDisplayMode)
 		{
-			FreeD3DLights();
-
 			if (!DXChangeVideoMode())
 			{
 				App.DXInfo.nDisplayMode = odm;
@@ -287,11 +226,10 @@ void WinProcessCommands(long cmd)
 			}
 
 			HWInitialise();
-			CreateD3DLights();
 			InitWindow(0, 0, App.dx.dwRenderWidth, App.dx.dwRenderHeight, 20, 20480, 80, App.dx.dwRenderWidth, App.dx.dwRenderHeight);
 			InitFont();
 			S_InitD3DMatrix();
-			SetD3DViewMatrix();
+			aSetViewMatrix();
 		}
 
 		ResumeThread((HANDLE)MainThread.handle);
@@ -507,7 +445,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	DEVMODE devmode;
 
 	start_setup = 0;
-	App.mmx = CheckMMXTechnology();
+	App.mmx = 0;
 	App.SetupComplete = 0;
 	App.AutoTarget = 0;
 
@@ -594,7 +532,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 		SetWindowPos(App.hWnd, 0, App.dx.rScreen.left, App.dx.rScreen.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
 
-	aCheckBumpMappingSupport();
 	UpdateWindow(App.hWnd);
 	ShowWindow(App.hWnd, nShowCmd);
 

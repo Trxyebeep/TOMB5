@@ -15,8 +15,6 @@ bool (*IsVisible)(D3DTLVERTEX* v0, D3DTLVERTEX* v1, D3DTLVERTEX* v2);
 HRESULT(*_BeginScene)();
 HRESULT(*_EndScene)();
 
-static long CurrentFog;
-
 void InitialiseFunctionTable()
 {
 	_BeginScene = HWBeginScene;
@@ -138,13 +136,4 @@ void SetCullCW()
 void SetCullCCW()
 {
 	IsVisible = _NVisible;
-}
-
-void SetFogColor(long r, long g, long b)
-{
-	r &= 0xFF;
-	g &= 0xFF;
-	b &= 0xFF;
-	CurrentFog = RGBA(r, g, b, 0xFF);
-	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, CurrentFog);
 }

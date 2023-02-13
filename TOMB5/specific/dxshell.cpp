@@ -41,9 +41,7 @@ LPDIRECT3D3 G_d3d;
 HWND G_hwnd;
 char keymap[256];
 
-static long KeyCount;
 static char tga_header[18] = { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64, 1, 0, 1, 16, 0 };
-static short KeyBuffer[32];
 
 void DXReadKeyboard(char* KeyMap)
 {
@@ -1062,111 +1060,6 @@ void DXJoyAcquisition(long acquire)
 		G_dxptr->Joystick->Unacquire();
 }
 
-void DXSize(long x, long y)
-{
-	Log(2, "DXSize : x %d y %d", x, y);
-
-	if (G_dxptr)
-	{
-		if (!(G_dxptr->Flags & 1))
-		{
-			G_dxptr->rScreen.right = x + G_dxptr->rScreen.left;
-			G_dxptr->rScreen.bottom = y + G_dxptr->rScreen.top;
-		}
-	}
-}
-
-long DXFindTextureFormat(long r, long g, long b, long a)
-{
-	DXD3DDEVICE* d;
-	DXTEXTUREINFO* t;
-
-	Log(5, "DXFindTextureFormat %d%d%d%d", r, g, b, a);
-
-	d = &G_dxinfo->DDInfo[G_dxinfo->nDDInfo].D3DDevices[G_dxinfo->nD3D];
-
-	for (int i = 0; i < d->nTextureInfos; i++)
-	{
-		t = &d->TextureInfos[i];
-
-		if (t->rbpp == r && t->gbpp == g && t->bbpp == b && t->abpp == a)
-		{
-			Log(5, "Found Format");
-			return i;
-		}
-	}
-
-	Log(1, "Format Not Found");
-	return -1;
-}
-
-void FlashLEDs()
-{
-	DIDEVICEOBJECTDATA obj[3];
-	static long data[4] = { 1, 2, 4, 2 };
-	static long a, b, c, lp;
-	ulong nOf;
-	long n;
-
-	nOf = 3;
-	memset(obj, 0, sizeof(obj));
-	obj[0].dwOfs = a;
-	obj[1].dwOfs = b;
-	obj[2].dwOfs = c;
-	n = data[lp];
-	obj[0].dwData = (n & 1) << 7;
-	obj[1].dwData = (n & 2) << 6;
-	obj[2].dwData = (n & 4) << 5;
-	lp = (lp + 1) % 4;
-	DXAttempt(G_dxptr->Keyboard->SendDeviceData(sizeof(DIDEVICEOBJECTDATA), obj, &nOf, 0));
-}
-
-long DXFindDevice(long w, long h, long bpp, long hw)
-{
-	DXDISPLAYMODE* dm;
-	bool flag;
-
-	for (int i = G_dxinfo->nDDInfo - 1; i >= 0; i--)
-	{
-		for (int j = 0; j < G_dxinfo->DDInfo[i].nD3DDevices; j++)
-		{
-			if (G_dxinfo->DDInfo[i].D3DDevices[j].bHardware == hw)
-			{
-				for (int k = 0; k < G_dxinfo->DDInfo[i].D3DDevices[j].nDisplayModes; k++)
-				{
-					dm = &G_dxinfo->DDInfo[i].D3DDevices[j].DisplayModes[k];
-
-					if (dm->w == w && dm->h == h && dm->bpp == bpp)
-					{
-						flag = 1;
-
-						if (G_dxptr->Flags & 2)
-							flag = G_dxinfo->DDInfo[i].DDCaps.dwCaps2 & DDCAPS2_CANRENDERWINDOWED;
-
-						if (flag)
-						{
-							G_dxinfo->nDD = i;
-							G_dxinfo->nD3D = j;
-							G_dxinfo->nDisplayMode = k;
-							Log(5, "Matching Device Found\n%s\n%s\n%dx%dx%d",
-								G_dxinfo->DDInfo[G_dxinfo->nDD].DDIdentifier.szDescription,
-								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].About,
-								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode].w,
-								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode].h,
-								G_dxinfo->DDInfo[G_dxinfo->nDD].D3DDevices[G_dxinfo->nD3D].DisplayModes[G_dxinfo->nDisplayMode].bpp);
-							G_dxinfo->bHardware = hw != 0;
-							return 1;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	Log(1, "No Matching Device Found");
-	return 0;
-}
-
 BOOL CALLBACK EnumAxesCallback(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef)
 {
 	DIPROPRANGE range;
@@ -1239,23 +1132,6 @@ long DXUpdateJoystick()
 	return 1;
 }
 
-long DXGetKey()
-{
-	long b;
-	char stash[64];
-
-	if (!KeyCount)
-		return 0;
-
-	b = KeyBuffer[0];
-	KeyCount--;
-
-	memcpy(stash, KeyBuffer, 64);
-	memset(KeyBuffer, 0, sizeof(KeyBuffer));
-	memcpy(KeyBuffer, &stash[1], 63);
-	return b;
-}
-
 void DXInitInput(HWND hwnd, HINSTANCE hinstance)
 {
 	LPDIRECTINPUT8 dinput;
@@ -1297,9 +1173,6 @@ void DXInitInput(HWND hwnd, HINSTANCE hinstance)
 	DXAttempt(G_dxptr->Keyboard->SetDataFormat(&c_dfDIKeyboard));
 	DXAttempt(G_dxptr->Keyboard->Acquire());
 	memset(keymap, 0, sizeof(keymap));
-
-	memset(KeyBuffer, 0, sizeof(KeyBuffer));
-	KeyCount = 0;
 
 #if (DIRECTINPUT_VERSION >= 0x800)
 	DIAttempt(G_dxptr->lpDirectInput->EnumDevices(DI8DEVCLASS_GAMECTRL, EnumJoysticksCallback, 0, 1));

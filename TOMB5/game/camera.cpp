@@ -92,7 +92,6 @@ void CalculateCamera()
 	PHD_VECTOR v;
 	short* bounds;
 	long shift, fixed_camera, y, gotit;
-	static long vol;
 	short change, tilt;
 	static char TLFlag = 0;
 
@@ -123,12 +122,7 @@ void CalculateCamera()
 	}
 
 	if (gfCurrentLevel == LVL5_STREETS_OF_ROME && (!XATrack || XATrack == 13))
-	{
-		if (camera.underwater && vol)
-			S_CDVolume(25 * vol + 5);
-
 		TLFlag = 1;
-	}
 	else
 	{
 		if (TLFlag == 1 && camera.underwater)
@@ -144,20 +138,10 @@ void CalculateCamera()
 			SoundEffect(SFX_UNDERWATER, 0, SFX_ALWAYS);
 
 			if (!camera.underwater)
-			{
-				if (!GLOBAL_playing_cutseq && !TLFlag)
-					S_CDVolume(0);
-
 				camera.underwater = 1;
-			}
 		}
 		else if (camera.underwater)
-		{
-			if (vol)
-				S_CDVolume(25 * vol + 5);
-
 			camera.underwater = 0;
-		}
 	}
 
 	if (camera.type == CINEMATIC_CAMERA)

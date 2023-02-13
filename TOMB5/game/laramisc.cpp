@@ -664,7 +664,7 @@ void LaraControl(short item_number)
 		break;
 	}
 
-	S_SetReverbType(room[item->room_number].ReverbType);
+//	S_SetReverbType(room[item->room_number].ReverbType);
 
 	if (item->hit_points <= 0)
 	{

@@ -782,7 +782,7 @@ void DrawThreeDeeObject2D(long x, long y, long num, long shade, long xrot, long 
 	else
 		pcbright = RGBONLY(bright, bright, bright);
 
-	SetD3DViewMatrix();
+	aSetViewMatrix();
 	phd_PushUnitMatrix();
 	phd_TranslateRel(0, 0, objme->scale1);
 	yoffset = objme->yoff + y;
@@ -819,19 +819,6 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, long overlay, long shagfla
 	frmptr = anim->frame_ptr;
 	object = &objects[item->object_number];
 	phd_PushMatrix();
-
-	if (item->object_number == PC_LOAD_INV_ITEM || item->object_number == PC_SAVE_INV_ITEM)
-	{
-		a = IsSuperLowRes();
-
-		if (!IsHardware() && a)
-		{
-			if (a == 1)
-				phd_TranslateRel(0, -390, 0);
-			else
-				phd_TranslateRel(0, -190, 0);
-		}
-	}
 
 	if (item->object_number == HK_ITEM && gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
 		phd_TranslateRel(0, 70, 0);

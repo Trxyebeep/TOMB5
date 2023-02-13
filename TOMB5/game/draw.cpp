@@ -20,7 +20,6 @@
 #include "door.h"
 #include "tomb4fx.h"
 #include "../specific/d3dmatrix.h"
-#include "../specific/profiler.h"
 #include "rope.h"
 #include "rat.h"
 #include "bat.h"
@@ -553,7 +552,6 @@ void DrawAnimatingItem(ITEM_INFO* item)
 	short* rot2;
 	long frac, rate, clip, bit;
 
-	mAddProfilerEvent(0xFF0000);
 	frac = GetFrames(item, frm, &rate);
 	obj = &objects[item->object_number];
 
@@ -692,7 +690,6 @@ void DrawAnimatingItem(ITEM_INFO* item)
 	phd_top = 0;
 	phd_bottom = phd_winheight;
 	phd_PopMatrix();
-	mAddProfilerEvent(0xFF);
 }
 
 void PrintObjects(short room_number)
@@ -798,8 +795,6 @@ void DrawRooms(short current_room)
 	}
 
 	GetRoomBounds();
-	InitialiseFogBulbs();
-	CreateFXBulbs();
 	ProcessClosedDoors();
 
 	if (gfCurrentLevel)
@@ -866,7 +861,6 @@ void DrawRooms(short current_room)
 		}
 	}
 
-	InitDynamicLighting_noparams();
 	nPolyType = 0;
 
 	for (int i = 0; i < 32; i++)
@@ -886,14 +880,11 @@ void DrawRooms(short current_room)
 	SaveD3DCameraMatrix();
 	phd_PopMatrix();
 	aResetFogBulbList();
-	RoomTestThing();
 	aBuildFogBulbList();
 	aBuildFXFogBulbList();
 
 	if (!tomb5.fog)
 		aResetFogBulbList();
-
-	mAddProfilerEvent(0xFF00FF00);
 
 	for (int i = 0; i < number_draw_rooms; i++)
 	{
@@ -910,7 +901,6 @@ void DrawRooms(short current_room)
 		phd_PopMatrix();
 	}
 
-	mAddProfilerEvent(0xFFFF0000);
 	DrawGunshells();
 	nPolyType = 3;
 
@@ -931,7 +921,6 @@ void DrawRooms(short current_room)
 	lara_item->pos.z_pos = camera.pos.z;
 	lara_item->room_number = camera.pos.room_number;
 	DoWeather();
-	mAddProfilerEvent(0xFFFFFFFF);
 	DoUwEffect();
 	S_DrawFires();
 	S_DrawSmokeSparks();
@@ -948,10 +937,6 @@ void DrawRooms(short current_room)
 	lara_item->pos.y_pos = ly;
 	lara_item->pos.z_pos = lz;
 	lara_item->room_number = lr;
-	mAddProfilerEvent(0xFF00FF00);
-
-	if (gfLevelFlags & GF_LENSFLARE)
-		SetUpLensFlare(gfLensFlare.x, gfLensFlare.y - 4096, gfLensFlare.z, 0);
 
 	if (LaserSightActive)
 		DrawLaserSightSprite();
@@ -1113,8 +1098,6 @@ void RenderIt(short current_room)
 	GetRoomBounds();
 	ProcessClosedDoors();
 	SkyDrawPhase();
-
-	InitDynamicLighting_noparams();
 	nPolyType = 0;
 
 	phd_PushMatrix();
@@ -1241,7 +1224,6 @@ void PrintRooms(short room_number)
 	phd_right = r->right;
 	phd_top = r->top;
 	phd_bottom = r->bottom;
-	SetD3DViewMatrix();
 	aSetViewMatrix();
 	S_InsertRoom(r, 1);
 }
@@ -1433,15 +1415,11 @@ void DrawEffect(short fx_num)
 		{
 			phd_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
 
-			if (gfCurrentLevel == 3 && fx->object_number == BODY_PART)
-				SetGlobalAmbient(0xFF282020);
-
 			if (obj->nmeshes)
 				meshp = meshes[obj->mesh_index];
 			else
 				meshp = meshes[fx->frame_number];
 
-			S_CalculateLight(fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos, fx->room_number, &duff_item[0].il);
 			phd_PutPolygons(meshp, -1);
 		}
 

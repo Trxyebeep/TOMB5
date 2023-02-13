@@ -4,7 +4,6 @@
 bool LoadTextureInfos();
 bool LoadRooms();
 FILE* FileOpen(const char* Filename);
-bool FindCDDrive();
 void FileClose(FILE* fp);
 long FileSize(FILE* fp);
 bool LoadItems();
@@ -20,8 +19,6 @@ long S_LoadLevelFile(long num);
 bool LoadTextures(long RTPages, long OTPages, long BTPages);
 void S_GetUVRotateTextures();
 void DoMonitorScreen();
-void S_LoadLevel();
-void LoadMapFile();
 bool LoadBoxes();
 void AdjustUV(long num);
 long LoadFile(const char* name, char** dest);

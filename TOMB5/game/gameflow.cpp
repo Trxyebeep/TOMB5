@@ -646,11 +646,10 @@ void DoTitle(uchar name, uchar audio)
 	title_controls_locked_out = 0;
 	InitialiseFXArray(1);
 	InitialiseLOTarray(1);
-	SetFogColor(gfFog.r, gfFog.g, gfFog.b);
 	InitialisePickUpDisplay();
 	SOUND_Stop();
 	IsAtmospherePlaying = 0;
-	S_SetReverbType(1);
+//	S_SetReverbType(1);
 	InitialiseCamera();
 	sound_cut_flag = 1;
 
@@ -772,14 +771,11 @@ void DoLevel(uchar Name, uchar Audio)
 	}
 
 	S_LoadLevelFile(Name);
-	SetFogColor(gfFog.r, gfFog.g, gfFog.b);
 	InitialiseFXArray(1);
 	InitialiseLOTarray(1);
-	ClearFXFogBulbs();
 	GlobalSoftReset = 0;
 	InitSpotCamSequences();
 	InitialisePickUpDisplay();
-	S_InitialiseScreen();
 	SOUND_Stop();
 	bDisableLaraControl = 0;
 
@@ -788,9 +784,6 @@ void DoLevel(uchar Name, uchar Audio)
 		sgRestoreGame();
 		gfRequiredStartPos = 0;
 		gfInitialiseGame = 0;
-
-		if (IsVolumetric())
-			SetFogColor(gfFog.r, gfFog.g, gfFog.b);
 	}
 	else
 	{

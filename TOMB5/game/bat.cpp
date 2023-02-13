@@ -93,7 +93,7 @@ void InitialiseBatEmitter(short item_number)
 		item->pos.x_pos -= 512;
 
 	if (objects[BAT].loaded)//most likely an inlined ClearBats function, similar to the rats, because this check just makes no sense here
-		S_MemSet(Bats, 0, 0x780);
+		memset(Bats, 0, 0x780);
 }
 
 void ControlBatEmitter(short item_number)
