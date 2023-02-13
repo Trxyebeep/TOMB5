@@ -286,6 +286,9 @@
     <Library Include="TOMB5\tomb5\libs\discordRPC\discord-rpc.lib" />
     <Library Include="TOMB5\tomb5\libs\discordRPC\discord-rpcd.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

@@ -694,4 +694,7 @@
     <Library Include="TOMB5\tomb5\libs\discordRPC\discord-rpc.lib" />
     <Library Include="TOMB5\tomb5\libs\discordRPC\discord-rpcd.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico" />
+  </ItemGroup>
 </Project>
