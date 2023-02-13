@@ -471,9 +471,6 @@
     <ClInclude Include="TOMB5\global\types.h">
       <Filter>TOMB5\global</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\global\vars.h">
-      <Filter>TOMB5\global</Filter>
-    </ClInclude>
     <ClInclude Include="TOMB5\specific\dxsound.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>

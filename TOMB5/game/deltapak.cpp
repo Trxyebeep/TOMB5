@@ -2098,6 +2098,7 @@ void handle_cutseq_triggering(long name)
 		if (!ScreenFadedOut)
 			return;
 
+		goin = 0;
 		cutseq_busy_timeout--;
 
 		if (cutseq_busy_timeout <= 0)

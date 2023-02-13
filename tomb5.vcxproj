@@ -241,7 +241,6 @@
     <ClInclude Include="TOMB5\game\willwisp.h" />
     <ClInclude Include="TOMB5\global\math_tbls.h" />
     <ClInclude Include="TOMB5\global\types.h" />
-    <ClInclude Include="TOMB5\global\vars.h" />
     <ClInclude Include="TOMB5\specific\3dmath.h" />
     <ClInclude Include="TOMB5\specific\alexstuff.h" />
     <ClInclude Include="TOMB5\specific\audio.h" />

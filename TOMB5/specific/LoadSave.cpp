@@ -467,6 +467,7 @@ void DoStatScreen()
 	PrintString(phd_centerx + (phd_centerx >> 2), ypos + 7 * font_height, 6, buffer, 0);
 }
 #pragma warning(pop)
+
 void DisplayStatsUCunt()
 {
 	DoStatScreen();

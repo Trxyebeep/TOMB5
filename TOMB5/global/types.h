@@ -1,4 +1,5 @@
 #pragma once
+#include "math_tbls.h"
 
 #pragma pack(push, 1)
 /*Injection macro, originally by Arsunt, modified by ChocolateFan to allow deinjection*/
@@ -28,14 +29,24 @@ do \
 #define	TRIGMULT2(a,b)		(((a) * (b)) >> 14)
 #define	TRIGMULT3(a,b,c)	(TRIGMULT2((TRIGMULT2(a, b)), c))
 #define SQUARE(x) ((x)*(x))
+
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
 #define RGBA(r, g, b, a) (RGBONLY(r, g, b) | ((a) << 24))
 #define	CLRA(clr)	((clr >> 24) & 0xFF)	//shift r, g, and b out of the way and 0xFF
 #define	CLRR(clr)	((clr >> 16) & 0xFF)	//shift g and b out of the way and 0xFF
 #define	CLRG(clr)	((clr >> 8) & 0xFF)		//shift b out of the way and 0xFF
 #define	CLRB(clr)	((clr) & 0xFF)			//and 0xFF
-//^ color multiply thingy phd_PutPolygons wants to do
+
+//misc
 #define SCRIPT_TEXT(num)		(&gfStringWad[gfStringOffset[num]])
+#define NO_HEIGHT -32512
+#define	NO_ITEM	-1
+#define NO_ROOM	255
+#define MAX_ITEMS	256
+#define MAX_SAMPLES	450
+#define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
+#define MALLOC_SIZE	5000000		//5MB
+#define WINDOW_STYLE	(WS_OVERLAPPED | WS_BORDER | WS_CAPTION)
 
 /*typedefs*/
 typedef unsigned char uchar;
