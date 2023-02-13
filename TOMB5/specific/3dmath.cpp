@@ -69,6 +69,7 @@ static float LfAspectCorrection;
 
 void AlterFOV(short fov)
 {
+	long fov_width;
 	static short old_fov = 0;
 
 	if (fov)
@@ -78,25 +79,12 @@ void AlterFOV(short fov)
 
 	CurrentFov = fov;
 	fov /= 2;
-
-#ifdef GENERAL_FIXES	//by Arsunt
-	long fov_width;
-
 	fov_width = phd_winheight * 320 / 240;
-	LfAspectCorrection = 1.0F; // must always be 1.0 for unstretched view
+	LfAspectCorrection = 1.0F;
 	phd_persp = (fov_width / 2) * phd_cos(fov) / phd_sin(fov);
-#else
-	phd_persp = ((phd_winwidth / 2) * phd_cos(fov)) / phd_sin(fov);
-#endif
-
 	f_persp = float(phd_persp);
 	f_oneopersp = one / f_persp;
 	f_perspoznear = f_persp / f_znear;
-
-#ifndef GENERAL_FIXES
-	LfAspectCorrection = (4.0F / 3.0F) / (float(phd_winwidth) / float(phd_winheight));
-#endif
-
 	f_mpersp = f_persp;
 	f_moneopersp = mone / f_persp;
 	f_mperspoznear = f_persp / f_mznear;
@@ -328,12 +316,7 @@ void phd_SetTrans(long x, long y, long z)
 	phd_mxptr[M03] = x << 14;
 	phd_mxptr[M13] = y << 14;
 	phd_mxptr[M23] = z << 14;
-
-#ifdef GENERAL_FIXES // Fixes wrong translation
 	aSetTrans(x, y, z);
-#else
-	aSetTrans(x << 14, y << 14, z << 14);
-#endif
 }
 
 void phd_PushUnitMatrix()
@@ -675,11 +658,7 @@ void phd_LookAt(long xsrc, long ysrc, long zsrc, long xtar, long ytar, long ztar
 	dx = xsrc - xtar;
 	dy = ysrc - ytar;
 	dz = zsrc - ztar;
-#ifdef GENERAL_FIXES
 	CamRot.x = (mGetAngle(0, 0, (long)phd_sqrt(SQUARE(dx) + SQUARE(dz)), dy) >> 4) & 0xFFF;
-#else
-	CamRot.x = (mGetAngle(0, 0, (long)sqrt(SQUARE(dx) + SQUARE(dz)), dy) >> 4) & 0xFFF;
-#endif
 	CamRot.y = (mGetAngle(zsrc, xsrc, ztar, xtar) >> 4) & 0xFFF;
 	CamRot.z = 0;
 	CamPos.x = xsrc;
@@ -687,9 +666,7 @@ void phd_LookAt(long xsrc, long ysrc, long zsrc, long xtar, long ytar, long ztar
 	CamPos.z = zsrc;
 	phd_GenerateW2V(&viewPos);
 	S_InitD3DMatrix();
-#ifdef GENERAL_FIXES
 	aLookAt((float)xsrc, (float)ysrc, (float)zsrc, (float)xtar, (float)ytar, (float)ztar, roll);
-#endif
 }
 
 void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float ztar, long roll)
@@ -703,7 +680,6 @@ void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float z
 	aCamera.tar.x = xtar;
 	aCamera.tar.y = ytar;
 	aCamera.tar.z = ztar;
-#ifdef GENERAL_FIXES
 	aCamera.matrix[M00] = (float)phd_mxptr[M00] / 16384;
 	aCamera.matrix[M01] = (float)phd_mxptr[M01] / 16384;
 	aCamera.matrix[M02] = (float)phd_mxptr[M02] / 16384;
@@ -713,9 +689,6 @@ void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float z
 	aCamera.matrix[M20] = (float)phd_mxptr[M20] / 16384;
 	aCamera.matrix[M21] = (float)phd_mxptr[M21] / 16384;
 	aCamera.matrix[M22] = (float)phd_mxptr[M22] / 16384;
-#else
-	aPointCamera(&aCamera);
-#endif
 	aCamera.matrix[M03] = xsrc;
 	aCamera.matrix[M13] = ysrc;
 	aCamera.matrix[M23] = zsrc;
@@ -731,26 +704,6 @@ void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float z
 	aMXPtr[M21] = aCamera.matrix[M21];
 	aMXPtr[M22] = aCamera.matrix[M22];
 	aMXPtr[M23] = aCamera.matrix[M23];
-
-#ifndef GENERAL_FIXES
-	if (roll)
-	{
-		aRotZ((short)roll);
-		aCamera.matrix[M00] = aMXPtr[M00];
-		aCamera.matrix[M01] = aMXPtr[M01];
-		aCamera.matrix[M02] = aMXPtr[M02];
-		aCamera.matrix[M10] = aMXPtr[M10];
-		aCamera.matrix[M11] = aMXPtr[M11];
-		aCamera.matrix[M12] = aMXPtr[M12];
-		aCamera.matrix[M20] = aMXPtr[M20];
-		aCamera.matrix[M21] = aMXPtr[M21];
-		aCamera.matrix[M22] = aMXPtr[M22];
-	}
-
-	aCamera.matrix[M10] *= LfAspectCorrection;
-	aCamera.matrix[M11] *= LfAspectCorrection;
-	aCamera.matrix[M12] *= LfAspectCorrection;
-#endif
 	SetD3DMatrixF(&mx, aCamera.matrix);
 	D3DInvCameraMatrix._11 = mx._11;
 	D3DInvCameraMatrix._12 = mx._21;

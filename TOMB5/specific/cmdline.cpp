@@ -15,7 +15,6 @@ static bool VolumetricFx;
 static bool BumpMap;
 static bool TextLow;
 
-#ifdef GENERAL_FIXES
 char ASCIIToANSITable[7][2] =
 {
 	{'‚', 'é'},
@@ -26,7 +25,6 @@ char ASCIIToANSITable[7][2] =
 	{' ', 'á'},
 	{'¢', 'ó'}
 };
-#endif
 
 void CLSetup(char* cmd)
 {
@@ -76,11 +74,7 @@ void InitTFormats(HWND dlg, HWND hwnd)
 
 	SendMessage(hwnd, CB_RESETCONTENT, 0, 0);
 	EnableWindow(GetDlgItem(dlg, 1006), 1);
-#if 0
 	software = 0;
-#else
-	software = SendMessage(GetDlgItem(dlg, 1011), BM_GETCHECK, 0, 0);
-#endif
 	device = &App.DXInfo.DDInfo[nDDDevice].D3DDevices[nD3DDevice];
 
 	for (int i = 0; i < device->nTextureInfos; i++)
@@ -124,7 +118,6 @@ char* MapASCIIToANSI(char* s, char* d)
 	{
 		c = *s++;
 
-#ifdef GENERAL_FIXES
 		if (c >= 0x80)
 		{
 			found = 0;
@@ -142,7 +135,6 @@ char* MapASCIIToANSI(char* s, char* d)
 			if (!found)
 				Log(1, "Reqd : %x", c);
 		}
-#endif
 
 		*d++ = c;
 	}
@@ -160,26 +152,10 @@ void InitResolution(HWND dlg, HWND hwnd, bool resetvms)
 	bool software;
 
 	n = 0;
-
-#if 1
 	SendMessage(GetDlgItem(dlg, 1010), BM_SETCHECK, 1, 0);
 	SendMessage(GetDlgItem(dlg, 1011), BM_SETCHECK, 0, 0);
 	EnableWindow(GetDlgItem(dlg, 1011), 0);
 	software = 0;
-#else
-	if (nD3DDevice)
-	{
-		SendMessage(GetDlgItem(dlg, 1010), BM_SETCHECK, 1, 0);
-		SendMessage(GetDlgItem(dlg, 1011), BM_SETCHECK, 0, 0);
-	}
-	else
-	{
-		SendMessage(GetDlgItem(dlg, 1010), BM_SETCHECK, 0, 0);
-		SendMessage(GetDlgItem(dlg, 1011), BM_SETCHECK, 1, 0);
-	}
-
-	software = SendMessage(GetDlgItem(dlg, 1011), BM_GETCHECK, 0, 0);
-#endif
 
 	if (resetvms)
 	{
@@ -404,16 +380,6 @@ BOOL CALLBACK DXSetupDlgProc(HWND dlg, UINT message, WPARAM wParam, LPARAM lPara
 			break;
 
 		case 1011:
-
-#if 0
-			if (((wParam >> 16) & 0xFFFF) == BN_CLICKED)
-			{
-				nD3DDevice = 0;
-				SendMessage(GetDlgItem(dlg, 1003), CB_SETCURSEL, 0, 0);
-				InitResolution(dlg, GetDlgItem(dlg, 1004), 1);
-			}
-#endif
-
 			break;
 
 		case 1012:

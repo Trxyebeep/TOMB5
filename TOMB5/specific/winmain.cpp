@@ -16,12 +16,9 @@
 #include "dxsound.h"
 #include "gamemain.h"
 #include "file.h"
-#ifdef GENERAL_FIXES
 #include "fmv.h"
-#endif
 
 WINAPP App;
-short FPCW;
 long resChangeCounter;
 
 static COMMANDLINES commandlines[] =
@@ -38,22 +35,9 @@ void ClearSurfaces()
 	r.y1 = App.dx.rViewport.top;
 	r.y2 = App.dx.rViewport.top + App.dx.rViewport.bottom;
 	r.x2 = App.dx.rViewport.left + App.dx.rViewport.right;
-
-	if (App.dx.Flags & 0x80)
-		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
-#if 0
-	else
-		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
-#endif
-
+	DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
 	S_DumpScreen();
-
-	if (App.dx.Flags & 0x80)
-		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
-#if 0
-	else
-		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
-#endif
+	DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
 
 	S_DumpScreen();
 }
@@ -118,13 +102,9 @@ bool WinRunCheck(LPSTR WindowName, LPSTR ClassName, HANDLE* mutex)
 
 		if (window)
 		{
-#ifdef GENERAL_FIXES
 			SendMessage(window, WM_ACTIVATE, WA_ACTIVE, 0);
 			SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 			SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-#else
-			SendMessage(window, WM_ACTIVATE, 0, 0);
-#endif
 		}
 
 		return 1;
@@ -236,11 +216,7 @@ void WinProcessCommands(long cmd)
 		}
 		else
 		{
-#if 0
-			SetCursor(LoadCursor(App.hInstance, MAKEINTRESOURCE(104)));
-#else
 			SetCursor(LoadCursor(0, IDC_ARROW));
-#endif
 			ShowCursor(1);
 		}
 	}
@@ -529,66 +505,14 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	HWND desktop;
 	HDC hdc;
 	DEVMODE devmode;
-#if 0
-	HWND dbg;
-	static ulong dbm_command;
-	static ulong dbm_clearlog;
-	long dbgflag;
-#endif
-#ifndef GENERAL_FIXES
-	bool drive;
-#endif
 
 	start_setup = 0;
 	App.mmx = CheckMMXTechnology();
 	App.SetupComplete = 0;
 	App.AutoTarget = 0;
 
-#if 0
-	Log_Init(1);
-	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
-
-	if (dbg)
-		PostMessage(dbg, dbm_command, 2, 0);
-
-	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
-
-	if (dbg)
-		PostMessage(dbg, dbm_clearlog, 0, 0);
-
-	Log_DefType("Error", 0xFF, 1);
-	Log_DefType("Function", 0x8000, 0);
-	Log_DefType("DirectX Information", 0x802040, 1);
-	Log_DefType("Object Release", 128, 0);
-	Log_DefType("General Information", 0x800000, 1);
-	Log_DefType("Windows Message", 0x800080, 0);
-	Log_DefType("Level Info", 0x8000FF, 0);
-	Log_DefType("Sound", 0x8080, 0);
-	Log(5, "Launching - %s", "Tomb Raider Chronicles");
-	Log(2, "WinMain");
-	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
-	dbgflag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-	dbgflag |= _CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_LEAK_CHECK_DF;
-	_CrtSetDbgFlag(dbgflag);
-#endif
-
 	if (WinRunCheck((char*)"Tomb Raider Chronicles", (char*)"MainGameWindow", &App.mutex))
 		return 0;
-
-#ifndef GENERAL_FIXES
-	if (!FindCDDrive())
-	{
-		drive = 0;
-
-		while (!drive)
-		{
-			if (MessageBox(0, "Tomb Raider Chronicles CD", "Tomb Raider", MB_RETRYCANCEL | MB_ICONQUESTION) == IDCANCEL)
-				return 0;
-
-			drive = FindCDDrive();
-		}
-	}
-#endif
 
 	LoadGameflow();
 	WinProcessCommandLine(lpCmdLine);
@@ -602,11 +526,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	App.WindowClass.lpfnWndProc = WinMainWndProc;
 	App.WindowClass.cbClsExtra = 0;
 	App.WindowClass.cbWndExtra = 0;
-#if 0
-	App.WindowClass.hCursor = LoadCursor(App.hInstance, MAKEINTRESOURCE(104));
-#else
 	App.WindowClass.hCursor = LoadCursor(0, IDC_ARROW);
-#endif
 
 	if (!RegisterClass(&App.WindowClass))
 	{
@@ -643,7 +563,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 		LoadSettings();
 	}
 
-#ifdef GENERAL_FIXES
 	if (!fmvs_disabled)
 	{
 		if (!LoadBinkStuff())
@@ -652,7 +571,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 			fmvs_disabled = 1;
 		}
 	}
-#endif
 
 	SetWindowPos(App.hWnd, 0, App.dx.rScreen.left, App.dx.rScreen.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	desktop = GetDesktopWindow();
@@ -670,13 +588,11 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 		return 0;
 	}
 
-#ifdef GENERAL_FIXES	//remove the border in fullscreen
 	if (G_dxptr->Flags & 1)
 	{
 		SetWindowLongPtr(App.hWnd, GWL_STYLE, WS_POPUP);
 		SetWindowPos(App.hWnd, 0, App.dx.rScreen.left, App.dx.rScreen.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	}
-#endif
 
 	aCheckBumpMappingSupport();
 	UpdateWindow(App.hWnd);
@@ -712,58 +628,5 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	ReleaseDC(desktop, hdc);
 	devmode.dmFields = DM_BITSPERPEL;
 	ChangeDisplaySettings(&devmode, 0);
-
-#if 0
-	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
-
-	if (dbg)
-		PostMessageA(dbg, dbm_command, 4, 0);
-#endif
-
 	return 0;
-}
-
-long MungeFPCW(short* fpcw)
-{
-#ifdef GENERAL_FIXES
-	return 0;
-#else
-	long ret;
-	short cw, temp;
-
-	ret = 0;
-
-	__asm
-	{
-		fstcw cw
-	}
-
-	if (cw & 0x300 || (cw & 0x3F) != 0x3F || cw & 0xC00)
-	{
-		__asm
-		{
-			mov ax, cw
-			and ax, not 0x300
-			or ax, 0x3F
-			and ax, not 0xC00
-			mov temp, ax
-			fldcw temp
-		}
-
-		ret = 1;
-	}
-
-	*fpcw = cw;
-	return ret;
-#endif
-}
-
-void RestoreFPCW(short fpcw)
-{
-#ifndef GENERAL_FIXES
-	__asm
-	{
-		fldcw fpcw
-	}
-#endif
 }

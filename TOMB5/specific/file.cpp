@@ -33,9 +33,7 @@
 #include "../game/effects.h"
 #include "../game/effect2.h"
 #include "../game/lara.h"
-#ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
-#endif
 
 TEXTURESTRUCT* textinfo;
 SPRITESTRUCT* spriteinfo;
@@ -85,9 +83,7 @@ bool LoadTextureInfos()
 		textinfo[i].tpage = tex.tpage & 0x7FFF;
 		textinfo[i].flag = tex.tpage ^ (tex.tpage ^ tex.flag) & 0x7FFF;
 
-#ifdef GENERAL_FIXES
-		if (
-			(gfCurrentLevel == LVL5_STREETS_OF_ROME && (i == 200 || i == 204)) ||
+		if ((gfCurrentLevel == LVL5_STREETS_OF_ROME && (i == 200 || i == 204)) ||
 			(gfCurrentLevel == LVL5_TRAJAN_MARKETS && (i == 225 || i == 229)) ||
 			(gfCurrentLevel == LVL5_COLOSSEUM && (i == 244 || i == 240)) ||
 			(gfCurrentLevel == LVL5_BASE && (i == 213 || i == 210)) ||
@@ -97,8 +93,7 @@ bool LoadTextureInfos()
 			((gfCurrentLevel >= LVL5_GALLOWS_TREE && gfCurrentLevel <= LVL5_OLD_MILL) && (i == 148 || i == 144)) ||
 			(gfCurrentLevel == LVL5_THIRTEENTH_FLOOR && (i == 99 || i == 103)) ||
 			(gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS && (i == 105 || i == 101)) ||
-			(gfCurrentLevel == LVL5_RED_ALERT && (i == 133 || i == 137))
-			)
+			(gfCurrentLevel == LVL5_RED_ALERT && (i == 133 || i == 137)))
 		{
 			textinfo[i].u1 = (tex.u1 >> 8) * (1.0f / 256.0f);
 			textinfo[i].v1 = (tex.v1 >> 8) * (1.0f / 256.0f);
@@ -112,7 +107,7 @@ bool LoadTextureInfos()
 			textinfo[i].v4 = (tex.v4 >> 8) * (1.0f / 256.0f);
 			continue;
 		}
-#endif
+
 		textinfo[i].u1 = (tex.u1 >> 8) * (1.0f / 256.0f);
 		textinfo[i].v1 = (tex.v1 >> 8) * (1.0f / 256.0f);
 		textinfo[i].u2 = (tex.u2 >> 8) * (1.0f / 256.0f);
@@ -152,12 +147,6 @@ FILE* FileOpen(const char* Filename)
 	char cdFilename[80];
 
 	memset(cdFilename, 0, 80);
-#ifndef GENERAL_FIXES
-	cdFilename[0] = cd_drive;
-	cdFilename[1] = ':';
-	cdFilename[2] = '\\';
-#endif
-
 	strcat(cdFilename, Filename);
 	Log(5, "FileOpen - %s", cdFilename);
 	fp = fopen(cdFilename, "rb");
@@ -421,10 +410,8 @@ bool LoadAnimatedTextures()
 	aranges = (short*)game_malloc(num_anim_ranges * 2, 0);
 	memcpy(aranges, FileData, num_anim_ranges * 2);
 
-#ifdef GENERAL_FIXES
-	if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS) // Fixes UVRotate in lift cutscene
+	if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
 		aranges[2] = 2076;
-#endif
 
 	FileData += num_anim_ranges * sizeof(short);
 	nAnimUVRanges = *(char*)FileData;
@@ -840,9 +827,7 @@ long S_LoadLevelFile(long num)
 
 	Log(2, "S_LoadLevelFile");
 
-#ifdef GENERAL_FIXES
 	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits && !gfStatus))
-#endif
 	{
 		if (!MonoScreenOn)
 		{
@@ -877,21 +862,13 @@ long S_LoadLevelFile(long num)
 		InitialiseSortList();
 		DrawLoadingScreen();
 		SortPolyList(SortCount, SortList);
-		RestoreFPCW(FPCW);
 		DrawSortList();
-		MungeFPCW(&FPCW);
 		S_DumpScreenFrame();
 	}
 
-#ifdef GENERAL_FIXES
 	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits && !gfStatus))
-#endif
 	{
-#ifdef GENERAL_FIXES
 		if (MonoScreenOn == 2)
-#else
-		if (MonoScreenOn == 1)
-#endif
 			ReleaseScreen();
 	}
 

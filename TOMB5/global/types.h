@@ -1189,13 +1189,11 @@ struct SAVEGAME_INFO
 	char buffer[7245];
 };
 
-#ifdef GENERAL_FIXES
 struct tomb5_save_info
 {
 	ushort LHolster;
 	ushort dash_timer;
 };
-#endif
 
 struct DYNAMIC
 {
@@ -2231,7 +2229,6 @@ struct FOGBULB_STRUCT	//fog data used to apply fog on vertices
 	long visible;
 };
 
-#ifdef GENERAL_FIXES
 struct SPOTLIGHT_STRUCT
 {
 	FVECTOR vec;
@@ -2240,7 +2237,6 @@ struct SPOTLIGHT_STRUCT
 	float b;
 	float rad;
 };
-#endif
 
 struct FCAMERA
 {
@@ -2454,7 +2450,6 @@ struct CUTSEQ_SELECTOR
 	short num;
 };
 
-#ifdef GENERAL_FIXES
 struct GouraudBarColourSet
 {
 	uchar abLeftRed[5];
@@ -2537,5 +2532,4 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool look_transparency;		//on off
 	bool static_lighting;		//on off
 };
-#endif
 #pragma pack(pop)

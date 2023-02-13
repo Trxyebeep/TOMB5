@@ -12,10 +12,8 @@
 #include "../game/gameflow.h"
 #include "dxshell.h"
 #include "specificfx.h"
-#ifdef GENERAL_FIXES
 #include "../game/savegame.h"
 #include "../tomb5/tomb5.h"
-#endif
 
 WATERTAB WaterTable[22][64];
 THREAD MainThread;
@@ -133,9 +131,7 @@ long S_SaveGame(long slot_num)
 		WriteFile(file, &minutes, 2, &bytes, 0);
 		WriteFile(file, &seconds, 2, &bytes, 0);
 		WriteFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, 0);
-#ifdef GENERAL_FIXES
 		WriteFile(file, &tomb5_save, sizeof(tomb5_save_info), &bytes, 0);
-#endif
 		CloseHandle(file);
 		wsprintf(counter, "%d", SaveCounter);
 		SaveCounter++;
@@ -162,9 +158,7 @@ long S_LoadGame(long slot_num)
 		ReadFile(file, &value, sizeof(long), &bytes, 0);
 		ReadFile(file, &value, sizeof(long), &bytes, 0);
 		ReadFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, 0);
-#ifdef GENERAL_FIXES
 		ReadFile(file, &tomb5_save, sizeof(tomb5_save_info), &tomb5_save_size, 0);
-#endif
 		CloseHandle(file);
 		return 1;
 	}
@@ -204,8 +198,6 @@ void GameClose()
 
 unsigned int __stdcall GameMain(void* ptr)
 {
-	long fpcw;
-
 	Log(2, "GameMain");
 
 	if (GameInitialise())
@@ -216,28 +208,18 @@ unsigned int __stdcall GameMain(void* ptr)
 		InitFont();
 		TIME_Init();
 		App.SetupComplete = 1;
-		fpcw = MungeFPCW(&FPCW);
 		S_CDStop();
 		ClearSurfaces();
 
 		if (!App.SoundDisabled)
 			SOUND_Init();
 
-#ifdef GENERAL_FIXES	//Better here than in DoGameflow
 		RPC_Init();
 		init_tomb5_stuff();
-#endif
-
 		DoGameflow();
 		GameClose();
 		S_CDStop();
-
-#ifdef GENERAL_FIXES
 		RPC_close();
-#endif
-
-		if (fpcw)
-			RestoreFPCW(FPCW);
 
 		PostMessage(App.hWnd, WM_CLOSE, 0, 0);
 		MainThread.active = 0;

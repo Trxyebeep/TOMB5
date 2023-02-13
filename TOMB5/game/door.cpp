@@ -29,12 +29,7 @@ static PHD_VECTOR PullDoorPos = { -201, 0, 322 };
 static PHD_VECTOR PushDoorPos = { 201, 0, -702 };
 static PHD_VECTOR KickDoorPos = { 0, 0, -917 };
 static PHD_VECTOR UnderwaterDoorPos = { -251, -540, -46 };
-
-#ifdef GENERAL_FIXES
 static PHD_VECTOR CrowbarDoorPos = { -412, 0, 140 };
-#else
-static PHD_VECTOR CrowbarDoorPos = { -412, 0, 256 };
-#endif
 
 void ShutThatDoor(DOORPOS_DATA* d, DOOR_DATA* dd)
 {

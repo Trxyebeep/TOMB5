@@ -16,7 +16,6 @@ long default_font_height;
 long GnFrameCounter;
 uchar ScaleFlag;
 
-#ifdef GENERAL_FIXES
 char AccentTable[46][2] =
 {
 	{'{', ' '},
@@ -66,7 +65,6 @@ char AccentTable[46][2] =
 	{' ', ' '},
 	{'~', ' '}
 };
-#endif
 
 #pragma warning(push)
 #pragma warning(disable : 4838)
@@ -278,13 +276,11 @@ long GetStringLength(const char* string, short* top, short* bottom)
 				def = &CharDef[s + 74];
 			else
 			{
-#ifdef GENERAL_FIXES
 				if (s >= 128 && s <= 173)
 				{
 					accent = 1;
 					s = AccentTable[s - 128][0];
 				}
-#endif
 
 				def = &CharDef[s - '!'];
 			}
@@ -308,10 +304,8 @@ long GetStringLength(const char* string, short* top, short* bottom)
 
 	if (top)
 	{
-#ifdef GENERAL_FIXES
 		if (accent)
 			highest -= 4;
-#endif
 
 		*top = highest;
 	}
@@ -397,7 +391,6 @@ void PrintString(ushort x, ushort y, uchar col, const char* string, ushort flags
 			continue;
 		}
 
-#ifdef GENERAL_FIXES
 		if (s >= 128 && s <= 173)
 		{
 			def = &CharDef[AccentTable[s - 128][0] - '!'];
@@ -408,7 +401,6 @@ void PrintString(ushort x, ushort y, uchar col, const char* string, ushort flags
 				DrawChar(def->w / 2 + x2 - 3, y + def->YOffset, col, accent);
 		}
 		else
-#endif
 		{
 			if (s < ' ')
 				def = &CharDef[s + 74];

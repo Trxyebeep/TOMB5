@@ -6,9 +6,7 @@
 #include "control.h"
 #include "objects.h"
 #include "lara.h"
-#ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
-#endif
 
 short* GLaraShadowframe;
 long lara_matrices[180];
@@ -179,7 +177,6 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 
 	phd_TranslateRel(bone[25], bone[26], bone[27]);
 
-#ifdef GENERAL_FIXES//rotate her head and torso when she's HK'ing
 	if (lara.weapon_item != NO_ITEM && lara.gun_type == WEAPON_HK &&
 		(items[lara.weapon_item].current_anim_state == 0 || items[lara.weapon_item].current_anim_state == 1 ||
 			items[lara.weapon_item].current_anim_state == 2 || items[lara.weapon_item].current_anim_state == 3 ||
@@ -189,7 +186,6 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 		gar_RotYXZsuperpack(&rot, 7);
 	}
 	else
-#endif
 		gar_RotYXZsuperpack(&rot, 0);
 
 	phd_RotYXZ(lara.torso_y_rot, lara.torso_x_rot, lara.torso_z_rot);
@@ -648,7 +644,6 @@ void Rich_CalcLaraMatrices_Interpolated(short* frame1, short* frame2, long frac,
 
 	phd_TranslateRel_I(bone[25], bone[26], bone[27]);
 
-#ifdef GENERAL_FIXES//rotate her head and torso when she's HK'ing
 	if (lara.weapon_item != NO_ITEM && lara.gun_type == WEAPON_HK &&
 		(items[lara.weapon_item].current_anim_state == 0 || items[lara.weapon_item].current_anim_state == 1 ||
 			items[lara.weapon_item].current_anim_state == 2 || items[lara.weapon_item].current_anim_state == 3 ||
@@ -659,7 +654,6 @@ void Rich_CalcLaraMatrices_Interpolated(short* frame1, short* frame2, long frac,
 		gar_RotYXZsuperpack_I(&rot, &rot2, 7);
 	}
 	else
-#endif
 		gar_RotYXZsuperpack_I(&rot, &rot2, 0);
 
 	phd_RotYXZ_I(lara.torso_y_rot, lara.torso_x_rot, lara.torso_z_rot);

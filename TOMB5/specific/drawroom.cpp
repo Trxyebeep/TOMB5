@@ -15,10 +15,8 @@
 #include "../game/control.h"
 #include "3dmath.h"
 #include "../game/effect2.h"
-#ifdef GENERAL_FIXES
-#include "../tomb5/tomb5.h"
 #include "../game/gameflow.h"
-#endif
+#include "../tomb5/tomb5.h"
 
 FOGBULB_INFO LevelFogBulbs[64];		//list of all fogbulbs in the level (copied from room data)
 FOGBULB_STRUCT ActiveFogBulbs[64];	//list of active fog bulbs
@@ -49,6 +47,7 @@ static float rClipRight;
 static ROOM_INFO* CurrentRoomPtr;
 static long CurrentRoomUnderwater;
 static ulong GlobalColor;
+static bool has_water_neighbor;
 
 void DrawBoundsRectangle(float left, float top, float right, float bottom)
 {
@@ -226,9 +225,6 @@ void RoomTestThing()
 {
 
 }
-
-#ifdef GENERAL_FIXES
-bool has_water_neighbor;
 
 static bool IsMistVert(FVECTOR* v)
 {
@@ -409,7 +405,6 @@ static bool IsShoreVert(FVECTOR* v)
 
 	return 0;
 }
-#endif
 
 void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWaterVerts, long nShoreVerts)
 {
@@ -429,9 +424,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal;
 	short clipFlag;
 	uchar rnd, absval;
-#ifdef GENERAL_FIXES
 	uchar flags;
-#endif
 	char choppy, shimmer;
 
 	clip = clipflags;
@@ -440,10 +433,8 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	if (!(App.dx.Flags & 0x80))	//no wibble on software mode
 		cam_underwater = 0;
 
-#ifdef GENERAL_FIXES
 	DistanceFogStart = tomb5.distance_fog * 1024.0F;
 	iDistanceFogStart = 1.0F / DistanceFogStart;
-#endif
 
 	num = iDistanceFogStart * 255.0F;
 
@@ -551,7 +542,6 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		cG = (long)fG;
 		cB = (long)fB;
 
-#ifdef GENERAL_FIXES
 		flags = 0;
 
 		if (tomb5.shimmer)
@@ -582,7 +572,6 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 				}
 			}
 		}
-#endif
 
 		if (CurrentRoomUnderwater)
 		{
@@ -596,7 +585,6 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			cG += iVal;
 			cB += iVal;
 		}
-#ifdef GENERAL_FIXES
 		else if (flags & 1)
 		{
 			wx = long(xyz.x / 64.0F);
@@ -621,31 +609,10 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			iVal = (shimmer + absval) << 3;
 			cG += abs(iVal);
 		}
-#else
-		else if (nShoreVerts && i > nWaterVerts && i < nShoreVerts + nWaterVerts)
-		{
-			wx = long(xyz.x * 0.015625F);
-			wy = long(xyz.y * 0.015625F);
-			wz = long(xyz.z * 0.0078125F);
-			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(wx + wy + wz) & 0x3F].random;
-			shimmer = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
-			absval = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
-			iVal = shimmer + absval;
-			cR += iVal;
-			cG += iVal;
-			cB += iVal;
-		}
-#endif
 
-#ifdef GENERAL_FIXES
 		if (zbak > DistanceFogStart)
 		{
 			val = (zbak - DistanceFogStart) * num;
-#else
-		if (zbak > DistanceFogEnd)
-		{
-			val = (zbak - DistanceFogEnd) * num;
-#endif
 			cR -= (long)val;
 			cG -= (long)val;
 			cB -= (long)val;
@@ -898,9 +865,7 @@ void ProcessMeshData(long num_meshes)
 	mesh_vtxbuf = (MESH_DATA**)game_malloc(4 * num_meshes, 0);
 	mesh_base = (short*)malloc_ptr;
 	no_mesh = 0;
-#ifdef GENERAL_FIXES	//uninitialized
 	data = 0;
-#endif
 
 	for (int i = 0; i < num_meshes; i++)
 	{

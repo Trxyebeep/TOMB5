@@ -47,20 +47,7 @@ static short KeyBuffer[32];
 
 void DXReadKeyboard(char* KeyMap)
 {
-#ifndef GENERAL_FIXES	//Arsunt's fix for keyboard deadlock, reproduceable in TR5 when a debugger breakpoint is hit..
-	HRESULT state;
-
-	state = G_dxptr->Keyboard->GetDeviceState(256, KeyMap);
-
-	if (FAILED(state))
-	{
-		if (state == DIERR_INPUTLOST)
-			G_dxptr->Keyboard->Acquire();
-
-		G_dxptr->Keyboard->GetDeviceState(256, KeyMap);
-	}
-#else
-	while FAILED(G_dxptr->Keyboard->GetDeviceState(256, KeyMap))	//original only acquires keyboard at DIERR_INPUTLOST
+	while FAILED(G_dxptr->Keyboard->GetDeviceState(256, KeyMap))
 	{
 		if FAILED(G_dxptr->Keyboard->Acquire())
 		{
@@ -68,7 +55,6 @@ void DXReadKeyboard(char* KeyMap)
 			break;
 		}
 	}
-#endif
 }
 
 void DXBitMask2ShiftCnt(ulong mask, uchar* shift, uchar* count)
@@ -752,12 +738,6 @@ long DXCreate(long w, long h, long bpp, long Flags, DXPTR* dxptr, HWND hWnd, lon
 	}
 
 	DXAttempt(G_dxptr->lpD3DDevice->SetRenderTarget(G_dxptr->lpBackBuffer, 0));
-
-#if 0
-	if (!(G_dxptr->Flags & 0x80))
-		CreateFakeD3D();
-#endif
-
 	return 1;
 }
 

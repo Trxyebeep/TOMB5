@@ -13,11 +13,9 @@
 #include "input.h"
 #include "../game/lara.h"
 #include "../game/subsuit.h"
-#ifdef GENERAL_FIXES
 #include "../game/savegame.h"
-#include "../tomb5/tomb5.h"
 #include "../game/lara2gun.h"
-#endif
+#include "../tomb5/tomb5.h"
 
 static long lara_mesh_sweetness_table[15] = { 0, 1, 2, 3, 4, 5, 6, 7, 14, 8, 9, 10, 11, 12, 13 };
 static char lara_underwater_skin_sweetness_table[15] = { 0, 2, 3, 0, 5, 6, 7, 9, 10, 11, 12, 13, 14, 8, 0 };
@@ -125,9 +123,7 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
 
-#ifdef GENERAL_FIXES
 	if (tomb5.look_transparency)
-#endif
 	{
 		if (input & IN_LOOK)
 		{
@@ -263,7 +259,6 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 
 	if (!(gfLevelFlags & GF_YOUNGLARA))
 	{
-#ifdef GENERAL_FIXES
 		obj = &objects[LHolster];
 		meshpp = &meshes[obj->mesh_index];
 		meshpp += 8;
@@ -297,44 +292,10 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 		aMXPtr[M22] = lara_matricesF[4 * 12 + M22];
 		aMXPtr[M23] = lara_matricesF[4 * 12 + M23];
 		phd_PutPolygons(*meshpp, -1);
-#else
-		obj = &objects[lara.holster];
-		meshpp = &meshes[obj->mesh_index];
-		meshpp += 8;
-		aMXPtr[M00] = lara_matricesF[1 * 12 + M00];//holsters
-		aMXPtr[M01] = lara_matricesF[1 * 12 + M01];
-		aMXPtr[M02] = lara_matricesF[1 * 12 + M02];
-		aMXPtr[M03] = lara_matricesF[1 * 12 + M03];
-		aMXPtr[M10] = lara_matricesF[1 * 12 + M10];
-		aMXPtr[M11] = lara_matricesF[1 * 12 + M11];
-		aMXPtr[M12] = lara_matricesF[1 * 12 + M12];
-		aMXPtr[M13] = lara_matricesF[1 * 12 + M13];
-		aMXPtr[M20] = lara_matricesF[1 * 12 + M20];
-		aMXPtr[M21] = lara_matricesF[1 * 12 + M21];
-		aMXPtr[M22] = lara_matricesF[1 * 12 + M22];
-		aMXPtr[M23] = lara_matricesF[1 * 12 + M23];
-		phd_PutPolygons(*meshpp, -1);
-		meshpp += 8;
-		aMXPtr[M00] = lara_matricesF[4 * 12 + M00];
-		aMXPtr[M01] = lara_matricesF[4 * 12 + M01];
-		aMXPtr[M02] = lara_matricesF[4 * 12 + M02];
-		aMXPtr[M03] = lara_matricesF[4 * 12 + M03];
-		aMXPtr[M10] = lara_matricesF[4 * 12 + M10];
-		aMXPtr[M11] = lara_matricesF[4 * 12 + M11];
-		aMXPtr[M12] = lara_matricesF[4 * 12 + M12];
-		aMXPtr[M13] = lara_matricesF[4 * 12 + M13];
-		aMXPtr[M20] = lara_matricesF[4 * 12 + M20];
-		aMXPtr[M21] = lara_matricesF[4 * 12 + M21];
-		aMXPtr[M22] = lara_matricesF[4 * 12 + M22];
-		aMXPtr[M23] = lara_matricesF[4 * 12 + M23];
-		phd_PutPolygons(*meshpp, -1);
-#endif
 
 		if (lara.back_gun)//back gun
 		{
 			phd_PushMatrix();
-
-#ifdef GENERAL_FIXES	//fixes back weapons not drawing
 			aMXPtr[M00] = lara_matricesF[7 * indices_count + M00];
 			aMXPtr[M01] = lara_matricesF[7 * indices_count + M01];
 			aMXPtr[M02] = lara_matricesF[7 * indices_count + M02];
@@ -347,20 +308,6 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 			aMXPtr[M21] = lara_matricesF[7 * indices_count + M21];
 			aMXPtr[M22] = lara_matricesF[7 * indices_count + M22];
 			aMXPtr[M23] = lara_matricesF[7 * indices_count + M23];
-#else
-			aMXPtr[0] = *((float*)(&lara_matrices[84]) + 0);
-			aMXPtr[1] = *((float*)(&lara_matrices[84]) + 1);
-			aMXPtr[2] = *((float*)(&lara_matrices[84]) + 2);
-			aMXPtr[3] = *((float*)(&lara_matrices[84]) + 3);
-			aMXPtr[4] = *((float*)(&lara_matrices[84]) + 4);
-			aMXPtr[5] = *((float*)(&lara_matrices[84]) + 5);
-			aMXPtr[6] = *((float*)(&lara_matrices[84]) + 6);
-			aMXPtr[7] = *((float*)(&lara_matrices[84]) + 7);
-			aMXPtr[8] = *((float*)(&lara_matrices[84]) + 8);
-			aMXPtr[9] = *((float*)(&lara_matrices[84]) + 9);
-			aMXPtr[10] = *((float*)(&lara_matrices[84]) + 10);
-			aMXPtr[11] = *((float*)(&lara_matrices[84]) + 11);
-#endif
 			bone = objects[lara.back_gun].bone_index;
 			phd_TranslateRel(bones[bone + 53], bones[bone + 54], bones[bone + 55]);
 			rot = objects[lara.back_gun].frame_base + 9;
@@ -402,9 +349,7 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
 
-#ifdef GENERAL_FIXES
 	if (tomb5.look_transparency)
-#endif
 	{
 		if (input & IN_LOOK)
 		{
@@ -592,9 +537,7 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
 
-#ifdef GENERAL_FIXES
 	if (tomb5.look_transparency)
-#endif
 	{
 		if (input & IN_LOOK)
 		{
@@ -708,11 +651,8 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 	PHD_VECTOR v0;
 	PHD_VECTOR v1;
 	short** meshpp;
-#ifdef GENERAL_FIXES
 	short* rot;
-	long bone;
-#endif
-	long cos, sin, xRot, top, bottom, left, right, stash;
+	long cos, sin, xRot, top, bottom, left, right, stash, bone;
 
 	top = phd_top;
 	bottom = phd_bottom;
@@ -725,10 +665,6 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 	phd_right = phd_winxmax;
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
-
-#ifndef GENERAL_FIXES
-	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-#endif
 
 	if (!mirror)
 		CalculateObjectLightingLara();
@@ -826,7 +762,6 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 		meshpp += 2;
 	}
 
-#ifdef GENERAL_FIXES
 	if (lara.back_gun)
 	{
 		phd_PushMatrix();
@@ -849,7 +784,6 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 		phd_PutPolygonsSpcXLU(meshes[objects[lara.back_gun].mesh_index + 28], -1);
 		phd_PopMatrix();
 	}
-#endif
 
 	phd_PopMatrix();
 	phd_left = left;

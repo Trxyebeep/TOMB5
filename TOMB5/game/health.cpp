@@ -13,11 +13,9 @@
 #include "../specific/3dmath.h"
 #include "lara.h"
 #include "savegame.h"
-#ifdef GENERAL_FIXES
 #include "larafire.h"
 #include "../specific/input.h"
 #include "../tomb5/tomb5.h"
-#endif
 
 DISPLAYPU pickups[8];
 short PickupX;
@@ -48,9 +46,7 @@ void DrawGameInfo(long timed)
 {
 	long flash_state, seconds;
 	char buf[80];
-#ifdef GENERAL_FIXES
 	short ammo, btm;
-#endif
 
 	if (!GLOBAL_playing_cutseq && !bDisableLaraControl && gfGameMode != 1)
 	{
@@ -62,13 +58,11 @@ void DrawGameInfo(long timed)
 		if (DashTimer < 120)
 			S_DrawDashBar(100 * DashTimer / 120);
 
-#ifdef GENERAL_FIXES
 		if (lara.target)
 		{
 			if (tomb5.enemy_bars && lara.target->hit_points > 0)
 				S_DrawEnemyBar(100 * lara.target->hit_points / objects[lara.target->object_number].hit_points);
 		}
-#endif
 
 		if (gfLevelFlags & GF_TIMER && savegame.Level.Timer && savegame.Level.Timer < 108000)
 		{
@@ -83,7 +77,6 @@ void DrawGameInfo(long timed)
 			PrintString(92, 24, 0, buf, 0);
 		}
 
-#ifdef GENERAL_FIXES
 		if (tomb5.ammo_counter)
 		{
 			if (lara.gun_status == LG_READY)
@@ -102,9 +95,7 @@ void DrawGameInfo(long timed)
 				}
 			}
 		}
-#endif
 
-#ifdef GENERAL_FIXES	//Ammotype change tings
 		if (ammo_change_timer)
 		{
 			ammo_change_timer--;
@@ -113,7 +104,6 @@ void DrawGameInfo(long timed)
 			if (ammo_change_timer <= 0)
 				ammo_change_timer = 0;
 		}
-#endif
 	}
 }
 

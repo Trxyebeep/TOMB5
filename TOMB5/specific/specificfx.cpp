@@ -27,13 +27,9 @@
 #include "../game/effect2.h"
 #include "gamemain.h"
 #include "../game/draw.h"
-
-#ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 
 #define CIRCUMFERENCE_POINTS 32 // Number of points in the circumference
-#endif
-
 #define LINE_POINTS	4	//number of points in each grid line
 #define POINT_HEIGHT_CORRECTION	196	//if the difference between the floor below Lara and the floor height below the point is greater than this value, point height is corrected to lara's floor level.
 #define NUM_TRIS	14	//number of triangles needed to create the shadow (this depends on what shape you're doing)
@@ -187,6 +183,7 @@ static MESH_DATA* binocsMeshP;
 static RAINDROPS Rain[2048];
 static SNOWFLAKE Snow[2048];
 static UWEFFECTS uwdust[256];
+static STARS stars[2048];
 static PHD_VECTOR NodeVectors[16];
 static float StarFieldPositions[1024];
 static long StarFieldColors[256];
@@ -199,7 +196,6 @@ static short snow_count;
 static short max_rain;
 static short max_snow;
 
-#ifdef GENERAL_FIXES
 static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 {
 	TEXTURESTRUCT Tex;
@@ -426,7 +422,6 @@ static void S_PrintSpriteShadow(short size, short* box, ITEM_INFO* item)
 	AddQuadSorted(v, 0, 1, 2, 3, &Tex, 0);
 	nPolyType = opt;
 }
-#endif
 
 void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 {
@@ -444,7 +439,6 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 	long x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, xSize, zSize, xDist, zDist;
 	short room_number;
 
-#ifdef GENERAL_FIXES
 	if (tomb5.shadow_mode != 1)
 	{
 		if (tomb5.shadow_mode == 4)
@@ -454,7 +448,6 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 
 		return;
 	}
-#endif
 
 	xSize = size * (box[1] - box[0]) / 192;	//x size of grid
 	zSize = size * (box[5] - box[4]) / 192;	//z size of grid
@@ -594,47 +587,28 @@ void DrawLaserSightSprite()
 	SPRITESTRUCT* sprite;
 	D3DTLVERTEX v[4];
 	TEXTURESTRUCT tex;
-#ifdef GENERAL_FIXES
 	FVECTOR vec;
-#else
-	PHD_VECTOR vec;
-#endif
-	long* Z;
-	short* pos;
-	short* XY;
-	float zv;
+	FVECTOR pos;
+	float zv, x, y, z;
+	long x1, y1, x2, y2;
 	short size;
 
-	XY = (short*)&scratchpad[0];
-	Z = (long*)&scratchpad[256];
-	pos = (short*)&scratchpad[512];
 	phd_PushMatrix();
 	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
-	pos[0] = short(LaserSightX - lara_item->pos.x_pos);
-	pos[1] = short(LaserSightY - lara_item->pos.y_pos);
-	pos[2] = short(LaserSightZ - lara_item->pos.z_pos);
 
-#ifdef GENERAL_FIXES
-	vec.x = aMXPtr[M00] * pos[0] + aMXPtr[M01] * pos[1] + aMXPtr[M02] * pos[2] + aMXPtr[M03];
-	vec.y = aMXPtr[M10] * pos[0] + aMXPtr[M11] * pos[1] + aMXPtr[M12] * pos[2] + aMXPtr[M13];
-	vec.z = aMXPtr[M20] * pos[0] + aMXPtr[M21] * pos[1] + aMXPtr[M22] * pos[2] + aMXPtr[M23];
+	x = float(LaserSightX - lara_item->pos.x_pos);
+	y = float(LaserSightY - lara_item->pos.y_pos);
+	z = float(LaserSightZ - lara_item->pos.z_pos);
+	vec.x = aMXPtr[M00] * x + aMXPtr[M01] * y + aMXPtr[M02] * z + aMXPtr[M03];
+	vec.y = aMXPtr[M10] * x + aMXPtr[M11] * y + aMXPtr[M12] * z + aMXPtr[M13];
+	vec.z = aMXPtr[M20] * x + aMXPtr[M21] * y + aMXPtr[M22] * z + aMXPtr[M23];
 	zv = f_persp / vec.z;
-	XY[0] = short(float(vec.x * zv + f_centerx));
-	XY[1] = short(float(vec.y * zv + f_centery));
-	Z[0] = (long)vec.z;
-#else
-	vec.x = phd_mxptr[M00] * pos[0] + phd_mxptr[M01] * pos[1] + phd_mxptr[M02] * pos[2] + phd_mxptr[M03];
-	vec.y = phd_mxptr[M10] * pos[0] + phd_mxptr[M11] * pos[1] + phd_mxptr[M12] * pos[2] + phd_mxptr[M13];
-	vec.z = phd_mxptr[M20] * pos[0] + phd_mxptr[M21] * pos[1] + phd_mxptr[M22] * pos[2] + phd_mxptr[M23];
-	zv = f_persp / (float)vec.z;
-	XY[0] = short(float(vec.x * zv + f_centerx));
-	XY[1] = short(float(vec.y * zv + f_centery));
-	Z[0] = vec.z >> 14;
-#endif
+	pos.x = vec.x * zv + f_centerx;
+	pos.y = vec.y * zv + f_centery;
+	pos.z = vec.z;
 
 	phd_PopMatrix();
 
-#ifdef GENERAL_FIXES	//restore the target sprite
 	if (LaserSightCol)
 	{
 		size = (GlobalCounter & 7) + 16;
@@ -645,13 +619,12 @@ void DrawLaserSightSprite()
 		size = 4;
 		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
 	}
-#else
-	size = 2;
-	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
-#endif
 
-	setXY4(v, XY[0] - size, XY[1] - size, XY[0] + size, XY[1] - size, XY[0] - size,
-		XY[1] + size, XY[0] + size, XY[1] + size, (long)f_mznear, clipflags);
+	x1 = long(pos.x - size);
+	x2 = long(pos.x + size);
+	y1 = long(pos.y - size);
+	y2 = long(pos.y + size);
+	setXY4(v, x1, y1, x2, y1, x1, y2, x2, y2, (long)f_mznear, clipflags);
 
 	v[0].color = LaserSightCol ? 0x0000FF00 : 0x00FF0000;
 	v[1].color = v[0].color;
@@ -673,16 +646,12 @@ void DrawLaserSightSprite()
 	tex.v3 = sprite->y1;
 	tex.u4 = sprite->x2;
 	tex.v4 = sprite->y1;
-#ifdef GENERAL_FIXES
 	AddQuadSorted(v, 0, 1, 3, 2, &tex, 0);
-#else
-	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
-#endif
+
 	LaserSightCol = 0;
 	LaserSightActive = 0;
 }
 
-#ifdef GENERAL_FIXES
 #define SetVecXYZ(num, X, Y, Z)	 vec[(num)].x = (X); vec[(num)].y = (Y); vec[(num)].z = (Z);
 
 void SetSkyCoords(FVECTOR* vec, long segment, long def)
@@ -976,7 +945,7 @@ void DrawPSXSky(ulong color, long zpos, long ypos, long drawtype)
 		for (int j = 0; j < 4; j++)
 			DrawSkySegment(color, drawtype, j, i, zpos, ypos);
 }
-#endif
+
 void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 {
 	PHD_VECTOR vec[4];
@@ -985,13 +954,11 @@ void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype)
 	short* clip;
 	long x, y, z;
 
-#ifdef GENERAL_FIXES
 	if (tomb5.PSX_skies)
 	{
 		DrawPSXSky(color, zpos, ypos, drawtype);
 		return;
 	}
-#endif
 
 	phd_PushMatrix();
 
@@ -1162,11 +1129,7 @@ void DrawMoon()
 		x2 = v[0].sx + 48.0F;
 		y1 = v[0].sy - 48.0F;
 		y2 = v[0].sy + 48.0F;
-#ifdef GENERAL_FIXES
 		z = f_mzfar;
-#else
-		z = f_mzfar - 1024.0F;
-#endif
 		aSetXY4(v, x1, y1, x2, y1, x1, y2, x2, y2, z, c);
 		v[0].color = 0xC0E0FF;
 		v[1].color = 0xC0E0FF;
@@ -1185,19 +1148,13 @@ void DrawMoon()
 		tex.u4 = sprite->x1;
 		tex.v4 = sprite->y2;
 		tex.tpage = tpage;
-#ifdef GENERAL_FIXES
 		tex.drawtype = 2;
 		AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
-#else
-		tex.drawtype = 0;
-		AddQuadZBuffer(v, 0, 1, 3, 2, &tex, 1);
-#endif
 	}
 
 	phd_PopMatrix();
 }
 
-#ifdef GENERAL_FIXES
 static void S_DrawGasCloud(ITEM_INFO* item, GAS_CLOUD* cloud)
 {
 	FVECTOR* vtx;
@@ -1367,7 +1324,6 @@ static void S_DrawGasCloud(ITEM_INFO* item, GAS_CLOUD* cloud)
 		pulse++;
 	}
 }
-#endif
 
 void DrawGasCloud(ITEM_INFO* item)
 {
@@ -1389,11 +1345,7 @@ void DrawGasCloud(ITEM_INFO* item)
 	if (!cloud->mTime)
 		cloud->yo = -6144.0F;
 
-#ifdef GENERAL_FIXES
 	TriggerFogBulbFX(0, 196, 0, item->pos.x_pos, long(item->pos.y_pos + cloud->yo), item->pos.z_pos, 2048, 40);
-#else
-	TriggerFogBulbFX(0, 128, 0, item->pos.x_pos, long(item->pos.y_pos + cloud->yo), item->pos.z_pos, 4096, 40);
-#endif
 
 	if (cloud->yo < -3584.0F)
 		cloud->yo += 12.0F;
@@ -1422,11 +1374,7 @@ void DrawGasCloud(ITEM_INFO* item)
 				num = 64;
 
 			sec = &cloud[cloud->num];
-#ifdef GENERAL_FIXES
 			TriggerFogBulbFX(0, 196, 0, item->pos.x_pos + sec->t.x, item->pos.y_pos + sec->t.y, item->pos.z_pos + sec->t.z, 1536, num);
-#else
-			TriggerFogBulbFX(0, 255, 0, item->pos.x_pos + sec->t.x, item->pos.y_pos + sec->t.y, item->pos.z_pos + sec->t.z, 1024, num);
-#endif
 		}
 
 		cloud->sTime++;
@@ -1435,21 +1383,9 @@ void DrawGasCloud(ITEM_INFO* item)
 	cloud->mTime++;
 
 	for (int i = 0; i < 8; i++, cloud++)
-	{
-#ifdef GENERAL_FIXES
 		S_DrawGasCloud(item, cloud);
-#else
-		phd_PushMatrix();
-		phd_TranslateAbs(item->pos.x_pos + cloud->t.x, item->pos.y_pos + cloud->t.y, item->pos.z_pos + cloud->t.z);
-		phd_RotY(-CamRot.y << 4);
-		phd_RotX(-4096);
-		phd_PopMatrix();
-#endif
-	}
 }
 
-#ifdef GENERAL_FIXES
-STARS stars[2048];
 
 static void DrawStars()
 {
@@ -1586,116 +1522,10 @@ static void DrawStars()
 		}
 	}
 }
-#endif
 
 void DrawStarField()
 {
-	D3DTLVERTEX v[4];
-	TEXTURESTRUCT tex;
-	static long first_time = 0;
-	float* pPos;
-	long* pCol;
-	float x, y, z, fx, fy, fz, bx, by;
-	long col;
-
-#ifdef GENERAL_FIXES
 	DrawStars();
-	return;
-#endif
-
-	if (!first_time)
-	{
-		pPos = StarFieldPositions;
-		pCol = StarFieldColors;
-
-		for (int i = 0; i < 256; i++)
-		{
-			pPos[0] = ((rand() & 0x1FF) + 512.0F) * fSin(i * 512);
-			pPos++;
-			pPos[0] = (float)(-rand() % 1900);
-			pPos++;
-			pPos[0] = ((rand() & 0x1FF) + 512.0F) * fCos(i * 512);
-			pPos++;
-			pPos[0] = (rand() & 1) + 1.0F;
-			pPos++;
-			col = rand() & 0x7F;
-			pCol[0] = RGBONLY(col + 128, col + 128, col + 192);
-			pCol++;
-		}
-
-		first_time = 1;
-	}
-
-	tex.drawtype = 0;
-	tex.tpage = 0;
-	tex.flag = 0;
-	phd_PushMatrix();
-	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
-	SetD3DViewMatrix();
-	phd_PopMatrix();
-	pPos = StarFieldPositions;
-	pCol = StarFieldColors;
-	clipflags[0] = 0;
-	clipflags[1] = 0;
-	clipflags[2] = 0;
-	clipflags[3] = 0;
-
-	for (int i = 0; i < 184; i++)
-	{
-		fx = pPos[0];
-		pPos++;
-		fy = pPos[0];
-		pPos++;
-		fz = pPos[0];
-		pPos++;
-		col = pCol[0];
-		pCol++;
-		x = fx * D3DMView._11 + fy * D3DMView._21 + fz * D3DMView._31;
-		y = fx * D3DMView._12 + fy * D3DMView._22 + fz * D3DMView._32;
-		z = fx * D3DMView._13 + fy * D3DMView._23 + fz * D3DMView._33;
-		fy = pPos[0];
-		pPos++;
-
-		if (z >= f_mznear)
-		{
-			fz = f_mpersp / z;
-			bx = fz * x + f_centerx;
-			by = fz * y + f_centery;
-
-			if (bx >= 0 && bx <= (float)phd_winxmax && by >= 0 && by <= (float)phd_winymax)
-			{
-				v[0].sx = bx;
-				v[0].sy = by;
-				v[0].color = col;
-				v[0].specular = 0xFF000000;
-				v[0].rhw = f_mpersp / f_mzfar * f_moneopersp;
-				v[0].tu = 0;
-				v[0].tv = 0;
-				v[1].sx = bx + fy;
-				v[1].sy = by;
-				v[1].color = col;
-				v[1].specular = 0xFF000000;
-				v[1].rhw = f_mpersp / f_mzfar * f_moneopersp;
-				v[1].tu = 0;
-				v[1].tv = 0;
-				v[2].sx = bx;
-				v[2].sy = by + fy;
-				v[2].color = col;
-				v[2].specular = 0xFF000000;
-				v[2].rhw = f_mpersp / f_mzfar * f_moneopersp;
-				v[2].tu = 0;
-				v[2].tv = 0;
-				v[3].sx = bx + fy;
-				v[3].sy = by + fy;
-				v[3].color = col;
-				v[3].specular = 0xFF000000;
-				v[3].rhw = f_mpersp / f_mzfar * f_moneopersp;
-				v[3].tu = 0;
-				v[3].tv = 0;
-				AddQuadZBuffer(v, 0, 1, 3, 2, &tex, 1);
-			}
-		}
-	}
 }
 
 void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z2, long x3, long y3, long z3, short* clip)
@@ -2175,17 +2005,12 @@ void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz)
 			v[2].specular = 0xFF000000;
 			v[3].specular = 0xFF000000;
 
-#ifdef GENERAL_FIXES
 			if (sptr->TransType == 3)
 				tex.drawtype = 5;
+			else if (sptr->TransType)
+				tex.drawtype = 2;
 			else
-#endif
-			{
-				if (sptr->TransType)
-					tex.drawtype = 2;
-				else
-					tex.drawtype = 1;
-			}
+				tex.drawtype = 1;
 
 			tex.tpage = sprite->tpage;
 			tex.u1 = sprite->x1;
@@ -2205,9 +2030,7 @@ void DoRain()
 {
 	RAINDROPS* rptr;
 	ROOM_INFO* r;
-#ifdef GENERAL_FIXES
 	FLOOR_INFO* floor;
-#endif
 	D3DTLVERTEX v[2];
 	TEXTURESTRUCT tex;
 	FVECTOR vec;
@@ -2272,14 +2095,10 @@ void DoRain()
 				rptr->z >= r->z + (x_size << 10) || rptr->x <= x || rptr->x >= r->x + (y_size << 10))
 			{
 				room_number = rptr->room_number;
-#ifdef GENERAL_FIXES
-				floor =		//only need it for Get(Water)Height
-#endif
-				GetFloor(rptr->x, rptr->y, rptr->z, &room_number);
+				floor = GetFloor(rptr->x, rptr->y, rptr->z, &room_number);
 
 				if (room_number == rptr->room_number || room[room_number].flags & ROOM_UNDERWATER)
 				{
-#ifdef GENERAL_FIXES
 					if (room[room_number].flags & ROOM_UNDERWATER)
 					{
 					//	clr = GetWaterHeight(rptr->x, rptr->y, rptr->z, room_number);
@@ -2292,9 +2111,6 @@ void DoRain()
 						clr = GetHeight(floor, rptr->x, rptr->y, rptr->z);
 						TriggerSmallSplash(rptr->x, clr, rptr->z, 1);
 					}
-#else
-					TriggerSmallSplash(rptr->x, rptr->y, rptr->z, 1);
-#endif
 					rptr->x = 0;
 					continue;
 				}
@@ -2342,11 +2158,7 @@ void DoRain()
 	cright = f_right - 4.0F;
 	phd_PushMatrix();
 	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
-#ifdef GENERAL_FIXES
 	aSetViewMatrix();
-#else
-	SetD3DViewMatrix();
-#endif
 
 	for (int i = 0; i < rain_count; i++)
 	{
@@ -2460,15 +2272,7 @@ void OutputSky()
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, 1);
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, 1);
 	SortPolyList(SortCount, SortList);
-	RestoreFPCW(FPCW);
-#if 0
-	MMXSetPerspecLimit(0);
 	DrawSortList();
-	MMXSetPerspecLimit(0x3F19999A);
-#else
-	DrawSortList();
-#endif
-	MungeFPCW(&FPCW);
 	InitBuckets();
 	InitialiseSortList();
 }
@@ -2484,7 +2288,6 @@ void SetFade(long start, long end)
 
 void DoScreenFade()
 {
-#ifdef GENERAL_FIXES
 	D3DTLVERTEX v[4];
 	TEXTURESTRUCT tex;
 	long a;
@@ -2535,18 +2338,6 @@ void DoScreenFade()
 	clipflags[2] = 0;
 	clipflags[3] = 0;
 	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
-#else
-	FadeVal += FadeStep;
-	FadeCnt++;
-
-	if (FadeCnt > 8)
-		DoFade = 2;
-
-	clipflags[0] = 0;
-	clipflags[1] = 0;
-	clipflags[2] = 0;
-	clipflags[3] = 0;
-#endif
 }
 
 void ClipCheckPoint(D3DTLVERTEX* v, float x, float y, float z, short* clip)
@@ -2829,17 +2620,10 @@ void DrawBinoculars()
 		if (InfraRed)
 		{
 			aSetXY4(irVtx, 0, 0, phd_winxmax, 0, 0, phd_winymax, phd_winxmax, phd_winymax, f_mznear + 1, clipflags);
-#ifdef GENERAL_FIXES
 			irVtx[0].color = 0x3FFF0000;
 			irVtx[1].color = 0x3FFF0000;
 			irVtx[2].color = 0x3FFF0000;
 			irVtx[3].color = 0x3FFF0000;
-#else
-			irVtx[0].color = 0x64FF0000;
-			irVtx[1].color = 0x64FF0000;
-			irVtx[2].color = 0x64FF0000;
-			irVtx[3].color = 0x64FF0000;
-#endif
 			irVtx[0].specular = 0xFF000000;
 			irVtx[1].specular = 0xFF000000;
 			irVtx[2].specular = 0xFF000000;
@@ -2884,15 +2668,9 @@ void aDrawWreckingBall(ITEM_INFO* item, long shade)
 
 	vec = (SVECTOR*)&scratchpad[0];
 
-#ifdef GENERAL_FIXES
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
 	aTransformPerspSV(vec, aVertexBuffer, clipflags, 9, RGBA(shade / 3, shade / 3, shade / 3, shade));
 	tex.drawtype = 5;
-#else
-	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 11];
-	aTransformPerspSV(vec, aVertexBuffer, clipflags, 9, shade << 24);
-	tex.drawtype = 3;
-#endif
 
 	tex.tpage = sprite->tpage;
 	tex.u1 = sprite->x1;
@@ -3116,11 +2894,7 @@ void DoSnow()
 
 	phd_PushMatrix();
 	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
-#ifdef GENERAL_FIXES
 	aSetViewMatrix();
-#else
-	SetD3DViewMatrix();
-#endif
 
 	clipflags[0] = 0;
 	clipflags[1] = 0;
@@ -5841,7 +5615,6 @@ void DrawSteamLasers(ITEM_INFO* item)
 	phd_PopMatrix();
 }
 
-#ifdef GENERAL_FIXES
 void S_DrawFloorLasers(ITEM_INFO* item)
 {
 	FLOORLASER_STRUCT* laser;
@@ -6037,7 +5810,6 @@ void S_DrawFloorLasers(ITEM_INFO* item)
 		pulse++;
 	}
 }
-#endif
 
 void DrawLightning()
 {

@@ -172,9 +172,7 @@ void GetActorJointAbsPosition(long actornum, ulong nodenum, PHD_VECTOR* vec);
 void init_cutseq_actors(char* data, long resident);
 void init_resident_cutseq(long num);
 void nail_intelligent_object(short objnum);
-#ifdef GENERAL_FIXES
 void do_cutseq_skipper_stuff();
-#endif
 
 extern NEW_CUTSCENE* GLOBAL_cutme;
 extern long nSpecialCut;

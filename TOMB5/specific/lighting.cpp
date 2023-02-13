@@ -24,9 +24,7 @@ long MaxRoomLights;
 D3DMATRIX aLightMatrix;
 SUNLIGHT_STRUCT SunLights[16];
 POINTLIGHT_STRUCT PointLights[64];
-#ifdef GENERAL_FIXES
 SPOTLIGHT_STRUCT SpotLights[64];
-#endif
 
 ITEM_INFO* current_item;
 FVECTOR lGlobalMeshPos;
@@ -40,7 +38,6 @@ char bLaraInWater;
 long StaticMeshShade;
 static ITEM_INFO StaticMeshLightItem;
 static long SetupLight_thing;
-static long unused_bLaraUnderWater;
 static D3DLIGHT_STRUCT* D3DLights;
 static D3DLIGHT_STRUCT* D3DDynamics;
 
@@ -67,11 +64,7 @@ void InitObjectLighting(ITEM_INFO* item)
 
 	if (item == lara_item && bLaraInWater)
 	{
-#ifdef GENERAL_FIXES	//fixes lara's node ambient in water
 		if (bLaraUnderWater < 0)
-#else
-		if (unused_bLaraUnderWater < 0)
-#endif
 		{
 			node_ambient = LaraNodeAmbient[0];
 			item->il.fcnt = 0;
@@ -84,43 +77,23 @@ void InitObjectLighting(ITEM_INFO* item)
 	aAmbientR = CLRR(node_ambient);
 	aAmbientG = CLRG(node_ambient);
 	aAmbientB = CLRB(node_ambient);
-
-#ifndef GENERAL_FIXES // Fixes shadows
-	if (aAmbientR < 16)
-		aAmbientR = 16;
-
-	if (aAmbientG < 16)
-		aAmbientG = 16;
-
-	if (aAmbientB < 16)
-		aAmbientB = 16;
-#endif
 }
 
 void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 {
 	SUNLIGHT_STRUCT* sun;
 	POINTLIGHT_STRUCT* point;
-#ifdef GENERAL_FIXES
 	SPOTLIGHT_STRUCT* spot;
-#endif
 	float x, y, z, num, num2;
 	long aR, aG, aB, val, val2;
 
 	if (light->Type == LIGHT_SUN)
 	{
 		sun = &SunLights[NumSunLights];
-#ifdef GENERAL_FIXES
 		x = light->nx;
 		y = light->ny;
 		z = light->nz;
 		num = -1.0F / sqrt(SQUARE(z) + SQUARE(y) + SQUARE(x));	//MINUS one because level files have inverted direction
-#else
-		x = (float)light->inx;
-		y = (float)light->iny;
-		z = (float)light->inz;
-		num = 1.0F / (float)(SQUARE(z) + SQUARE(y) + SQUARE(x));
-#endif
 
 		sun->vec.x = (aLightMatrix._11 * x + aLightMatrix._12 * y + aLightMatrix._13 * z) * num;
 		sun->vec.y = (aLightMatrix._21 * x + aLightMatrix._22 * y + aLightMatrix._23 * z) * num;
@@ -147,15 +120,12 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		point->b = light->b * 255.0F;
 		point->rad = (light->Outer - num2) / light->Outer;
 
-#ifdef GENERAL_FIXES // Fixes flashes
 		if (point->rad < 0)
 			point->rad = 0;
-#endif
 
 		NumPointLights++;
 		TotalNumLights++;
 	}
-#ifdef GENERAL_FIXES
 	else if (light->Type == LIGHT_SPOT)
 	{
 		x = light->x - lGlobalMeshPos.x;
@@ -178,7 +148,6 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		NumSpotLights++;
 		TotalNumLights++;
 	}
-#endif
 	else if (light->Type == LIGHT_SHADOW)
 	{
 		aR = CLRR(*ambient);
@@ -188,12 +157,10 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		val2 = light->shadow >> 3;
 
 		if (val >= light->Inner)
-			val2 = (long)((val - light->Outer) / ((light->Outer - light->Inner) / -val2));
+			val2 = long((val - light->Outer) / ((light->Outer - light->Inner) / -val2));
 
-#ifdef GENERAL_FIXES // Fixes flashes
 		if (val2 < 0)
 			val2 = 0;
-#endif
 
 		val = val2 >> 1;
 		aR -= val;
@@ -308,10 +275,7 @@ void CreateLightList(ITEM_INFO* item)
 		dx = current_lights[i].ix - item->il.item_pos.x;
 		dy = current_lights[i].iy - item->il.item_pos.y;
 		dz = current_lights[i].iz - item->il.item_pos.z;
-
-#ifdef GENERAL_FIXES	//uninitialized
 		range = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-#endif
 
 		if (current_lights[i].Type == LIGHT_POINT || current_lights[i].Type == LIGHT_SHADOW)
 		{

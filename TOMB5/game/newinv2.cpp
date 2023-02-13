@@ -27,9 +27,7 @@
 #include "../specific/file.h"
 #include "spotcam.h"
 #include "../specific/dxshell.h"
-#ifdef GENERAL_FIXES
 #include "savegame.h"
-#endif
 
 static RINGME* rings[2];
 static RINGME pcring1;
@@ -397,7 +395,6 @@ long S_CallInventory2()
 	else
 		inventry_objects_list[INV_BINOCULARS_ITEM].objname = TXT_Binoculars;
 
-#ifdef GENERAL_FIXES//restore HK tip, and properly align HK in iris
 	inventry_objects_list[INV_HK_ITEM1].meshbits = -1;
 
 	if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
@@ -416,7 +413,6 @@ long S_CallInventory2()
 		inventry_objects_list[INV_HK_ITEM1].flags = 2;
 		inventry_objects_list[INV_HK_ITEM1].yoff = 0;
 	}
-#endif
 
 	friggrimmer = 0;
 	oldLaraBusy = lara.Busy != 0;
@@ -471,9 +467,6 @@ long S_CallInventory2()
 		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
 			keymap[DIK_B] && keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_S])//BITS
 		{
-#ifndef GENERAL_FIXES	//no items with BITS
-			dels_give_lara_items_cheat();
-#endif
 			savegame.CampaignSecrets[0] = 9;
 			savegame.CampaignSecrets[1] = 9;
 			savegame.CampaignSecrets[2] = 9;
@@ -772,10 +765,7 @@ void DrawThreeDeeObject2D(long x, long y, long num, long shade, long xrot, long 
 	item.pos.y_rot = short(yrot + objme->yrot);
 	item.pos.z_rot = short(zrot + objme->zrot);
 	item.object_number = objme->object_number;
-	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
-#ifndef GENERAL_FIXES
-	aLookAt(0, 1024, 0, 100, 0, 200, 0);
-#endif
+	phd_LookAt(0, 1024, 0, 100, 0, 200, 0);
 
 	if (!bright)
 		pcbright = 0x7F7F7F;
@@ -931,11 +921,6 @@ void construct_combine_object_list()
 			else
 				insert_object_into_list_v2(INV_REVOLVER_ITEM1);
 		}
-
-#ifndef GENERAL_FIXES//stop HK from appearing in combine list
-		if (lara.hk_type_carried & W_PRESENT)
-			insert_object_into_list_v2(INV_HK_ITEM1);
-#endif
 
 		if (lara.crossbow_type_carried & W_PRESENT && (gfCurrentLevel < LVL5_THIRTEENTH_FLOOR || gfCurrentLevel > LVL5_RED_ALERT))
 		{
@@ -2306,59 +2291,62 @@ void use_current_item()
 
 			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_PISTOLS)
 				lara.gun_status = LG_DRAW_GUNS;
+
+			return;
 		}
-		else if (gmeobject == UZI_ITEM)
+
+		if (gmeobject == UZI_ITEM)
 		{
 			lara.request_gun_type = WEAPON_UZI;
 
 			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_UZI)
 				lara.gun_status = LG_DRAW_GUNS;
-		}
 
-		return;
-	}
-
-	if (gmeobject == SHOTGUN_ITEM || gmeobject == REVOLVER_ITEM || gmeobject == HK_ITEM || gmeobject == CROSSBOW_ITEM)
-	{
-		state = lara_item->current_anim_state;
-
-		if (lara.gun_status == LG_HANDS_BUSY || state == AS_ALL4S || state == AS_CRAWL || state == AS_ALL4TURNL || state == AS_ALL4TURNR ||
-			state == AS_CRAWLBACK || state == AS_CRAWL2HANG || state == AS_DUCK || state == AS_DUCKROTL || state == AS_DUCKROTR)
-		{
-			SayNo();
 			return;
 		}
 
-		if (gmeobject == SHOTGUN_ITEM)
+		if (gmeobject == SHOTGUN_ITEM || gmeobject == REVOLVER_ITEM || gmeobject == HK_ITEM || gmeobject == CROSSBOW_ITEM)
 		{
-			lara.request_gun_type = WEAPON_SHOTGUN;
+			state = lara_item->current_anim_state;
 
-			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == SHOTGUN_ITEM)
-				lara.gun_status = LG_DRAW_GUNS;
+			if (lara.gun_status == LG_HANDS_BUSY || state == AS_ALL4S || state == AS_CRAWL || state == AS_ALL4TURNL || state == AS_ALL4TURNR ||
+				state == AS_CRAWLBACK || state == AS_CRAWL2HANG || state == AS_DUCK || state == AS_DUCKROTL || state == AS_DUCKROTR)
+			{
+				SayNo();
+				return;
+			}
+
+			if (gmeobject == SHOTGUN_ITEM)
+			{
+				lara.request_gun_type = WEAPON_SHOTGUN;
+
+				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == SHOTGUN_ITEM)
+					lara.gun_status = LG_DRAW_GUNS;
+			}
+			else if (gmeobject == REVOLVER_ITEM)
+			{
+				lara.request_gun_type = WEAPON_REVOLVER;
+
+				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_REVOLVER)
+					lara.gun_status = LG_DRAW_GUNS;
+			}
+			else if (gmeobject == HK_ITEM)
+			{
+				lara.request_gun_type = WEAPON_HK;
+
+				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == HK_ITEM)
+					lara.gun_status = LG_DRAW_GUNS;
+			}
+			else
+			{
+				lara.request_gun_type = WEAPON_CROSSBOW;
+
+				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_CROSSBOW)
+					lara.gun_status = LG_DRAW_GUNS;
+			}
+
+			return;
 		}
-		else if (gmeobject == REVOLVER_ITEM)
-		{
-			lara.request_gun_type = WEAPON_REVOLVER;
-
-			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_REVOLVER)
-				lara.gun_status = LG_DRAW_GUNS;
-		}
-		else if (gmeobject == HK_ITEM)
-		{
-			lara.request_gun_type = WEAPON_HK;
-
-			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == HK_ITEM)
-				lara.gun_status = LG_DRAW_GUNS;
-		}
-		else
-		{
-			lara.request_gun_type = WEAPON_CROSSBOW;
-
-			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_CROSSBOW)
-				lara.gun_status = LG_DRAW_GUNS;
-		}
-
-		return;
 	}
 
 	if (gmeobject == FLARE_INV_ITEM)
@@ -2679,9 +2667,7 @@ void NailInvItem(short objnum)
 		break;
 
 	case PISTOLS_ITEM:
-#ifdef GENERAL_FIXES
 		LHolster = LARA_HOLSTERS;
-#endif
 		lara.holster = LARA_HOLSTERS;
 		lara.pistols_type_carried = W_NONE;
 		lara.gun_status = LG_NO_ARMS;
@@ -2916,7 +2902,6 @@ void do_keypad_mode()
 
 	if (keypadpause)
 	{
-#ifdef GENERAL_FIXES
 		x = keypadinputs[0] * 1000 + keypadinputs[1] * 100 + keypadinputs[2] * 10 + keypadinputs[3];
 
 		if (GLOBAL_invkeypadcombination == x)
@@ -2926,7 +2911,6 @@ void do_keypad_mode()
 		}
 		else if (keypadpause == 30 || keypadpause == 25 || keypadpause == 20 || keypadpause == 15 || keypadpause == 10 || keypadpause == 5)
 			SoundEffect(SFX_KEYPAD_ENTRY_NO, 0, SFX_ALWAYS | SFX_SETVOL | 0x1000);
-#endif
 
 		keypadpause--;
 
@@ -3036,7 +3020,6 @@ void do_stats_mode()
 
 void dels_give_lara_items_cheat()
 {
-#ifdef GENERAL_FIXES
 	long piss;
 
 	if (objects[CROWBAR_ITEM].loaded)
@@ -3075,12 +3058,10 @@ void dels_give_lara_items_cheat()
 		lara.keyitemscombo = 0;
 		lara.pickupitemscombo = 0;
 	}
-#endif
 }
 
 void dels_give_lara_guns_cheat()
 {
-#ifdef GENERAL_FIXES
 	if (objects[FLARE_INV_ITEM].loaded)
 		lara.num_flares = -1;
 
@@ -3132,28 +3113,18 @@ void dels_give_lara_guns_cheat()
 		if (objects[SILENCER_ITEM].loaded)
 			lara.silencer = 1;
 	}
-#endif
 }
 
 long LoadGame()
 {
-#ifdef GENERAL_FIXES
 	return S_LoadSave(IN_LOAD, 1, 1) < 0 ? -1 : 1;
-#else
-	return S_LoadSave(IN_LOAD, 1) < 0 ? -1 : 1;
-#endif
 }
 
 long SaveGame()
 {
 	input = 0;
 	dbinput = 0;
-
-#ifdef GENERAL_FIXES
 	return S_LoadSave(IN_SAVE, 1, 1) < 0 ? -1 : 1;
-#else
-	return S_LoadSave(IN_SAVE, 1) < 0 ? -1 : 1;
-#endif
 }
 
 void DelDrawSprite(long x, long y, long def, long z)

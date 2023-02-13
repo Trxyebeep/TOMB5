@@ -39,7 +39,5 @@ extern long bLaraUnderWater;
 extern char bLaraInWater;
 extern SUNLIGHT_STRUCT SunLights[16];
 extern POINTLIGHT_STRUCT PointLights[64];
-#ifdef GENERAL_FIXES
 extern SPOTLIGHT_STRUCT SpotLights[64];
-#endif
 extern long StaticMeshShade;

@@ -63,10 +63,8 @@
 #include "footprnt.h"
 #include "lara.h"
 #include "larafire.h"
-#ifdef GENERAL_FIXES
 #include "savegame.h"
 #include "lara2gun.h"
-#endif
 
 void InitialiseLara(long restore)
 {
@@ -98,9 +96,7 @@ void InitialiseLara(long restore)
 	lara.dpoisoned = 0;
 	lara.poisoned = 0;
 	lara.water_surface_dist = 100;
-#ifdef GENERAL_FIXES
 	LHolster = LARA_HOLSTERS_PISTOLS;
-#endif
 	lara.holster = LARA_HOLSTERS_PISTOLS;
 	lara.location = -1;
 	lara.highest_location = -1;
@@ -475,9 +471,7 @@ void ObjectObjects()
 	for (int i = KEY_HOLE1; i < SWITCH_TYPE1; i++)
 	{
 		obj = &objects[i];
-#ifdef GENERAL_FIXES
 		obj->initialise = InitialiseKeyhole;
-#endif
 		obj->collision = KeyHoleCollision;
 		obj->save_flags = 1;
 	}

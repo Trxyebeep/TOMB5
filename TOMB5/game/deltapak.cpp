@@ -29,14 +29,10 @@
 #include "../specific/audio.h"
 #include "../specific/alexstuff.h"
 #include "lara.h"
-#ifdef GENERAL_FIXES
 #include "savegame.h"
 #include "../tomb5/tomb5.h"
-#endif
 
-#ifdef GENERAL_FIXES
 ushort old_lara_LHolster;
-#endif
 
 long nSpecialCut;
 
@@ -243,9 +239,6 @@ void andrea1_control()
 
 	case 603:
 		undraw_pistol_mesh_right(WEAPON_PISTOLS);
-#ifndef GENERAL_FIXES
-		lara.holster = old_lara_holster;
-#endif
 		break;
 
 	case 705:
@@ -289,12 +282,7 @@ void andrea2_control()
 	else if (frame == 667)
 		undraw_pistol_mesh_left(WEAPON_PISTOLS);
 	else if (frame == 678)
-	{
 		undraw_pistol_mesh_right(WEAPON_PISTOLS);
-#ifndef GENERAL_FIXES
-		lara.holster = old_lara_holster;
-#endif
-	}
 	else if (frame == 2500)
 		lara_item->mesh_bits = 0;
 	else if (frame == 2797)
@@ -1615,11 +1603,6 @@ void joby4_control()
 
 	f = GLOBAL_cutseq_frame;
 
-#ifndef GENERAL_FIXES
-	if (f <= 130)
-		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, SCRIPT_TEXT(TXT_cack), FF_CENTER);
-#endif
-
 	if (f == 575)
 		cutseq_meshbits[5] &= ~0x80000000;
 
@@ -2121,22 +2104,10 @@ void handle_cutseq_triggering(long name)
 				lara.gun_type = WEAPON_NONE;
 				lara.request_gun_type = WEAPON_NONE;
 				lara.gun_status = LG_NO_ARMS;
-#ifndef GENERAL_FIXES // Fixes drawing pistols regardless of last weapon after cutscenes
-				lara.last_gun_type = WEAPON_PISTOLS;
-
-				if (!objects[PISTOLS_ITEM].loaded || lara.pistols_type_carried == W_NONE)
-					lara.last_gun_type = WEAPON_NONE;
-
-				if (gfLevelFlags & GF_OFFICE && objects[HK_ITEM].loaded && lara.hk_type_carried & W_PRESENT)
-					lara.last_gun_type = WEAPON_HK;
-#endif
-
-#ifdef GENERAL_FIXES
 				old_lara_LHolster = LHolster;
 				LHolster = lara.pistols_type_carried == W_NONE ? LARA_HOLSTERS : LARA_HOLSTERS_PISTOLS;
 				old_lara_holster = lara.holster;
 				lara.holster = LHolster;
-#endif
 				lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + (2 * LM_LHAND)];
 				lara.mesh_ptrs[LM_RHAND] = meshes[objects[LARA].mesh_index + (2 * LM_RHAND)];
 				lara.left_arm.frame_number = 0;
@@ -2206,10 +2177,8 @@ void handle_cutseq_triggering(long name)
 		if (cutseq_control_routines[fuck].end_func)
 			cutseq_control_routines[fuck].end_func();
 
-#ifdef GENERAL_FIXES
 		LHolster = old_lara_LHolster;
 		lara.holster = old_lara_holster;
-#endif
 
 		if (fuck <= 4)
 			DelsHandyTeleportLara(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, cutrot << 14);
@@ -2282,11 +2251,7 @@ void handle_cutseq_triggering(long name)
 
 void cutseq_givelara_pistols()
 {
-#ifdef GENERAL_FIXES
 	LHolster = LARA_HOLSTERS;
-#else
-	old_lara_holster = lara.holster;
-#endif
 	lara.holster = LARA_HOLSTERS;
 	draw_pistol_meshes(WEAPON_PISTOLS);
 }
@@ -2295,9 +2260,6 @@ void cutseq_removelara_pistols()
 {
 	undraw_pistol_mesh_left(WEAPON_PISTOLS);
 	undraw_pistol_mesh_right(WEAPON_PISTOLS);
-#ifndef GENERAL_FIXES
-	lara.holster = old_lara_holster;
-#endif
 }
 
 void do_pierre_gun_meshswap()
@@ -3105,9 +3067,6 @@ void do_new_cutscene_camera()
 		camera.pos.room_number = IsRoomOutsideNo;
 
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-#ifndef GENERAL_FIXES
-	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
-#endif
 
 	if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
 		DecodeAnim(actor_pnodes[0], 16, GLOBAL_cutseq_frame, 1023);
@@ -3291,10 +3250,8 @@ void frigup_lara()
 	long* bone;
 	short* frame;
 
-#ifdef GENERAL_FIXES
 	if (cutseq_num == 18 && GLOBAL_cutseq_frame <= 130)
 		PrintString((ushort)phd_centerx, ushort(phd_winymax - 3 * font_height), 5, SCRIPT_TEXT(TXT_cack), FF_CENTER);
-#endif
 
 	lara_item->pos.x_pos = GLOBAL_cutme->orgx;
 	lara_item->pos.y_pos = GLOBAL_cutme->orgy;
@@ -3308,13 +3265,11 @@ void frigup_lara()
 	bone = &bones[object->bone_index];
 	updateAnimFrame(actor_pnodes[0], 16, frame);
 
-#ifdef GENERAL_FIXES	//fixes lara gliding in the larson shootout
 	if (cutseq_num == 8 && (GLOBAL_cutseq_frame >= 696 && GLOBAL_cutseq_frame <= 841))
 	{
 		frame[6] = -69;
 		frame[8] = 267;
 	}
-#endif
 
 	Rich_CalcLaraMatrices_Normal(frame, bone, 0);
 	phd_PushUnitMatrix();
@@ -3531,13 +3486,11 @@ void init_cutseq_actors(char* data, long resident)
 	lastcamnum = -1;
 	GLOBAL_playing_cutseq = 0;
 
-#ifdef GENERAL_FIXES
 	if (cutseq_num == 26)				//restores the ending for the Security Breach cut
 		GLOBAL_cutme->numframes = 1978;	//original is 1700 (ish)
 
 	if (cutseq_num == 4)				//fixes the wrong audio for this cutscene (see 13th floor twogun chloroform cut)
 		GLOBAL_cutme->audio_track = 19;	//original is 40
-#endif
 
 	GLOBAL_numcutseq_frames = GLOBAL_cutme->numframes;
 
@@ -3643,7 +3596,6 @@ void nail_intelligent_object(short objnum)
 	}
 }
 
-#ifdef GENERAL_FIXES
 void do_cutseq_skipper_stuff()
 {
 	ITEM_INFO* item;
@@ -3750,5 +3702,3 @@ void do_cutseq_skipper_stuff()
 	lara_item->mesh_bits = -1;	//for good fucking measure
 	cutseq_trig = 3;	//end it
 }
-
-#endif

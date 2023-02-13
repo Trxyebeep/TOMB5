@@ -12,11 +12,9 @@
 #include "LoadSave.h"
 #include "../game/lara.h"
 #include "../game/savegame.h"
-#ifdef GENERAL_FIXES
 #include "../game/gameflow.h"
 #include "../game/newinv2.h"
 #include "../tomb5/tomb5.h"
-#endif
 
 const char* KeyboardButtons[272] =
 {
@@ -101,7 +99,6 @@ static long joy_fire;
 static double screen_sizer = 1.0;
 static double game_sizer = 1.0;
 
-#ifdef GENERAL_FIXES
 short ammo_change_timer = 0;
 char ammo_change_buf[12];
 
@@ -247,7 +244,6 @@ static void DoWeaponHotkey()
 			lara.gun_status = LG_DRAW_GUNS;
 	}
 }
-#endif
 
 long Key(long number)
 {
@@ -474,9 +470,7 @@ long S_UpdateInput()
 		}
 	}
 
-#ifdef GENERAL_FIXES
 	DoWeaponHotkey();
-#endif
 
 	if (keymap[DIK_0])
 	{
@@ -484,7 +478,6 @@ long S_UpdateInput()
 		{
 			if (lara_item->hit_points > 0 && lara_item->hit_points < 1000 || lara.poisoned)
 			{
-#ifdef GENERAL_FIXES
 				if (lara.num_small_medipack)
 				{
 					if (lara.num_small_medipack != -1)
@@ -506,25 +499,6 @@ long S_UpdateInput()
 
 					med_hotkey_timer = 15;
 				}
-#else
-				if (lara.num_small_medipack && lara.num_small_medipack != -1)
-					lara.num_small_medipack--;
-
-				if (lara.num_small_medipack)
-				{
-					lara.dpoisoned = 0;
-					lara_item->hit_points += 500;
-
-					if (lara_item->hit_points > 1000)
-					{
-						lara_item->hit_points = 1000;
-						SoundEffect(SFX_MENU_MEDI, 0, SFX_ALWAYS);
-						savegame.Game.HealthUsed++;
-					}
-				}
-
-				med_hotkey_timer = 15;
-#endif
 			}
 		}
 	}
@@ -534,7 +508,6 @@ long S_UpdateInput()
 		{
 			if (lara_item->hit_points > 0 && lara_item->hit_points < 1000 || lara.poisoned)
 			{
-#ifdef GENERAL_FIXES
 				if (lara.num_large_medipack)
 				{
 					if (lara.num_large_medipack != -1)
@@ -556,25 +529,6 @@ long S_UpdateInput()
 							setup_objectlist_startposition(INV_COMPASS_ITEM);
 					}
 				}
-#else
-				if (lara.num_large_medipack && lara.num_large_medipack != -1)
-					lara.num_large_medipack--;
-
-				if (lara.num_large_medipack)
-				{
-					lara.dpoisoned = 0;
-					lara_item->hit_points += 1000;
-
-					if (lara_item->hit_points > 1000)
-					{
-						lara_item->hit_points = 1000;
-						SoundEffect(SFX_MENU_MEDI, 0, SFX_ALWAYS);
-						savegame.Game.HealthUsed++;
-					}
-				}
-
-				med_hotkey_timer = 15;
-#endif
 			}
 		}
 	}

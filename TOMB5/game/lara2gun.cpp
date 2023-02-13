@@ -12,13 +12,9 @@
 #include "control.h"
 #include "../specific/input.h"
 #include "lara.h"
-#ifdef GENERAL_FIXES
 #include "savegame.h"
-#endif
 
-#ifdef GENERAL_FIXES
 ushort LHolster;
-#endif
 
 static PISTOL_DEF PistolTable[4] =
 {
@@ -77,10 +73,8 @@ void draw_pistol_meshes(long weapon_type)
 
 	mesh_index = objects[WeaponObjectMesh(weapon_type)].mesh_index;
 
-#ifdef GENERAL_FIXES
 	if (weapon_type != WEAPON_REVOLVER)
 		LHolster = LARA_HOLSTERS;
-#endif
 
 	lara.holster = LARA_HOLSTERS;
 	lara.mesh_ptrs[LM_RHAND] = meshes[mesh_index + LM_RHAND * 2];
@@ -94,17 +88,10 @@ void undraw_pistol_mesh_left(long weapon_type)
 	WeaponObject(weapon_type);
 	lara.mesh_ptrs[LM_LHAND] = meshes[objects[LARA].mesh_index + LM_LHAND * 2];
 
-#ifdef GENERAL_FIXES
 	if (weapon_type == WEAPON_PISTOLS)
 		LHolster = LARA_HOLSTERS_PISTOLS;
 	else if (weapon_type == WEAPON_UZI)
 		LHolster = LARA_HOLSTERS_UZIS;
-#else
-	if (weapon_type == WEAPON_PISTOLS)
-		lara.holster = LARA_HOLSTERS_PISTOLS;
-	else if (weapon_type == WEAPON_UZI)
-		lara.holster = LARA_HOLSTERS_UZIS;
-#endif
 }
 
 void undraw_pistol_mesh_right(long weapon_type)

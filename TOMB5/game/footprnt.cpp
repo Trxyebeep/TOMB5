@@ -7,7 +7,6 @@
 #include "../specific/file.h"
 #include "lara.h"
 #include "../specific/gamemain.h"
-#ifdef GENERAL_FIXES
 #include "../specific/3dmath.h"
 #include "../specific/specificfx.h"
 #include "objects.h"
@@ -15,7 +14,6 @@
 #include "../tomb5/tomb5.h"
 
 #define PRINT_HEIGHT_CORRECTION 128 // The maximum difference between the footprint and the floor
-#endif
 
 static char footsounds[14] = { 0, 5, 3, 2, 1, 9, 9, 4, 6, 5, 3, 9, 4, 6 };
 
@@ -32,15 +30,7 @@ void AddFootprint(ITEM_INFO* item)
 	pos.x = 0;
 	pos.y = 0;
 	pos.z = 0;
-
-#ifdef GENERAL_FIXES
 	GetProperFootPos(&pos);
-#else
-	if (FXType == SFX_LANDONLY)
-		GetLaraJointPos(&pos, LM_LFOOT);
-	else
-		GetLaraJointPos(&pos, LM_RFOOT);
-#endif
 
 	room_num = item->room_number;
 	floor = GetFloor(pos.x, pos.y, pos.z, &room_num);
@@ -48,11 +38,7 @@ void AddFootprint(ITEM_INFO* item)
 	if (floor->fx != 6 && floor->fx != 5 && floor->fx != 11)
 		SoundEffect(footsounds[floor->fx] + 288, &lara_item->pos, 0);
 
-#ifdef GENERAL_FIXES
 	if (tomb5.footprints && floor->fx < 3 && (gfCurrentLevel == LVL5_BASE || !OnObject))
-#else
-	if (floor->fx < 3 && !OnObject)
-#endif
 	{
 		print = &FootPrint[FootPrintNum];
 		print->x = pos.x;
@@ -64,7 +50,6 @@ void AddFootprint(ITEM_INFO* item)
 	}
 }
 
-#ifdef GENERAL_FIXES
 static void ProjectTriPoints(FVECTOR pos, float& x, float& y, float& z)
 {
 	x = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
@@ -458,4 +443,3 @@ void GetProperFootPos(PHD_VECTOR* pos)
 		break;
 	}
 }
-#endif

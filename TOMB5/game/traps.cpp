@@ -693,7 +693,6 @@ void FlameControl(short fx_number)
 
 	fx = &effects[fx_number];
 
-#ifdef GENERAL_FIXES
 	if (lara.water_status == LW_FLYCHEAT)
 	{
 		KillEffect(fx_number);
@@ -702,7 +701,6 @@ void FlameControl(short fx_number)
 		lara.BurnSmoke = 0;
 		return;
 	}
-#endif
 
 	for (int i = 14; i >= 0; i--)
 	{
@@ -989,9 +987,7 @@ void ControlRollingBall(short item_number)
 void TrapDoorControl(short item_number)
 {
 	ITEM_INFO* item;
-#ifdef GENERAL_FIXES
 	short room_number;
-#endif
 
 	item = &items[item_number];
 
@@ -1017,13 +1013,11 @@ void TrapDoorControl(short item_number)
 	else if (!item->current_anim_state && !item->item_flags[2])
 		CloseTrapDoor(item);
 
-#ifdef GENERAL_FIXES	//fixes flickering of trapdoors if they open into another room, see Trajan room 22
 	room_number = item->room_number;
 	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 
 	if (item->room_number != room_number)
 		ItemNewRoom(item_number, room_number);
-#endif
 }
 
 void FloorTrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)

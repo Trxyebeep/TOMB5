@@ -20,9 +20,7 @@
 #include "lara.h"
 #include "tomb4fx.h"
 #include "savegame.h"
-#ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
-#endif
 
 CAMERA_INFO camera;
 
@@ -181,7 +179,6 @@ void CalculateCamera()
 	bounds = GetBoundsAccurate(item);
 	y = ((bounds[2] + bounds[3]) >> 1) + item->pos.y_pos - 256;
 
-#ifdef GENERAL_FIXES
 	if (tomb5.tr4_camera)
 	{
 		if (fixed_camera)
@@ -189,7 +186,6 @@ void CalculateCamera()
 		else
 			y = item->pos.y_pos + bounds[3] + (3 * (bounds[2] - bounds[3]) >> 2);
 	}
-#endif
 
 	if (camera.item)
 	{
@@ -235,13 +231,11 @@ void CalculateCamera()
 		last_target.z = camera.target.z;
 		last_target.room_number = camera.target.room_number;
 
-#ifdef GENERAL_FIXES
 		if (tomb5.tr4_camera)
 		{
 			camera.target.x = item->pos.x_pos;
 			camera.target.z = item->pos.z_pos;
 		}
-#endif
 
 		camera.target.room_number = item->room_number;
 		camera.target.y = y;
@@ -265,7 +259,6 @@ void CalculateCamera()
 			}
 		}
 
-#ifdef GENERAL_FIXES
 		if (tomb5.tr4_camera && !gotit)
 		{
 			if (camera.flags == 1 || UseForcedFixedCamera)
@@ -277,7 +270,6 @@ void CalculateCamera()
 
 			gotit = 1;
 		}
-#endif
 
 		if (!gotit)
 		{
@@ -301,11 +293,7 @@ void CalculateCamera()
 
 			if (camera.speed != 1 && camera.old_type != LOOK_CAMERA && BinocularOn >= 0)
 			{
-#ifdef GENERAL_FIXES
 				if (tomb5.tr4_camera || TargetSnaps <= 8)
-#else
-				if (TargetSnaps <= 8)
-#endif
 				{
 					camera.target.x = last_target.x + ((camera.target.x - last_target.x) >> 2);
 					camera.target.y = last_target.y + ((camera.target.y - last_target.y) >> 2);
@@ -318,11 +306,7 @@ void CalculateCamera()
 
 		GetFloor(camera.target.x, camera.target.y, camera.target.z, &camera.target.room_number);
 
-#ifdef GENERAL_FIXES
 		if (!tomb5.tr4_camera && abs(last_target.x - camera.target.x) < 4 && abs(last_target.y - camera.target.y) < 4 && abs(last_target.z - camera.target.z) < 4)
-#else
-		if (abs(last_target.x - camera.target.x) < 4 && abs(last_target.y - camera.target.y) < 4 && abs(last_target.z - camera.target.z) < 4)
-#endif
 		{
 			camera.target.x = last_target.x;
 			camera.target.y = last_target.y;
@@ -336,10 +320,9 @@ void CalculateCamera()
 	}
 	else
 	{
-#ifdef GENERAL_FIXES
 		if (tomb5.tr4_camera)
 			y -= 256;
-#endif
+
 		if (camera.type == COMBAT_CAMERA)
 		{
 			last_target.x = camera.target.x;
@@ -617,14 +600,12 @@ void UpdateCameraElevation()
 	PHD_VECTOR pos;
 	PHD_VECTOR pos1;
 
-#ifdef GENERAL_FIXES
 	if (tomb5.tr4_camera)
 	{
 		camera.actual_angle = camera.target_angle;
 		camera.actual_elevation = camera.target_elevation;
 		return;
 	}
-#endif
 
 	if (camera.lara_node != -1)
 	{
@@ -810,7 +791,6 @@ void ChaseCamera(ITEM_INFO* item)
 
 	distance = camera.target_distance * phd_cos(camera.actual_elevation) >> 14;
 
-#ifdef GENERAL_FIXES
 	if (tomb5.tr4_camera)
 	{
 		wx = camera.target.x;
@@ -836,7 +816,6 @@ void ChaseCamera(ITEM_INFO* item)
 			camera.actual_elevation = 0;
 		}
 	}
-#endif
 
 	wx = camera.target.x;
 	wy = camera.target.y;
@@ -849,9 +828,7 @@ void ChaseCamera(ITEM_INFO* item)
 
 	if (wy < c || wy > h || c >= h || h == NO_HEIGHT || c == NO_HEIGHT)
 	{
-#ifdef GENERAL_FIXES
 		if (!tomb5.tr4_camera)
-#endif
 			TargetSnaps++;
 
 		camera.target.x = last_target.x;
@@ -859,10 +836,7 @@ void ChaseCamera(ITEM_INFO* item)
 		camera.target.z = last_target.z;
 		camera.target.room_number = last_target.room_number;
 	}
-	else
-#ifdef GENERAL_FIXES
-		if (!tomb5.tr4_camera)
-#endif
+	else if (!tomb5.tr4_camera)
 			TargetSnaps = 0;
 
 	for (int i = 0; i < 5; i++)
@@ -871,10 +845,8 @@ void ChaseCamera(ITEM_INFO* item)
 	farthest = 0x7FFFFFFF;
 	farthestnum = 0;
 
-#ifdef GENERAL_FIXES
 	if (tomb5.tr4_camera)
 		camera.actual_angle += item->pos.y_rot;
-#endif
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -978,10 +950,8 @@ void CombatCamera(ITEM_INFO* item)
 		camera.target_elevation = lara.head_x_rot + lara.torso_x_rot + item->pos.x_rot - 2730;
 	}
 
-#ifdef GENERAL_FIXES
 	if (tomb5.tr4_camera)
 		camera.target_angle += item->pos.y_rot;
-#endif
 
 	wx = camera.target.x;
 	wy = camera.target.y;
@@ -1017,9 +987,7 @@ void CombatCamera(ITEM_INFO* item)
 
 	if (wy < c || wy > h || c >= h || h == NO_HEIGHT || c == NO_HEIGHT)
 	{
-#ifdef GENERAL_FIXES
 		if (!tomb5.tr4_camera)
-#endif
 			TargetSnaps++;
 
 		camera.target.x = last_target.x;
@@ -1027,10 +995,7 @@ void CombatCamera(ITEM_INFO* item)
 		camera.target.z = last_target.z;
 		camera.target.room_number = last_target.room_number;
 	}
-	else
-#ifdef GENERAL_FIXES
-		if (!tomb5.tr4_camera)
-#endif
+	else if (!tomb5.tr4_camera)
 			TargetSnaps = 0;
 
 	UpdateCameraElevation();
@@ -1143,11 +1108,7 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 		old_cam.goal_anim_state == lara_item->goal_anim_state && old_cam.target_distance == camera.target_distance &&
 		old_cam.target_elevation == camera.target_elevation && old_cam.actual_elevation == camera.actual_elevation &&
 		old_cam.target_angle == camera.actual_angle &&
-#ifdef GENERAL_FIXES
 		(tomb5.tr4_camera || (old_cam.t.x == camera.target.x && old_cam.t.y == camera.target.y && old_cam.t.z == camera.target.z)) &&
-#else
-		old_cam.t.x == camera.target.x && old_cam.t.y == camera.target.y && old_cam.t.z == camera.target.z &&
-#endif
 		camera.old_type == camera.type && !SniperOverlay && BinocularOn >= 0)
 	{
 		ideal->x = last_ideal.x;
@@ -1281,9 +1242,6 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 
 	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-#ifndef GENERAL_FIXES
-	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
-#endif
 
 	if (camera.mike_at_lara)
 	{
@@ -1412,9 +1370,6 @@ void BinocularCamera(ITEM_INFO* item)
 
 	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-#ifndef GENERAL_FIXES
-	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
-#endif
 
 	if (camera.mike_at_lara)
 	{
@@ -1847,9 +1802,6 @@ void LookCamera(ITEM_INFO* item)
 
 	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-#ifndef GENERAL_FIXES
-	aLookAt((float)camera.pos.x, (float)camera.pos.y, (float)camera.pos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
-#endif
 
 	if (camera.mike_at_lara)
 	{

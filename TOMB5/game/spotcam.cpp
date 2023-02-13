@@ -9,10 +9,8 @@
 #include "gameflow.h"
 #include "../specific/input.h"
 #include "lara.h"
-#ifdef GENERAL_FIXES
 #include "../specific/dxshell.h"
 #include "../tomb5/tomb5.h"
-#endif
 
 SPOTCAM SpotCam[256];
 long bTrackCamInit = 0;
@@ -429,10 +427,8 @@ void CalculateSpotCams()
 	else if (!spotcam_timer)
 		current_spline_position += cspeed;
 
-#ifdef GENERAL_FIXES
 	if (tomb5.cutseq_skipper && keymap[DIK_ESCAPE] && gfCurrentLevel)
 		current_spline_position = 0x10000;
-#endif
 
 	if (!(input & IN_LOOK))
 		bFirstLook = 0;
@@ -494,12 +490,7 @@ void CalculateSpotCams()
 			}
 		}
 
-#ifdef GENERAL_FIXES
 		phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, (short)croll);
-#else
-		aLookAt(camera.fpos.x, camera.fpos.y, camera.fpos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
-		phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-#endif
 
 		if (bCheckTrigger)
 		{

@@ -30,9 +30,7 @@
 #include "../specific/dxshell.h"
 #include "lara.h"
 #include "cutseq.h"
-#ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
-#endif
 
 GAMEFLOW* Gameflow;
 PHD_VECTOR gfLensFlare;
@@ -91,11 +89,7 @@ static char DEL_playingamefmv = 0;
 static CUTSEQ_SELECTOR cutsel[] =
 {
 	{0, 0, 0},
-#ifdef GENERAL_FIXES
 	{TXT_cut19, LVL5_GALLOWS_TREE, 9},
-#else
-	{TXT_cut19, LVL5_SINKING_SUBMARINE, 13},//cmon del this should be gallows, cut 9!
-#endif
 	{TXT_cut36, LVL5_OLD_MILL, 44},
 	{TXT_cut35, LVL5_OLD_MILL, 43},
 	{TXT_cut34, LVL5_LABYRINTH, 42},
@@ -394,10 +388,6 @@ long TitleOptions()
 			gfLevelComplete = (uchar)gfLevelComplete_bak;
 			gfLevelComplete_bak = 0;
 			load_or_new = 0;
-#ifndef GENERAL_FIXES
-			menu = 0;
-			selection = 1;
-#endif
 			return ret;
 		}
 
@@ -554,8 +544,8 @@ long TitleOptions()
 			ret = 3;
 		}
 
-#ifdef _DEBUG	//new code but not for public releases
-		if (keymap[DIK_F] && keymap[DIK_U] && keymap[DIK_C] && keymap[DIK_K])//F U C K because this is fucking shit.
+#ifdef _DEBUG
+		if (keymap[DIK_F] && keymap[DIK_U] && keymap[DIK_C] && keymap[DIK_K])
 			dels_cutseq_selector_flag = 1;
 #endif
 	}
@@ -716,10 +706,8 @@ void DoTitle(uchar name, uchar audio)
 	if (gfLevelComplete == 1 && gfStatus != 2)
 		PlayFmvNow(2, 1);
 
-#ifdef GENERAL_FIXES
 	if (gfStatus != 4 && tomb5.tr4_loadscreens)
 		RenderLoadPic(0);
-#endif
 
 	if (gfStatus != 4)
 		input = 0;
@@ -731,12 +719,7 @@ long do_dels_cutseq_selector()
 	static uchar selection = 0;
 
 	ret = 0;
-
-#ifdef GENERAL_FIXES
 	PrintString((ushort)phd_centerx, ushort(font_height + phd_winymin), 6, SCRIPT_TEXT(TXT_cut0), FF_CENTER);
-#else
-	PrintString(256, 102, 6, SCRIPT_TEXT(TXT_cut0), FF_CENTER);
-#endif
 	num = selection - 4;
 
 	if (num < 0)
@@ -945,10 +928,8 @@ void DoLevel(uchar Name, uchar Audio)
 	lara.examine2 = 0;
 	lara.examine3 = 0;
 
-#ifdef GENERAL_FIXES
 	if (tomb5.tr4_loadscreens)
 		RenderLoadPic(0);
-#endif
 
 	if (gfStatus == 3 && gfCurrentLevel == LVL5_RED_ALERT)
 	{

@@ -104,7 +104,6 @@ void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, sho
 
 		break;
 
-#ifdef GENERAL_FIXES
 	case 5:
 
 		if (App.dx.lpZBuffer)
@@ -122,7 +121,6 @@ void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, sho
 		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, 1);
 		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
 		break;
-#endif
 
 	case 6:
 
@@ -192,9 +190,7 @@ void DrawSortList()
 	}
 	else
 	{
-#ifdef GENERAL_FIXES				//just to shut VS up
-		pSort = SortList[0];		//if SortCount is < 0 then pSort will be uninitialized in the original, but I don't think that ever happens
-#endif
+		pSort = SortList[0];
 
 		for (num = 0; num < SortCount; num++)
 		{
@@ -251,11 +247,7 @@ void DrawSortList()
 		{
 			pSort = SortList[num];
 
-#ifdef GENERAL_FIXES
 			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 5 || pSort->drawtype == 6 || pSort->drawtype == 7)
-#else
-			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 6 || pSort->drawtype == 7)
-#endif
 				break;
 		}
 
@@ -269,11 +261,7 @@ void DrawSortList()
 		{
 			pSort = SortList[num];
 
-#ifdef GENERAL_FIXES
 			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 5 || pSort->drawtype == 6 || pSort->drawtype == 7)
-#else
-			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 6 || pSort->drawtype == 7)
-#endif
 			{
 				if (pSort->tpage == tpage && pSort->drawtype == drawtype)
 				{

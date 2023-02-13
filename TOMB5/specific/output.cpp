@@ -27,12 +27,10 @@
 #include "../game/effect2.h"
 #include "../game/lara.h"
 #include "gamemain.h"
-#ifdef GENERAL_FIXES
 #include "../game/draw.h"
 #include "../game/health.h"
 #include "../game/text.h"
 #include "../tomb5/tomb5.h"
-#endif
 
 D3DTLVERTEX aVertexBuffer[1024];
 
@@ -75,9 +73,7 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 {
 	POINTLIGHT_STRUCT* point;
 	SUNLIGHT_STRUCT* sun;
-#ifdef GENERAL_FIXES
 	SPOTLIGHT_STRUCT* spot;
-#endif
 	FOGBULB_STRUCT* bulb;
 	FVECTOR vec;
 	FVECTOR vec2;
@@ -85,20 +81,15 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 	FVECTOR vec4;
 	short* clip;
 	float fR, fG, fB, val, val2, val3, zv, fCol, fCol2;
-#ifdef GENERAL_FIXES
 	static float DistanceFogStart, iDistanceFogStart;
 	float fNum, fZ;
-#endif
 	long sR, sG, sB, cR, cG, cB;
 	short clipFlag;
 
 	clip = clipflags;
-
-#ifdef GENERAL_FIXES
 	DistanceFogStart = tomb5.distance_fog * 1024.0F;
 	iDistanceFogStart = 1.0F / DistanceFogStart;
 	fNum = iDistanceFogStart * 255.0F;
-#endif
 
 	for (int i = 0; i < mesh->nVerts; i++)
 	{
@@ -108,9 +99,7 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 		vec.x = (mesh->aVtx[i].x * D3DMView._11) + (mesh->aVtx[i].y * D3DMView._21) + (mesh->aVtx[i].z * D3DMView._31) + D3DMView._41;
 		vec.y = (mesh->aVtx[i].x * D3DMView._12) + (mesh->aVtx[i].y * D3DMView._22) + (mesh->aVtx[i].z * D3DMView._32) + D3DMView._42;
 		vec.z = (mesh->aVtx[i].x * D3DMView._13) + (mesh->aVtx[i].y * D3DMView._23) + (mesh->aVtx[i].z * D3DMView._33) + D3DMView._43;
-#ifdef GENERAL_FIXES
 		fZ = vec.z;
-#endif
 
 		if (TotalNumLights)
 		{
@@ -124,7 +113,6 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 				{
 					point = &PointLights[j];
 
-#ifdef GENERAL_FIXES
 					if (tomb5.tr4_point_lights)
 						val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz);
 					else
@@ -132,9 +120,6 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 						val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
 						val *= val;
 					}
-#else
-					val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
-#endif
 
 					if (val > 0)
 					{
@@ -146,7 +131,6 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 				}
 			}
 
-#ifdef GENERAL_FIXES
 			if (NumSpotLights)
 			{
 				for (int j = 0; j < NumSpotLights; j++)
@@ -163,7 +147,6 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 					}
 				}
 			}
-#endif
 
 			if (NumSunLights)
 			{
@@ -174,11 +157,9 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 
 					if (val > 0)
 					{
-#ifdef GENERAL_FIXES
 						if (!InventoryActive)	//fucking shit
 							val *= 0.75F;
 						else
-#endif
 							val += val;
 
 						fR += val * sun->r;
@@ -199,7 +180,6 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 			cB = aAmbientB;
 		}
 
-#ifdef GENERAL_FIXES
 		if (fZ > DistanceFogStart)
 		{
 			val = fNum * (fZ - DistanceFogStart);
@@ -207,7 +187,6 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 			cG -= (long)val;
 			cB -= (long)val;
 		}
-#endif
 
 		if (cR - 128 <= 0)
 			cR <<= 1;
@@ -421,19 +400,15 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 {
 	FOGBULB_STRUCT* bulb;
-#ifdef GENERAL_FIXES
 	DYNAMIC* light;
-#endif
 	FVECTOR vec;
 	FVECTOR vec2;
 	FVECTOR vec3;
 	FVECTOR vec4;
 	short* clip;
 	float val, val2, val3, zv, fCol, fCol2;
-#ifdef GENERAL_FIXES
 	static float DistanceFogStart, iDistanceFogStart;
 	float fNum, fZ;
-#endif
 	long sR, sG, sB, cR, cG, cB, pR, pG, pB;
 	short clipFlag;
 
@@ -441,12 +416,9 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 	pR = (StaticMeshShade & 0x1F) << 3;
 	pG = ((StaticMeshShade >> 5) & 0x1F) << 3;
 	pB = ((StaticMeshShade >> 10) & 0x1F) << 3;
-
-#ifdef GENERAL_FIXES
 	DistanceFogStart = tomb5.distance_fog * 1024.0F;
 	iDistanceFogStart = 1.0F / DistanceFogStart;
 	fNum = iDistanceFogStart * 255.0F;
-#endif
 
 	for (int i = 0; i < mesh->nVerts; i++)
 	{
@@ -456,9 +428,8 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 		vec.x = (mesh->aVtx[i].x * D3DMView._11) + (mesh->aVtx[i].y * D3DMView._21) + (mesh->aVtx[i].z * D3DMView._31) + D3DMView._41;
 		vec.y = (mesh->aVtx[i].x * D3DMView._12) + (mesh->aVtx[i].y * D3DMView._22) + (mesh->aVtx[i].z * D3DMView._32) + D3DMView._42;
 		vec.z = (mesh->aVtx[i].x * D3DMView._13) + (mesh->aVtx[i].y * D3DMView._23) + (mesh->aVtx[i].z * D3DMView._33) + D3DMView._43;
-#ifdef GENERAL_FIXES
 		fZ = vec.z;
-#endif
+
 		cR = CLRR(mesh->aVtx[i].prelight);
 		cG = CLRG(mesh->aVtx[i].prelight);
 		cB = CLRB(mesh->aVtx[i].prelight);
@@ -466,7 +437,6 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 		cG = (cG * pG) >> 8;
 		cB = (cB * pB) >> 8;
 
-#ifdef GENERAL_FIXES
 		if (tomb5.static_lighting)
 		{
 			for (int j = 0; j < 32; j++)
@@ -501,7 +471,6 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 			cG -= (long)val;
 			cB -= (long)val;
 		}
-#endif
 
 		if (cR - 128 <= 0)
 			cR <<= 1;
@@ -712,8 +681,7 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 	}
 }
 
-#ifdef GENERAL_FIXES
-TR4LS tr4_load_screens[15] =
+static TR4LS tr4_load_screens[15] =
 {
 	{30548, 1770, 14103, 29452, 1576, 14853, 36},			//Title
 	{58434, -634, 42783, 57337, -1048, 40945, 59},			//Streets of Rome
@@ -745,15 +713,12 @@ static inline void GetLoadScreenCam()
 	load_target.z = ls->tz;
 	load_roomnum = ls->rn;
 }
-#endif
 
 void RenderLoadPic(long unused)
 {
 	short poisoned;
 
-#ifdef GENERAL_FIXES
 	GetLoadScreenCam();
-#endif
 	camera.pos.x = load_cam.x;
 	camera.pos.y = load_cam.y;
 	camera.pos.z = load_cam.z;
@@ -779,7 +744,6 @@ void RenderLoadPic(long unused)
 	if (App.dx.InScene)
 		_EndScene();
 
-#ifdef GENERAL_FIXES
 	InitialisePickUpDisplay();
 
 	do
@@ -807,7 +771,6 @@ void RenderLoadPic(long unused)
 
 	S_OutputPolyList();
 	S_DumpScreen();
-#endif
 
 	lara.poisoned = poisoned;
 	GlobalFogOff = 0;
@@ -1574,13 +1537,7 @@ void S_InitialisePolyList()
 	r.y1 = App.dx.rViewport.top;
 	r.y2 = App.dx.rViewport.top + App.dx.rViewport.bottom;
 	r.x2 = App.dx.rViewport.left + App.dx.rViewport.right;
-
-	if (App.dx.Flags & 0x80)
-		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0));
-#if 0
-	else
-		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
-#endif
+	DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0));
 
 	_BeginScene();
 	InitBuckets();
@@ -1593,7 +1550,6 @@ void S_OutputPolyList()
 	static long c;
 	long h;
 
-	RestoreFPCW(FPCW);
 	WinFrameRate();
 	nPolys = 0;
 	nClippedPolys = 0;
@@ -1699,8 +1655,6 @@ void S_OutputPolyList()
 
 		c = 0;
 	}
-
-	MungeFPCW(&FPCW);
 }
 
 void DebugString(char* txt, ...)

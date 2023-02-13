@@ -610,23 +610,15 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 	obj = &objects[item->object_number];
 	frame = GetBestFrame(item);
 	phd_PushUnitMatrix();
-#ifdef GENERAL_FIXES
 	phd_SetTrans(0, 0, 0);
-#else
-	phd_mxptr[M03] = 0;
-	phd_mxptr[M13] = 0;
-	phd_mxptr[M23] = 0;
-#endif
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 	phd_TranslateRel(frame[6], frame[7], frame[8]);
 	rotation = frame + 9;
 	gar_RotYXZsuperpack(&rotation, 0);
 
-#ifdef GENERAL_FIXES	//fix crash if exploding inactive enemies..
 	if (!item->data)
 		extra_rotation = no_rotation;
 	else
-#endif
 		extra_rotation = (short*)item->data;
 
 	bone = &bones[obj->bone_index];

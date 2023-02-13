@@ -22,8 +22,5 @@ extern long joystick_read;
 extern long joystick_read_x;
 extern long joystick_read_y;
 extern long joystick_read_fire;
-
-#ifdef GENERAL_FIXES
 extern short ammo_change_timer;
 extern char ammo_change_buf[12];
-#endif

@@ -35,10 +35,8 @@
 #include "effect2.h"
 #include "lara.h"
 #include "effects.h"
-#ifdef GENERAL_FIXES
 #include "footprnt.h"
 #include "../tomb5/tomb5.h"
-#endif
 
 STATIC_INFO static_objects[70];
 
@@ -407,10 +405,8 @@ void SkyDrawPhase()
 			return;
 		}
 
-#ifdef GENERAL_FIXES
 		if (gfCurrentLevel == LVL5_GALLOWS_TREE || gfCurrentLevel == LVL5_LABYRINTH || gfCurrentLevel == LVL5_OLD_MILL)
 			DrawMoon();
-#endif
 
 		if (BinocularRange)
 			AlterFOV(14560 - (short)BinocularRange);
@@ -474,13 +470,11 @@ void SkyDrawPhase()
 			OutputSky();
 		}
 
-#ifdef GENERAL_FIXES
 		if (gfCurrentLevel == LVL5_GALLOWS_TREE || gfCurrentLevel == LVL5_LABYRINTH || gfCurrentLevel == LVL5_OLD_MILL)
 		{
 			DrawStarField();
 			OutputSky();
 		}
-#endif
 
 		phd_PopMatrix();
 
@@ -563,10 +557,8 @@ void DrawAnimatingItem(ITEM_INFO* item)
 	frac = GetFrames(item, frm, &rate);
 	obj = &objects[item->object_number];
 
-#ifdef GENERAL_FIXES
 	if (obj->shadow_size)
 		S_PrintShadow(obj->shadow_size, frm[0], item);
-#endif
 
 	phd_PushMatrix();
 	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
@@ -898,10 +890,8 @@ void DrawRooms(short current_room)
 	aBuildFogBulbList();
 	aBuildFXFogBulbList();
 
-#ifdef GENERAL_FIXES
 	if (!tomb5.fog)
 		aResetFogBulbList();
-#endif
 
 	mAddProfilerEvent(0xFF00FF00);
 
@@ -953,9 +943,7 @@ void DrawRooms(short current_room)
 	DrawShockwaves();
 	DrawLightning();
 	DrawTwogunLasers();
-#ifdef GENERAL_FIXES
 	S_DrawFootPrints();
-#endif
 	lara_item->pos.x_pos = lx;
 	lara_item->pos.y_pos = ly;
 	lara_item->pos.z_pos = lz;
@@ -1123,71 +1111,19 @@ void RenderIt(short current_room)
 	}
 
 	GetRoomBounds();
-#ifndef GENERAL_FIXES
-	InitialiseFogBulbs();
-	CreateFXBulbs();
-#endif
-
-#ifdef GENERAL_FIXES
 	ProcessClosedDoors();
 	SkyDrawPhase();
-#else
-	if (outside)
-	{
-		if (!objects[HORIZON].loaded)
-			outside = -1;
-		else
-		{
-			if (BinocularRange)
-				AlterFOV(14560 - (short)BinocularRange);
-
-			phd_PushMatrix();
-			phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
-			nPolyType = 6;
-			phd_PushMatrix();
-
-			if (gfLevelFlags & GF_LAYER1)
-			{
-				phd_RotY(32760);
-
-				if (gfLevelFlags & GF_LIGHTNING)
-					DrawFlatSky(RGBA(LightningRGB[0], LightningRGB[1], LightningRGB[2], 44), SkyPos, -1536, 4);
-				else
-					DrawFlatSky(*(ulong*)&gfLayer1Col, SkyPos, -1536, 4);
-			}
-
-			if (gfLevelFlags & GF_LAYER2)
-				DrawFlatSky(0xFF000000 | *(ulong*)&gfLayer2Col, SkyPos2, -1536, 2);
-
-			if (gfLevelFlags & GF_LAYER1 || gfLevelFlags & GF_LAYER2)
-				OutputSky();
-
-			phd_PopMatrix();
-
-			if (gfLevelFlags & GF_HORIZON)
-			{
-				phd_PutPolygonSkyMesh(meshes[objects[HORIZON].mesh_index], -1);
-				OutputSky();
-			}
-
-			phd_PopMatrix();
-		}
-	}
-#endif
 
 	InitDynamicLighting_noparams();
 	nPolyType = 0;
 
-#ifdef GENERAL_FIXES
 	phd_PushMatrix();
 	phd_TranslateAbs(0, 0, 0);
 	SaveD3DCameraMatrix();
 	phd_PopMatrix();
 	aResetFogBulbList();
-#endif
 
 	for (int i = 0; i < number_draw_rooms; i++)
-#ifdef GENERAL_FIXES
 	{
 		r = &room[draw_rooms[i]];
 		phd_PushMatrix();
@@ -1201,15 +1137,10 @@ void RenderIt(short current_room)
 		InsertRoom(r);
 		phd_PopMatrix();
 	}
-#else
-		PrintRooms(draw_rooms[i]);
-#endif
 
-#ifdef GENERAL_FIXES
 	DoWeather();
 	S_DrawFires();
 	DrawLightning();
-#endif
 
 	for (int i = 0; i < number_draw_rooms; i++)
 		PrintObjects(draw_rooms[i]);
@@ -1375,7 +1306,6 @@ void InterpolateMatrix()
 
 	if (IM_rate == 2 || (IM_frac == 2 && IM_rate == 4))
 	{
-#ifdef GENERAL_FIXES
 		phd_mxptr[M00] += (IMptr[M00] - phd_mxptr[M00]) >> 1;
 		phd_mxptr[M01] += (IMptr[M01] - phd_mxptr[M01]) >> 1;
 		phd_mxptr[M02] += (IMptr[M02] - phd_mxptr[M02]) >> 1;
@@ -1388,20 +1318,6 @@ void InterpolateMatrix()
 		phd_mxptr[M21] += (IMptr[M21] - phd_mxptr[M21]) >> 1;
 		phd_mxptr[M22] += (IMptr[M22] - phd_mxptr[M22]) >> 1;
 		phd_mxptr[M23] += (IMptr[M23] - phd_mxptr[M23]) >> 1;
-#else
-		phd_mxptr[M00] = (phd_mxptr[M00] + IMptr[M00]) >> 1;
-		phd_mxptr[M01] = (phd_mxptr[M01] + IMptr[M01]) >> 1;
-		phd_mxptr[M02] = (phd_mxptr[M02] + IMptr[M02]) >> 1;
-		phd_mxptr[M03] = (phd_mxptr[M03] + IMptr[M03]) >> 1;
-		phd_mxptr[M10] = (phd_mxptr[M10] + IMptr[M10]) >> 1;
-		phd_mxptr[M11] = (phd_mxptr[M11] + IMptr[M11]) >> 1;
-		phd_mxptr[M12] = (phd_mxptr[M12] + IMptr[M12]) >> 1;
-		phd_mxptr[M13] = (phd_mxptr[M13] + IMptr[M13]) >> 1;
-		phd_mxptr[M20] = (phd_mxptr[M20] + IMptr[M20]) >> 1;
-		phd_mxptr[M21] = (phd_mxptr[M21] + IMptr[M21]) >> 1;
-		phd_mxptr[M22] = (phd_mxptr[M22] + IMptr[M22]) >> 1;
-		phd_mxptr[M23] = (phd_mxptr[M23] + IMptr[M23]) >> 1;
-#endif
 	}
 	else if (IM_frac == 1)
 	{

@@ -74,9 +74,7 @@ void GladiatorControl(short item_number)
 			{
 				distance = info.distance;
 				da = info.angle;
-#ifdef GENERAL_FIXES // Fixes uninitialised variable
 				front = 1;
-#endif
 			}
 			else
 			{

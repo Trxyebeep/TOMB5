@@ -19,11 +19,9 @@
 #include "../specific/file.h"
 #include "lara.h"
 #include "../specific/gamemain.h"
-#ifdef GENERAL_FIXES
 #include "../specific/specificfx.h"
 #include "../specific/function_table.h"
 #include "../specific/3dmath.h"
-#endif
 
 static PHD_VECTOR SteelDoorLensPos;
 
@@ -440,9 +438,7 @@ void ControlGasCloud(short item_number)
 	if (!TriggerActive(item))
 		return;
 
-#ifdef GENERAL_FIXES
 	if (lara.water_status != LW_FLYCHEAT)
-#endif
 	{
 		if (!lara.Gassed)
 		{
@@ -724,7 +720,6 @@ void ControlSteelDoor(short item_number)
 
 void DrawSprite2(long x, long y, long slot, long col, long size, long z)
 {
-#ifdef GENERAL_FIXES
 	D3DTLVERTEX v[4];
 	SPRITESTRUCT* sprite;
 	TEXTURESTRUCT tex;
@@ -755,12 +750,10 @@ void DrawSprite2(long x, long y, long slot, long col, long size, long z)
 	tex.u4 = sprite->x1;
 	tex.v4 = sprite->y2;
 	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
-#endif
 }
 
 void DrawSteelDoorLensFlare(ITEM_INFO* item)
 {
-#ifdef GENERAL_FIXES
 	FVECTOR pos;
 	long dx, dy, dz;
 	long x, y, z, r, g, b;
@@ -790,7 +783,6 @@ void DrawSteelDoorLensFlare(ITEM_INFO* item)
 	g = (GetRandomControl() & 0x3F) + 128;
 	b = (GetRandomControl() & 0x3F) + 128;
 	DrawSprite2(x, y, 32, RGBA(r, g, b, 128), (GetRandomControl() & 0xF) + 32, z);
-#endif
 }
 
 void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
