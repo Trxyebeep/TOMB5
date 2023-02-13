@@ -236,7 +236,11 @@ void WinProcessCommands(long cmd)
 		}
 		else
 		{
+#if 0
 			SetCursor(LoadCursor(App.hInstance, MAKEINTRESOURCE(104)));
+#else
+			SetCursor(LoadCursor(0, IDC_ARROW));
+#endif
 			ShowCursor(1);
 		}
 	}
@@ -598,7 +602,11 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	App.WindowClass.lpfnWndProc = WinMainWndProc;
 	App.WindowClass.cbClsExtra = 0;
 	App.WindowClass.cbWndExtra = 0;
+#if 0
 	App.WindowClass.hCursor = LoadCursor(App.hInstance, MAKEINTRESOURCE(104));
+#else
+	App.WindowClass.hCursor = LoadCursor(0, IDC_ARROW);
+#endif
 
 	if (!RegisterClass(&App.WindowClass))
 	{
