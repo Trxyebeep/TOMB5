@@ -24,7 +24,7 @@
 #include "deathsld.h"
 #include "andrea.h"
 #include "rope.h"
-#include "tower2.h"
+#include "tower.h"
 #include "lasers.h"
 #include "lion.h"
 #include "dog.h"

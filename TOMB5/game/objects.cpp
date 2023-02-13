@@ -14,7 +14,7 @@
 #include "tomb4fx.h"
 #include "twogun.h"
 #include "skeleton.h"
-#include "tower2.h"
+#include "tower.h"
 #include "../specific/function_stubs.h"
 #include "../specific/output.h"
 #include "camera.h"
