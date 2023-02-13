@@ -391,9 +391,17 @@ long S_CallInventory2()
 	}
 
 	if (gfCurrentLevel >= LVL5_THIRTEENTH_FLOOR && gfCurrentLevel <= LVL5_RED_ALERT)
+	{
+		inventry_objects_list[INV_BINOCULARS_ITEM].scale1 = 0x384;
+		inventry_objects_list[INV_BINOCULARS_ITEM].yrot = -0x8000;
 		inventry_objects_list[INV_BINOCULARS_ITEM].objname = TXT_Headset;
+	}
 	else
+	{
+		inventry_objects_list[INV_BINOCULARS_ITEM].scale1 = 0x2BC;
+		inventry_objects_list[INV_BINOCULARS_ITEM].yrot = 0x1000;
 		inventry_objects_list[INV_BINOCULARS_ITEM].objname = TXT_Binoculars;
+	}
 
 	inventry_objects_list[INV_HK_ITEM1].meshbits = -1;
 
