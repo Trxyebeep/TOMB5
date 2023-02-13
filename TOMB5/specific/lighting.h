@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_lighting(bool replace);
 
@@ -24,6 +24,24 @@ void InitObjectFogBulbs();
 void SetupLight(D3DLIGHT_STRUCT* d3dlight, PCLIGHT* light, long* ambient);
 void ShowOmni(long x, long y, long z, long rad);
 
+extern long NumSunLights;
+extern long NumPointLights;
+extern long NumShadowLights;
+extern long NumSpotLights;
+extern long NumFogBulbs;
+extern long TotalNumLights;
+extern long MaxRoomLights;
+extern D3DMATRIX aLightMatrix;
+extern ITEM_INFO* current_item;
+extern FVECTOR lGlobalMeshPos;
+extern long aAmbientR;
+extern long aAmbientG;
+extern long aAmbientB;
+extern long bLaraUnderWater;
+extern char bLaraInWater;
+extern SUNLIGHT_STRUCT SunLights[16];
+extern POINTLIGHT_STRUCT PointLights[64];
 #ifdef GENERAL_FIXES
 extern SPOTLIGHT_STRUCT SpotLights[64];
 #endif
+extern long StaticMeshShade;

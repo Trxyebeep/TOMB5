@@ -1,9 +1,9 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_control(bool replace);
 
-long ControlPhase(long _nframes, long demo_mode);
+long ControlPhase(long nframes, long demo_mode);
 long GetChange(ITEM_INFO* item, ANIM_STRUCT* anim);
 long CheckGuardOnTrigger();
 void InterpolateAngle(short dest, short* src, short* diff, short speed);
@@ -35,20 +35,80 @@ void RefreshCamera(short type, short* data);
 #ifdef GENERAL_FIXES
 long S_Death();
 #endif
+void KillMoveItems();
+void KillMoveEffects();
+void UpdateSky();
+void AlterFloorHeight(ITEM_INFO* item, long height);
+long GetWaterHeight(long x, long y, long z, short room_number);
+long TriggerActive(ITEM_INFO* item);
+long CheckNoColFloorTriangle(FLOOR_INFO* floor, long x, long z);
+long CheckNoColCeilingTriangle(FLOOR_INFO* floor, long x, long z);
+void FireCrossBowFromLaserSight(GAME_VECTOR* start, GAME_VECTOR* target);
+void TriggerCDTrack(short value, short flags, short type);
+void TriggerNormalCDTrack(short value, short flags, short type);
+long IsRoomOutside(long x, long y, long z);
+void AnimateItem(ITEM_INFO* item);
+long RayBoxIntersect(PHD_VECTOR* min, PHD_VECTOR* max, PHD_VECTOR* origin, PHD_VECTOR* dir, PHD_VECTOR* Coord);
+long DoRayBox(GAME_VECTOR* start, GAME_VECTOR* target, short* bounds, PHD_3DPOS* ItemPos, PHD_VECTOR* Coord, short item_number);
+void ResetGuards();
 
 extern uchar ShatterSounds[18][10];
 
-#define UpdateSky	( (void(__cdecl*)()) 0x00414720 )
-#define KillMoveEffects	( (void(__cdecl*)()) 0x004146A0 )
-#define KillMoveItems	( (void(__cdecl*)()) 0x00414620 )
-#define	CheckNoColFloorTriangle	( (long(__cdecl*)(FLOOR_INFO*, long, long)) 0x00418C80 )
-#define AnimateItem	( (void(__cdecl*)(ITEM_INFO*)) 0x00415300 )
-#define	GetWaterHeight	( (long(__cdecl*)(long, long, long, short)) 0x00415DA0 )
-#define TriggerActive	( (long(__cdecl*)(ITEM_INFO*)) 0x004175B0 )
-#define CheckNoColCeilingTriangle	( (long(__cdecl*)(FLOOR_INFO*, long, long)) 0x00418D60 )
-#define FireCrossBowFromLaserSight	( (void(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*)) 0x0041A0B0 )
-#define DoRayBox	( (long(__cdecl*)(GAME_VECTOR*, GAME_VECTOR*, short*, PHD_3DPOS*, PHD_VECTOR*, short)) 0x004193C0 )
-#define TriggerCDTrack	( (void(__cdecl*)(short, short, short)) 0x00418B90 )
-#define ResetGuards	( (void(__cdecl*)()) 0x0041AF10 )
-#define IsRoomOutside	( (long(__cdecl*)(long, long, long)) 0x00418E90 )
-#define AlterFloorHeight	( (void(__cdecl*)(ITEM_INFO*, long)) 0x004159F0 )
+extern ITEM_INFO* items;
+extern ANIM_STRUCT* anims;
+extern ROOM_INFO* room;
+extern short** meshes;
+extern long* bones;
+extern long level_items;
+extern short number_rooms;
+
+extern short* OutsideRoomOffsets;
+extern char* OutsideRoomTable;
+extern short IsRoomOutsideNo;
+
+extern MESH_INFO* SmashedMesh[16];
+extern short SmashedMeshRoom[16];
+extern short SmashedMeshCount;
+
+extern long flipmap[255];
+extern long flip_stats[255];
+extern long flip_status;
+extern long flipeffect;
+extern long fliptimer;
+
+extern short* trigger_index;
+extern long tiltxoff;
+extern long tiltyoff;
+extern long OnObject;
+extern long height_type;
+
+extern long InItemControlLoop;
+extern short ItemNewRooms[256][2];
+extern short ItemNewRoomNo;
+
+extern ulong FmvSceneTriggered;
+extern ulong _CutSceneTriggered1;
+extern ulong _CutSceneTriggered2;
+extern long SetDebounce;
+extern long framecount;
+extern long reset_flag;
+extern long LaserSightX;
+extern long LaserSightY;
+extern long LaserSightZ;
+extern ushort GlobalCounter;
+extern short XSoff1;
+extern short XSoff2;
+extern short YSoff1;
+extern short YSoff2;
+extern short ZSoff1;
+extern short ZSoff2;
+extern short FXType;
+extern char PoisonFlag;
+extern char LaserSightActive;
+extern char LaserSightCol;
+extern char TriggerTimer;
+extern char GetLaraOnLOS;
+
+extern uchar CurrentAtmosphere;
+extern uchar IsAtmospherePlaying;
+extern char cd_flags[136];

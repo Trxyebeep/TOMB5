@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_bats(bool replace);
 
@@ -9,3 +9,5 @@ void InitialiseBatEmitter(short item_number);
 void ControlBatEmitter(short item_number);
 void UpdateBats();
 void DrawBats();
+
+extern BAT_STRUCT* Bats;

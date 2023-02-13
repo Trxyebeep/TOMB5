@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_setup(bool replace);
 
@@ -11,7 +11,7 @@ void InitialiseObjects();
 void GetCarriedItems();
 void InitialiseGameFlags();
 void ClearFootPrints();
-
-#define BuildOutsideTable	( (void(__cdecl*)()) 0x004774D0 )
-#define SetupGame	( (void(__cdecl*)()) 0x004778F0 )
-#define reset_cutseq_vars	( (void(__cdecl*)()) 0x004779E0 )
+void reset_cutseq_vars();
+void GetAIPickups();
+void BuildOutsideTable();
+void SetupGame();

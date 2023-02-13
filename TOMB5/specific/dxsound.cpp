@@ -2,11 +2,17 @@
 #include "dxsound.h"
 #include "function_stubs.h"
 #include "dxshell.h"
+#include "winmain.h"
+#include "LoadSave.h"
+#include "../game/sound.h"
+#include "audio.h"
 
-#define DSPrimary	VAR_(0x0086CAF0, LPDIRECTSOUNDBUFFER)
-#define DS_Samples	ARRAY_(0x0086CAF8, DS_SAMPLE, [32])
-#define DS_Buffers	ARRAY_(0x0086BEF0, DS_SAMPLE, [256])
-#define d_hACMStream	VAR_(0x0086BEEC, HACMSTREAM)
+char* samples_buffer;
+
+static LPDIRECTSOUNDBUFFER DSPrimary;
+static HACMSTREAM d_hACMStream;
+static DS_SAMPLE DS_Samples[32];
+static DS_SAMPLE DS_Buffers[256];
 
 #pragma warning(push)
 #pragma warning(disable : 4838)
@@ -19,15 +25,9 @@ static char source_pcm_format[50] =
 #pragma warning(pop)
 
 static MMRESULT mmresult;
-#define pcm_format	VAR_(0x0086BEC8, WAVEFORMATEX)
-#define ACMStreamHeader	VAR_(0x0086BE70, ACMSTREAMHEADER)
-#define decompressed_samples_buffer	VAR_(0x0086CC78, char*)
-/*
-fix DXCreateSampleADPCM..
 static WAVEFORMATEX pcm_format;
 static ACMSTREAMHEADER ACMStreamHeader;
 static char* decompressed_samples_buffer;
-*/
 
 bool DXChangeOutputFormat(long nSamplesPerSec, bool force)
 {
@@ -140,8 +140,8 @@ bool InitSampleDecompress()
 	if (mmresult != DS_OK)
 		Log(1, "Stream Open %d", mmresult);
 
-	decompressed_samples_buffer = (char*)MALLOC(0x40000);
-	samples_buffer = (char*)MALLOC(0x4005A);
+	decompressed_samples_buffer = (char*)malloc(0x40000);
+	samples_buffer = (char*)malloc(0x4005A);
 	memset(&ACMStreamHeader, 0, sizeof(ACMSTREAMHEADER));
 	ACMStreamHeader.pbSrc = (uchar*)(samples_buffer + 90);
 	ACMStreamHeader.cbStruct = sizeof(ACMSTREAMHEADER);
@@ -169,8 +169,8 @@ bool FreeSampleDecompress()
 	if (mmresult != DS_OK)
 		Log(1, "Stream Close %d", mmresult);
 
-	FREE(decompressed_samples_buffer);
-	FREE(samples_buffer);
+	free(decompressed_samples_buffer);
+	free(samples_buffer);
 	return 1;
 }
 
@@ -192,7 +192,7 @@ bool DXCreateSampleADPCM(char* data, long comp_size, long uncomp_size, long num)
 	if (format->nSamplesPerSec != 22050)
 		Log(1, "Incorrect SamplesPerSec");
 
-	ACMStreamHeader.cbSrcLength = comp_size - (sizeof(WAVEFORMATEX) + format->cbSize + 40);
+	ACMStreamHeader.cbSrcLength = comp_size -  (ushort)format->cbSize - 58;
 	mmresult = acmStreamConvert(d_hACMStream, &ACMStreamHeader, ACM_STREAMCONVERTF_BLOCKALIGN | ACM_STREAMCONVERTF_START);
 
 	if (mmresult != DS_OK)
@@ -406,7 +406,7 @@ void inject_dxsound(bool replace)
 	INJECT(0x004A3100, DXDSCreate, replace);
 	INJECT(0x004A3300, InitSampleDecompress, replace);
 	INJECT(0x004A3470, FreeSampleDecompress, replace);
-	INJECT(0x004A3510, DXCreateSampleADPCM, 0);
+	INJECT(0x004A3510, DXCreateSampleADPCM, replace);
 	INJECT(0x004A3720, DXStopSample, replace);
 	INJECT(0x004A3790, DSIsChannelPlaying, replace);
 	INJECT(0x004A3800, DSGetFreeChannel, replace);

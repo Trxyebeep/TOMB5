@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 
 void inject_laraswim(bool replace);
@@ -24,6 +24,5 @@ void lara_col_tread(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_dive(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_uwdeath(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_waterroll(ITEM_INFO* item, COLL_INFO* coll);
-
-#define GetWaterDepth	( (long(__cdecl*)(long, long, long, short)) 0x004596D0 )
-#define LaraWaterCurrent	( (void(__cdecl*)(COLL_INFO*)) 0x004598F0 )
+long GetWaterDepth(long x, long y, long z, short room_number);
+void LaraWaterCurrent(COLL_INFO* coll);

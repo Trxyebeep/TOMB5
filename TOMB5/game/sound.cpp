@@ -3,6 +3,16 @@
 #include "../specific/function_stubs.h"
 #include "../specific/dxsound.h"
 #include "../specific/3dmath.h"
+#include "gameflow.h"
+#include "deltapak.h"
+#include "camera.h"
+#include "control.h"
+
+SAMPLE_INFO* sample_infos;
+SoundSlot LaSlot[32];
+short* sample_lut;
+long sound_active;
+long sound_cut_flag = 0;
 
 void SoundEffectCS(long sfx, PHD_3DPOS* pos, long flags)
 {

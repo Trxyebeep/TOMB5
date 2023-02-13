@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_hair(bool replace);
 
@@ -7,3 +7,5 @@ void DrawHair();
 void HairControl(long in_cutscene, long pigtail, short* cutscenething);
 void InitialiseHair();
 void GetCorrectStashPoints(long pigtail, long hair_nose, long skin_node);
+
+extern HAIR_STRUCT hairs[2][7];

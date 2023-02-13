@@ -16,6 +16,13 @@
 #include "dxsound.h"
 #include "gamemain.h"
 #include "file.h"
+#ifdef GENERAL_FIXES
+#include "fmv.h"
+#endif
+
+WINAPP App;
+short FPCW;
+long resChangeCounter;
 
 static COMMANDLINES commandlines[] =
 {
@@ -186,7 +193,8 @@ void WinProcMsg()
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-	} while (!MainThread.ended && msg.message != WM_QUIT);
+	}
+	while (!MainThread.ended && msg.message != WM_QUIT);
 }
 
 void WinProcessCommands(long cmd)
@@ -514,6 +522,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	HWND dbg;
 	HDC hdc;
 	DEVMODE devmode;
+	static ulong dbm_command;
+	static ulong dbm_clearlog;
 	long dbgflag;
 #ifndef GENERAL_FIXES
 	bool drive;
@@ -608,14 +618,25 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	{
 		if (!DXSetupDialog())
 		{
-			FREE(gfScriptFile);
-			FREE(gfLanguageFile);
+			free(gfScriptFile);
+			free(gfLanguageFile);
 			WinClose();
 			return 0;
 		}
 
 		LoadSettings();
 	}
+
+#ifdef GENERAL_FIXES
+	if (!fmvs_disabled)
+	{
+		if (!LoadBinkStuff())
+		{
+			MessageBox(0, "Failed to load Bink, disabling FMVs.", "Tomb Raider V", 0);
+			fmvs_disabled = 1;
+		}
+	}
+#endif
 
 	SetWindowPos(App.hWnd, 0, App.dx.rScreen.left, App.dx.rScreen.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	desktop = GetDesktopWindow();
@@ -629,7 +650,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 
 	if (!DXCreate(dm->w, dm->h, dm->bpp, App.StartFlags, &App.dx, App.hWnd, WINDOW_STYLE))
 	{
-		MessageBox(0, SCRIPT_TEXT(STR_FAILED_TO_SETUP_DIRECTX), "Tomb Raider IV", 0);
+		MessageBox(0, SCRIPT_TEXT(TXT_Failed_To_Setup_DirectX), "Tomb Raider", 0);
 		return 0;
 	}
 

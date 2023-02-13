@@ -1,18 +1,22 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_items(bool replace);
 
 void ItemNewRoom(short item_num, short room_number);
 void InitialiseItemArray(short num);
+void KillItem(short item_num);
+short CreateItem();
+void InitialiseItem(short item_num);
+void RemoveActiveItem(short item_num);
+void RemoveDrawnItem(short item_num);
+void AddActiveItem(short item_num);
+short SpawnItem(ITEM_INFO* item, long obj_num);
+long GlobalItemReplace(long in, long out);
+void InitialiseFXArray(long allocmem);
+short CreateEffect(short room_num);
+void KillEffect(short fx_num);
+void EffectNewRoom(short fx_num, short room_num);
 
-#define KillItem	( (void(__cdecl*)(short)) 0x00440620 )
-#define AddActiveItem	( (void(__cdecl*)(short)) 0x00440D10 )
-#define	RemoveActiveItem	( (short(__cdecl*)(short)) 0x00440B60 )
-#define CreateItem	( (short(__cdecl*)()) 0x00440840)
-#define CreateEffect	( (short(__cdecl*)(short)) 0x004410F0 )
-#define InitialiseItem	( (void(__cdecl*)(short)) 0x004408B0 )
-#define InitialiseFXArray	( (void(__cdecl*)(long)) 0x00441080 )
-#define EffectNewRoom	( (void(__cdecl*)(short, short)) 0x004412F0 )
-#define KillEffect	( (void(__cdecl*)(short)) 0x00441180 )
-#define RemoveDrawnItem	( (void(__cdecl*)(short)) 0x00440C40 )
+extern short next_fx_active;
+extern short next_item_active;

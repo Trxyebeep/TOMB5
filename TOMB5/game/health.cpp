@@ -6,11 +6,27 @@
 #include "../specific/output.h"
 #include "../specific/LoadSave.h"
 #include "text.h"
+#include "deltapak.h"
+#include "camera.h"
+#include "spotcam.h"
+#include "control.h"
+#include "../specific/3dmath.h"
+#include "lara.h"
+#include "savegame.h"
 #ifdef GENERAL_FIXES
 #include "larafire.h"
 #include "../specific/input.h"
 #include "../tomb5/tomb5.h"
 #endif
+
+DISPLAYPU pickups[8];
+short PickupX;
+short CurrentPickup;
+
+long health_bar_timer = 0;
+
+static short PickupY;
+static short PickupVel;
 
 long FlashIt()
 {

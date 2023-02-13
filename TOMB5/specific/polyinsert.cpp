@@ -4,10 +4,26 @@
 #include "drawroom.h"
 #include "function_table.h"
 #include "clipping.h"
+#include "output.h"
+#include "winmain.h"
+#include "texture.h"
+#include "function_stubs.h"
+#include "3dmath.h"
+#include "gamemain.h"
 
 static long rgb80h = 0x808080;
 static long rgbmask = 0xFFFFFFFF;
 static long zero = 0;
+
+SORTLIST* SortList[65536];
+long SortCount;
+
+static char SortBuffer[2621440];
+static SORTLIST** pSortList;
+static char* pSortBuffer;
+
+D3DTLBUMPVERTEX XYUVClipperBuffer[20];
+D3DTLBUMPVERTEX zClipperBuffer[20];
 
 void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, short type)
 {

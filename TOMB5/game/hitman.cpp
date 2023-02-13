@@ -12,6 +12,7 @@
 #include "traps.h"
 #include "../specific/3dmath.h"
 #include "people.h"
+#include "lara.h"
 
 static BITE_INFO hitman_gun = { 0,300,64, 7 };
 static char hitman_nodes[16] = { 15, 14, 13, 6, 5, 12, 7, 4, 10, 11, 19, 0, 0, 0, 0, 0 };

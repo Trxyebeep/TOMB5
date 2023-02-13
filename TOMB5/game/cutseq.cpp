@@ -8,8 +8,12 @@
 #include "delstuff.h"
 #include "../specific/3dmath.h"
 #include "../specific/function_stubs.h"
+#include "twogun.h"
+#include "lara.h"
+#include "gameflow.h"
 
-char iswappedit = 0;
+char title_controls_locked_out;
+static char iswappedit = 0;
 
 ushort special2_pistols_info[13] =
 {
@@ -30,7 +34,7 @@ void _special1_control()
 		iswappedit = 1;
 	}
 
-	UNK_00E916F0 = 1;
+	nSpecialCut = 1;
 }
 
 void _special1_end()

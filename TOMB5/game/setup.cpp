@@ -56,6 +56,13 @@
 #include "sas.h"
 #include "gladiatr.h"
 #include "items.h"
+#include "control.h"
+#include "deltapak.h"
+#include "../specific/file.h"
+#include "camera.h"
+#include "footprnt.h"
+#include "lara.h"
+#include "larafire.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #include "lara2gun.h"
@@ -1857,9 +1864,9 @@ void InitialiseObjects()
 {
 	for (int i = 0; i < 460; i++)
 	{
-		objects[i].initialise = NULL;
-		objects[i].collision = NULL;
-		objects[i].control = NULL;
+		objects[i].initialise = 0;
+		objects[i].collision = 0;
+		objects[i].control = 0;
 		objects[i].intelligent = 0;
 		objects[i].save_position = 0;
 		objects[i].save_hitpoints = 0;
@@ -1869,15 +1876,15 @@ void InitialiseObjects()
 		objects[i].using_drawanimating_item = 1;
 		objects[i].save_mesh = 0;
 		objects[i].draw_routine = DrawAnimatingItem;
-		objects[i].ceiling = NULL;
-		objects[i].floor = NULL;
+		objects[i].ceiling = 0;
+		objects[i].floor = 0;
 		objects[i].pivot_length = 0;
 		objects[i].radius = 10;
 		objects[i].shadow_size = 0;
 		objects[i].hit_points = -16384;
 		objects[i].explodable_meshbits = 0;
-		objects[i].draw_routine_extra = NULL;
-		objects[i].frame_base = (short*) ((long) objects[i].frame_base + (char*) frames);
+		objects[i].draw_routine_extra = 0;
+		objects[i].frame_base = (short*)((long) objects[i].frame_base + (char*) frames);
 		objects[i].object_mip = 0;
 	}
 
@@ -1972,6 +1979,200 @@ void ClearFootPrints()
 	FootPrintNum = 0;
 }
 
+void reset_cutseq_vars()
+{
+	cutseq_num = 0;
+	cutseq_trig = 0;
+	GLOBAL_playing_cutseq = 0;
+	GLOBAL_cutseq_frame = 0;
+	SetFadeClip(0, 1);
+}
+
+void GetAIPickups()
+{
+	ITEM_INFO* item;
+	AIOBJECT* aiObj;
+	short aiObjNum;
+
+	for (int i = 0; i < level_items; i++)
+	{
+		item = &items[i];
+
+		if (!objects[item->object_number].intelligent)
+			continue;
+
+		item->ai_bits = 0;
+
+		for (aiObjNum = 0; aiObjNum < nAIObjects; aiObjNum++)
+		{
+			aiObj = &AIObjects[aiObjNum];
+
+			if (abs(aiObj->x - item->pos.x_pos) < 512 && abs(aiObj->z - item->pos.z_pos) < 512 &&
+				aiObj->room_number == item->room_number && aiObj->object_number < AI_PATROL2)
+			{
+				item->ai_bits |= 1 << (aiObj->object_number - AI_GUARD);
+				item->item_flags[3] = aiObj->trigger_flags;
+
+				if (aiObj->object_number != AI_GUARD)
+					aiObj->room_number = NO_ROOM;
+			}
+		}
+
+		item->TOSSPAD |= item->ai_bits << 8 | (item->item_flags[3] & 0xFF);
+	}
+}
+
+void BuildOutsideTable()
+{
+	ROOM_INFO* r;
+	uchar* pTable;
+	uchar* oTable;
+	uchar* cTable;
+	long max_slots, roomx, roomy, cont, offset, z, z2;
+	long x, y, lp;
+	char flipped[256];
+
+	max_slots = 0;
+	OutsideRoomOffsets = (short*)game_malloc(0x5B2, 0);
+	OutsideRoomTable = (char*)game_malloc(0xB640, 0);
+	memset(OutsideRoomTable, 0xFF, 0xB640);
+	memset(flipped, 0, 255);
+
+	for (int i = 0; i < number_rooms; i++)
+	{
+		r = &room[i];
+
+		if (r->flipped_room != -1)
+			flipped[r->flipped_room] = 1;
+	}
+
+	for (y = 0; y < 108; y += 4)
+	{
+		for (x = 0; x < 108; x += 4)
+		{
+			for (int i = 0; i < number_rooms; i++)
+			{
+				r = &room[i];
+
+				if (flipped[i])
+					continue;
+
+				roomx = (r->z >> 10) + 1;
+				roomy = (r->x >> 10) + 1;
+				cont = 0;
+
+				for (int ry = 0; ry < 4; ry++)
+				{
+					for (int rx = 0; rx < 4; rx++)
+					{
+						if (x + rx >= roomx && x + rx < roomx + r->x_size - 2 && y + ry >= roomy && y + ry < roomy + r->y_size - 2)
+						{
+							cont = 1;
+							break;
+						}
+					}
+				}
+
+				if (!cont)
+					continue;
+
+				if (i == 255)
+					printf("ERROR : Room 255 fuckeroony - go tell Chris\n");
+
+				pTable = (uchar*)&OutsideRoomTable[64 * ((x >> 2) + 27 * (y >> 2))];
+
+				for (lp = 0; lp < 64; lp++)
+				{
+					if (pTable[lp] == 255)
+					{
+						pTable[lp] = i;
+
+						if (lp > max_slots)
+							max_slots = lp;
+
+						break;
+					}
+				}
+
+				if (lp == 64)
+					printf("ERROR : Buffer shittage - go tell Chris\n");
+			}
+		}
+	}
+
+	oTable = (uchar*)OutsideRoomTable;
+
+	for (y = 0; y < 27; y++)
+	{
+		for (x = 0; x < 27; x++)
+		{
+			z = 0;
+			offset = x + y * 27;
+			pTable = (uchar*)&OutsideRoomTable[64 * (x + 27 * y)];
+			while (pTable[z] != 255) z++;
+
+			if (!z)
+				OutsideRoomOffsets[offset] = -1;
+			else if (z == 1)
+				OutsideRoomOffsets[offset] = *pTable | 0x8000;
+			else
+			{
+				cTable = (uchar*)OutsideRoomTable;
+
+				while (cTable < oTable)
+				{
+					if (!memcmp(cTable, pTable, z))
+					{
+						OutsideRoomOffsets[offset] = short((long)cTable - (long)OutsideRoomTable);
+						break;
+					}
+
+					z2 = 0;
+					while (cTable[z2] != 255) z2++;
+					cTable += z2 + 1;
+				}
+
+				if (cTable >= oTable)
+				{
+					OutsideRoomOffsets[offset] = short((long)oTable - (long)OutsideRoomTable);
+
+					do
+					{
+						*oTable++ = *pTable++;
+						z--;
+
+					} while (z);
+
+					*oTable++ = 255;
+				}
+			}
+		}
+	}
+}
+
+void SetupGame()
+{
+	SeedRandomDraw(0xD371F947);
+	SeedRandomControl(0xD371F947);
+	wibble = 0;
+	torchroom = NO_ROOM;
+	ClearFootPrints();
+	InitBinoculars();
+	InitTarget();
+	InitialiseGameFlags();
+
+	if (gfCurrentLevel == LVL5_THIRTEENTH_FLOOR || gfCurrentLevel == LVL5_BASE || gfCurrentLevel == LVL5_GALLOWS_TREE ||
+		gfCurrentLevel == LVL5_STREETS_OF_ROME || gfInitialiseGame)
+		InitialiseLara(0);
+	else
+		InitialiseLara(1);
+
+	GetCarriedItems();
+	GetAIPickups();
+	SeedRandomDraw(0xD371F947);
+	SeedRandomControl(0xD371F947);
+}
+
 void inject_setup(bool replace)
 {
 	INJECT(0x00473210, InitialiseLara, replace);
@@ -1982,4 +2183,8 @@ void inject_setup(bool replace)
 	INJECT(0x004771E0, GetCarriedItems, replace);
 	INJECT(0x00477880, InitialiseGameFlags, replace);
 	INJECT(0x004779B0, ClearFootPrints, replace);
+	INJECT(0x004779E0, reset_cutseq_vars, replace);
+	INJECT(0x00477370, GetAIPickups, replace);
+	INJECT(0x004774D0, BuildOutsideTable, replace);
+	INJECT(0x004778F0, SetupGame, replace);
 }

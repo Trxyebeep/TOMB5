@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_texture(bool replace);
 
@@ -14,3 +14,6 @@ void FreeTextures();
 void ShowTextures();
 void aCheckBumpMappingSupport();
 LPDIRECTDRAWSURFACE4 aCreateBumpPage(long w, long h, long* pSrc, long format);
+
+extern TEXTURE Textures[64];
+extern long nTextures;

@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_cutseq(bool replace);
 
@@ -16,3 +16,5 @@ void resetwindowsmash(long item_num);
 void triggerwindowsmash(long item_num);
 void FlamingHell(PHD_VECTOR* pos);
 void FireTwoGunTitleWeapon(PHD_VECTOR* pos1, PHD_VECTOR* pos2);
+
+extern char title_controls_locked_out;

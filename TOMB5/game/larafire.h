@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_larafire(bool replace);
 
@@ -16,3 +16,5 @@ long WeaponObjectMesh(long weapon_type);
 void HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, long damage, long grenade);
 short* get_current_ammo_pointer(long num);
 void DoProperDetection(short item_number, long x, long y, long z, long xv, long yv, long zv);
+
+extern WEAPON_INFO weapons[9];

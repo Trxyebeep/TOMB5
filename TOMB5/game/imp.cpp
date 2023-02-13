@@ -9,8 +9,12 @@
 #include "lara_states.h"
 #include "effects.h"
 #include "../specific/function_stubs.h"
+#include "control.h"
+#include "lara.h"
+#include "effect2.h"
+#include "flmtorch.h"
 
-static BITE_INFO imp_hit = {0, 100, 0, 9};
+static BITE_INFO imp_hit = { 0, 100, 0, 9 };
 
 void TriggerImpMissile(ITEM_INFO* item)
 {
@@ -150,7 +154,7 @@ void ImpControl(short item_number)
 		head_y = info.angle >> 1;
 		head_x = info.x_angle >> 1;
 
-		if (wibble & 16)
+		if (wibble & 0x10)
 			item->meshswap_meshbits = 1024;
 		else
 			item->meshswap_meshbits = 0;

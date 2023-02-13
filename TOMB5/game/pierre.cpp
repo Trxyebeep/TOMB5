@@ -10,10 +10,11 @@
 #include "items.h"
 #include "people.h"
 #include "../specific/function_stubs.h"
+#include "lara.h"
 
-BITE_INFO larson_gun = {-55, 200, 5, 14};
-BITE_INFO pierre_gun1 = {60, 200, 0, 11};
-BITE_INFO pierre_gun2 = {-57, 200, 0, 14};
+BITE_INFO larson_gun = { -55, 200, 5, 14 };
+BITE_INFO pierre_gun1 = { 60, 200, 0, 11 };
+BITE_INFO pierre_gun2 = { -57, 200, 0, 14 };
 
 void InitialisePierre(short item_number)
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_laramisc(bool replace);
 
@@ -14,3 +14,5 @@ void AnimateLara(ITEM_INFO* item);
 void LaraCheatyBits();
 #endif
 void LaraControl(short item_number);
+
+extern COLL_INFO mycoll;

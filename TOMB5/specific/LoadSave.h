@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 
 void inject_LoadSave(bool replace);
@@ -49,3 +49,12 @@ long FindSFCursor(long in, long selection);
 void CalculateNumSpecialFeatures();
 void SpecialFeaturesDisplayScreens(long num);
 void DoSpecialFeaturesServer();
+
+extern long sfx_frequencies[3];
+extern long SoundQuality;
+extern long MusicVolume;
+extern long SFXVolume;
+extern long ControlMethod;
+extern MONOSCREEN_STRUCT MonoScreen[5];
+extern char MonoScreenOn;
+extern long loadbar_on;

@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 
 void inject_lara1gun(bool replace);
@@ -18,5 +18,7 @@ void AnimateShotgun(long weapon_type);
 void DoGrenadeDamageOnBaddie(ITEM_INFO* baddie, ITEM_INFO* item);
 void TriggerGrapplingEffect(long x, long y, long z);
 void CrossbowHitSwitchType78(ITEM_INFO* item, ITEM_INFO* target, long MustHitLastNode);
+void TriggerUnderwaterExplosion(ITEM_INFO* item);
 
-#define TriggerUnderwaterExplosion	( (void(__cdecl*)(ITEM_INFO*)) 0x0044F500 )
+extern char HKTimer;
+extern char HKShotsFired;

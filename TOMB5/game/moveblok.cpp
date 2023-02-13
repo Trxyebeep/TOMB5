@@ -7,6 +7,10 @@
 #include "items.h"
 #include "draw.h"
 #include "collide.h"
+#include "tomb4fx.h"
+#include "../specific/input.h"
+#include "lara.h"
+#include "box.h"
 
 static short MovingBlockBounds[12] =
 {
@@ -484,7 +488,7 @@ void ClearMovableBlockSplitters(long x, long y, long z, short room_number)
 	room_num = room_number;
 	floor = GetFloor(x + 1024, y, z, &room_number);
 
-	if (floor->box != 32752)
+	if (floor->box != 0x7FF)
 	{
 		if (boxes[floor->box].height == height && boxes[floor->box].overlap_index & 0x8000 && boxes[floor->box].overlap_index & 0x4000)
 			ClearMovableBlockSplitters(x + 1024, y, z, room_number);
@@ -493,7 +497,7 @@ void ClearMovableBlockSplitters(long x, long y, long z, short room_number)
 	room_number = room_num;
 	floor = GetFloor(x - 1024, y, z, &room_number);
 
-	if (floor->box != 32752)
+	if (floor->box != 0x7FF)
 	{
 		if (boxes[floor->box].height == height && boxes[floor->box].overlap_index & 0x8000 && boxes[floor->box].overlap_index & 0x4000)
 			ClearMovableBlockSplitters(x - 1024, y, z, room_number);
@@ -502,7 +506,7 @@ void ClearMovableBlockSplitters(long x, long y, long z, short room_number)
 	room_number = room_num;
 	floor = GetFloor(x, y, z + 1024, &room_number);
 
-	if (floor->box != 32752)
+	if (floor->box != 0x7FF)
 	{
 		if (boxes[floor->box].height == height && boxes[floor->box].overlap_index & 0x8000 && boxes[floor->box].overlap_index & 0x4000)
 			ClearMovableBlockSplitters(x, y, z + 1024, room_number);
@@ -511,7 +515,7 @@ void ClearMovableBlockSplitters(long x, long y, long z, short room_number)
 	room_number = room_num;
 	floor = GetFloor(x, y, z - 1024, &room_number);
 
-	if (floor->box != 32752)
+	if (floor->box != 0x7FF)
 	{
 		if (boxes[floor->box].height == height && boxes[floor->box].overlap_index & 0x8000 && boxes[floor->box].overlap_index & 0x4000)
 			ClearMovableBlockSplitters(x, y, z - 1024, room_number);

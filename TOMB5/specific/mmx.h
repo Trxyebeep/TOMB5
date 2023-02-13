@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 #define MMXSetPerspecLimit	( (void(__cdecl*)(long)) 0x004D3F30 )
 #define MMXGetBackSurfWH	( (void(__cdecl*)(long&, long&)) 0x004D3D90 )

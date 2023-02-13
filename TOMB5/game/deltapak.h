@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_deltaPak(bool replace);
 
@@ -166,7 +166,7 @@ void CalcActorLighting(ITEM_INFO* item, OBJECT_INFO* obj, short* rot);
 void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PHD_VECTOR* pos);
 void frigup_lara();
 void CalculateObjectLightingLaraCutSeq();
-void GrabActorMatrix(long actornum, ulong nodenum, MATRIX3D* matrixstash);
+void GrabActorMatrix(long actornum, ulong nodenum, long* matrixstash);
 long Load_and_Init_Cutseq(long num);
 void cutseq_kill_item(long num);
 ITEM_INFO* cutseq_restore_item(long num);
@@ -177,3 +177,18 @@ void nail_intelligent_object(short objnum);
 #ifdef GENERAL_FIXES
 void do_cutseq_skipper_stuff();
 #endif
+
+extern NEW_CUTSCENE* GLOBAL_cutme;
+extern long nSpecialCut;
+extern char* cutseq_resident_addresses[47];
+extern ITEM_INFO duff_item[10];
+extern long GLOBAL_cutseq_frame;
+extern long GLOBAL_playing_cutseq;
+extern long GLOBAL_numcutseq_frames;
+extern long cutrot;
+extern long cutseq_num;
+extern long cutseq_trig;
+extern long lastcamnum;
+extern ushort dels_cutseq_player;
+extern char jobyfrigger;
+extern char Chris_Menu;

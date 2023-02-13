@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_lara(bool replace);
 
@@ -169,20 +169,25 @@ void UpdateRopeSwing(ITEM_INFO* item);
 void ApplyVelocityToRope(long node, ushort angle, ushort n);
 void JumpOffRope(ITEM_INFO* item);
 long LaraHangTest(ITEM_INFO* item, COLL_INFO* coll);
+void SetCornerAnim(ITEM_INFO* item, COLL_INFO* coll, short rot, short flip);
+long LaraHangRightCornerTest(ITEM_INFO* item, COLL_INFO* coll);
+long LaraHangLeftCornerTest(ITEM_INFO* item, COLL_INFO* coll);
+short GetDirOctant(long rot);
+short TestMonkeyLeft(ITEM_INFO* item, COLL_INFO* coll);
+short TestMonkeyRight(ITEM_INFO* item, COLL_INFO* coll);
+void SnapLaraToEdgeOfBlock(ITEM_INFO* item, COLL_INFO* coll, short angle);
+long LaraTestClimbStance(ITEM_INFO* item, COLL_INFO* coll);
+long TestHangSwingIn(ITEM_INFO* item, short angle);
+long LaraTestHangOnClimbWall(ITEM_INFO* item, COLL_INFO* coll);
+long LaraTestEdgeCatch(ITEM_INFO* item, COLL_INFO* coll, long* edge);
 
 #ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 #endif
 
-#define LaraTestClimbStance	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00445580 )
-#define LaraHangLeftCornerTest	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x0044A2B0 )
-#define LaraHangRightCornerTest	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00449CC0 )
-#define LaraTestEdgeCatch	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*, long*)) 0x00444890 )
-#define LaraTestHangOnClimbWall	( (long(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00444970 )
-#define TestHangSwingIn	( (long(__cdecl*)(ITEM_INFO*, short)) 0x00444B30 )
-#define TestMonkeyLeft	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446810 )
-#define TestMonkeyRight	( (short(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00446960 )
-#define SetCornerAnim	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, short, short)) 0x0044A980 )
-#define GetTighRopeFallOff	( (void(__cdecl*)(long)) 0x0044D570 )
-#define SnapLaraToEdgeOfBlock	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, short)) 0x004466C0 )
+extern LARA_INFO lara;
+extern ITEM_INFO* lara_item;
+extern short DashTimer;
+extern char LaraDrawType;
+extern char WeatherType;

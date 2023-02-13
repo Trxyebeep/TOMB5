@@ -1,6 +1,15 @@
 #include "../tomb5/pch.h"
 #include "lot.h"
 #include "../specific/function_stubs.h"
+#include "objects.h"
+#include "box.h"
+#include "camera.h"
+#include "control.h"
+#include "lara.h"
+
+CREATURE_INFO* baddie_slots;
+
+static long slots_used = 0;
 
 void InitialiseLOTarray(long allocmem)
 {
@@ -15,13 +24,242 @@ void InitialiseLOTarray(long allocmem)
 		creature->item_num = NO_ITEM;
 
 		if (allocmem)
-			creature->LOT.node = (BOX_NODE*)game_malloc(sizeof(BOX_NODE) * number_boxes, 0);
+			creature->LOT.node = (BOX_NODE*)game_malloc(sizeof(BOX_NODE) * num_boxes, 0);
 	}
 
 	slots_used = 0;
 }
 
+void DisableBaddieAI(short item_number)
+{
+	ITEM_INFO* item;
+	CREATURE_INFO* creature;
+
+	item = &items[item_number];
+	creature = (CREATURE_INFO*)item->data;
+	item->data = 0;
+
+	if (creature)
+	{
+		creature->item_num = NO_ITEM;
+		slots_used--;
+	}
+}
+
+void ClearLOT(LOT_INFO* lot)
+{
+	BOX_NODE* node;
+
+	lot->tail = 2047;
+	lot->head = 2047;
+	lot->search_number = 0;
+	lot->target_box = 2047;
+	lot->required_box = 2047;
+	node = lot->node;
+
+	for (int i = 0; i < num_boxes; i++)
+	{
+		node->next_expansion = 2047;
+		node->exit_box = 2047;
+		node->search_number = 0;
+		node++;
+	}
+}
+
+void CreateZone(ITEM_INFO* item)
+{
+	CREATURE_INFO* creature;
+	ROOM_INFO* r;
+	BOX_NODE* node;
+	short* zone;
+	short* flip;
+	short zone_number, flip_number;
+
+	creature = (CREATURE_INFO*)item->data;
+	r = &room[item->room_number];
+	item->box_number = r->floor[((item->pos.z_pos - r->z) >> 10) + r->x_size * ((item->pos.x_pos - r->x) >> 10)].box;
+
+	if (creature->LOT.fly)
+	{
+		creature->LOT.zone_count = 0;
+		node = creature->LOT.node;
+
+		for (int i = 0; i < num_boxes; i++)
+		{
+			node->box_number = i;
+			node++;
+			creature->LOT.zone_count++;
+		}
+	}
+	else
+	{
+		zone = ground_zone[creature->LOT.zone][0];
+		flip = ground_zone[creature->LOT.zone][1];
+		zone_number = zone[item->box_number];
+		flip_number = flip[item->box_number];
+		creature->LOT.zone_count = 0;
+		node = creature->LOT.node;
+
+		for (int i = 0; i < num_boxes; i++)
+		{
+			if (*zone == zone_number || *flip == flip_number)
+			{
+				node->box_number = i;
+				node++;
+				creature->LOT.zone_count++;
+			}
+
+			zone++;
+			flip++;
+		}
+	}
+}
+
+void InitialiseSlot(short item_number, long slot)
+{
+	ITEM_INFO* item;
+	CREATURE_INFO* creature;
+
+	creature = &baddie_slots[slot];
+	item = &items[item_number];
+	item->data = creature;
+	creature->item_num = item_number;
+	creature->mood = BORED_MOOD;
+	creature->joint_rotation[0] = 0;
+	creature->joint_rotation[1] = 0;
+	creature->joint_rotation[2] = 0;
+	creature->joint_rotation[3] = 0;
+	creature->alerted = 0;
+	creature->head_left = 0;
+	creature->head_right = 0;
+	creature->reached_goal = 0;
+	creature->hurt_by_lara = 0;
+	creature->patrol2 = 0;
+	creature->jump_ahead = 0;
+	creature->monkey_ahead = 0;
+	creature->LOT.can_jump = 0;
+	creature->LOT.can_monkey = 0;
+	creature->LOT.is_jumping = 0;
+	creature->LOT.is_monkeying = 0;
+	creature->maximum_turn = 182;
+	creature->flags = 0;
+	creature->enemy = 0;
+	creature->LOT.step = 256;
+	creature->LOT.drop = -512;
+	creature->LOT.block_mask = 0x4000;
+	creature->LOT.fly = 0;
+	creature->LOT.zone = BASIC_ZONE;
+
+	switch (item->object_number)
+	{
+	case SAS:
+	case BLUE_GUARD:
+	case MAFIA2:
+	case SAILOR:
+		creature->LOT.step = 1024;
+		creature->LOT.drop = -1024;
+		creature->LOT.can_jump = 1;
+		creature->LOT.zone = HUMAN_ZONE;
+		break;
+
+	case CROW:
+	case WILLOWISP:
+	case REAPER:
+	case GREEN_TEETH:
+	case ATTACK_SUB:
+		creature->LOT.step = 20480;
+		creature->LOT.drop = -20480;
+		creature->LOT.fly = 16;
+		creature->LOT.zone = FLYER_ZONE;
+		break;
+
+	case HITMAN:
+		creature->LOT.step = 1024;
+		creature->LOT.drop = -1024;
+		creature->LOT.can_jump = 1;
+		creature->LOT.can_monkey = 1;
+		creature->LOT.zone = HUMAN_ZONE;
+		break;
+	}
+
+	ClearLOT(&creature->LOT);
+
+	if (item_number != lara.item_number)
+		CreateZone(item);
+
+	slots_used++;
+}
+
+long EnableBaddieAI(short item_number, long Always)
+{
+	ITEM_INFO* item;
+	CREATURE_INFO* creature;
+	long x, y, z, slot, worstslot, dist, worstdist;
+
+	item = &items[item_number];
+
+	if (item->data)
+		return 1;
+
+	if (slots_used < 5)
+	{
+		for (slot = 0; slot < 5; slot++)
+		{
+			creature = &baddie_slots[slot];
+
+			if (creature->item_num == NO_ITEM)
+			{
+				InitialiseSlot(item_number, slot);
+				return 1;
+			}
+		}
+	}
+
+	if (Always)
+		worstdist = 0;
+	else
+	{
+		x = (item->pos.x_pos - camera.pos.x) >> 8;
+		y = (item->pos.y_pos - camera.pos.y) >> 8;
+		z = (item->pos.z_pos - camera.pos.z) >> 8;
+		worstdist = SQUARE(x) + SQUARE(y) + SQUARE(z);
+	}
+
+	worstslot = -1;
+
+	for (slot = 0; slot < 5; slot++)
+	{
+		creature = &baddie_slots[slot];
+		item = &items[creature->item_num];
+		x = (item->pos.x_pos - camera.pos.x) >> 8;
+		y = (item->pos.y_pos - camera.pos.y) >> 8;
+		z = (item->pos.z_pos - camera.pos.z) >> 8;
+		dist = SQUARE(x) + SQUARE(y) + SQUARE(z);
+
+		if (dist > worstdist)
+		{
+			worstslot = slot;
+			worstdist = dist;
+		}
+	}
+
+	if (worstslot >= 0)
+	{
+		items[baddie_slots[worstslot].item_num].status = ITEM_INVISIBLE;
+		DisableBaddieAI(baddie_slots[worstslot].item_num);
+		InitialiseSlot(item_number, worstslot);
+		return 1;
+	}
+
+	return 0;
+}
+
 void inject_lot(bool replace)
 {
 	INJECT(0x0045B0C0, InitialiseLOTarray, replace);
+	INJECT(0x0045B150, DisableBaddieAI, replace);
+	INJECT(0x0045B740, ClearLOT, replace);
+	INJECT(0x0045B5E0, CreateZone, replace);
+	INJECT(0x0045B3D0, InitialiseSlot, replace);
+	INJECT(0x0045B1A0, EnableBaddieAI, replace);
 }

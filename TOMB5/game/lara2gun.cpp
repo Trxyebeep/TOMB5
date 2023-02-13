@@ -8,6 +8,10 @@
 #include "../specific/function_stubs.h"
 #include "gameflow.h"
 #include "effect2.h"
+#include "camera.h"
+#include "control.h"
+#include "../specific/input.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "savegame.h"
 #endif

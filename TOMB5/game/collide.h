@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_coll(bool replace);
 
@@ -19,10 +19,12 @@ long MoveLaraPosition(PHD_VECTOR* pos, ITEM_INFO* item, ITEM_INFO* l);
 long Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, long speed, short rotation);
 long CollideStaticObjects(COLL_INFO* coll, long x, long y, long z, short room_number, long hite);
 void UpdateLaraRoom(ITEM_INFO* item, long height);
+void LaraBaddieCollision(ITEM_INFO* l, COLL_INFO* coll);
+long ItemPushLara(ITEM_INFO* item, ITEM_INFO* l, COLL_INFO* coll, long spaz, long BigPush);
+long ItemPushLaraStatic(ITEM_INFO* l, short* bounds, PHD_3DPOS* pos, COLL_INFO* coll);
+long TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* l, long rad);
+long TestBoundsCollideStatic(short* bounds, PHD_3DPOS* pos, long rad);
+long TestLaraPosition(short* bounds, ITEM_INFO* item, ITEM_INFO* l);
+void AlignLaraPosition(PHD_VECTOR* pos, ITEM_INFO* item, ITEM_INFO* l);
 
-#define TestLaraPosition	( (long(__cdecl*)(short*, ITEM_INFO*, ITEM_INFO*)) 0x00413210 )
-#define	TestBoundsCollide	( (long(__cdecl*)(ITEM_INFO*, ITEM_INFO*, long)) 0x00412CC0 )
-#define	ItemPushLara	( (long(__cdecl*)(ITEM_INFO*, ITEM_INFO*, COLL_INFO*, long, long)) 0x00412860 )
-#define LaraBaddieCollision	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*)) 0x00412170 )
-#define AlignLaraPosition	( (void(__cdecl*)(PHD_VECTOR*, ITEM_INFO*, ITEM_INFO*)) 0x004133C0 )
-#define ItemPushLaraStatic	( (void(__cdecl*)(ITEM_INFO*, short*, PHD_3DPOS*, COLL_INFO*)) 0x00412F20 )
+extern short GlobalCollisionBounds[6];

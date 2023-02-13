@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_output(bool replace);
 
@@ -36,3 +36,14 @@ void phd_PutPolygonsPickup(short* objptr, float x, float y, long color);
 void phd_PutPolygons_seethrough(short* objptr, long fade);
 void phd_PutPolygonsSpcXLU(short* objptr, long clipstatus);
 void phd_PutPolygonsSpcEnvmap(short* objptr, long clipstatus);
+
+extern D3DTLVERTEX aVertexBuffer[1024];
+extern long nPolys;
+extern long nClippedPolys;
+extern long DrawPrimitiveCnt;
+extern long DrawSortedCnt;
+extern long aGlobalSkinMesh;
+extern long GlobalAlpha;
+extern long GlobalAmbient;
+extern float AnimatingTexturesV[16][8][3];
+extern float aBoundingBox[24];

@@ -15,10 +15,22 @@
 #include "larasurf.h"
 #include "../specific/function_stubs.h"
 #include "../specific/audio.h"
+#include "../specific/file.h"
+#include "camera.h"
+#include "spotcam.h"
+#include "effect2.h"
+#include "../specific/input.h"
+#include "savegame.h"
 #ifdef GENERAL_FIXES
 #include "newinv2.h"
+#include "../specific/dxshell.h"
 #include "../tomb5/tomb5.h"
 #endif
+
+COLL_INFO mycoll;
+
+static COLL_INFO* lara_coll = &mycoll;
+static short cheat_hit_points;
 
 void GetLaraDeadlyBounds()
 {
@@ -429,6 +441,7 @@ void LaraControl(short item_number)
 	long oldx, oldy, oldz;
 	long wh, wd ,hfw, room_water_state;
 	short room_number;
+	static short SubsuitAir = 0;
 
 	item = lara_item;
 

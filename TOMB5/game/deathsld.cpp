@@ -8,6 +8,9 @@
 #include "control.h"
 #include "sound.h"
 #include "../specific/3dmath.h"
+#include "../specific/input.h"
+#include "objects.h"
+#include "lara.h"
 
 static short DeathSlideBounds[] = {-256, 256, -100, 100, 256, 512, 0, 0, -4550, 4550, 0, 0};
 static PHD_VECTOR DeathSlidePosition = {0, 0, 371};

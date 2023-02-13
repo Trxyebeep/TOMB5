@@ -12,11 +12,15 @@
 #include "laraflar.h"
 #include "larafire.h"
 #include "../specific/3dmath.h"
+#include "tomb4fx.h"
+#include "control.h"
+#include "laramisc.h"
+#include "../specific/input.h"
+#include "draw.h"
+#include "lara.h"
 
-static short FireBounds[12] =
-{
-	0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
-};
+short torchroom = NO_ROOM;
+static short FireBounds[12] = { 0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820 };
 
 void FireCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 {

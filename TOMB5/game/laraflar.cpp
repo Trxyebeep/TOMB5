@@ -14,8 +14,11 @@
 #include "objects.h"
 #include "../specific/3dmath.h"
 #include "../specific/function_stubs.h"
+#include "tomb4fx.h"
+#include "lara.h"
 #ifdef GENERAL_FIXES
 #include "draw.h"
+#include "../specific/lighting.h"
 #endif
 
 void FlareControl(short item_number)

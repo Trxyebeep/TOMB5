@@ -3,6 +3,10 @@
 #include "function_stubs.h"
 #include "dxshell.h"
 #include "3dmath.h"
+#include "winmain.h"
+
+TEXTURE Textures[64];
+long nTextures;
 
 static long bBumpMapSupported = 0;
 static DDPIXELFORMAT bumpPF;

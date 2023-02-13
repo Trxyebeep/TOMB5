@@ -6,8 +6,10 @@
 #include "effect2.h"
 #include "../specific/3dmath.h"
 #include "people.h"
+#include "objects.h"
+#include "lara.h"
 
-static BITE_INFO mafia_gun = {-50, 220, 60, 13};
+static BITE_INFO mafia_gun = { -50, 220, 60, 13 };
 
 void InitialiseMafia(short item_number)
 {

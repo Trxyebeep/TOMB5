@@ -4,9 +4,11 @@
 #include "objects.h"
 #include "../specific/function_stubs.h"
 #include "effects.h"
+#include "control.h"
+#include "lara.h"
 
-BITE_INFO lion_pounce = {-2, -10, 250, 21};
-BITE_INFO lion_bite = {-2, -10, 132, 21};
+BITE_INFO lion_pounce = { -2, -10, 250, 21 };
+BITE_INFO lion_bite = { -2, -10, 132, 21 };
 
 void InitialiseLion(short item_number)
 {

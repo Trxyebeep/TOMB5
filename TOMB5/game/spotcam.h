@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_spotcam(bool replace);
 
@@ -7,6 +7,19 @@ long Spline(long x, long* knots, long nk);
 void InitSpotCamSequences();
 void InitialiseSpotCam(short Sequence);
 void CalculateSpotCams();
+
+extern SPOTCAM SpotCam[256];
+extern long bTrackCamInit;
+extern long bUseSpotCam;
+extern long bDisableLaraControl;
+extern short SlowMotion;
+extern short number_spotcams;
+extern short LastSequence;
+extern short CurrentFov;
+extern char SCNoDrawLara;
+extern char SCOverlay;
+extern uchar SpotRemap[16];
+extern uchar CameraCnt[16];
 
 enum spotcam_flags
 {

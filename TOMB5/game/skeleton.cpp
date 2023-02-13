@@ -8,8 +8,11 @@
 #include "../specific/function_stubs.h"
 #include "effect2.h"
 #include "sphere.h"
+#include "tomb4fx.h"
+#include "control.h"
+#include "lara.h"
 
-static BITE_INFO skeleton_hit = {0, 0, 0, 17};
+static BITE_INFO skeleton_hit = { 0, 0, 0, 17 };
 
 void InitialiseSkeleton(short item_number)
 {

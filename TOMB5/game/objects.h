@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 
 void inject_objects(bool replace);
@@ -275,3 +275,5 @@ enum object_types
 
 	NUMBER_OBJECTS
 };
+
+extern OBJECT_INFO objects[NUMBER_OBJECTS];

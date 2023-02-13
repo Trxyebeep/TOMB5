@@ -24,67 +24,113 @@
 #include "../specific/fmv.h"
 #include "../specific/polyinsert.h"
 #include "savegame.h"
+#include "newinv2.h"
+#include "../specific/3dmath.h"
+#include "../specific/input.h"
+#include "../specific/dxshell.h"
+#include "lara.h"
+#include "cutseq.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
 
-uchar dels_cutseq_selector_cursorpos = 0;
+GAMEFLOW* Gameflow;
+PHD_VECTOR gfLensFlare;
+CVECTOR gfLayer1Col;
+CVECTOR gfLayer2Col;
+CVECTOR gfLensFlareColour;
+CVECTOR gfFog = { 0, 0, 0, 0 };
+ushort* gfStringOffset;
+ushort* gfFilenameOffset;
+uchar* gfScriptFile;
+uchar* gfLanguageFile;
+char* gfStringWad;
+char* gfFilenameWad;
+long gfStatus = 0;
+long gfMirrorZPlane;
+short gfLevelFlags;
+uchar gfCurrentLevel;
+uchar gfLevelComplete;
+uchar gfGameMode = 1;
+uchar gfRequiredStartPos;
+uchar gfMirrorRoom;
+uchar gfInitialiseGame;
+uchar gfNumPickups;
+uchar gfNumTakeaways;
+uchar gfNumMips = 0;
+uchar gfPickups[16];
+uchar gfTakeaways[16];
+uchar gfMips[8];
+uchar gfResidentCut[4];
+uchar gfLevelNames[40];
+char gfUVRotate;
+char gfLayer1Vel;
+char gfLayer2Vel;
 
-char available_levels[40] =
-{
-	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-};
+static ushort* gfScriptOffset;
+static uchar* gfScriptWad;
+static char* gfExtensions;
+static uchar gfLegend;
+static uchar gfLegendTime;
+static uchar gfResetHubDest;
+static uchar gfCutNumber;
 
-struct cutseq_selector_item
-{
-	short string;
-	short lvl;
-	short num;
-};
+static ushort dels_cutseq_selector_flag = 0;
+static long nframes = 1;
 
-cutseq_selector_item cutseq_selector_data[] =
+ulong GameTimer;
+long GlobalSoftReset;
+uchar bDoCredits = 0;
+char JustLoaded;
+
+static char available_levels[40] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+static char fmv_to_play[2] = { 0, 0 };
+static char num_fmvs = 0;
+static char DEL_playingamefmv = 0;
+
+static CUTSEQ_SELECTOR cutsel[] =
 {
-	{0,0,0},
+	{0, 0, 0},
 #ifdef GENERAL_FIXES
-	{STR_ANDY4B, LVL5_GALLOWS_TREE, 9},
+	{TXT_cut19, LVL5_GALLOWS_TREE, 9},
 #else
-	{STR_ANDY4B, LVL5_SINKING_SUBMARINE, 13},//cmon del this should be gallows, cut 9!
+	{TXT_cut19, LVL5_SINKING_SUBMARINE, 13},//cmon del this should be gallows, cut 9!
 #endif
-	{STR_ANDY11, LVL5_OLD_MILL, 44},
-	{STR_SWAMPY, LVL5_OLD_MILL, 43},
-	{STR_MONK2, LVL5_LABYRINTH, 42},
-	{STR_ANDREA4, LVL5_COLOSSEUM, 41},
-	{STR_JOBY7, LVL5_DEEPSEA_DIVE, 40},
-	{STR_ANDY10, LVL5_OLD_MILL, 39},
-	{STR_ANDY8, LVL5_OLD_MILL, 38},
-	{STR_ANDY9, LVL5_OLD_MILL, 37},
-	{STR_COSSACK, LVL5_OLD_MILL, 36},
-	{STR_JOBY_CUT_2, LVL5_BASE, 25},
-	{STR_JOBY_CRANE_CUT, LVL5_BASE, 27},
-	{STR_RICH_CUT_2, LVL5_SECURITY_BREACH, 26},
-	{STR_RICH_CUT_1, LVL5_THIRTEENTH_FLOOR, 24},
-	{STR_RICH_CUT_3, LVL5_ESCAPE_WITH_THE_IRIS, 23},
-	{STR_JOBY_CUT_3, LVL5_BASE, 22},
-	{STR_ANDY1, LVL5_GALLOWS_TREE, 21},
-	{STR_RICH1, LVL5_THIRTEENTH_FLOOR, 20},
-	{STR_ANDY2, LVL5_GALLOWS_TREE, 19},
-	{STR_JOBY4, LVL5_SUBMARINE, 18},
-	{STR_ANDREA1, LVL5_STREETS_OF_ROME, 17},
-	{STR_ANDREA2, LVL5_STREETS_OF_ROME, 16},
-	{STR_JOBY5, LVL5_SUBMARINE, 15},
-	{STR_ANDY3, LVL5_GALLOWS_TREE, 14},
-	{STR_JOBY9, LVL5_SINKING_SUBMARINE, 13},
-	{STR_JOBY10, LVL5_SINKING_SUBMARINE, 12},
-	{STR_RICHCUT4, LVL5_THIRTEENTH_FLOOR, 11},
-	{STR_ANDY4, LVL5_GALLOWS_TREE, 10},
-	{STR_ANDREA3, LVL5_TRAJAN_MARKETS, 8},
-	{STR_ANDREA3B, LVL5_TRAJAN_MARKETS, 7},
-	{STR_ANDY5, LVL5_LABYRINTH, 6},
-	{STR_JOBY6, LVL5_SUBMARINE, 5},
-	{STR_JOBY8, LVL5_SINKING_SUBMARINE, 32},
-	{STR_ANDY6, LVL5_LABYRINTH, 33},
-	{STR_ANDYPEW, LVL5_LABYRINTH, 34},
-	{STR_ANDY7, LVL5_OLD_MILL, 35},
+	{TXT_cut36, LVL5_OLD_MILL, 44},
+	{TXT_cut35, LVL5_OLD_MILL, 43},
+	{TXT_cut34, LVL5_LABYRINTH, 42},
+	{TXT_cut33, LVL5_COLOSSEUM, 41},
+	{TXT_cut32, LVL5_DEEPSEA_DIVE, 40},
+	{TXT_cut31, LVL5_OLD_MILL, 39},
+	{TXT_cut30, LVL5_OLD_MILL, 38},
+	{TXT_cut29, LVL5_OLD_MILL, 37},
+	{TXT_cut28, LVL5_OLD_MILL, 36},
+	{TXT_cut3, LVL5_BASE, 25},
+	{TXT_cut1, LVL5_BASE, 27},
+	{TXT_cut2, LVL5_SECURITY_BREACH, 26},
+	{TXT_cut4, LVL5_THIRTEENTH_FLOOR, 24},
+	{TXT_cut5, LVL5_ESCAPE_WITH_THE_IRIS, 23},
+	{TXT_cut6, LVL5_BASE, 22},
+	{TXT_cut7, LVL5_GALLOWS_TREE, 21},
+	{TXT_cut8, LVL5_THIRTEENTH_FLOOR, 20},
+	{TXT_cut9, LVL5_GALLOWS_TREE, 19},
+	{TXT_cut10, LVL5_SUBMARINE, 18},
+	{TXT_cut11, LVL5_STREETS_OF_ROME, 17},
+	{TXT_cut12, LVL5_STREETS_OF_ROME, 16},
+	{TXT_cut13, LVL5_SUBMARINE, 15},
+	{TXT_cut14, LVL5_GALLOWS_TREE, 14},
+	{TXT_cut15, LVL5_SINKING_SUBMARINE, 13},
+	{TXT_cut16, LVL5_SINKING_SUBMARINE, 12},
+	{TXT_cut17, LVL5_THIRTEENTH_FLOOR, 11},
+	{TXT_cut18, LVL5_GALLOWS_TREE, 10},
+	{TXT_cut20, LVL5_TRAJAN_MARKETS, 8},
+	{TXT_cut21, LVL5_TRAJAN_MARKETS, 7},
+	{TXT_cut22, LVL5_LABYRINTH, 6},
+	{TXT_cut23, LVL5_SUBMARINE, 5},
+	{TXT_cut24, LVL5_SINKING_SUBMARINE, 32},
+	{TXT_cut25, LVL5_LABYRINTH, 33},
+	{TXT_cut26, LVL5_LABYRINTH, 34},
+	{TXT_cut27, LVL5_OLD_MILL, 35},
 };
 
 void DoGameflow()
@@ -94,8 +140,8 @@ void DoGameflow()
 
 	do_boot_screen(Gameflow->Language);
 	num_fmvs = 0;
-	fmv_to_play[1] = 0;
 	fmv_to_play[0] = 0;
+	fmv_to_play[1] = 0;
 	gfCurrentLevel = Gameflow->TitleEnabled ? 0 : 1;
 	gf = &gfScriptWad[gfScriptOffset[gfCurrentLevel]];
 
@@ -328,32 +374,31 @@ void DoGameflow()
 #pragma warning(disable : 4244)
 long TitleOptions()
 {
-	long ret, ret2, i, n, n2, load, cheat_jump, colorFlag, flag, height;
+	static __int64 selection = 1;
+	static __int64 selection_bak = 0;
+	__int64 flag, sel;
+	long nLevels, nFirst, lp;
+	long ret, n, load, cheat_jump, y;
 	static long load_or_new;
-	static long always0 = 0;//leftover debug thing? if it's ever 1, the menu and logo don't show.
 	static long gfLevelComplete_bak;
-	static long menu_to_display = 0;//0 main menu, del's cutseq selector. 1 level select. 2 the reload menu. 3 the options menu
+	static long menu = 0;
 	static long selected_level = 0;
-	static __int64 selected_option = 1;
-	static __int64 selected_option_bak = 0;
 
 	ret = 0;
 
 	if (load_or_new)
 	{
-		ret2 = load_or_new;
-
 		if (DoFade == 2)
 		{
+			ret = load_or_new;
 			gfLevelComplete = (uchar)gfLevelComplete_bak;
 			gfLevelComplete_bak = 0;
 			load_or_new = 0;
 #ifndef GENERAL_FIXES
-			always0 = 0;
-			menu_to_display = 0;
-			selected_option = 1;
+			menu = 0;
+			selection = 1;
 #endif
-			return ret2;
+			return ret;
 		}
 
 		input = 0;
@@ -371,271 +416,203 @@ long TitleOptions()
 
 	if (dels_cutseq_selector_flag)
 	{
-		menu_to_display = 0;
-		selected_option = 1;
-		do_dels_cutseq_selector();
-		return load_or_new;
+		menu = 0;
+		selection = 1;
+		return do_dels_cutseq_selector();
 	}
 
-	if (always0 == 0)
+	switch (menu)
 	{
-		switch (menu_to_display)
+	case 1://select level menu
+		PrintString(phd_centerx, font_height + phd_winymin, 6, SCRIPT_TEXT(TXT_Select_Level), FF_CENTER);
+
+		if (Gameflow->nLevels >= 10)
 		{
-		case 0://main menu
-			SuperShowLogo();
-			Chris_Menu = 0;
-
-			if (selected_option & 1)
-				PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
-			else
-				PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
-
-			if (selected_option & 2)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-
-			if (selected_option & 4)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
-			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
-
-			if (selected_option & 8)
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
-			else
-				PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
-
-			flag = 8;
-
-			break;
-
-		case 1://select level menu
-			PrintString(phd_centerx, font_height + phd_winymin, 6, SCRIPT_TEXT(STR_SELECT_LEVEL), FF_CENTER);
-
-			if (Gameflow->nLevels >= 10)
+			sel = selection;
+			n = 0;
+			nLevels = 10;
+			
+			while (sel)
 			{
-				i = (long)selected_option;
-				n = 0;
+				sel >>= 1;
+				n++;
+			}
 
-				for (colorFlag = 10; i; n++)
-					i >>= 1;
+			nFirst = n - 9;
 
-				n2 = n - 9;
-
-				if (n2 >= 1)
+			if (nFirst >= 1)
+			{
+				if (nFirst > 1)
 				{
-					if (n2 > 1)
-					{
-						PrintString(32, font_height + font_height + phd_winymin + font_height, 6, &title_string[4], 0);
-						PrintString(phd_winxmax - 48, font_height + font_height + phd_winymin + font_height, 6, &title_string[4], 0);
-					}
-				}
-				else
-					n2 = 1;
-
-				if (n != Gameflow->nLevels - 1)
-				{
-					PrintString(32, font_height + phd_winymin + font_height + (10 * font_height), 6, &title_string[0], 0);
-					PrintString(phd_winxmax - 48, font_height + phd_winymin + font_height + (10 * font_height), 6, &title_string[0], 0);
+					PrintString(32, 3 * font_height + phd_winymin, 6, "\x18", 0);
+					PrintString(phd_winxmax - 48, 3 * font_height + phd_winymin, 6, "\x18", 0);
 				}
 			}
 			else
+				nFirst = 1;
+
+			if (n != Gameflow->nLevels - 1)
 			{
-				n2 = 1;
-				colorFlag = Gameflow->nLevels - 1;
+				PrintString(32, 2 * font_height + phd_winymin + (10 * font_height), 6, "\x1a", 0);
+				PrintString(phd_winxmax - 48, 2 * font_height + phd_winymin + (10 * font_height), 6, "\x1a", 0);
 			}
+		}
+		else
+		{
+			nFirst = 1;
+			nLevels = Gameflow->nLevels - 1;
+		}
 
-			i = n2;
+		y = 2 * font_height + phd_winymin;
 
-			if (n2 < colorFlag + n2)
-			{
-				n = n2 - 1;
+		for (lp = nFirst; lp < nFirst + nLevels; lp++)
+		{
+			y += font_height;
 
-				height = font_height + font_height + phd_winymin;
-
-				while (1)
-				{
-					height += font_height;
-
-					if (selected_option & (1i64 << n))
-						PrintString(phd_centerx, (ushort)height, 1, SCRIPT_TEXT(gfLevelNames[n + 1]), FF_CENTER);
-					else
-						PrintString(phd_centerx, (ushort)height, 3 - (*((char*)&nframes + i + 3) != 0), SCRIPT_TEXT(gfLevelNames[n + 1]), FF_CENTER);
-
-					if (selected_option & (1i64 << n))
-						selected_level = n;
-
-					n++;
-
-					if (++i >= colorFlag + n2)
-						break;
-				}
-			}
-
-			ret = 0;
-			flag = 1 << (Gameflow->nLevels - 2);
-			break;
-
-		case 2://loading menu
-
-			if (Gameflow->LoadSaveEnabled)
-			{
-				load = DoLoadSave(IN_LOAD);
-
-				if (load >= 0)
-				{
-					S_LoadGame(load);
-					ret = 2;
-				}
-			}
+			if (selection & (1i64 << (lp - 1)))
+				PrintString(phd_centerx, (ushort)y, 1, SCRIPT_TEXT(gfLevelNames[lp]), FF_CENTER);
 			else
+				PrintString(phd_centerx, (ushort)y, available_levels[lp - 1] ? 2 : 3, SCRIPT_TEXT(gfLevelNames[lp]), FF_CENTER);
+
+			if (selection & (1i64 << (lp - 1)))
+				selected_level = lp - 1;
+		}
+
+		flag = 1i64 << (Gameflow->nLevels - 2);
+		break;
+
+	case 2://loading menu
+
+		if (Gameflow->LoadSaveEnabled)
+		{
+			load = DoLoadSave(IN_LOAD);
+
+			if (load >= 0)
 			{
-				SoundEffect(SFX_LARA_NO, 0, SFX_ALWAYS);
-				menu_to_display = 0;
-				SuperShowLogo();
-				Chris_Menu = 0;
-
-				if (selected_option & 1)
-					PrintString(phd_centerx, phd_winymax - 4 * font_height, 1, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
-				else
-					PrintString(phd_centerx, phd_winymax - 4 * font_height, 2, SCRIPT_TEXT(STR_SAVE_GAME_BIS), FF_CENTER);
-
-				if (selected_option & 2)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 1, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, 2, SCRIPT_TEXT(STR_LOAD_GAME_BIS), FF_CENTER);
-
-				if (selected_option & 4)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 1, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
-				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, 2, SCRIPT_TEXT(STR_OPTIONS), FF_CENTER);
-
-				if (selected_option & 8)
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 1, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
-				else
-					PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height + font_height, 2, SCRIPT_TEXT(STR_EXIT), FF_CENTER);
-
-				flag = 8;
+				S_LoadGame(load);
+				ret = 2;
 			}
 
-			break;
-
-		case 3://options menu
-			DoOptions();
 			break;
 		}
 
-		if (menu_to_display < 2)
+		SoundEffect(SFX_LARA_NO, 0, SFX_ALWAYS);
+		menu = 0;
+
+	case 0://main menu
+		SuperShowLogo();
+		Chris_Menu = 0;
+
+		PrintString(phd_centerx, phd_winymax - 4 * font_height, (selection & 1) ? 1 : 2, SCRIPT_TEXT(TXT_New_Game), FF_CENTER);
+		PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, (selection & 2) ? 1 : 2, SCRIPT_TEXT(TXT_Load_Game), FF_CENTER);
+		PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, (selection & 4) ? 1 : 2, SCRIPT_TEXT(TXT_Options), FF_CENTER);
+		PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 3 * font_height, (selection & 8) ? 1 : 2, SCRIPT_TEXT(TXT_Exit), FF_CENTER);
+
+		flag = 8;
+
+		break;
+
+	case 3://options menu
+		DoOptions();
+		break;
+	}
+
+	if (menu < 2)
+	{
+		if (dbinput & IN_FORWARD)
 		{
-			if (dbinput & IN_FORWARD)
-			{
-				if (selected_option > 1)
-					selected_option >>= 1;
+			if (selection > 1)
+				selection >>= 1;
 
-				SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
-			}
-
-			if (dbinput & IN_BACK)
-			{
-				if (selected_option < flag)
-					selected_option <<= 1;
-
-				SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
-			}
+			SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
 		}
 
-		if (dbinput & IN_DESELECT && menu_to_display > 0)
+		if (dbinput & IN_BACK)
 		{
-			menu_to_display = 0;
-			selected_option = selected_option_bak;
-			S_SoundStopAllSamples();
-			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			if (selection < flag)
+				selection <<= 1;
+
+			SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+		}
+	}
+
+	if (dbinput & IN_DESELECT && menu > 0)
+	{
+		menu = 0;
+		selection = selection_bak;
+		S_SoundStopAllSamples();
+		SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+	}
+
+	if (!menu)
+	{
+		cheat_jump = GetCampaignCheatValue();
+
+		if (cheat_jump)
+		{
+			gfLevelComplete = (uchar)cheat_jump;
+			ret = 3;
 		}
 
-		if (menu_to_display == 0)
-		{
-			cheat_jump = GetCampaignCheatValue();
-
-			if (cheat_jump)
-			{
-				gfLevelComplete = (uchar)cheat_jump;
-				ret = 3;
-			}
-#ifdef _DEBUG	//not for public releases, doesn't exist in original codebase
-			if (keymap[DIK_F] && keymap[DIK_U] && keymap[DIK_C] && keymap[DIK_K])//F U C K because this is fucking shit.
-				dels_cutseq_selector_flag = 1;
+#ifdef _DEBUG	//new code but not for public releases
+		if (keymap[DIK_F] && keymap[DIK_U] && keymap[DIK_C] && keymap[DIK_K])//F U C K because this is fucking shit.
+			dels_cutseq_selector_flag = 1;
 #endif
-		}
+	}
 
-		if (dbinput & IN_SELECT && !keymap[56] && menu_to_display < 2)
+	if (dbinput & IN_SELECT && !keymap[DIK_LALT] && menu < 2)
+	{
+		SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+
+		if (!menu)
 		{
-			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-
-			if (menu_to_display != 0)
+			switch (selection)
 			{
-				if (menu_to_display == 1 && available_levels[selected_level])
+			case 1:
+
+				if (Gameflow->PlayAnyLevel)
 				{
-					gfLevelComplete = 0;
-
-					n = 0;
-					n2 = (long)selected_option;
-
-					if (n2)
-					{
-						do
-						{
-							n2 >>= 1;
-							n++;
-
-						} while (n2);
-
-						gfLevelComplete = (uchar)n;
-					}
-
+					selection_bak = selection;
+					menu = 1;
+				}
+				else
+				{
+					gfLevelComplete = 1;
 					ret = 3;
 				}
+
+				break;
+
+			case 2:
+				GetSaveLoadFiles();
+				selection_bak = selection;
+				menu = 2;
+				break;
+
+			case 4:
+				selection_bak = selection;
+				menu = 3;
+				break;
+
+			case 8:
+				ret = 4;
+				break;
 			}
-			else if (selected_option > 0 && selected_option <= 8)
+		}
+		else if (menu == 1 && available_levels[selected_level])
+		{
+			gfLevelComplete = 0;
+
+			n = 0;
+			sel = selection;
+
+			while (sel)
 			{
-				switch (selected_option)
-				{
-				case 1:
-
-					if (Gameflow->PlayAnyLevel)
-					{
-						selected_option_bak = selected_option;
-						menu_to_display = 1;
-					}
-					else
-					{
-						gfLevelComplete = 1;
-						ret = 3;
-					}
-
-					break;
-
-				case 2:
-					GetSaveLoadFiles();
-					selected_option_bak = selected_option;
-					menu_to_display = 2;
-					break;
-
-				case 3:
-				case 5:
-				case 6:
-				case 7:
-					break;
-
-				case 4:
-					selected_option_bak = selected_option;
-					menu_to_display = 3;
-					break;
-
-				case 8:
-					ret = 4;
-					break;
-				}
+				sel >>= 1;
+				gfLevelComplete++;
 			}
+
+			ret = 3;
 		}
 	}
 
@@ -657,9 +634,7 @@ long TitleOptions()
 
 void DoTitle(uchar name, uchar audio)
 {
-	CreditsDone = 0;
 	DoFrontEndOneShotStuff();
-	CanLoad = 0;
 	SetFade(255, 0);
 	savegame.Level.Timer = 0;
 	savegame.Game.Timer = 0;
@@ -675,7 +650,7 @@ void DoTitle(uchar name, uchar audio)
 	fmv_to_play[1] = 0;
 	fmv_to_play[0] = 0;
 	S_LoadLevelFile(name);
-	GLOBAL_lastinvitem = -1;
+	GLOBAL_lastinvitem = NO_ITEM;
 	dels_cutseq_player = 0;
 	InitSpotCamSequences();
 	title_controls_locked_out = 0;
@@ -750,27 +725,32 @@ void DoTitle(uchar name, uchar audio)
 		input = 0;
 }
 
-void do_dels_cutseq_selector()
+long do_dels_cutseq_selector()
 {
-	short* name;
-	long num;
+	long num, ret;
+	static uchar selection = 0;
 
-	PrintString(256, 102, 6, SCRIPT_TEXT(STR_SELECT_CUTSCENE), FF_CENTER);
-	num = dels_cutseq_selector_cursorpos - 4;
+	ret = 0;
+
+#ifdef GENERAL_FIXES
+	PrintString((ushort)phd_centerx, ushort(font_height + phd_winymin), 6, SCRIPT_TEXT(TXT_cut0), FF_CENTER);
+#else
+	PrintString(256, 102, 6, SCRIPT_TEXT(TXT_cut0), FF_CENTER);
+#endif
+	num = selection - 4;
 
 	if (num < 0)
 		num = 0;
 
-	if (dbinput & IN_FORWARD && dels_cutseq_selector_cursorpos)
-		dels_cutseq_selector_cursorpos--;
+	if (dbinput & IN_FORWARD && selection)
+		selection--;
 
-	if (dbinput & IN_BACK && dels_cutseq_selector_cursorpos < 35)
-		dels_cutseq_selector_cursorpos++;
+	if (dbinput & IN_BACK && selection < 35)
+		selection++;
 
 	for (int i = 0; num < 36 && i < 5; i++)
 	{
-		name = &cutseq_selector_data[num + 1].string;
-		PrintString((short)phd_centerx, ushort(i * font_height + 136), (-(dels_cutseq_selector_cursorpos != num) & 4) + 1, SCRIPT_TEXT(*name), FF_CENTER);
+		PrintString((ushort)phd_centerx, ushort(i * font_height + 136), (selection == num) ? 1 : 5, SCRIPT_TEXT(cutsel[num + 1].string), FF_CENTER);
 		num++;
 	}
 
@@ -779,13 +759,16 @@ void do_dels_cutseq_selector()
 		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
 		dels_cutseq_selector_flag = 0;
 		cutrot = 0;
-		gfLevelComplete = (uchar) cutseq_selector_data[dels_cutseq_selector_cursorpos + 1].lvl;
-		dels_cutseq_player = cutseq_selector_data[dels_cutseq_selector_cursorpos + 1].num;
-		dels_cutseq_selector_cursorpos = 0;
+		gfLevelComplete = (uchar)cutsel[selection + 1].lvl;
+		dels_cutseq_player = cutsel[selection + 1].num;
+		selection = 0;
+		ret = 3;
 	}
 
 	if (dbinput & IN_JUMP)
 		dels_cutseq_selector_flag = 0;
+
+	return ret;
 }
 
 void DoLevel(uchar Name, uchar Audio)
@@ -1023,13 +1006,13 @@ void LoadGameflow()
 	Gameflow->Language = l;
 
 	memcpy(&sh, gfStringOffset, sizeof(STRINGHEADER));
-	memcpy(gfStringOffset, gfStringOffset + (sizeof(STRINGHEADER) / sizeof(ushort)), NUM_STRING_ENTRIES * sizeof(ushort));
-	gfStringWad = (char*)(gfStringOffset + NUM_STRING_ENTRIES);
-	memcpy(gfStringOffset + NUM_STRING_ENTRIES,
-		gfStringOffset + NUM_STRING_ENTRIES + (sizeof(STRINGHEADER) / sizeof(ushort)),
+	memcpy(gfStringOffset, gfStringOffset + (sizeof(STRINGHEADER) / sizeof(ushort)), TXT_NUM_STRINGS * sizeof(ushort));
+	gfStringWad = (char*)(gfStringOffset + TXT_NUM_STRINGS);
+	memcpy(gfStringOffset + TXT_NUM_STRINGS,
+		gfStringOffset + TXT_NUM_STRINGS + (sizeof(STRINGHEADER) / sizeof(ushort)),
 		sh.StringWadLen + sh.PCStringWadLen + sh.PSXStringWadLen);
 
-	for (int i = 0; i < NUM_STRING_ENTRIES - 1; i++)
+	for (int i = 0; i < TXT_NUM_STRINGS - 1; i++)
 	{
 		s = &gfStringWad[gfStringOffset[i]];
 		d = &gfStringWad[gfStringOffset[i + 1]];

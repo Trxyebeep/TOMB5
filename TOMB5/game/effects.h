@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_effects(bool replace);
 
@@ -45,8 +45,13 @@ void TL_10(ITEM_INFO* item);
 void TL_11(ITEM_INFO* item);
 void TL_12(ITEM_INFO* item);
 short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room_number);
-#define Richochet	( (void(__cdecl*)(GAME_VECTOR*)) 0x00432710 );
+void DoLotsOfBlood(long x, long y, long z, short speed, short ang, short room_number, long num);
+long ItemNearLara(PHD_3DPOS* pos, long rad);
+void Richochet(GAME_VECTOR* pos);
+void WadeSplash(ITEM_INFO* item, long water, long depth);
+void Splash(ITEM_INFO* item);
 
-#define WadeSplash	( (void(__cdecl*)(ITEM_INFO*, long, long)) 0x00432A30 )
-#define Splash	( (void(__cdecl*)(ITEM_INFO*)) 0x00432900 )
-#define ItemNearLara	( (long(__cdecl*)(PHD_3DPOS*, long)) 0x00432580 )
+extern FX_INFO* effects;
+extern OBJECT_VECTOR* sound_effects;
+extern long number_sound_effects;
+extern long GlobalFogOff;

@@ -1,11 +1,15 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_subsuit(bool replace);
 
 void DoSubsuitStuff();
 void FireChaff();
 void TriggerAirBubbles();
+void GetLaraJointPosRot(PHD_VECTOR* pos, long node, long rot, SVECTOR* sv);
+void TriggerSubMist(PHD_VECTOR* pos, PHD_VECTOR* pos1, long size);
+void TriggerEngineEffects();
+void TriggerEngineEffects_CUT();
 
-#define TriggerEngineEffects	( (void(__cdecl*)()) 0x0047CB70 )
-#define TriggerEngineEffects_CUT	( (void(__cdecl*)()) 0x0047D140 )
+extern SUBSUIT_INFO subsuit;
+extern char SubHitCount;

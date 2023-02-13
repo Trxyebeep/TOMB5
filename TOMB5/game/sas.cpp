@@ -11,6 +11,7 @@
 #include "people.h"
 #include "draw.h"
 #include "gameflow.h"
+#include "lara.h"
 
 static BITE_INFO sas_gun = { 15, 80, 200, 13 };
 

@@ -2,6 +2,70 @@
 #include "3dmath.h"
 #include "d3dmatrix.h"
 #include "dxshell.h"
+#include "winmain.h"
+#include "../game/spotcam.h"
+#include "../game/control.h"
+#include "../game/lara.h"
+
+FCAMERA aCamera;
+FVECTOR aCamPos;
+FVECTOR aCamTar;
+FVECTOR aCamDir;
+PHD_VECTOR CamPos;
+SVECTOR CamRot;
+
+float one = 33554432.0F;
+float mone = 2048.0F;
+float FogStart = float(1024 * 12);
+float FogEnd = float(1024 * 20);
+
+float f_centerx;
+float f_centery;
+float f_top;
+float f_left;
+float f_bottom;
+float f_right;
+float f_znear;
+float f_zfar;
+float f_mznear;
+float f_mzfar;
+float f_persp;
+float f_mpersp;
+float f_oneopersp;
+float f_moneopersp;
+float f_perspoznear;
+float f_mperspoznear;
+float f_moneoznear;
+float f_a;
+float f_b;
+float f_boo;
+
+float fcossin_tbl[65536];
+
+float* aMXPtr;
+float aFMatrixStack[20 * indices_count];
+
+long* phd_mxptr;
+long w2v_matrix[indices_count];
+long matrix_stack[20 * indices_count];
+
+long phd_winheight;
+long phd_winwidth;
+long phd_centerx;
+long phd_centery;
+long phd_top;
+long phd_left;
+long phd_bottom;
+long phd_right;
+long phd_znear;
+long phd_zfar;
+long phd_persp;
+short phd_winxmax;
+short phd_winxmin;
+short phd_winymax;
+short phd_winymin;
+
+static float LfAspectCorrection;
 
 void AlterFOV(short fov)
 {
@@ -1070,8 +1134,6 @@ void phd_GenerateW2V(PHD_3DPOS* viewPos)
 	phd_mxptr[M10] = w2v_matrix[M10];
 	phd_mxptr[M11] = w2v_matrix[M11];
 	phd_mxptr[M12] = w2v_matrix[M12];
-
-	SetD3DMatrix(&D3DMW2VMatrix, w2v_matrix);
 }
 
 void inject_3dmath(bool replace)

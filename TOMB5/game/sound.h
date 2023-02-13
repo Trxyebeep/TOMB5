@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_sound(bool replace);
 
@@ -10,6 +10,12 @@ void SOUND_Stop();
 void StopSoundEffect(long sfx);
 void GetPanVolume(SoundSlot* slot);
 long SoundEffect(long sfx, PHD_3DPOS* pos, long flags);
+
+extern SAMPLE_INFO* sample_infos;
+extern SoundSlot LaSlot[32];
+extern short* sample_lut;
+extern long sound_active;
+extern long sound_cut_flag;
 
 enum sfx_types
 {

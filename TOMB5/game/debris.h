@@ -1,10 +1,11 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_debris(bool replace);
 
 void TriggerDebris(GAME_VECTOR* pos, void* TextInfo, short* Offsets, long* Vels, short rgb);
 long GetFreeDebris();
 void UpdateDebris();
+void ShatterObject(SHATTER_ITEM* shatter_item, MESH_INFO* StaticMesh, short Num, short RoomNumber, long NoXZVel);
 
-#define ShatterObject	( (void(__cdecl*)(SHATTER_ITEM*, MESH_INFO*, short, short, long)) 0x0041D6B0 )
+extern short DebrisFlags;

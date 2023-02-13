@@ -1,11 +1,13 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_sphere(bool replace);
 
 void GetJointAbsPositionMatrix(ITEM_INFO* item, float* matrix, long node);
+void InitInterpolate2(long frac, long rate);
+void GetJointAbsPosition(ITEM_INFO* item, PHD_VECTOR* pos, long joint);
+long GetSpheres(ITEM_INFO* item, SPHERE* ptr, long WorldSpace);
+long TestCollision(ITEM_INFO* item, ITEM_INFO* l);
 
-#define GetSpheres	( (long(__cdecl*)(ITEM_INFO*, SPHERE*, long)) 0x00479380 )
-#define TestCollision	( (long(__cdecl*)(ITEM_INFO*, ITEM_INFO*)) 0x00479170 )
-#define GetJointAbsPosition	( (void(__cdecl*)(ITEM_INFO*, PHD_VECTOR*, long)) 0x00479780 )
-#define InitInterpolate2	( (void(__cdecl*)(long, long)) 0x00479BB0 )
+extern SPHERE Slist[34];
+extern char GotLaraSpheres;

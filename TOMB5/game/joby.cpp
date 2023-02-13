@@ -18,10 +18,18 @@
 #include "../specific/output.h"
 #include "../specific/specificfx.h"
 #include "../specific/function_stubs.h"
+#include "deltapak.h"
+#include "lara.h"
+
+short WB_room;
+static ITEM_INFO* WB_item;
+static short wbx;
+static short wbz;
 
 void KlaxonTremor()
 {
-	static short timer;
+	static short timer = 0;
+	static short bounce;
 
 	if (!(GlobalCounter & 0x1FF))
 		SoundEffect(SFX_KLAXON, 0, 0x1000 | SFX_SETVOL);
@@ -29,25 +37,25 @@ void KlaxonTremor()
 	if (timer >= 0)
 		timer++;
 
-	if (timer > 450)
+	if (timer > 450 && !(GetRandomControl() & 0x1FF))
 	{
-		if (!(GetRandomControl() & 0x1FF))
-		{
-			InGameCnt = 0;
-			timer = -32 - (GetRandomControl() & 0x1F);
-			return;
-		}
+		bounce = 0;
+		timer = -32 - (GetRandomControl() & 0x1F);
+		return;
 	}
 
 	if (timer < 0)
 	{
-		if ((long)InGameCnt >= abs(timer))
+		if (bounce < abs(timer))
+		{
+			bounce++;
+			camera.bounce = -(GetRandomControl() % bounce);
+		}
+		else
 		{
 			camera.bounce = -(GetRandomControl() % abs(timer));
 			timer++;
 		}
-		else
-			camera.bounce = -(GetRandomControl() % ++InGameCnt);
 	}
 }
 
@@ -82,7 +90,7 @@ void ControlElectricalCables(short item_number)
 
 	if (TriggerActive(item))
 	{
-		SoundEffect(SFX_ELECTRIC_WIRES, &item->pos, 0);
+		SoundEffect(SFX_ELECTRIC_WIRES, &item->pos, SFX_DEFAULT);
 		ffar = abs(lara_item->pos.x_pos - item->pos.x_pos) > 2048;
 		ffar += abs(lara_item->pos.y_pos - item->pos.y_pos) > 4096;
 		ffar += abs(lara_item->pos.z_pos - item->pos.z_pos) > 2048;
@@ -143,7 +151,7 @@ void ControlElectricalCables(short item_number)
 		pos.z = 256;
 		GetJointAbsPosition(item, &pos, j);
 
-		if ((GetRandomControl() & 1) && !ns)
+		if (GetRandomControl() & 1 && !ns)
 		{
 			rand = (GetRandomControl() & 63) + 128;
 			TriggerDynamic(pos.x, pos.y, pos.z, 12, 0, rand >> 1, rand);
@@ -165,12 +173,14 @@ void ControlElectricalCables(short item_number)
 	if (!ns && !lara.burn && in_water)
 	{
 		flip = room[wr].FlipNumber;
+
 		pos.x = 0;
 		pos.y = 0;
 		pos.z = 0;
 		GetLaraJointPos(&pos, 3);
 		room_num = lara_item->room_number;
 		GetFloor(pos.x, pos.y, pos.z, &room_num);
+
 		pos2.x = 0;
 		pos2.y = 0;
 		pos2.z = 0;
@@ -182,7 +192,7 @@ void ControlElectricalCables(short item_number)
 		{
 			if (lara_item->hit_points > 32)
 			{
-				SoundEffect(SFX_LARA_ELECTRIC_CRACKLES, &lara_item->pos, 0);
+				SoundEffect(SFX_LARA_ELECTRIC_CRACKLES, &lara_item->pos, SFX_DEFAULT);
 				TriggerLaraSparks(0);
 				TriggerLaraSparks(1);
 				TriggerDynamic(pos.x, pos.y, pos.z, 8, 0, GetRandomControl() & 127, (GetRandomControl() & 63) + 128);
@@ -199,45 +209,52 @@ void ControlElectricalCables(short item_number)
 	}
 }
 
-void WreckingBallCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll)
+void WreckingBallCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 {
 	ITEM_INFO* item;
-	long dx, dy, dz, middle, damage;
+	long x, y, z, dx, dy, dz, middle, damage, lp;
 
 	item = &items[item_num];
 
-	if (TestBoundsCollide(item, laraitem, coll->radius))
+	if (!TestBoundsCollide(item, l, coll->radius))
+		return;
+
+	dx = l->pos.x_pos;
+	dy = l->pos.y_pos;
+	dz = l->pos.z_pos;
+	middle = (dx & 1023) > 256 && (dx & 1023) < 768 && (dz & 1023) > 256 && (dz & 1023) < 768;
+	damage = item->fallspeed > 0 ? 96 : 0;
+
+	if (!ItemPushLara(item, l, coll, coll->enable_spaz, 1))
+		return;
+
+	if (middle)
+		l->hit_points = 0;
+	else
+		l->hit_points -= (short)damage;
+
+	dx -= l->pos.x_pos;
+	dy -= l->pos.y_pos;
+	dz -= l->pos.z_pos;
+
+	if (damage)
 	{
-		dx = laraitem->pos.x_pos;
-		dy = laraitem->pos.y_pos;
-		dz = laraitem->pos.z_pos;
-		middle = (dx & 1023) > 256 && (dx & 1023) < 768 && (dz & 1023) > 256 && (dz & 1023) < 768;
-		damage = item->fallspeed > 0 ? 96 : 0;
+		damage = (GetRandomControl() & 3) + (damage >> 3) + 2;
 
-		if (ItemPushLara(item, laraitem, coll, coll->enable_spaz, 1))
+		for (lp = 0; lp < damage; lp++)
 		{
-			if (middle)
-				laraitem->hit_points = 0;
-			else
-				laraitem->hit_points -= (short) damage;
-
-			dx -= laraitem->pos.x_pos;
-			dy -= laraitem->pos.y_pos;
-			dz -= laraitem->pos.z_pos;
-
-			if (damage)
-			{
-				for (int i = 14 + (GetRandomControl() & 3); i > 0; i--)
-					TriggerBlood(laraitem->pos.x_pos + (GetRandomControl() & 63) - 32, laraitem->pos.y_pos - (GetRandomControl() & 511) - 256, laraitem->pos.z_pos + (GetRandomControl() & 63) - 32, -1, 1);
-			}
-
-			if (!coll->enable_baddie_push || middle)
-			{
-				laraitem->pos.x_pos += dx;
-				laraitem->pos.y_pos += dy;
-				laraitem->pos.z_pos += dz;
-			}
+			x = l->pos.x_pos + (GetRandomControl() & 63) - 32;
+			y = l->pos.y_pos - (GetRandomControl() & 511) - 256;
+			z = l->pos.z_pos + (GetRandomControl() & 63) - 32;
+			TriggerBlood(x, y, z, -1, 1);
 		}
+	}
+
+	if (!coll->enable_baddie_push || middle)
+	{
+		l->pos.x_pos += dx;
+		l->pos.y_pos += dy;
+		l->pos.z_pos += dz;
 	}
 }
 
@@ -285,10 +302,10 @@ void ControlWreckingBall(short item_number)
 
 	if (GLOBAL_playing_cutseq || CheckCutPlayed(27))
 	{
-		room_number = item->room_number;
 		item->goal_anim_state = 0;
 		item->pos.x_pos = 47616;
 		item->pos.z_pos = 34816;
+		room_number = item->room_number;
 		floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 		item->pos.y_pos = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos) + 1664;
 	}
@@ -296,10 +313,10 @@ void ControlWreckingBall(short item_number)
 	{
 		ox = item->pos.x_pos;
 		oz = item->pos.z_pos;
-		Tx = Tx & 0xFFFFFE00 | 0x200;
-		Tz = Tz & 0xFFFFFE00 | 0x200;
-		Xdiff = (short) (Tx - item->pos.x_pos);
-		Zdiff = (short) (Tz - item->pos.z_pos);
+		Tx = Tx & ~0x3FF | 0x200;
+		Tz = Tz & ~0x3FF | 0x200;
+		Xdiff = short(Tx - item->pos.x_pos);
+		Zdiff = short(Tz - item->pos.z_pos);
 		xoff = 0;
 
 		if (Xdiff < 0)
@@ -314,13 +331,15 @@ void ControlWreckingBall(short item_number)
 		else if (Zdiff > 0)
 			zoff = 1024;
 
-		c = (short) baseitem->pos.y_pos;
+		c = (short)baseitem->pos.y_pos;
+
 		room_number = item->room_number;
 		floor = GetFloor(item->pos.x_pos + xoff, c, item->pos.z_pos, &room_number);
-		xoff = (short) GetCeiling(floor, item->pos.x_pos + xoff, c, item->pos.z_pos);
+		xoff = (short)GetCeiling(floor, item->pos.x_pos + xoff, c, item->pos.z_pos);
+
 		room_number = item->room_number;
 		floor = GetFloor(item->pos.x_pos, c, item->pos.z_pos + zoff, &room_number);
-		zoff = (short) GetCeiling(floor, item->pos.x_pos, c, item->pos.z_pos + zoff);
+		zoff = (short)GetCeiling(floor, item->pos.x_pos, c, item->pos.z_pos + zoff);
 
 		if (!item->item_flags[0])
 		{
@@ -332,7 +351,7 @@ void ControlWreckingBall(short item_number)
 
 		if (item->item_flags[0] == 1)
 		{
-			SoundEffect(SFX_J_GRAB_MOTOR_B_LP, &item->pos, 0);
+			SoundEffect(SFX_J_GRAB_MOTOR_B_LP, &item->pos, SFX_DEFAULT);
 			speed = abs(Xdiff);
 
 			if (speed >= 32)
@@ -348,7 +367,7 @@ void ControlWreckingBall(short item_number)
 
 		if (item->item_flags[0] == 2)
 		{
-			SoundEffect(SFX_J_GRAB_MOTOR_B_LP, &item->pos, 0);
+			SoundEffect(SFX_J_GRAB_MOTOR_B_LP, &item->pos, SFX_DEFAULT);
 			speed = abs(Zdiff);
 
 			if (speed >= 32)
@@ -365,7 +384,7 @@ void ControlWreckingBall(short item_number)
 		if (item->item_flags[1] == -1 && (ox != item->pos.x_pos || oz != item->pos.z_pos))
 		{
 			item->item_flags[1] = 0;
-			SoundEffect(SFX_J_GRAB_MOTOR_A, &item->pos, 0);
+			SoundEffect(SFX_J_GRAB_MOTOR_A, &item->pos, SFX_DEFAULT);
 		}
 
 		if ((item->pos.x_pos & 0x3FF) == 512 && (item->pos.z_pos & 0x3FF) == 512)
@@ -376,7 +395,7 @@ void ControlWreckingBall(short item_number)
 			if (item->item_flags[1] != -1)
 			{
 				StopSoundEffect(SFX_J_GRAB_MOTOR_B_LP);
-				SoundEffect(SFX_J_GRAB_MOTOR_C, &item->pos, 0);
+				SoundEffect(SFX_J_GRAB_MOTOR_C, &item->pos, SFX_DEFAULT);
 			}
 
 			item->item_flags[1] = 1;
@@ -385,13 +404,13 @@ void ControlWreckingBall(short item_number)
 	}
 	else if (item->item_flags[1] == 1)
 	{
-		if (!item->trigger_flags)
+		if (item->trigger_flags)
 			item->trigger_flags--;
 		else if (!item->current_anim_state)
 			item->goal_anim_state = 1;
 		else if (item->frame_number == anims[item->anim_number].frame_end)
 		{
-			SoundEffect(SFX_J_GRAB_DROP, &item->pos, 0);
+			SoundEffect(SFX_J_GRAB_DROP, &item->pos, SFX_DEFAULT);
 			item->item_flags[1]++;
 			item->fallspeed = 6;
 			item->pos.y_pos += item->fallspeed;
@@ -403,7 +422,7 @@ void ControlWreckingBall(short item_number)
 		item->pos.y_pos += item->fallspeed;
 		room_number = item->room_number;
 		floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
-		c = (short) GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+		c = (short)GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 
 		if (c < item->pos.y_pos)
 		{
@@ -436,7 +455,7 @@ void ControlWreckingBall(short item_number)
 
 			if (item->fallspeed < -32)
 			{
-				SoundEffect(SFX_J_GRAB_IMPACT, &item->pos, 4104);
+				SoundEffect(SFX_J_GRAB_IMPACT, &item->pos, 4096 | SFX_SETVOL);
 				item->fallspeed = -item->fallspeed >> 3;
 				ScreenShake(item, 16, 8192);
 			}
@@ -448,7 +467,7 @@ void ControlWreckingBall(short item_number)
 			}
 		}
 		else if (!item->item_flags[0])
-			SoundEffect(SFX_J_GRAB_WINCH_UP_LP, &item->pos, 0);
+			SoundEffect(SFX_J_GRAB_WINCH_UP_LP, &item->pos, SFX_DEFAULT);
 	}
 
 	baseitem->pos.x_pos = item->pos.x_pos;
@@ -474,48 +493,52 @@ void ControlWreckingBall(short item_number)
 	WB_room = room_number;
 }
 
-void DrawWreckingBall(ITEM_INFO* item)//actually only draws the shadow it seems?
+void DrawWreckingBall(ITEM_INFO* item)
 {
 	ITEM_INFO* baseitem;
 	FLOOR_INFO* floor;
 	PHD_VECTOR v;
-	short** meshpp;
 	short* frmptr[2];
-	long height, ceiling, shade, y;
+	long h, c, shade, y;
 	short room_num;
 
 	baseitem = &items[item->item_flags[3]];
+
 	room_num = item->room_number;
 	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_num);
-	height = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
-	ceiling = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
-	shade = 192 - (abs(height - item->pos.y_pos) >> 5);
+	h = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	c = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+	shade = 192 - (abs(h - item->pos.y_pos) >> 5);
 
 	if (shade < 64)
 		shade = 64;
 
 	phd_PushMatrix();
-	phd_TranslateAbs(item->pos.x_pos, height, item->pos.z_pos);
-	aDrawWreckingBall(item, shade);
+	phd_TranslateAbs(item->pos.x_pos, h, item->pos.z_pos);
+	aDrawWreckingBall(item, shade);							//Shadow
 
-	if (item->pos.y_pos - baseitem->pos.y_pos != 1664)
+	if (item->pos.y_pos - baseitem->pos.y_pos != 1664)		//Chain
 	{
 		phd_right = phd_winwidth;
 		phd_left = 0;
 		phd_top = 0;
 		phd_bottom = phd_winheight;
-		GetFrames(item, frmptr, &ceiling);
+		GetFrames(item, frmptr, &c);
+		
 		phd_PushMatrix();
 		phd_TranslateAbs(baseitem->pos.x_pos, baseitem->pos.y_pos + 512, baseitem->pos.z_pos);
 		phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-		meshpp = &meshes[objects[ANIMATING16_MIP].mesh_index];
+
 		y = item->pos.y_pos - baseitem->pos.y_pos - 1664;
-		v.z = 16384;
-		v.y = 4 * (y + ((21846 * y) >> 16));
-		v.x = 16384;
+		y += (21846 * y) >> 16;
+		v.z = 0x4000;
+		v.y = y << 2;
+		v.x = 0x4000;
 		ScaleCurrentMatrix(&v);
+
 		CalculateObjectLighting(item, *frmptr);
-		phd_PutPolygons(*meshpp, -1);
+		phd_PutPolygons(meshes[objects[ANIMATING16_MIP].mesh_index], -1);
+
 		phd_bottom = phd_winheight;
 		phd_right = phd_winwidth;
 		phd_left = 0;
@@ -552,12 +575,125 @@ void CookerFlameControl(short item_number)
 
 	if (TriggerActive(item))
 	{
-		if (!lara.burn && abs(lara_item->pos.x_pos - item->pos.x_pos) < 256 && abs(lara_item->pos.z_pos - item->pos.z_pos) < 256 && item->pos.y_pos - lara_item->pos.y_pos < 128)
+		if (!lara.burn &&
+			abs(lara_item->pos.x_pos - item->pos.x_pos) < 256 &&
+			abs(lara_item->pos.z_pos - item->pos.z_pos) < 256 &&
+			item->pos.y_pos - lara_item->pos.y_pos < 128)
 			LaraBurn();
 
 		item->item_flags[0] = (GetRandomControl() + item->item_flags[0]) & 0x1FF;
 		item->item_flags[1] = item->item_flags[0] + 4096;
 	}
+}
+
+void TriggerLaraSparks(long smoke)
+{
+	SPARKS* sptr;
+	PHD_VECTOR pos;
+
+	pos.x = 0;
+	pos.y = 0;
+	pos.z = 0;
+	GetLaraJointPos(&pos, GetRandomControl() % 15);
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = (GetRandomControl() & 0x3F) - 64;
+	sptr->sG = sptr->sR;
+	sptr->sB = sptr->sR;
+	sptr->dR = 0;
+	sptr->dG = sptr->sR >> 1;
+	sptr->dB = sptr->sR;
+	sptr->TransType = 2;
+	sptr->ColFadeSpeed = 8;
+	sptr->FadeToBlack = 4;
+	sptr->Life = 12;
+	sptr->sLife = 12;
+	sptr->x = pos.x;
+	sptr->y = pos.y;
+	sptr->z = pos.z;
+	sptr->Xvel = 2 * (GetRandomControl() & 0x1FF) - 512;
+	sptr->Yvel = 2 * (GetRandomControl() & 0x1FF) - 512;
+	sptr->Zvel = 2 * (GetRandomControl() & 0x1FF) - 512;
+	sptr->Friction = 51;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = 0;
+	sptr->Flags = 0;
+
+	if (smoke)
+		TriggerFireFlame(pos.x, pos.y, pos.z, -1, 254);
+}
+
+void TriggerCableSparks(long x, long z, short item_number, long node, long flare)
+{
+	SPARKS* sptr;
+	uchar n;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 255;
+	sptr->sG = 255;
+	sptr->sB = 255;
+	sptr->dR = 0;
+	sptr->dG = (GetRandomControl() & 0x7F) + 64;
+	sptr->dB = 255;
+
+	if (flare)
+	{
+		sptr->ColFadeSpeed = 1;
+		sptr->FadeToBlack = 0;
+		n = 4;
+	}
+	else
+	{
+		sptr->ColFadeSpeed = 3;
+		sptr->FadeToBlack = 4;
+		n = 16;
+	}
+
+	sptr->Life = n;
+	sptr->sLife = n;
+	sptr->FxObj = (uchar)item_number;
+	sptr->TransType = 2;
+	sptr->Flags = 4234;
+	sptr->NodeNumber = (uchar)node;
+	sptr->x = x;
+	sptr->y = 0;
+	sptr->z = z;
+
+	if (flare)
+	{
+		sptr->Xvel = 0;
+		sptr->Yvel = 0;
+		sptr->Zvel = 0;
+	}
+	else
+	{
+		sptr->Xvel = (GetRandomControl() & 0x1FF) - 256;
+		sptr->Yvel = (GetRandomControl() & 0xFF) - 64;
+		sptr->Zvel = (GetRandomControl() & 0x1FF) - 256;
+	}
+
+	sptr->Friction = 51;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = 0;
+
+	if (flare)
+	{
+		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 11;
+		sptr->Scalar = 1;
+		n = (GetRandomControl() & 0x1F) + 160;
+	}
+	else
+	{
+		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
+		sptr->Scalar = 0;
+		n = (GetRandomControl() & 7) + 8;
+	}
+
+	sptr->Size = n;
+	sptr->sSize = n;
+	sptr->dSize = n >> 1;
 }
 
 void inject_joby(bool replace)
@@ -570,4 +706,6 @@ void inject_joby(bool replace)
 	INJECT(0x00441F50, DrawWreckingBall, replace);
 	INJECT(0x004421C0, ControlSecurityScreens, replace);
 	INJECT(0x00442250, CookerFlameControl, replace);
+	INJECT(0x00442320, TriggerLaraSparks, replace);
+	INJECT(0x00442480, TriggerCableSparks, replace);
 }

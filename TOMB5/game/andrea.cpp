@@ -16,6 +16,11 @@
 #include "effects.h"
 #include "../specific/function_table.h"
 #include "../specific/specificfx.h"
+#include "tomb4fx.h"
+#include "../specific/file.h"
+#include "camera.h"
+#include "lara.h"
+#include "../specific/gamemain.h"
 
 void ControlPropeller(short item_number)
 {

@@ -5,11 +5,44 @@
 #include "../game/control.h"
 #include "function_stubs.h"
 #include "dxshell.h"
+#include "polyinsert.h"
+#include "output.h"
+#include "drawroom.h"
+#include "../game/delstuff.h"
+#include "../game/camera.h"
+#include "../game/effect2.h"
+#include "../game/lara.h"
+#include "../game/draw.h"
 
+long NumSunLights;
+long NumPointLights;
+long NumShadowLights;
+long NumSpotLights;
+long NumFogBulbs;
+long TotalNumLights;
+long MaxRoomLights;
+D3DMATRIX aLightMatrix;
+SUNLIGHT_STRUCT SunLights[16];
+POINTLIGHT_STRUCT PointLights[64];
 #ifdef GENERAL_FIXES
 SPOTLIGHT_STRUCT SpotLights[64];
 #endif
-#include "polyinsert.h"
+
+ITEM_INFO* current_item;
+FVECTOR lGlobalMeshPos;
+long aAmbientR;
+long aAmbientG;
+long aAmbientB;
+
+long bLaraUnderWater;
+char bLaraInWater;
+
+long StaticMeshShade;
+static ITEM_INFO StaticMeshLightItem;
+static long SetupLight_thing;
+static long unused_bLaraUnderWater;
+static D3DLIGHT_STRUCT* D3DLights;
+static D3DLIGHT_STRUCT* D3DDynamics;
 
 void InitObjectLighting(ITEM_INFO* item)
 {

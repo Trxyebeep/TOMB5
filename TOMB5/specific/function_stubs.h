@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_funcStubs(bool replace);
 
@@ -22,6 +22,12 @@ void S_CDLoop();
 void PrintDbug();
 void init_game_malloc();
 void game_free(long size);
+
+extern char* malloc_buffer;
+extern char* malloc_ptr;
+extern long malloc_size;
+extern long malloc_free;
+extern long nPolyType;
 
 #define Log_Init	( (void(__cdecl*)(ulong)) 0x004DEC40 )
 #define Log_DefType	( (void(__cdecl*)(const char*, ulong, bool)) 0x004DEA50 )

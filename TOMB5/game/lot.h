@@ -1,9 +1,13 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_lot(bool replace);
 
 void InitialiseLOTarray(long allocmem);
+void DisableBaddieAI(short item_number);
+void ClearLOT(LOT_INFO* lot);
+void CreateZone(ITEM_INFO* item);
+void InitialiseSlot(short item_number, long slot);
+long EnableBaddieAI(short item_number, long Always);
 
-#define EnableBaddieAI	( (long(__cdecl*)(short, long)) 0x0045B1A0 )
-#define	DisableBaddieAI	( (void(__cdecl*)(short)) 0x0045B150 )
+extern CREATURE_INFO* baddie_slots;

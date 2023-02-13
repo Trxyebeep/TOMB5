@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_winmain(bool replace);
 
@@ -17,3 +17,7 @@ void WinClose();
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nShowCmd);
 long MungeFPCW(short* fpcw);
 void RestoreFPCW(short fpcw);
+
+extern WINAPP App;
+extern short FPCW;
+extern long resChangeCounter;

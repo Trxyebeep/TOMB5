@@ -1,7 +1,6 @@
 #include "../tomb5/pch.h"
 #include "pickup.h"
 #include "gameflow.h"
-#include "xatracks.h"
 #include "effects.h"
 #include "sound.h"
 #include "items.h"
@@ -20,6 +19,26 @@
 #include "larafire.h"
 #include "laraflar.h"
 #include "flmtorch.h"
+#include "deltapak.h"
+#include "camera.h"
+#include "spotcam.h"
+#include "../specific/input.h"
+#include "lara.h"
+
+uchar NumRPickups;
+uchar RPickups[16];
+char KeyTriggerActive = 0;
+
+static short PuzzleBounds[12] = { 0, 0, -256, 256, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short SOBounds[12] = { 0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short MSBounds[12] = { 0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short KeyHoleBounds[12] = { -256, 256, 0, 0, 0, 412, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short PickUpBoundsUW[12] = { -512, 512, -512, 512, -512, 512, -8190, 8190, -8190, 8190, -8190, 8190 };
+static short PickUpBounds[12] = { -256, 256, -200, 200, -256, 256, -1820, 1820, 0, 0, 0, 0 };
+static short HiddenPickUpBounds[12] = { -256, 256, -100, 100, -800, -256, -1820, 1820, -5460, 5460, 0, 0 };
+static short PlinthPickUpBounds[12] = { -256, 256, -640, 640, -511, 0, -1820, 1820, -5460, 5460, 0, 0 };
+static short JobyCrowPickUpBounds[12] = { -512, 0, -100, 100, 0, 512, -1820, 1820, -5460, 5460, 0, 0 };
+static short CrowbarPickUpBounds[12] = { -256, 256, -100, 100, 200, 512, -1820, 1820, -5460, 5460, 0, 0 };
 
 static PHD_VECTOR SOPos = { 0, 0, 0 };
 static PHD_VECTOR MSPos = { 0, 0, 0 };
@@ -33,56 +52,6 @@ static PHD_VECTOR HiddenPickUpPosition = { 0, 0, -690 };
 static PHD_VECTOR PlinthPickUpPosition = { 0, 0, -460 };
 static PHD_VECTOR JobyCrowPickUpPosition = { -224, 0, 240 };
 static PHD_VECTOR CrowbarPickUpPosition = { 0, 0, 215 };
-
-static short PuzzleBounds[12] = 
-{
-	0, 0, -256, 256, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short SOBounds[12] =
-{
-	0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short MSBounds[12] =
-{
-	0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short KeyHoleBounds[12] =
-{
-	-256, 256, 0, 0, 0, 412, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short PickUpBoundsUW[12] =
-{
-	-512, 512, -512, 512, -512, 512, -8190, 8190, -8190, 8190, -8190, 8190
-};
-
-static short PickUpBounds[12] =
-{
-	-256, 256, -200, 200, -256, 256, -1820, 1820, 0, 0, 0, 0
-};
-
-static short HiddenPickUpBounds[12] =
-{
-	-256, 256, -100, 100, -800, -256, -1820, 1820, -5460, 5460, 0, 0
-};
-
-static short PlinthPickUpBounds[12] =
-{
-	-256, 256, -640, 640, -511, 0, -1820, 1820, -5460, 5460, 0, 0
-};
-
-static short JobyCrowPickUpBounds[12] =
-{
-	-512, 0, -100, 100, 0, 512, -1820, 1820, -5460, 5460, 0, 0
-};
-
-static short CrowbarPickUpBounds[12] =
-{
-	-256, 256, -100, 100, 200, 512, -1820, 1820, -5460, 5460, 0, 0
-};
 
 void RegeneratePickups()
 {
@@ -126,7 +95,7 @@ static void PuzzleDone(ITEM_INFO* item, short item_num)
 	if (item->object_number == PUZZLE_HOLE1 && gfCurrentLevel == LVL5_GALLOWS_TREE)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA6_SPOOKY03, 0);
+		S_CDPlay(45, 0);
 		SoundEffect(SFX_HANGMAN_LAUGH_OFFCAM, &item->pos, 0);
 	}
 
@@ -1120,6 +1089,24 @@ void PickUpCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 	}
 }
 
+void CollectCarriedItems(ITEM_INFO* item)
+{
+	ITEM_INFO* pickup;
+	short pickup_number;
+
+	pickup_number = item->carried_item;
+
+	while (pickup_number != NO_ITEM)
+	{
+		pickup = &items[pickup_number];
+		AddDisplayPickup(pickup->object_number);
+		KillItem(pickup_number);
+		pickup_number = pickup->carried_item;
+	}
+
+	item->carried_item = NO_ITEM;
+}
+
 void inject_pickup(bool replace)
 {
 	INJECT(0x00467AF0, RegeneratePickups, replace);
@@ -1135,4 +1122,5 @@ void inject_pickup(bool replace)
 	INJECT(0x00468930, KeyHoleCollision, replace);
 	INJECT(0x00468770, FindPlinth, replace);
 	INJECT(0x00467C00, PickUpCollision, replace);
+	INJECT(0x00469C90, CollectCarriedItems, replace);
 }

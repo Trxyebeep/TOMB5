@@ -15,15 +15,21 @@
 #include "sphere.h"
 #include "collide.h"
 #include "camera.h"
+#include "gameflow.h"
+#include "../specific/file.h"
+#include "lara.h"
+#include "../specific/gamemain.h"
 #ifdef GENERAL_FIXES
 #include "../specific/specificfx.h"
 #include "../specific/function_table.h"
 #include "../specific/3dmath.h"
 #endif
 
+static PHD_VECTOR SteelDoorLensPos;
+
 short SplashOffsets[18] = { 1072, 48, 1072, 48, 650, 280, 200, 320, -300, 320, -800, 320, -1200, 320, -1650, 280, -2112, 48 };
 
-short SteelDoorPos[4][2] =	//x z offsets for GetJointAbsPosition
+short SteelDoorPos[4][2] =
 { 
 	{ 872, 512 },
 	{ 872, -360 },
@@ -32,6 +38,8 @@ short SteelDoorPos[4][2] =	//x z offsets for GetJointAbsPosition
 };
 
 short SteelDoorMeshswaps[16] = { 37, 74, 111, 148, 185, 222, 259, 296, 340, 380, 420, 470, 481, 518, 555, 592 };
+
+static char NotHitLaraCount;
 
 void ControlGunship(short item_number)
 {
@@ -129,7 +137,7 @@ void ControlGunship(short item_number)
 				{
 					if (StaticMesh->static_number >= 50 && StaticMesh->static_number < 59)
 					{
-						ShatterObject(NULL, StaticMesh, 64, pos1.room_number, 0);
+						ShatterObject(0, StaticMesh, 64, pos1.room_number, 0);
 						StaticMesh->Flags &= ~0x1;
 						TestTriggersAtXYZ(StaticMesh->x, StaticMesh->y, StaticMesh->z, pos1.room_number, 1, 0);
 						SoundEffect(ShatterSounds[gfCurrentLevel][StaticMesh->static_number - 50], (PHD_3DPOS*)StaticMesh, 0);
@@ -785,6 +793,409 @@ void DrawSteelDoorLensFlare(ITEM_INFO* item)
 #endif
 }
 
+void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
+{
+	SMOKE_SPARKS* smoke;
+	SPARKS* sptr;
+	long v;
+	short yAdd;
+
+	yrot += 0x8000;
+
+	smoke = &smoke_spark[GetFreeSmokeSpark()];
+	smoke->On = 1;
+	smoke->sShade = 0;
+	smoke->dShade = 64;
+	smoke->ColFadeSpeed = 1;
+	smoke->FadeToBlack = 8;
+	smoke->TransType = 2;
+	smoke->Life = (GetRandomControl() & 3) + 24;
+	smoke->sLife = smoke->Life;
+
+	v = 2 * (GetRandomControl() & 0x7F) + 128;
+	yAdd = short((GetRandomControl() >> 2) - 4096);
+	smoke->x = (GetRandomControl() & 0x1F) + pos->x - 16;
+	smoke->y = pos->y;
+	smoke->z = (GetRandomControl() & 0x1F) + pos->z - 16;
+	smoke->Xvel = short((v * phd_sin(yrot + yAdd)) >> 14);
+	smoke->Yvel = (-128 - (GetRandomControl() & 0x7F)) << 3;
+	smoke->Zvel = short((v * phd_cos(yrot + yAdd)) >> 14);
+
+	smoke->Friction = 84;
+	smoke->Flags = 16;
+	smoke->RotAng = GetRandomControl() & 0xFFF;
+	smoke->RotAdd = (GetRandomControl() & 0x1F) - 16;
+	smoke->MaxYvel = 0;
+	smoke->Gravity = 0;
+	smoke->Size = (GetRandomControl() & 0x1F) + 32;
+	smoke->sSize = smoke->Size;
+	smoke->dSize = smoke->Size + 16;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 255;
+	sptr->sG = 255;
+	sptr->sB = 255;
+	sptr->dR = (GetRandomControl() & 0x3F) - 64;
+	sptr->dG = sptr->dR - (GetRandomControl() & 0x7F);
+	sptr->dB = 0;
+	sptr->ColFadeSpeed = 4;
+	sptr->TransType = 2;
+	sptr->FadeToBlack = 4;
+	sptr->Life = 12;
+	sptr->sLife = 12;
+
+	yAdd = short((GetRandomControl() >> 1) - 8192);
+	v = GetRandomControl() & 0x1FF;
+	sptr->Xvel = short((v * phd_sin(yrot + yAdd)) >> 14);
+	sptr->Yvel = (-512 - (GetRandomControl() & 0x7F)) << 2;
+	sptr->Zvel = short((v * phd_cos(yrot + yAdd)) >> 14);
+	sptr->x = (sptr->Xvel >> 5) + (GetRandomControl() & 0x1F) + pos->x - 16;
+	sptr->y = pos->y + (sptr->Yvel >> 5);
+	sptr->z = (sptr->Zvel >> 5) + (GetRandomControl() & 0x1F) + pos->z - 16;
+
+	sptr->Friction = 84;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = 0;
+	sptr->Flags = 0;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 255;
+	sptr->sG = (GetRandomControl() & 0x1F) + 48;
+	sptr->sB = 16;
+	sptr->dR = (GetRandomControl() & 0x3F) + 192;
+	sptr->dG = (GetRandomControl() & 0x3F) + 128;
+	sptr->dB = 0;
+	sptr->FadeToBlack = 4;
+	sptr->ColFadeSpeed = (GetRandomControl() & 3) + 4;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 3) + 24;
+	sptr->sLife = sptr->Life;
+
+	yAdd = short((GetRandomControl() >> 2) - 4096);
+	v = 2 * (GetRandomControl() & 0x7F) + 128;
+	sptr->x = (GetRandomControl() & 0xF) + pos->x - 8;
+	sptr->y = pos->y;
+	sptr->z = (GetRandomControl() & 0xF) + pos->z - 8;
+	sptr->Xvel = short((v * phd_sin(yrot + yAdd)) >> 14);
+	sptr->Yvel = -512 - (GetRandomControl() & 0x3FF);
+	sptr->Zvel = short((v * phd_cos(yrot + yAdd)) >> 14);
+
+	sptr->Friction = 6;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+	sptr->MaxYvel = 0;
+	sptr->Size = (GetRandomControl() & 0xF) + 12;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = sptr->Size >> 1;
+	sptr->Flags = 10;
+	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
+	sptr->Gravity = (GetRandomControl() & 0xF) + 16;
+	sptr->Scalar = 1;
+}
+
+void TriggerSteelDoorSmoke(short angle, short nPos, ITEM_INFO* item)
+{
+	SPARKS* sptr;
+	PHD_VECTOR pos;
+	PHD_VECTOR pos2;
+	long dx, dy, dz, num, v, lp;
+
+	pos.x = SteelDoorPos[nPos][0];
+	pos.y = 0;
+	pos.z = SteelDoorPos[nPos][1] - 512;
+	GetJointAbsPosition(item, &pos, 17);
+
+	pos2.x = SteelDoorPos[nPos + 1][0];
+	pos2.y = 0;
+	pos2.z = SteelDoorPos[nPos + 1][1] - 512;
+	GetJointAbsPosition(item, &pos2, 17);
+
+	dx = pos2.x - pos.x;
+	dy = pos2.y - pos.y;
+	dz = pos2.z - pos.z;
+
+	if (nPos == 1)
+		num = 5;
+	else
+		num = 4;
+
+	for (lp = 0; lp < (1 << num); lp++)
+	{
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->sR = (GetRandomControl() & 0x1F) + 32;
+		sptr->sG = sptr->sR;
+		sptr->sB = sptr->sR;
+		sptr->dR = (GetRandomControl() & 0x1F) + 64;
+		sptr->dG = sptr->dR;
+		sptr->dB = sptr->dR;
+		sptr->ColFadeSpeed = 4;
+		sptr->FadeToBlack = 8;
+		sptr->Life = (GetRandomControl() & 7) + 24;
+		sptr->sLife = sptr->Life;
+		sptr->TransType = 2;
+
+		v = GetRandomControl() & 0x3F;
+		sptr->x = pos.x + (dx * lp >> num);
+		sptr->y = pos.y + (dy * lp >> num);
+		sptr->z = pos.z + (dz * lp >> num);
+		sptr->Xvel = short((v * phd_sin(angle)) >> 10);
+		sptr->Yvel = 0;
+		sptr->Zvel = short((v * phd_cos(angle)) >> 10);
+
+		sptr->Friction = 4;
+		sptr->Flags = 538;
+		sptr->RotAng = GetRandomControl() & 0xFFF;
+		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+		sptr->Gravity = -8 - (GetRandomControl() & 7);
+		sptr->MaxYvel = 0;
+		sptr->Scalar = 3;
+		sptr->dSize = (GetRandomControl() & 7) + 32;
+		sptr->Size = sptr->dSize >> 1;
+		sptr->sSize = sptr->Size;
+	}
+}
+
+void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
+{
+	SPARKS* sptr;
+	SMOKE_SPARKS* smoke;
+	long lp;
+	short v, ang;
+
+	//molten steel looking thing
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 255;
+	sptr->sG = 255;
+	sptr->sB = 255;
+	sptr->dR = 192;
+	sptr->dG = (GetRandomControl() & 0x1F) + 96;
+	sptr->dB = GetRandomControl() & 0x1F;
+	sptr->ColFadeSpeed = 20;
+	sptr->FadeToBlack = 32;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 7) + 56;
+	sptr->sLife = sptr->Life;
+
+	v = (GetRandomControl() & 0x1F) - 16;
+	sptr->x = pos->x + ((v * phd_sin(yrot + 0x4000)) >> 14);
+	sptr->y = pos->y + (v >> 1);
+	sptr->z = pos->z + ((v * phd_cos(yrot + 0x4000)) >> 14);
+	sptr->Xvel = 0;
+	sptr->Yvel = 0;
+	sptr->Zvel = 0;
+
+	sptr->Flags = 16394;
+	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
+	sptr->Scalar = 0;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = 0;
+	sptr->Size = (GetRandomControl() & 7) + 32;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = (GetRandomControl() & 7) + 16;
+
+	//the line sparks
+	for (lp = 0; lp < 2; lp++)
+	{
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->sR = 255;
+		sptr->sG = 255;
+		sptr->sB = 255;
+		sptr->dR = 192;
+		sptr->dG = GetRandomControl() & 0x7F;
+		sptr->dB = GetRandomControl() & 0x7F;
+		sptr->ColFadeSpeed = 4;
+		sptr->FadeToBlack = 4;
+		sptr->TransType = 2;
+		sptr->Life = (GetRandomControl() & 3) + 24;
+		sptr->sLife = sptr->Life;
+		v = short((GetRandomControl() & 0x7F) + 16);
+		ang = (GetRandomControl() & 0x3FF) + yrot - 512;
+		sptr->Xvel = (v * phd_sin(ang)) >> 10;
+		sptr->Yvel = -(GetRandomControl() & 0x7F);
+		sptr->Zvel = (v * phd_cos(ang)) >> 10;
+		v = short((GetRandomControl() & 0x1F) - 16);
+		sptr->x = pos->x + (sptr->Xvel >> 5) + ((v * phd_sin(yrot + 0x4000)) >> 14);
+		sptr->y = pos->y + (v >> 1) + (sptr->Yvel >> 5);
+		sptr->z = pos->z + (sptr->Zvel >> 5) + ((v * phd_cos(yrot + 0x4000)) >> 14);
+		sptr->Friction = 5;
+		sptr->Flags = 0;
+		sptr->MaxYvel = 0;
+		sptr->Gravity = (GetRandomControl() & 0x1F) + 32;
+	}
+
+	//smoke
+	smoke = &smoke_spark[GetFreeSmokeSpark()];
+	smoke->On = 1;
+	smoke->sShade = 0;
+	smoke->dShade = (GetRandomControl() & 0x1F) + 64;
+	smoke->ColFadeSpeed = 4;
+	smoke->FadeToBlack = 24 - (GetRandomControl() & 7);
+	smoke->TransType = 2;
+	smoke->Life = (GetRandomControl() & 7) + 48;
+	smoke->sLife = smoke->Life;
+	smoke->x = sptr->x;
+	smoke->y = sptr->y;
+	smoke->z = sptr->z;
+	smoke->Xvel = sptr->Xvel >> 2;
+	smoke->Yvel = 0;
+	smoke->Zvel = sptr->Zvel >> 2;
+	smoke->Friction = 2;
+	smoke->Flags = 16;
+	smoke->RotAng = GetRandomControl() & 0xFFF;
+	smoke->RotAdd = (GetRandomControl() & 0x7F) - 64;
+	smoke->Gravity = -16 - (GetRandomControl() & 0xF);
+	smoke->MaxYvel = 0;
+	smoke->dSize = (GetRandomControl() & 0x1F) + 32;
+	smoke->Size = smoke->dSize >> 2;
+	smoke->sSize = smoke->Size;
+
+	//little left over molten steel dots 
+	if (!(GetRandomControl() & 0x3F))
+	{
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->sR = 255;
+		sptr->sG = 255;
+		sptr->sB = 255;
+		sptr->dR = 255;
+		sptr->dG = (GetRandomControl() & 0x1F) + 0x80;
+		sptr->dB = GetRandomControl() & 0x1F;
+		sptr->ColFadeSpeed = 48;
+		sptr->FadeToBlack = 32;
+		sptr->Life = 120;
+		sptr->sLife = 120;
+		sptr->TransType = 2;
+
+		sptr->x = pos->x;
+		sptr->y = pos->y;
+		sptr->z = pos->z;
+		v = (GetRandomControl() & 7) + 8;
+
+		if (GetRandomControl() & 1)
+			v = -v;
+
+		if (flag == 1)
+			sptr->y += v;
+		else
+		{
+			sptr->x += (v * phd_sin(yrot + 0x4000)) >> 14;
+			sptr->z += (v * phd_cos(yrot + 0x4000)) >> 14;
+		}
+
+		sptr->Xvel = 0;
+		sptr->Yvel = 0;
+		sptr->Zvel = 0;
+
+		sptr->Flags = 16394;
+		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
+		sptr->Scalar = 1;
+		sptr->MaxYvel = 0;
+		sptr->Gravity = 0;
+		sptr->Size = (GetRandomControl() & 3) + 4;
+		sptr->sSize = sptr->Size;
+		sptr->dSize = sptr->Size;
+	}
+
+	//little falling molten steel dots
+	if (!(GetRandomControl() & 3))
+	{
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->sR = 255;
+		sptr->sG = 255;
+		sptr->sB = 255;
+		sptr->dR = 255;
+		sptr->dG = (GetRandomControl() & 0x1F) + 128;
+		sptr->dB = GetRandomControl() & 0x1F;
+		sptr->ColFadeSpeed = 8;
+		sptr->FadeToBlack = 8;
+		sptr->TransType = 2;
+		sptr->Life = (GetRandomControl() & 3) + 32;
+		sptr->sLife = sptr->Life;
+
+		sptr->x = pos->x;
+		sptr->y = pos->y;
+		sptr->z = pos->z;
+
+		v = (GetRandomControl() & 7) + 8;
+
+		if (GetRandomControl() & 1)
+			v = -v;
+
+		if (flag == 1)
+		{
+			sptr->y += v;
+		}
+		else
+		{
+			sptr->x += (v * phd_sin(yrot + 0x4000)) >> 14;
+			sptr->z += (v * phd_cos(yrot + 0x4000)) >> 14;
+		}
+
+		v = short((GetRandomControl() & 0x7F) + 16);
+		sptr->Xvel = (v * phd_sin(yrot)) >> 14;
+		sptr->Yvel = (GetRandomControl() & 0xF) + 16;
+		sptr->Zvel = (v * phd_cos(yrot)) >> 14;
+
+		sptr->Friction = 3;
+		sptr->Flags = 16394;
+		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
+		sptr->Scalar = 1;
+		sptr->Gravity = (GetRandomControl() & 0xF) + 8;
+		sptr->MaxYvel = 0;
+		sptr->Size = (GetRandomControl() & 3) + 8;
+		sptr->sSize = sptr->Size;
+		sptr->dSize = 0;
+	}
+}
+
+void TriggerFishtankSpray(long x, long y, long z, long c)
+{
+	SPARKS* sptr;
+
+	c >>= 1;
+
+	if (c > 64)
+		c = 64;
+
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 0;
+	sptr->sG = 0;
+	sptr->sB = 0;
+	sptr->dR = (uchar)c;
+	sptr->dG = sptr->dR;
+	sptr->dB = sptr->dR;
+	sptr->ColFadeSpeed = 4;
+	sptr->FadeToBlack = 8;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 3) + 14;
+	sptr->sLife = sptr->Life;
+
+	sptr->x = (GetRandomControl() & 0xF) + x - 8;
+	sptr->y = y;
+	sptr->z = (GetRandomControl() & 0xF) + z - 8;
+	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Yvel = -(GetRandomControl() & 0xF);
+	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
+
+	sptr->Friction = 4;
+	sptr->Flags = 538;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+	sptr->Scalar = 3;
+	sptr->Gravity = -16 - (GetRandomControl() & 0xF);
+	sptr->MaxYvel = -8 - (GetRandomControl() & 7);
+	sptr->dSize = (GetRandomControl() & 0x1F) + 64;
+	sptr->Size = sptr->dSize >> 2;
+	sptr->sSize = sptr->Size;
+}
+
 void inject_tower2(bool replace)
 {
 	INJECT(0x00487FF0, ControlGunship, replace);
@@ -796,4 +1207,8 @@ void inject_tower2(bool replace)
 	INJECT(0x00486BE0, ControlSteelDoor, replace);
 	INJECT(0x00487A90, DrawSprite2, replace);
 	INJECT(0x00487AB0, DrawSteelDoorLensFlare, replace);
+	INJECT(0x00487B60, TriggerLiftBrakeSparks, replace);
+	INJECT(0x004877E0, TriggerSteelDoorSmoke, replace);
+	INJECT(0x004870B0, TriggerWeldingEffects, replace);
+	INJECT(0x00486A70, TriggerFishtankSpray, replace);
 }

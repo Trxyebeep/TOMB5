@@ -3,6 +3,9 @@
 #include "file.h"
 #include "function_stubs.h"
 #include "dxshell.h"
+#include "winmain.h"
+#include "../game/control.h"
+#include "LoadSave.h"
 
 const char* TrackFileNames[136] =
 {
@@ -154,6 +157,36 @@ static char source_wav_format[50] =
 };
 #pragma warning(pop)
 
+HACMDRIVER hACMDriver;
+uchar* wav_file_buffer;
+uchar* ADPCMBuffer;
+bool acm_ready;
+
+long XATrack = -1;
+long XAFlag = 7;
+static long XAReqTrack = 0;
+
+static FILE* audio_stream_fp;
+static LPDIRECTSOUNDBUFFER DSBuffer;
+static LPDIRECTSOUNDNOTIFY DSNotify;
+static HACMSTREAM hACMStream;
+static HACMDRIVERID hACMDriverID;
+static HANDLE NotificationThreadHandle;
+static CRITICAL_SECTION audio_cs;
+static ACMSTREAMHEADER StreamHeaders[4];
+static HANDLE NotifyEventHandles[2];
+static uchar* audio_fp_write_ptr;
+static uchar* pAudioWrite;
+static ulong AudioBytes;
+static long audio_play_mode;
+static long audio_buffer_size;
+static long CurrentNotify;
+static long NextWriteOffset;
+static long NotifySize;
+static long audio_counter;
+static volatile bool reading_audio_file;
+static volatile bool continue_reading_audio_file;
+
 void S_CDPlay(long track, long mode)
 {
 	if (acm_ready)
@@ -173,7 +206,7 @@ void S_CDStop()
 		DSBuffer->Stop();
 		DSBuffer->SetCurrentPosition(0);
 		while (reading_audio_file) {};
-		CLOSE(audio_stream_fp);
+		fclose(audio_stream_fp);
 		audio_stream_fp = 0;
 		audio_counter = 0;
 		XAFlag = 7;
@@ -224,13 +257,13 @@ void OpenStreamFile(char* name)
 		return;
 	}
 
-	SEEK(audio_stream_fp, 90, SEEK_SET);
+	fseek(audio_stream_fp, 90, SEEK_SET);
 	audio_fp_write_ptr = wav_file_buffer;
 	memset(wav_file_buffer, 0, 0x37000);
 
-	if (READ(wav_file_buffer, 1, 0x37000, audio_stream_fp) < 0x37000 && audio_play_mode == 1)
+	if (fread(wav_file_buffer, 1, 0x37000, audio_stream_fp) < 0x37000 && audio_play_mode == 1)
 	{
-		SEEK(audio_stream_fp, 90, SEEK_SET);
+		fseek(audio_stream_fp, 90, SEEK_SET);
 		Log(0, "FileReset In OpenStreamFile");
 	}
 }
@@ -242,10 +275,10 @@ void GetADPCMData()
 
 	memset(audio_fp_write_ptr, 0, 0x5800);
 
-	if (READ(audio_fp_write_ptr, 1, 0x5800, audio_stream_fp) < 0x5800 && audio_play_mode == 1)
+	if (fread(audio_fp_write_ptr, 1, 0x5800, audio_stream_fp) < 0x5800 && audio_play_mode == 1)
 	{
 		Log(0, "FileReset In GetADPCMData");
-		SEEK(audio_stream_fp, 90, SEEK_SET);
+		fseek(audio_stream_fp, 90, SEEK_SET);
 	}
 
 	audio_fp_write_ptr += 0x5800;
@@ -396,7 +429,7 @@ void FillADPCMBuffer(char* p, long track)
 	if (audio_stream_fp && feof(audio_stream_fp))
 	{
 		if (audio_play_mode == 1)
-			SEEK(audio_stream_fp, 90, SEEK_SET);
+			fseek(audio_stream_fp, 90, SEEK_SET);
 		else
 		{
 			audio_counter++;
@@ -500,8 +533,8 @@ bool ACMInit()
 		return 0;
 	}
 
-	ADPCMBuffer = (uchar*)MALLOC(0x5800);
-	wav_file_buffer = (uchar*)MALLOC(0x37000);
+	ADPCMBuffer = (uchar*)malloc(0x5800);
+	wav_file_buffer = (uchar*)malloc(0x37000);
 	wav_format.wFormatTag = WAVE_FORMAT_PCM;
 	acmMetrics(0, ACM_METRIC_MAX_SIZE_FORMAT, &pMetric);
 	acmFormatSuggest(hACMDriver, (LPWAVEFORMATEX)&source_wav_format, &wav_format, pMetric, ACM_FORMATSUGGESTF_WFORMATTAG);
@@ -585,7 +618,7 @@ void inject_audio(bool replace)
 	INJECT(0x00493760, ACMEmulateCDPlay, replace);
 	INJECT(0x00492B60, ACMEnumCallBack, replace);
 	INJECT(0x00492C20, ACMSetupNotifications, replace);
-	INJECT(0x00493490, FillADPCMBuffer, 0);
+	INJECT(0x00493490, FillADPCMBuffer, replace);
 	INJECT(0x00493990, ACMHandleNotifications, replace);
 	INJECT(0x00492DA0, ACMInit, replace);
 	INJECT(0x004931A0, ACMClose, replace);

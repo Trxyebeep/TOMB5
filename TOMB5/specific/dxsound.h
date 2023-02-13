@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_dxsound(bool replace);
 
@@ -26,3 +26,5 @@ long S_SoundSampleIsPlaying(long num);
 void S_SoundSetPanAndVolume(long num, short pan, ushort volume);
 void S_SoundSetPitch(long num, long pitch);
 bool DXCreateSample(long num, LPWAVEFORMATEX format, LPVOID data, ulong bytes);
+
+extern char* samples_buffer;

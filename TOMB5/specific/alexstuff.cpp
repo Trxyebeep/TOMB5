@@ -9,6 +9,14 @@
 #include "../game/text.h"
 #include "specificfx.h"
 #include "function_table.h"
+#include "lighting.h"
+#include "d3dmatrix.h"
+#include "../game/tomb4fx.h"
+#include "../game/deltapak.h"
+#include "texture.h"
+#include "../game/control.h"
+#include "3dmath.h"
+#include "gamemain.h"
 
 const char* CreditNames[] =
 {
@@ -53,19 +61,19 @@ const char* CreditNames[] =
 short CreditGroups[15] =
 {
 	0,
-	STR_PROGRAMMERS,
-	STR_AI_PROGRAMMERS,
-	STR_ADDITIONAL_PROGRAMMERS,
-	STR_ANIMATORS,
-	STR_LEVEL_DESIGNERS,
-	STR_FMV_SEQUENCES,
-	STR_MUSIC_AND_SOUND_FX,
-	STR_ADDITIONAL_SOUND_FX,
-	STR_ORIGINAL_STORY,
-	STR_SCRIPT,
-	STR_PRODUCER,
-	STR_QA,
-	STR_EXECUTIVE_PRODUCERS,
+	TXT_Programmers,
+	TXT_AI_Programming,
+	TXT_Additional_Programmers,
+	TXT_Animators,
+	TXT_Level_Designers,
+	TXT_FMV_Sequences,
+	TXT_Music_Sound_FX,
+	TXT_Additional_Sound_FX,
+	TXT_Original_Story,
+	TXT_Script,
+	TXT_Producer,
+	TXT_QA,
+	TXT_Executive_Producers,
 	0
 };
 
@@ -179,6 +187,11 @@ short CreditsTable[] =
 #endif
 #pragma warning(pop)
 
+long aWibble;
+static float water_buffer[8712];
+static float water_plot_buffer[4356];
+static long water_buffer_calced;
+
 void aLoadRoomStream()
 {
 	ROOM_INFO* room_data;
@@ -263,7 +276,7 @@ void aUpdate()
 	static long zero;
 	static long alphamaybe;
 
-	spec_wibble++;
+	aWibble++;
 	znear = f_mznear;
 	mAddProfilerEvent(0xFF00FF00);
 	mAddProfilerEvent(0xFF0000FF);
@@ -379,9 +392,9 @@ char* aReadCutData(long n, FILE* file)
 	//cutseq file header is put in tsv_buffer beforehand!
 	offset = *(long*)&tsv_buffer[n * 2 * sizeof(long)];
 	size = *(long*)&tsv_buffer[n * 2 * sizeof(long) + 4];
-	SEEK(file, offset, SEEK_SET);
+	fseek(file, offset, SEEK_SET);
 	data = (char*)game_malloc(size, 0);
-	READ(data, size, 1, file);
+	fread(data, size, 1, file);
 	return data;
 }
 
@@ -414,7 +427,7 @@ void aMakeCutsceneResident(long n1, long n2, long n3, long n4)
 	if (!file)
 		return;
 
-	READ(tsv_buffer, 1, 2048, file);	//whole header in tsv_buffer
+	fread(tsv_buffer, 1, 2048, file);	//whole header in tsv_buffer
 	memset(cutseq_resident_addresses, 0, sizeof(cutseq_resident_addresses));
 	lastcamnum = -1;
 	GLOBAL_playing_cutseq = 0;
@@ -423,7 +436,7 @@ void aMakeCutsceneResident(long n1, long n2, long n3, long n4)
 	d2 = aReadCutData(n2, file);
 	d3 = aReadCutData(n3, file);
 	d4 = aReadCutData(n4, file);
-	CLOSE(file);
+	fclose(file);
 
 	if (d1)
 		aCalcDepackBufferSz(d1);
@@ -463,9 +476,9 @@ char* aFetchCutData(long n)
 
 		if (file)
 		{
-			READ(tsv_buffer, 1, 2048, file);
+			fread(tsv_buffer, 1, 2048, file);
 			data = aReadCutData(n, file);
-			CLOSE(file);
+			fclose(file);
 		}
 	}
 
@@ -786,6 +799,73 @@ void PrintBigString(ushort x, ushort y, uchar col, const char* string, ushort fl
 	ScaleFlag = 0;
 }
 
+void aProcessWater(long n)
+{
+	float* pPlot;
+	float* pOld;
+	float* pNew;
+	float* pAbove;
+	float* pBelow;
+	float* stash;
+	float num;
+	long rnd, val, lp, lp2;
+
+	pPlot = water_plot_buffer;
+
+	if (water_buffer_calced)
+	{
+		pOld = water_buffer;
+		pNew = &water_buffer[4356];
+	}
+	else
+	{
+		pOld = &water_buffer[4356];
+		pNew = water_buffer;
+	}
+
+	pOld += 67;
+	pNew += 67;
+	pAbove = pOld - 66;
+	pBelow = pOld + 66;
+	stash = pNew;
+
+	for (lp = 0; lp < 64; lp++)
+	{
+		for (lp2 = 0; lp2 < 64; lp2++)
+		{
+			num = (pOld[lp2 + 1] + pOld[lp2 - 1] + pAbove[lp2] + pAbove[lp2 + 1] + pAbove[lp2 - 1] + pBelow[lp2] + pBelow[lp2 + 1] + pBelow[lp2 - 1]) *
+				0.25F - pNew[lp2];
+			num -= num * 0.0125F;
+			pNew[lp2] = num;
+			pPlot[lp2] = -num;
+		}
+
+		pPlot += 66;
+		pOld += 66;
+		pNew += 66;
+		pAbove += 66;
+		pBelow += 66;
+	}
+
+	rnd = rand() & 3;
+
+	for (lp = 0; lp < rnd; lp++)
+	{
+		val = 66 * (rand() % 56 + 4);
+		val += rand() % 56 + 4;
+		num = float(rand() & 7);
+		stash[val] += num;
+
+		num *= 0.5F;
+		stash[val - 66] += num;
+		stash[val + 66] += num;
+		stash[val - 1] += num;
+		stash[val + 1] += num;
+	}
+
+	water_buffer_calced ^= 1;
+}
+
 void inject_alexstuff(bool replace)
 {
 	INJECT(0x004916C0, aLoadRoomStream, replace);
@@ -804,4 +884,5 @@ void inject_alexstuff(bool replace)
 	INJECT(0x00491FE0, DrawBigChar, replace);
 	INJECT(0x004922E0, GetBigStringLength, replace);
 	INJECT(0x004924B0, PrintBigString, replace);
+	INJECT(0x00491980, aProcessWater, replace);
 }

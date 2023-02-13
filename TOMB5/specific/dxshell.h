@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_dxshell(bool replace);
 
@@ -41,6 +41,12 @@ BOOL CALLBACK EnumJoysticksCallback(LPCDIDEVICEINSTANCE lpddi, LPVOID pvRef);
 long DXUpdateJoystick();
 long DXGetKey();
 void DXInitInput(HWND hwnd, HINSTANCE hinstance);
+const char* DXGetErrorString(HRESULT hr);
+const char* DIGetErrorString(HRESULT hr);
 
-#define DXGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049E050 )
-#define DIGetErrorString	( (const char*(__cdecl*)(HRESULT)) 0x0049EFA0 )
+extern DXPTR* G_dxptr;
+extern DXINFO* G_dxinfo;
+extern LPDIRECTDRAW4 G_ddraw;
+extern LPDIRECT3D3 G_d3d;
+extern HWND G_hwnd;
+extern char keymap[256];

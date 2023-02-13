@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_pickup(bool replace);
 
@@ -15,5 +15,8 @@ void AnimatingPickUp(short item_number);
 void KeyHoleCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
 short* FindPlinth(ITEM_INFO* item);
 void PickUpCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll);
+void CollectCarriedItems(ITEM_INFO* item);
 
-#define	CollectCarriedItems	( (void(__cdecl*)(ITEM_INFO*)) 0x00469C90 )
+extern uchar NumRPickups;
+extern uchar RPickups[16];
+extern char KeyTriggerActive;

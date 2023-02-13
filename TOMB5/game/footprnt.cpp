@@ -3,6 +3,10 @@
 #include "delstuff.h"
 #include "control.h"
 #include "sound.h"
+#include "gameflow.h"
+#include "../specific/file.h"
+#include "lara.h"
+#include "../specific/gamemain.h"
 #ifdef GENERAL_FIXES
 #include "../specific/3dmath.h"
 #include "../specific/specificfx.h"
@@ -13,10 +17,10 @@
 #define PRINT_HEIGHT_CORRECTION 128 // The maximum difference between the footprint and the floor
 #endif
 
-static char footsounds[14] =
-{
-	0, 5, 3, 2, 1, 9, 9, 4, 6, 5, 3, 9, 4, 6
-};
+static char footsounds[14] = { 0, 5, 3, 2, 1, 9, 9, 4, 6, 5, 3, 9, 4, 6 };
+
+FOOTPRINT FootPrint[32];
+long FootPrintNum;
 
 void AddFootprint(ITEM_INFO* item)
 {
@@ -45,7 +49,7 @@ void AddFootprint(ITEM_INFO* item)
 		SoundEffect(footsounds[floor->fx] + 288, &lara_item->pos, 0);
 
 #ifdef GENERAL_FIXES
-	if (tomb5.footprints && floor->fx < 3 && (gfCurrentLevel == 4 || !OnObject))
+	if (tomb5.footprints && floor->fx < 3 && (gfCurrentLevel == LVL5_BASE || !OnObject))
 #else
 	if (floor->fx < 3 && !OnObject)
 #endif

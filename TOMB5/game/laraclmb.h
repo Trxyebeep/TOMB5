@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_laraclmb(bool replace);
 
@@ -15,7 +15,10 @@ void lara_as_climbend(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_climbend(ITEM_INFO* item, COLL_INFO* coll);
 void lara_as_climbdown(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_climbdown(ITEM_INFO* item, COLL_INFO* coll);
-#define	LaraDoClimbLeftRight	( (void(__cdecl*)(ITEM_INFO*, COLL_INFO*, long, long)) 0x004515A0 )
-#define LaraTestClimbPos	( (long(__cdecl*)(ITEM_INFO*, long, long, long, long, long*)) 0x00450970 )
-#define	LaraTestClimbUpPos	( (long(__cdecl*)(ITEM_INFO*, long, long, long*, long*)) 0x00451200 )
-#define	GetClimbTrigger	( (short(__cdecl*)(long, long, long, short)) 0x004523A0 )
+short GetClimbTrigger(long x, long y, long z, short room_number);
+long LaraTestClimbUpPos(ITEM_INFO* item, long front, long right, long* shift, long* ledge);
+long LaraTestClimb(long x, long y, long z, long xfront, long zfront, long item_height, short item_room, long* shift);
+long LaraTestClimbPos(ITEM_INFO* item, long front, long right, long origin, long height, long* shift);
+long LaraClimbLeftCornerTest(ITEM_INFO* item, COLL_INFO* coll);
+long LaraClimbRightCornerTest(ITEM_INFO* item, COLL_INFO* coll);
+void LaraDoClimbLeftRight(ITEM_INFO* item, COLL_INFO* coll, long result, long shift);

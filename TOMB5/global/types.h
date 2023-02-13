@@ -1,4 +1,5 @@
 #pragma once
+#include "math_tbls.h"
 
 #pragma pack(push, 1)
 /*Injection macro, originally by Arsunt, modified by ChocolateFan to allow deinjection*/
@@ -28,28 +29,24 @@ do \
 #define	TRIGMULT2(a,b)		(((a) * (b)) >> 14)
 #define	TRIGMULT3(a,b,c)	(TRIGMULT2((TRIGMULT2(a, b)), c))
 #define SQUARE(x) ((x)*(x))
+
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
 #define RGBA(r, g, b, a) (RGBONLY(r, g, b) | ((a) << 24))
 #define	CLRA(clr)	((clr >> 24) & 0xFF)	//shift r, g, and b out of the way and 0xFF
 #define	CLRR(clr)	((clr >> 16) & 0xFF)	//shift g and b out of the way and 0xFF
 #define	CLRG(clr)	((clr >> 8) & 0xFF)		//shift b out of the way and 0xFF
 #define	CLRB(clr)	((clr) & 0xFF)			//and 0xFF
-#define RGB_M(clr, m)	(clr = (clr & 0xFF000000) | (((CLRR(clr) * m) >> 8) << 16) | (((CLRG(clr) * m) >> 8) << 8) | ((CLRB(clr) * m) >> 8))
-//^ color multiply thingy phd_PutPolygons wants to do
+
+//misc
 #define SCRIPT_TEXT(num)		(&gfStringWad[gfStringOffset[num]])
-
-	/**********************************/
-#define OPEN	( (FILE*(__cdecl*)(const char*, const char*)) 0x004E46E0 )
-#define SEEK	( (int(__cdecl*)(FILE*, int, int)) 0x004E1F30 )
-#define READ	( (size_t(__cdecl*)(void*, size_t, size_t, FILE*)) 0x004E1D20 )
-#define TELL	( (int(__cdecl*)(FILE*)) 0x004E4700 )
-#define WRITE	( (size_t(__cdecl*)(const void*, size_t, size_t, FILE*)) 0x004E4380 )
-#define CLOSE	( (int(__cdecl*)(FILE*)) 0x004E20D0 )
-
-#define MALLOC	( (void*(__cdecl*)(size_t)) 0x004E2220 )
-#define REALLOC	( (void*(__cdecl*)(void*, size_t)) 0x004E26B0 )
-#define FREE	( (void(__cdecl*)(void*)) 0x004E2C90 )
-	/**********************************/
+#define NO_HEIGHT -32512
+#define	NO_ITEM	-1
+#define NO_ROOM	255
+#define MAX_ITEMS	256
+#define MAX_SAMPLES	450
+#define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
+#define MALLOC_SIZE	5000000		//5MB
+#define WINDOW_STYLE	(WS_OVERLAPPED | WS_BORDER | WS_CAPTION)
 
 /*typedefs*/
 typedef unsigned char uchar;
@@ -57,6 +54,13 @@ typedef unsigned short ushort;
 typedef unsigned long ulong;
 
 /*enums*/
+
+enum target_type
+{
+	NO_TARGET,
+	PRIME_TARGET,
+	SECONDARY_TARGET
+};
 
 enum languages
 {
@@ -1370,6 +1374,17 @@ struct SPARKS
 	uchar NodeNumber;
 };
 
+struct SP_DYNAMIC
+{
+	uchar On;
+	uchar Falloff;
+	uchar R;
+	uchar G;
+	uchar B;
+	uchar Flags;
+	uchar Pad[2];
+};
+
 struct SHATTER_ITEM
 {
 	SPHERE Sphere;
@@ -1454,13 +1469,6 @@ struct MENUTHANG
 {
 	long type;
 	char* text;
-};
-
-struct VECTOR
-{
-	long vx;
-	long vy;
-	long vz;
 };
 
 struct AI_INFO
@@ -1553,13 +1561,6 @@ struct PENDULUM
 	PHD_VECTOR Velocity;
 	long node;
 	ROPE_STRUCT* Rope;
-};
-
-struct MATRIX3D
-{
-	long m00, m01, m02, m03;
-	long m10, m11, m12, m13;
-	long m20, m21, m22, m23;
 };
 
 struct ACMESHVERTEX
@@ -2205,13 +2206,6 @@ struct GUARDIAN_TARGET
 	short Ydiff;
 };
 
-struct SkinXYZ
-{
-	long x;
-	long y;
-	long z;
-};
-
 struct OLD_CAMERA
 {
 	short current_anim_state;
@@ -2454,6 +2448,39 @@ struct PROFILER_EVENT
 {
 	__int64 t;
 	long c;
+};
+
+struct BINK_STRUCT
+{
+	long pad;
+	long num;
+	char padfuck[8];
+	long num2;
+};
+
+struct MAP_STRUCT
+{
+	long nLines;
+	long nVtx;
+	PHD_VECTOR vtx[256];
+	short lines[256];
+	short visited;
+	short room_number;
+};
+
+struct MAP_VECTOR
+{
+	long x1;
+	long y1;
+	long x2;
+	long y2;
+};
+
+struct CUTSEQ_SELECTOR
+{
+	short string;
+	short lvl;
+	short num;
 };
 
 #ifdef GENERAL_FIXES

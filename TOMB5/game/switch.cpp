@@ -10,6 +10,18 @@
 #include "draw.h"
 #include "laramisc.h"
 #include "../specific/3dmath.h"
+#include "gameflow.h"
+#include "newinv2.h"
+#include "camera.h"
+#include "spotcam.h"
+#include "../specific/input.h"
+#include "lara.h"
+
+PHD_VECTOR OldPickupPos;
+uchar CurrentSequence;
+uchar Sequences[3];
+uchar SequenceUsed[6];
+uchar SequenceResults[3][3][3];
 
 static PHD_VECTOR PulleyPos = { 0, 0, -148 };
 static PHD_VECTOR SwitchPos = { 0, 0, 0 };
@@ -27,75 +39,20 @@ static PHD_VECTOR FullBlockSwitchPos = { 0, 0, 0 };
 static PHD_VECTOR CogSwitchPos = { 0, 0, -856 };
 static PHD_VECTOR CrowDovePos = { 0, 0, -400 };
 
-static short PulleyBounds[12] =
-{
-	-256, 256, 0, 0, -512, 512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short SwitchBounds[12] =
-{
-	0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short Switch2Bounds[12] =
-{
-	-1024, 1024, -1024, 1024, -1024, 512, -14560, 14560, -14560, 14560, -14560, 14560
-};
-
-static short UnderwaterSwitchBounds[12] =
-{
-	-256, 256, -1280, -512, -512, 0, -14560, 14560, -14560, 14560, -14560, 14560
-};
-
-static short UnderwaterSwitchBounds2[12] =
-{
-	-256, 256, -1280, -512, 0, 512, -14560, 14560, -14560, 14560, -14560, 14560
-};
-
-static short TurnSwitchBoundsA[12] =
-{
-	512, 896, 0, 0, -512, 0, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short TurnSwitchBoundsC[12] =
-{
-	512, 896, 0, 0, 0, 512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short RailSwitchBounds[12] =
-{
-	-256, 256, 0, 0, -768, -512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short RailSwitchBounds2[12] =
-{
-	-256, 256, 0, 0, 512, 768, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short JumpSwitchBounds[12] =
-{
-	-128, 128, -256, 256, 384, 512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short CrowbarBounds[12] =
-{
-	-256, 256, 0, 0, -512, -256, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short CrowbarBounds2[12] =
-{
-	-256, 256, 0, 0, 256, 512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short FullBlockSwitchBounds[12] =
-{
-	-384, 384, 0, 256, 0, 512, -1820, 1820, -5460, 5460, -1820, 1820
-};
-
-static short CogSwitchBounds[12] =
-{
-	-512, 512, 0, 0, -1536, -512, -1820, 1820, -5460, 5460, -1820, 1820
-};
+static short PulleyBounds[12] = { -256, 256, 0, 0, -512, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short SwitchBounds[12] = { 0, 0, 0, 0, 0, 0, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short Switch2Bounds[12] = { -1024, 1024, -1024, 1024, -1024, 512, -14560, 14560, -14560, 14560, -14560, 14560 };
+static short UnderwaterSwitchBounds[12] = { -256, 256, -1280, -512, -512, 0, -14560, 14560, -14560, 14560, -14560, 14560 };
+static short UnderwaterSwitchBounds2[12] = { -256, 256, -1280, -512, 0, 512, -14560, 14560, -14560, 14560, -14560, 14560 };
+static short TurnSwitchBoundsA[12] = { 512, 896, 0, 0, -512, 0, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short TurnSwitchBoundsC[12] = { 512, 896, 0, 0, 0, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short RailSwitchBounds[12] = { -256, 256, 0, 0, -768, -512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short RailSwitchBounds2[12] = { -256, 256, 0, 0, 512, 768, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short JumpSwitchBounds[12] = { -128, 128, -256, 256, 384, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short CrowbarBounds[12] = { -256, 256, 0, 0, -512, -256, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short CrowbarBounds2[12] = { -256, 256, 0, 0, 256, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short FullBlockSwitchBounds[12] = { -384, 384, 0, 256, 0, 512, -1820, 1820, -5460, 5460, -1820, 1820 };
+static short CogSwitchBounds[12] = { -512, 512, 0, 0, -1536, -512, -1820, 1820, -5460, 5460, -1820, 1820 };
 
 void CrowDoveSwitchControl(short item_number)
 {
@@ -1039,6 +996,144 @@ void CogSwitchCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 	ObjectCollision(item_number, l, coll);
 }
 
+void ProcessExplodingSwitchType8(ITEM_INFO* item)
+{
+	PHD_VECTOR pos;
+
+	pos.x = 0;
+	pos.y = 0;
+	pos.z = 0;
+	GetJointAbsPosition(item, &pos, 0);
+	TestTriggersAtXYZ(pos.x, pos.y, pos.z, item->room_number, 1, 0);
+	ExplodeItemNode(item, objects[item->object_number].nmeshes - 1, 0, 64);
+	item->mesh_bits |= 1 << (objects[item->object_number].nmeshes - 2);
+}
+
+void TestTriggersAtXYZ(long x, long y, long z, short room_number, short heavy, short flags)
+{
+	GetHeight(GetFloor(x, y, z, &room_number), x, y, z);
+	TestTriggers(trigger_index, heavy, flags);
+}
+
+long GetSwitchTrigger(ITEM_INFO* item, short* ItemNos, long AttatchedToSwitch)
+{
+	FLOOR_INFO* floor;
+	short* data;
+	long num;
+
+	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &item->room_number);
+	GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+
+	if (!trigger_index)
+		return 0;
+
+	data = trigger_index;
+
+	while ((*data & 0x1F) != TRIGGER_TYPE && !(*data & 0x8000)) data++;
+
+	if (!(*data & TRIGGER_TYPE))
+		return 0;
+
+	data += 2;
+	num = 0;
+
+	while (1)
+	{
+		if ((*data & 0x3C00) == TO_OBJECT && item != &items[*data & 0x3FF])
+		{
+			*ItemNos++ = *data & 0x3FF;
+			num++;
+		}
+
+		if (*data & 0x8000)
+			break;
+
+		data++;
+	}
+
+	return num;
+}
+
+long GetKeyTrigger(ITEM_INFO* item)
+{
+	FLOOR_INFO* floor;
+	short* data;
+
+	if (item->object_number == PUZZLE_HOLE8 && gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
+		return 1;
+
+	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &item->room_number);
+	GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+
+	if (!trigger_index)
+		return 0;
+
+	data = trigger_index;
+
+	while ((*data & 0x1F) != TRIGGER_TYPE && !(*data & 0x8000)) data++;
+
+	if (!(*data & TRIGGER_TYPE))
+		return 0;
+
+	data += 2;
+
+	while (1)
+	{
+		if ((*data & 0x3C00) == TO_OBJECT && item == &items[*data & 0x3FF])
+			return 1;
+
+		if (*data & 0x8000)
+			break;
+
+		data++;
+	}
+
+	return 0;
+}
+
+long SwitchTrigger(short item_number, short timer)
+{
+	ITEM_INFO* item;
+
+	item = &items[item_number];
+
+	if (item->status == ITEM_DEACTIVATED)
+	{
+		if ((!item->current_anim_state && item->object_number != JUMP_SWITCH || item->current_anim_state == 1 && item->object_number == JUMP_SWITCH) &&
+			timer > 0)
+		{
+			item->timer = timer;
+			item->status = ITEM_ACTIVE;
+
+			if (timer != 1)
+				item->timer *= 30;
+		}
+		else if (item->trigger_flags == 6 && !item->current_anim_state)
+			item->status = ITEM_ACTIVE;
+		else
+		{
+			RemoveActiveItem(item_number);
+			item->status = ITEM_INACTIVE;
+
+			if (item->item_flags[0])
+				item->flags |= IFL_INVISIBLE;
+
+			if (item->current_anim_state == 1 && (item->trigger_flags == 5 || item->trigger_flags == 6))
+				return 0;
+		}
+
+		return 1;
+	}
+
+	if (item->status != ITEM_INACTIVE)
+	{
+		if (item->flags & IFL_INVISIBLE)
+			return 1;
+	}
+
+	return 0;
+}
+
 void inject_switch(bool replace)
 {
 	INJECT(0x0047FC80, CrowDoveSwitchControl, replace);
@@ -1057,4 +1152,9 @@ void inject_switch(bool replace)
 	INJECT(0x0047F610, FullBlockSwitchCollision, replace);
 	INJECT(0x0047F810, CogSwitchControl, replace);
 	INJECT(0x0047F990, CogSwitchCollision, replace);
+	INJECT(0x0047FF20, ProcessExplodingSwitchType8, replace);
+	INJECT(0x0047D9D0, TestTriggersAtXYZ, replace);
+	INJECT(0x0047D7B0, GetSwitchTrigger, replace);
+	INJECT(0x0047D8C0, GetKeyTrigger, replace);
+	INJECT(0x0047D670, SwitchTrigger, replace);
 }

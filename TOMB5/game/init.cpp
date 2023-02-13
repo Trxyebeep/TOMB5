@@ -15,6 +15,11 @@
 #include "box.h"
 #include "switch.h"
 #include "../specific/3dmath.h"
+#include "tomb4fx.h"
+#include "joby.h"
+#include "../specific/file.h"
+
+static short GlobalPulleyFrigItem;
 
 void InitialiseTrapDoor(short item_number)
 {

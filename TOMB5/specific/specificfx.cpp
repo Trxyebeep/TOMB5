@@ -17,6 +17,17 @@
 #include "../game/sphere.h"
 #include "../game/lasers.h"
 #include "../game/rope.h"
+#include "../game/gameflow.h"
+#include "output.h"
+#include "file.h"
+#include "texture.h"
+#include "../game/camera.h"
+#include "dxshell.h"
+#include "../game/lara.h"
+#include "../game/effects.h"
+#include "../game/effect2.h"
+#include "gamemain.h"
+#include "../game/draw.h"
 
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
@@ -142,7 +153,52 @@ static NODEOFFSET_INFO NodeOffsets[16] =
 	{ 0, 0, 0, 0, 0 }
 };
 
+uchar SplashLinks[347]
+{
+	16, 18, 0, 2,
+	18, 20, 2, 4,
+	20, 22, 4, 6,
+	22, 24, 6, 8,
+	24, 26, 8, 10,
+	26, 28, 10, 12,
+	28, 30, 12, 14,
+	30, 16, 14, 0,
+	//links
+	84, 111, 109, 98, 32, 82, 97, 105, 100, 101, 114, 32, 73, 86, 32, 45, 32, 84, 104, 101, 32, 76, 97, 115,
+	116, 32, 82, 101, 118, 101, 108, 97, 116, 105, 111, 110, 32, 32, 45, 45, 32, 68, 101, 100, 105, 99, 97, 116,
+	101, 100, 32, 116, 111, 32, 109, 121, 32, 102, 105, 97, 110, 99, 101, 32, 74, 97, 121, 32, 102, 111, 114, 32,
+	112, 117, 116, 116, 105, 110, 103, 32, 117, 112, 32, 119, 105, 116, 104, 32, 116, 104, 105, 115, 32, 103, 97, 109,
+	101, 32, 116, 97, 107, 105, 110, 103, 32, 111, 118, 101, 114, 32, 111, 117, 114, 32, 108, 105, 102, 101, 115, 44,
+	109, 121, 32, 115, 116, 101, 112, 32, 115, 111, 110, 115, 32, 67, 114, 97, 105, 103, 44, 74, 97, 109, 105, 101,
+	32, 38, 32, 65, 105, 100, 101, 110, 32, 40, 83, 104, 111, 119, 32, 116, 104, 105, 115, 32, 116, 111, 32, 121,
+	111, 117, 114, 32, 109, 97, 116, 101, 115, 32, 97, 116, 32, 115, 99, 104, 111, 111, 108, 44, 32, 116, 104, 101,
+	121, 39, 108, 108, 32, 98, 101, 108, 105, 101, 118, 101, 32, 121, 111, 117, 32, 110, 111, 119, 33, 33, 41, 44,
+	97, 108, 115, 111, 32, 102, 111, 114, 32, 109, 121, 32, 100, 97, 117, 103, 104, 116, 101, 114, 115, 32, 83, 111,
+	112, 104, 105, 101, 32, 97, 110, 100, 32, 74, 111, 100, 121, 32, 45, 32, 83, 101, 101, 32, 121, 111, 117, 32, 105,
+	110, 32, 97, 110, 111, 116, 104, 101, 114, 32, 104, 101, 120, 32, 100, 117, 109, 112, 32, 45, 32, 82, 105, 99,
+	104, 97, 114, 100, 32, 70, 108, 111, 119, 101, 114, 32, 49, 49, 47, 49, 49, 47, 49, 57, 57, 57, 0, 0, 0, 0
+};
+
+MAP_STRUCT Map[255];
+long DoFade;
+long snow_outside;
+
+static MESH_DATA* targetMeshP;
+static MESH_DATA* binocsMeshP;
+static RAINDROPS Rain[2048];
+static SNOWFLAKE Snow[2048];
+static UWEFFECTS uwdust[256];
 static PHD_VECTOR NodeVectors[16];
+static float StarFieldPositions[1024];
+static long StarFieldColors[256];
+static long FadeVal;
+static long FadeStep;
+static long FadeCnt;
+static long FadeEnd;
+static short rain_count;
+static short snow_count;
+static short max_rain;
+static short max_snow;
 
 #ifdef GENERAL_FIXES
 static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
@@ -2823,11 +2879,18 @@ void aDrawWreckingBall(ITEM_INFO* item, long shade)
 	if (shade < 100)
 		shade = 100;
 
-	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 11];
 	vec = (SVECTOR*)&scratchpad[0];
-	aTransformPerspSV(vec, aVertexBuffer, clipflags, 9, shade << 24);
 
+#ifdef GENERAL_FIXES
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
+	aTransformPerspSV(vec, aVertexBuffer, clipflags, 9, RGBA(shade / 3, shade / 3, shade / 3, shade));
+	tex.drawtype = 5;
+#else
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 11];
+	aTransformPerspSV(vec, aVertexBuffer, clipflags, 9, shade << 24);
 	tex.drawtype = 3;
+#endif
+
 	tex.tpage = sprite->tpage;
 	tex.u1 = sprite->x1;
 	tex.v1 = sprite->y1;
@@ -6152,7 +6215,7 @@ void DrawLightning()
 		tex.flag = 0;
 		tex.tpage = sprite->tpage;
 
-		uAdd = float(31 - 4 * (spec_wibble & 7)) * (1.0F / 256.0F);
+		uAdd = float(31 - 4 * (aWibble & 7)) * (1.0F / 256.0F);
 
 		if (l->Life < 16)
 		{
@@ -6596,7 +6659,7 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 	tex.drawtype = 2;
 	tex.flag = 0;
 	tex.tpage = sprite->tpage;
-	uAdd = float(31 - 4 * (spec_wibble & 7)) * (1.0F / 256.0F);
+	uAdd = float(31 - 4 * (aWibble & 7)) * (1.0F / 256.0F);
 	col = RGBONLY(r, g, b);
 
 	v = aVertexBuffer;
@@ -6664,6 +6727,1104 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 	phd_PopMatrix();
 }
 
+void DrawRope(ROPE_STRUCT* rope)
+{
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	long dx, dy, d, b, w, spec;
+	long x1, y1, z1, x2, y2, z2, x3, y3, x4, y4;
+
+	ProjectRopePoints(rope);
+	dx = rope->Coords[1][0] - rope->Coords[0][0];
+	dy = rope->Coords[1][1] - rope->Coords[0][1];
+	d = SQUARE(dx) + SQUARE(dy);
+	d = phd_sqrt(abs(d));
+
+	dx <<= 16;
+	dy <<= 16;
+	d <<= 16;
+
+	if (d)
+	{
+		d = ((0x1000000 / (d >> 8)) << 8) >> 8;
+		b = dx;
+		dx = ((__int64)-dy * (__int64)d) >> 16;
+		dy = ((__int64)b * (__int64)d) >> 16;
+	}
+
+	w = 0x60000;
+
+	if (rope->Coords[0][2])
+	{
+		w = 0x60000 * phd_persp / rope->Coords[0][2];
+
+		if (w < 1)
+			w = 1;
+	}
+
+	w <<= 16;
+	dx = (((__int64)dx * (__int64)w) >> 16) >> 16;
+	dy = (((__int64)dy * (__int64)w) >> 16) >> 16;
+	x1 = rope->Coords[0][0] - dx;
+	y1 = rope->Coords[0][1] - dy;
+	z1 = rope->Coords[0][2] >> 14;
+	x4 = rope->Coords[0][0] + dx;
+	y4 = rope->Coords[0][1] + dy;
+
+	for (int i = 0; i < 23; i++)
+	{
+		dx = rope->Coords[i + 1][0] - rope->Coords[i][0];
+		dy = rope->Coords[i + 1][1] - rope->Coords[i][1];
+		d = SQUARE(dx) + SQUARE(dy);
+		d = phd_sqrt(abs(d));
+
+		dx <<= 16;
+		dy <<= 16;
+		d <<= 16;
+
+		if (d)
+		{
+			d = ((0x1000000 / (d >> 8)) << 8) >> 8;
+			b = dx;
+			dx = ((__int64)-dy * (__int64)d) >> 16;
+			dy = ((__int64)b * (__int64)d) >> 16;
+		}
+
+		w = 0x60000;
+
+		if (rope->Coords[i][2])
+		{
+			w = 0x60000 * phd_persp / rope->Coords[i][2];
+
+			if (w < 3)
+				w = 3;
+		}
+
+		w <<= 16;
+		dx = (((__int64)dx * (__int64)w) >> 16) >> 16;
+		dy = (((__int64)dy * (__int64)w) >> 16) >> 16;
+		x2 = rope->Coords[i + 1][0] - dx;
+		y2 = rope->Coords[i + 1][1] - dy;
+		z2 = rope->Coords[i + 1][2] >> 14;
+		x3 = rope->Coords[i + 1][0] + dx;
+		y3 = rope->Coords[i + 1][1] + dy;
+
+		if ((double)z1 > f_mznear && (double)z2 > f_mznear)
+		{
+			setXY4(v, x1, y1, x2, y2, x3, y3, x4, y4, z1, clipflags);
+			v[0].color = 0xFF7F7F7F;
+			v[1].color = 0xFF7F7F7F;
+			v[2].color = 0xFF7F7F7F;
+			v[3].color = 0xFF7F7F7F;
+
+			spec = 255;
+
+			if (z1 > 0x3000)
+				spec = (255 * (0x5000 - z1)) >> 13;
+
+			v[0].specular = spec << 24;
+			v[1].specular = spec << 24;
+			v[2].specular = spec << 24;
+			v[3].specular = spec << 24;
+			sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 16];
+			tex.drawtype = 1;
+			tex.flag = 0;
+			tex.tpage = sprite->tpage;
+			tex.u1 = sprite->x1;
+			tex.v1 = sprite->y1;
+			tex.u2 = sprite->x1;
+			tex.v2 = sprite->y2;
+			tex.u3 = sprite->x2;
+			tex.v3 = sprite->y2;
+			tex.u4 = sprite->x2;
+			tex.v4 = sprite->y1;
+			AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+		}
+
+		x1 = x2;
+		y1 = y2;
+		z1 = z2;
+		x4 = x3;
+		y4 = y3;
+	}
+}
+
+void S_DrawDrawSparks(SPARKS* sptr, long smallest_size, short* xyptr, long* zptr)
+{
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	long x1, y1, z1, x2, y2, z2, x3, y3, x4, y4;
+	long cR, cG, cB, c1, c2, s1, s2, s1h, s2h, scale;
+	long sin, cos, sx1, sx2, sy1, sy2, cx1, cx2, cy1, cy2;
+
+	if (sptr->Flags & 8)
+	{
+		z1 = zptr[0];
+
+		if (z1 <= 0)
+			return;
+
+		if (z1 >= 0x5000)
+		{
+			sptr->On = 0;
+			return;
+		}
+
+		if (sptr->Flags & 2)
+		{
+			scale = sptr->Size << sptr->Scalar;
+			s1 = ((phd_persp * sptr->Size) << sptr->Scalar) / z1;
+			s2 = ((phd_persp * sptr->Size) << sptr->Scalar) / z1;
+
+			if (s1 > scale)
+				s1 = scale;
+			else if (s1 < smallest_size)
+				s1 = smallest_size;
+
+			if (s2 > scale)
+				s2 = scale;
+			else if (s2 < smallest_size)
+				s2 = smallest_size;
+		}
+		else
+		{
+			s1 = sptr->Size;
+			s2 = sptr->Size;
+		}
+
+		x1 = xyptr[0];
+		y1 = xyptr[1];
+		s1h = s1 >> 1;
+		s2h = s2 >> 1;
+
+		if (x1 + s1h >= phd_winxmin && x1 - s1h < phd_winxmax && y1 + s2h >= phd_winymin && y1 - s2h < phd_winymax)
+		{
+			if (sptr->Flags & 0x10)
+			{
+				sin = rcossin_tbl[sptr->RotAng << 1];
+				cos = rcossin_tbl[(sptr->RotAng << 1) + 1];
+				sx1 = (-s1h * sin) >> 12;
+				sx2 = (s1h * sin) >> 12;
+				sy1 = (-s2h * sin) >> 12;
+				sy2 = (s2h * sin) >> 12;
+				cx1 = (-s1h * cos) >> 12;
+				cx2 = (s1h * cos) >> 12;
+				cy1 = (-s2h * cos) >> 12;
+				cy2 = (s2h * cos) >> 12;
+				x1 = sx1 - cy1 + xyptr[0];
+				x2 = sx2 - cy1 + xyptr[0];
+				x3 = sx2 - cy2 + xyptr[0];
+				x4 = sx1 - cy2 + xyptr[0];
+				y1 = cx1 + sy1 + xyptr[1];
+				y2 = cx2 + sy1 + xyptr[1];
+				y3 = cx2 + sy2 + xyptr[1];
+				y4 = cx1 + sy2 + xyptr[1];
+				setXY4(v, x1, y1, x2, y2, x3, y3, x4, y4, z1, clipflags);
+			}
+			else
+			{
+				x1 = xyptr[0] - s1h;
+				x2 = xyptr[0] + s1h;
+				y1 = xyptr[1] - s2h;
+				y2 = xyptr[1] + s2h;
+				setXY4(v, x1, y1, x2, y1, x2, y2, x1, y2, z1, clipflags);
+			}
+
+			sprite = &spriteinfo[sptr->Def];
+
+			if (z1 <= 0x3000)
+			{
+				cR = sptr->R;
+				cG = sptr->G;
+				cB = sptr->B;
+			}
+			else
+			{
+				cR = ((0x5000 - z1) * sptr->R) >> 13;
+				cG = ((0x5000 - z1) * sptr->G) >> 13;
+				cB = ((0x5000 - z1) * sptr->B) >> 13;
+			}
+
+			c1 = RGBA(cR, cG, cB, 0xFF);
+			v[0].color = c1;
+			v[1].color = c1;
+			v[2].color = c1;
+			v[3].color = c1;
+			v[0].specular = 0xFF000000;
+			v[1].specular = 0xFF000000;
+			v[2].specular = 0xFF000000;
+			v[3].specular = 0xFF000000;
+
+			if (sptr->TransType)
+				tex.drawtype = 2;
+			else
+				tex.drawtype = 1;
+
+			tex.tpage = sprite->tpage;
+			tex.u1 = sprite->x1;
+			tex.v1 = sprite->y1;
+			tex.u2 = sprite->x2;
+			tex.v2 = sprite->y1;
+			tex.u3 = sprite->x2;
+			tex.v3 = sprite->y2;
+			tex.u4 = sprite->x1;
+			tex.v4 = sprite->y2;
+			AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+		}
+	}
+	else
+	{
+		x1 = xyptr[0];
+		y1 = xyptr[1];
+		x2 = xyptr[2];
+		y2 = xyptr[3];
+		z1 = zptr[0];
+		z2 = zptr[1];
+
+		if (z1 <= 0x3000)
+		{
+			cR = sptr->R;
+			cG = sptr->G;
+			cB = sptr->B;
+		}
+		else
+		{
+			cR = ((0x5000 - z1) * sptr->R) >> 13;
+			cG = ((0x5000 - z1) * sptr->G) >> 13;
+			cB = ((0x5000 - z1) * sptr->B) >> 13;
+		}
+
+		c1 = RGBA(cR, cG, cB, 0xFF);
+		c2 = RGBA(cR >> 1, cG >> 1, cB >> 1, 0xFF);
+
+		if (ClipLine(x1, y1, z1, x2, y2, z2, phd_winxmin, phd_winymin, phd_winxmax, phd_winymax))
+		{
+			v[0].sx = (float)x1;
+			v[0].sy = (float)y1;
+			v[0].rhw = f_mpersp / z1 * f_moneopersp;
+			v[0].sz = f_a - v[0].rhw * f_boo;
+			v[0].color = c1;
+			v[0].specular = 0xFF000000;
+			v[1].sx = (float)x2;
+			v[1].sy = (float)y2;
+			v[1].rhw = f_mpersp / z1 * f_moneopersp;
+			v[1].sz = f_a - v[1].rhw * f_boo;
+			v[1].color = c2;
+			v[1].specular = 0xFF000000;
+			AddLineSorted(v, &v[1], 6);
+		}
+	}
+}
+
+void S_DrawSplashes()
+{
+	SPLASH_STRUCT* splash;
+	RIPPLE_STRUCT* ripple;
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	long* Z;
+	short* XY;
+	short* offsets;
+	uchar* links;
+	ulong c0, c1;
+	long x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, linkNum, r, g, b;
+	short rads[6];
+	short yVals[6];
+
+	offsets = (short*)&scratchpad[768];
+
+	for (int i = 0; i < 4; i++)
+	{
+		splash = &splashes[i];
+
+		if (!(splash->flags & 1))
+			continue;
+
+		phd_PushMatrix();
+		phd_TranslateAbs(splash->x, splash->y, splash->z);
+		XY = (short*)&scratchpad[0];
+		Z = (long*)&scratchpad[256];
+
+		rads[0] = splash->InnerRad;
+		rads[1] = splash->InnerRad + splash->InnerSize;
+		rads[2] = splash->MiddleRad;
+		rads[3] = splash->MiddleRad + splash->MiddleSize;
+		rads[4] = splash->OuterRad;
+		rads[5] = splash->OuterRad + splash->OuterSize;
+
+		yVals[0] = 0;
+		yVals[1] = splash->InnerY;
+		yVals[2] = 0;
+		yVals[3] = splash->MiddleY;
+		yVals[4] = 0;
+		yVals[5] = 0;
+
+		for (int j = 0; j < 6; j++)
+		{
+			for (int k = 0; k < 0x10000; k += 0x2000)
+			{
+				offsets[0] = (rads[j] * phd_sin(k)) >> 13;
+				offsets[1] = yVals[j] >> 3;
+				offsets[2] = (rads[j] * phd_cos(k)) >> 13;
+				*XY++ = short((phd_mxptr[M00] * offsets[0] + phd_mxptr[M01] * offsets[1] + phd_mxptr[M02] * offsets[2] + phd_mxptr[M03]) >> 14);
+				*XY++ = short((phd_mxptr[M10] * offsets[0] + phd_mxptr[M11] * offsets[1] + phd_mxptr[M12] * offsets[2] + phd_mxptr[M13]) >> 14);
+				*Z++ = (phd_mxptr[M20] * offsets[0] + phd_mxptr[M21] * offsets[1] + phd_mxptr[M22] * offsets[2] + phd_mxptr[M23]) >> 14;
+				Z++;
+			}
+		}
+
+		phd_PopMatrix();
+		XY = (short*)&scratchpad[0];
+		Z = (long*)&scratchpad[256];
+
+		for (int j = 0; j < 3; j++)
+		{
+			if (j == 2 || (!j && splash->flags & 4) || (j == 1 && splash->flags & 8))
+				sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 4 + ((wibble >> 4) & 3)];
+			else
+				sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 8];
+
+			links = SplashLinks;
+			linkNum = j << 5;
+
+			for (int k = 0; k < 8; k++)
+			{
+				x1 = XY[links[0] + linkNum];
+				y1 = XY[links[0] + linkNum + 1];
+				z1 = Z[links[0] + linkNum];
+				links++;
+
+				x2 = XY[links[0] + linkNum];
+				y2 = XY[links[0] + linkNum + 1];
+				z2 = Z[links[0] + linkNum];
+				links++;
+
+				x3 = XY[links[0] + linkNum];
+				y3 = XY[links[0] + linkNum + 1];
+				z3 = Z[links[0] + linkNum];
+				links++;
+
+				x4 = XY[links[0] + linkNum];
+				y4 = XY[links[0] + linkNum + 1];
+				z4 = Z[links[0] + linkNum];
+				links++;
+
+				setXYZ4(v, x1, y1, z1, x2, y2, z2, x4, y4, z4, x3, y3, z3, clipflags);
+
+				r = splash->life << 1;
+				g = splash->life << 1;
+				b = splash->life << 1;
+
+				if (r > 255)
+					r = 255;
+
+				if (g > 255)
+					g = 255;
+
+				if (b > 255)
+					b = 255;
+
+				c0 = RGBA(r, g, b, 0xFF);
+
+				r = (splash->life - (splash->life >> 2)) << 1;
+				g = (splash->life - (splash->life >> 2)) << 1;
+				b = (splash->life - (splash->life >> 2)) << 1;
+
+				if (r > 255)
+					r = 255;
+
+				if (g > 255)
+					g = 255;
+
+				if (b > 255)
+					b = 255;
+
+				c1 = RGBA(r, g, b, 0xFF);
+
+				v[0].color = c0;
+				v[1].color = c0;
+				v[2].color = c1;
+				v[3].color = c1;
+				v[0].specular = 0xFF000000;
+				v[1].specular = 0xFF000000;
+				v[2].specular = 0xFF000000;
+				v[3].specular = 0xFF000000;
+				tex.drawtype = 2;
+				tex.flag = 0;
+				tex.tpage = sprite->tpage;
+				tex.u1 = sprite->x1;
+				tex.v1 = sprite->y1;
+				tex.u2 = sprite->x2;
+				tex.v2 = sprite->y1;
+				tex.v3 = sprite->y2;
+				tex.u3 = sprite->x2;
+				tex.u4 = sprite->x1;
+				tex.v4 = sprite->y2;
+				AddQuadSorted(v, 0, 1, 2, 3, &tex, 1);
+			}
+		}
+	}
+
+	for (int i = 0; i < 32; i++)
+	{
+		ripple = &ripples[i];
+
+		if (!(ripple->flags & 1))
+			continue;
+
+		phd_PushMatrix();
+		phd_TranslateAbs(ripple->x, ripple->y, ripple->z);
+
+		XY = (short*)&scratchpad[0];
+		Z = (long*)&scratchpad[256];
+
+		offsets[0] = -ripple->size;
+		offsets[1] = 0;
+		offsets[2] = -ripple->size;
+		*XY++ = short((phd_mxptr[M00] * offsets[0] + phd_mxptr[M01] * offsets[1] + phd_mxptr[M02] * offsets[2] + phd_mxptr[M03]) >> 14);
+		*XY++ = short((phd_mxptr[M10] * offsets[0] + phd_mxptr[M11] * offsets[1] + phd_mxptr[M12] * offsets[2] + phd_mxptr[M13]) >> 14);
+		*Z++ = (phd_mxptr[M20] * offsets[0] + phd_mxptr[M21] * offsets[1] + phd_mxptr[M22] * offsets[2] + phd_mxptr[M23]) >> 14;
+		Z++;
+
+		offsets[0] = -ripple->size;
+		offsets[1] = 0;
+		offsets[2] = ripple->size;
+		*XY++ = short((phd_mxptr[M00] * offsets[0] + phd_mxptr[M01] * offsets[1] + phd_mxptr[M02] * offsets[2] + phd_mxptr[M03]) >> 14);
+		*XY++ = short((phd_mxptr[M10] * offsets[0] + phd_mxptr[M11] * offsets[1] + phd_mxptr[M12] * offsets[2] + phd_mxptr[M13]) >> 14);
+		*Z++ = (phd_mxptr[M20] * offsets[0] + phd_mxptr[M21] * offsets[1] + phd_mxptr[M22] * offsets[2] + phd_mxptr[M23]) >> 14;
+		Z++;
+
+		offsets[0] = ripple->size;
+		offsets[1] = 0;
+		offsets[2] = ripple->size;
+		*XY++ = short((phd_mxptr[M00] * offsets[0] + phd_mxptr[M01] * offsets[1] + phd_mxptr[M02] * offsets[2] + phd_mxptr[M03]) >> 14);
+		*XY++ = short((phd_mxptr[M10] * offsets[0] + phd_mxptr[M11] * offsets[1] + phd_mxptr[M12] * offsets[2] + phd_mxptr[M13]) >> 14);
+		*Z++ = (phd_mxptr[M20] * offsets[0] + phd_mxptr[M21] * offsets[1] + phd_mxptr[M22] * offsets[2] + phd_mxptr[M23]) >> 14;
+		Z++;
+
+		offsets[0] = ripple->size;
+		offsets[1] = 0;
+		offsets[2] = -ripple->size;
+		*XY++ = short((phd_mxptr[M00] * offsets[0] + phd_mxptr[M01] * offsets[1] + phd_mxptr[M02] * offsets[2] + phd_mxptr[M03]) >> 14);
+		*XY++ = short((phd_mxptr[M10] * offsets[0] + phd_mxptr[M11] * offsets[1] + phd_mxptr[M12] * offsets[2] + phd_mxptr[M13]) >> 14);
+		*Z++ = (phd_mxptr[M20] * offsets[0] + phd_mxptr[M21] * offsets[1] + phd_mxptr[M22] * offsets[2] + phd_mxptr[M23]) >> 14;
+		Z++;
+
+		phd_PopMatrix();
+
+		XY = (short*)&scratchpad[0];
+		Z = (long*)&scratchpad[256];
+
+		if (ripple->flags & 0x20)
+			sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index];
+		else
+			sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 9];
+
+		x1 = *XY++;
+		y1 = *XY++;
+		z1 = *Z++;
+		Z++;
+
+		x2 = *XY++;
+		y2 = *XY++;
+		z2 = *Z++;
+		Z++;
+
+		x3 = *XY++;
+		y3 = *XY++;
+		z3 = *Z++;
+		Z++;
+
+		x4 = *XY++;
+		y4 = *XY++;
+		z4 = *Z++;
+		Z++;
+
+		setXYZ4(v, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, clipflags);
+
+		if (ripple->flags & 0x10)
+		{
+			if (ripple->flags & 0x20)
+			{
+				if (ripple->init)
+				{
+					r = (ripple->init >> 1) << 1;
+					g = 0;
+					b = (ripple->init >> 4) << 1;
+				}
+				else
+				{
+					r = (ripple->life >> 1) << 1;
+					g = 0;
+					b = (ripple->life >> 4) << 1;
+				}
+			}
+			else
+			{
+				if (ripple->init)
+				{
+					r = ripple->init << 1;
+					g = ripple->init << 1;
+					b = ripple->init << 1;
+				}
+				else
+				{
+					r = ripple->life << 1;
+					g = ripple->life << 1;
+					b = ripple->life << 1;
+				}
+			}
+		}
+		else
+		{
+			if (ripple->init)
+			{
+				r = ripple->init << 2;
+				g = ripple->init << 2;
+				b = ripple->init << 2;
+			}
+			else
+			{
+				r = ripple->life << 2;
+				g = ripple->life << 2;
+				b = ripple->life << 2;
+			}
+		}
+
+		if (r > 255)
+			r = 255;
+
+		if (g > 255)
+			g = 255;
+
+		if (b > 255)
+			b = 255;
+
+		c0 = RGBA(r, g, b, 0xFF);
+
+		v[0].color = c0;
+		v[1].color = c0;
+		v[2].color = c0;
+		v[3].color = c0;
+		v[0].specular = 0xFF000000;
+		v[1].specular = 0xFF000000;
+		v[2].specular = 0xFF000000;
+		v[3].specular = 0xFF000000;
+		tex.drawtype = 2;
+		tex.flag = 0;
+		tex.tpage = sprite->tpage;
+		tex.u1 = sprite->x1;
+		tex.v1 = sprite->y1;
+		tex.u2 = sprite->x2;
+		tex.v2 = sprite->y1;
+		tex.v3 = sprite->y2;
+		tex.u3 = sprite->x2;
+		tex.u4 = sprite->x1;
+		tex.v4 = sprite->y2;
+		AddQuadSorted(v, 0, 1, 2, 3, &tex, 1);
+	}
+}
+
+void S_DrawFireSparks(long size, long life)
+{
+	FIRE_SPARKS* sptr;
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	PHD_VECTOR pos;
+	long* Z;
+	short* XY;
+	short* offsets;
+	float perspz;
+	ulong r, g, b, col;
+	long newSize, s, c, sx1, cx1, sx2, cx2;
+	long dx, dy, dz, x1, y1, x2, y2, x3, y3, x4, y4;
+	short ang;
+
+	XY = (short*)&scratchpad[0];
+	Z = (long*)&scratchpad[256];
+	offsets = (short*)&scratchpad[512];
+
+	for (int i = 0; i < 20; i++)
+	{
+		sptr = &fire_spark[i];
+
+		if (!sptr->On)
+			continue;
+
+		dx = sptr->x >> (2 - size);
+		dy = sptr->y >> (2 - size);
+		dz = sptr->z >> (2 - size);
+
+		if (dx < -0x5000 || dx > 0x5000 || dy < -0x5000 || dy > 0x5000 || dz < -0x5000 || dz > 0x5000)
+			continue;
+
+		offsets[0] = (short)dx;
+		offsets[1] = (short)dy;
+		offsets[2] = (short)dz;
+		pos.x = offsets[0] * phd_mxptr[M00] + offsets[1] * phd_mxptr[M01] + offsets[2] * phd_mxptr[M02] + phd_mxptr[M03];
+		pos.y = offsets[0] * phd_mxptr[M10] + offsets[1] * phd_mxptr[M11] + offsets[2] * phd_mxptr[M12] + phd_mxptr[M13];
+		pos.z = offsets[0] * phd_mxptr[M20] + offsets[1] * phd_mxptr[M21] + offsets[2] * phd_mxptr[M22] + phd_mxptr[M23];
+		perspz = f_persp / (float)pos.z;
+		XY[0] = short(float(pos.x * perspz + f_centerx));
+		XY[1] = short(float(pos.y * perspz + f_centery));
+		Z[0] = pos.z >> 14;
+
+
+		if (Z[0] <= 0 || Z[0] >= 0x5000)
+			continue;
+
+		newSize = (((phd_persp * sptr->Size) << 2) / Z[0]) >> (2 - size);
+
+		if (newSize > (sptr->Size << 2))
+			newSize = (sptr->Size << 2);
+		else if (newSize < 4)
+			newSize = 4;
+
+		newSize >>= 1;
+
+		if (XY[0] + newSize < phd_winxmin || XY[0] - newSize >= phd_winxmax || XY[1] + newSize < phd_winymin || XY[1] - newSize >= phd_winymax)
+			continue;
+
+		if (sptr->Flags & 0x10)
+		{
+			ang = sptr->RotAng << 1;
+			s = rcossin_tbl[ang];
+			c = rcossin_tbl[ang + 1];
+			sx1 = (-newSize * s) >> 12;
+			cx1 = (-newSize * c) >> 12;
+			sx2 = (newSize * s) >> 12;
+			cx2 = (newSize * c) >> 12;
+			x1 = XY[0] + (sx1 - cx1);
+			y1 = XY[1] + sx1 + cx1;
+			x2 = XY[0] + (sx2 - cx1);
+			y2 = XY[1] + sx1 + cx2;
+			x3 = XY[0] + (sx2 - cx2);
+			y3 = XY[1] + sx2 + cx2;
+			x4 = XY[0] + (sx1 - cx2);
+			y4 = XY[1] + sx2 + cx1;
+			setXY4(v, x1, y1, x2, y2, x3, y3, x4, y4, Z[0], clipflags);
+		}
+		else
+		{
+			x1 = XY[0] - newSize;
+			x2 = XY[0] + newSize;
+			y1 = XY[1] - newSize;
+			y2 = XY[1] + newSize;
+			setXY4(v, x1, y1, x2, y1, x2, y2, x1, y2, Z[0], clipflags);
+		}
+
+		sprite = &spriteinfo[sptr->Def];
+
+		if (Z[0] <= 0x3000)
+		{
+			r = sptr->R;
+			g = sptr->G;
+			b = sptr->B;
+		}
+		else
+		{
+			r = ((0x5000 - Z[0]) * sptr->R) >> 13;
+			g = ((0x5000 - Z[0]) * sptr->G) >> 13;
+			b = ((0x5000 - Z[0]) * sptr->B) >> 13;
+		}
+
+		r = (r * life) >> 8;
+		g = (g * life) >> 8;
+		b = (b * life) >> 8;
+		col = RGBA(r, g, b, 0xFF);
+
+		v[0].color = col;
+		v[1].color = col;
+		v[2].color = col;
+		v[3].color = col;
+		v[0].specular = 0xFF000000;
+		v[1].specular = 0xFF000000;
+		v[2].specular = 0xFF000000;
+		v[3].specular = 0xFF000000;
+		tex.drawtype = 2;
+		tex.flag = 0;
+		tex.tpage = sprite->tpage;
+		tex.u1 = sprite->x1;
+		tex.v1 = sprite->y1;
+		tex.u2 = sprite->x2;
+		tex.v2 = sprite->y1;
+		tex.u3 = sprite->x2;
+		tex.v3 = sprite->y2;
+		tex.u4 = sprite->x1;
+		tex.v4 = sprite->y2;
+		AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+		AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+	}
+}
+
+void S_DrawSmokeSparks()
+{
+	SMOKE_SPARKS* sptr;
+	SPRITESTRUCT* sprite;
+	D3DTLVERTEX v[4];
+	TEXTURESTRUCT tex;
+	PHD_VECTOR pos;
+	long* Z;
+	short* XY;
+	short* offsets;
+	float perspz;
+	long is_mirror, size, col, s, c, ss, cs, sm, cm;
+	long dx, dy, dz, x1, y1, x2, y2, x3, y3, x4, y4;
+	short ang;
+
+	phd_PushMatrix();
+	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+	XY = (short*)&scratchpad[0];
+	Z = (long*)&scratchpad[256];
+	offsets = (short*)&scratchpad[512];
+	is_mirror = 0;
+	sptr = &smoke_spark[0];
+
+	for (int i = 0; i < 32; i++)
+	{
+		if (!sptr->On)
+		{
+			sptr++;
+			continue;
+		}
+
+		if (sptr->mirror && !is_mirror)
+			is_mirror = 1;
+		else
+			is_mirror = 0;
+
+		dx = sptr->x - lara_item->pos.x_pos;
+		dy = sptr->y - lara_item->pos.y_pos;
+		dz = sptr->z - lara_item->pos.z_pos;
+
+		if (is_mirror)
+			dz = 2 * gfMirrorZPlane - lara_item->pos.z_pos - sptr->z;
+
+		if (dx < -0x5000 || dx > 0x5000 || dy < -0x5000 || dy > 0x5000 || dz < -0x5000 || dz > 0x5000)
+		{
+			if (!is_mirror)
+				sptr++;
+
+			continue;
+		}
+
+		offsets[0] = (short)dx;
+		offsets[1] = (short)dy;
+		offsets[2] = (short)dz;
+		pos.x = offsets[0] * phd_mxptr[M00] + offsets[1] * phd_mxptr[M01] + offsets[2] * phd_mxptr[M02] + phd_mxptr[M03];
+		pos.y = offsets[0] * phd_mxptr[M10] + offsets[1] * phd_mxptr[M11] + offsets[2] * phd_mxptr[M12] + phd_mxptr[M13];
+		pos.z = offsets[0] * phd_mxptr[M20] + offsets[1] * phd_mxptr[M21] + offsets[2] * phd_mxptr[M22] + phd_mxptr[M23];
+		perspz = f_persp / (float)pos.z;
+		XY[0] = short(float(pos.x * perspz + f_centerx));
+		XY[1] = short(float(pos.y * perspz + f_centery));
+		Z[0] = pos.z >> 14;
+
+		if (Z[0] <= 0 || Z[0] >= 0x5000)
+		{
+			if (!is_mirror)
+				sptr++;
+
+			continue;
+		}
+
+		size = ((phd_persp * sptr->Size) << 2) / Z[0];
+
+		if (size > sptr->Size << 2)
+			size = sptr->Size << 2;
+		else if (size < 4)
+			size = 4;
+
+		size >>= 1;
+
+		if (XY[0] + size < phd_winxmin || XY[0] - size >= phd_winxmax || XY[1] + size < phd_winymin || XY[1] - size >= phd_winymax)
+		{
+			if (!is_mirror)
+				sptr++;
+
+			continue;
+		}
+
+		if (sptr->Flags & 0x10)
+		{
+			ang = sptr->RotAng << 1;
+			s = rcossin_tbl[ang];
+			c = rcossin_tbl[ang + 1];
+			ss = (s * size) >> 12;
+			cs = (c * size) >> 12;
+			sm = (s * -size) >> 12;
+			cm = (c * -size) >> 12;
+
+			x1 = sm + XY[0] - cm;
+			y1 = sm + XY[1] + cm;
+			x2 = XY[0] - cm + ss;
+			y2 = sm + XY[1] + cs;
+			x3 = ss + XY[0] - cs;
+			y3 = cs + XY[1] + ss;
+			x4 = sm + XY[0] - cs;
+			y4 = ss + XY[1] + cm;
+
+			setXY4(v, x1, y1, x2, y2, x3, y3, x4, y4, Z[0], clipflags);
+		}
+		else
+		{
+			x1 = XY[0] - size;
+			y1 = XY[1] - size;
+			x2 = XY[0] + size;
+			y2 = XY[1] + size;
+			setXY4(v, x1, y1, x2, y1, x2, y2, x1, y2, Z[0], clipflags);
+		}
+
+		sprite = &spriteinfo[sptr->Def];
+
+		if (Z[0] <= 0x3000)
+			col = sptr->Shade;
+		else
+			col = ((0x5000 - Z[0]) * sptr->Shade) >> 13;
+
+		v[0].color = RGBA(col, col, col, 0xFF);
+		v[1].color = RGBA(col, col, col, 0xFF);
+		v[2].color = RGBA(col, col, col, 0xFF);
+		v[3].color = RGBA(col, col, col, 0xFF);
+		v[0].specular = 0xFF000000;
+		v[1].specular = 0xFF000000;
+		v[2].specular = 0xFF000000;
+		v[3].specular = 0xFF000000;
+		tex.drawtype = 2;
+		tex.flag = 0;
+		tex.tpage = sprite->tpage;
+		tex.u1 = sprite->x1;
+		tex.v1 = sprite->y1;
+		tex.u2 = sprite->x2;
+		tex.v3 = sprite->y2;
+		tex.v2 = sprite->y1;
+		tex.u3 = sprite->x2;
+		tex.u4 = sprite->x1;
+		tex.v4 = sprite->y2;
+		AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
+
+		if (!is_mirror)
+			sptr++;
+	}
+
+	phd_PopMatrix();
+}
+
+long MapCompare(MAP_STRUCT* a, MAP_STRUCT* b)
+{
+	static long max = -99999999;
+	static long min = 99999999;
+	long af, bf;
+
+	af = room[a->room_number].minfloor;
+	bf = room[b->room_number].minfloor;
+
+	if (af > max)
+		max = af;
+
+	if (af < min)
+		min = af;
+
+	if (bf > max)
+		max = bf;
+
+	if (bf < min)
+		min = bf;
+
+	if (af > bf)
+		return -1;
+
+	if (af < bf)
+		return 1;
+
+	return 0;
+}
+
+void MapInit()
+{
+	static MAP_VECTOR* xVPs[400];
+	static MAP_VECTOR* yVPs[400];
+	MAP_VECTOR* p;
+	MAP_VECTOR vs[1024];
+	D3DVECTOR v[1024];
+	short* data;
+	long n, nVtx, found, lp, lp2, lp3;
+	long x1, y1, x2, y2;
+	short vList[512];
+
+	data = (short*)MapData;
+
+	for (int i = 0; i < number_rooms; i++)
+	{
+		lp2 = 0;
+
+		while(1)
+		{
+			x1 = *data++;
+			y1 = *data++;
+
+			if (x1 == -1 && y1 == -1)
+				return;
+
+			x2 = *data++;
+			y2 = *data++;
+
+			vs[lp2].x1 = x1;
+			vs[lp2].y1 = y1;
+			vs[lp2].x2 = x2;
+			vs[lp2].y2 = y2;
+			lp2++;
+		}
+
+		memset(xVPs, 0, sizeof(xVPs));
+		memset(yVPs, 0, sizeof(yVPs));
+
+		for (lp = 0; lp < lp2; lp++)
+		{
+			if (vs[lp].y1 == vs[lp].y2)
+				xVPs[(20 * (vs[lp].y1 >> 10)) + (vs[lp].x1 >> 10)] = &vs[lp];
+			else
+				yVPs[(20 * (vs[lp].x1 >> 10)) + (vs[lp].y1 >> 10)] = &vs[lp];
+		}
+
+		n = 0;
+		nVtx = 0;
+
+		for (lp = 0; lp < 20; lp++)
+		{
+			for (lp2 = 0; lp2 < 20; lp2++)
+			{
+				p = xVPs[(20 * lp) + lp2];
+
+				if (!p)
+					continue;
+
+				x1 = p->x1;
+				y1 = p->y1;
+				x2 = p->x2;
+				y2 = p->y2;
+
+				while (lp2 <= 20)
+				{
+					p = yVPs[(20 * lp) + 1 + lp2];
+
+					if (!p)
+						break;
+
+					x2 = p->x2;
+					y2 = p->y2;
+					lp2++;
+				}
+
+				v[n].x = (float)y1;
+				v[n].y = (float)x1;
+				v[n].z = 0;
+				v[n + 1].x = (float)y2;
+				v[n + 1].y = (float)x2;
+				v[n + 1].z = 0;
+				n += 2;
+			}
+		}
+
+		for (lp = 0; lp < 20; lp++)
+		{
+			for (lp2 = 0; lp2 < 20; lp2++)
+			{
+				p = yVPs[(20 * lp) + lp2];
+
+				if (!p)
+					continue;
+
+				x1 = p->x1;
+				y1 = p->y1;
+				x2 = p->x2;
+				y2 = p->y2;
+
+				while (lp2 <= 20)
+				{
+					p = yVPs[(20 * lp) + 1 + lp2];
+
+					if (!p)
+						break;
+
+					x2 = p->x2;
+					y2 = p->y2;
+					lp2++;
+				}
+
+				v[n].x = (float)y1;
+				v[n].y = (float)x1;
+				v[n].z = 0;
+				v[n + 1].x = (float)y2;
+				v[n + 1].y = (float)x2;
+				v[n + 1].z = 0;
+				n += 2;
+			}
+		}
+
+		nVtx = n;
+		Map[i].nLines = n >> 1;
+
+		for (lp = 0; lp < Map[i].nLines; lp++)
+		{
+			Map[i].lines[lp << 1] = short(lp << 1);
+			Map[i].lines[(lp << 1) + 1] = short((lp << 1) + 1);
+		}
+
+		n = 0;
+
+		for (lp = 0; lp < nVtx; lp++)
+		{
+			found = 0;
+
+			for (lp2 = 0; lp2 < n; lp2++)
+			{
+				if (v[lp].x == v[vList[lp2]].x)
+				{
+					found = 1;
+					break;
+				}
+			}
+
+			if (found)
+			{
+				for (lp3 = 0; lp3 < Map[i].nLines << 1; lp3++)
+				{
+					if (Map[i].lines[lp3] == lp)
+						Map[i].lines[lp3] = (short)lp2;
+				}
+			}
+			else
+			{
+				vList[n] = (short)lp;
+
+				for (lp3 = 0; lp3 < 2 * Map[i].nLines; lp3++)
+				{
+					if (Map[i].lines[lp3] == lp)
+						Map[i].lines[lp3] = (short)n;
+				}
+
+				n++;
+			}
+		}
+
+		Map[i].nVtx = n;
+
+		for (lp = 0; lp < n; lp++)
+		{
+			Map[i].vtx[lp].x = (long)v[vList[lp]].x;
+			Map[i].vtx[lp].y = (long)v[vList[lp]].y;
+			Map[i].vtx[lp].z = (long)v[vList[lp]].z;
+		}
+
+		Map[i].visited = 1;
+		Map[i].room_number = i;
+	}
+}
+
 void inject_specificfx(bool replace)
 {
 	INJECT(0x004C2F10, S_PrintShadow, replace);
@@ -6719,4 +7880,11 @@ void inject_specificfx(bool replace)
 	INJECT(0x004CC0B0, DrawLightning, replace);
 	INJECT(0x004CCBA0, OldDrawLightning, replace);
 	INJECT(0x004CF550, DrawTwogunLaser, replace);
+	INJECT(0x004C6E00, DrawRope, replace);
+	INJECT(0x004C4130, S_DrawDrawSparks, replace);
+	INJECT(0x004C1790, S_DrawSplashes, replace);
+	INJECT(0x004C23C0, S_DrawFireSparks, replace);
+	INJECT(0x004C2980, S_DrawSmokeSparks, replace);
+	INJECT(0x004C54F0, MapCompare, replace);
+	INJECT(0x004C5590, MapInit, replace);
 }

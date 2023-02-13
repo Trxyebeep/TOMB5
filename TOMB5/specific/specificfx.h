@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_specificfx(bool replace);
 
@@ -59,7 +59,14 @@ void S_DrawFloorLasers(ITEM_INFO* item);
 void DrawLightning();
 void OldDrawLightning();
 void DrawTwogunLaser(TWOGUN_INFO* info);
+void DrawRope(ROPE_STRUCT* rope);
+void S_DrawDrawSparks(SPARKS* sptr, long smallest_size, short* xyptr, long* zptr);
+void S_DrawSplashes();
+void S_DrawFireSparks(long size, long life);
+void S_DrawSmokeSparks();
+long MapCompare(MAP_STRUCT* a, MAP_STRUCT* b);
+void MapInit();
 
-#define DrawRope	( (void(__cdecl*)(ROPE_STRUCT*)) 0x004C6E00)
-#define S_DrawSmokeSparks	( (void(__cdecl*)()) 0x004C2980 )
-#define S_DrawSplashes	( (void(__cdecl*)()) 0x004C1790 )
+extern MAP_STRUCT Map[255];
+extern long DoFade;
+extern long snow_outside;

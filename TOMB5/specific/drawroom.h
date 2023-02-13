@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_drawroom(bool replace);
 
@@ -30,4 +30,14 @@ void PrelightVertsNonMMXByRoomlet(D3DTLVERTEX* v, ROOMLET* r);
 void CalcTriFaceNormal(D3DVECTOR* p1, D3DVECTOR* p2, D3DVECTOR* p3, D3DVECTOR* n);
 void CreateVertexNormals(MESH_DATA* mesh);
 
+extern FOGBULB_STRUCT ActiveFogBulbs[64];
+extern FOGBULB_STRUCT FogBulbs[16];
 extern short CheckClipBox[8 * 3];
+extern MESH_DATA** mesh_vtxbuf;
+extern TEXTUREBUCKET Bucket[30];
+extern float clip_left;
+extern float clip_top;
+extern float clip_right;
+extern float clip_bottom;
+extern long NumActiveFogBulbs;
+extern long num_level_meshes;

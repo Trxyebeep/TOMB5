@@ -11,27 +11,40 @@
 #include "pickup.h"
 #include "lara_states.h"
 #include "items.h"
+#include "../specific/specificfx.h"
+#include "sound.h"
+#include "../specific/file.h"
+#include "camera.h"
+#include "lara.h"
+
+static char LM[15] = { 0, 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 8 };
+
+short GlobalCollisionBounds[6];
 
 void TriggerLaraBlood()
 {
-	PHD_VECTOR vec;
+	PHD_VECTOR pos;
+	long lp, node;
 
-	for (int i = 0, node = 1; i < 15; i++, node <<= 1)
+	for (lp = 0, node = 1; lp < 15; lp++)
 	{
-		if (node & lara_item->touch_bits)
+		if (lara_item->touch_bits & node)
 		{
-			vec.x = (GetRandomControl() & 0x1F) - 16;
-			vec.y = (GetRandomControl() & 0x1F) - 16;
-			vec.z = (GetRandomControl() & 0x1F) - 16;
-			GetLaraJointPos(&vec, LM[i]);
-			DoBloodSplat(vec.x, vec.y, vec.z, (GetRandomControl() & 7) + 8, short(GetRandomControl() << 1), lara_item->room_number);
+			pos.x = (GetRandomControl() & 0x1F) - 16;
+			pos.y = (GetRandomControl() & 0x1F) - 16;
+			pos.z = (GetRandomControl() & 0x1F) - 16;
+			GetLaraJointPos(&pos, LM[lp]);
+			DoBloodSplat(pos.x, pos.y, pos.z, (GetRandomControl() & 7) + 8, short(GetRandomControl() << 1), lara_item->room_number);
 		}
+
+		node <<= 1;
 	}
 }
 
 void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short room_number, long objheight)
 {
 	FLOOR_INFO* floor;
+	static long xfront, zfront;
 	long x, y, yT, z, xright, xleft, zright, zleft, height, ceiling, reset_room;
 	ushort tilt_type;
 	short fspeed, room_num, room_num2;
@@ -1081,6 +1094,18 @@ long CollideStaticObjects(COLL_INFO* coll, long x, long y, long z, short room_nu
 	return 0;
 }
 
+static void SetMapRoom()
+{
+	for (int i = 0; i < 255; i++)
+	{
+		if (Map[i].room_number == lara_item->room_number)
+		{
+			Map[i].visited = 1;
+			break;
+		}
+	}
+}
+
 void UpdateLaraRoom(ITEM_INFO* item, long height)
 {
 	FLOOR_INFO* floor;
@@ -1097,7 +1122,364 @@ void UpdateLaraRoom(ITEM_INFO* item, long height)
 	if (item->room_number != room_number)
 		ItemNewRoom(lara.item_number, room_number);
 
-	//map code removed
+	SetMapRoom();
+}
+
+void LaraBaddieCollision(ITEM_INFO* l, COLL_INFO* coll)
+{
+	ROOM_INFO* r;
+	ITEM_INFO* item;
+	MESH_INFO* mesh;
+	PHD_3DPOS pos;
+	short* door;
+	short* bounds;
+	long i, j, dx, dy, dz;
+	short num_nearby_rooms, item_number, nex;
+	short nearby_rooms[22];
+
+	l->hit_status = 0;
+	lara.hit_direction = -1;
+
+	if (l->hit_points <= 0)
+		return;
+
+	num_nearby_rooms = 1;
+	nearby_rooms[0] = l->room_number;
+	door = room[nearby_rooms[0]].door;
+
+	if (door)
+	{
+		for (i = *door++; i > 0; i--)
+		{
+			for (j = 0; j < num_nearby_rooms; j++)
+			{
+				if (nearby_rooms[j] == *door)
+					break;
+			}
+
+			if (j == num_nearby_rooms)
+			{
+				nearby_rooms[num_nearby_rooms] = *door;
+				num_nearby_rooms++;
+			}
+
+			door += 16;
+		}
+	}
+
+	for (i = 0; i < num_nearby_rooms; i++)
+	{
+		r = &room[nearby_rooms[i]];
+		item_number = r->item_number;
+
+		while (item_number != NO_ITEM)
+		{
+			item = &items[item_number];
+			nex = item->next_item;
+
+			if (item->collidable && item->status != ITEM_INVISIBLE)
+			{
+				if (objects[item->object_number].collision)
+				{
+					dx = l->pos.x_pos - item->pos.x_pos;
+					dy = l->pos.y_pos - item->pos.y_pos;
+					dz = l->pos.z_pos - item->pos.z_pos;
+
+					if (dx > -3072 && dx < 3072 && dy > -3072 && dy < 3072 && dz > -3072 && dz < 3072)
+						objects[item->object_number].collision(item_number, l, coll);
+				}
+			}
+
+			item_number = nex;
+		}
+
+		if (coll->enable_baddie_push)
+		{
+			r = &room[nearby_rooms[i]];
+			mesh = r->mesh;
+
+			for (j = r->num_meshes; j > 0; j--, mesh++)
+			{
+				if (!(mesh->Flags & 1))
+					continue;
+
+				dx = l->pos.x_pos - mesh->x;
+				dy = l->pos.y_pos - mesh->y;
+				dz = l->pos.z_pos - mesh->z;
+
+				if (dx > -3072 && dx < 3072 && dy > -3072 && dy < 3072 && dz > -3072 && dz < 3072)
+				{
+					bounds = &static_objects[mesh->static_number].x_minc;
+					pos.x_pos = mesh->x;
+					pos.y_pos = mesh->y;
+					pos.z_pos = mesh->z;
+					pos.y_rot = mesh->y_rot;
+
+					if (TestBoundsCollideStatic(bounds, &pos, coll->radius))
+						ItemPushLaraStatic(l, bounds, &pos, coll);
+				}
+			}
+		}
+	}
+
+	if (lara.hit_direction == -1)
+		lara.hit_frame = 0;
+}
+
+long ItemPushLara(ITEM_INFO* item, ITEM_INFO* l, COLL_INFO* coll, long spaz, long BigPush)
+{
+	short* bounds;
+	long dx, dz, s, c, x, z;
+	long xmin, xmax, zmin, zmax, left, top, right, bottom;
+	short facing;
+
+	dx = l->pos.x_pos - item->pos.x_pos;
+	dz = l->pos.z_pos - item->pos.z_pos;
+	s = phd_sin(item->pos.y_rot);
+	c = phd_cos(item->pos.y_rot);
+	x = (dx * c - dz * s) >> 14;
+	z = (dx * s + dz * c) >> 14;
+
+	if (BigPush & 2)
+		bounds = GlobalCollisionBounds;
+	else
+		bounds = GetBestFrame(item);
+
+	xmin = bounds[0];
+	xmax = bounds[1];
+	zmin = bounds[4];
+	zmax = bounds[5];
+
+	if (BigPush & 1)
+	{
+		xmin -= coll->radius;
+		xmax += coll->radius;
+		zmin -= coll->radius;
+		zmax += coll->radius;
+	}
+
+	if (abs(dx) > 4608 || abs(dz) > 4608 || x <= xmin || x >= xmax || z <= zmin || z >= zmax)
+		return 0;
+
+	left = x - xmin;
+	top = zmax - z;
+	right = xmax - x;
+	bottom = z - zmin;
+
+	if (left <= right && left <= top && left <= bottom)
+		x -= left;
+	else if (right <= left && right <= top && right <= bottom)
+		x += right;
+	else if (top <= left && top <= right && top <= bottom)
+		z += top;
+	else
+		z -= bottom;
+
+	l->pos.x_pos = item->pos.x_pos + ((c * x + s * z) >> 14);
+	l->pos.z_pos = item->pos.z_pos + ((c * z - s * x) >> 14);
+
+	if (spaz && bounds[3] - bounds[2] > 256)
+	{
+		x = (bounds[0] + bounds[1]) / 2;
+		z = (bounds[4] + bounds[5]) / 2;
+		dx -= (c * x + s * z) >> 14;
+		dz -= (c * z - s * x) >> 14;
+		lara.hit_direction = ushort(l->pos.y_rot - phd_atan(dz, dx) - 24576) >> 14;
+
+		if (!lara.hit_frame)
+			SoundEffect(SFX_LARA_INJURY_RND, &l->pos, SFX_DEFAULT);
+
+		lara.hit_frame++;
+
+		if (lara.hit_frame > 34)
+			lara.hit_frame = 34;
+	}
+
+	coll->bad_pos = -NO_HEIGHT;
+	coll->bad_neg = -384;
+	coll->bad_ceiling = 0;
+	facing = coll->facing;
+	coll->facing = (short)phd_atan(l->pos.z_pos - coll->old.z, l->pos.x_pos - coll->old.x);
+	GetCollisionInfo(coll, l->pos.x_pos, l->pos.y_pos, l->pos.z_pos, l->room_number, 762);
+	coll->facing = facing;
+
+	if (coll->coll_type == CT_NONE)
+	{
+		coll->old.x = l->pos.x_pos;
+		coll->old.y = l->pos.y_pos;
+		coll->old.z = l->pos.z_pos;
+		UpdateLaraRoom(l, -10);
+	}
+	else
+	{
+		l->pos.x_pos = coll->old.x;
+		l->pos.z_pos = coll->old.z;
+	}
+
+	if (lara.IsMoving && lara.MoveCount > 15)
+	{
+		lara.IsMoving = 0;
+		lara.gun_status = LG_NO_ARMS;
+	}
+
+	return 1;
+}
+
+long ItemPushLaraStatic(ITEM_INFO* l, short* bounds, PHD_3DPOS* pos, COLL_INFO* coll)
+{
+	long dx, dz, s, c, x, z;
+	long xmin, xmax, zmin, zmax, left, top, right, bottom;
+	short facing;
+
+	dx = l->pos.x_pos - pos->x_pos;
+	dz = l->pos.z_pos - pos->z_pos;
+	s = phd_sin(pos->y_rot);
+	c = phd_cos(pos->y_rot);
+	x = (dx * c - dz * s) >> 14;
+	z = (dx * s + dz * c) >> 14;
+	xmin = bounds[0] - coll->radius;
+	xmax = bounds[1] + coll->radius;
+	zmin = bounds[4] - coll->radius;
+	zmax = bounds[5] + coll->radius;
+
+	if (abs(dx) > 4608 || abs(dz) > 4608 || x <= xmin || x >= xmax || z <= zmin || z >= zmax)
+		return 0;
+
+	left = x - xmin;
+	top = zmax - z;
+	right = xmax - x;
+	bottom = z - zmin;
+
+	if (left <= right && left <= top && left <= bottom)
+		x -= left;
+	else if (right <= left && right <= top && right <= bottom)
+		x += right;
+	else if (top <= left && top <= right && top <= bottom)
+		z += top;
+	else
+		z -= bottom;
+
+	l->pos.x_pos = pos->x_pos + ((c * x + s * z) >> 14);
+	l->pos.z_pos = pos->z_pos + ((c * z - s * x) >> 14);
+	coll->bad_pos = -NO_HEIGHT;
+	coll->bad_neg = -384;
+	coll->bad_ceiling = 0;
+	facing = coll->facing;
+	coll->facing = (short)phd_atan(l->pos.z_pos - coll->old.z, l->pos.x_pos - coll->old.x);
+	GetCollisionInfo(coll, l->pos.x_pos, l->pos.y_pos, l->pos.z_pos, l->room_number, 762);
+	coll->facing = facing;
+
+	if (coll->coll_type == CT_NONE)
+	{
+		coll->old.x = l->pos.x_pos;
+		coll->old.y = l->pos.y_pos;
+		coll->old.z = l->pos.z_pos;
+		UpdateLaraRoom(l, -10);
+	}
+	else
+	{
+		l->pos.x_pos = coll->old.x;
+		l->pos.z_pos = coll->old.z;
+	}
+
+	if (l == lara_item && lara.IsMoving && lara.MoveCount > 15)
+	{
+		lara.IsMoving = 0;
+		lara.gun_status = LG_NO_ARMS;
+	}
+
+	return 1;
+}
+
+long TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* l, long rad)
+{
+	short* bounds;
+	short* lbounds;
+	long s, c, dx, dz, x, z;
+
+	bounds = GetBestFrame(item);
+	lbounds = GetBestFrame(l);
+
+	if (item->pos.y_pos + bounds[3] <= l->pos.y_pos + lbounds[2] || item->pos.y_pos + bounds[2] >= l->pos.y_pos + lbounds[3])
+		return 0;
+
+	s = phd_sin(item->pos.y_rot);
+	c = phd_cos(item->pos.y_rot);
+	dx = l->pos.x_pos - item->pos.x_pos;
+	dz = l->pos.z_pos - item->pos.z_pos;
+	x = (dx * c - dz * s) >> 14;
+	z = (dx * s + dz * c) >> 14;
+	return x >= bounds[0] - rad && x <= rad + bounds[1] && z >= bounds[4] - rad && z <= rad + bounds[5];
+}
+
+long TestBoundsCollideStatic(short* bounds, PHD_3DPOS* pos, long rad)
+{
+	short* lbounds;
+	long s, c, dx, dz, x, z;
+
+	if (!(bounds[0] | bounds[1] | bounds[2] | bounds[3] | bounds[4] | bounds[5]))
+		return 0;
+
+	lbounds = GetBestFrame(lara_item);
+
+	if (pos->y_pos + bounds[3] <= lara_item->pos.y_pos + lbounds[2] || pos->y_pos + bounds[2] >= lara_item->pos.y_pos + lbounds[3])
+		return 0;
+
+	s = phd_sin(pos->y_rot);
+	c = phd_cos(pos->y_rot);
+	dx = lara_item->pos.x_pos - pos->x_pos;
+	dz = lara_item->pos.z_pos - pos->z_pos;
+	x = (dx * c - dz * s) >> 14;
+	z = (dx * s + dz * c) >> 14;
+	return x >= bounds[0] - rad && x <= rad + bounds[1] && z >= bounds[4] - rad && z <= rad + bounds[5];
+}
+
+long TestLaraPosition(short* bounds, ITEM_INFO* item, ITEM_INFO* l)
+{
+	PHD_VECTOR pos;
+	long x, y, z;
+	short xrot, yrot, zrot;
+
+	xrot = l->pos.x_rot - item->pos.x_rot;
+	yrot = l->pos.y_rot - item->pos.y_rot;
+	zrot = l->pos.z_rot - item->pos.z_rot;
+
+	if (xrot < bounds[6] || xrot > bounds[7] ||
+		yrot < bounds[8] || yrot > bounds[9] ||
+		zrot < bounds[10] || zrot > bounds[11])
+		return 0;
+
+	phd_PushUnitMatrix();
+	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+	pos.x = l->pos.x_pos - item->pos.x_pos;
+	pos.y = l->pos.y_pos - item->pos.y_pos;
+	pos.z = l->pos.z_pos - item->pos.z_pos;
+	x = (pos.x * phd_mxptr[M00] + pos.y * phd_mxptr[M10] + pos.z * phd_mxptr[M20]) >> 14;
+	y = (pos.x * phd_mxptr[M01] + pos.y * phd_mxptr[M11] + pos.z * phd_mxptr[M21]) >> 14;
+	z = (pos.x * phd_mxptr[M02] + pos.y * phd_mxptr[M12] + pos.z * phd_mxptr[M22]) >> 14;
+	phd_PopMatrix();
+
+	return x >= bounds[0] && x <= bounds[1] && y >= bounds[2] && y <= bounds[3] && z >= bounds[4] && z <= bounds[5];
+}
+
+void AlignLaraPosition(PHD_VECTOR* pos, ITEM_INFO* item, ITEM_INFO* l)
+{
+	long x, y, z;
+
+	l->pos.x_rot = item->pos.x_rot;
+	l->pos.y_rot = item->pos.y_rot;
+	l->pos.z_rot = item->pos.z_rot;
+
+	phd_PushUnitMatrix();
+	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+	x = item->pos.x_pos + ((pos->x * phd_mxptr[M00] + pos->y * phd_mxptr[M01] + pos->z * phd_mxptr[M02]) >> 14);
+	y = item->pos.y_pos + ((pos->x * phd_mxptr[M10] + pos->y * phd_mxptr[M11] + pos->z * phd_mxptr[M12]) >> 14);
+	z = item->pos.z_pos + ((pos->x * phd_mxptr[M20] + pos->y * phd_mxptr[M21] + pos->z * phd_mxptr[M22]) >> 14);
+	phd_PopMatrix();
+
+	l->pos.x_pos = x;
+	l->pos.y_pos = y;
+	l->pos.z_pos = z;
 }
 
 void inject_coll(bool replace)
@@ -1118,4 +1500,11 @@ void inject_coll(bool replace)
 	INJECT(0x004134E0, Move3DPosTo3DPos, replace);
 	INJECT(0x00411DB0, CollideStaticObjects, replace);
 	INJECT(0x004120F0, UpdateLaraRoom, replace);
+	INJECT(0x00412170, LaraBaddieCollision, replace);
+	INJECT(0x00412860, ItemPushLara, replace);
+	INJECT(0x00412F20, ItemPushLaraStatic, replace);
+	INJECT(0x00412CC0, TestBoundsCollide, replace);
+	INJECT(0x00412DE0, TestBoundsCollideStatic, replace);
+	INJECT(0x00413210, TestLaraPosition, replace);
+	INJECT(0x004133C0, AlignLaraPosition, replace);
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_cmdline(bool replace);
 
@@ -11,5 +11,8 @@ char* MapASCIIToANSI(char* s, char* d);
 void InitResolution(HWND dlg, HWND hwnd, bool resetvms);
 void InitD3DDevice(HWND dlg, HWND hwnd);
 void InitDDDevice(HWND dlg, HWND hwnd);
+BOOL CALLBACK DXSetupDlgProc(HWND dlg, UINT message, WPARAM wParam, LPARAM lParam);
+bool DXSetupDialog();
 
-#define DXSetupDialog	( (bool(__cdecl*)()) 0x00495BD0 )
+extern bool start_setup;
+extern bool fmvs_disabled;

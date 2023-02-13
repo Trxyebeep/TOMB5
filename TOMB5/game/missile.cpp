@@ -6,6 +6,10 @@
 #include "effects.h"
 #include "sound.h"
 #include "../specific/3dmath.h"
+#include "draw.h"
+#include "debris.h"
+#include "camera.h"
+#include "lara.h"
 
 void ControlBodyPart(short fx_number)
 {
@@ -129,7 +133,83 @@ void ControlBodyPart(short fx_number)
 		EffectNewRoom(fx_number, room_number);
 }
 
+void ShootAtLara(FX_INFO* fx)
+{
+	short* bounds;
+	long dx, dy, dz, z, x;
+	
+	dx = lara_item->pos.x_pos - fx->pos.x_pos;
+	dy = lara_item->pos.y_pos - fx->pos.y_pos;
+	dz = lara_item->pos.z_pos - fx->pos.z_pos;
+	bounds = GetBoundsAccurate(lara_item);
+
+	z = phd_sqrt(SQUARE(dx) + SQUARE(dz));
+	x = bounds[3] + 3 * (bounds[2] - bounds[3]) / 4 + dy;
+	fx->pos.x_rot = -(short)phd_atan(x, z);
+	fx->pos.y_rot = (short)phd_atan(z, x);
+	fx->pos.x_rot += short((GetRandomControl() - 0x4000) / 64);
+	fx->pos.y_rot += short((GetRandomControl() - 0x4000) / 64);
+}
+
+void ControlMissile(short fx_number)
+{
+	FX_INFO* fx;
+	FLOOR_INFO* floor;
+	long speed, h, c;
+	short room_number;
+
+	fx = &effects[fx_number];
+	speed = (fx->speed * phd_cos(fx->pos.x_rot)) >> 14;
+	fx->pos.x_pos += (speed * phd_sin(fx->pos.y_rot)) >> 14;
+	fx->pos.y_pos += (fx->speed * phd_sin(-fx->pos.x_rot)) >> 14;
+	fx->pos.z_pos += (speed * phd_cos(fx->pos.y_rot)) >> 14;
+
+	room_number = fx->room_number;
+	floor = GetFloor(fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos, &room_number);
+	h = GetHeight(floor, fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos);
+	c = GetCeiling(floor, fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos);
+
+	if (fx->pos.y_pos < h && fx->pos.y_pos > c)
+	{
+		if (!fx->room_number != room_number)
+			EffectNewRoom(fx_number, room_number);
+
+		if (ItemNearLara(&fx->pos, 200))
+		{
+			lara_item->hit_status = 1;
+			fx->pos.y_rot = lara_item->pos.y_rot;
+			fx->speed = lara_item->speed;
+			fx->counter = 0;
+			fx->frame_number = 0;
+		}
+	}
+}
+
+long ExplodeFX(FX_INFO* fx, long NoXZVel, short Num)
+{
+	short** meshpp;
+
+	meshpp = &meshes[fx->frame_number];
+	ShatterItem.YRot = fx->pos.y_rot;
+	ShatterItem.meshp = *meshpp;
+	ShatterItem.Sphere.x = fx->pos.x_pos;
+	ShatterItem.Sphere.y = fx->pos.y_pos;
+	ShatterItem.Sphere.z = fx->pos.z_pos;
+	ShatterItem.Bit = 0;
+	ShatterItem.Flags = fx->flag2 & 0x1400;
+
+	if (fx->flag2 & 0x2000)
+		DebrisFlags = 1;
+
+	ShatterObject(&ShatterItem, 0, Num, fx->room_number, NoXZVel);
+	DebrisFlags = 0;
+	return 1;
+}
+
 void inject_missile(bool replace)
 {
 	INJECT(0x0045E380, ControlBodyPart, replace);
+	INJECT(0x0045E2A0, ShootAtLara, replace);
+	INJECT(0x0045E0E0, ControlMissile, replace);
+	INJECT(0x0045E010, ExplodeFX, replace);
 }

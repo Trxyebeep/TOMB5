@@ -17,9 +17,17 @@
 #include "../tomb5/tomb5.h"
 #endif
 
-uchar water_abs[4] = { 4, 8, 12, 16 };
-short water_shimmer[4] = { 31, 63, 95, 127 };
-short water_choppy[4] = { 16, 53, 90, 127 };
+WATERTAB WaterTable[22][64];
+THREAD MainThread;
+float vert_wibble_table[32];
+short* clipflags;
+long SaveCounter;
+
+static LPDIRECT3DVERTEXBUFFER DestVB;
+static float unused_vert_wibble_table[256];
+static uchar water_abs[4] = { 4, 8, 12, 16 };
+static short water_shimmer[4] = { 31, 63, 95, 127 };
+static short water_choppy[4] = { 16, 53, 90, 127 };
 
 ushort GetRandom(WATERTAB* wt, long lp)
 {
@@ -106,7 +114,7 @@ long S_SaveGame(long slot_num)
 		buffer[i] = '\0';
 
 	wsprintf(buffer, "savegame.%d", slot_num);
-	file = CreateFile(buffer, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile(buffer, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 
 	if (file != INVALID_HANDLE_VALUE)
 	{
@@ -114,23 +122,23 @@ long S_SaveGame(long slot_num)
 			buffer[i] = '\0';
 
 		wsprintf(buffer, "%s", SCRIPT_TEXT(gfLevelNames[gfCurrentLevel]));
-		WriteFile(file, buffer, 75, &bytes, NULL);
-		WriteFile(file, &save_counter, sizeof(long), &bytes, NULL);
+		WriteFile(file, buffer, 75, &bytes, 0);
+		WriteFile(file, &SaveCounter, sizeof(long), &bytes, 0);
 		days = savegame.Game.Timer / 30 / 86400;
 		hours = savegame.Game.Timer / 30 % 86400 / 3600;
 		minutes = savegame.Game.Timer / 30 / 60 % 60;
 		seconds = savegame.Game.Timer / 30 % 60;
-		WriteFile(file, &days, 2, &bytes, NULL);
-		WriteFile(file, &hours, 2, &bytes, NULL);
-		WriteFile(file, &minutes, 2, &bytes, NULL);
-		WriteFile(file, &seconds, 2, &bytes, NULL);
-		WriteFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, NULL);
+		WriteFile(file, &days, 2, &bytes, 0);
+		WriteFile(file, &hours, 2, &bytes, 0);
+		WriteFile(file, &minutes, 2, &bytes, 0);
+		WriteFile(file, &seconds, 2, &bytes, 0);
+		WriteFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, 0);
 #ifdef GENERAL_FIXES
-		WriteFile(file, &tomb5_save, sizeof(tomb5_save_info), &bytes, NULL);
+		WriteFile(file, &tomb5_save, sizeof(tomb5_save_info), &bytes, 0);
 #endif
 		CloseHandle(file);
-		wsprintf(counter, "%d", save_counter);
-		save_counter++;
+		wsprintf(counter, "%d", SaveCounter);
+		SaveCounter++;
 		return 1;
 	}
 
@@ -145,17 +153,17 @@ long S_LoadGame(long slot_num)
 	char buffer[80];
 
 	wsprintf(buffer, "savegame.%d", slot_num);
-	file = CreateFile(buffer, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	file = CreateFile(buffer, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 	if (file != INVALID_HANDLE_VALUE)
 	{
-		ReadFile(file, buffer, 75, &bytes, NULL);
-		ReadFile(file, &value, sizeof(long), &bytes, NULL);
-		ReadFile(file, &value, sizeof(long), &bytes, NULL);
-		ReadFile(file, &value, sizeof(long), &bytes, NULL);
-		ReadFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, NULL);
+		ReadFile(file, buffer, 75, &bytes, 0);
+		ReadFile(file, &value, sizeof(long), &bytes, 0);
+		ReadFile(file, &value, sizeof(long), &bytes, 0);
+		ReadFile(file, &value, sizeof(long), &bytes, 0);
+		ReadFile(file, &savegame, sizeof(SAVEGAME_INFO), &bytes, 0);
 #ifdef GENERAL_FIXES
-		ReadFile(file, &tomb5_save, sizeof(tomb5_save_info), &tomb5_save_size, NULL);
+		ReadFile(file, &tomb5_save, sizeof(tomb5_save_info), &tomb5_save_size, 0);
 #endif
 		CloseHandle(file);
 		return 1;
@@ -178,17 +186,17 @@ void GameClose()
 	else
 		Log(1, "%s Attempt To Release NULL Ptr", "Dest VB");
 
-	FREE(clipflags);
+	free(clipflags);
 
 	if (wav_file_buffer)
-		FREE(wav_file_buffer);
+		free(wav_file_buffer);
 
 	if (ADPCMBuffer)
-		FREE(ADPCMBuffer);
+		free(ADPCMBuffer);
 
-	FREE(malloc_buffer);
-	FREE(gfScriptFile);
-	FREE(gfLanguageFile);
+	free(malloc_buffer);
+	free(gfScriptFile);
+	free(gfLanguageFile);
 }
 
 unsigned int __stdcall GameMain(void* ptr)
@@ -247,7 +255,7 @@ bool GameInitialise()
 	desc.dwNumVertices = 0x2000;
 	DXAttempt(App.dx.lpD3D->CreateVertexBuffer(&desc, &DestVB, D3DDP_DONOTCLIP, 0));
 	init_game_malloc();
-	clipflags = (short*)MALLOC(0x8000);
+	clipflags = (short*)malloc(0x8000);
 	init_water_table();
 	aInitFX();
 	return 1;

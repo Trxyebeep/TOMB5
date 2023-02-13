@@ -1,4 +1,5 @@
 #include "../tomb5/pch.h"
+#include "../tomb5/libs/zlib/zlib.h"
 #include "file.h"
 #include "function_stubs.h"
 #include "../game/gameflow.h"
@@ -22,9 +23,47 @@
 #include "../game/deltapak.h"
 #include "3dmath.h"
 #include "specificfx.h"
+#include "../game/box.h"
+#include "../game/camera.h"
+#include "../game/sound.h"
+#include "../game/spotcam.h"
+#include "../game/control.h"
+#include "../game/draw.h"
+#include "audio.h"
+#include "../game/effects.h"
+#include "../game/effect2.h"
+#include "../game/lara.h"
 #ifdef GENERAL_FIXES
 #include "../tomb5/tomb5.h"
 #endif
+
+TEXTURESTRUCT* textinfo;
+SPRITESTRUCT* spriteinfo;
+CHANGE_STRUCT* changes;
+RANGE_STRUCT* ranges;
+AIOBJECT* AIObjects;
+THREAD LevelLoadingThread;
+short* aranges;
+short* frames;
+short* commands;
+short* floor_data;
+short* mesh_base;
+char* FileData;
+char* MapData;
+long number_cameras;
+long nAnimUVRanges;
+short nAIObjects;
+
+TEXTURESTRUCT* AnimatingWaterfalls[6];
+float AnimatingWaterfallsV[6];
+
+static TEXTURESTRUCT* MonitorScreenTex;
+static FILE* level_fp;
+static LOADLEVELNAME LoadLevelName;
+static char* CompressedData;
+static float MonitorScreenU;
+static long num_items;
+static long FileCompressed = 1;
 
 bool LoadTextureInfos()
 {
@@ -96,7 +135,6 @@ bool LoadRooms()
 	Log(2, "LoadRooms");
 	wibble = 0;
 	MaxRoomLights = 0;
-	LevelFogBulbCnt = 0;
 	aLoadRoomStream();
 	BuildOutsideTable();
 	size = *(long*)FileData;
@@ -122,7 +160,7 @@ FILE* FileOpen(const char* Filename)
 
 	strcat(cdFilename, Filename);
 	Log(5, "FileOpen - %s", cdFilename);
-	fp = OPEN(cdFilename, "rb");
+	fp = fopen(cdFilename, "rb");
 
 	if (!fp)
 		Log(1, "Unable To Open %s", cdFilename);
@@ -137,6 +175,7 @@ bool FindCDDrive()
 	char root[5];
 	char file_check[14];
 	HANDLE file;
+	static char cd_drive;
 
 	strcpy(file_check, "c:\\script.dat");
 	drives = GetLogicalDrives();
@@ -153,7 +192,7 @@ bool FindCDDrive()
 			if (type == DRIVE_CDROM)
 			{
 				file_check[0] = cd_drive;
-				file = CreateFile(file_check, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+				file = CreateFile(file_check, GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 
 				if (file != INVALID_HANDLE_VALUE)
 				{
@@ -173,16 +212,16 @@ bool FindCDDrive()
 void FileClose(FILE* fp)
 {
 	Log(2, "FileClose");
-	CLOSE(fp);
+	fclose(fp);
 }
 
 long FileSize(FILE* fp)
 {
 	long size;
 
-	SEEK(fp, 0, SEEK_END);
-	size = TELL(fp);
-	SEEK(fp, 0, SEEK_SET);
+	fseek(fp, 0, SEEK_END);
+	size = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
 	return size;
 }
 
@@ -587,9 +626,9 @@ bool LoadSamples()
 	}
 
 	Log(8, "Number Of Samples %d", num_samples);
-	READ(&num_samples, 1, 4, LevelFILEptr);
+	fread(&num_samples, 1, 4, level_fp);
 
-	if (feof(LevelFILEptr))
+	if (feof(level_fp))
 		Log(1, "END OF FILE");
 
 	InitSampleDecompress();
@@ -602,9 +641,9 @@ bool LoadSamples()
 
 	for (int i = 0; i < num_samples; i++)
 	{
-		READ(&uncomp_size, 1, 4, LevelFILEptr);
-		READ(&comp_size, 1, 4, LevelFILEptr);
-		READ(samples_buffer, comp_size, 1, LevelFILEptr);
+		fread(&uncomp_size, 1, 4, level_fp);
+		fread(&comp_size, 1, 4, level_fp);
+		fread(samples_buffer, comp_size, 1, level_fp);
 
 		if (!DXCreateSampleADPCM(samples_buffer, comp_size, uncomp_size, i))
 		{
@@ -661,24 +700,24 @@ unsigned int __stdcall LoadLevel(void* name)
 
 	if (level_fp)
 	{
-		READ(&version, 1, 4, level_fp);
-		READ(&RTPages, 1, 2, level_fp);
-		READ(&OTPages, 1, 2, level_fp);
-		READ(&BTPages, 1, 2, level_fp);
+		fread(&version, 1, 4, level_fp);
+		fread(&RTPages, 1, 2, level_fp);
+		fread(&OTPages, 1, 2, level_fp);
+		fread(&BTPages, 1, 2, level_fp);
 		S_InitLoadBar(OTPages + BTPages + RTPages + 20);
 		S_LoadBar();
 
 		Log(7, "Process Level Data");
 		LoadTextures(RTPages, OTPages, BTPages);
 
-		READ(data, 1, 32, level_fp);
+		fread(data, 1, 32, level_fp);
 		LaraDrawType = data[0] + LARA_NORMAL;
 		WeatherType = (char)data[1];
 
-		READ(&size, 1, 4, level_fp);
-		READ(&compressedSize, 1, 4, level_fp);
-		FileData = (char*)MALLOC(size);
-		READ(FileData, size, 1, level_fp);
+		fread(&size, 1, 4, level_fp);
+		fread(&compressedSize, 1, 4, level_fp);
+		FileData = (char*)malloc(size);
+		fread(FileData, size, 1, level_fp);
 
 		pData = FileData;
 
@@ -728,7 +767,7 @@ unsigned int __stdcall LoadLevel(void* name)
 		if (acm_ready && !App.SoundDisabled)
 			LoadSamples();
 
-		FREE(pData);
+		free(pData);
 		S_LoadBar();
 
 		for (int i = 0; i < 6; i++)
@@ -901,60 +940,60 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 
 	if (format <= 1)
 	{
-		READ(&size, 1, 4, level_fp);
-		READ(&compressedSize, 1, 4, level_fp);
-		CompressedData = (char*)MALLOC(compressedSize);
-		FileData = (char*)MALLOC(size);
+		fread(&size, 1, 4, level_fp);
+		fread(&compressedSize, 1, 4, level_fp);
+		CompressedData = (char*)malloc(compressedSize);
+		FileData = (char*)malloc(size);
 
 		if (FileCompressed)
 		{
-			READ(CompressedData, compressedSize, 1, level_fp);
+			fread(CompressedData, compressedSize, 1, level_fp);
 			Decompress(FileData, CompressedData, compressedSize, size);
-			READ(&size, 1, 4, level_fp);
-			READ(&compressedSize, 1, 4, level_fp);
-			SEEK(level_fp, compressedSize, SEEK_CUR);
+			fread(&size, 1, 4, level_fp);
+			fread(&compressedSize, 1, 4, level_fp);
+			fseek(level_fp, compressedSize, SEEK_CUR);
 		}
 		else
 		{
-			READ(FileData, size, 1, level_fp);
-			READ(&size, 1, 4, level_fp);
-			READ(&compressedSize, 1, 4, level_fp);
-			SEEK(level_fp, size, SEEK_CUR);
+			fread(FileData, size, 1, level_fp);
+			fread(&size, 1, 4, level_fp);
+			fread(&compressedSize, 1, 4, level_fp);
+			fseek(level_fp, size, SEEK_CUR);
 		}
 
-		FREE(CompressedData);
+		free(CompressedData);
 	}
 	else
 	{
-		READ(&size, 1, 4, level_fp);
-		READ(&compressedSize, 1, 4, level_fp);
+		fread(&size, 1, 4, level_fp);
+		fread(&compressedSize, 1, 4, level_fp);
 
 		if (FileCompressed)
-			SEEK(level_fp, compressedSize, SEEK_CUR);
+			fseek(level_fp, compressedSize, SEEK_CUR);
 		else
-			SEEK(level_fp, size, SEEK_CUR);
+			fseek(level_fp, size, SEEK_CUR);
 
-		READ(&size, 1, 4, level_fp);
-		READ(&compressedSize, 1, 4, level_fp);
-		CompressedData = (char*)MALLOC(compressedSize);
-		FileData = (char*)MALLOC(size);
+		fread(&size, 1, 4, level_fp);
+		fread(&compressedSize, 1, 4, level_fp);
+		CompressedData = (char*)malloc(compressedSize);
+		FileData = (char*)malloc(size);
 
 		if (FileCompressed)
 		{
-			READ(CompressedData, compressedSize, 1, level_fp);
+			fread(CompressedData, compressedSize, 1, level_fp);
 			Decompress(FileData, CompressedData, compressedSize, size);
 		}
 		else
-			READ(FileData, size, 1, level_fp);
+			fread(FileData, size, 1, level_fp);
 
-		FREE(CompressedData);
+		free(CompressedData);
 	}
 
 	pData = FileData;
 
 	Log(5, "RTPages %d", RTPages);
 	size = RTPages * skip * 0x10000;
-	TextureData = (uchar*)MALLOC(size);
+	TextureData = (uchar*)malloc(size);
 	memcpy(TextureData, FileData, size);
 	FileData += size;
 	S_LoadBar();
@@ -974,11 +1013,11 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 		S_LoadBar();
 	}
 
-	FREE(TextureData);
+	free(TextureData);
 
 	Log(5, "OTPages %d", OTPages);
 	size = OTPages * skip * 0x10000;
-	TextureData = (uchar*)MALLOC(size);
+	TextureData = (uchar*)malloc(size);
 	memcpy(TextureData, FileData, size);
 	FileData += size;
 	S_LoadBar();
@@ -998,7 +1037,7 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 		S_LoadBar();
 	}
 
-	FREE(TextureData);
+	free(TextureData);
 	S_LoadBar();
 
 	Log(5, "BTPages %d", BTPages);
@@ -1006,7 +1045,7 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 	if (BTPages)
 	{
 		size = BTPages * skip * 0x10000;
-		TextureData = (uchar*)MALLOC(size);
+		TextureData = (uchar*)malloc(size);
 		memcpy(TextureData, FileData, size);
 		FileData += size;
 
@@ -1044,28 +1083,28 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 			S_LoadBar();
 		}
 
-		FREE(TextureData);
+		free(TextureData);
 	}
 
-	FREE(pData);
+	free(pData);
 
-	READ(&size, 1, 4, level_fp);
-	READ(&compressedSize, 1, 4, level_fp);
-	CompressedData = (char*)MALLOC(compressedSize);
-	FileData = (char*)MALLOC(size);
+	fread(&size, 1, 4, level_fp);
+	fread(&compressedSize, 1, 4, level_fp);
+	CompressedData = (char*)malloc(compressedSize);
+	FileData = (char*)malloc(size);
 
 	if (FileCompressed)
 	{
-		READ(CompressedData, compressedSize, 1, level_fp);
+		fread(CompressedData, compressedSize, 1, level_fp);
 		Decompress(FileData, CompressedData, compressedSize, size);
 	}
 	else
-		READ(FileData, size, 1, level_fp);
+		fread(FileData, size, 1, level_fp);
 
-	FREE(CompressedData);
+	free(CompressedData);
 
 	pData = FileData;
-	TextureData = (uchar*)MALLOC(0x40000);
+	TextureData = (uchar*)malloc(0x40000);
 
 	if (!gfCurrentLevel)	//main menu logo
 	{
@@ -1081,9 +1120,9 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 		else
 			size = LoadFile("data\\logo512.pak", &CompressedData);
 
-		pComp = (char*)MALLOC(*(long*)CompressedData);
+		pComp = (char*)malloc(*(long*)CompressedData);
 		Decompress(pComp, CompressedData + 4, size - 4, *(long*)CompressedData);
-		FREE(CompressedData);
+		free(CompressedData);
 
 		for (int i = 0; i < 2; i++)
 		{
@@ -1122,7 +1161,7 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 			Textures[nTex].staticTex = 0;
 		}
 
-		FREE(pComp);
+		free(pComp);
 	}
 
 	//shine
@@ -1164,8 +1203,8 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 	Textures[nTex].bump = 0;
 	Textures[nTex].staticTex = 0;
 
-	FREE(TextureData);
-	FREE(pData);
+	free(TextureData);
+	free(pData);
 	return 1;
 }
 
@@ -1428,16 +1467,16 @@ long LoadFile(const char* name, char** dest)
 	size = FileSize(file);
 
 	if (!*dest)
-		*dest = (char*)MALLOC(size);
+		*dest = (char*)malloc(size);
 
-	count = READ(*dest, 1, size, file);
+	count = fread(*dest, 1, size, file);
 	Log(5, "Read - %d FileSize - %d", count, size);
 
 	if (count != size)
 	{
 		Log(1, "Error Reading File");
 		FileClose(file);
-		FREE(*dest);
+		free(*dest);
 		return 0;
 	}
 
@@ -1473,6 +1512,30 @@ void FreeLevel()
 	malloc_free = malloc_size;
 }
 
+bool Decompress(char* pDest, char* pCompressed, long compressedSize, long size)
+{
+	z_stream stream;
+
+	Log(2, "Decompress");
+	memset(&stream, 0, sizeof(z_stream));
+	stream.avail_in = compressedSize;
+	stream.avail_out = size;
+	stream.next_out = (Bytef*)pDest;
+	stream.next_in = (Bytef*)pCompressed;
+	inflateInit(&stream);
+	inflate(&stream, Z_FINISH);
+
+	if (stream.total_out != size)
+	{
+		Log(1, "Error Decompressing Data");
+		return 0;
+	}
+
+	inflateEnd(&stream);
+	Log(5, "Decompression OK");
+	return 1;
+}
+
 void inject_file(bool replace)
 {
 	INJECT(0x004A60E0, LoadTextureInfos, replace);
@@ -1501,4 +1564,5 @@ void inject_file(bool replace)
 	INJECT(0x004A5430, AdjustUV, replace);
 	INJECT(0x004A3E10, LoadFile, replace);
 	INJECT(0x004A7130, FreeLevel, replace);
+	INJECT(0x004A3EF0, Decompress, replace);
 }

@@ -12,6 +12,7 @@
 #include "items.h"
 #include "../specific/function_stubs.h"
 #include "effects.h"
+#include "lara.h"
 
 static BITE_INFO mazemonster_hitright = {0, 0, 0, 22};
 static BITE_INFO mazemonster_hitleft = {0, 0, 0, 16};
@@ -49,7 +50,7 @@ void WillOWispControl(short item_number)
 		{
 			item->item_flags[3]++;
 			willowisp->reached_goal = 0;
-			willowisp->enemy = NULL;
+			willowisp->enemy = 0;
 		}
 
 		if (item->ai_bits)

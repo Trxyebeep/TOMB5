@@ -7,9 +7,24 @@
 #include "control.h"
 #include "pickup.h"
 #include "lot.h"
+#include "gameflow.h"
+#include "newinv2.h"
+#include "../specific/file.h"
+#include "camera.h"
+#include "spotcam.h"
+#include "../specific/function_stubs.h"
+#include "switch.h"
+#include "lara.h"
+#include "rat.h"
+#include "bat.h"
+#include "spider.h"
 #ifdef GENERAL_FIXES
 #include "lara2gun.h"
 #endif
+
+SAVEGAME_INFO savegame;
+static char* SGpoint = 0;
+static long SGcount = 0;
 
 #ifdef GENERAL_FIXES
 tomb5_save_info tomb5_save;

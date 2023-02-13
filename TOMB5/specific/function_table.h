@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_functbl(bool replace);
 
@@ -13,11 +13,11 @@ void SetCullCW();
 void SetCullCCW();
 void SetFogColor(long r, long g, long b);
 
-#define AddQuadSorted	( *(void(__cdecl**)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, long)) 0x00876C04 )
-#define AddQuadZBuffer	( *(void(__cdecl**)(D3DTLVERTEX*, short, short, short, short, TEXTURESTRUCT*, long)) 0x00876C08 )
-#define AddTriZBuffer	( *(void(__cdecl**)(D3DTLVERTEX*, short, short, short, TEXTURESTRUCT*, long)) 0x00876C10 )
-#define AddTriSorted	( *(void(__cdecl**)(D3DTLVERTEX*, short, short, short, TEXTURESTRUCT*, long)) 0x00876BFC )
-#define AddLineSorted	( *(void(__cdecl**)(D3DTLVERTEX*, D3DTLVERTEX*, short)) 0x00876C00 )
-#define IsVisible	( *(bool(__cdecl**)(D3DTLVERTEX*, D3DTLVERTEX*, D3DTLVERTEX*)) 0x00876C14 )
-#define _BeginScene	( *(HRESULT(__cdecl**)()) 0x00876C18 )
-#define _EndScene	( *(HRESULT(__cdecl**)()) 0x00876C0C )
+extern void (*AddQuadSorted)(D3DTLVERTEX* v, short v0, short v1, short v2, short v3, TEXTURESTRUCT* tex, long double_sided);
+extern void (*AddTriSorted)(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURESTRUCT* tex, long double_sided);
+extern void (*AddQuadZBuffer)(D3DTLVERTEX* v, short v0, short v1, short v2, short v3, TEXTURESTRUCT* tex, long double_sided);
+extern void (*AddTriZBuffer)(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURESTRUCT* tex, long double_sided);
+extern void (*AddLineSorted)(D3DTLVERTEX* v0, D3DTLVERTEX* v1, short drawtype);
+extern bool (*IsVisible)(D3DTLVERTEX* v0, D3DTLVERTEX* v1, D3DTLVERTEX* v2);
+extern HRESULT(*_BeginScene)();
+extern HRESULT(*_EndScene)();

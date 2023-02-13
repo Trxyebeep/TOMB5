@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_input(bool replace);
 
@@ -9,30 +9,23 @@ long ReadJoystick(long& x, long& y);
 void IncreaseScreenSize();
 void DecreaseScreenSize();
 
+extern const char* KeyboardButtons[272];
+extern const char* GermanKeyboard[272];
+extern const char* JoyStickButtons[16];
+extern long jLayout[32];
+extern long defaultJLayout[32];
+
+extern short layout[2][18];
+extern long conflict[18];
+extern long input;
+extern long dbinput;
+extern long inputBusy;
+extern long joystick_read;
+extern long joystick_read_x;
+extern long joystick_read_y;
+extern long joystick_read_fire;
+
 #ifdef GENERAL_FIXES
 extern short ammo_change_timer;
 extern char ammo_change_buf[12];
 #endif
-
-enum IKEYS
-{
-	KEY_FORWARD = 0,
-	KEY_BACK = 1,
-	KEY_LEFT = 2,
-	KEY_RIGHT = 3,
-	KEY_DUCK = 4,
-	KEY_SPRINT = 5,
-	KEY_WALK = 6,
-	KEY_JUMP = 7,
-	KEY_ACTION = 8,
-	KEY_DRAW = 9,
-	KEY_FLARE = 10,
-	KEY_LOOK = 11,
-	KEY_ROLL = 12,
-	KEY_OPTION = 13,
-	KEY_STEPL = 14,
-	KEY_STEPR = 15,
-	KEY_PAUSE = 16,
-	KEY_SELECT = 17,
-};
-

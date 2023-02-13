@@ -10,6 +10,8 @@
 #include "../specific/3dmath.h"
 #include "objects.h"
 #include "../specific/specificfx.h"
+#include "draw.h"
+#include "lara.h"
 
 char SteamLasers[8][5] =
 {
@@ -192,24 +194,29 @@ void ControlFloorLasers(short item_number)
 				item->item_flags[2] = (GetRandomControl() & 0x7F) + 1024;
 		}
 
-		if (item->room_number == lara_item->room_number)
+#ifdef GENERAL_FIXES
+		if (lara_item->hit_points > 0)
+#endif
 		{
-			bbox[0] = item->pos.x_pos + laser->v1.x;
-			bbox[1] = item->pos.x_pos + laser->v4.x;
-			bbox[2] = item->pos.y_pos;
-			bbox[3] = item->pos.y_pos;
-			bbox[4] = item->pos.z_pos + laser->v1.z;
-			bbox[5] = item->pos.z_pos + laser->v4.z;
-
-			if (CheckLaserBox(bbox) && !lara.burn)
+			if (item->room_number == lara_item->room_number)
 			{
-				LaraBurn();
-				lara.BurnCount = 24;
+				bbox[0] = item->pos.x_pos + laser->v1.x;
+				bbox[1] = item->pos.x_pos + laser->v4.x;
+				bbox[2] = item->pos.y_pos;
+				bbox[3] = item->pos.y_pos;
+				bbox[4] = item->pos.z_pos + laser->v1.z;
+				bbox[5] = item->pos.z_pos + laser->v4.z;
 
-				if (lara_item->hit_points > 0)
-					lara_item->hit_points = 0;
+				if (CheckLaserBox(bbox) && !lara.burn)
+				{
+					LaraBurn();
+					lara.BurnCount = 24;
 
-				item->item_flags[3] = (GetRandomControl() & 0xF) + 48;
+					if (lara_item->hit_points > 0)
+						lara_item->hit_points = 0;
+
+					item->item_flags[3] = (GetRandomControl() & 0xF) + 48;
+				}
 			}
 		}
 
@@ -260,6 +267,66 @@ long GetSteamMultiplier(ITEM_INFO* item, long y, long z)
 	return 0;
 }
 
+long CheckLaserBox(long* bounds)
+{
+	short* lbounds;
+	long swp;
+	short rbounds[6];
+
+	if (bounds[0] > bounds[1])
+	{
+		swp = bounds[0];
+		bounds[0] = bounds[1];
+		bounds[1] = swp;
+	}
+
+	if (bounds[4] > bounds[5])
+	{
+		swp = bounds[4];
+		bounds[4] = bounds[5];
+		bounds[5] = swp;
+	}
+
+	lbounds = GetBoundsAccurate(lara_item);
+	phd_PushUnitMatrix();
+	phd_RotYXZ(lara_item->pos.y_rot, lara_item->pos.x_rot, lara_item->pos.z_rot);
+	phd_SetTrans(0, 0, 0);
+	mRotBoundingBoxNoPersp(lbounds, rbounds);
+	phd_PopMatrix();
+
+	DeadlyBounds[0] = lara_item->pos.x_pos + rbounds[0];
+	DeadlyBounds[1] = lara_item->pos.x_pos + rbounds[1];
+	DeadlyBounds[2] = lara_item->pos.y_pos + rbounds[2];
+	DeadlyBounds[3] = lara_item->pos.y_pos + rbounds[3];
+	DeadlyBounds[4] = lara_item->pos.z_pos + rbounds[4];
+	DeadlyBounds[5] = lara_item->pos.z_pos + rbounds[5];
+
+	return bounds[1] >= DeadlyBounds[0] && bounds[0] <= DeadlyBounds[1] &&
+		bounds[3] >= DeadlyBounds[2] && bounds[2] <= DeadlyBounds[3] &&
+		bounds[5] >= DeadlyBounds[4] && bounds[4] <= DeadlyBounds[5];
+}
+
+void GetFishTank(ITEM_INFO* item)
+{
+	ITEM_INFO* tank;
+	short item_number;
+
+	item_number = room[item->room_number].item_number;
+
+	while (item_number != NO_ITEM)
+	{
+		tank = &items[item_number];
+
+		if (tank->object_number == FISHTANK && tank->status == ITEM_ACTIVE)
+		{
+			item->trigger_flags = 64;
+			return;
+		}
+
+		item_number = tank->next_item;
+	}
+}
+
 void inject_lasers(bool replace)
 {
 	INJECT(0x0045A540, DrawFloorLasers, replace);
@@ -268,4 +335,6 @@ void inject_lasers(bool replace)
 	INJECT(0x0045A1E0, ControlFloorLasers, replace);
 	INJECT(0x00459C10, IsSteamOn, replace);
 	INJECT(0x00459CA0, GetSteamMultiplier, replace);
+	INJECT(0x00459EB0, CheckLaserBox, replace);
+	INJECT(0x0045A4B0, GetFishTank, replace);
 }

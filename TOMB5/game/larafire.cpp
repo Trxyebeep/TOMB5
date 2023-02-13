@@ -17,12 +17,155 @@
 #include "sphere.h"
 #include "objects.h"
 #include "../specific/function_stubs.h"
+#include "camera.h"
+#include "../specific/input.h"
+#include "lara.h"
+#include "lot.h"
+#include "savegame.h"
 
 PHD_3DPOS bum_view;
 GAME_VECTOR bum_vdest;
 GAME_VECTOR bum_vsrc;
 ITEM_INFO* TargetList[8];
 ITEM_INFO* LastTargets[8];
+
+WEAPON_INFO weapons[9] =
+{
+	{
+		0, 0, 0, 0,							//WEAPON_NONE
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
+	},
+
+	{
+		-10920, 10920, -10920, 10920,		//WEAPON_PISTOLS
+		-30940, 10920, -14560, 14560,
+		-10920, 30940, -14560, 14560,
+		1820,
+		1456,
+		650,
+		8192,
+		1,
+		9,
+		3,
+		0,
+		SFX_LARA_FIRE
+	},
+
+	{
+		-10920, 10920, -10920, 10920,		//WEAPON_REVOLVER
+		-1820, 1820, -14560, 14560,
+		0, 0, 0, 0,
+		1820,
+		728,
+		650,
+		8192,
+		21,
+		16,
+		3,
+		0,
+		SFX_REVOLVER
+	},
+
+	{
+		-10920, 10920, -10920, 10920,		//WEAPON_UZI
+		-30940, 10920, -14560, 14560,
+		-10920, 30940, -14560, 14560,
+		1820,
+		1456,
+		650,
+		8192,
+		1,
+		3,
+		3,
+		0,
+		SFX_LARA_UZI_FIRE
+	},
+
+	{
+		-10920, 10920, -10010, 10010,		//WEAPON_SHOTGUN
+		-14560, 14560, -11830, 11830,
+		-14560, 14560, -11830, 11830,
+		1820,
+		0,
+		500,
+		8192,
+		3,
+		9,
+		3,
+		10,
+		SFX_LARA_SHOTGUN
+	},
+
+	{
+		-10920, 10920, -10010, 10010,		//WEAPON_HK
+		-14560, 14560, -11830, 11830,
+		-14560, 14560, -11830, 11830,
+		1820,
+		728,
+		500,
+		12288,
+		4,
+		0,
+		3,
+		16,
+		0
+	},
+
+	{
+		-10920, 10920, -10010, 10010,		//WEAPON_CROSSBOW
+		-14560, 14560, -11830, 11830,
+		-14560, 14560, -11830, 11830,
+		1820,
+		1456,
+		500,
+		8192,
+		5,
+		0,
+		2,
+		10,
+		0
+	},
+
+	{
+		0, 0, 0, 0,							//WEAPON_FLARE
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0,
+		0
+	},
+
+	{
+		-5460, 5460, -10010, 10010,			//WEAPON_TORCH
+		-5460, 5460, -10010, 10010,
+		-5460, 5460, -10010, 10010,
+		1820,
+		1456,
+		400,
+		8192,
+		3,
+		0,
+		2,
+		0,
+		SFX_LARA_UZI_FIRE
+	},
+};
 
 static short HoldStates[] =
 {
@@ -506,7 +649,7 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
 		for (slot = 0; slot < 8; ++slot)
 		{
 			if (!TargetList[slot])
-				lara.target = NULL;
+				lara.target = 0;
 
 			if (TargetList[slot] == lara.target)
 				break;
@@ -550,7 +693,7 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
 				if (!lara.target)
 				{
 					lara.target = bestitem;
-					LastTargets[0] = NULL;
+					LastTargets[0] = 0;
 				}
 			}
 		}

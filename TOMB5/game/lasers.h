@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_lasers(bool replace);
 
@@ -9,8 +9,7 @@ void ControlSteamLasers(short item_number);
 void ControlFloorLasers(short item_number);
 long IsSteamOn(ITEM_INFO* item);
 long GetSteamMultiplier(ITEM_INFO* item, long y, long z);
-
-#define CheckLaserBox	( (long(__cdecl*)(long*)) 0x00459EB0 )
-#define GetFishTank	( (void(__cdecl*)(ITEM_INFO*)) 0x0045A4B0 )
+long CheckLaserBox(long* bounds);
+void GetFishTank(ITEM_INFO* item);
 
 extern char SteamLasers[8][5];

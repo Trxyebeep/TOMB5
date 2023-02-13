@@ -9,7 +9,6 @@
 #include "deltapak.h"
 #include "spider.h"
 #include "lot.h"
-#include "xatracks.h"
 #include "effect2.h"
 #include "objects.h"
 #include "sphere.h"
@@ -20,13 +19,44 @@
 #include "../specific/function_table.h"
 #include "../specific/polyinsert.h"
 #include "../specific/3dmath.h"
+#include "draw.h"
+#include "lara_states.h"
+#include "gameflow.h"
+#include "camera.h"
+#include "pickup.h"
+#include "lara.h"
+#include "savegame.h"
 
-long FogTableColor[] =
+long FogTableColor[28] =
 {
-	0, RGBONLY(245,200,60), RGBONLY(120,196,112),	RGBONLY(202,204,230),	RGBONLY(128,64,0), RGBONLY(64,64,64), RGBONLY(243,232,236), RGBONLY(0,64,192),
-	RGBONLY(0,128,0), RGBONLY(150,172,157), RGBONLY(128,128,128), RGBONLY(204,163,123),	 RGBONLY(177,162,140),	RGBONLY(0,223,191), RGBONLY(111,255,223),
-	RGBONLY(244,216,152), RGBONLY(248,192,60), RGBONLY(252,0,0), RGBONLY(198,95,87), RGBONLY(226,151,118), RGBONLY(248,235,206), RGBONLY(0,30,16),
-	RGBONLY(250,222,167), RGBONLY(218,175,117), RGBONLY(225,191,78), RGBONLY(77,140,141), RGBONLY(4,181,154), RGBONLY(255,174,0)
+	0,
+	RGBONLY(245, 200, 60),
+	RGBONLY(120, 196, 112),
+	RGBONLY(202, 204, 230),
+	RGBONLY(128, 64, 0),
+	RGBONLY(64, 64, 64),
+	RGBONLY(243, 232, 236),
+	RGBONLY(0, 64, 192),
+	RGBONLY(0, 128, 0),
+	RGBONLY(150, 172, 157),
+	RGBONLY(128, 128, 128),
+	RGBONLY(204, 163, 123),
+	RGBONLY(177, 162, 140),
+	RGBONLY(0, 223, 191),
+	RGBONLY(111, 255, 223),
+	RGBONLY(244, 216, 152),
+	RGBONLY(248, 192, 60),
+	RGBONLY(252, 0, 0),
+	RGBONLY(198, 95, 87),
+	RGBONLY(226, 151, 118),
+	RGBONLY(248, 235, 206),
+	RGBONLY(0, 30, 16),
+	RGBONLY(250, 222, 167),
+	RGBONLY(218, 175, 117),
+	RGBONLY(225, 191, 78),
+	RGBONLY(77, 140, 141),
+	RGBONLY(4, 181, 154),
+	RGBONLY(255, 174, 0)
 };
 
 void(*effect_routines[59])(ITEM_INFO* item) =
@@ -92,26 +122,32 @@ void(*effect_routines[59])(ITEM_INFO* item) =
 	TL_12,
 };
 
+FX_INFO* effects;
+OBJECT_VECTOR* sound_effects;
+long number_sound_effects;
+long GlobalFogOff = 0;
+
 void WaterFall(short item_number)
 {
 	ITEM_INFO* item;
 	long x, z, ang;
+	static long wf = 256;
 
 	item = &items[item_number];
 	ang = item->pos.y_rot + 0x8000;
-	x = item->pos.x_pos - (phd_sin(ang) * 512 >> 14);
-	z = item->pos.z_pos - (phd_cos(ang) * 512 >> 14);
+	x = item->pos.x_pos - (512 * phd_sin(ang) >> 14);
+	z = item->pos.z_pos - (512 * phd_cos(ang) >> 14);
 
 	switch (ang)
 	{
 	case 0:
-		x += (phd_sin(ang + 0x4000) * _wf >> 14);
-		z += (phd_cos(ang + 0x4000) * _wf >> 14);
+		x += (wf * phd_sin(ang + 0x4000) >> 14);
+		z += (wf * phd_cos(ang + 0x4000) >> 14);
 		break;
 
 	default:
-		x += (phd_sin(ang - 0x4000) * _wf >> 14);
-		z += (phd_cos(ang - 0x4000) * _wf >> 14);
+		x += (wf * phd_sin(ang - 0x4000) >> 14);
+		z += (wf * phd_cos(ang - 0x4000) >> 14);
 		break;
 	}
 
@@ -378,7 +414,7 @@ void TL_1(ITEM_INFO* item)
 	if (savegame.TLCount < 1)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA2_TL_01, 0);
+		S_CDPlay(9, 0);
 		savegame.TLCount = 1;
 	}
 }
@@ -388,7 +424,7 @@ void TL_2(ITEM_INFO* item)
 	if (savegame.TLCount < 2)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA1_TL_02, 0);
+		S_CDPlay(7, 0);
 		savegame.TLCount = 2;
 	}
 }
@@ -398,7 +434,7 @@ void TL_3(ITEM_INFO* item)
 	if (savegame.TLCount < 3)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA3_TL_03, 0);
+		S_CDPlay(23, 0);
 		savegame.TLCount = 3;
 	}
 }
@@ -408,7 +444,7 @@ void TL_4(ITEM_INFO* item)
 	if (savegame.TLCount < 4)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA5_TL_04, 0);
+		S_CDPlay(39, 0);
 		savegame.TLCount = 4;
 	}
 }
@@ -418,7 +454,7 @@ void TL_5(ITEM_INFO* item)
 	if (savegame.TLCount < 5)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA1_TL_05, 0);
+		S_CDPlay(2, 0);
 		savegame.TLCount = 5;
 	}
 }
@@ -428,7 +464,7 @@ void TL_6(ITEM_INFO* item)
 	if (savegame.TLCount < 6)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA3_TL_06, 0);
+		S_CDPlay(22, 0);
 		savegame.TLCount = 6;
 	}
 }
@@ -438,7 +474,7 @@ void TL_7(ITEM_INFO* item)
 	if (savegame.TLCount < 7)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA7_TL_07, 0);
+		S_CDPlay(51, 0);
 		savegame.TLCount = 7;
 	}
 }
@@ -449,7 +485,7 @@ void TL_8(ITEM_INFO* item)
 	if (savegame.TLCount < 8)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA1_TL_08, 0);
+		S_CDPlay(3, 0);
 		savegame.TLCount = 8;
 	}
 }
@@ -459,7 +495,7 @@ void TL_9(ITEM_INFO* item)
 	if (savegame.TLCount < 9)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA1_TL_11, 0);
+		S_CDPlay(4, 0);
 		savegame.TLCount = 9;
 	}
 }
@@ -469,7 +505,7 @@ void TL_10(ITEM_INFO* item)
 	if (savegame.TLCount == 9)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA2_TL_10A, 0);
+		S_CDPlay(13, 0);
 		savegame.TLCount = 10;
 	}
 }
@@ -479,7 +515,7 @@ void TL_11(ITEM_INFO* item)
 	if (savegame.TLCount == 10)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA1_TL_10B, 0);
+		S_CDPlay(0, 0);
 		savegame.TLCount = 11;
 	}
 }
@@ -489,7 +525,7 @@ void TL_12(ITEM_INFO* item)
 	if (savegame.TLCount == 11)
 	{
 		IsAtmospherePlaying = 0;
-		S_CDPlay(CDA_XA5_TL_12, 0);
+		S_CDPlay(35, 0);
 		savegame.TLCount = 12;
 	}
 }
@@ -573,6 +609,116 @@ short DoBloodSplat(long x, long y, long z, short random, short y_rot, short room
 	return -1;
 }
 
+void DoLotsOfBlood(long x, long y, long z, short speed, short ang, short room_number, long num)
+{
+	long bx, by, bz;
+
+	for (; num > 0; num--)
+	{
+		bx = x - (GetRandomControl() << 9) / 0x8000 + 256;
+		by = y - (GetRandomControl() << 9) / 0x8000 + 256;
+		bz = z - (GetRandomControl() << 9) / 0x8000 + 256;
+		DoBloodSplat(bx, by, bz, speed, ang, room_number);
+	}
+}
+
+long ItemNearLara(PHD_3DPOS* pos, long rad)
+{
+	short* bounds;
+	long dx, dy, dz;
+
+	dx = pos->x_pos - lara_item->pos.x_pos;
+	dy = pos->y_pos - lara_item->pos.y_pos;
+	dz = pos->z_pos - lara_item->pos.z_pos;
+
+	if (dx >= -rad && dx <= rad && dz >= -rad && dz <= rad && dy >= -3072 && dy <= 3072 && SQUARE(dx) + SQUARE(dz) <= SQUARE(rad))
+	{
+		bounds = GetBoundsAccurate(lara_item);
+
+		if (dy >= bounds[2] && dy <= bounds[3] + 100)
+			return 1;
+	}
+
+	return 0;
+}
+
+void Richochet(GAME_VECTOR* pos)
+{
+	TriggerRicochetSpark(pos, mGetAngle(pos->z, pos->x, lara_item->pos.z_pos, lara_item->pos.x_pos) >> 4, 3, 0);
+	SoundEffect(SFX_LARA_RICOCHET, (PHD_3DPOS*)pos, SFX_DEFAULT);
+}
+
+void WadeSplash(ITEM_INFO* item, long water, long depth)
+{
+	short* bounds;
+	short room_number;
+
+	room_number = item->room_number;
+	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+
+	if (!(room[room_number].flags & ROOM_UNDERWATER))
+		return;
+
+	bounds = GetBestFrame(item);
+
+	if (item->pos.y_pos + bounds[2] > water || item->pos.y_pos + bounds[3] < water)
+		return;
+
+	if (item->fallspeed > 0 && depth < 474 && !SplashCount)
+	{
+		splash_setup.x = item->pos.x_pos;
+		splash_setup.y = water;
+		splash_setup.z = item->pos.z_pos;
+		splash_setup.InnerRad = 16;
+		splash_setup.InnerSize = 12;
+		splash_setup.InnerRadVel = 160;
+		splash_setup.InnerYVel = -72 * item->fallspeed;
+		splash_setup.MiddleRad = 24;
+		splash_setup.MiddleSize = 24;
+		splash_setup.MiddleRadVel = 224;
+		splash_setup.MiddleYVel = -36 * item->fallspeed;
+		splash_setup.OuterRad = 32;
+		splash_setup.OuterSize = 32;
+		splash_setup.OuterRadVel = 272;
+		SetupSplash(&splash_setup);
+		SplashCount = 16;
+	}
+	else if (!(wibble & 0xF) && (!(GetRandomControl() & 0xF) || item->current_anim_state != AS_STOP))
+	{
+		if (item->current_anim_state == AS_STOP)
+			SetupRipple(item->pos.x_pos, water, item->pos.z_pos, (GetRandomControl() & 0xF) + 112, 16);
+		else
+			SetupRipple(item->pos.x_pos, water, item->pos.z_pos, (GetRandomControl() & 0xF) + 112, 18);
+	}
+}
+
+void Splash(ITEM_INFO* item)
+{
+	short room_number;
+
+	room_number = item->room_number;
+	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+
+	if (room[room_number].flags & ROOM_UNDERWATER)
+	{
+		splash_setup.x = item->pos.x_pos;
+		splash_setup.y = GetWaterHeight(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, room_number);
+		splash_setup.z = item->pos.z_pos;
+		splash_setup.InnerRad = 32;
+		splash_setup.InnerSize = 8;
+		splash_setup.InnerRadVel = 320;
+		splash_setup.InnerYVel = -40 * item->fallspeed;
+		splash_setup.MiddleRad = 48;
+		splash_setup.MiddleSize = 32;
+		splash_setup.MiddleRadVel = 480;
+		splash_setup.MiddleYVel = -20 * item->fallspeed;
+		splash_setup.OuterRad = 32;
+		splash_setup.OuterSize = 128;
+		splash_setup.OuterRadVel = 544;
+		SetupSplash(&splash_setup);
+	}
+}
+
 void inject_effects(bool replace)
 {
 	INJECT(0x00432640, SoundEffects, replace);
@@ -614,4 +760,9 @@ void inject_effects(bool replace)
 	INJECT(0x00433910, TL_11, replace);
 	INJECT(0x00433950, TL_12, replace);
 	INJECT(0x00432760, DoBloodSplat, replace);
+	INJECT(0x00432800, DoLotsOfBlood, replace);
+	INJECT(0x00432580, ItemNearLara, replace);
+	INJECT(0x00432710, Richochet, replace);
+	INJECT(0x00432A30, WadeSplash, replace);
+	INJECT(0x00432900, Splash, replace);
 }

@@ -20,10 +20,14 @@
 #include "gameflow.h"
 #include "draw.h"
 #include "../specific/output.h"
+#include "camera.h"
+#include "../specific/input.h"
+#include "lara.h"
 
 short SPxzoffs[8] = {0, 0, 0x200, 0, 0, 0, -0x200, 0};
 short SPyoffs[8] = {-0x400, 0, -0x200, 0, 0, 0, -0x200, 0};
 short SPDETyoffs[8] = {0x400, 0x200, 0x200, 0x200, 0, 0x200, 0x200, 0x200};
+
 uchar Flame3xzoffs[16][2] =
 {
 	{9, 9},
@@ -199,7 +203,7 @@ void ControlExplosion(short item_number)
 						TriggerShockwave((PHD_VECTOR*) &staticp->x, 0xB00028, 64, 0x10806000, 0);
 						staticp->y += 128;
 						SoundEffect(ShatterSounds[gfCurrentLevel][staticp->static_number - 50], (PHD_3DPOS*)&staticp->x, 0);
-						ShatterObject(NULL, staticp, -128, item->room_number, 0);
+						ShatterObject(0, staticp, -128, item->room_number, 0);
 						SmashedMeshRoom[SmashedMeshCount] = item->room_number;
 						SmashedMesh[SmashedMeshCount] = staticp;
 						SmashedMeshCount++;
@@ -278,6 +282,32 @@ void CloseTrapDoor(ITEM_INFO* item)
 		item->item_flags[3] = 0;
 		item->item_flags[2] = 1;
 	}
+}
+
+void OpenTrapDoor(ITEM_INFO* item)
+{
+	ROOM_INFO* r;
+	FLOOR_INFO* floor;
+	ushort pitsky;
+
+	pitsky = item->item_flags[3];
+	r = &room[item->room_number];
+	floor = &r->floor[((item->pos.z_pos - r->z) >> 10) + r->x_size * ((item->pos.x_pos - r->x) >> 10)];
+
+	if (item->pos.y_pos == r->minfloor)
+	{
+		floor->pit_room = pitsky & 0xFF;
+		r = &room[floor->pit_room];
+		r->floor[((item->pos.z_pos - r->z) >> 10) + r->x_size * ((item->pos.x_pos - r->x) >> 10)].sky_room = pitsky >> 8;
+	}
+	else
+	{
+		floor->sky_room = pitsky >> 8;
+		r = &room[floor->sky_room];
+		r->floor[((item->pos.z_pos - r->z) >> 10) + r->x_size * ((item->pos.x_pos - r->x) >> 10)].pit_room = pitsky & 0xFF;
+	}
+
+	item->item_flags[2] = 0;
 }
 
 void DartEmitterControl(short item_number)
@@ -1528,6 +1558,33 @@ void ControlTwoBlockPlatform(short item_number)
 	}
 }
 
+static long OnTwoBlockPlatform(ITEM_INFO* item, long x, long z)
+{
+	long tx, tz;
+
+	if (!item->mesh_bits)
+		return 0;
+
+	x >>= 10;
+	z >>= 10;
+	tx = item->pos.x_pos >> 10;
+	tz = item->pos.z_pos >> 10;
+
+	if (!item->pos.y_rot && (x == tx || x == tx - 1) && (z == tz || z == tz + 1))
+		return 1;
+
+	if (item->pos.y_rot == 0x8000 && (x == tx || x == tx + 1) && (z == tz || z == tz - 1))
+		return 1;
+
+	if (item->pos.y_rot == 0x4000 && (z == tz || z == tz - 1) && (x == tx || x == tx + 1))
+		return 1;
+
+	if (item->pos.y_rot == -0x4000 && (z == tz || z == tz - 1) && (x == tx || x == tx - 1))
+		return 1;
+
+	return 0;
+}
+
 void TwoBlockPlatformFloor(ITEM_INFO* item, long x, long y, long z, long* height)
 {
 	if (OnTwoBlockPlatform(item, x, z))
@@ -1591,12 +1648,47 @@ void FallingCeiling(short item_number)
 	}
 }
 
+long TestBoundsCollideTeethSpikes(ITEM_INFO* item)
+{
+	short* bounds;
+	long x, y, z, rad, xMin, xMax, zMin, zMax;
+
+	if (item->trigger_flags & 8)
+	{
+		x = item->pos.x_pos & ~0x3FF | 0x200;
+		z = (item->pos.z_pos + SPxzoffs[item->trigger_flags & 7]) & ~0x3FF | 0x200;
+	}
+	else
+	{
+		x = (item->pos.x_pos - SPxzoffs[item->trigger_flags & 7]) & ~0x3FF | 0x200;
+		z = item->pos.z_pos & ~0x3FF | 0x200;
+	}
+
+	if (item->trigger_flags & 1)
+		rad = 300;
+	else
+		rad = 480;
+
+	y = item->pos.y_pos + SPDETyoffs[item->trigger_flags & 7];
+	bounds = GetBestFrame(lara_item);
+
+	if (lara_item->pos.y_pos + bounds[2] > y || lara_item->pos.y_pos + bounds[3] < y - 900)
+		return 0;
+
+	xMin = lara_item->pos.x_pos + bounds[0];
+	xMax = lara_item->pos.x_pos + bounds[1];
+	zMin = lara_item->pos.z_pos + bounds[4];
+	zMax = lara_item->pos.z_pos + bounds[5];
+	return xMin <= x + rad && xMax >= x - rad && zMin <= z + rad && zMax >= z - rad;
+}
+
 void inject_traps(bool replace)
 {
 	INJECT(0x0048AD60, LaraBurn, replace);
 	INJECT(0x0048ADD0, LavaBurn, replace);
 	INJECT(0x0048C6D0, ControlExplosion, replace);
 	INJECT(0x00488E30, CloseTrapDoor, replace);
+	INJECT(0x004890C0, OpenTrapDoor, replace);
 	INJECT(0x00489B30, DartEmitterControl, replace);
 	INJECT(0x00489D60, DartsControl, replace);
 	INJECT(0x00489F70, FlameEmitterControl, replace);
@@ -1617,7 +1709,9 @@ void inject_traps(bool replace)
 	INJECT(0x0048BEF0, ControlScaledSpike, replace);
 	INJECT(0x0048C3D0, ControlRaisingBlock, replace);
 	INJECT(0x0048BBB0, ControlTwoBlockPlatform, replace);
+	INJECT(0x0048BAA0, OnTwoBlockPlatform, replace);
 	INJECT(0x0048B9E0, TwoBlockPlatformFloor, replace);
 	INJECT(0x0048BA50, TwoBlockPlatformCeiling, replace);
 	INJECT(0x004899D0, FallingCeiling, replace);
+	INJECT(0x0048BD90, TestBoundsCollideTeethSpikes, replace);
 }

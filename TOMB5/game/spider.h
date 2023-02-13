@@ -1,5 +1,5 @@
 #pragma once
-#include "../global/vars.h"
+#include "../global/types.h"
 
 void inject_spider(bool replace);
 
@@ -8,3 +8,5 @@ void ClearSpiders();
 void TriggerSpider(short item_number);
 void UpdateSpiders();
 void DrawSpiders();
+
+extern SPIDER_STRUCT* Spiders;
