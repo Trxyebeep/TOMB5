@@ -37,9 +37,6 @@ char bLaraInWater;
 
 long StaticMeshShade;
 static ITEM_INFO StaticMeshLightItem;
-static long SetupLight_thing;
-static D3DLIGHT_STRUCT* D3DLights;
-static D3DLIGHT_STRUCT* D3DDynamics;
 
 void InitObjectLighting(ITEM_INFO* item)
 {
@@ -47,7 +44,6 @@ void InitObjectLighting(ITEM_INFO* item)
 	long node_ambient;
 
 	node_ambient = item->il.ambient;
-	SetupLight_thing = 0;
 	light = (PCLIGHT*)item->il.pCurrentLights;
 
 	for (int i = 0; i < item->il.nCurrentLights; i++)

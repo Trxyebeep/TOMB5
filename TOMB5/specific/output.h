@@ -30,10 +30,6 @@ void phd_PutPolygonsSpcXLU(short* objptr, long clipstatus);
 void phd_PutPolygonsSpcEnvmap(short* objptr, long clipstatus);
 
 extern D3DTLVERTEX aVertexBuffer[1024];
-extern long nPolys;
-extern long nClippedPolys;
-extern long DrawPrimitiveCnt;
-extern long DrawSortedCnt;
 extern long aGlobalSkinMesh;
 extern long GlobalAlpha;
 extern long GlobalAmbient;

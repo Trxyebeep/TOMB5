@@ -43,8 +43,6 @@ extern SVECTOR CamRot;
 
 extern float one;
 extern float mone;
-extern float FogStart;
-extern float FogEnd;
 
 extern float f_centerx;
 extern float f_centery;

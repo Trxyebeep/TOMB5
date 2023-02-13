@@ -9,7 +9,6 @@ D3DMATRIX D3DCameraMatrix;
 D3DMATRIX D3DInvCameraMatrix;
 
 static D3DMATRIX D3DMWorld;
-static D3DMATRIX D3DMProjection;
 
 void SetD3DMatrix(D3DMATRIX* mx, float* imx)
 {
@@ -69,10 +68,7 @@ void SaveD3DCameraMatrix()
 void S_InitD3DMatrix()
 {
 	D3DIdentityMatrix(&D3DMWorld);
-	D3DIdentityMatrix(&D3DMProjection);
-	D3DMProjection._22 = -1;
 	DXAttempt(App.dx.lpD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &D3DMWorld));
-	DXAttempt(App.dx.lpD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &D3DMProjection));
 }
 
 D3DVECTOR* D3DNormalise(D3DVECTOR* vec)

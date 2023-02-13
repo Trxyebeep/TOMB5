@@ -156,24 +156,9 @@ uchar SplashLinks[347]
 	24, 26, 8, 10,
 	26, 28, 10, 12,
 	28, 30, 12, 14,
-	30, 16, 14, 0,
-	//links
-	84, 111, 109, 98, 32, 82, 97, 105, 100, 101, 114, 32, 73, 86, 32, 45, 32, 84, 104, 101, 32, 76, 97, 115,
-	116, 32, 82, 101, 118, 101, 108, 97, 116, 105, 111, 110, 32, 32, 45, 45, 32, 68, 101, 100, 105, 99, 97, 116,
-	101, 100, 32, 116, 111, 32, 109, 121, 32, 102, 105, 97, 110, 99, 101, 32, 74, 97, 121, 32, 102, 111, 114, 32,
-	112, 117, 116, 116, 105, 110, 103, 32, 117, 112, 32, 119, 105, 116, 104, 32, 116, 104, 105, 115, 32, 103, 97, 109,
-	101, 32, 116, 97, 107, 105, 110, 103, 32, 111, 118, 101, 114, 32, 111, 117, 114, 32, 108, 105, 102, 101, 115, 44,
-	109, 121, 32, 115, 116, 101, 112, 32, 115, 111, 110, 115, 32, 67, 114, 97, 105, 103, 44, 74, 97, 109, 105, 101,
-	32, 38, 32, 65, 105, 100, 101, 110, 32, 40, 83, 104, 111, 119, 32, 116, 104, 105, 115, 32, 116, 111, 32, 121,
-	111, 117, 114, 32, 109, 97, 116, 101, 115, 32, 97, 116, 32, 115, 99, 104, 111, 111, 108, 44, 32, 116, 104, 101,
-	121, 39, 108, 108, 32, 98, 101, 108, 105, 101, 118, 101, 32, 121, 111, 117, 32, 110, 111, 119, 33, 33, 41, 44,
-	97, 108, 115, 111, 32, 102, 111, 114, 32, 109, 121, 32, 100, 97, 117, 103, 104, 116, 101, 114, 115, 32, 83, 111,
-	112, 104, 105, 101, 32, 97, 110, 100, 32, 74, 111, 100, 121, 32, 45, 32, 83, 101, 101, 32, 121, 111, 117, 32, 105,
-	110, 32, 97, 110, 111, 116, 104, 101, 114, 32, 104, 101, 120, 32, 100, 117, 109, 112, 32, 45, 32, 82, 105, 99,
-	104, 97, 114, 100, 32, 70, 108, 111, 119, 101, 114, 32, 49, 49, 47, 49, 49, 47, 49, 57, 57, 57, 0, 0, 0, 0
+	30, 16, 14, 0
 };
 
-MAP_STRUCT Map[255];
 long DoFade;
 long snow_outside;
 
@@ -184,8 +169,6 @@ static SNOWFLAKE Snow[2048];
 static UWEFFECTS uwdust[256];
 static STARS stars[2048];
 static PHD_VECTOR NodeVectors[16];
-static float StarFieldPositions[1024];
-static long StarFieldColors[256];
 static long FadeVal;
 static long FadeStep;
 static long FadeCnt;
@@ -836,7 +819,7 @@ void DrawSkySegment(ulong color, long drawtype, long def, long seg, long zpos, l
 		{
 			perspz = f_mpersp / v[i].sz;
 
-			if (v[i].sz > FogEnd)
+			if (v[i].sz > f_mzfar)
 			{
 				v[i].sz = f_zfar;
 				clipdistance = 256;
@@ -908,7 +891,7 @@ void DrawSkySegment(ulong color, long drawtype, long def, long seg, long zpos, l
 		{
 			perspz = f_mpersp / v[i].sz;
 
-			if (v[i].sz > FogEnd)
+			if (v[i].sz > f_mzfar)
 			{
 				v[i].sz = f_zfar;
 				clipdistance = 256;
@@ -1543,7 +1526,7 @@ void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 	{
 		zv = f_mpersp / v->sz;
 
-		if (v->sz > FogEnd)
+		if (v->sz > f_mzfar)
 		{
 			clipFlag = 256;
 			v->sz = f_zfar;
@@ -1577,7 +1560,7 @@ void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 	{
 		zv = f_mpersp / v->sz;
 
-		if (v->sz > FogEnd)
+		if (v->sz > f_mzfar)
 		{
 			clipFlag = 256;
 			v->sz = f_zfar;
@@ -1611,7 +1594,7 @@ void setXYZ3(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 	{
 		zv = f_mpersp / v->sz;
 
-		if (v->sz > FogEnd)
+		if (v->sz > f_mzfar)
 		{
 			clipFlag = 256;
 			v->sz = f_zfar;
@@ -1651,7 +1634,7 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 	{
 		zv= f_mpersp / v->sz;
 
-		if (v->sz > FogEnd)
+		if (v->sz > f_mzfar)
 		{
 			clipFlag = 256;
 			v->sz = f_zfar;
@@ -1685,7 +1668,7 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 	{
 		zv = f_mpersp / v->sz;
 
-		if (v->sz > FogEnd)
+		if (v->sz > f_mzfar)
 		{
 			clipFlag = 256;
 			v->sz = f_zfar;
@@ -1719,7 +1702,7 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 	{
 		zv = f_mpersp / v->sz;
 
-		if (v->sz > FogEnd)
+		if (v->sz > f_mzfar)
 		{
 			clipFlag = 256;
 			v->sz = f_zfar;
@@ -1753,7 +1736,7 @@ void setXYZ4(D3DTLVERTEX* v, long x1, long y1, long z1, long x2, long y2, long z
 	{
 		zv = f_mpersp / v->sz;
 
-		if (v->sz > FogEnd)
+		if (v->sz > f_mzfar)
 		{
 			clipFlag = 256;
 			v->sz = f_zfar;
@@ -2184,7 +2167,7 @@ void DoRain()
 				clipFlag = -128;
 			else
 			{
-				if (vec2.z > FogEnd)
+				if (vec2.z > f_mzfar)
 				{
 					zz = f_zfar;
 					clipFlag = 16;
@@ -2227,7 +2210,7 @@ void DoRain()
 				clipFlag = -128;
 			else
 			{
-				if (vec2.z > FogEnd)
+				if (vec2.z > f_mzfar)
 				{
 					zz = f_zfar;
 					clipFlag = 16;
@@ -2355,7 +2338,7 @@ void ClipCheckPoint(D3DTLVERTEX* v, float x, float y, float z, short* clip)
 	{
 		perspz = f_mpersp / v->sz;
 
-		if (v->sz > FogEnd)
+		if (v->sz > f_mzfar)
 		{
 			v->sz = f_zfar;
 			clipdistance = 256;

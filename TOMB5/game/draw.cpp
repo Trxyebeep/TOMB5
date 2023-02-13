@@ -1888,6 +1888,9 @@ void GetRoomBounds()
 			{
 				rn = *door++;
 
+				if (room[rn].flags & ROOM_OUTSIDE)
+					snow_outside = 1;
+
 				if (door[0] * long(r->x + door[3] - w2v_matrix[M03]) +
 					door[1] * long(r->y + door[4] - w2v_matrix[M13]) +
 					door[2] * long(r->z + door[5] - w2v_matrix[M23]) < 0)

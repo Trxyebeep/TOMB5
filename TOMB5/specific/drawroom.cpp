@@ -45,7 +45,6 @@ static float rClipLeft;
 static float rClipRight;
 static ROOM_INFO* CurrentRoomPtr;
 static long CurrentRoomUnderwater;
-static ulong GlobalColor;
 static bool has_water_neighbor;
 
 void InsertRoom(ROOM_INFO* r)
@@ -69,8 +68,6 @@ void InsertRoom(ROOM_INFO* r)
 			if (CheckBoundsClip(r->pRoomlets[i].bBox))
 				InsertRoomlet(&r->pRoomlets[i]);
 		}
-
-		GlobalColor = 0x00FFFFFF;
 	}
 }
 
@@ -1177,7 +1174,6 @@ void DrawBucket(TEXTUREBUCKET* bucket)
 		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
 		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
 		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
-		DrawPrimitiveCnt++;
 	}
 
 	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[bucket->tpage].tex));
@@ -1188,7 +1184,6 @@ void DrawBucket(TEXTUREBUCKET* bucket)
 
 	bucket->nVtx = 0;
 	bucket->tpage = -1;
-	DrawPrimitiveCnt++;
 }
 
 void DrawBuckets()
@@ -1214,7 +1209,6 @@ void DrawBuckets()
 			{
 				DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[Textures[bucket->tpage].bumptpage].tex));
 				App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, bucket->vtx, bucket->nVtx, D3DDP_DONOTCLIP);
-				DrawPrimitiveCnt++;
 			}
 		}
 
@@ -1236,7 +1230,6 @@ void DrawBuckets()
 				App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, bucket->vtx, bucket->nVtx, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP);
 				bucket->nVtx = 0;
 				bucket->tpage = -1;
-				DrawPrimitiveCnt++;
 			}
 		}
 
@@ -1252,7 +1245,6 @@ void DrawBuckets()
 				App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, FVF, bucket->vtx, bucket->nVtx, D3DDP_DONOTUPDATEEXTENTS | D3DDP_DONOTCLIP);
 				bucket->nVtx = 0;
 				bucket->tpage = -1;
-				DrawPrimitiveCnt++;
 			}
 		}
 	}

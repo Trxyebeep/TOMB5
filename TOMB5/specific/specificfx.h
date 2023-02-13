@@ -51,6 +51,5 @@ void S_DrawSplashes();
 void S_DrawFireSparks(long size, long life);
 void S_DrawSmokeSparks();
 
-extern MAP_STRUCT Map[255];
 extern long DoFade;
 extern long snow_outside;

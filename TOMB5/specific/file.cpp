@@ -47,7 +47,6 @@ short* commands;
 short* floor_data;
 short* mesh_base;
 char* FileData;
-char* MapData;
 long number_cameras;
 long nAnimUVRanges;
 short nAIObjects;

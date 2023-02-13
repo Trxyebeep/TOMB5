@@ -45,8 +45,6 @@ static long NumSpecialFeatures;
 
 static LPDIRECTDRAWSURFACE4 screen_surface;
 static SAVEFILE_INFO SaveGames[15];
-static long MonoScreenX[4] = { 0, 256, 512, 640 };
-static long MonoScreenY[3] = { 0, 256, 480 };
 static char SpecialFeaturesPage[5];
 
 static const char* screen_paths[5] =

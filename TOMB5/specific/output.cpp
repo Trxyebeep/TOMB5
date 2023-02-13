@@ -33,10 +33,6 @@
 
 D3DTLVERTEX aVertexBuffer[1024];
 
-long nPolys;
-long nClippedPolys;
-long DrawPrimitiveCnt;
-long DrawSortedCnt;
 long aGlobalSkinMesh;
 long GlobalAlpha = 0xFF000000;
 long GlobalAmbient;
@@ -51,13 +47,6 @@ static short SkinClip[40][12];
 static PHD_VECTOR load_cam;
 static PHD_VECTOR load_target;
 static char load_roomnum = (char)NO_ROOM;
-
-static long nDebugStrings;
-static char DebugStrings[256][80];
-static long water_color_R = 128;
-static long water_color_G = 224;
-static long water_color_B = 255;
-static long old_lighting_water;
 
 void S_DrawPickup(short object_number)
 {
@@ -1404,15 +1393,6 @@ void S_OutputPolyList()
 	long h;
 
 	WinFrameRate();
-	nPolys = 0;
-	nClippedPolys = 0;
-	DrawPrimitiveCnt = 0;
-	DrawSortedCnt = 0;
-
-	for (int i = 0; i < nDebugStrings; i++)
-		WinDisplayString(0, font_height * (i + 1), DebugStrings[i]);
-
-	nDebugStrings = 0;
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
@@ -1458,7 +1438,6 @@ void S_OutputPolyList()
 
 	if (pickups[CurrentPickup].life != -1 && !MonoScreenOn && !GLOBAL_playing_cutseq)
 	{
-		old_lighting_water = 0;
 		InitialiseSortList();
 		S_DrawPickup(pickups[CurrentPickup].object_number);
 		SortPolyList(SortCount, SortList);
@@ -1836,7 +1815,6 @@ void phd_PutPolygonsPickup(short* objptr, float x, float y, long color)
 	ushort drawbak;
 	bool envmap;
 
-	old_lighting_water = 0;
 	aSetViewMatrix();
 	mesh = (MESH_DATA*)objptr;
 	lGlobalMeshPos.x = mesh->bbox[3] - mesh->bbox[0];

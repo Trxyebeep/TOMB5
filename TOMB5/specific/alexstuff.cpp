@@ -227,7 +227,7 @@ void aTransformClip_D3DV(D3DVECTOR* vec, D3DTLVERTEX* v, long nVtx, long nClip)
 		{
 			zv = f_mpersp / z;
 
-			if (v->sz > FogEnd)
+			if (v->sz > f_mzfar)
 			{
 				v->sz = f_zfar;
 				c = 256;

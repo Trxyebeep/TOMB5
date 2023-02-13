@@ -11,10 +11,6 @@
 #include "3dmath.h"
 #include "gamemain.h"
 
-static long rgb80h = 0x808080;
-static long rgbmask = 0xFFFFFFFF;
-static long zero = 0;
-
 SORTLIST* SortList[65536];
 long SortCount;
 
@@ -148,8 +144,6 @@ void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, sho
 		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
 		break;
 	}
-
-	DrawSortedCnt++;
 }
 
 void DrawSortList()
@@ -443,7 +437,6 @@ void AddClippedPoly(D3DTLBUMPVERTEX* dest, long nPoints, D3DTLBUMPVERTEX* v, TEX
 	}
 
 	nPoints -= 3;
-	nClippedPolys++;
 	v--;
 
 	for (int i = nPoints; i > 0; i--)
@@ -479,8 +472,6 @@ void AddClippedPoly(D3DTLBUMPVERTEX* dest, long nPoints, D3DTLBUMPVERTEX* v, TEX
 		p->tu = z * v->tu;
 		p->tv = z * v->tv;
 		p++;
-
-		nClippedPolys++;
 	}
 }
 
@@ -935,7 +926,6 @@ void AddQuadClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, short v3
 		z *= 0.25F;
 
 	sl->zVal = z;
-	nPolys += 2;
 }
 
 void AddTriClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURESTRUCT* tex, long double_sided)
@@ -1138,7 +1128,6 @@ void AddTriClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTUREST
 			sl->zVal = z;
 
 		SortCount++;
-		nPolys++;
 	}
 }
 
@@ -1306,8 +1295,6 @@ void AddQuadClippedZBuffer(D3DTLVERTEX* v, short v0, short v1, short v2, short v
 	p->specular = vtx->specular;
 	p->tu = tex->u4;
 	p->tv = tex->v4;
-
-	nPolys += 2;
 }
 
 void AddTriClippedZBuffer(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURESTRUCT* tex, long double_sided)
@@ -1472,6 +1459,5 @@ void AddTriClippedZBuffer(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURES
 		p->sz = f_a - f_boo * p->rhw;
 		p++;
 		p->sz = f_a - f_boo * p->rhw;
-		nPolys++;
 	}
 }

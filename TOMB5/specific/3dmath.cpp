@@ -12,8 +12,6 @@ SVECTOR CamRot;
 
 float one = 33554432.0F;
 float mone = 2048.0F;
-float FogStart = float(1024 * 12);
-float FogEnd = float(1024 * 20);
 
 float f_centerx;
 float f_centery;
@@ -62,8 +60,6 @@ short phd_winxmin;
 short phd_winymax;
 short phd_winymin;
 
-static float LfAspectCorrection;
-
 void AlterFOV(short fov)
 {
 	long fov_width;
@@ -77,7 +73,6 @@ void AlterFOV(short fov)
 	CurrentFov = fov;
 	fov /= 2;
 	fov_width = phd_winheight * 320 / 240;
-	LfAspectCorrection = 1.0F;
 	phd_persp = (fov_width / 2) * phd_cos(fov) / phd_sin(fov);
 	f_persp = float(phd_persp);
 	f_oneopersp = one / f_persp;
@@ -967,9 +962,9 @@ void phd_GenerateW2V(PHD_3DPOS* viewPos)
 	phd_mxptr[M13] = w2v_matrix[M13];
 	phd_mxptr[M23] = w2v_matrix[M23];
 
-	w2v_matrix[M10] = long(LfAspectCorrection * float(phd_mxptr[M10]));
-	w2v_matrix[M11] = long(LfAspectCorrection * float(phd_mxptr[M11]));
-	w2v_matrix[M12] = long(LfAspectCorrection * float(phd_mxptr[M12]));
+	w2v_matrix[M10] = phd_mxptr[M10];
+	w2v_matrix[M11] = phd_mxptr[M11];
+	w2v_matrix[M12] = phd_mxptr[M12];
 	phd_mxptr[M10] = w2v_matrix[M10];
 	phd_mxptr[M11] = w2v_matrix[M11];
 	phd_mxptr[M12] = w2v_matrix[M12];
