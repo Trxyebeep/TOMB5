@@ -11,7 +11,6 @@
 #include "function_stubs.h"
 #include "../game/tomb4fx.h"
 #include "winmain.h"
-#include "mmx.h"
 #include "profiler.h"
 #include "alexstuff.h"
 #include "../game/sphere.h"
@@ -2462,9 +2461,13 @@ void OutputSky()
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, 1);
 	SortPolyList(SortCount, SortList);
 	RestoreFPCW(FPCW);
+#if 0
 	MMXSetPerspecLimit(0);
 	DrawSortList();
 	MMXSetPerspecLimit(0x3F19999A);
+#else
+	DrawSortList();
+#endif
 	MungeFPCW(&FPCW);
 	InitBuckets();
 	InitialiseSortList();

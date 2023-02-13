@@ -76,7 +76,11 @@ void InitTFormats(HWND dlg, HWND hwnd)
 
 	SendMessage(hwnd, CB_RESETCONTENT, 0, 0);
 	EnableWindow(GetDlgItem(dlg, 1006), 1);
+#if 0
+	software = 0;
+#else
 	software = SendMessage(GetDlgItem(dlg, 1011), BM_GETCHECK, 0, 0);
+#endif
 	device = &App.DXInfo.DDInfo[nDDDevice].D3DDevices[nD3DDevice];
 
 	for (int i = 0; i < device->nTextureInfos; i++)
@@ -157,6 +161,12 @@ void InitResolution(HWND dlg, HWND hwnd, bool resetvms)
 
 	n = 0;
 
+#if 1
+	SendMessage(GetDlgItem(dlg, 1010), BM_SETCHECK, 1, 0);
+	SendMessage(GetDlgItem(dlg, 1011), BM_SETCHECK, 0, 0);
+	EnableWindow(GetDlgItem(dlg, 1011), 0);
+	software = 0;
+#else
 	if (nD3DDevice)
 	{
 		SendMessage(GetDlgItem(dlg, 1010), BM_SETCHECK, 1, 0);
@@ -169,6 +179,7 @@ void InitResolution(HWND dlg, HWND hwnd, bool resetvms)
 	}
 
 	software = SendMessage(GetDlgItem(dlg, 1011), BM_GETCHECK, 0, 0);
+#endif
 
 	if (resetvms)
 	{
@@ -394,12 +405,14 @@ BOOL CALLBACK DXSetupDlgProc(HWND dlg, UINT message, WPARAM wParam, LPARAM lPara
 
 		case 1011:
 
+#if 0
 			if (((wParam >> 16) & 0xFFFF) == BN_CLICKED)
 			{
 				nD3DDevice = 0;
 				SendMessage(GetDlgItem(dlg, 1003), CB_SETCURSEL, 0, 0);
 				InitResolution(dlg, GetDlgItem(dlg, 1004), 1);
 			}
+#endif
 
 			break;
 

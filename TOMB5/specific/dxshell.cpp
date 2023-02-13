@@ -753,8 +753,10 @@ long DXCreate(long w, long h, long bpp, long Flags, DXPTR* dxptr, HWND hWnd, lon
 
 	DXAttempt(G_dxptr->lpD3DDevice->SetRenderTarget(G_dxptr->lpBackBuffer, 0));
 
+#if 0
 	if (!(G_dxptr->Flags & 0x80))
 		CreateFakeD3D();
+#endif
 
 	return 1;
 }

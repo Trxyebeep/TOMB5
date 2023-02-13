@@ -22,15 +22,11 @@ void S_CDLoop();
 void PrintDbug();
 void init_game_malloc();
 void game_free(long size);
+void Log(ulong type, const char* s, ...);
 
+extern FILE* logF;
 extern char* malloc_buffer;
 extern char* malloc_ptr;
 extern long malloc_size;
 extern long malloc_free;
 extern long nPolyType;
-
-#define Log_Init	( (void(__cdecl*)(ulong)) 0x004DEC40 )
-#define Log_DefType	( (void(__cdecl*)(const char*, ulong, bool)) 0x004DEA50 )
-#define Log	( (void(__cdecl*)(ulong, const char*, ...)) 0x004DEB10 )//wrong place, idk where it goes
-#define CreateFakeD3D	( (void(__cdecl*)()) 0x004D3A90 )
-#define ClearFakeDevice	( (HRESULT(__cdecl*)(LPDIRECT3DDEVICE3, long, D3DRECT*, long, long, float, long)) 0x004D3D20 )

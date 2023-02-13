@@ -19,7 +19,6 @@
 #include "specificfx.h"
 #include "time.h"
 #include "file.h"
-#include "mmx.h"
 #include "fmv.h"
 #include "../game/newinv2.h"
 #include "../game/control.h"
@@ -2321,6 +2320,7 @@ void ReleaseScreen()
 
 void DrawLoadingScreen()
 {
+#if 0
 	DDSURFACEDESC2 surf;
 	ushort* pSrc;
 	uchar* pDest;
@@ -2362,11 +2362,14 @@ void DrawLoadingScreen()
 		screen_surface->Unlock(0);
 	}
 	else
+#endif
+	{
 #ifdef GENERAL_FIXES
 		S_DisplayMonoScreen();
 #else
 		G_dxptr->lpBackBuffer->Blt(0, screen_surface, 0, DDBLT_WAIT, 0);
 #endif
+	}
 }
 
 long GetSaveLoadFiles()
@@ -2706,11 +2709,18 @@ long S_PauseMenu()
 
 long IsHardware()
 {
+#if 1
+	return 1;
+#else
 	return App.dx.Flags & 0x80;
+#endif
 }
 
 long IsSuperLowRes()
 {
+#if 1
+	return 0;
+#else
 	long w, h;
 
 	MMXGetBackSurfWH(w, h);
@@ -2722,6 +2732,7 @@ long IsSuperLowRes()
 		return 2;
 
 	return 0;
+#endif
 }
 
 void DoFrontEndOneShotStuff()

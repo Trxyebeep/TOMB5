@@ -1,6 +1,8 @@
 #include "../tomb5/pch.h"
 #include "function_stubs.h"
 
+FILE* logF = 0;
+
 char* malloc_buffer;
 char* malloc_ptr;
 long malloc_size;
@@ -138,6 +140,23 @@ void game_free(long size)
 	malloc_ptr -= size;
 	malloc_free += size;
 	malloc_used -= size;
+}
+
+void Log(ulong type, const char* s, ...)
+{
+#ifdef DO_LOG
+	va_list list;
+	char buf[4096];
+
+	if (!logF)
+		logF = fopen("log.txt", "w+");
+
+	va_start(list, s);
+	vsprintf(buf, s, list);
+	strcat(buf, "\n");
+	va_end(list);
+	fwrite(buf, strlen(buf), 1, logF);
+#endif
 }
 
 void inject_funcStubs(bool replace)

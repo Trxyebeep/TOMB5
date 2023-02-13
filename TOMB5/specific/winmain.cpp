@@ -41,15 +41,19 @@ void ClearSurfaces()
 
 	if (App.dx.Flags & 0x80)
 		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
+#if 0
 	else
 		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
+#endif
 
 	S_DumpScreen();
 
 	if (App.dx.Flags & 0x80)
 		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
+#if 0
 	else
 		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
+#endif
 
 	S_DumpScreen();
 }
@@ -519,12 +523,14 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	DXDISPLAYMODE* dm;
 	RECT r;
 	HWND desktop;
-	HWND dbg;
 	HDC hdc;
 	DEVMODE devmode;
+#if 0
+	HWND dbg;
 	static ulong dbm_command;
 	static ulong dbm_clearlog;
 	long dbgflag;
+#endif
 #ifndef GENERAL_FIXES
 	bool drive;
 #endif
@@ -534,6 +540,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	App.SetupComplete = 0;
 	App.AutoTarget = 0;
 
+#if 0
 	Log_Init(1);
 	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
 
@@ -559,6 +566,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	dbgflag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
 	dbgflag |= _CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_LEAK_CHECK_DF;
 	_CrtSetDbgFlag(dbgflag);
+#endif
 
 	if (WinRunCheck((char*)"Tomb Raider Chronicles", (char*)"MainGameWindow", &App.mutex))
 		return 0;
@@ -697,10 +705,12 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	devmode.dmFields = DM_BITSPERPEL;
 	ChangeDisplaySettings(&devmode, 0);
 
+#if 0
 	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
 
 	if (dbg)
 		PostMessageA(dbg, dbm_command, 4, 0);
+#endif
 
 	return 0;
 }

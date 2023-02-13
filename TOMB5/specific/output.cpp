@@ -1577,8 +1577,10 @@ void S_InitialisePolyList()
 
 	if (App.dx.Flags & 0x80)
 		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0));
+#if 0
 	else
 		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
+#endif
 
 	_BeginScene();
 	InitBuckets();
