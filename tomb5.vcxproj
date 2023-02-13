@@ -271,7 +271,6 @@
     <ClInclude Include="TOMB5\specific\texture.h" />
     <ClInclude Include="TOMB5\specific\time.h" />
     <ClInclude Include="TOMB5\specific\winmain.h" />
-    <ClInclude Include="TOMB5\tomb5\framework.h" />
     <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_register.h" />
     <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_rpc.h" />
     <ClInclude Include="TOMB5\tomb5\libs\zlib\zlib.h" />

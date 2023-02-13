@@ -52,13 +52,6 @@ enum languages
 	DUTCH
 };
 
-enum win_commands
-{
-	KA_ALTENTER = 8,
-	KA_ALTP = 40001,
-	KA_ALTM = 40002
-};
-
 enum LightTypes
 {
 	LIGHT_SUN,

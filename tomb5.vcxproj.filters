@@ -477,9 +477,6 @@
     <ClInclude Include="TOMB5\specific\d3dmatrix.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\tomb5\framework.h">
-      <Filter>TOMB5\tomb5</Filter>
-    </ClInclude>
     <ClInclude Include="TOMB5\tomb5\pch.h">
       <Filter>TOMB5\tomb5</Filter>
     </ClInclude>
