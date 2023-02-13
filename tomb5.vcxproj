@@ -126,7 +126,6 @@
     <ClCompile Include="TOMB5\specific\texture.cpp" />
     <ClCompile Include="TOMB5\specific\time.cpp" />
     <ClCompile Include="TOMB5\specific\winmain.cpp" />
-    <ClCompile Include="TOMB5\tomb5\dllmain.cpp" />
     <ClCompile Include="TOMB5\tomb5\libs\zlib\adler32.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -281,9 +280,6 @@
     <ClInclude Include="TOMB5\tomb5\tomb5.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="TOMB5\global\progress.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="tomb5.rc" />
   </ItemGroup>
   <ItemGroup>
@@ -306,7 +302,7 @@
     <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>

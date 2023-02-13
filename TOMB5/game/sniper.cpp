@@ -134,9 +134,3 @@ void SniperControl(short item_number)
 		CreatureAnimation(item_number, angle, tilt);
 	}
 }
-
-void inject_sniper(bool replace)
-{
-	INJECT(0x00478180, InitialiseSniper, replace);
-	INJECT(0x00478250, SniperControl, replace);
-}

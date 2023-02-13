@@ -773,15 +773,3 @@ void RomangodControl(short item_number)
 		CreatureAnimation(item_number, angle, 0);
 	}
 }
-
-void inject_romangod(bool replace)
-{
-	INJECT(0x0046B340, TriggerRomanGodSparks, replace);
-	INJECT(0x0046B420, TriggerRomanGodMissileFlame, replace);
-	INJECT(0x0046B590, TriggerRomanGodMissile, replace);
-	INJECT(0x0046B650, TriggerRomanGodLightningGlow, replace);
-	INJECT(0x0046B730, TriggerRomanGodPowerupFlames, replace);
-	INJECT(0x0046B8E0, TriggerRomangodGravel, replace);
-	INJECT(0x0046BB00, InitialiseRomangod, replace);
-	INJECT(0x0046BC10, RomangodControl, replace);
-}

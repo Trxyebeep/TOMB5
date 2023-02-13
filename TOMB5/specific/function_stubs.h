@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_funcStubs(bool replace);
-
 void* game_malloc(long size, long type);
 long GetRandomControl();
 void SeedRandomControl(long seed);

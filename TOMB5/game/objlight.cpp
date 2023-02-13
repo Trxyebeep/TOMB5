@@ -195,13 +195,3 @@ void ControlBlinker(short item_number)
 			item->item_flags[0] = 30;
 	}
 }
-
-void inject_objlight(bool replace)
-{
-	INJECT(0x00466B20, TriggerAlertLight, replace);
-	INJECT(0x00466C00, ControlStrobeLight, replace);
-	INJECT(0x00466D20, ControlPulseLight, replace);
-	INJECT(0x00466E10, ControlColouredLight, replace);
-	INJECT(0x00466EA0, ControlElectricalLight, replace);
-	INJECT(0x004670D0, ControlBlinker, replace);
-}

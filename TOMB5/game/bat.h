@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_bats(bool replace);
-
 long GetFreeBat();
 void TriggerBat(ITEM_INFO* item);
 void InitialiseBatEmitter(short item_number);

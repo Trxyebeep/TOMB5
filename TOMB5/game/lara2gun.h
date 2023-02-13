@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_lara2gun(bool replace);
-
 #ifdef GENERAL_FIXES
 extern ushort LHolster;
 #endif

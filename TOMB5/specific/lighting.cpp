@@ -874,27 +874,3 @@ void ShowOmni(long x, long y, long z, long rad)
 	phd_PopMatrix();
 }
 #pragma warning(pop)
-
-void inject_lighting(bool replace)
-{
-	INJECT(0x004AB7A0, InitObjectLighting, replace);
-	INJECT(0x004AAFE0, SuperSetupLight, replace);
-	INJECT(0x004AA5A0, CreateLightList, replace);
-	INJECT(0x004A9FE0, FadeLightList, replace);
-	INJECT(0x004AAF00, SuperResetLights, replace);
-	INJECT(0x004A9E60, CalcAmbientLight, replace);
-	INJECT(0x004A9DF0, S_CalculateStaticMeshLight, replace);
-	INJECT(0x004AB3A0, SuperSetupDynamicLight, replace);
-	INJECT(0x004AB930, InitDynamicLighting_noparams, replace);
-	INJECT(0x004AB950, InitDynamicLighting, replace);
-	INJECT(0x004AB910, ClearObjectLighting, replace);
-	INJECT(0x004AB9D0, ClearDynamicLighting, replace);
-	INJECT(0x004A9CD0, ApplyMatrix, replace);
-	INJECT(0x004A9D60, ApplyTransposeMatrix, replace);
-	INJECT(0x004A9C90, CreateD3DLights, replace);
-	INJECT(0x004A9CB0, FreeD3DLights, replace);
-	INJECT(0x004A9C10, MallocD3DLights, replace);
-	INJECT(0x004AB580, InitObjectFogBulbs, replace);
-	INJECT(0x004AAAC0, SetupLight, replace);
-	INJECT(0x004AA0C0, ShowOmni, replace);
-}

@@ -231,11 +231,3 @@ void TriggerFontFire(ITEM_INFO* item, long num, long loop)
 	color = ((64 + (GetRandomControl() & 15)) * color) >> 4;
 	TriggerDynamic(pos.x, pos.y, pos.z, falloff, color, color - (color >> 2), color >> 1);
 }
-
-void inject_skelly(bool replace)
-{
-	INJECT(0x00477A20, InitialiseSkeleton, replace);
-	INJECT(0x00477AB0, SkeletonControl, replace);
-	INJECT(0x00477D50, TriggerSkeletonFire, replace);
-	INJECT(0x00477ED0, TriggerFontFire, replace);
-}

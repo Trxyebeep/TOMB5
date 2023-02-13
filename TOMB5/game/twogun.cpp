@@ -671,15 +671,3 @@ void ControlGunTestStation(ITEM_INFO* item)
 		TriggerDynamic(pos.x, pos.y, pos.z, (GetRandomControl() & 3) + 20, p->r, p->g, p->b);
 	}
 }
-
-void inject_twogun(bool replace)
-{
-	INJECT(0x0048E3C0, ControlZipController, replace);
-	INJECT(0x0048CD40, InitialiseTwogun, replace);
-	INJECT(0x0048CDD0, TwogunControl, replace);
-	INJECT(0x0048D7D0, UpdateTwogunLasers, replace);
-	INJECT(0x0048D900, DrawTwogunLasers, replace);
-	INJECT(0x0048DD80, TriggerTwogunPlasma, replace);
-	INJECT(0x0048DF60, FireTwogunWeapon, replace);
-	INJECT(0x0048D940, ControlGunTestStation, replace);
-}

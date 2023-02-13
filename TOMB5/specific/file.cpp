@@ -1535,34 +1535,3 @@ bool Decompress(char* pDest, char* pCompressed, long compressedSize, long size)
 	Log(5, "Decompression OK");
 	return 1;
 }
-
-void inject_file(bool replace)
-{
-	INJECT(0x004A60E0, LoadTextureInfos, replace);
-	INJECT(0x004A4DA0, LoadRooms, replace);
-	INJECT(0x004A3CD0, FileOpen, replace);
-	INJECT(0x004A3BC0, FindCDDrive, replace);
-	INJECT(0x004A3DA0, FileClose, replace);
-	INJECT(0x004A3DD0, FileSize, replace);
-	INJECT(0x004A6380, LoadItems, replace);
-	INJECT(0x004A59D0, LoadSprites, replace);
-	INJECT(0x004A5CA0, LoadCameras, replace);
-	INJECT(0x004A5D90, LoadSoundEffects, replace);
-	INJECT(0x004A6060, LoadAnimatedTextures, replace);
-	INJECT(0x004A4E60, LoadObjects, replace);
-	INJECT(0x004A67D0, LoadCinematic, replace);
-	INJECT(0x004A6880, LoadSamples, replace);
-	INJECT(0x004A67F0, LoadAIInfo, replace);
-	INJECT(0x004A6B30, LoadLevel, replace);
-	INJECT(0x004A72B0, S_LoadLevelFile, replace);
-	INJECT(0x004A3FC0, LoadTextures, replace);
-	INJECT(0x004A6AB0, S_GetUVRotateTextures, replace);
-	INJECT(0x004A7020, DoMonitorScreen, replace);
-	INJECT(0x004A7210, S_LoadLevel, replace);
-	INJECT(0x004A6760, LoadMapFile, replace);
-	INJECT(0x004A5E50, LoadBoxes, replace);
-	INJECT(0x004A5430, AdjustUV, replace);
-	INJECT(0x004A3E10, LoadFile, replace);
-	INJECT(0x004A7130, FreeLevel, replace);
-	INJECT(0x004A3EF0, Decompress, replace);
-}

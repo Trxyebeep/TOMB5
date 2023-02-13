@@ -521,13 +521,3 @@ void ClearMovableBlockSplitters(long x, long y, long z, short room_number)
 			ClearMovableBlockSplitters(x, y, z - 1024, room_number);
 	}
 }
-
-void inject_moveblok(bool replace)
-{
-	INJECT(0x0045E720, InitialiseMovingBlock, replace);
-	INJECT(0x0045EA30, MovableBlock, replace);
-	INJECT(0x0045F570, MovableBlockCollision, replace);
-	INJECT(0x0045F010, TestBlockPush, replace);
-	INJECT(0x0045F1E0, TestBlockPull, replace);
-	INJECT(0x0045E770, ClearMovableBlockSplitters, replace);
-}

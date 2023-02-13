@@ -1,9 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-
-void inject_objects(bool replace);
-
 void EarthQuake(short item_number);
 void SmashObject(short item_number);
 void SmashObjectControl(short item_number);

@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_subsuit(bool replace);
-
 void DoSubsuitStuff();
 void FireChaff();
 void TriggerAirBubbles();

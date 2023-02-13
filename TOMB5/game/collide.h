@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_coll(bool replace);
-
 void TriggerLaraBlood();
 void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short room_number, long objheight);
 long FindGridShift(long src, long dst);

@@ -230,12 +230,3 @@ void DrawSpiders()
 		}
 	}
 }
-
-void inject_spider(bool replace)
-{
-	INJECT(0x0047A140, GetFreeSpider, replace);
-	INJECT(0x0047A1B0, ClearSpiders, replace);
-	INJECT(0x0047A200, TriggerSpider, replace);
-	INJECT(0x0047A340, UpdateSpiders, replace);
-	INJECT(0x0047A730, DrawSpiders, replace);
-}

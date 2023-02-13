@@ -474,21 +474,3 @@ void EffectNewRoom(short fx_num, short room_num)
 	fx->next_fx = room[room_num].fx_number;
 	room[room_num].fx_number = fx_num;
 }
-
-void inject_items(bool replace)
-{
-	INJECT(0x00440DA0, ItemNewRoom, replace);
-	INJECT(0x00440590, InitialiseItemArray, replace);
-	INJECT(0x00440620, KillItem, replace);
-	INJECT(0x00440840, CreateItem, replace);
-	INJECT(0x004408B0, InitialiseItem, replace);
-	INJECT(0x00440B60, RemoveActiveItem, replace);
-	INJECT(0x00440C40, RemoveDrawnItem, replace);
-	INJECT(0x00440D10, AddActiveItem, replace);
-	INJECT(0x00440F00, SpawnItem, replace);
-	INJECT(0x00440FC0, GlobalItemReplace, replace);
-	INJECT(0x00441080, InitialiseFXArray, replace);
-	INJECT(0x004410F0, CreateEffect, replace);
-	INJECT(0x00441180, KillEffect, replace);
-	INJECT(0x004412F0, EffectNewRoom, replace);
-}

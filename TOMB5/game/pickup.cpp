@@ -1106,21 +1106,3 @@ void CollectCarriedItems(ITEM_INFO* item)
 
 	item->carried_item = NO_ITEM;
 }
-
-void inject_pickup(bool replace)
-{
-	INJECT(0x00467AF0, RegeneratePickups, replace);
-	INJECT(0x004693A0, PuzzleDone, replace);
-	INJECT(0x00469550, KeyTrigger, replace);
-	INJECT(0x004695E0, PickupTrigger, replace);
-	INJECT(0x00468C00, PuzzleDoneCollision, replace);
-	INJECT(0x00468C70, PuzzleHoleCollision, replace);
-	INJECT(0x00469660, SearchObjectControl, replace);
-	INJECT(0x004699A0, SearchObjectCollision, replace);
-	INJECT(0x00469D10, MonitorScreenCollision, replace);
-	INJECT(0x004679D0, AnimatingPickUp, replace);
-	INJECT(0x00468930, KeyHoleCollision, replace);
-	INJECT(0x00468770, FindPlinth, replace);
-	INJECT(0x00467C00, PickUpCollision, replace);
-	INJECT(0x00469C90, CollectCarriedItems, replace);
-}

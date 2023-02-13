@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_twogun(bool replace);
-
 void ControlZipController(short item_number);
 void InitialiseTwogun(short item_number);
 void TwogunControl(short item_number);

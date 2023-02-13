@@ -125,9 +125,3 @@ void SwampyControl(short item_number)
 	CreatureAnimation(item_number, angle, 0);
 	CreatureUnderwater(item, 341);
 }
-
-void inject_swampy(bool replace)
-{
-	INJECT(0x0047D2D0, InitialiseSwampy, replace);
-	INJECT(0x0047D360, SwampyControl, replace);
-}

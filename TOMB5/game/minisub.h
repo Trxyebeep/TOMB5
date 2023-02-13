@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_minisub(bool replace);
-
 void TriggerTorpedoSteam(PHD_VECTOR* pos1, PHD_VECTOR* pos2, long chaff);
 void TriggerMinisubLight(short item_number);
 void FireTorpedo(ITEM_INFO* src);

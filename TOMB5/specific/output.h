@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_output(bool replace);
-
 void S_DrawPickup(short object_number);
 void aTransformLightClipMesh(MESH_DATA* mesh);
 void aTransformLightPrelightClipMesh(MESH_DATA* mesh);

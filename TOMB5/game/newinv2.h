@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_newinv2(bool replace);
-
 long S_CallInventory2();
 void init_new_inventry();
 void do_debounced_joystick_poo();

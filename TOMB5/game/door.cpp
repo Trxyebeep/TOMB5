@@ -699,17 +699,3 @@ void ProcessClosedDoors()
 		}
 	}
 }
-
-void inject_door(bool replace)
-{
-	INJECT(0x00428EF0, ShutThatDoor, replace);
-	INJECT(0x00428FD0, OpenThatDoor, replace);
-	INJECT(0x00429140, DoorControl, replace);
-	INJECT(0x00429550, DoorCollision, replace);
-	INJECT(0x00429840, PushPullKickDoorControl, replace);
-	INJECT(0x004298D0, PushPullKickDoorCollision, replace);
-	INJECT(0x00429B30, DoubleDoorCollision, replace);
-	INJECT(0x00429CF0, UnderwaterDoorCollision, replace);
-	INJECT(0x00429EC0, SequenceDoorControl, replace);
-	INJECT(0x0042A050, ProcessClosedDoors, replace);
-}

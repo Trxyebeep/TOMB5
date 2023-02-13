@@ -1481,30 +1481,3 @@ void AlignLaraPosition(PHD_VECTOR* pos, ITEM_INFO* item, ITEM_INFO* l)
 	l->pos.y_pos = y;
 	l->pos.z_pos = z;
 }
-
-void inject_coll(bool replace)
-{
-	INJECT(0x00414370, TriggerLaraBlood, replace);
-	INJECT(0x00411100, GetCollisionInfo, replace);
-	INJECT(0x00411D70, FindGridShift, replace);
-	INJECT(0x004120A0, ShiftItem, replace);
-	INJECT(0x00410EF0, GetTiltType, replace);
-	INJECT(0x00413A90, GenericSphereBoxCollision, replace);
-	INJECT(0x004126E0, ObjectCollision, replace);
-	INJECT(0x004124E0, CreatureCollision, replace);
-	INJECT(0x00412770, AIPickupCollision, replace);
-	INJECT(0x004127C0, TrapCollision, replace);
-	INJECT(0x00414450, TestForObjectOnLedge, replace);
-	INJECT(0x00413CF0, GetCollidedObjects, replace);
-	INJECT(0x00413840, MoveLaraPosition, replace);
-	INJECT(0x004134E0, Move3DPosTo3DPos, replace);
-	INJECT(0x00411DB0, CollideStaticObjects, replace);
-	INJECT(0x004120F0, UpdateLaraRoom, replace);
-	INJECT(0x00412170, LaraBaddieCollision, replace);
-	INJECT(0x00412860, ItemPushLara, replace);
-	INJECT(0x00412F20, ItemPushLaraStatic, replace);
-	INJECT(0x00412CC0, TestBoundsCollide, replace);
-	INJECT(0x00412DE0, TestBoundsCollideStatic, replace);
-	INJECT(0x00413210, TestLaraPosition, replace);
-	INJECT(0x004133C0, AlignLaraPosition, replace);
-}

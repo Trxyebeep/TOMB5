@@ -1,9 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_draw(bool replace);
-
-
 short* GetBoundsAccurate(ITEM_INFO* item);
 short* GetBestFrame(ITEM_INFO* item);
 void InitInterpolate(long frac, long rate);

@@ -205,11 +205,3 @@ long ExplodeFX(FX_INFO* fx, long NoXZVel, short Num)
 	DebrisFlags = 0;
 	return 1;
 }
-
-void inject_missile(bool replace)
-{
-	INJECT(0x0045E380, ControlBodyPart, replace);
-	INJECT(0x0045E2A0, ShootAtLara, replace);
-	INJECT(0x0045E0E0, ControlMissile, replace);
-	INJECT(0x0045E010, ExplodeFX, replace);
-}

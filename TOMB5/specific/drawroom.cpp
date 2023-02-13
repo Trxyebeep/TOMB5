@@ -1827,33 +1827,3 @@ void CreateVertexNormals(MESH_DATA* mesh)
 	mesh->SourceVB->Unlock();
 	free(fnormals);
 }
-
-void inject_drawroom(bool replace)
-{
-	INJECT(0x0049C9F0, DrawBoundsRectangle, replace);
-	INJECT(0x0049CC20, DrawBoundsRectangleII, replace);
-	INJECT(0x0049CE40, DrawClipRectangle, replace);
-	INJECT(0x0049A9D0, InsertRoom, replace);
-	INJECT(0x0049ABF0, InsertRoomlet, replace);
-	INJECT(0x0049A9B0, RoomTestThing, replace);
-	INJECT(0x0049B7B0, aRoomletTransformLight, replace);
-	INJECT(0x0049AFB0, aBuildFogBulbList, replace);
-	INJECT(0x0049A3D0, ProcessMeshData, replace);
-	INJECT(0x0049CEB0, DrawRoomletBounds, replace);
-	INJECT(0x0049B390, aBuildRoomletLights, replace);
-	INJECT(0x0049AD90, aRoomInit, replace);
-	INJECT(0x0049AD70, aResetFogBulbList, replace);
-	INJECT(0x0049AEF0, TriggerFogBulbFX, replace);
-	INJECT(0x0049B1C0, aBuildFXFogBulbList, replace);
-	INJECT(0x0049D220, InitBuckets, replace);
-	INJECT(0x0049D3B0, aSetBumpComponent, replace);
-	INJECT(0x0049D420, aResetBumpComponent, replace);
-	INJECT(0x0049D460, DrawBucket, replace);
-	INJECT(0x0049D750, DrawBuckets, replace);
-	INJECT(0x0049D250, FindBucket, replace);
-	INJECT(0x0049C6B0, CheckBoundsClip, replace);
-	INJECT(0x0049D0E0, PrelightVertsMMXByRoomlet, replace);
-	INJECT(0x0049D130, PrelightVertsNonMMXByRoomlet, replace);
-	INJECT(0x0049DB10, CalcTriFaceNormal, replace);
-	INJECT(0x0049DBA0, CreateVertexNormals, replace);
-}

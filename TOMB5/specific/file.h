@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_file(bool replace);
-
 bool LoadTextureInfos();
 bool LoadRooms();
 FILE* FileOpen(const char* Filename);

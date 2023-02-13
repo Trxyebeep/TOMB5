@@ -263,14 +263,3 @@ bool GameInitialise()
 	aInitFX();
 	return 1;
 }
-
-void inject_gamemain(bool replace)
-{
-	INJECT(0x004A8B70, GetRandom, replace);
-	INJECT(0x004A8880, init_water_table, replace);
-	INJECT(0x004A8BC0, S_SaveGame, replace);
-	INJECT(0x004A8E10, S_LoadGame, replace);
-	INJECT(0x004A8790, GameClose, replace);
-	INJECT(0x004A84F0, GameMain, replace);
-	INJECT(0x004A8610, GameInitialise, replace);
-}

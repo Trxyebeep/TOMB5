@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_lasers(bool replace);
-
 void DrawFloorLasers(ITEM_INFO* item);
 void ControlLasers(short item_number);
 void ControlSteamLasers(short item_number);

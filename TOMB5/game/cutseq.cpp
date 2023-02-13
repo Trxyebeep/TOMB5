@@ -418,20 +418,3 @@ void FireTwoGunTitleWeapon(PHD_VECTOR* pos1, PHD_VECTOR* pos2)
 	TriggerLightningGlow(info->pos.x_pos, info->pos.y_pos, info->pos.z_pos, RGBA(0, info->g >> 1, info->b >> 1, (GetRandomControl() & 3) + 64));
 	TriggerLightning(pos1, pos2, (GetRandomControl() & 7) + 8, RGBA(0, info->g, info->b, 22), 12, 80, 5);
 }
-
-void inject_cutseq(bool replace)
-{
-	INJECT(0x0041BCF0, _special1_control, replace);
-	INJECT(0x0041BD40, _special1_end, replace);
-	INJECT(0x0041BE90, _special2_control, replace);
-	INJECT(0x0041C0F0, _special2_end, replace);
-	INJECT(0x0041C160, _special3_control, replace);
-	INJECT(0x0041C610, _special3_end, replace);
-	INJECT(0x0041C690, _special4_control, replace);
-	INJECT(0x0041C860, _special4_end, replace);
-	INJECT(0x0041C8B0, ResetCutItem, replace);
-	INJECT(0x0041C920, resetwindowsmash, replace);
-	INJECT(0x0041C8E0, triggerwindowsmash, replace);
-	INJECT(0x0041C950, FlamingHell, replace);
-	INJECT(0x0041CB10, FireTwoGunTitleWeapon, replace);
-}

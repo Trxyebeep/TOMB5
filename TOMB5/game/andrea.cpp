@@ -822,14 +822,3 @@ void DrawPortalDoor(ITEM_INFO* item)
 	}
 #endif
 }
-
-void inject_andrea(bool replace)
-{
-	INJECT(0x00405610, ControlPropeller, replace);
-	INJECT(0x00405C00, TriggerFanEffects, replace);
-	INJECT(0x00406040, ControlRaisingCog, replace);
-	INJECT(0x004062B0, ControlPortalDoor, replace);
-	INJECT(0x00406580, ControlGenSlot1, replace);
-	INJECT(0x004067E0, ControlRaisingPlinth, replace);
-	INJECT(0x00406560, DrawPortalDoor, replace);
-}

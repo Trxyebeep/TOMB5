@@ -745,32 +745,3 @@ void _Straighten(ROPE_STRUCT* rope, PHD_VECTOR* pos, PHD_VECTOR* dir, long sleng
 		rope->Velocity[n].z = 0;
 	}
 }
-
-void inject_rope(bool replace)
-{
-	INJECT(0x0046D130, GetRopePos, replace);
-	INJECT(0x0046D200, RopeNodeCollision, replace);
-	INJECT(0x0046D310, vMul, replace);
-	INJECT(0x0046D360, mDotProduct, replace);
-	INJECT(0x0046D3A0, mCrossProduct, replace);
-	INJECT(0x0046D420, phd_GetMatrixAngles, replace);
-	INJECT(0x0046D510, AlignLaraToRope, replace);
-	INJECT(0x0046DAE0, RopeCollision, replace);
-	INJECT(0x0046DD40, RopeControl, replace);
-	INJECT(0x0046DE10, Normalise, replace);
-	INJECT(0x0046DF00, ModelRigid, replace);
-	INJECT(0x0046E080, ModelRigidRope, replace);
-	INJECT(0x0046E1C0, SetPendulumPoint, replace);
-	INJECT(0x0046E280, SetPendulumVelocity, replace);
-	INJECT(0x0046E370, CalculateRope, replace);
-	INJECT(0x0046EE80, CreateRope, replace);
-	INJECT(0x0046F060, InitialiseRope, replace);
-	INJECT(0x0046F240, LaraClimbRope, replace);
-	INJECT(0x0046DDC0, DrawRopeList, replace);
-	INJECT(0x0046EC70, ProjectRopePoints, replace);
-	INJECT(0x0046EE40, init_all_ropes, replace);
-	INJECT(0x0046F170, SaveRope, replace);
-	INJECT(0x0046F1F0, LoadRope, replace);
-	INJECT(0x0046F3C0, StraightenRope, replace);
-	INJECT(0x0046F480, _Straighten, replace);
-}

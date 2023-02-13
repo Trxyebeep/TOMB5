@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_hair(bool replace);
-
 void DrawHair();
 void HairControl(long in_cutscene, long pigtail, short* cutscenething);
 void InitialiseHair();

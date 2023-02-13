@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_specificfx(bool replace);
-
 void S_PrintShadow(short size, short* box, ITEM_INFO* item);
 void DrawLaserSightSprite();
 void DrawFlatSky(ulong color, long zpos, long ypos, long drawtype);

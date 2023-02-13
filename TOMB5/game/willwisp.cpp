@@ -250,11 +250,3 @@ void MazeMonsterControl(short item_number)
 		CreatureAnimation(item_number, angle, 0);
 	}
 }
-
-void inject_wisp(bool replace)
-{
-	INJECT(0x0048E500, InitialiseWillOWisp, replace);
-	INJECT(0x0048E580, WillOWispControl, replace);
-	INJECT(0x0048E8E0, InitialiseMazeMonster, replace);
-	INJECT(0x0048E960, MazeMonsterControl, replace);
-}

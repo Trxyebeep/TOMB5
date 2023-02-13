@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_joby(bool replace);
-
 void KlaxonTremor();
 void ControlElectricalCables(short item_number);
 void WreckingBallCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);

@@ -2172,19 +2172,3 @@ void SetupGame()
 	SeedRandomDraw(0xD371F947);
 	SeedRandomControl(0xD371F947);
 }
-
-void inject_setup(bool replace)
-{
-	INJECT(0x00473210, InitialiseLara, replace);
-	INJECT(0x00476360, ObjectObjects, replace);
-	INJECT(0x00475D40, TrapObjects, replace);
-	INJECT(0x004737C0, BaddyObjects, replace);
-	INJECT(0x00473600, InitialiseObjects, replace);
-	INJECT(0x004771E0, GetCarriedItems, replace);
-	INJECT(0x00477880, InitialiseGameFlags, replace);
-	INJECT(0x004779B0, ClearFootPrints, replace);
-	INJECT(0x004779E0, reset_cutseq_vars, replace);
-	INJECT(0x00477370, GetAIPickups, replace);
-	INJECT(0x004774D0, BuildOutsideTable, replace);
-	INJECT(0x004778F0, SetupGame, replace);
-}

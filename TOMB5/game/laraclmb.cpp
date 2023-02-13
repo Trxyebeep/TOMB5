@@ -938,27 +938,3 @@ void LaraDoClimbLeftRight(ITEM_INFO* item, COLL_INFO* coll, long result, long sh
 		item->pos.z_pos = coll->old.z;
 	}
 }
-
-void inject_laraclmb(bool replace)
-{
-	INJECT(0x00450D40, lara_as_climbstnc, replace);
-	INJECT(0x00450E20, lara_col_climbstnc, replace);
-	INJECT(0x004510E0, LaraCheckForLetGo, replace);
-	INJECT(0x00451ED0, lara_as_climbing, replace);
-	INJECT(0x00451F00, lara_col_climbing, replace);
-	INJECT(0x004514D0, lara_as_climbleft, replace);
-	INJECT(0x00451520, lara_col_climbleft, replace);
-	INJECT(0x00451E00, lara_as_climbright, replace);
-	INJECT(0x00451E50, lara_col_climbright, replace);
-	INJECT(0x00452340, lara_as_climbend, replace);
-	INJECT(0x00452380, lara_col_climbend, replace);
-	INJECT(0x004520E0, lara_as_climbdown, replace);
-	INJECT(0x00452110, lara_col_climbdown, replace);
-	INJECT(0x004523A0, GetClimbTrigger, replace);
-	INJECT(0x00451200, LaraTestClimbUpPos, replace);
-	INJECT(0x00450A50, LaraTestClimb, replace);
-	INJECT(0x00450970, LaraTestClimbPos, replace);
-	INJECT(0x004517D0, LaraClimbLeftCornerTest, replace);
-	INJECT(0x00451AF0, LaraClimbRightCornerTest, replace);
-	INJECT(0x004515A0, LaraDoClimbLeftRight, replace);
-}

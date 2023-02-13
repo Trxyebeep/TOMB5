@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_functbl(bool replace);
-
 void InitialiseFunctionTable();
 void HWInitialise();
 HRESULT HWBeginScene();

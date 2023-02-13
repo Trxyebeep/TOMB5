@@ -1,9 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-
-void inject_gameflow(bool replace);
-
 void DoGameflow();
 long TitleOptions();
 void DoTitle(uchar name, uchar audio);

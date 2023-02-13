@@ -491,18 +491,3 @@ void DrawFlareInAir(ITEM_INFO* item)
 		}
 	}
 }
-
-void inject_laraflar(bool replace)
-{
-	INJECT(0x00454EE0, set_flare_arm, replace);
-	INJECT(0x004549B0, DoFlareInHand, replace);
-	INJECT(0x00454750, DoFlareLight, replace);
-	INJECT(0x004553B0, draw_flare_meshes, replace);
-	INJECT(0x004553E0, undraw_flare_meshes, replace);
-	INJECT(0x00455410, ready_flare, replace);
-	INJECT(0x00454F50, draw_flare, replace);
-	INJECT(0x00454BC0, CreateFlare, replace);
-	INJECT(0x00455460, FlareControl, replace);
-	INJECT(0x004550C0, undraw_flare, replace);
-	INJECT(0x00454A90, DrawFlareInAir, replace);
-}

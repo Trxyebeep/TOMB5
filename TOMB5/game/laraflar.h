@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_laraflar(bool replace);
-
 void FlareControl(short item_number);
 void undraw_flare_meshes();
 void draw_flare_meshes();

@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_3dmath(bool replace);
-
 void AlterFOV(short fov);
 void gte_sttr(PHD_VECTOR* vec);
 void aInitMatrix();

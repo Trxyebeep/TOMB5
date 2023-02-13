@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_texture(bool replace);
-
 void AdjustTextInfo(PHDTEXTURESTRUCT* ptex, long num, TEXTURESTRUCT* tex);
 long FindHighestBit(long n);
 void RGBMDarkMap(uchar* r, uchar* g, uchar* b);

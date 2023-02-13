@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_lighting(bool replace);
-
 void InitObjectLighting(ITEM_INFO* item);
 void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient);
 void CreateLightList(ITEM_INFO* item);

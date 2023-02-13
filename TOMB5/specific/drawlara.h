@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_drawlara(bool replace);
-
 void DrawLara(ITEM_INFO* item, long mirror);
 void DrawLara__1(ITEM_INFO* item, long mirror);
 void DrawLara__4(ITEM_INFO* item, long mirror);

@@ -1,11 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_lara(bool replace);
-
-extern void (*lara_control_routines[])(ITEM_INFO* item, COLL_INFO* coll);
-extern void (*lara_collision_routines[])(ITEM_INFO* item, COLL_INFO* coll);
-
 void LaraDeflectEdgeJump(ITEM_INFO* item, COLL_INFO* coll);
 void GetLaraCollisionInfo(ITEM_INFO* item, COLL_INFO* coll);
 long LaraLandedBad(ITEM_INFO* item, COLL_INFO* coll);
@@ -185,6 +180,9 @@ long LaraTestEdgeCatch(ITEM_INFO* item, COLL_INFO* coll, long* edge);
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 #endif
+
+extern void (*lara_control_routines[])(ITEM_INFO* item, COLL_INFO* coll);
+extern void (*lara_collision_routines[])(ITEM_INFO* item, COLL_INFO* coll);
 
 extern LARA_INFO lara;
 extern ITEM_INFO* lara_item;

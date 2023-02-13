@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_alexstuff(bool replace);
-
 void aLoadRoomStream();
 void aFixUpRoom(ROOM_INFO* r, char* s);
 void aUpdate();

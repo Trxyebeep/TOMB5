@@ -1,11 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_effects(bool replace);
-
-
-extern void(*effect_routines[])(ITEM_INFO* item);
-
 void SoundEffects();
 void WaterFall(short item_number);
 void void_effect(ITEM_INFO* item);
@@ -50,6 +45,8 @@ long ItemNearLara(PHD_3DPOS* pos, long rad);
 void Richochet(GAME_VECTOR* pos);
 void WadeSplash(ITEM_INFO* item, long water, long depth);
 void Splash(ITEM_INFO* item);
+
+extern void(*effect_routines[])(ITEM_INFO* item);
 
 extern FX_INFO* effects;
 extern OBJECT_VECTOR* sound_effects;

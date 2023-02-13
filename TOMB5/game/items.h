@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_items(bool replace);
-
 void ItemNewRoom(short item_num, short room_number);
 void InitialiseItemArray(short num);
 void KillItem(short item_num);

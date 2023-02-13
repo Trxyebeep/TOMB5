@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_pickup(bool replace);
-
 void RegeneratePickups();
 long KeyTrigger(short item_num);
 long PickupTrigger(short item_num);

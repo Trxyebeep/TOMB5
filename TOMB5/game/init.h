@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_init(bool replace);
-
 void InitialiseTrapDoor(short item_number);
 void InitialiseFallingBlock2(short item_number);
 void InitialiseFlameEmitter(short item_number);

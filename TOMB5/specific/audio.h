@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_audio(bool replace);
-
 void S_CDPlay(long track, long mode);
 void S_CDStop();
 void S_CDFade(long n);

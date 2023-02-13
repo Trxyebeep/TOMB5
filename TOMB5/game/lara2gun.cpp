@@ -516,16 +516,3 @@ void undraw_pistols(long weapon_type)
 		lara.torso_y_rot = lara.head_y_rot;
 	}
 }
-
-void inject_lara2gun(bool replace)
-{
-	INJECT(0x0044FDD0, ready_pistols, replace);
-	INJECT(0x0044FE60, draw_pistol_meshes, replace);
-	INJECT(0x0044FED0, undraw_pistol_mesh_left, replace);
-	INJECT(0x0044FF40, undraw_pistol_mesh_right, replace);
-	INJECT(0x004502B0, AnimatePistols, replace);
-	INJECT(0x0044FFC0, PistolHandler, replace);
-	INJECT(0x0044F950, draw_pistols, replace);
-	INJECT(0x0044FAC0, undraw_pistols, replace);
-	INJECT(0x0044FA20, set_arm_info, replace);
-}

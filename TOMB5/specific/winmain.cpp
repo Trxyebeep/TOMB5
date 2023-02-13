@@ -759,21 +759,3 @@ void RestoreFPCW(short fpcw)
 	}
 #endif
 }
-
-void inject_winmain(bool replace)
-{
-	INJECT(0x004D1AD0, ClearSurfaces, replace);
-	INJECT(0x004D22D0, CheckMMXTechnology, replace);
-	INJECT(0x004D2DD0, WinRunCheck, replace);
-	INJECT(0x004D2FD0, WinFrameRate, replace);
-	INJECT(0x004D3070, WinDisplayString, replace);
-	INJECT(0x004D2450, WinGetLastError, replace);
-	INJECT(0x004D24C0, WinProcMsg, replace);
-	INJECT(0x004D2560, WinProcessCommands, replace);
-	INJECT(0x004D2E50, WinProcessCommandLine, replace);
-	INJECT(0x004D2AB0, WinMainWndProc, replace);
-	INJECT(0x004D23E0, WinClose, replace);
-	INJECT(0x004D1C00, WinMain, replace);
-	INJECT(0x004D30E0, MungeFPCW, replace);
-	INJECT(0x004D3150, RestoreFPCW, replace);
-}

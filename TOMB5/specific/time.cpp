@@ -35,10 +35,3 @@ bool TIME_Init()
 	TIME_Reset();
 	return 1;
 }
-
-void inject_time(bool replace)
-{
-	INJECT(0x004D1A40, Sync, replace);
-	INJECT(0x004D19B0, TIME_Reset, replace);
-	INJECT(0x004D19D0, TIME_Init, replace);
-}

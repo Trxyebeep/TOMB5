@@ -172,9 +172,3 @@ void ControlLiftTeleporter(short item_number)
 		}
 	}
 }
-
-void inject_lifts(bool replace)
-{
-	INJECT(0x0045AAF0, DrawLiftDoors, replace);
-	INJECT(0x0045A560, ControlLiftTeleporter, replace);
-}

@@ -695,17 +695,3 @@ void TriggerCableSparks(long x, long z, short item_number, long node, long flare
 	sptr->sSize = n;
 	sptr->dSize = n >> 1;
 }
-
-void inject_joby(bool replace)
-{
-	INJECT(0x00442C90, KlaxonTremor, replace);
-	INJECT(0x00442BE0, CheckCableBox, replace);
-	INJECT(0x00442610, ControlElectricalCables, replace);
-	INJECT(0x00441D50, WreckingBallCollision, replace);
-	INJECT(0x00441410, ControlWreckingBall, replace);
-	INJECT(0x00441F50, DrawWreckingBall, replace);
-	INJECT(0x004421C0, ControlSecurityScreens, replace);
-	INJECT(0x00442250, CookerFlameControl, replace);
-	INJECT(0x00442320, TriggerLaraSparks, replace);
-	INJECT(0x00442480, TriggerCableSparks, replace);
-}

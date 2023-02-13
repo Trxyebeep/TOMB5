@@ -148,16 +148,3 @@ void SetFogColor(long r, long g, long b)
 	CurrentFog = RGBA(r, g, b, 0xFF);
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, CurrentFog);
 }
-
-void inject_functbl(bool replace)
-{
-	INJECT(0x004A7EE0, InitialiseFunctionTable, replace);
-	INJECT(0x004A8040, HWInitialise, replace);
-	INJECT(0x004A7FA0, HWBeginScene, replace);
-	INJECT(0x004A8010, HWEndScene, replace);
-	INJECT(0x004A7E00, _NVisible, replace);
-	INJECT(0x004A7E50, _Visible, replace);
-	INJECT(0x004A7EA0, SetCullCW, replace);
-	INJECT(0x004A7EC0, SetCullCCW, replace);
-	INJECT(0x004A84A0, SetFogColor, replace);
-}

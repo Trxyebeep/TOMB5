@@ -952,11 +952,3 @@ void GetCorrectStashPoints(long pigtail, long hair_node, long skin_node)
 	for (int i = 0; i < 5; i++)
 		ScratchVertNums[skin_node][i] = HairRotScratchVertNums[num][i];
 }
-
-void inject_hair(bool replace)
-{
-	INJECT(0x00439A40, DrawHair, replace);
-	INJECT(0x00438C80, HairControl, replace);
-	INJECT(0x00438BE0, InitialiseHair, replace);
-	INJECT(0x00439950, GetCorrectStashPoints, replace);
-}

@@ -813,28 +813,3 @@ void LaraWaterCurrent(COLL_INFO* coll)
 	coll->old.y = lara_item->pos.y_pos;
 	coll->old.z = lara_item->pos.z_pos;
 }
-
-void inject_laraswim(bool replace)
-{
-	INJECT(0x00459470, LaraTestWaterDepth, replace);
-	INJECT(0x00458FF0, LaraSwimCollision, replace);
-	INJECT(0x00458BC0, SwimTurn, replace);
-	INJECT(0x00458C80, SwimTurnSubsuit, replace);
-	INJECT(0x004584C0, UpdateSubsuitAngles, replace);
-	INJECT(0x004586F0, LaraUnderWater, replace);
-	INJECT(0x004589F0, lara_as_swimcheat, replace);
-	INJECT(0x00458B20, lara_as_swim, replace);
-	INJECT(0x00458D60, lara_as_glide, replace);
-	INJECT(0x00458E20, lara_as_tread, replace);
-	INJECT(0x00458EF0, lara_as_dive, replace);
-	INJECT(0x00458F20, lara_as_uwdeath, replace);
-	INJECT(0x00458FA0, lara_as_waterroll, replace);
-	INJECT(0x00458FC0, lara_col_swim, replace);
-	INJECT(0x00459590, lara_col_glide, replace);
-	INJECT(0x004595C0, lara_col_tread, replace);
-	INJECT(0x004595F0, lara_col_dive, replace);
-	INJECT(0x00459620, lara_col_uwdeath, replace);
-	INJECT(0x004596A0, lara_col_waterroll, replace);
-	INJECT(0x004596D0, GetWaterDepth, replace);
-	INJECT(0x004598F0, LaraWaterCurrent, replace);
-}

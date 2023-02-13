@@ -254,11 +254,3 @@ void TriggerCoinGlow(short item_number)
 	sptr->sSize = 24;
 	sptr->Size = 24;
 }
-
-void inject_andy(bool replace)
-{
-	INJECT(0x00406C10, TriggerRopeFlame, replace);
-	INJECT(0x00406E10, ControlBurningRoots, replace);
-	INJECT(0x004070D0, ControlLavaEffect, replace);
-	INJECT(0x00407350, TriggerCoinGlow, replace);
-}

@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_camera(bool replace);
-
 void InitialiseCamera();
 void CalculateCamera();
 void LaraTorch(PHD_VECTOR* Soffset, PHD_VECTOR* Eoffset, short yrot, long brightness);

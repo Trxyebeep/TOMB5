@@ -508,17 +508,3 @@ bool DXSetupDialog()
 
 	return 0;
 }
-
-void inject_cmdline(bool replace)
-{
-	INJECT(0x00495B70, CLSetup, replace);
-	INJECT(0x00495BA0, CLNoFMV, replace);
-	INJECT(0x00495C40, InitDSDevice, replace);
-	INJECT(0x00495D50, InitTFormats, replace);
-	INJECT(0x00496750, MapASCIIToANSI, replace);
-	INJECT(0x00496000, InitResolution, replace);
-	INJECT(0x00496530, InitD3DDevice, replace);
-	INJECT(0x00496620, InitDDDevice, replace);
-	INJECT(0x00496810, DXSetupDlgProc, replace);
-	INJECT(0x00495BD0, DXSetupDialog, replace);
-}

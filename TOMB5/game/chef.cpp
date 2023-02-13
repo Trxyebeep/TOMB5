@@ -163,9 +163,3 @@ void ChefControl(short item_number)
 	CreatureJoint(chef, 2, head);
 	CreatureAnimation(item_number, angle, 0);
 }
-
-void inject_chef(bool replace)
-{
-	INJECT(0x00410990, InitialiseChef, replace);
-	INJECT(0x00410A60, ChefControl, replace);
-}

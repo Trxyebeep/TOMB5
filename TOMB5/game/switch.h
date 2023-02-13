@@ -1,8 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void inject_switch(bool replace);
-
 void CrowDoveSwitchControl(short item_number);
 void CrowDoveSwitchCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll);
 void SwitchControl(short item_number);

@@ -1133,28 +1133,3 @@ long SwitchTrigger(short item_number, short timer)
 
 	return 0;
 }
-
-void inject_switch(bool replace)
-{
-	INJECT(0x0047FC80, CrowDoveSwitchControl, replace);
-	INJECT(0x0047FD20, CrowDoveSwitchCollision, replace);
-	INJECT(0x0047DA40, SwitchControl, replace);
-	INJECT(0x0047DC70, SwitchCollision, replace);
-	INJECT(0x0047E0C0, SwitchCollision2, replace);
-	INJECT(0x0047E220, UnderwaterSwitchCollision, replace);
-	INJECT(0x0047E450, PulleyCollision, replace);
-	INJECT(0x0047E650, TurnSwitchControl, replace);
-	INJECT(0x0047E950, TurnSwitchCollision, replace);
-	INJECT(0x0047EE00, RailSwitchCollision, replace);
-	INJECT(0x0047F050, JumpSwitchCollision, replace);
-	INJECT(0x0047F190, CrowbarSwitchCollision, replace);
-	INJECT(0x0047F520, FullBlockSwitchControl, replace);
-	INJECT(0x0047F610, FullBlockSwitchCollision, replace);
-	INJECT(0x0047F810, CogSwitchControl, replace);
-	INJECT(0x0047F990, CogSwitchCollision, replace);
-	INJECT(0x0047FF20, ProcessExplodingSwitchType8, replace);
-	INJECT(0x0047D9D0, TestTriggersAtXYZ, replace);
-	INJECT(0x0047D7B0, GetSwitchTrigger, replace);
-	INJECT(0x0047D8C0, GetKeyTrigger, replace);
-	INJECT(0x0047D670, SwitchTrigger, replace);
-}
