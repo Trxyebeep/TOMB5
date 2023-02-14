@@ -711,8 +711,7 @@ void DoTitle(uchar name, uchar audio)
 	if (gfStatus != 4 && tomb5.tr4_loadscreens)
 		RenderLoadPic(0);
 
-	if (gfStatus != 4)
-		input = 0;
+	input = 0;
 }
 
 long do_dels_cutseq_selector()
@@ -901,20 +900,11 @@ void DoLevel(uchar Name, uchar Audio)
 
 	if (gfStatus == 3)
 	{
-		if (fmv_to_play[0] & 0x80)
-		{
-			if ((fmv_to_play[0] & 0x7F) == 9 && gfLevelComplete != 10)
-				fmv_to_play[0] = 0;
-																						//leftover TR4 hacks
-			if ((fmv_to_play[0] & 0x7F) == 8 && gfLevelComplete != 22)
-				fmv_to_play[0] = 0;
-		}
+		if (fmv_to_play[0])
+			gamestatus = PlayFmvNow(fmv_to_play[0] & 0x7F, 1);
 
-		if (fmv_to_play[0] && PlayFmvNow(fmv_to_play[0] & 0x7F, 1) == 2)
-		{
-			if (fmv_to_play[1])
+		if (gamestatus != 2 && fmv_to_play[1])
 				PlayFmvNow(fmv_to_play[1] & 0x7F, 1);
-		}
 	}
 
 	num_fmvs = 0;

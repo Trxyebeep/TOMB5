@@ -1,7 +1,6 @@
 #pragma once
 #include "../global/types.h"
 
-void aLoadRoomStream();
 void aFixUpRoom(ROOM_INFO* r, char* s);
 void aUpdate();
 void aTransformClip_D3DV(D3DVECTOR* vec, D3DTLVERTEX* v, long nVtx, long nClip);
