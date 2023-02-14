@@ -34,8 +34,8 @@ long DoFade;
 long snow_outside;
 
 static STARS stars[2048];
-static RAINDROPS Rain[2048];
-static SNOWFLAKE Snow[2048];
+static RAINDROPS Rain[1024];
+static SNOWFLAKE Snow[1024];
 static UWEFFECTS uwdust[256];
 static PHD_VECTOR NodeVectors[16];
 static long FadeVal;
@@ -705,7 +705,7 @@ void aTransformPerspSV(SVECTOR* vec, D3DTLVERTEX* v, short* c, long nVtx, long c
 	}
 }
 
-void AddPolyLine(D3DTLVERTEX* vtx, TEXTURESTRUCT* tex)
+void AddPolyLine(D3DTLVERTEX* vtx, TEXTURESTRUCT* tex, float p)
 {
 	D3DTLVERTEX v[4];
 	float x0, y0, x1, y1, x2, y2, x3, y3;
@@ -720,17 +720,17 @@ void AddPolyLine(D3DTLVERTEX* vtx, TEXTURESTRUCT* tex)
 
 	if (fabs(x1 - x0) <= fabs(y1 - y0))
 	{
-		x2 = x0 + 2.0F;
+		x2 = x0 + p;
 		y2 = y0;
-		x3 = x1 + 2.0F;
+		x3 = x1 + p;
 		y3 = y1;
 	}
 	else
 	{
 		x2 = x0;
-		y2 = y0 + 2.0F;
+		y2 = y0 + p;
 		x3 = x1;
-		y3 = y1 + 2.0F;
+		y3 = y1 + p;
 	}
 
 	v[0].sx = x0;
@@ -850,25 +850,15 @@ bool ClipLine(long& x1, long& y1, long z1, long& x2, long& y2, long z2, long xMi
 
 void aInitFX()
 {
-	if (G_dxptr->Flags & 0x80)
-	{
-		snow_count = 2048;
-		rain_count = 2048;
-		max_snow = 128;
-		max_rain = 128;
-	}
-	else
-	{
-		snow_count = 256;
-		rain_count = 256;
-		max_snow = 8;
-		max_rain = 8;
-	}
+	snow_count = 1024;
+	rain_count = 1024;
+	max_snow = 64;
+	max_rain = 64;
 }
 
 void ClearFX()
 {
-	for (int i = 0; i < 2048; i++)
+	for (int i = 0; i < 1024; i++)
 	{
 		Rain[i].x = 0;
 		Snow[i].x = 0;
@@ -1123,11 +1113,9 @@ void DoRain()
 	FLOOR_INFO* floor;
 	D3DTLVERTEX v[2];
 	TEXTURESTRUCT tex;
-	FVECTOR vec;
-	FVECTOR vec2;
 	short* clip;
-	float ctop, cbottom, cright, cleft, zv, zz;
-	long num_alive, rad, angle, rnd, x, z, x_size, y_size, clr;
+	float ctop, cbottom, cright, cleft, zv, fx, fy, fz, mx, my, mz;
+	long num_alive, rad, angle, rnd, x, z, x_size, y_size, c;
 	short room_number, clipFlag;
 
 	num_alive = 0;
@@ -1158,7 +1146,7 @@ void DoRain()
 			}
 
 			rptr->xv = (GetRandomDraw() & 7) - 4;
-			rptr->yv = (GetRandomDraw() & 3) + 24;
+			rptr->yv = uchar((GetRandomDraw() & 3) + GetFixedScale(8));
 			rptr->zv = (GetRandomDraw() & 7) - 4;
 			rptr->room_number = IsRoomOutsideNo;
 			rptr->life = 64 - rptr->yv;
@@ -1198,9 +1186,10 @@ void DoRain()
 					}
 					else
 					{
-						clr = GetHeight(floor, rptr->x, rptr->y, rptr->z);
-						TriggerSmallSplash(rptr->x, clr, rptr->z, 1);
+						c = GetHeight(floor, rptr->x, rptr->y, rptr->z);
+						TriggerSmallSplash(rptr->x, c, rptr->z, 1);
 					}
+
 					rptr->x = 0;
 					continue;
 				}
@@ -1258,32 +1247,32 @@ void DoRain()
 		{
 			clipFlag = 0;
 			clip = clipflags;
-			vec.x = (float)(rptr->x - lara_item->pos.x_pos - 2 * SmokeWindX);
-			vec.y = (float)(rptr->y - 8 * rptr->yv - lara_item->pos.y_pos);
-			vec.z = (float)(rptr->z - lara_item->pos.z_pos - 2 * SmokeWindZ);
-			vec2.x = vec.x * D3DMView._11 + vec.y * D3DMView._21 + vec.z * D3DMView._31 + D3DMView._41;
-			vec2.y = vec.x * D3DMView._12 + vec.y * D3DMView._22 + vec.z * D3DMView._32 + D3DMView._42;
-			vec2.z = vec.x * D3DMView._13 + vec.y * D3DMView._23 + vec.z * D3DMView._33 + D3DMView._43;
-			zz = vec2.z;
-			clr = (long)((1.0F - (f_mzfar - vec2.z) * (1.0F / f_mzfar)) * 8.0F + 8.0F);
-			v[0].specular = 0xFF000000;
-			v[0].color = RGBA(clr, clr, clr, 128);
-			v[0].tu = vec2.x;
-			v[0].tv = vec2.y;
+			fx = float(rptr->x - lara_item->pos.x_pos - (SmokeWindX << 2));
+			fy = float(rptr->y - (rptr->yv << 3) - lara_item->pos.y_pos);
+			fz = float(rptr->z - lara_item->pos.z_pos - (SmokeWindZ << 2));
+			mx = fx * D3DMView._11 + fy * D3DMView._21 + fz * D3DMView._31 + D3DMView._41;
+			my = fx * D3DMView._12 + fy * D3DMView._22 + fz * D3DMView._32 + D3DMView._42;
+			mz = fx * D3DMView._13 + fy * D3DMView._23 + fz * D3DMView._33 + D3DMView._43;
 
-			if (vec2.z < f_mznear)
+			c = long((1.0F - (f_mzfar - mz) * (1.0F / f_mzfar)) * 8.0F + 8.0F);
+			v[0].specular = 0xFF000000;
+			v[0].color = RGBA(c, c, c, 128);
+			v[0].tu = mx;
+			v[0].tv = my;
+
+			if (mz < f_mznear)
 				clipFlag = -128;
 			else
 			{
-				if (vec2.z > f_mzfar)
+				if (mz > f_mzfar)
 				{
-					zz = f_zfar;
+					mz = f_zfar;
 					clipFlag = 16;
 				}
 
-				zv = f_mpersp / zz;
-				v[0].sx = zv * vec2.x + f_centerx;
-				v[0].sy = zv * vec2.y + f_centery;
+				zv = f_mpersp / mz;
+				v[0].sx = zv * mx + f_centerx;
+				v[0].sy = zv * my + f_centery;
 				v[0].rhw = f_moneopersp * zv;
 
 				if (v[0].sx < cleft)
@@ -1297,36 +1286,37 @@ void DoRain()
 					clipFlag += 8;
 			}
 
-			v[0].sz = zz;
-			clip[0] = clipFlag;
+			v[0].sz = mz;
+			*clip++ = clipFlag;
 			clipFlag = 0;
-			clip++;
 
-			vec.x = (float)(rptr->x - lara_item->pos.x_pos);
-			vec.y = (float)(rptr->y - lara_item->pos.y_pos);
-			vec.z = (float)(rptr->z - lara_item->pos.z_pos);
-			vec2.x = vec.x * D3DMView._11 + vec.y * D3DMView._21 + vec.z * D3DMView._31 + D3DMView._41;
-			vec2.y = vec.x * D3DMView._12 + vec.y * D3DMView._22 + vec.z * D3DMView._32 + D3DMView._42;
-			vec2.z = vec.x * D3DMView._13 + vec.y * D3DMView._23 + vec.z * D3DMView._33 + D3DMView._43;
-			clr = (long)((1.0F - (f_mzfar - vec2.z) * (1.0F / f_mzfar)) * 16.0F + 16.0F);
+			fx = float(rptr->x - lara_item->pos.x_pos);
+			fy = float(rptr->y - lara_item->pos.y_pos);
+			fz = float(rptr->z - lara_item->pos.z_pos);
+			mx = fx * D3DMView._11 + fy * D3DMView._21 + fz * D3DMView._31 + D3DMView._41;
+			my = fx * D3DMView._12 + fy * D3DMView._22 + fz * D3DMView._32 + D3DMView._42;
+			mz = fx * D3DMView._13 + fy * D3DMView._23 + fz * D3DMView._33 + D3DMView._43;
+
+			c = long((1.0F - (f_mzfar - mz) * (1.0F / f_mzfar)) * 16.0F + 16.0F);
+			c <<= 1;
 			v[1].specular = 0xFF000000;
-			v[1].color = RGBA(clr, clr, clr, 128);
-			v[1].tu = vec2.x;
-			v[1].tv = vec2.y;
+			v[1].color = RGBA(c, c, c, 0xFF);
+			v[1].tu = mx;
+			v[1].tv = my;
 
-			if (vec2.z < f_mznear)
+			if (mz < f_mznear)
 				clipFlag = -128;
 			else
 			{
-				if (vec2.z > f_mzfar)
+				if (mz > f_mzfar)
 				{
-					zz = f_zfar;
+					mz = f_zfar;
 					clipFlag = 16;
 				}
 
-				zv = f_mpersp / zz;
-				v[1].sx = zv * vec2.x + f_centerx;
-				v[1].sy = zv * vec2.y + f_centery;
+				zv = f_mpersp / mz;
+				v[1].sx = zv * mx + f_centerx;
+				v[1].sy = zv * my + f_centery;
 				v[1].rhw = f_moneopersp * zv;
 
 				if (v[1].sx < cleft)
@@ -1340,11 +1330,11 @@ void DoRain()
 					clipFlag += 8;
 			}
 
-			v[1].sz = zz;
-			clip[0] = clipFlag;
+			v[1].sz = mz;
+			*clip-- = clipFlag;
 
-			if (!clipflags[0] && !clipflags[1])
-				AddPolyLine(v, &tex);
+			if (!clip[0] && !clip[1])
+				AddPolyLine(v, &tex, (float)GetFixedScale(1));
 		}
 	}
 
@@ -1944,7 +1934,7 @@ void S_DrawSparks()
 			v[1].color = c1;
 			v[1].specular = 0xFF000000;
 
-			AddPolyLine(v, &tex);
+			AddPolyLine(v, &tex, (float)GetFixedScale(1));
 		}
 	}
 
