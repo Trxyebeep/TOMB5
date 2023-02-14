@@ -3,7 +3,6 @@
 
 void WriteSG(void* pointer, long size);
 void ReadSG(void* pointer, long size);
-long CheckSumValid(char* buffer);
 void SaveLaraData();
 void RestoreLaraData(long FullSave);
 void SaveLevelData(long FullSave);

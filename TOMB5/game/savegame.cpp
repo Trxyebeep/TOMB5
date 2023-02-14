@@ -55,21 +55,21 @@ void ReadSG(void* pointer, long size)
 	}
 }
 
-long CheckSumValid(char* buffer)	//unused
+static void save_tomb5_data()
 {
-	char* ptr;
-	long checksum;
+	tomb5_save.LHolster = LHolster;
+	tomb5_save.dash_timer = DashTimer;
+}
 
-	ptr = buffer;
-	checksum = 0;
+static void load_tomb5_data()
+{
+	if (tomb5_save_size <= offsetof(tomb5_save_info, LHolster))
+		LHolster = lara.holster;
+	else
+		LHolster = tomb5_save.LHolster;
 
-	for (int i = 0; i < 3828; i++)
-	{
-		checksum += *ptr;
-		ptr++;
-	}
-
-	return !checksum;
+	if (tomb5_save_size > offsetof(tomb5_save_info, dash_timer))
+		DashTimer = tomb5_save.dash_timer;
 }
 
 void SaveLaraData()
@@ -103,9 +103,7 @@ void SaveLaraData()
 
 	savegame.CutSceneTriggered1 = _CutSceneTriggered1;
 	savegame.CutSceneTriggered2 = _CutSceneTriggered2;
-
-	tomb5_save.LHolster = LHolster;
-	tomb5_save.dash_timer = DashTimer;
+	save_tomb5_data();
 }
 
 void RestoreLaraData(long FullSave)
@@ -125,15 +123,6 @@ void RestoreLaraData(long FullSave)
 	}
 
 	memcpy(&lara, &savegame.Lara, sizeof(lara));
-
-	if (tomb5_save_size <= offsetof(tomb5_save_info, LHolster))
-		LHolster = lara.holster;
-	else
-		LHolster = tomb5_save.LHolster;
-
-	if (tomb5_save_size > offsetof(tomb5_save_info, dash_timer))
-		DashTimer = tomb5_save.dash_timer;
-
 	lara.target = 0;
 	lara.spaz_effect = 0;
 	lara.left_arm.frame_base = (short*)((long)lara.left_arm.frame_base + (long)objects[PISTOLS_ANIM].frame_base);
@@ -175,6 +164,7 @@ void RestoreLaraData(long FullSave)
 
 	_CutSceneTriggered1 = savegame.CutSceneTriggered1;
 	_CutSceneTriggered2 = savegame.CutSceneTriggered2;
+	load_tomb5_data();
 }
 
 void SaveLevelData(long FullSave)
