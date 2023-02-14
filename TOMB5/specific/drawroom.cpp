@@ -925,10 +925,7 @@ long aBuildRoomletLights(ROOMLET* r)
 	FOGBULB_STRUCT* fogbulb;
 	FOGBULB_STRUCT* rFog;
 	FVECTOR dPos;
-	FVECTOR fPos;
-	FVECTOR box;
-	float* bbox;
-	float falloff, sqr, val;
+	float falloff;
 	long numLights;
 
 	light = RoomletLights;
@@ -973,39 +970,6 @@ long aBuildRoomletLights(ROOMLET* r)
 
 		if (!fogbulb->visible)
 			continue;
-
-		if (fogbulb->sqlen >= fogbulb->sqrad)	//this block does nothing
-		{
-			bbox = aBoundingBox;
-
-			for (int j = 0; j < 8; j++)
-			{
-				box.x = *bbox++;
-				box.y = *bbox++;
-				box.z = *bbox++;
-				fPos.x = fogbulb->pos.x - box.x;
-				fPos.y = fogbulb->pos.y - box.y;
-				fPos.z = fogbulb->pos.z - box.z;
-
-				if (SQUARE(fPos.x) + SQUARE(fPos.y) + SQUARE(fPos.y) < fogbulb->sqrad)
-					break;
-
-				sqr = SQUARE(box.x) + SQUARE(box.y) + SQUARE(box.z);
-				val = 1.0F / sqrt(sqr);
-				fPos.x = box.x * val;
-				fPos.y = box.y * val;
-				fPos.z = box.z * val;
-				val = fogbulb->pos.x * fPos.x + fogbulb->pos.y * fPos.y + fogbulb->pos.z * fPos.z;
-
-				if (val > 0)
-				{
-					val = SQUARE(val);
-
-					if (sqr > val && fogbulb->sqlen - val < fogbulb->sqrad)
-						break;
-				}
-			}
-		}
 
 		rFog->pos.x = fogbulb->pos.x;
 		rFog->pos.y = fogbulb->pos.y;
