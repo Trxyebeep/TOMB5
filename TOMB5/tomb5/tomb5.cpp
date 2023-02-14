@@ -116,6 +116,10 @@ void init_tomb5_stuff()
 		sprintf(buf, "static_lighting");
 		tomb5.static_lighting = 1;						//on
 		REG_WriteBool(buf, tomb5.static_lighting);
+
+		sprintf(buf, "uw_dust");
+		tomb5.uw_dust = 2;								//original
+		REG_WriteLong(buf, tomb5.uw_dust);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
@@ -193,6 +197,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "static_lighting");
 		REG_ReadBool(buf, tomb5.static_lighting, 1);
+
+		sprintf(buf, "uw_dust");
+		REG_ReadLong(buf, tomb5.uw_dust, 2);
 	}
 
 	CloseRegistry();
@@ -277,6 +284,9 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "static_lighting");
 	REG_WriteBool(buf, tomb5.static_lighting);
+
+	sprintf(buf, "uw_dust");
+	REG_WriteLong(buf, tomb5.uw_dust);
 
 	CloseRegistry();
 }

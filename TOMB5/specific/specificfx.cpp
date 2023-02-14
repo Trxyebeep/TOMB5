@@ -858,6 +858,9 @@ void aInitFX()
 
 void ClearFX()
 {
+	for (int i = 0; i < 256; i++)
+		uwdust[i].x = 0;
+
 	for (int i = 0; i < 1024; i++)
 	{
 		Rain[i].x = 0;
@@ -2767,6 +2770,9 @@ void DoUwEffect()
 	float perspz;
 	long num_alive, rad, ang, x, y, z, size, col, yv;
 
+	if (tomb5.uw_dust == 1)
+		return;
+
 	v = aVertexBuffer;
 	num_alive = 0;
 
@@ -2822,7 +2828,11 @@ void DoUwEffect()
 			p->yv++;
 	}
 
-	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 15];
+	if (tomb5.uw_dust == 2)
+		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 15];
+	else
+		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
+
 	XY = (short*)&scratchpad[0];
 	Z = (long*)&scratchpad[256];
 	offsets = (short*)&scratchpad[512];

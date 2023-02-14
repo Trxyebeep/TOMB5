@@ -7,7 +7,7 @@
 #include "../specific/input.h"
 
 #define PAGE0_NUM	14
-#define PAGE1_NUM	11
+#define PAGE1_NUM	12
 
 #pragma warning(push)
 #pragma warning(disable : 4244)
@@ -376,6 +376,7 @@ bool Page1(long& num, long textY, ulong selection)
 	PrintString(phd_centerx >> 2, ushort(textY + 10 * font_height), selection & 0x100 ? 1 : 2, "ammotype hotkeys", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 11 * font_height), selection & 0x200 ? 1 : 2, "look transparency", 0);
 	PrintString(phd_centerx >> 2, ushort(textY + 12 * font_height), selection & 0x400 ? 1 : 2, "static lighting", 0);
+	PrintString(phd_centerx >> 2, ushort(textY + 13 * font_height), selection & 0x800 ? 1 : 2, "UW Effect", 0);
 
 	strcpy(buffer, tomb5.crawltilt ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 2 * font_height), selection & 1 ? 1 : 6, buffer, 0);
@@ -409,6 +410,9 @@ bool Page1(long& num, long textY, ulong selection)
 
 	strcpy(buffer, tomb5.static_lighting ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 12 * font_height), selection & 0x400 ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.uw_dust == 1 ? "off" : tomb5.uw_dust == 2 ? "original" : "TR4");
+	PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 13 * font_height), selection & 0x800 ? 1 : 6, buffer, 0);
 
 	switch (selection)
 	{
@@ -558,6 +562,32 @@ bool Page1(long& num, long textY, ulong selection)
 		{
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 			tomb5.static_lighting = !tomb5.static_lighting;
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 11:
+
+		if (dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.uw_dust++;
+
+			if (tomb5.uw_dust > 3)
+				tomb5.uw_dust = 1;
+
+			changed = 1;
+		}
+
+		if (dbinput & IN_LEFT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.uw_dust--;
+
+			if (tomb5.uw_dust < 1)
+				tomb5.uw_dust = 3;
+
 			changed = 1;
 		}
 
