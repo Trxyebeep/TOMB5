@@ -5151,8 +5151,7 @@ void DrawLaserSightSprite()
 	FVECTOR vec;
 	FVECTOR pos;
 	float zv, x, y, z;
-	long x1, y1, x2, y2;
-	short size;
+	long x1, y1, x2, y2, size;
 
 	phd_PushMatrix();
 	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
@@ -5172,15 +5171,16 @@ void DrawLaserSightSprite()
 
 	if (LaserSightCol)
 	{
-		size = (GlobalCounter & 7) + 16;
+		size = (GlobalCounter & 4) + 8;
 		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 18];
 	}
 	else
 	{
-		size = 4;
+		size = 3;
 		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
 	}
 
+	size = GetFixedScale(size);
 	x1 = long(pos.x - size);
 	x2 = long(pos.x + size);
 	y1 = long(pos.y - size);
