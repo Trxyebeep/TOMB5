@@ -704,6 +704,7 @@ static inline void GetLoadScreenCam()
 
 void RenderLoadPic(long unused)
 {
+	long x, y;
 	short poisoned;
 
 	GetLoadScreenCam();
@@ -734,6 +735,9 @@ void RenderLoadPic(long unused)
 
 	InitialisePickUpDisplay();
 
+	x = phd_centerx;
+	y = phd_winheight - GetFixedScale(37);
+
 	do
 	{
 		phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
@@ -741,8 +745,7 @@ void RenderLoadPic(long unused)
 		RenderIt(camera.pos.room_number);
 
 		if (tomb5.loadingtxt && tomb5.tr4_loadbar)
-			PrintString(phd_centerx, long(float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1),
-				5, SCRIPT_TEXT(TXT_LOADING2), FF_CENTER);
+			PrintString(x, y, 5, SCRIPT_TEXT(TXT_LOADING2), FF_CENTER);
 
 		S_OutputPolyList();
 		S_DumpScreen();
@@ -754,8 +757,7 @@ void RenderLoadPic(long unused)
 	RenderIt(camera.pos.room_number);
 
 	if (tomb5.loadingtxt && tomb5.tr4_loadbar)
-		PrintString(phd_centerx, long(float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1),
-			5, SCRIPT_TEXT(TXT_LOADING2), FF_CENTER);
+		PrintString(x, y, 5, SCRIPT_TEXT(TXT_LOADING2), FF_CENTER);
 
 	S_OutputPolyList();
 	S_DumpScreen();
