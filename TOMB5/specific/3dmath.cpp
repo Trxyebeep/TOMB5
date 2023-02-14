@@ -106,6 +106,9 @@ void aInitMatrix()
 
 void aSetViewMatrix()
 {
+	if (!aMXPtr)
+		return;
+
 	SetD3DMatrix(&D3DMView, aMXPtr);
 	DXAttempt(App.dx.lpD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &D3DMView));
 }
