@@ -488,7 +488,6 @@ void WinSetStyle(bool fullscreen, ulong& set)
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nShowCmd)
 {
 	DXDISPLAYMODE* dm;
-	RECT r;
 	HWND desktop;
 	HDC hdc;
 	DEVMODE devmode;
