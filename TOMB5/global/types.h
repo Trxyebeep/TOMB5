@@ -24,7 +24,7 @@
 #define MAX_SAMPLES	450
 #define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
 #define MALLOC_SIZE	5000000		//5MB
-#define WINDOW_STYLE	(WS_OVERLAPPED | WS_BORDER | WS_CAPTION)
+#define WINDOW_STYLE	WS_OVERLAPPEDWINDOW
 
 /*typedefs*/
 typedef unsigned char uchar;
@@ -1713,7 +1713,7 @@ struct DXPTR
 	RECT rViewport;
 	RECT rScreen;
 	long Flags;
-	long WindowStyle;
+	ulong WindowStyle;
 	long CoopLevel;
 #if (DIRECTINPUT_VERSION >= 0x800)
 	LPDIRECTINPUT8 lpDirectInput;

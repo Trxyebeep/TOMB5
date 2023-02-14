@@ -10,6 +10,9 @@ void WinProcessCommands(long cmd);
 void WinProcessCommandLine(LPSTR cmd);
 LRESULT CALLBACK WinMainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void WinClose();
+bool WinRegisterWindow(HINSTANCE hinstance);
+bool WinCreateWindow();
+void WinSetStyle(bool fullscreen, ulong& set);
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nShowCmd);
 
 extern WINAPP App;
