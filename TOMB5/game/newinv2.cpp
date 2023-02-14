@@ -2879,10 +2879,10 @@ void do_keypad_mode()
 
 	objme->meshbits = meshbits;
 
-	x = long(phd_centerx / 256.0F * 256.0F + inventry_xpos);
-	y = long((phd_centery / 120.0F * 256.0F + inventry_ypos) / 2);
+	x = phd_centerx;
+	y = phd_centery + GetFixedScale(16);
 	DrawThreeDeeObject2D(x, y, INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
-	PrintString(256, y - 64, 6, SCRIPT_TEXT(TXT_keypad), FF_CENTER);
+	PrintString(x, y - GetFixedScale(64), 6, SCRIPT_TEXT(TXT_keypad), FF_CENTER);
 
 	buf[0] = '-';
 	buf[1] = '-';
@@ -2893,7 +2893,7 @@ void do_keypad_mode()
 	for (int i = 0; i < keypadnuminputs; i++)
 		buf[i] = keypadinputs[i] + '0';
 
-	PrintString(256, y + 64, 1, buf, FF_CENTER);
+	PrintString(x, y + GetFixedScale(128), 1, buf, FF_CENTER);
 
 	if (keypadpause)
 	{
