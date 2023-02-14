@@ -94,17 +94,6 @@ float WinFrameRate()
 	return fps;
 }
 
-void WinDisplayString(long x, long y, char* string, ...)
-{
-	va_list list;
-	char buf[4096];
-
-	va_start(list, string);
-	vsprintf(buf, string, list);
-	va_end(list);
-	PrintString(x, y, 6, buf, 0);
-}
-
 void WinProcMsg()
 {
 	MSG msg;

@@ -1393,6 +1393,7 @@ void S_OutputPolyList()
 	D3DRECT r;
 	static long c;
 	long h;
+	char buf[128];
 
 	WinFrameRate();
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -1401,7 +1402,8 @@ void S_OutputPolyList()
 
 	if (resChangeCounter)
 	{
-		WinDisplayString(8, App.dx.dwRenderHeight - 8, (char*)"%dx%d", App.dx.dwRenderWidth, App.dx.dwRenderHeight);
+		sprintf(buf, "%dx%d", App.dx.dwRenderWidth, App.dx.dwRenderHeight);
+		PrintString(8, App.dx.dwRenderHeight - 8, 6, buf, 0);
 		resChangeCounter -= long(30 / App.fps);
 
 		if (resChangeCounter < 0)

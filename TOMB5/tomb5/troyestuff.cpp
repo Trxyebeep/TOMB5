@@ -92,7 +92,7 @@ bool Page0(long& num, long textY, ulong selection)
 
 	changed = 0;
 	num = PAGE0_NUM;
-	PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
+	PrintString(phd_centerx, font_height, 6, "New tomb5 options", FF_CENTER);
 	PrintString(phd_centerx >> 2, textY + 2 * font_height, selection & 1 ? 1 : 2, "FootPrints", 0);
 	PrintString(phd_centerx >> 2, textY + 3 * font_height, selection & 2 ? 1 : 2, "Point light shadows", 0);
 	PrintString(phd_centerx >> 2, textY + 4 * font_height, selection & 4 ? 1 : 2, "Shadow mode", 0);
@@ -362,7 +362,7 @@ bool Page1(long& num, long textY, ulong selection)
 
 	changed = 0;
 	num = PAGE1_NUM;
-	PrintString(phd_centerx, 2 * font_height, 6, "New tomb5 options", FF_CENTER);
+	PrintString(phd_centerx, font_height, 6, "New tomb5 options", FF_CENTER);
 	PrintString(phd_centerx >> 2, textY + 2 * font_height, selection & 1 ? 1 : 2, "Crawl Tilting", 0);
 	PrintString(phd_centerx >> 2, textY + 3 * font_height, selection & 2 ? 1 : 2, "PSX skies", 0);
 	PrintString(phd_centerx >> 2, textY + 4 * font_height, selection & 4 ? 1 : 2, "TR4 loadscreens", 0);

@@ -109,7 +109,7 @@ long DoLoadSave(long LoadSave)
 {
 	SAVEFILE_INFO* pSave;
 	static long selection;
-	long txt, l;
+	long txt, l, f;
 	uchar color;
 	char string[80];
 	char name[41];
@@ -119,7 +119,10 @@ long DoLoadSave(long LoadSave)
 	else
 		txt = TXT_Load_Game;
 
-	PrintString(phd_centerx, font_height, 6, SCRIPT_TEXT(txt), FF_CENTER);
+	f = font_height;
+	PrintString(phd_centerx, f, 6, SCRIPT_TEXT(txt), FF_CENTER);
+	f += font_height;
+	f += font_height >> 1;
 
 	for (int i = 0; i < 15; i++)
 	{
@@ -137,23 +140,22 @@ long DoLoadSave(long LoadSave)
 
 		strncpy(name, pSave->name, l);
 		name[40] = 0;
-		small_font = 1;
 
 		if (pSave->valid)
 		{
 			wsprintf(string, "%03d", pSave->num);
-			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * 310.0F), font_height + font_height * (i + 2), color, string, 0);
-			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * 270.0F), font_height + font_height * (i + 2), color, name, 0);
+			PrintString(phd_centerx - GetFixedScale(310), f, color, string, 0);
+			PrintString(phd_centerx - GetFixedScale(270), f, color, name, 0);
 			wsprintf(string, "%d %s %02d:%02d:%02d", pSave->days, SCRIPT_TEXT(TXT_days), pSave->hours, pSave->minutes, pSave->seconds);
-			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * -135.0F), font_height + font_height * (i + 2), color, string, 0);
+			PrintString(phd_centerx + GetFixedScale(135), f, color, string, 0);
 		}
 		else
 		{
 			wsprintf(string, "%s", pSave->name);
-			PrintString(phd_centerx, font_height + font_height * (i + 2), color, string, FF_CENTER);
+			PrintString(phd_centerx, f, color, string, FF_CENTER);
 		}
 
-		small_font = 0;
+		f += font_height;
 	}
 
 	if (dbinput & IN_FORWARD)
@@ -277,7 +279,7 @@ void DoOptions()
 	static long sfx_bak;	//backup sfx volume
 	static long sfx_quality_bak;	//backup sfx quality
 	static long sfx_breath_db = -1;
-	long textY, textY2, special_features_available, joystick, joystick_x, joystick_y, joy1, joy2, joy3;
+	long f, special_features_available, joystick, joystick_x, joystick_y, joy1, joy2, joy3;
 	const char* text;
 	uchar clr, num, num2;
 	char quality_buffer[256];
@@ -297,7 +299,7 @@ void DoOptions()
 		sfx_quality_bak = SoundQuality;
 	}
 
-	textY = font_height - 4;
+	f = font_height - 4;
 
 	if (menu == 1)	//controls menu
 	{
@@ -312,121 +314,120 @@ void DoOptions()
 			num = 17;
 
 		PrintString(phd_centerx >> 2, font_height, selection & 1 ? 1 : 2, SCRIPT_TEXT(TXT_Control_Method), 0);
-		textY = font_height;
-		font_height = long((float)phd_winymax * 0.050000001F);
-		textY2 = font_height + (font_height + (font_height >> 1));
+
+		font_height = GetFixedScale(27);
 
 		if (!ControlMethod)
 		{
-			PrintString(phd_centerx >> 2, textY2 + 1 * font_height, selection & 2 ? 1 : 2, "\x18", 0);
-			PrintString(phd_centerx >> 2, textY2 + 2 * font_height, selection & 4 ? 1 : 2, "\x1A", 0);
-			PrintString(phd_centerx >> 2, textY2 + 3 * font_height, selection & 8 ? 1 : 2, "\x19", 0);
-			PrintString(phd_centerx >> 2, textY2 + 4 * font_height, selection & 0x10 ? 1 : 2, "\x1B", 0);
-			PrintString(phd_centerx >> 2, textY2 + 5 * font_height,  selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Duck), 0);
-			PrintString(phd_centerx >> 2, textY2 + 6 * font_height, selection & 0x40 ? 1 : 2, SCRIPT_TEXT(TXT_Dash), 0);
-			PrintString(phd_centerx >> 2, textY2 + 7 * font_height, selection & 0x80 ? 1 : 2, SCRIPT_TEXT(TXT_Walk), 0);
-			PrintString(phd_centerx >> 2, textY2 + 8 * font_height, selection & 0x100 ? 1 : 2, SCRIPT_TEXT(TXT_Jump), 0);
-			PrintString(phd_centerx >> 2, textY2 + 9 * font_height, selection & 0x200 ? 1 : 2, SCRIPT_TEXT(TXT_Action), 0);
-			PrintString(phd_centerx >> 2, textY2 + 10 * font_height, selection & 0x400 ? 1 : 2, SCRIPT_TEXT(TXT_Draw_Weapon), 0);
-			PrintString(phd_centerx >> 2, textY2 + 11 * font_height, selection & 0x800 ? 1 : 2, SCRIPT_TEXT(TXT_Use_Flare), 0);
-			PrintString(phd_centerx >> 2, textY2 + 12 * font_height, selection & 0x1000 ? 1 : 2, SCRIPT_TEXT(TXT_Look), 0);
-			PrintString(phd_centerx >> 2, textY2 + 13 * font_height, selection & 0x2000 ? 1 : 2, SCRIPT_TEXT(TXT_Roll), 0);
-			PrintString(phd_centerx >> 2, textY2 + 14 * font_height, selection & 0x4000 ? 1 : 2, SCRIPT_TEXT(TXT_Inventory), 0);
-			PrintString(phd_centerx >> 2, textY2 + 15 * font_height, selection & 0x8000 ? 1 : 2, SCRIPT_TEXT(TXT_Step_Left), 0);
-			PrintString(phd_centerx >> 2, textY2 + 16 * font_height, selection & 0x10000 ? 1 : 2, SCRIPT_TEXT(TXT_Step_Right), 0);
+			PrintString(phd_centerx >> 2, 2 * font_height, selection & 2 ? 1 : 2, "\x18", 0);
+			PrintString(phd_centerx >> 2, 3 * font_height, selection & 4 ? 1 : 2, "\x1A", 0);
+			PrintString(phd_centerx >> 2, 4 * font_height, selection & 8 ? 1 : 2, "\x19", 0);
+			PrintString(phd_centerx >> 2, 5 * font_height, selection & 0x10 ? 1 : 2, "\x1B", 0);
+			PrintString(phd_centerx >> 2, 6 * font_height,  selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Duck), 0);
+			PrintString(phd_centerx >> 2, 7 * font_height, selection & 0x40 ? 1 : 2, SCRIPT_TEXT(TXT_Dash), 0);
+			PrintString(phd_centerx >> 2, 8 * font_height, selection & 0x80 ? 1 : 2, SCRIPT_TEXT(TXT_Walk), 0);
+			PrintString(phd_centerx >> 2, 9 * font_height, selection & 0x100 ? 1 : 2, SCRIPT_TEXT(TXT_Jump), 0);
+			PrintString(phd_centerx >> 2, 10 * font_height, selection & 0x200 ? 1 : 2, SCRIPT_TEXT(TXT_Action), 0);
+			PrintString(phd_centerx >> 2, 11 * font_height, selection & 0x400 ? 1 : 2, SCRIPT_TEXT(TXT_Draw_Weapon), 0);
+			PrintString(phd_centerx >> 2, 12 * font_height, selection & 0x800 ? 1 : 2, SCRIPT_TEXT(TXT_Use_Flare), 0);
+			PrintString(phd_centerx >> 2, 13 * font_height, selection & 0x1000 ? 1 : 2, SCRIPT_TEXT(TXT_Look), 0);
+			PrintString(phd_centerx >> 2, 14 * font_height, selection & 0x2000 ? 1 : 2, SCRIPT_TEXT(TXT_Roll), 0);
+			PrintString(phd_centerx >> 2, 15 * font_height, selection & 0x4000 ? 1 : 2, SCRIPT_TEXT(TXT_Inventory), 0);
+			PrintString(phd_centerx >> 2, 16 * font_height, selection & 0x8000 ? 1 : 2, SCRIPT_TEXT(TXT_Step_Left), 0);
+			PrintString(phd_centerx >> 2, 17 * font_height, selection & 0x10000 ? 1 : 2, SCRIPT_TEXT(TXT_Step_Right), 0);
 			text = (waiting_for_key && (controls_selection & 2)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][0]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + font_height, controls_selection & 2 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 2 * font_height, controls_selection & 2 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 4)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][1]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 2 * font_height, controls_selection & 4 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 3 * font_height, controls_selection & 4 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 8)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][2]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 3 * font_height, (controls_selection & 8) != 0 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 4 * font_height, (controls_selection & 8) != 0 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x10)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][3]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 4 * font_height, controls_selection & 0x10 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 5 * font_height, controls_selection & 0x10 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x20)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][4]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 5 * font_height, controls_selection & 0x20 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 6 * font_height, controls_selection & 0x20 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x40)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][5]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 6 * font_height, controls_selection & 0x40 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 7 * font_height, controls_selection & 0x40 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x80)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][6]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 7 * font_height, controls_selection & 0x80 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 8 * font_height, controls_selection & 0x80 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x100)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][7]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 8 * font_height, controls_selection & 0x100 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 9 * font_height, controls_selection & 0x100 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x200)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][8]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 9 * font_height, controls_selection & 0x200 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 10 * font_height, controls_selection & 0x200 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x400)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][9]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 10 * font_height, controls_selection & 0x400 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 11 * font_height, controls_selection & 0x400 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x800)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][10]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 11 * font_height, controls_selection & 0x800 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 12 * font_height, controls_selection & 0x800 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x1000)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][11]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 12 * font_height, controls_selection & 0x1000 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 13 * font_height, controls_selection & 0x1000 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x2000)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][12]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 13 * font_height, controls_selection & 0x2000 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 14 * font_height, controls_selection & 0x2000 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x4000)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][13]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 14 * font_height, controls_selection & 0x4000 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 15 * font_height, controls_selection & 0x4000 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x8000)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][14]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 15 * font_height, controls_selection & 0x8000 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 16 * font_height, controls_selection & 0x8000 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x10000)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][15]];
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 16 * font_height, controls_selection & 0x10000 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 17 * font_height, controls_selection & 0x10000 ? 1 : 6, text, 0);
 		}
 
 		if (ControlMethod == 1)
 		{
-			PrintString(phd_centerx >> 2, textY2 + 5 * font_height, selection & 2 ? 1 : 2, SCRIPT_TEXT(TXT_Duck), 0);
-			PrintString(phd_centerx >> 2, textY2 + 6 * font_height, selection & 4 ? 1 : 2, SCRIPT_TEXT(TXT_Dash), 0);
-			PrintString(phd_centerx >> 2, textY2 + 7 * font_height, selection & 8 ? 1 : 2, SCRIPT_TEXT(TXT_Walk), 0);
-			PrintString(phd_centerx >> 2, textY2 + 8 * font_height, selection & 0x10 ? 1 : 2, SCRIPT_TEXT(TXT_Jump), 0);
-			PrintString(phd_centerx >> 2, textY2 + 9 * font_height, selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Action), 0);
-			PrintString(phd_centerx >> 2, textY2 + 10 * font_height, selection & 0x40 ? 1 : 2, SCRIPT_TEXT(TXT_Draw_Weapon), 0);
-			PrintString(phd_centerx >> 2, textY2 + 11 * font_height, selection & 0x80 ? 1 : 2, SCRIPT_TEXT(TXT_Use_Flare), 0);
-			PrintString(phd_centerx >> 2, textY2 + 12 * font_height, selection & 0x100 ? 1 : 2, SCRIPT_TEXT(TXT_Look), 0);
-			PrintString(phd_centerx >> 2, textY2 + 13 * font_height, selection & 0x200 ? 1 : 2, SCRIPT_TEXT(TXT_Roll), 0);
-			PrintString(phd_centerx >> 2, textY2 + 14 * font_height, selection & 0x400 ? 1 : 2, SCRIPT_TEXT(TXT_Inventory), 0);
+			PrintString(phd_centerx >> 2, 3 * font_height, selection & 2 ? 1 : 2, SCRIPT_TEXT(TXT_Duck), 0);
+			PrintString(phd_centerx >> 2, 4 * font_height, selection & 4 ? 1 : 2, SCRIPT_TEXT(TXT_Dash), 0);
+			PrintString(phd_centerx >> 2, 5 * font_height, selection & 8 ? 1 : 2, SCRIPT_TEXT(TXT_Walk), 0);
+			PrintString(phd_centerx >> 2, 6 * font_height, selection & 0x10 ? 1 : 2, SCRIPT_TEXT(TXT_Jump), 0);
+			PrintString(phd_centerx >> 2, 7 * font_height, selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Action), 0);
+			PrintString(phd_centerx >> 2, 8 * font_height, selection & 0x40 ? 1 : 2, SCRIPT_TEXT(TXT_Draw_Weapon), 0);
+			PrintString(phd_centerx >> 2, 9 * font_height, selection & 0x80 ? 1 : 2, SCRIPT_TEXT(TXT_Use_Flare), 0);
+			PrintString(phd_centerx >> 2, 10 * font_height, selection & 0x100 ? 1 : 2, SCRIPT_TEXT(TXT_Look), 0);
+			PrintString(phd_centerx >> 2, 11 * font_height, selection & 0x200 ? 1 : 2, SCRIPT_TEXT(TXT_Roll), 0);
+			PrintString(phd_centerx >> 2, 12 * font_height, selection & 0x400 ? 1 : 2, SCRIPT_TEXT(TXT_Inventory), 0);
 
-			for (int i = 0; i < 10; i++)
+			for (int i = 0, f = 3; i < 10; i++, f++)
 			{
 				sprintf(quality_buffer, "(%s)", keyboard_buttons[layout[1][i + 4]]);
-				PrintString((phd_centerx >> 3) + phd_centerx + (phd_centerx >> 1), textY2 + font_height * (i + 5), 5, quality_buffer, 0);
+				PrintString(phd_centerx + (phd_centerx >> 3) + (phd_centerx >> 1), f * font_height, 5, quality_buffer, 0);
 			}
 
 			text = (waiting_for_key && (controls_selection & 2)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[0]];
 			clr = (waiting_for_key && (selection & 2)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 5 * font_height, clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 3 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 4)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[1]];
 			clr = (waiting_for_key && (selection & 4)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 6 * font_height, clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 4 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 8)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[2]];
 			clr = (waiting_for_key && (selection & 8)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 7 * font_height, clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 5 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x10)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[3]];
 			clr = (waiting_for_key && (selection & 0x10)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 8 * font_height, clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 6 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x20)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[4]];
 			clr = (waiting_for_key && (selection & 0x20)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 9 * font_height, clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 7 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x40)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[5]];
 			clr = (waiting_for_key && (selection & 0x40)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 10 * font_height, clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 8 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x80)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[6]];
 			clr = (waiting_for_key && (selection & 0x80)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 11 * font_height, clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 9 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x100)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[7]];
 			clr = (waiting_for_key && (selection & 0x100)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 12 * font_height, clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 10 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x200)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[8]];
 			clr = (waiting_for_key && (selection & 0x200)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 13 * font_height, clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 11 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x400)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[9]];
 			clr = (waiting_for_key && (selection & 0x400)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), textY2 + 14 * font_height, clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 12 * font_height, clr, text, 0);
 		}
 
 		font_height = default_font_height;
 
 		if (!ControlMethod)
-			PrintString(phd_centerx + (phd_centerx >> 2), textY, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Keyboard), 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), font_height, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Keyboard), 0);
 		else if (ControlMethod == 1)
-			PrintString(phd_centerx + (phd_centerx >> 2), textY, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Joystick), 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), font_height, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Joystick), 0);
 		else if (ControlMethod == 2)
-			PrintString(phd_centerx + (phd_centerx >> 2), textY, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Reset), 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), font_height, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Reset), 0);
 
 		if (ControlMethod < 2 && !waiting_for_key)
 		{
@@ -574,35 +575,35 @@ void DoOptions()
 	}
 	else if (menu == 100)	//special features
 	{
-		PrintString(phd_centerx, textY + 3 * font_height, 6, SCRIPT_TEXT(TXT_Special_Features), FF_CENTER);
+		PrintString(phd_centerx, f + 3 * font_height, 6, SCRIPT_TEXT(TXT_Special_Features), FF_CENTER);
 
 		if (SpecialFeaturesPage[0])
 			clr = selection & 1 ? 1 : 2;
 		else
 			clr = 3;
 
-		PrintString(phd_centerx, textY + 5 * font_height, clr, SCRIPT_TEXT(TXT_Storyboards_Part_1), FF_CENTER);
+		PrintString(phd_centerx, f + 5 * font_height, clr, SCRIPT_TEXT(TXT_Storyboards_Part_1), FF_CENTER);
 
 		if (SpecialFeaturesPage[1])
 			clr = selection & 2 ? 1 : 2;
 		else
 			clr = 3;
 
-		PrintString(phd_centerx, textY + 6 * font_height, clr, SCRIPT_TEXT(TXT_Next_Generation_Concept), FF_CENTER);
+		PrintString(phd_centerx, f + 6 * font_height, clr, SCRIPT_TEXT(TXT_Next_Generation_Concept), FF_CENTER);
 
 		if (SpecialFeaturesPage[2])
 			clr = selection & 4 ? 1 : 2;
 		else
 			clr = 3;
 
-		PrintString(phd_centerx, textY + 7 * font_height, clr, SCRIPT_TEXT(TXT_Storyboards_Part_2), FF_CENTER);
+		PrintString(phd_centerx, f + 7 * font_height, clr, SCRIPT_TEXT(TXT_Storyboards_Part_2), FF_CENTER);
 
 		if (SpecialFeaturesPage[3])
 			clr = selection & 8 ? 1 : 2;
 		else
 			clr = 3;
 
-		PrintString(phd_centerx, textY + 8 * font_height, clr, "Gallery", FF_CENTER);
+		PrintString(phd_centerx, f + 8 * font_height, clr, "Gallery", FF_CENTER);
 
 		if (NumSpecialFeatures)
 		{
@@ -651,16 +652,16 @@ void DoOptions()
 	}
 	else if (menu == 0)	//main options menu
 	{
-		textY= 3 * font_height;
+		f= 3 * font_height;
 		num = 6;
 		PrintString(phd_centerx, 3 * font_height, 6, SCRIPT_TEXT(TXT_Options), FF_CENTER);
-		PrintString(phd_centerx, textY + font_height + (font_height >> 1), selection & 1 ? 1 : 2, SCRIPT_TEXT(TXT_Control_Configuration), FF_CENTER);
-		PrintString(phd_centerx >> 2, textY + 3 * font_height, selection & 2 ? 1 : 2, SCRIPT_TEXT(TXT_Music_Volume), 0);
-		PrintString(phd_centerx >> 2, textY + 4 * font_height, selection & 4 ? 1 : 2, SCRIPT_TEXT(TXT_SFX_Volume), 0);
-		PrintString(phd_centerx >> 2, textY + 5 * font_height, selection & 8 ? 1 : 2, SCRIPT_TEXT(TXT_Sound_Quality), 0);
-		PrintString(phd_centerx >> 2, textY + 6 * font_height, selection & 0x10 ? 1 : 2, SCRIPT_TEXT(TXT_Targeting), 0);
-		DoSlider(400, 3 * font_height - (font_height >> 1) + textY + 4, 200, 16, MusicVolume, 0xFF1F1F1F, 0xFF3F3FFF, music_volume_bar_shade);
-		DoSlider(400, textY + 4 * font_height + 4 - (font_height >> 1), 200, 16, SFXVolume, 0xFF1F1F1F, 0xFF3F3FFF, sfx_volume_bar_shade);
+		PrintString(phd_centerx, f + font_height + (font_height >> 1), selection & 1 ? 1 : 2, SCRIPT_TEXT(TXT_Control_Configuration), FF_CENTER);
+		PrintString(phd_centerx >> 2, f + 3 * font_height, selection & 2 ? 1 : 2, SCRIPT_TEXT(TXT_Music_Volume), 0);
+		PrintString(phd_centerx >> 2, f + 4 * font_height, selection & 4 ? 1 : 2, SCRIPT_TEXT(TXT_SFX_Volume), 0);
+		PrintString(phd_centerx >> 2, f + 5 * font_height, selection & 8 ? 1 : 2, SCRIPT_TEXT(TXT_Sound_Quality), 0);
+		PrintString(phd_centerx >> 2, f + 6 * font_height, selection & 0x10 ? 1 : 2, SCRIPT_TEXT(TXT_Targeting), 0);
+		DoSlider(400, 3 * font_height - (font_height >> 1) + f + 4, 200, 16, MusicVolume, 0xFF1F1F1F, 0xFF3F3FFF, music_volume_bar_shade);
+		DoSlider(400, f + 4 * font_height + 4 - (font_height >> 1), 200, 16, SFXVolume, 0xFF1F1F1F, 0xFF3F3FFF, sfx_volume_bar_shade);
 
 		switch (SoundQuality)
 		{
@@ -677,28 +678,28 @@ void DoOptions()
 			break;
 		}
 
-		PrintString(phd_centerx + (phd_centerx >> 2), textY + 5 * font_height, selection & 8 ? 1 : 6, quality_text, 0);
+		PrintString(phd_centerx + (phd_centerx >> 2), f + 5 * font_height, selection & 8 ? 1 : 6, quality_text, 0);
 
 		if (App.AutoTarget)
 			strcpy(quality_text, SCRIPT_TEXT(TXT_Automatic));
 		else
 			strcpy(quality_text, SCRIPT_TEXT(TXT_Manual));
 
-		PrintString(phd_centerx + (phd_centerx >> 2), textY + 6 * font_height, selection & 0x10 ? 1 : 6, quality_text, 0);
+		PrintString(phd_centerx + (phd_centerx >> 2), f + 6 * font_height, selection & 0x10 ? 1 : 6, quality_text, 0);
 		special_features_available = 0x20;	//not the most accurate name
 
 		if (gfGameMode == 1)
 		{
 			num = 7;
-			PrintString(phd_centerx, (font_height >> 1) + textY + 7 * font_height, selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Special_Features), FF_CENTER);
+			PrintString(phd_centerx, (font_height >> 1) + f + 7 * font_height, selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Special_Features), FF_CENTER);
 		}
 		else
 			special_features_available = 0;
 
 		if (special_features_available)
-			PrintString(phd_centerx, (font_height >> 1) + textY + 8 * font_height, selection & 0x40 ? 1 : 2, "tomb5 options", FF_CENTER);
+			PrintString(phd_centerx, (font_height >> 1) + f + 8 * font_height, selection & 0x40 ? 1 : 2, "tomb5 options", FF_CENTER);
 		else
-			PrintString(phd_centerx, (font_height >> 1) + textY + 7 * font_height, selection & 0x20 ? 1 : 2, "tomb5 options", FF_CENTER);
+			PrintString(phd_centerx, (font_height >> 1) + f + 7 * font_height, selection & 0x20 ? 1 : 2, "tomb5 options", FF_CENTER);
 
 		if (dbinput & IN_FORWARD)
 		{
@@ -840,7 +841,7 @@ void DoOptions()
 		}
 	}
 	else if (menu == 200)
-		TroyeMenu(textY, menu, selection, selection_bak);
+		TroyeMenu(font_height - (font_height >> 1), menu, selection, selection_bak);
 }
 
 void CreateMonoScreen()

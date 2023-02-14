@@ -9,7 +9,6 @@
 #include "../specific/gamemain.h"
 
 CVECTOR FontShades[10][32];
-long small_font;
 long font_height;
 long default_font_height;
 long GnFrameCounter;
@@ -494,7 +493,7 @@ void InitFont()
 		CharDef[i].YOffset = yoff;
 	}
 
-	font_height = long(float(7.0F * phd_winymax / 120.0F));
+	font_height = GetFixedScale(28);
 	default_font_height = font_height;
 }
 

@@ -412,7 +412,11 @@ long TitleOptions()
 	switch (menu)
 	{
 	case 1://select level menu
-		PrintString(phd_centerx, font_height + phd_winymin, 6, SCRIPT_TEXT(TXT_Select_Level), FF_CENTER);
+
+		font_height = GetFixedScale(36);
+		y = font_height;
+		PrintString(phd_centerx, font_height, 6, SCRIPT_TEXT(TXT_Select_Level), FF_CENTER);
+		y += font_height;
 
 		if (Gameflow->nLevels >= 10)
 		{
@@ -432,8 +436,8 @@ long TitleOptions()
 			{
 				if (nFirst > 1)
 				{
-					PrintString(32, 3 * font_height + phd_winymin, 6, "\x18", 0);
-					PrintString(phd_winxmax - 48, 3 * font_height + phd_winymin, 6, "\x18", 0);
+					PrintString(32, y + font_height, 6, "\x18", 0);
+					PrintString(phd_winxmax - 48, y + font_height, 6, "\x18", 0);
 				}
 			}
 			else
@@ -441,8 +445,8 @@ long TitleOptions()
 
 			if (n != Gameflow->nLevels - 1)
 			{
-				PrintString(32, 2 * font_height + phd_winymin + (10 * font_height), 6, "\x1a", 0);
-				PrintString(phd_winxmax - 48, 2 * font_height + phd_winymin + (10 * font_height), 6, "\x1a", 0);
+				PrintString(32, y + (nLevels * font_height), 6, "\x1a", 0);
+				PrintString(phd_winxmax - 48, y + (nLevels * font_height), 6, "\x1a", 0);
 			}
 		}
 		else
@@ -451,7 +455,7 @@ long TitleOptions()
 			nLevels = Gameflow->nLevels - 1;
 		}
 
-		y = 2 * font_height + phd_winymin;
+		y = 2 * font_height;
 
 		for (lp = nFirst; lp < nFirst + nLevels; lp++)
 		{
@@ -467,6 +471,7 @@ long TitleOptions()
 		}
 
 		flag = 1i64 << (Gameflow->nLevels - 2);
+		font_height = default_font_height;
 		break;
 
 	case 2://loading menu
@@ -491,13 +496,14 @@ long TitleOptions()
 		SuperShowLogo();
 		Chris_Menu = 0;
 
+		font_height = GetFixedScale(36);
 		PrintString(phd_centerx, phd_winymax - 4 * font_height, (selection & 1) ? 1 : 2, SCRIPT_TEXT(TXT_New_Game), FF_CENTER);
-		PrintString(phd_centerx, (phd_winymax - 4 * font_height) + font_height, (selection & 2) ? 1 : 2, SCRIPT_TEXT(TXT_Load_Game), FF_CENTER);
-		PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 2 * font_height, (selection & 4) ? 1 : 2, SCRIPT_TEXT(TXT_Options), FF_CENTER);
-		PrintString(phd_centerx, (phd_winymax - 4 * font_height) + 3 * font_height, (selection & 8) ? 1 : 2, SCRIPT_TEXT(TXT_Exit), FF_CENTER);
+		PrintString(phd_centerx, phd_winymax - 3 * font_height, (selection & 2) ? 1 : 2, SCRIPT_TEXT(TXT_Load_Game), FF_CENTER);
+		PrintString(phd_centerx, phd_winymax - 2 * font_height, (selection & 4) ? 1 : 2, SCRIPT_TEXT(TXT_Options), FF_CENTER);
+		PrintString(phd_centerx, phd_winymax - 1 * font_height, (selection & 8) ? 1 : 2, SCRIPT_TEXT(TXT_Exit), FF_CENTER);
+		font_height = default_font_height;
 
 		flag = 8;
-
 		break;
 
 	case 3://options menu
@@ -715,7 +721,7 @@ long do_dels_cutseq_selector()
 	static uchar selection = 0;
 
 	ret = 0;
-	PrintString(phd_centerx, font_height + phd_winymin, 6, SCRIPT_TEXT(TXT_cut0), FF_CENTER);
+	PrintString(phd_centerx, font_height, 6, SCRIPT_TEXT(TXT_cut0), FF_CENTER);
 	num = selection - 4;
 
 	if (num < 0)

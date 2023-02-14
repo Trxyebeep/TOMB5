@@ -4,7 +4,6 @@
 void ClearSurfaces();
 bool WinRunCheck(LPSTR WindowName, LPSTR ClassName, HANDLE* mutex);
 float WinFrameRate();
-void WinDisplayString(long x, long y, char* string, ...);
 void WinProcMsg();
 void WinProcessCommands(long cmd);
 void WinProcessCommandLine(LPSTR cmd);

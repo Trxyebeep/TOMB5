@@ -1905,7 +1905,7 @@ void draw_ammo_selector()
 		}
 		
 		DrawThreeDeeObject2D(long(phd_centerx / 256.0F * 64.0F + inventry_xpos + xpos),
-			long(phd_centery / 12.0F * 190.0F + inventry_ypos), invitem,
+			long(phd_centery / 120.0F * 190.0F + inventry_ypos), invitem,
 			ammo_selector_fade_val, 0, yrot, 0, (i == current_ammo_type[0]) ? 0 : 1, 0);
 
 		xpos += OBJLIST_SPACING;
