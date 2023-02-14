@@ -741,7 +741,7 @@ void RenderLoadPic(long unused)
 		RenderIt(camera.pos.room_number);
 
 		if (tomb5.loadingtxt && tomb5.tr4_loadbar)
-			PrintString((ushort)phd_centerx, ushort((float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1)),
+			PrintString(phd_centerx, long(float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1),
 				5, SCRIPT_TEXT(TXT_LOADING2), FF_CENTER);
 
 		S_OutputPolyList();
@@ -754,7 +754,7 @@ void RenderLoadPic(long unused)
 	RenderIt(camera.pos.room_number);
 
 	if (tomb5.loadingtxt && tomb5.tr4_loadbar)
-		PrintString((ushort)phd_centerx, ushort((float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1)),
+		PrintString(phd_centerx, long(float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1),
 			5, SCRIPT_TEXT(TXT_LOADING2), FF_CENTER);
 
 	S_OutputPolyList();

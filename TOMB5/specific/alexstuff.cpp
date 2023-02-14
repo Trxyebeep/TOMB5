@@ -386,8 +386,6 @@ char* aFetchCutData(long n)
 	return data;
 }
 
-#pragma warning(push)
-#pragma warning(disable : 4244)
 long DoCredits()
 {
 	const char* s;
@@ -434,4 +432,3 @@ long DoCredits()
 
 	return num_drawn;
 }
-#pragma warning(pop)

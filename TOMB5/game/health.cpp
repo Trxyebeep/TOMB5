@@ -44,9 +44,9 @@ long FlashIt()
 
 void DrawGameInfo(long timed)
 {
-	long flash_state, seconds;
+	long flash_state, seconds, btm;
 	char buf[80];
-	short ammo, btm;
+	short ammo;
 
 	if (!GLOBAL_playing_cutseq && !bDisableLaraControl && gfGameMode != 1)
 	{
@@ -91,7 +91,7 @@ void DrawGameInfo(long timed)
 
 					sprintf(&buf[0], "%i", ammo);
 					GetStringLength(buf, 0, &btm);
-					PrintString(LaserSight ? ushort(phd_centerx + 30) : ushort(phd_winxmax - GetStringLength(buf, 0, 0) - 80), phd_winymax - btm - 70, 0, &buf[0], 0);
+					PrintString(LaserSight ? phd_centerx + 30 : phd_winxmax - GetStringLength(buf, 0, 0) - 80, phd_winymax - btm - 70, 0, &buf[0], 0);
 				}
 			}
 		}
@@ -99,7 +99,7 @@ void DrawGameInfo(long timed)
 		if (ammo_change_timer)
 		{
 			ammo_change_timer--;
-			PrintString(ushort(phd_winwidth >> 1), (ushort)font_height, 5, ammo_change_buf, 0x8000);
+			PrintString(phd_winwidth >> 1, font_height, 5, ammo_change_buf, FF_CENTER);
 
 			if (ammo_change_timer <= 0)
 				ammo_change_timer = 0;

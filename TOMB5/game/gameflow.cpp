@@ -364,8 +364,6 @@ void DoGameflow()
 	}
 }
 
-#pragma warning(push)
-#pragma warning(disable : 4244)
 long TitleOptions()
 {
 	static __int64 selection = 1;
@@ -460,9 +458,9 @@ long TitleOptions()
 			y += font_height;
 
 			if (selection & (1i64 << (lp - 1)))
-				PrintString(phd_centerx, (ushort)y, 1, SCRIPT_TEXT(gfLevelNames[lp]), FF_CENTER);
+				PrintString(phd_centerx, y, 1, SCRIPT_TEXT(gfLevelNames[lp]), FF_CENTER);
 			else
-				PrintString(phd_centerx, (ushort)y, available_levels[lp - 1] ? 2 : 3, SCRIPT_TEXT(gfLevelNames[lp]), FF_CENTER);
+				PrintString(phd_centerx, y, available_levels[lp - 1] ? 2 : 3, SCRIPT_TEXT(gfLevelNames[lp]), FF_CENTER);
 
 			if (selection & (1i64 << (lp - 1)))
 				selected_level = lp - 1;
@@ -620,7 +618,6 @@ long TitleOptions()
 
 	return ret;
 }
-#pragma warning(pop)
 
 void DoTitle(uchar name, uchar audio)
 {
@@ -718,7 +715,7 @@ long do_dels_cutseq_selector()
 	static uchar selection = 0;
 
 	ret = 0;
-	PrintString((ushort)phd_centerx, ushort(font_height + phd_winymin), 6, SCRIPT_TEXT(TXT_cut0), FF_CENTER);
+	PrintString(phd_centerx, font_height + phd_winymin, 6, SCRIPT_TEXT(TXT_cut0), FF_CENTER);
 	num = selection - 4;
 
 	if (num < 0)
@@ -732,7 +729,7 @@ long do_dels_cutseq_selector()
 
 	for (int i = 0; num < 36 && i < 5; i++)
 	{
-		PrintString((ushort)phd_centerx, ushort(i * font_height + 136), (selection == num) ? 1 : 5, SCRIPT_TEXT(cutsel[num + 1].string), FF_CENTER);
+		PrintString(phd_centerx, i * font_height + 136, (selection == num) ? 1 : 5, SCRIPT_TEXT(cutsel[num + 1].string), FF_CENTER);
 		num++;
 	}
 
@@ -848,7 +845,7 @@ void DoLevel(uchar Name, uchar Audio)
 
 		if (gfLegendTime && !DestFadeScreenHeight && !FadeScreenHeight && !cutseq_num)
 		{
-			PrintString(ushort(phd_winwidth >> 1), ushort(phd_winymax - font_height), 2, SCRIPT_TEXT(gfLegend), FF_CENTER);
+			PrintString(phd_winwidth >> 1, phd_winymax - font_height, 2, SCRIPT_TEXT(gfLegend), FF_CENTER);
 			gfLegendTime--;
 		}
 

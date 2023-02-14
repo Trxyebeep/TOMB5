@@ -1172,8 +1172,8 @@ void insert_object_into_list(long num)
 
 void draw_current_object_list(long ringnum)
 {
-	long n, maxobj, xoff, shade, minobj, objmeup, nummeup, activenum;
-	short ymeup, yrot;
+	long n, maxobj, xoff, shade, minobj, objmeup, nummeup, activenum, ymeup;
+	short yrot;
 	char textbufme[128];
 
 	if (rings[ringnum]->numobjectsinlist <= 0)
@@ -1366,11 +1366,11 @@ void draw_current_object_list(long ringnum)
 				sprintf(textbufme, "%d x %s", nummeup, SCRIPT_TEXT(inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname));
 
 			if (ringnum == RING_INVENTORY)
-				ymeup = short(phd_centery - (phd_winymax + 1) / 16.0F * 3.0F);
+				ymeup = long(phd_centery - (phd_winymax + 1) / 16.0F * 3.0F);
 			else
-				ymeup = short((phd_winymax + 1) / 16.0F * 3.0F + phd_centery);
+				ymeup = long((phd_winymax + 1) / 16.0F * 3.0F + phd_centery);
 
-			PrintString((ushort)phd_centerx, ymeup, 8, textbufme, FF_CENTER);
+			PrintString(phd_centerx, ymeup, 8, textbufme, FF_CENTER);
 		}
 
 		if (!i && !rings[ringnum]->objlistmovement)
@@ -1489,7 +1489,7 @@ void handle_inventry_menu()
 
 	if (rings[RING_AMMO]->ringactive)
 	{
-		PrintString((ushort)phd_centerx, (ushort)phd_centery, 1, SCRIPT_TEXT(optmessages[5]), FF_CENTER);
+		PrintString(phd_centerx, phd_centery, 1, SCRIPT_TEXT(optmessages[5]), FF_CENTER);
 
 		if (rings[RING_INVENTORY]->objlistmovement || rings[RING_AMMO]->objlistmovement)
 			return;
@@ -1631,7 +1631,7 @@ void handle_inventry_menu()
 
 	for (int i = 0; i < n; i++)
 	{
-		PrintString((ushort)phd_centerx, (ushort)ypos, i == current_selected_option ? 1 : 5, current_options[i].text, FF_CENTER);
+		PrintString(phd_centerx, ypos, i == current_selected_option ? 1 : 5, current_options[i].text, FF_CENTER);
 		ypos += font_height;
 	}
 
@@ -1901,7 +1901,7 @@ void draw_ammo_selector()
 				sprintf(cunter, "%d x %s", ammo_object_list[i].amount, SCRIPT_TEXT(inventry_objects_list[invitem].objname));
 
 			if (ammo_selector_fade_val)
-				PrintString((ushort)phd_centerx, ushort(phd_centery + 3 * font_height - 9), 8, cunter, FF_CENTER);
+				PrintString(phd_centerx, phd_centery + 3 * font_height - 9, 8, cunter, FF_CENTER);
 		}
 		
 		DrawThreeDeeObject2D(long(phd_centerx / 256.0F * 64.0F + inventry_xpos + xpos),
@@ -2882,7 +2882,7 @@ void do_keypad_mode()
 	x = long(phd_centerx / 256.0F * 256.0F + inventry_xpos);
 	y = long((phd_centery / 120.0F * 256.0F + inventry_ypos) / 2);
 	DrawThreeDeeObject2D(x, y, INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
-	PrintString(256, ushort(y - 64), 6, SCRIPT_TEXT(TXT_keypad), FF_CENTER);
+	PrintString(256, y - 64, 6, SCRIPT_TEXT(TXT_keypad), FF_CENTER);
 
 	buf[0] = '-';
 	buf[1] = '-';
@@ -2893,7 +2893,7 @@ void do_keypad_mode()
 	for (int i = 0; i < keypadnuminputs; i++)
 		buf[i] = keypadinputs[i] + '0';
 
-	PrintString(256, ushort(y + 64), 1, buf, FF_CENTER);
+	PrintString(256, y + 64, 1, buf, FF_CENTER);
 
 	if (keypadpause)
 	{

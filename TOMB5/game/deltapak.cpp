@@ -3251,7 +3251,7 @@ void frigup_lara()
 	short* frame;
 
 	if (cutseq_num == 18 && GLOBAL_cutseq_frame <= 130)
-		PrintString((ushort)phd_centerx, ushort(phd_winymax - 3 * font_height), 5, SCRIPT_TEXT(TXT_cack), FF_CENTER);
+		PrintString(phd_centerx, phd_winymax - 3 * font_height, 5, SCRIPT_TEXT(TXT_cack), FF_CENTER);
 
 	lara_item->pos.x_pos = GLOBAL_cutme->orgx;
 	lara_item->pos.y_pos = GLOBAL_cutme->orgy;
