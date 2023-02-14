@@ -2758,7 +2758,7 @@ void DoUwEffect()
 {
 	UWEFFECTS* p;
 	SPRITESTRUCT* sprite;
-	D3DTLVERTEX v[3];
+	D3DTLVERTEX* v;
 	TEXTURESTRUCT tex;
 	PHD_VECTOR pos;
 	long* Z;
@@ -2767,6 +2767,7 @@ void DoUwEffect()
 	float perspz;
 	long num_alive, rad, ang, x, y, z, size, col, yv;
 
+	v = aVertexBuffer;
 	num_alive = 0;
 
 	for (int i = 0; i < 256; i++)
@@ -2860,17 +2861,15 @@ void DoUwEffect()
 		if (XY[0] < phd_winxmin || XY[0] > phd_winxmax || XY[1] < phd_winymin || XY[1] > phd_winymax)
 			continue;
 
-		size = (phd_persp * (p->yv >> 3)) / (Z[0] >> 4);
+		size = phd_persp * (p->yv >> 3) / (Z[0] >> 2);
 
-		if (size < 1)
-			size = 6;
-		else if (size > 12)
-			size = 12;
+		if (size < 4)
+			size = 4;
+		else if (size > 16)
+			size = 16;
 
-		size = (0x5556 * size) >> 16;
-
-		if (phd_winwidth > 512)
-			size = long(float(phd_winwidth / 512.0F) * (float)size);
+		size = (size * 0x2AAB) >> 15;
+		size = GetFixedScale(size) >> 1;
 
 		if ((p->yv & 7) == 7)
 		{
@@ -2885,23 +2884,32 @@ void DoUwEffect()
 			col = (yv | ((yv | ((yv | 0xFFFFFF80) << 8)) << 8)) << 1;	//decipher me
 		}
 
-		setXY3(v, XY[0] + size, XY[1] - (size << 1), XY[0] + size, XY[1] + size, XY[0] - (size << 1), XY[1] + size, Z[0], clipflags);
+		setXY4(v, XY[0] + size, XY[1] - (size << 1), XY[0] + size, XY[1] + size,
+			XY[0] - (size << 1), XY[1] + size, XY[0] - (size << 1), XY[1] - (size << 1), Z[0], clipflags);
+
 		v[0].color = col;
 		v[1].color = col;
 		v[2].color = col;
+		v[3].color = col;
 		v[0].specular = 0xFF000000;
 		v[1].specular = 0xFF000000;
 		v[2].specular = 0xFF000000;
+		v[3].specular = 0xFF000000;
+
 		tex.drawtype = 2;
 		tex.flag = 0;
 		tex.tpage = sprite->tpage;
+
 		tex.u1 = sprite->x2;
 		tex.v1 = sprite->y1;
 		tex.u2 = sprite->x2;
 		tex.v2 = sprite->y2;
 		tex.u3 = sprite->x1;
 		tex.v3 = sprite->y2;
-		AddTriSorted(v, 0, 1, 2, &tex, 0);
+		tex.u4 = sprite->x1;
+		tex.v4 = sprite->y1;
+
+		AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
 	}
 
 	phd_PopMatrix();
