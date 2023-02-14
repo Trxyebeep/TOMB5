@@ -33,6 +33,7 @@
 #include "../game/effects.h"
 #include "../game/effect2.h"
 #include "../game/lara.h"
+#include "drawbars.h"
 #include "../tomb5/tomb5.h"
 
 TEXTURESTRUCT* textinfo;

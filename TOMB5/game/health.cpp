@@ -4,7 +4,6 @@
 #include "newinv2.h"
 #include "objects.h"
 #include "../specific/output.h"
-#include "../specific/LoadSave.h"
 #include "text.h"
 #include "deltapak.h"
 #include "camera.h"
@@ -16,6 +15,7 @@
 #include "larafire.h"
 #include "../specific/input.h"
 #include "../tomb5/tomb5.h"
+#include "../specific/drawbars.h"
 
 DISPLAYPU pickups[8];
 short PickupX;

@@ -340,6 +340,7 @@
     <ClCompile Include="TOMB5\tomb5\libs\zlib\inflate.c" />
     <ClCompile Include="TOMB5\tomb5\libs\zlib\inftrees.c" />
     <ClCompile Include="TOMB5\tomb5\libs\zlib\zutil.c" />
+    <ClCompile Include="TOMB5\specific\drawbars.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -671,6 +672,7 @@
     <ClInclude Include="TOMB5\specific\cmdline.h" />
     <ClInclude Include="TOMB5\specific\clipping.h" />
     <ClInclude Include="TOMB5\tomb5\libs\zlib\zlib.h" />
+    <ClInclude Include="TOMB5\specific\drawbars.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tomb5.rc" />
