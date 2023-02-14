@@ -471,7 +471,7 @@ void SkyDrawPhase()
 
 		if (gfCurrentLevel == LVL5_GALLOWS_TREE || gfCurrentLevel == LVL5_LABYRINTH || gfCurrentLevel == LVL5_OLD_MILL)
 		{
-			DrawStarField();
+			DrawStars();
 			OutputSky();
 		}
 

@@ -27,6 +27,8 @@
 #include "gamemain.h"
 #include "../game/draw.h"
 #include "../tomb5/tomb5.h"
+#include "../game/lara_states.h"
+#include "../game/deltapak.h"
 
 long DoFade;
 long snow_outside;
@@ -6021,72 +6023,164 @@ static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 static void S_PrintSpriteShadow(short size, short* box, ITEM_INFO* item)
 {
 	SPRITESTRUCT* sprite;
-	TEXTURESTRUCT Tex;
-	D3DTLVERTEX v[4];
-	FVECTOR pos;
-	float xSize, zSize, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
-	long opt;
+	D3DTLVERTEX* v;
+	TEXTURESTRUCT tex;
+	PHD_VECTOR pos;
+	long* sXYZ;
+	long* hXZ;
+	long* hY;
+	float uStep, vStep;
+	long sxyz[GRID_POINTS * 3];
+	long hxz[GRID_POINTS * 2];
+	long hy[GRID_POINTS];
+	long p, x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, xSize, zSize, xDist, zDist;
+	short room_number, anim;
 
-	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 11];
-	xSize = float(size * (box[1] - box[0]) / 160) / 2;
-	zSize = float(size * (box[5] - box[4]) / 160) / 2;
+	v = aVertexBuffer;
+	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
+	uStep = (sprite->x2 - sprite->x1) / (LINE_POINTS - 1);
+	vStep = (sprite->y2 - sprite->y1) / (LINE_POINTS - 1);
 
-	phd_PushMatrix();
-	phd_TranslateAbs(item->pos.x_pos, item->floor, item->pos.z_pos);
-	phd_RotY(item->pos.y_rot);
+	xSize = size * (box[1] - box[0]) / 128;
+	zSize = size * (box[5] - box[4]) / 128;
+	xDist = xSize / LINE_POINTS;
+	zDist = zSize / LINE_POINTS;
+	x = -xDist - (xDist >> 1);
+	z = zDist + (zDist >> 1);
+	sXYZ = sxyz;
+	hXZ = hxz;
 
-	pos.x = -xSize;
-	pos.y = -16;
-	pos.z = zSize;
-	x1 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
-	y1 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
-	z1 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
-
-	pos.x = xSize;
-	pos.y = -16;
-	pos.z = zSize;
-	x2 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
-	y2 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
-	z2 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
-
-	pos.x = xSize;
-	pos.y = -16;
-	pos.z = -zSize;
-	x3 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
-	y3 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
-	z3 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
-
-	pos.x = -xSize;
-	pos.y = -16;
-	pos.z = -zSize;
-	x4 = aMXPtr[M00] * pos.x + aMXPtr[M01] * pos.y + aMXPtr[M02] * pos.z + aMXPtr[M03];
-	y4 = aMXPtr[M10] * pos.x + aMXPtr[M11] * pos.y + aMXPtr[M12] * pos.z + aMXPtr[M13];
-	z4 = aMXPtr[M20] * pos.x + aMXPtr[M21] * pos.y + aMXPtr[M22] * pos.z + aMXPtr[M23];
-	phd_PopMatrix();
-
-	setXYZ4(v, (long)x1, (long)y1, (long)z1, (long)x2, (long)y2, (long)z2, (long)x3, (long)y3, (long)z3, (long)x4, (long)y4, (long)z4, clipflags);
-
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < LINE_POINTS; i++, z -= zDist)
 	{
-		v[i].color = 0xFF3C3C3C;
-		v[i].specular = 0xFF000000;
+		for (int j = 0; j < LINE_POINTS; j++, sXYZ += 3, hXZ += 2, x += xDist)
+		{
+			sXYZ[0] = x;
+			sXYZ[2] = z;
+			hXZ[0] = x;
+			hXZ[1] = z;
+		}
+
+		x = -xDist - (xDist >> 1);
 	}
 
-	Tex.drawtype = 5;
-	Tex.flag = 0;
-	Tex.tpage = sprite->tpage;
-	Tex.u1 = sprite->x2;
-	Tex.v1 = sprite->y2;
-	Tex.u2 = sprite->x1;
-	Tex.v2 = sprite->y2;
-	Tex.u3 = sprite->x1;
-	Tex.v3 = sprite->y1;
-	Tex.u4 = sprite->x2;
-	Tex.v4 = sprite->y1;
-	opt = nPolyType;
-	nPolyType = 6;
-	AddQuadSorted(v, 0, 1, 2, 3, &Tex, 0);
-	nPolyType = opt;
+	phd_PushUnitMatrix();
+
+	anim = item->anim_number;
+
+	if (item == lara_item && (cutseq_trig || (anim == ANIM_PULL || anim == ANIM_PUSH || anim == ANIM_SCABINET || anim == ANIM_SDRAWERS ||
+		anim == ANIM_SSHELVES || anim == ANIM_SBOX || anim == 417 || anim == 418)))
+	{
+		pos.x = 0;
+		pos.y = 0;
+		pos.z = 0;
+		GetLaraJointPos(&pos, LM_HIPS);
+		room_number = lara_item->room_number;
+		pos.y = GetHeight(GetFloor(pos.x, pos.y, pos.z, &room_number), pos.x, pos.y, pos.z);
+
+		if (pos.y == NO_HEIGHT)
+			pos.y = item->floor;
+	}
+	else
+	{
+		pos.x = item->pos.x_pos;
+		pos.y = item->floor;
+		pos.z = item->pos.z_pos;
+	}
+
+	pos.y -= 16;
+	phd_TranslateRel(pos.x, pos.y, pos.z);
+	phd_RotY(item->pos.y_rot);
+	hXZ = hxz;
+
+	for (int i = 0; i < GRID_POINTS; i++, hXZ += 2)
+	{
+		x = hXZ[0];
+		z = hXZ[1];
+		hXZ[0] = long(x * aMXPtr[M00] + z * aMXPtr[M02] + aMXPtr[M03]);
+		hXZ[1] = long(x * aMXPtr[M20] + z * aMXPtr[M22] + aMXPtr[M23]);
+	}
+
+	phd_PopMatrix();
+
+	hXZ = hxz;
+	hY = hy;
+
+	for (int i = 0; i < GRID_POINTS; i++, hXZ += 2, hY++)
+	{
+		room_number = item->room_number;
+		*hY = GetHeight(GetFloor(hXZ[0], item->floor, hXZ[1], &room_number), hXZ[0], item->floor, hXZ[1]);
+
+		if (abs(*hY - item->floor) > POINT_HEIGHT_CORRECTION)
+			*hY = item->floor;
+	}
+
+	phd_PushMatrix();
+	phd_TranslateAbs(pos.x, pos.y, pos.z);
+	phd_RotY(item->pos.y_rot);
+	sXYZ = sxyz;
+	hY = hy;
+
+	for (int i = 0; i < GRID_POINTS; i++, sXYZ += 3, hY++)
+	{
+		x = sXYZ[0];
+		y = *hY - item->floor;
+		z = sXYZ[2];
+		sXYZ[0] = long(aMXPtr[M00] * x + aMXPtr[M01] * y + aMXPtr[M02] * z + aMXPtr[M03]);
+		sXYZ[1] = long(aMXPtr[M10] * x + aMXPtr[M11] * y + aMXPtr[M12] * z + aMXPtr[M13]);
+		sXYZ[2] = long(aMXPtr[M20] * x + aMXPtr[M21] * y + aMXPtr[M22] * z + aMXPtr[M23]);
+	}
+
+	phd_PopMatrix();
+
+	tex.drawtype = 5;
+	tex.tpage = sprite->tpage;
+	tex.flag = 0;
+
+	sXYZ = sxyz;
+
+	for (int i = 0; i < LINE_POINTS - 1; i++)
+	{
+		for (int j = 0; j < LINE_POINTS - 1; j++)
+		{
+			p = (j * 3) + (i * 12);
+			x1 = sXYZ[p + 0];
+			y1 = sXYZ[p + 1];
+			z1 = sXYZ[p + 2];
+			x2 = sXYZ[p + 3];
+			y2 = sXYZ[p + 4];
+			z2 = sXYZ[p + 5];
+
+			p = (j * 3) + ((i + 1) * 12);
+			x3 = sXYZ[p + 0];
+			y3 = sXYZ[p + 1];
+			z3 = sXYZ[p + 2];
+			x4 = sXYZ[p + 3];
+			y4 = sXYZ[p + 4];
+			z4 = sXYZ[p + 5];
+
+			setXYZ4(v, x1, y1, z1, x2, y2, z2, x4, y4, z4, x3, y3, z3, clipflags);
+
+			for (int k = 0; k < 4; k++)
+			{
+				v[k].color = 0xFF2D2D2D;
+				v[k].specular = 0xFF000000;
+			}
+
+			tex.u1 = sprite->x1 + (uStep * j);
+			tex.v1 = sprite->y1 + (vStep * i);
+
+			tex.u2 = tex.u1 + uStep;
+			tex.v2 = tex.v1;
+
+			tex.u3 = tex.u1 + uStep;
+			tex.v3 = tex.v1 + vStep;
+
+			tex.u4 = tex.u1;
+			tex.v4 = tex.v1 + vStep;
+
+			AddQuadSorted(v, 0, 1, 2, 3, &tex, 1);
+		}
+	}
 }
 
 void S_PrintShadow(short size, short* box, ITEM_INFO* item)
