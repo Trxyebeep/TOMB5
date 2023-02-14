@@ -301,7 +301,7 @@ void RPC_Init()
 
 const char* RPC_GetLevelName()
 {
-	if (!gfCurrentLevel)
+	if (gfCurrentLevel == LVL5_TITLE)
 	{
 		if (bDoCredits)
 			return "In Credits";
@@ -330,46 +330,46 @@ const char* RPC_GetLevelPic()
 {
 	switch (gfCurrentLevel)
 	{
-	case 1:
+	case LVL5_STREETS_OF_ROME:
 		return "rome";
 
-	case 2:
+	case LVL5_TRAJAN_MARKETS:
 		return "streets";
 
-	case 3:
+	case LVL5_COLOSSEUM:
 		return "colosseum";
 
-	case 4:
+	case LVL5_BASE:
 		return "base";
 
-	case 5:
+	case LVL5_SUBMARINE:
 		return "submarine";
 
-	case 6:
+	case LVL5_DEEPSEA_DIVE:
 		return "deepsea";
 
-	case 7:
+	case LVL5_SINKING_SUBMARINE:
 		return "sink";
 
-	case 8:
+	case LVL5_GALLOWS_TREE:
 		return "gallow1";
 
-	case 9:
+	case LVL5_LABYRINTH:
 		return "laby";
 
-	case 10:
+	case LVL5_OLD_MILL:
 		return "mill";
 
-	case 11:
+	case LVL5_THIRTEENTH_FLOOR:
 		return "13th";
 
-	case 12:
+	case LVL5_ESCAPE_WITH_THE_IRIS:
 		return "iris";
 
-	case 13:
+	case LVL5_SECURITY_BREACH:
 		return "breach";
 
-	case 14:
+	case LVL5_RED_ALERT:
 		return "alert";
 
 	default:
@@ -405,7 +405,7 @@ void RPC_Update()
 
 	RPC.details = RPC_GetLevelName();
 	RPC.largeImageKey = RPC_GetLevelPic();
-	RPC.largeImageText = gfCurrentLevel == 3 ? "BOO" : RPC.details;	//xoxo
+	RPC.largeImageText = gfCurrentLevel == LVL5_COLOSSEUM ? "BOO" : RPC.details;	//xoxo
 
 	RPC.smallImageKey = RPC_GetHealthPic();
 	RPC.smallImageText = RPC_GetHealthPercentage();

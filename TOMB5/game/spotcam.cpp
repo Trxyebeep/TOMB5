@@ -351,7 +351,7 @@ void CalculateSpotCams()
 	{
 		CameraFade = current_spline_camera;
 
-		if (gfCurrentLevel)
+		if (gfCurrentLevel != LVL5_TITLE)
 		{
 			ScreenFadedOut = 0;
 			ScreenFade = 255;
@@ -364,7 +364,7 @@ void CalculateSpotCams()
 	{
 		CameraFade = current_spline_camera;
 
-		if (gfCurrentLevel)
+		if (gfCurrentLevel != LVL5_TITLE)
 		{
 			ScreenFadedOut = 0;
 			ScreenFade = 0;
@@ -427,7 +427,7 @@ void CalculateSpotCams()
 	else if (!spotcam_timer)
 		current_spline_position += cspeed;
 
-	if (tomb5.cutseq_skipper && keymap[DIK_ESCAPE] && gfCurrentLevel)
+	if (tomb5.cutseq_skipper && keymap[DIK_ESCAPE] && gfCurrentLevel != LVL5_TITLE)
 		current_spline_position = 0x10000;
 
 	if (!(input & IN_LOOK))
@@ -497,7 +497,7 @@ void CalculateSpotCams()
 			ctype = camera.type;
 			camera.type = HEAVY_CAMERA;
 
-			if (gfCurrentLevel)
+			if (gfCurrentLevel != LVL5_TITLE)
 				TestTriggersAtXYZ(camera.pos.x, camera.pos.y, camera.pos.z, camera.pos.room_number, 1, 0);
 			else
 			{
@@ -662,7 +662,7 @@ void CalculateSpotCams()
 							ctype = camera.type;
 							camera.type = HEAVY_CAMERA;
 
-							if (gfCurrentLevel)
+							if (gfCurrentLevel != LVL5_TITLE)
 								TestTriggersAtXYZ(camera.pos.x, camera.pos.y, camera.pos.z, camera.pos.room_number, 1, 0);
 							else
 							{

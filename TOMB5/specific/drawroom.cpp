@@ -1012,7 +1012,7 @@ void aRoomInit()
 			bulb = &LevelFogBulbs[nBulbs];
 			memcpy(bulb, &r->fogbulb[j], sizeof(FOGBULB_INFO));
 
-			if (gfCurrentLevel == 2 || gfCurrentLevel == 3)
+			if (gfCurrentLevel == LVL5_TRAJAN_MARKETS || gfCurrentLevel == LVL5_COLOSSEUM)
 			{
 				bulb->den -= bulb->den * 0.5F;
 

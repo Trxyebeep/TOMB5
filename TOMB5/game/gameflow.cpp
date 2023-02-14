@@ -185,11 +185,11 @@ void DoGameflow()
 
 			case 3:
 				if (Gameflow->DemoDisc || Gameflow->nLevels == 2)
-					gfCurrentLevel = 0;
+					gfCurrentLevel = LVL5_TITLE;
 				else
 				{
 					if (gfLevelComplete > Gameflow->nLevels)
-						gfCurrentLevel = 0;
+						gfCurrentLevel = LVL5_TITLE;
 					else
 						gfCurrentLevel = gfLevelComplete;
 				}

@@ -1413,7 +1413,7 @@ void S_OutputPolyList()
 	if (App.dx.lpZBuffer)
 		DrawBuckets();
 
-	if (!gfCurrentLevel)
+	if (gfCurrentLevel == LVL5_TITLE)
 	{
 		Fade();
 
@@ -1457,7 +1457,7 @@ void S_OutputPolyList()
 		DrawPsxTile(phd_winheight - h, phd_winwidth | (h << 16), 0x62FFFFFF, 0, 0);
 	}
 
-	if (gfCurrentLevel)
+	if (gfCurrentLevel != LVL5_TITLE)
 	{
 		Fade();
 

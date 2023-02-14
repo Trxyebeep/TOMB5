@@ -328,7 +328,7 @@ void S_DrawAirBar(long pos)
 {
 	long x, y, w, h;
 
-	if (!gfCurrentLevel)
+	if (gfCurrentLevel == LVL5_TITLE)
 		return;
 
 	w = GetFixedScale(150);

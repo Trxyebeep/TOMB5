@@ -797,7 +797,7 @@ void DrawRooms(short current_room)
 	GetRoomBounds();
 	ProcessClosedDoors();
 
-	if (gfCurrentLevel)
+	if (gfCurrentLevel != LVL5_TITLE)
 		SkyDrawPhase();
 
 	if (objects[LARA].loaded)
