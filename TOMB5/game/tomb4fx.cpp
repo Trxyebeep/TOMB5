@@ -53,7 +53,6 @@ short ScreenFading;
 short FadeScreenHeight;
 short DestFadeScreenHeight;
 short ScreenFadeSpeed = 8;
-char scratchpad[1024];
 char tsv_buffer[16384];
 
 static short FadeClipSpeed;
@@ -2078,10 +2077,8 @@ void S_DrawFires()
 {
 	FIRE_LIST* fire;
 	ROOM_INFO* r;
-	short* bounds;
+	short bounds[6];
 	short size;
-
-	bounds = (short*)&scratchpad[0];
 
 	for (int i = 0; i < 32; i++)
 	{
