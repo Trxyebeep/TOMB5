@@ -103,8 +103,8 @@ void DrawLara(ITEM_INFO* item, long mirror)
 void DrawLara__1(ITEM_INFO* item, long mirror)
 {
 	OBJECT_INFO* obj;
-	PHD_VECTOR v0;
-	PHD_VECTOR v1;
+	FVECTOR v0;
+	FVECTOR v1;
 	short** meshpp;
 	short* rot;
 	long dx, dy, dz, dist, cos, sin, xRot, bone, top, bottom, left, right, stash;
@@ -218,26 +218,35 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 				phd_PutPolygons(*meshpp, -1);
 			else
 			{
+				aMXPtr[M00] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M00];
+				aMXPtr[M01] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M01];
+				aMXPtr[M02] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M02];
+				aMXPtr[M03] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M03];
+				aMXPtr[M10] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M10];
+				aMXPtr[M11] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M11];
+				aMXPtr[M12] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M12];
+				aMXPtr[M13] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M13];
+				aMXPtr[M20] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M20];
+				aMXPtr[M21] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M21];
+				aMXPtr[M22] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M22];
+				aMXPtr[M23] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M23];
 				phd_PushMatrix();
-				aMXPtr[M00] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M00];
-				aMXPtr[M01] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M01];
-				aMXPtr[M02] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M02];
-				aMXPtr[M03] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M03];
-				aMXPtr[M10] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M10];
-				aMXPtr[M11] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M11];
-				aMXPtr[M12] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M12];
-				aMXPtr[M13] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M13];
-				aMXPtr[M20] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M20];
-				aMXPtr[M21] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M21];
-				aMXPtr[M22] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M22];
-				aMXPtr[M23] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M23];
-				v0.x = lara_matrices[12 * SkinUseMatrix[i][0] + M01];
-				v0.y = lara_matrices[12 * SkinUseMatrix[i][0] + M11];
-				v0.z = lara_matrices[12 * SkinUseMatrix[i][0] + M21];
-				v1.x = lara_matrices[12 * SkinUseMatrix[i][1] + M01];
-				v1.y = lara_matrices[12 * SkinUseMatrix[i][1] + M11];
-				v1.z = lara_matrices[12 * SkinUseMatrix[i][1] + M21];
-				cos = ((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
+
+				v0.x = lara_matricesF[SkinUseMatrix[i][0] * indices_count + M01];
+				v0.y = lara_matricesF[SkinUseMatrix[i][0] * indices_count + M11];
+				v0.z = lara_matricesF[SkinUseMatrix[i][0] * indices_count + M21];
+				v1.x = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M01];
+				v1.y = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M11];
+				v1.z = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M21];
+
+				v0.x *= 1 << 14;
+				v0.y *= 1 << 14;
+				v0.z *= 1 << 14;
+				v1.x *= 1 << 14;
+				v1.y *= 1 << 14;
+				v1.z *= 1 << 14;
+
+				cos = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
 				sin = phd_sqrt(0x1000000 - SQUARE(cos));
 
 				if (i == 1 || i == 4)
@@ -245,7 +254,7 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 				else
 					xRot = phd_atan(cos, sin);
 
-				phd_RotX((short)(-xRot >> 1));
+				phd_RotX(short(-xRot >> 1));
 				phd_PutPolygons(*meshpp, -1);
 				phd_PopMatrix();
 			}
@@ -329,8 +338,8 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 void DrawLara__4(ITEM_INFO* item, long mirror)
 {
 	OBJECT_INFO* obj;
-	PHD_VECTOR v0;
-	PHD_VECTOR v1;
+	FVECTOR v0;
+	FVECTOR v1;
 	short** meshpp;
 	short* rot;
 	long dx, dy, dz, dist, cos, sin, xRot, bone, top, bottom, left, right, stash;
@@ -447,25 +456,34 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 		else
 		{
 			phd_PushMatrix();
-			aMXPtr[M00] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M00];
-			aMXPtr[M01] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M01];
-			aMXPtr[M02] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M02];
-			aMXPtr[M03] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M03];
-			aMXPtr[M10] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M10];
-			aMXPtr[M11] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M11];
-			aMXPtr[M12] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M12];
-			aMXPtr[M13] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M13];
-			aMXPtr[M20] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M20];
-			aMXPtr[M21] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M21];
-			aMXPtr[M22] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M22];
-			aMXPtr[M23] = lara_matricesF[SkinUseMatrix[i][1] * 12 + M23];
-			v0.x = lara_matrices[12 * SkinUseMatrix[i][0] + M01];
-			v0.y = lara_matrices[12 * SkinUseMatrix[i][0] + M11];
-			v0.z = lara_matrices[12 * SkinUseMatrix[i][0] + M21];
-			v1.x = lara_matrices[12 * SkinUseMatrix[i][1] + M01];
-			v1.y = lara_matrices[12 * SkinUseMatrix[i][1] + M11];
-			v1.z = lara_matrices[12 * SkinUseMatrix[i][1] + M21];
-			cos = ((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
+			aMXPtr[M00] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M00];
+			aMXPtr[M01] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M01];
+			aMXPtr[M02] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M02];
+			aMXPtr[M03] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M03];
+			aMXPtr[M10] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M10];
+			aMXPtr[M11] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M11];
+			aMXPtr[M12] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M12];
+			aMXPtr[M13] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M13];
+			aMXPtr[M20] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M20];
+			aMXPtr[M21] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M21];
+			aMXPtr[M22] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M22];
+			aMXPtr[M23] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M23];
+
+			v0.x = lara_matricesF[SkinUseMatrix[i][0] * indices_count + M01];
+			v0.y = lara_matricesF[SkinUseMatrix[i][0] * indices_count + M11];
+			v0.z = lara_matricesF[SkinUseMatrix[i][0] * indices_count + M21];
+			v1.x = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M01];
+			v1.y = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M11];
+			v1.z = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M21];
+
+			v0.x *= 1 << 14;
+			v0.y *= 1 << 14;
+			v0.z *= 1 << 14;
+			v1.x *= 1 << 14;
+			v1.y *= 1 << 14;
+			v1.z *= 1 << 14;
+
+			cos = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
 			sin = phd_sqrt(0x1000000 - SQUARE(cos));
 
 			if (i == 1 || i == 4)
@@ -648,8 +666,8 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 void DrawLara__6(ITEM_INFO* item, long mirror)
 {
 	OBJECT_INFO* obj;
-	PHD_VECTOR v0;
-	PHD_VECTOR v1;
+	FVECTOR v0;
+	FVECTOR v1;
 	short** meshpp;
 	short* rot;
 	long cos, sin, xRot, top, bottom, left, right, stash, bone;
@@ -740,13 +758,22 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 			aMXPtr[M21] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M21];
 			aMXPtr[M22] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M22];
 			aMXPtr[M23] = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M23];
-			v0.x = lara_matrices[indices_count * SkinUseMatrix[i][0] + M01];
-			v0.y = lara_matrices[indices_count * SkinUseMatrix[i][0] + M11];
-			v0.z = lara_matrices[indices_count * SkinUseMatrix[i][0] + M21];
-			v1.x = lara_matrices[indices_count * SkinUseMatrix[i][1] + M01];
-			v1.y = lara_matrices[indices_count * SkinUseMatrix[i][1] + M11];
-			v1.z = lara_matrices[indices_count * SkinUseMatrix[i][1] + M21];
-			cos = ((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
+
+			v0.x = lara_matricesF[SkinUseMatrix[i][0] * indices_count + M01];
+			v0.y = lara_matricesF[SkinUseMatrix[i][0] * indices_count + M11];
+			v0.z = lara_matricesF[SkinUseMatrix[i][0] * indices_count + M21];
+			v1.x = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M01];
+			v1.y = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M11];
+			v1.z = lara_matricesF[SkinUseMatrix[i][1] * indices_count + M21];
+
+			v0.x *= 1 << 14;
+			v0.y *= 1 << 14;
+			v0.z *= 1 << 14;
+			v1.x *= 1 << 14;
+			v1.y *= 1 << 14;
+			v1.z *= 1 << 14;
+
+			cos = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
 			sin = phd_sqrt(0x1000000 - SQUARE(cos));
 
 			if (i == 1 || i == 4)
