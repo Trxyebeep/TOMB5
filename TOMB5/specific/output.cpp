@@ -50,11 +50,14 @@ static char load_roomnum = (char)NO_ROOM;
 
 void S_DrawPickup(short object_number)
 {
-	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
+	long x, y;
+
+	phd_LookAt(0, 1024, 0, 100, 0, 200, 0);
 	aSetViewMatrix();
 
-	DrawThreeDeeObject2D(long(phd_winxmax * 0.001953125 * 448.0 + PickupX), long(phd_winymax * 0.00390625 * 216.0), convert_obj_to_invobj(object_number),
-		128, 0, (GnFrameCounter & 0x7F) << 9, 0, 0, 1);
+	x = phd_winwidth - GetFixedScale(80) + PickupX;
+	y = phd_winheight - GetFixedScale(75);
+	DrawThreeDeeObject2D(x, y, convert_obj_to_invobj(object_number), 128, 0, (GnFrameCounter & 0x7F) << 9, 0, 0, 1);
 }
 
 void aTransformLightClipMesh(MESH_DATA* mesh)

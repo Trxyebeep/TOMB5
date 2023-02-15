@@ -942,99 +942,91 @@ void OutputSky()
 
 void SuperShowLogo()
 {
-	D3DTLVERTEX v[4];
+	D3DTLVERTEX* v;
 	TEXTURESTRUCT tex;
-	long x, y, w;
+	float x, y, w;
 
+	v = aVertexBuffer;
 	clipflags[0] = 0;
 	clipflags[1] = 0;
 	clipflags[2] = 0;
 	clipflags[3] = 0;
 	nPolyType = 4;
-	x = long(phd_winxmin - float((phd_winxmax / 640.0F) * -64));
-	w = long(float((phd_winxmax / 640.0F) * 256));
-	y = long(phd_winymin + float((phd_winymax / 480.0F) * 256));
 
-	v[0].sx = (float)x;
+	tex.drawtype = 1;
+	tex.flag = 0;
+	tex.u1 = 1.0F / 256.0F;
+	tex.v1 = 1.0F / 256.0F;
+	tex.u2 = 1.0F - (1.0F / 256.0F);
+	tex.v2 = 1.0F / 256.0F;
+	tex.u3 = 1.0F - (1.0F / 256.0F);
+	tex.v3 = 1.0F - (1.0F / 256.0F);
+	tex.u4 = 1.0F / 256.0F;
+	tex.v4 = 1.0F - (1.0F / 256.0F);
+	w = (float)GetFixedScale(256);
+	x = phd_centerx - w;
+	y = phd_winymin + w;
+
+	v[0].sx = x;
 	v[0].sy = (float)phd_winymin;
 	v[0].sz = 0;
 	v[0].rhw = f_moneoznear;
 	v[0].color = 0xFFFFFFFF;
 	v[0].specular = 0xFF000000;
 
-	v[1].sx = float(w + x);
+	v[1].sx = x + w;
 	v[1].sy = (float)phd_winymin;
 	v[1].sz = 0;
 	v[1].rhw = f_moneoznear;
 	v[1].color = 0xFFFFFFFF;
 	v[1].specular = 0xFF000000;
 
-	v[2].sx = float(w + x);
-	v[2].sy = (float)y;
+	v[2].sx = x + w;
+	v[2].sy = y;
 	v[2].sz = 0;
 	v[2].rhw = f_moneoznear;
 	v[2].color = 0xFFFFFFFF;
 	v[2].specular = 0xFF000000;
 
-	v[3].sx = (float)x;
-	v[3].sy = (float)y;
+	v[3].sx = x;
+	v[3].sy = y;
 	v[3].sz = 0;
 	v[3].rhw = f_moneoznear;
 	v[3].color = 0xFFFFFFFF;
 	v[3].specular = 0xFF000000;
-
-	tex.drawtype = 1;
-	tex.flag = 0;
+	
 	tex.tpage = ushort(nTextures - 5);
-	tex.u1 = 0.00390625F;
-	tex.v1 = 0.00390625F;
-	tex.u2 = 0.99609375F;
-	tex.v2 = 0.00390625F;
-	tex.u3 = 0.99609375F;
-	tex.v3 = 0.99609375F;
-	tex.u4 = 0.00390625F;
-	tex.v4 = 0.99609375F;
 	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
 
-	v[0].sx = float(w + x);
+	v[0].sx = x + w;
 	v[0].sy = (float)phd_winymin;
 	v[0].sz = 0;
 	v[0].rhw = f_moneoznear;
 	v[0].color = 0xFFFFFFFF;
 	v[0].specular = 0xFF000000;
 
-	v[1].sx = float(2 * w + x);
+	v[1].sx = x + (w * 2);
 	v[1].sy = (float)phd_winymin;
 	v[1].sz = 0;
 	v[1].rhw = f_moneoznear;
 	v[1].color = 0xFFFFFFFF;
 	v[1].specular = 0xFF000000;
 
-	v[2].sx = float(2 * w + x);
-	v[2].sy = (float)y;
+	v[2].sx = x + (w * 2);
+	v[2].sy = y;
 	v[2].sz = 0;
 	v[2].rhw = f_moneoznear;
 	v[2].color = 0xFFFFFFFF;
 	v[2].specular = 0xFF000000;
 
-	v[3].sx = float(w + x);
-	v[3].sy = (float)y;
+	v[3].sx = x + w;
+	v[3].sy = y;
 	v[3].sz = 0;
 	v[3].rhw = f_moneoznear;
 	v[3].color = 0xFFFFFFFF;
 	v[3].specular = 0xFF000000;
 
-	tex.drawtype = 1;
-	tex.flag = 0;
 	tex.tpage = ushort(nTextures - 4);
-	tex.u1 = 0.00390625F;
-	tex.v1 = 0.00390625F;
-	tex.u2 = 0.99609375F;
-	tex.v2 = 0.00390625F;
-	tex.u3 = 0.99609375F;
-	tex.v3 = 0.99609375F;
-	tex.u4 = 0.00390625F;
-	tex.v4 = 0.99609375F;
 	AddQuadSorted(v, 0, 1, 2, 3, &tex, 1);
 }
 

@@ -23,7 +23,6 @@ short CurrentPickup;
 
 long health_bar_timer = 0;
 
-static short PickupY;
 static short PickupVel;
 
 long FlashIt()
@@ -197,7 +196,6 @@ void InitialisePickUpDisplay()
 	for (int i = 7; i > -1; i--)
 		pickups[i].life = -1;
 
-	PickupY = 128;
 	PickupX = 128;
 	PickupVel = 0;
 	CurrentPickup = 0;
