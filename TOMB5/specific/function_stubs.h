@@ -1,7 +1,7 @@
 #pragma once
 #include "../global/types.h"
 
-void* game_malloc(long size, long type);
+void* game_malloc(long size);
 long GetRandomControl();
 void SeedRandomControl(long seed);
 long GetRandomDraw();

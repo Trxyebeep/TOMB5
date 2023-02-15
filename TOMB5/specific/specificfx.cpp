@@ -882,7 +882,7 @@ void InitTarget()
 
 	mesh = (MESH_DATA*)meshes[obj->mesh_index];
 	p = mesh->aVtx;
-	mesh->aVtx = (ACMESHVERTEX*)game_malloc(mesh->nVerts * sizeof(ACMESHVERTEX), 0);
+	mesh->aVtx = (ACMESHVERTEX*)game_malloc(mesh->nVerts * sizeof(ACMESHVERTEX));
 	v = (D3DTLVERTEX*)mesh->aVtx;
 
 	for (int i = 0; i < mesh->nVerts; i++)
@@ -910,7 +910,7 @@ void InitBinoculars()
 
 	mesh = (MESH_DATA*)meshes[obj->mesh_index];
 	p = mesh->aVtx;
-	mesh->aVtx = (ACMESHVERTEX*)game_malloc(mesh->nVerts * sizeof(ACMESHVERTEX), 0);
+	mesh->aVtx = (ACMESHVERTEX*)game_malloc(mesh->nVerts * sizeof(ACMESHVERTEX));
 	v = (D3DTLVERTEX*)mesh->aVtx;	//makes no sense otherwise
 
 	for (int i = 0; i < mesh->nVerts; i++)

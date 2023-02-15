@@ -685,7 +685,7 @@ static void aLoadRoomStream()
 
 	ReadLong();	//skip unused space
 	num = ReadLong();
-	room = (ROOM_INFO*)game_malloc(num * sizeof(ROOM_INFO), 0);
+	room = (ROOM_INFO*)game_malloc(num * sizeof(ROOM_INFO));
 
 	for (int i = 0; i < num; i++)
 	{
@@ -694,7 +694,7 @@ static void aLoadRoomStream()
 		ReadLong();		//X E L A
 
 		size = ReadLong();
-		data = (char*)game_malloc(size, 0);
+		data = (char*)game_malloc(size);
 		ReadBlock(data, size);
 		aFixUpRoom(r, data);
 	}
@@ -714,7 +714,7 @@ bool LoadRooms()
 	BuildOutsideTable();
 
 	size = ReadLong();
-	floor_data = (short*)game_malloc(size * sizeof(short), 0);
+	floor_data = (short*)game_malloc(size * sizeof(short));
 	ReadBlock(floor_data, sizeof(short) * size);
 
 	Log(0, "Floor Data Size %d @ %x", size, floor_data);
@@ -737,11 +737,11 @@ bool LoadObjects()
 
 	//meshes
 	num = ReadLong();
-	mesh_base = (short*)game_malloc(num * 2, 0);
+	mesh_base = (short*)game_malloc(num * 2);
 	ReadBlock(mesh_base, num * sizeof(short));
 
 	num = ReadLong();
-	meshes = (short**)game_malloc(num * sizeof(long) * 2, 0);	//*2 for meshswaps
+	meshes = (short**)game_malloc(num * sizeof(long) * 2);	//*2 for meshswaps
 	ReadBlock(meshes, num * sizeof(long));
 
 	for (lp = 0; lp < num; lp++)
@@ -751,32 +751,32 @@ bool LoadObjects()
 
 	//anims
 	num_anims = ReadLong();
-	anims = (ANIM_STRUCT*)game_malloc(num_anims * sizeof(ANIM_STRUCT), 0);
+	anims = (ANIM_STRUCT*)game_malloc(num_anims * sizeof(ANIM_STRUCT));
 	ReadBlock(anims, num_anims * sizeof(ANIM_STRUCT));
 
 	//changes
 	num = ReadLong();
-	changes = (CHANGE_STRUCT*)game_malloc(num * sizeof(CHANGE_STRUCT), 0);
+	changes = (CHANGE_STRUCT*)game_malloc(num * sizeof(CHANGE_STRUCT));
 	ReadBlock(changes, num * sizeof(CHANGE_STRUCT));
 
 	//ranges
 	num = ReadLong();
-	ranges = (RANGE_STRUCT*)game_malloc(num * sizeof(RANGE_STRUCT), 0);
+	ranges = (RANGE_STRUCT*)game_malloc(num * sizeof(RANGE_STRUCT));
 	ReadBlock(ranges, num * sizeof(RANGE_STRUCT));
 
 	//anim commands
 	num = ReadLong();
-	commands = (short*)game_malloc(num * sizeof(short), 0);
+	commands = (short*)game_malloc(num * sizeof(short));
 	ReadBlock(commands, num * sizeof(short));
 
 	//bones
 	num = ReadLong();
-	bones = (long*)game_malloc(num * sizeof(long), 0);
+	bones = (long*)game_malloc(num * sizeof(long));
 	ReadBlock(bones, num * sizeof(long));
 
 	//frames
 	num = ReadLong();
-	frames = (short*)game_malloc(num * sizeof(short), 0);
+	frames = (short*)game_malloc(num * sizeof(short));
 	ReadBlock(frames, num * sizeof(short));
 
 	for (lp = 0; lp < num_anims; lp++)
@@ -856,7 +856,7 @@ bool LoadSprites()
 	ReadLong();			//SPR 0 marker
 
 	num_sprites = ReadLong();
-	spriteinfo = (SPRITESTRUCT*)game_malloc(sizeof(SPRITESTRUCT) * num_sprites, 0);
+	spriteinfo = (SPRITESTRUCT*)game_malloc(sizeof(SPRITESTRUCT) * num_sprites);
 
 	for (int i = 0; i < num_sprites; i++)
 	{
@@ -911,7 +911,7 @@ bool LoadCameras()
 
 	if (number_cameras)
 	{
-		camera.fixed = (OBJECT_VECTOR*)game_malloc(number_cameras * sizeof(OBJECT_VECTOR), 0);
+		camera.fixed = (OBJECT_VECTOR*)game_malloc(number_cameras * sizeof(OBJECT_VECTOR));
 		ReadBlock(camera.fixed, number_cameras * sizeof(OBJECT_VECTOR));
 	}
 
@@ -931,7 +931,7 @@ bool LoadSoundEffects()
 
 	if (number_sound_effects)
 	{
-		sound_effects = (OBJECT_VECTOR*)game_malloc(number_sound_effects * sizeof(OBJECT_VECTOR), 0);
+		sound_effects = (OBJECT_VECTOR*)game_malloc(number_sound_effects * sizeof(OBJECT_VECTOR));
 		ReadBlock(sound_effects, number_sound_effects * sizeof(OBJECT_VECTOR));
 	}
 
@@ -946,22 +946,22 @@ bool LoadBoxes()
 	Log(2, "LoadBoxes");
 	num_boxes = ReadLong();
 
-	boxes = (BOX_INFO*)game_malloc(num_boxes * sizeof(BOX_INFO), 0);
+	boxes = (BOX_INFO*)game_malloc(num_boxes * sizeof(BOX_INFO));
 	ReadBlock(boxes, num_boxes * sizeof(BOX_INFO));
 
 	size = ReadLong();
-	overlap = (ushort*)game_malloc(size * sizeof(ushort), 0);
+	overlap = (ushort*)game_malloc(size * sizeof(ushort));
 	ReadBlock(overlap, size * sizeof(ushort));
 
 	for (int i = 0; i < 2; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			ground_zone[j][i] = (short*)game_malloc(num_boxes * sizeof(short), 0);
+			ground_zone[j][i] = (short*)game_malloc(num_boxes * sizeof(short));
 			ReadBlock(ground_zone[j][i], num_boxes * sizeof(short));
 		}
 
-		ground_zone[4][i] = (short*)game_malloc(num_boxes * sizeof(short), 0);
+		ground_zone[4][i] = (short*)game_malloc(num_boxes * sizeof(short));
 		ReadBlock(ground_zone[4][i], num_boxes * sizeof(short));
 	}
 
@@ -982,7 +982,7 @@ bool LoadAnimatedTextures()
 
 	num_anim_ranges = ReadLong();
 
-	aranges = (short*)game_malloc(num_anim_ranges * 2, 0);
+	aranges = (short*)game_malloc(num_anim_ranges * 2);
 	ReadBlock(aranges, num_anim_ranges * sizeof(short));
 
 	if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
@@ -1002,7 +1002,7 @@ bool LoadTextureInfos()
 	ReadLong();
 	val = ReadLong();
 	Log(5, "Texture Infos : %d", val);
-	textinfo = (TEXTURESTRUCT*)game_malloc(val * sizeof(TEXTURESTRUCT), 0);
+	textinfo = (TEXTURESTRUCT*)game_malloc(val * sizeof(TEXTURESTRUCT));
 
 	for (int i = 0; i < val; i++)
 	{
@@ -1066,7 +1066,7 @@ bool LoadItems()
 	if (!num_items)
 		return 1;
 
-	items = (ITEM_INFO*)game_malloc(MAX_ITEMS * sizeof(ITEM_INFO), 0);
+	items = (ITEM_INFO*)game_malloc(MAX_ITEMS * sizeof(ITEM_INFO));
 	level_items = num_items;
 	InitialiseClosedDoors();
 	InitialiseItemArray(MAX_ITEMS);
@@ -1131,7 +1131,7 @@ bool LoadAIInfo()
 		return 1;
 
 	nAIObjects = (short)num;
-	AIObjects = (AIOBJECT*)game_malloc(num * sizeof(AIOBJECT), 0);
+	AIObjects = (AIOBJECT*)game_malloc(num * sizeof(AIOBJECT));
 	ReadBlock(AIObjects, num * sizeof(AIOBJECT));
 	return 1;
 }
@@ -1148,7 +1148,7 @@ bool LoadSamples()
 	static long num_sample_infos;
 
 	Log(2, "LoadSamples");
-	sample_lut = (short*)game_malloc(MAX_SAMPLES * sizeof(short), 0);
+	sample_lut = (short*)game_malloc(MAX_SAMPLES * sizeof(short));
 	ReadBlock(sample_lut, MAX_SAMPLES * sizeof(short));
 
 
@@ -1161,7 +1161,7 @@ bool LoadSamples()
 		return 0;
 	}
 
-	sample_infos = (SAMPLE_INFO*)game_malloc(num_sample_infos * sizeof(SAMPLE_INFO), 0);
+	sample_infos = (SAMPLE_INFO*)game_malloc(num_sample_infos * sizeof(SAMPLE_INFO));
 	ReadBlock(sample_infos, num_sample_infos * sizeof(SAMPLE_INFO));
 
 	num_samples = ReadLong();

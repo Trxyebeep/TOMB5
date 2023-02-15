@@ -21,7 +21,7 @@ void InitialiseDeathSlide(short item_number)
 	GAME_VECTOR* old;
 
 	item = &items[item_number];
-	old = (GAME_VECTOR*)game_malloc(sizeof(GAME_VECTOR), 0);
+	old = (GAME_VECTOR*)game_malloc(sizeof(GAME_VECTOR));
 	item->data = old;
 	old->x = item->pos.x_pos;
 	old->y = item->pos.y_pos;

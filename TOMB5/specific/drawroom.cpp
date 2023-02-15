@@ -745,7 +745,7 @@ void ProcessMeshData(long num_meshes)
 
 	Log(2, "ProcessMeshData %d", num_meshes);
 	num_level_meshes = num_meshes;
-	mesh_vtxbuf = (MESH_DATA**)game_malloc(4 * num_meshes, 0);
+	mesh_vtxbuf = (MESH_DATA**)game_malloc(4 * num_meshes);
 	mesh_base = (short*)malloc_ptr;
 	no_mesh = 0;
 	data = 0;
@@ -768,7 +768,7 @@ void ProcessMeshData(long num_meshes)
 			maxx = -20000.0F;
 			maxy = -20000.0F;
 			maxz = -20000.0F;
-			data = (MESH_DATA*)game_malloc(sizeof(MESH_DATA), 0);
+			data = (MESH_DATA*)game_malloc(sizeof(MESH_DATA));
 			memset(data, 0, sizeof(MESH_DATA));
 			meshes[i] = (short*)data;
 			mesh_vtxbuf[i] = data;
@@ -788,7 +788,7 @@ void ProcessMeshData(long num_meshes)
 				num = *sMeshPtr >> 8;
 
 			sMeshPtr++;
-			data->aVtx = (ACMESHVERTEX*)game_malloc(sizeof(ACMESHVERTEX) * data->nVerts, 0);
+			data->aVtx = (ACMESHVERTEX*)game_malloc(sizeof(ACMESHVERTEX) * data->nVerts);
 
 			if (data->nVerts)
 			{
@@ -838,7 +838,7 @@ void ProcessMeshData(long num_meshes)
 				if (data->nNorms <= 0)
 				{
 					data->Normals = 0;
-					data->prelight = (long*)game_malloc(4 * data->nVerts, 0);
+					data->prelight = (long*)game_malloc(4 * data->nVerts);
 
 					for (int j = 0; j < data->nVerts; j++)
 					{
@@ -852,7 +852,7 @@ void ProcessMeshData(long num_meshes)
 				}
 				else
 				{
-					data->Normals = (D3DVECTOR*)game_malloc(sizeof(D3DVECTOR) * data->nNorms, 0);
+					data->Normals = (D3DVECTOR*)game_malloc(sizeof(D3DVECTOR) * data->nNorms);
 
 					for (int j = 0; j < data->nVerts; j++)
 					{
@@ -879,7 +879,7 @@ void ProcessMeshData(long num_meshes)
 
 			if (data->ngt4)
 			{
-				data->gt4 = (short*)game_malloc(12 * data->ngt4, 0);
+				data->gt4 = (short*)game_malloc(12 * data->ngt4);
 				memcpy(data->gt4, sMeshPtr, 12 * data->ngt4);
 				sMeshPtr += 6 * data->ngt4;
 				gtx = data->gt4 + 5;
@@ -899,7 +899,7 @@ void ProcessMeshData(long num_meshes)
 
 			if (data->ngt3)
 			{
-				data->gt3 = (short*)game_malloc(10 * data->ngt3, 0);
+				data->gt3 = (short*)game_malloc(10 * data->ngt3);
 				memcpy(data->gt3, sMeshPtr, 10 * data->ngt3);
 				gtx = data->gt3 + 4;
 

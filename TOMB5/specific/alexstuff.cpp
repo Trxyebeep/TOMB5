@@ -266,7 +266,7 @@ char* aReadCutData(long n, FILE* file)
 	offset = *(long*)&tsv_buffer[n * 2 * sizeof(long)];
 	size = *(long*)&tsv_buffer[n * 2 * sizeof(long) + 4];
 	fseek(file, offset, SEEK_SET);
-	data = (char*)game_malloc(size, 0);
+	data = (char*)game_malloc(size);
 	fread(data, size, 1, file);
 	return data;
 }

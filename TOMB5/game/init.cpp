@@ -287,7 +287,7 @@ void InitialiseDoor(short item_number)
 	if (item->object_number >= LIFT_DOORS1 && item->object_number <= LIFT_DOORS2)
 		item->item_flags[0] = 4096;
 
-	door = (DOOR_DATA*)game_malloc(sizeof(DOOR_DATA), 0);
+	door = (DOOR_DATA*)game_malloc(sizeof(DOOR_DATA));
 	item->data = door;
 	door->Opened = 0;
 	door->dptr1 = 0;
@@ -585,7 +585,7 @@ void InitialiseLasers(short item_number)
 	short room_num;
 
 	item = &items[item_number];
-	item->data = (LASER_STRUCT*)game_malloc(sizeof(LASER_STRUCT), 0);
+	item->data = (LASER_STRUCT*)game_malloc(sizeof(LASER_STRUCT));
 	width = (item->trigger_flags & 255) << 10;
 
 	if (!(item->trigger_flags & 1))
@@ -642,7 +642,7 @@ void InitialiseSteamLasers(short item_number)
 	short room_num;
 
 	item = &items[item_number];
-	item->data = (STEAMLASER_STRUCT*)game_malloc(sizeof(STEAMLASER_STRUCT), 0);
+	item->data = (STEAMLASER_STRUCT*)game_malloc(sizeof(STEAMLASER_STRUCT));
 	height = 1536;
 	width = 2048;
 	Xadd = (width / 2) - 512;
@@ -685,7 +685,7 @@ void InitialiseFloorLasers(short item_number)
 	long width, height;
 
 	item = &items[item_number];
-	item->data = (FLOORLASER_STRUCT*)game_malloc(sizeof(FLOORLASER_STRUCT), 0);
+	item->data = (FLOORLASER_STRUCT*)game_malloc(sizeof(FLOORLASER_STRUCT));
 	ls = (FLOORLASER_STRUCT*)item->data;
 
 	width = item->trigger_flags % 10;
@@ -1071,7 +1071,7 @@ void InitialiseAutogun(short item_number)
 
 	item = &items[item_number];
 	item->mesh_bits = 1024;
-	item->data = game_malloc(5702, 0);
+	item->data = game_malloc(5702);
 }
 
 void InitialiseKeyhole(short item_number)
@@ -1112,7 +1112,7 @@ void InitialisePortalDoor(short item_number)
 	PORTAL_STRUCT* portal;
 
 	item = &items[item_number];
-	portal = (PORTAL_STRUCT*)game_malloc(sizeof(PORTAL_STRUCT), 0);
+	portal = (PORTAL_STRUCT*)game_malloc(sizeof(PORTAL_STRUCT));
 	item->pos.x_pos -= 512;
 	item->data = portal;
 
@@ -1237,7 +1237,7 @@ void InitialiseGasCloud(short item_number)
 		return;
 	}
 
-	cloud = (GAS_CLOUD*)game_malloc(sizeof(GAS_CLOUD) * 8, 0);
+	cloud = (GAS_CLOUD*)game_malloc(sizeof(GAS_CLOUD) * 8);
 	item->data = cloud;
 	memset(clouds, NO_ITEM, sizeof(clouds));
 
@@ -1331,7 +1331,7 @@ void InitialiseAnimatingSlots(short item_number)
 
 	if (item->trigger_flags == 666 || item->trigger_flags == 667)
 	{
-		c = (CREATURE_INFO*)game_malloc(sizeof(CREATURE_INFO), 0);
+		c = (CREATURE_INFO*)game_malloc(sizeof(CREATURE_INFO));
 		item->data = c;
 		c->joint_rotation[0] = 0;
 		c->joint_rotation[1] = 0;

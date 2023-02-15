@@ -15,7 +15,7 @@ static long malloc_used;
 static long rand_1 = 0xD371F947;
 static long rand_2 = 0xD371F947;
 
-void* game_malloc(long size, long type)
+void* game_malloc(long size)
 {
 	char* ptr;
 
