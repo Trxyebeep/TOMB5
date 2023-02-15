@@ -3338,7 +3338,7 @@ void lara_col_duck(ITEM_INFO* item, COLL_INFO* coll)
 	coll->bad_neg = -384;
 	coll->bad_ceiling = 0;
 	coll->slopes_are_walls = 1;
-	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 400);
+	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, -400);
 
 	if (LaraFallen(item, coll))
 		lara.gun_status = LG_NO_ARMS;
@@ -3722,7 +3722,7 @@ void lara_col_all4s(ITEM_INFO* item, COLL_INFO* coll)
 	coll->bad_ceiling = 400;
 	coll->slopes_are_walls = 1;
 	coll->slopes_are_pits = 1;
-	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 400);
+	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, -400);
 	TiltHer(item, 140, 400);
 
 	if (LaraFallen(item, coll))
@@ -4074,7 +4074,7 @@ void lara_col_crawlb(ITEM_INFO* item, COLL_INFO* coll)
 	coll->slopes_are_walls = 1;
 	lara.move_angle = item->pos.y_rot + 32768;
 	coll->facing = lara.move_angle;
-	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 400);
+	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, -400);
 	TiltHer(item, 140, 400);
 
 	if (LaraDeflectEdgeDuck(item, coll))
@@ -5930,7 +5930,7 @@ void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 	coll->bad_neg = -384;
 	coll->bad_ceiling = 0;
 	coll->slopes_are_walls = 1;
-	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 400);
+	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, -400);
 
 	if (LaraFallen(item, coll))
 		lara.gun_status = LG_NO_ARMS;
