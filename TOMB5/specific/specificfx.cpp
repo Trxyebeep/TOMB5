@@ -5215,15 +5215,18 @@ void DrawLaserSightSprite()
 
 void DrawMoon()
 {
-	D3DTLVERTEX v[4];
+	D3DTLVERTEX* v;
 	SPRITESTRUCT* sprite;
 	TEXTURESTRUCT tex;
-	SVECTOR vec;
+	SVECTOR vec[4];
 	short* c;
-	float x1, x2, y1, y2, z;
+	short p;
 	ushort tpage;
 
 	c = clipflags;
+	v = aVertexBuffer;
+	p = 320;
+
 	sprite = &spriteinfo[objects[MISC_SPRITES].mesh_index + 3];
 	tpage = sprite->tpage < nTextures ? sprite->tpage : 0;
 	phd_PushMatrix();
@@ -5231,39 +5234,46 @@ void DrawMoon()
 	D3DMView._41 = 0;
 	D3DMView._42 = 0;
 	D3DMView._43 = 0;
-	vec.x = 0;
-	vec.y = -1024;
-	vec.z = 1920;
-	aTransformPerspSV(&vec, v, c, 1, 0);
 
-	if (*c >= 0)
-	{
-		x1 = v[0].sx - 48.0F;
-		x2 = v[0].sx + 48.0F;
-		y1 = v[0].sy - 48.0F;
-		y2 = v[0].sy + 48.0F;
-		z = f_mzfar;
-		aSetXY4(v, x1, y1, x2, y1, x1, y2, x2, y2, z, c);
-		v[0].color = 0xC0E0FF;
-		v[1].color = 0xC0E0FF;
-		v[2].color = 0xC0E0FF;
-		v[3].color = 0xC0E0FF;
-		v[0].specular = 0xFF000000;
-		v[1].specular = 0xFF000000;
-		v[2].specular = 0xFF000000;
-		v[3].specular = 0xFF000000;
-		tex.u1 = sprite->x1;
-		tex.v1 = sprite->y1;
-		tex.u2 = sprite->x2;
-		tex.v2 = sprite->y1;
-		tex.u3 = sprite->x2;
-		tex.v3 = sprite->y2;
-		tex.u4 = sprite->x1;
-		tex.v4 = sprite->y2;
-		tex.tpage = tpage;
-		tex.drawtype = 2;
-		AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
-	}
+	vec[0].x = 0;
+	vec[0].y = -1024;
+	vec[0].z = 1920;
+
+	vec[1].x = p;
+	vec[1].y = -1024;
+	vec[1].z = 1920;
+
+	vec[2].x = p;
+	vec[2].y = -1024 + p;
+	vec[2].z = 1920;
+
+	vec[3].x = 0;
+	vec[3].y = -1024 + p;
+	vec[3].z = 1920;
+
+	aTransformPerspSV(vec, v, c, 4, 0);
+
+	v = aVertexBuffer;
+
+	v[0].color = 0xC0E0FF;
+	v[1].color = 0xC0E0FF;
+	v[2].color = 0xC0E0FF;
+	v[3].color = 0xC0E0FF;
+	v[0].specular = 0xFF000000;
+	v[1].specular = 0xFF000000;
+	v[2].specular = 0xFF000000;
+	v[3].specular = 0xFF000000;
+	tex.u1 = sprite->x1;
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x2;
+	tex.v2 = sprite->y1;
+	tex.u3 = sprite->x2;
+	tex.v3 = sprite->y2;
+	tex.u4 = sprite->x1;
+	tex.v4 = sprite->y2;
+	tex.tpage = tpage;
+	tex.drawtype = 2;
+	AddQuadSorted(v, 0, 1, 2, 3, &tex, 1);
 
 	phd_PopMatrix();
 }
