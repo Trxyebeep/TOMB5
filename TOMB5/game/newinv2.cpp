@@ -334,11 +334,11 @@ INVOBJ inventry_objects_list[NUM_INVOBJ] =
 	{EXAMINE1, 4, 0x514, 0, 0x4000, 0, 2, TXT_Load, -1},
 	{EXAMINE2, 14, 0x4B0, 0, 0x4000, 0, 2, TXT_Load, -1},
 	{EXAMINE3, 14, 0x4B0, 0, 0x4000, 0, 2, TXT_Load, -1},
-	{WET_CLOTH, -12, 0x200, 0x4000, 0x3000, 0x5000, 2, TXT_Wet_Cloth, -1},
+	{WET_CLOTH, -50, 0x200, 0x4000, 0x3000, 0x5000, 2, TXT_Wet_Cloth, -1},
 	{CROSSBOW_ITEM, 0, 0x384, 0x2000, 0x1800, 0,2 , TXT_GRAP1, 1},
 	{CROSSBOW_AMMO1_ITEM, 0, 0x44C, 0x4000, -0x1000, 0, 2, TXT_GRAP2, -1},
-	{CLOTH, -12, 0x200, 0x4000, 0x3000, 0x5000, 2, TXT_Cloth, -1 },
-	{BOTTLE, 18, 0x320, 0xC000, 0, 0, 2, TXT_Bottle, -1},
+	{CLOTH, -50, 0x200, 0x4000, 0x3000, 0x5000, 2, TXT_Cloth, -1 },
+	{BOTTLE, 50, 0x320, 0xC000, 0, 0, 2, TXT_Bottle, -1},
 	{PUZZLE_HOLE8, -10, 0x180, 0xC000, 0x6800, 0xC000, 10, TXT_Bottle, -1}
 };
 #pragma warning(pop)
