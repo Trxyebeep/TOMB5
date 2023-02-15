@@ -62,8 +62,6 @@ static long xoffset;
 static long yoffset;
 static long OBJLIST_SPACING;
 static long pcbright = 0x7F7F7F;
-static short inventry_xpos = 0;
-static short inventry_ypos = 0;
 static short combine_obj1;
 static short combine_obj2;
 static short ammo_selector_fade_val;
@@ -1172,7 +1170,7 @@ void insert_object_into_list(long num)
 
 void draw_current_object_list(long ringnum)
 {
-	long n, maxobj, xoff, shade, minobj, objmeup, nummeup, activenum, ymeup;
+	long n, maxobj, xoff, shade, minobj, objmeup, nummeup, activenum, ymeup, x, y;
 	short yrot;
 	char textbufme[128];
 
@@ -1407,11 +1405,9 @@ void draw_current_object_list(long ringnum)
 				rings[ringnum]->current_object_list[n].bright = 32;
 		}
 
-		ymeup = ringnum == RING_INVENTORY ? 42 : 190;
-		DrawThreeDeeObject2D(long((phd_centerx / 256.0F * 256.0F + inventry_xpos) + xoff + i * OBJLIST_SPACING),
-			long(phd_centery / 120.0F * ymeup + inventry_ypos),
-			rings[ringnum]->current_object_list[n].invitem,
-			shade, 0, yrot, 0, rings[ringnum]->current_object_list[n].bright, 0);
+		x = xoff + phd_centerx + i * OBJLIST_SPACING;
+		y = ringnum == RING_INVENTORY ? GetFixedScale(84) : GetFixedScale(380);
+		DrawThreeDeeObject2D(x, y, rings[ringnum]->current_object_list[n].invitem, shade, 0, yrot, 0, rings[ringnum]->current_object_list[n].bright, 0);
 
 		n++;
 
@@ -1864,7 +1860,7 @@ void fade_ammo_selector()
 void draw_ammo_selector()
 {
 	INVOBJ* objme;
-	long xpos;
+	long xpos, x, y;
 	short yrot, invitem;
 	char cunter[256];
 
@@ -1904,10 +1900,9 @@ void draw_ammo_selector()
 				PrintString(phd_centerx, phd_centery + 3 * font_height - 9, 8, cunter, FF_CENTER);
 		}
 		
-		DrawThreeDeeObject2D(long(phd_centerx / 256.0F * 64.0F + inventry_xpos + xpos),
-			long(phd_centery / 120.0F * 190.0F + inventry_ypos), invitem,
-			ammo_selector_fade_val, 0, yrot, 0, (i == current_ammo_type[0]) ? 0 : 1, 0);
-
+		x = xpos + GetFixedScale(80);
+		y = GetFixedScale(380);
+		DrawThreeDeeObject2D(x, y, invitem, ammo_selector_fade_val, 0, yrot, 0, (i == current_ammo_type[0]) ? 0 : 1, 0);
 		xpos += OBJLIST_SPACING;
 	}
 }
@@ -2973,6 +2968,7 @@ void do_keypad_mode()
 void do_examine_mode()
 {
 	INVOBJ* objme;
+	long x, y;
 	short invitem, scale;
 
 	invitem = rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem;
@@ -2984,8 +2980,9 @@ void do_examine_mode()
 		examine_mode = 128;
 
 	objme->scale1 = 300;
-	DrawThreeDeeObject2D(long(phd_centerx + inventry_xpos), long(phd_centery / 120.0 * 256.0 + inventry_xpos) / 2,
-		invitem, examine_mode, 0x8000, 0x4000, 0x4000, 96, 0);
+	x = phd_centerx;
+	y = GetFixedScale(256);
+	DrawThreeDeeObject2D(x, y, invitem, examine_mode, 0x8000, 0x4000, 0x4000, 96, 0);
 	objme->scale1 = scale;
 
 	if (go_deselect)
