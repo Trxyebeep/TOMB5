@@ -915,8 +915,7 @@ bool LoadCameras()
 		ReadBlock(camera.fixed, number_cameras * sizeof(OBJECT_VECTOR));
 	}
 
-	number_spotcams = ReadShort();
-	ReadShort();
+	number_spotcams = (short)ReadLong();
 
 	if (number_spotcams)
 		ReadBlock(SpotCam, number_spotcams * sizeof(SPOTCAM));
