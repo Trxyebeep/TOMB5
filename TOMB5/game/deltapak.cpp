@@ -3467,7 +3467,9 @@ void GetActorJointAbsPosition(long actornum, ulong nodenum, PHD_VECTOR* vec)
 	}
 
 	phd_TranslateRel(vec->x, vec->y, vec->z);
-	gte_sttr(vec);
+	vec->x = phd_mxptr[M03] >> 14;
+	vec->y = phd_mxptr[M13] >> 14;
+	vec->z = phd_mxptr[M23] >> 14;
 	vec->x += item->pos.x_pos;
 	vec->y += item->pos.y_pos;
 	vec->z += item->pos.z_pos;

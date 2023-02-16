@@ -2,7 +2,6 @@
 #include "../global/types.h"
 
 void AlterFOV(short fov);
-void gte_sttr(PHD_VECTOR* vec);
 void aInitMatrix();
 void aSetViewMatrix();
 void aSetTrans(long x, long y, long z);

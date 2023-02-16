@@ -82,13 +82,6 @@ void AlterFOV(short fov)
 	f_mperspoznear = f_persp / f_mznear;
 }
 
-void gte_sttr(PHD_VECTOR* vec)
-{
-	vec->x = phd_mxptr[M03] >> 14;
-	vec->y = phd_mxptr[M13] >> 14;
-	vec->z = phd_mxptr[M23] >> 14;
-}
-
 void aInitMatrix()
 {
 	float* ptr;
