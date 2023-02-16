@@ -10,7 +10,7 @@
 const char* TrackFileNames[136] =
 {
 	"xa1_TL_10B.wav",
-	"xa1_Z10.wav",
+	"xa1_Z_10.wav",
 	"xa1_TL_05.wav",
 	"xa1_TL_08.wav",
 	"xa1_TL_11.wav",

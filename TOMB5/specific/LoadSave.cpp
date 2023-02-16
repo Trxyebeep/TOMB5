@@ -243,6 +243,7 @@ long GetCampaignCheatValue()
 		break;
 
 	case 6:
+
 		if (keymap[DIK_1])
 			jump = LVL5_STREETS_OF_ROME;
 
