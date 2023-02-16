@@ -118,7 +118,7 @@ void InitialiseSpotCam(short Sequence)
 
 	BinocularRange = 0;
 	LaserSight = 0;
-	AlterFOV(14560);
+	AlterFOV(GAME_FOV);
 	lara_item->mesh_bits = -1;
 	lara.Busy = 0;
 	CameraFade = -1;

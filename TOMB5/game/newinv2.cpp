@@ -598,7 +598,7 @@ void init_new_inventry()
 {
 	examine_mode = 0;
 	stats_mode = 0;
-	AlterFOV(14560);
+	AlterFOV(GAME_FOV);
 	lara.Busy = 0;
 	GLOBAL_inventoryitemchosen = NO_ITEM;
 	left_debounce = 0;

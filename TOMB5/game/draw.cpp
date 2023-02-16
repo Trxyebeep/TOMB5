@@ -408,7 +408,7 @@ void SkyDrawPhase()
 			DrawMoon();
 
 		if (BinocularRange)
-			AlterFOV(14560 - (short)BinocularRange);
+			AlterFOV(short(GAME_FOV - BinocularRange));
 
 		phd_PushMatrix();
 		phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
@@ -478,7 +478,7 @@ void SkyDrawPhase()
 		phd_PopMatrix();
 
 		if (BinocularRange)
-			AlterFOV(7 * (2080 - (short)BinocularRange));
+			AlterFOV(short(GAME_FOV -  (7 * BinocularRange)));
 	}
 }
 

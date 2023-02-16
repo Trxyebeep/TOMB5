@@ -2202,7 +2202,7 @@ void handle_cutseq_triggering(long name)
 				cutseq_num = 0;
 				GLOBAL_playing_cutseq = 0;
 				cutseq_trig = 0;
-				AlterFOV(14560);
+				AlterFOV(GAME_FOV);
 				ScreenFade = 0;
 				dScreenFade = 0;
 				ScreenFadeSpeed = 8;
@@ -2219,7 +2219,7 @@ void handle_cutseq_triggering(long name)
 			if (gfCurrentLevel != LVL5_TITLE)
 				SetFadeClip(0, 1);
 
-			AlterFOV(14560);
+			AlterFOV(GAME_FOV);
 
 			if (gfCurrentLevel != LVL5_TITLE)
 				S_CDPlay(CurrentAtmosphere, 1);

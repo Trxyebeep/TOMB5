@@ -25,6 +25,7 @@
 #define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
 #define MALLOC_SIZE	15000000	//15MB
 #define WINDOW_STYLE	WS_OVERLAPPEDWINDOW
+#define GAME_FOV	(80 * 182)
 
 /*typedefs*/
 typedef unsigned char uchar;

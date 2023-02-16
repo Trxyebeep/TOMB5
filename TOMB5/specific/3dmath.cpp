@@ -880,7 +880,7 @@ ulong mGetAngle(long x, long z, long x1, long z1)
 		dz = swap;
 	}
 
-	while (short(dz) != dz)
+	while ((short)dz != dz)
 	{
 		dx >>= 1;
 		dz >>= 1;
