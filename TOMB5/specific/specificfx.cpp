@@ -771,9 +771,9 @@ void AddPolyLine(D3DTLVERTEX* vtx, TEXTURESTRUCT* tex, float p)
 	clipflags[3] = cf1;
 
 	if (tex->drawtype == 3 || tex->drawtype == 2)
-		AddQuadSorted(v, 0, 1, 2, 3, tex, 0);
+		AddQuadSorted(v, 0, 1, 2, 3, tex, 1);
 	else
-		AddQuadZBuffer(v, 0, 1, 2, 3, tex, 0);
+		AddQuadZBuffer(v, 0, 1, 2, 3, tex, 1);
 }
 
 bool ClipLine(long& x1, long& y1, long z1, long& x2, long& y2, long z2, long xMin, long yMin, long w, long h)
