@@ -144,10 +144,10 @@ long DoLoadSave(long LoadSave)
 		if (pSave->valid)
 		{
 			wsprintf(string, "%03d", pSave->num);
-			PrintString(phd_centerx - GetFixedScale(310), f, color, string, 0);
-			PrintString(phd_centerx - GetFixedScale(270), f, color, name, 0);
+			PrintString(GetFixedScale(10), f, color, string, 0);
+			PrintString(GetFixedScale(60), f, color, name, 0);
 			wsprintf(string, "%d %s %02d:%02d:%02d", pSave->days, SCRIPT_TEXT(TXT_days), pSave->hours, pSave->minutes, pSave->seconds);
-			PrintString(phd_centerx + GetFixedScale(135), f, color, string, 0);
+			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * -135.0), f, color, string, 0);
 		}
 		else
 		{

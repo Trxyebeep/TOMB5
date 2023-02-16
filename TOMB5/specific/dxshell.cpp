@@ -175,6 +175,9 @@ HRESULT __stdcall DXEnumDisplayModes(DDSURFACEDESC2* lpDDSurfaceDesc2, LPVOID lp
 	DXDISPLAYMODE* DM;
 	long nDisplayModes;
 
+	if (lpDDSurfaceDesc2->ddpfPixelFormat.dwRGBBitCount == 16)
+		return DDENUMRET_OK;
+
 	DDInfo = (DXDIRECTDRAWINFO*)lpContext;
 	nDisplayModes = DDInfo->nDisplayModes;
 	DDInfo->DisplayModes = (DXDISPLAYMODE*)AddStruct(DDInfo->DisplayModes, nDisplayModes, sizeof(DXDISPLAYMODE));
@@ -224,6 +227,9 @@ HRESULT __stdcall DXEnumTextureFormats(LPDDPIXELFORMAT lpDDPixFmt, LPVOID lpCont
 	long nTextureInfos;
 
 	if (!(lpDDPixFmt->dwFlags & DDPF_ALPHAPIXELS) || !(lpDDPixFmt->dwFlags & DDPF_RGB))
+		return DDENUMRET_OK;
+
+	if (lpDDPixFmt->dwRGBBitCount == 16)
 		return DDENUMRET_OK;
 
 	d3d = (DXD3DDEVICE*)lpContext;
