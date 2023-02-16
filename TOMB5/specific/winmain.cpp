@@ -468,7 +468,7 @@ void WinSetStyle(bool fullscreen, ulong& set)
 	else
 		style = (style & ~WS_POPUP) | WS_OVERLAPPEDWINDOW;
 
-	style &= ~(WS_THICKFRAME | WS_MAXIMIZEBOX);
+	style &= ~(WS_THICKFRAME | WS_MAXIMIZEBOX | WS_SYSMENU);
 	SetWindowLong(App.hWnd, GWL_STYLE, style);
 
 	if (set)
