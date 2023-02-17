@@ -181,15 +181,19 @@ static long audio_buffer_size;
 static long CurrentNotify;
 static long NextWriteOffset;
 static long NotifySize;
-static long audio_counter;
+static long eof_counter;
 static volatile bool reading_audio_file;
 static volatile bool continue_reading_audio_file;
+
+#define ACM_BUFFER_SIZE		0x5800
+#define FILE_BUFFER_SIZE	((ACM_BUFFER_SIZE * 2) * 1)		//WAS * 5
+#define EOF_LEEWAY			2								//WAS 8.. every 2 = about 1 extra second of playtime
 
 void S_CDPlay(long track, long mode)
 {
 	if (acm_ready)
 	{
-		audio_counter = 0;
+		eof_counter = 0;
 		IsAtmospherePlaying = track == CurrentAtmosphere;
 		S_CDStop();
 		ACMEmulateCDPlay(track, mode);
@@ -200,13 +204,13 @@ void S_CDStop()
 {
 	if (acm_ready && audio_stream_fp)
 	{
-		memset(wav_file_buffer, 0, 0x37000);
+		memset(wav_file_buffer, 0, FILE_BUFFER_SIZE);
 		DSBuffer->Stop();
 		DSBuffer->SetCurrentPosition(0);
 		while (reading_audio_file) {};
 		fclose(audio_stream_fp);
 		audio_stream_fp = 0;
-		audio_counter = 0;
+		eof_counter = 0;
 		XATrack = -1;
 	}
 }
@@ -256,9 +260,9 @@ void OpenStreamFile(char* name)
 
 	fseek(audio_stream_fp, 90, SEEK_SET);
 	audio_fp_write_ptr = wav_file_buffer;
-	memset(wav_file_buffer, 0, 0x37000);
+	memset(wav_file_buffer, 0, FILE_BUFFER_SIZE);
 
-	if (fread(wav_file_buffer, 1, 0x37000, audio_stream_fp) < 0x37000 && audio_play_mode == 1)
+	if (fread(wav_file_buffer, 1, FILE_BUFFER_SIZE, audio_stream_fp) < FILE_BUFFER_SIZE && audio_play_mode == 1)
 	{
 		fseek(audio_stream_fp, 90, SEEK_SET);
 		Log(0, "FileReset In OpenStreamFile");
@@ -270,17 +274,17 @@ void GetADPCMData()
 	if (!audio_stream_fp)
 		return;
 
-	memset(audio_fp_write_ptr, 0, 0x5800);
+	memset(audio_fp_write_ptr, 0, ACM_BUFFER_SIZE);
 
-	if (fread(audio_fp_write_ptr, 1, 0x5800, audio_stream_fp) < 0x5800 && audio_play_mode == 1)
+	if (fread(audio_fp_write_ptr, 1, ACM_BUFFER_SIZE, audio_stream_fp) < ACM_BUFFER_SIZE && audio_play_mode == 1)
 	{
 		Log(0, "FileReset In GetADPCMData");
 		fseek(audio_stream_fp, 90, SEEK_SET);
 	}
 
-	audio_fp_write_ptr += 0x5800;
+	audio_fp_write_ptr += ACM_BUFFER_SIZE;
 
-	if ((long)audio_fp_write_ptr >= long(wav_file_buffer + 0x37000))
+	if ((long)audio_fp_write_ptr >= long(wav_file_buffer + FILE_BUFFER_SIZE))
 		audio_fp_write_ptr = wav_file_buffer;
 }
 
@@ -311,11 +315,11 @@ void ACMEmulateCDPlay(long track, long mode)
 	if (!audio_stream_fp)
 		return;
 
-	memcpy(ADPCMBuffer, audio_fp_write_ptr, 0x5800);
+	memcpy(ADPCMBuffer, audio_fp_write_ptr, ACM_BUFFER_SIZE);
 	GetADPCMData();
 	DXAttempt(DSBuffer->Lock(0, audio_buffer_size, (LPVOID*)&pAudioWrite, &AudioBytes, 0, 0, 0));
 	acmStreamConvert(hACMStream, &StreamHeaders[0], ACM_STREAMCONVERTF_BLOCKALIGN | ACM_STREAMCONVERTF_START);
-	memcpy(ADPCMBuffer, audio_fp_write_ptr, 0x5800);
+	memcpy(ADPCMBuffer, audio_fp_write_ptr, ACM_BUFFER_SIZE);
 	GetADPCMData();
 	acmStreamConvert(hACMStream, &StreamHeaders[1], ACM_STREAMCONVERTF_BLOCKALIGN);
 	DXAttempt(DSBuffer->Unlock(pAudioWrite, audio_buffer_size, 0, 0));
@@ -410,7 +414,7 @@ void FillADPCMBuffer(char* p, long track)
 		return;
 	}
 
-	memset(p, 0, 0x5800);
+	memset(p, 0, ACM_BUFFER_SIZE);
 
 	if (!audio_stream_fp)
 	{
@@ -419,7 +423,7 @@ void FillADPCMBuffer(char* p, long track)
 		return;
 	}
 
-	fread(p, 1, 0x5800, audio_stream_fp);
+	fread(p, 1, ACM_BUFFER_SIZE, audio_stream_fp);
 
 	if (audio_stream_fp && feof(audio_stream_fp))
 	{
@@ -427,11 +431,11 @@ void FillADPCMBuffer(char* p, long track)
 			fseek(audio_stream_fp, 90, SEEK_SET);
 		else
 		{
-			audio_counter++;
+			eof_counter++;
 
-			if (audio_counter > 8)
+			if (eof_counter > EOF_LEEWAY)
 			{
-				audio_counter = 0;
+				eof_counter = 0;
 
 				if (audio_play_mode == 2)
 				{
@@ -468,18 +472,18 @@ long ACMHandleNotifications()
 
 		if (!wait && DSBuffer)
 		{
-			memcpy(ADPCMBuffer, audio_fp_write_ptr, 0x5800);
+			memcpy(ADPCMBuffer, audio_fp_write_ptr, ACM_BUFFER_SIZE);
 
 			if (XATrack == -1)
-				memset(ADPCMBuffer, 0, 0x5800);
+				memset(ADPCMBuffer, 0, ACM_BUFFER_SIZE);
 			else
 				FillADPCMBuffer((char*)audio_fp_write_ptr, XATrack);
 
 			if (continue_reading_audio_file)
 			{
-				audio_fp_write_ptr += 0x5800;
+				audio_fp_write_ptr += ACM_BUFFER_SIZE;
 
-				if ((long)audio_fp_write_ptr >= long(wav_file_buffer + 0x37000))
+				if ((long)audio_fp_write_ptr >= long(wav_file_buffer + FILE_BUFFER_SIZE))
 					audio_fp_write_ptr = wav_file_buffer;
 
 				DSBuffer->Lock(NextWriteOffset, NotifySize, (LPVOID*)&write, &bytes, 0, 0, 0);
@@ -528,8 +532,8 @@ bool ACMInit()
 		return 0;
 	}
 
-	ADPCMBuffer = (uchar*)malloc(0x5800);
-	wav_file_buffer = (uchar*)malloc(0x37000);
+	ADPCMBuffer = (uchar*)malloc(ACM_BUFFER_SIZE);
+	wav_file_buffer = (uchar*)malloc(FILE_BUFFER_SIZE);
 	wav_format.wFormatTag = WAVE_FORMAT_PCM;
 	acmMetrics(0, ACM_METRIC_MAX_SIZE_FORMAT, &pMetric);
 	acmFormatSuggest(hACMDriver, (LPWAVEFORMATEX)&source_wav_format, &wav_format, pMetric, ACM_FORMATSUGGESTF_WFORMATTAG);
@@ -546,7 +550,7 @@ bool ACMInit()
 
 	ACMSetupNotifications();
 	acmStreamOpen(&hACMStream, hACMDriver, (LPWAVEFORMATEX)&source_wav_format, &wav_format, 0, 0, 0, 0);
-	acmStreamSize(hACMStream, 0x5800, &StreamSize, 0);
+	acmStreamSize(hACMStream, ACM_BUFFER_SIZE, &StreamSize, 0);
 	DXAttempt(DSBuffer->Lock(0, audio_buffer_size, (LPVOID*)&pAudioWrite, &AudioBytes, 0, 0, 0));
 	memset(pAudioWrite, 0, audio_buffer_size);
 
@@ -555,7 +559,7 @@ bool ACMInit()
 		memset(&StreamHeaders[i], 0, sizeof(ACMSTREAMHEADER));
 		StreamHeaders[i].cbStruct = sizeof(ACMSTREAMHEADER);
 		StreamHeaders[i].pbSrc = ADPCMBuffer;
-		StreamHeaders[i].cbSrcLength = 0x5800;
+		StreamHeaders[i].cbSrcLength = ACM_BUFFER_SIZE;
 		StreamHeaders[i].cbDstLength = StreamSize;
 		StreamHeaders[i].pbDst = &pAudioWrite[NotifySize * i];
 		acmStreamPrepareHeader(hACMStream, &StreamHeaders[i], 0);
