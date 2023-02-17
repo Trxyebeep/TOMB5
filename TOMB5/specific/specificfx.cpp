@@ -5255,10 +5255,10 @@ void DrawMoon()
 
 	v = aVertexBuffer;
 
-	v[0].color = 0xC0E0FF;
-	v[1].color = 0xC0E0FF;
-	v[2].color = 0xC0E0FF;
-	v[3].color = 0xC0E0FF;
+	v[0].color = 0xFFC0E0FF;
+	v[1].color = 0xFFC0E0FF;
+	v[2].color = 0xFFC0E0FF;
+	v[3].color = 0xFFC0E0FF;
 	v[0].specular = 0xFF000000;
 	v[1].specular = 0xFF000000;
 	v[2].specular = 0xFF000000;
