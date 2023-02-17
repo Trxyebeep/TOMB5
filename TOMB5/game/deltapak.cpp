@@ -2563,15 +2563,15 @@ void trigger_title_spotcam(long num)
 		item->pos.z_pos = 42496;
 		item->room_number = 0;
 
-		S_CDPlay(83, 0);
+		S_CDPlay(83, 1);
 		break;
 
 	case 2:
-		S_CDPlay(86, 0);
+		S_CDPlay(86, 1);
 		break;
 
 	case 3:
-		S_CDPlay(87, 0);
+		S_CDPlay(87, 1);
 		break;
 
 	case 4:
@@ -2596,7 +2596,7 @@ void trigger_title_spotcam(long num)
 		ResetCutanimate(ANIMATING13);
 		ResetCutanimate(ANIMATING14);
 		ResetCutanimate(ANIMATING15);
-		S_CDPlay(91, 0);
+		S_CDPlay(91, 1);
 		break;
 	}
 
