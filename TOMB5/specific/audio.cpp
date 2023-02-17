@@ -163,8 +163,6 @@ uchar* ADPCMBuffer;
 bool acm_ready;
 
 long XATrack = -1;
-long XAFlag = 7;
-static long XAReqTrack = 0;
 
 static FILE* audio_stream_fp;
 static LPDIRECTSOUNDBUFFER DSBuffer;
@@ -209,7 +207,6 @@ void S_CDStop()
 		fclose(audio_stream_fp);
 		audio_stream_fp = 0;
 		audio_counter = 0;
-		XAFlag = 7;
 		XATrack = -1;
 	}
 }
@@ -308,8 +305,6 @@ void ACMEmulateCDPlay(long track, long mode)
 		Log(8, "Playing %s %s %d", name, "", track);
 
 	XATrack = track;
-	XAReqTrack = track;
-	XAFlag = 6;
 	audio_play_mode = mode;
 	OpenStreamFile(name);
 
