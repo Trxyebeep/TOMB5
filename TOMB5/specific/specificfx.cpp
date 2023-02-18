@@ -2648,12 +2648,17 @@ void DrawDrips()
 {
 	DRIP_STRUCT* drip;
 	PHD_VECTOR vec;
-	D3DTLVERTEX v[3];
+	D3DTLVERTEX v[2];
+	TEXTURESTRUCT tex;
 	long* XY;
 	long* Z;
 	long* pos;
 	float perspz;
 	long x0, y0, z0, x1, y1, z1, r, g, b;
+
+	tex.drawtype = 2;
+	tex.tpage = 0;
+	tex.flag = 0;
 
 	XY = (long*)&tsv_buffer[0];
 	Z = (long*)&tsv_buffer[512];
@@ -2685,7 +2690,7 @@ void DrawDrips()
 		XY[1] = long(float(vec.y * perspz + f_centery));
 		Z[0] = vec.z >> 14;
 
-		pos[1] -= drip->Yvel >> 6;
+		pos[1] -= GetFixedScale(drip->Yvel >> 6);
 
 		if (room[drip->RoomNumber].flags & ROOM_NOT_INSIDE)
 		{
@@ -2742,7 +2747,11 @@ void DrawDrips()
 			v[1].color = RGBA(r, g, b, 0xFF);
 			v[1].specular = 0xFF000000;
 
-			AddLineSorted(v, &v[1], 6);
+			clipflags[0] = 0;
+			clipflags[1] = 0;
+			clipflags[2] = 0;
+			clipflags[3] = 0;
+			AddPolyLine(v, &tex, (float)GetFixedScale(1));
 		}
 	}
 

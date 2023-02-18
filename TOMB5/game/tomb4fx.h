@@ -33,6 +33,7 @@ long GetFreeBubble();
 void CreateBubble(PHD_3DPOS* pos, short room_number, long size, long biggest, long flags, short xv, short yv, short zv);
 void UpdateBubbles();
 void TriggerSmallSplash(long x, long y, long z, long num);
+void TriggerDripSplash(long x, long y, long z, long num);
 long GetFreeGunshell();
 void TriggerGunShell(short leftright, short objnum, long weapon);
 void UpdateGunShells();
