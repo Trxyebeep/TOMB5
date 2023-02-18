@@ -14,7 +14,7 @@
 #include "tomb4fx.h"
 #include "twogun.h"
 #include "skeleton.h"
-#include "tower2.h"
+#include "tower.h"
 #include "../specific/function_stubs.h"
 #include "../specific/output.h"
 #include "camera.h"
@@ -186,22 +186,14 @@ void BridgeFlatCeiling(ITEM_INFO* item, long x, long y, long z, long* height)
 
 long GetOffset(ITEM_INFO* item, long x, long z)
 {
-	if (item->pos.y_rot == 0)
-#ifdef GENERAL_FIXES // Fixes bridge bug
+	if (!item->pos.y_rot)
 		return ~x & 0x3FF;
-#else
-		return -x & 0x3FF;
-#endif
 	else if (item->pos.y_rot == -0x8000)
 		return x & 0x3FF;
 	else if (item->pos.y_rot == 0x4000)
 		return z & 0x3FF;
 	else
-#ifdef GENERAL_FIXES
 		return ~z & 0x3FF;
-#else
-		return -z & 0x3FF;
-#endif
 }
 
 void BridgeTilt1Floor(ITEM_INFO* item, long x, long y, long z, long* height)

@@ -24,7 +24,7 @@
 #include "deathsld.h"
 #include "andrea.h"
 #include "rope.h"
-#include "tower2.h"
+#include "tower.h"
 #include "lasers.h"
 #include "lion.h"
 #include "dog.h"
@@ -63,10 +63,8 @@
 #include "footprnt.h"
 #include "lara.h"
 #include "larafire.h"
-#ifdef GENERAL_FIXES
 #include "savegame.h"
 #include "lara2gun.h"
-#endif
 
 void InitialiseLara(long restore)
 {
@@ -98,9 +96,7 @@ void InitialiseLara(long restore)
 	lara.dpoisoned = 0;
 	lara.poisoned = 0;
 	lara.water_surface_dist = 100;
-#ifdef GENERAL_FIXES
 	LHolster = LARA_HOLSTERS_PISTOLS;
-#endif
 	lara.holster = LARA_HOLSTERS_PISTOLS;
 	lara.location = -1;
 	lara.highest_location = -1;
@@ -475,9 +471,7 @@ void ObjectObjects()
 	for (int i = KEY_HOLE1; i < SWITCH_TYPE1; i++)
 	{
 		obj = &objects[i];
-#ifdef GENERAL_FIXES
 		obj->initialise = InitialiseKeyhole;
-#endif
 		obj->collision = KeyHoleCollision;
 		obj->save_flags = 1;
 	}
@@ -687,7 +681,7 @@ void ObjectObjects()
 	obj->save_flags = 1;
 
 	obj = &objects[LENS_FLARE];
-	obj->draw_routine = DrawLensFlares;
+	obj->draw_routine = 0;
 	obj->using_drawanimating_item = 0;
 
 	obj = &objects[TELEPORTER];
@@ -1910,13 +1904,13 @@ void InitialiseObjects()
 		objects[2 * (gfMips[i] & 0xF) + ANIMATING1].object_mip = 64 * (gfMips[i] & 0xF0);
 
 	if (objects[RAT].loaded)
-		Rats = (RAT_STRUCT*) game_malloc(832, 0);
+		Rats = (RAT_STRUCT*)game_malloc(832);
 
 	if (objects[BAT].loaded)
-		Bats = (BAT_STRUCT*) game_malloc(1920, 0);
+		Bats = (BAT_STRUCT*)game_malloc(1920);
 
 	if (objects[SPIDER].loaded)
-		Spiders = (SPIDER_STRUCT*) game_malloc(1664, 0);
+		Spiders = (SPIDER_STRUCT*)game_malloc(1664);
 }
 
 void GetCarriedItems()
@@ -2033,8 +2027,8 @@ void BuildOutsideTable()
 	char flipped[256];
 
 	max_slots = 0;
-	OutsideRoomOffsets = (short*)game_malloc(0x5B2, 0);
-	OutsideRoomTable = (char*)game_malloc(0xB640, 0);
+	OutsideRoomOffsets = (short*)game_malloc(0x5B2);
+	OutsideRoomTable = (char*)game_malloc(0xB640);
 	memset(OutsideRoomTable, 0xFF, 0xB640);
 	memset(flipped, 0, 255);
 

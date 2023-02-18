@@ -12,7 +12,6 @@
 #include "function_stubs.h"
 #include "time.h"
 #include "dxshell.h"
-#include "profiler.h"
 #include "polyinsert.h"
 #include "winmain.h"
 #include "../game/tomb4fx.h"
@@ -27,19 +26,13 @@
 #include "../game/effect2.h"
 #include "../game/lara.h"
 #include "gamemain.h"
-#ifdef GENERAL_FIXES
 #include "../game/draw.h"
 #include "../game/health.h"
 #include "../game/text.h"
 #include "../tomb5/tomb5.h"
-#endif
 
 D3DTLVERTEX aVertexBuffer[1024];
 
-long nPolys;
-long nClippedPolys;
-long DrawPrimitiveCnt;
-long DrawSortedCnt;
 long aGlobalSkinMesh;
 long GlobalAlpha = 0xFF000000;
 long GlobalAmbient;
@@ -55,29 +48,23 @@ static PHD_VECTOR load_cam;
 static PHD_VECTOR load_target;
 static char load_roomnum = (char)NO_ROOM;
 
-static long nDebugStrings;
-static char DebugStrings[256][80];
-static long water_color_R = 128;
-static long water_color_G = 224;
-static long water_color_B = 255;
-static long old_lighting_water;
-
 void S_DrawPickup(short object_number)
 {
-	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
-	SetD3DViewMatrix();
+	long x, y;
+
+	phd_LookAt(0, 1024, 0, 100, 0, 200, 0);
 	aSetViewMatrix();
-	DrawThreeDeeObject2D(long(phd_winxmax * 0.001953125 * 448.0 + PickupX), long(phd_winymax * 0.00390625 * 216.0), convert_obj_to_invobj(object_number),
-		128, 0, (GnFrameCounter & 0x7F) << 9, 0, 0, 1);
+
+	x = phd_winwidth - GetFixedScale(80) + PickupX;
+	y = phd_winheight - GetFixedScale(75);
+	DrawThreeDeeObject2D(x, y, convert_obj_to_invobj(object_number), 128, 0, (GnFrameCounter & 0x7F) << 9, 0, 0, 1);
 }
 
 void aTransformLightClipMesh(MESH_DATA* mesh)
 {
 	POINTLIGHT_STRUCT* point;
 	SUNLIGHT_STRUCT* sun;
-#ifdef GENERAL_FIXES
 	SPOTLIGHT_STRUCT* spot;
-#endif
 	FOGBULB_STRUCT* bulb;
 	FVECTOR vec;
 	FVECTOR vec2;
@@ -85,20 +72,15 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 	FVECTOR vec4;
 	short* clip;
 	float fR, fG, fB, val, val2, val3, zv, fCol, fCol2;
-#ifdef GENERAL_FIXES
 	static float DistanceFogStart, iDistanceFogStart;
 	float fNum, fZ;
-#endif
 	long sR, sG, sB, cR, cG, cB;
 	short clipFlag;
 
 	clip = clipflags;
-
-#ifdef GENERAL_FIXES
 	DistanceFogStart = tomb5.distance_fog * 1024.0F;
 	iDistanceFogStart = 1.0F / DistanceFogStart;
 	fNum = iDistanceFogStart * 255.0F;
-#endif
 
 	for (int i = 0; i < mesh->nVerts; i++)
 	{
@@ -108,9 +90,7 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 		vec.x = (mesh->aVtx[i].x * D3DMView._11) + (mesh->aVtx[i].y * D3DMView._21) + (mesh->aVtx[i].z * D3DMView._31) + D3DMView._41;
 		vec.y = (mesh->aVtx[i].x * D3DMView._12) + (mesh->aVtx[i].y * D3DMView._22) + (mesh->aVtx[i].z * D3DMView._32) + D3DMView._42;
 		vec.z = (mesh->aVtx[i].x * D3DMView._13) + (mesh->aVtx[i].y * D3DMView._23) + (mesh->aVtx[i].z * D3DMView._33) + D3DMView._43;
-#ifdef GENERAL_FIXES
 		fZ = vec.z;
-#endif
 
 		if (TotalNumLights)
 		{
@@ -123,18 +103,8 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 				for (int j = 0; j < NumPointLights; j++)
 				{
 					point = &PointLights[j];
-
-#ifdef GENERAL_FIXES
-					if (tomb5.tr4_point_lights)
-						val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz);
-					else
-					{
-						val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
-						val *= val;
-					}
-#else
 					val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
-#endif
+					val *= val;
 
 					if (val > 0)
 					{
@@ -146,7 +116,6 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 				}
 			}
 
-#ifdef GENERAL_FIXES
 			if (NumSpotLights)
 			{
 				for (int j = 0; j < NumSpotLights; j++)
@@ -163,7 +132,6 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 					}
 				}
 			}
-#endif
 
 			if (NumSunLights)
 			{
@@ -174,11 +142,9 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 
 					if (val > 0)
 					{
-#ifdef GENERAL_FIXES
 						if (!InventoryActive)	//fucking shit
 							val *= 0.75F;
 						else
-#endif
 							val += val;
 
 						fR += val * sun->r;
@@ -199,7 +165,6 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 			cB = aAmbientB;
 		}
 
-#ifdef GENERAL_FIXES
 		if (fZ > DistanceFogStart)
 		{
 			val = fNum * (fZ - DistanceFogStart);
@@ -207,7 +172,6 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 			cG -= (long)val;
 			cB -= (long)val;
 		}
-#endif
 
 		if (cR - 128 <= 0)
 			cR <<= 1;
@@ -421,19 +385,15 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 {
 	FOGBULB_STRUCT* bulb;
-#ifdef GENERAL_FIXES
 	DYNAMIC* light;
-#endif
 	FVECTOR vec;
 	FVECTOR vec2;
 	FVECTOR vec3;
 	FVECTOR vec4;
 	short* clip;
 	float val, val2, val3, zv, fCol, fCol2;
-#ifdef GENERAL_FIXES
 	static float DistanceFogStart, iDistanceFogStart;
 	float fNum, fZ;
-#endif
 	long sR, sG, sB, cR, cG, cB, pR, pG, pB;
 	short clipFlag;
 
@@ -441,12 +401,9 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 	pR = (StaticMeshShade & 0x1F) << 3;
 	pG = ((StaticMeshShade >> 5) & 0x1F) << 3;
 	pB = ((StaticMeshShade >> 10) & 0x1F) << 3;
-
-#ifdef GENERAL_FIXES
 	DistanceFogStart = tomb5.distance_fog * 1024.0F;
 	iDistanceFogStart = 1.0F / DistanceFogStart;
 	fNum = iDistanceFogStart * 255.0F;
-#endif
 
 	for (int i = 0; i < mesh->nVerts; i++)
 	{
@@ -456,9 +413,8 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 		vec.x = (mesh->aVtx[i].x * D3DMView._11) + (mesh->aVtx[i].y * D3DMView._21) + (mesh->aVtx[i].z * D3DMView._31) + D3DMView._41;
 		vec.y = (mesh->aVtx[i].x * D3DMView._12) + (mesh->aVtx[i].y * D3DMView._22) + (mesh->aVtx[i].z * D3DMView._32) + D3DMView._42;
 		vec.z = (mesh->aVtx[i].x * D3DMView._13) + (mesh->aVtx[i].y * D3DMView._23) + (mesh->aVtx[i].z * D3DMView._33) + D3DMView._43;
-#ifdef GENERAL_FIXES
 		fZ = vec.z;
-#endif
+
 		cR = CLRR(mesh->aVtx[i].prelight);
 		cG = CLRG(mesh->aVtx[i].prelight);
 		cB = CLRB(mesh->aVtx[i].prelight);
@@ -466,7 +422,6 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 		cG = (cG * pG) >> 8;
 		cB = (cB * pB) >> 8;
 
-#ifdef GENERAL_FIXES
 		if (tomb5.static_lighting)
 		{
 			for (int j = 0; j < 32; j++)
@@ -501,7 +456,6 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 			cG -= (long)val;
 			cB -= (long)val;
 		}
-#endif
 
 		if (cR - 128 <= 0)
 			cR <<= 1;
@@ -712,8 +666,7 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 	}
 }
 
-#ifdef GENERAL_FIXES
-TR4LS tr4_load_screens[15] =
+static TR4LS tr4_load_screens[15] =
 {
 	{30548, 1770, 14103, 29452, 1576, 14853, 36},			//Title
 	{58434, -634, 42783, 57337, -1048, 40945, 59},			//Streets of Rome
@@ -745,15 +698,13 @@ static inline void GetLoadScreenCam()
 	load_target.z = ls->tz;
 	load_roomnum = ls->rn;
 }
-#endif
 
 void RenderLoadPic(long unused)
 {
+	long x, y;
 	short poisoned;
 
-#ifdef GENERAL_FIXES
 	GetLoadScreenCam();
-#endif
 	camera.pos.x = load_cam.x;
 	camera.pos.y = load_cam.y;
 	camera.pos.z = load_cam.z;
@@ -779,8 +730,10 @@ void RenderLoadPic(long unused)
 	if (App.dx.InScene)
 		_EndScene();
 
-#ifdef GENERAL_FIXES
 	InitialisePickUpDisplay();
+
+	x = phd_centerx;
+	y = phd_winheight - GetFixedScale(37);
 
 	do
 	{
@@ -789,8 +742,7 @@ void RenderLoadPic(long unused)
 		RenderIt(camera.pos.room_number);
 
 		if (tomb5.loadingtxt && tomb5.tr4_loadbar)
-			PrintString((ushort)phd_centerx, ushort((float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1)),
-				5, SCRIPT_TEXT(TXT_LOADING), FF_CENTER);
+			PrintString(x, y, 5, SCRIPT_TEXT(TXT_LOADING2), FF_CENTER);
 
 		S_OutputPolyList();
 		S_DumpScreen();
@@ -802,12 +754,10 @@ void RenderLoadPic(long unused)
 	RenderIt(camera.pos.room_number);
 
 	if (tomb5.loadingtxt && tomb5.tr4_loadbar)
-		PrintString((ushort)phd_centerx, ushort((float((480 - (font_height >> 1)) * float(phd_winymax / 480.0F))) - (font_height >> 1)),
-			5, SCRIPT_TEXT(TXT_LOADING), FF_CENTER);
+		PrintString(x, y, 5, SCRIPT_TEXT(TXT_LOADING2), FF_CENTER);
 
 	S_OutputPolyList();
 	S_DumpScreen();
-#endif
 
 	lara.poisoned = poisoned;
 	GlobalFogOff = 0;
@@ -1079,50 +1029,6 @@ long aCheckMeshClip(MESH_DATA* mesh)
 	return 2;
 }
 
-void ProjectTrainVerts(short nVerts, D3DTLVERTEX* v, short* clip, long x)
-{
-	float zv;
-	short clipFlag;
-
-	for (int i = 0; i < nVerts; i++)
-	{
-		clipFlag = 0;
-		v->tu = v->sx;
-		v->tv = v->sy;
-
-		if (v->sz < f_mznear)
-			clipFlag = -128;
-		else
-		{
-			zv = f_mpersp / v->sz;
-
-			if (v->sz > FogEnd)
-			{
-				v->sz = f_zfar;
-				clipFlag = 256;
-			}
-
-			v->sx = zv * v->sx + f_centerx;
-			v->sy = zv * v->sy + f_centery;
-			v->rhw = f_moneopersp * zv;
-
-			if (v->sx < clip_left)
-				clipFlag++;
-			else if (v->sx > clip_right)
-				clipFlag += 2;
-
-			if (v->sy < clip_top)
-				clipFlag += 4;
-			else if (v->sy > clip_bottom)
-				clipFlag += 8;
-		}
-
-		clip[0] = clipFlag;
-		clip++;
-		v++;
-	}
-}
-
 HRESULT DDCopyBitmap(LPDIRECTDRAWSURFACE4 surf, HBITMAP hbm, long x, long y, long dx, long dy)
 {
 	HDC hdc;
@@ -1202,26 +1108,6 @@ HRESULT _LoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name)
 
 	DeleteObject(hBitmap);
 	return result;
-}
-
-HRESULT aLoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name)
-{
-	HBITMAP hBitmap;
-	HRESULT result;
-
-	hBitmap = (HBITMAP)LoadImage(0, name, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE);
-
-	if (hBitmap)
-	{
-		result = DDCopyBitmap(surf, hBitmap, 0, 0, 0, 0);
-		DeleteObject(hBitmap);
-
-		if (result == DD_OK)
-			return result;
-	}
-
-	Log(1, "LoadBitmap FAILED");
-	return E_FAIL;
 }
 
 void do_boot_screen(long language)
@@ -1348,8 +1234,6 @@ long S_DumpScreen()
 {
 	long n;
 
-	mAddProfilerEvent(0);
-	mDrawProfiler(0, 64, App.dx.dwRenderHeight - 32);
 	n = Sync();
 
 	while (n < 2)
@@ -1361,7 +1245,6 @@ long S_DumpScreen()
 	GnFrameCounter++;
 	_EndScene();
 	DXShowFrame();
-	mAddProfilerEvent(0x805C805C);
 	App.dx.DoneBlit = 1;
 	return n;
 }
@@ -1383,85 +1266,6 @@ long S_DumpScreenFrame()
 	DXShowFrame();
 	App.dx.DoneBlit = 1;
 	return n;
-}
-
-void SetGlobalAmbient(long ambient)
-{
-	GlobalAmbient = ambient;
-}
-
-void PrelightVerts(long nVerts, D3DTLVERTEX* v, MESH_DATA* mesh)
-{
-	D3DVERTEX* vtx;
-	long r, g, b, sr, sg, sb;
-
-	sr = (StaticMeshShade & 0x1F) << 3;
-	sg = ((StaticMeshShade >> 5) & 0x1F) << 3;
-	sb = ((StaticMeshShade >> 10) & 0x1F) << 3;
-	vtx = 0;
-
-	for (int i = 0; i < nVerts; i++)
-	{
-		r = CLRR(v->color) + ((sr * (mesh->prelight[i] & 0xFF)) >> 8);
-		g = CLRG(v->color) + ((sg * (mesh->prelight[i] & 0xFF)) >> 8);
-		b = CLRB(v->color) + ((sb * (mesh->prelight[i] & 0xFF)) >> 8);
-
-		if (r > 255)
-			r = 255;
-
-		if (g > 255)
-			g = 255;
-
-		if (b > 255)
-			b = 255;
-
-		if (!(room[current_item->room_number].flags & ROOM_UNDERWATER) && old_lighting_water)
-		{
-			r = (r * water_color_R) >> 8;
-			g = (g * water_color_G) >> 8;
-			b = (b * water_color_B) >> 8;
-		}
-
-		v->color = RGBA(r, g, b, 0xFF);
-		CalcColorSplit(v->color, &v->color);
-		v++;
-	}
-}
-
-void CalcVertsColorSplitMMX(long nVerts, D3DTLVERTEX* v)
-{
-	D3DTLVERTEX* waterVtx;
-	short r, g, b;
-
-	if (old_lighting_water && !(room[current_item->room_number].flags & ROOM_UNDERWATER))
-	{
-		waterVtx = v;
-
-		for (int i = 0; i < nVerts; i++, waterVtx++)
-		{
-			r = short(water_color_R * CLRR(waterVtx->color) >> 8);
-			g = short(water_color_G * CLRG(waterVtx->color) >> 8);
-			b = short(water_color_B * CLRB(waterVtx->color) >> 8);
-			waterVtx->color &= 0xFF000000;
-			waterVtx->color |= RGBONLY(r, g, b);
-		}
-	}
-
-	if (App.mmx)
-	{
-		for (int i = 0; i < nVerts; i++, v++)
-			CalcColorSplitMMX(v->color, &v->color);
-
-		__asm
-		{
-			emms
-		}
-	}
-	else
-	{
-		for (int i = 0; i < nVerts; i++, v++)
-			CalcColorSplit(v->color, &v->color);
-	}
 }
 
 void StashSkinVertices(long node)
@@ -1574,13 +1378,7 @@ void S_InitialisePolyList()
 	r.y1 = App.dx.rViewport.top;
 	r.y2 = App.dx.rViewport.top + App.dx.rViewport.bottom;
 	r.x2 = App.dx.rViewport.left + App.dx.rViewport.right;
-
-	if (App.dx.Flags & 0x80)
-		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0));
-#if 0
-	else
-		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
-#endif
+	DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0));
 
 	_BeginScene();
 	InitBuckets();
@@ -1592,25 +1390,17 @@ void S_OutputPolyList()
 	D3DRECT r;
 	static long c;
 	long h;
+	char buf[128];
 
-	RestoreFPCW(FPCW);
 	WinFrameRate();
-	nPolys = 0;
-	nClippedPolys = 0;
-	DrawPrimitiveCnt = 0;
-	DrawSortedCnt = 0;
-
-	for (int i = 0; i < nDebugStrings; i++)
-		WinDisplayString(0, font_height * (i + 1), DebugStrings[i]);
-
-	nDebugStrings = 0;
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
 	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
 
 	if (resChangeCounter)
 	{
-		WinDisplayString(8, App.dx.dwRenderHeight - 8, (char*)"%dx%d", App.dx.dwRenderWidth, App.dx.dwRenderHeight);
+		sprintf(buf, "%dx%d", App.dx.dwRenderWidth, App.dx.dwRenderHeight);
+		PrintString(8, App.dx.dwRenderHeight - 8, 6, buf, 0);
 		resChangeCounter -= long(30 / App.fps);
 
 		if (resChangeCounter < 0)
@@ -1620,7 +1410,7 @@ void S_OutputPolyList()
 	if (App.dx.lpZBuffer)
 		DrawBuckets();
 
-	if (!gfCurrentLevel)
+	if (gfCurrentLevel == LVL5_TITLE)
 	{
 		Fade();
 
@@ -1628,11 +1418,8 @@ void S_OutputPolyList()
 			DrawSortList();
 	}
 
-	mAddProfilerEvent(0xFFFF0000);
 	SortPolyList(SortCount, SortList);
-	mAddProfilerEvent(0xFF00FF00);
 	DrawSortList();
-	mAddProfilerEvent(0xFF0000FF);
 
 	if (App.dx.lpZBuffer)
 	{
@@ -1652,7 +1439,6 @@ void S_OutputPolyList()
 
 	if (pickups[CurrentPickup].life != -1 && !MonoScreenOn && !GLOBAL_playing_cutseq)
 	{
-		old_lighting_water = 0;
 		InitialiseSortList();
 		S_DrawPickup(pickups[CurrentPickup].object_number);
 		SortPolyList(SortCount, SortList);
@@ -1668,7 +1454,7 @@ void S_OutputPolyList()
 		DrawPsxTile(phd_winheight - h, phd_winwidth | (h << 16), 0x62FFFFFF, 0, 0);
 	}
 
-	if (gfCurrentLevel)
+	if (gfCurrentLevel != LVL5_TITLE)
 	{
 		Fade();
 
@@ -1699,18 +1485,6 @@ void S_OutputPolyList()
 
 		c = 0;
 	}
-
-	MungeFPCW(&FPCW);
-}
-
-void DebugString(char* txt, ...)
-{
-	va_list list;
-
-	va_start(list, txt);
-	vsprintf(&DebugStrings[nDebugStrings][0], txt, list);
-	va_end(list);
-	nDebugStrings++;
 }
 
 void S_InsertRoom(ROOM_INFO* r, long a)
@@ -1765,9 +1539,6 @@ void phd_PutPolygons(short* objptr, long clipstatus)
 
 	if (GlobalAmbient)
 	{
-		ClearObjectLighting();
-		ClearDynamicLighting();
-		App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_AMBIENT, GlobalAmbient);
 		aAmbientR = CLRR(GlobalAmbient);
 		aAmbientG = CLRG(GlobalAmbient);
 		aAmbientB = CLRB(GlobalAmbient);
@@ -1776,10 +1547,7 @@ void phd_PutPolygons(short* objptr, long clipstatus)
 	else
 	{
 		if (mesh->prelight)
-		{
-			ClearObjectLighting();
 			InitDynamicLighting(current_item);
-		}
 		else
 			InitObjectLighting(current_item);
 
@@ -1955,8 +1723,6 @@ void phd_PutPolygonsSkyMesh(short* objptr, long clipstatus)
 	mesh = (MESH_DATA*)objptr;
 	aSetViewMatrix();
 	SuperResetLights();
-	ClearDynamicLighting();
-	ClearObjectLighting();
 	aAmbientR = 128;
 	aAmbientG = 128;
 	aAmbientB = 128;
@@ -2050,16 +1816,12 @@ void phd_PutPolygonsPickup(short* objptr, float x, float y, long color)
 	ushort drawbak;
 	bool envmap;
 
-	old_lighting_water = 0;
-	SetD3DViewMatrix();
 	aSetViewMatrix();
 	mesh = (MESH_DATA*)objptr;
 	lGlobalMeshPos.x = mesh->bbox[3] - mesh->bbox[0];
 	lGlobalMeshPos.y = mesh->bbox[4] - mesh->bbox[1];
 	lGlobalMeshPos.z = mesh->bbox[5] - mesh->bbox[2];
 	SuperResetLights();
-	ClearDynamicLighting();
-	ClearObjectLighting();
 	clip_left = f_left;
 	clip_top = f_top;
 	clip_right = f_right;
@@ -2270,9 +2032,6 @@ void phd_PutPolygons_seethrough(short* objptr, long fade)
 
 	if (GlobalAmbient)
 	{
-		ClearObjectLighting();
-		ClearDynamicLighting();
-		App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_AMBIENT, GlobalAmbient);
 		aAmbientR = CLRR(GlobalAmbient);
 		aAmbientG = CLRG(GlobalAmbient);
 		aAmbientB = CLRB(GlobalAmbient);
@@ -2281,10 +2040,7 @@ void phd_PutPolygons_seethrough(short* objptr, long fade)
 	else
 	{
 		if (mesh->prelight)
-		{
-			ClearObjectLighting();
 			InitDynamicLighting(current_item);
-		}
 		else
 			InitObjectLighting(current_item);
 
@@ -2350,9 +2106,6 @@ void phd_PutPolygonsSpcXLU(short* objptr, long clipstatus)
 
 	if (GlobalAmbient)
 	{
-		ClearObjectLighting();
-		ClearDynamicLighting();
-		App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_AMBIENT, GlobalAmbient);
 		aAmbientR = CLRR(GlobalAmbient);
 		aAmbientG = CLRG(GlobalAmbient);
 		aAmbientB = CLRB(GlobalAmbient);
@@ -2361,10 +2114,7 @@ void phd_PutPolygonsSpcXLU(short* objptr, long clipstatus)
 	else
 	{
 		if (mesh->prelight)
-		{
-			ClearObjectLighting();
 			InitDynamicLighting(current_item);
-		}
 		else
 			InitObjectLighting(current_item);
 
@@ -2435,9 +2185,6 @@ void phd_PutPolygonsSpcEnvmap(short* objptr, long clipstatus)
 
 	if (GlobalAmbient)
 	{
-		ClearObjectLighting();
-		ClearDynamicLighting();
-		App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_AMBIENT, GlobalAmbient);
 		aAmbientR = CLRR(GlobalAmbient);
 		aAmbientG = CLRG(GlobalAmbient);
 		aAmbientB = CLRB(GlobalAmbient);
@@ -2446,10 +2193,7 @@ void phd_PutPolygonsSpcEnvmap(short* objptr, long clipstatus)
 	else
 	{
 		if (mesh->prelight)
-		{
-			ClearObjectLighting();
 			InitDynamicLighting(current_item);
-		}
 		else
 			InitObjectLighting(current_item);
 
@@ -2666,4 +2410,15 @@ void phd_PutPolygonsSpcEnvmap(short* objptr, long clipstatus)
 
 		pTex->drawtype = drawbak;
 	}
+}
+
+long GetFixedScale(long unit)
+{
+	long w, h, x, y;
+
+	w = 640;
+	h = 480;
+	x = (phd_winwidth > w) ? MulDiv(phd_winwidth, unit, w) : unit;
+	y = (phd_winheight > h) ? MulDiv(phd_winheight, unit, h) : unit;
+	return x < y ? x : y;
 }

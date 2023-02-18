@@ -231,9 +231,7 @@ void ShatterObject(SHATTER_ITEM* shatter_item, MESH_INFO* StaticMesh, short Num,
 		TPos.z = shatter_item->Sphere.z;
 		RotY = shatter_item->YRot;
 		shift = ((shatter_item->Flags >> 12) & 1) << 1;
-#ifdef GENERAL_FIXES
-		rgb = 0;					//uninitialized
-#endif
+		rgb = 0;
 	}
 	else
 	{

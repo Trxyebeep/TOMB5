@@ -252,13 +252,10 @@
     <ClCompile Include="TOMB5\specific\texture.cpp">
       <Filter>TOMB5\specific</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\game\tower1.cpp">
+    <ClCompile Include="TOMB5\game\tower.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
     <ClCompile Include="TOMB5\game\twogun.cpp">
-      <Filter>TOMB5\game</Filter>
-    </ClCompile>
-    <ClCompile Include="TOMB5\game\tower2.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
     <ClCompile Include="TOMB5\game\andrea.cpp">
@@ -324,9 +321,6 @@
     <ClCompile Include="TOMB5\game\mirror.cpp">
       <Filter>TOMB5\game</Filter>
     </ClCompile>
-    <ClCompile Include="TOMB5\specific\profiler.cpp">
-      <Filter>TOMB5\specific</Filter>
-    </ClCompile>
     <ClCompile Include="TOMB5\tomb5\tomb5.cpp">
       <Filter>TOMB5\tomb5</Filter>
     </ClCompile>
@@ -346,6 +340,7 @@
     <ClCompile Include="TOMB5\tomb5\libs\zlib\inflate.c" />
     <ClCompile Include="TOMB5\tomb5\libs\zlib\inftrees.c" />
     <ClCompile Include="TOMB5\tomb5\libs\zlib\zutil.c" />
+    <ClCompile Include="TOMB5\specific\drawbars.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -594,13 +589,10 @@
     <ClInclude Include="TOMB5\specific\texture.h">
       <Filter>TOMB5\specific</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\game\tower1.h">
+    <ClInclude Include="TOMB5\game\tower.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\game\twogun.h">
-      <Filter>TOMB5\game</Filter>
-    </ClInclude>
-    <ClInclude Include="TOMB5\game\tower2.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
     <ClInclude Include="TOMB5\game\andrea.h">
@@ -663,9 +655,6 @@
     <ClInclude Include="TOMB5\game\mirror.h">
       <Filter>TOMB5\game</Filter>
     </ClInclude>
-    <ClInclude Include="TOMB5\specific\profiler.h">
-      <Filter>TOMB5\specific</Filter>
-    </ClInclude>
     <ClInclude Include="TOMB5\tomb5\tomb5.h">
       <Filter>TOMB5\tomb5</Filter>
     </ClInclude>
@@ -683,6 +672,7 @@
     <ClInclude Include="TOMB5\specific\cmdline.h" />
     <ClInclude Include="TOMB5\specific\clipping.h" />
     <ClInclude Include="TOMB5\tomb5\libs\zlib\zlib.h" />
+    <ClInclude Include="TOMB5\specific\drawbars.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tomb5.rc" />

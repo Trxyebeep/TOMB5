@@ -15,7 +15,7 @@ static long malloc_used;
 static long rand_1 = 0xD371F947;
 static long rand_2 = 0xD371F947;
 
-void* game_malloc(long size, long type)
+void* game_malloc(long size)
 {
 	char* ptr;
 
@@ -57,72 +57,6 @@ long GetRandomDraw()
 void SeedRandomDraw(long seed)
 {
 	rand_2 = seed;
-}
-
-void S_SoundSetMasterVolume()
-{
-
-}
-
-void deadLog(const char* string, ...)
-{
-
-}
-
-void DBG_Print(const char* string, ...)
-{
-	va_list list;
-	char buf[4096];
-
-	va_start(list, string);
-	vsprintf(buf, string, list);
-	va_end(list);
-	Log(0, buf);
-}
-
-void exit_message()
-{
-
-}
-
-void S_ExitSystem(const char* string)
-{
-	Log(0, "**** %s ****", string);
-}
-
-void S_InitialiseScreen()
-{
-
-}
-
-void S_CalculateStaticLight()
-{
-
-}
-
-void S_CalculateLight(long x, long y, long z, short room_number, ITEM_LIGHT* il)
-{
-
-}
-
-void S_SetReverbType(short type)
-{
-
-}
-
-void S_CDVolume(long vol)
-{
-
-}
-
-void S_CDLoop()
-{
-
-}
-
-void PrintDbug()
-{
-
 }
 
 void init_game_malloc()

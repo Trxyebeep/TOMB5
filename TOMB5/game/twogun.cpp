@@ -123,10 +123,8 @@ void TwogunControl(short item_number)
 				{
 					dx = item->item_flags[i] << 4;
 
-#ifdef GENERAL_FIXES
 					if (dx > 255)
 						dx = 255;
-#endif
 
 					TriggerDynamic(pos.x, pos.y, pos.z, item->item_flags[i] + 8, 0, dx >> 2, dx);
 					item->item_flags[i]--;

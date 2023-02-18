@@ -237,17 +237,10 @@ void MovableBlockCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* co
 
 			if (TestLaraPosition(MovingBlockBounds, item, laraitem))
 			{
-#ifdef GENERAL_FIXES
-				if ((((ushort)(yrot + 8192)) >> 14) + (((ushort)(item->pos.y_rot)) >> 14) & 1)
+				if (((ushort(yrot + 8192) >> 14) + (ushort(item->pos.y_rot) >> 14)) & 1)
 					MovingBlockPos.z = bounds[0] - 95;
 				else
 					MovingBlockPos.z = bounds[4] - 95;
-#else
-				if ((((ushort)(yrot + 8192)) >> 14) + (((ushort)(item->pos.y_rot)) >> 14) & 1)
-					MovingBlockPos.z = bounds[0] - 35;
-				else
-					MovingBlockPos.z = bounds[4] - 35;
-#endif
 
 				if (MoveLaraPosition(&MovingBlockPos, item, laraitem))
 				{
@@ -470,11 +463,7 @@ long TestBlockPull(ITEM_INFO* item, long height, ushort quadrant)
 	GetCollidedObjects(lara_item, 256, 1, itemlist, 0, 0);
 	lara_item->pos.x_pos = rx;
 	lara_item->pos.z_pos = rz;
-#ifdef GENERAL_FIXES
 	return !*itemlist || *itemlist == item;
-#else
-	return !*itemlist;
-#endif
 }
 
 void ClearMovableBlockSplitters(long x, long y, long z, short room_number)

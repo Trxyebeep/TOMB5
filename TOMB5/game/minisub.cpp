@@ -435,9 +435,7 @@ void MinisubControl(short item_number)
 	{
 		lara_info.angle = info.angle;
 		lara_info.distance = info.distance;
-#ifdef GENERAL_FIXES	//uninitialized
 		lara_info.ahead = 1;
-#endif
 	}
 	else
 	{

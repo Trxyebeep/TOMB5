@@ -53,7 +53,6 @@ short ScreenFading;
 short FadeScreenHeight;
 short DestFadeScreenHeight;
 short ScreenFadeSpeed = 8;
-char scratchpad[1024];
 char tsv_buffer[16384];
 
 static short FadeClipSpeed;
@@ -583,17 +582,6 @@ void DrawWeaponMissile(ITEM_INFO* item)
 	phd_PopMatrix();
 }
 
-void DrawLensFlares(ITEM_INFO* item)
-{
-	GAME_VECTOR pos;
-
-	pos.x = item->pos.x_pos;
-	pos.y = item->pos.y_pos;
-	pos.z = item->pos.z_pos;
-	pos.room_number = item->room_number;
-	SetUpLensFlare(0, 0, 0, &pos);
-}
-
 long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 {
 	ITEM_INFO* item;
@@ -610,23 +598,15 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 	obj = &objects[item->object_number];
 	frame = GetBestFrame(item);
 	phd_PushUnitMatrix();
-#ifdef GENERAL_FIXES
 	phd_SetTrans(0, 0, 0);
-#else
-	phd_mxptr[M03] = 0;
-	phd_mxptr[M13] = 0;
-	phd_mxptr[M23] = 0;
-#endif
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 	phd_TranslateRel(frame[6], frame[7], frame[8]);
 	rotation = frame + 9;
 	gar_RotYXZsuperpack(&rotation, 0);
 
-#ifdef GENERAL_FIXES	//fix crash if exploding inactive enemies..
 	if (!item->data)
 		extra_rotation = no_rotation;
 	else
-#endif
 		extra_rotation = (short*)item->data;
 
 	bone = &bones[obj->bone_index];
@@ -1243,25 +1223,29 @@ void TriggerLaraDrips()
 
 	for (int i = 14; i > 0; i--)
 	{
-		if (lara.wet[i] && !LaraNodeUnderwater[i] && (GetRandomControl() & 0x1FF) < lara.wet[i])
+		if (lara.wet[i])
 		{
-			pos.x = (GetRandomControl() & 0x1F) - 16;
-			pos.y = (GetRandomControl() & 0xF) + 16;
-			pos.z = (GetRandomControl() & 0x1F) - 16;
-			GetLaraJointPos(&pos, i);
+			if (!LaraNodeUnderwater[i] && (GetRandomControl() & 0x1FF) < lara.wet[i])
+			{
+				pos.x = (GetRandomControl() & 0x1F) - 16;
+				pos.y = (GetRandomControl() & 0xF) + 16;
+				pos.z = (GetRandomControl() & 0x1F) - 16;
+				GetLaraJointPos(&pos, i);
 
-			drip = &Drips[GetFreeDrip()];
-			drip->x = pos.x;
-			drip->y = pos.y;
-			drip->z = pos.z;
-			drip->On = 1;
-			drip->R = (GetRandomControl() & 7) + 16;
-			drip->G = (GetRandomControl() & 7) + 24;
-			drip->B = (GetRandomControl() & 7) + 32;
-			drip->Yvel = (GetRandomControl() & 0x1F) + 32;
-			drip->Gravity = (GetRandomControl() & 0x1F) + 32;
-			drip->Life = (GetRandomControl() & 0x1F) + 16;
-			drip->RoomNumber = lara_item->room_number;
+				drip = &Drips[GetFreeDrip()];
+				drip->On = 1;
+				drip->x = pos.x;
+				drip->y = pos.y;
+				drip->z = pos.z;
+				drip->R = (GetRandomControl() & 7) + 16;
+				drip->G = (GetRandomControl() & 7) + 24;
+				drip->B = (GetRandomControl() & 7) + 32;
+				drip->Yvel = (GetRandomControl() & 0x1F) + 32;
+				drip->Gravity = (GetRandomControl() & 0x1F) + 32;
+				drip->Life = (GetRandomControl() & 0x1F) + 16;
+				drip->RoomNumber = lara_item->room_number;
+			}
+
 			lara.wet[i] -= 4;
 		}
 	}
@@ -1314,7 +1298,7 @@ void UpdateDrips()
 		if (drip->y > h)
 		{
 			if (!(i & 1))
-				TriggerSmallSplash(drip->x, h, drip->z, 1);
+				TriggerDripSplash(drip->x, h, drip->z, 1);
 
 			drip->On = 0;
 		}
@@ -1571,6 +1555,41 @@ void TriggerSmallSplash(long x, long y, long z, long num)
 		sptr->dR = 32;
 		sptr->dG = 32;
 		sptr->dB = 32;
+		sptr->ColFadeSpeed = 4;
+		sptr->FadeToBlack = 8;
+		sptr->Life = 24;
+		sptr->sLife = 24;
+		sptr->TransType = 2;
+		ang = GetRandomControl() & 0xFFF;
+		sptr->Xvel = -rcossin_tbl[ang << 1] >> 5;
+		sptr->Yvel = -640 - (GetRandomControl() & 0xFF);
+		sptr->Zvel = rcossin_tbl[(ang << 1) + 1] >> 5;
+		sptr->x = x + (sptr->Xvel >> 3);
+		sptr->y = y - (sptr->Yvel >> 5);
+		sptr->z = z + (sptr->Zvel >> 3);
+		sptr->Friction = 5;
+		sptr->Flags = 0;
+		sptr->MaxYvel = 0;
+		sptr->Gravity = (GetRandomControl() & 0xF) + 64;
+		num--;
+	}
+}
+
+void TriggerDripSplash(long x, long y, long z, long num)	//new func; same as above but more fitting color to the new drips!
+{
+	SPARKS* sptr;
+	short ang;
+
+	while (num)
+	{
+		sptr = &spark[GetFreeSpark()];
+		sptr->On = 1;
+		sptr->sR = (GetRandomControl() & 0x1F) + 64;
+		sptr->sG = (GetRandomControl() & 0x1F) + 96;
+		sptr->sB = (GetRandomControl() & 0x1F) + 128;
+		sptr->dR = sptr->sR >> 1;
+		sptr->dG = sptr->sG >> 1;
+		sptr->dB = sptr->sB >> 1;
 		sptr->ColFadeSpeed = 4;
 		sptr->FadeToBlack = 8;
 		sptr->Life = 24;
@@ -2097,10 +2116,8 @@ void S_DrawFires()
 {
 	FIRE_LIST* fire;
 	ROOM_INFO* r;
-	short* bounds;
+	short bounds[6];
 	short size;
-
-	bounds = (short*)&scratchpad[0];
 
 	for (int i = 0; i < 32; i++)
 	{

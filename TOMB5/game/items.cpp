@@ -351,7 +351,7 @@ void InitialiseFXArray(long allocmem)
 	FX_INFO* fx;
 
 	if (allocmem)
-		effects = (FX_INFO*)game_malloc(sizeof(FX_INFO) * 24, 0);
+		effects = (FX_INFO*)game_malloc(sizeof(FX_INFO) * 24);
 
 	next_fx_active = NO_ITEM;
 	next_fx_free = 0;

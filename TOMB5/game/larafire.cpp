@@ -170,9 +170,6 @@ WEAPON_INFO weapons[9] =
 static short HoldStates[] =
 {
 	AS_WALK,
-#ifndef GENERAL_FIXES
-	AS_RUN,
-#endif
 	AS_STOP,
 	AS_POSE,
 	AS_TURN_R,
@@ -182,11 +179,6 @@ static short HoldStates[] =
 	AS_STEPLEFT, 
 	AS_STEPRIGHT,
 	AS_WADE,
-#ifndef GENERAL_FIXES
-	AS_PICKUP,
-	AS_SWITCHON,
-	AS_SWITCHOFF,
-#endif
 	AS_DUCK,
 	AS_DUCKROTL,
 	AS_DUCKROTR,
@@ -255,12 +247,7 @@ void LaraGun()
 		{
 			state = lara_item->current_anim_state;
 
-#ifdef GENERAL_FIXES
 			if ((state == AS_DUCK || state == AS_DUCKROTL || state == AS_DUCKROTR || state == AS_DUCKROLL) &&
-
-#else
-			if ((state == AS_DUCK || state == AS_DUCKROTL || state == AS_DUCKROTR) &&
-#endif
 				(lara.request_gun_type == WEAPON_SHOTGUN || lara.request_gun_type == WEAPON_HK || lara.request_gun_type == WEAPON_CROSSBOW))
 			{
 				if (lara.gun_type == WEAPON_FLARE)

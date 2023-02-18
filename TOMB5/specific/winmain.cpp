@@ -16,12 +16,9 @@
 #include "dxsound.h"
 #include "gamemain.h"
 #include "file.h"
-#ifdef GENERAL_FIXES
 #include "fmv.h"
-#endif
 
 WINAPP App;
-short FPCW;
 long resChangeCounter;
 
 static COMMANDLINES commandlines[] =
@@ -38,71 +35,11 @@ void ClearSurfaces()
 	r.y1 = App.dx.rViewport.top;
 	r.y2 = App.dx.rViewport.top + App.dx.rViewport.bottom;
 	r.x2 = App.dx.rViewport.left + App.dx.rViewport.right;
-
-	if (App.dx.Flags & 0x80)
-		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
-#if 0
-	else
-		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
-#endif
+	DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
+	S_DumpScreen();
+	DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
 
 	S_DumpScreen();
-
-	if (App.dx.Flags & 0x80)
-		DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
-#if 0
-	else
-		ClearFakeDevice(App.dx.lpD3DDevice, 1, &r, D3DCLEAR_TARGET, 0, 1.0F, 0);
-#endif
-
-	S_DumpScreen();
-}
-
-long CheckMMXTechnology()
-{
-	ulong _edx;
-	long mmx;
-
-	mmx = 1;
-
-	__try
-	{
-		__asm
-		{
-			pusha
-			mov eax, 1
-			cpuid
-			mov _edx, edx
-			popa
-		}
-
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER)
-	{
-		mmx = 0;
-	}
-
-	if (!mmx)
-		mmx = 0;
-
-	if (_edx & 0x800000)
-	{
-		__try
-		{
-			__asm
-			{
-				emms
-			}
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
-		{
-			mmx = 0;
-		}
-	}
-	else
-		mmx = 0;
-
-	return mmx;
 }
 
 bool WinRunCheck(LPSTR WindowName, LPSTR ClassName, HANDLE* mutex)
@@ -118,13 +55,9 @@ bool WinRunCheck(LPSTR WindowName, LPSTR ClassName, HANDLE* mutex)
 
 		if (window)
 		{
-#ifdef GENERAL_FIXES
 			SendMessage(window, WM_ACTIVATE, WA_ACTIVE, 0);
 			SetWindowPos(window, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 			SetWindowPos(window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-#else
-			SendMessage(window, WM_ACTIVATE, 0, 0);
-#endif
 		}
 
 		return 1;
@@ -159,27 +92,6 @@ float WinFrameRate()
 
 	App.fps = fps;
 	return fps;
-}
-
-void WinDisplayString(long x, long y, char* string, ...)
-{
-	va_list list;
-	char buf[4096];
-
-	va_start(list, string);
-	vsprintf(buf, string, list);
-	va_end(list);
-	PrintString((ushort)x, (ushort)y, 6, buf, 0);
-}
-
-void WinGetLastError()
-{
-	LPVOID buf;
-
-	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_FROM_SYSTEM, 0,
-		GetLastError(), MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&buf, 0, 0);
-	Log(1, "%s", buf);
-	LocalFree(buf);
 }
 
 void WinProcMsg()
@@ -219,12 +131,10 @@ void WinProcessCommands(long cmd)
 		SuspendThread((HANDLE)MainThread.handle);
 		Log(5, "Game Thread Suspended");
 
-		FreeD3DLights();
 		DXToggleFullScreen();
 		HWInitialise();
-		CreateD3DLights();
 		S_InitD3DMatrix();
-		SetD3DViewMatrix();
+		aSetViewMatrix();
 		ResumeThread((HANDLE)MainThread.handle);
 		App.dx.WaitAtBeginScene = 0;
 		Log(5, "Game Thread Resumed");
@@ -236,11 +146,7 @@ void WinProcessCommands(long cmd)
 		}
 		else
 		{
-#if 0
-			SetCursor(LoadCursor(App.hInstance, MAKEINTRESOURCE(104)));
-#else
 			SetCursor(LoadCursor(0, IDC_ARROW));
-#endif
 			ShowCursor(1);
 		}
 	}
@@ -302,8 +208,6 @@ void WinProcessCommands(long cmd)
 
 		if (odm != App.DXInfo.nDisplayMode)
 		{
-			FreeD3DLights();
-
 			if (!DXChangeVideoMode())
 			{
 				App.DXInfo.nDisplayMode = odm;
@@ -311,11 +215,10 @@ void WinProcessCommands(long cmd)
 			}
 
 			HWInitialise();
-			CreateD3DLights();
 			InitWindow(0, 0, App.dx.dwRenderWidth, App.dx.dwRenderHeight, 20, 20480, 80, App.dx.dwRenderWidth, App.dx.dwRenderHeight);
 			InitFont();
 			S_InitD3DMatrix();
-			SetD3DViewMatrix();
+			aSetViewMatrix();
 		}
 
 		ResumeThread((HANDLE)MainThread.handle);
@@ -522,111 +425,88 @@ void WinClose()
 		Log(1, "%s Attempt To Release NULL Ptr", "DirectInput");
 }
 
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nShowCmd)
+bool WinRegisterWindow(HINSTANCE hinstance)
 {
-	DXDISPLAYMODE* dm;
-	RECT r;
-	HWND desktop;
-	HDC hdc;
-	DEVMODE devmode;
-#if 0
-	HWND dbg;
-	static ulong dbm_command;
-	static ulong dbm_clearlog;
-	long dbgflag;
-#endif
-#ifndef GENERAL_FIXES
-	bool drive;
-#endif
-
-	start_setup = 0;
-	App.mmx = CheckMMXTechnology();
-	App.SetupComplete = 0;
-	App.AutoTarget = 0;
-
-#if 0
-	Log_Init(1);
-	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
-
-	if (dbg)
-		PostMessage(dbg, dbm_command, 2, 0);
-
-	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
-
-	if (dbg)
-		PostMessage(dbg, dbm_clearlog, 0, 0);
-
-	Log_DefType("Error", 0xFF, 1);
-	Log_DefType("Function", 0x8000, 0);
-	Log_DefType("DirectX Information", 0x802040, 1);
-	Log_DefType("Object Release", 128, 0);
-	Log_DefType("General Information", 0x800000, 1);
-	Log_DefType("Windows Message", 0x800080, 0);
-	Log_DefType("Level Info", 0x8000FF, 0);
-	Log_DefType("Sound", 0x8080, 0);
-	Log(5, "Launching - %s", "Tomb Raider Chronicles");
-	Log(2, "WinMain");
-	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
-	dbgflag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-	dbgflag |= _CRTDBG_CHECK_ALWAYS_DF | _CRTDBG_LEAK_CHECK_DF;
-	_CrtSetDbgFlag(dbgflag);
-#endif
-
-	if (WinRunCheck((char*)"Tomb Raider Chronicles", (char*)"MainGameWindow", &App.mutex))
-		return 0;
-
-#ifndef GENERAL_FIXES
-	if (!FindCDDrive())
-	{
-		drive = 0;
-
-		while (!drive)
-		{
-			if (MessageBox(0, "Tomb Raider Chronicles CD", "Tomb Raider", MB_RETRYCANCEL | MB_ICONQUESTION) == IDCANCEL)
-				return 0;
-
-			drive = FindCDDrive();
-		}
-	}
-#endif
-
-	LoadGameflow();
-	WinProcessCommandLine(lpCmdLine);
-	App.hInstance = hInstance;
+	App.hInstance = hinstance;
 	App.WindowClass.hIcon = 0;
 	App.WindowClass.lpszMenuName = 0;
 	App.WindowClass.lpszClassName = "MainGameWindow";
 	App.WindowClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-	App.WindowClass.hInstance = hInstance;
+	App.WindowClass.hInstance = hinstance;
 	App.WindowClass.style = CS_VREDRAW | CS_HREDRAW;
 	App.WindowClass.lpfnWndProc = WinMainWndProc;
 	App.WindowClass.cbClsExtra = 0;
 	App.WindowClass.cbWndExtra = 0;
-#if 0
-	App.WindowClass.hCursor = LoadCursor(App.hInstance, MAKEINTRESOURCE(104));
-#else
 	App.WindowClass.hCursor = LoadCursor(0, IDC_ARROW);
-#endif
 
 	if (!RegisterClass(&App.WindowClass))
+		return 0;
+
+	return 1;
+}
+
+bool WinCreateWindow()
+{
+	App.hWnd = CreateWindowEx(WS_EX_APPWINDOW, "MainGameWindow", "Tomb Raider Chronicles", WINDOW_STYLE,
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		0, 0, App.hInstance, 0);
+
+	if (!App.hWnd)
+		return 0;
+
+	return 1;
+}
+
+void WinSetStyle(bool fullscreen, ulong& set)
+{
+	ulong style;
+
+	style = GetWindowLong(App.hWnd, GWL_STYLE);
+
+	if (fullscreen)
+		style = (style & ~WS_OVERLAPPEDWINDOW) | WS_POPUP;
+	else
+		style = (style & ~WS_POPUP) | WS_OVERLAPPEDWINDOW;
+
+	style &= ~(WS_THICKFRAME | WS_MAXIMIZEBOX | WS_SYSMENU);
+	SetWindowLong(App.hWnd, GWL_STYLE, style);
+
+	if (set)
+		set = style;
+}
+
+int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nShowCmd)
+{
+	DXDISPLAYMODE* dm;
+	HWND desktop;
+	HDC hdc;
+	DEVMODE devmode;
+
+	start_setup = 0;
+	App.mmx = 0;
+	App.SetupComplete = 0;
+	App.AutoTarget = 0;
+
+	if (WinRunCheck((char*)"Tomb Raider Chronicles", (char*)"MainGameWindow", &App.mutex))
+		return 0;
+
+	LoadGameflow();
+	WinProcessCommandLine(lpCmdLine);
+
+	if (!WinRegisterWindow(hInstance))
 	{
 		Log(1, "Unable To Register Window Class");
 		return 0;
 	}
 
-	r.left = 0;
-	r.top = 0;
-	r.right = 640;
-	r.bottom = 480;
-	AdjustWindowRect(&r, WINDOW_STYLE, 0);
-	App.hWnd = CreateWindowEx(WS_EX_APPWINDOW, "MainGameWindow", "Tomb Raider Chronicles", WINDOW_STYLE,
-		CW_USEDEFAULT, CW_USEDEFAULT, r.right - r.left, r.bottom - r.top, 0, 0, hInstance, 0);
-
-	if (!App.hWnd)
+	if (!WinCreateWindow())
 	{
 		Log(1, "Unable To Create Window");
 		return 0;
 	}
+
+	ShowWindow(App.hWnd, SW_HIDE);
+	UpdateWindow(App.hWnd);
 
 	DXGetInfo(&App.DXInfo, App.hWnd);
 
@@ -643,7 +523,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 		LoadSettings();
 	}
 
-#ifdef GENERAL_FIXES
 	if (!fmvs_disabled)
 	{
 		if (!LoadBinkStuff())
@@ -652,7 +531,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 			fmvs_disabled = 1;
 		}
 	}
-#endif
 
 	SetWindowPos(App.hWnd, 0, App.dx.rScreen.left, App.dx.rScreen.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	desktop = GetDesktopWindow();
@@ -670,15 +548,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 		return 0;
 	}
 
-#ifdef GENERAL_FIXES	//remove the border in fullscreen
-	if (G_dxptr->Flags & 1)
-	{
-		SetWindowLongPtr(App.hWnd, GWL_STYLE, WS_POPUP);
-		SetWindowPos(App.hWnd, 0, App.dx.rScreen.left, App.dx.rScreen.top, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-	}
-#endif
+	WinSetStyle(G_dxptr->Flags & 1, G_dxptr->WindowStyle);
 
-	aCheckBumpMappingSupport();
 	UpdateWindow(App.hWnd);
 	ShowWindow(App.hWnd, nShowCmd);
 
@@ -712,58 +583,5 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	ReleaseDC(desktop, hdc);
 	devmode.dmFields = DM_BITSPERPEL;
 	ChangeDisplaySettings(&devmode, 0);
-
-#if 0
-	dbg = FindWindow("DBLogWindowClass", "DBLog Server");
-
-	if (dbg)
-		PostMessageA(dbg, dbm_command, 4, 0);
-#endif
-
 	return 0;
-}
-
-long MungeFPCW(short* fpcw)
-{
-#ifdef GENERAL_FIXES
-	return 0;
-#else
-	long ret;
-	short cw, temp;
-
-	ret = 0;
-
-	__asm
-	{
-		fstcw cw
-	}
-
-	if (cw & 0x300 || (cw & 0x3F) != 0x3F || cw & 0xC00)
-	{
-		__asm
-		{
-			mov ax, cw
-			and ax, not 0x300
-			or ax, 0x3F
-			and ax, not 0xC00
-			mov temp, ax
-			fldcw temp
-		}
-
-		ret = 1;
-	}
-
-	*fpcw = cw;
-	return ret;
-#endif
-}
-
-void RestoreFPCW(short fpcw)
-{
-#ifndef GENERAL_FIXES
-	__asm
-	{
-		fldcw fpcw
-	}
-#endif
 }

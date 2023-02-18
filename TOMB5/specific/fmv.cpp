@@ -37,7 +37,6 @@ static BINK_STRUCT* Bink;
 static LPDIRECTDRAWSURFACE4 BinkSurface;
 static long BinkSurfaceType;
 
-#ifdef GENERAL_FIXES
 bool LoadBinkStuff()
 {
 	static HMODULE hBinkW32;
@@ -68,7 +67,6 @@ bool LoadBinkStuff()
 
 	return 1;
 }
-#endif
 
 void ShowBinkFrame()
 {
@@ -108,11 +106,6 @@ long PlayFmv(long num)
 
 	sprintf(name, "movie\\fmv%01d.bik", num);
 	memset(path, 0, sizeof(path));
-#ifndef GENERAL_FIXES
-	path[0] = cd_drive;
-	path[1] = ':';
-	path[2] = '\\';
-#endif
 	strcat(path, name);
 	Log(5, "PlayFMV %s", path);
 	App.fmv = 1;
@@ -134,7 +127,6 @@ long PlayFmv(long num)
 			}
 		}
 
-		FreeD3DLights();
 		DXChangeVideoMode();
 		HWInitialise();
 		ClearSurfaces();
@@ -183,11 +175,10 @@ long PlayFmv(long num)
 	{
 		App.DXInfo.nDisplayMode = dm;
 		DXChangeVideoMode();
-		CreateD3DLights();
 		InitWindow(0, 0, App.dx.dwRenderWidth, App.dx.dwRenderHeight, 20, 20480, 80, App.dx.dwRenderWidth, App.dx.dwRenderHeight);
 		InitFont();
 		S_InitD3DMatrix();
-		SetD3DViewMatrix();
+		aSetViewMatrix();
 	}
 
 	DXChangeOutputFormat(sfx_frequencies[SoundQuality], 1);

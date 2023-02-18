@@ -11,10 +11,6 @@
 #include "3dmath.h"
 #include "gamemain.h"
 
-static long rgb80h = 0x808080;
-static long rgbmask = 0xFFFFFFFF;
-static long zero = 0;
-
 SORTLIST* SortList[65536];
 long SortCount;
 
@@ -104,7 +100,6 @@ void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, sho
 
 		break;
 
-#ifdef GENERAL_FIXES
 	case 5:
 
 		if (App.dx.lpZBuffer)
@@ -122,7 +117,6 @@ void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, sho
 		App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, 1);
 		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
 		break;
-#endif
 
 	case 6:
 
@@ -150,8 +144,6 @@ void HWR_DrawSortList(D3DTLBUMPVERTEX* info, short num_verts, short texture, sho
 		App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
 		break;
 	}
-
-	DrawSortedCnt++;
 }
 
 void DrawSortList()
@@ -192,9 +184,7 @@ void DrawSortList()
 	}
 	else
 	{
-#ifdef GENERAL_FIXES				//just to shut VS up
-		pSort = SortList[0];		//if SortCount is < 0 then pSort will be uninitialized in the original, but I don't think that ever happens
-#endif
+		pSort = SortList[0];
 
 		for (num = 0; num < SortCount; num++)
 		{
@@ -251,11 +241,7 @@ void DrawSortList()
 		{
 			pSort = SortList[num];
 
-#ifdef GENERAL_FIXES
 			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 5 || pSort->drawtype == 6 || pSort->drawtype == 7)
-#else
-			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 6 || pSort->drawtype == 7)
-#endif
 				break;
 		}
 
@@ -269,11 +255,7 @@ void DrawSortList()
 		{
 			pSort = SortList[num];
 
-#ifdef GENERAL_FIXES
 			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 5 || pSort->drawtype == 6 || pSort->drawtype == 7)
-#else
-			if (pSort->drawtype == 2 || pSort->drawtype == 3 || pSort->drawtype == 6 || pSort->drawtype == 7)
-#endif
 			{
 				if (pSort->tpage == tpage && pSort->drawtype == drawtype)
 				{
@@ -434,226 +416,6 @@ void SortPolyList(long count, SORTLIST** list)
 	DoSort(0, count - 1, list);
 }
 
-void ClearFXFogBulbs()
-{
-
-}
-
-void ControlFXBulb()
-{
-
-}
-
-void CreateFXBulbs()
-{
-
-}
-
-void TriggerFXFogBulb()
-{
-
-}
-
-long IsVolumetric()
-{
-	return App.Volumetric;
-}
-
-void mD3DTransform(FVECTOR* vec, D3DMATRIX* mx)
-{
-	float x, y, z;
-
-	x = vec->x * mx->_11 + mx->_21 * vec->y + mx->_31 * vec->z + mx->_41;
-	y = vec->x * mx->_12 + mx->_22 * vec->y + mx->_32 * vec->z + mx->_42;
-	z = vec->x * mx->_13 + mx->_23 * vec->y + mx->_33 * vec->z + mx->_43;
-	vec->x = x;
-	vec->y = y;
-	vec->z = z;
-}
-
-void CreateFogPos()
-{
-
-}
-
-long DistCompare()
-{
-	return 0;
-}
-
-void InitialiseFogBulbs()
-{
-
-}
-
-void OmniEffect()
-{
-
-}
-
-void OmniFog()
-{
-
-}
-
-#pragma warning(push)
-#pragma warning(disable : 4799)
-void AddPrelitMMX(long prelight, D3DCOLOR* color)
-{
-	long c;
-
-	c = color[0];
-
-	__asm
-	{
-		xor eax, eax
-		movd mm3, rgbmask
-		movd mm4, prelight
-		movd mm0, c
-		paddusb mm0, mm4
-		movd ecx, mm0
-		movd mm1, rgb80h
-		psubusb mm0, mm1
-		movd mm2, eax
-		movd mm5, zero
-		punpcklbw mm5, mm0
-		psrlw mm5, 9
-		packuswb mm0, mm5
-		psrlq mm0, 0x20
-		movd ebx, mm0
-		pcmpgtb mm0, mm2
-		movd eax, mm0
-		pandn mm0, mm3
-		movd mm1, ecx
-		pand mm1, mm0
-		paddusb mm1, mm1
-		movd ecx, mm1
-		mov edx, color
-		or ecx, eax
-		mov[edx], ecx
-		mov ecx, [edx + 4]
-		and ebx, 0xFFFFFF
-		or ecx, ebx
-		mov[edx + 4], ecx
-	}
-
-	//caller does the emms
-}
-
-void AddPrelitMeshMMX(MESH_DATA* m, long p, D3DCOLOR* color)
-{
-	long prelight;
-	long c;
-
-	prelight = m->prelight[p];
-	c = color[0];
-
-	__asm
-	{
-		xor eax, eax
-		movd mm3, rgbmask
-		movd mm4, prelight
-		movd mm0, c
-		paddusb mm0, mm4
-		movd ecx, mm0
-		movd mm1, rgb80h
-		psubusb mm0, mm1
-		movd mm2, eax
-		movd mm5, zero
-		punpcklbw mm5, mm0
-		psrlw mm5, 9
-		packuswb mm0, mm5
-		psrlq mm0, 0x20
-		movd ebx, mm0
-		pcmpgtb mm0, mm2
-		movd eax, mm0
-		pandn mm0, mm3
-		movd mm1, ecx
-		pand mm1, mm0
-		paddusb mm1, mm1
-		movd ecx, mm1
-		mov edx, color
-		or ecx, eax
-		mov[edx], ecx
-		mov ecx, [edx + 4]
-		and ebx, 0xFFFFFF
-		or ecx, ebx
-		mov[edx + 4], ecx
-	}
-
-	//caller does the emms
-}
-
-void CalcColorSplitMMX(D3DCOLOR s, D3DCOLOR* d)
-{
-	__asm
-	{
-		xor eax, eax
-		mov ecx, s
-		movd mm3, rgbmask
-		movd mm0, ecx
-		movd mm1, rgb80h
-		psubusb mm0, mm1
-		movd mm2, eax
-		movd mm5, zero
-		punpcklbw mm5, mm0
-		psrlw mm5, 9
-		packuswb mm0, mm5
-		psrlq mm0, 0x20
-		movd ebx, mm0
-		pcmpgtb mm0, mm2
-		movd eax, mm0
-		pandn mm0, mm3
-		movd mm1, ecx
-		pand mm1, mm0
-		paddusb mm1, mm1
-		movd ecx, mm1
-		mov edx, d
-		or ecx, eax
-		mov[edx], ecx
-		mov ecx, [edx + 4]
-		and ebx, 0xFFFFFF
-		or ecx, ebx
-		mov[edx + 4], ecx
-	}
-
-	//caller does the emms
-
-	d[0] &= 0xFFFFFF;
-	d[0] |= GlobalAlpha;
-}
-#pragma warning(pop)
-
-void S_DrawLine(long nVtx, D3DTLVERTEX* v)
-{
-	float zv;
-
-	for (int i = 0; i < nVtx; i++)
-	{
-		zv = f_persp / v[i].sz;
-		v[i].rhw = zv * f_oneopersp;
-		v[i].sz = f_a - v[i].rhw * f_boo;
-	}
-
-	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, 0));
-	App.dx.lpD3DDevice->DrawPrimitive(D3DPT_LINESTRIP, D3DFVF_TLVERTEX, v, nVtx, D3DDP_DONOTUPDATEEXTENTS);
-}
-
-void S_DrawTriFan(long nVtx, D3DTLVERTEX* v)
-{
-	float zv;
-
-	for (int i = 0; i < nVtx; i++)
-	{
-		zv = f_persp / v[i].sz;
-		v[i].rhw = zv * f_oneopersp;
-		v[i].sz = f_a - v[i].rhw * f_boo;
-	}
-
-	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, Textures[0].tex));
-	App.dx.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, D3DFVF_TLVERTEX, v, nVtx, D3DDP_DONOTUPDATEEXTENTS);
-}
-
 void AddClippedPoly(D3DTLBUMPVERTEX* dest, long nPoints, D3DTLBUMPVERTEX* v, TEXTURESTRUCT* pTex)
 {
 	D3DTLBUMPVERTEX* p;
@@ -675,7 +437,6 @@ void AddClippedPoly(D3DTLBUMPVERTEX* dest, long nPoints, D3DTLBUMPVERTEX* v, TEX
 	}
 
 	nPoints -= 3;
-	nClippedPolys++;
 	v--;
 
 	for (int i = nPoints; i > 0; i--)
@@ -711,8 +472,6 @@ void AddClippedPoly(D3DTLBUMPVERTEX* dest, long nPoints, D3DTLBUMPVERTEX* v, TEX
 		p->tu = z * v->tu;
 		p->tv = z * v->tv;
 		p++;
-
-		nClippedPolys++;
 	}
 }
 
@@ -1167,7 +926,6 @@ void AddQuadClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, short v3
 		z *= 0.25F;
 
 	sl->zVal = z;
-	nPolys += 2;
 }
 
 void AddTriClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURESTRUCT* tex, long double_sided)
@@ -1370,7 +1128,6 @@ void AddTriClippedSorted(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTUREST
 			sl->zVal = z;
 
 		SortCount++;
-		nPolys++;
 	}
 }
 
@@ -1538,8 +1295,6 @@ void AddQuadClippedZBuffer(D3DTLVERTEX* v, short v0, short v1, short v2, short v
 	p->specular = vtx->specular;
 	p->tu = tex->u4;
 	p->tv = tex->v4;
-
-	nPolys += 2;
 }
 
 void AddTriClippedZBuffer(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURESTRUCT* tex, long double_sided)
@@ -1704,6 +1459,5 @@ void AddTriClippedZBuffer(D3DTLVERTEX* v, short v0, short v1, short v2, TEXTURES
 		p->sz = f_a - f_boo * p->rhw;
 		p++;
 		p->sz = f_a - f_boo * p->rhw;
-		nPolys++;
 	}
 }

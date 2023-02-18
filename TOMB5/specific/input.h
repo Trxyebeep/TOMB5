@@ -4,8 +4,6 @@
 long Key(long number);
 long S_UpdateInput();
 long ReadJoystick(long& x, long& y);
-void IncreaseScreenSize();
-void DecreaseScreenSize();
 
 extern const char* KeyboardButtons[272];
 extern const char* GermanKeyboard[272];
@@ -22,8 +20,5 @@ extern long joystick_read;
 extern long joystick_read_x;
 extern long joystick_read_y;
 extern long joystick_read_fire;
-
-#ifdef GENERAL_FIXES
 extern short ammo_change_timer;
 extern char ammo_change_buf[12];
-#endif

@@ -15,8 +15,6 @@ bool (*IsVisible)(D3DTLVERTEX* v0, D3DTLVERTEX* v1, D3DTLVERTEX* v2);
 HRESULT(*_BeginScene)();
 HRESULT(*_EndScene)();
 
-static long CurrentFog;
-
 void InitialiseFunctionTable()
 {
 	_BeginScene = HWBeginScene;
@@ -96,11 +94,7 @@ void HWInitialise()
 	DXAttempt(App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_COLORVERTEX, 0));
 	DXAttempt(App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_COLORMODEL, D3DCOLOR_RGB));
 
-	DXAttempt(App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_FOGMODE, D3DFOG_LINEAR));
-	DXAttempt(App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_FOGSTART, (DWORD)FogStart));
-	DXAttempt(App.dx.lpD3DDevice->SetLightState(D3DLIGHTSTATE_FOGEND, (DWORD)FogEnd));
-	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, 0xFF000000);
-	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, 1);
+	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, 0);
 }
 
 HRESULT HWBeginScene()
@@ -138,13 +132,4 @@ void SetCullCW()
 void SetCullCCW()
 {
 	IsVisible = _NVisible;
-}
-
-void SetFogColor(long r, long g, long b)
-{
-	r &= 0xFF;
-	g &= 0xFF;
-	b &= 0xFF;
-	CurrentFog = RGBA(r, g, b, 0xFF);
-	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, CurrentFog);
 }

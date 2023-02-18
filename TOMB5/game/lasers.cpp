@@ -27,9 +27,7 @@ char SteamLasers[8][5] =
 
 void DrawFloorLasers(ITEM_INFO* item)
 {
-#ifdef GENERAL_FIXES
-	return S_DrawFloorLasers(item);
-#endif
+	S_DrawFloorLasers(item);
 }
 
 void ControlLasers(short item_number)
@@ -193,30 +191,25 @@ void ControlFloorLasers(short item_number)
 			if (!item->item_flags[2])
 				item->item_flags[2] = (GetRandomControl() & 0x7F) + 1024;
 		}
-
-#ifdef GENERAL_FIXES
-		if (lara_item->hit_points > 0)
-#endif
+		
+		if (item->room_number == lara_item->room_number && lara_item->hit_points > 0)
 		{
-			if (item->room_number == lara_item->room_number)
+			bbox[0] = item->pos.x_pos + laser->v1.x;
+			bbox[1] = item->pos.x_pos + laser->v4.x;
+			bbox[2] = item->pos.y_pos;
+			bbox[3] = item->pos.y_pos;
+			bbox[4] = item->pos.z_pos + laser->v1.z;
+			bbox[5] = item->pos.z_pos + laser->v4.z;
+
+			if (CheckLaserBox(bbox) && !lara.burn)
 			{
-				bbox[0] = item->pos.x_pos + laser->v1.x;
-				bbox[1] = item->pos.x_pos + laser->v4.x;
-				bbox[2] = item->pos.y_pos;
-				bbox[3] = item->pos.y_pos;
-				bbox[4] = item->pos.z_pos + laser->v1.z;
-				bbox[5] = item->pos.z_pos + laser->v4.z;
+				LaraBurn();
+				lara.BurnCount = 24;
 
-				if (CheckLaserBox(bbox) && !lara.burn)
-				{
-					LaraBurn();
-					lara.BurnCount = 24;
+				if (lara_item->hit_points > 0)
+					lara_item->hit_points = 0;
 
-					if (lara_item->hit_points > 0)
-						lara_item->hit_points = 0;
-
-					item->item_flags[3] = (GetRandomControl() & 0xF) + 48;
-				}
+				item->item_flags[3] = (GetRandomControl() & 0xF) + 48;
 			}
 		}
 

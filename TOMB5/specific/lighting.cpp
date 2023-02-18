@@ -24,9 +24,7 @@ long MaxRoomLights;
 D3DMATRIX aLightMatrix;
 SUNLIGHT_STRUCT SunLights[16];
 POINTLIGHT_STRUCT PointLights[64];
-#ifdef GENERAL_FIXES
 SPOTLIGHT_STRUCT SpotLights[64];
-#endif
 
 ITEM_INFO* current_item;
 FVECTOR lGlobalMeshPos;
@@ -39,10 +37,6 @@ char bLaraInWater;
 
 long StaticMeshShade;
 static ITEM_INFO StaticMeshLightItem;
-static long SetupLight_thing;
-static long unused_bLaraUnderWater;
-static D3DLIGHT_STRUCT* D3DLights;
-static D3DLIGHT_STRUCT* D3DDynamics;
 
 void InitObjectLighting(ITEM_INFO* item)
 {
@@ -50,28 +44,27 @@ void InitObjectLighting(ITEM_INFO* item)
 	long node_ambient;
 
 	node_ambient = item->il.ambient;
-	SetupLight_thing = 0;
 	light = (PCLIGHT*)item->il.pCurrentLights;
 
 	for (int i = 0; i < item->il.nCurrentLights; i++)
+	{
 		if (light[i].Active)
 			SuperSetupLight(&light[i], item, &node_ambient);
+	}
 
 	light = (PCLIGHT*)item->il.pPrevLights;
 
 	for (int i = 0; i < item->il.nPrevLights; i++)
+	{
 		if (light[i].Active)
 			SuperSetupLight(&light[i], item, &node_ambient);
+	}
 
 	InitDynamicLighting(item);
 
 	if (item == lara_item && bLaraInWater)
 	{
-#ifdef GENERAL_FIXES	//fixes lara's node ambient in water
 		if (bLaraUnderWater < 0)
-#else
-		if (unused_bLaraUnderWater < 0)
-#endif
 		{
 			node_ambient = LaraNodeAmbient[0];
 			item->il.fcnt = 0;
@@ -84,43 +77,23 @@ void InitObjectLighting(ITEM_INFO* item)
 	aAmbientR = CLRR(node_ambient);
 	aAmbientG = CLRG(node_ambient);
 	aAmbientB = CLRB(node_ambient);
-
-#ifndef GENERAL_FIXES // Fixes shadows
-	if (aAmbientR < 16)
-		aAmbientR = 16;
-
-	if (aAmbientG < 16)
-		aAmbientG = 16;
-
-	if (aAmbientB < 16)
-		aAmbientB = 16;
-#endif
 }
 
 void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 {
 	SUNLIGHT_STRUCT* sun;
 	POINTLIGHT_STRUCT* point;
-#ifdef GENERAL_FIXES
 	SPOTLIGHT_STRUCT* spot;
-#endif
 	float x, y, z, num, num2;
 	long aR, aG, aB, val, val2;
 
 	if (light->Type == LIGHT_SUN)
 	{
 		sun = &SunLights[NumSunLights];
-#ifdef GENERAL_FIXES
 		x = light->nx;
 		y = light->ny;
 		z = light->nz;
 		num = -1.0F / sqrt(SQUARE(z) + SQUARE(y) + SQUARE(x));	//MINUS one because level files have inverted direction
-#else
-		x = (float)light->inx;
-		y = (float)light->iny;
-		z = (float)light->inz;
-		num = 1.0F / (float)(SQUARE(z) + SQUARE(y) + SQUARE(x));
-#endif
 
 		sun->vec.x = (aLightMatrix._11 * x + aLightMatrix._12 * y + aLightMatrix._13 * z) * num;
 		sun->vec.y = (aLightMatrix._21 * x + aLightMatrix._22 * y + aLightMatrix._23 * z) * num;
@@ -147,15 +120,12 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		point->b = light->b * 255.0F;
 		point->rad = (light->Outer - num2) / light->Outer;
 
-#ifdef GENERAL_FIXES // Fixes flashes
 		if (point->rad < 0)
 			point->rad = 0;
-#endif
 
 		NumPointLights++;
 		TotalNumLights++;
 	}
-#ifdef GENERAL_FIXES
 	else if (light->Type == LIGHT_SPOT)
 	{
 		x = light->x - lGlobalMeshPos.x;
@@ -178,7 +148,6 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		NumSpotLights++;
 		TotalNumLights++;
 	}
-#endif
 	else if (light->Type == LIGHT_SHADOW)
 	{
 		aR = CLRR(*ambient);
@@ -188,12 +157,10 @@ void SuperSetupLight(PCLIGHT* light, ITEM_INFO* item, long* ambient)
 		val2 = light->shadow >> 3;
 
 		if (val >= light->Inner)
-			val2 = (long)((val - light->Outer) / ((light->Outer - light->Inner) / -val2));
+			val2 = long((val - light->Outer) / ((light->Outer - light->Inner) / -val2));
 
-#ifdef GENERAL_FIXES // Fixes flashes
 		if (val2 < 0)
 			val2 = 0;
-#endif
 
 		val = val2 >> 1;
 		aR -= val;
@@ -308,10 +275,7 @@ void CreateLightList(ITEM_INFO* item)
 		dx = current_lights[i].ix - item->il.item_pos.x;
 		dy = current_lights[i].iy - item->il.item_pos.y;
 		dz = current_lights[i].iz - item->il.item_pos.z;
-
-#ifdef GENERAL_FIXES	//uninitialized
 		range = SQUARE(dx) + SQUARE(dy) + SQUARE(dz);
-#endif
 
 		if (current_lights[i].Type == LIGHT_POINT || current_lights[i].Type == LIGHT_SHADOW)
 		{
@@ -437,9 +401,9 @@ void SuperResetLights()
 	aAmbientG = 0;
 	aAmbientB = 0;
 	D3DMultMatrix(&aLightMatrix, &view, &cam);
-	lGlobalMeshPos.x = aCamera.pos.x + aLightMatrix._41;
-	lGlobalMeshPos.y = aCamera.pos.y + aLightMatrix._42;
-	lGlobalMeshPos.z = aCamera.pos.z + aLightMatrix._43;
+	lGlobalMeshPos.x = CamPos.x + aLightMatrix._41;
+	lGlobalMeshPos.y = CamPos.y + aLightMatrix._42;
+	lGlobalMeshPos.z = CamPos.z + aLightMatrix._43;
 }
 
 void CalcAmbientLight(ITEM_INFO* item)
@@ -524,11 +488,6 @@ void SuperSetupDynamicLight(DYNAMIC* light, ITEM_INFO* item)
 	}
 }
 
-void InitDynamicLighting_noparams()
-{
-
-}
-
 void InitDynamicLighting(ITEM_INFO* item)
 {
 	DYNAMIC* light;
@@ -544,50 +503,6 @@ void InitDynamicLighting(ITEM_INFO* item)
 	aAmbientR = CLRR(item->il.ambient);
 	aAmbientG = CLRG(item->il.ambient);
 	aAmbientB = CLRB(item->il.ambient);
-}
-
-void ClearObjectLighting()
-{
-
-}
-
-void ClearDynamicLighting()
-{
-
-}
-
-void ApplyMatrix(long* matrix, PHD_VECTOR* start, PHD_VECTOR* dest)
-{
-	dest->x = (start->x * matrix[M00] + start->y * matrix[M01] + start->z * matrix[M02]) >> 14;
-	dest->y = (start->x * matrix[M10] + start->y * matrix[M11] + start->z * matrix[M12]) >> 14;
-	dest->z = (start->x * matrix[M20] + start->y * matrix[M21] + start->z * matrix[M22]) >> 14;
-}
-
-void ApplyTransposeMatrix(long* matrix, PHD_VECTOR* start, PHD_VECTOR* dest)
-{
-	dest->x = (start->x * matrix[M00] + start->y * matrix[M10] + start->z * matrix[M20]) >> 14;
-	dest->y = (start->x * matrix[M01] + start->y * matrix[M11] + start->z * matrix[M21]) >> 14;
-	dest->z = (start->x * matrix[M02] + start->y * matrix[M12] + start->z * matrix[M22]) >> 14;
-}
-
-void CreateD3DLights()
-{
-
-}
-
-void FreeD3DLights()
-{
-
-}
-
-void MallocD3DLights()
-{
-	if (MaxRoomLights > 21)
-		Log(1, "MAX Room Lights of %d Exceeded - %d", 21, MaxRoomLights);
-
-	MaxRoomLights *= 2;
-	D3DLights = (D3DLIGHT_STRUCT*)game_malloc(sizeof(D3DLIGHT_STRUCT) * MaxRoomLights, 0);
-	D3DDynamics = (D3DLIGHT_STRUCT*)game_malloc(sizeof(D3DLIGHT_STRUCT) * 32, 0);
 }
 
 void InitObjectFogBulbs()
@@ -669,208 +584,3 @@ void InitObjectFogBulbs()
 		}
 	}
 }
-
-void SetupLight(D3DLIGHT_STRUCT* d3dlight, PCLIGHT* light, long* ambient)
-{
-	PHD_VECTOR d;
-	PHD_VECTOR vec;
-	PHD_VECTOR l;
-	float fVal;
-	long r, g, b, val, val2;;
-
-	d.x = light->rlp.x;
-	d.y = light->rlp.y;
-	d.z = light->rlp.z;
-	d3dlight->D3DLight2.dcvColor.r = light->r;
-	d3dlight->D3DLight2.dcvColor.g = light->g;
-	d3dlight->D3DLight2.dcvColor.b = light->b;
-	ApplyMatrix(w2v_matrix, &d, &vec);
-	ApplyTransposeMatrix(phd_mxptr, &vec, &d);
-	d3dlight->D3DLight2.dvPosition.x = (float)d.x;
-	d3dlight->D3DLight2.dvPosition.y = (float)d.y;
-	d3dlight->D3DLight2.dvPosition.z = (float)d.z;
-
-	if (light->Type == LIGHT_SUN || light->Type == LIGHT_SPOT)
-	{
-		d.x = light->inx;
-		d.y = light->iny;
-		d.z = light->inz;
-		ApplyMatrix(w2v_matrix, &d, &vec);
-		ApplyTransposeMatrix(phd_mxptr, &vec, &d);
-		l.x = d.x;
-		l.y = d.y;
-		l.z = d.z;
-	}
-
-	d3dlight->D3DLight2.dwFlags = D3DLIGHT_ALL;
-
-	switch (light->Type)
-	{
-	case LIGHT_SUN:
-		d3dlight->D3DLight2.dltType = D3DLIGHT_DIRECTIONAL;
-		d3dlight->D3DLight2.dvDirection.x = (float)l.x;
-		d3dlight->D3DLight2.dvDirection.y = (float)l.y;
-		d3dlight->D3DLight2.dvDirection.z = (float)l.z;
-		break;
-
-	case LIGHT_POINT:
-		d3dlight->D3DLight2.dltType = D3DLIGHT_POINT;
-		d3dlight->D3DLight2.dvAttenuation1 = 2;
-		d3dlight->D3DLight2.dvRange = light->Outer;
-
-		if (SetupLight_thing)
-		{
-			fVal = (light->Outer - phd_sqrt(light->Range)) / light->Outer;
-
-			if (fVal < 1)
-			{
-				r = long(CLRR(*ambient) + (fVal * light->r * 255));
-				g = long(CLRG(*ambient) + (fVal * light->g * 255));
-				b = long(CLRB(*ambient) + (fVal * light->b * 255));
-
-				if (r > 255)
-					r = 255;
-
-				if (g > 255)
-					g = 255;
-
-				if (b > 255)
-					b = 255;
-
-				*ambient = RGBONLY(r, g, b);
-			}
-		}
-
-		break;
-
-	case LIGHT_SPOT:
-		d3dlight->D3DLight2.dltType = D3DLIGHT_SPOT;
-		d3dlight->D3DLight2.dvDirection.x = (float)l.x;
-		d3dlight->D3DLight2.dvDirection.y = (float)l.y;
-		d3dlight->D3DLight2.dvDirection.z = (float)l.z;
-		d3dlight->D3DLight2.dvFalloff = 1;
-
-		if (SetupLight_thing)
-			d3dlight->D3DLight2.dvAttenuation1 = 2;
-		else
-			d3dlight->D3DLight2.dvAttenuation1 = 1;
-
-		d3dlight->D3DLight2.dvRange = light->Cutoff;
-		d3dlight->D3DLight2.dvTheta = light->OuterAngle;
-		d3dlight->D3DLight2.dvPhi = light->OuterAngle;
-		break;
-
-	case LIGHT_SHADOW:
-		r = CLRR(*ambient);
-		g = CLRG(*ambient);
-		b = CLRB(*ambient);
-		val = phd_sqrt(light->Range);
-		val2 = light->shadow >> 3;
-
-		if (val >= light->Inner)
-			val2 = long((val - light->Outer) / ((light->Outer - light->Inner) / -val2));
-
-		if (val2 < 0)
-			val2 = 0;
-
-		r -= val2;
-		g -= val2;
-		b -= val2;
-
-		if (r < 0)
-			r = 0;
-
-		if (g < 0)
-			g = 0;
-
-		if (b < 0)
-			b = 0;
-
-		*ambient = RGBONLY(r, g, b);
-		d3dlight->D3DLight2.dwFlags = D3DLIGHT_NO_SPECULAR;
-		d3dlight->D3DLight2.dltType = D3DLIGHT_POINT;
-		break;
-	}
-
-	DXAttempt(d3dlight->D3DLight->SetLight((LPD3DLIGHT)&d3dlight->D3DLight2));
-}
-
-#pragma warning(push)
-#pragma warning(disable : 4244)
-void ShowOmni(long x, long y, long z, long rad)
-{
-	PHD_VECTOR pos;
-	FVECTOR p;
-	D3DTLVERTEX v[64];
-	float ang, zv, step;
-
-	x -= camera.pos.x;
-	y -= camera.pos.y;
-	z -= camera.pos.z;
-
-	phd_PushMatrix();
-	phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
-
-	step = float(2 * M_PI) / float(64 - 1);	//2pi / (nVtx - 1)
-	ang = 0;
-
-	for (int i = 0; i < 64; i++)
-	{
-		p.x = sin(ang) * rad + x;
-		p.y = y;
-		p.z = cos(ang) * rad + z;
-		pos.x = p.x * phd_mxptr[M00] + p.y * phd_mxptr[M01] + p.z * phd_mxptr[M02] + phd_mxptr[M03];
-		pos.y = p.x * phd_mxptr[M10] + p.y * phd_mxptr[M11] + p.z * phd_mxptr[M12] + phd_mxptr[M13];
-		pos.z = p.x * phd_mxptr[M20] + p.y * phd_mxptr[M21] + p.z * phd_mxptr[M22] + phd_mxptr[M23];
-		zv = (float)phd_persp / (float)pos.z;
-		v[i].sx = pos.x * zv + f_centerx;
-		v[i].sy = pos.y * zv + f_centery;
-		v[i].sz = pos.z;
-		v[i].color = 0xFF00FF00;
-		v[i].specular = 0xFF000000;
-		ang += step;
-	}
-
-	S_DrawLine(64, v);
-
-	for (int i = 0; i < 64; i++)
-	{
-		p.x = cos(ang) * rad + x;
-		p.y = sin(ang) * rad + y;
-		p.z = z;
-		pos.x = p.x * phd_mxptr[M00] + p.y * phd_mxptr[M01] + p.z * phd_mxptr[M02] + phd_mxptr[M03];
-		pos.y = p.x * phd_mxptr[M10] + p.y * phd_mxptr[M11] + p.z * phd_mxptr[M12] + phd_mxptr[M13];
-		pos.z = p.x * phd_mxptr[M20] + p.y * phd_mxptr[M21] + p.z * phd_mxptr[M22] + phd_mxptr[M23];
-		zv = (float)phd_persp / (float)pos.z;
-		v[i].sx = pos.x * zv + f_centerx;
-		v[i].sy = pos.y * zv + f_centery;
-		v[i].sz = pos.z;
-		v[i].color = 0xFFFF0000;
-		v[i].specular = 0xFF000000;
-		ang += step;
-	}
-
-	S_DrawLine(64, v);
-
-	for (int i = 0; i < 64; i++)
-	{
-		p.x = x;
-		p.y = sin(ang) * rad + y;
-		p.z = cos(ang) * rad + z;
-		pos.x = p.x * phd_mxptr[M00] + p.y * phd_mxptr[M01] + p.z * phd_mxptr[M02] + phd_mxptr[M03];
-		pos.y = p.x * phd_mxptr[M10] + p.y * phd_mxptr[M11] + p.z * phd_mxptr[M12] + phd_mxptr[M13];
-		pos.z = p.x * phd_mxptr[M20] + p.y * phd_mxptr[M21] + p.z * phd_mxptr[M22] + phd_mxptr[M23];
-		zv = (float)phd_persp / (float)pos.z;
-		v[i].sx = pos.x * zv + f_centerx;
-		v[i].sy = pos.y * zv + f_centery;
-		v[i].sz = pos.z;
-		v[i].color = 0xFFFF0000;
-		v[i].specular = 0xFF000000;
-		ang += step;
-	}
-
-	S_DrawLine(64, v);
-
-	phd_PopMatrix();
-}
-#pragma warning(pop)

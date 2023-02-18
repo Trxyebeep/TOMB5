@@ -21,10 +21,6 @@ void init_tomb5_stuff()
 		tomb5.footprints = 1;							//footprints on
 		REG_WriteBool(buf, tomb5.footprints);
 
-		sprintf(buf, "point_lights");
-		tomb5.tr4_point_lights = 0;						//TR5 points
-		REG_WriteBool(buf, tomb5.tr4_point_lights);		
-
 		sprintf(buf, "shadow");
 		tomb5.shadow_mode = 3;							//PSX like shadow
 		REG_WriteLong(buf, tomb5.shadow_mode);
@@ -116,14 +112,15 @@ void init_tomb5_stuff()
 		sprintf(buf, "static_lighting");
 		tomb5.static_lighting = 1;						//on
 		REG_WriteBool(buf, tomb5.static_lighting);
+
+		sprintf(buf, "uw_dust");
+		tomb5.uw_dust = 2;								//original
+		REG_WriteLong(buf, tomb5.uw_dust);
 	}
 	else	//Key already exists, settings already written, read them. also falls back to default if a smartass manually deletes a single value
 	{
 		sprintf(buf, "footprints");
 		REG_ReadBool(buf, tomb5.footprints, 1);
-
-		sprintf(buf, "point_lights");
-		REG_ReadBool(buf, tomb5.tr4_point_lights, 0);
 
 		sprintf(buf, "shadow");
 		REG_ReadLong(buf, tomb5.shadow_mode, 3);
@@ -193,6 +190,9 @@ void init_tomb5_stuff()
 
 		sprintf(buf, "static_lighting");
 		REG_ReadBool(buf, tomb5.static_lighting, 1);
+
+		sprintf(buf, "uw_dust");
+		REG_ReadLong(buf, tomb5.uw_dust, 2);
 	}
 
 	CloseRegistry();
@@ -205,9 +205,6 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "footprints");
 	REG_WriteBool(buf, tomb5.footprints);
-
-	sprintf(buf, "point_lights");
-	REG_WriteBool(buf, tomb5.tr4_point_lights);
 
 	sprintf(buf, "shadow");
 	REG_WriteLong(buf, tomb5.shadow_mode);
@@ -278,6 +275,9 @@ void save_new_tomb5_settings()
 	sprintf(buf, "static_lighting");
 	REG_WriteBool(buf, tomb5.static_lighting);
 
+	sprintf(buf, "uw_dust");
+	REG_WriteLong(buf, tomb5.uw_dust);
+
 	CloseRegistry();
 }
 
@@ -291,7 +291,7 @@ void RPC_Init()
 
 const char* RPC_GetLevelName()
 {
-	if (!gfCurrentLevel)
+	if (gfCurrentLevel == LVL5_TITLE)
 	{
 		if (bDoCredits)
 			return "In Credits";
@@ -320,46 +320,46 @@ const char* RPC_GetLevelPic()
 {
 	switch (gfCurrentLevel)
 	{
-	case 1:
+	case LVL5_STREETS_OF_ROME:
 		return "rome";
 
-	case 2:
+	case LVL5_TRAJAN_MARKETS:
 		return "streets";
 
-	case 3:
+	case LVL5_COLOSSEUM:
 		return "colosseum";
 
-	case 4:
+	case LVL5_BASE:
 		return "base";
 
-	case 5:
+	case LVL5_SUBMARINE:
 		return "submarine";
 
-	case 6:
+	case LVL5_DEEPSEA_DIVE:
 		return "deepsea";
 
-	case 7:
+	case LVL5_SINKING_SUBMARINE:
 		return "sink";
 
-	case 8:
+	case LVL5_GALLOWS_TREE:
 		return "gallow1";
 
-	case 9:
+	case LVL5_LABYRINTH:
 		return "laby";
 
-	case 10:
+	case LVL5_OLD_MILL:
 		return "mill";
 
-	case 11:
+	case LVL5_THIRTEENTH_FLOOR:
 		return "13th";
 
-	case 12:
+	case LVL5_ESCAPE_WITH_THE_IRIS:
 		return "iris";
 
-	case 13:
+	case LVL5_SECURITY_BREACH:
 		return "breach";
 
-	case 14:
+	case LVL5_RED_ALERT:
 		return "alert";
 
 	default:
@@ -395,7 +395,7 @@ void RPC_Update()
 
 	RPC.details = RPC_GetLevelName();
 	RPC.largeImageKey = RPC_GetLevelPic();
-	RPC.largeImageText = gfCurrentLevel == 3 ? "BOO" : RPC.details;	//xoxo
+	RPC.largeImageText = gfCurrentLevel == LVL5_COLOSSEUM ? "BOO" : RPC.details;	//xoxo
 
 	RPC.smallImageKey = RPC_GetHealthPic();
 	RPC.smallImageText = RPC_GetHealthPercentage();

@@ -2,7 +2,6 @@
 #include "../global/types.h"
 
 void AlterFOV(short fov);
-void gte_sttr(PHD_VECTOR* vec);
 void aInitMatrix();
 void aSetViewMatrix();
 void aSetTrans(long x, long y, long z);
@@ -29,11 +28,6 @@ void phd_GetVectorAngles(long x, long y, long z, short* angles);
 void phd_TransposeMatrix();
 void phd_LookAt(long xsrc, long ysrc, long zsec, long xtar, long ytar, long ztar, short roll);
 void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float ztar, long roll);
-void aOuterProduct(FVECTOR* v1, FVECTOR* v2, FVECTOR* dest);
-void aVectorNormal(FVECTOR* s, FVECTOR* v);
-void aPerpVectors(FVECTOR* a, FVECTOR* b, FVECTOR* c);
-void aPointCameraByVector(float* mx, FCAMERA* cam);
-void aPointCamera(FCAMERA* cam);
 void aScaleCurrentMatrix(PHD_VECTOR* vec);
 void ScaleCurrentMatrix(PHD_VECTOR* vec);
 void SetupZRange(long znear, long zfar);
@@ -43,17 +37,11 @@ ulong phd_sqrt(ulong num);
 ulong mGetAngle(long x, long z, long x1, long z1);
 void phd_GenerateW2V(PHD_3DPOS* viewPos);
 
-extern FCAMERA aCamera;
-extern FVECTOR aCamPos;
-extern FVECTOR aCamTar;
-extern FVECTOR aCamDir;
 extern PHD_VECTOR CamPos;
 extern SVECTOR CamRot;
 
 extern float one;
 extern float mone;
-extern float FogStart;
-extern float FogEnd;
 
 extern float f_centerx;
 extern float f_centery;

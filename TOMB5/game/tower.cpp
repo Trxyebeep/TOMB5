@@ -1,36 +1,35 @@
 #include "../tomb5/pch.h"
-#include "tower2.h"
+#include "tower.h"
+#include "gameflow.h"
 #include "control.h"
+#include "../specific/3dmath.h"
+#include "camera.h"
+#include "draw.h"
 #include "sound.h"
+#include "../specific/function_stubs.h"
 #include "delstuff.h"
-#include "objects.h"
 #include "effect2.h"
+#include "objects.h"
+#include "lara.h"
 #include "effects.h"
 #include "items.h"
-#include "tomb4fx.h"
 #include "debris.h"
 #include "switch.h"
-#include "../specific/function_stubs.h"
 #include "traps.h"
+#include "tomb4fx.h"
 #include "sphere.h"
 #include "collide.h"
-#include "camera.h"
-#include "gameflow.h"
 #include "../specific/file.h"
-#include "lara.h"
 #include "../specific/gamemain.h"
-#ifdef GENERAL_FIXES
 #include "../specific/specificfx.h"
 #include "../specific/function_table.h"
-#include "../specific/3dmath.h"
-#endif
 
 static PHD_VECTOR SteelDoorLensPos;
 
 short SplashOffsets[18] = { 1072, 48, 1072, 48, 650, 280, 200, 320, -300, 320, -800, 320, -1200, 320, -1650, 280, -2112, 48 };
 
 short SteelDoorPos[4][2] =
-{ 
+{
 	{ 872, 512 },
 	{ 872, -360 },
 	{ -860, -360 },
@@ -40,6 +39,139 @@ short SteelDoorPos[4][2] =
 short SteelDoorMeshswaps[16] = { 37, 74, 111, 148, 185, 222, 259, 296, 340, 380, 420, 470, 481, 518, 555, 592 };
 
 static char NotHitLaraCount;
+
+long TestBoundsCollideCamera(short* bounds, PHD_3DPOS* pos, long radius)
+{
+	long x, z, dx, dz, sin, cos;
+
+	if (pos->y_pos + bounds[3] > camera.pos.y - radius && pos->y_pos + bounds[2] < radius + camera.pos.y)
+	{
+		dx = camera.pos.x - pos->x_pos;
+		dz = camera.pos.z - pos->z_pos;
+		sin = phd_sin(pos->y_rot);
+		cos = phd_cos(pos->y_rot);
+		x = (cos * dx - sin * dz) >> 14;
+		z = (cos * dz + sin * dx) >> 14;
+
+		if (x >= bounds[0] - radius && x <= radius + bounds[1] && z >= bounds[4] - radius && z <= radius + bounds[5])
+			return 1;
+	}
+
+	return 0;
+}
+
+void CheckForRichesIllegalDiagonalWalls()
+{
+	MESH_INFO* mesh;
+	ROOM_INFO* r;
+	PHD_3DPOS pos;
+	short* doors;
+	short* bounds;
+	long j, dx, dy, dz;
+	short room_count;
+	short rooms[22];
+
+	rooms[0] = camera.pos.room_number;
+	r = &room[rooms[0]];
+	doors = r->door;
+	room_count = 1;
+
+	if (doors)
+	{
+		for (int i = *doors++; i > 0; i--, doors += 16)
+		{
+			for (j = 0; j < room_count; j++)
+				if (rooms[j] == *doors)
+					break;
+
+			if (j == room_count)
+			{
+				rooms[room_count] = *doors;
+				room_count++;
+			}
+		}
+	}
+
+	for (int i = 0; i < room_count; i++)
+	{
+		r = &room[rooms[i]];
+		mesh = r->mesh;
+
+		for (j = r->num_meshes; j > 0; j--, mesh++)
+		{
+			if (mesh->Flags & 1)
+			{
+				if (mesh->static_number == 36 || gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS && mesh->static_number == 27)
+				{
+					dx = camera.pos.x - mesh->x;
+					dy = camera.pos.y - mesh->y;
+					dz = camera.pos.z - mesh->z;
+
+					if (dx > -4096 && dx < 4096 && dz > -4096 && dz < 4096 && dy > -4096 && dy < 4096)
+					{
+						bounds = &static_objects[mesh->static_number].x_minc;
+						pos.x_pos = mesh->x;
+						pos.y_pos = mesh->y;
+						pos.z_pos = mesh->z;
+						pos.y_rot = mesh->y_rot;
+
+						if (TestBoundsCollideCamera(bounds, &pos, 512))
+							ItemPushCamera(bounds, &pos);
+					}
+				}
+			}
+		}
+	}
+}
+
+void ItemPushCamera(short* bounds, PHD_3DPOS* pos)
+{
+	FLOOR_INFO* floor;
+	long x, z, dx, dz, sin, cos, left, right, top, bottom, h, c;
+	short xmin, xmax, zmin, zmax;
+
+	dx = camera.pos.x - pos->x_pos;
+	dz = camera.pos.z - pos->z_pos;
+	sin = phd_sin(pos->y_rot);
+	cos = phd_cos(pos->y_rot);
+	x = (dx * cos - dz * sin) >> 14;
+	z = (dx * sin + dz * cos) >> 14;
+	xmin = bounds[0] - 384;
+	xmax = bounds[1] + 384;
+	zmin = bounds[4] - 384;
+	zmax = bounds[5] + 384;
+
+	if (abs(dx) > 4608 || abs(dz) > 4608 || x <= xmin || x >= xmax || z <= zmin || z >= zmax)
+		return;
+
+	left = x - xmin;
+	right = xmax - x;
+	top = zmax - z;
+	bottom = z - zmin;
+
+	if (left <= right && left <= top && left <= bottom)//left is closest
+		x -= left;
+	else if (right <= left && right <= top && right <= bottom)//right is closest
+		x += right;
+	else if (top <= left && top <= right && top <= bottom)//top is closest
+		z += top;
+	else
+		z -= bottom;//bottom
+
+	camera.pos.x = pos->x_pos + ((cos * x + sin * z) >> 14);
+	camera.pos.z = pos->z_pos + ((cos * z - sin * x) >> 14);
+	floor = GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
+	h = GetHeight(floor, camera.pos.x, camera.pos.y, camera.pos.z);
+	c = GetCeiling(floor, camera.pos.x, camera.pos.y, camera.pos.z);
+
+	if (h == NO_HEIGHT || camera.pos.y > h || camera.pos.y < c)
+	{
+		camera.pos.x = CamOldPos.x;
+		camera.pos.y = CamOldPos.y;
+		camera.pos.z = CamOldPos.z;
+		GetFloor(CamOldPos.x, CamOldPos.y, CamOldPos.z, &camera.pos.room_number);
+	}
+}
 
 void ControlGunship(short item_number)
 {
@@ -440,9 +572,7 @@ void ControlGasCloud(short item_number)
 	if (!TriggerActive(item))
 		return;
 
-#ifdef GENERAL_FIXES
 	if (lara.water_status != LW_FLYCHEAT)
-#endif
 	{
 		if (!lara.Gassed)
 		{
@@ -724,7 +854,6 @@ void ControlSteelDoor(short item_number)
 
 void DrawSprite2(long x, long y, long slot, long col, long size, long z)
 {
-#ifdef GENERAL_FIXES
 	D3DTLVERTEX v[4];
 	SPRITESTRUCT* sprite;
 	TEXTURESTRUCT tex;
@@ -736,7 +865,7 @@ void DrawSprite2(long x, long y, long slot, long col, long size, long z)
 	x2 = x + size;
 	y2 = y + size;
 	setXY4(v, x1, y1, x2, y1, x1, y2, x2, y2, z, clipflags);
-	
+
 	for (int i = 0; i < 4; i++)
 	{
 		v[i].color = col;
@@ -755,12 +884,10 @@ void DrawSprite2(long x, long y, long slot, long col, long size, long z)
 	tex.u4 = sprite->x1;
 	tex.v4 = sprite->y2;
 	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
-#endif
 }
 
 void DrawSteelDoorLensFlare(ITEM_INFO* item)
 {
-#ifdef GENERAL_FIXES
 	FVECTOR pos;
 	long dx, dy, dz;
 	long x, y, z, r, g, b;
@@ -790,7 +917,6 @@ void DrawSteelDoorLensFlare(ITEM_INFO* item)
 	g = (GetRandomControl() & 0x3F) + 128;
 	b = (GetRandomControl() & 0x3F) + 128;
 	DrawSprite2(x, y, 32, RGBA(r, g, b, 128), (GetRandomControl() & 0xF) + 32, z);
-#endif
 }
 
 void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)

@@ -16,10 +16,8 @@
 #include "../specific/function_stubs.h"
 #include "tomb4fx.h"
 #include "lara.h"
-#ifdef GENERAL_FIXES
 #include "draw.h"
 #include "../specific/lighting.h"
-#endif
 
 void FlareControl(short item_number)
 {
@@ -459,35 +457,19 @@ void undraw_flare()
 
 void DrawFlareInAir(ITEM_INFO* item)
 {
-#ifdef GENERAL_FIXES
-	short* bounds;
-#endif
-
 	phd_PushMatrix();
-
-#ifdef GENERAL_FIXES
-	bounds = GetBoundsAccurate(item);
-	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos - bounds[3], item->pos.z_pos);
-#else
-	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
-#endif
-
+	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos - GetBoundsAccurate(item)[3], item->pos.z_pos);
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-#ifdef GENERAL_FIXES
 	current_item = item;
-#endif
 	phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
 	phd_PopMatrix();
 
-	if (gfLevelFlags & GF_MIRROR)
+	if (gfLevelFlags & GF_MIRROR && item->room_number == gfMirrorRoom)
 	{
-		if (item->room_number == gfMirrorRoom)
-		{
-			phd_PushMatrix();
-			phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, 2 * gfMirrorZPlane - item->pos.z_pos);
-			phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-			phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
-			phd_PopMatrix();
-		}
+		phd_PushMatrix();
+		phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, 2 * gfMirrorZPlane - item->pos.z_pos);
+		phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
+		phd_PutPolygons_train(meshes[objects[FLARE_ITEM].mesh_index], 0);
+		phd_PopMatrix();
 	}
 }

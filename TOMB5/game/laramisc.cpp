@@ -21,11 +21,9 @@
 #include "effect2.h"
 #include "../specific/input.h"
 #include "savegame.h"
-#ifdef GENERAL_FIXES
 #include "newinv2.h"
 #include "../specific/dxshell.h"
 #include "../tomb5/tomb5.h"
-#endif
 
 COLL_INFO mycoll;
 
@@ -97,11 +95,7 @@ void LaraCheat(ITEM_INFO* item, COLL_INFO* coll)
 		lara.gun_status = 0;
 		LaraInitialiseMeshes();
 		lara.mesh_effects = 0;
-#ifdef GENERAL_FIXES
 		lara_item->hit_points = 1000;
-#else
-		lara_item->hit_points = cheat_hit_points;
-#endif
 	}
 }
 
@@ -133,7 +127,6 @@ void LaraInitialiseMeshes()
 
 void LaraCheatGetStuff()
 {
-#ifdef GENERAL_FIXES	//fix errors with cheats
 	if (objects[FLARE_INV_ITEM].loaded)
 		lara.num_flares = -1;
 
@@ -185,24 +178,8 @@ void LaraCheatGetStuff()
 	}
 
 	dels_give_lara_items_cheat();
-#else
-	if (objects[CROWBAR_ITEM].loaded)
-		lara.crowbar = 1;
-
-	lara.num_flares = -1;
-	lara.num_small_medipack = -1;
-	lara.num_large_medipack = -1;
-	lara.lasersight = 1;
-	lara.uzis_type_carried = 9;
-	lara.shotgun_type_carried = 9;
-	lara.sixshooter_type_carried = 9;
-	lara.num_uzi_ammo = -1;
-	lara.num_revolver_ammo = -1;
-	lara.num_shotgun_ammo1 = -1;
-#endif
 }
 
-#ifdef GENERAL_FIXES
 void LaraCheatyBits()
 {
 #ifndef _DEBUG	//public releases have cheats in inventory, except for DOZY
@@ -229,31 +206,14 @@ void LaraCheatyBits()
 		}
 	}
 #else
-
-#ifndef GENERAL_FIXES	//make cheats available
-	if (!Gameflow->CheatEnabled)
-		return;
-#endif
-
-#ifdef GENERAL_FIXES
 	if (keymap[DIK_F1])
-#else
-	if (input & IN_D)
-#endif
 	{
 		LaraCheatGetStuff();
 		lara_item->hit_points = 1000;
 	}
 
-#ifdef GENERAL_FIXES
 	if (keymap[DIK_F2])
-#else
-	if (input & IN_CHEAT)
-#endif
 	{
-#ifndef GENERAL_FIXES
-		dels_give_lara_items_cheat();
-#endif
 		lara_item->pos.y_pos -= 128;
 
 		if (lara.water_status != LW_FLYCHEAT)
@@ -276,18 +236,15 @@ void LaraCheatyBits()
 		}
 	}
 
-#ifdef GENERAL_FIXES
 	if (keymap[DIK_F3])
 	{
 		gfLevelComplete = gfCurrentLevel + 1;
 		SCNoDrawLara = 0;
 		bDisableLaraControl = 0;
 	}
-#endif
 
-#endif	//!_DEBUG
+#endif
 }
-#endif	//GENERAL_FIXES
 
 void AnimateLara(ITEM_INFO* item)
 {
@@ -451,10 +408,8 @@ void LaraControl(short item_number)
 		lara.gun_status = LG_NO_ARMS;
 	}
 
-#ifdef GENERAL_FIXES
 	if (tomb5.enable_cheats)
 		LaraCheatyBits();
-#endif
 
 	if (!bDisableLaraControl)
 		lara.locationPad = -128;
@@ -545,11 +500,7 @@ void LaraControl(short item_number)
 	case LW_WADE:
 		camera.target_elevation = -4004;
 
-#ifdef GENERAL_FIXES
 		if (hfw > 256)
-#else
-		if (hfw >= 256)
-#endif
 		{
 			if (hfw > 730)
 			{
@@ -713,7 +664,7 @@ void LaraControl(short item_number)
 		break;
 	}
 
-	S_SetReverbType(room[item->room_number].ReverbType);
+//	S_SetReverbType(room[item->room_number].ReverbType);
 
 	if (item->hit_points <= 0)
 	{

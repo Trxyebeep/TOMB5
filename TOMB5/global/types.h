@@ -23,8 +23,9 @@
 #define MAX_ITEMS	256
 #define MAX_SAMPLES	450
 #define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
-#define MALLOC_SIZE	5000000		//5MB
-#define WINDOW_STYLE	(WS_OVERLAPPED | WS_BORDER | WS_CAPTION)
+#define MALLOC_SIZE	15000000	//15MB
+#define WINDOW_STYLE	WS_OVERLAPPEDWINDOW
+#define GAME_FOV	(80 * 182)
 
 /*typedefs*/
 typedef unsigned char uchar;
@@ -1189,13 +1190,11 @@ struct SAVEGAME_INFO
 	char buffer[7245];
 };
 
-#ifdef GENERAL_FIXES
 struct tomb5_save_info
 {
 	ushort LHolster;
 	ushort dash_timer;
 };
-#endif
 
 struct DYNAMIC
 {
@@ -1715,7 +1714,7 @@ struct DXPTR
 	RECT rViewport;
 	RECT rScreen;
 	long Flags;
-	long WindowStyle;
+	ulong WindowStyle;
 	long CoopLevel;
 #if (DIRECTINPUT_VERSION >= 0x800)
 	LPDIRECTINPUT8 lpDirectInput;
@@ -2231,7 +2230,6 @@ struct FOGBULB_STRUCT	//fog data used to apply fog on vertices
 	long visible;
 };
 
-#ifdef GENERAL_FIXES
 struct SPOTLIGHT_STRUCT
 {
 	FVECTOR vec;
@@ -2240,7 +2238,6 @@ struct SPOTLIGHT_STRUCT
 	float b;
 	float rad;
 };
-#endif
 
 struct FCAMERA
 {
@@ -2454,7 +2451,6 @@ struct CUTSEQ_SELECTOR
 	short num;
 };
 
-#ifdef GENERAL_FIXES
 struct GouraudBarColourSet
 {
 	uchar abLeftRed[5];
@@ -2512,7 +2508,6 @@ struct PORTAL
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
 	bool footprints;			//on off
-	bool tr4_point_lights;		//on off (1 -> TR4, 0 -> fixed TR5)
 	ulong shadow_mode;			//1-> original, 2-> circle, 3-> PSX color like circle, 4-> PSX sprite
 	bool fix_climb_up_delay;	//on off 
 	bool flexible_crawling;		//on off
@@ -2536,6 +2531,6 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool ammotype_hotkeys;		//on off
 	bool look_transparency;		//on off
 	bool static_lighting;		//on off
+	ulong uw_dust;				//1-> off, 2-> original, 3-> TR4
 };
-#endif
 #pragma pack(pop)

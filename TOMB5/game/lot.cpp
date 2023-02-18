@@ -16,7 +16,7 @@ void InitialiseLOTarray(long allocmem)
 	CREATURE_INFO* creature;
 
 	if (allocmem)
-		baddie_slots = (CREATURE_INFO*)game_malloc(sizeof(CREATURE_INFO) * 5, 0);
+		baddie_slots = (CREATURE_INFO*)game_malloc(sizeof(CREATURE_INFO) * 5);
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -24,7 +24,7 @@ void InitialiseLOTarray(long allocmem)
 		creature->item_num = NO_ITEM;
 
 		if (allocmem)
-			creature->LOT.node = (BOX_NODE*)game_malloc(sizeof(BOX_NODE) * num_boxes, 0);
+			creature->LOT.node = (BOX_NODE*)game_malloc(sizeof(BOX_NODE) * num_boxes);
 	}
 
 	slots_used = 0;

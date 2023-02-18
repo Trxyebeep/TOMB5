@@ -1,7 +1,6 @@
 #include "../tomb5/pch.h"
 #include "alexstuff.h"
 #include "function_stubs.h"
-#include "profiler.h"
 #include "drawroom.h"
 #include "winmain.h"
 #include "file.h"
@@ -20,9 +19,7 @@
 
 const char* CreditNames[] =
 {
-#ifdef GENERAL_FIXES
 	"nobody",
-#endif
 	"Derek Leigh-Gilchrist",
 	"Martin Gibbins",
 	"Tom Scutt",
@@ -57,7 +54,6 @@ const char* CreditNames[] =
 #pragma warning(push)
 #pragma warning(disable : 4838)
 #pragma warning(disable : 4309)
-#ifdef GENERAL_FIXES
 short CreditGroups[15] =
 {
 	0,
@@ -121,104 +117,9 @@ const char* CreditsTable[] =
 	"Tomb Raider V Community Edition",
 	"Troye", "ChocolateFan"
 };
-#else
-//0x8000 = "category"/use string, otherwise use index from above names^
-//-1 = empty space
-//-2 = end of list
-short CreditsTable[] =
-{
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-
-	0x8000 | STR_PROGRAMMERS, -1,
-	4, 1, 0,		//Alex, Martin (gibby), Del
-	-1, -1, -1, -1,
-
-	0x8000 | STR_AI_PROGRAMMERS, -1,
-	2,				//Tom
-	-1, -1, -1, -1,
-
-	0x8000 | STR_ADDITIONAL_PROGRAMMERS, -1,
-	3, 5, 6,		//Chris, Richard, Martin (jensen)
-	-1, -1, -1, -1,
-
-	0x8000 | STR_ANIMATORS, -1,
-	8, 7,			//Jerr, Phil
-	-1, -1, -1, -1,
-
-	0x8000 | STR_LEVEL_DESIGNERS, -1,
-	10, 11, 12, 9,	//Andrea, Richard, Andy, Joby
-	-1, -1, -1, -1,
-
-	0x8000 | STR_FMV_SEQUENCES, -1,
-	25,				//"Ex Machina" (who?)
-	-1, -1, -1, -1,
-
-	0x8000 | STR_MUSIC_AND_SOUND_FX, -1,
-	13,				//Peter
-	-1, -1, -1, -1,
-
-	0x8000 | STR_ADDITIONAL_SOUND_FX, -1,
-	14,				//Martin (Iveson)
-	-1, -1, -1, -1,
-
-	0x8000 | STR_ORIGINAL_STORY, -1,
-	11, 12,			//Richard, Andy
-	-1, -1, -1, -1,
-
-	0x8000 | STR_SCRIPT, -1,
-	12,				//Andy
-	-1, -1, -1, -1,
-
-	0x8000 | STR_PRODUCER, -1,
-	15,				//Andy Watt
-	-1, -1, -1, -1,
-
-	0x8000 | STR_QA, -1,
-	27, 28, 16, 17, 18, 19, 20, 21, 24,	//buncha people
-	-1, -1, -1, -1,
-
-	0x8000 | STR_EXECUTIVE_PRODUCERS, -1,
-	22, 23,			//Jeremy, Adrian
-	-1, -1, -1, -1,
-
-	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-	-2
-};
-#endif
 #pragma warning(pop)
 
 long aWibble;
-static float water_buffer[8712];
-static float water_plot_buffer[4356];
-static long water_buffer_calced;
-
-void aLoadRoomStream()
-{
-	ROOM_INFO* room_data;
-	long length, num_rooms, size;
-	char* data;
-
-	length = *(long*)FileData;
-	FileData += sizeof(long);
-	num_rooms = *(long*)FileData;
-	FileData += sizeof(long);
-	room = (ROOM_INFO*)game_malloc(num_rooms * sizeof(ROOM_INFO), 0);
-	room_data = room;
-
-	for (int i = 0; i < num_rooms; i++)
-	{
-		FileData += sizeof(long);
-		size = *(long*)FileData;
-		FileData += sizeof(long);
-		data = (char*)game_malloc(size, 0);
-		memcpy(data, FileData, size);
-		aFixUpRoom(room_data, data);
-		FileData += size;
-		room_data++;
-	}
-
-	number_rooms = (short)num_rooms;
-}
 
 void aFixUpRoom(ROOM_INFO* r, char* s)
 {
@@ -272,29 +173,7 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 
 void aUpdate()
 {
-	static float znear;
-	static long zero;
-	static long alphamaybe;
-
 	aWibble++;
-	znear = f_mznear;
-	mAddProfilerEvent(0xFF00FF00);
-	mAddProfilerEvent(0xFF0000FF);
-	zero = 0;
-	mAddProfilerEvent(0xFFFFFFFF);
-
-	if (aCamDir.y >= 0)
-		alphamaybe = long(95 - ((1 - aCamDir.y) * -144)) << 24;
-	else
-		alphamaybe = 0xEF000000;
-
-	mAddProfilerEvent(0xFFFF00);
-}
-
-void aInitWater()
-{
-	memset(&water_buffer, 0, sizeof(water_buffer));
-	water_buffer_calced = 0;
 }
 
 void aTransformClip_D3DV(D3DVECTOR* vec, D3DTLVERTEX* v, long nVtx, long nClip)
@@ -320,7 +199,7 @@ void aTransformClip_D3DV(D3DVECTOR* vec, D3DTLVERTEX* v, long nVtx, long nClip)
 		{
 			zv = f_mpersp / z;
 
-			if (v->sz > FogEnd)
+			if (v->sz > f_mzfar)
 			{
 				v->sz = f_zfar;
 				c = 256;
@@ -372,13 +251,7 @@ void aTransform_D3DV(D3DVECTOR* vec, D3DTLVERTEX* v, long nVtx)
 
 void aInit()
 {
-	aInitWater();
 	aRoomInit();
-}
-
-void aWinString(long x, long y, char* string)
-{
-	WinDisplayString(x, y, string);
 }
 
 char* aReadCutData(long n, FILE* file)
@@ -393,7 +266,7 @@ char* aReadCutData(long n, FILE* file)
 	offset = *(long*)&tsv_buffer[n * 2 * sizeof(long)];
 	size = *(long*)&tsv_buffer[n * 2 * sizeof(long) + 4];
 	fseek(file, offset, SEEK_SET);
-	data = (char*)game_malloc(size, 0);
+	data = (char*)game_malloc(size);
 	fread(data, size, 1, file);
 	return data;
 }
@@ -485,10 +358,6 @@ char* aFetchCutData(long n)
 	return data;
 }
 
-#pragma warning(push)
-#pragma warning(disable : 4244)
-#ifdef GENERAL_FIXES
-
 long DoCredits()
 {
 	const char* s;
@@ -513,22 +382,13 @@ long DoCredits()
 		if (y < font_height + phd_winheight + 1 && y > -font_height)
 		{
 			if (*s == '%')
-			{
 				PrintString(phd_winwidth >> 1, y, 6, SCRIPT_TEXT(CreditGroups[atoi(s + 1)]), FF_CENTER);
-			//	PrintBigString(phd_winwidth >> 1, y << 1, 6, SCRIPT_TEXT(CreditGroups[atoi(s + 1)]), FF_CENTER);
-			}
 			else if (*s != '0')
 			{
 				if (i >= 57)
-				{
 					PrintString(phd_winwidth >> 1, y, 2 + (i == 57 ? 4 : 0), s, FF_CENTER);
-				//	PrintBigString(phd_winwidth >> 1, y << 1, 2 + (i == 57 ? 4 : 0), s, FF_CENTER);
-				}
 				else
-				{
 					PrintString(phd_winwidth >> 1, y, 2, CreditNames[atoi(s + 1)], FF_CENTER);
-				//	PrintBigString(phd_winwidth >> 1, y << 1, 2, CreditNames[atoi(s + 1)], FF_CENTER);
-				}
 			}
 
 			num_drawn++;
@@ -543,325 +403,4 @@ long DoCredits()
 		init = 0;
 
 	return num_drawn;
-}
-
-#else
-
-#define CREDIT_FONT_HEIGHT	34
-long DoCredits()
-{
-	short* c;
-	long n, l, y, y2;
-	static long pos = 1;
-
-	n = pos / CREDIT_FONT_HEIGHT;
-	l = n + 26;							//todo: what's 26?
-	y = phd_winymax / -2 - pos % CREDIT_FONT_HEIGHT;
-	y2 = y * 2;
-
-	for (; n < l; n++)
-	{
-		c = &CreditsTable[n];
-
-		if (*c == -2)
-		{
-			//done
-			pos = 1;
-			return 0;
-		}
-
-		if (*c == -1)	//empty line
-		{
-			y += CREDIT_FONT_HEIGHT;
-			y2 += CREDIT_FONT_HEIGHT * 2;
-			continue;
-		}
-
-		if (*c & 0x8000)
-			PrintString(phd_winwidth >> 1, y + phd_centery, 6, SCRIPT_TEXT(*c & 0x7FFF), FF_CENTER);
-		else
-			PrintString(phd_winwidth >> 1, y + phd_centery, 2, CreditNames[*c], FF_CENTER);
-
-		if (*c & 0x8000)
-			PrintBigString(phd_winwidth >> 1, y2 + phd_centery, 6, SCRIPT_TEXT(*c & 0x7FFF), FF_CENTER);
-		else
-			PrintBigString(phd_winwidth >> 1, y2 + phd_centery, 2, CreditNames[*c], FF_CENTER);
-
-		y += CREDIT_FONT_HEIGHT;
-		y2 += CREDIT_FONT_HEIGHT * 2;
-	}
-
-	pos++;
-	return 1;
-}
-
-#endif
-#pragma warning(pop)
-
-void DrawBigChar(short x, short y, ushort col, CHARDEF* c, long scale)
-{
-	D3DTLVERTEX v[4];
-	TEXTURESTRUCT tex;
-	float u1, v1, u2, v2;
-	long x1, y1, x2, y2, tc, bc;
-
-	x += phd_winxmin;
-	y += phd_winymin;
-
-	x1 = x;
-	y1 = y + scale * c->YOffset;
-
-	x2 = x + scale * c->w;
-	y2 = scale * (c->YOffset + c->h - big_char_height) + y;
-
-	if (y2 < 0 || y1 > phd_winymax)
-		return;
-
-	setXY4(v, x1, y1, x2, y1, x2, y2, x1, y2, long(f_mznear + 1.0F), clipflags);
-
-	tc = *(long*)&FontShades[col][2 * c->TopShade];
-	bc = *(long*)&FontShades[col][2 * c->BottomShade];
-	v[0].color = tc & 0xFFFFFF | 0x20000000;
-	v[1].color = tc & 0xFFFFFF | 0x20000000;
-	v[2].color = bc & 0xFFFFFF | 0x20000000;
-	v[3].color = bc & 0xFFFFFF | 0x20000000;
-	v[0].specular = 0xFF000000;
-	v[1].specular = 0xFF000000;
-	v[2].specular = 0xFF000000;
-	v[3].specular = 0xFF000000;
-
-	u1 = c->u + (1.0F / 512.0F);
-	v1 = c->v + (1.0F / 512.0F);
-	u2 = 512.0F / float(phd_winxmax + 1) * (float)c->w * (1.0F / 256.0F) + c->u - (1.0F / 512.0F);
-	v2 = 240.0F / float(phd_winymax + 1) * (float)c->h * (1.0F / 256.0F) + c->v - (1.0F / 512.0F);
-	tex.drawtype = 3;
-	tex.flag = 0;
-	tex.tpage = ushort(nTextures - 2);
-	tex.u1 = u1;
-	tex.v1 = v1;
-	tex.u2 = u2;
-	tex.v2 = v1;
-	tex.u3 = u2;
-	tex.v3 = v2;
-	tex.u4 = u1;
-	tex.v4 = v2;
-	nPolyType = 4;
-	AddQuadSorted(v, 0, 1, 2, 3, &tex, 1);
-}
-
-long GetBigStringLength(const char* string, short* top, short* bottom)
-{
-	CHARDEF* def;
-	long s, length;
-	short lowest, highest, y;
-
-	s = *string++;
-	length = 0;
-	lowest = -1024;
-	highest = 1024;
-
-	while (s)
-	{
-		if (s == '\n')
-			break;
-
-		if (s == ' ')
-			length += long((float(phd_winxmax + 1) / 640.0F) * 8.0F) * 3;
-		else if (s == '\t')
-		{
-			length += 40;
-
-			if (top && highest > -12)
-				highest = -12;
-
-			if (bottom && lowest < 2)
-				lowest = 2;
-		}
-		else if (s >= 20)
-		{
-			if (s < ' ')
-				def = &CharDef[s + 74];
-			else
-				def = &CharDef[s - '!'];
-
-			if (ScaleFlag)
-				length += def->w - def->w / 4;
-			else
-				length += def->w * 3;
-
-			y = def->YOffset;
-
-			if (top && y < highest)
-				highest = def->YOffset;
-
-			if (bottom && def->h + y > lowest)
-				lowest = def->h + y;
-		}
-
-		s = *string++;
-	}
-
-	if (top)
-		*top = highest;
-
-	if (bottom)
-		*bottom = lowest;
-
-	return length;
-}
-
-void PrintBigString(ushort x, ushort y, uchar col, const char* string, ushort flags)
-{
-	CHARDEF* def;
-	short x2, bottom, l, top, bottom2;
-	uchar s;
-
-	ScaleFlag = (flags & FF_SMALL) != 0;
-	x2 = (short)GetBigStringLength(string, 0, &bottom);
-
-	if (flags & FF_CENTER)
-		x2 = x - (x2 >> 1);
-	else if (flags & FF_RJUSTIFY)
-		x2 = x - x2;
-	else
-		x2 = x;
-
-	s = *string++;
-
-	while (s)
-	{
-		if (s == '\n')
-		{
-			if (*string == '\n')
-			{
-				bottom = 0;
-				y += 16;
-			}
-			else
-			{
-				l = (short)GetBigStringLength(string, &top, &bottom2);
-
-				if (flags & FF_CENTER)
-					x2 = x - (l >> 1);
-				else if (flags & FF_RJUSTIFY)
-					x2 = x - l;
-				else
-					x2 = x;
-
-				y += bottom - top + 2;
-				bottom = bottom2;
-			}
-
-			s = *string++;
-			continue;
-		}
-
-		if (s == ' ')
-		{
-			if (ScaleFlag)
-				x2 += 6;
-			else
-				x2 += short(float(phd_winxmax + 1) / 640.0F * 8.0F) * 3;
-
-			s = *string++;
-			continue;
-		}
-
-		if (s == '\t')
-		{
-			x2 += 40;
-			s = *string++;
-			continue;
-		}
-
-		if (s < 20)
-		{
-			col = s - 1;
-			s = *string++;
-			continue;
-		}
-
-		if (s < ' ')
-			def = &CharDef[s + 74];
-		else
-			def = &CharDef[s - '!'];
-
-		DrawBigChar(x2, y, col, def, 3);
-
-		if (ScaleFlag)
-			x2 += def->w - def->w / 4;
-		else
-			x2 += def->w * 3;
-
-		s = *string++;
-	}
-
-	ScaleFlag = 0;
-}
-
-void aProcessWater(long n)
-{
-	float* pPlot;
-	float* pOld;
-	float* pNew;
-	float* pAbove;
-	float* pBelow;
-	float* stash;
-	float num;
-	long rnd, val, lp, lp2;
-
-	pPlot = water_plot_buffer;
-
-	if (water_buffer_calced)
-	{
-		pOld = water_buffer;
-		pNew = &water_buffer[4356];
-	}
-	else
-	{
-		pOld = &water_buffer[4356];
-		pNew = water_buffer;
-	}
-
-	pOld += 67;
-	pNew += 67;
-	pAbove = pOld - 66;
-	pBelow = pOld + 66;
-	stash = pNew;
-
-	for (lp = 0; lp < 64; lp++)
-	{
-		for (lp2 = 0; lp2 < 64; lp2++)
-		{
-			num = (pOld[lp2 + 1] + pOld[lp2 - 1] + pAbove[lp2] + pAbove[lp2 + 1] + pAbove[lp2 - 1] + pBelow[lp2] + pBelow[lp2 + 1] + pBelow[lp2 - 1]) *
-				0.25F - pNew[lp2];
-			num -= num * 0.0125F;
-			pNew[lp2] = num;
-			pPlot[lp2] = -num;
-		}
-
-		pPlot += 66;
-		pOld += 66;
-		pNew += 66;
-		pAbove += 66;
-		pBelow += 66;
-	}
-
-	rnd = rand() & 3;
-
-	for (lp = 0; lp < rnd; lp++)
-	{
-		val = 66 * (rand() % 56 + 4);
-		val += rand() % 56 + 4;
-		num = float(rand() & 7);
-		stash[val] += num;
-
-		num *= 0.5F;
-		stash[val - 66] += num;
-		stash[val + 66] += num;
-		stash[val - 1] += num;
-		stash[val + 1] += num;
-	}
-
-	water_buffer_calced ^= 1;
 }

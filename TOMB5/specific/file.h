@@ -1,32 +1,29 @@
 #pragma once
 #include "../global/types.h"
 
-bool LoadTextureInfos();
-bool LoadRooms();
 FILE* FileOpen(const char* Filename);
-bool FindCDDrive();
 void FileClose(FILE* fp);
 long FileSize(FILE* fp);
-bool LoadItems();
+long LoadFile(const char* name, char** dest);
+bool Decompress(char* pDest, char* pCompressed, long compressedSize, long size);
+void AdjustUV(long num);
+void DoMonitorScreen();
+void S_GetUVRotateTextures();
+void FreeLevel();
+bool LoadTextures(long RTPages, long OTPages, long BTPages);
+bool LoadRooms();
+bool LoadObjects();
 bool LoadSprites();
 bool LoadCameras();
 bool LoadSoundEffects();
+bool LoadBoxes();
 bool LoadAnimatedTextures();
-bool LoadObjects();
+bool LoadTextureInfos();
+bool LoadItems();
+bool LoadAIInfo();
 bool LoadCinematic();
 bool LoadSamples();
-bool LoadAIInfo();
 long S_LoadLevelFile(long num);
-bool LoadTextures(long RTPages, long OTPages, long BTPages);
-void S_GetUVRotateTextures();
-void DoMonitorScreen();
-void S_LoadLevel();
-void LoadMapFile();
-bool LoadBoxes();
-void AdjustUV(long num);
-long LoadFile(const char* name, char** dest);
-void FreeLevel();
-bool Decompress(char* pDest, char* pCompressed, long compressedSize, long size);
 
 extern TEXTURESTRUCT* textinfo;
 extern SPRITESTRUCT* spriteinfo;
@@ -39,8 +36,6 @@ extern short* frames;
 extern short* commands;
 extern short* floor_data;
 extern short* mesh_base;
-extern char* FileData;
-extern char* MapData;
 extern long number_cameras;
 extern long nAnimUVRanges;
 extern short nAIObjects;

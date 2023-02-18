@@ -85,9 +85,7 @@ void MafiaControl(short item_number)
 		item->fired_weapon--;
 	}
 
-#ifdef GENERAL_FIXES
 	CreatureAIInfo(item, &info);
-#endif
 
 	if (item->hit_points > 0)
 	{
@@ -95,10 +93,6 @@ void MafiaControl(short item_number)
 			GetAITarget(mafia);
 		else
 			mafia->enemy = lara_item;
-
-#ifndef GENERAL_FIXES
-		CreatureAIInfo(item, &info);
-#endif
 
 		if (mafia->enemy == lara_item)
 		{

@@ -20,7 +20,6 @@
 #include "door.h"
 #include "tomb4fx.h"
 #include "../specific/d3dmatrix.h"
-#include "../specific/profiler.h"
 #include "rope.h"
 #include "rat.h"
 #include "bat.h"
@@ -35,10 +34,8 @@
 #include "effect2.h"
 #include "lara.h"
 #include "effects.h"
-#ifdef GENERAL_FIXES
 #include "footprnt.h"
 #include "../tomb5/tomb5.h"
-#endif
 
 STATIC_INFO static_objects[70];
 
@@ -407,13 +404,11 @@ void SkyDrawPhase()
 			return;
 		}
 
-#ifdef GENERAL_FIXES
 		if (gfCurrentLevel == LVL5_GALLOWS_TREE || gfCurrentLevel == LVL5_LABYRINTH || gfCurrentLevel == LVL5_OLD_MILL)
 			DrawMoon();
-#endif
 
 		if (BinocularRange)
-			AlterFOV(14560 - (short)BinocularRange);
+			AlterFOV(short(GAME_FOV - BinocularRange));
 
 		phd_PushMatrix();
 		phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
@@ -474,18 +469,16 @@ void SkyDrawPhase()
 			OutputSky();
 		}
 
-#ifdef GENERAL_FIXES
 		if (gfCurrentLevel == LVL5_GALLOWS_TREE || gfCurrentLevel == LVL5_LABYRINTH || gfCurrentLevel == LVL5_OLD_MILL)
 		{
-			DrawStarField();
+			DrawStars();
 			OutputSky();
 		}
-#endif
 
 		phd_PopMatrix();
 
 		if (BinocularRange)
-			AlterFOV(7 * (2080 - (short)BinocularRange));
+			AlterFOV(short(GAME_FOV -  (7 * BinocularRange)));
 	}
 }
 
@@ -559,14 +552,11 @@ void DrawAnimatingItem(ITEM_INFO* item)
 	short* rot2;
 	long frac, rate, clip, bit;
 
-	mAddProfilerEvent(0xFF0000);
 	frac = GetFrames(item, frm, &rate);
 	obj = &objects[item->object_number];
 
-#ifdef GENERAL_FIXES
 	if (obj->shadow_size)
 		S_PrintShadow(obj->shadow_size, frm[0], item);
-#endif
 
 	phd_PushMatrix();
 	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
@@ -700,7 +690,6 @@ void DrawAnimatingItem(ITEM_INFO* item)
 	phd_top = 0;
 	phd_bottom = phd_winheight;
 	phd_PopMatrix();
-	mAddProfilerEvent(0xFF);
 }
 
 void PrintObjects(short room_number)
@@ -806,11 +795,9 @@ void DrawRooms(short current_room)
 	}
 
 	GetRoomBounds();
-	InitialiseFogBulbs();
-	CreateFXBulbs();
 	ProcessClosedDoors();
 
-	if (gfCurrentLevel)
+	if (gfCurrentLevel != LVL5_TITLE)
 		SkyDrawPhase();
 
 	if (objects[LARA].loaded)
@@ -833,35 +820,35 @@ void DrawRooms(short current_room)
 
 				if (lara.right_arm.flash_gun)
 				{
-					aMXPtr[M00] = lara_matricesF[132 + M00];
-					aMXPtr[M01] = lara_matricesF[132 + M01];
-					aMXPtr[M02] = lara_matricesF[132 + M02];
-					aMXPtr[M03] = lara_matricesF[132 + M03];
-					aMXPtr[M10] = lara_matricesF[132 + M10];
-					aMXPtr[M11] = lara_matricesF[132 + M11];
-					aMXPtr[M12] = lara_matricesF[132 + M12];
-					aMXPtr[M13] = lara_matricesF[132 + M13];
-					aMXPtr[M20] = lara_matricesF[132 + M20];
-					aMXPtr[M21] = lara_matricesF[132 + M21];
-					aMXPtr[M22] = lara_matricesF[132 + M22];
-					aMXPtr[M23] = lara_matricesF[132 + M23];
+					aMXPtr[M00] = lara_matrices[11 * indices_count + M00];
+					aMXPtr[M01] = lara_matrices[11 * indices_count + M01];
+					aMXPtr[M02] = lara_matrices[11 * indices_count + M02];
+					aMXPtr[M03] = lara_matrices[11 * indices_count + M03];
+					aMXPtr[M10] = lara_matrices[11 * indices_count + M10];
+					aMXPtr[M11] = lara_matrices[11 * indices_count + M11];
+					aMXPtr[M12] = lara_matrices[11 * indices_count + M12];
+					aMXPtr[M13] = lara_matrices[11 * indices_count + M13];
+					aMXPtr[M20] = lara_matrices[11 * indices_count + M20];
+					aMXPtr[M21] = lara_matrices[11 * indices_count + M21];
+					aMXPtr[M22] = lara_matrices[11 * indices_count + M22];
+					aMXPtr[M23] = lara_matrices[11 * indices_count + M23];
 					SetGunFlash(lara.gun_type);
 				}
 
 				if (lara.left_arm.flash_gun)
 				{
-					aMXPtr[M00] = lara_matricesF[168 + M00];
-					aMXPtr[M01] = lara_matricesF[168 + M01];
-					aMXPtr[M02] = lara_matricesF[168 + M02];
-					aMXPtr[M03] = lara_matricesF[168 + M03];
-					aMXPtr[M10] = lara_matricesF[168 + M10];
-					aMXPtr[M11] = lara_matricesF[168 + M11];
-					aMXPtr[M12] = lara_matricesF[168 + M12];
-					aMXPtr[M13] = lara_matricesF[168 + M13];
-					aMXPtr[M20] = lara_matricesF[168 + M20];
-					aMXPtr[M21] = lara_matricesF[168 + M21];
-					aMXPtr[M22] = lara_matricesF[168 + M22];
-					aMXPtr[M23] = lara_matricesF[168 + M23];
+					aMXPtr[M00] = lara_matrices[14 * indices_count + M00];
+					aMXPtr[M01] = lara_matrices[14 * indices_count + M01];
+					aMXPtr[M02] = lara_matrices[14 * indices_count + M02];
+					aMXPtr[M03] = lara_matrices[14 * indices_count + M03];
+					aMXPtr[M10] = lara_matrices[14 * indices_count + M10];
+					aMXPtr[M11] = lara_matrices[14 * indices_count + M11];
+					aMXPtr[M12] = lara_matrices[14 * indices_count + M12];
+					aMXPtr[M13] = lara_matrices[14 * indices_count + M13];
+					aMXPtr[M20] = lara_matrices[14 * indices_count + M20];
+					aMXPtr[M21] = lara_matrices[14 * indices_count + M21];
+					aMXPtr[M22] = lara_matrices[14 * indices_count + M22];
+					aMXPtr[M23] = lara_matrices[14 * indices_count + M23];
 					SetGunFlash(lara.gun_type);
 				}
 
@@ -874,7 +861,6 @@ void DrawRooms(short current_room)
 		}
 	}
 
-	InitDynamicLighting_noparams();
 	nPolyType = 0;
 
 	for (int i = 0; i < 32; i++)
@@ -894,16 +880,11 @@ void DrawRooms(short current_room)
 	SaveD3DCameraMatrix();
 	phd_PopMatrix();
 	aResetFogBulbList();
-	RoomTestThing();
 	aBuildFogBulbList();
 	aBuildFXFogBulbList();
 
-#ifdef GENERAL_FIXES
 	if (!tomb5.fog)
 		aResetFogBulbList();
-#endif
-
-	mAddProfilerEvent(0xFF00FF00);
 
 	for (int i = 0; i < number_draw_rooms; i++)
 	{
@@ -920,7 +901,6 @@ void DrawRooms(short current_room)
 		phd_PopMatrix();
 	}
 
-	mAddProfilerEvent(0xFFFF0000);
 	DrawGunshells();
 	nPolyType = 3;
 
@@ -941,7 +921,6 @@ void DrawRooms(short current_room)
 	lara_item->pos.z_pos = camera.pos.z;
 	lara_item->room_number = camera.pos.room_number;
 	DoWeather();
-	mAddProfilerEvent(0xFFFFFFFF);
 	DoUwEffect();
 	S_DrawFires();
 	S_DrawSmokeSparks();
@@ -953,17 +932,11 @@ void DrawRooms(short current_room)
 	DrawShockwaves();
 	DrawLightning();
 	DrawTwogunLasers();
-#ifdef GENERAL_FIXES
 	S_DrawFootPrints();
-#endif
 	lara_item->pos.x_pos = lx;
 	lara_item->pos.y_pos = ly;
 	lara_item->pos.z_pos = lz;
 	lara_item->room_number = lr;
-	mAddProfilerEvent(0xFF00FF00);
-
-	if (gfLevelFlags & GF_LENSFLARE)
-		SetUpLensFlare(gfLensFlare.x, gfLensFlare.y - 4096, gfLensFlare.z, 0);
 
 	if (LaserSightActive)
 		DrawLaserSightSprite();
@@ -1123,71 +1096,17 @@ void RenderIt(short current_room)
 	}
 
 	GetRoomBounds();
-#ifndef GENERAL_FIXES
-	InitialiseFogBulbs();
-	CreateFXBulbs();
-#endif
-
-#ifdef GENERAL_FIXES
 	ProcessClosedDoors();
 	SkyDrawPhase();
-#else
-	if (outside)
-	{
-		if (!objects[HORIZON].loaded)
-			outside = -1;
-		else
-		{
-			if (BinocularRange)
-				AlterFOV(14560 - (short)BinocularRange);
-
-			phd_PushMatrix();
-			phd_TranslateAbs(camera.pos.x, camera.pos.y, camera.pos.z);
-			nPolyType = 6;
-			phd_PushMatrix();
-
-			if (gfLevelFlags & GF_LAYER1)
-			{
-				phd_RotY(32760);
-
-				if (gfLevelFlags & GF_LIGHTNING)
-					DrawFlatSky(RGBA(LightningRGB[0], LightningRGB[1], LightningRGB[2], 44), SkyPos, -1536, 4);
-				else
-					DrawFlatSky(*(ulong*)&gfLayer1Col, SkyPos, -1536, 4);
-			}
-
-			if (gfLevelFlags & GF_LAYER2)
-				DrawFlatSky(0xFF000000 | *(ulong*)&gfLayer2Col, SkyPos2, -1536, 2);
-
-			if (gfLevelFlags & GF_LAYER1 || gfLevelFlags & GF_LAYER2)
-				OutputSky();
-
-			phd_PopMatrix();
-
-			if (gfLevelFlags & GF_HORIZON)
-			{
-				phd_PutPolygonSkyMesh(meshes[objects[HORIZON].mesh_index], -1);
-				OutputSky();
-			}
-
-			phd_PopMatrix();
-		}
-	}
-#endif
-
-	InitDynamicLighting_noparams();
 	nPolyType = 0;
 
-#ifdef GENERAL_FIXES
 	phd_PushMatrix();
 	phd_TranslateAbs(0, 0, 0);
 	SaveD3DCameraMatrix();
 	phd_PopMatrix();
 	aResetFogBulbList();
-#endif
 
 	for (int i = 0; i < number_draw_rooms; i++)
-#ifdef GENERAL_FIXES
 	{
 		r = &room[draw_rooms[i]];
 		phd_PushMatrix();
@@ -1201,15 +1120,10 @@ void RenderIt(short current_room)
 		InsertRoom(r);
 		phd_PopMatrix();
 	}
-#else
-		PrintRooms(draw_rooms[i]);
-#endif
 
-#ifdef GENERAL_FIXES
 	DoWeather();
 	S_DrawFires();
 	DrawLightning();
-#endif
 
 	for (int i = 0; i < number_draw_rooms; i++)
 		PrintObjects(draw_rooms[i]);
@@ -1310,7 +1224,6 @@ void PrintRooms(short room_number)
 	phd_right = r->right;
 	phd_top = r->top;
 	phd_bottom = r->bottom;
-	SetD3DViewMatrix();
 	aSetViewMatrix();
 	S_InsertRoom(r, 1);
 }
@@ -1375,7 +1288,6 @@ void InterpolateMatrix()
 
 	if (IM_rate == 2 || (IM_frac == 2 && IM_rate == 4))
 	{
-#ifdef GENERAL_FIXES
 		phd_mxptr[M00] += (IMptr[M00] - phd_mxptr[M00]) >> 1;
 		phd_mxptr[M01] += (IMptr[M01] - phd_mxptr[M01]) >> 1;
 		phd_mxptr[M02] += (IMptr[M02] - phd_mxptr[M02]) >> 1;
@@ -1388,20 +1300,6 @@ void InterpolateMatrix()
 		phd_mxptr[M21] += (IMptr[M21] - phd_mxptr[M21]) >> 1;
 		phd_mxptr[M22] += (IMptr[M22] - phd_mxptr[M22]) >> 1;
 		phd_mxptr[M23] += (IMptr[M23] - phd_mxptr[M23]) >> 1;
-#else
-		phd_mxptr[M00] = (phd_mxptr[M00] + IMptr[M00]) >> 1;
-		phd_mxptr[M01] = (phd_mxptr[M01] + IMptr[M01]) >> 1;
-		phd_mxptr[M02] = (phd_mxptr[M02] + IMptr[M02]) >> 1;
-		phd_mxptr[M03] = (phd_mxptr[M03] + IMptr[M03]) >> 1;
-		phd_mxptr[M10] = (phd_mxptr[M10] + IMptr[M10]) >> 1;
-		phd_mxptr[M11] = (phd_mxptr[M11] + IMptr[M11]) >> 1;
-		phd_mxptr[M12] = (phd_mxptr[M12] + IMptr[M12]) >> 1;
-		phd_mxptr[M13] = (phd_mxptr[M13] + IMptr[M13]) >> 1;
-		phd_mxptr[M20] = (phd_mxptr[M20] + IMptr[M20]) >> 1;
-		phd_mxptr[M21] = (phd_mxptr[M21] + IMptr[M21]) >> 1;
-		phd_mxptr[M22] = (phd_mxptr[M22] + IMptr[M22]) >> 1;
-		phd_mxptr[M23] = (phd_mxptr[M23] + IMptr[M23]) >> 1;
-#endif
 	}
 	else if (IM_frac == 1)
 	{
@@ -1517,15 +1415,11 @@ void DrawEffect(short fx_num)
 		{
 			phd_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
 
-			if (gfCurrentLevel == 3 && fx->object_number == BODY_PART)
-				SetGlobalAmbient(0xFF282020);
-
 			if (obj->nmeshes)
 				meshp = meshes[obj->mesh_index];
 			else
 				meshp = meshes[fx->frame_number];
 
-			S_CalculateLight(fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos, fx->room_number, &duff_item[0].il);
 			phd_PutPolygons(meshp, -1);
 		}
 
@@ -1993,6 +1887,9 @@ void GetRoomBounds()
 			for (drn = *door++; drn > 0; drn--)
 			{
 				rn = *door++;
+
+				if (room[rn].flags & ROOM_OUTSIDE)
+					snow_outside = 1;
 
 				if (door[0] * long(r->x + door[3] - w2v_matrix[M03]) +
 					door[1] * long(r->y + door[4] - w2v_matrix[M13]) +

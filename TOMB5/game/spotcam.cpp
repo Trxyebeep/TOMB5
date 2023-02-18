@@ -9,17 +9,15 @@
 #include "gameflow.h"
 #include "../specific/input.h"
 #include "lara.h"
-#ifdef GENERAL_FIXES
 #include "../specific/dxshell.h"
 #include "../tomb5/tomb5.h"
-#endif
 
 SPOTCAM SpotCam[256];
 long bTrackCamInit = 0;
 long bUseSpotCam = 0;
 long bDisableLaraControl = 0;
+long number_spotcams;
 short SlowMotion = 0;
-short number_spotcams;
 short LastSequence;
 short CurrentFov;
 char SCNoDrawLara;
@@ -120,7 +118,7 @@ void InitialiseSpotCam(short Sequence)
 
 	BinocularRange = 0;
 	LaserSight = 0;
-	AlterFOV(14560);
+	AlterFOV(GAME_FOV);
 	lara_item->mesh_bits = -1;
 	lara.Busy = 0;
 	CameraFade = -1;
@@ -353,7 +351,7 @@ void CalculateSpotCams()
 	{
 		CameraFade = current_spline_camera;
 
-		if (gfCurrentLevel)
+		if (gfCurrentLevel != LVL5_TITLE)
 		{
 			ScreenFadedOut = 0;
 			ScreenFade = 255;
@@ -366,7 +364,7 @@ void CalculateSpotCams()
 	{
 		CameraFade = current_spline_camera;
 
-		if (gfCurrentLevel)
+		if (gfCurrentLevel != LVL5_TITLE)
 		{
 			ScreenFadedOut = 0;
 			ScreenFade = 0;
@@ -429,10 +427,8 @@ void CalculateSpotCams()
 	else if (!spotcam_timer)
 		current_spline_position += cspeed;
 
-#ifdef GENERAL_FIXES
-	if (tomb5.cutseq_skipper && keymap[DIK_ESCAPE] && gfCurrentLevel)
+	if (tomb5.cutseq_skipper && keymap[DIK_ESCAPE] && gfCurrentLevel != LVL5_TITLE)
 		current_spline_position = 0x10000;
-#endif
 
 	if (!(input & IN_LOOK))
 		bFirstLook = 0;
@@ -494,19 +490,14 @@ void CalculateSpotCams()
 			}
 		}
 
-#ifdef GENERAL_FIXES
 		phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, (short)croll);
-#else
-		aLookAt(camera.fpos.x, camera.fpos.y, camera.fpos.z, (float)camera.target.x, (float)camera.target.y, (float)camera.target.z, 0);
-		phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-#endif
 
 		if (bCheckTrigger)
 		{
 			ctype = camera.type;
 			camera.type = HEAVY_CAMERA;
 
-			if (gfCurrentLevel)
+			if (gfCurrentLevel != LVL5_TITLE)
 				TestTriggersAtXYZ(camera.pos.x, camera.pos.y, camera.pos.z, camera.pos.room_number, 1, 0);
 			else
 			{
@@ -671,7 +662,7 @@ void CalculateSpotCams()
 							ctype = camera.type;
 							camera.type = HEAVY_CAMERA;
 
-							if (gfCurrentLevel)
+							if (gfCurrentLevel != LVL5_TITLE)
 								TestTriggersAtXYZ(camera.pos.x, camera.pos.y, camera.pos.z, camera.pos.room_number, 1, 0);
 							else
 							{

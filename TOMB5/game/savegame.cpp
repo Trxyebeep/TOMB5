@@ -18,18 +18,14 @@
 #include "rat.h"
 #include "bat.h"
 #include "spider.h"
-#ifdef GENERAL_FIXES
 #include "lara2gun.h"
-#endif
 
 SAVEGAME_INFO savegame;
 static char* SGpoint = 0;
 static long SGcount = 0;
 
-#ifdef GENERAL_FIXES
 tomb5_save_info tomb5_save;
 ulong tomb5_save_size;
-#endif
 
 void WriteSG(void* pointer, long size)
 {
@@ -59,21 +55,21 @@ void ReadSG(void* pointer, long size)
 	}
 }
 
-long CheckSumValid(char* buffer)	//unused
+static void save_tomb5_data()
 {
-	char* ptr;
-	long checksum;
+	tomb5_save.LHolster = LHolster;
+	tomb5_save.dash_timer = DashTimer;
+}
 
-	ptr = buffer;
-	checksum = 0;
+static void load_tomb5_data()
+{
+	if (tomb5_save_size <= offsetof(tomb5_save_info, LHolster))
+		LHolster = lara.holster;
+	else
+		LHolster = tomb5_save.LHolster;
 
-	for (int i = 0; i < 3828; i++)
-	{
-		checksum += *ptr;
-		ptr++;
-	}
-
-	return !checksum;
+	if (tomb5_save_size > offsetof(tomb5_save_info, dash_timer))
+		DashTimer = tomb5_save.dash_timer;
 }
 
 void SaveLaraData()
@@ -107,11 +103,7 @@ void SaveLaraData()
 
 	savegame.CutSceneTriggered1 = _CutSceneTriggered1;
 	savegame.CutSceneTriggered2 = _CutSceneTriggered2;
-
-#ifdef GENERAL_FIXES
-	tomb5_save.LHolster = LHolster;
-	tomb5_save.dash_timer = DashTimer;
-#endif
+	save_tomb5_data();
 }
 
 void RestoreLaraData(long FullSave)
@@ -131,17 +123,6 @@ void RestoreLaraData(long FullSave)
 	}
 
 	memcpy(&lara, &savegame.Lara, sizeof(lara));
-
-#ifdef GENERAL_FIXES
-	if (tomb5_save_size <= offsetof(tomb5_save_info, LHolster))
-		LHolster = lara.holster;
-	else
-		LHolster = tomb5_save.LHolster;
-
-	if (tomb5_save_size > offsetof(tomb5_save_info, dash_timer))
-		DashTimer = tomb5_save.dash_timer;
-#endif
-
 	lara.target = 0;
 	lara.spaz_effect = 0;
 	lara.left_arm.frame_base = (short*)((long)lara.left_arm.frame_base + (long)objects[PISTOLS_ANIM].frame_base);
@@ -183,6 +164,7 @@ void RestoreLaraData(long FullSave)
 
 	_CutSceneTriggered1 = savegame.CutSceneTriggered1;
 	_CutSceneTriggered2 = savegame.CutSceneTriggered2;
+	load_tomb5_data();
 }
 
 void SaveLevelData(long FullSave)
@@ -205,11 +187,7 @@ void SaveLevelData(long FullSave)
 	WriteSG(&GLOBAL_lastinvitem, sizeof(long));
 	word = 0;
 
-#ifdef GENERAL_FIXES	//fix Red Alert flip bugs, word was being overwritten on high numbers
 	for (int i = 0; i < 16; i++)
-#else
-	for (int i = 0; i < 255; i++)
-#endif
 	{
 		if (flip_stats[i])
 			word |= (1 << i);
@@ -660,11 +638,7 @@ void RestoreLevelData(long FullSave)
 	ReadSG(&GLOBAL_lastinvitem, sizeof(long));
 	ReadSG(&sword, sizeof(short));	//FlipMap sets flip_stats
 
-#ifdef GENERAL_FIXES	//stop FlipMapping random rooms in Red Alert..
 	for (int i = 0; i < 16; i++)
-#else
-	for (int i = 0; i < 255; i++)
-#endif
 	{
 		if (sword & (1 << i))
 			FlipMap(i);
@@ -673,10 +647,8 @@ void RestoreLevelData(long FullSave)
 		flipmap[i] = uword << 8;
 	}
 
-#ifdef GENERAL_FIXES	//align without corrupting flipmap array
-	for (int i = 0; i < 255 - 16; i++)
+	for (int i = 0; i < 255 - 16; i++)	//align without corrupting flipmap array
 		ReadSG(&uword, sizeof(ushort));
-#endif
 
 	ReadSG(&flipeffect, sizeof(long));
 	ReadSG(&fliptimer, sizeof(long));

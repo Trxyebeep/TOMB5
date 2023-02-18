@@ -175,11 +175,8 @@ long LaraTestClimbStance(ITEM_INFO* item, COLL_INFO* coll);
 long TestHangSwingIn(ITEM_INFO* item, short angle);
 long LaraTestHangOnClimbWall(ITEM_INFO* item, COLL_INFO* coll);
 long LaraTestEdgeCatch(ITEM_INFO* item, COLL_INFO* coll, long* edge);
-
-#ifdef GENERAL_FIXES
 void lara_as_duckroll(ITEM_INFO* item, COLL_INFO* coll);
 void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll);
-#endif
 
 extern void (*lara_control_routines[])(ITEM_INFO* item, COLL_INFO* coll);
 extern void (*lara_collision_routines[])(ITEM_INFO* item, COLL_INFO* coll);

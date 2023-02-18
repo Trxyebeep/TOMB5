@@ -1,6 +1,9 @@
 #pragma once
 #include "../global/types.h"
 
+long TestBoundsCollideCamera(short* bounds, PHD_3DPOS* pos, long radius);
+void CheckForRichesIllegalDiagonalWalls();
+void ItemPushCamera(short* bounds, PHD_3DPOS* pos);
 void ControlGunship(short item_number);
 void ControlIris(short item_number);
 void ControlFishtank(short item_number);

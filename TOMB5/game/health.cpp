@@ -4,7 +4,6 @@
 #include "newinv2.h"
 #include "objects.h"
 #include "../specific/output.h"
-#include "../specific/LoadSave.h"
 #include "text.h"
 #include "deltapak.h"
 #include "camera.h"
@@ -13,11 +12,10 @@
 #include "../specific/3dmath.h"
 #include "lara.h"
 #include "savegame.h"
-#ifdef GENERAL_FIXES
 #include "larafire.h"
 #include "../specific/input.h"
 #include "../tomb5/tomb5.h"
-#endif
+#include "../specific/drawbars.h"
 
 DISPLAYPU pickups[8];
 short PickupX;
@@ -25,7 +23,6 @@ short CurrentPickup;
 
 long health_bar_timer = 0;
 
-static short PickupY;
 static short PickupVel;
 
 long FlashIt()
@@ -46,11 +43,9 @@ long FlashIt()
 
 void DrawGameInfo(long timed)
 {
-	long flash_state, seconds;
+	long flash_state, seconds, btm;
 	char buf[80];
-#ifdef GENERAL_FIXES
-	short ammo, btm;
-#endif
+	short ammo;
 
 	if (!GLOBAL_playing_cutseq && !bDisableLaraControl && gfGameMode != 1)
 	{
@@ -62,13 +57,11 @@ void DrawGameInfo(long timed)
 		if (DashTimer < 120)
 			S_DrawDashBar(100 * DashTimer / 120);
 
-#ifdef GENERAL_FIXES
 		if (lara.target)
 		{
 			if (tomb5.enemy_bars && lara.target->hit_points > 0)
 				S_DrawEnemyBar(100 * lara.target->hit_points / objects[lara.target->object_number].hit_points);
 		}
-#endif
 
 		if (gfLevelFlags & GF_TIMER && savegame.Level.Timer && savegame.Level.Timer < 108000)
 		{
@@ -83,7 +76,6 @@ void DrawGameInfo(long timed)
 			PrintString(92, 24, 0, buf, 0);
 		}
 
-#ifdef GENERAL_FIXES
 		if (tomb5.ammo_counter)
 		{
 			if (lara.gun_status == LG_READY)
@@ -98,22 +90,19 @@ void DrawGameInfo(long timed)
 
 					sprintf(&buf[0], "%i", ammo);
 					GetStringLength(buf, 0, &btm);
-					PrintString(LaserSight ? ushort(phd_centerx + 30) : ushort(phd_winxmax - GetStringLength(buf, 0, 0) - 80), phd_winymax - btm - 70, 0, &buf[0], 0);
+					PrintString(LaserSight ? phd_centerx + 30 : phd_winxmax - GetStringLength(buf, 0, 0) - 80, phd_winymax - btm - 70, 0, &buf[0], 0);
 				}
 			}
 		}
-#endif
 
-#ifdef GENERAL_FIXES	//Ammotype change tings
 		if (ammo_change_timer)
 		{
 			ammo_change_timer--;
-			PrintString(ushort(phd_winwidth >> 1), (ushort)font_height, 5, ammo_change_buf, 0x8000);
+			PrintString(phd_winwidth >> 1, font_height, 5, ammo_change_buf, FF_CENTER);
 
 			if (ammo_change_timer <= 0)
 				ammo_change_timer = 0;
 		}
-#endif
 	}
 }
 
@@ -140,28 +129,13 @@ void DrawHealthBar(long flash_state)
 
 	if (hitpoints <= 250)
 	{
-		if (BinocularRange)
-		{
-			if (flash_state)
-				S_DrawHealthBar2(hitpoints / 10);
-			else
-				S_DrawHealthBar2(0);
-		}
+		if (flash_state)
+			S_DrawHealthBar(hitpoints / 10);
 		else
-		{
-			if (flash_state)
-				S_DrawHealthBar(hitpoints / 10);
-			else
-				S_DrawHealthBar(0);
-		}
+			S_DrawHealthBar(0);
 	}
 	else if (health_bar_timer > 0 || lara.gun_status == LG_READY && lara.gun_type != WEAPON_TORCH || lara.poisoned >= 256)
-	{
-		if (BinocularRange || SniperOverlay)
-			S_DrawHealthBar2(hitpoints / 10);
-		else
 			S_DrawHealthBar(hitpoints / 10);
-	}
 
 	if (PoisonFlag)
 		PoisonFlag--;
@@ -222,7 +196,6 @@ void InitialisePickUpDisplay()
 	for (int i = 7; i > -1; i--)
 		pickups[i].life = -1;
 
-	PickupY = 128;
 	PickupX = 128;
 	PickupVel = 0;
 	CurrentPickup = 0;

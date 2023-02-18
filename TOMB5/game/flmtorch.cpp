@@ -136,11 +136,7 @@ void DoFlameTorch()
 		{
 			lara.left_arm.frame_number++;
 
-#ifdef GENERAL_FIXES	//fixes the jumpy hand when throwing the torch
 			if (lara.left_arm.frame_number == 13)
-#else
-			if (lara.left_arm.frame_number == 27)
-#endif
 			{
 				lara.LitTorch = 0;
 				lara.flare_control_left = 0;

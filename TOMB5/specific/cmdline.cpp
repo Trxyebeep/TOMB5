@@ -15,7 +15,6 @@ static bool VolumetricFx;
 static bool BumpMap;
 static bool TextLow;
 
-#ifdef GENERAL_FIXES
 char ASCIIToANSITable[7][2] =
 {
 	{'‚', 'é'},
@@ -26,7 +25,6 @@ char ASCIIToANSITable[7][2] =
 	{' ', 'á'},
 	{'¢', 'ó'}
 };
-#endif
 
 void CLSetup(char* cmd)
 {
@@ -72,15 +70,9 @@ void InitTFormats(HWND dlg, HWND hwnd)
 	DXTEXTUREINFO* tex;
 	long bpp, r, g, b, a;
 	char buffer[40];
-	bool software;
 
 	SendMessage(hwnd, CB_RESETCONTENT, 0, 0);
 	EnableWindow(GetDlgItem(dlg, 1006), 1);
-#if 0
-	software = 0;
-#else
-	software = SendMessage(GetDlgItem(dlg, 1011), BM_GETCHECK, 0, 0);
-#endif
 	device = &App.DXInfo.DDInfo[nDDDevice].D3DDevices[nD3DDevice];
 
 	for (int i = 0; i < device->nTextureInfos; i++)
@@ -94,20 +86,9 @@ void InitTFormats(HWND dlg, HWND hwnd)
 
 		wsprintf(buffer, "%d %s RGBA %d%d%d%d", bpp, SCRIPT_TEXT(TXT_Bit), r, g, b, a);
 		SendMessage(hwnd, CB_ADDSTRING, 0, (LPARAM)buffer);
-
-		if (software)
-		{
-			if (bpp == 32 && r == 8 && b == 8 && g == 8 && a == 8)
-			{
-				SendMessage(hwnd, CB_SETCURSEL, i, 0);
-				EnableWindow(GetDlgItem(dlg, 1006), 0);
-			}
-		}
-		else if (bpp == 16 && r == 5 && b == 5 && g == 5 && a == 1)
-			SendMessage(hwnd, CB_SETCURSEL, i, 0);
-		else
-			SendMessage(hwnd, CB_SETCURSEL, 0, 0);
 	}
+
+	SendMessage(hwnd, CB_SETCURSEL, 0, 0);
 }
 
 char* MapASCIIToANSI(char* s, char* d)
@@ -124,7 +105,6 @@ char* MapASCIIToANSI(char* s, char* d)
 	{
 		c = *s++;
 
-#ifdef GENERAL_FIXES
 		if (c >= 0x80)
 		{
 			found = 0;
@@ -142,7 +122,6 @@ char* MapASCIIToANSI(char* s, char* d)
 			if (!found)
 				Log(1, "Reqd : %x", c);
 		}
-#endif
 
 		*d++ = c;
 	}
@@ -157,29 +136,11 @@ void InitResolution(HWND dlg, HWND hwnd, bool resetvms)
 	DXDISPLAYMODE* dm;
 	long bpp, w, h, n;
 	char buffer[40];
-	bool software;
 
 	n = 0;
-
-#if 1
 	SendMessage(GetDlgItem(dlg, 1010), BM_SETCHECK, 1, 0);
 	SendMessage(GetDlgItem(dlg, 1011), BM_SETCHECK, 0, 0);
 	EnableWindow(GetDlgItem(dlg, 1011), 0);
-	software = 0;
-#else
-	if (nD3DDevice)
-	{
-		SendMessage(GetDlgItem(dlg, 1010), BM_SETCHECK, 1, 0);
-		SendMessage(GetDlgItem(dlg, 1011), BM_SETCHECK, 0, 0);
-	}
-	else
-	{
-		SendMessage(GetDlgItem(dlg, 1010), BM_SETCHECK, 0, 0);
-		SendMessage(GetDlgItem(dlg, 1011), BM_SETCHECK, 1, 0);
-	}
-
-	software = SendMessage(GetDlgItem(dlg, 1011), BM_GETCHECK, 0, 0);
-#endif
 
 	if (resetvms)
 	{
@@ -199,12 +160,7 @@ void InitResolution(HWND dlg, HWND hwnd, bool resetvms)
 				SendMessage(hwnd, CB_ADDSTRING, 0, (LPARAM)buffer);
 				SendMessage(hwnd, CB_SETITEMDATA, n, i);
 
-				if (software)
-				{
-					if (w == 320 && h == 240 && bpp == 16)
-						SendMessage(hwnd, CB_SETCURSEL, n, 0);
-				}
-				else if (w == 640 && h == 480 && bpp == 16)
+				if (w == 640 && h == 480)
 					SendMessage(hwnd, CB_SETCURSEL, n, 0);
 
 				n++;
@@ -222,34 +178,13 @@ void InitResolution(HWND dlg, HWND hwnd, bool resetvms)
 
 	SendMessage(GetDlgItem(dlg, 1012), BM_SETCHECK, Filter, 0);
 
-	if (software)
-	{
-		EnableWindow(GetDlgItem(dlg, 1029), 0);
-		VolumetricFx = 0;
-	}
-	else
-		EnableWindow(GetDlgItem(dlg, 1029), 1);
-
+	EnableWindow(GetDlgItem(dlg, 1029), 1);
 	SendMessage(GetDlgItem(dlg, 1029), BM_SETCHECK, VolumetricFx, 0);
 
-	if (software)
-	{
-		EnableWindow(GetDlgItem(dlg, 1016), 0);
-		BumpMap = 0;
-	}
-	else
-		EnableWindow(GetDlgItem(dlg, 1016), 1);
-
+	EnableWindow(GetDlgItem(dlg, 1016), 1);
 	SendMessage(GetDlgItem(dlg, 1016), BM_SETCHECK, BumpMap, 0);
 
-	if (software)
-	{
-		EnableWindow(GetDlgItem(dlg, 1014), 0);
-		TextLow = 0;
-	}
-	else
-		EnableWindow(GetDlgItem(dlg, 1014), 1);
-
+	EnableWindow(GetDlgItem(dlg, 1014), 1);
 	SendMessage(GetDlgItem(dlg, 1014), BM_SETCHECK, TextLow, 0);
 
 	if (TextLow)
@@ -404,16 +339,6 @@ BOOL CALLBACK DXSetupDlgProc(HWND dlg, UINT message, WPARAM wParam, LPARAM lPara
 			break;
 
 		case 1011:
-
-#if 0
-			if (((wParam >> 16) & 0xFFFF) == BN_CLICKED)
-			{
-				nD3DDevice = 0;
-				SendMessage(GetDlgItem(dlg, 1003), CB_SETCURSEL, 0, 0);
-				InitResolution(dlg, GetDlgItem(dlg, 1004), 1);
-			}
-#endif
-
 			break;
 
 		case 1012:

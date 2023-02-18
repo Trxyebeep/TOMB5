@@ -649,7 +649,6 @@ void ControlRaisingPlinth(short item_number)
 
 void DrawPortalDoor(ITEM_INFO* item)
 {
-#ifdef GENERAL_FIXES
 	PORTAL_STRUCT* portal;
 	FVECTOR* p;
 	CVECTOR* rgb;
@@ -820,5 +819,4 @@ void DrawPortalDoor(ITEM_INFO* item)
 
 		AddQuadSorted(vtx, 0, 1, 2, 3, &tex, 1);
 	}
-#endif
 }

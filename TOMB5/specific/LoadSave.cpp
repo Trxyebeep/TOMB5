@@ -23,11 +23,8 @@
 #include "../game/newinv2.h"
 #include "../game/control.h"
 #include "3dmath.h"
-#include "../game/lara.h"
-#ifdef GENERAL_FIXES
-#include "../tomb5/tomb5.h"
 #include "../tomb5/troyestuff.h"
-#endif
+#include "../tomb5/tomb5.h"
 
 long sfx_frequencies[3] = { 11025, 22050, 44100 };
 long SoundQuality = 1;
@@ -38,17 +35,11 @@ long ControlMethod;
 MONOSCREEN_STRUCT MonoScreen[5];
 char MonoScreenOn;
 
-long loadbar_on;
-static float loadbar_steps;
-static float loadbar_pos;
-static long loadbar_maxpos;
 static long SpecialFeaturesNum = -1;
 static long NumSpecialFeatures;
 
 static LPDIRECTDRAWSURFACE4 screen_surface;
 static SAVEFILE_INFO SaveGames[15];
-static long MonoScreenX[4] = { 0, 256, 512, 640 };
-static long MonoScreenY[3] = { 0, 256, 480 };
 static char SpecialFeaturesPage[5];
 
 static const char* screen_paths[5] =
@@ -59,355 +50,6 @@ static const char* screen_paths[5] =
 	"SCREENS\\GALLERY.STR",
 	"SCREENS\\SCREENS.STR"
 };
-
-#ifdef GENERAL_FIXES
-static GouraudBarColourSet healthBarColourSet =
-{
-	{ 64, 96, 128, 96, 64 },
-	{ 0, 0, 0, 0, 0 },
-	{ 0, 0, 0, 0, 0 },
-	{ 0, 0, 0, 0, 0 },
-	{ 128, 192, 255, 192, 128 },
-	{ 0, 0, 0, 0, 0 }
-};
-
-static GouraudBarColourSet poisonBarColourSet =
-{
-	{ 64, 96, 128, 96, 64 },
-	{ 0, 0, 0, 0, 0 },
-	{ 0, 0, 0, 0, 0 },
-	{ 64, 96, 128, 96, 64 },
-	{ 0, 0, 0, 0, 0 },
-	{ 128, 192, 255, 192, 128 }
-};
-
-static GouraudBarColourSet airBarColourSet =
-{
-	{ 0, 0, 0, 0, 0 },
-	{ 113, 146, 113, 93, 74 },
-	{ 123, 154, 123, 107, 91 },
-	{ 0, 0, 0, 0, 0 },
-	{ 113, 146, 113, 93, 74 },
-	{ 0, 0, 0, 0, 0 }
-};
-
-static GouraudBarColourSet dashBarColourSet =
-{
-	{ 144, 192, 240, 192, 144 },
-	{ 0, 0, 0, 0, 0 },
-	{ 0, 0, 0, 0, 0 },
-	{ 144, 192, 240, 192, 144 },
-	{ 144, 192, 240, 192, 144 },
-	{ 0, 0, 0, 0, 0 }
-};
-
-static GouraudBarColourSet loadBarColourSet =
-{
-	{ 48, 96, 127, 80, 32 },
-	{ 0, 0, 0, 0, 0 },
-	{ 48, 96, 127, 80, 32 },
-	{ 0, 0, 0, 0, 0 },
-	{ 48, 96, 127, 80, 32 },
-	{ 48, 96, 127, 80, 32 }
-};
-
-static GouraudBarColourSet enemyBarColourSet =
-{
-	{ 128, 192, 255, 192, 128 },
-	{ 64, 96, 128, 96, 64 },
-	{ 0, 0, 0, 0, 0 },
-	{ 0, 0, 0, 0, 0 },
-	{ 123, 154, 123, 107, 91 },
-	{ 0, 0, 0, 0, 0 }
-};
-
-static void S_DrawGouraudBar(long x, long y, long width, long height, long value, GouraudBarColourSet* colour)
-{
-	D3DTLVERTEX v[4];
-	TEXTURESTRUCT tex;
-	float fx, fx2, fy, fy2, fvalue;
-	long r, g, b;
-
-	clipflags[0] = 0;
-	clipflags[1] = 0;
-	clipflags[2] = 0;
-	clipflags[3] = 0;
-	nPolyType = 4;
-	tex.drawtype = 0;
-	tex.tpage = 0;
-	fx = phd_winxmax * 0.0015625F;
-	fy = phd_winymax * 0.0020833334F;
-	fvalue = 0.0099999998F * value;
-	fx2 = width * fvalue;
-	fy2 = height * 0.1666666716F;
-	v[0].specular = 0xFF000000;
-	v[1].specular = 0xFF000000;
-	v[2].specular = 0xFF000000;
-	v[3].specular = 0xFF000000;
-	v[0].sx = x * fx;
-	v[1].sx = x * fx + fx2 * fx;
-	v[2].sx = x * fx;
-	v[3].sx = x * fx + fx2 * fx;
-	v[0].sy = y * fy - fy2 * fy;
-	v[1].sy = y * fy - fy2 * fy;
-	v[2].sy = y * fy;
-	v[3].sy = y * fy;
-	v[0].sz = f_mznear;
-	v[1].sz = f_mznear;
-	v[2].sz = f_mznear;
-	v[3].sz = f_mznear;
-	v[0].rhw = f_mpersp / f_mznear * f_moneopersp;
-	v[1].rhw = f_mpersp / f_mznear * f_moneopersp;
-	v[2].rhw = f_mpersp / f_mznear * f_moneopersp;
-	v[3].rhw = f_mpersp / f_mznear * f_moneopersp;
-
-	v[0].sy += fy2 * fy;
-	v[1].sy += fy2 * fy;
-	v[2].sy += fy2 * fy;
-	v[3].sy += fy2 * fy;
-
-	v[0].color = 0xFF000000;
-	v[1].color = 0xFF000000;
-
-	r = colour->abLeftRed[0];
-	g = colour->abLeftGreen[0];
-	b = colour->abLeftBlue[0];
-	r -= r >> 2;
-	g -= g >> 2;
-	b -= b >> 2;
-	v[2].color = RGBONLY(r, g, b);
-
-	r = (long)((1 - fvalue) * colour->abLeftRed[0] + fvalue * colour->abRightRed[0]);
-	g = (long)((1 - fvalue) * colour->abLeftGreen[0] + fvalue * colour->abRightGreen[0]);
-	b = (long)((1 - fvalue) * colour->abLeftBlue[0] + fvalue * colour->abRightBlue[0]);
-	r -= r >> 2;
-	g -= g >> 2;
-	b -= b >> 2;
-	v[3].color = RGBONLY(r, g, b);
-
-	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
-
-	for (int i = 0; i < 4; i++)
-	{
-		v[0].sy += fy2 * fy;
-		v[1].sy += fy2 * fy;
-		v[2].sy += fy2 * fy;
-		v[3].sy += fy2 * fy;
-		v[0].color = RGBONLY(colour->abLeftRed[i], colour->abLeftGreen[i], colour->abLeftBlue[i]);
-		r = (long)((1 - fvalue) * colour->abLeftRed[i] + fvalue * colour->abRightRed[i]);
-		g = (long)((1 - fvalue) * colour->abLeftGreen[i] + fvalue * colour->abRightGreen[i]);
-		b = (long)((1 - fvalue) * colour->abLeftBlue[i] + fvalue * colour->abRightBlue[i]);
-		v[1].color = RGBONLY(r, g, b);
-		v[2].color = RGBONLY(colour->abLeftRed[i + 1], colour->abLeftGreen[i + 1], colour->abLeftBlue[i + 1]);
-		r = (long)((1 - fvalue) * colour->abLeftRed[i + 1] + fvalue * colour->abRightRed[i + 1]);
-		g = (long)((1 - fvalue) * colour->abLeftGreen[i + 1] + fvalue * colour->abRightGreen[i + 1]);
-		b = (long)((1 - fvalue) * colour->abLeftBlue[i + 1] + fvalue * colour->abRightBlue[i + 1]);
-		v[3].color = RGBONLY(r, g, b);
-		AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
-	}
-
-	v[0].sy += fy2 * fy;
-	v[1].sy += fy2 * fy;
-	v[2].sy += fy2 * fy;
-	v[3].sy += fy2 * fy;
-
-	r = colour->abLeftRed[4];
-	g = colour->abLeftGreen[4];
-	b = colour->abLeftBlue[4];
-	r -= r >> 2;
-	g -= g >> 2;
-	b -= b >> 2;
-	v[0].color = RGBONLY(r, g, b);
-
-	r = (long)((1 - fvalue) * colour->abLeftRed[4] + fvalue * colour->abRightRed[4]);
-	g = (long)((1 - fvalue) * colour->abLeftGreen[4] + fvalue * colour->abRightGreen[4]);
-	b = (long)((1 - fvalue) * colour->abLeftBlue[4] + fvalue * colour->abRightBlue[4]);
-	r -= r >> 2;
-	g -= g >> 2;
-	b -= b >> 2;
-	v[1].color = RGBONLY(r, g, b);
-
-	v[2].color = 0xFF000000;
-	v[3].color = 0xFF000000;
-	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
-
-	v[0].sx = x * fx - 2;
-	v[1].sx = x * fx + width * fx + 2;
-	v[2].sx = x * fx - 2;
-	v[3].sx = x * fx + width * fx + 2;
-	v[0].sy = y * fy;
-	v[1].sy = y * fy;
-	v[2].sy = y * fy + height * fy;
-	v[3].sy = y * fy + height * fy;
-	v[0].sz = f_mznear + 1;
-	v[1].sz = f_mznear + 1;
-	v[2].sz = f_mznear + 1;
-	v[3].sz = f_mznear + 1;
-	v[0].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
-	v[1].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
-	v[2].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
-	v[3].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
-	v[0].color = 0;
-	v[1].color = 0;
-	v[2].color = 0;
-	v[3].color = 0;
-	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//black background
-
-	v[0].sx = x * fx - 3;
-	v[1].sx = x * fx + width * fx + 3;
-	v[2].sx = x * fx - 3;
-	v[3].sx = x * fx + width * fx + 3;
-	v[0].sy = y * fy - 1;
-	v[1].sy = y * fy - 1;
-	v[2].sy = y * fy + height * fy + 1;
-	v[3].sy = y * fy + height * fy + 1;
-	v[0].sz = f_mznear + 2;
-	v[1].sz = f_mznear + 2;
-	v[2].sz = f_mznear + 2;
-	v[3].sz = f_mznear + 2;
-	v[0].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
-	v[1].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
-	v[2].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
-	v[3].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
-	v[0].color = 0xFFFFFFFF;
-	v[1].color = 0xFFFFFFFF;
-	v[2].color = 0xFFFFFFFF;
-	v[3].color = 0xFFFFFFFF;
-	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//white border
-}
-
-void S_DoTR4Bar(long x, long y, long width, long height, long pos, long clr1, long clr2)
-{
-	D3DTLVERTEX v[4];
-	TEXTURESTRUCT tex;
-	static float wat = 0;
-	long x2, sx, sy;
-
-	nPolyType = 4;
-	wat += 0.0099999998F;
-
-	if (wat > 0.99000001F)
-		wat = 0;
-
-	clipflags[0] = 0;
-	clipflags[1] = 0;
-	clipflags[2] = 0;
-	clipflags[3] = 0;
-
-	x2 = (long)(x * phd_winxmax * 0.0015625F);
-	sx = (long(width * phd_winxmax * 0.0015625F) * pos) / 100;
-	sy = (long)((height >> 1) * phd_winymax * 0.0020833334F);
-
-	v[0].sx = (float)x2;
-	v[0].sy = (float)y;
-	v[0].color = clr1;
-
-	v[1].sx = (float)(x2 + sx);
-	v[1].sy = (float)y;
-	v[1].color = clr1;
-
-	v[2].sx = (float)(x2 + sx);
-	v[2].sy = (float)(y + sy);
-	v[2].color = clr2;
-
-	v[3].sx = (float)x2;
-	v[3].sy = (float)(y + sy);
-	v[3].color = clr2;
-
-	for (int i = 0; i < 4; i++)
-	{
-		v[i].specular = 0xFF000000;
-		v[i].sz = f_mznear - 6;
-		v[i].rhw = f_moneoznear - 2;
-		v[i].tu = 0;
-		v[i].tv = 0;
-	}
-
-	tex.drawtype = 0;
-	tex.flag = 0;
-	tex.tpage = 0;
-	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
-
-	v[0].sx = (float)x2;
-	v[0].sy = (float)(y + sy);
-	v[0].color = clr2;
-
-	v[1].sx = (float)(x2 + sx);
-	v[1].sy = (float)(y + sy);
-	v[1].color = clr2;
-
-	v[2].sx = (float)(x2 + sx);
-	v[2].sy = (float)(y + 2 * sy);
-	v[2].color = clr1;
-
-	v[3].sx = (float)x2;
-	v[3].sy = (float)(y + 2 * sy);
-	v[3].color = clr1;
-
-	for (int i = 0; i < 4; i++)
-	{
-		v[i].specular = 0xFF000000;
-		v[i].sz = f_mznear - 6;
-		v[i].rhw = f_moneoznear - 2;
-		v[i].tu = 0;
-		v[i].tv = 0;
-	}
-
-	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
-
-	x2 = (long)(x * phd_winxmax * 0.0015625F);
-	sx = (long)(width * phd_winxmax * 0.0015625F);
-	sy = (long)((height >> 1) * phd_winymax * 0.0020833334F);
-
-	v[0].sx = (float)(x2 - 1);
-	v[0].sy = (float)(y - 1);
-
-	v[1].sx = (float)(x2 + sx + 1);
-	v[1].sy = (float)(y - 1);
-
-	v[2].sx = (float)(x2 + sx + 1);
-	v[2].sy = (float)(y + 2 * sy + 1);
-
-	v[3].sx = (float)(x2 - 1);
-	v[3].sy = (float)(y + 2 * sy + 1);
-
-	for (int i = 0; i < 4; i++)
-	{
-		v[i].color = 0xFFFFFFFF;
-		v[i].specular = 0xFF000000;
-		v[i].sz = f_mznear - 3;
-		v[i].rhw = f_moneoznear - 4;
-		v[i].tu = 0;
-		v[i].tv = 0;
-	}
-
-	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
-
-	v[0].sx = (float)x2;
-	v[0].sy = (float)y;
-
-	v[1].sx = (float)(x2 + sx);
-	v[1].sy = (float)y;
-
-	v[2].sx = (float)(x2 + sx);
-	v[2].sy = (float)(y + 2 * sy);
-
-	v[3].sx = (float)x2;
-	v[3].sy = (float)(y + 2 * sy);
-
-	for (int i = 0; i < 4; i++)
-	{
-		v[i].color = 0xFF000000;
-		v[i].specular = 0xFF000000;
-		v[i].sz = f_mznear - 4;
-		v[i].rhw = f_moneoznear - 3;
-		v[i].tu = 0;
-		v[i].tv = 0;
-	}
-
-	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
-}
-#endif
 
 void CheckKeyConflicts()
 {
@@ -430,14 +72,11 @@ void CheckKeyConflicts()
 	}
 }
 
-#pragma warning(push)
-#pragma warning(disable : 4244)
-void DoStatScreen()
+void DisplayStatsUCunt()
 {
-	ushort ypos;
+	long ypos;
 	short Days, Hours, Min, Sec;
 	char buffer[40];
-	long seconds;
 
 	ypos = phd_centery - 4 * font_height;
 	PrintString(phd_centerx, ypos, 6, SCRIPT_TEXT(TXT_Statistics), FF_CENTER);
@@ -448,11 +87,11 @@ void DoStatScreen()
 	PrintString(phd_centerx >> 2, ypos + 6 * font_height, 2, SCRIPT_TEXT(TXT_Health_Packs_Used), 0);
 	PrintString(phd_centerx >> 2, ypos + 7 * font_height, 2, SCRIPT_TEXT(TXT_Secrets_Found), 0);
 
-	seconds = GameTimer / 30;
-	Days = seconds / (24 * 60 * 60);
-	Hours = (seconds % (24 * 60 * 60)) / (60 * 60);
-	Min = (seconds / 60) % 60;
-	Sec = (seconds % 60);
+	Sec = short(GameTimer / 30);
+	Days = Sec / (24 * 60 * 60);
+	Hours = (Sec % (24 * 60 * 60)) / (60 * 60);
+	Min = (Sec / 60) % 60;
+	Sec = (Sec % 60);
 
 	sprintf(buffer, "%02d:%02d:%02d", (Days * 24) + Hours, Min, Sec);
 	PrintString(phd_centerx + (phd_centerx >> 2), ypos + 3 * font_height, 6, buffer, 0);
@@ -465,245 +104,13 @@ void DoStatScreen()
 	sprintf(buffer, "%d / 36", savegame.Game.Secrets);
 	PrintString(phd_centerx + (phd_centerx >> 2), ypos + 7 * font_height, 6, buffer, 0);
 }
-#pragma warning(pop)
 
-void DisplayStatsUCunt()
-{
-	DoStatScreen();
-}
-
-void S_DrawAirBar(long pos)
-{
-#ifdef GENERAL_FIXES
-	long x, y;
-
-	if (gfCurrentLevel != LVL5_TITLE)
-	{
-		if (tomb5.bars_pos == 1)//original
-		{
-			x = 490 - (font_height >> 2);
-
-			if (tomb5.bar_mode == 2)
-				y = (font_height >> 2) + (2 * font_height / 3);
-			else
-				y = (font_height >> 1) + (font_height >> 2) + 32;
-		}
-		else if (tomb5.bars_pos == 2)//improved
-		{
-			x = 490 - (font_height >> 2);
-			y = font_height >> 2;
-		}
-		else//PSX
-		{
-			x = 470 - (font_height >> 2);
-
-			if (tomb5.bar_mode == 2)
-				y = (font_height >> 2) + (2 * font_height / 3);
-			else
-				y = (font_height >> 1) + (font_height >> 2);
-		}
-
-#ifdef GENERAL_FIXES
-		if (tomb5.bar_mode == 3)
-			S_DrawGouraudBar(x, y, 150, 12, pos, &airBarColourSet);
-		else if (tomb5.bar_mode == 2)
-			S_DoTR4Bar(x, y, 150, 12, pos, 0xFF000000, 0xFF0000FF);
-		else
-#endif
-			DoBar(x, y, 150, 12, pos, 0x0000A0, 0x0050A0);
-	}
-#else
-	if (gfCurrentLevel != LVL5_TITLE)
-		DoBar(490 - (font_height >> 2), (font_height >> 1) + (font_height >> 2) + 32, 150, 12, pos, 0x0000A0, 0x0050A0);//blue rgb 0, 0, 160/lighter blue rgb 0, 80, 160
-#endif
-}
-
-void S_DrawHealthBar(long pos)
-{
-	long color;
-#ifdef GENERAL_FIXES
-	long x, y;
-
-	if (gfCurrentLevel != LVL5_TITLE)
-	{
-		if (lara.poisoned || lara.Gassed)
-			color = 0xA0A000;//yellowish poison, rgb 160, 160, 0
-		else
-			color = 0x00A000;//green, rgb 0, 160, 0
-
-		if (tomb5.bars_pos == 1)//original
-		{
-			x = font_height >> 2;
-
-			if (tomb5.bar_mode == 2)
-				y = font_height >> 2;
-			else
-				y = (font_height >> 2) + 32;
-}
-		else if (tomb5.bars_pos == 2)//improved
-		{
-			x = font_height >> 2;
-			y = font_height >> 2;
-		}
-		else//PSX
-		{
-			x = 470 - (font_height >> 2);
-			y = font_height >> 2;
-		}
-
-#ifdef GENERAL_FIXES
-		if (tomb5.bar_mode == 3)
-			S_DrawGouraudBar(x, y, 150, 12, pos, lara.poisoned || lara.Gassed ? &poisonBarColourSet : &healthBarColourSet);
-		else if (tomb5.bar_mode == 2)
-		{
-			if (lara.poisoned || lara.Gassed)
-				S_DoTR4Bar(x, y, 150, 12, pos, 0xFF000000, 0xFFFFFF00);
-			else
-				S_DoTR4Bar(x, y, 150, 12, pos, 0xFF000000, 0xFFFF0000);
-		}
-		else
-#endif
-			DoBar(x, y, 150, 12, pos, 0xA00000, color);
-	}
-#else
-	if (gfCurrentLevel != LVL5_TITLE)
-	{
-		if (lara.poisoned || lara.Gassed)
-			color = 0xA0A000;//yellowish poison, rgb 160, 160, 0
-		else
-			color = 0x00A000;//green, rgb 0, 160, 0
-
-		DoBar(font_height >> 2, (font_height >> 2) + 32, 150, 12, pos, 0xA00000, color);//red rgb 160, 0, 0/color
-	}
-#endif
-}
-
-void S_DrawHealthBar2(long pos)//same as above just different screen position
-{
-	long color;
-
-	if (gfCurrentLevel != LVL5_TITLE)
-	{
-		if (lara.poisoned || lara.Gassed)
-			color = 0xA0A000;
-		else
-			color = 0xA000;
-
-#ifdef GENERAL_FIXES
-		if (tomb5.bar_mode == 3)
-			S_DrawGouraudBar(245, (font_height >> 1) + 32, 150, 12, pos, lara.poisoned || lara.Gassed ? &poisonBarColourSet : &healthBarColourSet);
-		else if (tomb5.bar_mode == 2)
-		{
-			if (lara.poisoned || lara.Gassed)
-				S_DoTR4Bar(245, font_height + 48, 150, 12, pos, 0xFF000000, 0xFFFFFF00);
-			else
-				S_DoTR4Bar(245, font_height + 48, 150, 12, pos, 0xFF000000, 0xFFFF0000);
-		}
-		else
-#endif
-			DoBar(245, (font_height >> 1) + 32, 150, 12, pos, 0xA00000, color);
-	}
-}
-
-void S_DrawDashBar(long pos)
-{
-#ifdef GENERAL_FIXES
-	long x, y;
-
-	if (tomb5.bars_pos == 1)//original
-	{
-		x = 490 - (font_height >> 2);
-
-		if (tomb5.bar_mode == 2)
-			y = font_height >> 2;
-		else
-			y = (font_height >> 2) + 32;
-}
-	else if (tomb5.bars_pos == 2)//improved
-	{
-		x = 490 - (font_height >> 2);
-
-		if (tomb5.bar_mode == 2)
-			y = (font_height >> 2) + (2 * font_height / 3);
-		else
-			y = (font_height >> 1) + (font_height >> 2);
-	}
-	else//PSX
-	{
-		x = 470 - (font_height >> 2);
-
-		if (tomb5.bar_mode == 2)
-			y = (font_height >> 2) + (2 * font_height / 3) + (2 * font_height / 3);
-		else
-			y = (font_height >> 2) + (font_height >> 2) + 32;
-	}
-
-	if (gfCurrentLevel != LVL5_TITLE)
-	{
-#ifdef GENERAL_FIXES
-		if (tomb5.bar_mode == 3)
-			S_DrawGouraudBar(x, y, 150, 12, pos, &dashBarColourSet);
-		else if (tomb5.bar_mode == 2)
-			S_DoTR4Bar(x, y, 150, 12, pos, 0xFF000000, 0xFF00FF00);
-		else
-#endif	//GENERAL_FIXES
-			DoBar(x, y, 150, 12, pos, 0xA0A000, 0x00A000);
-	}
-#else	//GENERAL_FIXES
-	if (gfCurrentLevel != LVL5_TITLE)
-		DoBar(490 - (font_height >> 2), (font_height >> 2) + 32, 150, 12, pos, 0xA0A000, 0x00A000);//yellow rgb 160, 160, 0 / green rgb 0, 160, 0
-#endif	//GENERAL_FIXES
-}
-
-#ifdef GENERAL_FIXES
-void S_DrawEnemyBar(long pos)
-{
-	long x, y;
-
-	if (tomb5.bars_pos == 1)//original
-	{
-		x = font_height >> 2;
-
-		if (tomb5.bar_mode == 2)
-			y = (font_height >> 2) + (2 * font_height / 3);
-		else
-			y = (font_height >> 1) + (font_height >> 2) + 32;
-	}
-	else if (tomb5.bars_pos == 2)//improved
-	{
-		x = font_height >> 2;
-
-		if (tomb5.bar_mode == 2)
-			y = (font_height >> 2) + (2 * font_height / 3);
-		else
-			y = (font_height >> 1) + (font_height >> 2);
-	}
-	else//PSX
-	{
-		x = 470 - (font_height >> 2);
-
-		if (tomb5.bar_mode == 2)
-			y = (font_height >> 2) + (2 * font_height / 3) + (2 * font_height / 3) + (2 * font_height / 3);
-		else
-			y = (font_height >> 1) + (font_height >> 2) + (font_height >> 2) + 32;
-	}
-
-	if (tomb5.bar_mode == 3)
-		S_DrawGouraudBar(x, y, 150, 12, pos, &enemyBarColourSet);
-	else if (tomb5.bar_mode == 2)
-		S_DoTR4Bar(x, y, 150, 12, pos, 0xFF000000, 0xFFFFA000);
-	else
-		DoBar(x, y, 150, 12, pos, 0xA00000, 0xA0A000);
-}
-#endif
-
-#pragma warning(push)
-#pragma warning(disable : 4244)
 long DoLoadSave(long LoadSave)
 {
 	SAVEFILE_INFO* pSave;
 	static long selection;
-	long txt, color, l;
+	long txt, l, f;
+	uchar color;
 	char string[80];
 	char name[41];
 
@@ -712,7 +119,10 @@ long DoLoadSave(long LoadSave)
 	else
 		txt = TXT_Load_Game;
 
-	PrintString(phd_centerx, font_height, 6, SCRIPT_TEXT(txt), FF_CENTER);
+	f = font_height;
+	PrintString(phd_centerx, f, 6, SCRIPT_TEXT(txt), FF_CENTER);
+	f += font_height;
+	f += font_height >> 1;
 
 	for (int i = 0; i < 15; i++)
 	{
@@ -730,23 +140,22 @@ long DoLoadSave(long LoadSave)
 
 		strncpy(name, pSave->name, l);
 		name[40] = 0;
-		small_font = 1;
 
 		if (pSave->valid)
 		{
 			wsprintf(string, "%03d", pSave->num);
-			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * 310.0F), font_height + font_height * (i + 2), color, string, 0);
-			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * 270.0F), font_height + font_height * (i + 2), color, name, 0);
+			PrintString(GetFixedScale(10), f, color, string, 0);
+			PrintString(GetFixedScale(60), f, color, name, 0);
 			wsprintf(string, "%d %s %02d:%02d:%02d", pSave->days, SCRIPT_TEXT(TXT_days), pSave->hours, pSave->minutes, pSave->seconds);
-			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * -135.0F), font_height + font_height * (i + 2), color, string, 0);
+			PrintString(phd_centerx - long((float)phd_winwidth / 640.0F * -135.0), f, color, string, 0);
 		}
 		else
 		{
 			wsprintf(string, "%s", pSave->name);
-			PrintString(phd_centerx, font_height + font_height * (i + 2), color, string, FF_CENTER);
+			PrintString(phd_centerx, f, color, string, FF_CENTER);
 		}
 
-		small_font = 0;
+		f += font_height;
 	}
 
 	if (dbinput & IN_FORWARD)
@@ -776,12 +185,6 @@ long DoLoadSave(long LoadSave)
 	}
 
 	return -1;
-}
-#pragma warning (pop)
-
-void S_MemSet(void* p, long val, size_t sz)
-{
-	memset(p, val, sz);
 }
 
 long GetCampaignCheatValue()
@@ -840,6 +243,7 @@ long GetCampaignCheatValue()
 		break;
 
 	case 6:
+
 		if (keymap[DIK_1])
 			jump = LVL5_STREETS_OF_ROME;
 
@@ -864,8 +268,6 @@ long GetCampaignCheatValue()
 	return jump;
 }
 
-#pragma warning(push)
-#pragma warning(disable : 4244)
 void DoOptions()
 {
 	const char** keyboard_buttons;
@@ -878,7 +280,7 @@ void DoOptions()
 	static long sfx_bak;	//backup sfx volume
 	static long sfx_quality_bak;	//backup sfx quality
 	static long sfx_breath_db = -1;
-	long textY, textY2, special_features_available, joystick, joystick_x, joystick_y, joy1, joy2, joy3;
+	long f, special_features_available, joystick, joystick_x, joystick_y, joy1, joy2, joy3;
 	const char* text;
 	uchar clr, num, num2;
 	char quality_buffer[256];
@@ -898,7 +300,7 @@ void DoOptions()
 		sfx_quality_bak = SoundQuality;
 	}
 
-	textY = font_height - 4;
+	f = font_height - 4;
 
 	if (menu == 1)	//controls menu
 	{
@@ -913,123 +315,120 @@ void DoOptions()
 			num = 17;
 
 		PrintString(phd_centerx >> 2, font_height, selection & 1 ? 1 : 2, SCRIPT_TEXT(TXT_Control_Method), 0);
-		textY = font_height;
-		font_height = (long)((float)phd_winymax * 0.050000001F);
-		big_char_height = 10;
-		textY2 = font_height + (font_height + (font_height >> 1));
+
+		font_height = GetFixedScale(27);
 
 		if (!ControlMethod)
 		{
-			PrintString(phd_centerx >> 2, ushort(textY2 + 1 * font_height), selection & 2 ? 1 : 2, "\x18", 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 2 * font_height), selection & 4 ? 1 : 2, "\x1A", 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 3 * font_height), selection & 8 ? 1 : 2, "\x19", 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 4 * font_height), selection & 0x10 ? 1 : 2, "\x1B", 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 5 * font_height),  selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Duck), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 6 * font_height), selection & 0x40 ? 1 : 2, SCRIPT_TEXT(TXT_Dash), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 7 * font_height), selection & 0x80 ? 1 : 2, SCRIPT_TEXT(TXT_Walk), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 8 * font_height), selection & 0x100 ? 1 : 2, SCRIPT_TEXT(TXT_Jump), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 9 * font_height), selection & 0x200 ? 1 : 2, SCRIPT_TEXT(TXT_Action), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 10 * font_height), selection & 0x400 ? 1 : 2, SCRIPT_TEXT(TXT_Draw_Weapon), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 11 * font_height), selection & 0x800 ? 1 : 2, SCRIPT_TEXT(TXT_Use_Flare), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 12 * font_height), selection & 0x1000 ? 1 : 2, SCRIPT_TEXT(TXT_Look), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 13 * font_height), selection & 0x2000 ? 1 : 2, SCRIPT_TEXT(TXT_Roll), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 14 * font_height), selection & 0x4000 ? 1 : 2, SCRIPT_TEXT(TXT_Inventory), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 15 * font_height), selection & 0x8000 ? 1 : 2, SCRIPT_TEXT(TXT_Step_Left), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 16 * font_height), selection & 0x10000 ? 1 : 2, SCRIPT_TEXT(TXT_Step_Right), 0);
+			PrintString(phd_centerx >> 2, 2 * font_height, selection & 2 ? 1 : 2, "\x18", 0);
+			PrintString(phd_centerx >> 2, 3 * font_height, selection & 4 ? 1 : 2, "\x1A", 0);
+			PrintString(phd_centerx >> 2, 4 * font_height, selection & 8 ? 1 : 2, "\x19", 0);
+			PrintString(phd_centerx >> 2, 5 * font_height, selection & 0x10 ? 1 : 2, "\x1B", 0);
+			PrintString(phd_centerx >> 2, 6 * font_height,  selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Duck), 0);
+			PrintString(phd_centerx >> 2, 7 * font_height, selection & 0x40 ? 1 : 2, SCRIPT_TEXT(TXT_Dash), 0);
+			PrintString(phd_centerx >> 2, 8 * font_height, selection & 0x80 ? 1 : 2, SCRIPT_TEXT(TXT_Walk), 0);
+			PrintString(phd_centerx >> 2, 9 * font_height, selection & 0x100 ? 1 : 2, SCRIPT_TEXT(TXT_Jump), 0);
+			PrintString(phd_centerx >> 2, 10 * font_height, selection & 0x200 ? 1 : 2, SCRIPT_TEXT(TXT_Action), 0);
+			PrintString(phd_centerx >> 2, 11 * font_height, selection & 0x400 ? 1 : 2, SCRIPT_TEXT(TXT_Draw_Weapon), 0);
+			PrintString(phd_centerx >> 2, 12 * font_height, selection & 0x800 ? 1 : 2, SCRIPT_TEXT(TXT_Use_Flare), 0);
+			PrintString(phd_centerx >> 2, 13 * font_height, selection & 0x1000 ? 1 : 2, SCRIPT_TEXT(TXT_Look), 0);
+			PrintString(phd_centerx >> 2, 14 * font_height, selection & 0x2000 ? 1 : 2, SCRIPT_TEXT(TXT_Roll), 0);
+			PrintString(phd_centerx >> 2, 15 * font_height, selection & 0x4000 ? 1 : 2, SCRIPT_TEXT(TXT_Inventory), 0);
+			PrintString(phd_centerx >> 2, 16 * font_height, selection & 0x8000 ? 1 : 2, SCRIPT_TEXT(TXT_Step_Left), 0);
+			PrintString(phd_centerx >> 2, 17 * font_height, selection & 0x10000 ? 1 : 2, SCRIPT_TEXT(TXT_Step_Right), 0);
 			text = (waiting_for_key && (controls_selection & 2)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][0]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + font_height), controls_selection & 2 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 2 * font_height, controls_selection & 2 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 4)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][1]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 2 * font_height), controls_selection & 4 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 3 * font_height, controls_selection & 4 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 8)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][2]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 3 * font_height), (controls_selection & 8) != 0 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 4 * font_height, (controls_selection & 8) != 0 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x10)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][3]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 4 * font_height), controls_selection & 0x10 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 5 * font_height, controls_selection & 0x10 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x20)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][4]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 5 * font_height), controls_selection & 0x20 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 6 * font_height, controls_selection & 0x20 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x40)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][5]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 6 * font_height), controls_selection & 0x40 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 7 * font_height, controls_selection & 0x40 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x80)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][6]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 7 * font_height), controls_selection & 0x80 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 8 * font_height, controls_selection & 0x80 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x100)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][7]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 8 * font_height), controls_selection & 0x100 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 9 * font_height, controls_selection & 0x100 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x200)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][8]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 9 * font_height), controls_selection & 0x200 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 10 * font_height, controls_selection & 0x200 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x400)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][9]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 10 * font_height), controls_selection & 0x400 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 11 * font_height, controls_selection & 0x400 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x800)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][10]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 11 * font_height), controls_selection & 0x800 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 12 * font_height, controls_selection & 0x800 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x1000)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][11]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 12 * font_height), controls_selection & 0x1000 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 13 * font_height, controls_selection & 0x1000 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x2000)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][12]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 13 * font_height), controls_selection & 0x2000 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 14 * font_height, controls_selection & 0x2000 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x4000)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][13]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 14 * font_height), controls_selection & 0x4000 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 15 * font_height, controls_selection & 0x4000 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x8000)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][14]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 15 * font_height), controls_selection & 0x8000 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 16 * font_height, controls_selection & 0x8000 ? 1 : 6, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x10000)) ? SCRIPT_TEXT(TXT_Waiting) : keyboard_buttons[layout[1][15]];
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 16 * font_height), controls_selection & 0x10000 ? 1 : 6, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 17 * font_height, controls_selection & 0x10000 ? 1 : 6, text, 0);
 		}
 
 		if (ControlMethod == 1)
 		{
-			PrintString(phd_centerx >> 2, ushort(textY2 + 5 * font_height), selection & 2 ? 1 : 2, SCRIPT_TEXT(TXT_Duck), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 6 * font_height), selection & 4 ? 1 : 2, SCRIPT_TEXT(TXT_Dash), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 7 * font_height), selection & 8 ? 1 : 2, SCRIPT_TEXT(TXT_Walk), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 8 * font_height), selection & 0x10 ? 1 : 2, SCRIPT_TEXT(TXT_Jump), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 9 * font_height), selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Action), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 10 * font_height), selection & 0x40 ? 1 : 2, SCRIPT_TEXT(TXT_Draw_Weapon), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 11 * font_height), selection & 0x80 ? 1 : 2, SCRIPT_TEXT(TXT_Use_Flare), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 12 * font_height), selection & 0x100 ? 1 : 2, SCRIPT_TEXT(TXT_Look), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 13 * font_height), selection & 0x200 ? 1 : 2, SCRIPT_TEXT(TXT_Roll), 0);
-			PrintString(phd_centerx >> 2, ushort(textY2 + 14 * font_height), selection & 0x400 ? 1 : 2, SCRIPT_TEXT(TXT_Inventory), 0);
+			PrintString(phd_centerx >> 2, 3 * font_height, selection & 2 ? 1 : 2, SCRIPT_TEXT(TXT_Duck), 0);
+			PrintString(phd_centerx >> 2, 4 * font_height, selection & 4 ? 1 : 2, SCRIPT_TEXT(TXT_Dash), 0);
+			PrintString(phd_centerx >> 2, 5 * font_height, selection & 8 ? 1 : 2, SCRIPT_TEXT(TXT_Walk), 0);
+			PrintString(phd_centerx >> 2, 6 * font_height, selection & 0x10 ? 1 : 2, SCRIPT_TEXT(TXT_Jump), 0);
+			PrintString(phd_centerx >> 2, 7 * font_height, selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Action), 0);
+			PrintString(phd_centerx >> 2, 8 * font_height, selection & 0x40 ? 1 : 2, SCRIPT_TEXT(TXT_Draw_Weapon), 0);
+			PrintString(phd_centerx >> 2, 9 * font_height, selection & 0x80 ? 1 : 2, SCRIPT_TEXT(TXT_Use_Flare), 0);
+			PrintString(phd_centerx >> 2, 10 * font_height, selection & 0x100 ? 1 : 2, SCRIPT_TEXT(TXT_Look), 0);
+			PrintString(phd_centerx >> 2, 11 * font_height, selection & 0x200 ? 1 : 2, SCRIPT_TEXT(TXT_Roll), 0);
+			PrintString(phd_centerx >> 2, 12 * font_height, selection & 0x400 ? 1 : 2, SCRIPT_TEXT(TXT_Inventory), 0);
 
-			for (int i = 0; i < 10; i++)
+			for (int i = 0, f = 3; i < 10; i++, f++)
 			{
 				sprintf(quality_buffer, "(%s)", keyboard_buttons[layout[1][i + 4]]);
-				PrintString((phd_centerx >> 3) + phd_centerx + (phd_centerx >> 1), ushort(textY2 + font_height * (i + 5)), 5, quality_buffer, 0);
+				PrintString(phd_centerx + (phd_centerx >> 3) + (phd_centerx >> 1), f * font_height, 5, quality_buffer, 0);
 			}
 
 			text = (waiting_for_key && (controls_selection & 2)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[0]];
 			clr = (waiting_for_key && (selection & 2)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 5 * font_height), clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 3 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 4)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[1]];
 			clr = (waiting_for_key && (selection & 4)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 6 * font_height), clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 4 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 8)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[2]];
 			clr = (waiting_for_key && (selection & 8)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 7 * font_height), clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 5 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x10)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[3]];
 			clr = (waiting_for_key && (selection & 0x10)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 8 * font_height), clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 6 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x20)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[4]];
 			clr = (waiting_for_key && (selection & 0x20)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 9 * font_height), clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 7 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x40)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[5]];
 			clr = (waiting_for_key && (selection & 0x40)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 10 * font_height), clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 8 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x80)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[6]];
 			clr = (waiting_for_key && (selection & 0x80)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 11 * font_height), clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 9 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x100)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[7]];
 			clr = (waiting_for_key && (selection & 0x100)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 12 * font_height), clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 10 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x200)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[8]];
 			clr = (waiting_for_key && (selection & 0x200)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 13 * font_height), clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 11 * font_height, clr, text, 0);
 			text = (waiting_for_key && (controls_selection & 0x400)) ? SCRIPT_TEXT(TXT_Waiting) : JoyStickButtons[jLayout[9]];
 			clr = (waiting_for_key && (selection & 0x400)) ? 1 : 6;
-			PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY2 + 14 * font_height), clr, text, 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), 12 * font_height, clr, text, 0);
 		}
 
 		font_height = default_font_height;
-		big_char_height = 6;
 
 		if (!ControlMethod)
-			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)textY, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Keyboard), 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), font_height, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Keyboard), 0);
 		else if (ControlMethod == 1)
-			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)textY, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Joystick), 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), font_height, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Joystick), 0);
 		else if (ControlMethod == 2)
-			PrintString(phd_centerx + (phd_centerx >> 2), (ushort)textY, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Reset), 0);
+			PrintString(phd_centerx + (phd_centerx >> 2), font_height, controls_selection & 1 ? 1 : 6, SCRIPT_TEXT(TXT_Reset), 0);
 
 		if (ControlMethod < 2 && !waiting_for_key)
 		{
@@ -1177,35 +576,35 @@ void DoOptions()
 	}
 	else if (menu == 100)	//special features
 	{
-		PrintString(phd_centerx, ushort(textY + 3 * font_height), 6, SCRIPT_TEXT(TXT_Special_Features), FF_CENTER);
+		PrintString(phd_centerx, f + 3 * font_height, 6, SCRIPT_TEXT(TXT_Special_Features), FF_CENTER);
 
 		if (SpecialFeaturesPage[0])
 			clr = selection & 1 ? 1 : 2;
 		else
 			clr = 3;
 
-		PrintString(phd_centerx, ushort(textY + 5 * font_height), clr, SCRIPT_TEXT(TXT_Storyboards_Part_1), FF_CENTER);
+		PrintString(phd_centerx, f + 5 * font_height, clr, SCRIPT_TEXT(TXT_Storyboards_Part_1), FF_CENTER);
 
 		if (SpecialFeaturesPage[1])
 			clr = selection & 2 ? 1 : 2;
 		else
 			clr = 3;
 
-		PrintString(phd_centerx, ushort(textY + 6 * font_height), clr, SCRIPT_TEXT(TXT_Next_Generation_Concept), FF_CENTER);
+		PrintString(phd_centerx, f + 6 * font_height, clr, SCRIPT_TEXT(TXT_Next_Generation_Concept), FF_CENTER);
 
 		if (SpecialFeaturesPage[2])
 			clr = selection & 4 ? 1 : 2;
 		else
 			clr = 3;
 
-		PrintString(phd_centerx, ushort(textY + 7 * font_height), clr, SCRIPT_TEXT(TXT_Storyboards_Part_2), FF_CENTER);
+		PrintString(phd_centerx, f + 7 * font_height, clr, SCRIPT_TEXT(TXT_Storyboards_Part_2), FF_CENTER);
 
 		if (SpecialFeaturesPage[3])
 			clr = selection & 8 ? 1 : 2;
 		else
 			clr = 3;
 
-		PrintString(phd_centerx, ushort(textY + 8 * font_height), clr, "Gallery", FF_CENTER);
+		PrintString(phd_centerx, f + 8 * font_height, clr, "Gallery", FF_CENTER);
 
 		if (NumSpecialFeatures)
 		{
@@ -1254,20 +653,16 @@ void DoOptions()
 	}
 	else if (menu == 0)	//main options menu
 	{
-		textY= 3 * font_height;
-#ifdef GENERAL_FIXES	//1 more option
+		f= 3 * font_height;
 		num = 6;
-#else
-		num = 5;
-#endif
 		PrintString(phd_centerx, 3 * font_height, 6, SCRIPT_TEXT(TXT_Options), FF_CENTER);
-		PrintString(phd_centerx, ushort(textY + font_height + (font_height >> 1)), selection & 1 ? 1 : 2, SCRIPT_TEXT(TXT_Control_Configuration), FF_CENTER);
-		PrintString(phd_centerx >> 2, ushort(textY + 3 * font_height), selection & 2 ? 1 : 2, SCRIPT_TEXT(TXT_Music_Volume), 0);
-		PrintString(phd_centerx >> 2, ushort(textY + 4 * font_height), selection & 4 ? 1 : 2, SCRIPT_TEXT(TXT_SFX_Volume), 0);
-		PrintString(phd_centerx >> 2, ushort(textY + 5 * font_height), selection & 8 ? 1 : 2, SCRIPT_TEXT(TXT_Sound_Quality), 0);
-		PrintString(phd_centerx >> 2, ushort(textY + 6 * font_height), selection & 0x10 ? 1 : 2, SCRIPT_TEXT(TXT_Targeting), 0);
-		DoSlider(400, 3 * font_height - (font_height >> 1) + textY + 4, 200, 16, MusicVolume, 0xFF1F1F1F, 0xFF3F3FFF, music_volume_bar_shade);
-		DoSlider(400, textY + 4 * font_height + 4 - (font_height >> 1), 200, 16, SFXVolume, 0xFF1F1F1F, 0xFF3F3FFF, sfx_volume_bar_shade);
+		PrintString(phd_centerx, f + font_height + (font_height >> 1), selection & 1 ? 1 : 2, SCRIPT_TEXT(TXT_Control_Configuration), FF_CENTER);
+		PrintString(phd_centerx >> 2, f + 3 * font_height, selection & 2 ? 1 : 2, SCRIPT_TEXT(TXT_Music_Volume), 0);
+		PrintString(phd_centerx >> 2, f + 4 * font_height, selection & 4 ? 1 : 2, SCRIPT_TEXT(TXT_SFX_Volume), 0);
+		PrintString(phd_centerx >> 2, f + 5 * font_height, selection & 8 ? 1 : 2, SCRIPT_TEXT(TXT_Sound_Quality), 0);
+		PrintString(phd_centerx >> 2, f + 6 * font_height, selection & 0x10 ? 1 : 2, SCRIPT_TEXT(TXT_Targeting), 0);
+		DoSlider(400, 3 * font_height - (font_height >> 1) + f + 4, 200, 16, MusicVolume, 0xFF1F1F1F, 0xFF3F3FFF, music_volume_bar_shade);
+		DoSlider(400, f + 4 * font_height + 4 - (font_height >> 1), 200, 16, SFXVolume, 0xFF1F1F1F, 0xFF3F3FFF, sfx_volume_bar_shade);
 
 		switch (SoundQuality)
 		{
@@ -1284,34 +679,28 @@ void DoOptions()
 			break;
 		}
 
-		PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 5 * font_height), selection & 8 ? 1 : 6, quality_text, 0);
+		PrintString(phd_centerx + (phd_centerx >> 2), f + 5 * font_height, selection & 8 ? 1 : 6, quality_text, 0);
 
 		if (App.AutoTarget)
 			strcpy(quality_text, SCRIPT_TEXT(TXT_Automatic));
 		else
 			strcpy(quality_text, SCRIPT_TEXT(TXT_Manual));
 
-		PrintString(phd_centerx + (phd_centerx >> 2), ushort(textY + 6 * font_height), selection & 0x10 ? 1 : 6, quality_text, 0);
+		PrintString(phd_centerx + (phd_centerx >> 2), f + 6 * font_height, selection & 0x10 ? 1 : 6, quality_text, 0);
 		special_features_available = 0x20;	//not the most accurate name
 
 		if (gfGameMode == 1)
 		{
-#ifdef GENERAL_FIXES
 			num = 7;
-#else
-			num = 6;
-#endif
-			PrintString(phd_centerx, ushort((font_height >> 1) + textY + 7 * font_height), selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Special_Features), FF_CENTER);
+			PrintString(phd_centerx, (font_height >> 1) + f + 7 * font_height, selection & 0x20 ? 1 : 2, SCRIPT_TEXT(TXT_Special_Features), FF_CENTER);
 		}
 		else
 			special_features_available = 0;
 
-#ifdef GENERAL_FIXES	//if special features are available, print it below them
 		if (special_features_available)
-			PrintString(phd_centerx, ushort((font_height >> 1) + textY + 8 * font_height), selection & 0x40 ? 1 : 2, "tomb5 options", FF_CENTER);
+			PrintString(phd_centerx, (font_height >> 1) + f + 8 * font_height, selection & 0x40 ? 1 : 2, "tomb5 options", FF_CENTER);
 		else
-			PrintString(phd_centerx, ushort((font_height >> 1) + textY + 7 * font_height), selection & 0x20 ? 1 : 2, "tomb5 options", FF_CENTER);
-#endif
+			PrintString(phd_centerx, (font_height >> 1) + f + 7 * font_height, selection & 0x20 ? 1 : 2, "tomb5 options", FF_CENTER);
 
 		if (dbinput & IN_FORWARD)
 		{
@@ -1331,7 +720,6 @@ void DoOptions()
 			menu = 1;
 		}
 
-#ifdef GENERAL_FIXES	//time to change some options
 		num2 = !special_features_available ? 0x20 : 0x40;
 
 		if (dbinput & IN_SELECT && selection & num2)
@@ -1341,7 +729,6 @@ void DoOptions()
 			selection = 1;
 			menu = 200;
 		}
-#endif
 
 		if (!selection)
 			selection = 1;
@@ -1454,318 +841,25 @@ void DoOptions()
 			menu = 100;
 		}
 	}
-#ifdef GENERAL_FIXES	//new menu
 	else if (menu == 200)
-		TroyeMenu(textY, menu, selection, selection_bak);
-#endif
-}
-#pragma warning (pop)
-
-void DoBar(long x, long y, long width, long height, long pos, long clr1, long clr2)
-{
-	D3DTLVERTEX v[4];
-	TEXTURESTRUCT tex;
-	float fx, fx2, fy, fw, fh, r1, g1, b1, r2, g2, b2, r, g, b, mul;
-	long lr, lg, lb, clr_11, clr_12, clr_21, clr_22;
-
-	clipflags[0] = 0;
-	clipflags[1] = 0;
-	clipflags[2] = 0;
-	clipflags[3] = 0;
-	nPolyType = 4;
-	tex.drawtype = 0;
-	tex.tpage = 0;
-	fx = (float)phd_winxmax * 0.0015625F;
-	fy = (float)phd_winymax * 0.0020833334F;
-	fw = (float)width;
-	fh = (float)(height >> 1);
-	fx2 = (fw * fx) * 0.0099999998F * (float)pos;
-	v[0].specular = 0xFF000000;
-	v[1].specular = 0xFF000000;
-	v[2].specular = 0xFF000000;
-	v[3].specular = 0xFF000000;
-	v[0].sx = (float)x * fx;
-	v[1].sx = ((float)x * fx) + fx2;
-	v[2].sx = (float)x * fx;
-	v[3].sx = ((float)x * fx) + fx2;
-	v[0].sy = (float)y * fy;
-	v[1].sy = (float)y * fy;
-	v[2].sy = ((float)y * fy) + (fh * fy);
-	v[3].sy = ((float)y * fy) + (fh * fy);
-	v[0].sz = f_mznear;
-	v[1].sz = f_mznear;
-	v[2].sz = f_mznear;
-	v[3].sz = f_mznear;
-	v[0].rhw = f_mpersp / f_mznear * f_moneopersp;
-	v[1].rhw = f_mpersp / f_mznear * f_moneopersp;
-	v[2].rhw = f_mpersp / f_mznear * f_moneopersp;
-	v[3].rhw = f_mpersp / f_mznear * f_moneopersp;
-
-	r1 = (float)CLRR(clr1);		//get rgbs
-	g1 = (float)CLRG(clr1);
-	b1 = (float)CLRB(clr1);
-	r2 = (float)CLRR(clr2);
-	g2 = (float)CLRG(clr2);
-	b2 = (float)CLRB(clr2);
-
-	mul = fx2 / (fw * fx);		//mix
-	r = r1 + ((r2 - r1) * mul);
-	g = g1 + ((g2 - g1) * mul);
-	b = b1 + ((b2 - b1) * mul);
-
-	lr = (long)r1;
-	lg = (long)g1;
-	lb = (long)b1;
-	clr_11 = RGBONLY(lr >> 1, lg >> 1, lb >> 1);
-	clr_12 = RGBONLY(lr, lg, lb);
-
-	lr = (long)r;
-	lg = (long)g;
-	lb = (long)b;
-	clr_21 = RGBONLY(lr >> 1, lg >> 1, lb >> 1);
-	clr_22 = RGBONLY(lr, lg, lb);
-
-	v[0].color = clr_11;
-	v[1].color = clr_21;
-	v[2].color = clr_12;
-	v[3].color = clr_22;
-	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//top half
-
-	v[0].color = clr_12;
-	v[1].color = clr_22;
-	v[2].color = clr_11;
-	v[3].color = clr_21;
-	v[0].sy = ((float)y * fy) + (fh * fy);
-	v[1].sy = ((float)y * fy) + (fh * fy);
-	v[2].sy = (fh * fy) + (fh * fy) + ((float)y * fy);
-	v[3].sy = (fh * fy) + (fh * fy) + ((float)y * fy);
-	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);		//bottom half
-
-	v[0].sx = (float)x * fx;
-	v[1].sx = (fw * fx) + ((float)x * fx);
-	v[2].sx = (float)x * fx;
-	v[3].sx = (fw * fx) + ((float)x * fx);
-	v[0].sy = (float)y * fy;
-	v[1].sy = (float)y * fy;
-	v[2].sy = (fh * fy) + (fh * fy) + ((float)y * fy);
-	v[3].sy = (fh * fy) + (fh * fy) + ((float)y * fy);
-	v[0].sz = f_mznear + 1;
-	v[1].sz = f_mznear + 1;
-	v[2].sz = f_mznear + 1;
-	v[3].sz = f_mznear + 1;
-	v[0].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
-	v[1].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
-	v[2].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
-	v[3].rhw = f_mpersp / (f_mznear + 1) * f_moneopersp;
-	v[0].color = 0;
-	v[1].color = 0;
-	v[2].color = 0;
-	v[3].color = 0;
-	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//black background
-
-	v[0].sx = ((float)x * fx) - 1;
-	v[1].sx = (fw * fx) + ((float)x * fx) + 1;
-	v[2].sx = ((float)x * fx) - 1;
-	v[3].sx = (fw * fx) + ((float)x * fx) + 1;
-	v[0].sy = ((float)y * fy) - 1;
-	v[1].sy = ((float)y * fy) - 1;
-	v[2].sy = (fh * fy) + (fh * fy) + ((float)y * fy) + 1;
-	v[3].sy = (fh * fy) + (fh * fy) + ((float)y * fy) + 1;
-	v[0].sz = f_mznear + 2;
-	v[1].sz = f_mznear + 2;
-	v[2].sz = f_mznear + 2;
-	v[3].sz = f_mznear + 2;
-	v[0].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
-	v[1].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
-	v[2].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
-	v[3].rhw = f_mpersp / (f_mznear + 2) * f_moneopersp;
-	v[0].color = 0xFFFFFFFF;
-	v[1].color = 0xFFFFFFFF;
-	v[2].color = 0xFFFFFFFF;
-	v[3].color = 0xFFFFFFFF;
-	AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);	//white border
+		TroyeMenu(font_height - (font_height >> 1), menu, selection, selection_bak);
 }
 
 void CreateMonoScreen()
 {
 	MonoScreenOn = 1;
-
-#ifdef GENERAL_FIXES
 	ConvertSurfaceToTextures(App.dx.lpBackBuffer);
-#else
-	ConvertSurfaceToTextures(App.dx.lpPrimaryBuffer);
-#endif
-}
-
-void S_InitLoadBar(long max)
-{
-	loadbar_steps = 0;
-	loadbar_maxpos = max;
-	loadbar_pos = 0;
-	loadbar_on = 1;
-}
-
-void S_UpdateLoadBar()
-{
-	loadbar_steps = 100.0F / loadbar_maxpos + loadbar_steps;
-}
-
-long S_DrawLoadBar()
-{
-	_BeginScene();
-	InitBuckets();
-	InitialiseSortList();
-	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_SRCALPHA);
-	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_INVSRCALPHA);
-	App.dx.lpD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, 0);
-
-#ifdef GENERAL_FIXES
-	if (tomb5.tr4_loadbar)
-	{
-		if (tomb5.bar_mode == 3)
-			S_DrawGouraudBar(20, 480 - (font_height >> 1), 600, 15, (long)loadbar_pos, &loadBarColourSet);
-		else if (tomb5.bar_mode == 2)
-			S_DoTR4Bar(20, phd_winymax - font_height, 600, 15, (long)loadbar_pos, 0xFF000000, 0xFF9F1F80);
-		else
-			DoBar(20, 480 - (font_height >> 1), 600, 15, (long)loadbar_pos, 0xFF7F007F, 0xFF007F7F);
-	}
-	else
-	{
-		if (tomb5.bar_mode == 3)
-			S_DrawGouraudBar(170, 480 - font_height, 300, 10, (long)loadbar_pos, &loadBarColourSet);
-		else if (tomb5.bar_mode == 2)
-			S_DoTR4Bar(170, phd_winymax- (font_height << 1), 300, 10, (long)loadbar_pos, 0xFF000000, 0xFF9F1F80);
-		else
-			DoBar(170, 480 - font_height, 300, 10, (long)loadbar_pos, 0xA0, 0xF0);
-	}
-#else
-		DoBar(170, 480 - font_height, 300, 10, (long)loadbar_pos, 0xA0, 0xF0);
-#endif
-
-	SortPolyList(SortCount, SortList);
-	RestoreFPCW(FPCW);
-	DrawSortList();
-	MungeFPCW(&FPCW);
-	S_DumpScreenFrame();
-
-	if (loadbar_pos >= loadbar_steps)
-		return loadbar_maxpos <= loadbar_steps;
-
-	loadbar_pos += 2;
-	return 0;
-}
-
-void S_LoadBar()
-{
-	S_UpdateLoadBar();
-}
-
-void MemBltSurf(void* dest, long x, long y, long w, long h, long dadd, void* source, long x2, long y2, DDSURFACEDESC2 surface, float xsize, float ysize)
-{
-	ulong* pDest;
-	short* psSrc;
-	char* pSrc;
-	long xadd, yadd, rx2, ry2, xoff, yoff, curY;
-	short andVal;
-	uchar r, g, b, rshift, gshift, bshift, rcount, gcount, bcount;
-
-	xadd = long(((float)App.dx.dwRenderWidth / 640.0F) * xsize * 65536.0);
-	yadd = long(((float)App.dx.dwRenderHeight / 480.0F) * ysize * 65536.0);
-	rx2 = long(x2 * ((float)App.dx.dwRenderWidth / 639.0F));
-	ry2 = long(y2 * ((float)App.dx.dwRenderHeight / 479.0F));
-
-	if (App.dx.Flags & 2)
-	{
-		rx2 += App.dx.rScreen.left;
-		ry2 += App.dx.rScreen.top;
-	}
-
-	DXBitMask2ShiftCnt(surface.ddpfPixelFormat.dwRBitMask, &rshift, &rcount);
-	DXBitMask2ShiftCnt(surface.ddpfPixelFormat.dwGBitMask, &gshift, &gcount);
-	DXBitMask2ShiftCnt(surface.ddpfPixelFormat.dwBBitMask, &bshift, &bcount);
-	pDest = (ulong*)dest + 4 * h * y + x;
-	pSrc = (char*)source + rx2 * (surface.ddpfPixelFormat.dwRGBBitCount >> 3) + (ry2 * surface.lPitch);
-	psSrc = (short*)pSrc;
-	curY = 0;
-	yoff = 0;
-
-	if (surface.ddpfPixelFormat.dwRGBBitCount == 16)
-	{
-		for (int i = 0; i < h; i++)
-		{
-			xoff = 0;
-
-			for (int j = 0; j < w; j++)
-			{
-				andVal = psSrc[curY + (xoff >> 16)];
-				r = uchar(((surface.ddpfPixelFormat.dwRBitMask & andVal) >> rshift) << (8 - rcount));
-				g = uchar(((surface.ddpfPixelFormat.dwGBitMask & andVal) >> gshift) << (8 - gcount));
-				b = uchar(((surface.ddpfPixelFormat.dwBBitMask & andVal) >> bshift) << (8 - bcount));
-				*pDest = RGBA(r, g, b, 0xFF);
-				pDest++;
-				xoff += xadd;
-			}
-
-			yoff += yadd;
-			curY = (surface.lPitch >> 1) * (yoff >> 16);
-			pDest += dadd - w;
-		}
-	}
-	else if (surface.ddpfPixelFormat.dwRGBBitCount == 24)
-	{
-		for (int i = 0; i < h; i++)
-		{
-			xoff = 0;
-
-			for (int j = 0; j < w; j++)
-			{
-				r = pSrc[curY + (xoff >> 16)];
-				g = pSrc[curY + 1 + (xoff >> 16)];
-				b = pSrc[curY + 2 + (xoff >> 16)];
-				*pDest = RGBA(r, g, b, 0xFF);
-				pDest++;
-				xoff += 3 * xadd;
-			}
-
-			yoff += yadd;
-			curY = surface.lPitch * (yoff >> 16);
-			pDest += dadd - w;
-		}
-	}
-	else if (surface.ddpfPixelFormat.dwRGBBitCount == 32)
-	{
-		for (int i = 0; i < h; i++)
-		{
-			xoff = 0;
-
-			for (int j = 0; j < w; j++)
-			{
-				r = pSrc[curY + (xoff >> 16)];
-				g = pSrc[curY + 1 + (xoff >> 16)];
-				b = pSrc[curY + 2 + (xoff >> 16)];
-				*pDest = RGBA(r, g, b, 0xFF);
-				pDest++;
-				xoff += xadd << 2;
-			}
-
-			yoff += yadd;
-			curY = surface.lPitch * (yoff >> 16);
-			pDest += dadd - w;
-		}
-	}
 }
 
 void RGBM_Mono(uchar* r, uchar* g, uchar* b)
 {
 	uchar c;
 
-#ifdef GENERAL_FIXES
 	if (MonoScreenOn == 2)
 		return;
 
 	if (tomb5.inv_bg_mode == 3)
 		return;
-#endif
 
 	c = (*r + *b) >> 1;
 	*r = c;
@@ -1773,7 +867,6 @@ void RGBM_Mono(uchar* r, uchar* g, uchar* b)
 	*b = c;
 }
 
-#ifdef GENERAL_FIXES
 static void BitMaskGetNumberOfBits(ulong bitMask, ulong* bitDepth, ulong* bitOffset)
 {
 	long i;
@@ -1884,15 +977,12 @@ static void CustomBlt(DDSURFACEDESC2* dst, ulong dstX, ulong dstY, DDSURFACEDESC
 		dstLine += dst->lPitch;
 	}
 }
-#endif
 
 void ConvertSurfaceToTextures(LPDIRECTDRAWSURFACE4 surface)
 {
 	DDSURFACEDESC2 tSurf;
-#ifdef GENERAL_FIXES
 	DDSURFACEDESC2 uSurf;
 	RECT r;
-#endif
 	ushort* pTexture;
 	ushort* pSrc;
 
@@ -1900,7 +990,6 @@ void ConvertSurfaceToTextures(LPDIRECTDRAWSURFACE4 surface)
 	tSurf.dwSize = sizeof(DDSURFACEDESC2);
 	surface->Lock(0, &tSurf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
 	pSrc = (ushort*)tSurf.lpSurface;
-#ifdef GENERAL_FIXES
 	MonoScreen[0].surface = CreateTexturePage(tSurf.dwWidth, tSurf.dwHeight, 0, NULL, RGBM_Mono, -1);
 
 	memset(&uSurf, 0, sizeof(uSurf));
@@ -1917,33 +1006,6 @@ void ConvertSurfaceToTextures(LPDIRECTDRAWSURFACE4 surface)
 	MonoScreen[0].surface->Unlock(0);
 	DXAttempt(MonoScreen[0].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[0].tex));
 	surface->Unlock(0);
-#else
-	pTexture = (ushort*)malloc(0x40000);
-
-	MemBltSurf(pTexture, 0, 0, 256, 256, 256, pSrc, 0, 0, tSurf, 1.0F, 1.0F);
-	MonoScreen[0].surface = CreateTexturePage(256, 256, 0, (long*)pTexture, RGBM_Mono, 0);
-	DXAttempt(MonoScreen[0].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[0].tex));
-
-	MemBltSurf(pTexture, 0, 0, 256, 256, 256, pSrc, 256, 0, tSurf, 1.0F, 1.0F);
-	MonoScreen[1].surface = CreateTexturePage(256, 256, 0, (long*)pTexture, RGBM_Mono, 0);
-	DXAttempt(MonoScreen[1].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[1].tex));
-
-	MemBltSurf(pTexture, 0, 0, 128, 256, 256, pSrc, 512, 0, tSurf, 1.0F, 1.0F);
-	MemBltSurf(pTexture, 128, 0, 128, 224, 256, pSrc, 512, 256, tSurf, 1.0F, 1.0F);
-	MonoScreen[2].surface = CreateTexturePage(256, 256, 0, (long*)pTexture, RGBM_Mono, 0);
-	DXAttempt(MonoScreen[2].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[2].tex));
-
-	MemBltSurf(pTexture, 0, 0, 256, 224, 256, pSrc, 0, 256, tSurf, 1.0F, 1.0F);
-	MonoScreen[3].surface = CreateTexturePage(256, 256, 0, (long*)pTexture, RGBM_Mono, 0);
-	DXAttempt(MonoScreen[3].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[3].tex));
-
-	MemBltSurf(pTexture, 0, 0, 256, 224, 256, pSrc, 256, 256, tSurf, 1.0F, 1.0F);
-	MonoScreen[4].surface = CreateTexturePage(256, 256, 0, (long*)pTexture, RGBM_Mono, 0);
-	DXAttempt(MonoScreen[4].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[4].tex));
-
-	surface->Unlock(0);
-	free(pTexture);
-#endif
 }
 
 void FreeMonoScreen()
@@ -1958,40 +1020,6 @@ void FreeMonoScreen()
 		else
 			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
 
-#ifndef GENERAL_FIXES
-		if (MonoScreen[1].surface)
-		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen[1].surface, MonoScreen[1].surface->Release());
-			MonoScreen[1].surface = 0;
-		}
-		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
-
-		if (MonoScreen[2].surface)
-		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen[2].surface, MonoScreen[2].surface->Release());
-			MonoScreen[2].surface = 0;
-		}
-		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
-
-		if (MonoScreen[3].surface)
-		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen[3].surface, MonoScreen[3].surface->Release());
-			MonoScreen[3].surface = 0;
-		}
-		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
-
-		if (MonoScreen[4].surface)
-		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen[4].surface, MonoScreen[4].surface->Release());
-			MonoScreen[4].surface = 0;
-		}
-		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
-#endif
-
 		if (MonoScreen[0].tex)
 		{
 			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[0].tex, MonoScreen[0].tex->Release());
@@ -1999,41 +1027,6 @@ void FreeMonoScreen()
 		}
 		else
 			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
-
-#ifndef GENERAL_FIXES
-
-		if (MonoScreen[1].tex)
-		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[1].tex, MonoScreen[1].tex->Release());
-			MonoScreen[1].tex = 0;
-		}
-		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
-
-		if (MonoScreen[2].tex)
-		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[2].tex, MonoScreen[2].tex->Release());
-			MonoScreen[2].tex = 0;
-		}
-		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
-
-		if (MonoScreen[3].tex)
-		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[3].tex, MonoScreen[3].tex->Release());
-			MonoScreen[3].tex = 0;
-		}
-		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
-
-		if (MonoScreen[4].tex)
-		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[4].tex, MonoScreen[4].tex->Release());
-			MonoScreen[4].tex = 0;
-		}
-		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
-#endif
 	}
 
 	MonoScreenOn = 0;
@@ -2110,29 +1103,13 @@ void S_DisplayMonoScreen()
 	long y[4];
 	ulong col;
 
-#ifdef GENERAL_FIXES
 	if (MonoScreenOn == 1 || MonoScreenOn == 2)
-#else
-	if (MonoScreenOn == 1)
-#endif
 	{
-#ifdef GENERAL_FIXES
 		x[0] = phd_winxmin;
 		y[0] = phd_winymin;
 		x[1] = phd_winxmin + phd_winwidth;
 		y[1] = phd_winymin + phd_winheight;
-#else
-		for (int i = 0; i < 3; i++)
-		{
-			x[i] = phd_winxmin + phd_winwidth * MonoScreenX[i] / 640;
-			y[i] = phd_winymin + phd_winheight * MonoScreenY[i] / 480;
-		}
 
-		x[3] = phd_winxmin + phd_winwidth * MonoScreenX[3] / 640;
-#endif
-		RestoreFPCW(FPCW);
-
-#ifdef GENERAL_FIXES
 		if (MonoScreenOn == 2)	//pictures always the same!!
 			col = 0xFFFFFFFF;
 		else
@@ -2142,27 +1119,12 @@ void S_DisplayMonoScreen()
 			else
 				col = 0xFFFFFF80;
 		}
-#else
-		col = 0xFFFFFF80;
-#endif
-			S_DrawTile(x[0], y[0], x[1] - x[0], y[1] - y[0], MonoScreen[0].tex, 0, 0, 256, 256, col, col, col, col);
 
-#ifndef GENERAL_FIXES
-		S_DrawTile(x[1], y[0], x[2] - x[1], y[1] - y[0], MonoScreen[1].tex, 0, 0, 256, 256, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
-		S_DrawTile(x[2], y[0], x[3] - x[2], y[1] - y[0], MonoScreen[2].tex, 0, 0, 128, 256, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
-		S_DrawTile(x[0], y[1], x[1] - x[0], y[2] - y[1], MonoScreen[3].tex, 0, 0, 256, 224, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
-		S_DrawTile(x[1], y[1], x[2] - x[1], y[2] - y[1], MonoScreen[4].tex, 0, 0, 256, 224, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
-		S_DrawTile(x[2], y[1], x[3] - x[2], y[2] - y[1], MonoScreen[2].tex, 128, 0, 128, 224, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80, 0xFFFFFF80);
-#endif
-		MungeFPCW(&FPCW);
+		S_DrawTile(x[0], y[0], x[1] - x[0], y[1] - y[0], MonoScreen[0].tex, 0, 0, 256, 256, col, col, col, col);
 	}
 }
 
-#ifdef GENERAL_FIXES
 long S_LoadSave(long load_or_save, long mono, long inv_active)
-#else
-long S_LoadSave(long load_or_save, long mono)
-#endif
 {
 	long fade, ret;
 
@@ -2173,9 +1135,7 @@ long S_LoadSave(long load_or_save, long mono)
 
 	GetSaveLoadFiles();
 
-#ifdef GENERAL_FIXES
 	if (!inv_active)
-#endif
 		InventoryActive = 1;
 
 	while (1)
@@ -2231,9 +1191,7 @@ long S_LoadSave(long load_or_save, long mono)
 	if (!mono)
 		FreeMonoScreen();
 
-#ifdef GENERAL_FIXES
 	if (!inv_active)
-#endif
 		InventoryActive = 0;
 
 	return ret;
@@ -2289,13 +1247,8 @@ void LoadScreen(long screen, long pathNum)
 
 		screen_surface->Unlock(0);
 		free(pic);
-		
-#ifdef GENERAL_FIXES
 		MonoScreenOn = 2;
 		ConvertSurfaceToTextures(screen_surface);
-#else
-		MonoScreenOn = 1;
-#endif
 	}
 	else
 		Log(0, "WHORE!");
@@ -2313,63 +1266,12 @@ void ReleaseScreen()
 	else
 		Log(1, "%s Attempt To Release NULL Ptr", "Picture Surface");
 
-#ifdef GENERAL_FIXES
 	FreeMonoScreen();
-#endif
 }
 
 void DrawLoadingScreen()
 {
-#if 0
-	DDSURFACEDESC2 surf;
-	ushort* pSrc;
-	uchar* pDest;
-	float xoff, yoff, xadd, yadd;
-	long w, h, val;
-	ushort sVal;
-
-	if (!(App.dx.Flags & 0x80))	//software
-	{
-		memset(&surf, 0, sizeof(surf));
-		surf.dwSize = sizeof(DDSURFACEDESC2);
-		screen_surface->Lock(0, &surf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
-		pSrc = (ushort*)surf.lpSurface;
-		pDest = (uchar*)MMXGetDeviceViewPort(App.dx.lpD3DDevice);
-		MMXGetBackSurfWH(w, h);
-		xadd = 640.0F / (float)w;
-		yadd = 480.0F / (float)h;
-		xoff = 0;
-		yoff = 0;
-
-		for (int i = 0; i < h; i++)
-		{
-			for (int j = 0; j < w; j++)
-			{
-				val = long(640 * yoff + xoff);
-				xoff += xadd;
-				sVal = pSrc[val];
-				pDest[0] = sVal << 3;			//b
-				pDest[1] = (sVal >> 6) << 3;	//g
-				pDest[2] = (sVal >> 11) << 3;	//r
-				pDest[3] = 0xFF;				//a
-				pDest += 4;
-			}
-
-			xoff = 0;
-			yoff += yadd;
-		}
-
-		screen_surface->Unlock(0);
-	}
-	else
-#endif
-	{
-#ifdef GENERAL_FIXES
-		S_DisplayMonoScreen();
-#else
-		G_dxptr->lpBackBuffer->Blt(0, screen_surface, 0, DDBLT_WAIT, 0);
-#endif
-	}
+	S_DisplayMonoScreen();
 }
 
 long GetSaveLoadFiles()
@@ -2576,8 +1478,6 @@ void DoSlider(long x, long y, long width, long height, long pos, long c1, long c
 	AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
 }
 
-#pragma warning(push)
-#pragma warning(disable : 4244)
 long S_DisplayPauseMenu(long reset)
 {
 	static long menu, selection = 1;
@@ -2645,7 +1545,7 @@ long S_DisplayPauseMenu(long reset)
 	}
 	else if (menu == 2)
 	{
-		DoStatScreen();
+		DisplayStatsUCunt();
 
 		if (dbinput & IN_DESELECT)
 		{
@@ -2656,7 +1556,6 @@ long S_DisplayPauseMenu(long reset)
 
 	return 0;
 }
-#pragma warning (pop)
 
 long S_PauseMenu()
 {
@@ -2705,34 +1604,6 @@ long S_PauseMenu()
 	FreeMonoScreen();
 	InventoryActive = 0;
 	return ret;
-}
-
-long IsHardware()
-{
-#if 1
-	return 1;
-#else
-	return App.dx.Flags & 0x80;
-#endif
-}
-
-long IsSuperLowRes()
-{
-#if 1
-	return 0;
-#else
-	long w, h;
-
-	MMXGetBackSurfWH(w, h);
-
-	if (w < 400)
-		return 1;
-
-	if (w <= 512)
-		return 2;
-
-	return 0;
-#endif
 }
 
 void DoFrontEndOneShotStuff()
@@ -2792,16 +1663,10 @@ void CalculateNumSpecialFeatures()
 	}
 }
 
-#pragma warning(push)
-#pragma warning(disable : 4244)
 void SpecialFeaturesDisplayScreens(long num)
 {
 	static long start[4] = { 0, 0, 0, 0 };
-#ifdef GENERAL_FIXES
 	static long nPics[4] = { 12, 15, 12, 23 };
-#else
-	static long nPics[4] = { 12, 11, 12, 23 };
-#endif
 	long first, max, pos, count;
 
 	first = start[num];
@@ -2857,7 +1722,6 @@ void SpecialFeaturesDisplayScreens(long num)
 	dbinput &= ~IN_DESELECT;
 	ReleaseScreen();
 }
-#pragma warning (pop)
 
 void DoSpecialFeaturesServer()
 {

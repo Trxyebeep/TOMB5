@@ -27,9 +27,7 @@
 #include "../specific/file.h"
 #include "spotcam.h"
 #include "../specific/dxshell.h"
-#ifdef GENERAL_FIXES
 #include "savegame.h"
-#endif
 
 static RINGME* rings[2];
 static RINGME pcring1;
@@ -64,8 +62,6 @@ static long xoffset;
 static long yoffset;
 static long OBJLIST_SPACING;
 static long pcbright = 0x7F7F7F;
-static short inventry_xpos = 0;
-static short inventry_ypos = 0;
 static short combine_obj1;
 static short combine_obj2;
 static short ammo_selector_fade_val;
@@ -336,11 +332,11 @@ INVOBJ inventry_objects_list[NUM_INVOBJ] =
 	{EXAMINE1, 4, 0x514, 0, 0x4000, 0, 2, TXT_Load, -1},
 	{EXAMINE2, 14, 0x4B0, 0, 0x4000, 0, 2, TXT_Load, -1},
 	{EXAMINE3, 14, 0x4B0, 0, 0x4000, 0, 2, TXT_Load, -1},
-	{WET_CLOTH, -12, 0x200, 0x4000, 0x3000, 0x5000, 2, TXT_Wet_Cloth, -1},
+	{WET_CLOTH, -50, 0x200, 0x4000, 0x3000, 0x5000, 2, TXT_Wet_Cloth, -1},
 	{CROSSBOW_ITEM, 0, 0x384, 0x2000, 0x1800, 0,2 , TXT_GRAP1, 1},
 	{CROSSBOW_AMMO1_ITEM, 0, 0x44C, 0x4000, -0x1000, 0, 2, TXT_GRAP2, -1},
-	{CLOTH, -12, 0x200, 0x4000, 0x3000, 0x5000, 2, TXT_Cloth, -1 },
-	{BOTTLE, 18, 0x320, 0xC000, 0, 0, 2, TXT_Bottle, -1},
+	{CLOTH, -50, 0x200, 0x4000, 0x3000, 0x5000, 2, TXT_Cloth, -1 },
+	{BOTTLE, 50, 0x320, 0xC000, 0, 0, 2, TXT_Bottle, -1},
 	{PUZZLE_HOLE8, -10, 0x180, 0xC000, 0x6800, 0xC000, 10, TXT_Bottle, -1}
 };
 #pragma warning(pop)
@@ -393,11 +389,18 @@ long S_CallInventory2()
 	}
 
 	if (gfCurrentLevel >= LVL5_THIRTEENTH_FLOOR && gfCurrentLevel <= LVL5_RED_ALERT)
+	{
+		inventry_objects_list[INV_BINOCULARS_ITEM].scale1 = 0x384;
+		inventry_objects_list[INV_BINOCULARS_ITEM].yrot = -0x8000;
 		inventry_objects_list[INV_BINOCULARS_ITEM].objname = TXT_Headset;
+	}
 	else
+	{
+		inventry_objects_list[INV_BINOCULARS_ITEM].scale1 = 0x2BC;
+		inventry_objects_list[INV_BINOCULARS_ITEM].yrot = 0x1000;
 		inventry_objects_list[INV_BINOCULARS_ITEM].objname = TXT_Binoculars;
+	}
 
-#ifdef GENERAL_FIXES//restore HK tip, and properly align HK in iris
 	inventry_objects_list[INV_HK_ITEM1].meshbits = -1;
 
 	if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
@@ -416,7 +419,6 @@ long S_CallInventory2()
 		inventry_objects_list[INV_HK_ITEM1].flags = 2;
 		inventry_objects_list[INV_HK_ITEM1].yoff = 0;
 	}
-#endif
 
 	friggrimmer = 0;
 	oldLaraBusy = lara.Busy != 0;
@@ -471,9 +473,6 @@ long S_CallInventory2()
 		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
 			keymap[DIK_B] && keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_S])//BITS
 		{
-#ifndef GENERAL_FIXES	//no items with BITS
-			dels_give_lara_items_cheat();
-#endif
 			savegame.CampaignSecrets[0] = 9;
 			savegame.CampaignSecrets[1] = 9;
 			savegame.CampaignSecrets[2] = 9;
@@ -599,7 +598,7 @@ void init_new_inventry()
 {
 	examine_mode = 0;
 	stats_mode = 0;
-	AlterFOV(14560);
+	AlterFOV(GAME_FOV);
 	lara.Busy = 0;
 	GLOBAL_inventoryitemchosen = NO_ITEM;
 	left_debounce = 0;
@@ -772,10 +771,7 @@ void DrawThreeDeeObject2D(long x, long y, long num, long shade, long xrot, long 
 	item.pos.y_rot = short(yrot + objme->yrot);
 	item.pos.z_rot = short(zrot + objme->zrot);
 	item.object_number = objme->object_number;
-	phd_LookAt(0, 1024, 0, 0, 0, 0, 0);
-#ifndef GENERAL_FIXES
-	aLookAt(0, 1024, 0, 100, 0, 200, 0);
-#endif
+	phd_LookAt(0, 1024, 0, 100, 0, 200, 0);
 
 	if (!bright)
 		pcbright = 0x7F7F7F;
@@ -784,7 +780,7 @@ void DrawThreeDeeObject2D(long x, long y, long num, long shade, long xrot, long 
 	else
 		pcbright = RGBONLY(bright, bright, bright);
 
-	SetD3DViewMatrix();
+	aSetViewMatrix();
 	phd_PushUnitMatrix();
 	phd_TranslateRel(0, 0, objme->scale1);
 	yoffset = objme->yoff + y;
@@ -821,19 +817,6 @@ void DrawInventoryItemMe(ITEM_INFO* item, long shade, long overlay, long shagfla
 	frmptr = anim->frame_ptr;
 	object = &objects[item->object_number];
 	phd_PushMatrix();
-
-	if (item->object_number == PC_LOAD_INV_ITEM || item->object_number == PC_SAVE_INV_ITEM)
-	{
-		a = IsSuperLowRes();
-
-		if (!IsHardware() && a)
-		{
-			if (a == 1)
-				phd_TranslateRel(0, -390, 0);
-			else
-				phd_TranslateRel(0, -190, 0);
-		}
-	}
 
 	if (item->object_number == HK_ITEM && gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
 		phd_TranslateRel(0, 70, 0);
@@ -931,11 +914,6 @@ void construct_combine_object_list()
 			else
 				insert_object_into_list_v2(INV_REVOLVER_ITEM1);
 		}
-
-#ifndef GENERAL_FIXES//stop HK from appearing in combine list
-		if (lara.hk_type_carried & W_PRESENT)
-			insert_object_into_list_v2(INV_HK_ITEM1);
-#endif
 
 		if (lara.crossbow_type_carried & W_PRESENT && (gfCurrentLevel < LVL5_THIRTEENTH_FLOOR || gfCurrentLevel > LVL5_RED_ALERT))
 		{
@@ -1192,8 +1170,8 @@ void insert_object_into_list(long num)
 
 void draw_current_object_list(long ringnum)
 {
-	long n, maxobj, xoff, shade, minobj, objmeup, nummeup, activenum;
-	short ymeup, yrot;
+	long n, maxobj, xoff, shade, minobj, objmeup, nummeup, activenum, ymeup, x, y;
+	short yrot;
 	char textbufme[128];
 
 	if (rings[ringnum]->numobjectsinlist <= 0)
@@ -1386,11 +1364,11 @@ void draw_current_object_list(long ringnum)
 				sprintf(textbufme, "%d x %s", nummeup, SCRIPT_TEXT(inventry_objects_list[rings[ringnum]->current_object_list[n].invitem].objname));
 
 			if (ringnum == RING_INVENTORY)
-				ymeup = short(phd_centery - (phd_winymax + 1) / 16.0F * 3.0F);
+				ymeup = long(phd_centery - (phd_winymax + 1) / 16.0F * 3.0F);
 			else
-				ymeup = short((phd_winymax + 1) / 16.0F * 3.0F + phd_centery);
+				ymeup = long((phd_winymax + 1) / 16.0F * 3.0F + phd_centery);
 
-			PrintString((ushort)phd_centerx, ymeup, 8, textbufme, FF_CENTER);
+			PrintString(phd_centerx, ymeup, 8, textbufme, FF_CENTER);
 		}
 
 		if (!i && !rings[ringnum]->objlistmovement)
@@ -1427,11 +1405,9 @@ void draw_current_object_list(long ringnum)
 				rings[ringnum]->current_object_list[n].bright = 32;
 		}
 
-		ymeup = ringnum == RING_INVENTORY ? 42 : 190;
-		DrawThreeDeeObject2D(long((phd_centerx / 256.0F * 256.0F + inventry_xpos) + xoff + i * OBJLIST_SPACING),
-			long(phd_centery / 120.0F * ymeup + inventry_ypos),
-			rings[ringnum]->current_object_list[n].invitem,
-			shade, 0, yrot, 0, rings[ringnum]->current_object_list[n].bright, 0);
+		x = xoff + phd_centerx + i * OBJLIST_SPACING;
+		y = ringnum == RING_INVENTORY ? GetFixedScale(84) : GetFixedScale(380);
+		DrawThreeDeeObject2D(x, y, rings[ringnum]->current_object_list[n].invitem, shade, 0, yrot, 0, rings[ringnum]->current_object_list[n].bright, 0);
 
 		n++;
 
@@ -1509,7 +1485,7 @@ void handle_inventry_menu()
 
 	if (rings[RING_AMMO]->ringactive)
 	{
-		PrintString((ushort)phd_centerx, (ushort)phd_centery, 1, SCRIPT_TEXT(optmessages[5]), FF_CENTER);
+		PrintString(phd_centerx, phd_centery, 1, SCRIPT_TEXT(optmessages[5]), FF_CENTER);
 
 		if (rings[RING_INVENTORY]->objlistmovement || rings[RING_AMMO]->objlistmovement)
 			return;
@@ -1651,7 +1627,7 @@ void handle_inventry_menu()
 
 	for (int i = 0; i < n; i++)
 	{
-		PrintString((ushort)phd_centerx, (ushort)ypos, i == current_selected_option ? 1 : 5, current_options[i].text, FF_CENTER);
+		PrintString(phd_centerx, ypos, i == current_selected_option ? 1 : 5, current_options[i].text, FF_CENTER);
 		ypos += font_height;
 	}
 
@@ -1884,7 +1860,7 @@ void fade_ammo_selector()
 void draw_ammo_selector()
 {
 	INVOBJ* objme;
-	long xpos;
+	long xpos, x, y;
 	short yrot, invitem;
 	char cunter[256];
 
@@ -1921,13 +1897,12 @@ void draw_ammo_selector()
 				sprintf(cunter, "%d x %s", ammo_object_list[i].amount, SCRIPT_TEXT(inventry_objects_list[invitem].objname));
 
 			if (ammo_selector_fade_val)
-				PrintString((ushort)phd_centerx, ushort(phd_centery + 3 * font_height - 9), 8, cunter, FF_CENTER);
+				PrintString(phd_centerx, phd_centery + 3 * font_height - 9, 8, cunter, FF_CENTER);
 		}
 		
-		DrawThreeDeeObject2D(long(phd_centerx / 256.0F * 64.0F + inventry_xpos + xpos),
-			long(phd_centery / 12.0F * 190.0F + inventry_ypos), invitem,
-			ammo_selector_fade_val, 0, yrot, 0, (i == current_ammo_type[0]) ? 0 : 1, 0);
-
+		x = xpos + GetFixedScale(80);
+		y = GetFixedScale(380);
+		DrawThreeDeeObject2D(x, y, invitem, ammo_selector_fade_val, 0, yrot, 0, (i == current_ammo_type[0]) ? 0 : 1, 0);
 		xpos += OBJLIST_SPACING;
 	}
 }
@@ -2306,59 +2281,62 @@ void use_current_item()
 
 			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_PISTOLS)
 				lara.gun_status = LG_DRAW_GUNS;
+
+			return;
 		}
-		else if (gmeobject == UZI_ITEM)
+
+		if (gmeobject == UZI_ITEM)
 		{
 			lara.request_gun_type = WEAPON_UZI;
 
 			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_UZI)
 				lara.gun_status = LG_DRAW_GUNS;
-		}
 
-		return;
-	}
-
-	if (gmeobject == SHOTGUN_ITEM || gmeobject == REVOLVER_ITEM || gmeobject == HK_ITEM || gmeobject == CROSSBOW_ITEM)
-	{
-		state = lara_item->current_anim_state;
-
-		if (lara.gun_status == LG_HANDS_BUSY || state == AS_ALL4S || state == AS_CRAWL || state == AS_ALL4TURNL || state == AS_ALL4TURNR ||
-			state == AS_CRAWLBACK || state == AS_CRAWL2HANG || state == AS_DUCK || state == AS_DUCKROTL || state == AS_DUCKROTR)
-		{
-			SayNo();
 			return;
 		}
 
-		if (gmeobject == SHOTGUN_ITEM)
+		if (gmeobject == SHOTGUN_ITEM || gmeobject == REVOLVER_ITEM || gmeobject == HK_ITEM || gmeobject == CROSSBOW_ITEM)
 		{
-			lara.request_gun_type = WEAPON_SHOTGUN;
+			state = lara_item->current_anim_state;
 
-			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == SHOTGUN_ITEM)
-				lara.gun_status = LG_DRAW_GUNS;
+			if (lara.gun_status == LG_HANDS_BUSY || state == AS_ALL4S || state == AS_CRAWL || state == AS_ALL4TURNL || state == AS_ALL4TURNR ||
+				state == AS_CRAWLBACK || state == AS_CRAWL2HANG || state == AS_DUCK || state == AS_DUCKROTL || state == AS_DUCKROTR)
+			{
+				SayNo();
+				return;
+			}
+
+			if (gmeobject == SHOTGUN_ITEM)
+			{
+				lara.request_gun_type = WEAPON_SHOTGUN;
+
+				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == SHOTGUN_ITEM)
+					lara.gun_status = LG_DRAW_GUNS;
+			}
+			else if (gmeobject == REVOLVER_ITEM)
+			{
+				lara.request_gun_type = WEAPON_REVOLVER;
+
+				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_REVOLVER)
+					lara.gun_status = LG_DRAW_GUNS;
+			}
+			else if (gmeobject == HK_ITEM)
+			{
+				lara.request_gun_type = WEAPON_HK;
+
+				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == HK_ITEM)
+					lara.gun_status = LG_DRAW_GUNS;
+			}
+			else
+			{
+				lara.request_gun_type = WEAPON_CROSSBOW;
+
+				if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_CROSSBOW)
+					lara.gun_status = LG_DRAW_GUNS;
+			}
+
+			return;
 		}
-		else if (gmeobject == REVOLVER_ITEM)
-		{
-			lara.request_gun_type = WEAPON_REVOLVER;
-
-			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_REVOLVER)
-				lara.gun_status = LG_DRAW_GUNS;
-		}
-		else if (gmeobject == HK_ITEM)
-		{
-			lara.request_gun_type = WEAPON_HK;
-
-			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == HK_ITEM)
-				lara.gun_status = LG_DRAW_GUNS;
-		}
-		else
-		{
-			lara.request_gun_type = WEAPON_CROSSBOW;
-
-			if (lara.gun_status == LG_NO_ARMS && lara.gun_type == WEAPON_CROSSBOW)
-				lara.gun_status = LG_DRAW_GUNS;
-		}
-
-		return;
 	}
 
 	if (gmeobject == FLARE_INV_ITEM)
@@ -2679,9 +2657,7 @@ void NailInvItem(short objnum)
 		break;
 
 	case PISTOLS_ITEM:
-#ifdef GENERAL_FIXES
 		LHolster = LARA_HOLSTERS;
-#endif
 		lara.holster = LARA_HOLSTERS;
 		lara.pistols_type_carried = W_NONE;
 		lara.gun_status = LG_NO_ARMS;
@@ -2898,10 +2874,10 @@ void do_keypad_mode()
 
 	objme->meshbits = meshbits;
 
-	x = long(phd_centerx / 256.0F * 256.0F + inventry_xpos);
-	y = long((phd_centery / 120.0F * 256.0F + inventry_ypos) / 2);
+	x = phd_centerx;
+	y = phd_centery + GetFixedScale(16);
 	DrawThreeDeeObject2D(x, y, INV_PUZZLE_HOLE8, 128, 0x8000, 0x4000, 0x4000, 0, 0);
-	PrintString(256, ushort(y - 64), 6, SCRIPT_TEXT(TXT_keypad), FF_CENTER);
+	PrintString(x, y - GetFixedScale(64), 6, SCRIPT_TEXT(TXT_keypad), FF_CENTER);
 
 	buf[0] = '-';
 	buf[1] = '-';
@@ -2912,11 +2888,10 @@ void do_keypad_mode()
 	for (int i = 0; i < keypadnuminputs; i++)
 		buf[i] = keypadinputs[i] + '0';
 
-	PrintString(256, ushort(y + 64), 1, buf, FF_CENTER);
+	PrintString(x, y + GetFixedScale(128), 1, buf, FF_CENTER);
 
 	if (keypadpause)
 	{
-#ifdef GENERAL_FIXES
 		x = keypadinputs[0] * 1000 + keypadinputs[1] * 100 + keypadinputs[2] * 10 + keypadinputs[3];
 
 		if (GLOBAL_invkeypadcombination == x)
@@ -2926,7 +2901,6 @@ void do_keypad_mode()
 		}
 		else if (keypadpause == 30 || keypadpause == 25 || keypadpause == 20 || keypadpause == 15 || keypadpause == 10 || keypadpause == 5)
 			SoundEffect(SFX_KEYPAD_ENTRY_NO, 0, SFX_ALWAYS | SFX_SETVOL | 0x1000);
-#endif
 
 		keypadpause--;
 
@@ -2994,6 +2968,7 @@ void do_keypad_mode()
 void do_examine_mode()
 {
 	INVOBJ* objme;
+	long x, y;
 	short invitem, scale;
 
 	invitem = rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem;
@@ -3005,8 +2980,9 @@ void do_examine_mode()
 		examine_mode = 128;
 
 	objme->scale1 = 300;
-	DrawThreeDeeObject2D(long(phd_centerx + inventry_xpos), long(phd_centery / 120.0 * 256.0 + inventry_xpos) / 2,
-		invitem, examine_mode, 0x8000, 0x4000, 0x4000, 96, 0);
+	x = phd_centerx;
+	y = GetFixedScale(256);
+	DrawThreeDeeObject2D(x, y, invitem, examine_mode, 0x8000, 0x4000, 0x4000, 96, 0);
 	objme->scale1 = scale;
 
 	if (go_deselect)
@@ -3036,7 +3012,6 @@ void do_stats_mode()
 
 void dels_give_lara_items_cheat()
 {
-#ifdef GENERAL_FIXES
 	long piss;
 
 	if (objects[CROWBAR_ITEM].loaded)
@@ -3075,12 +3050,10 @@ void dels_give_lara_items_cheat()
 		lara.keyitemscombo = 0;
 		lara.pickupitemscombo = 0;
 	}
-#endif
 }
 
 void dels_give_lara_guns_cheat()
 {
-#ifdef GENERAL_FIXES
 	if (objects[FLARE_INV_ITEM].loaded)
 		lara.num_flares = -1;
 
@@ -3132,28 +3105,18 @@ void dels_give_lara_guns_cheat()
 		if (objects[SILENCER_ITEM].loaded)
 			lara.silencer = 1;
 	}
-#endif
 }
 
 long LoadGame()
 {
-#ifdef GENERAL_FIXES
 	return S_LoadSave(IN_LOAD, 1, 1) < 0 ? -1 : 1;
-#else
-	return S_LoadSave(IN_LOAD, 1) < 0 ? -1 : 1;
-#endif
 }
 
 long SaveGame()
 {
 	input = 0;
 	dbinput = 0;
-
-#ifdef GENERAL_FIXES
 	return S_LoadSave(IN_SAVE, 1, 1) < 0 ? -1 : 1;
-#else
-	return S_LoadSave(IN_SAVE, 1) < 0 ? -1 : 1;
-#endif
 }
 
 void DelDrawSprite(long x, long y, long def, long z)

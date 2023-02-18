@@ -50,7 +50,7 @@ void ClearSpiders()
 {
 	if (objects[SPIDER].loaded)
 	{
-		S_MemSet(Spiders, 0, 1664);
+		memset(Spiders, 0, 0x680);
 		next_spider = 0;
 		flipeffect = -1;
 	}
