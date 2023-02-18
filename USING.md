@@ -36,30 +36,23 @@
 ### 1. FootPrints:
 - Toggles footprints on and off.
 
-### 2. Point Light Shadows:
-Determines behavior of point light/dynamic light shadows.
-
-- TR4: Brings more physically accurate shadowing.
-- TR5: Less physically accurate, produces broader lighting.
-![image](https://user-images.githubusercontent.com/38836940/146661985-c9b02088-c853-4c46-85d4-6f430611eb8d.png)
-
-### 3. Shadow Mode:
+### 2. Shadow Mode:
 Determines shadow shape
 - Original: Original octagon shape.
 - Circle: A flat semi-transparent circle.
 - PSX: A faded circle similar to the shadow present in the PSX version.
 
-### 4. Fix climb up delay:
+### 3. Fix climb up delay:
 - Fixes the 1 second delay for Lara's ledge climb up.
 
-### 5. Flexible crawling:
+### 4. Flexible crawling:
 - Toggles more responsive crawling with less freezes in Lara's moveset.
 
-### 6. Cutscene skipper:
+### 5. Cutscene skipper:
 - Toggles the cutscene skipper. (Keep in mind, normal flybies are not cutscenes!)
 *Skip cutscenes using the ESC button.*
 
-### 7. Cheats:
+### 6. Cheats:
 Toggles ingame cheats on and off.
 For inventory cheats, highlight the Timex-TMX.
 
@@ -70,7 +63,7 @@ For inventory cheats, highlight the Timex-TMX.
 - SKIP: Inventory cheat. Skips to the next level.
 - HEAL: Inventory cheat. Fills Lara's healthbar.
 
-### 8. Bar Positions:
+### 7. Bar Positions:
 Changes the positions of the bars on the screen.
 
 - Original: original PC bar positions
@@ -146,3 +139,6 @@ Note: this value is in blocks/squares, meaning a value of 12 makes the distance 
 
 ### 24. static lighting:
 - Toggles static lighting.
+
+### 25. UW Effect:
+- Controls the underwater dust effect.

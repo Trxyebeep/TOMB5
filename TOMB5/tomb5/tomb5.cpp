@@ -21,10 +21,6 @@ void init_tomb5_stuff()
 		tomb5.footprints = 1;							//footprints on
 		REG_WriteBool(buf, tomb5.footprints);
 
-		sprintf(buf, "point_lights");
-		tomb5.tr4_point_lights = 0;						//TR5 points
-		REG_WriteBool(buf, tomb5.tr4_point_lights);		
-
 		sprintf(buf, "shadow");
 		tomb5.shadow_mode = 3;							//PSX like shadow
 		REG_WriteLong(buf, tomb5.shadow_mode);
@@ -126,9 +122,6 @@ void init_tomb5_stuff()
 		sprintf(buf, "footprints");
 		REG_ReadBool(buf, tomb5.footprints, 1);
 
-		sprintf(buf, "point_lights");
-		REG_ReadBool(buf, tomb5.tr4_point_lights, 0);
-
 		sprintf(buf, "shadow");
 		REG_ReadLong(buf, tomb5.shadow_mode, 3);
 
@@ -212,9 +205,6 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "footprints");
 	REG_WriteBool(buf, tomb5.footprints);
-
-	sprintf(buf, "point_lights");
-	REG_WriteBool(buf, tomb5.tr4_point_lights);
 
 	sprintf(buf, "shadow");
 	REG_WriteLong(buf, tomb5.shadow_mode);

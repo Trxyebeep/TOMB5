@@ -103,14 +103,8 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 				for (int j = 0; j < NumPointLights; j++)
 				{
 					point = &PointLights[j];
-
-					if (tomb5.tr4_point_lights)
-						val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz);
-					else
-					{
-						val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
-						val *= val;
-					}
+					val = (point->vec.x * mesh->aVtx[i].nx + point->vec.y * mesh->aVtx[i].ny + point->vec.z * mesh->aVtx[i].nz + 1.0F) * 0.5F;
+					val *= val;
 
 					if (val > 0)
 					{
