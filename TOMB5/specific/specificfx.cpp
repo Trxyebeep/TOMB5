@@ -3191,8 +3191,8 @@ void DrawLightning()
 	float* pPos;
 	float* pVtx;
 	short* pC;
-	float pos[128];
-	float vtx[256];
+	float pos[32 * 3];
+	float vtx[32 * 6];
 	float px, py, pz, px1, py1, pz1, px2, py2, pz2, px3, py3, pz3, n, nx, ny, nz, xAdd, yAdd, zAdd;
 	float mx, my, mz, zv, size, size2, step, s, c, uAdd;
 	long r1, r2, r3, col, r, g, b, lp;
@@ -3202,11 +3202,10 @@ void DrawLightning()
 
 	phd_PushMatrix();
 	phd_TranslateAbs(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos);
+	aSetViewMatrix();
 
 	for (int i = 0; i < 16; i++)
 	{
-		aSetViewMatrix();
-
 		l = &Lightning[i];
 
 		if (!l->Life)
@@ -3260,10 +3259,9 @@ void DrawLightning()
 			pPos[0] = nx * px1 + ny * px2 + nz * px3 + px + xAdd;
 			pPos[1] = nx * py1 + ny * py2 + nz * py3 + py + yAdd;
 			pPos[2] = nx * pz1 + ny * pz2 + nz * pz3 + pz + zAdd;
-			pPos[3] = 1.0F;
 
 			n += (1.0F / 32.0F);
-			pPos += 4;
+			pPos += 3;
 		}
 
 		rand = r1;
@@ -3306,8 +3304,8 @@ void DrawLightning()
 			pVtx[4] = mx;
 			pVtx[5] = my;
 
-			pPos += 4;
-			pVtx += 8;
+			pPos += 3;
+			pVtx += 6;
 		}
 
 		size = float(l->Size >> 1);
@@ -3326,7 +3324,7 @@ void DrawLightning()
 
 		for (lp = 0; lp < 32; lp++)
 		{
-			r = phd_atan(long(pVtx[8] - pVtx[0]), long(pVtx[9] - pVtx[1]));
+			r = phd_atan(long(pVtx[6] - pVtx[0]), long(pVtx[7] - pVtx[1]));
 			s = fSin(-r);
 			c = fCos(-r);
 
@@ -3352,8 +3350,8 @@ void DrawLightning()
 				l->Flags &= ~8;
 			}
 
-			pPos += 4;
-			pVtx += 8;
+			pPos += 3;
+			pVtx += 6;
 		}
 
 		sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 28];
@@ -3395,7 +3393,7 @@ void DrawLightning()
 			tex.u4 = tex.u3;
 			tex.v4 = sprite->y1;
 
-			if (pVtx[3] >= zv && pVtx[11] >= zv)
+			if (pVtx[3] >= zv && pVtx[9] >= zv)
 			{
 				pV[0].sx = pVtx[0] - pPos[0];
 				pV[0].sy = pVtx[1] - pPos[1];
@@ -3415,21 +3413,21 @@ void DrawLightning()
 				pV[1].color = col;
 				pV[1].specular = 0xFF000000;
 
-				pV[2].sx = pVtx[8] - pPos[4];
-				pV[2].sy = pVtx[9] - pPos[5];
-				pV[2].rhw = pVtx[10];
-				pV[2].sz = pVtx[11];
-				pV[2].tu = pVtx[12];
-				pV[2].tv = pVtx[13];
+				pV[2].sx = pVtx[6] - pPos[3];
+				pV[2].sy = pVtx[7] - pPos[4];
+				pV[2].rhw = pVtx[8];
+				pV[2].sz = pVtx[9];
+				pV[2].tu = pVtx[10];
+				pV[2].tv = pVtx[11];
 				pV[2].color = col;
 				pV[2].specular = 0xFF000000;
 
-				pV[3].sx = pVtx[8] + pPos[4];
-				pV[3].sy = pVtx[9] + pPos[5];
-				pV[3].rhw = pVtx[10];
-				pV[3].sz = pVtx[11];
-				pV[3].tu = pVtx[12];
-				pV[3].tv = pVtx[13];
+				pV[3].sx = pVtx[6] + pPos[3];
+				pV[3].sy = pVtx[7] + pPos[4];
+				pV[3].rhw = pVtx[8];
+				pV[3].sz = pVtx[9];
+				pV[3].tu = pVtx[10];
+				pV[3].tv = pVtx[11];
 				pV[3].color = col;
 				pV[3].specular = 0xFF000000;
 
@@ -3442,8 +3440,8 @@ void DrawLightning()
 				AddQuadSorted(pV, 1, 0, 2, 3, &tex, 1);
 			}
 
-			pPos += 4;
-			pVtx += 8;
+			pPos += 3;
+			pVtx += 6;
 			pC++;
 		}
 	}
