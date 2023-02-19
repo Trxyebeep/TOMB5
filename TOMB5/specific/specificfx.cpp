@@ -4820,14 +4820,15 @@ void S_DrawFloorLasers(ITEM_INFO* item)
 	val = float((GlobalCounter >> 2) & 0x1F) * (1.0F / 256.0F) + sprite->y1;
 	tex.drawtype = 2;
 	tex.tpage = sprite->tpage;
+
 	tex.u1 = sprite->x1;
-	tex.v1 = val;
-	tex.u2 = sprite->x1;
-	tex.v2 = val;
-	tex.u3 = sprite->x1;
-	tex.v3 = val + (31.0F / 256.0F);
+	tex.v1 = sprite->y1;
+	tex.u2 = sprite->x1 + (30.0F / 256.0F);
+	tex.v2 = sprite->y1;
 	tex.u4 = sprite->x1;
-	tex.v4 = val + (31.0F / 256.0F);
+	tex.v4 = sprite->y1 + (32.0F / 256.0F);
+	tex.u3 = sprite->x1 + (30.0F / 256.0F);
+	tex.v3 = sprite->y1 + (32.0F / 256.0F);
 
 	pulse = laser->Pulse;
 	vbuf = aVertexBuffer;
