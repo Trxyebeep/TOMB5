@@ -3890,7 +3890,7 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 	TEXTURESTRUCT tex;
 	float* pVtx;
 	short* c;
-	float vtx[128 * 8];
+	float vtx[128 * 6];
 	float x, y, z, mx, my, mz, zv, uAdd;
 	float size, size2;
 	long r, g, b, step, col, lp;
