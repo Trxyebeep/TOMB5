@@ -3884,15 +3884,16 @@ void DrawRope(ROPE_STRUCT* rope)
 
 void DrawTwogunLaser(TWOGUN_INFO* info)
 {
-	SVECTOR* pos;
+	FVECTOR* pos;
 	D3DTLVERTEX* v;
 	SPRITESTRUCT* sprite;
 	TEXTURESTRUCT tex;
 	float* pVtx;
 	short* c;
-	float vtx[1024];
+	float vtx[128 * 8];
 	float x, y, z, mx, my, mz, zv, uAdd;
-	long r, g, b, size, size2, step, col, lp;
+	float size, size2;
+	long r, g, b, step, col, lp;
 	short angle, pz, clipFlag;
 	short clip[128];
 
@@ -3920,7 +3921,7 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 	phd_RotYXZ(info->pos.y_rot, info->pos.x_rot, info->pos.z_rot);
 	aSetViewMatrix();
 
-	pos = (SVECTOR*)&tsv_buffer[0];
+	pos = (FVECTOR*)&tsv_buffer[0];
 	size = 0;
 	step = info->size << 2;
 	pz = 0;
@@ -3928,16 +3929,16 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 
 	for (lp = 0; lp < 8; lp++)
 	{
-		size2 = size >> 1;
+		size2 = size / 2;
 
 		if (size2 > 48)
 			size2 = 48;
 
-		pos->x = short((size * phd_sin(angle)) >> 15);
-		pos->y = short((size * phd_cos(angle)) >> 15);
+		pos->x = (size * fSin(angle)) / 2;
+		pos->y = (size * fCos(angle)) / 2;
 		pos->z = pz;
-		pos[1].x = short(pos->x - size2);
-		pos[1].y = short(pos->y - size2);
+		pos[1].x = pos->x - size2;
+		pos[1].y = pos->y - size2;
 		pos[1].z = pz;
 
 		size += step;
@@ -3948,16 +3949,16 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 
 	for (lp = 0; lp < 56; lp++)
 	{
-		size2 = size >> 1;
+		size2 = size / 2;
 
 		if (size2 > 48)
 			size2 = 48;
 
-		pos->x = short((size * phd_sin(angle)) >> 15);
-		pos->y = short((size * phd_cos(angle)) >> 15);
+		pos->x = (size * fSin(angle)) / 2;
+		pos->y = (size * fCos(angle)) / 2;
 		pos->z = pz;
-		pos[1].x = short(pos->x - size2);
-		pos[1].y = short(pos->y - size2);
+		pos[1].x = pos->x - size2;
+		pos[1].y = pos->y - size2;
 		pos[1].z = pz;
 
 		if (lp & 1)
@@ -3971,7 +3972,7 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 		pos += 2;
 	}
 
-	pos = (SVECTOR*)&tsv_buffer[0];
+	pos = (FVECTOR*)&tsv_buffer[0];
 	pVtx = vtx;
 	c = clip;
 
@@ -4011,7 +4012,7 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 		pVtx[4] = mx;
 		pVtx[5] = my;
 
-		pVtx += 8;
+		pVtx += 6;
 		pos++;
 	}
 
@@ -4046,30 +4047,30 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 		v[0].color = col;
 		v[0].specular = 0xFF000000;
 
-		v[1].sx = pVtx[8];
-		v[1].sy = pVtx[9];
-		v[1].rhw = pVtx[10];
-		v[1].sz = pVtx[11];
-		v[1].tu = pVtx[12];
-		v[1].tv = pVtx[13];
+		v[1].sx = pVtx[6];
+		v[1].sy = pVtx[7];
+		v[1].rhw = pVtx[8];
+		v[1].sz = pVtx[9];
+		v[1].tu = pVtx[10];
+		v[1].tv = pVtx[11];
 		v[1].color = col;
 		v[1].specular = 0xFF000000;
 
-		v[2].sx = pVtx[16];
-		v[2].sy = pVtx[17];
-		v[2].rhw = pVtx[18];
-		v[2].sz = pVtx[19];
-		v[2].tu = pVtx[20];
-		v[2].tv = pVtx[21];
+		v[2].sx = pVtx[12];
+		v[2].sy = pVtx[13];
+		v[2].rhw = pVtx[14];
+		v[2].sz = pVtx[15];
+		v[2].tu = pVtx[16];
+		v[2].tv = pVtx[17];
 		v[2].color = col;
 		v[2].specular = 0xFF000000;
 
-		v[3].sx = pVtx[24];
-		v[3].sy = pVtx[25];
-		v[3].rhw = pVtx[26];
-		v[3].sz = pVtx[27];
-		v[3].tu = pVtx[28];
-		v[3].tv = pVtx[29];
+		v[3].sx = pVtx[18];
+		v[3].sy = pVtx[19];
+		v[3].rhw = pVtx[20];
+		v[3].sz = pVtx[21];
+		v[3].tu = pVtx[22];
+		v[3].tv = pVtx[23];
 		v[3].color = col;
 		v[3].specular = 0xFF000000;
 
@@ -4081,7 +4082,7 @@ void DrawTwogunLaser(TWOGUN_INFO* info)
 		AddQuadSorted(v, 1, 0, 2, 3, &tex, 1);
 
 		c += 2;
-		pVtx += 16;
+		pVtx += 12;
 	}
 
 	phd_PopMatrix();
