@@ -774,16 +774,17 @@ void ChaseCamera(ITEM_INFO* item)
 		camera.actual_elevation = -15470;
 
 	distance = camera.target_distance * phd_cos(camera.actual_elevation) >> 14;
+	wx = camera.target.x;
+	wy = camera.target.y;
+	wz = camera.target.z;
+	GetFloor(wx, wy, wz, &camera.target.room_number);
+	room_number = camera.target.room_number;
+	floor = GetFloor(wx, wy, wz, &room_number);
+	h = GetHeight(floor, wx, wy, wz);
+	c = GetCeiling(floor, wx, wy, wz);
 
 	if (tomb5.tr4_camera)
 	{
-		wx = camera.target.x;
-		wy = camera.target.y;
-		wz = camera.target.z;
-		floor = GetFloor(wx, wy, wz, &camera.target.room_number);
-		h = GetHeight(floor, wx, wy, wz);
-		c = GetCeiling(floor, wx, wy, wz);
-
 		if (c + 16 > h - 16 && h != NO_HEIGHT && c != NO_HEIGHT)
 		{
 			camera.target.y = (h + c) >> 1;
@@ -800,15 +801,6 @@ void ChaseCamera(ITEM_INFO* item)
 			camera.actual_elevation = 0;
 		}
 	}
-
-	wx = camera.target.x;
-	wy = camera.target.y;
-	wz = camera.target.z;
-	GetFloor(wx, wy, wz, &camera.target.room_number);
-	room_number = camera.target.room_number;
-	floor = GetFloor(wx, wy, wz, &room_number);
-	h = GetHeight(floor, wx, wy, wz);
-	c = GetCeiling(floor, wx, wy, wz);
 
 	if (wy < c || wy > h || c >= h || h == NO_HEIGHT || c == NO_HEIGHT)
 	{
