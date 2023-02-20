@@ -1172,18 +1172,10 @@ void DoRain()
 
 				if (room_number == rptr->room_number || room[room_number].flags & ROOM_UNDERWATER)
 				{
-					if (room[room_number].flags & ROOM_UNDERWATER)
-					{
-						//	clr = GetWaterHeight(rptr->x, rptr->y, rptr->z, room_number);
-						//	SetupRipple(rptr->x, clr, rptr->z, 3, 0);
-						//max num of ripples is 32, this fills up very quickly and Lara produces no ripples when walking through water... 
-						//increase limit someday.. nothing for now!
-					}
+					if (room[room_number].flags & ROOM_UNDERWATER && (i & 7) == 7)
+						SetupRipple(rptr->x, GetWaterHeight(rptr->x, rptr->y, rptr->z, room_number), rptr->z, 3, 0);
 					else
-					{
-						c = GetHeight(floor, rptr->x, rptr->y, rptr->z);
-						TriggerSmallSplash(rptr->x, c, rptr->z, 1);
-					}
+						TriggerSmallSplash(rptr->x, GetHeight(floor, rptr->x, rptr->y, rptr->z), rptr->z, 1);
 
 					rptr->x = 0;
 					continue;
@@ -3599,7 +3591,7 @@ void S_DrawSplashes()
 		}
 	}
 
-	for (int i = 0; i < 32; i++)
+	for (int i = 0; i < MAX_RIPPLES; i++)
 	{
 		ripple = &ripples[i];
 

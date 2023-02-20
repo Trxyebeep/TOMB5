@@ -933,7 +933,7 @@ void TriggerUnderwaterBlood(long x, long y, long z, long size)
 		ripple++;
 		n++;
 
-		if (n >= 32)
+		if (n >= MAX_RIPPLES)
 			return;
 	}
 
@@ -957,7 +957,7 @@ void SetupRipple(long x, long y, long z, long size, long flags)
 	{
 		num++;
 
-		if (num >= 32)
+		if (num >= MAX_RIPPLES)
 			return;
 	}
 
@@ -1078,7 +1078,7 @@ void UpdateSplashes()
 		}
 	}
 
-	for (int i = 0; i < 32; i++)
+	for (int i = 0; i < MAX_RIPPLES; i++)
 	{
 		ripple = &ripples[i];
 

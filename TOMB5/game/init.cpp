@@ -196,7 +196,7 @@ void InitialiseEffects()
 	memset(debris, 0, sizeof(DEBRIS_STRUCT) * 256);
 	memset(blood, 0, sizeof(BLOOD_STRUCT) * 32);
 	memset(splashes, 0, sizeof(SPLASH_STRUCT) * 4);
-	memset(ripples, 0, sizeof(RIPPLE_STRUCT) * 32);
+	memset(ripples, 0, sizeof(RIPPLE_STRUCT) * MAX_RIPPLES);
 	memset(Bubbles, 0, sizeof(BUBBLE_STRUCT) * 40);
 	memset(Drips, 0, sizeof(DRIP_STRUCT) * 32);
 	memset(ShockWaves, 0, sizeof(SHOCKWAVE_STRUCT) * 16);

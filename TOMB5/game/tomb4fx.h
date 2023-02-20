@@ -57,7 +57,7 @@ extern LIGHTNING_STRUCT Lightning[16];
 extern SHOCKWAVE_STRUCT ShockWaves[16];
 extern DRIP_STRUCT Drips[32];
 extern BUBBLE_STRUCT Bubbles[40];
-extern RIPPLE_STRUCT ripples[32];
+extern RIPPLE_STRUCT ripples[MAX_RIPPLES];
 extern SPLASH_STRUCT splashes[4];
 extern DEBRIS_STRUCT debris[256];
 extern GUNFLASH_STRUCT Gunflashes[4];
