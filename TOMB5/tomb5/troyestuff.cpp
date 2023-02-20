@@ -98,18 +98,18 @@ bool Page0(long& num, long textY, ulong selection)
 	y = 2;
 	i = 0;
 
-	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "FootPrints", 0);
+	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Footprints", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Shadow mode", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Fix climb up delay", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Flexible crawling", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Cutscene skipper", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Cheats", 0);
+	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Bar mode", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Bar positions", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Enemy bars", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Ammo counter", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Gameover menu", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Fog", 0);
-	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Bar mode", 0);
 
 	y = 2;
 	i = 0;
@@ -117,7 +117,7 @@ bool Page0(long& num, long textY, ulong selection)
 	strcpy(buffer, tomb5.footprints ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
 
-	strcpy(buffer, tomb5.shadow_mode == 1 ? "original" : tomb5.shadow_mode == 2 ? "circle" : tomb5.shadow_mode == 3 ? "faded circle" : "PSX");
+	strcpy(buffer, tomb5.shadow_mode == 1 ? "Original" : tomb5.shadow_mode == 2 ? "Circle" : tomb5.shadow_mode == 3 ? "Faded circle" : "PSX");
 	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.fix_climb_up_delay ? "on" : "off");
@@ -132,7 +132,10 @@ bool Page0(long& num, long textY, ulong selection)
 	strcpy(buffer, tomb5.enable_cheats ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
 
-	strcpy(buffer, tomb5.bars_pos == 1 ? "original" : tomb5.bars_pos == 2 ? "improved" : "PSX");
+	strcpy(buffer, tomb5.bar_mode == 1 ? "Original" : tomb5.bar_mode == 2 ? "TR4" : "PSX");
+	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
+
+	strcpy(buffer, tomb5.bars_pos == 1 ? "Original" : tomb5.bars_pos == 2 ? "Improved" : "PSX");
 	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.enemy_bars ? "on" : "off");
@@ -145,9 +148,6 @@ bool Page0(long& num, long textY, ulong selection)
 	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.fog ? "on" : "off");
-	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
-
-	strcpy(buffer, tomb5.bar_mode == 1 ? "original" : tomb5.bar_mode == 2 ? "TR4" : "PSX");
 	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
 
 	switch (selection)
@@ -238,6 +238,32 @@ bool Page0(long& num, long textY, ulong selection)
 		if (dbinput & IN_RIGHT)
 		{
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.bar_mode++;
+
+			if (tomb5.bar_mode > 3)
+				tomb5.bar_mode = 1;
+
+			changed = 1;
+		}
+
+		if (dbinput & IN_LEFT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
+			tomb5.bar_mode--;
+
+			if (tomb5.bar_mode < 1)
+				tomb5.bar_mode = 3;
+
+			changed = 1;
+		}
+
+		break;
+
+	case 1 << 7:
+
+		if (dbinput & IN_RIGHT)
+		{
+			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 			tomb5.bars_pos++;
 
 			if (tomb5.bars_pos > 3)
@@ -259,7 +285,7 @@ bool Page0(long& num, long textY, ulong selection)
 
 		break;
 
-	case 1 << 7:
+	case 1 << 8:
 
 		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
 		{
@@ -270,7 +296,7 @@ bool Page0(long& num, long textY, ulong selection)
 
 		break;
 
-	case 1 << 8:
+	case 1 << 9:
 
 		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
 		{
@@ -281,7 +307,7 @@ bool Page0(long& num, long textY, ulong selection)
 
 		break;
 
-	case 1 << 9:
+	case 1 << 10:
 
 		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
 		{
@@ -292,38 +318,12 @@ bool Page0(long& num, long textY, ulong selection)
 
 		break;
 
-	case 1 << 10:
+	case 1 << 11:
 
 		if (dbinput & IN_LEFT || dbinput & IN_RIGHT)
 		{
 			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
 			tomb5.fog = !tomb5.fog;
-			changed = 1;
-		}
-
-		break;
-
-	case 1 << 11:
-
-		if (dbinput & IN_RIGHT)
-		{
-			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-			tomb5.bar_mode++;
-
-			if (tomb5.bar_mode > 3)
-				tomb5.bar_mode = 1;
-
-			changed = 1;
-		}
-
-		if (dbinput & IN_LEFT)
-		{
-			SoundEffect(SFX_MENU_SELECT, 0, SFX_ALWAYS);
-			tomb5.bar_mode--;
-
-			if (tomb5.bar_mode < 1)
-				tomb5.bar_mode = 3;
-
 			changed = 1;
 		}
 
@@ -349,14 +349,14 @@ bool Page1(long& num, long textY, ulong selection)
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Crawl Tilting", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "PSX skies", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "TR4 loadscreens", 0);
-	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "loadbar style", 0);
-	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "mono screen style", 0);
+	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Loadbar style", 0);
+	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Mono screen style", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Loading text", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Shimmer", 0);
-	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "distance fog", 0);
-	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "ammotype hotkeys", 0);
-	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "look transparency", 0);
-	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "static lighting", 0);
+	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Distance fog", 0);
+	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Ammotype hotkeys", 0);
+	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Look transparency", 0);
+	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "Static lighting", 0);
 	PrintString(phd_centerx >> 2, textY + y++ * font_height, selection & (1 << i++) ? 1 : 2, "UW Effect", 0);
 
 	y = 2;
@@ -374,7 +374,7 @@ bool Page1(long& num, long textY, ulong selection)
 	strcpy(buffer, tomb5.tr4_loadbar ? "TR4" : "TR5");
 	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
 
-	strcpy(buffer, tomb5.inv_bg_mode == 1 ? "original" : tomb5.inv_bg_mode == 2 ? "TR4" : "clear");
+	strcpy(buffer, tomb5.inv_bg_mode == 1 ? "Original" : tomb5.inv_bg_mode == 2 ? "TR4" : "Clear");
 	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
 
 	strcpy(buffer, tomb5.loadingtxt ? "on" : "off");
@@ -395,7 +395,7 @@ bool Page1(long& num, long textY, ulong selection)
 	strcpy(buffer, tomb5.static_lighting ? "on" : "off");
 	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
 
-	strcpy(buffer, tomb5.uw_dust == 1 ? "off" : tomb5.uw_dust == 2 ? "original" : "TR4");
+	strcpy(buffer, tomb5.uw_dust == 1 ? "off" : tomb5.uw_dust == 2 ? "Original" : "TR4");
 	PrintString(phd_centerx + (phd_centerx >> 2), textY + y++ * font_height, selection & (1 << i++) ? 1 : 6, buffer, 0);
 
 	switch (selection)
