@@ -902,6 +902,7 @@ void InitBinoculars()
 	ACMESHVERTEX* p;
 	D3DTLVERTEX* v;
 	MESH_DATA* mesh;
+	float x, y;
 
 	obj = &objects[BINOCULAR_GRAPHICS];
 
@@ -913,10 +914,13 @@ void InitBinoculars()
 	mesh->aVtx = (ACMESHVERTEX*)game_malloc(mesh->nVerts * sizeof(ACMESHVERTEX));
 	v = (D3DTLVERTEX*)mesh->aVtx;	//makes no sense otherwise
 
+	x = gfCurrentLevel == LVL5_LABYRINTH ? 33.0F : 32.0F;
+	y = 30.0F;
+
 	for (int i = 0; i < mesh->nVerts; i++)
 	{
-		v[i].sx = (p[i].x * 32.0F) / 96.0F;
-		v[i].sy = (p[i].y * 30.0F) / 224.0F;
+		v[i].sx = (p[i].x * x) / 96.0F;
+		v[i].sy = (p[i].y * y) / 224.0F;
 		v[i].sz = 0;
 		v[i].rhw = f_mpersp / f_mznear * f_moneopersp;
 		v[i].color = 0xFF000000;
