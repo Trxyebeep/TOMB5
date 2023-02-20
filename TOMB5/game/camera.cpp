@@ -20,7 +20,6 @@
 #include "lara.h"
 #include "tomb4fx.h"
 #include "savegame.h"
-#include "../tomb5/tomb5.h"
 
 CAMERA_INFO camera;
 
@@ -163,14 +162,6 @@ void CalculateCamera()
 	bounds = GetBoundsAccurate(item);
 	y = ((bounds[2] + bounds[3]) >> 1) + item->pos.y_pos - 256;
 
-	if (tomb5.tr4_camera)
-	{
-		if (fixed_camera)
-			y = item->pos.y_pos + (bounds[2] + bounds[3]) / 2;
-		else
-			y = item->pos.y_pos + bounds[3] + (3 * (bounds[2] - bounds[3]) >> 2);
-	}
-
 	if (camera.item)
 	{
 		if (!fixed_camera)
@@ -214,13 +205,6 @@ void CalculateCamera()
 		last_target.y = camera.target.y;
 		last_target.z = camera.target.z;
 		last_target.room_number = camera.target.room_number;
-
-		if (tomb5.tr4_camera)
-		{
-			camera.target.x = item->pos.x_pos;
-			camera.target.z = item->pos.z_pos;
-		}
-
 		camera.target.room_number = item->room_number;
 		camera.target.y = y;
 		gotit = 0;
@@ -241,18 +225,6 @@ void CalculateCamera()
 				camera.target.z = v.z;
 				gotit = 1;
 			}
-		}
-
-		if (tomb5.tr4_camera && !gotit)
-		{
-			if (camera.flags == 1 || UseForcedFixedCamera)
-			{
-				shift = (bounds[4] + bounds[5]) / 2;
-				camera.target.x = item->pos.x_pos + (phd_sin(item->pos.y_rot) * shift >> 14);
-				camera.target.z = item->pos.z_pos + (phd_cos(item->pos.y_rot) * shift >> 14);
-			}
-
-			gotit = 1;
 		}
 
 		if (!gotit)
@@ -277,7 +249,7 @@ void CalculateCamera()
 
 			if (camera.speed != 1 && camera.old_type != LOOK_CAMERA && BinocularOn >= 0)
 			{
-				if (tomb5.tr4_camera || TargetSnaps <= 8)
+				if (TargetSnaps <= 8)
 				{
 					camera.target.x = last_target.x + ((camera.target.x - last_target.x) >> 2);
 					camera.target.y = last_target.y + ((camera.target.y - last_target.y) >> 2);
@@ -290,7 +262,7 @@ void CalculateCamera()
 
 		GetFloor(camera.target.x, camera.target.y, camera.target.z, &camera.target.room_number);
 
-		if (!tomb5.tr4_camera && abs(last_target.x - camera.target.x) < 4 && abs(last_target.y - camera.target.y) < 4 && abs(last_target.z - camera.target.z) < 4)
+		if (abs(last_target.x - camera.target.x) < 4 && abs(last_target.y - camera.target.y) < 4 && abs(last_target.z - camera.target.z) < 4)
 		{
 			camera.target.x = last_target.x;
 			camera.target.y = last_target.y;
@@ -304,9 +276,6 @@ void CalculateCamera()
 	}
 	else
 	{
-		if (tomb5.tr4_camera)
-			y -= 256;
-
 		if (camera.type == COMBAT_CAMERA)
 		{
 			last_target.x = camera.target.x;
@@ -584,13 +553,6 @@ void UpdateCameraElevation()
 	PHD_VECTOR pos;
 	PHD_VECTOR pos1;
 
-	if (tomb5.tr4_camera)
-	{
-		camera.actual_angle = camera.target_angle;
-		camera.actual_elevation = camera.target_elevation;
-		return;
-	}
-
 	if (camera.lara_node != -1)
 	{
 		pos.x = 0;
@@ -774,33 +736,6 @@ void ChaseCamera(ITEM_INFO* item)
 		camera.actual_elevation = -15470;
 
 	distance = camera.target_distance * phd_cos(camera.actual_elevation) >> 14;
-
-	if (tomb5.tr4_camera)
-	{
-		wx = camera.target.x;
-		wy = camera.target.y;
-		wz = camera.target.z;
-		floor = GetFloor(wx, wy, wz, &camera.target.room_number);
-		h = GetHeight(floor, wx, wy, wz);
-		c = GetCeiling(floor, wx, wy, wz);
-
-		if (c + 16 > h - 16 && h != NO_HEIGHT && c != NO_HEIGHT)
-		{
-			camera.target.y = (h + c) >> 1;
-			camera.actual_elevation = 0;
-		}
-		else if (wy > h - 16 && h != NO_HEIGHT)
-		{
-			camera.target.y = h - 16;
-			camera.actual_elevation = 0;
-		}
-		else if (wy < c + 16 && c != NO_HEIGHT)
-		{
-			camera.target.y = c + 16;
-			camera.actual_elevation = 0;
-		}
-	}
-
 	wx = camera.target.x;
 	wy = camera.target.y;
 	wz = camera.target.z;
@@ -812,25 +747,20 @@ void ChaseCamera(ITEM_INFO* item)
 
 	if (wy < c || wy > h || c >= h || h == NO_HEIGHT || c == NO_HEIGHT)
 	{
-		if (!tomb5.tr4_camera)
-			TargetSnaps++;
-
+		TargetSnaps++;
 		camera.target.x = last_target.x;
 		camera.target.y = last_target.y;
 		camera.target.z = last_target.z;
 		camera.target.room_number = last_target.room_number;
 	}
-	else if (!tomb5.tr4_camera)
-			TargetSnaps = 0;
+	else
+		TargetSnaps = 0;
 
 	for (int i = 0; i < 5; i++)
 		ideals[i].y = (camera.target_distance * phd_sin(camera.actual_elevation) >> 14) + camera.target.y;
 
 	farthest = 0x7FFFFFFF;
 	farthestnum = 0;
-
-	if (tomb5.tr4_camera)
-		camera.actual_angle += item->pos.y_rot;
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -934,9 +864,6 @@ void CombatCamera(ITEM_INFO* item)
 		camera.target_elevation = lara.head_x_rot + lara.torso_x_rot + item->pos.x_rot - 2730;
 	}
 
-	if (tomb5.tr4_camera)
-		camera.target_angle += item->pos.y_rot;
-
 	wx = camera.target.x;
 	wy = camera.target.y;
 	wz = camera.target.z;
@@ -971,16 +898,14 @@ void CombatCamera(ITEM_INFO* item)
 
 	if (wy < c || wy > h || c >= h || h == NO_HEIGHT || c == NO_HEIGHT)
 	{
-		if (!tomb5.tr4_camera)
-			TargetSnaps++;
-
+		TargetSnaps++;
 		camera.target.x = last_target.x;
 		camera.target.y = last_target.y;
 		camera.target.z = last_target.z;
 		camera.target.room_number = last_target.room_number;
 	}
-	else if (!tomb5.tr4_camera)
-			TargetSnaps = 0;
+	else
+		TargetSnaps = 0;
 
 	UpdateCameraElevation();
 	camera.target_distance = 1536;
@@ -1091,9 +1016,8 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 		old_cam.pos.z_pos == lara_item->pos.z_pos && old_cam.current_anim_state == lara_item->current_anim_state &&
 		old_cam.goal_anim_state == lara_item->goal_anim_state && old_cam.target_distance == camera.target_distance &&
 		old_cam.target_elevation == camera.target_elevation && old_cam.actual_elevation == camera.actual_elevation &&
-		old_cam.target_angle == camera.actual_angle &&
-		(tomb5.tr4_camera || (old_cam.t.x == camera.target.x && old_cam.t.y == camera.target.y && old_cam.t.z == camera.target.z)) &&
-		camera.old_type == camera.type && !SniperOverlay && BinocularOn >= 0)
+		old_cam.target_angle == camera.actual_angle && old_cam.t.x == camera.target.x && old_cam.t.y == camera.target.y &&
+		old_cam.t.z == camera.target.z && camera.old_type == camera.type && !SniperOverlay && BinocularOn >= 0)
 	{
 		ideal->x = last_ideal.x;
 		ideal->y = last_ideal.y;
