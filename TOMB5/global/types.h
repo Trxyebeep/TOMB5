@@ -126,7 +126,7 @@ enum lara_gun_status
 	LG_DRAW_GUNS,
 	LG_UNDRAW_GUNS,
 	LG_READY,
-	LG_FLARE,
+	LG_FLARE
 };
 
 enum lara_water_status
@@ -256,7 +256,7 @@ enum weapon_type_carried
 	W_LASERSIGHT =	0x4,
 	W_AMMO1 =		0x8,
 	W_AMMO2 =		0x10,
-	W_AMMO3 =		0x20,
+	W_AMMO3 =		0x20
 };
 
 enum zone_type
@@ -265,7 +265,7 @@ enum zone_type
 	BASIC_ZONE,
 	CROC_ZONE,
 	HUMAN_ZONE,
-	FLYER_ZONE,
+	FLYER_ZONE
 };
 
 enum camera_type
@@ -275,7 +275,7 @@ enum camera_type
 	LOOK_CAMERA,
 	COMBAT_CAMERA,
 	CINEMATIC_CAMERA,
-	HEAVY_CAMERA,
+	HEAVY_CAMERA
 };
 
 enum mood_type
@@ -283,7 +283,7 @@ enum mood_type
 	BORED_MOOD,
 	ATTACK_MOOD,
 	ESCAPE_MOOD,
-	STALK_MOOD,
+	STALK_MOOD
 };
 
 enum weapon_types 
@@ -2240,17 +2240,6 @@ struct SPOTLIGHT_STRUCT
 	float rad;
 };
 
-struct FCAMERA
-{
-	FVECTOR i;			//forward
-	FVECTOR j;			//right
-	FVECTOR k;			//up
-	FVECTOR pos;		//eye
-	FVECTOR tar;		//look at
-	float matrix[12];
-	float invmatrix[12];
-};
-
 struct D3DTLBUMPVERTEX
 {
 	D3DVALUE sx;
@@ -2296,12 +2285,6 @@ struct TEXTUREBUCKET
 	long tpage;
 	long nVtx;
 	D3DTLBUMPVERTEX vtx[2080];
-};
-
-struct D3DLIGHT_STRUCT
-{
-	LPDIRECT3DLIGHT D3DLight;
-	D3DLIGHT2 D3DLight2;
 };
 
 struct PISTOL_DEF
@@ -2376,24 +2359,6 @@ struct CHARDEF
 	char BottomShade;
 };
 
-struct LOADLEVELNAME
-{
-	char unk;
-	char name[256];
-};
-
-struct WRAITH_STRUCT
-{
-	PHD_VECTOR pos;
-	short xv;
-	short yv;
-	short zv;
-	uchar r;
-	uchar g;
-	uchar b;
-	uchar pad[3];
-};
-
 struct STRINGHEADER
 {
 	ushort nStrings;
@@ -2413,36 +2378,12 @@ struct NODEOFFSET_INFO
 	uchar GotIt;
 };
 
-struct PROFILER_EVENT
-{
-	__int64 t;
-	long c;
-};
-
 struct BINK_STRUCT
 {
 	long pad;
 	long num;
 	char padfuck[8];
 	long num2;
-};
-
-struct MAP_STRUCT
-{
-	long nLines;
-	long nVtx;
-	PHD_VECTOR vtx[256];
-	short lines[256];
-	short visited;
-	short room_number;
-};
-
-struct MAP_VECTOR
-{
-	long x1;
-	long y1;
-	long x2;
-	long y2;
 };
 
 struct CUTSEQ_SELECTOR
