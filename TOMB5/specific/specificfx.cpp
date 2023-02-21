@@ -6207,14 +6207,15 @@ static void S_PrintSpriteShadow(short size, short* box, ITEM_INFO* item)
 
 void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 {
+	FLOOR_INFO* floor;
 	TEXTURESTRUCT Tex;
 	D3DTLVERTEX v[3];
 	PHD_VECTOR pos;
 	float* sXYZ;
-	long* hXZ;
+	float* hXZ;
 	long* hY;
 	float sxyz[GRID_POINTS * 3];
-	long hxz[GRID_POINTS * 2];
+	float hxz[GRID_POINTS * 2];
 	long hy[GRID_POINTS];
 	long triA, triB, triC;
 	float fx, fy, fz;
@@ -6246,8 +6247,8 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 		{
 			sXYZ[0] = (float)x;		//fill shadow XYZ array with the points of the grid
 			sXYZ[2] = (float)z;
-			hXZ[0] = x;				//fill height XZ array with the points of the grid
-			hXZ[1] = z;
+			hXZ[0] = sXYZ[0];				//fill height XZ array with the points of the grid
+			hXZ[1] = sXYZ[2];
 		}
 
 		x = -xDist - (xDist >> 1);
@@ -6262,7 +6263,8 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 		pos.z = 0;
 		GetLaraJointPos(&pos, LM_TORSO);
 		room_number = lara_item->room_number;
-		y = GetHeight(GetFloor(pos.x, pos.y, pos.z, &room_number), pos.x, pos.y, pos.z);
+		floor = GetFloor(pos.x, pos.y, pos.z, &room_number);
+		y = GetHeight(floor, pos.x, pos.y, pos.z);
 
 		if (y == NO_HEIGHT)
 			y = item->floor;
@@ -6281,10 +6283,10 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 
 	for (int i = 0; i < GRID_POINTS; i++, hXZ += 2)
 	{
-		x = hXZ[0];
-		z = hXZ[1];
-		hXZ[0] = (x * phd_mxptr[M00] + z * phd_mxptr[M02] + phd_mxptr[M03]) >> 14;
-		hXZ[1] = (x * phd_mxptr[M20] + z * phd_mxptr[M22] + phd_mxptr[M23]) >> 14;
+		fx = hXZ[0];
+		fz = hXZ[1];
+		hXZ[0] = fx * aMXPtr[M00] + fz * aMXPtr[M02] + aMXPtr[M03];
+		hXZ[1] = fx * aMXPtr[M20] + fz * aMXPtr[M22] + aMXPtr[M23];
 	}
 
 	phd_PopMatrix();
@@ -6295,7 +6297,8 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 	for (int i = 0; i < GRID_POINTS; i++, hXZ += 2, hY++)	//Get height on each grid point and store it in hy array
 	{
 		room_number = item->room_number;
-		*hY = GetHeight(GetFloor(hXZ[0], item->floor, hXZ[1], &room_number), hXZ[0], item->floor, hXZ[1]);
+		floor = GetFloor((long)hXZ[0], item->floor, (long)hXZ[1], &room_number);
+		*hY = GetHeight(floor, (long)hXZ[0], item->floor, (long)hXZ[1]);
 
 		if (abs(*hY - item->floor) > POINT_HEIGHT_CORRECTION)
 			*hY = item->floor;
