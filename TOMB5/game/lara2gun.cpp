@@ -144,7 +144,7 @@ void AnimatePistols(long weapon_type)
 				break;
 			}
 
-			GetLaraJointPos(&pos, 14);
+			GetLaraJointPos(&pos, LMX_HAND_L);
 			TriggerGunSmoke(pos.x, pos.y, pos.z, 0, 0, 0, 0, SmokeWeapon, SmokeCountL);
 		}
 
@@ -171,7 +171,7 @@ void AnimatePistols(long weapon_type)
 				break;
 			}
 
-			GetLaraJointPos(&pos, 11);
+			GetLaraJointPos(&pos, LMX_HAND_R);
 			TriggerGunSmoke(pos.x, pos.y, pos.z, 0, 0, 0, 0, SmokeWeapon, SmokeCountR);
 		}
 	}
@@ -380,9 +380,9 @@ void PistolHandler(long weapon_type)
 		pos.z = (GetRandomControl() & 0xFF) - 128;
 
 		if (lara.left_arm.flash_gun)
-			GetLaraJointPos(&pos, 13);
+			GetLaraJointPos(&pos, LMX_HAND_R);
 		else
-			GetLaraJointPos(&pos, 14);
+			GetLaraJointPos(&pos, LMX_HAND_L);
 
 		r = (GetRandomControl() & 0x3F) + 192;
 		g = (GetRandomControl() & 0x1F) + 128;

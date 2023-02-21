@@ -95,7 +95,7 @@ void AutogunControl(short item_number)
 		pos2.z = 0;
 		pos2.y = 0;
 		pos2.x = 0;
-		GetLaraJointPos((PHD_VECTOR*)&pos2, 0);
+		GetLaraJointPos((PHD_VECTOR*)&pos2, LMX_HIPS);
 		pos1.room_number = item->room_number;
 		los = (short)LOS(&pos1, &pos2);
 

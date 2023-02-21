@@ -28,10 +28,12 @@ void TriggerImpMissile(ITEM_INFO* item)
 	pos.y = 0;
 	pos.z = 0;
 	GetJointAbsPosition(item, &pos, 9);
+
 	pos2.x = 0;
 	pos2.y = 0;
 	pos2.z = 0;
-	GetLaraJointPos(&pos2, 8);
+	GetLaraJointPos(&pos2, LMX_HEAD);
+
 	dx = pos.x - pos2.x;
 	dy = pos.y - pos2.y;
 	dz = pos.z - pos2.z;

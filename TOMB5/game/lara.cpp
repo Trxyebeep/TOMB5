@@ -4801,7 +4801,7 @@ void lara_as_trfall(ITEM_INFO* item, COLL_INFO* coll)
 			pos.x = 0;
 			pos.y = 0;
 			pos.z = 0;
-			GetLaraJointPos(&pos, LM_RFOOT);
+			GetLaraJointPos(&pos, LMX_FOOT_R);
 			item->pos.x_pos = pos.x;
 			item->pos.y_pos = pos.y + 75;
 			item->pos.z_pos = pos.z;

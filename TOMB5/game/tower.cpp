@@ -190,7 +190,7 @@ void ControlGunship(short item_number)
 		pos.x = (GetRandomControl() & 0x1FF) - 255;
 		pos.y = (GetRandomControl() & 0x1FF) - 255;
 		pos.z = (GetRandomControl() & 0x1FF) - 255;
-		GetLaraJointPos((PHD_VECTOR*)&pos, LM_TORSO);
+		GetLaraJointPos((PHD_VECTOR*)&pos, LMX_TORSO);
 		pos1.x = pos.x;
 		pos1.y = pos.y;
 		pos1.z = pos.z;
@@ -341,7 +341,7 @@ void ControlIris(short item_number)
 			pos.z = 0;
 			pos.y = 0;
 			pos.x = 0;
-			GetLaraJointPos(&pos, 0);
+			GetLaraJointPos(&pos, LMX_HIPS);
 
 			if (abs(pos.y - item->pos.y_pos) >= 1024 || abs(pos.x - item->pos.x_pos) >= 2048 || abs(pos.z - item->pos.z_pos) >= 2048)
 				item->item_flags[3] = 0;
@@ -579,7 +579,7 @@ void ControlGasCloud(short item_number)
 			pos.x = 0;
 			pos.y = 0;
 			pos.z = 0;
-			GetLaraJointPos(&pos, 8);
+			GetLaraJointPos(&pos, LMX_HEAD);
 			room_number = lara_item->room_number;
 			GetFloor(pos.x, pos.y, pos.z, &room_number);
 

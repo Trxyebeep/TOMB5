@@ -165,7 +165,7 @@ void _special3_control()
 		pos.x = 0;
 		pos.y = 0;
 		pos.z = 0;
-		GetLaraJointPos(&pos, 0);
+		GetLaraJointPos(&pos, LMX_HIPS);
 		pos.z -= 256;
 		TriggerDynamic(pos.x, pos.y, pos.z, 10, (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 128, GetRandomControl() & 0x3F);
 	}

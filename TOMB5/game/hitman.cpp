@@ -447,13 +447,14 @@ void HitmanControl(short item_number)
 		pos.x = 0;
 		pos.y = 0;
 		pos.z = 0;
-		GetLaraJointPos(&pos, 3);
+		GetLaraJointPos(&pos, LMX_FOOT_L);
 		left_foot_room = lara_item->room_number;
 		GetFloor(pos.x, pos.y, pos.z, &left_foot_room);
+
 		pos2.x = 0;
 		pos2.y = 0;
 		pos2.z = 0;
-		GetLaraJointPos(&pos2, 6);
+		GetLaraJointPos(&pos2, LMX_FOOT_R);
 		right_foot_room = lara_item->room_number;
 		GetFloor(pos2.x, pos2.y, pos2.z, &right_foot_room);
 

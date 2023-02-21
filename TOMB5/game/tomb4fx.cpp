@@ -278,13 +278,13 @@ void LaraBubbles(ITEM_INFO* item)
 	{
 		pos.y = -192;
 		pos.z = -160;
-		GetLaraJointPos(&pos, 7);
+		GetLaraJointPos(&pos, LMX_TORSO);
 	}
 	else
 	{
 		pos.y = -4;
 		pos.z = 64;
-		GetLaraJointPos(&pos, 8);
+		GetLaraJointPos(&pos, LMX_HEAD);
 	}
 
 	i = (GetRandomControl() & 1) + 2;
@@ -1689,7 +1689,7 @@ void TriggerGunShell(short leftright, short objnum, long weapon)
 			break;
 		}
 
-		GetLaraJointPos(&pos, 11);
+		GetLaraJointPos(&pos, LMX_HAND_R);
 	}
 	else
 	{
@@ -1708,7 +1708,7 @@ void TriggerGunShell(short leftright, short objnum, long weapon)
 			break;
 		}
 
-		GetLaraJointPos(&pos, 14);
+		GetLaraJointPos(&pos, LMX_HAND_L);
 	}
 
 	shell = &Gunshells[GetFreeGunshell()];

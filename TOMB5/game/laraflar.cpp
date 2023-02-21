@@ -108,7 +108,7 @@ void CreateFlare(short object, long thrown)
 		pos.x = -16;
 		pos.y = 32;
 		pos.z = 42;
-		GetLaraJointPos(&pos, 0xE);
+		GetLaraJointPos(&pos, LMX_HAND_L);
 		flare->pos.x_pos = pos.x;
 		flare->pos.y_pos = pos.y;
 		flare->pos.z_pos = pos.z;
@@ -224,7 +224,7 @@ void DoFlareInHand(long flare_age)
 	pos.x = 11;
 	pos.y = 32;
 	pos.z = 41;
-	GetLaraJointPos(&pos, 0xE);
+	GetLaraJointPos(&pos, LMX_HAND_L);
 	DoFlareLight(&pos, flare_age);
 
 	if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)

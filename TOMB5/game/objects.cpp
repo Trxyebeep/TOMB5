@@ -659,13 +659,14 @@ void ParallelBarsCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	pos.x = 0;
 	pos.y = -128;
 	pos.z = 512;
-	GetLaraJointPos(&pos, 14);
+	GetLaraJointPos(&pos, LMX_HAND_L);
+
 	pos2.x = 0;
 	pos2.y = -128;
 	pos2.z = 512;
-	GetLaraJointPos(&pos2, 11);
+	GetLaraJointPos(&pos2, LMX_HAND_R);
 
-	if (l->pos.y_rot & 16384)
+	if (l->pos.y_rot & 0x4000)
 		l->pos.x_pos += item->pos.x_pos - ((pos.x + pos2.x) >> 1);
 	else
 		l->pos.z_pos += item->pos.z_pos - ((pos.z + pos2.z) >> 1);

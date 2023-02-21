@@ -90,6 +90,25 @@ enum lara_draw_type
 	LARA_DIVESUIT
 };
 
+enum LMX
+{
+	LMX_HIPS,
+	LMX_THIGH_L,
+	LMX_CALF_L,
+	LMX_FOOT_L,
+	LMX_THIGH_R,
+	LMX_CALF_R,
+	LMX_FOOT_R,
+	LMX_TORSO,
+	LMX_HEAD,
+	LMX_UARM_R,
+	LMX_LARM_R,
+	LMX_HAND_R,
+	LMX_UARM_L,
+	LMX_LARM_L,
+	LMX_HAND_L
+};
+
 enum lara_mesh
 {
 	LM_HIPS,

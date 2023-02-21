@@ -638,7 +638,7 @@ void TestForObjectOnLedge(ITEM_INFO* item, COLL_INFO* coll)
 		s.x = (i * 96) - 96;	//-96, 0, 96
 		s.y = -512;
 		s.z = -128;
-		GetLaraJointPos((PHD_VECTOR*)&s, 7);
+		GetLaraJointPos((PHD_VECTOR*)&s, LMX_TORSO);
 		s.room_number = lara_item->room_number;
 		d.x = s.x + ((768 * phd_sin(lara_item->pos.y_rot)) >> 14);
 		d.y = s.y;

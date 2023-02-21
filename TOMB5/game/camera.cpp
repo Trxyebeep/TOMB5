@@ -217,7 +217,7 @@ void CalculateCamera()
 				v.x = 0;
 				v.y = 0;
 				v.z = 0;
-				GetLaraJointPos(&v, LM_TORSO);
+				GetLaraJointPos(&v, LMX_TORSO);
 				camera.target.x = v.x;
 				camera.target.y = v.y;
 				camera.target.z = v.z;
@@ -1504,7 +1504,7 @@ void LookCamera(ITEM_INFO* item)
 	pos1.x = 0;
 	pos1.y = 16;
 	pos1.z = 64;
-	GetLaraJointPos(&pos1, 8);
+	GetLaraJointPos(&pos1, LMX_HEAD);
 	room_number = lara_item->room_number;
 	floor = GetFloor(pos1.x, pos1.y, pos1.z, &room_number);
 	h = GetHeight(floor, pos1.x, pos1.y, pos1.z);
@@ -1515,7 +1515,7 @@ void LookCamera(ITEM_INFO* item)
 		pos1.x = 0;
 		pos1.y = 16;
 		pos1.z = 0;
-		GetLaraJointPos(&pos1, 8);
+		GetLaraJointPos(&pos1, LMX_HEAD);
 		floor = GetFloor(pos1.x, pos1.y, pos1.z, &room_number);
 		h = GetHeight(floor, pos1.x, pos1.y, pos1.z);
 		c = GetCeiling(floor, pos1.x, pos1.y, pos1.z);
@@ -1525,18 +1525,18 @@ void LookCamera(ITEM_INFO* item)
 			pos1.x = 0;
 			pos1.y = 16;
 			pos1.z = -64;
-			GetLaraJointPos(&pos1, 8);
+			GetLaraJointPos(&pos1, LMX_HEAD);
 		}
 	}
 
 	pos2.x = 0;
 	pos2.y = 0;
 	pos2.z = -1024;
-	GetLaraJointPos(&pos2, 8);
+	GetLaraJointPos(&pos2, LMX_HEAD);
 	pos3.x = 0;
 	pos3.y = 0;
 	pos3.z = 2048;
-	GetLaraJointPos(&pos3, 8);
+	GetLaraJointPos(&pos3, LMX_HEAD);
 	wy = pos1.y;
 	wx = pos1.x;
 	wz = pos1.z;

@@ -510,7 +510,8 @@ void LaraTargetInfo(WEAPON_INFO* winfo)
 	src.x = 0;
 	src.y = 0;
 	src.z = 0;
-	GetLaraJointPos((PHD_VECTOR*)&src, 11);
+	GetLaraJointPos((PHD_VECTOR*)&src, LMX_HAND_R);
+
 	src.x = lara_item->pos.x_pos;
 	src.z = lara_item->pos.z_pos;
 	src.room_number = lara_item->room_number;
@@ -761,7 +762,7 @@ long FireWeapon(long weapon_type, ITEM_INFO* target, ITEM_INFO* src, short* angl
 	bum_view.x_pos = 0;
 	bum_view.y_pos = 0;
 	bum_view.z_pos = 0;
-	GetLaraJointPos((PHD_VECTOR*)&bum_view, 11);
+	GetLaraJointPos((PHD_VECTOR*)&bum_view, LMX_HAND_R);
 	ammo = get_current_ammo_pointer(weapon_type);
 
 	if (!*ammo)

@@ -61,7 +61,7 @@ void MovableBlock(short item_number)
 			sfx = 1;
 		}
 
-		GetLaraJointPos(&pos, 14);
+		GetLaraJointPos(&pos, LMX_HAND_L);
 
 		switch (quadrant)
 		{
@@ -130,7 +130,7 @@ void MovableBlock(short item_number)
 			sfx = 1;
 		}
 
-		GetLaraJointPos(&pos, 14);
+		GetLaraJointPos(&pos, LMX_HAND_L);
 
 		switch (quadrant)
 		{
@@ -295,7 +295,7 @@ void MovableBlockCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* co
 		lara.head_x_rot = 0;
 		lara.torso_y_rot = 0;
 		lara.torso_x_rot = 0;
-		GetLaraJointPos(&pos, 14);
+		GetLaraJointPos(&pos, LMX_HAND_L);
 		*(long*)&laraitem->item_flags[0] = pos.x;
 		*(long*)&laraitem->item_flags[2] = pos.z;
 		*(long*)&item->item_flags[0] = item->pos.x_pos;

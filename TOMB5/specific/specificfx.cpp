@@ -75,7 +75,7 @@ static float SnowSizes[32]
 
 static NODEOFFSET_INFO NodeOffsets[16] =
 {
-	{ -16, 40, 160, -14, 0 },
+	{ -16, 40, 160, -LMX_HAND_L, 0 },
 	{ -16, -8, 160, 0, 0 },
 	{ 0, 0, 256, 8, 0 },
 	{ 0, 0, 256, 17, 0 },
@@ -5919,7 +5919,7 @@ static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 		pos.x = 0;
 		pos.y = 0;
 		pos.z = 0;
-		GetLaraJointPos(&pos, LM_TORSO);
+		GetLaraJointPos(&pos, LMX_TORSO);
 		room_number = lara_item->room_number;
 		y = GetHeight(GetFloor(pos.x, pos.y, pos.z, &room_number), pos.x, pos.y, pos.z);
 
@@ -6095,7 +6095,7 @@ static void S_PrintSpriteShadow(short size, short* box, ITEM_INFO* item)
 		pos.x = 0;
 		pos.y = 0;
 		pos.z = 0;
-		GetLaraJointPos(&pos, LM_HIPS);
+		GetLaraJointPos(&pos, LMX_HIPS);
 		room_number = lara_item->room_number;
 		pos.y = GetHeight(GetFloor(pos.x, pos.y, pos.z, &room_number), pos.x, pos.y, pos.z);
 
@@ -6261,7 +6261,7 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 		pos.x = 0;
 		pos.y = 0;
 		pos.z = 0;
-		GetLaraJointPos(&pos, LM_TORSO);
+		GetLaraJointPos(&pos, LMX_TORSO);
 		room_number = lara_item->room_number;
 		floor = GetFloor(pos.x, pos.y, pos.z, &room_number);
 		y = GetHeight(floor, pos.x, pos.y, pos.z);

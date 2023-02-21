@@ -116,7 +116,7 @@ void RifleHandler(long weapon_type)
 			pos.x = (GetRandomControl() & 0xFF) - 128;
 			pos.y = (GetRandomControl() & 0x7F) - 63;
 			pos.z = (GetRandomControl() & 0xFF) - 128;
-			GetLaraJointPos(&pos, 11);
+			GetLaraJointPos(&pos, LMX_HAND_R);
 
 			if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
 				TriggerDynamic_MIRROR(pos.x, pos.y, pos.z, 12, r, g, b);
@@ -164,12 +164,12 @@ void FireShotgun()
 		pos.x = 0;
 		pos.y = 228;
 		pos.z = 32;
-		GetLaraJointPos(&pos, 11);
+		GetLaraJointPos(&pos, LMX_HAND_R);
 
 		pos2.x = 0;
 		pos2.y = 1508;
 		pos2.z = 32;
-		GetLaraJointPos(&pos2, 11);
+		GetLaraJointPos(&pos2, LMX_HAND_R);
 
 		SmokeCountL = 32;
 		SmokeWeapon = WEAPON_SHOTGUN;
@@ -414,7 +414,7 @@ void AnimateShotgun(long weapon_type)
 			pos.z = 32;
 		}
 
-		GetLaraJointPos(&pos, 11);
+		GetLaraJointPos(&pos, LMX_HAND_R);
 
 		if (lara_item->mesh_bits)
 			TriggerGunSmoke(pos.x, pos.y, pos.z, 0, 0, 0, 0, SmokeWeapon, SmokeCountL);

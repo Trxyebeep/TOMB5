@@ -199,7 +199,7 @@ void DoFlameTorch()
 		pos.x = -32;
 		pos.y = 64;
 		pos.z = 256;
-		GetLaraJointPos(&pos, LM_HEAD);
+		GetLaraJointPos(&pos, LMX_HAND_L);
 		TriggerDynamic(pos.x, pos.y, pos.z, 12 - (GetRandomControl() & 1), (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 96, 0);
 
 		if (!(wibble & 7))

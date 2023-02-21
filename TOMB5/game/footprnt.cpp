@@ -158,12 +158,12 @@ void GetProperFootPos(PHD_VECTOR* pos)
 	left_foot.x = 0;
 	left_foot.y = 0;
 	left_foot.z = 0;
-	GetLaraJointPos(&left_foot, LM_LFOOT);
+	GetLaraJointPos(&left_foot, LMX_FOOT_L);
 
 	right_foot.x = 0;
 	right_foot.y = 0;
 	right_foot.z = 0;
-	GetLaraJointPos(&right_foot, LM_RFOOT);
+	GetLaraJointPos(&right_foot, LMX_FOOT_R);
 
 	frame = lara_item->frame_number;
 	base = anims[lara_item->anim_number].frame_base;
