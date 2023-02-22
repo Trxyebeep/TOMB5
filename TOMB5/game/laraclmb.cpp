@@ -51,12 +51,12 @@ void lara_as_climbstnc(ITEM_INFO* item, COLL_INFO* coll)
 	if (input & IN_LEFT || input & IN_LSTEP)
 	{
 		item->goal_anim_state = AS_CLIMBLEFT;
-		lara.move_angle = item->pos.y_rot - 16384;
+		lara.move_angle = item->pos.y_rot - 0x4000;
 	}
 	else if (input & IN_RIGHT || input & IN_RSTEP)
 	{
 		item->goal_anim_state = AS_CLIMBRIGHT;
-		lara.move_angle = item->pos.y_rot + 16384;
+		lara.move_angle = item->pos.y_rot + 0x4000;
 	}
 	else if (input & IN_JUMP)
 	{
@@ -64,7 +64,7 @@ void lara_as_climbstnc(ITEM_INFO* item, COLL_INFO* coll)
 		{
 			item->goal_anim_state = AS_BACKJUMP;
 			lara.gun_status = LG_NO_ARMS;
-			lara.move_angle = item->pos.y_rot + 32768;
+			lara.move_angle = item->pos.y_rot + 0x8000;
 		}
 	}
 }
@@ -106,32 +106,34 @@ void lara_col_climbstnc(ITEM_INFO* item, COLL_INFO* coll)
 				item->goal_anim_state = AS_CLIMB2DUCK;
 				item->required_anim_state = AS_DUCK;
 			}
-
-			return;
 		}
-
-		if (shift_r)
+		else
 		{
-			if (shift_l)
+			if (shift_r)
 			{
+				if (shift_l)
+				{
 
-				if ((shift_r < 0) ^ (shift_l < 0))
-					return;
+					if ((shift_r < 0) ^ (shift_l < 0))
+						return;
 
-				if (shift_r < 0 && shift_r < shift_l)
-					shift_l = shift_r;
-				else if (shift_r > 0 && shift_r > shift_l)
+					if (shift_r < 0 && shift_r < shift_l)
+						shift_l = shift_r;
+					else if (shift_r > 0 && shift_r > shift_l)
+						shift_l = shift_r;
+				}
+				else
 					shift_l = shift_r;
 			}
-			else
-				shift_l = shift_r;
+
+			item->goal_anim_state = AS_CLIMBING;
+			item->pos.y_pos += shift_l;
 		}
 
-		item->goal_anim_state = AS_CLIMBING;
-		item->pos.y_pos += shift_l;
 		return;
 	}
-	else if (input & IN_BACK)
+	
+	if (input & IN_BACK)
 	{
 		if (item->goal_anim_state == AS_HANG)
 			return;
@@ -179,58 +181,58 @@ void lara_col_climbing(ITEM_INFO* item, COLL_INFO* coll)
 	if (LaraCheckForLetGo(item, coll))
 		return;
 
-	if (item->anim_number == ANIM_CLIMBING)
+	if (item->anim_number != ANIM_CLIMBING)
+		return;
+
+	frame = item->frame_number - anims[ANIM_CLIMBING].frame_base;
+
+	if (!frame)
+		yshift = 0;
+	else if (frame == 28 || frame == 29)
+		yshift = -256;
+	else if (frame == 57)
+		yshift = -512;
+	else
+		return;
+
+	item->pos.y_pos += yshift - 256;
+	result_r = LaraTestClimbUpPos(item, coll->radius, coll->radius + 120, &shift_r, &ledge_r);
+	result_l = LaraTestClimbUpPos(item, coll->radius, -(coll->radius + 120), &shift_l, &ledge_l);
+	item->pos.y_pos += 256;
+
+	if (result_r && result_l && input & IN_FORWARD)
 	{
-		frame = item->frame_number - anims[ANIM_CLIMBING].frame_base;
-		
-		if (frame == 0)
-			yshift = 0;
-		else if (frame == 28 || frame == 29)
-			yshift = -256;
-		else if (frame == 57)
-			yshift = -512;
-		else
-			return;
-
-		item->pos.y_pos += yshift - 256;
-		result_r = LaraTestClimbUpPos(item, coll->radius, coll->radius + 120, &shift_r, &ledge_r);
-		result_l = LaraTestClimbUpPos(item, coll->radius, -(coll->radius + 120), &shift_l, &ledge_l);
-		item->pos.y_pos += 256;
-
-		if (result_r && result_l && input & IN_FORWARD)
-		{
-			if (result_r < 0 || result_l < 0)
-			{
-				item->goal_anim_state = AS_CLIMBSTNC;
-				AnimateLara(item);
-
-				if (abs(ledge_r - ledge_l) <= 120)
-				{
-					if (result_r == -1 || result_l == -1)
-					{
-						item->goal_anim_state = AS_NULL;
-						item->pos.y_pos += (ledge_r + ledge_l) / 2 - 256;
-					}
-					else
-					{
-						item->goal_anim_state = AS_CLIMB2DUCK;
-						item->required_anim_state = AS_DUCK;
-					}
-				}
-			}
-			else
-			{
-				item->goal_anim_state = AS_CLIMBING;
-				item->pos.y_pos -= yshift;
-			}
-		}
-		else
+		if (result_r < 0 || result_l < 0)
 		{
 			item->goal_anim_state = AS_CLIMBSTNC;
+			AnimateLara(item);
 
-			if (yshift)
-				AnimateLara(item);
+			if (abs(ledge_r - ledge_l) <= 120)
+			{
+				if (result_r == -1 || result_l == -1)
+				{
+					item->goal_anim_state = AS_NULL;
+					item->pos.y_pos += (ledge_r + ledge_l) / 2 - 256;
+				}
+				else
+				{
+					item->goal_anim_state = AS_CLIMB2DUCK;
+					item->required_anim_state = AS_DUCK;
+				}
+			}
 		}
+		else
+		{
+			item->goal_anim_state = AS_CLIMBING;
+			item->pos.y_pos -= yshift;
+		}
+	}
+	else
+	{
+		item->goal_anim_state = AS_CLIMBSTNC;
+
+		if (yshift)
+			AnimateLara(item);
 	}
 }
 
@@ -251,7 +253,7 @@ void lara_col_climbleft(ITEM_INFO* item, COLL_INFO* coll)
 
 	if (!LaraCheckForLetGo(item, coll))
 	{
-		lara.move_angle = item->pos.y_rot - 16384;
+		lara.move_angle = item->pos.y_rot - 0x4000;
 		res = LaraTestClimbPos(item, coll->radius, -(coll->radius + 120), -512, 512, &shift);
 		LaraDoClimbLeftRight(item, coll, res, shift);
 	}
@@ -274,7 +276,7 @@ void lara_col_climbright(ITEM_INFO* item, COLL_INFO* coll)
 
 	if (!LaraCheckForLetGo(item, coll))
 	{
-		lara.move_angle = item->pos.y_rot + 16384;
+		lara.move_angle = item->pos.y_rot + 0x4000;
 		res = LaraTestClimbPos(item, coll->radius, coll->radius + 120, -512, 512, &shift);
 		LaraDoClimbLeftRight(item, coll, res, shift);
 	}
@@ -290,7 +292,7 @@ void lara_as_climbend(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_col_climbend(ITEM_INFO* item, COLL_INFO* coll)
 {
-	return;
+
 }
 
 void lara_as_climbdown(ITEM_INFO* item, COLL_INFO* coll)
@@ -309,7 +311,7 @@ void lara_col_climbdown(ITEM_INFO* item, COLL_INFO* coll)
 
 	frame = item->frame_number - anims[ANIM_CLIMBDOWN].frame_base;
 
-	if (frame == 0)
+	if (!frame)
 		yshift = 0;
 	else if (frame == 28 || frame == 29)
 		yshift = 256;

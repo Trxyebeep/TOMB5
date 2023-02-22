@@ -1359,11 +1359,47 @@ void BinocularCamera(ITEM_INFO* item)
 			Fire = 1;
 			WeaponDelay = 32;
 		}
-		else
+		else if (lara.hk_type_carried & W_AMMO1)//sniper mode!
 		{
-			if (lara.hk_type_carried & W_AMMO1)//sniper mode!
+			WeaponDelay = 12;
+			Fire = 1;
+
+			if (lara.hk_type_carried & W_SILENCER)
+				SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
+			else
 			{
-				WeaponDelay = 12;
+				SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+				SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
+			}
+
+			if (ammo[0] != -1)
+				ammo[0]--;
+		}
+		else if (lara.hk_type_carried & W_AMMO2)//burst mode!
+		{
+			if (LSHKTimer)
+			{
+				camera.bounce = -16 - (GetRandomControl() & 0x1F);
+
+				if (lara.hk_type_carried & W_SILENCER)
+					SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
+				else
+				{
+					SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+					SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
+				}
+			}
+			else
+			{
+				LSHKShotsFired++;
+
+				if (LSHKShotsFired == 5)
+				{
+					LSHKShotsFired = 0;
+					WeaponDelay = 12;
+				}
+
+				LSHKTimer = 4;
 				Fire = 1;
 
 				if (lara.hk_type_carried & W_SILENCER)
@@ -1377,76 +1413,37 @@ void BinocularCamera(ITEM_INFO* item)
 				if (ammo[0] != -1)
 					ammo[0]--;
 			}
-			else if (lara.hk_type_carried & W_AMMO2)//burst mode!
+		}
+		else//rapid mode!
+		{
+			if (LSHKTimer)
 			{
-				if (LSHKTimer)
-				{
-					camera.bounce = -16 - (GetRandomControl() & 0x1F);
-
-					if (lara.hk_type_carried & W_SILENCER)
-						SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-					else
-					{
-						SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
-						SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
-					}
-				}
+				if (lara.hk_type_carried & W_SILENCER)
+					SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 				else
 				{
-					LSHKShotsFired++;
-
-					if (LSHKShotsFired == 5)
-					{
-						LSHKShotsFired = 0;
-						WeaponDelay = 12;
-					}
-
-					LSHKTimer = 4;
-					Fire = 1;
-
-					if (lara.hk_type_carried & W_SILENCER)
-						SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-					else
-					{
-						SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
-						SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
-					}
-
-					if (ammo[0] != -1)
-						ammo[0]--;
+					SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+					SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
 				}
 			}
-			else//rapid mode!
+			else
 			{
-				if (LSHKTimer)
-				{
-					if (lara.hk_type_carried & W_SILENCER)
-						SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-					else
-					{
-						SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
-						SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
-					}
-				}
+				LSHKTimer = 4;
+				Fire = 1;
+
+				if (lara.hk_type_carried & W_SILENCER)
+					SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
 				else
 				{
-					LSHKTimer = 4;
-					Fire = 1;
-
-					if (lara.hk_type_carried & W_SILENCER)
-						SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-					else
-					{
-						SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
-						SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
-					}
-
-					if (ammo[0] != -1)
-						ammo[0]--;
+					SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+					SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
 				}
 
-				camera.bounce = -16 - (GetRandomControl() & 0x1F);
+				if (ammo[0] != -1)
+					ammo[0]--;
 			}
+
+			camera.bounce = -16 - (GetRandomControl() & 0x1F);
 		}
 
 		GetTargetOnLOS(&camera.pos, &camera.target, 1, Fire);

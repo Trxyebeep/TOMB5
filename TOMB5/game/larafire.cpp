@@ -23,12 +23,6 @@
 #include "lot.h"
 #include "savegame.h"
 
-PHD_3DPOS bum_view;
-GAME_VECTOR bum_vdest;
-GAME_VECTOR bum_vsrc;
-ITEM_INFO* TargetList[8];
-ITEM_INFO* LastTargets[8];
-
 WEAPON_INFO weapons[9] =
 {
 	{
@@ -253,8 +247,8 @@ void LaraGun()
 				if (lara.gun_type == WEAPON_FLARE)
 					lara.request_gun_type = WEAPON_FLARE;
 			}
-			else if (lara.request_gun_type == WEAPON_FLARE || lara.water_status == LW_ABOVE_WATER || lara.water_status == LW_WADE &&
-				lara.water_surface_dist > -weapons[lara.gun_type].gun_height)
+			else if (lara.request_gun_type == WEAPON_FLARE || (lara.water_status == LW_ABOVE_WATER ||
+				(lara.water_status == LW_WADE && lara.water_surface_dist > -weapons[lara.gun_type].gun_height)))
 			{
 				if (lara.gun_type == WEAPON_FLARE)
 				{
@@ -283,8 +277,8 @@ void LaraGun()
 	}
 	else if (lara.gun_status == LG_READY)
 	{
-		if (input & IN_DRAW || lara.request_gun_type != lara.gun_type || lara.water_status != LW_ABOVE_WATER &&
-			(lara.water_status != LW_WADE || lara.water_surface_dist < -weapons[lara.gun_type].gun_height))
+		if ((input & IN_DRAW || lara.request_gun_type != lara.gun_type) || (lara.water_status != LW_ABOVE_WATER &&
+			(lara.water_status != LW_WADE || lara.water_surface_dist < -weapons[lara.gun_type].gun_height)))
 			lara.gun_status = LG_UNDRAW_GUNS;
 	}
 	else if (lara.gun_status == LG_HANDS_BUSY && input & IN_FLARE && lara_item->current_anim_state == AS_ALL4S && lara_item->anim_number == ANIM_ALL4S)
@@ -322,7 +316,7 @@ void LaraGun()
 
 	case LG_HANDS_BUSY:
 
-		if (lara.gun_type == WEAPON_FLARE && lara.mesh_ptrs[LM_LHAND] == meshes[objects[FLARE_ANIM].mesh_index + (2 * LM_LHAND)])
+		if (lara.gun_type == WEAPON_FLARE && lara.mesh_ptrs[LM_LHAND] == meshes[objects[FLARE_ANIM].mesh_index + 2 * LM_LHAND])
 		{
 			lara.flare_control_left = CheckForHoldingState(lara_item->current_anim_state);
 			DoFlareInHand(lara.flare_age);
@@ -370,7 +364,7 @@ void LaraGun()
 		break;
 
 	case LG_UNDRAW_GUNS:
-		lara.mesh_ptrs[LM_HEAD] = meshes[objects[LARA].mesh_index + (2 * LM_HEAD)];
+		lara.mesh_ptrs[LM_HEAD] = meshes[objects[LARA].mesh_index + 2 * LM_HEAD];
 
 		switch (lara.gun_type)
 		{
@@ -396,36 +390,37 @@ void LaraGun()
 	case LG_READY:
 
 		if (input & IN_ACTION)
-			lara.mesh_ptrs[LM_HEAD] = meshes[objects[LARA_SCREAM].mesh_index + (2 * LM_HEAD)];
+			lara.mesh_ptrs[LM_HEAD] = meshes[objects[LARA_SCREAM].mesh_index + 2 * LM_HEAD];
 		else
-			lara.mesh_ptrs[LM_HEAD] = meshes[objects[LARA].mesh_index + (2 * LM_HEAD)];
+			lara.mesh_ptrs[LM_HEAD] = meshes[objects[LARA].mesh_index + 2 * LM_HEAD];
 
 		if (camera.type != CINEMATIC_CAMERA && camera.type != LOOK_CAMERA && camera.type != HEAVY_CAMERA)
 			camera.type = COMBAT_CAMERA;
 
-		if (input & IN_ACTION && !*get_current_ammo_pointer(lara.gun_type))
+		if (input & IN_ACTION)
 		{
-			if (objects[PISTOLS_ITEM].loaded)
-				lara.request_gun_type = WEAPON_PISTOLS;
-			else
-				lara.request_gun_type = WEAPON_NONE;
-		}
-		else
-		{
-			switch (lara.gun_type)
+			if (!*get_current_ammo_pointer(lara.gun_type))
 			{
-			case WEAPON_PISTOLS:
-			case WEAPON_UZI:
-				PistolHandler(lara.gun_type);
-				break;
-
-			case WEAPON_REVOLVER:
-			case WEAPON_SHOTGUN:
-			case WEAPON_HK:
-			case WEAPON_CROSSBOW:
-				RifleHandler(lara.gun_type);
-				break;
+				if (objects[PISTOLS_ITEM].loaded)
+					lara.request_gun_type = WEAPON_PISTOLS;
+				else
+					lara.request_gun_type = WEAPON_NONE;
 			}
+		}
+
+		switch (lara.gun_type)
+		{
+		case WEAPON_PISTOLS:
+		case WEAPON_UZI:
+			PistolHandler(lara.gun_type);
+			break;
+
+		case WEAPON_REVOLVER:
+		case WEAPON_SHOTGUN:
+		case WEAPON_HK:
+		case WEAPON_CROSSBOW:
+			RifleHandler(lara.gun_type);
+			break;
 		}
 
 		break;
@@ -560,6 +555,8 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
 {
 	ITEM_INFO* item;
 	ITEM_INFO* bestitem;
+	static ITEM_INFO* TargetList[8];
+	static ITEM_INFO* LastTargets[8];
 	CREATURE_INFO* creature;
 	GAME_VECTOR src, target;
 	long x, y, z, slot, dist, maxdist, maxdist2, bestdist;
@@ -586,43 +583,43 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
 
 	for (slot = 0; slot < 5; slot++, creature++)
 	{
-		if (creature->item_num != NO_ITEM)
+		if (creature->item_num == NO_ITEM)
+			continue;
+
+		item = &items[creature->item_num];
+
+		if (item->hit_points <= 0)
+			continue;
+
+		x = item->pos.x_pos - src.x;
+		y = item->pos.y_pos - src.y;
+		z = item->pos.z_pos - src.z;
+
+		if (abs(x) <= maxdist && abs(y) <= maxdist && abs(z) <= maxdist)
 		{
-			item = &items[creature->item_num];
+			dist = SQUARE(x) + SQUARE(y) + SQUARE(z);
 
-			if (item->hit_points > 0)
+			if (dist < maxdist2)
 			{
-				x = item->pos.x_pos - src.x;
-				y = item->pos.y_pos - src.y;
-				z = item->pos.z_pos - src.z;
+				find_target_point(item, &target);
 
-				if (abs(x) <= maxdist && abs(y) <= maxdist && abs(z) <= maxdist)
+				if (LOS(&src, &target))
 				{
-					dist = SQUARE(x) + SQUARE(y) + SQUARE(z);
+					phd_GetVectorAngles(target.x - src.x, target.y - src.y, target.z - src.z, ang);
+					ang[0] -= (lara.torso_y_rot + lara_item->pos.y_rot);
+					ang[1] -= (lara.torso_x_rot + lara_item->pos.x_rot);
 
-					if (dist < maxdist2)
+					if (ang[0] >= winfo->lock_angles[0] && ang[0] <= winfo->lock_angles[1] &&
+						ang[1] >= winfo->lock_angles[2] && ang[1] <= winfo->lock_angles[3])
 					{
-						find_target_point(item, &target);
+						TargetList[targets] = item;
+						targets++;
 
-						if (LOS(&src, &target))
+						if (abs(ang[0]) < bestyrot + 2730 && dist < bestdist)
 						{
-							phd_GetVectorAngles(target.x - src.x, target.y - src.y, target.z - src.z, ang);
-							ang[0] -= (lara.torso_y_rot + lara_item->pos.y_rot);
-							ang[1] -= (lara.torso_x_rot + lara_item->pos.x_rot);
-
-							if (ang[0] >= winfo->lock_angles[0] && ang[0] <= winfo->lock_angles[1] &&
-								ang[1] >= winfo->lock_angles[2] && ang[1] <= winfo->lock_angles[3])
-							{
-								TargetList[targets] = item;
-								targets++;
-
-								if (abs(ang[0]) < bestyrot + 2730 && dist < bestdist)
-								{
-									bestdist = dist;
-									bestyrot = abs(ang[0]);
-									bestitem = item;
-								}
-							}
+							bestdist = dist;
+							bestyrot = abs(ang[0]);
+							bestitem = item;
 						}
 					}
 				}
@@ -691,7 +688,7 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
 
 	if (lara.target != LastTargets[0])
 	{
-		for (slot = 7; slot > 0; --slot)
+		for (slot = 7; slot > 0; slot--)
 			LastTargets[slot] = LastTargets[slot - 1];
 
 		LastTargets[0] = lara.target;
@@ -707,7 +704,7 @@ void find_target_point(ITEM_INFO* item, GAME_VECTOR* target)
 
 	bounds = GetBestFrame(item);
 	x = (bounds[0] + bounds[1]) >> 1;
-	y = (bounds[2] + (bounds[3] - bounds[2]) / 3);
+	y = bounds[2] + (bounds[3] - bounds[2]) / 3;
 	z = (bounds[4] + bounds[5]) >> 1;
 	s = phd_sin(item->pos.y_rot);
 	c = phd_cos(item->pos.y_rot);
@@ -755,6 +752,9 @@ long FireWeapon(long weapon_type, ITEM_INFO* target, ITEM_INFO* src, short* angl
 {
 	WEAPON_INFO* winfo;
 	SPHERE* sptr;
+	static PHD_3DPOS bum_view;
+	static GAME_VECTOR bum_vdest;
+	static GAME_VECTOR bum_vsrc;
 	short* ammo;
 	long r, nSpheres, bestdist, best;
 	short room_number;
@@ -765,11 +765,11 @@ long FireWeapon(long weapon_type, ITEM_INFO* target, ITEM_INFO* src, short* angl
 	GetLaraJointPos((PHD_VECTOR*)&bum_view, LMX_HAND_R);
 	ammo = get_current_ammo_pointer(weapon_type);
 
-	if (!*ammo)
+	if (!ammo[0])
 		return 0;
 
-	if (*ammo != -1)
-		--*ammo;
+	if (ammo[0] != -1)
+		ammo[0]--;
 
 	winfo = &weapons[weapon_type];
 
@@ -789,7 +789,7 @@ long FireWeapon(long weapon_type, ITEM_INFO* target, ITEM_INFO* src, short* angl
 		sptr = &Slist[i];
 		r = sptr->r;
 
-		if (abs(sptr->x) < r && abs(sptr->y) < r && sptr->z > r && (SQUARE(sptr->x) + SQUARE(sptr->y) <= SQUARE(r)))
+		if (abs(sptr->x) < r && abs(sptr->y) < r && sptr->z > r && SQUARE(sptr->x) + SQUARE(sptr->y) <= SQUARE(r))
 		{
 			if (sptr->z - r < bestdist)
 			{
@@ -816,18 +816,16 @@ long FireWeapon(long weapon_type, ITEM_INFO* target, ITEM_INFO* src, short* angl
 		GetTargetOnLOS(&bum_vsrc, &bum_vdest, 0, 1);
 		return -1;
 	}
-	else
-	{
-		savegame.Game.AmmoHits++;
-		bum_vdest.x = bum_vsrc.x + (bestdist * phd_mxptr[M20] >> 14);
-		bum_vdest.y = bum_vsrc.y + (bestdist * phd_mxptr[M21] >> 14);
-		bum_vdest.z = bum_vsrc.z + (bestdist * phd_mxptr[M22] >> 14);
 
-		if (!GetTargetOnLOS(&bum_vsrc, &bum_vdest, 0, 1))
-			HitTarget(target, &bum_vdest, winfo->damage, 0);
+	savegame.Game.AmmoHits++;
+	bum_vdest.x = bum_vsrc.x + (bestdist * phd_mxptr[M20] >> 14);
+	bum_vdest.y = bum_vsrc.y + (bestdist * phd_mxptr[M21] >> 14);
+	bum_vdest.z = bum_vsrc.z + (bestdist * phd_mxptr[M22] >> 14);
 
-		return 1;
-	}
+	if (!GetTargetOnLOS(&bum_vsrc, &bum_vdest, 0, 1))
+		HitTarget(target, &bum_vdest, winfo->damage, 0);
+
+	return 1;
 }
 
 void HitTarget(ITEM_INFO* item, GAME_VECTOR* hitpos, long damage, long grenade)
