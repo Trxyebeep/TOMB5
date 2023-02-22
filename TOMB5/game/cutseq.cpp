@@ -15,16 +15,8 @@
 char title_controls_locked_out;
 static char iswappedit = 0;
 
-ushort special2_pistols_info[13] =
-{
-	0x00C4, 0x00CC, 0x00D4, 0x00DC, 0x00E4, 0x00EC, 0x00F4, 0x00FC, 0x0104, 0x010C,
-	0x0114, 0x0121, 0xFFFF
-};
-
-ushort special3_pistols_info[] =
-{
-	0x0102, 0x010A, 0x0114, 0xFFFF, 0, 0, 0, 0, 0x00FF, 0x0100, 0x0114, 0xFF9C, 0x0064, 0x0100, 0x0200
-};
+static ushort special2_pistols_info[13] = { 196, 204, 212, 220, 228, 236, 244, 252, 260, 268, 276, 289, (ushort)-1 };
+static ushort special3_pistols_info[4] = { 258, 266, 276, (ushort)-1 };
 
 void _special1_control()
 {
@@ -247,9 +239,9 @@ void _special3_control()
 		a1 = GetRandomControl() << 1;
 		a2 = GetRandomControl() << 1;
 		f = (1024 * phd_cos(a1)) >> 14;
-		sptr->Xvel = short((f * phd_sin(a2)) >> 14);
+		sptr->Xvel = short(f * phd_sin(a2) >> 14);
 		sptr->Yvel = 256 * phd_sin(-a1) >> 14;
-		sptr->Zvel = short((f * phd_cos(a2)) >> 14);
+		sptr->Zvel = short(f * phd_cos(a2) >> 14);
 
 		sptr->Friction = 0;
 		sptr->Flags = 538;
@@ -361,8 +353,8 @@ void FlamingHell(PHD_VECTOR* pos)
 	sptr->On = 1;
 	sptr->sR = (GetRandomControl() & 0x1F) + 48;
 	sptr->sG = sptr->sR;
-	sptr->sB = (GetRandomControl() & 0x3F) - 64;
-	sptr->dR = (GetRandomControl() & 0x3F) - 64;
+	sptr->sB = (GetRandomControl() & 0x3F) + 192;
+	sptr->dR = (GetRandomControl() & 0x3F) + 192;
 	sptr->dB = 32;
 	sptr->dG = (GetRandomControl() & 0x3F) + 128;
 	sptr->ColFadeSpeed = 8;
@@ -373,17 +365,17 @@ void FlamingHell(PHD_VECTOR* pos)
 	sptr->x = (GetRandomControl() & 0xFF) + x - 128;
 	sptr->y = (GetRandomControl() & 0xFF) + y - 128;
 	sptr->z = (GetRandomControl() & 0xFF) + z - 128;
+	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
+	sptr->Yvel = (short)-r;
+	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Friction = 51;
 	sptr->MaxYvel = 0;
 	sptr->Flags = 538;
 	sptr->Scalar = 2;
+	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
 	sptr->dSize = uchar((GetRandomControl() & 0xF) + (r >> 6) + 16);
 	sptr->sSize = sptr->dSize >> 1;
 	sptr->Size = sptr->dSize >> 1;
-	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
-	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
-	sptr->Yvel = (short)-r;
-	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->dSize += sptr->dSize >> 2;
 }
 

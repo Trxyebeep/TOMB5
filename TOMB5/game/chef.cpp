@@ -119,7 +119,7 @@ void ChefControl(short item_number)
 			lara_item->hit_points -= 80;
 			lara_item->hit_status = 1;
 			CreatureEffectT(item, &knife, 20, item->pos.y_rot, DoBloodSplat);
-			SoundEffect(70, &item->pos, 0);
+			SoundEffect(SFX_LARA_THUD, &item->pos, SFX_DEFAULT);
 			chef->flags = 1;
 		}
 
