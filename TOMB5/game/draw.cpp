@@ -57,7 +57,6 @@ static short LightningRand;
 static short dLightningRand;
 static short LightningSFXDelay = 0;
 short no_rotation[12] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-static long box_lines[12][2] = { {0, 1}, {1, 2}, {2, 3}, {3, 0}, {4, 5}, {5, 6}, {6, 7}, {7, 4}, {0, 4}, {1, 5}, {2, 6}, {3, 7} };
 
 static long outside_top;
 static long outside_left;
@@ -78,20 +77,17 @@ static short ClipRoomNum;
 
 short* GetBoundsAccurate(ITEM_INFO* item)
 {
-	short* bptr;
 	short* frmptr[2];
 	long rate, frac;
 	static short interpolated_bounds[6];
 
 	frac = GetFrames(item, frmptr, &rate);
 
-	if (frac == 0)
+	if (!frac)
 		return frmptr[0];
 
-	bptr = interpolated_bounds;
-
-	for (int i = 0; i < 6; i++, bptr++, frmptr[0]++, frmptr[1]++)
-		*bptr = (short)(*frmptr[0] + (*frmptr[1] - *frmptr[0]) * frac / rate);
+	for (int i = 0; i < 6; i++, frmptr[0]++, frmptr[1]++)
+		interpolated_bounds[i] = short(*frmptr[0] + (*frmptr[1] - *frmptr[0]) * frac / rate);
 
 	return interpolated_bounds;
 }
@@ -99,11 +95,11 @@ short* GetBoundsAccurate(ITEM_INFO* item)
 short* GetBestFrame(ITEM_INFO* item)
 {
 	short* frm[2];
-	long rate, ret;
+	long frac, rate;
 	
-	ret = GetFrames(item, frm, &rate);
+	frac = GetFrames(item, frm, &rate);
 
-	if (ret > (rate >> 1))
+	if (frac > (rate >> 1))
 		return frm[1];
 	else
 		return frm[0];
@@ -243,13 +239,14 @@ void gar_RotYXZsuperpack_I(short** pprot1, short** pprot2, long skip)
 void gar_RotYXZsuperpack(short** pprot, long skip)
 {
 	ushort* prot;
+	long packed;
 
 	while (skip)
 	{
 		prot = (ushort*)*pprot;
 
-		if (*prot & (49152))
-			*pprot += 1;
+		if (*prot & 0xC000)
+			*pprot++;
 		else
 			*pprot += 2;
 
@@ -258,23 +255,28 @@ void gar_RotYXZsuperpack(short** pprot, long skip)
 
 	prot = (ushort*)*pprot;
 
-	if ((*prot >> 14))
+	switch (*prot >> 14)
 	{
-		if ((*prot >> 14) == 1)
-			phd_RotX((short)((*prot & 4095) << 4));
-		else if ((*prot >> 14) == 2)
-			phd_RotY((short)((*prot & 4095) << 4));
-		else
-			phd_RotZ((short)((*prot & 4095) << 4));
-	}
-	else
-	{
-		phd_RotYXZpack(((ushort)**pprot << 16) + (ushort)(*pprot)[1]);
-		*pprot += 2;
-		return;
+	case 0:
+		packed = (*prot << 16) + *(prot + 1);
+		phd_RotYXZpack(packed);
+		(*pprot)++;
+		break;
+
+	case 1:
+		phd_RotX(short((*prot & 0xFFF) << 4));
+		break;
+
+	case 2:
+		phd_RotY(short((*prot & 0xFFF) << 4));
+		break;
+
+	default:
+		phd_RotZ(short((*prot & 0xFFF) << 4));
+		break;
 	}
 
-	++*pprot;
+	(*pprot)++;
 }
 
 void phd_PutPolygons_I(short* ptr, long clip)
@@ -295,18 +297,18 @@ void aInterpolateMatrix()
 
 	if (IM_rate == 2)
 	{
-		matrixp[0] = (float)((iMatrixp[0] + matrixp[0]) * 0.5);
-		matrixp[1] = (float)((iMatrixp[1] + matrixp[1]) * 0.5);
-		matrixp[2] = (float)((iMatrixp[2] + matrixp[2]) * 0.5);
-		matrixp[3] = (float)((iMatrixp[3] + matrixp[3]) * 0.5);
-		matrixp[4] = (float)((iMatrixp[4] + matrixp[4]) * 0.5);
-		matrixp[5] = (float)((iMatrixp[5] + matrixp[5]) * 0.5);
-		matrixp[6] = (float)((iMatrixp[6] + matrixp[6]) * 0.5);
-		matrixp[7] = (float)((iMatrixp[7] + matrixp[7]) * 0.5);
-		matrixp[8] = (float)((iMatrixp[8] + matrixp[8]) * 0.5);
-		matrixp[9] = (float)((iMatrixp[9] + matrixp[9]) * 0.5);
-		matrixp[10] = (float)((iMatrixp[10] + matrixp[10]) * 0.5);
-		matrixp[11] = (float)((iMatrixp[11] + matrixp[11]) * 0.5);
+		matrixp[0] = (iMatrixp[0] + matrixp[0]) * 0.5F;
+		matrixp[1] = (iMatrixp[1] + matrixp[1]) * 0.5F;
+		matrixp[2] = (iMatrixp[2] + matrixp[2]) * 0.5F;
+		matrixp[3] = (iMatrixp[3] + matrixp[3]) * 0.5F;
+		matrixp[4] = (iMatrixp[4] + matrixp[4]) * 0.5F;
+		matrixp[5] = (iMatrixp[5] + matrixp[5]) * 0.5F;
+		matrixp[6] = (iMatrixp[6] + matrixp[6]) * 0.5F;
+		matrixp[7] = (iMatrixp[7] + matrixp[7]) * 0.5F;
+		matrixp[8] = (iMatrixp[8] + matrixp[8]) * 0.5F;
+		matrixp[9] = (iMatrixp[9] + matrixp[9]) * 0.5F;
+		matrixp[10] = (iMatrixp[10] + matrixp[10]) * 0.5F;
+		matrixp[11] = (iMatrixp[11] + matrixp[11]) * 0.5F;
 		return;
 	}
 
@@ -314,65 +316,65 @@ void aInterpolateMatrix()
 	{
 		if (IM_rate != 4)
 		{
-			matrixp[0] = iMatrixp[0] - (float)((iMatrixp[0] - matrixp[0]) * 0.25);
-			matrixp[1] = iMatrixp[1] - (float)((iMatrixp[1] - matrixp[1]) * 0.25);
-			matrixp[2] = iMatrixp[2] - (float)((iMatrixp[2] - matrixp[2]) * 0.25);
-			matrixp[3] = iMatrixp[3] - (float)((iMatrixp[3] - matrixp[3]) * 0.25);
-			matrixp[4] = iMatrixp[4] - (float)((iMatrixp[4] - matrixp[4]) * 0.25);
-			matrixp[5] = iMatrixp[5] - (float)((iMatrixp[5] - matrixp[5]) * 0.25);
-			matrixp[6] = iMatrixp[6] - (float)((iMatrixp[6] - matrixp[6]) * 0.25);
-			matrixp[7] = iMatrixp[7] - (float)((iMatrixp[7] - matrixp[7]) * 0.25);
-			matrixp[8] = iMatrixp[8] - (float)((iMatrixp[8] - matrixp[8]) * 0.25);
-			matrixp[9] = iMatrixp[9] - (float)((iMatrixp[9] - matrixp[9]) * 0.25);
-			matrixp[10] = iMatrixp[10] - (float)((iMatrixp[10] - matrixp[10]) * 0.25);
-			matrixp[11] = iMatrixp[11] - (float)((iMatrixp[11] - matrixp[11]) * 0.25);
+			matrixp[0] = iMatrixp[0] - (iMatrixp[0] - matrixp[0]) * 0.25F;
+			matrixp[1] = iMatrixp[1] - (iMatrixp[1] - matrixp[1]) * 0.25F;
+			matrixp[2] = iMatrixp[2] - (iMatrixp[2] - matrixp[2]) * 0.25F;
+			matrixp[3] = iMatrixp[3] - (iMatrixp[3] - matrixp[3]) * 0.25F;
+			matrixp[4] = iMatrixp[4] - (iMatrixp[4] - matrixp[4]) * 0.25F;
+			matrixp[5] = iMatrixp[5] - (iMatrixp[5] - matrixp[5]) * 0.25F;
+			matrixp[6] = iMatrixp[6] - (iMatrixp[6] - matrixp[6]) * 0.25F;
+			matrixp[7] = iMatrixp[7] - (iMatrixp[7] - matrixp[7]) * 0.25F;
+			matrixp[8] = iMatrixp[8] - (iMatrixp[8] - matrixp[8]) * 0.25F;
+			matrixp[9] = iMatrixp[9] - (iMatrixp[9] - matrixp[9]) * 0.25F;
+			matrixp[10] = iMatrixp[10] - (iMatrixp[10] - matrixp[10]) * 0.25F;
+			matrixp[11] = iMatrixp[11] - (iMatrixp[11] - matrixp[11]) * 0.25F;
 			return;
 		}
 
-		matrixp[0] = (float)((iMatrixp[0] + matrixp[0]) * 0.5);
-		matrixp[1] = (float)((iMatrixp[1] + matrixp[1]) * 0.5);
-		matrixp[2] = (float)((iMatrixp[2] + matrixp[2]) * 0.5);
-		matrixp[3] = (float)((iMatrixp[3] + matrixp[3]) * 0.5);
-		matrixp[4] = (float)((iMatrixp[4] + matrixp[4]) * 0.5);
-		matrixp[5] = (float)((iMatrixp[5] + matrixp[5]) * 0.5);
-		matrixp[6] = (float)((iMatrixp[6] + matrixp[6]) * 0.5);
-		matrixp[7] = (float)((iMatrixp[7] + matrixp[7]) * 0.5);
-		matrixp[8] = (float)((iMatrixp[8] + matrixp[8]) * 0.5);
-		matrixp[9] = (float)((iMatrixp[9] + matrixp[9]) * 0.5);
-		matrixp[10] = (float)((iMatrixp[10] + matrixp[10]) * 0.5);
-		matrixp[11] = (float)((iMatrixp[11] + matrixp[11]) * 0.5);
+		matrixp[0] = (iMatrixp[0] + matrixp[0]) * 0.5F;
+		matrixp[1] = (iMatrixp[1] + matrixp[1]) * 0.5F;
+		matrixp[2] = (iMatrixp[2] + matrixp[2]) * 0.5F;
+		matrixp[3] = (iMatrixp[3] + matrixp[3]) * 0.5F;
+		matrixp[4] = (iMatrixp[4] + matrixp[4]) * 0.5F;
+		matrixp[5] = (iMatrixp[5] + matrixp[5]) * 0.5F;
+		matrixp[6] = (iMatrixp[6] + matrixp[6]) * 0.5F;
+		matrixp[7] = (iMatrixp[7] + matrixp[7]) * 0.5F;
+		matrixp[8] = (iMatrixp[8] + matrixp[8]) * 0.5F;
+		matrixp[9] = (iMatrixp[9] + matrixp[9]) * 0.5F;
+		matrixp[10] = (iMatrixp[10] + matrixp[10]) * 0.5F;
+		matrixp[11] = (iMatrixp[11] + matrixp[11]) * 0.5F;
 		return;
 	}
 
 	if (IM_frac != 1)
 	{
-		matrixp[0] = iMatrixp[0] - (float)((iMatrixp[0] - matrixp[0]) * 0.25);
-		matrixp[1] = iMatrixp[1] - (float)((iMatrixp[1] - matrixp[1]) * 0.25);
-		matrixp[2] = iMatrixp[2] - (float)((iMatrixp[2] - matrixp[2]) * 0.25);
-		matrixp[3] = iMatrixp[3] - (float)((iMatrixp[3] - matrixp[3]) * 0.25);
-		matrixp[4] = iMatrixp[4] - (float)((iMatrixp[4] - matrixp[4]) * 0.25);
-		matrixp[5] = iMatrixp[5] - (float)((iMatrixp[5] - matrixp[5]) * 0.25);
-		matrixp[6] = iMatrixp[6] - (float)((iMatrixp[6] - matrixp[6]) * 0.25);
-		matrixp[7] = iMatrixp[7] - (float)((iMatrixp[7] - matrixp[7]) * 0.25);
-		matrixp[8] = iMatrixp[8] - (float)((iMatrixp[8] - matrixp[8]) * 0.25);
-		matrixp[9] = iMatrixp[9] - (float)((iMatrixp[9] - matrixp[9]) * 0.25);
-		matrixp[10] = iMatrixp[10] - (float)((iMatrixp[10] - matrixp[10]) * 0.25);
-		matrixp[11] = iMatrixp[11] - (float)((iMatrixp[11] - matrixp[11]) * 0.25);
+		matrixp[0] = iMatrixp[0] - (iMatrixp[0] - matrixp[0]) * 0.25F;
+		matrixp[1] = iMatrixp[1] - (iMatrixp[1] - matrixp[1]) * 0.25F;
+		matrixp[2] = iMatrixp[2] - (iMatrixp[2] - matrixp[2]) * 0.25F;
+		matrixp[3] = iMatrixp[3] - (iMatrixp[3] - matrixp[3]) * 0.25F;
+		matrixp[4] = iMatrixp[4] - (iMatrixp[4] - matrixp[4]) * 0.25F;
+		matrixp[5] = iMatrixp[5] - (iMatrixp[5] - matrixp[5]) * 0.25F;
+		matrixp[6] = iMatrixp[6] - (iMatrixp[6] - matrixp[6]) * 0.25F;
+		matrixp[7] = iMatrixp[7] - (iMatrixp[7] - matrixp[7]) * 0.25F;
+		matrixp[8] = iMatrixp[8] - (iMatrixp[8] - matrixp[8]) * 0.25F;
+		matrixp[9] = iMatrixp[9] - (iMatrixp[9] - matrixp[9]) * 0.25F;
+		matrixp[10] = iMatrixp[10] - (iMatrixp[10] - matrixp[10]) * 0.25F;
+		matrixp[11] = iMatrixp[11] - (iMatrixp[11] - matrixp[11]) * 0.25F;
 		return;
 	}
 
-	matrixp[0] += (float)((iMatrixp[0] - matrixp[0]) * 0.25);
-	matrixp[1] += (float)((iMatrixp[1] - matrixp[1]) * 0.25);
-	matrixp[2] += (float)((iMatrixp[2] - matrixp[2]) * 0.25);
-	matrixp[3] += (float)((iMatrixp[3] - matrixp[3]) * 0.25);
-	matrixp[4] += (float)((iMatrixp[4] - matrixp[4]) * 0.25);
-	matrixp[5] += (float)((iMatrixp[5] - matrixp[5]) * 0.25);
-	matrixp[6] += (float)((iMatrixp[6] - matrixp[6]) * 0.25);
-	matrixp[7] += (float)((iMatrixp[7] - matrixp[7]) * 0.25);
-	matrixp[8] += (float)((iMatrixp[8] - matrixp[8]) * 0.25);
-	matrixp[9] += (float)((iMatrixp[9] - matrixp[9]) * 0.25);
-	matrixp[10] += (float)((iMatrixp[10] - matrixp[10]) * 0.25);
-	matrixp[11] += (float)((iMatrixp[11] - matrixp[11]) * 0.25);
+	matrixp[0] += (iMatrixp[0] - matrixp[0]) * 0.25F;
+	matrixp[1] += (iMatrixp[1] - matrixp[1]) * 0.25F;
+	matrixp[2] += (iMatrixp[2] - matrixp[2]) * 0.25F;
+	matrixp[3] += (iMatrixp[3] - matrixp[3]) * 0.25F;
+	matrixp[4] += (iMatrixp[4] - matrixp[4]) * 0.25F;
+	matrixp[5] += (iMatrixp[5] - matrixp[5]) * 0.25F;
+	matrixp[6] += (iMatrixp[6] - matrixp[6]) * 0.25F;
+	matrixp[7] += (iMatrixp[7] - matrixp[7]) * 0.25F;
+	matrixp[8] += (iMatrixp[8] - matrixp[8]) * 0.25F;
+	matrixp[9] += (iMatrixp[9] - matrixp[9]) * 0.25F;
+	matrixp[10] += (iMatrixp[10] - matrixp[10]) * 0.25F;
+	matrixp[11] += (iMatrixp[11] - matrixp[11]) * 0.25F;
 }
 
 long DrawPhaseGame()
@@ -618,7 +620,7 @@ void DrawAnimatingItem(ITEM_INFO* item)
 					if (bone[0] & 4)
 						phd_RotX_I(*data++);
 
-					if (bone[0] & 16)
+					if (bone[0] & 0x10)
 						phd_RotZ_I(*data++);
 				}
 
@@ -668,7 +670,7 @@ void DrawAnimatingItem(ITEM_INFO* item)
 					if (bone[0] & 4)
 						phd_RotX(*data++);
 
-					if (bone[0] & 16)
+					if (bone[0] & 0x10)
 						phd_RotZ(*data++);
 				}
 
@@ -721,6 +723,9 @@ void PrintObjects(short room_number)
 		{
 			if (item->after_death)
 				GlobalAlpha = 0xFE000000 * item->after_death;
+
+		//	if (gfCurrentLevel == LVL5_BASE && item->object_number == BRIDGE_FLAT)
+		//		don't draw
 
 			if (gfCurrentLevel != LVL5_BASE || item->object_number != BRIDGE_FLAT)
 			{
@@ -800,65 +805,62 @@ void DrawRooms(short current_room)
 	if (gfCurrentLevel != LVL5_TITLE)
 		SkyDrawPhase();
 
-	if (objects[LARA].loaded)
+	if (objects[LARA].loaded && !(lara_item->flags & IFL_INVISIBLE))
 	{
-		if (!(lara_item->flags & IFL_INVISIBLE))
+		nPolyType = 4;
+
+		if (lara_item->mesh_bits && !SCNoDrawLara)
 		{
-			nPolyType = 4;
+			if (lara.skelebob)
+				SetupSkelebobMeshswaps();
 
-			if (lara_item->mesh_bits && !SCNoDrawLara)
+			DrawLara(lara_item, 0);
+
+			if (lara.skelebob)
+				RestoreLaraMeshswaps();
+
+			phd_PushMatrix();
+
+			if (lara.right_arm.flash_gun)
 			{
-				if (lara.skelebob)
-					SetupSkelebobMeshswaps();
-
-				DrawLara(lara_item, 0);
-
-				if (lara.skelebob)
-					RestoreLaraMeshswaps();
-
-				phd_PushMatrix();
-
-				if (lara.right_arm.flash_gun)
-				{
-					aMXPtr[M00] = lara_matrices[LMX_HAND_R * indices_count + M00];
-					aMXPtr[M01] = lara_matrices[LMX_HAND_R * indices_count + M01];
-					aMXPtr[M02] = lara_matrices[LMX_HAND_R * indices_count + M02];
-					aMXPtr[M03] = lara_matrices[LMX_HAND_R * indices_count + M03];
-					aMXPtr[M10] = lara_matrices[LMX_HAND_R * indices_count + M10];
-					aMXPtr[M11] = lara_matrices[LMX_HAND_R * indices_count + M11];
-					aMXPtr[M12] = lara_matrices[LMX_HAND_R * indices_count + M12];
-					aMXPtr[M13] = lara_matrices[LMX_HAND_R * indices_count + M13];
-					aMXPtr[M20] = lara_matrices[LMX_HAND_R * indices_count + M20];
-					aMXPtr[M21] = lara_matrices[LMX_HAND_R * indices_count + M21];
-					aMXPtr[M22] = lara_matrices[LMX_HAND_R * indices_count + M22];
-					aMXPtr[M23] = lara_matrices[LMX_HAND_R * indices_count + M23];
-					SetGunFlash(lara.gun_type);
-				}
-
-				if (lara.left_arm.flash_gun)
-				{
-					aMXPtr[M00] = lara_matrices[LMX_HAND_L * indices_count + M00];
-					aMXPtr[M01] = lara_matrices[LMX_HAND_L * indices_count + M01];
-					aMXPtr[M02] = lara_matrices[LMX_HAND_L * indices_count + M02];
-					aMXPtr[M03] = lara_matrices[LMX_HAND_L * indices_count + M03];
-					aMXPtr[M10] = lara_matrices[LMX_HAND_L * indices_count + M10];
-					aMXPtr[M11] = lara_matrices[LMX_HAND_L * indices_count + M11];
-					aMXPtr[M12] = lara_matrices[LMX_HAND_L * indices_count + M12];
-					aMXPtr[M13] = lara_matrices[LMX_HAND_L * indices_count + M13];
-					aMXPtr[M20] = lara_matrices[LMX_HAND_L * indices_count + M20];
-					aMXPtr[M21] = lara_matrices[LMX_HAND_L * indices_count + M21];
-					aMXPtr[M22] = lara_matrices[LMX_HAND_L * indices_count + M22];
-					aMXPtr[M23] = lara_matrices[LMX_HAND_L * indices_count + M23];
-					SetGunFlash(lara.gun_type);
-				}
-
-				phd_PopMatrix();
-				DrawGunflashes();
+				aMXPtr[M00] = lara_matrices[LMX_HAND_R * indices_count + M00];
+				aMXPtr[M01] = lara_matrices[LMX_HAND_R * indices_count + M01];
+				aMXPtr[M02] = lara_matrices[LMX_HAND_R * indices_count + M02];
+				aMXPtr[M03] = lara_matrices[LMX_HAND_R * indices_count + M03];
+				aMXPtr[M10] = lara_matrices[LMX_HAND_R * indices_count + M10];
+				aMXPtr[M11] = lara_matrices[LMX_HAND_R * indices_count + M11];
+				aMXPtr[M12] = lara_matrices[LMX_HAND_R * indices_count + M12];
+				aMXPtr[M13] = lara_matrices[LMX_HAND_R * indices_count + M13];
+				aMXPtr[M20] = lara_matrices[LMX_HAND_R * indices_count + M20];
+				aMXPtr[M21] = lara_matrices[LMX_HAND_R * indices_count + M21];
+				aMXPtr[M22] = lara_matrices[LMX_HAND_R * indices_count + M22];
+				aMXPtr[M23] = lara_matrices[LMX_HAND_R * indices_count + M23];
+				SetGunFlash(lara.gun_type);
 			}
 
-			if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
-				Draw_Mirror_Lara();
+			if (lara.left_arm.flash_gun)
+			{
+				aMXPtr[M00] = lara_matrices[LMX_HAND_L * indices_count + M00];
+				aMXPtr[M01] = lara_matrices[LMX_HAND_L * indices_count + M01];
+				aMXPtr[M02] = lara_matrices[LMX_HAND_L * indices_count + M02];
+				aMXPtr[M03] = lara_matrices[LMX_HAND_L * indices_count + M03];
+				aMXPtr[M10] = lara_matrices[LMX_HAND_L * indices_count + M10];
+				aMXPtr[M11] = lara_matrices[LMX_HAND_L * indices_count + M11];
+				aMXPtr[M12] = lara_matrices[LMX_HAND_L * indices_count + M12];
+				aMXPtr[M13] = lara_matrices[LMX_HAND_L * indices_count + M13];
+				aMXPtr[M20] = lara_matrices[LMX_HAND_L * indices_count + M20];
+				aMXPtr[M21] = lara_matrices[LMX_HAND_L * indices_count + M21];
+				aMXPtr[M22] = lara_matrices[LMX_HAND_L * indices_count + M22];
+				aMXPtr[M23] = lara_matrices[LMX_HAND_L * indices_count + M23];
+				SetGunFlash(lara.gun_type);
+			}
+
+			phd_PopMatrix();
+			DrawGunflashes();
 		}
+
+		if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
+			Draw_Mirror_Lara();
 	}
 
 	nPolyType = 0;
@@ -879,12 +881,14 @@ void DrawRooms(short current_room)
 	phd_TranslateAbs(0, 0, 0);
 	SaveD3DCameraMatrix();
 	phd_PopMatrix();
-	aResetFogBulbList();
-	aBuildFogBulbList();
-	aBuildFXFogBulbList();
 
-	if (!tomb5.fog)
-		aResetFogBulbList();
+	aResetFogBulbList();
+
+	if (tomb5.fog)
+	{
+		aBuildFogBulbList();
+		aBuildFXFogBulbList();
+	}
 
 	for (int i = 0; i < number_draw_rooms; i++)
 	{
@@ -950,7 +954,6 @@ void DrawRooms(short current_room)
 void CalculateObjectLightingLara()
 {
 	PHD_VECTOR pos;
-	short room_no;
 
 	if (GLOBAL_playing_cutseq)
 		CalculateObjectLightingLaraCutSeq();
@@ -970,15 +973,9 @@ void CalculateObjectLightingLara()
 				pos.y = lara_item->pos.y_pos - 192;
 
 			pos.z = lara_item->pos.z_pos;
-			room_no = lara_item->room_number;
-			GetFloor(pos.x, pos.y, pos.z, &room_no);
 		}
 		else
-		{
 			GetLaraJointPos(&pos, LMX_TORSO);
-			room_no = lara_item->room_number;
-			GetFloor(pos.x, pos.y, pos.z, &room_no);
-		}
 
 		current_item = lara_item;
 		lara_item->il.item_pos.x = pos.x;
@@ -1104,6 +1101,7 @@ void RenderIt(short current_room)
 	phd_TranslateAbs(0, 0, 0);
 	SaveD3DCameraMatrix();
 	phd_PopMatrix();
+
 	aResetFogBulbList();
 
 	for (int i = 0; i < number_draw_rooms; i++)
@@ -1251,32 +1249,32 @@ void DrawStaticObjects(short room_number)
 
 	for (int i = r->num_meshes; i > 0; i--, mesh++)
 	{
-		if (mesh->Flags & 1)
+		if (!(mesh->Flags & 1))
+			continue;
+
+		phd_PushMatrix();
+		phd_TranslateAbs(mesh->x, mesh->y, mesh->z);
+		phd_RotY(mesh->y_rot);
+		n = mesh->static_number;
+		sinfo = &static_objects[n];
+		clip = S_GetObjectBounds(&sinfo->x_minp);
+
+		if (clip)
 		{
-			phd_PushMatrix();
-			phd_TranslateAbs(mesh->x, mesh->y, mesh->z);
-			phd_RotY(mesh->y_rot);
-			n = mesh->static_number;
-			sinfo = &static_objects[n];
-			clip = S_GetObjectBounds(&sinfo->x_minp);
+			mip = sinfo->flags & 0x3C;
+			S_CalculateStaticMeshLight(mesh->x, mesh->y, mesh->z, mesh->shade, r);
 
-			if (clip)
+			if (mip)
 			{
-				mip = sinfo->flags & 0x3C;
-				S_CalculateStaticMeshLight(mesh->x, mesh->y, mesh->z, mesh->shade, r);
-
-				if (mip)
-				{
-					if (phd_mxptr[M23] >> 15 > (mip & 0xFFFC) << 8)
-						n++;
-				}
-
-				sinfo = &static_objects[n];
-				phd_PutPolygons(meshes[sinfo->mesh_number], clip);
+				if (phd_mxptr[M23] >> 15 > (mip & 0xFFFC) << 8)
+					n++;
 			}
 
-			phd_PopMatrix();
+			sinfo = &static_objects[n];
+			phd_PutPolygons(meshes[sinfo->mesh_number], clip);
 		}
+
+		phd_PopMatrix();
 	}
 
 	phd_PopMatrix();
@@ -1559,127 +1557,6 @@ void calc_animating_item_clip_window(ITEM_INFO* item, short* bounds)
 			phd_right = r->right;
 			phd_top = r->top;
 			phd_bottom = r->bottom;
-		}
-	}
-}
-
-void ClipRoom(ROOM_INFO* r)
-{
-	long xv[8];
-	long yv[8];
-	long zv[8];
-	long clip[8];
-	long clip_room, x, y, z, xmin, xmax, ymin, ymax, l1, l2, div;
-
-	xv[0] = 1024;
-	xv[1] = (r->y_size << 10) - 1024;
-	xv[2] = (r->y_size << 10) - 1024;
-	xv[3] = 1024;
-	xv[4] = 1024;
-	xv[5] = (r->y_size << 10) - 1024;
-	xv[6] = (r->y_size << 10) - 1024;
-	xv[7] = 1024;
-
-	yv[0] = r->maxceiling - r->y;
-	yv[1] = r->maxceiling - r->y;
-	yv[2] = r->maxceiling - r->y;
-	yv[3] = r->maxceiling - r->y;
-	yv[4] = r->minfloor - r->y;
-	yv[5] = r->minfloor - r->y;
-	yv[6] = r->minfloor - r->y;
-	yv[7] = r->minfloor - r->y;
-
-	zv[0] = 1024;
-	zv[1] = 1024;
-	zv[2] = (r->x_size << 10) - 1024;
-	zv[3] = (r->x_size << 10) - 1024;
-	zv[4] = 1024;
-	zv[5] = 1024;
-	zv[6] = (r->x_size << 10) - 1024;
-	zv[7] = (r->x_size << 10) - 1024;
-
-	clip_room = 0;
-
-	for (int i = 0; i < 8; i++)
-	{
-		x = xv[i];
-		y = yv[i];
-		z = zv[i];
-
-		xv[i] = x * phd_mxptr[M00] + y * phd_mxptr[M01] + z * phd_mxptr[M02] + phd_mxptr[M03];
-		yv[i] = x * phd_mxptr[M10] + y * phd_mxptr[M11] + z * phd_mxptr[M12] + phd_mxptr[M13];
-		zv[i] = x * phd_mxptr[M20] + y * phd_mxptr[M21] + z * phd_mxptr[M22] + phd_mxptr[M23];
-
-		if (zv[i] > phd_zfar)
-		{
-			clip_room = 1;
-			clip[i] = 1;
-		}
-		else
-			clip[i] = 0;
-	}
-
-	if (!clip_room)
-		return;
-
-	xmin = 0x10000000;
-	xmax = -0x10000000;
-	ymin = 0x10000000;
-	ymax = -0x10000000;
-
-	for (int i = 0; i < 12; i++)
-	{
-		l1 = box_lines[i][0];
-		l2 = box_lines[i][1];
-
-		if (clip[l1] != clip[l2])
-		{
-			div = (zv[l2] - zv[l1]) >> 14;
-
-			if (div)
-			{
-				z = (phd_zfar - zv[l1]) >> 14;
-				x = xv[l1] + ((z * ((xv[l2] - xv[l1]) >> 14) / div) << 14);
-				y = yv[l1] + ((z * ((yv[l2] - yv[l1]) >> 14) / div) << 14);
-
-				if (x < xmin)
-					xmin = x;
-
-				if (x > xmax)
-					xmax = x;
-
-				if (y < ymin)
-					ymin = y;
-
-				if (y > ymax)
-					ymax = y;
-			}
-			else
-			{
-				if (xv[l1] < xmin)
-					xmin = xv[l1];
-
-				if (xv[l2] < xmin)
-					xmin = xv[l2];
-
-				if (xv[l1] > xmax)
-					xmax = xv[l1];
-
-				if (xv[l2] > xmax)
-					xmax = xv[l2];
-
-				if (yv[l1] < ymin)
-					ymin = yv[l1];
-
-				if (yv[l2] < ymin)
-					ymin = yv[l2];
-
-				if (yv[l1] > ymax)
-					ymax = yv[l1];
-
-				if (yv[l2] > ymax)
-					ymax = yv[l2];
-			}
 		}
 	}
 }

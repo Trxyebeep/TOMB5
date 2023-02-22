@@ -724,7 +724,6 @@ void RenderLoadPic(long unused)
 	poisoned = lara.poisoned;
 	FadeScreenHeight = 0;
 	lara.poisoned = 0;
-	GlobalFogOff = 1;
 	BinocularRange = 0;
 
 	if (App.dx.InScene)
@@ -760,7 +759,6 @@ void RenderLoadPic(long unused)
 	S_DumpScreen();
 
 	lara.poisoned = poisoned;
-	GlobalFogOff = 0;
 }
 
 long S_GetObjectBounds(short* bounds)
