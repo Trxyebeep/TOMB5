@@ -246,7 +246,7 @@ void gar_RotYXZsuperpack(short** pprot, long skip)
 		prot = (ushort*)*pprot;
 
 		if (*prot & 0xC000)
-			*pprot++;
+			(*pprot)++;
 		else
 			*pprot += 2;
 

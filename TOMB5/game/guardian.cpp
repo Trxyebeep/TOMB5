@@ -66,7 +66,7 @@ void InitialiseGuardian(short item_number)
 			}
 		}
 
-		angle += 8192;
+		angle += 0x2000;
 	}
 
 	for (int i = 0; i < level_items; i++)
@@ -80,7 +80,7 @@ void InitialiseGuardian(short item_number)
 	}
 
 	item->pos.y_pos -= 640;
-	item->item_flags[1] = (short) item->pos.y_pos - 640;
+	item->item_flags[1] = (short)item->pos.y_pos - 640;
 	item->current_anim_state = 0;
 	item->item_flags[3] = 90;
 	memset(&gt, 0, sizeof(GUARDIAN_TARGET));
@@ -95,9 +95,9 @@ void TriggerGuardianSparks(GAME_VECTOR* pos, long size, long rgb, long power)
 	{
 		sptr = &spark[GetFreeSpark()];
 		sptr->On = 1;
-		sptr->sR = rgb & 0xFF;
-		sptr->sG = rgb >> 8 & 0xFF;
-		sptr->sB = rgb >> 16 & 0xFF;
+		sptr->sR = CLRB(rgb);	//BGR
+		sptr->sG = CLRG(rgb);
+		sptr->sB = CLRR(rgb);
 		sptr->dR = 0;
 		sptr->dG = 0;
 		sptr->dB = 0;
@@ -106,14 +106,16 @@ void TriggerGuardianSparks(GAME_VECTOR* pos, long size, long rgb, long power)
 		sptr->Life = 9 << power;
 		sptr->sLife = 9 << power;
 		sptr->TransType = 2;
+
+		rnd = GetRandomControl();
 		sptr->x = pos->x;
 		sptr->y = pos->y;
 		sptr->z = pos->z;
-		rnd = GetRandomControl();
-		sptr->Gravity = rnd >> 7 & 0x1F;
-		sptr->Yvel = ((rnd & 0xFFF) - 2048) << power;
 		sptr->Xvel = ((GetRandomControl() & 0xFFF) - 2048) << power;
+		sptr->Yvel = ((rnd & 0xFFF) - 2048) << power;
 		sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) << power;
+		
+		sptr->Gravity = rnd >> 7 & 0x1F;
 		sptr->Flags = 0;
 		sptr->MaxYvel = 0;
 		sptr->Friction = 34 << power;
@@ -139,7 +141,7 @@ void TriggerBaseLightning(ITEM_INFO *item)
 		b = b * fade >> 5;
 	}
 
-	bptr = (short*) item->data;
+	bptr = (short*)item->data;
 	d.x = Base[0].x;
 	d.y = Base[0].y;
 	d.z = Base[0].z;
@@ -178,19 +180,19 @@ void TriggerBaseLightning(ITEM_INFO *item)
 				s.y = 0;
 				s.z = 0;
 				GetJointAbsPosition(item, &s, Eye[i].mesh_num);
-				TriggerLightningGlow(s.x, s.y, s.z, ((GetRandomControl() & 3) + fade) << 24 | g << 8 | b);
-				TriggerGuardianSparks((GAME_VECTOR*) &s, 3, RGBONLY(0, g, b), 0);
+				TriggerLightningGlow(s.x, s.y, s.z, RGBA(0, g, b, (GetRandomControl() & 3) + fade));
+				TriggerGuardianSparks((GAME_VECTOR*)&s, 3, RGBONLY(0, g, b), 0);
 			}
 		}
 
-		TriggerLightningGlow(d.x, d.y, d.z, ((GetRandomControl() & 3) + fade + 8) << 24 | g << 8 | b);
+		TriggerLightningGlow(d.x, d.y, d.z, RGBA(0, g, b, (GetRandomControl() & 3) + fade + 8));
 		TriggerDynamic(d.x, d.y, d.z, (GetRandomControl() & 3) + 16, 0, g, b);
 	}
 
 	if (!(GlobalCounter & 3))
-		TriggerLightning(&d, (PHD_VECTOR*) &item->pos, (GetRandomControl() & 7) + 8, (0x180000 | g) << 8 | b, 13, 64, 3);
+		TriggerLightning(&d, (PHD_VECTOR*)&item->pos, (GetRandomControl() & 7) + 8, RGBA(0, g, b, 24), 13, 64, 3);
 
-	TriggerGuardianSparks((GAME_VECTOR*) &d, 3, RGBONLY(0, g, b), 1);
+	TriggerGuardianSparks((GAME_VECTOR*)&d, 3, RGBONLY(0, g, b), 1);
 }
 
 void GuardianControl(short item_number)
@@ -225,35 +227,33 @@ void GuardianControl(short item_number)
 				item->item_flags[2]++;
 			}
 		}
+		else if (item->pos.y_pos > item->item_flags[1])
+		{
+			item->fallspeed += 3;
+
+			if (item->fallspeed > 32)
+				item->fallspeed = 32;
+
+			item->pos.y_pos -= item->fallspeed;
+		}
 		else
 		{
-			if (item->pos.y_pos > item->item_flags[1])
+			s.x = 0;
+			s.y = 168;
+			s.z = 248;
+			s.room_number = item->room_number;
+			GetJointAbsPosition(item, (PHD_VECTOR*)&s, 0);
+
+			d.x = 0;
+			d.y = 0;
+			d.z = 0;
+			GetJointAbsPosition(lara_item, (PHD_VECTOR*)&d, LM_HEAD);
+
+			if (LOS(&s, &d))
 			{
-				item->fallspeed += 3;
-
-				if (item->fallspeed > 32)
-					item->fallspeed = 32;
-
-				item->pos.y_pos -= item->fallspeed;
-			}
-			else
-			{
-				s.x = 0;
-				s.y = 168;
-				s.z = 248;
-				s.room_number = item->room_number;
-				GetJointAbsPosition(item, (PHD_VECTOR*) &s, 0);
-				d.x = 0;
-				d.y = 0;
-				d.z = 0;
-				GetJointAbsPosition(lara_item, (PHD_VECTOR*) &d, LM_HEAD);
-
-				if (LOS(&s, &d))
-				{
-					item->item_flags[0]++;
-					item->item_flags[1] = (short) item->pos.y_pos;
-					item->item_flags[2] = 2640;
-				}
+				item->item_flags[0]++;
+				item->item_flags[1] = (short)item->pos.y_pos;
+				item->item_flags[2] = 2640;
 			}
 		}
 	}
@@ -279,7 +279,7 @@ void GuardianControl(short item_number)
 			dz = s.z - d.z;
 			adiff = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
 
-			if (LOS(&s, &d) && adiff <= 8192 && lara_item->hit_points > 0 && !lara.burn && (gt.x || gt.y || gt.z))
+			if (LOS(&s, &d) && adiff <= 0x2000 && lara_item->hit_points > 0 && !lara.burn && (gt.x || gt.y || gt.z))
 			{
 				d.x = 0;
 				d.y = 0;
@@ -309,7 +309,7 @@ void GuardianControl(short item_number)
 					else
 						a2 = ushort(GetRandomControl() << 1);
 
-					lp = (GetRandomControl() & 0x1FFF) + 8192;
+					lp = (GetRandomControl() & 0x1FFF) + 0x2000;
 					d.x = s.x + ((lp * phd_cos(a1) >> 14) * phd_sin(a2) >> 14);
 					d.y = s.y + (lp * phd_sin(a1) >> 14);
 					d.z = s.z + ((lp * phd_cos(a1) >> 14) * phd_cos(a2) >> 14);
@@ -338,11 +338,12 @@ void GuardianControl(short item_number)
 
 			if (JustLoaded)
 			{
-				d.x = s.x + ((8192 * phd_cos(item->pos.x_rot + 3328) >> 14) * phd_sin(item->pos.y_rot) >> 14);
-				gt.x = d.x;
-				d.y = s.y + (8192 * phd_sin(3328 - item->pos.x_rot) >> 14);
+				d.x = s.x + ((0x2000 * phd_cos(item->pos.x_rot + 0xD00) >> 14) * phd_sin(item->pos.y_rot) >> 14);
+				d.y = s.y + (0x2000 * phd_sin(0xD00 - item->pos.x_rot) >> 14);
+				d.z = s.z + ((0x2000 * phd_cos(item->pos.x_rot + 0xD00) >> 14) * phd_cos(item->pos.y_rot) >> 14);
+
 				gt.y = d.y;
-				d.z = s.z + ((8192 * phd_cos(item->pos.x_rot + 3328) >> 14) * phd_cos(item->pos.y_rot) >> 14);
+				gt.x = d.x;
 				gt.z = d.z;
 			}
 			else
@@ -355,7 +356,7 @@ void GuardianControl(short item_number)
 
 		phd_GetVectorAngles(gt.x - s.x, gt.y - s.y, gt.z - s.z, angles);
 		InterpolateAngle(angles[0], &item->pos.y_rot, &gt.Ydiff, gt.TrackSpeed);
-		InterpolateAngle(angles[1] + 3328, &item->pos.x_rot, &gt.Xdiff, gt.TrackSpeed);
+		InterpolateAngle(angles[1] + 0xD00, &item->pos.x_rot, &gt.Xdiff, gt.TrackSpeed);
 
 		if (item->item_flags[0] == 1)
 		{
@@ -416,9 +417,9 @@ void GuardianControl(short item_number)
 							d.y = 0;
 							d.z = 0;
 							GetJointAbsPosition(item, (PHD_VECTOR*) &d, Eye[i].mesh_num);
-							eye.x = d.x + ((8192 * phd_cos(angles[1]) >> 14) * phd_sin(item->pos.y_rot) >> 14);
-							eye.y = d.y + (8192 * phd_sin(-angles[1]) >> 14);
-							eye.z = d.z + ((8192 * phd_cos(angles[1]) >> 14) * phd_cos(item->pos.y_rot) >> 14);
+							eye.x = d.x + ((0x2000 * phd_cos(angles[1]) >> 14) * phd_sin(item->pos.y_rot) >> 14);
+							eye.y = d.y + (0x2000 * phd_sin(-angles[1]) >> 14);
+							eye.z = d.z + ((0x2000 * phd_cos(angles[1]) >> 14) * phd_cos(item->pos.y_rot) >> 14);
 
 							if (item->item_flags[3] != 90 && gt.elptr[i])
 							{
@@ -431,7 +432,7 @@ void GuardianControl(short item_number)
 							{
 								d.room_number = item->room_number;
 								gt.ricochet[i] = (char)LOS(&d, &eye);
-								gt.elptr[i] = TriggerLightning((PHD_VECTOR*) &d, (PHD_VECTOR*) &eye, (GetRandomControl() & 7) + 4, (0x640000 | a1) << 8 | a2, 12, 64, 5);
+								gt.elptr[i] = TriggerLightning((PHD_VECTOR*)&d, (PHD_VECTOR*)&eye, (GetRandomControl() & 7) + 4, RGBA(0, a1, a2, 0x64), 12, 64, 5);
 								StopSoundEffect(SFX_GOD_HEAD_CHARGE);
 								SoundEffect(SFX_GOD_HEAD_BLAST, &item->pos, 0);
 							}
@@ -439,14 +440,14 @@ void GuardianControl(short item_number)
 							if (GlobalCounter & 1)
 							{
 								TriggerGuardianSparks(&d, 3, RGBONLY(0, a1, a2), 0);
-								TriggerLightningGlow(d.x, d.y, d.z, ((GetRandomControl() & 3) + 32) << 24 | a1 << 8 | a2);
+								TriggerLightningGlow(d.x, d.y, d.z, RGBA(0, a1, a2, (GetRandomControl() & 3) + 32));
 								TriggerDynamic(d.x, d.y, d.z, (GetRandomControl() & 3) + 16, 0, a1, a2);
 
 								if (!gt.ricochet[i])
 								{
-									TriggerLightningGlow(gt.elptr[i]->Point[3].x, gt.elptr[i]->Point[3].y, gt.elptr[i]->Point[3].z, ((GetRandomControl() & 3) + 16) << 24 | a1 << 8 | a2);
+									TriggerLightningGlow(gt.elptr[i]->Point[3].x, gt.elptr[i]->Point[3].y, gt.elptr[i]->Point[3].z, RGBA(0, a1, a2, (GetRandomControl() & 3) + 16));
 									TriggerDynamic(gt.elptr[i]->Point[3].x, gt.elptr[i]->Point[3].y, gt.elptr[i]->Point[3].z, (GetRandomControl() & 3) + 6, 0, a1, a2);
-									TriggerGuardianSparks((GAME_VECTOR*) &gt.elptr[i]->Point[3], 3, RGBONLY(0, a1, a2), 0);
+									TriggerGuardianSparks((GAME_VECTOR*)&gt.elptr[i]->Point[3], 3, RGBONLY(0, a1, a2), 0);
 								}
 							}
 
@@ -454,11 +455,13 @@ void GuardianControl(short item_number)
 							{
 								farflag = 0;
 								bounds = GetBoundsAccurate(lara_item);
+
 								phd_PushUnitMatrix();
 								phd_RotYXZ(lara_item->pos.y_rot, lara_item->pos.x_rot, lara_item->pos.z_rot);
 								phd_SetTrans(0, 0, 0);
 								mRotBoundingBoxNoPersp(bounds, tbounds);
 								phd_PopMatrix();
+
 								DB[0] = lara_item->pos.x_pos + tbounds[0];
 								DB[1] = lara_item->pos.x_pos + tbounds[1];
 								DB[2] = lara_item->pos.y_pos + tbounds[2];
@@ -470,15 +473,15 @@ void GuardianControl(short item_number)
 								dz1 = lara_item->pos.z_pos + ((bounds[4] + bounds[5]) >> 1) - d.z;
 								adiff = phd_sqrt(SQUARE(dx1) + SQUARE(dy1) + SQUARE(dz1));
 
-								if (adiff < 8192)
+								if (adiff < 0x2000)
 								{
 									adiff += 512;
 
-									if (adiff < 8192)
+									if (adiff < 0x2000)
 									{
-										eye.x = d.x + (eye.x - d.x) * adiff / 8192;
-										eye.y = d.y + (eye.y - d.y) * adiff / 8192;
-										eye.z = d.z + (eye.z - d.z) * adiff / 8192;
+										eye.x = d.x + (eye.x - d.x) * adiff / 0x2000;
+										eye.y = d.y + (eye.y - d.y) * adiff / 0x2000;
+										eye.z = d.z + (eye.z - d.z) * adiff / 0x2000;
 									}
 
 									tx = (eye.x - d.x) >> 5;
@@ -589,9 +592,9 @@ void GuardianControl(short item_number)
 			item->pos.y_pos -= 256;
 			TriggerExplosionSparks(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, 3, -2, 2, item->room_number);
 			TriggerExplosionSparks(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, 2, 0, 2, item->room_number);
-			TriggerShockwave((PHD_VECTOR*) &item->pos, 0xA00020, 64, 0x24008040, 0);
-			TriggerShockwave((PHD_VECTOR*) &item->pos, 0xA00020, 64, 0x24008040, 0x3000);
-			TriggerShockwave((PHD_VECTOR*) &item->pos, 0xA00020, 64, 0x24008040, 0x6000);
+			TriggerShockwave((PHD_VECTOR*)&item->pos, 0xA00020, 64, 0x24008040, 0);
+			TriggerShockwave((PHD_VECTOR*)&item->pos, 0xA00020, 64, 0x24008040, 0x3000);
+			TriggerShockwave((PHD_VECTOR*)&item->pos, 0xA00020, 64, 0x24008040, 0x6000);
 			items[aptr[9]].pos.y_pos = item->pos.y_pos;
 			TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
 			SoundEffect(SFX_GOD_HEAD_BLAST, &item->pos, 0x800000 | SFX_SETPITCH);
