@@ -31,7 +31,7 @@ void InitialiseHydra(short item_number)
 	else if (item->trigger_flags == 2)
 		item->pos.z_pos -= 384;
 
-	item->pos.y_rot = 16384;
+	item->pos.y_rot = 0x4000;
 	item->pos.x_pos -= 256;
 }
 
@@ -56,7 +56,28 @@ void HydraControl(short item_number)
 	item = &items[item_number];
 	hydra = (CREATURE_INFO*)item->data;
 
-	if (item->hit_points > 0)
+	if (item->hit_points <= 0)
+	{
+		item->hit_points = 0;
+
+		if (item->current_anim_state != 11)
+		{
+			item->anim_number = objects[HYDRA].anim_index + 15;
+			item->frame_number = anims[item->anim_number].frame_base;
+			item->current_anim_state = 11;
+		}
+
+		if (!((item->frame_number - anims[item->anim_number].frame_base) & 7))
+		{
+			if (item->item_flags[3] < 12)
+			{
+				ExplodeItemNode(item, 11 - item->item_flags[3], 0, 64);
+				SoundEffect(SFX_SMASH_ROCK, &item->pos, 0);
+				item->item_flags[3]++;
+			}
+		}
+	}
+	else
 	{
 		if (item->ai_bits)
 			GetAITarget(hydra);
@@ -132,7 +153,7 @@ void HydraControl(short item_number)
 
 				if (item->hit_status && info.distance < 0x310000)
 				{
-					damage = (short)(5 - phd_sqrt(info.distance) / 1024);
+					damage = short(5 - phd_sqrt(info.distance) / 1024);
 
 					if (lara.gun_type == WEAPON_SHOTGUN)
 						damage *= 3;
@@ -153,7 +174,7 @@ void HydraControl(short item_number)
 
 			if (item->hit_status)
 			{
-				damage = (short)(6 - phd_sqrt(info.distance) / 1024);
+				damage = short(6 - phd_sqrt(info.distance) / 1024);
 
 				if (lara.gun_type == WEAPON_SHOTGUN)
 					damage *= 3;
@@ -191,11 +212,13 @@ void HydraControl(short item_number)
 				pos.y = 1024;
 				pos.z = 40;
 				GetJointAbsPosition(item, &pos, 10);
+
 				pos2.x_pos = 0;
 				pos2.y_pos = 144;
 				pos2.z_pos = 40;
 				GetJointAbsPosition(item, (PHD_VECTOR*)&pos2, 10);
-				phd_GetVectorAngles(pos.x - pos2.x_pos, pos.y - pos2.y_pos, pos.z - pos2.z_pos, &angles[0]);
+
+				phd_GetVectorAngles(pos.x - pos2.x_pos, pos.y - pos2.y_pos, pos.z - pos2.z_pos, angles);
 				pos2.x_rot = angles[1];
 				pos2.y_rot = angles[0];
 				room_number = item->room_number;
@@ -223,27 +246,6 @@ void HydraControl(short item_number)
 				item->goal_anim_state = 0;
 
 			break;
-		}
-	}
-	else
-	{
-		item->hit_points = 0;
-
-		if (item->current_anim_state != 11)
-		{
-			item->anim_number = objects[HYDRA].anim_index + 15;
-			item->frame_number = anims[item->anim_number].frame_base;
-			item->current_anim_state = 11;
-		}
-		
-		if (!((item->frame_number - anims[item->anim_number].frame_base) & 7))
-		{
-			if (item->item_flags[3] < 12)
-			{
-				ExplodeItemNode(item, 11 - item->item_flags[3], 0, 64);
-				SoundEffect(SFX_SMASH_ROCK, &item->pos, 0);
-				item->item_flags[3]++;
-			}
 		}
 	}
 
@@ -298,12 +300,9 @@ void TriggerHydraMissileFlame(PHD_VECTOR* pos, long xv, long yv, long zv)
 	sptr->Dynamic = -1;
 	sptr->Life = (GetRandomControl() & 3) + 20;
 	sptr->sLife = sptr->Life;
-	sptr->x = (GetRandomControl() & 0xF) - 8;
-	sptr->y = 0;
-	sptr->z = (GetRandomControl() & 0xF) - 8;
-	sptr->x += pos->x;
-	sptr->y += pos->y;
-	sptr->z += pos->z;
+	sptr->x = pos->x + (GetRandomControl() & 0xF) - 8;
+	sptr->y = pos->y;
+	sptr->z = pos->z + (GetRandomControl() & 0xF) - 8;
 	sptr->Xvel = (short)xv;
 	sptr->Yvel = (short)yv;
 	sptr->Zvel = (short)zv;
@@ -319,8 +318,8 @@ void TriggerHydraMissileFlame(PHD_VECTOR* pos, long xv, long yv, long zv)
 	sptr->Gravity = 0;
 	sptr->MaxYvel = 0;
 	sptr->Scalar = 1;
-	sptr->sSize = (GetRandomControl() & 0xF) + 96;
-	sptr->Size = sptr->sSize;
+	sptr->Size = (GetRandomControl() & 0xF) + 96;
+	sptr->sSize = sptr->Size;
 	sptr->dSize = sptr->Size >> 2;
 }
 
@@ -364,7 +363,7 @@ void TriggerHydraPowerupFlames(short item_number, long shade)
 	sptr->MaxYvel = 0;
 	sptr->Gravity = -8 - (GetRandomControl() & 7);
 	sptr->Scalar = 0;
+	sptr->Size = uchar((shade * ((GetRandomControl() & 0xF) + 16)) >> 4);
+	sptr->sSize = sptr->Size;
 	sptr->dSize = 4;
-	sptr->sSize = (uchar)((shade * ((GetRandomControl() & 0xF) + 16)) >> 4);
-	sptr->Size = sptr->sSize;
 }
