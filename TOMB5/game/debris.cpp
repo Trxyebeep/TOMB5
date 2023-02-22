@@ -41,7 +41,7 @@ void TriggerDebris(GAME_VECTOR* pos, void* TextInfo, short* Offsets, long* Vels,
 	}
 	else
 	{
-		dptr->Dir = (short)(phd_atan(Vels[2], Vels[0]));
+		dptr->Dir = (short)phd_atan(Vels[2], Vels[0]);
 
 		if (Vels[0] < 0)
 			Vels[0] = -Vels[0];
@@ -49,8 +49,8 @@ void TriggerDebris(GAME_VECTOR* pos, void* TextInfo, short* Offsets, long* Vels,
 		if (Vels[2] < 0)
 			Vels[2] = -Vels[2];
 
-		dptr->Speed = (short)((Vels[0] + Vels[2]) >> 2);
-		dptr->Speed = (short)(phd_sqrt(SQUARE(Vels[0]) + SQUARE(Vels[2])) >> 3);
+		dptr->Speed = short((Vels[0] + Vels[2]) >> 2);
+		dptr->Speed = short(phd_sqrt(SQUARE(Vels[0]) + SQUARE(Vels[2])) >> 3);
 
 		if (Vels[1])
 		{
@@ -58,7 +58,7 @@ void TriggerDebris(GAME_VECTOR* pos, void* TextInfo, short* Offsets, long* Vels,
 			dptr->Gravity = (GetRandomControl() & 0x3F) + 64;
 
 			if (Vels[1] == -1)
-				dptr->Yvel *= 2;
+				dptr->Yvel <<= 1;
 		}
 		else
 		{
@@ -119,7 +119,7 @@ long GetFreeDebris()
 
 	free = next_debris;
 	eldestfree = 0;
-	eldestage = -16384;
+	eldestage = -0x4000;
 	dptr = &debris[next_debris];
 
 	for (int i = 0; i < 256; i++)
@@ -143,8 +143,8 @@ long GetFreeDebris()
 		}
 		else
 		{
-			++free;
-			++dptr;
+			free++;
+			dptr++;
 		}
 	}
 
