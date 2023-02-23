@@ -111,7 +111,7 @@ void InsertRoomlet(ROOMLET* roomlet)
 
 static bool IsMistVert(FVECTOR* v)
 {
-	PORTAL* p;
+	ROOM_PORTAL* p;
 	ROOM_INFO* r;
 	ROOMLET* rlet;
 	float* verts;
@@ -129,7 +129,7 @@ static bool IsMistVert(FVECTOR* v)
 	z = v->z + CurrentRoomPtr->z;
 	drn = *door++;
 
-	for (p = (PORTAL*)door; drn > 0; drn--, p++)
+	for (p = (ROOM_PORTAL*)door; drn > 0; drn--, p++)
 	{
 		r = &room[p->rn];
 
@@ -155,8 +155,8 @@ static bool IsMistVert(FVECTOR* v)
 
 static bool IsReflectionVert(FVECTOR* v)
 {
-	PORTAL* p;
-	PORTAL* np;
+	ROOM_PORTAL* p;
+	ROOM_PORTAL* np;
 	ROOM_INFO* r;
 	ROOM_INFO* nr;
 	ROOMLET* rlet;
@@ -178,7 +178,7 @@ static bool IsReflectionVert(FVECTOR* v)
 	z = v->z + CurrentRoomPtr->z;
 	drn = *door++;
 
-	for (p = (PORTAL*)door; drn > 0; drn--, p++)
+	for (p = (ROOM_PORTAL*)door; drn > 0; drn--, p++)
 	{
 		r = &room[p->rn];
 
@@ -211,14 +211,14 @@ static bool IsReflectionVert(FVECTOR* v)
 		{
 			drn = *door++;
 
-			for (p = (PORTAL*)door; drn > 0; drn--, p++)
+			for (p = (ROOM_PORTAL*)door; drn > 0; drn--, p++)
 			{
 				r = &room[p->rn];
 
 				ndoor = r->door;
 				ndrn = *ndoor++;
 
-				for (np = (PORTAL*)ndoor; ndrn > 0; ndrn--, np++)
+				for (np = (ROOM_PORTAL*)ndoor; ndrn > 0; ndrn--, np++)
 				{
 					nr = &room[np->rn];
 
@@ -247,7 +247,7 @@ static bool IsReflectionVert(FVECTOR* v)
 
 static bool IsShoreVert(FVECTOR* v)
 {
-	PORTAL* p;
+	ROOM_PORTAL* p;
 	ROOM_INFO* r;
 	ROOMLET* rlet;
 	float* verts;
@@ -265,7 +265,7 @@ static bool IsShoreVert(FVECTOR* v)
 	z = v->z + CurrentRoomPtr->z;
 	drn = *door++;
 
-	for (p = (PORTAL*)door; drn > 0; drn--, p++)
+	for (p = (ROOM_PORTAL*)door; drn > 0; drn--, p++)
 	{
 		r = &room[p->rn];
 

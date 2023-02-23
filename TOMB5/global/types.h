@@ -2456,7 +2456,7 @@ struct STARS
 	long col;
 };
 
-struct PORTAL
+struct ROOM_PORTAL
 {
 	short rn;
 	short normal[3];
