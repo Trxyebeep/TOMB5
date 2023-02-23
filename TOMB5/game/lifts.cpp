@@ -26,6 +26,7 @@ void DrawLiftDoors(ITEM_INFO* item)
 		phd_left = 0;
 		phd_top = 0;
 		phd_bottom = phd_winheight;
+
 		GetFrames(item, frmptr, &rate);
 		phd_PushMatrix();
 		phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
@@ -37,8 +38,8 @@ void DrawLiftDoors(ITEM_INFO* item)
 			meshpp = &meshes[objects[item->object_number].mesh_index];
 			phd_TranslateRel(frmptr[0][6], frmptr[0][7], frmptr[0][8]);
 			v.x = item->item_flags[0] << 2;
-			v.y = 16384;
-			v.z = 16384;
+			v.y = 0x4000;
+			v.z = 0x4000;
 			ScaleCurrentMatrix(&v);
 			CalculateObjectLighting(item, frmptr[0]);
 			phd_PutPolygons(*meshpp, clip);
@@ -56,7 +57,8 @@ void ControlLiftTeleporter(short item_number)
 {
 	ITEM_INFO* item;
 	ITEM_INFO* item2;
-	long num;
+	FLOOR_INFO* floor;
+	long num, b1, b2;
 	short triggeredItems[8];
 	short room_number;
 
@@ -75,33 +77,39 @@ void ControlLiftTeleporter(short item_number)
 
 				if (item2->object_number >= SWITCH_TYPE1 && item2->object_number <= SWITCH_TYPE6 && item2->trigger_flags == 6)
 				{
-					item2->mesh_bits = (4 << (18 - 2 * (item2->item_flags[3] & 0xF))) |
-						(4 << (18 - ((item2->item_flags[3] >> 3) & 0x1E))) |
-						~(2 << (18 - 2 * (item2->item_flags[3] & 0xF))) &
-						~(2 << (18 - ((item2->item_flags[3] >> 3) & 0x1E))) & 0xAAAAB;
+					//unpack buttons (packed in InitialiseSwitch)
+					b1 = item2->item_flags[3] & 0xF;
+					b2 = (item2->item_flags[3] >> 4) & 0xF;
+					b1 *= 2;
+					b2 *= 2;
+
+					item2->mesh_bits = (4 << (18 - b1)) | (4 << (18 - b2)) | ~(2 << (18 - b1)) & ~(2 << (18 - b2)) & 0xAAAAB;
 					item->item_flags[3] = item2->item_flags[3];
 					break;
 				}
 			}
 		}
 
-		if (item->item_flags[0] >= 30)
+		if (item->item_flags[0] < 30)
+			item->item_flags[0]++;
+		else
 		{
 			item->item_flags[0] = 0;
 			item->item_flags[1] = 1;
 		}
-		else
-			item->item_flags[0]++;
+
+		return;
 	}
-	else if (item->item_flags[1] == 1)
+	
+	if (item->item_flags[1] == 1)
 	{
 		camera.bounce = -32;
 		camera.fixed_camera = 1;
 		camera.old_type = FIXED_CAMERA;
 		room_number = item->room_number;
+		floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 		lara_item->pos.x_pos = (item->pos.x_pos & -1024) | (lara_item->pos.x_pos & 1023);
-		lara_item->pos.y_pos = GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number),
-			item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+		lara_item->pos.y_pos = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 		lara_item->pos.z_pos = (item->pos.z_pos & -1024) | (lara_item->pos.z_pos & 1023);
 		lara_item->pos.y_rot = item->pos.y_rot + 0x8000;
 
@@ -116,24 +124,37 @@ void ControlLiftTeleporter(short item_number)
 
 			if (item2->object_number >= SWITCH_TYPE1 && item2->object_number <= SWITCH_TYPE6 && item2->trigger_flags == 6)
 			{
-				item2->current_anim_state = 0;
-				item2->goal_anim_state = 0;
 				item2->anim_number = objects[item2->object_number].anim_index + 1;
 				item2->frame_number = anims[item2->anim_number].frame_base;
-				item2->mesh_bits = (4 << (18 - 2 * (item->item_flags[3] & 0xF))) |
-					(4 << (18 - ((item->item_flags[3] >> 3) & 0x1E))) |
-					~(2 << (18 - 2 * (item->item_flags[3] & 0xF))) &
-					~(2 << (18 - ((item->item_flags[3] >> 3) & 0x1E))) & 0xAAAAB;
+				item2->current_anim_state = 0;
+				item2->goal_anim_state = 0;
+
+				b1 = item->item_flags[3] & 0xF;
+				b2 = (item->item_flags[3] >> 4) & 0xF;
+				b1 *= 2;
+				b2 *= 2;
+
+				item2->mesh_bits = (4 << (18 - b1)) | (4 << (18 - b2)) | ~(2 << (18 - b1)) & ~(2 << (18 - b2)) & 0xAAAAB;
 				break;
 			}
 		}
 
 		item->item_flags[1] = 2;
 		bDisableLaraControl = 0;
+		return;
 	}
-	else if (item->item_flags[1] == 2)
+	
+	if (item->item_flags[1] == 2)
 	{
-		if (item->item_flags[0] >= 120)
+		if (item->item_flags[0] < 120)
+		{
+			if (!item->item_flags[0])
+				SoundEffect(SFX_LIFT_MOVE, 0, SFX_ALWAYS);
+
+			camera.bounce = -8;
+			item->item_flags[0]++;
+		}
+		else
 		{
 			for (num = GetSwitchTrigger(item, triggeredItems, 1); num > 0; num--)
 			{
@@ -141,10 +162,10 @@ void ControlLiftTeleporter(short item_number)
 
 				if (item2->object_number >= SWITCH_TYPE1 && item2->object_number <= SWITCH_TYPE6 && item2->trigger_flags == 6)
 				{
-					item2->current_anim_state = 1;
-					item2->goal_anim_state = 1;
 					item2->anim_number = objects[item2->object_number].anim_index;
 					item2->frame_number = anims[item2->anim_number].frame_base;
+					item2->current_anim_state = 1;
+					item2->goal_anim_state = 1;
 					item2->status = ITEM_INACTIVE;
 				}
 				else if (item2->object_number >= LIFT_DOORS1 && item2->object_number <= LIFT_DOORS2)
@@ -159,16 +180,10 @@ void ControlLiftTeleporter(short item_number)
 			RemoveActiveItem(item_number);
 			item->flags &= ~IFL_CODEBITS;
 			item->status = ITEM_INACTIVE;
-			item->item_flags[1] = 0;
 			item->item_flags[0] = 0;
+			item->item_flags[1] = 0;
 		}
-		else
-		{
-			if (!item->item_flags[0])
-				SoundEffect(SFX_LIFT_MOVE, 0, SFX_ALWAYS);
 
-			camera.bounce = -8;
-			item->item_flags[0]++;
-		}
+		return;
 	}
 }
