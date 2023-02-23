@@ -18,7 +18,7 @@ void ControlMotionSensors(short item_number)
 {
 	ITEM_INFO* item;
 	short angles[2];
-	short angdiff, destangle;
+	short diff, ang, state;
 
 	item = &items[item_number];
 
@@ -29,42 +29,34 @@ void ControlMotionSensors(short item_number)
 		TriggerExplosionSparks(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, 2, 0, 0, item->room_number);
 		KillItem(item_number);
 	}
-	else if (!item->item_flags[2])
-	{
-		InterpolateAngle(-2048, &item->pos.x_rot, 0, 3);
-		destangle = item->item_flags[3];
-
-		if (item->item_flags[0])
-			destangle += 20480;
-
-		InterpolateAngle(destangle, &item->pos.y_rot, &angdiff, 5);
-
-		if (abs(angdiff) < 256)
-			item->item_flags[0] ^= 1;
-
-		if (lara_item->current_anim_state != AS_WALK &&
-			lara_item->current_anim_state != AS_STOP &&
-			lara_item->current_anim_state != AS_STEPLEFT &&
-			lara_item->current_anim_state != AS_STEPRIGHT &&
-			lara_item->current_anim_state != AS_BACK &&
-			lara_item->current_anim_state != AS_TURN_R &&
-			lara_item->current_anim_state != AS_TURN_L &&
-			lara_item->current_anim_state != AS_POSE &&
-			lara_item->current_anim_state != AS_INTO_ZIP &&
-			lara_item->current_anim_state != AS_ZIP &&
-			lara_item->current_anim_state != AS_OUT_ZIP &&
-			lara_item->current_anim_state != AS_SWITCHON &&
-			lara_item->current_anim_state != AS_SWITCHOFF)
-		{
-			TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
-			item->item_flags[2] = 1;
-		}
-	}
-	else
+	else if (item->item_flags[2])
 	{
 		phd_GetVectorAngles(lara_item->pos.x_pos - item->pos.x_pos, lara_item->pos.y_pos - item->pos.y_pos - 384, lara_item->pos.z_pos - item->pos.z_pos, angles);
 		InterpolateAngle(angles[0], &item->pos.y_rot, 0, 3);
 		InterpolateAngle(angles[1], &item->pos.x_rot, 0, 3);
+	}
+	else
+	{
+		InterpolateAngle(-2048, &item->pos.x_rot, 0, 3);
+		ang = item->item_flags[3];
+
+		if (item->item_flags[0])
+			ang += 20480;
+
+		InterpolateAngle(ang, &item->pos.y_rot, &diff, 5);
+
+		if (abs(diff) < 256)
+			item->item_flags[0] ^= 1;
+
+		state = lara_item->current_anim_state;
+
+		if (state != AS_WALK && state != AS_STOP && state != AS_STEPLEFT && state != AS_STEPRIGHT && state != AS_BACK &&
+			state != AS_TURN_R && state != AS_TURN_L && state != AS_POSE && state != AS_INTO_ZIP && state != AS_ZIP &&
+			state != AS_OUT_ZIP && state != AS_SWITCHON && state != AS_SWITCHOFF && state != AS_FASTTURN)
+		{
+			TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
+			item->item_flags[2] = 1;
+		}
 	}
 }
 
@@ -84,103 +76,104 @@ void AutogunControl(short item_number)
 	if (!TriggerActive(item))
 		return;
 
-	if (item->frame_number >= anims[item->anim_number].frame_end)
+	if (item->frame_number < anims[item->anim_number].frame_end)
 	{
-		gun = (CREATURE_INFO*)item->data;
-		item->mesh_bits = 1664;
-		pos1.y = 0;
-		pos1.x = 0;
-		pos1.z = -64;
-		GetJointAbsPosition(item, (PHD_VECTOR*)&pos1, 8);
-		pos2.z = 0;
-		pos2.y = 0;
-		pos2.x = 0;
-		GetLaraJointPos((PHD_VECTOR*)&pos2, 0);
-		pos1.room_number = item->room_number;
-		los = (short)LOS(&pos1, &pos2);
+		item->mesh_bits = ~0x500;
+		AnimateItem(item);
+		return;
+	}
 
-		if (los)
-		{
-			phd_GetVectorAngles(pos2.x - pos1.x, pos2.y - pos1.y, pos2.z - pos1.z, angles);
-			angles[0] -= item->pos.y_rot;
-		}
-		else
-		{
-			angles[0] = item->item_flags[0];
-			angles[1] = item->item_flags[1];
-		}
+	gun = (CREATURE_INFO*)item->data;
+	item->mesh_bits = 0x680;
 
-		InterpolateAngle(angles[0], &item->item_flags[0], &y, 4);
-		InterpolateAngle(angles[1], &item->item_flags[1], &x, 4);
-		gun->joint_rotation[0] = item->item_flags[0];
-		gun->joint_rotation[1] = item->item_flags[1];
-		gun->joint_rotation[2] += item->item_flags[2];
+	pos1.y = 0;
+	pos1.x = 0;
+	pos1.z = -64;
+	GetJointAbsPosition(item, (PHD_VECTOR*)&pos1, 8);
 
-		if (abs(y) < 1024 && abs(x) < 1024 && los)
-		{
-			SoundEffect(SFX_HK_FIRE, &item->pos, SFX_SETPITCH | 0xC00000);
+	pos2.z = 0;
+	pos2.y = 0;
+	pos2.x = 0;
+	GetLaraJointPos((PHD_VECTOR*)&pos2, LMX_HIPS);
 
-			if (GlobalCounter & 1)
-			{
-				item->mesh_bits |= 256;
-				TriggerDynamic(pos1.x, pos1.y, pos1.z, 10, (GetRandomControl() & 0x1F) + 192, (GetRandomControl() & 0x1F) + 128, 0);
+	pos1.room_number = item->room_number;
+	los = (short)LOS(&pos1, &pos2);
 
-				if (GetRandomControl() & 3)
-				{
-					pos2.x = 0;
-					pos2.y = 0;
-					pos2.z = 0;
-					GetLaraJointPos((PHD_VECTOR*)&pos2, GetRandomControl() % 15);
-					DoBloodSplat(pos2.x, pos2.y, pos2.z, (GetRandomControl() & 3) + 3, short(GetRandomControl() << 1), lara_item->room_number);
-					lara_item->hit_points -= 20;
-				}
-				else
-				{
-					pos3.x = pos2.x;
-					pos3.y = pos2.y;
-					pos3.z = pos2.z;
-					dx = pos2.x - pos1.x;
-					dy = pos2.y - pos1.y;
-					dz = pos2.z - pos1.z;
-
-					do
-					{
-						dx <<= 1;
-						dy <<= 1;
-						dz <<= 1;
-
-					} while (abs(dx) < 12288 && abs(dy) < 12288 && abs(dz) < 12288);
-
-					pos3.x += dx + (GetRandomControl() & 0xFF) - 128;
-					pos3.y += dy + (GetRandomControl() & 0xFF) - 128;
-					pos3.z += dz + (GetRandomControl() & 0xFF) - 128;
-
-					if (!LOS(&pos1, &pos3))
-						TriggerRicochetSpark(&pos3, GetRandomControl() << 1, 3, 0);
-				}
-			}
-			else
-				item->mesh_bits &= ~256;
-
-			if (item->item_flags[2] < 1024)
-				item->item_flags[2] += 64;
-		}
-		else
-		{
-			if (item->item_flags[2])
-				item->item_flags[2] -= 64;
-
-			item->mesh_bits &= ~256;
-		}
-
-		if (item->item_flags[2])
-			TriggerAutoGunSmoke(&pos1, item->item_flags[2] >> 4);
+	if (los)
+	{
+		phd_GetVectorAngles(pos2.x - pos1.x, pos2.y - pos1.y, pos2.z - pos1.z, angles);
+		angles[0] -= item->pos.y_rot;
 	}
 	else
 	{
-		item->mesh_bits = -1281;
-		AnimateItem(item);
+		angles[0] = item->item_flags[0];
+		angles[1] = item->item_flags[1];
 	}
+
+	InterpolateAngle(angles[0], &item->item_flags[0], &y, 4);
+	InterpolateAngle(angles[1], &item->item_flags[1], &x, 4);
+	gun->joint_rotation[0] = item->item_flags[0];
+	gun->joint_rotation[1] = item->item_flags[1];
+	gun->joint_rotation[2] += item->item_flags[2];
+
+	if (abs(y) >= 1024 || abs(x) >= 1024 || !los)
+	{
+		if (item->item_flags[2])
+			item->item_flags[2] -= 64;
+
+		item->mesh_bits &= ~0x100;
+	}
+	else
+	{
+		SoundEffect(SFX_HK_FIRE, &item->pos, SFX_SETPITCH | 0xC00000);
+
+		if (GlobalCounter & 1)
+		{
+			item->mesh_bits |= 0x100;
+			TriggerDynamic(pos1.x, pos1.y, pos1.z, 10, (GetRandomControl() & 0x1F) + 192, (GetRandomControl() & 0x1F) + 128, 0);
+
+			if (GetRandomControl() & 3)
+			{
+				pos2.x = 0;
+				pos2.y = 0;
+				pos2.z = 0;
+				GetLaraJointPos((PHD_VECTOR*)&pos2, GetRandomControl() % 15);
+				DoBloodSplat(pos2.x, pos2.y, pos2.z, (GetRandomControl() & 3) + 3, short(GetRandomControl() << 1), lara_item->room_number);
+				lara_item->hit_points -= 20;
+			}
+			else
+			{
+				pos3.x = pos2.x;
+				pos3.y = pos2.y;
+				pos3.z = pos2.z;
+				dx = pos2.x - pos1.x;
+				dy = pos2.y - pos1.y;
+				dz = pos2.z - pos1.z;
+
+				while (abs(dx) < 0x3000 && abs(dy) < 0x3000 && abs(dz) < 0x3000)
+				{
+					dx <<= 1;
+					dy <<= 1;
+					dz <<= 1;
+				}
+
+				pos3.x += dx + (GetRandomControl() & 0xFF) - 128;
+				pos3.y += dy + (GetRandomControl() & 0xFF) - 128;
+				pos3.z += dz + (GetRandomControl() & 0xFF) - 128;
+
+				if (!LOS(&pos1, &pos3))
+					TriggerRicochetSpark(&pos3, GetRandomControl() << 1, 3, 0);
+			}
+		}
+		else
+			item->mesh_bits &= ~0x100;
+
+		if (item->item_flags[2] < 1024)
+			item->item_flags[2] += 64;
+	}
+
+	if (item->item_flags[2])
+		TriggerAutoGunSmoke(&pos1, item->item_flags[2] >> 4);
 }
 
 void TriggerAutoGunSmoke(GAME_VECTOR* pos, long shade)
@@ -210,6 +203,6 @@ void TriggerAutoGunSmoke(GAME_VECTOR* pos, long shade)
 	sptr->Gravity = -4 - (GetRandomControl() & 3);
 	sptr->mirror = 0;
 	sptr->dSize = (GetRandomControl() & 0xF) + 24;
-	sptr->sSize = sptr->dSize >> 2;
 	sptr->Size = sptr->dSize >> 2;
+	sptr->sSize = sptr->Size;
 }

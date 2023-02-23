@@ -17,7 +17,6 @@ void LoadScreen(long screen, long pathNum);
 void ReleaseScreen();
 void DrawLoadingScreen();
 long GetSaveLoadFiles();
-void DoSlider(long x, long y, long width, long height, long pos, long c1, long c2, long c3);
 long S_DisplayPauseMenu(long reset);
 long S_PauseMenu();
 void DoFrontEndOneShotStuff();

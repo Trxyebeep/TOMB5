@@ -1275,13 +1275,13 @@ void cossack_control()
 			pos.z = 0;
 			pos.y = 0;
 			pos.x = 0;
-			GetLaraJointPos(&pos, 11);
+			GetLaraJointPos(&pos, LMX_HAND_R);
 			TriggerDelBrownSmoke(pos.x, pos.y, pos.z);
 
 			pos.z = 0;
 			pos.y = 0;
 			pos.x = 0;
-			GetLaraJointPos(&pos, 14);
+			GetLaraJointPos(&pos, LMX_HAND_L);
 			TriggerDelBrownSmoke(pos.x, pos.y, pos.z);
 		}
 
@@ -1290,7 +1290,7 @@ void cossack_control()
 			pos.z = 0;
 			pos.y = 0;
 			pos.x = 0;
-			GetLaraJointPos(&pos, 11);
+			GetLaraJointPos(&pos, LMX_HAND_R);
 			TriggerDelBrownSmoke(pos.x, pos.y, pos.z);
 		}
 
@@ -1299,7 +1299,7 @@ void cossack_control()
 			pos.z = 0;
 			pos.y = 0;
 			pos.x = 0;
-			GetLaraJointPos(&pos, 4);
+			GetLaraJointPos(&pos, LMX_THIGH_R);
 			TriggerDelBrownSmoke(pos.x, pos.y, pos.z);
 		}
 	}
@@ -1893,7 +1893,7 @@ void joby8_control()
 		s.x = 512;
 		s.y = 0;
 		s.z = 0;
-		GetLaraJointPos(&s, 0);
+		GetLaraJointPos(&s, LMX_HIPS);
 		scale = (GLOBAL_cutseq_frame - 2681) >> 4;
 		r = ((GetRandomControl() & 0x3F) + 192) >> scale;
 		g = ((GetRandomControl() & 0x1F) + 128) >> scale;
@@ -2612,7 +2612,7 @@ void CutLaraBubbles()
 	offset.x = 0;
 	offset.y = -4;
 	offset.z = 64;
-	GetLaraJointPos(&offset, 8);
+	GetLaraJointPos(&offset, LMX_HEAD);
 
 	roomnum = camera.pos.room_number;
 	IsRoomOutsideNo = -1;
@@ -2657,14 +2657,14 @@ void deal_with_pistols(ushort* shootdata)
 
 	if (SmokeCountL || SmokeCountR)
 	{
-		lara.mesh_ptrs[14] = meshes[objects[LARA_SCREAM].mesh_index + (14 * 2)];
+		lara.mesh_ptrs[LM_HEAD] = meshes[objects[LARA_SCREAM].mesh_index + LM_HEAD * 2];
 
 		if (SmokeCountL)
 		{
 			pos.x = 4;
 			pos.y = 128;
 			pos.z = 40;
-			GetLaraJointPos(&pos, 14);
+			GetLaraJointPos(&pos, LMX_HAND_L);
 			TriggerGunSmoke(pos.x, pos.y, pos.z, 0, 0, 0, 0, SmokeWeapon, SmokeCountL);
 		}
 
@@ -2673,23 +2673,23 @@ void deal_with_pistols(ushort* shootdata)
 			pos.x = -16;
 			pos.y = 128;
 			pos.z = 40;
-			GetLaraJointPos(&pos, 11);
+			GetLaraJointPos(&pos, LMX_HAND_R);
 			TriggerGunSmoke(pos.x, pos.y, pos.z, 0, 0, 0, 0, SmokeWeapon, SmokeCountR);
 		}
 	}
 	else
-		lara.mesh_ptrs[14] = meshes[objects[LARA].mesh_index + (14 * 2)];
+		lara.mesh_ptrs[LM_HEAD] = meshes[objects[LARA].mesh_index + LM_HEAD * 2];
 
 	if (lara.left_arm.flash_gun)
 	{
 		lara.left_arm.flash_gun--;
-		trigger_weapon_dynamics(14);
+		trigger_weapon_dynamics(LMX_HAND_L);
 	}
 
 	if (lara.right_arm.flash_gun)
 	{
 		lara.right_arm.flash_gun--;
-		trigger_weapon_dynamics(11);
+		trigger_weapon_dynamics(LMX_HAND_R);
 	}
 }
 
@@ -3292,7 +3292,7 @@ void CalculateObjectLightingLaraCutSeq()
 	pos.x = 0;
 	pos.y = 0;
 	pos.z = 0;
-	GetLaraJointPos(&pos, 7);
+	GetLaraJointPos(&pos, LMX_TORSO);
 	room_num = lara_item->room_number;
 	IsRoomOutsideNo = -1;
 	IsRoomOutside(pos.x, pos.y, pos.z);

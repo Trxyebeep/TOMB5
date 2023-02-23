@@ -37,22 +37,19 @@ void DeathSlideCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 	{
 		item = &items[item_number];
 
-		if (item->status == ITEM_INACTIVE)
+		if (item->status == ITEM_INACTIVE && TestLaraPosition(DeathSlideBounds, item, l))
 		{
-			if (TestLaraPosition(DeathSlideBounds, item, l))
-			{
-				AlignLaraPosition(&DeathSlidePosition, item, l);
-				lara.gun_status = LG_HANDS_BUSY;
-				l->goal_anim_state = AS_DEATHSLIDE;
+			AlignLaraPosition(&DeathSlidePosition, item, l);
+			lara.gun_status = LG_HANDS_BUSY;
+			l->goal_anim_state = AS_DEATHSLIDE;
 
-				do AnimateLara(l); while (l->current_anim_state != AS_NULL);
+			do AnimateLara(l); while (l->current_anim_state != AS_NULL);
 
-				if (!item->active)
-					AddActiveItem(item_number);
+			if (!item->active)
+				AddActiveItem(item_number);
 
-				item->status = ITEM_ACTIVE;
-				item->flags |= 0x100;
-			}
+			item->status = ITEM_ACTIVE;
+			item->flags |= IFL_INVISIBLE;
 		}
 	}
 }
@@ -70,7 +67,7 @@ void ControlDeathSlide(short item_number)
 	if (item->status != ITEM_ACTIVE)
 		return;
 
-	if (item->flags & 0x100)
+	if (item->flags & IFL_INVISIBLE)
 	{
 		if (item->current_anim_state == 1)
 		{
@@ -89,7 +86,7 @@ void ControlDeathSlide(short item_number)
 		room_number = item->room_number;
 		GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 
-		if (room_number != item->room_number)
+		if (item->room_number != room_number)
 			ItemNewRoom(item_number, room_number);
 
 		if (lara_item->current_anim_state == AS_DEATHSLIDE)
@@ -99,9 +96,9 @@ void ControlDeathSlide(short item_number)
 			lara_item->pos.z_pos = item->pos.z_pos;
 		}
 
-		x = item->pos.x_pos + (phd_sin(item->pos.y_rot) >> 4);
+		x = item->pos.x_pos + (1024 * phd_sin(item->pos.y_rot) >> 14);
 		y = item->pos.y_pos + 64;
-		z = item->pos.z_pos + (phd_cos(item->pos.y_rot) >> 4);
+		z = item->pos.z_pos + (1024 * phd_cos(item->pos.y_rot) >> 14);
 		floor = GetFloor(x, y, z, &room_number);
 
 		if (GetHeight(floor, x, y, z) <= y + 256 || GetCeiling(floor, x, y, z) >= y - 256)
@@ -118,7 +115,7 @@ void ControlDeathSlide(short item_number)
 			SoundEffect(SFX_COGS_ROME, &item->pos, SFX_DEFAULT);
 			RemoveActiveItem(item_number);
 			item->status = ITEM_INACTIVE;
-			item->flags -= 0x100;
+			item->flags -= IFL_INVISIBLE;
 		}
 		else
 			SoundEffect(SFX_GOD_HEAD_LASER_LOOPS, &item->pos, SFX_DEFAULT);
@@ -130,7 +127,7 @@ void ControlDeathSlide(short item_number)
 		item->pos.y_pos = old->y;
 		item->pos.z_pos = old->z;
 
-		if (old->room_number != item->room_number)
+		if (item->room_number != old->room_number)
 			ItemNewRoom(item_number, old->room_number);
 
 		item->status = ITEM_INACTIVE;

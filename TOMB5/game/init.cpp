@@ -39,13 +39,13 @@ void InitialiseFlameEmitter(short item_number)
 
 	if (item->trigger_flags == 33)
 	{
-		if (item->pos.y_rot == 0)
+		if (!item->pos.y_rot)
 			item->pos.z_pos += 144;
-		else if (item->pos.y_rot == 16384)
+		else if (item->pos.y_rot == 0x4000)
 			item->pos.x_pos += 144;
-		else if (item->pos.y_rot == -32768)
+		else if (item->pos.y_rot == -0x8000)
 			item->pos.z_pos -= 144;
-		else if (item->pos.y_rot == -16384)
+		else if (item->pos.y_rot == -0x4000)
 			item->pos.x_pos -= 144;
 
 		item->pos.y_pos += 32;
@@ -59,11 +59,11 @@ void InitialiseFlameEmitter(short item_number)
 		{
 			if (item->pos.y_rot == 0)
 				item->pos.z_pos += 512;
-			else if (item->pos.y_rot == 16384)
+			else if (item->pos.y_rot == 0x4000)
 				item->pos.x_pos += 512;
-			else if (item->pos.y_rot == -32768)
+			else if (item->pos.y_rot == -0x8000)
 				item->pos.z_pos -= 512;
-			else if (item->pos.y_rot == -16384)
+			else if (item->pos.y_rot == -0x4000)
 				item->pos.x_pos -= 512;
 		}
 	}
@@ -76,36 +76,36 @@ void InitialiseFlameEmitter2(short item_number)
 	item = &items[item_number];
 	item->pos.y_pos -= 64;
 
-	if (item->trigger_flags != 123)
+	if (item->trigger_flags == 123)
+		return;
+
+	if (!item->pos.y_rot)
 	{
-		if (item->pos.y_rot == 0)
-		{
-			if (item->trigger_flags == 2)
-				item->pos.z_pos += 80;
-			else
-				item->pos.z_pos += 256;
-		}
-		else if (item->pos.y_rot == 16384)
-		{
-			if (item->trigger_flags == 2)
-				item->pos.x_pos += 80;
-			else
-				item->pos.x_pos += 256;
-		}
-		else if (item->pos.y_rot == -32768)
-		{
-			if (item->trigger_flags == 2)
-				item->pos.z_pos -= 80;
-			else
-				item->pos.z_pos -= 256;
-		}
-		else if (item->pos.y_rot == -16384)
-		{
-			if (item->trigger_flags == 2)
-				item->pos.x_pos -= 80;
-			else
-				item->pos.x_pos -= 256;
-		}
+		if (item->trigger_flags == 2)
+			item->pos.z_pos += 80;
+		else
+			item->pos.z_pos += 256;
+	}
+	else if (item->pos.y_rot == 0x4000)
+	{
+		if (item->trigger_flags == 2)
+			item->pos.x_pos += 80;
+		else
+			item->pos.x_pos += 256;
+	}
+	else if (item->pos.y_rot == -0x8000)
+	{
+		if (item->trigger_flags == 2)
+			item->pos.z_pos -= 80;
+		else
+			item->pos.z_pos -= 256;
+	}
+	else if (item->pos.y_rot == -0x4000)
+	{
+		if (item->trigger_flags == 2)
+			item->pos.x_pos -= 80;
+		else
+			item->pos.x_pos -= 256;
 	}
 }
 
@@ -125,9 +125,9 @@ void InitialiseScaledSpike(short item_number)
 
 	item = &items[item_number];
 	xzrots[0] = -0x8000;
-	xzrots[1] = -24576;
-	xzrots[2] = -16384;
-	xzrots[3] = -8192;
+	xzrots[1] = -0x6000;
+	xzrots[2] = -0x4000;
+	xzrots[3] = -0x2000;
 	xzrots[4] = 0;
 	xzrots[5] = 0x2000;
 	xzrots[6] = 0x4000;
@@ -196,7 +196,7 @@ void InitialiseEffects()
 	memset(debris, 0, sizeof(DEBRIS_STRUCT) * 256);
 	memset(blood, 0, sizeof(BLOOD_STRUCT) * 32);
 	memset(splashes, 0, sizeof(SPLASH_STRUCT) * 4);
-	memset(ripples, 0, sizeof(RIPPLE_STRUCT) * 32);
+	memset(ripples, 0, sizeof(RIPPLE_STRUCT) * MAX_RIPPLES);
 	memset(Bubbles, 0, sizeof(BUBBLE_STRUCT) * 40);
 	memset(Drips, 0, sizeof(DRIP_STRUCT) * 32);
 	memset(ShockWaves, 0, sizeof(SHOCKWAVE_STRUCT) * 16);
@@ -222,31 +222,31 @@ void InitialiseSmokeEmitter(short item_number)
 
 	if (item->trigger_flags == 111)
 	{
-		if (item->pos.y_rot == 0)
+		if (!item->pos.y_rot)
 			item->pos.z_pos += 512;
-		else if (item->pos.y_rot == 16384)
+		else if (item->pos.y_rot == 0x4000)
 			item->pos.x_pos += 512;
-		else if (item->pos.y_rot == -16384)
+		else if (item->pos.y_rot == -0x4000)
 			item->pos.x_pos -= 512;
-		else if (item->pos.y_rot == -32768)
+		else if (item->pos.y_rot == -0x8000)
 			item->pos.z_pos -= 512;
-	}
-	else
-	{
-		if (item->object_number != STEAM_EMITTER)
-			return;
 
+		return;
+	}
+
+	if (item->object_number == STEAM_EMITTER)
+	{
 		if (item->trigger_flags & 8)
 		{
 			item->item_flags[0] = item->trigger_flags >> 4;
 
-			if (item->pos.y_rot == 0)
+			if (!item->pos.y_rot)
 				item->pos.z_pos += 256;
-			else if (item->pos.y_rot == 16384)
+			else if (item->pos.y_rot == 0x4000)
 				item->pos.x_pos += 256;
-			else if (item->pos.y_rot == -16384)
+			else if (item->pos.y_rot == -0x4000)
 				item->pos.x_pos -= 256;
-			else if (item->pos.y_rot == -32768)
+			else if (item->pos.y_rot == -0x8000)
 				item->pos.z_pos -= 256;
 
 			if (item->item_flags[0] <= 0)
@@ -282,7 +282,7 @@ void InitialiseDoor(short item_number)
 	}
 
 	if (item->object_number == SEQUENCE_DOOR1)
-		item->flags &= 0xBFFF;
+		item->flags &= ~IFL_REVERSE;
 
 	if (item->object_number >= LIFT_DOORS1 && item->object_number <= LIFT_DOORS2)
 		item->item_flags[0] = 4096;
@@ -298,11 +298,11 @@ void InitialiseDoor(short item_number)
 	dx = 0;
 	dy = 0;
 
-	if (item->pos.y_rot == 0)
+	if (!item->pos.y_rot)
 		dx = -1;
-	else if (item->pos.y_rot == -32768)
+	else if (item->pos.y_rot == -0x8000)
 		dx = 1;
-	else if (item->pos.y_rot == 16384)
+	else if (item->pos.y_rot == 0x4000)
 		dy = -1;
 	else
 		dy = 1;
@@ -466,25 +466,25 @@ void InitialisePickup(short item_number)
 		return;
 
 	bounds = GetBoundsAccurate(item);
+
 	if (ocb == 5)
 	{
-		item->item_flags[0] = (short)(item->pos.y_pos - bounds[3]);
+		item->item_flags[0] = short(item->pos.y_pos - bounds[3]);
 		item->status = ITEM_INVISIBLE;
+		return;
 	}
-	else
-	{
-		if (ocb == 0 || ocb == 3 || ocb == 4 || ocb == 7 || ocb == 8 || ocb == 11)
-			item->pos.y_pos -= bounds[3];
 
-		if (item->trigger_flags & 128)
-			RPickups[NumRPickups++] = (uchar)item_number;
+	if (!ocb || ocb == 3 || ocb == 4 || ocb == 7 || ocb == 8 || ocb == 11)
+		item->pos.y_pos -= bounds[3];
 
-		if (item->trigger_flags & 256)
-			item->mesh_bits = 0;
+	if (item->trigger_flags & 0x80)
+		RPickups[NumRPickups++] = (uchar)item_number;
 
-		if (item->status == ITEM_INVISIBLE)
-			item->flags |= IFL_TRIGGERED;
-	}
+	if (item->trigger_flags & 0x100)
+		item->mesh_bits = 0;
+
+	if (item->status == ITEM_INVISIBLE)
+		item->flags |= IFL_TRIGGERED;
 }
 
 void InitialiseClosedDoors()
@@ -495,13 +495,11 @@ void InitialiseClosedDoors()
 
 void AddClosedDoor(ITEM_INFO* item)
 {
-	long	lp;
-
-	for (lp = 0; lp < 32; lp++)
+	for (int i = 0; i < 32; i++)
 	{
-		if (!ClosedDoors[lp])
+		if (!ClosedDoors[i])
 		{
-			ClosedDoors[lp] = (long)item;
+			ClosedDoors[i] = (long)item;
 			break;
 		}
 	}
@@ -536,42 +534,42 @@ void SCDS(ROOM_INFO* r, short** dptr, char* dn, long dx, long dy, long ox, long 
 
 	d = r->door;
 
-	if (d)
+	if (!d)
+		return;
+	
+	for (int i = *d++; i > 0; i--, d += 15)
 	{
-		for (int i = *d++; i > 0; i--, d += 15)
+		d++;
+		minx = r->x + (dy >> 1) + ((d[3] + 128) & 0xFFFFFF00);
+		maxx = r->x + (dy >> 1) + ((d[9] + 128) & 0xFFFFFF00);
+
+		if (minx > maxx)
 		{
-			d++;
-			minx = r->x + (dy >> 1) + ((d[3] + 128) & 0xFFFFFF00);
-			maxx = r->x + (dy >> 1) + ((d[9] + 128) & 0xFFFFFF00);
+			wx = minx;
+			minx = maxx;
+			maxx = wx;
+		}
 
-			if (minx > maxx)
-			{
-				wx = minx;
-				minx = maxx;
-				maxx = wx;
-			}
+		minz = r->z + (dx >> 1) + ((d[5] + 128) & 0xFFFFFF00);
+		maxz = r->z + (dx >> 1) + ((d[11] + 128) & 0xFFFFFF00);
 
-			minz = r->z + (dx >> 1) + ((d[5] + 128) & 0xFFFFFF00);
-			maxz = r->z + (dx >> 1) + ((d[11] + 128) & 0xFFFFFF00);
+		if (minz > maxz)
+		{
+			wz = minz;
+			minz = maxz;
+			maxz = wz;
+		}
 
-			if (minz > maxz)
-			{
-				wz = minz;
-				minz = maxz;
-				maxz = wz;
-			}
+		if (ox >= minx && ox <= maxx && oz >= minz && oz <= maxz)
+		{
+			*dptr = d;
 
-			if (ox >= minx && ox <= maxx && oz >= minz && oz <= maxz)
-			{
-				*dptr = d;
-
-				if (*d)
-					*dn = (*d & 128) | 1;
-				else if (d[1])
-					*dn = (d[1] & 128) | 2;
-				else
-					*dn = (d[2] & 128) | 4;
-			}
+			if (*d)
+				*dn = (d[0] & 0x80) | 1;
+			else if (d[1])
+				*dn = (d[1] & 0x80) | 2;
+			else
+				*dn = (d[2] & 0x80) | 4;
 		}
 	}
 }
@@ -586,13 +584,13 @@ void InitialiseLasers(short item_number)
 
 	item = &items[item_number];
 	item->data = (LASER_STRUCT*)game_malloc(sizeof(LASER_STRUCT));
-	width = (item->trigger_flags & 255) << 10;
+	width = (item->trigger_flags & 0xFF) << 10;
 
 	if (!(item->trigger_flags & 1))
 	{
 		Xadd = (width / 2) - 512;
-		item->pos.z_pos += (Xadd * phd_cos(item->pos.y_rot + 32768)) >> 14;
-		item->pos.x_pos += (Xadd * phd_sin(item->pos.y_rot + 32768)) >> 14;
+		item->pos.z_pos += (Xadd * phd_cos(item->pos.y_rot + 0x8000)) >> 14;
+		item->pos.x_pos += (Xadd * phd_sin(item->pos.y_rot + 0x8000)) >> 14;
 	}
 
 	if ((item->trigger_flags & 255) == 1)
@@ -605,8 +603,8 @@ void InitialiseLasers(short item_number)
 	height = item->item_flags[0];
 	item->trigger_flags >>= 8;
 	Yadd = height / 8;
-	Zadd = abs((width * phd_cos(item->pos.y_rot + 32768)) >> 15);
-	Xadd = abs((width * phd_sin(item->pos.y_rot + 32768)) >> 15);
+	Zadd = abs((width * phd_cos(item->pos.y_rot + 0x8000)) >> 15);
+	Xadd = abs((width * phd_sin(item->pos.y_rot + 0x8000)) >> 15);
 	ls = (LASER_STRUCT*)item->data;
 	Lh = Yadd >> 1;
 	height = -Yadd;
@@ -614,18 +612,18 @@ void InitialiseLasers(short item_number)
 	for (int i = 0; i < 3; i++)
 	{
 		Hadd = (Lh >> 1) * (i - 1);
-		ls->v1[i].x = short(Xadd);
+		ls->v1[i].x = (short)Xadd;
 		ls->v1[i].y = short(height - Lh + Hadd);
-		ls->v1[i].z = short(Zadd);
-		ls->v2[i].x = short(-Xadd);
+		ls->v1[i].z = (short)Zadd;
+		ls->v2[i].x = (short)-Xadd;
 		ls->v2[i].y = short(height - Lh + Hadd);
-		ls->v2[i].z = short(-Zadd);
-		ls->v3[i].x = short(Xadd);
+		ls->v2[i].z = (short)-Zadd;
+		ls->v3[i].x = (short)Xadd;
 		ls->v3[i].y = short(height + Lh + Hadd);
-		ls->v3[i].z = short(Zadd);
-		ls->v4[i].x = short(-Xadd);
+		ls->v3[i].z = (short)Zadd;
+		ls->v4[i].x = (short)-Xadd;
 		ls->v4[i].y = short(height + Lh + Hadd);
-		ls->v4[i].z = short(-Zadd);
+		ls->v4[i].z = (short)-Zadd;
 		height -= Yadd * 3;
 	}
 
@@ -646,13 +644,13 @@ void InitialiseSteamLasers(short item_number)
 	height = 1536;
 	width = 2048;
 	Xadd = (width / 2) - 512;
-	item->pos.x_pos += (Xadd * phd_sin(item->pos.y_rot + 32768)) >> 14;
-	item->pos.z_pos += (Xadd * phd_cos(item->pos.y_rot + 32768)) >> 14;
+	item->pos.x_pos += (Xadd * phd_sin(item->pos.y_rot + 0x8000)) >> 14;
+	item->pos.z_pos += (Xadd * phd_cos(item->pos.y_rot + 0x8000)) >> 14;
 	room_num = item->room_number;
 	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_num);
 	item->pos.y_pos = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
-	Xadd = abs((width * phd_sin(item->pos.y_rot + 32768)) >> 15);
-	Zadd = abs((width * phd_cos(item->pos.y_rot + 32768)) >> 15);
+	Xadd = abs((width * phd_sin(item->pos.y_rot + 0x8000)) >> 15);
+	Zadd = abs((width * phd_cos(item->pos.y_rot + 0x8000)) >> 15);
 	Yadd = height / 4;
 	ls = (STEAMLASER_STRUCT*)item->data;
 	height = -Yadd;
@@ -660,16 +658,16 @@ void InitialiseSteamLasers(short item_number)
 	for (int i = 0; i < 2; i++)
 	{
 		ls->v1[i].x = (short)Xadd;
-		ls->v1[i].y = (short)(height - 64);
+		ls->v1[i].y = short(height - 64);
 		ls->v1[i].z = (short)Zadd;
 		ls->v2[i].x = (short)-Xadd;
-		ls->v2[i].y = (short)(height - 64);
+		ls->v2[i].y = short(height - 64);
 		ls->v2[i].z = (short)-Zadd;
 		ls->v3[i].x = (short)Xadd;
-		ls->v3[i].y = (short)(height + 64);
+		ls->v3[i].y = short(height + 64);
 		ls->v3[i].z = (short)Zadd;
 		ls->v4[i].x = (short)-Xadd;
-		ls->v4[i].y = (short)(height + 64);
+		ls->v4[i].y = short(height + 64);
 		ls->v4[i].z = (short)-Zadd;
 		height -= Yadd;
 	}
@@ -733,12 +731,13 @@ void InitialiseWreckingBall(short item_number)
 	item = &items[item_number];
 	item2 = find_a_fucking_item(ANIMATING16);
 	item->item_flags[3] = item2 - items;
+
 	room_number = item->room_number;
 	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 	item->pos.y_pos = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos) + 1644;
 	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 
-	if (room_number != item->room_number)
+	if (item->room_number != room_number)
 		ItemNewRoom(item_number, room_number);
 }
 
@@ -761,11 +760,11 @@ void InitialiseTightRope(short item_number)
 
 	if (!item->pos.y_rot)
 		item->pos.z_pos -= 256;
-	else if (item->pos.y_rot == 16384)
+	else if (item->pos.y_rot == 0x4000)
 		item->pos.x_pos -= 256;
-	else if (item->pos.y_rot == -16384)
+	else if (item->pos.y_rot == -0x4000)
 		item->pos.x_pos += 256;
-	else if (item->pos.y_rot == -32768)
+	else if (item->pos.y_rot == -0x8000)
 		item->pos.z_pos += 256;
 }
 
@@ -773,7 +772,6 @@ void InitialiseSearchObject(short item_number)
 {
 	ITEM_INFO* item;
 	short ObjNum;
-	long i;
 
 	item = &items[item_number];
 	ObjNum = 3 - ((SEARCH_OBJECT4 - item->object_number) >> 1);
@@ -790,15 +788,12 @@ void InitialiseSearchObject(short item_number)
 		item->item_flags[1] = -1;
 		item->mesh_bits = 9;
 
-		for (i = 0; i < level_items; ++i)
+		for (int i = 0; i < level_items; ++i)
 		{
-			if ((items[i].object_number == EXPLOSION ||
-				objects[items[i].object_number].collision == PickUpCollision) &&
-				item->pos.x_pos == items[i].pos.x_pos &&
-				item->pos.y_pos == items[i].pos.y_pos &&
-				item->pos.z_pos == items[i].pos.z_pos)
+			if ((items[i].object_number == EXPLOSION || objects[items[i].object_number].collision == PickUpCollision) &&
+				item->pos.x_pos == items[i].pos.x_pos && item->pos.y_pos == items[i].pos.y_pos && item->pos.z_pos == items[i].pos.z_pos)
 			{
-				item->item_flags[1] = (short)i;
+				item->item_flags[1] = i;
 				break;
 			}
 
@@ -849,13 +844,11 @@ void InitialiseExplosion(short item_number)
 void InitialiseSecurityScreens(short item_number)
 {
 	ITEM_INFO* item;
-	short mb1;
 
 	item = &items[item_number];
-	mb1 = item->trigger_flags;
-	item->item_flags[1] = mb1;
-	item->item_flags[0] = (mb1 & 3) << 6;
-	item->mesh_bits = (2 << mb1) + (32 << mb1);
+	item->item_flags[1] = item->trigger_flags;
+	item->item_flags[0] = (item->trigger_flags & 3) << 6;
+	item->mesh_bits = (2 << item->trigger_flags) + (32 << item->trigger_flags);
 }
 
 void InitialiseSteelDoor(short item_number)
@@ -872,10 +865,10 @@ void InitialiseMotionSensors(short item_number)
 	ITEM_INFO* item;
 
 	item = &items[item_number];
-	item->pos.z_pos -= (360 * phd_cos(item->pos.y_rot)) >> 14;
 	item->pos.x_pos -= (360 * phd_sin(item->pos.y_rot)) >> 14;
 	item->pos.y_pos -= 88;
-	item->item_flags[3] = item->pos.y_rot - 10240;
+	item->pos.z_pos -= (360 * phd_cos(item->pos.y_rot)) >> 14;
+	item->item_flags[3] = item->pos.y_rot - 0x2800;
 }
 
 void InitialiseGrapplingTarget(short item_number)
@@ -893,18 +886,18 @@ void InitialiseSpiderGenerator(short item_number)
 	item->item_flags[0] = tf & 1;
 	item->item_flags[1] = tf & 2;
 	item->item_flags[2] = tf & 4;
-	item->pos.x_rot = 8192;
+	item->pos.x_rot = 0x2000;
 	item->trigger_flags %= 1000;
 
 	if (!item->item_flags[0])
 	{
-		if (item->pos.y_rot > 4096 && item->pos.y_rot < 28672)
+		if (item->pos.y_rot > 0x1000 && item->pos.y_rot < 0x7000)
 			item->pos.x_pos -= 512;
-		else if (item->pos.y_rot < -4096 && item->pos.y_rot > -28672)
+		else if (item->pos.y_rot < -0x1000 && item->pos.y_rot > -0x7000)
 			item->pos.x_pos += 512;
-		if (item->pos.y_rot > -8192 && item->pos.y_rot < 8192)
+		if (item->pos.y_rot > -0x2000 && item->pos.y_rot < 0x2000)
 			item->pos.z_pos -= 512;
-		else if (item->pos.y_rot < -20480 || item->pos.y_rot > 20480)
+		else if (item->pos.y_rot < -0x5000 || item->pos.y_rot > 0x5000)
 			item->pos.z_pos += 512;
 	}
 
@@ -945,13 +938,13 @@ void InitialiseSas(short item_number)
 		break;
 
 	case 1:
-		item->goal_anim_state = 11;
 		item->anim_number = anim_index + 23;
+		item->goal_anim_state = 11;
 		break;
 
 	case 2:
-		item->goal_anim_state = 13;
 		item->anim_number = anim_index + 25;
+		item->goal_anim_state = 13;
 		item->status -= ITEM_INVISIBLE;
 		break;
 
@@ -996,20 +989,20 @@ void InitialiseSas(short item_number)
 
 	case 7:
 	case 9:
-		item->goal_anim_state = 38;
 		item->anim_number = anim_index + 59;
+		item->goal_anim_state = 38;
 		item->pos.x_pos -= 128 * phd_sin(item->pos.y_rot) >> 14;
 		item->pos.z_pos -= 128 * phd_cos(item->pos.y_rot) >> 14;
 		break;
 
 	case 8:
-		item->goal_anim_state = 31;
 		item->anim_number = anim_index + 46;
+		item->goal_anim_state = 31;
 		break;
 
 	case 11:
-		item->goal_anim_state = 7;
 		item->anim_number = anim_index + 12;
+		item->goal_anim_state = 7;
 		break;
 	}
 
@@ -1071,7 +1064,7 @@ void InitialiseAutogun(short item_number)
 
 	item = &items[item_number];
 	item->mesh_bits = 1024;
-	item->data = game_malloc(5702);
+	item->data = game_malloc(sizeof(CREATURE_INFO));
 }
 
 void InitialiseKeyhole(short item_number)
@@ -1084,7 +1077,7 @@ void InitialiseKeyhole(short item_number)
 		item->mesh_bits = 1;
 }
 
-void InitialiseCutsceneRope(short item_number)//not used
+void InitialiseCutsceneRope(short item_number)
 {
 	ITEM_INFO* rope;
 
@@ -1155,8 +1148,8 @@ void InitialiseExplodingSwitch(short item_number)
 
 void InitialiseRaisingPlinth(short item_number)
 {
-	ITEM_INFO* item;//actual plinth
-	ITEM_INFO* item2;//other items
+	ITEM_INFO* item;
+	ITEM_INFO* item2;
 	long x, y, z;
 
 	x = 0;
@@ -1172,7 +1165,7 @@ void InitialiseRaisingPlinth(short item_number)
 		if (item2->object_number == TRIGGER_TRIGGERER)
 		{
 			if (item2->trigger_flags == 111)
-				item->item_flags[3] |= i & 255;
+				item->item_flags[3] |= i & 0xFF;
 			else if (item2->trigger_flags == 112)
 			{
 				x = item2->pos.x_pos;
@@ -1182,7 +1175,7 @@ void InitialiseRaisingPlinth(short item_number)
 		}
 		else if (item2->object_number == PUZZLE_ITEM4_COMBO2)
 		{
-			item->item_flags[3] |= (i & 255) << 8;
+			item->item_flags[3] |= (i & 0xFF) << 8;
 			item2->pos.y_pos = item->pos.y_pos - 512;
 		}
 	}
@@ -1193,7 +1186,7 @@ void InitialiseRaisingPlinth(short item_number)
 
 		if (item2->object_number == PULLEY && item2->pos.x_pos == x && item2->pos.y_pos == y && item2->pos.z_pos == z)
 		{
-			item->item_flags[2] |= i & 255;
+			item->item_flags[2] |= i & 0xFF;
 			return;
 		}
 	}
@@ -1347,31 +1340,31 @@ void InitialiseAnimatingSlots(short item_number)
 		switch (item->trigger_flags)
 		{
 		case 901:
-			item->current_anim_state = 1;
-			item->goal_anim_state = 1;
 			item->anim_number = objects[item->object_number].anim_index;
 			item->frame_number = anims[item->anim_number].frame_base;
+			item->current_anim_state = 1;
+			item->goal_anim_state = 1;
 			break;
 
 		case 902:
-			item->current_anim_state = 1;
-			item->goal_anim_state = 1;
 			item->anim_number = objects[item->object_number].anim_index + 2;
 			item->frame_number = anims[item->anim_number].frame_base + 60;
+			item->current_anim_state = 1;
+			item->goal_anim_state = 1;
 			break;
 
 		case 903:
-			item->current_anim_state = 0;
-			item->goal_anim_state = 1;
 			item->anim_number = objects[item->object_number].anim_index;
 			item->frame_number = anims[item->anim_number].frame_base;
+			item->current_anim_state = 0;
+			item->goal_anim_state = 1;
 			break;
 
 		case 904:
-			item->current_anim_state = 1;
-			item->goal_anim_state = 1;
 			item->anim_number = objects[item->object_number].anim_index + 2;
 			item->frame_number = anims[item->anim_number].frame_base;
+			item->current_anim_state = 1;
+			item->goal_anim_state = 1;
 			break;
 		}
 	}

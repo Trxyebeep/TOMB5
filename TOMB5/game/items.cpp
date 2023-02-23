@@ -104,7 +104,7 @@ void KillItem(short item_num)
 		}
 	}
 
-	if (item->room_number != 255)
+	if (item->room_number != NO_ROOM)
 	{
 		linknum = room[item->room_number].item_number;
 

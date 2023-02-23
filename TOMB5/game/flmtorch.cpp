@@ -29,7 +29,8 @@ void FireCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 
 	item = &items[item_num];
 
-	if (lara.gun_type == WEAPON_TORCH && lara.gun_status == LG_READY && !lara.left_arm.lock && (item->status & 1) != lara.LitTorch && item->timer != -1 && input & IN_ACTION && l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH && !l->gravity_status)
+	if (lara.gun_type == WEAPON_TORCH && lara.gun_status == LG_READY && !lara.left_arm.lock && (item->status & ITEM_ACTIVE) != lara.LitTorch &&
+		item->timer != -1 && input & IN_ACTION && l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH && !l->gravity_status)
 	{
 		rot = item->pos.y_rot;
 
@@ -68,7 +69,7 @@ void FireCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 			if (item->object_number != BURNING_ROOTS)
 			{
 				l->item_flags[3] = 1;
-				l->anim_number = (short) (ANIM_LIGHT_TORCH1 + (abs(l->pos.y_pos - item->pos.y_pos) >> 8));
+				l->anim_number = short(ANIM_LIGHT_TORCH1 + (abs(l->pos.y_pos - item->pos.y_pos) >> 8));
 			}
 			else
 				l->anim_number = ANIM_LIGHT_TORCH5;
@@ -77,7 +78,7 @@ void FireCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 			l->frame_number = anims[l->anim_number].frame_base;
 			lara.flare_control_left = 0;
 			lara.left_arm.lock = 3;
-			lara.GeneralPtr = (void*) item_num;
+			lara.GeneralPtr = (void*)item_num;
 		}
 
 		item->pos.y_rot = rot;
@@ -85,7 +86,8 @@ void FireCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	else if (item->object_number == BURNING_ROOTS)
 		ObjectCollision(item_num, l, coll);
 
-	if (lara.GeneralPtr == (void*) item_num && item->status != ITEM_ACTIVE && l->current_anim_state == AS_CONTROLLED && l->anim_number >= ANIM_LIGHT_TORCH1 && l->anim_number <= ANIM_LIGHT_TORCH5 && l->frame_number - anims[l->anim_number].frame_base == 40)
+	if (lara.GeneralPtr == (void*)item_num && item->status != ITEM_ACTIVE && l->current_anim_state == AS_CONTROLLED &&
+		l->anim_number >= ANIM_LIGHT_TORCH1 && l->anim_number <= ANIM_LIGHT_TORCH5 && l->frame_number - anims[l->anim_number].frame_base == 40)
 	{
 		TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, item->flags & IFL_CODEBITS);
 		item->flags |= IFL_CODEBITS;
@@ -98,10 +100,13 @@ void FireCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 void DoFlameTorch()
 {
 	PHD_VECTOR pos;
+	short state;
 
 	switch (lara.left_arm.lock)
 	{
 	case 0:	//holding it
+
+		state = lara_item->current_anim_state;
 
 		if (lara.request_gun_type != lara.gun_type)
 		{
@@ -109,10 +114,8 @@ void DoFlameTorch()
 			lara.left_arm.frame_number = 31;
 			lara.left_arm.anim_number = objects[TORCH_ANIM].anim_index + 2;
 		}
-		else if (input & IN_DRAW && !lara_item->gravity_status && !lara_item->fallspeed && lara_item->current_anim_state != AS_COMPRESS &&
-			lara_item->current_anim_state != AS_UPJUMP && lara_item->current_anim_state != AS_FORWARDJUMP &&
-			lara_item->current_anim_state != AS_BACKJUMP && lara_item->current_anim_state != AS_RIGHTJUMP &&
-			lara_item->current_anim_state != AS_LEFTJUMP || lara.water_status == LW_UNDERWATER)
+		else if (input & IN_DRAW && !lara_item->gravity_status && !lara_item->fallspeed && state != AS_COMPRESS && state != AS_UPJUMP &&
+			state != AS_FORWARDJUMP && state != AS_BACKJUMP && state != AS_RIGHTJUMP && state != AS_LEFTJUMP || lara.water_status == LW_UNDERWATER)
 		{
 			lara.left_arm.lock = 1;	//throw it
 			lara.left_arm.frame_number = 1;
@@ -199,7 +202,7 @@ void DoFlameTorch()
 		pos.x = -32;
 		pos.y = 64;
 		pos.z = 256;
-		GetLaraJointPos(&pos, LM_HEAD);
+		GetLaraJointPos(&pos, LMX_HAND_L);
 		TriggerDynamic(pos.x, pos.y, pos.z, 12 - (GetRandomControl() & 1), (GetRandomControl() & 0x3F) + 192, (GetRandomControl() & 0x1F) + 96, 0);
 
 		if (!(wibble & 7))
@@ -220,7 +223,7 @@ void TriggerTorchFlame(short item_number, long node)
 	sptr->sR = 255;
 	sptr->sG = (GetRandomControl() & 0x1F) + 48;
 	sptr->sB = 48;
-	sptr->dR = (GetRandomControl() & 0x3F) - 64;
+	sptr->dR = (GetRandomControl() & 0x3F) + 192;
 	sptr->dG = (GetRandomControl() & 0x3F) + 128;
 	sptr->dB = 32;
 	sptr->FadeToBlack = 8;
@@ -251,7 +254,7 @@ void TriggerTorchFlame(short item_number, long node)
 	size = (GetRandomControl() & 0x1F) + 80;
 	sptr->Size = (uchar)size;
 	sptr->sSize = sptr->Size;
-	sptr->dSize = (uchar)(size >> 3);
+	sptr->dSize = sptr->Size >> 3;
 }
 
 void GetFlameTorch()
@@ -267,7 +270,7 @@ void GetFlameTorch()
 	lara.left_arm.lock = 0;
 	lara.left_arm.frame_number = 0;
 	lara.left_arm.frame_base = anims[objects[TORCH_ANIM].anim_index].frame_ptr;
-	lara.mesh_ptrs[LM_LHAND] = meshes[objects[TORCH_ANIM].mesh_index + (LM_LHAND * 2)];
+	lara.mesh_ptrs[LM_LHAND] = meshes[objects[TORCH_ANIM].mesh_index + LM_LHAND * 2];
 }
 
 void FlameTorchControl(short item_number)

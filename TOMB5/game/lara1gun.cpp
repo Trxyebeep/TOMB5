@@ -24,8 +24,8 @@
 #include "lara.h"
 #include "savegame.h"
 
-char HKTimer = 0;
-char HKShotsFired = 0;
+static char HKTimer = 0;
+static char HKShotsFired = 0;
 
 void draw_shotgun_meshes(long weapon_type)
 {
@@ -98,13 +98,13 @@ void RifleHandler(long weapon_type)
 	{
 		r = (GetRandomControl() & 0x3F) + 192;
 		g = (GetRandomControl() & 0x1F) + 128;
-		b = GetRandomControl() & 63;
+		b = GetRandomControl() & 0x3F;
 
 		if (weapon_type == WEAPON_SHOTGUN || weapon_type == WEAPON_HK)
 		{
-			pos.x = (GetRandomControl() & 0xFF) + (phd_sin(lara_item->pos.y_rot) >> 4) + lara_item->pos.x_pos;
-			pos.y = ((GetRandomControl() & 0x7F) - 575) + lara_item->pos.y_pos;
-			pos.z = (GetRandomControl() & 0xFF) + (phd_cos(lara_item->pos.y_rot) >> 4) + lara_item->pos.z_pos;
+			pos.x = lara_item->pos.x_pos + (1024 * phd_sin(lara_item->pos.y_rot) >> 14) + (GetRandomControl() & 0xFF);
+			pos.y = lara_item->pos.y_pos + ((GetRandomControl() & 0x7F) - 575);
+			pos.z = lara_item->pos.z_pos + (1024 * phd_cos(lara_item->pos.y_rot) >> 14) + (GetRandomControl() & 0xFF);
 
 			if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
 				TriggerDynamic_MIRROR(pos.x, pos.y, pos.z, 12, r, g, b);
@@ -116,7 +116,7 @@ void RifleHandler(long weapon_type)
 			pos.x = (GetRandomControl() & 0xFF) - 128;
 			pos.y = (GetRandomControl() & 0x7F) - 63;
 			pos.z = (GetRandomControl() & 0xFF) - 128;
-			GetLaraJointPos(&pos, 11);
+			GetLaraJointPos(&pos, LMX_HAND_R);
 
 			if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
 				TriggerDynamic_MIRROR(pos.x, pos.y, pos.z, 12, r, g, b);
@@ -164,12 +164,12 @@ void FireShotgun()
 		pos.x = 0;
 		pos.y = 228;
 		pos.z = 32;
-		GetLaraJointPos(&pos, 11);
+		GetLaraJointPos(&pos, LMX_HAND_R);
 
 		pos2.x = 0;
 		pos2.y = 1508;
 		pos2.z = 32;
-		GetLaraJointPos(&pos2, 11);
+		GetLaraJointPos(&pos2, LMX_HAND_R);
 
 		SmokeCountL = 32;
 		SmokeWeapon = WEAPON_SHOTGUN;
@@ -241,35 +241,35 @@ void FireCrossbow(PHD_3DPOS* Start)
 
 	ammo = get_current_ammo_pointer(WEAPON_CROSSBOW);
 
-	if (!*ammo)
+	if (!ammo[0])
 		return;
 
 	lara.has_fired = 1;
 	lara.Fired = 1;
 	item_number = CreateItem();
 
-	if (item_number != NO_ITEM)
-	{
-		item = &items[item_number];
-		item->object_number = CROSSBOW_BOLT;
-		item->shade = -0x3DF0;
-		item->room_number = lara_item->room_number;
-		item->pos.x_pos = Start->x_pos;
-		item->pos.y_pos = Start->y_pos;
-		item->pos.z_pos = Start->z_pos;
-		InitialiseItem(item_number);
-		item->pos.x_rot = Start->x_rot;
-		item->pos.y_rot = Start->y_rot;
-		item->pos.z_rot = Start->z_rot;
-		item->speed = 512;
-		AddActiveItem(item_number);
+	if (item_number == NO_ITEM)
+		return;
 
-		if (*ammo != -1)
-			--*ammo;
+	item = &items[item_number];
+	item->object_number = CROSSBOW_BOLT;
+	item->shade = -0x3DF0;
+	item->room_number = lara_item->room_number;
+	item->pos.x_pos = Start->x_pos;
+	item->pos.y_pos = Start->y_pos;
+	item->pos.z_pos = Start->z_pos;
+	InitialiseItem(item_number);
+	item->pos.x_rot = Start->x_rot;
+	item->pos.y_rot = Start->y_rot;
+	item->pos.z_rot = Start->z_rot;
+	item->speed = 512;
+	AddActiveItem(item_number);
 
-		SoundEffect(SFX_LARA_CROSSBOW, 0, SFX_DEFAULT);
-		savegame.Game.AmmoUsed++;
-	}
+	if (ammo[0] != -1)
+		ammo[0]--;
+
+	SoundEffect(SFX_LARA_CROSSBOW, 0, SFX_DEFAULT);
+	savegame.Game.AmmoUsed++;
 }
 
 void ControlCrossbow(short item_number)
@@ -300,21 +300,21 @@ void ControlCrossbow(short item_number)
 	{
 		target = *itemlist;
 
-		while (!(gfLevelFlags & GF_OFFICE) || target->object_number != GRAPPLING_TARGET)
+		while (target)
 		{
-			itemlist++;
-			target = *itemlist;
-
-			if (!target)
+			if (gfLevelFlags & GF_OFFICE && target->object_number == GRAPPLING_TARGET)
+			{
+				TriggerGrapplingEffect(target->pos.x_pos, target->pos.y_pos + 32, target->pos.z_pos);
+				TestTriggersAtXYZ(target->pos.x_pos, target->pos.y_pos, target->pos.z_pos, target->room_number, 1, 0);
+				ExplodeItemNode(item, 0, 0, 256);
+				SoundEffect(SFX_SMASH_METAL, &item->pos, SFX_DEFAULT);
+				KillItem(item_number);
+				target->mesh_bits <<= 1;
 				return;
-		}
+			}
 
-		TriggerGrapplingEffect(target->pos.x_pos, target->pos.y_pos + 32, target->pos.z_pos);
-		TestTriggersAtXYZ(target->pos.x_pos, target->pos.y_pos, target->pos.z_pos, target->room_number, 1, 0);
-		ExplodeItemNode(item, 0, 0, 256);
-		SoundEffect(SFX_SMASH_METAL, &item->pos, 0);
-		KillItem(item_number);
-		target->mesh_bits <<= 1;
+			target = *itemlist++;
+		}
 	}
 }
 
@@ -414,7 +414,7 @@ void AnimateShotgun(long weapon_type)
 			pos.z = 32;
 		}
 
-		GetLaraJointPos(&pos, 11);
+		GetLaraJointPos(&pos, LMX_HAND_R);
 
 		if (lara_item->mesh_bits)
 			TriggerGunSmoke(pos.x, pos.y, pos.z, 0, 0, 0, 0, SmokeWeapon, SmokeCountL);

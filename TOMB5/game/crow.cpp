@@ -35,7 +35,32 @@ void CrowControl(short item_number)
 	item = &items[item_number];
 	crow = (CREATURE_INFO*)item->data;
 
-	if (item->hit_points > 0)
+	if (item->hit_points <= 0)
+	{
+		if (item->current_anim_state == 4)
+		{
+			if (item->pos.y_pos >= item->floor)
+			{
+				item->pos.y_pos = item->floor;
+				item->fallspeed = 0;
+				item->gravity_status = 0;
+				item->goal_anim_state = 5;
+			}
+		}
+		else if (item->current_anim_state == 5)
+			item->pos.y_pos = item->floor;
+		else
+		{
+			item->anim_number = objects[CROW].anim_index + 1;
+			item->frame_number = anims[item->anim_number].frame_base;;
+			item->current_anim_state = 4;
+			item->gravity_status = 1;
+			item->speed = 0;
+		}
+
+		item->pos.x_rot = 0;
+	}
+	else
 	{
 		CreatureAIInfo(item, &info);
 		GetCreatureMood(item, &info, 0);
@@ -50,15 +75,12 @@ void CrowControl(short item_number)
 			if (item->required_anim_state)
 				item->goal_anim_state = item->required_anim_state;
 
-			if (crow->mood != BORED_MOOD)
-			{
-				if (info.ahead && info.distance < 0x40000)
-					item->goal_anim_state = 6;
-				else
-					item->goal_anim_state = 3;
-			}
-			else
+			if (crow->mood == BORED_MOOD)
 				item->goal_anim_state = 2;
+			else if (info.ahead && info.distance < 0x40000)
+				item->goal_anim_state = 6;
+			else
+				item->goal_anim_state = 3;
 
 			break;
 
@@ -72,16 +94,13 @@ void CrowControl(short item_number)
 
 		case 3:
 
-			if (crow->mood)
-			{
-				if (info.ahead && info.distance < 0x40000)
-					item->goal_anim_state = 6;
-			}
-			else
+			if (crow->mood == BORED_MOOD)
 			{
 				item->required_anim_state = 2;
 				item->goal_anim_state = 1;
 			}
+			else if (info.ahead && info.distance < 0x40000)
+				item->goal_anim_state = 6;
 
 			break;
 
@@ -105,32 +124,6 @@ void CrowControl(short item_number)
 
 			break;
 		}
-	}
-	else if (item->current_anim_state == 4)
-	{
-		if (item->pos.y_pos >= item->floor)
-		{
-			item->pos.y_pos = item->floor;
-			item->fallspeed = 0;
-			item->gravity_status = 0;
-			item->goal_anim_state = 5;
-		}
-
-		item->pos.x_rot = 0;
-	}
-	else if (item->current_anim_state == 5)
-	{
-		item->pos.x_rot = 0;
-		item->pos.y_pos = item->floor;
-	}
-	else
-	{
-		item->anim_number = objects[CROW].anim_index + 1;
-		item->frame_number = anims[item->anim_number].frame_base;;
-		item->current_anim_state = 4;
-		item->gravity_status = 1;
-		item->speed = 0;
-		item->pos.x_rot = 0;
 	}
 
 	CreatureAnimation(item_number, angle, 0);

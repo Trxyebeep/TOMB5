@@ -177,14 +177,14 @@ void ControlElectricalCables(short item_number)
 		pos.x = 0;
 		pos.y = 0;
 		pos.z = 0;
-		GetLaraJointPos(&pos, 3);
+		GetLaraJointPos(&pos, LMX_FOOT_L);
 		room_num = lara_item->room_number;
 		GetFloor(pos.x, pos.y, pos.z, &room_num);
 
 		pos2.x = 0;
 		pos2.y = 0;
 		pos2.z = 0;
-		GetLaraJointPos(&pos2, 6);
+		GetLaraJointPos(&pos2, LMX_FOOT_R);
 		room2_num = lara_item->room_number;
 		GetFloor(pos2.x, pos2.y, pos2.z, &room2_num);
 

@@ -36,7 +36,7 @@ void AddFootprint(ITEM_INFO* item)
 	floor = GetFloor(pos.x, pos.y, pos.z, &room_num);
 
 	if (floor->fx != 6 && floor->fx != 5 && floor->fx != 11)
-		SoundEffect(footsounds[floor->fx] + 288, &lara_item->pos, 0);
+		SoundEffect(footsounds[floor->fx] + SFX_FOOTSTEPS_MUD, &lara_item->pos, 0);
 
 	if (tomb5.footprints && floor->fx < 3 && (gfCurrentLevel == LVL5_BASE || !OnObject))
 	{
@@ -46,7 +46,7 @@ void AddFootprint(ITEM_INFO* item)
 		print->z = pos.z;
 		print->YRot = item->pos.y_rot;
 		print->Active = 512;
-		FootPrintNum = FootPrintNum + 1 & 0x1F;
+		FootPrintNum = (FootPrintNum + 1) & 0x1F;
 	}
 }
 
@@ -61,6 +61,7 @@ void S_DrawFootPrints()
 {
 	FOOTPRINT* print;
 	SPRITESTRUCT* sprite;
+	FLOOR_INFO* floor;
 	D3DTLVERTEX v[3];
 	FVECTOR pos[3];
 	TEXTURESTRUCT tex;
@@ -101,8 +102,10 @@ void S_DrawFootPrints()
 			{
 				x = long(pos[j].x * aMXPtr[M00] + pos[j].z * aMXPtr[M02] + aMXPtr[M03]);
 				z = long(pos[j].x * aMXPtr[M20] + pos[j].z * aMXPtr[M22] + aMXPtr[M23]);
+
 				room_number = lara_item->room_number;
-				pos[j].y = (float)GetHeight(GetFloor(x, print->y, z, &room_number), x, print->y, z) - print->y;
+				floor = GetFloor(x, print->y, z, &room_number);
+				pos[j].y = (float)GetHeight(floor, x, print->y, z) - print->y;
 
 				if (abs(pos[j].y) > PRINT_HEIGHT_CORRECTION)
 					pos[j].y = 0;
@@ -141,7 +144,7 @@ void S_DrawFootPrints()
 			tex.v2 = v1;	//top right
 			tex.u3 = u1;
 			tex.v3 = v2;	//bottom left
-			AddTriSorted(v, 0, 1, 2, &tex, 1);	//a tri instead of a quad is needed to avoid the snow sprite
+			AddTriSorted(v, 0, 1, 2, &tex, 1);
 		}
 	}
 }
@@ -158,12 +161,12 @@ void GetProperFootPos(PHD_VECTOR* pos)
 	left_foot.x = 0;
 	left_foot.y = 0;
 	left_foot.z = 0;
-	GetLaraJointPos(&left_foot, LM_LFOOT);
+	GetLaraJointPos(&left_foot, LMX_FOOT_L);
 
 	right_foot.x = 0;
 	right_foot.y = 0;
 	right_foot.z = 0;
-	GetLaraJointPos(&right_foot, LM_RFOOT);
+	GetLaraJointPos(&right_foot, LMX_FOOT_R);
 
 	frame = lara_item->frame_number;
 	base = anims[lara_item->anim_number].frame_base;

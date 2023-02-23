@@ -116,7 +116,7 @@ void CalculateCamera()
 	{
 		camera.type = FIXED_CAMERA;
 
-		if (camera.old_type == FIXED_CAMERA)
+		if (camera.old_type != FIXED_CAMERA)
 			camera.speed = 1;
 	}
 
@@ -149,10 +149,11 @@ void CalculateCamera()
 		return;
 	}
 
-	item = camera.item;
-
 	if (camera.item && (camera.type == FIXED_CAMERA || camera.type == HEAVY_CAMERA))
+	{
+		item = camera.item;
 		fixed_camera = 1;
+	}
 	else
 	{
 		item = lara_item;
@@ -162,40 +163,37 @@ void CalculateCamera()
 	bounds = GetBoundsAccurate(item);
 	y = ((bounds[2] + bounds[3]) >> 1) + item->pos.y_pos - 256;
 
-	if (camera.item)
+	if (camera.item && !fixed_camera)
 	{
-		if (!fixed_camera)
+		shift = phd_sqrt(SQUARE(camera.item->pos.z_pos - item->pos.z_pos) + SQUARE(camera.item->pos.x_pos - item->pos.x_pos));
+		gotit = (phd_atan(camera.item->pos.z_pos - item->pos.z_pos, camera.item->pos.x_pos - item->pos.x_pos) - item->pos.y_rot) >> 1;
+		bounds = GetBoundsAccurate(camera.item);
+		tilt = short(phd_atan(shift, y - (bounds[2] + bounds[3]) / 2 - camera.item->pos.y_pos)) >> 1;
+
+		if (gotit > -9100 && gotit < 9100 && tilt > -15470 && tilt < 15470)
 		{
-			shift = phd_sqrt(SQUARE(camera.item->pos.z_pos - item->pos.z_pos) + SQUARE(camera.item->pos.x_pos - item->pos.x_pos));
-			gotit = (phd_atan(camera.item->pos.z_pos - item->pos.z_pos, camera.item->pos.x_pos - item->pos.x_pos) - item->pos.y_rot) >> 1;
-			bounds = GetBoundsAccurate(camera.item);
-			tilt = (short)(phd_atan(shift, y - (bounds[2] + bounds[3]) / 2 - camera.item->pos.y_pos)) >> 1;
+			change = short(gotit - lara.head_y_rot);
 
-			if (gotit > -9100 && gotit < 9100 && tilt > -15470 && tilt < 15470)
-			{
-				change = (short)(gotit - lara.head_y_rot);
+			if (change > 728)
+				lara.head_y_rot += 728;
+			else if (change < -728)
+				lara.head_y_rot -= 728;
+			else
+				lara.head_y_rot = (short)gotit;
 
-				if (change > 728)
-					lara.head_y_rot += 728;
-				else if (change < -728)
-					lara.head_y_rot -= 728;
-				else
-					lara.head_y_rot = (short)gotit;
+			lara.torso_y_rot = lara.head_y_rot;
+			change = tilt - lara.head_x_rot;
 
-				lara.torso_y_rot = lara.head_y_rot;
-				change = tilt - lara.head_x_rot;
+			if (change > 728)
+				lara.head_x_rot += 728;
+			else if (change < -728)
+				lara.head_x_rot -= 728;
+			else
+				lara.head_x_rot = tilt;
 
-				if (change > 728)
-					lara.head_x_rot += 728;
-				else if (change < -728)
-					lara.head_x_rot -= 728;
-				else
-					lara.head_x_rot = tilt;
-
-				lara.torso_x_rot = lara.head_x_rot;
-				camera.type = LOOK_CAMERA;
-				camera.item->looked_at = 1;
-			}
+			lara.torso_x_rot = lara.head_x_rot;
+			camera.type = LOOK_CAMERA;
+			camera.item->looked_at = 1;
 		}
 	}
 
@@ -219,7 +217,7 @@ void CalculateCamera()
 				v.x = 0;
 				v.y = 0;
 				v.z = 0;
-				GetLaraJointPos(&v, LM_TORSO);
+				GetLaraJointPos(&v, LMX_TORSO);
 				camera.target.x = v.x;
 				camera.target.y = v.y;
 				camera.target.z = v.z;
@@ -230,8 +228,8 @@ void CalculateCamera()
 		if (!gotit)
 		{
 			shift = (bounds[0] + bounds[1] + bounds[4] + bounds[5]) >> 2;
-			camera.target.x = ((phd_sin(item->pos.y_rot) * shift) >> 14) + item->pos.x_pos;
-			camera.target.z = ((phd_cos(item->pos.y_rot) * shift) >> 14) + item->pos.z_pos;
+			camera.target.x = item->pos.x_pos + (shift * phd_sin(item->pos.y_rot) >> 14);
+			camera.target.z = item->pos.z_pos + (shift * phd_cos(item->pos.y_rot) >> 14);
 
 			if (item->object_number == LARA)
 				ConfirmCameraTargetPos();
@@ -378,7 +376,7 @@ void ScreenShake(ITEM_INFO* item, short MaxVal, short MaxDist)
 long mgLOS(GAME_VECTOR* start, GAME_VECTOR* target, long push)
 {
 	FLOOR_INFO* floor;
-	long x, y, z, h, c, cdiff, hdiff, dx, dy, dz, clipped, nc, i;
+	long x, y, z, h, c, cdiff, hdiff, dx, dy, dz, clipped, nc, lp;
 	short room_number, room_number2;
 
 	dx = (target->x - start->x) >> 3;
@@ -392,7 +390,7 @@ long mgLOS(GAME_VECTOR* start, GAME_VECTOR* target, long push)
 	nc = 0;
 	clipped = 0;
 
-	for (i = 0; i < 8; i++)
+	for (lp = 0; lp < 8; lp++)
 	{
 		room_number = room_number2;
 		floor = GetFloor(x, y, z, &room_number2);
@@ -446,7 +444,7 @@ long mgLOS(GAME_VECTOR* start, GAME_VECTOR* target, long push)
 		z += dz;
 	}
 
-	if (i)
+	if (lp)
 	{
 		x -= dx;
 		y -= dy;
@@ -559,13 +557,15 @@ void UpdateCameraElevation()
 		pos.y = 0;
 		pos.z = 0;
 		GetLaraJointPos(&pos, camera.lara_node);
+
 		pos1.x = 0;
 		pos1.y = -256;
 		pos1.z = 2048;
 		GetLaraJointPos(&pos1, camera.lara_node);
+
 		pos.z = pos1.z - pos.z;
 		pos.x = pos1.x - pos.x;
-		camera.actual_angle = (short)(camera.target_angle + phd_atan(pos.z, pos.x));
+		camera.actual_angle = short(camera.target_angle + phd_atan(pos.z, pos.x));
 	}
 	else
 		camera.actual_angle = lara_item->pos.y_rot + camera.target_angle;
@@ -641,7 +641,7 @@ void FixedCamera()
 		if (fixed->flags & 2)	//sniper
 		{
 			if (FlashFader > 2)
-				FlashFader = (FlashFader >> 1) & -2;
+				FlashFader = (FlashFader >> 1) & ~1;
 
 			SniperOverlay = 1;
 			camera.target.x = (camera.target.x + 2 * last_target.x) / 3;
@@ -658,7 +658,7 @@ void FixedCamera()
 				ricochet = LOS(&ideal, &t2);
 				GetLaraOnLOS = 1;
 				Target = ObjectOnLOS2(&ideal, &t2, &v, &StaticMesh);
-				HitLara = Target != 999 && Target >= 0 && !items[Target].object_number;
+				HitLara = Target != 999 && Target >= 0 && items[Target].object_number == LARA;
 
 				if (!(GetRandomControl() & 0x3F) || !(GlobalCounter & 0x3F) || HitLara && !(GlobalCounter & 0xF) && GetRandomControl() & 1)
 				{
@@ -674,28 +674,23 @@ void FixedCamera()
 					{
 						DoBloodSplat(v.x, v.y, v.z, (GetRandomControl() & 3) + 3, short(GetRandomControl() << 1), lara_item->room_number);
 						lara_item->hit_points -= 100;
-						GetLaraOnLOS = 0;
 					}
-					else
+					else if (Target < 0)
 					{
-						if (Target < 0)
+						if (StaticMesh->static_number >= 50 && StaticMesh->static_number < 58)
 						{
-							if (StaticMesh->static_number >= 50 && StaticMesh->static_number < 58)
-							{
-								ShatterObject(0, StaticMesh, 128, t2.room_number, 0);
-								SmashedMeshRoom[SmashedMeshCount] = t2.room_number;
-								SmashedMesh[SmashedMeshCount] = StaticMesh;
-								SmashedMeshCount++;
-								StaticMesh->Flags &= -2;
-								SoundEffect(ShatterSounds[gfCurrentLevel][StaticMesh->static_number - 50], (PHD_3DPOS*)&StaticMesh->x, 0);
-							}
-
-							TriggerRicochetSpark((GAME_VECTOR*)&v, GetRandomControl() << 1, 3, 0);
-							TriggerRicochetSpark((GAME_VECTOR*)&v, GetRandomControl() << 1, 3, 0);
+							ShatterObject(0, StaticMesh, 128, t2.room_number, 0);
+							SmashedMeshRoom[SmashedMeshCount] = t2.room_number;
+							SmashedMesh[SmashedMeshCount++] = StaticMesh;
+							StaticMesh->Flags &= ~1;
+							SoundEffect(ShatterSounds[gfCurrentLevel][StaticMesh->static_number - 50], (PHD_3DPOS*)&StaticMesh->x, 0);
 						}
-						else if (!ricochet)
-							TriggerRicochetSpark(&t2, GetRandomControl() << 1, 3, 0);
+
+						TriggerRicochetSpark((GAME_VECTOR*)&v, GetRandomControl() << 1, 3, 0);
+						TriggerRicochetSpark((GAME_VECTOR*)&v, GetRandomControl() << 1, 3, 0);
 					}
+					else if (!ricochet)
+						TriggerRicochetSpark(&t2, GetRandomControl() << 1, 3, 0);
 				}
 
 				GetLaraOnLOS = 0;
@@ -721,8 +716,8 @@ void ChaseCamera(ITEM_INFO* item)
 	GAME_VECTOR ideal;
 	GAME_VECTOR ideals[5];
 	GAME_VECTOR temp[2];
-	long distance, dx, dz, farthest, farthestnum, h, c, wx, wy, wz;
-	short angle, room_number;
+	long distance, dx, dz, farthest, farthestnum, h, c, wx, wy, wz, angle, lp;
+	short room_number;
 
 	if (!camera.target_elevation)
 		camera.target_elevation = -1820;
@@ -756,59 +751,59 @@ void ChaseCamera(ITEM_INFO* item)
 	else
 		TargetSnaps = 0;
 
-	for (int i = 0; i < 5; i++)
-		ideals[i].y = (camera.target_distance * phd_sin(camera.actual_elevation) >> 14) + camera.target.y;
+	for (lp = 0; lp < 5; lp++)
+		ideals[lp].y = camera.target.y + (camera.target_distance * phd_sin(camera.actual_elevation) >> 14);
 
 	farthest = 0x7FFFFFFF;
 	farthestnum = 0;
 
-	for (int i = 0; i < 5; i++)
+	for (lp = 0; lp < 5; lp++)
 	{
-		if (i)
-			angle = (i - 1) << 14;
+		if (lp)
+			angle = (lp - 1) << 14;
 		else
 			angle = camera.actual_angle;
 
-		ideals[i].x = camera.target.x - ((distance * phd_sin(angle)) >> 14);
-		ideals[i].z = camera.target.z - ((distance * phd_cos(angle)) >> 14);
-		ideals[i].room_number = camera.target.room_number;
+		ideals[lp].x = camera.target.x - (distance * phd_sin(angle) >> 14);
+		ideals[lp].z = camera.target.z - (distance * phd_cos(angle) >> 14);
+		ideals[lp].room_number = camera.target.room_number;
 
-		if (mgLOS(&camera.target, &ideals[i], 200))
+		if (mgLOS(&camera.target, &ideals[lp], 200))
 		{
-			temp[0].x = ideals[i].x;
-			temp[0].y = ideals[i].y;
-			temp[0].z = ideals[i].z;
-			temp[0].room_number = ideals[i].room_number;
+			temp[0].x = ideals[lp].x;
+			temp[0].y = ideals[lp].y;
+			temp[0].z = ideals[lp].z;
+			temp[0].room_number = ideals[lp].room_number;
 			temp[1].x = camera.pos.x;
 			temp[1].y = camera.pos.y;
 			temp[1].z = camera.pos.z;
 			temp[1].room_number = camera.pos.room_number;
 
-			if (mgLOS(&temp[0], &temp[1], 0) || !i)
+			if (mgLOS(&temp[0], &temp[1], 0) || !lp)
 			{
-				if (!i)
+				if (!lp)
 				{
 					farthestnum = 0;
 					break;
 				}
 
-				dx = SQUARE(camera.pos.x - ideals[i].x);
-				dz = SQUARE(camera.pos.z - ideals[i].z);
+				dx = SQUARE(camera.pos.x - ideals[lp].x);
+				dz = SQUARE(camera.pos.z - ideals[lp].z);
 				dz += dx;
 
 				if (dz < farthest)
 				{
 					farthest = dz;
-					farthestnum = i;
+					farthestnum = lp;
 				}
 			}
 		}
-		else if (!i)
+		else if (!lp)
 		{
-			temp[0].x = ideals[i].x;
-			temp[0].y = ideals[i].y;
-			temp[0].z = ideals[i].z;
-			temp[0].room_number = ideals[i].room_number;
+			temp[0].x = ideals[lp].x;
+			temp[0].y = ideals[lp].y;
+			temp[0].z = ideals[lp].z;
+			temp[0].room_number = ideals[lp].room_number;
 			temp[1].x = camera.pos.x;
 			temp[1].y = camera.pos.y;
 			temp[1].z = camera.pos.z;
@@ -816,11 +811,11 @@ void ChaseCamera(ITEM_INFO* item)
 
 			if (mgLOS(&temp[0], &temp[1], 0))
 			{
-				dx = SQUARE(camera.target.x - ideals[i].x);
-				dz = SQUARE(camera.target.z - ideals[i].z);
+				dx = SQUARE(camera.target.x - ideals[lp].x);
+				dz = SQUARE(camera.target.z - ideals[lp].z);
 				dz += dx;
 
-				if (dz > 589824)
+				if (dz > 0x90000)
 				{
 					farthestnum = 0;
 					break;
@@ -847,8 +842,8 @@ void CombatCamera(ITEM_INFO* item)
 	GAME_VECTOR ideal;
 	GAME_VECTOR ideals[9];
 	GAME_VECTOR temp[2];
-	long distance, dx, dz, farthest, farthestnum, h, c, wx, wy, wz;
-	short angle, room_number;
+	long distance, dx, dz, farthest, farthestnum, h, c, wx, wy, wz, angle, lp;
+	short room_number;
 
 	camera.target.x = item->pos.x_pos;
 	camera.target.z = item->pos.z_pos;
@@ -911,59 +906,59 @@ void CombatCamera(ITEM_INFO* item)
 	camera.target_distance = 1536;
 	distance = camera.target_distance * phd_cos(camera.actual_elevation) >> 14;
 
-	for (int i = 0; i < 5; i++)
-		ideals[i].y = (camera.target_distance * phd_sin(camera.actual_elevation) >> 14) + camera.target.y;
+	for (lp = 0; lp < 5; lp++)
+		ideals[lp].y = camera.target.y + (camera.target_distance * phd_sin(camera.actual_elevation) >> 14);
 
 	farthest = 0x7FFFFFFF;
 	farthestnum = 0;
 
-	for (int i = 0; i < 5; i++)
+	for (lp = 0; lp < 5; lp++)
 	{
-		if (i)
-			angle = (i - 1) << 14;
+		if (lp)
+			angle = (lp - 1) << 14;
 		else
 			angle = camera.actual_angle;
 
-		ideals[i].x = camera.target.x - ((distance * phd_sin(angle)) >> 14);
-		ideals[i].z = camera.target.z - ((distance * phd_cos(angle)) >> 14);
-		ideals[i].room_number = camera.target.room_number;
+		ideals[lp].x = camera.target.x - (distance * phd_sin(angle) >> 14);
+		ideals[lp].z = camera.target.z - (distance * phd_cos(angle) >> 14);
+		ideals[lp].room_number = camera.target.room_number;
 
-		if (mgLOS(&camera.target, &ideals[i], 200))
+		if (mgLOS(&camera.target, &ideals[lp], 200))
 		{
-			temp[0].x = ideals[i].x;
-			temp[0].y = ideals[i].y;
-			temp[0].z = ideals[i].z;
-			temp[0].room_number = ideals[i].room_number;
+			temp[0].x = ideals[lp].x;
+			temp[0].y = ideals[lp].y;
+			temp[0].z = ideals[lp].z;
+			temp[0].room_number = ideals[lp].room_number;
 			temp[1].x = camera.pos.x;
 			temp[1].y = camera.pos.y;
 			temp[1].z = camera.pos.z;
 			temp[1].room_number = camera.pos.room_number;
 
-			if (mgLOS(&temp[0], &temp[1], 0) || !i)
+			if (mgLOS(&temp[0], &temp[1], 0) || !lp)
 			{
-				if (!i)
+				if (!lp)
 				{
 					farthestnum = 0;
 					break;
 				}
 
-				dx = SQUARE(camera.pos.x - ideals[i].x);
-				dz = SQUARE(camera.pos.z - ideals[i].z);
+				dx = SQUARE(camera.pos.x - ideals[lp].x);
+				dz = SQUARE(camera.pos.z - ideals[lp].z);
 				dz += dx;
 
 				if (dz < farthest)
 				{
 					farthest = dz;
-					farthestnum = i;
+					farthestnum = lp;
 				}
 			}
 		}
-		else if (!i)
+		else if (!lp)
 		{
-			temp[0].x = ideals[i].x;
-			temp[0].y = ideals[i].y;
-			temp[0].z = ideals[i].z;
-			temp[0].room_number = ideals[i].room_number;
+			temp[0].x = ideals[lp].x;
+			temp[0].y = ideals[lp].y;
+			temp[0].z = ideals[lp].z;
+			temp[0].room_number = ideals[lp].room_number;
 			temp[1].x = camera.pos.x;
 			temp[1].y = camera.pos.y;
 			temp[1].z = camera.pos.z;
@@ -971,11 +966,11 @@ void CombatCamera(ITEM_INFO* item)
 
 			if (mgLOS(&temp[0], &temp[1], 0))
 			{
-				dx = SQUARE(camera.target.x - ideals[i].x);
-				dz = SQUARE(camera.target.z - ideals[i].z);
+				dx = SQUARE(camera.target.x - ideals[lp].x);
+				dz = SQUARE(camera.target.z - ideals[lp].z);
 				dz += dx;
 
-				if (dz > 589824)
+				if (dz > 0x90000)
 				{
 					farthestnum = 0;
 					break;
@@ -1104,7 +1099,7 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 			temp2.z = ideal->z;
 			temp2.room_number = ideal->room_number;
 
-			if (!(mgLOS(&temp2, &temp1, 0)))
+			if (!mgLOS(&temp2, &temp1, 0))
 			{
 				CameraSnaps++;
 
@@ -1162,9 +1157,9 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 		dx = camera.target.x - camera.pos.x;
 		dz = camera.target.z - camera.pos.z;
 		dx = phd_atan(dz, dx);
-		camera.mike_pos.x = (phd_sin(dx) * phd_persp >> 14) + camera.pos.x;
+		camera.mike_pos.x = camera.pos.x + (phd_persp * phd_sin(dx) >> 14);
 		camera.mike_pos.y = camera.pos.y;
-		camera.mike_pos.z = (phd_cos(dx) * phd_persp >> 14) + camera.pos.z;
+		camera.mike_pos.z = camera.pos.z + (phd_persp * phd_cos(dx) >> 14);
 	}
 
 	camera.old_type = camera.type;
@@ -1172,8 +1167,9 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 
 void BinocularCamera(ITEM_INFO* item)
 {
+	FLOOR_INFO* floor;
+	PHD_VECTOR pos;
 	PHD_VECTOR pos1;
-	PHD_VECTOR pos3;
 	PHD_VECTOR Soffset;
 	PHD_VECTOR Eoffset;
 	short* ammo;
@@ -1223,38 +1219,39 @@ void BinocularCamera(ITEM_INFO* item)
 		hyrot = -14560;
 
 	hyrot += lara_item->pos.y_rot;
-	pos1.x = lara_item->pos.x_pos;
-	pos1.y = lara_item->pos.y_pos - 512;
-	pos1.z = lara_item->pos.z_pos;
+	pos.x = lara_item->pos.x_pos;
+	pos.y = lara_item->pos.y_pos - 512;
+	pos.z = lara_item->pos.z_pos;
 	room_number = lara_item->room_number;
-	c = GetCeiling(GetFloor(pos1.x, pos1.y, pos1.z, &room_number), pos1.x, pos1.y, pos1.z);
+	floor = GetFloor(pos.x, pos.y, pos.z, &room_number);
+	c = GetCeiling(floor, pos.x, pos.y, pos.z);
 
-	if (c <= pos1.y - 256)
-		pos1.y -= 256;
+	if (c <= pos.y - 256)
+		pos.y -= 256;
 	else
-		pos1.y += 64;
+		pos.y = c + 64;
 
-	speed = (20736 * phd_cos(hxrot)) >> 14;
-	pos3.x = pos1.x + (phd_sin(hyrot) * speed >> 14);
-	pos3.y = pos1.y - (phd_sin(hxrot) * 20736 >> 14);
-	pos3.z = pos1.z + (phd_cos(hyrot) * speed >> 14);
-	camera.pos.x = pos1.x;
-	camera.pos.y = pos1.y;
-	camera.pos.z = pos1.z;
+	speed = (0x5100 * phd_cos(hxrot)) >> 14;
+	pos1.x = pos.x + (phd_sin(hyrot) * speed >> 14);
+	pos1.y = pos.y - (0x5100 * phd_sin(hxrot) >> 14);
+	pos1.z = pos.z + (phd_cos(hyrot) * speed >> 14);
+	camera.pos.x = pos.x;
+	camera.pos.y = pos.y;
+	camera.pos.z = pos.z;
 	camera.pos.room_number = room_number;
 
 	if (camera.old_type == FIXED_CAMERA)
 	{
-		camera.target.x = pos3.x;
-		camera.target.y = pos3.y;
-		camera.target.z = pos3.z;
+		camera.target.x = pos1.x;
+		camera.target.y = pos1.y;
+		camera.target.z = pos1.z;
 		camera.target.room_number = lara_item->room_number;
 	}
 	else
 	{
-		camera.target.x += (pos3.x - camera.target.x) >> 2;
-		camera.target.y += (pos3.y - camera.target.y) >> 2;
-		camera.target.z += (pos3.z - camera.target.z) >> 2;
+		camera.target.x += (pos1.x - camera.target.x) >> 2;
+		camera.target.y += (pos1.y - camera.target.y) >> 2;
+		camera.target.z += (pos1.z - camera.target.z) >> 2;
 		camera.target.room_number = lara_item->room_number;
 	}
 
@@ -1295,15 +1292,15 @@ void BinocularCamera(ITEM_INFO* item)
 
 	camera.old_type = camera.type;
 
-	if (!(inputBusy & IN_WALK))
-	{
-		BinocStep = 64;
-		pit = 0x10000;
-	}
-	else
+	if (inputBusy & IN_WALK)
 	{
 		BinocStep = 32;
 		pit = 0x8000;
+	}
+	else
+	{
+		BinocStep = 64;
+		pit = 0x10000;
 	}
 
 	if (inputBusy & IN_SPRINT)
@@ -1348,111 +1345,105 @@ void BinocularCamera(ITEM_INFO* item)
 				camera.bounce = 0;
 			}
 		}
-		else
+		else if (lara.gun_type == WEAPON_REVOLVER)
 		{
-			if (lara.gun_type == WEAPON_REVOLVER)
+			Fire = 1;
+			WeaponDelay = 16;
+			savegame.Game.AmmoUsed++;
+
+			if (ammo[0] != -1)
+				ammo[0]--;
+		}
+		else if (lara.gun_type == WEAPON_CROSSBOW)
+		{
+			Fire = 1;
+			WeaponDelay = 32;
+		}
+		else if (lara.hk_type_carried & W_AMMO1)//sniper mode!
+		{
+			WeaponDelay = 12;
+			Fire = 1;
+
+			if (lara.hk_type_carried & W_SILENCER)
+				SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
+			else
 			{
+				SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+				SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
+			}
+
+			if (ammo[0] != -1)
+				ammo[0]--;
+		}
+		else if (lara.hk_type_carried & W_AMMO2)//burst mode!
+		{
+			if (LSHKTimer)
+			{
+				camera.bounce = -16 - (GetRandomControl() & 0x1F);
+
+				if (lara.hk_type_carried & W_SILENCER)
+					SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
+				else
+				{
+					SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+					SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
+				}
+			}
+			else
+			{
+				LSHKShotsFired++;
+
+				if (LSHKShotsFired == 5)
+				{
+					LSHKShotsFired = 0;
+					WeaponDelay = 12;
+				}
+
+				LSHKTimer = 4;
 				Fire = 1;
-				WeaponDelay = 16;
-				savegame.Game.AmmoUsed++;
+
+				if (lara.hk_type_carried & W_SILENCER)
+					SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
+				else
+				{
+					SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+					SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
+				}
 
 				if (ammo[0] != -1)
 					ammo[0]--;
 			}
-			else if (lara.gun_type == WEAPON_CROSSBOW)
+		}
+		else//rapid mode!
+		{
+			if (LSHKTimer)
 			{
-				Fire = 1;
-				WeaponDelay = 32;
+				if (lara.hk_type_carried & W_SILENCER)
+					SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
+				else
+				{
+					SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+					SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
+				}
 			}
 			else
 			{
-				if (lara.hk_type_carried & W_AMMO1)//sniper mode!
+				LSHKTimer = 4;
+				Fire = 1;
+
+				if (lara.hk_type_carried & W_SILENCER)
+					SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
+				else
 				{
-					WeaponDelay = 12;
-					Fire = 1;
-
-					if (lara.hk_type_carried & W_SILENCER)
-						SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-					else
-					{
-						SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
-						SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
-					}
-
-					if (ammo[0] != -1)
-						ammo[0]--;
+					SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
+					SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
 				}
-				else if (lara.hk_type_carried & W_AMMO2)//burst mode!
-				{
-					if (LSHKTimer)
-					{
-						camera.bounce = -16 - (GetRandomControl() & 0x1F);
 
-						if (lara.hk_type_carried & W_SILENCER)
-							SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-						else
-						{
-							SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
-							SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
-						}
-					}
-					else
-					{
-						LSHKShotsFired++;
-
-						if (LSHKShotsFired == 5)
-						{
-							LSHKShotsFired = 0;
-							WeaponDelay = 12;
-						}
-
-						LSHKTimer = 4;
-						Fire = 1;
-
-						if (lara.hk_type_carried & W_SILENCER)
-							SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-						else
-						{
-							SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
-							SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
-						}
-
-						if (ammo[0] != -1)
-							ammo[0]--;
-					}
-				}
-				else//rapid mode!
-				{
-					if (LSHKTimer)
-					{
-						if (lara.hk_type_carried & W_SILENCER)
-							SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-						else
-						{
-							SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
-							SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
-						}
-					}
-					else
-					{
-						LSHKTimer = 4;
-						Fire = 1;
-
-						if (lara.hk_type_carried & W_SILENCER)
-							SoundEffect(SFX_HK_SILENCED, 0, SFX_DEFAULT);
-						else
-						{
-							SoundEffect(SFX_EXPLOSION1, 0, 0x5000800 | SFX_SETPITCH | SFX_SETVOL);
-							SoundEffect(SFX_HK_FIRE, 0, SFX_DEFAULT);
-						}
-
-						if (ammo[0] != -1)
-							ammo[0]--;
-					}
-
-					camera.bounce = -16 - (GetRandomControl() & 0x1F);
-				}
+				if (ammo[0] != -1)
+					ammo[0]--;
 			}
+
+			camera.bounce = -16 - (GetRandomControl() & 0x1F);
 		}
 
 		GetTargetOnLOS(&camera.pos, &camera.target, 1, Fire);
@@ -1510,7 +1501,7 @@ void LookCamera(ITEM_INFO* item)
 	pos1.x = 0;
 	pos1.y = 16;
 	pos1.z = 64;
-	GetLaraJointPos(&pos1, 8);
+	GetLaraJointPos(&pos1, LMX_HEAD);
 	room_number = lara_item->room_number;
 	floor = GetFloor(pos1.x, pos1.y, pos1.z, &room_number);
 	h = GetHeight(floor, pos1.x, pos1.y, pos1.z);
@@ -1521,7 +1512,7 @@ void LookCamera(ITEM_INFO* item)
 		pos1.x = 0;
 		pos1.y = 16;
 		pos1.z = 0;
-		GetLaraJointPos(&pos1, 8);
+		GetLaraJointPos(&pos1, LMX_HEAD);
 		floor = GetFloor(pos1.x, pos1.y, pos1.z, &room_number);
 		h = GetHeight(floor, pos1.x, pos1.y, pos1.z);
 		c = GetCeiling(floor, pos1.x, pos1.y, pos1.z);
@@ -1531,18 +1522,18 @@ void LookCamera(ITEM_INFO* item)
 			pos1.x = 0;
 			pos1.y = 16;
 			pos1.z = -64;
-			GetLaraJointPos(&pos1, 8);
+			GetLaraJointPos(&pos1, LMX_HEAD);
 		}
 	}
 
 	pos2.x = 0;
 	pos2.y = 0;
 	pos2.z = -1024;
-	GetLaraJointPos(&pos2, 8);
+	GetLaraJointPos(&pos2, LMX_HEAD);
 	pos3.x = 0;
 	pos3.y = 0;
 	pos3.z = 2048;
-	GetLaraJointPos(&pos3, 8);
+	GetLaraJointPos(&pos3, LMX_HEAD);
 	wy = pos1.y;
 	wx = pos1.x;
 	wz = pos1.z;

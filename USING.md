@@ -89,10 +89,7 @@ Changes the positions of the bars on the screen.
 - Toggles volumetric fog on and off.
 ![fog](https://user-images.githubusercontent.com/38836940/146662639-09301530-241d-4ffa-88e5-31d6f02a2656.png)
 
-### 12. TR4 Camera:
-- Toggles TR4 camera behavior on and off.
-
-### 13. Bar Mode:
+### 12. Bar Mode:
 Determines the mode of the bars.
 - original: original TR4 bars.
 - TR5: TR5 bar colors.
@@ -100,45 +97,45 @@ Determines the mode of the bars.
 
 # page 2
 
-### 14. Crawl Tilting:
+### 13. Crawl Tilting:
 - Toggles Lara tilting while crawling on sloped surfaces.
 
-### 15. PSX Skies:
+### 14. PSX Skies:
 - Toggles using the PSX sprite for the sky.
 
-### 16. TR4 loadscreens:
+### 15. TR4 loadscreens:
 - Toggles using original picture or new TR4 style loading screens.
 
-### 17. Loadbar style:
+### 16. Loadbar style:
 Determines the style of the loading bar in the loading screens.
 - TR4: big bar, like TR4.
 - TR5: original small TR5 bar.
 
-### 18. mono screen style:
+### 17. mono screen style:
 Determines the style of the inventory/pause menu background.
 - original: The original yellow-ish style.
 - TR4: The TR4 black and white.
 - Clear: Clear game screen as is, no color modification.
 
-### 19. Loading text:
+### 18. Loading text:
 - Toggles the "Loading" text in loading screens.
 Note: TR5 loadbar style will ignore this option and never show the text. This is intentional and will not change.
 
-### 20. Shimmer:
+### 19. Shimmer:
 - Toggles the vertex shimmer effect.
 
-### 21. Distance Fog:
+### 20. Distance Fog:
 - Controls the distance at which vertices start to fade to black.
 Note: this value is in blocks/squares, meaning a value of 12 makes the distance fog start 12 game blocks away from the current camera position.
 
-### 22. ammotype hotkeys:
+### 21. ammotype hotkeys:
 - Toggles the ability to switch ammo types through keyboard hotkeys.
 
-### 23. look transparency:
+### 22. look transparency:
 - Toggles Lara going transparent when looking around.
 
-### 24. static lighting:
+### 23. static lighting:
 - Toggles static lighting.
 
-### 25. UW Effect:
+### 24. UW Effect:
 - Controls the underwater dust effect.

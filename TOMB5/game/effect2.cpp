@@ -39,37 +39,37 @@ void TriggerFlareSparks(long x, long y, long z, long xv, long yv, long zv)
 	dx = lara_item->pos.x_pos - x;
 	dz = lara_item->pos.z_pos - z;
 
-	if (dx >= -0x4000 && dx <= 0x4000 && dz >= -0x4000 && dz <= 0x4000)
-	{
-		rand = GetRandomDraw();
-		sptr = &spark[GetFreeSpark()];
-		sptr->sR = -1;
-		sptr->sG = -1;
-		sptr->sB = -1;
-		sptr->dR = -1;
-		sptr->dG = (rand & 127) + 64;
-		sptr->dB = 192 - sptr->dG;
-		sptr->On = 1;
-		sptr->ColFadeSpeed = 3;
-		sptr->FadeToBlack = 5;
-		sptr->Life = 10;
-		sptr->sLife = 10;
-		sptr->TransType = 2;
-		sptr->Friction = 34;
-		sptr->Scalar = 1;
-		sptr->x = (rand & 7) + x - 3;
-		sptr->y = ((rand >> 3) & 7) + y - 3;
-		sptr->z = ((rand >> 6) & 7) + z - 3;
-		sptr->Xvel = (short)(((rand >> 2) & 0xFF) + xv - 128);
-		sptr->Yvel = (short)(((rand >> 4) & 0xFF) + yv - 128);
-		sptr->Zvel = (short)(((rand >> 6) & 0xFF) + zv - 128);
-		sptr->Flags = 2;
-		sptr->Size = ((rand >> 9) & 3) + 4;
-		sptr->sSize = ((rand >> 9) & 3) + 4;
-		sptr->dSize = ((rand >> 12) & 1) + 1;
-		sptr->MaxYvel = 0;
-		sptr->Gravity = 0;
-	}
+	if (dx < -0x4000 || dx > 0x4000 || dz < -0x4000 || dz > 0x4000)
+		return;
+
+	rand = GetRandomDraw();
+	sptr = &spark[GetFreeSpark()];
+	sptr->sR = 255;
+	sptr->sG = 255;
+	sptr->sB = 255;
+	sptr->dR = 255;
+	sptr->dG = (rand & 0x7F) + 64;
+	sptr->dB = 192 - sptr->dG;
+	sptr->On = 1;
+	sptr->ColFadeSpeed = 3;
+	sptr->FadeToBlack = 5;
+	sptr->Life = 10;
+	sptr->sLife = 10;
+	sptr->TransType = 2;
+	sptr->Friction = 34;
+	sptr->Scalar = 1;
+	sptr->x = (rand & 7) + x - 3;
+	sptr->y = ((rand >> 3) & 7) + y - 3;
+	sptr->z = ((rand >> 6) & 7) + z - 3;
+	sptr->Xvel = short(((rand >> 2) & 0xFF) + xv - 128);
+	sptr->Yvel = short(((rand >> 4) & 0xFF) + yv - 128);
+	sptr->Zvel = short(((rand >> 6) & 0xFF) + zv - 128);
+	sptr->Flags = 2;
+	sptr->Size = ((rand >> 9) & 3) + 4;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = ((rand >> 12) & 1) + 1;
+	sptr->MaxYvel = 0;
+	sptr->Gravity = 0;
 }
 
 void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit)
@@ -102,23 +102,23 @@ void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit)
 
 	if (hit)
 	{
-		sptr->Xvel = (short)((GetRandomControl() & 0xFF) - xv - 128);
-		sptr->Yvel = (short)(-4 - (GetRandomControl() & 3));
-		sptr->Zvel = (short)((GetRandomControl() & 0xFF) - zv - 128);
+		sptr->Xvel = short((GetRandomControl() & 0xFF) - xv - 128);
+		sptr->Yvel = short(-4 - (GetRandomControl() & 3));
+		sptr->Zvel = short((GetRandomControl() & 0xFF) - zv - 128);
 	}
 	else
 	{
 		if (xv)
 			sptr->Xvel = (short)-xv;
 		else
-			sptr->Xvel = (short)((GetRandomControl() & 0xFF) - 128);
+			sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
 
-		sptr->Yvel = (short)(-4 - (GetRandomControl() & 3));
+		sptr->Yvel = -4 - (GetRandomControl() & 3);
 
 		if (zv)
 			sptr->Zvel = (short)-zv;
 		else
-			sptr->Zvel = (short)((GetRandomControl() & 0xFF) - 128);
+			sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	}
 
 	sptr->Friction = 3;
@@ -126,12 +126,12 @@ void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit)
 	if (GetRandomControl() & 1)
 	{
 		sptr->Flags = 538;
-		sptr->RotAng = (short)(GetRandomControl() & 0xFFF);
+		sptr->RotAng = GetRandomControl() & 0xFFF;
 
 		if (GetRandomControl() & 1)
-			sptr->RotAdd = (char)(-16 - (GetRandomControl() & 0xF));
+			sptr->RotAdd = -16 - (GetRandomControl() & 0xF);
 		else
-			sptr->RotAdd = (char)((GetRandomControl() & 0xF) + 16);
+			sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
 	}
 	else
 		sptr->Flags = 522;
@@ -151,9 +151,9 @@ void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit)
 	{
 		sptr->sSize = (uchar)(rand >> 4);
 		sptr->Size = sptr->sSize;
-		sptr->Gravity = (short)(-4 - (GetRandomControl() & 3));
+		sptr->Gravity = -4 - (GetRandomControl() & 3);
 		sptr->dSize = (uchar)rand;
-		sptr->MaxYvel = (char)(-4 - (GetRandomControl() & 3));
+		sptr->MaxYvel = -4 - (GetRandomControl() & 3);
 	}
 }
 
@@ -461,8 +461,7 @@ void ControlEnemyMissile(short fx_number)
 	}
 	else
 	{
-		phd_GetVectorAngles(lara_item->pos.x_pos - fx->pos.x_pos, lara_item->pos.y_pos - fx->pos.y_pos - 256,
-			lara_item->pos.z_pos - fx->pos.z_pos, &angles[0]);
+		phd_GetVectorAngles(lara_item->pos.x_pos - fx->pos.x_pos, lara_item->pos.y_pos - fx->pos.y_pos - 256, lara_item->pos.z_pos - fx->pos.z_pos, angles);
 
 		if (!fx->flag1)
 		{
@@ -504,8 +503,8 @@ void ControlEnemyMissile(short fx_number)
 			else if (ox < -max_turn)
 				ox = -max_turn;
 
-			fx->pos.y_rot += (short)oy;
 			fx->pos.x_rot += (short)ox;
+			fx->pos.y_rot += (short)oy;
 		}
 
 		fx->pos.z_rot += fx->speed << 4;
@@ -933,7 +932,7 @@ void TriggerUnderwaterBlood(long x, long y, long z, long size)
 		ripple++;
 		n++;
 
-		if (n >= 32)
+		if (n >= MAX_RIPPLES)
 			return;
 	}
 
@@ -957,7 +956,7 @@ void SetupRipple(long x, long y, long z, long size, long flags)
 	{
 		num++;
 
-		if (num >= 32)
+		if (num >= MAX_RIPPLES)
 			return;
 	}
 
@@ -1078,7 +1077,7 @@ void UpdateSplashes()
 		}
 	}
 
-	for (int i = 0; i < 32; i++)
+	for (int i = 0; i < MAX_RIPPLES; i++)
 	{
 		ripple = &ripples[i];
 

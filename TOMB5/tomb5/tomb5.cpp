@@ -61,10 +61,6 @@ void init_tomb5_stuff()
 		tomb5.fog = 1;									//on
 		REG_WriteBool(buf, tomb5.fog);
 
-		sprintf(buf, "tr4cam");
-		tomb5.tr4_camera = 0;							//off
-		REG_WriteBool(buf, tomb5.tr4_camera);
-
 		sprintf(buf, "barMode");
 		tomb5.bar_mode = 3;								//PSX
 		REG_WriteLong(buf, tomb5.bar_mode);
@@ -152,9 +148,6 @@ void init_tomb5_stuff()
 		sprintf(buf, "fog");
 		REG_ReadBool(buf, tomb5.fog, 1);
 
-		sprintf(buf, "tr4cam");
-		REG_ReadBool(buf, tomb5.tr4_camera, 0);
-
 		sprintf(buf, "barMode");
 		REG_ReadLong(buf, tomb5.bar_mode, 3);
 
@@ -235,9 +228,6 @@ void save_new_tomb5_settings()
 
 	sprintf(buf, "fog");
 	REG_WriteBool(buf, tomb5.fog);
-
-	sprintf(buf, "tr4cam");
-	REG_WriteBool(buf, tomb5.tr4_camera);
 
 	sprintf(buf, "barMode");
 	REG_WriteLong(buf, tomb5.bar_mode);
