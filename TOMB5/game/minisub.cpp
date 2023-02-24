@@ -150,7 +150,7 @@ void TorpedoControl(short item_number)
 
 	if (item->item_flags[0] == NO_ITEM)
 	{
-		for (counter = (short)level_items, found = 0; counter < 256; counter++)
+		for (counter = (short)level_items, found = 0; counter < MAX_ITEMS; counter++)
 		{
 			chaff = &items[counter];
 
