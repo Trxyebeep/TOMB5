@@ -36,6 +36,8 @@ float f_boo;
 
 float fcossin_tbl[65536];
 
+static D3DMATRIX D3DMW2VMatrix;
+
 float* aMXPtr;
 static float aW2VMx[indices_count];
 float aFMatrixStack[20 * indices_count];
@@ -82,7 +84,7 @@ void AlterFOV(short fov)
 	f_mperspoznear = f_persp / f_mznear;
 }
 
-void aInitMatrix()
+static void aInitMatrix()
 {
 	float ang;
 
@@ -101,14 +103,111 @@ void aSetViewMatrix()
 	DXAttempt(App.dx.lpD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &D3DMView));
 }
 
-void aSetTrans(long x, long y, long z)
+static void aPushMatrix()
+{
+	aMXPtr[indices_count + M00] = aMXPtr[M00];
+	aMXPtr[indices_count + M01] = aMXPtr[M01];
+	aMXPtr[indices_count + M02] = aMXPtr[M02];
+	aMXPtr[indices_count + M03] = aMXPtr[M03];
+	aMXPtr[indices_count + M10] = aMXPtr[M10];
+	aMXPtr[indices_count + M11] = aMXPtr[M11];
+	aMXPtr[indices_count + M12] = aMXPtr[M12];
+	aMXPtr[indices_count + M13] = aMXPtr[M13];
+	aMXPtr[indices_count + M20] = aMXPtr[M20];
+	aMXPtr[indices_count + M21] = aMXPtr[M21];
+	aMXPtr[indices_count + M22] = aMXPtr[M22];
+	aMXPtr[indices_count + M23] = aMXPtr[M23];
+	aMXPtr += indices_count;
+}
+
+void phd_PushMatrix()
+{
+	phd_mxptr[indices_count + M00] = phd_mxptr[M00];
+	phd_mxptr[indices_count + M01] = phd_mxptr[M01];
+	phd_mxptr[indices_count + M02] = phd_mxptr[M02];
+	phd_mxptr[indices_count + M03] = phd_mxptr[M03];
+	phd_mxptr[indices_count + M10] = phd_mxptr[M10];
+	phd_mxptr[indices_count + M11] = phd_mxptr[M11];
+	phd_mxptr[indices_count + M12] = phd_mxptr[M12];
+	phd_mxptr[indices_count + M13] = phd_mxptr[M13];
+	phd_mxptr[indices_count + M20] = phd_mxptr[M20];
+	phd_mxptr[indices_count + M21] = phd_mxptr[M21];
+	phd_mxptr[indices_count + M22] = phd_mxptr[M22];
+	phd_mxptr[indices_count + M23] = phd_mxptr[M23];
+	phd_mxptr += indices_count;
+
+	aPushMatrix();
+}
+
+static void aPushUnitMatrix()
+{
+	aMXPtr += indices_count;
+	aMXPtr[M00] = 1.0F;
+	aMXPtr[M01] = 0;
+	aMXPtr[M02] = 0;
+	aMXPtr[M03] = 0;
+	aMXPtr[M10] = 0;
+	aMXPtr[M11] = 1.0F;
+	aMXPtr[M12] = 0;
+	aMXPtr[M13] = 0;
+	aMXPtr[M20] = 0;
+	aMXPtr[M21] = 0;
+	aMXPtr[M22] = 1.0F;
+	aMXPtr[M23] = 0;
+}
+
+void phd_PushUnitMatrix()
+{
+	phd_mxptr += indices_count;
+	phd_mxptr[M00] = 1 << 14;
+	phd_mxptr[M01] = 0;
+	phd_mxptr[M02] = 0;
+	phd_mxptr[M03] = 0;
+	phd_mxptr[M10] = 0;
+	phd_mxptr[M11] = 1 << 14;
+	phd_mxptr[M12] = 0;
+	phd_mxptr[M13] = 0;
+	phd_mxptr[M20] = 0;
+	phd_mxptr[M21] = 0;
+	phd_mxptr[M22] = 1 << 14;
+	phd_mxptr[M23] = 0;
+
+	aPushUnitMatrix();
+}
+
+static void aSetTrans(long x, long y, long z)
 {
 	aMXPtr[M03] = (float)x;
 	aMXPtr[M13] = (float)y;
 	aMXPtr[M23] = (float)z;
 }
 
-void aTranslateAbs(long x, long y, long z)
+void phd_SetTrans(long x, long y, long z)
+{
+	phd_mxptr[M03] = x << 14;
+	phd_mxptr[M13] = y << 14;
+	phd_mxptr[M23] = z << 14;
+
+	aSetTrans(x, y, z);
+}
+
+static void aTranslateRel(long x, long y, long z)
+{
+	aMXPtr[M03] += x * aMXPtr[M00] + y * aMXPtr[M01] + z * aMXPtr[M02];
+	aMXPtr[M13] += x * aMXPtr[M10] + y * aMXPtr[M11] + z * aMXPtr[M12];
+	aMXPtr[M23] += x * aMXPtr[M20] + y * aMXPtr[M21] + z * aMXPtr[M22];
+}
+
+void phd_TranslateRel(long x, long y, long z)
+{
+	phd_mxptr[M03] += x * phd_mxptr[M00] + y * phd_mxptr[M01] + z * phd_mxptr[M02];
+	phd_mxptr[M13] += x * phd_mxptr[M10] + y * phd_mxptr[M11] + z * phd_mxptr[M12];
+	phd_mxptr[M23] += x * phd_mxptr[M20] + y * phd_mxptr[M21] + z * phd_mxptr[M22];
+
+	aTranslateRel(x, y, z);
+}
+
+static void aTranslateAbs(long x, long y, long z)
 {
 	float fx, fy, fz;
 
@@ -120,37 +219,21 @@ void aTranslateAbs(long x, long y, long z)
 	aMXPtr[M23] = fx * aMXPtr[M20] + fy * aMXPtr[M21] + fz * aMXPtr[M22];
 }
 
-void aUnitMatrixByMat(float* matrix)
+void phd_TranslateAbs(long x, long y, long z)
 {
-	matrix[M00] = 1;
-	matrix[M01] = 0;
-	matrix[M02] = 0;
-	matrix[M03] = 0;
-	matrix[M10] = 0;
-	matrix[M11] = 1;
-	matrix[M12] = 0;
-	matrix[M13] = 0;
-	matrix[M20] = 0;
-	matrix[M21] = 0;
-	matrix[M22] = 1;
-	matrix[M23] = 0;
+	long fx, fy, fz;
+
+	fx = x - w2v_matrix[M03];
+	fy = y - w2v_matrix[M13];
+	fz = z - w2v_matrix[M23];
+	phd_mxptr[M03] = fx * phd_mxptr[M00] + fy * phd_mxptr[M01] + fz * phd_mxptr[M02];
+	phd_mxptr[M13] = fx * phd_mxptr[M10] + fy * phd_mxptr[M11] + fz * phd_mxptr[M12];
+	phd_mxptr[M23] = fx * phd_mxptr[M20] + fy * phd_mxptr[M21] + fz * phd_mxptr[M22];
+
+	aTranslateAbs(x, y, z);
 }
 
-void aPushUnitMatrix()
-{
-	aMXPtr += 12;
-	aUnitMatrixByMat(aMXPtr);
-}
-
-long aTranslateRel(long x, long y, long z)
-{
-	aMXPtr[M03] += x * aMXPtr[M00] + y * aMXPtr[M01] + z * aMXPtr[M02];
-	aMXPtr[M13] += x * aMXPtr[M10] + y * aMXPtr[M11] + z * aMXPtr[M12];
-	aMXPtr[M23] += x * aMXPtr[M20] + y * aMXPtr[M21] + z * aMXPtr[M22];
-	return 1;
-}
-
-void aRotX(short angle)
+static void aRotX(short angle)
 {
 	float sin, cos, mx1, mx2;
 
@@ -174,171 +257,6 @@ void aRotX(short angle)
 		aMXPtr[M21] = mx1;
 		aMXPtr[M22] = mx2;
 	}
-}
-
-void aRotY(short angle)
-{
-	float sin, cos, mx1, mx2;
-
-	if (angle)
-	{
-		sin = fSin(angle);
-		cos = fCos(angle);
-
-		mx1 = cos * aMXPtr[M00] - sin * aMXPtr[M02];
-		mx2 = cos * aMXPtr[M02] + sin * aMXPtr[M00];
-		aMXPtr[M00] = mx1;
-		aMXPtr[M02] = mx2;
-
-		mx1 = cos * aMXPtr[M10] - sin * aMXPtr[M12];
-		mx2 = cos * aMXPtr[M12] + sin * aMXPtr[M10];
-		aMXPtr[M10] = mx1;
-		aMXPtr[M12] = mx2;
-
-		mx1 = cos * aMXPtr[M20] - sin * aMXPtr[M22];
-		mx2 = cos * aMXPtr[M22] + sin * aMXPtr[M20];
-		aMXPtr[M20] = mx1;
-		aMXPtr[M22] = mx2;
-	}
-}
-
-void aRotZ(short angle)
-{
-	float sin, cos, mx1, mx2;
-
-	if (angle)
-	{
-		sin = fSin(angle);
-		cos = fCos(angle);
-
-		mx1 = cos * aMXPtr[M00] + sin * aMXPtr[M01];
-		mx2 = cos * aMXPtr[M01] - sin * aMXPtr[M00];
-		aMXPtr[M00] = mx1;
-		aMXPtr[M01] = mx2;
-
-		mx1 = cos * aMXPtr[M10] + sin * aMXPtr[M11];
-		mx2 = cos * aMXPtr[M11] - sin * aMXPtr[M10];
-		aMXPtr[M10] = mx1;
-		aMXPtr[M11] = mx2;
-
-		mx1= cos * aMXPtr[M20] + sin * aMXPtr[M21];
-		mx2 = cos * aMXPtr[M21] - sin * aMXPtr[M20];;
-		aMXPtr[M20] = mx1;
-		aMXPtr[M21] = mx2;
-	}
-}
-
-void aRotYXZPack(long angles)	//angles is XYZ
-{
-	short angle;
-
-	angle = (angles >> 10) & 0x3FF;//second ten bits, Y
-	angle <<= 6;
-
-	if (angle)
-		aRotY(angle);
-
-	angle = (angles >> 20) & 0x3FF;//first ten bits, X
-	angle <<= 6;
-
-	if (angle)
-		aRotX(angle);
-
-	angle = angles & 0x3FF;//last ten, Z
-	angle <<= 6;
-
-	if (angle)
-		aRotZ(angle);
-}
-
-void aRotYXZ(short y, short x, short z)
-{
-	if (y)
-		aRotY(y);
-
-	if (x)
-		aRotX(x);
-
-	if (z)
-		aRotZ(z);
-}
-
-void phd_PushMatrix()
-{
-	phd_mxptr[indices_count + M00] = phd_mxptr[M00];
-	phd_mxptr[indices_count + M01] = phd_mxptr[M01];
-	phd_mxptr[indices_count + M02] = phd_mxptr[M02];
-	phd_mxptr[indices_count + M03] = phd_mxptr[M03];
-	phd_mxptr[indices_count + M10] = phd_mxptr[M10];
-	phd_mxptr[indices_count + M11] = phd_mxptr[M11];
-	phd_mxptr[indices_count + M12] = phd_mxptr[M12];
-	phd_mxptr[indices_count + M13] = phd_mxptr[M13];
-	phd_mxptr[indices_count + M20] = phd_mxptr[M20];
-	phd_mxptr[indices_count + M21] = phd_mxptr[M21];
-	phd_mxptr[indices_count + M22] = phd_mxptr[M22];
-	phd_mxptr[indices_count + M23] = phd_mxptr[M23];
-	phd_mxptr += 12;
-
-	aMXPtr[indices_count + M00] = aMXPtr[M00];
-	aMXPtr[indices_count + M01] = aMXPtr[M01];
-	aMXPtr[indices_count + M02] = aMXPtr[M02];
-	aMXPtr[indices_count + M03] = aMXPtr[M03];
-	aMXPtr[indices_count + M10] = aMXPtr[M10];
-	aMXPtr[indices_count + M11] = aMXPtr[M11];
-	aMXPtr[indices_count + M12] = aMXPtr[M12];
-	aMXPtr[indices_count + M13] = aMXPtr[M13];
-	aMXPtr[indices_count + M20] = aMXPtr[M20];
-	aMXPtr[indices_count + M21] = aMXPtr[M21];
-	aMXPtr[indices_count + M22] = aMXPtr[M22];
-	aMXPtr[indices_count + M23] = aMXPtr[M23];
-	aMXPtr += 12;
-}
-
-void phd_SetTrans(long x, long y, long z)
-{
-	phd_mxptr[M03] = x << 14;
-	phd_mxptr[M13] = y << 14;
-	phd_mxptr[M23] = z << 14;
-	aSetTrans(x, y, z);
-}
-
-void phd_PushUnitMatrix()
-{
-	aMXPtr += 12;
-	phd_mxptr += 12;
-	phd_mxptr[M00] = 16384;
-	phd_mxptr[M01] = 0;
-	phd_mxptr[M02] = 0;
-	phd_mxptr[M03] = 0;
-	phd_mxptr[M10] = 0;
-	phd_mxptr[M11] = 16384;
-	phd_mxptr[M12] = 0;
-	phd_mxptr[M13] = 0;
-	phd_mxptr[M20] = 0;
-	phd_mxptr[M21] = 0;
-	phd_mxptr[M22] = 16384;
-	phd_mxptr[M23] = 0;
-	aMXPtr[M00] = 1;
-	aMXPtr[M01] = 0;
-	aMXPtr[M02] = 0;
-	aMXPtr[M03] = 0;
-	aMXPtr[M10] = 0;
-	aMXPtr[M11] = 1;
-	aMXPtr[M12] = 0;
-	aMXPtr[M13] = 0;
-	aMXPtr[M20] = 0;
-	aMXPtr[M21] = 0;
-	aMXPtr[M22] = 1;
-	aMXPtr[M23] = 0;
-}
-
-long phd_TranslateRel(long x, long y, long z)
-{
-	phd_mxptr[M03] += x * phd_mxptr[M00] + y * phd_mxptr[M01] + z * phd_mxptr[M02];
-	phd_mxptr[M13] += x * phd_mxptr[M10] + y * phd_mxptr[M11] + z * phd_mxptr[M12];
-	phd_mxptr[M23] += x * phd_mxptr[M20] + y * phd_mxptr[M21] + z * phd_mxptr[M22];
-	aTranslateRel(x, y, z);
-	return 1;
 }
 
 void phd_RotX(short angle)
@@ -369,6 +287,32 @@ void phd_RotX(short angle)
 	aRotX(angle);
 }
 
+static void aRotY(short angle)
+{
+	float sin, cos, mx1, mx2;
+
+	if (angle)
+	{
+		sin = fSin(angle);
+		cos = fCos(angle);
+
+		mx1 = cos * aMXPtr[M00] - sin * aMXPtr[M02];
+		mx2 = cos * aMXPtr[M02] + sin * aMXPtr[M00];
+		aMXPtr[M00] = mx1;
+		aMXPtr[M02] = mx2;
+
+		mx1 = cos * aMXPtr[M10] - sin * aMXPtr[M12];
+		mx2 = cos * aMXPtr[M12] + sin * aMXPtr[M10];
+		aMXPtr[M10] = mx1;
+		aMXPtr[M12] = mx2;
+
+		mx1 = cos * aMXPtr[M20] - sin * aMXPtr[M22];
+		mx2 = cos * aMXPtr[M22] + sin * aMXPtr[M20];
+		aMXPtr[M20] = mx1;
+		aMXPtr[M22] = mx2;
+	}
+}
+
 void phd_RotY(short angle)
 {
 	long sin, cos, mx1, mx2;
@@ -395,6 +339,32 @@ void phd_RotY(short angle)
 	}
 
 	aRotY(angle);
+}
+
+static void aRotZ(short angle)
+{
+	float sin, cos, mx1, mx2;
+
+	if (angle)
+	{
+		sin = fSin(angle);
+		cos = fCos(angle);
+
+		mx1 = cos * aMXPtr[M00] + sin * aMXPtr[M01];
+		mx2 = cos * aMXPtr[M01] - sin * aMXPtr[M00];
+		aMXPtr[M00] = mx1;
+		aMXPtr[M01] = mx2;
+
+		mx1 = cos * aMXPtr[M10] + sin * aMXPtr[M11];
+		mx2 = cos * aMXPtr[M11] - sin * aMXPtr[M10];
+		aMXPtr[M10] = mx1;
+		aMXPtr[M11] = mx2;
+
+		mx1 = cos * aMXPtr[M20] + sin * aMXPtr[M21];
+		mx2 = cos * aMXPtr[M21] - sin * aMXPtr[M20];;
+		aMXPtr[M20] = mx1;
+		aMXPtr[M21] = mx2;
+	}
 }
 
 void phd_RotZ(short angle)
@@ -425,271 +395,42 @@ void phd_RotZ(short angle)
 	aRotZ(angle);
 }
 
-void phd_RotYXZpack(long angles)	//angles is XYZ
-{
-	long sin, cos, mx1, mx2;
-	short angle;
-
-	aRotYXZPack(angles);
-	angle = (angles >> 10) & 0x3FF;//second ten bits, Y
-	angle <<= 6;
-
-	if (angle)
-	{
-		sin = phd_sin(angle);
-		cos = phd_cos(angle);
-
-		mx1 = cos * phd_mxptr[M00] - sin * phd_mxptr[M02];
-		mx2 = cos * phd_mxptr[M02] + sin * phd_mxptr[M00];
-		phd_mxptr[M00] = mx1 >> 14;
-		phd_mxptr[M02] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M10] - sin * phd_mxptr[M12];
-		mx2 = cos * phd_mxptr[M12] + sin * phd_mxptr[M10];
-		phd_mxptr[M10] = mx1 >> 14;
-		phd_mxptr[M12] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M20] - sin * phd_mxptr[M22];
-		mx2 = cos * phd_mxptr[M22] + sin * phd_mxptr[M20];
-		phd_mxptr[M20] = mx1 >> 14;
-		phd_mxptr[M22] = mx2 >> 14;
-	}
-
-	angle = (angles >> 20) & 0x3FF;//firrst ten bits, X
-	angle <<= 6;
-
-	if (angle)
-	{
-		sin = phd_sin(angle);
-		cos = phd_cos(angle);
-
-		mx1 = cos * phd_mxptr[M01] + sin * phd_mxptr[M02];
-		mx2 = cos * phd_mxptr[M02] - sin * phd_mxptr[M01];
-		phd_mxptr[M01] = mx1 >> 14;
-		phd_mxptr[M02] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M11] + sin * phd_mxptr[M12];
-		mx2 = cos * phd_mxptr[M12] - sin * phd_mxptr[M11];
-		phd_mxptr[M11] = mx1 >> 14;
-		phd_mxptr[M12] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M21] + sin * phd_mxptr[M22];
-		mx2 = cos * phd_mxptr[M22] - sin * phd_mxptr[M21];
-		phd_mxptr[M21] = mx1 >> 14;
-		phd_mxptr[M22] = mx2 >> 14;
-	}
-
-	angle = angles & 0x3FF;//last ten, Z
-	angle <<= 6;
-
-	if (angle)
-	{
-		sin = phd_sin(angle);
-		cos = phd_cos(angle);
-
-		mx1 = cos * phd_mxptr[M00] + sin * phd_mxptr[M01];
-		mx2 = cos * phd_mxptr[M01] - sin * phd_mxptr[M00];
-		phd_mxptr[M00] = mx1 >> 14;
-		phd_mxptr[M01] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M10] + sin * phd_mxptr[M11];
-		mx2 = cos * phd_mxptr[M11] - sin * phd_mxptr[M10];
-		phd_mxptr[M10] = mx1 >> 14;
-		phd_mxptr[M11] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M20] + sin * phd_mxptr[M21];
-		mx2 = cos * phd_mxptr[M21] - sin * phd_mxptr[M20];
-		phd_mxptr[M20] = mx1 >> 14;
-		phd_mxptr[M21] = mx2 >> 14;
-	}
-}
-
 void phd_RotYXZ(short y, short x, short z)
 {
-	long sin, cos, mx1, mx2;
-
-	aRotYXZ(y, x, z);
-
 	if (y)
-	{
-		sin = phd_sin(y);
-		cos = phd_cos(y);
-
-		mx1 = cos * phd_mxptr[M00] - sin * phd_mxptr[M02];
-		mx2 = cos * phd_mxptr[M02] + sin * phd_mxptr[M00];
-		phd_mxptr[M00] = mx1 >> 14;
-		phd_mxptr[M02] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M10] - sin * phd_mxptr[M12];
-		mx2 = cos * phd_mxptr[M12] + sin * phd_mxptr[M10];
-		phd_mxptr[M10] = mx1 >> 14;
-		phd_mxptr[M12] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M20] - sin * phd_mxptr[M22];
-		mx2 = cos * phd_mxptr[M22] + sin * phd_mxptr[M20];
-		phd_mxptr[M20] = mx1 >> 14;
-		phd_mxptr[M22] = mx2 >> 14;
-	}
+		phd_RotY(y);
 
 	if (x)
-	{
-		sin = phd_sin(x);
-		cos = phd_cos(x);
-
-		mx1 = cos * phd_mxptr[M01] + sin * phd_mxptr[M02];
-		mx2 = cos * phd_mxptr[M02] - sin * phd_mxptr[M01];
-		phd_mxptr[M01] = mx1 >> 14;
-		phd_mxptr[M02] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M11] + sin * phd_mxptr[M12];
-		mx2 = cos * phd_mxptr[M12] - sin * phd_mxptr[M11];
-		phd_mxptr[M11] = mx1 >> 14;
-		phd_mxptr[M12] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M21] + sin * phd_mxptr[M22];
-		mx2 = cos * phd_mxptr[M22] - sin * phd_mxptr[M21];
-		phd_mxptr[M21] = mx1 >> 14;
-		phd_mxptr[M22] = mx2 >> 14;
-	}
+		phd_RotX(x);
 
 	if (z)
-	{
-		sin = phd_sin(z);
-		cos = phd_cos(z);
-
-		mx1 = cos * phd_mxptr[M00] + sin * phd_mxptr[M01];
-		mx2 = cos * phd_mxptr[M01] - sin * phd_mxptr[M00];
-		phd_mxptr[M00] = mx1 >> 14;
-		phd_mxptr[M01] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M10] + sin * phd_mxptr[M11];
-		mx2 = cos * phd_mxptr[M11] - sin * phd_mxptr[M10];
-		phd_mxptr[M10] = mx1 >> 14;
-		phd_mxptr[M11] = mx2 >> 14;
-
-		mx1 = cos * phd_mxptr[M20] + sin * phd_mxptr[M21];
-		mx2 = cos * phd_mxptr[M21] - sin * phd_mxptr[M20];
-		phd_mxptr[M20] = mx1 >> 14;
-		phd_mxptr[M21] = mx2 >> 14;
-	}
+		phd_RotZ(z);
 }
 
-void phd_TranslateAbs(long x, long y, long z)
+void phd_RotYXZpack(long angles)	//angles is XYZ
 {
-	long fx, fy, fz;
+	short angle;
 
-	aTranslateAbs(x, y, z);
-	fx = x - w2v_matrix[M03];
-	fy = y - w2v_matrix[M13];
-	fz = z - w2v_matrix[M23];
-	phd_mxptr[M03] = fx * phd_mxptr[M00] + fy * phd_mxptr[M01] + fz * phd_mxptr[M02];
-	phd_mxptr[M13] = fx * phd_mxptr[M10] + fy * phd_mxptr[M11] + fz * phd_mxptr[M12];
-	phd_mxptr[M23] = fx * phd_mxptr[M20] + fy * phd_mxptr[M21] + fz * phd_mxptr[M22];
+	angle = (angles >> 10) & 0x3FF;	//second ten bits, Y
+	angle <<= 6;
+
+	if (angle)
+		phd_RotY(angle);
+
+	angle = (angles >> 20) & 0x3FF;	//first ten bits, X
+	angle <<= 6;
+
+	if (angle)
+		phd_RotX(angle);
+
+	angle = angles & 0x3FF;			//last ten, Z
+	angle <<= 6;
+
+	if (angle)
+		phd_RotZ(angle);
 }
 
-void phd_GetVectorAngles(long x, long y, long z, short* angles)
-{
-	short atan;
-
-	angles[0] = (short)phd_atan(z, x);
-
-	while ((short)x != x || (short)y != y || (short)z != z)
-	{
-		x >>= 2;
-		y >>= 2;
-		z >>= 2;
-	}
-
-	atan = (short)phd_atan(phd_sqrt(SQUARE(z) + SQUARE(x)), y);
-
-	if ((y > 0 && atan > 0) || (y < 0 && atan < 0))
-		atan = -atan;
-
-	angles[1] = atan;
-}
-
-void phd_TransposeMatrix()
-{
-	long bak;
-
-	bak = phd_mxptr[M01];
-	phd_mxptr[M01] = phd_mxptr[M10];
-	phd_mxptr[M10] = bak;
-
-	bak = phd_mxptr[M12];
-	phd_mxptr[M12] = phd_mxptr[M21];
-	phd_mxptr[M21] = bak;
-
-	bak = phd_mxptr[M20];
-	phd_mxptr[M20] = phd_mxptr[M21];
-	phd_mxptr[M21] = bak;
-}
-
-void phd_LookAt(long xsrc, long ysrc, long zsrc, long xtar, long ytar, long ztar, short roll)
-{
-	PHD_3DPOS viewPos;
-	long dx, dy, dz;
-	short angles[2];
-
-	phd_GetVectorAngles(xtar - xsrc, ytar - ysrc, ztar - zsrc, angles);
-	viewPos.x_pos = xsrc;
-	viewPos.y_pos = ysrc;
-	viewPos.z_pos = zsrc;
-	viewPos.x_rot = angles[1];
-	viewPos.y_rot = angles[0];
-	viewPos.z_rot = roll;
-	dx = xsrc - xtar;
-	dy = ysrc - ytar;
-	dz = zsrc - ztar;
-	CamRot.x = (mGetAngle(0, 0, (long)phd_sqrt(SQUARE(dx) + SQUARE(dz)), dy) >> 4) & 0xFFF;
-	CamRot.y = (mGetAngle(zsrc, xsrc, ztar, xtar) >> 4) & 0xFFF;
-	CamRot.z = 0;
-	CamPos.x = xsrc;
-	CamPos.y = ysrc;
-	CamPos.z = zsrc;
-	phd_GenerateW2V(&viewPos);
-	S_InitD3DMatrix();
-	aLookAt((float)xsrc, (float)ysrc, (float)zsrc, (float)xtar, (float)ytar, (float)ztar, roll);
-}
-
-void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float ztar, long roll)
-{
-	D3DMATRIX mx;
-
-	aMXPtr = aFMatrixStack;
-	aMXPtr[M00] = (float)phd_mxptr[M00] / 16384;
-	aMXPtr[M01] = (float)phd_mxptr[M01] / 16384;
-	aMXPtr[M02] = (float)phd_mxptr[M02] / 16384;
-	aMXPtr[M10] = (float)phd_mxptr[M10] / 16384;
-	aMXPtr[M11] = (float)phd_mxptr[M11] / 16384;
-	aMXPtr[M12] = (float)phd_mxptr[M12] / 16384;
-	aMXPtr[M20] = (float)phd_mxptr[M20] / 16384;
-	aMXPtr[M21] = (float)phd_mxptr[M21] / 16384;
-	aMXPtr[M22] = (float)phd_mxptr[M22] / 16384;
-	aMXPtr[M03] = xsrc;
-	aMXPtr[M13] = ysrc;
-	aMXPtr[M23] = zsrc;
-	memcpy(aW2VMx, aMXPtr, sizeof(aW2VMx));
-	SetD3DMatrix(&mx, aMXPtr);
-	D3DInvCameraMatrix._11 = mx._11;
-	D3DInvCameraMatrix._12 = mx._21;
-	D3DInvCameraMatrix._13 = mx._31;
-	D3DInvCameraMatrix._14 = mx._41;
-	D3DInvCameraMatrix._21 = mx._12;
-	D3DInvCameraMatrix._22 = mx._22;
-	D3DInvCameraMatrix._23 = mx._32;
-	D3DInvCameraMatrix._24 = mx._42;
-	D3DInvCameraMatrix._31 = mx._13;
-	D3DInvCameraMatrix._32 = mx._23;
-	D3DInvCameraMatrix._33 = mx._33;
-	D3DInvCameraMatrix._34 = mx._43;
-	D3DInvCameraMatrix._41 = mx._14;
-	D3DInvCameraMatrix._42 = mx._24;
-	D3DInvCameraMatrix._43 = mx._34;
-	D3DInvCameraMatrix._44 = mx._44;
-}
-
-void aScaleCurrentMatrix(PHD_VECTOR* vec)
+static void aScaleCurrentMatrix(PHD_VECTOR* vec)
 {
 	float x, y, z;
 
@@ -725,6 +466,212 @@ void ScaleCurrentMatrix(PHD_VECTOR* vec)
 	phd_mxptr[M22] = (phd_mxptr[M22] * vec->z) >> 14;
 
 	aScaleCurrentMatrix(vec);
+}
+
+void phd_GetVectorAngles(long x, long y, long z, short* angles)
+{
+	short atan;
+
+	angles[0] = (short)phd_atan(z, x);
+
+	while ((short)x != x || (short)y != y || (short)z != z)
+	{
+		x >>= 2;
+		y >>= 2;
+		z >>= 2;
+	}
+
+	atan = (short)phd_atan(phd_sqrt(SQUARE(z) + SQUARE(x)), y);
+
+	if ((y > 0 && atan > 0) || (y < 0 && atan < 0))
+		atan = -atan;
+
+	angles[1] = atan;
+}
+
+static void aGenerateW2V(PHD_3DPOS* viewPos)
+{
+	PHD_VECTOR scalar;
+	float sx, cx, sy, cy, sz, cz;
+
+	sx = fSin(viewPos->x_rot);
+	cx = fCos(viewPos->x_rot);
+	sy = fSin(viewPos->y_rot);
+	cy = fCos(viewPos->y_rot);
+	sz = fSin(viewPos->z_rot);
+	cz = fCos(viewPos->z_rot);
+	aMXPtr = aFMatrixStack;
+
+	aW2VMx[M00] = FTRIGMULT3(sx, sy, sz) + FTRIGMULT2(cy, cz);
+	aW2VMx[M01] = FTRIGMULT2(cx, sz);
+	aW2VMx[M02] = FTRIGMULT3(sx, cy, sz) - FTRIGMULT2(sy, cz);
+	aMXPtr[M00] = aW2VMx[M00];
+	aMXPtr[M01] = aW2VMx[M01];
+	aMXPtr[M02] = aW2VMx[M02];
+
+	aW2VMx[M10] = FTRIGMULT3(sx, sy, cz) - FTRIGMULT2(cy, sz);
+	aW2VMx[M11] = FTRIGMULT2(cx, cz);
+	aW2VMx[M12] = FTRIGMULT3(sx, cy, cz) + FTRIGMULT2(sy, sz);
+	aMXPtr[M10] = aW2VMx[M10];
+	aMXPtr[M11] = aW2VMx[M11];
+	aMXPtr[M12] = aW2VMx[M12];
+
+	aW2VMx[M20] = FTRIGMULT2(cx, sy);
+	aW2VMx[M21] = -sx;
+	aW2VMx[M22] = FTRIGMULT2(cx, cy);
+	aMXPtr[M20] = aW2VMx[M20];
+	aMXPtr[M21] = aW2VMx[M21];
+	aMXPtr[M22] = aW2VMx[M22];
+
+	if (lara.dpoisoned != lara.poisoned)
+	{
+		lara.poisoned += (lara.dpoisoned - lara.poisoned) >> 4;
+
+		if (abs(lara.dpoisoned - lara.poisoned) < 16)
+			lara.poisoned = lara.dpoisoned;
+	}
+
+	if (lara.poisoned >= 256)
+	{
+		scalar.x = (lara.poisoned - 256) * ((phd_sin(XSoff1) + phd_sin(XSoff2)) >> 2);
+		scalar.y = (lara.poisoned - 256) * ((phd_sin(YSoff1) + phd_sin(YSoff2)) >> 2);
+		scalar.z = (lara.poisoned - 256) * ((phd_sin(ZSoff1) + phd_sin(ZSoff2)) >> 2);
+
+		if (scalar.x || scalar.y || scalar.z)
+		{
+			scalar.x = (scalar.x >> 12) + 0x4000;
+			scalar.y = (scalar.y >> 12) + 0x4000;
+			scalar.z = (scalar.z >> 12) + 0x4000;
+			ScaleCurrentMatrix(&scalar);
+		}
+	}
+
+	aW2VMx[M03] = (float)viewPos->x_pos;
+	aW2VMx[M13] = (float)viewPos->y_pos;
+	aW2VMx[M23] = (float)viewPos->z_pos;
+	aMXPtr[M03] = aW2VMx[M03];
+	aMXPtr[M13] = aW2VMx[M13];
+	aMXPtr[M23] = aW2VMx[M23];
+
+	aW2VMx[M10] = aMXPtr[M10];
+	aW2VMx[M11] = aMXPtr[M11];
+	aW2VMx[M12] = aMXPtr[M12];
+
+	SetD3DMatrix(&D3DMW2VMatrix, aW2VMx);
+	D3DInvCameraMatrix._11 = D3DMW2VMatrix._11;
+	D3DInvCameraMatrix._12 = D3DMW2VMatrix._21;
+	D3DInvCameraMatrix._13 = D3DMW2VMatrix._31;
+	D3DInvCameraMatrix._14 = D3DMW2VMatrix._41;
+	D3DInvCameraMatrix._21 = D3DMW2VMatrix._12;
+	D3DInvCameraMatrix._22 = D3DMW2VMatrix._22;
+	D3DInvCameraMatrix._23 = D3DMW2VMatrix._32;
+	D3DInvCameraMatrix._24 = D3DMW2VMatrix._42;
+	D3DInvCameraMatrix._31 = D3DMW2VMatrix._13;
+	D3DInvCameraMatrix._32 = D3DMW2VMatrix._23;
+	D3DInvCameraMatrix._33 = D3DMW2VMatrix._33;
+	D3DInvCameraMatrix._34 = D3DMW2VMatrix._43;
+	D3DInvCameraMatrix._41 = D3DMW2VMatrix._14;
+	D3DInvCameraMatrix._42 = D3DMW2VMatrix._24;
+	D3DInvCameraMatrix._43 = D3DMW2VMatrix._34;
+	D3DInvCameraMatrix._44 = D3DMW2VMatrix._44;
+}
+
+void phd_GenerateW2V(PHD_3DPOS* viewPos)
+{
+	PHD_VECTOR scalar;
+	long sx, cx, sy, cy, sz, cz;
+
+	sx = phd_sin(viewPos->x_rot);
+	cx = phd_cos(viewPos->x_rot);
+	sy = phd_sin(viewPos->y_rot);
+	cy = phd_cos(viewPos->y_rot);
+	sz = phd_sin(viewPos->z_rot);
+	cz = phd_cos(viewPos->z_rot);
+	phd_mxptr = matrix_stack;
+
+	w2v_matrix[M00] = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
+	w2v_matrix[M01] = TRIGMULT2(cx, sz);
+	w2v_matrix[M02] = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
+	phd_mxptr[M00] = w2v_matrix[M00];
+	phd_mxptr[M01] = w2v_matrix[M01];
+	phd_mxptr[M02] = w2v_matrix[M02];
+
+	w2v_matrix[M10] = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
+	w2v_matrix[M11] = TRIGMULT2(cx, cz);
+	w2v_matrix[M12] = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
+	phd_mxptr[M10] = w2v_matrix[M10];
+	phd_mxptr[M11] = w2v_matrix[M11];
+	phd_mxptr[M12] = w2v_matrix[M12];
+
+	w2v_matrix[M20] = TRIGMULT2(cx, sy);
+	w2v_matrix[M21] = -sx;
+	w2v_matrix[M22] = TRIGMULT2(cx, cy);
+	phd_mxptr[M20] = w2v_matrix[M20];
+	phd_mxptr[M21] = w2v_matrix[M21];
+	phd_mxptr[M22] = w2v_matrix[M22];
+
+	if (lara.dpoisoned != lara.poisoned)
+	{
+		lara.poisoned += (lara.dpoisoned - lara.poisoned) >> 4;
+
+		if (abs(lara.dpoisoned - lara.poisoned) < 16)
+			lara.poisoned = lara.dpoisoned;
+	}
+
+	if (lara.poisoned >= 256)
+	{
+		scalar.x = (lara.poisoned - 256) * ((phd_sin(XSoff1) + phd_sin(XSoff2)) >> 2);
+		scalar.y = (lara.poisoned - 256) * ((phd_sin(YSoff1) + phd_sin(YSoff2)) >> 2);
+		scalar.z = (lara.poisoned - 256) * ((phd_sin(ZSoff1) + phd_sin(ZSoff2)) >> 2);
+
+		if (scalar.x || scalar.y || scalar.z)
+		{
+			scalar.x = (scalar.x >> 12) + 0x4000;
+			scalar.y = (scalar.y >> 12) + 0x4000;
+			scalar.z = (scalar.z >> 12) + 0x4000;
+			ScaleCurrentMatrix(&scalar);
+		}
+	}
+
+	w2v_matrix[M03] = viewPos->x_pos;;
+	w2v_matrix[M13] = viewPos->y_pos;
+	w2v_matrix[M23] = viewPos->z_pos;
+	phd_mxptr[M03] = w2v_matrix[M03];
+	phd_mxptr[M13] = w2v_matrix[M13];
+	phd_mxptr[M23] = w2v_matrix[M23];
+
+	w2v_matrix[M10] = phd_mxptr[M10];
+	w2v_matrix[M11] = phd_mxptr[M11];
+	w2v_matrix[M12] = phd_mxptr[M12];
+
+	aGenerateW2V(viewPos);
+}
+
+void phd_LookAt(long xsrc, long ysrc, long zsrc, long xtar, long ytar, long ztar, short roll)
+{
+	PHD_3DPOS viewPos;
+	long dx, dy, dz;
+	short angles[2];
+
+	phd_GetVectorAngles(xtar - xsrc, ytar - ysrc, ztar - zsrc, angles);
+	viewPos.x_pos = xsrc;
+	viewPos.y_pos = ysrc;
+	viewPos.z_pos = zsrc;
+	viewPos.x_rot = angles[1];
+	viewPos.y_rot = angles[0];
+	viewPos.z_rot = roll;
+	dx = xsrc - xtar;
+	dy = ysrc - ytar;
+	dz = zsrc - ztar;
+	CamRot.x = (mGetAngle(0, 0, (long)phd_sqrt(SQUARE(dx) + SQUARE(dz)), dy) >> 4) & 0xFFF;
+	CamRot.y = (mGetAngle(zsrc, xsrc, ztar, xtar) >> 4) & 0xFFF;
+	CamRot.z = 0;
+	CamPos.x = xsrc;
+	CamPos.y = ysrc;
+	CamPos.z = zsrc;
+	phd_GenerateW2V(&viewPos);
+	S_InitD3DMatrix();
+	aSetViewMatrix();
 }
 
 void SetupZRange(long znear, long zfar)
@@ -888,76 +835,4 @@ ulong mGetAngle(long x, long z, long x1, long z1)
 		angle = -angle;
 
 	return -angle & 0xFFFF;
-}
-
-void phd_GenerateW2V(PHD_3DPOS* viewPos)
-{
-	PHD_VECTOR scalar;
-	long sx, cx, sy, cy, sz, cz;
-
-	sx = phd_sin(viewPos->x_rot);
-	cx = phd_cos(viewPos->x_rot);
-	sy = phd_sin(viewPos->y_rot);
-	cy = phd_cos(viewPos->y_rot);
-	sz = phd_sin(viewPos->z_rot);
-	cz = phd_cos(viewPos->z_rot);
-	phd_mxptr = matrix_stack;
-
-	w2v_matrix[M00] = TRIGMULT3(sx, sy, sz) + TRIGMULT2(cy, cz);
-	w2v_matrix[M01] = TRIGMULT2(cx, sz);
-	w2v_matrix[M02] = TRIGMULT3(sx, cy, sz) - TRIGMULT2(sy, cz);
-	phd_mxptr[M00] = w2v_matrix[M00];
-	phd_mxptr[M01] = w2v_matrix[M01];
-	phd_mxptr[M02] = w2v_matrix[M02];
-
-	w2v_matrix[M10] = TRIGMULT3(sx, sy, cz) - TRIGMULT2(cy, sz);
-	w2v_matrix[M11] = TRIGMULT2(cx, cz);
-	w2v_matrix[M12] = TRIGMULT3(sx, cy, cz) + TRIGMULT2(sy, sz);
-	phd_mxptr[M10] = w2v_matrix[M10];
-	phd_mxptr[M11] = w2v_matrix[M11];
-	phd_mxptr[M12] = w2v_matrix[M12];
-
-	w2v_matrix[M20] = TRIGMULT2(cx, sy);
-	w2v_matrix[M21] = -sx;
-	w2v_matrix[M22] = TRIGMULT2(cx, cy);
-	phd_mxptr[M20] = w2v_matrix[M20];
-	phd_mxptr[M21] = w2v_matrix[M21];
-	phd_mxptr[M22] = w2v_matrix[M22];
-
-	if (lara.dpoisoned != lara.poisoned)
-	{
-		lara.poisoned += (lara.dpoisoned - lara.poisoned) >> 4;
-
-		if (abs(lara.dpoisoned - lara.poisoned) < 16)
-			lara.poisoned = lara.dpoisoned;
-	}
-
-	if (lara.poisoned >= 256)
-	{
-		scalar.x = (lara.poisoned - 256) * ((phd_sin(XSoff1) + phd_sin(XSoff2)) >> 2);
-		scalar.y = (lara.poisoned - 256) * ((phd_sin(YSoff1) + phd_sin(YSoff2)) >> 2);
-		scalar.z = (lara.poisoned - 256) * ((phd_sin(ZSoff1) + phd_sin(ZSoff2)) >> 2);
-
-		if (scalar.x || scalar.y || scalar.z)
-		{
-			scalar.x = (scalar.x >> 12) + 0x4000;
-			scalar.y = (scalar.y >> 12) + 0x4000;
-			scalar.z = (scalar.z >> 12) + 0x4000;
-			ScaleCurrentMatrix(&scalar);
-		}
-	}
-
-	w2v_matrix[M03] = viewPos->x_pos;;
-	w2v_matrix[M13] = viewPos->y_pos;
-	w2v_matrix[M23] = viewPos->z_pos;
-	phd_mxptr[M03] = w2v_matrix[M03];
-	phd_mxptr[M13] = w2v_matrix[M13];
-	phd_mxptr[M23] = w2v_matrix[M23];
-
-	w2v_matrix[M10] = phd_mxptr[M10];
-	w2v_matrix[M11] = phd_mxptr[M11];
-	w2v_matrix[M12] = phd_mxptr[M12];
-	phd_mxptr[M10] = w2v_matrix[M10];
-	phd_mxptr[M11] = w2v_matrix[M11];
-	phd_mxptr[M12] = w2v_matrix[M12];
 }

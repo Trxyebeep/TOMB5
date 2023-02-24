@@ -491,7 +491,7 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 			else
 				xRot = phd_atan(cos, sin);
 
-			phd_RotX((short)(-xRot >> 1));
+			phd_RotX(short(-xRot >> 1));
 			aSetViewMatrix();
 			phd_PutPolygonsSpcEnvmap(*meshpp, -1);
 			phd_PopMatrix();
@@ -551,6 +551,7 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	phd_bottom = phd_winymax;
 	phd_left = 0;
 	phd_right = phd_winxmax;
+
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
@@ -613,15 +614,9 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	}
 
 	phd_PopMatrix();
-	bLaraUnderWater = LaraNodeUnderwater[8] != 0 ? 8 : -1;
-	phd_PushMatrix();
+
 	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;
-	phd_PopMatrix();
-	phd_left = left;
-	phd_right = right;
-	phd_top = top;
-	phd_bottom = bottom;
-	GlobalAlpha = 0xFF000000;
+
 	obj = &objects[LARA_EXTRA_MESH1];
 	meshpp = &meshes[obj->mesh_index];
 
@@ -638,8 +633,8 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	aMXPtr[M21] = lara_matrices[LMX_TORSO * indices_count + M21];
 	aMXPtr[M22] = lara_matrices[LMX_TORSO * indices_count + M22];
 	aMXPtr[M23] = lara_matrices[LMX_TORSO * indices_count + M23];
-	aTranslateRel(-80, -192, -160);
-	aRotX(subsuit.XRot);
+	phd_TranslateRel(-80, -192, -160);
+	phd_RotX(subsuit.XRot);
 	phd_PutPolygons(*meshpp, -1);
 	phd_PopMatrix();
 
@@ -656,11 +651,18 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	aMXPtr[M21] = lara_matrices[LMX_TORSO * indices_count + M21];
 	aMXPtr[M22] = lara_matrices[LMX_TORSO * indices_count + M22];
 	aMXPtr[M23] = lara_matrices[LMX_TORSO * indices_count + M23];
-	aTranslateRel(80, -192, -160);
-	aRotX(subsuit.XRot);
+	phd_TranslateRel(80, -192, -160);
+	phd_RotX(subsuit.XRot);
 	phd_PutPolygons(*meshpp, -1);
 	phd_PopMatrix();
+
 	bLaraUnderWater = 0;
+
+	phd_left = left;
+	phd_right = right;
+	phd_top = top;
+	phd_bottom = bottom;
+	GlobalAlpha = 0xFF000000;
 }
 
 void DrawLara__6(ITEM_INFO* item, long mirror)
@@ -781,7 +783,7 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 			else
 				xRot = phd_atan(cos, sin);
 
-			phd_RotX((short)(-xRot >> 1));
+			phd_RotX(short(-xRot >> 1));
 			phd_PutPolygonsSpcXLU(*meshpp, -1);
 			phd_PopMatrix();
 		}
