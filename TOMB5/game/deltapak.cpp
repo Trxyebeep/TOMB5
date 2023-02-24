@@ -2047,7 +2047,7 @@ void special4_end()
 
 void handle_cutseq_triggering(long name)
 {
-	long n, goin, fuck;
+	long n, goin;
 
 	if (!cutseq_num)
 		return;
@@ -2172,80 +2172,79 @@ void handle_cutseq_triggering(long name)
 
 		ScreenFadedOut = 0;
 		numnailed = 0;
-		fuck = cutseq_num;
 
-		if (cutseq_control_routines[fuck].end_func)
-			cutseq_control_routines[fuck].end_func();
+		if (cutseq_control_routines[cutseq_num].end_func)
+			cutseq_control_routines[cutseq_num].end_func();
 
 		LHolster = old_lara_LHolster;
 		lara.holster = old_lara_holster;
 
-		if (fuck <= 4)
+		if (cutseq_num <= 4)
 			DelsHandyTeleportLara(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, cutrot << 14);
 
 		cutseq_trig = 0;
 		GLOBAL_playing_cutseq = 0;
 
-		if (!bDoCredits)
+		if (bDoCredits)
 		{
-			if (dels_cutseq_player || fuck == 26 || fuck == 22 || fuck == 5 || fuck == 16 || fuck == 33 || fuck == 44 || fuck == 12)
-			{
-				if (dels_cutseq_player)
-				{
-					reset_flag = 1;
-					dels_cutseq_player = 0;
-				}
-				else
-					gfLevelComplete = gfCurrentLevel + 1;
-
-				gfRequiredStartPos = 0;
-				cutseq_num = 0;
-				GLOBAL_playing_cutseq = 0;
-				cutseq_trig = 0;
-				AlterFOV(GAME_FOV);
-				ScreenFade = 0;
-				dScreenFade = 0;
-				ScreenFadeSpeed = 8;
-				ScreenFadeBack = 0;
-				ScreenFadedOut = 0;
-				ScreenFading = 0;
-				return;
-			}
-
-			finish_cutseq(name);
-			cutseq_num = 0;
-			camera.type = GLOBAL_oldcamtype;
-
-			if (gfCurrentLevel != LVL5_TITLE)
-				SetFadeClip(0, 1);
-
-			AlterFOV(GAME_FOV);
-
-			if (gfCurrentLevel != LVL5_TITLE)
-				S_CDPlay(CurrentAtmosphere, 1);
-
-			IsAtmospherePlaying = 1;
-		}
-		else
-		{
-			switch (fuck)
+			switch (cutseq_num)
 			{
 			case 28:
-				fuck = 29;
+				cutseq_num = 29;
 				break;
 
 			case 29:
-				fuck = 30;
+				cutseq_num = 30;
 				break;
 
 			case 30:
-				fuck = 28;
+				cutseq_num = 28;
 				break;
 			}
 
-			Load_and_Init_Cutseq(fuck);
+			Load_and_Init_Cutseq(cutseq_num);
 			cutseq_trig = 2;
+			return;
 		}
+
+		if (dels_cutseq_player ||
+			cutseq_num == 26 || cutseq_num == 22 || cutseq_num == 5 || cutseq_num == 16 || cutseq_num == 33 || cutseq_num == 44 || cutseq_num == 12)
+		{
+			if (dels_cutseq_player)
+			{
+				reset_flag = 1;
+				dels_cutseq_player = 0;
+			}
+			else
+				gfLevelComplete = gfCurrentLevel + 1;
+
+			gfRequiredStartPos = 0;
+			cutseq_num = 0;
+			GLOBAL_playing_cutseq = 0;
+			cutseq_trig = 0;
+			AlterFOV(GAME_FOV);
+			ScreenFade = 0;
+			dScreenFade = 0;
+			ScreenFadeSpeed = 8;
+			ScreenFadeBack = 0;
+			ScreenFadedOut = 0;
+			ScreenFading = 0;
+			return;
+		}
+
+		finish_cutseq(name);
+		cutseq_num = 0;
+		camera.type = GLOBAL_oldcamtype;
+
+		if (gfCurrentLevel != LVL5_TITLE)
+			SetFadeClip(0, 1);
+
+		AlterFOV(GAME_FOV);
+
+		if (gfCurrentLevel != LVL5_TITLE)
+			S_CDPlay(CurrentAtmosphere, 1);
+
+		IsAtmospherePlaying = 1;
 	}
 }
 
@@ -3602,6 +3601,9 @@ void do_cutseq_skipper_stuff()
 {
 	ITEM_INFO* item;
 	short room_num;
+
+	if (gfCurrentLevel == LVL5_TITLE)
+		return;
 
 	//a bunch of hardcoded bullshit to avoid softlocking..
 
