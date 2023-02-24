@@ -10,7 +10,7 @@
 PHD_VECTOR CamPos;
 SVECTOR CamRot;
 
-float one = 33554432.0F;
+float one = 2048.0F * float(1 << 14);
 float mone = 2048.0F;
 
 float f_centerx;
