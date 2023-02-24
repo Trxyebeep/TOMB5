@@ -404,7 +404,7 @@ struct ROOMLET
 	short padd;
 	float bBox[6];
 	LPDIRECT3DVERTEXBUFFER pVtx;
-	float* pSVtx;
+	float* pSVtx;	//ROOMLET_VERTEX format
 	short* pFac;
 	long* pPrelight;
 };
@@ -1552,6 +1552,17 @@ struct PENDULUM
 	PHD_VECTOR Velocity;
 	long node;
 	ROPE_STRUCT* Rope;
+};
+
+struct ROOMLET_VERTEX
+{
+	float x;
+	float y;
+	float z;
+	float nx;
+	float ny;
+	float nz;
+	long prelight;
 };
 
 struct ACMESHVERTEX
