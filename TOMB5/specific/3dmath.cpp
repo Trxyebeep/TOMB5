@@ -84,14 +84,12 @@ void AlterFOV(short fov)
 
 void aInitMatrix()
 {
-	float* ptr;
 	float ang;
 
 	for (int i = 0; i < 65536; i++)
 	{
-		ptr = &fcossin_tbl[i];
-		ang = i * 0.000095873802F;
-		*ptr = sin(ang);
+		ang = (float)i * float(M_PI * 2.0F / 65536.0F);
+		fcossin_tbl[i] = sin(ang);
 	}
 
 	aMXPtr = aFMatrixStack;
@@ -99,9 +97,6 @@ void aInitMatrix()
 
 void aSetViewMatrix()
 {
-	if (!aMXPtr)
-		return;
-
 	SetD3DMatrix(&D3DMView, aMXPtr);
 	DXAttempt(App.dx.lpD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &D3DMView));
 }
@@ -774,6 +769,7 @@ void InitWindow(long x, long y, long w, long h, long znear, long zfar, long fov,
 	f_top = (float)phd_winymin;
 	f_left = (float)phd_winxmin;
 	phd_mxptr = matrix_stack;
+	aInitMatrix();
 }
 
 long phd_atan(long x, long y)

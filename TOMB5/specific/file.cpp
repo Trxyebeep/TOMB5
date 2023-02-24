@@ -1352,7 +1352,6 @@ unsigned int __stdcall LoadLevel(void* name)
 
 		FileClose(level_fp);
 		aInit();
-		aInitMatrix();
 		ClearFX();
 	}
 
