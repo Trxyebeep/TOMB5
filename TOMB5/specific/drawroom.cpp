@@ -303,11 +303,10 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 	short* clip;
 	static float DistanceFogStart;
 	static float iDistanceFogStart;
-	float zv, zv2, fR, fG, fB, val, val2, val3, fCol;
-	long x, y, z, col, sR, sG, sB, cR, cG, cB, iVal;
+	float zv, zv2, fR, fG, fB, val, val2, val3, intensity;
+	long x, y, z, col, cR, cG, cB, sR, sG, sB;
 	short clipFlag;
-	uchar rnd, absval;
-	uchar flags;
+	uchar flags, rnd, absval;
 	char choppy, shimmer;
 
 	pVtx = (ROOMLET_VERTEX*)verts;
@@ -456,10 +455,10 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			z = long(pos.z / 128.0F);
 			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(x + y + z) & 0x3F].random;
 			choppy = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
-			iVal = -2 * choppy;
-			cR += iVal;
-			cG += iVal;
-			cB += iVal;
+			col = -2 * choppy;
+			cR += col;
+			cG += col;
+			cB += col;
 		}
 		else if (flags & 1)
 		{
@@ -469,10 +468,10 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(x + y + z) & 0x3F].random;
 			shimmer = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
 			absval = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
-			iVal = (shimmer + absval) << 3;
-			cR += iVal;
-			cG += iVal;
-			cB += iVal;
+			col = (shimmer + absval) << 3;
+			cR += col;
+			cG += col;
+			cB += col;
 		}
 		else if (flags & 2)	//special Red Alert! gas rooms wibble (slower and green only)
 		{
@@ -482,8 +481,8 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(x + y + z) & 0x3F].random;
 			shimmer = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].shimmer;
 			absval = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].abs;
-			iVal = (shimmer + absval) << 3;
-			cG += abs(iVal);
+			col = (shimmer + absval) << 3;
+			cG += abs(col);
 		}
 
 		if (stash.z > DistanceFogStart)
@@ -525,7 +524,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			for (int j = 0; j < nRoomletFogBulbs; j++)
 			{
 				bulb = &RoomletFogBulbs[j];
-				fCol = 0;
+				intensity = 0;
 
 				if (stash.z + bulb->rad > 0 && abs(stash.x) - bulb->rad < abs(stash.z) && abs(stash.y) - bulb->rad < abs(stash.z))
 				{
@@ -590,7 +589,21 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 							{
 								val = bulb->sqlen - val3;
 
-								if (val >= bulb->sqrad)
+								if (val < bulb->sqrad)
+								{
+									val3 = sqrtf(bulb->sqrad - val);
+
+									val = val2 - val3;
+									vec2.x = val * vec.x;
+									vec2.y = val * vec.y;
+									vec2.z = val * vec.z;
+
+									val = val2 + val3;
+									vec.x *= val;
+									vec.y *= val;
+									vec.z *= val;
+								}
+								else
 								{
 									vec.x = 0;
 									vec.y = 0;
@@ -599,31 +612,19 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 									vec2.y = 0;
 									vec2.z = 0;
 								}
-								else
-								{
-									val3 = sqrtf(bulb->sqrad - val);
-									val = val2 - val3;
-									vec2.x = val * vec.x;
-									vec2.y = val * vec.y;
-									vec2.z = val * vec.z;
-									val = val2 + val3;
-									vec.x *= val;
-									vec.y *= val;
-									vec.z *= val;
-								}
 							}
 						}
 					}
 
-					fCol = sqrt(SQUARE(vec2.x - vec.x) + SQUARE(vec2.y - vec.y) + SQUARE(vec2.z - vec.z)) * bulb->d;
+					intensity = sqrt(SQUARE(vec2.x - vec.x) + SQUARE(vec2.y - vec.y) + SQUARE(vec2.z - vec.z)) * bulb->d;
 				}
 
-				if (fCol)
+				if (intensity)
 				{
-					col += (long)fCol;
-					sR += long(fCol * bulb->r);
-					sG += long(fCol * bulb->g);
-					sB += long(fCol * bulb->b);
+					col += (long)intensity;
+					sR += long(intensity * bulb->r);
+					sG += long(intensity * bulb->g);
+					sB += long(intensity * bulb->b);
 				}
 			}
 
