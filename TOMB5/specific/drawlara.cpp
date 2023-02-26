@@ -263,7 +263,6 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 		meshpp += 2;
 	}
 
-	aGlobalSkinMesh = 0;
 	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;
 
 	if (!(gfLevelFlags & GF_YOUNGLARA))
@@ -327,6 +326,8 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 	}
 
 	phd_PopMatrix();
+
+	aGlobalSkinMesh = 0;
 	bLaraUnderWater = 0;
 	phd_top = top;
 	phd_bottom = bottom;
@@ -500,7 +501,6 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 		meshpp += 2;
 	}
 
-	aGlobalSkinMesh = 0;
 	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;
 
 	if (!(gfLevelFlags & GF_YOUNGLARA) && lara.back_gun)
@@ -528,6 +528,8 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 	}
 
 	phd_PopMatrix();
+
+	aGlobalSkinMesh = 0;
 	bLaraUnderWater = 0;
 	phd_top = top;
 	phd_bottom = bottom;
