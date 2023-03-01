@@ -450,9 +450,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 		if (CurrentRoomUnderwater)
 		{
-			x = long(pos.x / 64.0F);
-			y = long(pos.y / 64.0F);
-			z = long(pos.z / 128.0F);
+			x = long(pos.x + CurrentRoomPtr->x) >> 6;
+			y = long(pos.y + CurrentRoomPtr->y) >> 6;
+			z = long(pos.z + CurrentRoomPtr->z) >> 7;
 			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(x + y + z) & 0x3F].random;
 			choppy = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
 			col = -2 * choppy;
@@ -462,9 +462,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		}
 		else if (flags & 1)
 		{
-			x = long(pos.x / 64.0F);
-			y = long(pos.y / 64.0F);
-			z = long(pos.z / 128.0F);
+			x = long(pos.x + CurrentRoomPtr->x) >> 6;
+			y = long(pos.y + CurrentRoomPtr->y) >> 6;
+			z = long(pos.z + CurrentRoomPtr->z) >> 7;
 			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(x + y + z) & 0x3F].random;
 			shimmer = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
 			absval = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
@@ -475,9 +475,9 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		}
 		else if (flags & 2)	//special Red Alert! gas rooms wibble (slower and green only)
 		{
-			x = long(pos.x / 64.0F);
-			y = long(pos.y / 64.0F);
-			z = long(pos.z / 128.0F);
+			x = long(pos.x + CurrentRoomPtr->x) >> 6;
+			y = long(pos.y + CurrentRoomPtr->y) >> 6;
+			z = long(pos.z + CurrentRoomPtr->z) >> 7;
 			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(x + y + z) & 0x3F].random;
 			shimmer = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].shimmer;
 			absval = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].abs;
