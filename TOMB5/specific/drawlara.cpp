@@ -17,7 +17,25 @@
 #include "../game/lara2gun.h"
 #include "../tomb5/tomb5.h"
 
-static long lara_mesh_sweetness_table[15] = { 0, 1, 2, 3, 4, 5, 6, 7, 14, 8, 9, 10, 11, 12, 13 };
+static long lara_mesh_sweetness_table[15] =	//LM_ in LMX_ order for drawing
+{
+	LM_HIPS,
+	LM_LTHIGH,
+	LM_LSHIN,
+	LM_LFOOT,
+	LM_RTHIGH,
+	LM_RSHIN,
+	LM_RFOOT,
+	LM_TORSO,
+	LM_HEAD,
+	LM_RINARM,
+	LM_ROUTARM,
+	LM_RHAND,
+	LM_LINARM,
+	LM_LOUTARM,
+	LM_LHAND
+};
+
 static char lara_underwater_skin_sweetness_table[15] = { 0, 2, 3, 0, 5, 6, 7, 9, 10, 11, 12, 13, 14, 8, 0 };
 
 static char NodesToStashToScratch[14][2] =
@@ -847,15 +865,19 @@ void SetLaraUnderwaterNodes()
 		pos.z = 0;
 		GetLaraJointPos(&pos, i);
 
-		if (lara_mesh_sweetness_table[i] == 7)
+		if (lara_mesh_sweetness_table[i] == LM_TORSO)
 			pos.y -= 120;
 
-		if (lara_mesh_sweetness_table[i] == 14)
+		if (lara_mesh_sweetness_table[i] == LM_HEAD)
 			pos.y -= 60;
 
 		room_num = lara_item->room_number;
 		GetFloor(pos.x, pos.y, pos.z, &room_num);
-		LaraNodeUnderwater[i] = room[room_num].flags & ROOM_UNDERWATER;
+
+		if (lara_mesh_sweetness_table[i] == LM_RINARM || lara_mesh_sweetness_table[i] == LM_LINARM)
+			LaraNodeUnderwater[i] = LaraNodeUnderwater[LMX_TORSO];
+		else
+			LaraNodeUnderwater[i] = room[room_num].flags & ROOM_UNDERWATER;
 
 		if (room[room_num].flags & ROOM_UNDERWATER)
 		{
