@@ -394,6 +394,7 @@ void WinClose()
 	DXFreeInfo(&App.DXInfo);
 	DestroyAcceleratorTable(App.hAccel);
 	DXClose();
+	FreeBinkStuff();
 
 	if (!G_dxptr)
 		return;
