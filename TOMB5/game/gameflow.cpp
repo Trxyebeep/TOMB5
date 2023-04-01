@@ -642,13 +642,14 @@ void DoTitle(uchar name, uchar audio)
 	num_fmvs = 0;
 	fmv_to_play[1] = 0;
 	fmv_to_play[0] = 0;
+	init_game_malloc(0);
+	InitialiseFXArray(1);
+	InitialiseLOTarray(1);
 	S_LoadLevelFile(name);
 	GLOBAL_lastinvitem = NO_ITEM;
 	dels_cutseq_player = 0;
 	InitSpotCamSequences();
 	title_controls_locked_out = 0;
-	InitialiseFXArray(1);
-	InitialiseLOTarray(1);
 	InitialisePickUpDisplay();
 	SOUND_Stop();
 	IsAtmospherePlaying = 0;
@@ -772,9 +773,10 @@ void DoLevel(uchar Name, uchar Audio)
 		savegame.Level.Secrets = 0;
 	}
 
-	S_LoadLevelFile(Name);
+	init_game_malloc(0);
 	InitialiseFXArray(1);
 	InitialiseLOTarray(1);
+	S_LoadLevelFile(Name);
 	GlobalSoftReset = 0;
 	InitSpotCamSequences();
 	InitialisePickUpDisplay();

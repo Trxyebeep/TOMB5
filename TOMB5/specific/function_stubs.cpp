@@ -59,9 +59,11 @@ void SeedRandomDraw(long seed)
 	rand_2 = seed;
 }
 
-void init_game_malloc()
+void init_game_malloc(bool alloc)
 {
-	malloc_buffer = (char*)malloc(MALLOC_SIZE);
+	if (alloc)
+		malloc_buffer = (char*)malloc(MALLOC_SIZE);
+
 	malloc_size = MALLOC_SIZE;
 	malloc_ptr = malloc_buffer;
 	malloc_free = MALLOC_SIZE;

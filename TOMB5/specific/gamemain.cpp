@@ -220,7 +220,7 @@ unsigned int __stdcall GameMain(void* ptr)
 bool GameInitialise()
 {
 	Log(2, "GameInitialise");
-	init_game_malloc();
+	init_game_malloc(1);
 	clipflags = (short*)malloc(0x8000);
 	init_water_table();
 	aInitFX();
