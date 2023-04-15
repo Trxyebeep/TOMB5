@@ -2104,8 +2104,12 @@ struct BAT_STRUCT
 
 struct QUAKE_CAM
 {
-	GAME_VECTOR spos;
-	GAME_VECTOR epos;
+	PHD_VECTOR start;
+	PHD_VECTOR end;
+	long start_strength;
+	long end_strength;
+	long dist;
+	long active;
 };
 
 struct LIGHTNING_STRUCT
