@@ -34,7 +34,6 @@
 #include "../game/effect2.h"
 #include "../game/lara.h"
 #include "drawbars.h"
-#include "../game/lot.h"
 #include "../tomb5/tomb5.h"
 
 TEXTURESTRUCT* textinfo;
@@ -380,10 +379,7 @@ void FreeLevel()
 
 	Log(5, "Free Textures");
 	FreeTextures();
-
 	DXFreeSounds();
-	malloc_ptr = malloc_buffer;
-	malloc_free = malloc_size;
 }
 
 bool LoadTextures(long RTPages, long OTPages, long BTPages)
@@ -1218,8 +1214,6 @@ unsigned int __stdcall LoadLevel(void* name)
 
 	Log(5, "Begin LoadLevel");
 	FreeLevel();
-	InitialiseFXArray(1);
-	InitialiseLOTarray(1);
 	nTextures = 1;
 	Textures[0].tex = 0;
 	Textures[0].surface = 0;

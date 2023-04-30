@@ -1,5 +1,64 @@
 # tomb5 changelog
 
+## Unreleased
+
+### Original bug fixes
+
+- Restore support for accented characters in the setup window.
+- Fix VCI headset size/rotation.
+- Fix issues with window creation.
+- Fix vertical text space.
+- Fix keypad scale/position and keypad text positions.
+- Fix cloth and bottle inventory positions.
+- Fix Lara getting stuck in front of some crawlspaces during some crawl animations.
+- Fix the "Close the door quickly!" track not playing in Escape with the Iris.
+- Fix line sparks (like Steel Door welding effects) disapparing.
+- Fix some music tracks cutting off prematurely.
+- Fix title tracks not looping.
+- Fix Labyrinth fishye not covering the entire screen.
+- Fix Lara's holsters and back weapon not getting affected by fog.
+- Fix underwater shimmer discontinuity.
+- Fix upper arm underwater ambience.
+
+### tomb5 bug fixes
+
+- Fix wrecking ball behavior.
+- Fix floor lasers staying on after lara dies.
+- Fix floor lasers sprite UVs.
+- Fix multiple little issues in cutscenes.
+- Fix level select text.
+- Fix level select arrows.
+- Fix the cutscene selector.
+- Fix multiple little issues in the inventory.
+- Fix VCI headset name.
+- Fix "Loading" text position.
+- Fix credit cutscenes.
+
+### tomb5 additions
+
+- Move input to DirectInput8.
+- Improve wrecking ball shadow.
+- Improve the cutscene selector's text positions.
+- Improve the PSX shadow sprite, and make it tilt with the floor.
+- Add new scaling system.
+- Use new scale for bar drawing.
+- Use new scale for lasersight sprite and improve its size.
+- Improve rain scale and restore ripples with rain hits water.
+- Improve underwater dust drawing, and make it customizable.
+- Improve text drawing using the new scale system.
+- Use new scale for title logo drawing.
+- Use new scale for pickup display drawing.
+- Improve inventory item screen positioning.
+- Raise internal memory limit.
+- Rework moon drawing to fix all issues.
+- Remove 16 bit option.
+- Improve drip size, color, and duration.
+- Remove redundant and confusing options.
+- Heavily optimize and greatly reduce memory usage in effect drawing.
+- Move all matrix operations to floats.
+- Stop skipping title cutscenes.
+
+
 ## [3.2.0](https://github.com/Trxyebeep/TOMB5/tree/V3.2.0) (Feb. 4 2023)
 
 ### Original bug fixes

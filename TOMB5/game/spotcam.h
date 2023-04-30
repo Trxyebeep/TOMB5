@@ -29,7 +29,7 @@ enum spotcam_flags
 	SP_TARGETLARA =			(1 << 5),	//overrides the camera target to lara's position
 	SP_SNAPBACK =			(1 << 6),	//?
 	SP_JUMPTO =				(1 << 7),	//cuts to another camera in the same sequence
-	SP_HOLD =				(1 << 8),	//stops moving, or, "holds" the camera for a given time, the "timer" field
+	SP_QUAKE =				(1 << 8),	//quake cam
 	SP_NOBREAK =			(1 << 9),	//don't allow breaking the sequence with the look button
 	SP_NOLARACONTROL =		(1 << 10),	//disable lara control
 	SP_ENABLELARACONTROL =	(1 << 11),	//enable lara control

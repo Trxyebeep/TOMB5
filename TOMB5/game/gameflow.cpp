@@ -8,6 +8,8 @@
 #include "deltapak.h"
 #include "tomb4fx.h"
 #include "control.h"
+#include "items.h"
+#include "lot.h"
 #include "../specific/output.h"
 #include "draw.h"
 #include "../specific/LoadSave.h"
@@ -640,6 +642,9 @@ void DoTitle(uchar name, uchar audio)
 	num_fmvs = 0;
 	fmv_to_play[1] = 0;
 	fmv_to_play[0] = 0;
+	init_game_malloc(0);
+	InitialiseFXArray(1);
+	InitialiseLOTarray(1);
 	S_LoadLevelFile(name);
 	GLOBAL_lastinvitem = NO_ITEM;
 	dels_cutseq_player = 0;
@@ -768,6 +773,9 @@ void DoLevel(uchar Name, uchar Audio)
 		savegame.Level.Secrets = 0;
 	}
 
+	init_game_malloc(0);
+	InitialiseFXArray(1);
+	InitialiseLOTarray(1);
 	S_LoadLevelFile(Name);
 	GlobalSoftReset = 0;
 	InitSpotCamSequences();

@@ -293,60 +293,54 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 {
 	ROOMLET_LIGHT* light;
 	FOGBULB_STRUCT* bulb;
-	FVECTOR xyz;
-	FVECTOR Nxyz;
-	FVECTOR fog_bak;
+	ROOMLET_VERTEX* pVtx;
+	FVECTOR pos;
+	FVECTOR n;
+	FVECTOR lPos;
+	FVECTOR stash;
 	FVECTOR vec;
 	FVECTOR vec2;
-	FVECTOR Lxyz;
 	short* clip;
-	static float DistanceFogStart = 12.0F * 1024.0F;
-	static float iDistanceFogStart = 1.0F / DistanceFogStart;
-	static float DistanceFogEnd = 20.0F * 1024.0F;
-	float num, zbak, zv, zv2, fR, fG, fB, val, val2, val3, fCol;
-	long cam_underwater, wx, wy, wz, prelight, sR, sG, sB, cR, cG, cB, iVal;
+	static float DistanceFogStart;
+	static float iDistanceFogStart;
+	float zv, zv2, fR, fG, fB, val, val2, val3, intensity;
+	long x, y, z, col, cR, cG, cB, sR, sG, sB;
 	short clipFlag;
-	uchar rnd, absval;
-	uchar flags;
+	uchar flags, rnd, absval;
 	char choppy, shimmer;
 
+	pVtx = (ROOMLET_VERTEX*)verts;
 	clip = clipflags;
-	cam_underwater = camera.underwater;
-
-	if (!(App.dx.Flags & 0x80))	//no wibble on software mode
-		cam_underwater = 0;
-
 	DistanceFogStart = tomb5.distance_fog * 1024.0F;
 	iDistanceFogStart = 1.0F / DistanceFogStart;
 
-	num = iDistanceFogStart * 255.0F;
-
 	for (int i = 0; i < nVerts; i++)
 	{
-		xyz.x = verts[0];
-		xyz.y = verts[1];
-		xyz.z = verts[2];
-		Nxyz.x = verts[3];
-		Nxyz.y = verts[4];
-		Nxyz.z = verts[5];
-		verts += 6;
+		pos.x = pVtx->x;
+		pos.y = pVtx->y;
+		pos.z = pVtx->z;
+		n.x = pVtx->nx;
+		n.y = pVtx->ny;
+		n.z = pVtx->nz;
 
 		if (i < nWaterVerts)
 		{
-			wx = long(xyz.x + CurrentRoomPtr->x) >> 6;
-			wy = long(xyz.y + CurrentRoomPtr->y) >> 6;
-			wz = long(xyz.z + CurrentRoomPtr->z) >> 7;
-			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(wx + wy + wz) & 0x3F].random;
-			xyz.y += WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
+			x = long(pos.x + CurrentRoomPtr->x) >> 6;
+			y = long(pos.y + CurrentRoomPtr->y) >> 6;
+			z = long(pos.z + CurrentRoomPtr->z) >> 7;
+			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(x + y + z) & 0x3F].random;
+			pos.y += WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
 		}
 
-		vec.x = xyz.x * D3DMView._11 + xyz.y * D3DMView._21 + xyz.z * D3DMView._31 + D3DMView._41;
-		vec.y = xyz.x * D3DMView._12 + xyz.y * D3DMView._22 + xyz.z * D3DMView._32 + D3DMView._42;
-		vec.z = xyz.x * D3DMView._13 + xyz.y * D3DMView._23 + xyz.z * D3DMView._33 + D3DMView._43;
-		fog_bak.x = vec.x;
-		fog_bak.y = vec.y;
-		fog_bak.z = vec.z;
-		zbak = vec.z;
+		vec.x = pos.x * D3DMView._11 + pos.y * D3DMView._21 + pos.z * D3DMView._31 + D3DMView._41;
+		vec.y = pos.x * D3DMView._12 + pos.y * D3DMView._22 + pos.z * D3DMView._32 + D3DMView._42;
+		vec.z = pos.x * D3DMView._13 + pos.y * D3DMView._23 + pos.z * D3DMView._33 + D3DMView._43;
+
+		//Stash transformed unprojected pos for fog calculation
+		stash.x = vec.x;
+		stash.y = vec.y;
+		stash.z = vec.z;
+
 		aVertexBuffer[i].tu = vec.x;
 		aVertexBuffer[i].tv = vec.y;
 		clipFlag = 0;
@@ -357,7 +351,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		{
 			zv = f_mpersp / vec.z;
 
-			if (cam_underwater)
+			if (camera.underwater)
 			{
 				zv2 = 1.0F / (vec.z / 512.0F);
 				vec.x = vec.x * zv + f_centerx + vert_wibble_table[((wibble + long(zv2 * vec.y)) >> 3) & 0x1F];
@@ -382,13 +376,11 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 				clipFlag += 8;
 		}
 
-		clip[0] = clipFlag;
-		clip++;
+		*clip++ = clipFlag;
 		aVertexBuffer[i].sx = vec.x;
 		aVertexBuffer[i].sy = vec.y;
 		aVertexBuffer[i].sz = vec.z;
-		prelight = *(long*)verts;
-		verts++;
+		col = pVtx->prelight;
 		fR = 0;
 		fG = 0;
 		fB = 0;
@@ -399,28 +391,28 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 		for (int j = 0; j < nLights; j++)
 		{
 			light = &RoomletLights[j];
-			Lxyz.x = xyz.x - light->x;
-			Lxyz.y = xyz.y - light->y;
-			Lxyz.z = xyz.z - light->z;
-			val = SQUARE(Lxyz.x) + SQUARE(Lxyz.y) + SQUARE(Lxyz.z);
+			lPos.x = pos.x - light->x;
+			lPos.y = pos.y - light->y;
+			lPos.z = pos.z - light->z;
+			val = SQUARE(lPos.x) + SQUARE(lPos.y) + SQUARE(lPos.z);
 
 			if (val < light->sqr_falloff)
 			{
 				val = sqrt(val);
 				val2 = light->inv_falloff * (light->falloff - val);
-				Lxyz.x = (Nxyz.x * D3DMView._11 + Nxyz.y * D3DMView._21 + Nxyz.z * D3DMView._31) * (1.0F / val * Lxyz.x);
-				Lxyz.y = (Nxyz.x * D3DMView._12 + Nxyz.y * D3DMView._22 + Nxyz.z * D3DMView._32) * (1.0F / val * Lxyz.y);
-				Lxyz.z = (Nxyz.x * D3DMView._13 + Nxyz.y * D3DMView._23 + Nxyz.z * D3DMView._33) * (1.0F / val * Lxyz.z);
-				val = val2 * (1.0F - (Lxyz.x + Lxyz.y + Lxyz.z));
+				lPos.x = (n.x * D3DMView._11 + n.y * D3DMView._21 + n.z * D3DMView._31) * (1.0F / val * lPos.x);
+				lPos.y = (n.x * D3DMView._12 + n.y * D3DMView._22 + n.z * D3DMView._32) * (1.0F / val * lPos.y);
+				lPos.z = (n.x * D3DMView._13 + n.y * D3DMView._23 + n.z * D3DMView._33) * (1.0F / val * lPos.z);
+				val = val2 * (1.0F - (lPos.x + lPos.y + lPos.z));
 				fR += light->r * val;
 				fG += light->g * val;
 				fB += light->b * val;
 			}
 		}
 
-		fR = CLRR(prelight) + fR * 255.0F;
-		fG = CLRG(prelight) + fG * 255.0F;
-		fB = CLRB(prelight) + fB * 255.0F;
+		fR = CLRR(col) + fR * 255.0F;
+		fG = CLRG(col) + fG * 255.0F;
+		fB = CLRB(col) + fB * 255.0F;
 		cR = (long)fR;
 		cG = (long)fG;
 		cB = (long)fB;
@@ -433,24 +425,24 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 			{
 				if (gfCurrentLevel == LVL5_RED_ALERT)
 				{
-					if (xyz.y != CurrentRoomPtr->minfloor)
+					if (pos.y != CurrentRoomPtr->minfloor)
 						flags |= 2;
 				}
-				else if (!IsMistVert(&xyz) || abs(xyz.y - CurrentRoomPtr->minfloor) > 1536)
+				else if (!IsMistVert(&pos) || abs(pos.y - CurrentRoomPtr->minfloor) > 1536)
 					flags |= 1;
 			}
-			else if (xyz.y == CurrentRoomPtr->minfloor)
+			else if (pos.y == CurrentRoomPtr->minfloor)
 			{
 				if (CurrentRoomPtr->flags & ROOM_MIST)
 				{
-					if (IsMistVert(&xyz))
+					if (IsMistVert(&pos))
 						flags |= 1;
 				}
 				else if (CurrentRoomPtr->flags & ROOM_REFLECT)
 				{
-					if (IsReflectionVert(&xyz))
+					if (IsReflectionVert(&pos))
 						flags |= 1;
-					else if (IsShoreVert(&xyz) || has_water_neighbor)
+					else if (IsShoreVert(&pos) || has_water_neighbor)
 						flags |= 1;
 				}
 			}
@@ -458,44 +450,44 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 		if (CurrentRoomUnderwater)
 		{
-			wx = long(xyz.x / 64.0F);
-			wy = long(xyz.y / 64.0F);
-			wz = long(xyz.z / 128.0F);
-			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(wx + wy + wz) & 0x3F].random;
+			x = long(pos.x + CurrentRoomPtr->x) >> 6;
+			y = long(pos.y + CurrentRoomPtr->y) >> 6;
+			z = long(pos.z + CurrentRoomPtr->z) >> 7;
+			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(x + y + z) & 0x3F].random;
 			choppy = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].choppy;
-			iVal = -2 * choppy;
-			cR += iVal;
-			cG += iVal;
-			cB += iVal;
+			col = -2 * choppy;
+			cR += col;
+			cG += col;
+			cB += col;
 		}
 		else if (flags & 1)
 		{
-			wx = long(xyz.x / 64.0F);
-			wy = long(xyz.y / 64.0F);
-			wz = long(xyz.z / 128.0F);
-			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(wx + wy + wz) & 0x3F].random;
+			x = long(pos.x + CurrentRoomPtr->x) >> 6;
+			y = long(pos.y + CurrentRoomPtr->y) >> 6;
+			z = long(pos.z + CurrentRoomPtr->z) >> 7;
+			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(x + y + z) & 0x3F].random;
 			shimmer = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].shimmer;
 			absval = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 2) + rnd) & 0x3F].abs;
-			iVal = (shimmer + absval) << 3;
-			cR += iVal;
-			cG += iVal;
-			cB += iVal;
+			col = (shimmer + absval) << 3;
+			cR += col;
+			cG += col;
+			cB += col;
 		}
 		else if (flags & 2)	//special Red Alert! gas rooms wibble (slower and green only)
 		{
-			wx = long(xyz.x / 64.0F);
-			wy = long(xyz.y / 64.0F);
-			wz = long(xyz.z / 128.0F);
-			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(wx + wy + wz) & 0x3F].random;
+			x = long(pos.x + CurrentRoomPtr->x) >> 6;
+			y = long(pos.y + CurrentRoomPtr->y) >> 6;
+			z = long(pos.z + CurrentRoomPtr->z) >> 7;
+			rnd = WaterTable[CurrentRoomPtr->MeshEffect][(x + y + z) & 0x3F].random;
 			shimmer = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].shimmer;
 			absval = WaterTable[CurrentRoomPtr->MeshEffect][((wibble >> 3) + rnd) & 0x3F].abs;
-			iVal = (shimmer + absval) << 3;
-			cG += abs(iVal);
+			col = (shimmer + absval) << 3;
+			cG += abs(col);
 		}
 
-		if (zbak > DistanceFogStart)
+		if (stash.z > DistanceFogStart)
 		{
-			val = (zbak - DistanceFogStart) * num;
+			val = (stash.z - DistanceFogStart) * (iDistanceFogStart * 255.0F);
 			cR -= (long)val;
 			cG -= (long)val;
 			cB -= (long)val;
@@ -527,119 +519,118 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 		if (nRoomletFogBulbs)
 		{
-			prelight = 0;
+			col = 0;
 
 			for (int j = 0; j < nRoomletFogBulbs; j++)
 			{
 				bulb = &RoomletFogBulbs[j];
-				fCol = 0;
+				intensity = 0;
 
-				if (fog_bak.z + bulb->rad > 0)
+				if (stash.z + bulb->rad > 0 && abs(stash.x) - bulb->rad < abs(stash.z) && abs(stash.y) - bulb->rad < abs(stash.z))
 				{
-					if (fabs(fog_bak.x) - bulb->rad < fabs(fog_bak.z) && fabs(fog_bak.y) - bulb->rad < fabs(fog_bak.z))
+					vec.x = 0;
+					vec.y = 0;
+					vec.z = 0;
+					vec2.x = 0;
+					vec2.y = 0;
+					vec2.z = 0;
+					val = SQUARE(bulb->pos.x - stash.x) + SQUARE(bulb->pos.y - stash.y) + SQUARE(bulb->pos.z - stash.z);
+
+					if (bulb->sqlen < bulb->sqrad)
 					{
-						vec.x = 0;
-						vec.y = 0;
-						vec.z = 0;
-						vec2.x = 0;
-						vec2.y = 0;
-						vec2.z = 0;
-						val = SQUARE(bulb->pos.x - fog_bak.x) + SQUARE(bulb->pos.y - fog_bak.y) + SQUARE(bulb->pos.z - fog_bak.z);
-
-						if (bulb->sqlen >= bulb->sqrad)
+						if (val < bulb->sqrad)
 						{
-							if (val >= bulb->sqrad)
-							{
-								val = SQUARE(fog_bak.x) + SQUARE(fog_bak.y) + SQUARE(fog_bak.z);
-								val2 = 1.0F / sqrt(val);
-								vec.x = val2 * fog_bak.x;
-								vec.y = val2 * fog_bak.y;
-								vec.z = val2 * fog_bak.z;
-								val2 = bulb->pos.x * vec.x + bulb->pos.y * vec.y + bulb->pos.z * vec.z;
-
-								if (val2 > 0)
-								{
-									val3 = SQUARE(val2);
-
-									if (val > val3)
-									{
-										val = bulb->sqlen - val3;
-
-										if (val >= bulb->sqrad)
-										{
-											vec.x = 0;
-											vec.y = 0;
-											vec.z = 0;
-											vec2.x = 0;
-											vec2.y = 0;
-											vec2.z = 0;
-										}
-										else
-										{
-											val3 = sqrtf(bulb->sqrad - val);
-											val = val2 - val3;
-											vec2.x = val * vec.x;
-											vec2.y = val * vec.y;
-											vec2.z = val * vec.z;
-											val = val2 + val3;
-											vec.x *= val;
-											vec.y *= val;
-											vec.z *= val;
-										}
-									}
-								}
-							}
-							else
-							{
-								vec2.x = fog_bak.x;
-								vec2.y = fog_bak.y;
-								vec2.z = fog_bak.z;
-								val = 1.0F / sqrt(SQUARE(fog_bak.x) + SQUARE(fog_bak.y) + SQUARE(fog_bak.z));
-								vec.x = val * fog_bak.x;
-								vec.y = val * fog_bak.y;
-								vec.z = val * fog_bak.z;
-								val2 = bulb->pos.x * vec.x + bulb->pos.y * vec.y + bulb->pos.z * vec.z;
-								val = val2 - sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
-								vec.x *= val;
-								vec.y *= val;
-								vec.z *= val;
-							}
+							vec2.x = stash.x;
+							vec2.y = stash.y;
+							vec2.z = stash.z;
 						}
-						else if (val >= bulb->sqrad)
+						else
 						{
-							val = 1.0F / sqrt(SQUARE(fog_bak.x) + SQUARE(fog_bak.y) + SQUARE(fog_bak.z));
-							vec2.x = val * fog_bak.x;
-							vec2.y = val * fog_bak.y;
-							vec2.z = val * fog_bak.z;
+							val = 1.0F / sqrt(SQUARE(stash.x) + SQUARE(stash.y) + SQUARE(stash.z));
+							vec2.x = val * stash.x;
+							vec2.y = val * stash.y;
+							vec2.z = val * stash.z;
 							val2 = bulb->pos.x * vec2.x + bulb->pos.y * vec2.y + bulb->pos.z * vec2.z;
 							val = val2 + sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
 							vec2.x *= val;
 							vec2.y *= val;
 							vec2.z *= val;
 						}
-						else
-						{
-							vec2.x = fog_bak.x;
-							vec2.y = fog_bak.y;
-							vec2.z = fog_bak.z;
-						}
-
-						fCol = sqrt(SQUARE(vec2.x - vec.x) + SQUARE(vec2.y - vec.y) + SQUARE(vec2.z - vec.z)) * bulb->d;
 					}
+					else if (val < bulb->sqrad)
+					{
+						vec2.x = stash.x;
+						vec2.y = stash.y;
+						vec2.z = stash.z;
+						val = 1.0F / sqrt(SQUARE(stash.x) + SQUARE(stash.y) + SQUARE(stash.z));
+						vec.x = val * stash.x;
+						vec.y = val * stash.y;
+						vec.z = val * stash.z;
+						val2 = bulb->pos.x * vec.x + bulb->pos.y * vec.y + bulb->pos.z * vec.z;
+						val = val2 - sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
+						vec.x *= val;
+						vec.y *= val;
+						vec.z *= val;
+					}
+					else
+					{
+						val = SQUARE(stash.x) + SQUARE(stash.y) + SQUARE(stash.z);
+						val2 = 1.0F / sqrt(val);
+						vec.x = val2 * stash.x;
+						vec.y = val2 * stash.y;
+						vec.z = val2 * stash.z;
+						val2 = bulb->pos.x * vec.x + bulb->pos.y * vec.y + bulb->pos.z * vec.z;
+
+						if (val2 > 0)
+						{
+							val3 = SQUARE(val2);
+
+							if (val > val3)
+							{
+								val = bulb->sqlen - val3;
+
+								if (val < bulb->sqrad)
+								{
+									val3 = sqrtf(bulb->sqrad - val);
+
+									val = val2 - val3;
+									vec2.x = val * vec.x;
+									vec2.y = val * vec.y;
+									vec2.z = val * vec.z;
+
+									val = val2 + val3;
+									vec.x *= val;
+									vec.y *= val;
+									vec.z *= val;
+								}
+								else
+								{
+									vec.x = 0;
+									vec.y = 0;
+									vec.z = 0;
+									vec2.x = 0;
+									vec2.y = 0;
+									vec2.z = 0;
+								}
+							}
+						}
+					}
+
+					intensity = sqrt(SQUARE(vec2.x - vec.x) + SQUARE(vec2.y - vec.y) + SQUARE(vec2.z - vec.z)) * bulb->d;
 				}
 
-				if (fCol)
+				if (intensity)
 				{
-					prelight += (long)fCol;
-					sR += (long)(fCol * bulb->r);
-					sG += (long)(fCol * bulb->g);
-					sB += (long)(fCol * bulb->b);
+					col += (long)intensity;
+					sR += long(intensity * bulb->r);
+					sG += long(intensity * bulb->g);
+					sB += long(intensity * bulb->b);
 				}
 			}
 
-			cR -= prelight;
-			cG -= prelight;
-			cB -= prelight;
+			cR -= col;
+			cG -= col;
+			cB -= col;
 		}
 
 		if (sR > 255)
@@ -674,6 +665,7 @@ void aRoomletTransformLight(float* verts, long nVerts, long nLights, long nWater
 
 		aVertexBuffer[i].color = RGBA(cR, cG, cB, 255);
 		aVertexBuffer[i].specular = RGBA(sR, sG, sB, 255);
+		pVtx++;
 	}
 }
 

@@ -2,40 +2,27 @@
 #include "../global/types.h"
 
 void AlterFOV(short fov);
-void aInitMatrix();
 void aSetViewMatrix();
-void aSetTrans(long x, long y, long z);
-void aTranslateAbs(long x, long y, long z);
-void aUnitMatrixByMat(float* matrix);
-void aPushUnitMatrix();
-long aTranslateRel(long x, long y, long z);
-void aRotX(short angle);
-void aRotY(short angle);
-void aRotZ(short angle);
-void aRotYXZPack(long angles);
-void aRotYXZ(short y, short x, short z);
 void phd_PushMatrix();
-void phd_SetTrans(long x, long y, long z);
 void phd_PushUnitMatrix();
-long phd_TranslateRel(long x, long y, long z);
+void phd_SetTrans(long x, long y, long z);
+void phd_TranslateRel(long x, long y, long z);
+void phd_TranslateAbs(long x, long y, long z);
 void phd_RotX(short angle);
 void phd_RotY(short angle);
 void phd_RotZ(short angle);
-void phd_RotYXZpack(long angles);
 void phd_RotYXZ(short y, short x, short z);
-void phd_TranslateAbs(long x, long y, long z);
-void phd_GetVectorAngles(long x, long y, long z, short* angles);
-void phd_TransposeMatrix();
-void phd_LookAt(long xsrc, long ysrc, long zsec, long xtar, long ytar, long ztar, short roll);
-void aLookAt(float xsrc, float ysrc, float zsrc, float xtar, float ytar, float ztar, long roll);
-void aScaleCurrentMatrix(PHD_VECTOR* vec);
+void phd_RotYXZpack(long angles);
 void ScaleCurrentMatrix(PHD_VECTOR* vec);
+void phd_GetVectorAngles(long x, long y, long z, short* angles);
+void phd_GenerateW2V(PHD_3DPOS* viewPos);
+void phd_LookAt(long xsrc, long ysrc, long zsec, long xtar, long ytar, long ztar, short roll);
+
 void SetupZRange(long znear, long zfar);
 void InitWindow(long x, long y, long w, long h, long znear, long zfar, long fov, long a, long b);
 long phd_atan(long x, long y);
 ulong phd_sqrt(ulong num);
 ulong mGetAngle(long x, long z, long x1, long z1);
-void phd_GenerateW2V(PHD_3DPOS* viewPos);
 
 extern PHD_VECTOR CamPos;
 extern SVECTOR CamRot;

@@ -66,31 +66,25 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 	SUNLIGHT_STRUCT* sun;
 	SPOTLIGHT_STRUCT* spot;
 	FOGBULB_STRUCT* bulb;
+	FVECTOR pos;
+	FVECTOR stash;
 	FVECTOR vec;
 	FVECTOR vec2;
-	FVECTOR vec3;
-	FVECTOR vec4;
 	short* clip;
-	float fR, fG, fB, val, val2, val3, zv, fCol, fCol2;
+	float fR, fG, fB, val, val2, val3, zv, intensity;
 	static float DistanceFogStart, iDistanceFogStart;
-	float fNum, fZ;
-	long sR, sG, sB, cR, cG, cB;
+	long cR, cG, cB, sR, sG, sB, col;
 	short clipFlag;
 
 	clip = clipflags;
 	DistanceFogStart = tomb5.distance_fog * 1024.0F;
 	iDistanceFogStart = 1.0F / DistanceFogStart;
-	fNum = iDistanceFogStart * 255.0F;
 
 	for (int i = 0; i < mesh->nVerts; i++)
 	{
-		sR = 0;
-		sG = 0;
-		sB = 0;
-		vec.x = (mesh->aVtx[i].x * D3DMView._11) + (mesh->aVtx[i].y * D3DMView._21) + (mesh->aVtx[i].z * D3DMView._31) + D3DMView._41;
-		vec.y = (mesh->aVtx[i].x * D3DMView._12) + (mesh->aVtx[i].y * D3DMView._22) + (mesh->aVtx[i].z * D3DMView._32) + D3DMView._42;
-		vec.z = (mesh->aVtx[i].x * D3DMView._13) + (mesh->aVtx[i].y * D3DMView._23) + (mesh->aVtx[i].z * D3DMView._33) + D3DMView._43;
-		fZ = vec.z;
+		pos.x = mesh->aVtx[i].x * D3DMView._11 + mesh->aVtx[i].y * D3DMView._21 + mesh->aVtx[i].z * D3DMView._31 + D3DMView._41;
+		pos.y = mesh->aVtx[i].x * D3DMView._12 + mesh->aVtx[i].y * D3DMView._22 + mesh->aVtx[i].z * D3DMView._32 + D3DMView._42;
+		pos.z = mesh->aVtx[i].x * D3DMView._13 + mesh->aVtx[i].y * D3DMView._23 + mesh->aVtx[i].z * D3DMView._33 + D3DMView._43;
 
 		if (TotalNumLights)
 		{
@@ -165,13 +159,17 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 			cB = aAmbientB;
 		}
 
-		if (fZ > DistanceFogStart)
+		if (pos.z > DistanceFogStart)
 		{
-			val = fNum * (fZ - DistanceFogStart);
+			val = (pos.z - DistanceFogStart) * (iDistanceFogStart * 255.0F);
 			cR -= (long)val;
 			cG -= (long)val;
 			cB -= (long)val;
 		}
+
+		sR = 0;
+		sG = 0;
+		sB = 0;
 
 		if (cR - 128 <= 0)
 			cR <<= 1;
@@ -197,154 +195,150 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 			cB = 255;
 		}
 
-		vec2.x = vec.x;
-		vec2.y = vec.y;
-		vec2.z = vec.z;
-		aVertexBuffer[i].tu = vec.x;
-		aVertexBuffer[i].tv = vec.y;
+		stash.x = pos.x;
+		stash.y = pos.y;
+		stash.z = pos.z;
+		aVertexBuffer[i].tu = pos.x;
+		aVertexBuffer[i].tv = pos.y;
 		clipFlag = 0;
 
-		if (vec.z < f_mznear)
+		if (pos.z < f_mznear)
 			clipFlag = -128;
 		else
 		{
-			zv = f_mpersp / vec.z;
-			vec.x = vec.x * zv + f_centerx;
-			vec.y = vec.y * zv + f_centery;
+			zv = f_mpersp / pos.z;
+			pos.x = pos.x * zv + f_centerx;
+			pos.y = pos.y * zv + f_centery;
 			aVertexBuffer[i].rhw = f_moneopersp * zv;
 
-			if (vec.x < clip_left)
+			if (pos.x < clip_left)
 				clipFlag++;
-			else if (vec.x > clip_right)
+			else if (pos.x > clip_right)
 				clipFlag += 2;
 
-			if (vec.y < clip_top)
+			if (pos.y < clip_top)
 				clipFlag += 4;
-			else if (vec.y > clip_bottom)
+			else if (pos.y > clip_bottom)
 				clipFlag += 8;
 		}
 
-		clip[0] = clipFlag;
-		clip++;
+		*clip++ = clipFlag;
 
-		aVertexBuffer[i].sx = vec.x;
-		aVertexBuffer[i].sy = vec.y;
-		aVertexBuffer[i].sz = vec.z;
-		fCol2 = 0;
+		aVertexBuffer[i].sx = pos.x;
+		aVertexBuffer[i].sy = pos.y;
+		aVertexBuffer[i].sz = pos.z;
+		col = 0;
 
 		if (NumFogBulbs)
 		{
 			for (int j = 0; j < NumFogBulbs; j++)
 			{
 				bulb = &FogBulbs[j];
-				fCol = 0;
+				intensity = 0;
 
-				if (bulb->rad + vec2.z > 0)
+				if (bulb->rad + stash.z > 0 && fabs(stash.x) - bulb->rad < fabs(stash.z) && fabs(stash.y) - bulb->rad < fabs(stash.z))
 				{
-					if (fabs(vec2.x) - bulb->rad < fabs(vec2.z) && fabs(vec2.y) - bulb->rad < fabs(vec2.z))
+					vec.x = 0;
+					vec.y = 0;
+					vec.z = 0;
+					vec2.x = 0;
+					vec2.y = 0;
+					vec2.z = 0;
+					val = SQUARE(bulb->pos.x - stash.x) + SQUARE(bulb->pos.y - stash.y) + SQUARE(bulb->pos.z - stash.z);
+
+					if (bulb->sqlen < bulb->sqrad)
 					{
-						vec3.x = 0;
-						vec3.y = 0;
-						vec3.z = 0;
-						vec4.x = 0;
-						vec4.y = 0;
-						vec4.z = 0;
-						val = SQUARE(bulb->pos.x - vec2.x) + SQUARE(bulb->pos.y - vec2.y) + SQUARE(bulb->pos.z - vec2.z);
-
-						if (bulb->sqlen >= bulb->sqrad)
+						if (val < bulb->sqrad)
 						{
-							if (val >= bulb->sqrad)
-							{
-								val = SQUARE(vec2.z) + SQUARE(vec2.y) + SQUARE(vec2.x);
-								val2 = 1.0F / sqrt(val);
-								vec3.x = val2 * vec2.x;
-								vec3.y = val2 * vec2.y;
-								vec3.z = val2 * vec2.z;
-								val2 = bulb->pos.x * vec3.x + bulb->pos.y * vec3.y + bulb->pos.z * vec3.z;
-
-								if (val2 > 0)
-								{
-									val3 = SQUARE(val2);
-
-									if (val > val3)
-									{
-										val = bulb->sqlen - val3;
-
-										if (val >= bulb->sqrad)
-										{
-											vec3.x = 0;
-											vec3.y = 0;
-											vec3.z = 0;
-											vec4.x = 0;
-											vec4.y = 0;
-											vec4.z = 0;
-										}
-										else
-										{
-											val3 = sqrtf(bulb->sqrad - val);
-											val = val2 - val3;
-											vec4.x = val * vec3.x;
-											vec4.y = val * vec3.y;
-											vec4.z = val * vec3.z;
-											val = val2 + val3;
-											vec3.x *= val;
-											vec3.y *= val;
-											vec3.z *= val;
-										}
-									}
-								}
-							}
-							else
-							{
-								vec4.z = vec2.z;
-								vec4.x = vec2.x;
-								vec4.y = vec2.y;
-								val = 1.0F / sqrt(SQUARE(vec2.z) + SQUARE(vec2.y) + SQUARE(vec2.x));
-								vec3.x = val * vec2.x;
-								vec3.y = val * vec2.y;
-								vec3.z = val * vec2.z;
-								val2 = vec3.x * bulb->pos.x + vec3.y * bulb->pos.y + vec3.z * bulb->pos.z;
-								val = val2 - sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
-								vec3.x *= val;
-								vec3.y *= val;
-								vec3.z *= val;
-							}
-						}
-						else if (val >= bulb->sqrad)
-						{
-							val = 1.0F / sqrt(SQUARE(vec2.z) + SQUARE(vec2.y) + SQUARE(vec2.x));
-							vec4.x = val * vec2.x;
-							vec4.y = val * vec2.y;
-							vec4.z = val * vec2.z;
-							val2 = vec4.x * bulb->pos.x + vec4.y * bulb->pos.y + vec4.z * bulb->pos.z;
-							val = val2 + sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
-							vec4.x *= val;
-							vec4.y *= val;
-							vec4.z *= val;
+							vec2.x = stash.x;
+							vec2.y = stash.y;
+							vec2.z = stash.z;
 						}
 						else
 						{
-							vec4.x = vec2.x;
-							vec4.y = vec2.y;
-							vec4.z = vec2.z;
+							val = 1.0F / sqrt(SQUARE(stash.x) + SQUARE(stash.y) + SQUARE(stash.z));
+							vec2.x = val * stash.x;
+							vec2.y = val * stash.y;
+							vec2.z = val * stash.z;
+							val2 = vec2.x * bulb->pos.x + vec2.y * bulb->pos.y + vec2.z * bulb->pos.z;
+							val = val2 + sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
+							vec2.x *= val;
+							vec2.y *= val;
+							vec2.z *= val;
 						}
-
-						fCol = sqrt(SQUARE((vec4.z - vec3.z)) + SQUARE((vec4.y - vec3.y)) + SQUARE((vec4.x - vec3.x))) * bulb->d;
 					}
+					else if (val < bulb->sqrad)
+					{
+						vec2.z = stash.z;
+						vec2.x = stash.x;
+						vec2.y = stash.y;
+						val = 1.0F / sqrt(SQUARE(stash.x) + SQUARE(stash.y) + SQUARE(stash.z));
+						vec.x = val * stash.x;
+						vec.y = val * stash.y;
+						vec.z = val * stash.z;
+						val2 = vec.x * bulb->pos.x + vec.y * bulb->pos.y + vec.z * bulb->pos.z;
+						val = val2 - sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
+						vec.x *= val;
+						vec.y *= val;
+						vec.z *= val;
+					}
+					else
+					{
+						val = SQUARE(stash.x) + SQUARE(stash.y) + SQUARE(stash.z);
+						val2 = 1.0F / sqrt(val);
+						vec.x = val2 * stash.x;
+						vec.y = val2 * stash.y;
+						vec.z = val2 * stash.z;
+						val2 = bulb->pos.x * vec.x + bulb->pos.y * vec.y + bulb->pos.z * vec.z;
+
+						if (val2 > 0)
+						{
+							val3 = SQUARE(val2);
+
+							if (val > val3)
+							{
+								val = bulb->sqlen - val3;
+
+								if (val < bulb->sqrad)
+								{
+									val3 = sqrtf(bulb->sqrad - val);
+									val = val2 - val3;
+									vec2.x = val * vec.x;
+									vec2.y = val * vec.y;
+									vec2.z = val * vec.z;
+									val = val2 + val3;
+									vec.x *= val;
+									vec.y *= val;
+									vec.z *= val;
+								}
+								else
+								{
+									vec.x = 0;
+									vec.y = 0;
+									vec.z = 0;
+									vec2.x = 0;
+									vec2.y = 0;
+									vec2.z = 0;
+								}
+							}
+						}
+					}
+
+					intensity = sqrt(SQUARE(vec2.x - vec.x) + SQUARE(vec2.y - vec.y) + SQUARE(vec2.z - vec.z)) * bulb->d;
 				}
 
-				if (fCol)
+				if (intensity)
 				{
-					fCol2 += fCol;
-					sR += (long)(fCol * bulb->r);
-					sG += (long)(fCol * bulb->g);
-					sB += (long)(fCol * bulb->b);
+					col += (long)intensity;
+					sR += long(intensity * bulb->r);
+					sG += long(intensity * bulb->g);
+					sB += long(intensity * bulb->b);
 				}
 			}
 
-			cR -= (long)fCol2;
-			cG -= (long)fCol2;
-			cB -= (long)fCol2;
+			cR -= col;
+			cG -= col;
+			cB -= col;
 		}
 
 		if (sR > 255)
@@ -377,8 +371,8 @@ void aTransformLightClipMesh(MESH_DATA* mesh)
 		else if (cB < 0)
 			cB = 0;
 
-		aVertexBuffer[i].color = cB | GlobalAlpha | ((cG | (cR << 8)) << 8);
-		aVertexBuffer[i].specular = sB | ((sG | ((sR | 0xFFFFFF00) << 8)) << 8);
+		aVertexBuffer[i].color = GlobalAlpha | RGBONLY(cR, cG, cB);
+		aVertexBuffer[i].specular = RGBA(sR, sG, sB, 0xFF);
 	}
 }
 
@@ -386,15 +380,15 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 {
 	FOGBULB_STRUCT* bulb;
 	DYNAMIC* light;
+	FVECTOR pos;
+	FVECTOR lPos;
+	FVECTOR stash;
 	FVECTOR vec;
 	FVECTOR vec2;
-	FVECTOR vec3;
-	FVECTOR vec4;
 	short* clip;
-	float val, val2, val3, zv, fCol, fCol2;
+	float x, y, z, val, val2, val3, zv, intensity;
 	static float DistanceFogStart, iDistanceFogStart;
-	float fNum, fZ;
-	long sR, sG, sB, cR, cG, cB, pR, pG, pB;
+	long sR, sG, sB, cR, cG, cB, pR, pG, pB, col;
 	short clipFlag;
 
 	clip = clipflags;
@@ -403,17 +397,12 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 	pB = ((StaticMeshShade >> 10) & 0x1F) << 3;
 	DistanceFogStart = tomb5.distance_fog * 1024.0F;
 	iDistanceFogStart = 1.0F / DistanceFogStart;
-	fNum = iDistanceFogStart * 255.0F;
 
 	for (int i = 0; i < mesh->nVerts; i++)
 	{
-		sR = 0;
-		sG = 0;
-		sB = 0;
-		vec.x = (mesh->aVtx[i].x * D3DMView._11) + (mesh->aVtx[i].y * D3DMView._21) + (mesh->aVtx[i].z * D3DMView._31) + D3DMView._41;
-		vec.y = (mesh->aVtx[i].x * D3DMView._12) + (mesh->aVtx[i].y * D3DMView._22) + (mesh->aVtx[i].z * D3DMView._32) + D3DMView._42;
-		vec.z = (mesh->aVtx[i].x * D3DMView._13) + (mesh->aVtx[i].y * D3DMView._23) + (mesh->aVtx[i].z * D3DMView._33) + D3DMView._43;
-		fZ = vec.z;
+		pos.x = mesh->aVtx[i].x * D3DMView._11 + mesh->aVtx[i].y * D3DMView._21 + mesh->aVtx[i].z * D3DMView._31 + D3DMView._41;
+		pos.y = mesh->aVtx[i].x * D3DMView._12 + mesh->aVtx[i].y * D3DMView._22 + mesh->aVtx[i].z * D3DMView._32 + D3DMView._42;
+		pos.z = mesh->aVtx[i].x * D3DMView._13 + mesh->aVtx[i].y * D3DMView._23 + mesh->aVtx[i].z * D3DMView._33 + D3DMView._43;
 
 		cR = CLRR(mesh->aVtx[i].prelight);
 		cG = CLRG(mesh->aVtx[i].prelight);
@@ -430,13 +419,13 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 
 				if (light->on)
 				{
-					vec2.x = light->x - lGlobalMeshPos.x;
-					vec2.y = light->y - lGlobalMeshPos.y;
-					vec2.z = light->z - lGlobalMeshPos.z;
-					vec3.x = (aLightMatrix._11 * vec2.x + aLightMatrix._12 * vec2.y + aLightMatrix._13 * vec2.z);
-					vec3.y = (aLightMatrix._21 * vec2.x + aLightMatrix._22 * vec2.y + aLightMatrix._23 * vec2.z);
-					vec3.z = (aLightMatrix._31 * vec2.x + aLightMatrix._32 * vec2.y + aLightMatrix._33 * vec2.z);
-					val = sqrt(SQUARE(vec3.x - mesh->aVtx[i].x) + SQUARE(vec3.y - mesh->aVtx[i].y) + SQUARE(vec3.z - mesh->aVtx[i].z)) * 1.7F;
+					x = light->x - lGlobalMeshPos.x;
+					y = light->y - lGlobalMeshPos.y;
+					z = light->z - lGlobalMeshPos.z;
+					lPos.x = aLightMatrix._11 * x + aLightMatrix._12 * y + aLightMatrix._13 * z;
+					lPos.y = aLightMatrix._21 * x + aLightMatrix._22 * y + aLightMatrix._23 * z;
+					lPos.z = aLightMatrix._31 * x + aLightMatrix._32 * y + aLightMatrix._33 * z;
+					val = sqrt(SQUARE(lPos.x - mesh->aVtx[i].x) + SQUARE(lPos.y - mesh->aVtx[i].y) + SQUARE(lPos.z - mesh->aVtx[i].z)) * 1.7F;
 
 					if (val <= light->falloff)
 					{
@@ -449,13 +438,17 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 			}
 		}
 
-		if (fZ > DistanceFogStart)
+		if (pos.z > DistanceFogStart)
 		{
-			val = fNum * (fZ - DistanceFogStart);
+			val = (pos.z - DistanceFogStart) * (iDistanceFogStart * 255.0F);
 			cR -= (long)val;
 			cG -= (long)val;
 			cB -= (long)val;
 		}
+
+		sR = 0;
+		sG = 0;
+		sB = 0;
 
 		if (cR - 128 <= 0)
 			cR <<= 1;
@@ -481,154 +474,150 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 			cB = 255;
 		}
 
-		vec2.x = vec.x;
-		vec2.y = vec.y;
-		vec2.z = vec.z;
-		aVertexBuffer[i].tu = vec.x;
-		aVertexBuffer[i].tv = vec.y;
+		stash.x = pos.x;
+		stash.y = pos.y;
+		stash.z = pos.z;
+		aVertexBuffer[i].tu = pos.x;
+		aVertexBuffer[i].tv = pos.y;
 		clipFlag = 0;
 
-		if (vec.z < f_mznear)
+		if (pos.z < f_mznear)
 			clipFlag = -128;
 		else
 		{
-			zv = f_mpersp / vec.z;
-			vec.x = vec.x * zv + f_centerx;
-			vec.y = vec.y * zv + f_centery;
+			zv = f_mpersp / pos.z;
+			pos.x = pos.x * zv + f_centerx;
+			pos.y = pos.y * zv + f_centery;
 			aVertexBuffer[i].rhw = f_moneopersp * zv;
 
-			if (vec.x < clip_left)
+			if (pos.x < clip_left)
 				clipFlag++;
-			else if (vec.x > clip_right)
+			else if (pos.x > clip_right)
 				clipFlag += 2;
 
-			if (vec.y < clip_top)
+			if (pos.y < clip_top)
 				clipFlag += 4;
-			else if (vec.y > clip_bottom)
+			else if (pos.y > clip_bottom)
 				clipFlag += 8;
 		}
 
-		clip[0] = clipFlag;
-		clip++;
+		*clip++ = clipFlag;
 
-		aVertexBuffer[i].sx = vec.x;
-		aVertexBuffer[i].sy = vec.y;
-		aVertexBuffer[i].sz = vec.z;
-		fCol2 = 0;
+		aVertexBuffer[i].sx = pos.x;
+		aVertexBuffer[i].sy = pos.y;
+		aVertexBuffer[i].sz = pos.z;
+		col = 0;
 
 		if (NumFogBulbs)
 		{
 			for (int j = 0; j < NumFogBulbs; j++)
 			{
 				bulb = &FogBulbs[j];
-				fCol = 0;
+				intensity = 0;
 
-				if (bulb->rad + vec2.z > 0)
+				if (bulb->rad + stash.z > 0 && fabs(stash.x) - bulb->rad < fabs(stash.z) && fabs(stash.y) - bulb->rad < fabs(stash.z))
 				{
-					if (fabs(vec2.x) - bulb->rad < fabs(vec2.z) && fabs(vec2.y) - bulb->rad < fabs(vec2.z))
+					vec.x = 0;
+					vec.y = 0;
+					vec.z = 0;
+					vec2.x = 0;
+					vec2.y = 0;
+					vec2.z = 0;
+					val = SQUARE(bulb->pos.x - stash.x) + SQUARE(bulb->pos.y - stash.y) + SQUARE(bulb->pos.z - stash.z);
+
+					if (bulb->sqlen < bulb->sqrad)
 					{
-						vec3.x = 0;
-						vec3.y = 0;
-						vec3.z = 0;
-						vec4.x = 0;
-						vec4.y = 0;
-						vec4.z = 0;
-						val = SQUARE(bulb->pos.x - vec2.x) + SQUARE(bulb->pos.y - vec2.y) + SQUARE(bulb->pos.z - vec2.z);
-
-						if (bulb->sqlen >= bulb->sqrad)
+						if (val < bulb->sqrad)
 						{
-							if (val >= bulb->sqrad)
-							{
-								val = SQUARE(vec2.z) + SQUARE(vec2.y) + SQUARE(vec2.x);
-								val2 = 1.0F / sqrt(val);
-								vec3.x = val2 * vec2.x;
-								vec3.y = val2 * vec2.y;
-								vec3.z = val2 * vec2.z;
-								val2 = bulb->pos.x * vec3.x + bulb->pos.y * vec3.y + bulb->pos.z * vec3.z;
-
-								if (val2 > 0)
-								{
-									val3 = SQUARE(val2);
-
-									if (val > val3)
-									{
-										val = bulb->sqlen - val3;
-
-										if (val >= bulb->sqrad)
-										{
-											vec3.x = 0;
-											vec3.y = 0;
-											vec3.z = 0;
-											vec4.x = 0;
-											vec4.y = 0;
-											vec4.z = 0;
-										}
-										else
-										{
-											val3 = sqrtf(bulb->sqrad - val);
-											val = val2 - val3;
-											vec4.x = val * vec3.x;
-											vec4.y = val * vec3.y;
-											vec4.z = val * vec3.z;
-											val = val2 + val3;
-											vec3.x *= val;
-											vec3.y *= val;
-											vec3.z *= val;
-										}
-									}
-								}
-							}
-							else
-							{
-								vec4.z = vec2.z;
-								vec4.x = vec2.x;
-								vec4.y = vec2.y;
-								val = 1.0F / sqrt(SQUARE(vec2.z) + SQUARE(vec2.y) + SQUARE(vec2.x));
-								vec3.x = val * vec2.x;
-								vec3.y = val * vec2.y;
-								vec3.z = val * vec2.z;
-								val2 = vec3.x * bulb->pos.x + vec3.y * bulb->pos.y + vec3.z * bulb->pos.z;
-								val = val2 - sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
-								vec3.x *= val;
-								vec3.y *= val;
-								vec3.z *= val;
-							}
-						}
-						else if (val >= bulb->sqrad)
-						{
-							val = 1.0F / sqrt(SQUARE(vec2.z) + SQUARE(vec2.y) + SQUARE(vec2.x));
-							vec4.x = val * vec2.x;
-							vec4.y = val * vec2.y;
-							vec4.z = val * vec2.z;
-							val2 = vec4.x * bulb->pos.x + vec4.y * bulb->pos.y + vec4.z * bulb->pos.z;
-							val = val2 + sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
-							vec4.x *= val;
-							vec4.y *= val;
-							vec4.z *= val;
+							vec2.x = stash.x;
+							vec2.y = stash.y;
+							vec2.z = stash.z;
 						}
 						else
 						{
-							vec4.x = vec2.x;
-							vec4.y = vec2.y;
-							vec4.z = vec2.z;
+							val = 1.0F / sqrt(SQUARE(stash.x) + SQUARE(stash.y) + SQUARE(stash.z));
+							vec2.x = val * stash.x;
+							vec2.y = val * stash.y;
+							vec2.z = val * stash.z;
+							val2 = vec2.x * bulb->pos.x + vec2.y * bulb->pos.y + vec2.z * bulb->pos.z;
+							val = val2 + sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
+							vec2.x *= val;
+							vec2.y *= val;
+							vec2.z *= val;
 						}
-
-						fCol = sqrt(SQUARE((vec4.z - vec3.z)) + SQUARE((vec4.y - vec3.y)) + SQUARE((vec4.x - vec3.x))) * bulb->d;
 					}
+					else if (val < bulb->sqrad)
+					{
+						vec2.z = stash.z;
+						vec2.x = stash.x;
+						vec2.y = stash.y;
+						val = 1.0F / sqrt(SQUARE(stash.x) + SQUARE(stash.y) + SQUARE(stash.z));
+						vec.x = val * stash.x;
+						vec.y = val * stash.y;
+						vec.z = val * stash.z;
+						val2 = vec.x * bulb->pos.x + vec.y * bulb->pos.y + vec.z * bulb->pos.z;
+						val = val2 - sqrt(bulb->sqrad - (bulb->sqlen - SQUARE(val2)));
+						vec.x *= val;
+						vec.y *= val;
+						vec.z *= val;
+					}
+					else
+					{
+						val = SQUARE(stash.x) + SQUARE(stash.y) + SQUARE(stash.z);
+						val2 = 1.0F / sqrt(val);
+						vec.x = val2 * stash.x;
+						vec.y = val2 * stash.y;
+						vec.z = val2 * stash.z;
+						val2 = bulb->pos.x * vec.x + bulb->pos.y * vec.y + bulb->pos.z * vec.z;
+
+						if (val2 > 0)
+						{
+							val3 = SQUARE(val2);
+
+							if (val > val3)
+							{
+								val = bulb->sqlen - val3;
+
+								if (val < bulb->sqrad)
+								{
+									val3 = sqrtf(bulb->sqrad - val);
+									val = val2 - val3;
+									vec2.x = val * vec.x;
+									vec2.y = val * vec.y;
+									vec2.z = val * vec.z;
+									val = val2 + val3;
+									vec.x *= val;
+									vec.y *= val;
+									vec.z *= val;
+								}
+								else
+								{
+									vec.x = 0;
+									vec.y = 0;
+									vec.z = 0;
+									vec2.x = 0;
+									vec2.y = 0;
+									vec2.z = 0;
+								}
+							}
+						}
+					}
+
+					intensity = sqrt(SQUARE(vec2.x - vec.x) + SQUARE(vec2.y - vec.y) + SQUARE(vec2.z - vec.z)) * bulb->d;
 				}
 
-				if (fCol)
+				if (intensity)
 				{
-					fCol2 += fCol;
-					sR += (long)(fCol * bulb->r);
-					sG += (long)(fCol * bulb->g);
-					sB += (long)(fCol * bulb->b);
+					col += (long)intensity;
+					sR += long(intensity * bulb->r);
+					sG += long(intensity * bulb->g);
+					sB += long(intensity * bulb->b);
 				}
 			}
 
-			cR -= (long)fCol2;
-			cG -= (long)fCol2;
-			cB -= (long)fCol2;
+			cR -= col;
+			cG -= col;
+			cB -= col;
 		}
 
 		if (sR > 255)
@@ -661,8 +650,8 @@ void aTransformLightPrelightClipMesh(MESH_DATA* mesh)
 		else if (cB < 0)
 			cB = 0;
 
-		aVertexBuffer[i].color = cB | GlobalAlpha | ((cG | (cR << 8)) << 8);
-		aVertexBuffer[i].specular = sB | ((sG | ((sR | 0xFFFFFF00) << 8)) << 8);
+		aVertexBuffer[i].color = RGBONLY(cR, cG, cB) | GlobalAlpha;
+		aVertexBuffer[i].specular = RGBA(sR, sG, sB, 0xFF);
 	}
 }
 

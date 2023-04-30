@@ -902,7 +902,9 @@ long MoveLaraPosition(PHD_VECTOR* v, ITEM_INFO* item, ITEM_INFO* laraitem)
 
 long Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, long speed, short rotation)
 {
+	ulong ang;
 	long dx, dy, dz, distance, shift;
+	ushort quad;
 	short adiff;
 
 	dx = dest->x_pos - pos->x_pos;
@@ -928,7 +930,12 @@ long Move3DPosTo3DPos(PHD_3DPOS* pos, PHD_3DPOS* dest, long speed, short rotatio
 	{
 		if (lara.water_status != LW_UNDERWATER)
 		{
-			switch (((ulong(mGetAngle(dest->x_pos, dest->z_pos, pos->x_pos, pos->z_pos) + 8192) >> 14) - (ushort(dest->y_rot + 8192) >> 14)) & 3)
+			ang = ulong(mGetAngle(dest->x_pos, dest->z_pos, pos->x_pos, pos->z_pos) + 0x2000) / 0x4000;
+			quad = ushort(dest->y_rot + 0x2000) / 0x4000;
+			ang -= quad;
+			ang &= 3;
+
+			switch (ang)
 			{
 			case 0:
 				lara_item->anim_number = 65;

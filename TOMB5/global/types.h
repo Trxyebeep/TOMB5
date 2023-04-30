@@ -4,9 +4,11 @@
 #pragma pack(push, 1)
 
 /*macros*/
+#define SQUARE(x) ((x)*(x))
 #define	TRIGMULT2(a,b)		(((a) * (b)) >> 14)
 #define	TRIGMULT3(a,b,c)	(TRIGMULT2((TRIGMULT2(a, b)), c))
-#define SQUARE(x) ((x)*(x))
+#define	FTRIGMULT2(a,b)		((a) * (b))
+#define	FTRIGMULT3(a,b,c)	(FTRIGMULT2((FTRIGMULT2(a, b)), c))
 
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
 #define RGBA(r, g, b, a) (RGBONLY(r, g, b) | ((a) << 24))
@@ -25,7 +27,6 @@
 #define MAX_RIPPLES	128
 #define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
 #define MALLOC_SIZE	15000000	//15MB
-#define WINDOW_STYLE	WS_OVERLAPPEDWINDOW
 #define GAME_FOV	(80 * 182)
 
 /*typedefs*/
@@ -403,7 +404,7 @@ struct ROOMLET
 	short padd;
 	float bBox[6];
 	LPDIRECT3DVERTEXBUFFER pVtx;
-	float* pSVtx;
+	float* pSVtx;	//ROOMLET_VERTEX format
 	short* pFac;
 	long* pPrelight;
 };
@@ -1553,6 +1554,17 @@ struct PENDULUM
 	ROPE_STRUCT* Rope;
 };
 
+struct ROOMLET_VERTEX
+{
+	float x;
+	float y;
+	float z;
+	float nx;
+	float ny;
+	float nz;
+	long prelight;
+};
+
 struct ACMESHVERTEX
 {
 	float x;
@@ -2092,8 +2104,12 @@ struct BAT_STRUCT
 
 struct QUAKE_CAM
 {
-	GAME_VECTOR spos;
-	GAME_VECTOR epos;
+	PHD_VECTOR start;
+	PHD_VECTOR end;
+	long start_strength;
+	long end_strength;
+	long dist;
+	long active;
 };
 
 struct LIGHTNING_STRUCT

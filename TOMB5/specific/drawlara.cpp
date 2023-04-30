@@ -17,7 +17,25 @@
 #include "../game/lara2gun.h"
 #include "../tomb5/tomb5.h"
 
-static long lara_mesh_sweetness_table[15] = { 0, 1, 2, 3, 4, 5, 6, 7, 14, 8, 9, 10, 11, 12, 13 };
+static long lara_mesh_sweetness_table[15] =	//LM_ in LMX_ order for drawing
+{
+	LM_HIPS,
+	LM_LTHIGH,
+	LM_LSHIN,
+	LM_LFOOT,
+	LM_RTHIGH,
+	LM_RSHIN,
+	LM_RFOOT,
+	LM_TORSO,
+	LM_HEAD,
+	LM_RINARM,
+	LM_ROUTARM,
+	LM_RHAND,
+	LM_LINARM,
+	LM_LOUTARM,
+	LM_LHAND
+};
+
 static char lara_underwater_skin_sweetness_table[15] = { 0, 2, 3, 0, 5, 6, 7, 9, 10, 11, 12, 13, 14, 8, 0 };
 
 static char NodesToStashToScratch[14][2] =
@@ -263,7 +281,6 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 		meshpp += 2;
 	}
 
-	aGlobalSkinMesh = 0;
 	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;
 
 	if (!(gfLevelFlags & GF_YOUNGLARA))
@@ -327,6 +344,8 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 	}
 
 	phd_PopMatrix();
+
+	aGlobalSkinMesh = 0;
 	bLaraUnderWater = 0;
 	phd_top = top;
 	phd_bottom = bottom;
@@ -491,7 +510,7 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 			else
 				xRot = phd_atan(cos, sin);
 
-			phd_RotX((short)(-xRot >> 1));
+			phd_RotX(short(-xRot >> 1));
 			aSetViewMatrix();
 			phd_PutPolygonsSpcEnvmap(*meshpp, -1);
 			phd_PopMatrix();
@@ -500,7 +519,6 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 		meshpp += 2;
 	}
 
-	aGlobalSkinMesh = 0;
 	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;
 
 	if (!(gfLevelFlags & GF_YOUNGLARA) && lara.back_gun)
@@ -528,6 +546,8 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 	}
 
 	phd_PopMatrix();
+
+	aGlobalSkinMesh = 0;
 	bLaraUnderWater = 0;
 	phd_top = top;
 	phd_bottom = bottom;
@@ -551,6 +571,7 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	phd_bottom = phd_winymax;
 	phd_left = 0;
 	phd_right = phd_winxmax;
+
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
@@ -613,15 +634,9 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	}
 
 	phd_PopMatrix();
-	bLaraUnderWater = LaraNodeUnderwater[8] != 0 ? 8 : -1;
-	phd_PushMatrix();
+
 	bLaraUnderWater = (LaraNodeUnderwater[0] != 0) - 1;
-	phd_PopMatrix();
-	phd_left = left;
-	phd_right = right;
-	phd_top = top;
-	phd_bottom = bottom;
-	GlobalAlpha = 0xFF000000;
+
 	obj = &objects[LARA_EXTRA_MESH1];
 	meshpp = &meshes[obj->mesh_index];
 
@@ -638,8 +653,8 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	aMXPtr[M21] = lara_matrices[LMX_TORSO * indices_count + M21];
 	aMXPtr[M22] = lara_matrices[LMX_TORSO * indices_count + M22];
 	aMXPtr[M23] = lara_matrices[LMX_TORSO * indices_count + M23];
-	aTranslateRel(-80, -192, -160);
-	aRotX(subsuit.XRot);
+	phd_TranslateRel(-80, -192, -160);
+	phd_RotX(subsuit.XRot);
 	phd_PutPolygons(*meshpp, -1);
 	phd_PopMatrix();
 
@@ -656,11 +671,18 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	aMXPtr[M21] = lara_matrices[LMX_TORSO * indices_count + M21];
 	aMXPtr[M22] = lara_matrices[LMX_TORSO * indices_count + M22];
 	aMXPtr[M23] = lara_matrices[LMX_TORSO * indices_count + M23];
-	aTranslateRel(80, -192, -160);
-	aRotX(subsuit.XRot);
+	phd_TranslateRel(80, -192, -160);
+	phd_RotX(subsuit.XRot);
 	phd_PutPolygons(*meshpp, -1);
 	phd_PopMatrix();
+
 	bLaraUnderWater = 0;
+
+	phd_left = left;
+	phd_right = right;
+	phd_top = top;
+	phd_bottom = bottom;
+	GlobalAlpha = 0xFF000000;
 }
 
 void DrawLara__6(ITEM_INFO* item, long mirror)
@@ -781,7 +803,7 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 			else
 				xRot = phd_atan(cos, sin);
 
-			phd_RotX((short)(-xRot >> 1));
+			phd_RotX(short(-xRot >> 1));
 			phd_PutPolygonsSpcXLU(*meshpp, -1);
 			phd_PopMatrix();
 		}
@@ -843,15 +865,19 @@ void SetLaraUnderwaterNodes()
 		pos.z = 0;
 		GetLaraJointPos(&pos, i);
 
-		if (lara_mesh_sweetness_table[i] == 7)
+		if (lara_mesh_sweetness_table[i] == LM_TORSO)
 			pos.y -= 120;
 
-		if (lara_mesh_sweetness_table[i] == 14)
+		if (lara_mesh_sweetness_table[i] == LM_HEAD)
 			pos.y -= 60;
 
 		room_num = lara_item->room_number;
 		GetFloor(pos.x, pos.y, pos.z, &room_num);
-		LaraNodeUnderwater[i] = room[room_num].flags & ROOM_UNDERWATER;
+
+		if (lara_mesh_sweetness_table[i] == LM_RINARM || lara_mesh_sweetness_table[i] == LM_LINARM)
+			LaraNodeUnderwater[i] = LaraNodeUnderwater[LMX_TORSO];
+		else
+			LaraNodeUnderwater[i] = room[room_num].flags & ROOM_UNDERWATER;
 
 		if (room[room_num].flags & ROOM_UNDERWATER)
 		{

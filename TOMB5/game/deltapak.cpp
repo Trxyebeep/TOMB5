@@ -2047,7 +2047,7 @@ void special4_end()
 
 void handle_cutseq_triggering(long name)
 {
-	long n, goin, fuck;
+	long n, goin;
 
 	if (!cutseq_num)
 		return;
@@ -2172,80 +2172,79 @@ void handle_cutseq_triggering(long name)
 
 		ScreenFadedOut = 0;
 		numnailed = 0;
-		fuck = cutseq_num;
 
-		if (cutseq_control_routines[fuck].end_func)
-			cutseq_control_routines[fuck].end_func();
+		if (cutseq_control_routines[cutseq_num].end_func)
+			cutseq_control_routines[cutseq_num].end_func();
 
 		LHolster = old_lara_LHolster;
 		lara.holster = old_lara_holster;
 
-		if (fuck <= 4)
+		if (cutseq_num <= 4)
 			DelsHandyTeleportLara(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, cutrot << 14);
 
 		cutseq_trig = 0;
 		GLOBAL_playing_cutseq = 0;
 
-		if (!bDoCredits)
+		if (bDoCredits)
 		{
-			if (dels_cutseq_player || fuck == 26 || fuck == 22 || fuck == 5 || fuck == 16 || fuck == 33 || fuck == 44 || fuck == 12)
-			{
-				if (dels_cutseq_player)
-				{
-					reset_flag = 1;
-					dels_cutseq_player = 0;
-				}
-				else
-					gfLevelComplete = gfCurrentLevel + 1;
-
-				gfRequiredStartPos = 0;
-				cutseq_num = 0;
-				GLOBAL_playing_cutseq = 0;
-				cutseq_trig = 0;
-				AlterFOV(GAME_FOV);
-				ScreenFade = 0;
-				dScreenFade = 0;
-				ScreenFadeSpeed = 8;
-				ScreenFadeBack = 0;
-				ScreenFadedOut = 0;
-				ScreenFading = 0;
-				return;
-			}
-
-			finish_cutseq(name);
-			cutseq_num = 0;
-			camera.type = GLOBAL_oldcamtype;
-
-			if (gfCurrentLevel != LVL5_TITLE)
-				SetFadeClip(0, 1);
-
-			AlterFOV(GAME_FOV);
-
-			if (gfCurrentLevel != LVL5_TITLE)
-				S_CDPlay(CurrentAtmosphere, 1);
-
-			IsAtmospherePlaying = 1;
-		}
-		else
-		{
-			switch (fuck)
+			switch (cutseq_num)
 			{
 			case 28:
-				fuck = 29;
+				cutseq_num = 29;
 				break;
 
 			case 29:
-				fuck = 30;
+				cutseq_num = 30;
 				break;
 
 			case 30:
-				fuck = 28;
+				cutseq_num = 28;
 				break;
 			}
 
-			Load_and_Init_Cutseq(fuck);
+			Load_and_Init_Cutseq(cutseq_num);
 			cutseq_trig = 2;
+			return;
 		}
+
+		if (dels_cutseq_player ||
+			cutseq_num == 26 || cutseq_num == 22 || cutseq_num == 5 || cutseq_num == 16 || cutseq_num == 33 || cutseq_num == 44 || cutseq_num == 12)
+		{
+			if (dels_cutseq_player)
+			{
+				reset_flag = 1;
+				dels_cutseq_player = 0;
+			}
+			else
+				gfLevelComplete = gfCurrentLevel + 1;
+
+			gfRequiredStartPos = 0;
+			cutseq_num = 0;
+			GLOBAL_playing_cutseq = 0;
+			cutseq_trig = 0;
+			AlterFOV(GAME_FOV);
+			ScreenFade = 0;
+			dScreenFade = 0;
+			ScreenFadeSpeed = 8;
+			ScreenFadeBack = 0;
+			ScreenFadedOut = 0;
+			ScreenFading = 0;
+			return;
+		}
+
+		finish_cutseq(name);
+		cutseq_num = 0;
+		camera.type = GLOBAL_oldcamtype;
+
+		if (gfCurrentLevel != LVL5_TITLE)
+			SetFadeClip(0, 1);
+
+		AlterFOV(GAME_FOV);
+
+		if (gfCurrentLevel != LVL5_TITLE)
+			S_CDPlay(CurrentAtmosphere, 1);
+
+		IsAtmospherePlaying = 1;
 	}
 }
 
@@ -2852,162 +2851,155 @@ void DelsHandyTeleportLara(long x, long y, long z, long yrot)
 	camera.fixed_camera = 1;
 }
 
-void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, long numnodes)
+void InitPackNodes(NODELOADHEADER* lnode, PACKNODE* pnode, char* packed, long nNodes)
 {
 	long offset, xoff, yoff, zoff;
 
-	offset = ((numnodes << 3) - numnodes) << 1;
+	offset = nNodes * sizeof(NODELOADHEADER);
 
-
-	for (int i = 0; i < numnodes; i++)
+	for (int i = 0; i < nNodes; i++)
 	{
-		pnode->xkey = (ushort)lnode->xkey;
-		pnode->ykey = (ushort)lnode->ykey;
-		pnode->zkey = (ushort)lnode->zkey;
-		pnode->decode_x.packmethod = (lnode->packmethod >> 10) & 0xF;
-		pnode->decode_y.packmethod = (lnode->packmethod >> 5) & 0xF;
-		pnode->decode_z.packmethod = (lnode->packmethod) & 0xF;
-		pnode->xlength = lnode->xlength;
-		pnode->ylength = lnode->ylength;
-		pnode->zlength = lnode->zlength;
-		xoff = ((lnode->xlength * pnode->decode_x.packmethod) >> 3) + 4;
-		yoff = ((lnode->ylength * pnode->decode_y.packmethod) >> 3) + 4;
-		zoff = ((lnode->zlength * pnode->decode_z.packmethod) >> 3) + 4;
-		lnode++;
-		pnode->xpacked = &packed[offset];
-		pnode->ypacked = &packed[offset + xoff];
-		pnode->zpacked = &packed[offset + xoff + yoff];
-		pnode++;
+		pnode[i].xkey = lnode[i].xkey;
+		pnode[i].ykey = lnode[i].ykey;
+		pnode[i].zkey = lnode[i].zkey;
+		pnode[i].decode_x.packmethod = (lnode[i].packmethod >> 10) & 0xF;
+		pnode[i].decode_y.packmethod = (lnode[i].packmethod >> 5) & 0xF;
+		pnode[i].decode_z.packmethod = lnode[i].packmethod & 0xF;
+		pnode[i].xlength = lnode[i].xlength;
+		pnode[i].ylength = lnode[i].ylength;
+		pnode[i].zlength = lnode[i].zlength;
+		xoff = ((lnode[i].xlength * pnode[i].decode_x.packmethod) >> 3) + 4;
+		yoff = ((lnode[i].ylength * pnode[i].decode_y.packmethod) >> 3) + 4;
+		zoff = ((lnode[i].zlength * pnode[i].decode_z.packmethod) >> 3) + 4;
+		pnode[i].xpacked = &packed[offset];
+		pnode[i].ypacked = &packed[offset + xoff];
+		pnode[i].zpacked = &packed[offset + xoff + yoff];
+		
 		offset += xoff + yoff + zoff;
 	}
 }
 
 short GetTrackWord(long off, char* packed, long packmethod)
 {
-	long offset, offset2;
-	short ret;
+	ulong data;
+	long index;
 
-	offset = packmethod * off;
-	offset2 = offset >> 3;
+	index = off * packmethod;
+	data = *(ulong*)&packed[index >> 3];
+	data >>= index & 7;
+	data &= (1 << packmethod) - 1;
 
-	ret = ((1 << packmethod) - 1) & ((ulong)(*(uchar*)(packed + offset2) |
-		((*(uchar*)(packed + offset2 + 1) |
-			(*(ushort*)(packed + offset2 + 2) << 8)) << 8)) >> (offset & 7));
-
-	if (((1 << (packmethod - 1)) & ret) != 0)
-		return ulong(ret | ~((1 << packmethod) - 1));
-
-	return ret;
+	if (data & (1 << (packmethod - 1)))
+		data |= ~((1 << packmethod) - 1);
+	
+	return (short)data;
 }
 
-short DecodeTrack(char* packed, RTDECODE* decode)
+short DecodeTrack(char* packed, RTDECODE* code)
 {
-	short word;
+	short word, word2;
 
-	if (!decode->decodetype)
+	if (!code->decodetype)
 	{
-		word = GetTrackWord(decode->off, packed, decode->packmethod);
+		word = GetTrackWord(code->off, packed, code->packmethod);
 
-		if ((word & 0x20))
+		if (word & 0x20)
 		{
-			if (!(word & 0xF))
-				decode->counter = 16;
-			else
-				decode->counter = (word & 0xF);
+			code->counter = word & 0xF;
 
-			decode->decodetype = 1;
-			decode->off++;
-			decode->length--;
+			if (!code->counter)
+				code->counter = 16;
+
+			code->decodetype = 1;
+			code->off++;
+			code->length--;
 		}
 		else
 		{
-			decode->decodetype = 2;
+			code->decodetype = 2;
 
-			if ((word & 0x10))
+			if (word & 0x10)
 			{
-				GetTrackWord(decode->off + 1, packed, decode->packmethod);
-				decode->counter = ((word & 7) << 5) | (GetTrackWord(decode->off + 1, packed, decode->packmethod) & 0x1F);
-				decode->data = GetTrackWord(decode->off + 2, packed, decode->packmethod);
-				decode->off += 3;
-				decode->length -= 3;
+				word2 = GetTrackWord(code->off + 1, packed, code->packmethod);
+				code->counter = (word & 7) << 5;
+				code->counter |= word2 & 0x1F;
+				code->counter &= 0xFF;
+				code->data = GetTrackWord(code->off + 2, packed, code->packmethod);
+				code->off += 3;
+				code->length -= 3;
 			}
 			else
 			{
-				decode->data = GetTrackWord(decode->off + 1, packed, decode->packmethod);
-				decode->counter = word & 0x7;
-				decode->off += 2;
-				decode->length -= 2;
+				code->data = GetTrackWord(code->off + 1, packed, code->packmethod);
+				code->counter = word & 0x7;
+				code->off += 2;
+				code->length -= 2;
 			}
 		}
 	}
 
-	if (decode->decodetype == 2)
+	if (code->decodetype == 2)
 	{
-		decode->counter--;
+		code->counter--;
 
-		if (!decode->counter)
-			decode->decodetype = 0;
+		if (!code->counter)
+			code->decodetype = 0;
 
-		return decode->data;
+		return code->data;
 	}
-	else
-	{
-		word = GetTrackWord(decode->off, packed, decode->packmethod);
-		decode->off++;
-		decode->length--;
-		decode->counter--;
 
-		if (!decode->counter)
-			decode->decodetype = 0;
+	word = GetTrackWord(code->off, packed, code->packmethod);
+	code->off++;
+	code->length--;
+	code->counter--;
 
-		return word;
-	}
+	if (!code->counter)
+		code->decodetype = 0;
+
+	return word;
 }
 
-void DecodeAnim(PACKNODE* node, long num_nodes, long frame, long flags)
+void DecodeAnim(PACKNODE* nodes, long nNodes, long frame, long limit)
 {
 	if (!frame)
 	{
-		for (int i = num_nodes; i; i--)
+		for (int i = 0; i < nNodes; i++)
 		{
-			node->decode_x.off = 0;
-			node->decode_x.counter = 0;
-			node->decode_x.data = 0;
-			node->decode_x.decodetype = 0;
-			node->decode_y.off = 0;
-			node->decode_y.counter = 0;
-			node->decode_y.data = 0;
-			node->decode_y.decodetype = 0;
-			node->decode_z.off = 0;
-			node->decode_z.counter = 0;
-			node->decode_z.data = 0;
-			node->decode_z.decodetype = 0;
-			node->xrot_run = node->xkey;
-			node->yrot_run = node->ykey;
-			node->zrot_run = node->zkey;
-			node->decode_x.length = node->xlength;
-			node->decode_y.length = node->ylength;
-			node->decode_z.length = node->zlength;
-			node++;
+			nodes[i].xrot_run = nodes[i].xkey;
+			nodes[i].yrot_run = nodes[i].ykey;
+			nodes[i].zrot_run = nodes[i].zkey;
+			nodes[i].decode_x.length = nodes[i].xlength;
+			nodes[i].decode_y.length = nodes[i].ylength;
+			nodes[i].decode_z.length = nodes[i].zlength;
+			nodes[i].decode_x.off = 0;
+			nodes[i].decode_y.off = 0;
+			nodes[i].decode_z.off = 0;
+			nodes[i].decode_x.counter = 0;
+			nodes[i].decode_y.counter = 0;
+			nodes[i].decode_z.counter = 0;
+			nodes[i].decode_x.data = 0;
+			nodes[i].decode_y.data = 0;
+			nodes[i].decode_z.data = 0;
+			nodes[i].decode_x.decodetype = 0;
+			nodes[i].decode_y.decodetype = 0;
+			nodes[i].decode_z.decodetype = 0;
 		}
-
-		return;
 	}
-
-	node->xrot_run += DecodeTrack(node->xpacked, &node->decode_x);
-	node->yrot_run += DecodeTrack(node->ypacked, &node->decode_y);
-	node->zrot_run += DecodeTrack(node->zpacked, &node->decode_z);
-	node++;
-
-	for (int i = 1; i < num_nodes; i++)
+	else
 	{
-		node->xrot_run += DecodeTrack(node->xpacked, &node->decode_x);
-		node->yrot_run += DecodeTrack(node->ypacked, &node->decode_y);
-		node->zrot_run += DecodeTrack(node->zpacked, &node->decode_z);
-		node->xrot_run &= flags;
-		node->yrot_run &= flags;
-		node->zrot_run &= flags;
-		node++;
+		nodes[0].xrot_run += DecodeTrack(nodes[0].xpacked, &nodes[0].decode_x);
+		nodes[0].yrot_run += DecodeTrack(nodes[0].ypacked, &nodes[0].decode_y);
+		nodes[0].zrot_run += DecodeTrack(nodes[0].zpacked, &nodes[0].decode_z);
+
+		for (int i = 1; i < nNodes; i++)
+		{
+			nodes[i].xrot_run += DecodeTrack(nodes[i].xpacked, &nodes[i].decode_x);
+			nodes[i].yrot_run += DecodeTrack(nodes[i].ypacked, &nodes[i].decode_y);
+			nodes[i].zrot_run += DecodeTrack(nodes[i].zpacked, &nodes[i].decode_z);
+			nodes[i].xrot_run &= limit;
+			nodes[i].yrot_run &= limit;
+			nodes[i].zrot_run &= limit;
+		}
 	}
 }
 
@@ -3069,10 +3061,10 @@ void do_new_cutscene_camera()
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
 
 	if (GLOBAL_cutme->actor_data[0].objslot != NO_ITEM)
-		DecodeAnim(actor_pnodes[0], 16, GLOBAL_cutseq_frame, 1023);
+		DecodeAnim(actor_pnodes[0], 16, GLOBAL_cutseq_frame, 0x3FF);
 
 	for (int i = 1; i < GLOBAL_cutme->numactors; i++)
-		DecodeAnim(actor_pnodes[i], GLOBAL_cutme->actor_data[i].nodes + 1, GLOBAL_cutseq_frame, 1023);
+		DecodeAnim(actor_pnodes[i], GLOBAL_cutme->actor_data[i].nodes + 1, GLOBAL_cutseq_frame, 0x3FF);
 
 	GLOBAL_cutseq_frame++;
 
@@ -3083,47 +3075,52 @@ void do_new_cutscene_camera()
 		GLOBAL_cutseq_frame = GLOBAL_numcutseq_frames;
 }
 
-void updateAnimFrame(PACKNODE* node, long flags, short* frame)
+void updateAnimFrame(PACKNODE* nodes, long nNodes, short* frame)
 {
 	short* nex;
-	short y;
+	long rot;
+	short x, y, z;
 
-	frame[7] = 3 * node->yrot_run;
+	frame[7] = 3 * nodes[0].yrot_run;
 
 	switch (cutrot)
 	{
 	case 0:
-		frame[6] = 3 * node->xrot_run;
-		frame[8] = 3 * node->zrot_run;
+		frame[6] = 3 * nodes[0].xrot_run;
+		frame[8] = 3 * nodes[0].zrot_run;
 		break;
 
 	case 1:
-		frame[6] = 3 * node->zrot_run;
-		frame[8] = -3 * node->xrot_run;
+		frame[6] = 3 * nodes[0].zrot_run;
+		frame[8] = -3 * nodes[0].xrot_run;
 		break;
 
 	case 2:
-		frame[6] = -3 * node->xrot_run;
-		frame[8] = -3 * node->zrot_run;
+		frame[6] = -3 * nodes[0].xrot_run;
+		frame[8] = -3 * nodes[0].zrot_run;
 		break;
 
 	case 3:
-		frame[6] = -3 * node->zrot_run;
-		frame[8] = 3 * node->xrot_run;
+		frame[6] = -3 * nodes[0].zrot_run;
+		frame[8] = 3 * nodes[0].xrot_run;
 		break;
 	}
 
 	nex = frame + 9;
 
-	for (int i = 1; i < flags; i++)
+	for (int i = 1; i < nNodes; i++)
 	{
-		y = node[i].yrot_run;
+		x = nodes[i].xrot_run;
+		y = nodes[i].yrot_run;
+		z = nodes[i].zrot_run;
 
 		if (cutrot && i == 1)
 			y = (y + (cutrot << 8)) & 0x3FF;
 
-		nex[0] = (((node[i].xrot_run << 10 | y) << 10) | node[i].zrot_run) >> 16;
-		nex[1] = ((node[i].xrot_run << 10 | y) << 10) | node[i].zrot_run;
+		rot = z | y << 10 | x << 20;
+
+		nex[0] = rot >> 16;
+		nex[1] = rot & 0xFFFF;
 		nex += 2;
 	}
 }
@@ -3387,9 +3384,9 @@ long Load_and_Init_Cutseq(long num)
 
 	if (cutseq_num <= 4)
 	{
-		GLOBAL_cutme->orgx = (lara_item->pos.x_pos & -1024) + 512;
+		GLOBAL_cutme->orgx = (lara_item->pos.x_pos & ~0x3FF) + 512;
 		GLOBAL_cutme->orgy = lara_item->pos.y_pos;
-		GLOBAL_cutme->orgz = (lara_item->pos.z_pos & -1024) + 512;
+		GLOBAL_cutme->orgz = (lara_item->pos.z_pos & ~0x3FF) + 512;
 	}
 
 	init_cutseq_actors(packed, 0);
@@ -3602,6 +3599,9 @@ void do_cutseq_skipper_stuff()
 {
 	ITEM_INFO* item;
 	short room_num;
+
+	if (gfCurrentLevel == LVL5_TITLE)
+		return;
 
 	//a bunch of hardcoded bullshit to avoid softlocking..
 

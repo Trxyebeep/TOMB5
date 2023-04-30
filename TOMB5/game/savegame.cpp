@@ -439,7 +439,7 @@ void SaveLevelData(long FullSave)
 		byte = 0;
 		item = &items[level_items];
 
-		for (int i = level_items; i < 256; i++)
+		for (int i = level_items; i < MAX_ITEMS; i++)
 		{
 			if (item->active && (item->object_number == FLARE_ITEM || item->object_number == BURNING_TORCH_ITEM ||
 				item->object_number == CHAFF ||item->object_number == TORPEDO || item->object_number == CROSSBOW_BOLT))
@@ -451,7 +451,7 @@ void SaveLevelData(long FullSave)
 		WriteSG(&byte, sizeof(uchar));
 		item = &items[level_items];
 
-		for (int i = level_items; i < 256; i++)
+		for (int i = level_items; i < MAX_ITEMS; i++)
 		{
 			if (item->active && (item->object_number == FLARE_ITEM || item->object_number == BURNING_TORCH_ITEM ||
 				item->object_number == CHAFF || item->object_number == TORPEDO || item->object_number == CROSSBOW_BOLT))

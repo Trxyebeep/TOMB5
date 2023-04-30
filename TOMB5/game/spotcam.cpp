@@ -310,7 +310,7 @@ void InitialiseSpotCam(short Sequence)
 	if (s->flags & SP_NODRAWLARA)
 		SCNoDrawLara = 1;
 
-	quakecam.spos.box_number = 0;
+	quakecam.active = 0;
 }
 
 void CalculateSpotCams()
@@ -320,6 +320,7 @@ void CalculateSpotCams()
 	camera_type ctype;
 	long cpx, cpy, cpz, ctx, cty, ctz, cspeed, cfov, croll, next_spline_camera, n;
 	long dx, dy, dz, cs, cp, clen, tlen, cx, cy, cz, lx, ly, lz, sp;
+	long dist, ds, sval;
 	static long bFirstLook = 0;
 	short spline_cnt;
 
@@ -468,24 +469,25 @@ void CalculateSpotCams()
 
 		AlterFOV((short)cfov);
 
-		if (quakecam.spos.box_number)
+		if (quakecam.active)
 		{
-			dx = camera.pos.x - quakecam.epos.x;
-			dy = camera.pos.y - quakecam.epos.y;
-			dz = camera.pos.z - quakecam.epos.z;
-			dz = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
+			dx = camera.pos.x - quakecam.end.x;
+			dy = camera.pos.y - quakecam.end.y;
+			dz = camera.pos.z - quakecam.end.z;
+			dist = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
 
-			if (dz < quakecam.epos.box_number)
+			if (dist < quakecam.dist)
 			{
-				dx = (quakecam.epos.box_number - dz) * (quakecam.epos.room_number - quakecam.spos.room_number) /
-					quakecam.epos.box_number + quakecam.spos.room_number;
-				dy = dx >> 1;
+				dist = quakecam.dist - dist;
+				ds = quakecam.end_strength - quakecam.start_strength;
+				sval = (dist * ds / quakecam.dist) + quakecam.start_strength;
 
-				if (dx > 0)
+				if (sval > 0)
 				{
-					camera.pos.x += GetRandomControl() % dx - dy;
-					camera.pos.y += GetRandomControl() % dx - dy;
-					camera.pos.z += GetRandomControl() % dx - dy;
+					ds = sval >> 1;
+					camera.pos.x += GetRandomControl() % sval - ds;
+					camera.pos.y += GetRandomControl() % sval - ds;
+					camera.pos.z += GetRandomControl() % sval - ds;
 				}
 			}
 		}
@@ -527,36 +529,36 @@ void CalculateSpotCams()
 			if (SpotCam[current_spline_camera].flags & SP_TESTTRIGGER)
 				bCheckTrigger = 1;
 
-			if (SpotCam[current_spline_camera].flags & SP_HOLD)
+			if (SpotCam[current_spline_camera].flags & SP_QUAKE)
 			{
-				if (quakecam.spos.box_number && SpotCam[current_spline_camera].timer == -1)
-					quakecam.spos.box_number = 0;
+				if (quakecam.active && SpotCam[current_spline_camera].timer == -1)
+					quakecam.active = 0;
 				else
 				{
-					quakecam.spos.x = SpotCam[current_spline_camera].x;
-					quakecam.spos.y = SpotCam[current_spline_camera].y;
-					quakecam.spos.z = SpotCam[current_spline_camera].z;
+					quakecam.active = 1;
+
+					quakecam.start.x = SpotCam[current_spline_camera].x;
+					quakecam.start.y = SpotCam[current_spline_camera].y;
+					quakecam.start.z = SpotCam[current_spline_camera].z;
 
 					if (SpotCam[current_spline_camera].timer == -1)
-						quakecam.spos.room_number = 0;
+						quakecam.start_strength = 0;
 					else
-						quakecam.spos.room_number = SpotCam[current_spline_camera].timer << 3;
+						quakecam.start_strength = SpotCam[current_spline_camera].timer << 3;
 
-					quakecam.spos.box_number = 1;
-					quakecam.epos.x = SpotCam[current_spline_camera + 1].x;
-					quakecam.epos.y = SpotCam[current_spline_camera + 1].y;
-					quakecam.epos.z = SpotCam[current_spline_camera + 1].z;
+					quakecam.end.x = SpotCam[current_spline_camera + 1].x;
+					quakecam.end.y = SpotCam[current_spline_camera + 1].y;
+					quakecam.end.z = SpotCam[current_spline_camera + 1].z;
 
 					if (SpotCam[current_spline_camera + 1].timer == -1)
-						quakecam.epos.room_number = 0;
+						quakecam.end_strength = 0;
 					else
-						quakecam.epos.room_number = SpotCam[current_spline_camera + 1].timer << 3;
+						quakecam.end_strength = SpotCam[current_spline_camera + 1].timer << 3;
 
-					dx = quakecam.spos.x - quakecam.epos.x;
-					dy = quakecam.spos.y - quakecam.epos.y;
-					dz = quakecam.spos.z - quakecam.epos.z;
-					dz = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
-					quakecam.epos.box_number = (short)dz;
+					dx = quakecam.start.x - quakecam.end.x;
+					dy = quakecam.start.y - quakecam.end.y;
+					dz = quakecam.start.z - quakecam.end.z;
+					quakecam.dist = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
 				}
 			}
 

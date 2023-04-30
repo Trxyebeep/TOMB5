@@ -6,7 +6,7 @@ long GetRandomControl();
 void SeedRandomControl(long seed);
 long GetRandomDraw();
 void SeedRandomDraw(long seed);
-void init_game_malloc();
+void init_game_malloc(bool alloc);
 void game_free(long size);
 void Log(ulong type, const char* s, ...);
 
