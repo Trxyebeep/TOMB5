@@ -833,10 +833,6 @@ void DrawGunflashes()
 	phd_right = phd_winwidth;
 	phd_bottom = phd_winheight;
 	phd_PushMatrix();
-	GetRandomDraw();
-	GetRandomDraw();
-	GetRandomDraw();
-	GetRandomDraw();
 
 	for (int i = 0; i < 4; i++)
 	{

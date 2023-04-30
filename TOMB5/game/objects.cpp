@@ -24,7 +24,6 @@
 #include "box.h"
 
 OBJECT_INFO objects[NUMBER_OBJECTS];
-static short* GLOBAL_gunflash_meshptr;
 
 static BITE_INFO EnemyBites[9] =
 {
@@ -833,10 +832,6 @@ void DrawBaddieGunFlash(ITEM_INFO* item)
 	if (!item->fired_weapon)
 		return;
 
-	GetRandomDraw();
-	GetRandomDraw();
-	GetRandomDraw();
-	GetRandomDraw();
 	bite[0] = objects[item->object_number].bite_offset;
 	bite[1] = objects[item->object_number].bite_offset + 1;
 	node[0] = short(EnemyBites[bite[0]].mesh_num);
