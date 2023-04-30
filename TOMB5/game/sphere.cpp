@@ -31,7 +31,6 @@ void GetJointAbsPositionMatrix(ITEM_INFO* item, float* matrix, long node)
 	frac = GetFrames(item, frmptr, &rate);
 	phd_PushMatrix();
 	phd_TranslateAbs(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
-	phd_SetTrans(0, 0, 0);
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 
 	if (!item->data)

@@ -830,6 +830,9 @@ void DrawBaddieGunFlash(ITEM_INFO* item)
 	short bite[2];
 	short num;
 
+	if (!item->fired_weapon)
+		return;
+
 	GetRandomDraw();
 	GetRandomDraw();
 	GetRandomDraw();
@@ -860,7 +863,7 @@ void DrawBaddieGunFlash(ITEM_INFO* item)
 		phd_RotX(-16384);
 		phd_TranslateRel(EnemyBites[bite[num]].x, EnemyBites[bite[num]].y, EnemyBites[bite[num]].z);
 		phd_RotZ(short(GetRandomControl() << 1));
-		phd_PutPolygons(GLOBAL_gunflash_meshptr, -1);	//nothing writes to this pointer
+		phd_PutPolygons(meshes[objects[GUN_FLASH].mesh_index], -1);
 		phd_PopMatrix();
 		num--;
 	}
