@@ -856,13 +856,14 @@ void DrawRooms(short current_room)
 			}
 
 			phd_PopMatrix();
-			DrawGunflashes();
 		}
 
 		if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
 			Draw_Mirror_Lara();
 	}
 
+	nPolyType = 4;
+	DrawGunflashes();
 	nPolyType = 0;
 
 	for (int i = 0; i < 32; i++)

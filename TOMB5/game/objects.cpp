@@ -24,7 +24,6 @@
 #include "box.h"
 
 OBJECT_INFO objects[NUMBER_OBJECTS];
-static short* GLOBAL_gunflash_meshptr;
 
 static BITE_INFO EnemyBites[9] =
 {
@@ -831,10 +830,9 @@ void DrawBaddieGunFlash(ITEM_INFO* item)
 	short bite[2];
 	short num;
 
-	GetRandomDraw();
-	GetRandomDraw();
-	GetRandomDraw();
-	GetRandomDraw();
+	if (!item->fired_weapon)
+		return;
+
 	bite[0] = objects[item->object_number].bite_offset;
 	bite[1] = objects[item->object_number].bite_offset + 1;
 	node[0] = short(EnemyBites[bite[0]].mesh_num);
@@ -861,7 +859,7 @@ void DrawBaddieGunFlash(ITEM_INFO* item)
 		phd_RotX(-16384);
 		phd_TranslateRel(EnemyBites[bite[num]].x, EnemyBites[bite[num]].y, EnemyBites[bite[num]].z);
 		phd_RotZ(short(GetRandomControl() << 1));
-		phd_PutPolygons(GLOBAL_gunflash_meshptr, -1);	//nothing writes to this pointer
+		phd_PutPolygons(meshes[objects[GUN_FLASH].mesh_index], -1);
 		phd_PopMatrix();
 		num--;
 	}

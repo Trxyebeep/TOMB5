@@ -1407,6 +1407,7 @@ void BaddyObjects()
 		obj->initialise = InitialiseMafia;
 		obj->control = MafiaControl;
 		obj->collision = CreatureCollision;
+		obj->draw_routine_extra = DrawBaddieGunFlash;
 		obj->shadow_size = 128;
 		obj->hit_points = 26;
 		obj->pivot_length = 50;
