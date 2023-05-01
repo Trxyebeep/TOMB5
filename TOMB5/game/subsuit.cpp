@@ -79,12 +79,12 @@ void DoSubsuitStuff()
 	s.x = 0;
 	s.y = -1024;
 	s.z = -128;
-	GetLaraJointPos(&s, 7);
+	GetLaraJointPos(&s, LMX_TORSO);
 
 	d.x = 0;
 	d.y = -20480;
 	d.z = -128;
-	GetLaraJointPos(&d, 7);
+	GetLaraJointPos(&d, LMX_TORSO);
 
 	LaraTorch(&s, &d, lara_item->pos.y_rot, 255);
 	TriggerEngineEffects();
@@ -123,7 +123,7 @@ void FireChaff()
 	pos.x = 0;
 	pos.y = -112;
 	pos.z = -112;
-	GetLaraJointPos(&pos, 7);
+	GetLaraJointPos(&pos, LMX_TORSO);
 
 	item->room_number = lara_item->room_number;
 	floor = GetFloor(pos.x, pos.y, pos.z, &item->room_number);
@@ -157,12 +157,12 @@ void FireChaff()
 		pos.x = 0;
 		pos.y = (GetRandomControl() & 0x1F) - 128;
 		pos.z = -112;
-		GetLaraJointPos(&pos, 7);
+		GetLaraJointPos(&pos, LMX_TORSO);
 
 		pos2.x = (GetRandomControl() & 0xFF) - 128;
 		pos2.y = GetRandomControl() & (((i + 1) << 7) - 1);
 		pos2.z = -112 - (GetRandomControl() & (((i + 1) << 6) - 1));
-		GetLaraJointPos(&pos2, 7);
+		GetLaraJointPos(&pos2, LMX_TORSO);
 
 		TriggerTorpedoSteam(&pos, &pos2, 1);
 	}
@@ -178,12 +178,12 @@ void TriggerAirBubbles()
 	pos1.x = 0;
 	pos1.y = -192;
 	pos1.z = -160;
-	GetLaraJointPos(&pos1, 7);
+	GetLaraJointPos(&pos1, LMX_TORSO);
 
 	pos2.x = 0;
 	pos2.y = -192;
 	pos2.z = -512 - (GetRandomControl() & 0x7F);
-	GetLaraJointPos(&pos2, 7);
+	GetLaraJointPos(&pos2, LMX_TORSO);
 
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
@@ -321,7 +321,7 @@ void TriggerEngineEffects()
 			pos.x = x;
 			pos.y = -192;
 			pos.z = -160;
-			GetLaraJointPosRot(&pos, 7, subsuit.XRot, &Eng1);
+			GetLaraJointPosRot(&pos, LMX_TORSO, subsuit.XRot, &Eng1);
 
 			Eng2.y = subsuit.Vel[lp];
 			n = Eng2.y >> 2;
@@ -336,7 +336,7 @@ void TriggerEngineEffects()
 				pos2.z += GetRandomControl() % n - (n >> 1);
 			}
 
-			GetLaraJointPosRot(&pos2, 7, subsuit.XRot, &Eng2);
+			GetLaraJointPosRot(&pos2, LMX_TORSO, subsuit.XRot, &Eng2);
 			TriggerSubMist(&pos, &pos2, Eng2.y >> 8);
 
 			pos2.x = x;
@@ -349,7 +349,7 @@ void TriggerEngineEffects()
 				pos2.z += GetRandomControl() % n - (n >> 1);
 			}
 
-			GetLaraJointPosRot(&pos2, 7, subsuit.XRot, &Eng2);
+			GetLaraJointPosRot(&pos2, LMX_TORSO, subsuit.XRot, &Eng2);
 			TriggerSubMist(&pos, &pos2, -(Eng2.y >> 8));
 		}
 

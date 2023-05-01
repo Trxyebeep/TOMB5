@@ -264,26 +264,20 @@ long ControlPhase(long nframes, long demo_mode)
 
 		if (cutseq_trig)
 		{
-			if (tomb5.cutseq_skipper)
-			{
-				if (keymap[DIK_ESCAPE] && !ScreenFading && !bDoCredits)//skip them with esc
-					do_cutseq_skipper_stuff();
-			}
+			if (tomb5.cutseq_skipper && keymap[DIK_ESCAPE] && !ScreenFading && !bDoCredits)	//skip them with esc
+				do_cutseq_skipper_stuff();
 
 			input = 0;
 		}
 
 		SetDebounce = 0;
 
-		if (gfCurrentLevel != LVL5_TITLE)
+		if (gfCurrentLevel != LVL5_TITLE && (dbinput & IN_OPTION || GLOBAL_enterinventory != NO_ITEM) && !cutseq_trig && lara_item->hit_points > 0)
 		{
-			if ((dbinput & IN_OPTION || GLOBAL_enterinventory != NO_ITEM) && !cutseq_trig && lara_item->hit_points > 0)
-			{
-				S_SoundStopAllSamples();
+			S_SoundStopAllSamples();
 
-				if (S_CallInventory2())
-					return 2;
-			}
+			if (S_CallInventory2())
+				return 2;
 		}
 
 		if (gfLevelComplete)
@@ -330,7 +324,7 @@ long ControlPhase(long nframes, long demo_mode)
 					return 2;
 			}
 
-			if (input & IN_PAUSE && gfGameMode == 0 && lara_item->hit_points > 0)
+			if (input & IN_PAUSE && !gfGameMode && lara_item->hit_points > 0)
 			{
 				if (S_PauseMenu() == 8)
 					return 1;
@@ -493,15 +487,12 @@ long ControlPhase(long nframes, long demo_mode)
 			else if (lara.dpoisoned)
 				lara.dpoisoned++;
 
-			if (gfLevelFlags & GF_OFFICE && !lara.Gassed)
+			if (gfLevelFlags & GF_OFFICE && !lara.Gassed && lara.dpoisoned)
 			{
-				if (lara.dpoisoned)
-				{
-					lara.dpoisoned -= 8;
+				lara.dpoisoned -= 8;
 
-					if (lara.dpoisoned < 0)
-						lara.dpoisoned = 0;
-				}
+				if (lara.dpoisoned < 0)
+					lara.dpoisoned = 0;
 			}
 
 			if (lara.poisoned >= 256 && !(wibble & 0xFF))
@@ -526,13 +517,10 @@ long ControlPhase(long nframes, long demo_mode)
 		InItemControlLoop = 0;
 		KillMoveItems();
 
-		if (gfLevelFlags & GF_OFFICE && !bUseSpotCam)
+		if (gfLevelFlags & GF_OFFICE && !bUseSpotCam && room[lara_item->room_number].FlipNumber > 10)
 		{
-			if (room[lara_item->room_number].FlipNumber > 10)
-			{
-				InitialiseSpotCam(room[lara_item->room_number].FlipNumber);
-				bUseSpotCam = 1;
-			}
+			InitialiseSpotCam(room[lara_item->room_number].FlipNumber);
+			bUseSpotCam = 1;
 		}
 
 		if (GLOBAL_inventoryitemchosen != NO_ITEM)
@@ -604,15 +592,12 @@ long ControlPhase(long nframes, long demo_mode)
 		SoundEffects();
 		health_bar_timer--;
 
-		if (gfGameMode == 0)
+		if (!gfGameMode)
 		{
 			GameTimer++;
 
-			if (savegame.Level.Timer)
-			{
-				if (!GLOBAL_playing_cutseq)
-					savegame.Level.Timer++;
-			}
+			if (savegame.Level.Timer && !GLOBAL_playing_cutseq)
+				savegame.Level.Timer++;
 		}
 
 		UpdateFadeClip();
@@ -767,11 +752,8 @@ void NeatAndTidyTriggerCutscene(long value, long timer)
 	if (lara.burn)
 		return;
 	
-	if (value == 23)
-	{
-		if (!cutseq_trig && CheckCutPlayed(23))
-			richcutfrigflag = 1;
-	}
+	if (value == 23 && !cutseq_trig && CheckCutPlayed(23))
+		richcutfrigflag = 1;
 
 	if (cutseq_trig || CheckCutPlayed(value))
 		return;
@@ -780,10 +762,7 @@ void NeatAndTidyTriggerCutscene(long value, long timer)
 
 	if (value <= 4 || value > 63)	//stealth "frigggggs"
 	{
-		if (value == 2)
-			inv_item_stealth_frigggggs = CROWBAR_ITEM;
-		else
-			inv_item_stealth_frigggggs = WET_CLOTH;
+		inv_item_stealth_frigggggs = value == 2 ? CROWBAR_ITEM : WET_CLOTH;
 
 		if (input & IN_ACTION && !BinocularRange && lara.gun_status == LG_NO_ARMS &&
 			lara_item->current_anim_state == AS_STOP && lara_item->anim_number == ANIM_BREATH &&
@@ -1022,7 +1001,6 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			
 			do
 			{
-
 				trigger = *data++;
 
 				if ((trigger & 0x3C00) != (TO_OBJECT << 10))
@@ -1355,74 +1333,71 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 			h1 = 0;
 			h2 = 0;
 
-			if ((type & 0x1F) != ROOF_TYPE)
-			{
-				if ((type & 0x1F) == SPLIT3 || (type & 0x1F) == SPLIT4 || (type & 0x1F) == NOCOLC1T ||
-					(type & 0x1F) == NOCOLC1B || (type & 0x1F) == NOCOLC2T || (type & 0x1F) == NOCOLC2B)
-				{
-					dx = x & 0x3FF;
-					dz = z & 0x3FF;
-					t0 = -(*data & 0xF);
-					t1 = -(*data >> 4 & 0xF);
-					t2 = -(*data >> 8 & 0xF);
-					t3 = -(*data >> 12 & 0xF);
-
-					if ((type & 0x1F) == SPLIT3 || (type & 0x1F) == NOCOLC1T || (type & 0x1F) == NOCOLC1B)
-					{
-						if (dx <= 1024 - dz)
-						{
-							hadj = type >> 10 & 0x1F;
-
-							if (hadj & 0x10)
-								hadj |= 0xFFF0;
-
-							height += 256 * hadj;
-							h1 = t2 - t1;
-							h2 = t3 - t2;
-						}
-						else
-						{
-							hadj = type >> 5 & 0x1F;
-
-							if (hadj & 0x10)
-								hadj |= 0xFFF0;
-
-							height += 256 * hadj;
-							h1 = t3 - t0;
-							h2 = t0 - t1;
-						}
-					}
-					else
-					{
-						if (dx <= dz)
-						{
-							hadj = type >> 10 & 0x1F;
-
-							if (hadj & 0x10)
-								hadj |= 0xFFF0;
-
-							height += 256 * hadj;
-							h1 = t2 - t1;
-							h2 = t0 - t1;
-						}
-						else
-						{
-							hadj = type >> 5 & 0x1F;
-
-							if (hadj & 0x10)
-								hadj |= 0xFFF0;
-
-							height += 256 * hadj;
-							h1 = t3 - t0;
-							h2 = t3 - t2;
-						}
-					}
-				}
-			}
-			else
+			if ((type & 0x1F) == ROOF_TYPE)
 			{
 				h1 = *data >> 8;
 				h2 = *(char*)data;
+			}
+			else if ((type & 0x1F) == SPLIT3 || (type & 0x1F) == SPLIT4 || (type & 0x1F) == NOCOLC1T ||
+				(type & 0x1F) == NOCOLC1B || (type & 0x1F) == NOCOLC2T || (type & 0x1F) == NOCOLC2B)
+			{
+				dx = x & 0x3FF;
+				dz = z & 0x3FF;
+				t0 = -(*data & 0xF);
+				t1 = -(*data >> 4 & 0xF);
+				t2 = -(*data >> 8 & 0xF);
+				t3 = -(*data >> 12 & 0xF);
+
+				if ((type & 0x1F) == SPLIT3 || (type & 0x1F) == NOCOLC1T || (type & 0x1F) == NOCOLC1B)
+				{
+					if (dx <= 1024 - dz)
+					{
+						hadj = type >> 10 & 0x1F;
+
+						if (hadj & 0x10)
+							hadj |= 0xFFF0;
+
+						height += 256 * hadj;
+						h1 = t2 - t1;
+						h2 = t3 - t2;
+					}
+					else
+					{
+						hadj = type >> 5 & 0x1F;
+
+						if (hadj & 0x10)
+							hadj |= 0xFFF0;
+
+						height += 256 * hadj;
+						h1 = t3 - t0;
+						h2 = t0 - t1;
+					}
+				}
+				else
+				{
+					if (dx <= dz)
+					{
+						hadj = type >> 10 & 0x1F;
+
+						if (hadj & 0x10)
+							hadj |= 0xFFF0;
+
+						height += 256 * hadj;
+						h1 = t2 - t1;
+						h2 = t0 - t1;
+					}
+					else
+					{
+						hadj = type >> 5 & 0x1F;
+
+						if (hadj & 0x10)
+							hadj |= 0xFFF0;
+
+						height += 256 * hadj;
+						h1 = t3 - t0;
+						h2 = t3 - t2;
+					}
+				}
 			}
 
 			if (h1 < 0)
@@ -1566,7 +1541,7 @@ long xLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 
 	if (dx < 0)
 	{
-		x = start->x & 0xFFFFFC00;
+		x = start->x & ~1023;
 		y = ((x - start->x) * dy >> 10) + start->y;
 		z = ((x - start->x) * dz >> 10) + start->z;
 
@@ -1687,7 +1662,7 @@ long zLOS(GAME_VECTOR* start, GAME_VECTOR* target)
 
 	if (dz < 0)
 	{
-		z = start->z & 0xFFFFFC00;
+		z = start->z & ~1023;
 		x = ((z - start->z) * dx >> 10) + start->x;
 		y = ((z - start->z) * dy >> 10) + start->y;
 
@@ -1885,134 +1860,137 @@ long GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, long DrawTarget, long f
 
 		if (firing)
 		{
-			if (lara.gun_type != WEAPON_CROSSBOW)
+			if (lara.gun_type == WEAPON_CROSSBOW)
 			{
-				if (item_no < 0)
-				{
-					if (Mesh->static_number >= 50 && Mesh->static_number < 58)
-					{
-						ShatterObject(0, Mesh, 128, target.room_number, 0);
-						SmashedMeshRoom[SmashedMeshCount] = target.room_number;
-						SmashedMesh[SmashedMeshCount] = Mesh;
-						SmashedMeshCount++;
-						Mesh->Flags &= ~0x1;
-						SoundEffect(ShatterSounds[gfCurrentLevel][Mesh->static_number - 50], (PHD_3DPOS*)Mesh, 0);
-					}
-
-					TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
-					TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
-				}
-				else
+				if (LaserSight && item_no >= 0)
 				{
 					shotitem = &items[item_no];
 
-					if (shotitem->object_number != SWITCH_TYPE7 && shotitem->object_number != SWITCH_TYPE8)
+					if (shotitem->object_number == GRAPPLING_TARGET && shotitem->mesh_bits & 1)
 					{
-						if (objects[shotitem->object_number].explodable_meshbits & ShatterItem.Bit && LaserSight)
+						LaserSightCol = gfLevelFlags & GF_OFFICE;
+
+						if (gfLevelFlags & GF_OFFICE)
 						{
-							if (!objects[shotitem->object_number].intelligent)
-							{
-								ShatterObject(&ShatterItem, 0, 128, target.room_number, 0);
-								shotitem->mesh_bits &= ~ShatterItem.Bit;
-								TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
-							}
-							else if (shotitem->object_number != TWOGUN)
-							{
-								shotitem->hit_points -= 30;
+							target.x = shotitem->pos.x_pos;
+							target.y = shotitem->pos.y_pos;
+							target.z = shotitem->pos.z_pos;
+						}
 
-								if (shotitem->hit_points < 0)
-									shotitem->hit_points = 0;
+						FireCrossBowFromLaserSight(src, &target);
+					}
+				}
+			}
+			else if (item_no < 0)
+			{
+				if (Mesh->static_number >= 50 && Mesh->static_number < 58)
+				{
+					ShatterObject(0, Mesh, 128, target.room_number, 0);
+					SmashedMeshRoom[SmashedMeshCount] = target.room_number;
+					SmashedMesh[SmashedMeshCount] = Mesh;
+					SmashedMeshCount++;
+					Mesh->Flags &= ~0x1;
+					SoundEffect(ShatterSounds[gfCurrentLevel][Mesh->static_number - 50], (PHD_3DPOS*)Mesh, 0);
+				}
 
-								HitTarget(shotitem, &target, weapons[lara.gun_type].damage, 0);
-							}
-							else if (abs(phd_atan(lara_item->pos.z_pos - shotitem->pos.z_pos, lara_item->pos.x_pos - shotitem->pos.x_pos) - shotitem->pos.y_rot) < 16384)
+				TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
+				TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
+			}
+			else
+			{
+				shotitem = &items[item_no];
+
+				if (shotitem->object_number != SWITCH_TYPE7 && shotitem->object_number != SWITCH_TYPE8)
+				{
+					if (objects[shotitem->object_number].explodable_meshbits & ShatterItem.Bit && LaserSight)
+					{
+						if (!objects[shotitem->object_number].intelligent)
+						{
+							ShatterObject(&ShatterItem, 0, 128, target.room_number, 0);
+							shotitem->mesh_bits &= ~ShatterItem.Bit;
+							TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
+						}
+						else if (shotitem->object_number == TWOGUN)
+						{
+							if (abs(phd_atan(lara_item->pos.z_pos - shotitem->pos.z_pos, lara_item->pos.x_pos - shotitem->pos.x_pos) - shotitem->pos.y_rot) < 16384)
 							{
 								shotitem->hit_points = 0;
 								HitTarget(shotitem, &target, weapons[lara.gun_type].damage, 0);
 							}
 						}
-						else if (DrawTarget && (lara.gun_type == WEAPON_REVOLVER || lara.gun_type == WEAPON_HK))
-						{
-							if (objects[shotitem->object_number].intelligent)
-								HitTarget(shotitem, &target, weapons[lara.gun_type].damage, 0);
-							else if (objects[shotitem->object_number].HitEffect == 3)
-								TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
-						}
-						else if (shotitem->object_number >= SMASH_OBJECT1 && shotitem->object_number <= SMASH_OBJECT8)
-							SmashObject(item_no);
 						else
 						{
-							if (objects[shotitem->object_number].HitEffect == 1)
-								DoBloodSplat(target.x, target.y, target.z, (GetRandomControl() & 3) + 3, shotitem->pos.y_rot, shotitem->room_number);
-							else if (objects[shotitem->object_number].HitEffect == 2)
-								TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, -5);
-							else if (objects[shotitem->object_number].HitEffect == 3)
-								TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
+							shotitem->hit_points -= 30;
 
-							shotitem->hit_status = 1;
+							if (shotitem->hit_points < 0)
+								shotitem->hit_points = 0;
 
-							if (!objects[shotitem->object_number].undead)
-								shotitem->hit_points -= weapons[lara.gun_type].damage;
+							HitTarget(shotitem, &target, weapons[lara.gun_type].damage, 0);
 						}
 					}
+					else if (DrawTarget && (lara.gun_type == WEAPON_REVOLVER || lara.gun_type == WEAPON_HK))
+					{
+						if (objects[shotitem->object_number].intelligent)
+							HitTarget(shotitem, &target, weapons[lara.gun_type].damage, 0);
+						else if (objects[shotitem->object_number].HitEffect == 3)
+							TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
+					}
+					else if (shotitem->object_number >= SMASH_OBJECT1 && shotitem->object_number <= SMASH_OBJECT8)
+						SmashObject(item_no);
 					else
 					{
-						if (ShatterItem.Bit == 1 << (objects[shotitem->object_number].nmeshes - 1))
+						if (objects[shotitem->object_number].HitEffect == 1)
+							DoBloodSplat(target.x, target.y, target.z, (GetRandomControl() & 3) + 3, shotitem->pos.y_rot, shotitem->room_number);
+						else if (objects[shotitem->object_number].HitEffect == 2)
+							TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, -5);
+						else if (objects[shotitem->object_number].HitEffect == 3)
+							TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
+
+						shotitem->hit_status = 1;
+
+						if (!objects[shotitem->object_number].undead)
+							shotitem->hit_points -= weapons[lara.gun_type].damage;
+					}
+				}
+				else
+				{
+					if (ShatterItem.Bit == 1 << (objects[shotitem->object_number].nmeshes - 1))
+					{
+						if (!(shotitem->flags & IFL_SWITCH_ONESHOT))
 						{
-							if (!(shotitem->flags & IFL_SWITCH_ONESHOT))
+							if (shotitem->object_number == SWITCH_TYPE7)
+								ExplodeItemNode(shotitem, objects[shotitem->object_number].nmeshes - 1, 0, 64);
+
+							if (shotitem->trigger_flags == 444 && shotitem->object_number == SWITCH_TYPE8)
+								ProcessExplodingSwitchType8(shotitem);
+							else if (shotitem->flags & IFL_CODEBITS && (shotitem->flags & IFL_CODEBITS) != IFL_CODEBITS)
 							{
-								if (shotitem->object_number == SWITCH_TYPE7)
-									ExplodeItemNode(shotitem, objects[shotitem->object_number].nmeshes - 1, 0, 64);
-
-								if (shotitem->trigger_flags == 444 && shotitem->object_number == SWITCH_TYPE8)
-									ProcessExplodingSwitchType8(shotitem);
-								else if (shotitem->flags & IFL_CODEBITS && (shotitem->flags & IFL_CODEBITS) != IFL_CODEBITS)
-								{
-									room_number = shotitem->room_number;
-									GetHeight(GetFloor(shotitem->pos.x_pos, shotitem->pos.y_pos - 256, shotitem->pos.z_pos, &room_number), shotitem->pos.x_pos, shotitem->pos.y_pos - 256, shotitem->pos.z_pos);
-									TestTriggers(trigger_index, 1, shotitem->flags & IFL_CODEBITS);
-								}
-								else
-								{
-									NumTrigs = (short)GetSwitchTrigger(shotitem, TriggerItems, 1);
-
-									for (int i = NumTrigs - 1; i >= 0; i--)
-									{
-										AddActiveItem(TriggerItems[i]);
-										items[TriggerItems[i]].status = ITEM_ACTIVE;
-										items[TriggerItems[i]].flags |= IFL_CODEBITS;
-									}
-								}
+								room_number = shotitem->room_number;
+								GetHeight(GetFloor(shotitem->pos.x_pos, shotitem->pos.y_pos - 256, shotitem->pos.z_pos, &room_number), shotitem->pos.x_pos, shotitem->pos.y_pos - 256, shotitem->pos.z_pos);
+								TestTriggers(trigger_index, 1, shotitem->flags & IFL_CODEBITS);
 							}
-
-							if (shotitem->status != ITEM_DEACTIVATED)
+							else
 							{
-								AddActiveItem(item_no);
-								shotitem->status = ITEM_ACTIVE;
-								shotitem->flags |= IFL_SWITCH_ONESHOT | IFL_CODEBITS;
+								NumTrigs = (short)GetSwitchTrigger(shotitem, TriggerItems, 1);
+
+								for (int i = NumTrigs - 1; i >= 0; i--)
+								{
+									AddActiveItem(TriggerItems[i]);
+									items[TriggerItems[i]].status = ITEM_ACTIVE;
+									items[TriggerItems[i]].flags |= IFL_CODEBITS;
+								}
 							}
 						}
 
-						TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
-					}
-				}
-			}
-			else if (LaserSight && item_no >= 0)
-			{
-				shotitem = &items[item_no];
-
-				if (shotitem->object_number == GRAPPLING_TARGET && shotitem->mesh_bits & 1)
-				{
-					LaserSightCol = gfLevelFlags & GF_OFFICE;
-
-					if (gfLevelFlags & GF_OFFICE)
-					{
-						target.x = shotitem->pos.x_pos;
-						target.y = shotitem->pos.y_pos;
-						target.z = shotitem->pos.z_pos;
+						if (shotitem->status != ITEM_DEACTIVATED)
+						{
+							AddActiveItem(item_no);
+							shotitem->status = ITEM_ACTIVE;
+							shotitem->flags |= IFL_SWITCH_ONESHOT | IFL_CODEBITS;
+						}
 					}
 
-					FireCrossBowFromLaserSight(src, &target);
+					TriggerRicochetSpark(&target, lara_item->pos.y_rot, 3, 0);
 				}
 			}
 		}
@@ -2026,7 +2004,12 @@ long GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, long DrawTarget, long f
 
 		hit = 1;
 	}
-	else if (lara.gun_type != WEAPON_CROSSBOW)
+	else if (lara.gun_type == WEAPON_CROSSBOW)
+	{
+		if (firing && LaserSight && LaserSightCol == (gfLevelFlags & GF_OFFICE))
+			FireCrossBowFromLaserSight(src, &target);
+	}
+	else
 	{
 		target.x -= (target.x - src->x) >> 5;
 		target.y -= (target.y - src->y) >> 5;
@@ -2035,8 +2018,6 @@ long GetTargetOnLOS(GAME_VECTOR* src, GAME_VECTOR* dest, long DrawTarget, long f
 		if (firing && !ricochet)
 			TriggerRicochetSpark(&target, lara_item->pos.y_rot, 8, 0);
 	}
-	else if (firing && LaserSight && LaserSightCol == (gfLevelFlags & GF_OFFICE))
-		FireCrossBowFromLaserSight(src, &target);
 
 	if (DrawTarget && (hit || !ricochet))
 	{
@@ -2074,7 +2055,8 @@ long ObjectOnLOS2(GAME_VECTOR* start, GAME_VECTOR* target, PHD_VECTOR* Coord, ME
 		{
 			item = &items[item_number];
 
-			if (item->status != ITEM_DEACTIVATED && item->status != ITEM_INVISIBLE && (item->object_number != LARA && objects[item->object_number].collision || item->object_number == LARA && GetLaraOnLOS))
+			if (item->status != ITEM_DEACTIVATED && item->status != ITEM_INVISIBLE &&
+				(item->object_number != LARA && objects[item->object_number].collision || item->object_number == LARA && GetLaraOnLOS))
 			{
 				bounds = GetBoundsAccurate(item);
 				ItemPos.x_pos = item->pos.x_pos;
@@ -2654,15 +2636,12 @@ void RemoveRoomFlipItems(ROOM_INFO* r)
 	{
 		item = &items[item_num];
 
-		if (item->flags & IFL_INVISIBLE && objects[item->object_number].intelligent)
+		if (item->flags & IFL_INVISIBLE && objects[item->object_number].intelligent && item->hit_points <= 0 && item->hit_points != -16384)
 		{
-			if (item->hit_points <= 0 && item->hit_points != -16384)
-			{
-				if (gfCurrentLevel == LVL5_RED_ALERT && item->object_number == HITMAN)
-					continue;
+			if (gfCurrentLevel == LVL5_RED_ALERT && item->object_number == HITMAN)
+				continue;
 
-				KillItem(item_num);
-			}
+			KillItem(item_num);
 		}
 	}
 }
@@ -2675,10 +2654,10 @@ void AddRoomFlipItems(ROOM_INFO* r)
 	{
 		item = &items[item_num];
 
-		if (items[item_num].object_number == 134 && item->item_flags[1])
+		if (items[item_num].object_number == RAISING_BLOCK1 && item->item_flags[1])
 			AlterFloorHeight(item, -1024);
 
-		if (item->object_number == 135 && item->item_flags[1])
+		if (item->object_number == RAISING_BLOCK2 && item->item_flags[1])
 			AlterFloorHeight(item, -2048);
 	}
 }
@@ -2719,14 +2698,11 @@ void RefreshCamera(short type, short* data)
 			if (camera.type != LOOK_CAMERA && camera.type != COMBAT_CAMERA || camera.number == NO_ITEM || camera.fixed[camera.number].flags & 3)
 				camera.item = &items[value];
 		}
-
-	} while (!(trigger & 0x8000));
-
-	if (camera.item)
-	{
-		if (!target_ok || target_ok == 2 && camera.item->looked_at && camera.item != camera.last_item)
-			camera.item = 0;
 	}
+	while (!(trigger & 0x8000));
+
+	if (camera.item && (!target_ok || target_ok == 2 && camera.item->looked_at && camera.item != camera.last_item))
+		camera.item = 0;
 
 	if (camera.number == -1 && camera.timer > 0)
 		camera.timer = -1;

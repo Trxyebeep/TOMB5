@@ -27,38 +27,6 @@
 #include "lara.h"
 #include "savegame.h"
 
-long FogTableColor[28] =
-{
-	0,
-	RGBONLY(245, 200, 60),
-	RGBONLY(120, 196, 112),
-	RGBONLY(202, 204, 230),
-	RGBONLY(128, 64, 0),
-	RGBONLY(64, 64, 64),
-	RGBONLY(243, 232, 236),
-	RGBONLY(0, 64, 192),
-	RGBONLY(0, 128, 0),
-	RGBONLY(150, 172, 157),
-	RGBONLY(128, 128, 128),
-	RGBONLY(204, 163, 123),
-	RGBONLY(177, 162, 140),
-	RGBONLY(0, 223, 191),
-	RGBONLY(111, 255, 223),
-	RGBONLY(244, 216, 152),
-	RGBONLY(248, 192, 60),
-	RGBONLY(252, 0, 0),
-	RGBONLY(198, 95, 87),
-	RGBONLY(226, 151, 118),
-	RGBONLY(248, 235, 206),
-	RGBONLY(0, 30, 16),
-	RGBONLY(250, 222, 167),
-	RGBONLY(218, 175, 117),
-	RGBONLY(225, 191, 78),
-	RGBONLY(77, 140, 141),
-	RGBONLY(4, 181, 154),
-	RGBONLY(255, 174, 0)
-};
-
 void(*effect_routines[59])(ITEM_INFO* item) =
 {
 	turn180_effect,
@@ -89,7 +57,7 @@ void(*effect_routines[59])(ITEM_INFO* item) =
 	void_effect,
 	reset_hair,
 	void_effect,
-	SetFog,
+	void_effect,
 	void_effect,
 	LaraLocation,
 	ClearSpidersPatch,
@@ -125,7 +93,6 @@ void(*effect_routines[59])(ITEM_INFO* item) =
 FX_INFO* effects;
 OBJECT_VECTOR* sound_effects;
 long number_sound_effects;
-long GlobalFogOff = 0;
 
 void WaterFall(short item_number)
 {
@@ -155,16 +122,15 @@ void WaterFall(short item_number)
 	SoundEffect(SFX_WATERFALL_LOOP, &item->pos, SFX_DEFAULT);
 }
 
-
 void void_effect(ITEM_INFO* item)
 {
-	return;
+
 }
 
 void turn180_effect(ITEM_INFO* item)
 {
-	item->pos.y_rot -= 32768;
 	item->pos.x_rot = -item->pos.x_rot;
+	item->pos.y_rot -= 0x8000;
 }
 
 void floor_shake_effect(ITEM_INFO* item)
@@ -274,11 +240,6 @@ void invisibility_off(ITEM_INFO* item)
 void reset_hair(ITEM_INFO* item)
 {
 	InitialiseHair();
-}
-
-void SetFog(ITEM_INFO* item)
-{
-
 }
 
 void LaraLocation(ITEM_INFO* item)

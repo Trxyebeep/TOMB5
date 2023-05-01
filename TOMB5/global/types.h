@@ -4,9 +4,11 @@
 #pragma pack(push, 1)
 
 /*macros*/
+#define SQUARE(x) ((x)*(x))
 #define	TRIGMULT2(a,b)		(((a) * (b)) >> 14)
 #define	TRIGMULT3(a,b,c)	(TRIGMULT2((TRIGMULT2(a, b)), c))
-#define SQUARE(x) ((x)*(x))
+#define	FTRIGMULT2(a,b)		((a) * (b))
+#define	FTRIGMULT3(a,b,c)	(FTRIGMULT2((FTRIGMULT2(a, b)), c))
 
 #define RGBONLY(r, g, b) ((b & 0xFF) | (((g & 0xFF) | ((r & 0xFF) << 8)) << 8))
 #define RGBA(r, g, b, a) (RGBONLY(r, g, b) | ((a) << 24))
@@ -22,9 +24,9 @@
 #define NO_ROOM	255
 #define MAX_ITEMS	256
 #define MAX_SAMPLES	450
+#define MAX_RIPPLES	128
 #define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
 #define MALLOC_SIZE	15000000	//15MB
-#define WINDOW_STYLE	WS_OVERLAPPEDWINDOW
 #define GAME_FOV	(80 * 182)
 
 /*typedefs*/
@@ -89,6 +91,25 @@ enum lara_draw_type
 	LARA_DIVESUIT
 };
 
+enum LMX
+{
+	LMX_HIPS,
+	LMX_THIGH_L,
+	LMX_CALF_L,
+	LMX_FOOT_L,
+	LMX_THIGH_R,
+	LMX_CALF_R,
+	LMX_FOOT_R,
+	LMX_TORSO,
+	LMX_HEAD,
+	LMX_UARM_R,
+	LMX_LARM_R,
+	LMX_HAND_R,
+	LMX_UARM_L,
+	LMX_LARM_L,
+	LMX_HAND_L
+};
+
 enum lara_mesh
 {
 	LM_HIPS,
@@ -125,7 +146,7 @@ enum lara_gun_status
 	LG_DRAW_GUNS,
 	LG_UNDRAW_GUNS,
 	LG_READY,
-	LG_FLARE,
+	LG_FLARE
 };
 
 enum lara_water_status
@@ -255,7 +276,7 @@ enum weapon_type_carried
 	W_LASERSIGHT =	0x4,
 	W_AMMO1 =		0x8,
 	W_AMMO2 =		0x10,
-	W_AMMO3 =		0x20,
+	W_AMMO3 =		0x20
 };
 
 enum zone_type
@@ -264,7 +285,7 @@ enum zone_type
 	BASIC_ZONE,
 	CROC_ZONE,
 	HUMAN_ZONE,
-	FLYER_ZONE,
+	FLYER_ZONE
 };
 
 enum camera_type
@@ -274,7 +295,7 @@ enum camera_type
 	LOOK_CAMERA,
 	COMBAT_CAMERA,
 	CINEMATIC_CAMERA,
-	HEAVY_CAMERA,
+	HEAVY_CAMERA
 };
 
 enum mood_type
@@ -282,7 +303,7 @@ enum mood_type
 	BORED_MOOD,
 	ATTACK_MOOD,
 	ESCAPE_MOOD,
-	STALK_MOOD,
+	STALK_MOOD
 };
 
 enum weapon_types 
@@ -383,7 +404,7 @@ struct ROOMLET
 	short padd;
 	float bBox[6];
 	LPDIRECT3DVERTEXBUFFER pVtx;
-	float* pSVtx;
+	float* pSVtx;	//ROOMLET_VERTEX format
 	short* pFac;
 	long* pPrelight;
 };
@@ -1533,6 +1554,17 @@ struct PENDULUM
 	ROPE_STRUCT* Rope;
 };
 
+struct ROOMLET_VERTEX
+{
+	float x;
+	float y;
+	float z;
+	float nx;
+	float ny;
+	float nz;
+	long prelight;
+};
+
 struct ACMESHVERTEX
 {
 	float x;
@@ -2072,8 +2104,12 @@ struct BAT_STRUCT
 
 struct QUAKE_CAM
 {
-	GAME_VECTOR spos;
-	GAME_VECTOR epos;
+	PHD_VECTOR start;
+	PHD_VECTOR end;
+	long start_strength;
+	long end_strength;
+	long dist;
+	long active;
 };
 
 struct LIGHTNING_STRUCT
@@ -2239,17 +2275,6 @@ struct SPOTLIGHT_STRUCT
 	float rad;
 };
 
-struct FCAMERA
-{
-	FVECTOR i;			//forward
-	FVECTOR j;			//right
-	FVECTOR k;			//up
-	FVECTOR pos;		//eye
-	FVECTOR tar;		//look at
-	float matrix[12];
-	float invmatrix[12];
-};
-
 struct D3DTLBUMPVERTEX
 {
 	D3DVALUE sx;
@@ -2295,12 +2320,6 @@ struct TEXTUREBUCKET
 	long tpage;
 	long nVtx;
 	D3DTLBUMPVERTEX vtx[2080];
-};
-
-struct D3DLIGHT_STRUCT
-{
-	LPDIRECT3DLIGHT D3DLight;
-	D3DLIGHT2 D3DLight2;
 };
 
 struct PISTOL_DEF
@@ -2375,24 +2394,6 @@ struct CHARDEF
 	char BottomShade;
 };
 
-struct LOADLEVELNAME
-{
-	char unk;
-	char name[256];
-};
-
-struct WRAITH_STRUCT
-{
-	PHD_VECTOR pos;
-	short xv;
-	short yv;
-	short zv;
-	uchar r;
-	uchar g;
-	uchar b;
-	uchar pad[3];
-};
-
 struct STRINGHEADER
 {
 	ushort nStrings;
@@ -2412,36 +2413,12 @@ struct NODEOFFSET_INFO
 	uchar GotIt;
 };
 
-struct PROFILER_EVENT
-{
-	__int64 t;
-	long c;
-};
-
 struct BINK_STRUCT
 {
 	long pad;
 	long num;
 	char padfuck[8];
 	long num2;
-};
-
-struct MAP_STRUCT
-{
-	long nLines;
-	long nVtx;
-	PHD_VECTOR vtx[256];
-	short lines[256];
-	short visited;
-	short room_number;
-};
-
-struct MAP_VECTOR
-{
-	long x1;
-	long y1;
-	long x2;
-	long y2;
 };
 
 struct CUTSEQ_SELECTOR
@@ -2495,7 +2472,7 @@ struct STARS
 	long col;
 };
 
-struct PORTAL
+struct ROOM_PORTAL
 {
 	short rn;
 	short normal[3];
@@ -2508,7 +2485,7 @@ struct PORTAL
 struct tomb5_options	//only bools or ulongs because that's what registry likes
 {
 	bool footprints;			//on off
-	ulong shadow_mode;			//1-> original, 2-> circle, 3-> PSX color like circle, 4-> PSX sprite
+	ulong shadow_mode;			//1-> original, 2-> circle, 3-> faded circle, 4-> PSX sprite
 	bool fix_climb_up_delay;	//on off 
 	bool flexible_crawling;		//on off
 	bool cutseq_skipper;		//on off
@@ -2518,7 +2495,6 @@ struct tomb5_options	//only bools or ulongs because that's what registry likes
 	bool ammo_counter;			//on off
 	bool gameover;				//on off, gameover menu after death
 	bool fog;					//on off
-	bool tr4_camera;			//on off (1 -> TR4, 0 -> TR5)
 	ulong bar_mode;				//1-> original, 2-> TR4, 3-> PSX
 	bool crawltilt;				//on off
 	bool PSX_skies;				//on off

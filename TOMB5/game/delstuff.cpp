@@ -237,17 +237,7 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 		phd_PushMatrix();
 		phd_TranslateRel(bone[29], bone[30], bone[31]);
 
-		phd_mxptr[M00] = phd_mxptr[-2 * indices_count + M00];//going back 2 matrices
-		phd_mxptr[M01] = phd_mxptr[-2 * indices_count + M01];
-		phd_mxptr[M02] = phd_mxptr[-2 * indices_count + M02];
-		phd_mxptr[M10] = phd_mxptr[-2 * indices_count + M10];
-		phd_mxptr[M11] = phd_mxptr[-2 * indices_count + M11];
-		phd_mxptr[M12] = phd_mxptr[-2 * indices_count + M12];
-		phd_mxptr[M20] = phd_mxptr[-2 * indices_count + M20];
-		phd_mxptr[M21] = phd_mxptr[-2 * indices_count + M21];
-		phd_mxptr[M22] = phd_mxptr[-2 * indices_count + M22];
-
-		aMXPtr[M00] = aMXPtr[-2 * indices_count + M00];
+		aMXPtr[M00] = aMXPtr[-2 * indices_count + M00];	//going back 2 matrices
 		aMXPtr[M01] = aMXPtr[-2 * indices_count + M01];
 		aMXPtr[M02] = aMXPtr[-2 * indices_count + M02];
 		aMXPtr[M10] = aMXPtr[-2 * indices_count + M10];
@@ -277,16 +267,6 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 
 		phd_PushMatrix();
 		phd_TranslateRel(bone[41], bone[42], bone[43]);
-
-		phd_mxptr[M00] = phd_mxptr[-2 * indices_count + M00];
-		phd_mxptr[M01] = phd_mxptr[-2 * indices_count + M01];
-		phd_mxptr[M02] = phd_mxptr[-2 * indices_count + M02];
-		phd_mxptr[M10] = phd_mxptr[-2 * indices_count + M10];
-		phd_mxptr[M11] = phd_mxptr[-2 * indices_count + M11];
-		phd_mxptr[M12] = phd_mxptr[-2 * indices_count + M12];
-		phd_mxptr[M20] = phd_mxptr[-2 * indices_count + M20];
-		phd_mxptr[M21] = phd_mxptr[-2 * indices_count + M21];
-		phd_mxptr[M22] = phd_mxptr[-2 * indices_count + M22];
 
 		aMXPtr[M00] = aMXPtr[-2 * indices_count + M00];
 		aMXPtr[M01] = aMXPtr[-2 * indices_count + M01];
@@ -320,16 +300,6 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 		phd_PushMatrix();
 		phd_TranslateRel(bone[29], bone[30], bone[31]);
 
-		phd_mxptr[M00] = phd_mxptr[-2 * indices_count + M00];
-		phd_mxptr[M01] = phd_mxptr[-2 * indices_count + M01];
-		phd_mxptr[M02] = phd_mxptr[-2 * indices_count + M02];
-		phd_mxptr[M10] = phd_mxptr[-2 * indices_count + M10];
-		phd_mxptr[M11] = phd_mxptr[-2 * indices_count + M11];
-		phd_mxptr[M12] = phd_mxptr[-2 * indices_count + M12];
-		phd_mxptr[M20] = phd_mxptr[-2 * indices_count + M20];
-		phd_mxptr[M21] = phd_mxptr[-2 * indices_count + M21];
-		phd_mxptr[M22] = phd_mxptr[-2 * indices_count + M22];
-
 		aMXPtr[M00] = aMXPtr[-2 * indices_count + M00];
 		aMXPtr[M01] = aMXPtr[-2 * indices_count + M01];
 		aMXPtr[M02] = aMXPtr[-2 * indices_count + M02];
@@ -360,16 +330,6 @@ void Rich_CalcLaraMatrices_Normal(short* frame, long* bone, long flag)
 
 		phd_PushMatrix();
 		phd_TranslateRel(bone[41], bone[42], bone[43]);
-
-		phd_mxptr[M00] = phd_mxptr[-2 * indices_count + M00];
-		phd_mxptr[M01] = phd_mxptr[-2 * indices_count + M01];
-		phd_mxptr[M02] = phd_mxptr[-2 * indices_count + M02];
-		phd_mxptr[M10] = phd_mxptr[-2 * indices_count + M10];
-		phd_mxptr[M11] = phd_mxptr[-2 * indices_count + M11];
-		phd_mxptr[M12] = phd_mxptr[-2 * indices_count + M12];
-		phd_mxptr[M20] = phd_mxptr[-2 * indices_count + M20];
-		phd_mxptr[M21] = phd_mxptr[-2 * indices_count + M21];
-		phd_mxptr[M22] = phd_mxptr[-2 * indices_count + M22];
 
 		aMXPtr[M00] = aMXPtr[-2 * indices_count + M00];
 		aMXPtr[M01] = aMXPtr[-2 * indices_count + M01];
@@ -473,9 +433,9 @@ void Rich_CalcLaraMatrices_Interpolated(short* frame1, short* frame2, long frac,
 
 	if (flag == 2)
 	{
-		vec.z = -16384;
-		vec.y = -16384;
-		vec.x = -16384;
+		vec.z = -0x4000;
+		vec.y = -0x4000;
+		vec.x = -0x4000;
 		ScaleCurrentMatrix(&vec);
 	}
 

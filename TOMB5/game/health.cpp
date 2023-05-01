@@ -63,7 +63,7 @@ void DrawGameInfo(long timed)
 				S_DrawEnemyBar(100 * lara.target->hit_points / objects[lara.target->object_number].hit_points);
 		}
 
-		if (gfLevelFlags & GF_TIMER && savegame.Level.Timer && savegame.Level.Timer < 108000)
+		if (gfLevelFlags & GF_TIMER && savegame.Level.Timer && savegame.Level.Timer < 0x1A5E0)
 		{
 			seconds = savegame.Level.Timer / 30;
 			sprintf(buf, "%.2d", seconds / 60);
@@ -76,22 +76,19 @@ void DrawGameInfo(long timed)
 			PrintString(92, 24, 0, buf, 0);
 		}
 
-		if (tomb5.ammo_counter)
+		if (tomb5.ammo_counter && lara.gun_status == LG_READY)
 		{
-			if (lara.gun_status == LG_READY)
+			ammo = *get_current_ammo_pointer(lara.gun_type);
+
+			if (ammo != -1)
 			{
-				ammo = *get_current_ammo_pointer(lara.gun_type);
 
-				if (ammo != -1)
-				{
+				if (lara.gun_type == WEAPON_SHOTGUN)
+					ammo /= 6;
 
-					if (lara.gun_type == WEAPON_SHOTGUN)
-						ammo /= 6;
-
-					sprintf(&buf[0], "%i", ammo);
-					GetStringLength(buf, 0, &btm);
-					PrintString(LaserSight ? phd_centerx + 30 : phd_winxmax - GetStringLength(buf, 0, 0) - 80, phd_winymax - btm - 70, 0, &buf[0], 0);
-				}
+				sprintf(&buf[0], "%i", ammo);
+				GetStringLength(buf, 0, &btm);
+				PrintString(LaserSight ? phd_centerx + 30 : phd_winxmax - GetStringLength(buf, 0, 0) - 80, phd_winymax - btm - 70, 0, buf, 0);
 			}
 		}
 
@@ -169,31 +166,9 @@ void DrawAirBar(long flash_state)
 	}
 }
 
-void MakeAmmoString(char* string)
-{
-	char* s;
-
-	s = string;
-
-	if (*string)
-	{
-		do
-		{
-			if (*s != 32)
-			{
-				if (*s - 65 < 0)
-					*s -= 47;
-				else
-					*s -= 53;
-			}
-
-		} while (*++s);
-	}
-}
-
 void InitialisePickUpDisplay()
 {
-	for (int i = 7; i > -1; i--)
+	for (int i = 0; i < 8; i++)
 		pickups[i].life = -1;
 
 	PickupX = 128;

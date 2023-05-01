@@ -15,10 +15,10 @@ void TriggerRopeFlame(PHD_VECTOR* pos, long size)
 
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
-	sptr->sR = -1;
+	sptr->sR = 255;
 	sptr->sG = (GetRandomControl() & 0x1F) + 48;
 	sptr->sB = 48;
-	sptr->dR = (GetRandomControl() & 0x3F) - 64;
+	sptr->dR = (GetRandomControl() & 0x3F) + 192;
 	sptr->dG = (GetRandomControl() & 0x3F) + 128;
 	sptr->dB = 32;
 	sptr->FadeToBlack = 4;
@@ -59,17 +59,17 @@ void TriggerRopeFlame(PHD_VECTOR* pos, long size)
 
 	sptr->Scalar = 2;
 	size += (GetRandomControl() & 15);
-	sptr->sSize = (uchar)size;
-	sptr->Size = sptr->sSize;
-	sptr->dSize = (uchar)(size >> 2);
+	sptr->Size = (uchar)size;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = sptr->Size >> 2;
 }
 
 void ControlBurningRoots(short item_number)
 {
 	ITEM_INFO* item;
-	ITEM_INFO* inside_item;
+	ITEM_INFO* heart;
 	PHD_VECTOR pos;
-	long size, Sine, Sn, Loop, Odd;
+	long size, s, o, odd, lp;
 
 	item = &items[item_number];
 
@@ -77,28 +77,25 @@ void ControlBurningRoots(short item_number)
 	{
 		item->item_flags[0]++;
 
-		if (item->item_flags[0] == 96)
+		if (item->item_flags[0] == 96 && item->item_flags[1] != NO_ITEM)
 		{
-			if (item->item_flags[1] != NO_ITEM)
-			{
-				inside_item = &items[item->item_flags[1]];
-				AddActiveItem(item->item_flags[1]);
-				inside_item->status = ITEM_ACTIVE;
-				inside_item->flags |= IFL_CODEBITS;
-				inside_item->pos.y_pos = item->pos.y_pos;
-			}
+			AddActiveItem(item->item_flags[1]);
+			heart = &items[item->item_flags[1]];
+			heart->status = ITEM_ACTIVE;
+			heart->flags |= IFL_CODEBITS;
+			heart->pos.y_pos = item->pos.y_pos;
 		}
 
 		if (GlobalCounter & 1)
 			return;
 
-		Odd = (GlobalCounter & 2) >> 1;
+		odd = (GlobalCounter & 2) >> 1;
 
 		if (item->item_flags[0] <= 127)
 		{
 			size = rcossin_tbl[item->item_flags[0] >> 3] << 9 >> 14;
 
-			for (int i = Odd; i < 4; i += 2)
+			for (int i = odd; i < 4; i += 2)
 			{
 				pos.x = 0;
 				pos.y = 0;
@@ -110,21 +107,21 @@ void ControlBurningRoots(short item_number)
 			if (item->item_flags[0] == 64 || item->item_flags[0] == 65)
 			{
 				item->meshswap_meshbits |= 1;
-				item->mesh_bits &= 0xFFFFFFF1;
+				item->mesh_bits &= ~0xE;
 			}
 		}
 
-		Sn = 4 + (Odd * 3);
-		Sine = item->item_flags[0] - 32;
-		Loop = 0;
+		s = item->item_flags[0] - 32;
+		o = (odd * 3) + 4;
+		lp = 0;
 
-		while (Sine >= 0 && Loop < 3)
+		while (s >= 0 && lp < 3)
 		{
-			if (Sine <= 127)
+			if (s <= 127)
 			{
-				size = (phd_sin(Sine << 8) << 7) >> 14;
+				size = 128 * phd_sin(s << 8) >> 14;
 
-				for (int i = Sn; i < 28; i += 6)
+				for (int i = o; i < 28; i += 6)
 				{
 					pos.x = 0;
 					pos.y = 0;
@@ -134,15 +131,15 @@ void ControlBurningRoots(short item_number)
 				}
 			}
 
-			if (Sine == 64 || Sine == 65)
+			if (s == 64 || s == 65)
 			{
-				for (int i = 4 + Loop; i < 28; i += 3)
+				for (int i = lp + 4; i < 28; i += 3)
 					item->meshswap_meshbits |= (1 << i);
 			}
 
-			Sine -= 32;
-			Loop++;
-			Sn++;
+			s -= 32;
+			o++;
+			lp++;
 		}
 	}
 }
@@ -166,48 +163,48 @@ void ControlLavaEffect(short item_number)
 
 	item->item_flags[2]--;
 
-	if (item->item_flags[2] < 15)
-	{
-		sptr = &spark[GetFreeSpark()];
-		sptr->On = 1;
-		sptr->sR = -1;
-		sptr->sG = (GetRandomControl() & 0x1F) + 48;
-		sptr->sB = 16;
-		sptr->dR = (GetRandomControl() & 0x3F) - 64;
-		sptr->dG = (GetRandomControl() & 0x3F) + 128;
-		sptr->dB = 0;
-		sptr->FadeToBlack = 4;
-		sptr->ColFadeSpeed = (GetRandomControl() & 3) + 4;
-		sptr->TransType = 2;
-		sptr->Life = (GetRandomControl() & 3) + 24;
-		sptr->sLife = sptr->Life;
-		sptr->x = item->item_flags[1] + (GetRandomControl() & 0x3F) + item->pos.x_pos - 544;
-		sptr->y = item->pos.y_pos;
-		sptr->z = item->item_flags[0] + (GetRandomControl() & 0x3F) + item->pos.z_pos - 544;
-		sptr->Xvel = (GetRandomControl() & 0x1FF) - 256;
-		sptr->Yvel = -512 - (GetRandomControl() & 0x3FF);
-		sptr->Zvel = (GetRandomControl() & 0x1FF) - 256;
-		sptr->Friction = 6;
-		sptr->RotAng = GetRandomControl() & 0xFFF;
-		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
-		sptr->MaxYvel = 0;
-		sptr->sSize = (GetRandomControl() & 0xF) + 32;
-		sptr->Size = sptr->sSize;
-		sptr->dSize = sptr->sSize >> 2;
+	if (item->item_flags[2] >= 15)
+		return;
 
-		if (GetRandomControl() & 3)
-		{
-			sptr->Flags = 538;
-			sptr->Scalar = 3;
-			sptr->Gravity = (GetRandomControl() & 0x3F) + 32;
-		}
-		else
-		{
-			sptr->Flags = 26;
-			sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
-			sptr->Scalar = 1;
-			sptr->Gravity = (GetRandomControl() & 0xF) + 64;
-		}
+	sptr = &spark[GetFreeSpark()];
+	sptr->On = 1;
+	sptr->sR = 255;
+	sptr->sG = (GetRandomControl() & 0x1F) + 48;
+	sptr->sB = 16;
+	sptr->dR = (GetRandomControl() & 0x3F) + 192;
+	sptr->dG = (GetRandomControl() & 0x3F) + 128;
+	sptr->dB = 0;
+	sptr->FadeToBlack = 4;
+	sptr->ColFadeSpeed = (GetRandomControl() & 3) + 4;
+	sptr->TransType = 2;
+	sptr->Life = (GetRandomControl() & 3) + 24;
+	sptr->sLife = sptr->Life;
+	sptr->x = item->item_flags[1] + (GetRandomControl() & 0x3F) + item->pos.x_pos - 544;
+	sptr->y = item->pos.y_pos;
+	sptr->z = item->item_flags[0] + (GetRandomControl() & 0x3F) + item->pos.z_pos - 544;
+	sptr->Xvel = (GetRandomControl() & 0x1FF) - 256;
+	sptr->Yvel = -512 - (GetRandomControl() & 0x3FF);
+	sptr->Zvel = (GetRandomControl() & 0x1FF) - 256;
+	sptr->Friction = 6;
+	sptr->RotAng = GetRandomControl() & 0xFFF;
+	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
+	sptr->MaxYvel = 0;
+	sptr->Size = (GetRandomControl() & 0xF) + 32;
+	sptr->sSize = sptr->Size;
+	sptr->dSize = sptr->Size >> 2;
+
+	if (GetRandomControl() & 3)
+	{
+		sptr->Flags = 538;
+		sptr->Scalar = 3;
+		sptr->Gravity = (GetRandomControl() & 0x3F) + 32;
+	}
+	else
+	{
+		sptr->Flags = 26;
+		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
+		sptr->Scalar = 1;
+		sptr->Gravity = (GetRandomControl() & 0xF) + 64;
 	}
 }
 
@@ -215,18 +212,19 @@ void TriggerCoinGlow(short item_number)
 {
 	ITEM_INFO* item;
 	SPARKS* sptr;
-	short shade;
+	short shade, ang;
 
 	item = &items[item_number];
+	ang = CamRot.y + 1256;
 
-	if (((CamRot.y + 1256) & 0x7FF) > 1024)
+	if ((ang & 0x7FF) > 1024)
 		return;
 
-	shade = phd_sin(((CamRot.y + 1256) & 2047) << 5);
+	shade = phd_sin((ang & 0x7FF) << 5);
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
-	sptr->sR = (GetRandomControl() & 0x1F) - 32;
-	sptr->sG = (GetRandomControl() & 0xF) - 64;
+	sptr->sR = (GetRandomControl() & 0x1F) + 224;
+	sptr->sG = (GetRandomControl() & 0xF) + 192;
 	sptr->sB = GetRandomControl() & 0x7F;
 	sptr->dR = 0;
 	sptr->dG = 0;
@@ -239,9 +237,9 @@ void TriggerCoinGlow(short item_number)
 	sptr->Life = 2;
 	sptr->sLife = 2;
 	sptr->TransType = 2;
-	sptr->x = item->pos.x_pos + ((phd_sin(((CamRot.y + 1256) & 0xFFF) << 4) << 5) >> 14);
+	sptr->x = item->pos.x_pos + (32 * phd_sin((ang & 0xFFF) << 4) >> 14);
 	sptr->y = item->pos.y_pos - 16;
-	sptr->z = item->pos.z_pos + ((phd_cos(((CamRot.y + 1256) & 0xFFF) << 4) << 5) >> 14);
+	sptr->z = item->pos.z_pos + (32 * phd_cos((ang & 0xFFF) << 4) >> 14);
 	sptr->Xvel = 0;
 	sptr->Yvel = 0;
 	sptr->Zvel = 0;
@@ -250,7 +248,7 @@ void TriggerCoinGlow(short item_number)
 	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 11;
 	sptr->MaxYvel = 0;
 	sptr->Gravity = 0;
-	sptr->dSize = 24;
-	sptr->sSize = 24;
 	sptr->Size = 24;
+	sptr->sSize = 24;
+	sptr->dSize = 24;
 }

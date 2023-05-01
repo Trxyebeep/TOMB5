@@ -141,7 +141,7 @@ void ControlExplosion(short item_number)
 				pos.x = 0;
 				pos.y = 0;
 				pos.z = 0;
-				GetLaraJointPos(&pos, 0);
+				GetLaraJointPos(&pos, LMX_HIPS);
 				dx = pos.x - item->pos.x_pos;
 				dy = pos.y - item->pos.y_pos;
 				dz = pos.z - item->pos.z_pos;

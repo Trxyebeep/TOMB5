@@ -30,6 +30,7 @@ static long(__stdcall* BinkDoFrame)(BINK_STRUCT*);
 static void(__stdcall* BinkNextFrame)(BINK_STRUCT*);
 static long(__stdcall* BinkWait)(BINK_STRUCT*);
 static void(__stdcall* BinkClose)(BINK_STRUCT*);
+static HMODULE hBinkW32;
 
 static long nFmvFrames[9] = { 880, 1826, 3869, 3112, 1903, 1973, 3200, 2799, 1725 };
 
@@ -39,8 +40,6 @@ static long BinkSurfaceType;
 
 bool LoadBinkStuff()
 {
-	static HMODULE hBinkW32;
-
 	hBinkW32 = LoadLibrary("binkw32.dll");
 
 	if (!hBinkW32)
@@ -66,6 +65,15 @@ bool LoadBinkStuff()
 	}
 
 	return 1;
+}
+
+void FreeBinkStuff()
+{
+	if (hBinkW32)
+	{
+		FreeLibrary(hBinkW32);
+		hBinkW32 = 0;
+	}
 }
 
 void ShowBinkFrame()

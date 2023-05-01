@@ -16,26 +16,23 @@ long LaraTestWaterStepOut(ITEM_INFO* item, COLL_INFO* coll)
 	if (coll->coll_type == CT_FRONT || coll->mid_type == BIG_SLOPE || coll->mid_type == DIAGONAL || coll->mid_floor >= 0)
 		return 0;
 
-	if (coll->mid_floor >= -128)
-	{
-		if (item->goal_anim_state == AS_SURFLEFT)
-			item->goal_anim_state = AS_STEPLEFT;
-		else if (item->goal_anim_state == AS_SURFRIGHT)
-			item->goal_anim_state = AS_STEPRIGHT;
-		else
-		{
-			item->anim_number = ANIM_WADE;
-			item->frame_number = anims[ANIM_WADE].frame_base;
-			item->goal_anim_state = AS_WADE;
-			item->current_anim_state = AS_WADE;
-		}
-	}
-	else
+	if (coll->mid_floor < -128)
 	{
 		item->anim_number = ANIM_SURF2WADE1;
 		item->frame_number = anims[ANIM_SURF2WADE1].frame_base;
 		item->current_anim_state = AS_WATEROUT;
 		item->goal_anim_state = AS_STOP;
+	}
+	else if (item->goal_anim_state == AS_SURFLEFT)
+		item->goal_anim_state = AS_STEPLEFT;
+	else if (item->goal_anim_state == AS_SURFRIGHT)
+		item->goal_anim_state = AS_STEPRIGHT;
+	else
+	{
+		item->anim_number = ANIM_WADE;
+		item->frame_number = anims[ANIM_WADE].frame_base;
+		item->current_anim_state = AS_WADE;
+		item->goal_anim_state = AS_WADE;
 	}
 
 	item->pos.y_pos += coll->front_floor + 695;
@@ -65,14 +62,14 @@ long LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
 
 	angle = item->pos.y_rot;
 
-	if (angle >= -6370 && angle <= 6370)
+	if (angle >= -0x18E2 && angle <= 0x18E2)
 		angle = 0;
-	else if (angle >= 10014 && angle <= 22754)
-		angle = 16384;
-	else if (angle >= 26397 || angle <= -26397)
-		angle = -32768;
-	else if (angle >= -22754 && angle <= -10014)
-		angle = -16384;
+	else if (angle >= 0x271E && angle <= 0x58E2)
+		angle = 0x4000;
+	else if (angle >= 0x671D || angle <= -0x671D)
+		angle = -0x8000;
+	else if (angle >= -0x58E2 && angle <= -0x271E)
+		angle = -0x4000;
 
 	if (angle & 0x3FFF)
 		return 0;
@@ -80,14 +77,14 @@ long LaraTestWaterClimbOut(ITEM_INFO* item, COLL_INFO* coll)
 	item->pos.y_pos += coll->front_floor + 695;
 	UpdateLaraRoom(item, -381);
 
-	if (angle == 0)
-		item->pos.z_pos = (item->pos.z_pos & -1024) + 1124;
-	else if (angle == 16384)
-		item->pos.x_pos = (item->pos.x_pos & -1024) + 1124;
-	else if (angle == -32768)
-		item->pos.z_pos = (item->pos.z_pos & -1024) - 100;
-	else if (angle == -16384)
-		item->pos.x_pos = (item->pos.x_pos & -1024) - 100;
+	if (!angle)
+		item->pos.z_pos = (item->pos.z_pos & ~1023) + 1124;
+	else if (angle == 0x4000)
+		item->pos.x_pos = (item->pos.x_pos & ~1023) + 1124;
+	else if (angle == -0x8000)
+		item->pos.z_pos = (item->pos.z_pos & ~1023) - 100;
+	else if (angle == -0x4000)
+		item->pos.x_pos = (item->pos.x_pos & ~1023) - 100;
 
 	if (hdif < -128)
 	{
@@ -350,19 +347,19 @@ void lara_col_surfswim(ITEM_INFO* item, COLL_INFO* coll)
 
 void lara_col_surfback(ITEM_INFO* item, COLL_INFO* coll)
 {
-	lara.move_angle = item->pos.y_rot - 32768;
+	lara.move_angle = item->pos.y_rot - 0x8000;
 	LaraSurfaceCollision(item, coll);
 }
 
 void lara_col_surfleft(ITEM_INFO* item, COLL_INFO* coll)
 {
-	lara.move_angle = item->pos.y_rot - 16384;
+	lara.move_angle = item->pos.y_rot - 0x4000;
 	LaraSurfaceCollision(item, coll);
 }
 
 void lara_col_surfright(ITEM_INFO* item, COLL_INFO* coll)
 {
-	lara.move_angle = item->pos.y_rot + 16384;
+	lara.move_angle = item->pos.y_rot + 0x4000;
 	LaraSurfaceCollision(item, coll);
 }
 

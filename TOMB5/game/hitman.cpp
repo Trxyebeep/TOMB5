@@ -25,8 +25,8 @@ void InitialiseHitman(short item_number)
 	InitialiseCreature(item_number);
 	item->anim_number = objects[HITMAN].anim_index + 4;
 	item->frame_number = anims[item->anim_number].frame_base;
-	item->goal_anim_state = 1;
 	item->current_anim_state = 1;
+	item->goal_anim_state = 1;
 }
 
 void HitmanControl(short item_number)
@@ -36,8 +36,8 @@ void HitmanControl(short item_number)
 	FLOOR_INFO* floor;
 	PHD_VECTOR pos;
 	PHD_VECTOR pos2;
-	AI_INFO lara_info;
-	AI_INFO hitmanAI;
+	AI_INFO info;
+	AI_INFO larainfo;
 	long Xoffset, Zoffset, x, y, z, nearheight, midheight, farheight, dx, dz, c, h;
 	short angle, head, torso_x, torso_y, room_number, jump_ahead, long_jump_ahead, node, left_foot_room, right_foot_room, frame, base;
 
@@ -50,19 +50,23 @@ void HitmanControl(short item_number)
 	head = 0;
 	torso_x = 0;
 	torso_y = 0;
+
 	room_number = item->room_number;
 	Xoffset = 808 * phd_sin(item->pos.y_rot) >> 14;
 	Zoffset = 808 * phd_cos(item->pos.y_rot) >> 14;
+
 	x = item->pos.x_pos + Xoffset;
 	y = item->pos.y_pos;
 	z = item->pos.z_pos + Zoffset;
 	floor = GetFloor(x, y, z, &room_number);
 	nearheight = GetHeight(floor, x, y, z);
+
 	room_number = item->room_number;
 	x += Xoffset;
 	z += Zoffset;
 	floor = GetFloor(x, y, z, &room_number);
 	midheight = GetHeight(floor, x, y, z);
+
 	room_number = item->room_number;
 	x += Xoffset;
 	z += Zoffset;
@@ -94,15 +98,12 @@ void HitmanControl(short item_number)
 	else
 		hitman->enemy = lara_item;
 
-	CreatureAIInfo(item, &hitmanAI);
+	CreatureAIInfo(item, &info);
 
-	if (item->hit_status && !(GetRandomControl() & 7))
+	if (item->hit_status && !(GetRandomControl() & 7) && item->item_flags[0] < 11)
 	{
-		if (item->item_flags[0] < 11)
-		{
-			item->meshswap_meshbits |= 1 << hitman_nodes[item->item_flags[0]];
-			item->item_flags[0]++;
-		}
+		item->meshswap_meshbits |= 1 << hitman_nodes[item->item_flags[0]];
+		item->item_flags[0]++;
 	}
 
 	node = GetRandomControl() & 0xFF;
@@ -116,6 +117,7 @@ void HitmanControl(short item_number)
 		pos.y = 0;
 		pos.z = 50;
 		GetJointAbsPosition(item, &pos, hitman_nodes[node]);
+
 		TriggerLightningGlow(pos.x, pos.y, pos.z, 0x30202040);
 		TriggerFlareSparks(pos.x, pos.y, pos.z, -1, -1, -1);
 		TriggerDynamic(pos.x, pos.y, pos.z, (GetRandomControl() & 3) + 16, 31, 63, 127);
@@ -149,22 +151,50 @@ void HitmanControl(short item_number)
 		}
 	}
 
-	if (item->hit_points > 0)
+	if (item->hit_points <= 0)
+	{
+		if (item->current_anim_state == 43 && !lara.burn)
+		{
+			pos.x = 0;
+			pos.y = 0;
+			pos.z = 0;
+			GetLaraJointPos(&pos, LMX_FOOT_L);
+			left_foot_room = lara_item->room_number;
+			GetFloor(pos.x, pos.y, pos.z, &left_foot_room);
+
+			pos2.x = 0;
+			pos2.y = 0;
+			pos2.z = 0;
+			GetLaraJointPos(&pos2, LMX_FOOT_R);
+			right_foot_room = lara_item->room_number;
+			GetFloor(pos2.x, pos2.y, pos2.z, &right_foot_room);
+
+			if ((room[left_foot_room].flags & ROOM_UNDERWATER || room[right_foot_room].flags & ROOM_UNDERWATER) &&
+				(room[left_foot_room].FlipNumber == room[item->room_number].FlipNumber || room[right_foot_room].FlipNumber == room[item->room_number].FlipNumber))
+			{
+				LaraBurn();
+				lara.BurnBlue = 1;
+				lara.BurnCount = 48;
+				lara_item->hit_points = 0;
+			}
+		}
+	}
+	else
 	{
 		if (hitman->enemy == lara_item)
 		{
-			lara_info.angle = hitmanAI.angle;
-			lara_info.distance = hitmanAI.distance;
+			larainfo.angle = info.angle;
+			larainfo.distance = info.distance;
 		}
 		else
 		{
 			dx = lara_item->pos.x_pos - item->pos.x_pos;
 			dz = lara_item->pos.z_pos - item->pos.z_pos;
-			lara_info.angle = (short)(phd_atan(dz, dx) - item->pos.y_rot);
-			lara_info.distance = SQUARE(dz) + SQUARE(dx);
+			larainfo.angle = short(phd_atan(dz, dx) - item->pos.y_rot);
+			larainfo.distance = SQUARE(dz) + SQUARE(dx);
 		}
 
-		GetCreatureMood(item, &hitmanAI, hitman->enemy != lara_item);
+		GetCreatureMood(item, &info, hitman->enemy != lara_item);
 
 		if (room[item->room_number].flags & ROOM_NO_LENSFLARE)
 		{
@@ -181,11 +211,10 @@ void HitmanControl(short item_number)
 			}
 		}
 
-		CreatureMood(item, &hitmanAI, hitman->enemy != lara_item);
+		CreatureMood(item, &info, hitman->enemy != lara_item);
 		angle = CreatureTurn(item, hitman->maximum_turn);
 
-		if ((lara_info.distance < 0x400000 && lara_item->speed > 20 || item->hit_status || TargetVisible(item, &lara_info)) &&
-			!(item->ai_bits & 16))
+		if ((larainfo.distance < 0x400000 && lara_item->speed > 20 || item->hit_status || TargetVisible(item, &larainfo)) && !(item->ai_bits & 16))
 		{
 			hitman->enemy = lara_item;
 			AlertAllGuards(item_number);
@@ -194,15 +223,15 @@ void HitmanControl(short item_number)
 		switch (item->current_anim_state)
 		{
 		case 1:
-			head = lara_info.angle;
+			head = larainfo.angle;
 			hitman->flags = 0;
 			hitman->LOT.is_jumping = 0;
 			hitman->maximum_turn = 0;
 
-			if (hitmanAI.ahead && item->ai_bits != 1)
+			if (info.ahead && item->ai_bits != 1)
 			{
-				torso_y = hitmanAI.angle >> 1;
-				torso_x = hitmanAI.x_angle;
+				torso_y = info.angle >> 1;
+				torso_x = info.x_angle;
 			}
 
 			if (item->required_anim_state)
@@ -219,58 +248,46 @@ void HitmanControl(short item_number)
 						item->ai_bits = 4;
 				}
 			}
-			else if (Targetable(item, &hitmanAI))
+			else if (Targetable(item, &info))
 			{
-				if (hitmanAI.distance >= 0x1000000 && hitmanAI.zone_number == hitmanAI.enemy_zone)
-				{
-					if (item->ai_bits != 4)
-						item->goal_anim_state = 2;
-				}
-				else
+				if (info.distance < 0x1000000 || info.zone_number != info.enemy_zone)
 					item->goal_anim_state = 38;
+				else if (item->ai_bits != 4)
+					item->goal_anim_state = 2;
+			}
+			else if (item->ai_bits & 4)
+				item->goal_anim_state = 2;
+			else if (jump_ahead || long_jump_ahead)
+			{
+				hitman->maximum_turn = 0;
+				item->anim_number = objects[HITMAN].anim_index + 22;
+				item->frame_number = anims[item->anim_number].frame_base;
+				item->current_anim_state = 15;
+
+				if (long_jump_ahead)
+					item->goal_anim_state = 16;
+
+				hitman->LOT.is_jumping = 1;
+			}
+			else if (!hitman->monkey_ahead)
+			{
+				if (hitman->mood == BORED_MOOD)
+					item->goal_anim_state = 1;
+				else if (info.distance < 0x900000 || item->ai_bits & 0x10)
+					item->goal_anim_state = 2;
+				else
+					item->goal_anim_state = 3;
 			}
 			else
 			{
-				if (item->ai_bits & 4)
-					item->goal_anim_state = 2;
+				floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
+				c = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+				h = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
+
+				if (c == h - 1536)
+					item->goal_anim_state = 4;
 				else
-				{
-					if (jump_ahead || long_jump_ahead)
-					{
-						hitman->maximum_turn = 0;
-						item->anim_number = objects[HITMAN].anim_index + 22;
-						item->frame_number = anims[item->anim_number].frame_base;
-						item->current_anim_state = 15;
-
-						if (long_jump_ahead)
-							item->goal_anim_state = 16;
-
-						hitman->LOT.is_jumping = 1;
-					}
-					else if (!hitman->monkey_ahead)
-					{
-						if (hitman->mood != BORED_MOOD)
-						{
-							if (hitmanAI.distance < 0x900000 || item->ai_bits & 16)
-								item->goal_anim_state = 2;
-							else
-								item->goal_anim_state = 3;
-						}
-						else
-							item->goal_anim_state = 1;
-					}
-					else
-					{
-						floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
-						c = GetCeiling(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
-						h = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
-
-						if (c == h - 1536)
-							item->goal_anim_state = 4;
-						else
-							item->goal_anim_state = 2;
-					}
-				}
+					item->goal_anim_state = 2;
 			}
 
 			break;
@@ -279,41 +296,29 @@ void HitmanControl(short item_number)
 			hitman->LOT.is_jumping = 0;
 			hitman->maximum_turn = 910;
 
-			if (!Targetable(item, &hitmanAI) || hitmanAI.distance >= 0x1000000 && hitmanAI.zone_number == hitmanAI.enemy_zone)
-			{
-				if (jump_ahead || long_jump_ahead)
-				{
-					hitman->maximum_turn = 0;
-					item->anim_number = objects[HITMAN].anim_index + 22;
-					item->frame_number = anims[item->anim_number].frame_base;
-					item->current_anim_state = 15;
-
-					if (long_jump_ahead)
-						item->goal_anim_state = 16;
-
-					hitman->LOT.is_jumping = 1;
-				}
-				else
-				{
-					if (!hitman->monkey_ahead)
-					{
-						if (hitmanAI.distance >= 0x100000)
-						{
-							if (hitmanAI.distance > 0x900000 && !item->ai_bits)
-								item->goal_anim_state = 3;
-						}
-						else
-							item->goal_anim_state = 1;
-					}
-					else
-						item->goal_anim_state = 1;		
-				}
-			}
-			else
+			if (Targetable(item, &info) && (info.distance < 0x1000000 || info.zone_number != info.enemy_zone))
 			{
 				item->goal_anim_state = 1;
 				item->required_anim_state = 38;
 			}
+			else if (jump_ahead || long_jump_ahead)
+			{
+				hitman->maximum_turn = 0;
+				item->anim_number = objects[HITMAN].anim_index + 22;
+				item->frame_number = anims[item->anim_number].frame_base;
+				item->current_anim_state = 15;
+
+				if (long_jump_ahead)
+					item->goal_anim_state = 16;
+
+				hitman->LOT.is_jumping = 1;
+			}
+			else if (hitman->monkey_ahead)
+				item->goal_anim_state = 1;
+			else if (info.distance < 0x100000)
+				item->goal_anim_state = 1;
+			else if (info.distance > 0x900000 && !item->ai_bits)
+				item->goal_anim_state = 3;
 
 			break;
 
@@ -321,33 +326,27 @@ void HitmanControl(short item_number)
 			hitman->maximum_turn = 1820;
 			hitman->LOT.is_jumping = 0;
 
-			if (!Targetable(item, &hitmanAI) || hitmanAI.distance >= 0x1000000 && hitmanAI.zone_number == hitmanAI.enemy_zone)
-			{
-				if (jump_ahead || long_jump_ahead)
-				{
-					hitman->maximum_turn = 0;
-					item->anim_number = objects[HITMAN].anim_index + 22;
-					item->frame_number = anims[item->anim_number].frame_base;
-					item->current_anim_state = 15;
-
-					if (long_jump_ahead)
-						item->goal_anim_state = 16;
-
-					hitman->LOT.is_jumping = 1;
-				}
-				else
-				{
-					if (hitman->monkey_ahead)
-						item->goal_anim_state = 1;
-					else if (hitmanAI.distance < 0x900000)
-						item->goal_anim_state = 2;
-				}
-			}
-			else
+			if (Targetable(item, &info) && (info.distance < 0x1000000 || info.zone_number != info.enemy_zone))
 			{
 				item->goal_anim_state = 1;
 				item->required_anim_state = 38;
 			}
+			else if (jump_ahead || long_jump_ahead)
+			{
+				hitman->maximum_turn = 0;
+				item->anim_number = objects[HITMAN].anim_index + 22;
+				item->frame_number = anims[item->anim_number].frame_base;
+				item->current_anim_state = 15;
+
+				if (long_jump_ahead)
+					item->goal_anim_state = 16;
+
+				hitman->LOT.is_jumping = 1;
+			}
+			else if (hitman->monkey_ahead)
+				item->goal_anim_state = 1;
+			else if (info.distance < 0x900000)
+				item->goal_anim_state = 2;
 
 			break;
 
@@ -386,25 +385,22 @@ void HitmanControl(short item_number)
 			break;
 
 		case 38:
-			torso_y = lara_info.angle >> 1;
-			head = lara_info.angle >> 1;
+			torso_y = larainfo.angle >> 1;
+			head = larainfo.angle >> 1;
 			hitman->flags = 0;
 			hitman->maximum_turn = 0;
 
-			if (hitmanAI.ahead)
-				torso_x = hitmanAI.x_angle;
+			if (info.ahead)
+				torso_x = info.x_angle;
 
-			if (abs(hitmanAI.angle) >= 364)
-			{
-				if (hitmanAI.angle >= 0)
-					item->pos.y_rot += 364;
-				else
-					item->pos.y_rot -= 364;
-			}
+			if (abs(info.angle) < 364)
+				item->pos.y_rot += info.angle;
+			else if (info.angle < 0)
+				item->pos.y_rot -= 364;
 			else
-				item->pos.y_rot += hitmanAI.angle;
-
-			if (!Targetable(item, &hitmanAI) || hitmanAI.distance >= 0x1000000 && hitmanAI.zone_number == hitmanAI.enemy_zone)
+				item->pos.y_rot += 364;
+				
+			if (!Targetable(item, &info) || info.distance >= 0x1000000 && info.zone_number == info.enemy_zone)
 				item->goal_anim_state = 1;
 			else
 				item->goal_anim_state = 39;
@@ -412,23 +408,20 @@ void HitmanControl(short item_number)
 			break;
 
 		case 39:
-			torso_y = lara_info.angle >> 1;
-			head = lara_info.angle >> 1;
+			torso_y = larainfo.angle >> 1;
+			head = larainfo.angle >> 1;
 
-			if (hitmanAI.ahead)
-				torso_x = hitmanAI.x_angle;
+			if (info.ahead)
+				torso_x = info.x_angle;
 
 			hitman->maximum_turn = 0;
 
-			if (abs(hitmanAI.angle) >= 364)
-			{
-				if (hitmanAI.angle >= 0)
-					item->pos.y_rot += 364;
-				else
-					item->pos.y_rot -= 364;
-			}
+			if (abs(info.angle) < 364)
+				item->pos.y_rot += info.angle;
+			else if (info.angle < 0)
+				item->pos.y_rot -= 364;
 			else
-				item->pos.y_rot += hitmanAI.angle;
+				item->pos.y_rot += 364;
 
 			frame = item->frame_number;
 			base = anims[item->anim_number].frame_base;
@@ -436,35 +429,10 @@ void HitmanControl(short item_number)
 			if (frame > base + 6 && frame < base + 16 && ((frame - base) & 1))
 			{
 				item->fired_weapon = 1;
-				ShotLara(item, &hitmanAI, &hitman_gun, lara_info.angle >> 1, 12);
+				ShotLara(item, &info, &hitman_gun, larainfo.angle >> 1, 12);
 			}
 
 			break;
-		}
-	}
-	else if (item->current_anim_state == 43 && !lara.burn)
-	{
-		pos.x = 0;
-		pos.y = 0;
-		pos.z = 0;
-		GetLaraJointPos(&pos, 3);
-		left_foot_room = lara_item->room_number;
-		GetFloor(pos.x, pos.y, pos.z, &left_foot_room);
-		pos2.x = 0;
-		pos2.y = 0;
-		pos2.z = 0;
-		GetLaraJointPos(&pos2, 6);
-		right_foot_room = lara_item->room_number;
-		GetFloor(pos2.x, pos2.y, pos2.z, &right_foot_room);
-
-		if ((room[left_foot_room].flags & ROOM_UNDERWATER || room[right_foot_room].flags & ROOM_UNDERWATER) &&
-			(room[left_foot_room].FlipNumber == room[item->room_number].FlipNumber ||
-				room[right_foot_room].FlipNumber == room[item->room_number].FlipNumber))
-		{
-			LaraBurn();
-			lara.BurnBlue = 1;
-			lara.BurnCount = 48;
-			lara_item->hit_points = 0;
 		}
 	}
 

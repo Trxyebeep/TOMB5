@@ -11,6 +11,7 @@
 #include "drawroom.h"
 #include "polyinsert.h"
 #include "winmain.h"
+#include "texture.h"
 
 static GouraudBarColourSet healthBarColourSet =
 {
@@ -511,4 +512,47 @@ long S_DrawLoadBar()
 void S_LoadBar()
 {
 	S_UpdateLoadBar();
+}
+
+void DoSlider(long x, long y, long width, long height, long pos, long c1, long c2, long c3)
+{
+	TEXTURESTRUCT tex;
+	float sx, sy, w, h;
+	static float V;
+
+	V += 0.01F;
+
+	if (V > 0.99F)
+		V = 0;
+
+	clipflags[0] = 0;
+	clipflags[1] = 0;
+	clipflags[2] = 0;
+	clipflags[3] = 0;
+
+	sx = (float)GetFixedScale(x);
+	sy = (float)y;
+	w = (float)GetFixedScale(width);
+	h = (float)GetFixedScale(height >> 1);
+
+	tex.tpage = ushort(nTextures - 1);
+	tex.drawtype = 0;
+	tex.flag = 0;
+	tex.u1 = 0;
+	tex.v1 = V;
+	tex.u2 = 1;
+	tex.v2 = V;
+	tex.u3 = 1;
+	tex.v3 = V + 0.01F;
+	tex.u4 = 0;
+	tex.v4 = V + 0.01F;
+	DrawColoredRect(sx, sy, sx + w, sy + h, f_mznear, c1, c1, c2, c2, &tex);
+	DrawColoredRect(sx, sy + h, sx + w, sy + (h * 2), f_mznear, c2, c2, c1, c1, &tex);
+
+	tex.tpage = 0;
+	DrawColoredRect(sx - 1, sy - 1, sx + w + 1, sy + (h * 2) + 1, f_mznear + 2, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, &tex);
+
+	w = pos * w / 100;
+	tex.drawtype = 2;
+	DrawColoredRect(sx, sy, sx + w + 1, sy + (h * 2), f_mznear - 1, c3, c3, c3, c3, &tex);
 }
