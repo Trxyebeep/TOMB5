@@ -379,7 +379,10 @@ void FreeLevel()
 
 	Log(5, "Free Textures");
 	FreeTextures();
+
 	DXFreeSounds();
+	malloc_ptr = malloc_buffer;
+	malloc_free = malloc_size;
 }
 
 bool LoadTextures(long RTPages, long OTPages, long BTPages)
