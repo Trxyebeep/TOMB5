@@ -646,7 +646,7 @@ long CheckGuardOnTrigger()
 	room_number = lara_item->room_number;
 	GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number);
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < MAX_LOT; i++)
 	{
 		cinfo = &baddie_slots[i];
 
@@ -2621,7 +2621,7 @@ void FlipMap(long FlipNumber)
 	flip_stats[FlipNumber] = !flip_stats[FlipNumber];
 	flip_status = flip_stats[FlipNumber];
 
-	for (short slot = 0; slot < 5; slot++)
+	for (short slot = 0; slot < MAX_LOT; slot++)
 	{
 		cinfo = &baddie_slots[slot];
 		cinfo->LOT.target_box = 0x7FF;

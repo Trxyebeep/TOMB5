@@ -7,25 +7,14 @@
 #include "control.h"
 #include "lara.h"
 
-CREATURE_INFO* baddie_slots;
+CREATURE_INFO baddie_slots[MAX_LOT];
 
 static long slots_used = 0;
 
-void InitialiseLOTarray(long allocmem)
+void InitialiseLOTarray()
 {
-	CREATURE_INFO* creature;
-
-	if (allocmem)
-		baddie_slots = (CREATURE_INFO*)game_malloc(sizeof(CREATURE_INFO) * 5);
-
-	for (int i = 0; i < 5; i++)
-	{
-		creature = &baddie_slots[i];
-		creature->item_num = NO_ITEM;
-
-		if (allocmem)
-			creature->LOT.node = (BOX_NODE*)game_malloc(sizeof(BOX_NODE) * num_boxes);
-	}
+	for (int i = 0; i < MAX_LOT; i++)
+		baddie_slots[i].item_num = NO_ITEM;
 
 	slots_used = 0;
 }
@@ -57,7 +46,7 @@ void ClearLOT(LOT_INFO* lot)
 	lot->required_box = 2047;
 	node = lot->node;
 
-	for (int i = 0; i < num_boxes; i++)
+	for (int i = 0; i < MAX_NODES; i++)
 	{
 		node->next_expansion = 2047;
 		node->exit_box = 2047;
@@ -201,9 +190,9 @@ long EnableBaddieAI(short item_number, long Always)
 	if (item->data)
 		return 1;
 
-	if (slots_used < 5)
+	if (slots_used < MAX_LOT)
 	{
-		for (slot = 0; slot < 5; slot++)
+		for (slot = 0; slot < MAX_LOT; slot++)
 		{
 			creature = &baddie_slots[slot];
 
@@ -227,7 +216,7 @@ long EnableBaddieAI(short item_number, long Always)
 
 	worstslot = -1;
 
-	for (slot = 0; slot < 5; slot++)
+	for (slot = 0; slot < MAX_LOT; slot++)
 	{
 		creature = &baddie_slots[slot];
 		item = &items[creature->item_num];

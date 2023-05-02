@@ -28,6 +28,8 @@
 #define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
 #define MALLOC_SIZE	15000000	//15MB
 #define GAME_FOV	(80 * 182)
+#define MAX_LOT		5
+#define MAX_NODES	1024		//max num_boxes in a TR5 level is about 960
 
 /*typedefs*/
 typedef unsigned char uchar;
@@ -745,7 +747,7 @@ struct FX_INFO
 
 struct LOT_INFO
 {
-	BOX_NODE* node;
+	BOX_NODE node[MAX_NODES];
 	short head;
 	short tail;
 	ushort search_number;

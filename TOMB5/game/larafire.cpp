@@ -581,7 +581,7 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
 	creature = baddie_slots;
 	targets = 0;
 
-	for (slot = 0; slot < 5; slot++, creature++)
+	for (slot = 0; slot < MAX_LOT; slot++, creature++)
 	{
 		if (creature->item_num == NO_ITEM)
 			continue;

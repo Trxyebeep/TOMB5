@@ -19,6 +19,7 @@
 - Fix Lara's holsters and back weapon not getting affected by fog.
 - Fix underwater shimmer discontinuity.
 - Fix upper arm underwater ambience.
+- Fix possible bad pointers leading to data corruption when reloading between levels.
 
 ### tomb5 bug fixes
 
