@@ -2293,9 +2293,9 @@ struct D3DTLBUMPVERTEX
 
 struct TEXTURE
 {
-	IDirect3DTexture2* tex;
+	LPDIRECT3DTEXTURE2 tex;
 	LPDIRECTDRAWSURFACE4 surface;
-	IDirect3DTexture2* bumpTex;
+	LPDIRECT3DTEXTURE2 bumpTex;
 	LPDIRECTDRAWSURFACE4 bumpSurface;
 	ulong xoff;
 	ulong yoff;
@@ -2366,7 +2366,7 @@ struct THREAD
 
 struct MONOSCREEN_STRUCT
 {
-	IDirect3DTexture2* tex;
+	LPDIRECT3DTEXTURE2 tex;
 	LPDIRECTDRAWSURFACE4 surface;
 };
 

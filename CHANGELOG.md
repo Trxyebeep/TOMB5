@@ -34,6 +34,7 @@
 - Fix VCI headset name.
 - Fix "Loading" text position.
 - Fix credit cutscenes.
+- Fix monoscreen corruption.
 
 ### tomb5 additions
 

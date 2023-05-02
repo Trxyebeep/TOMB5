@@ -33,7 +33,7 @@ long MusicVolume = 40;
 long SFXVolume = 80;
 long ControlMethod;
 
-MONOSCREEN_STRUCT MonoScreen[5];
+static MONOSCREEN_STRUCT MonoScreen;
 char MonoScreenOn;
 
 static long SpecialFeaturesNum = -1;
@@ -927,11 +927,11 @@ void ConvertSurfaceToTextures(LPDIRECTDRAWSURFACE4 surface)
 	tSurf.dwSize = sizeof(DDSURFACEDESC2);
 	surface->Lock(0, &tSurf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
 	pSrc = (ushort*)tSurf.lpSurface;
-	MonoScreen[0].surface = CreateTexturePage(tSurf.dwWidth, tSurf.dwHeight, 0, NULL, RGBM_Mono, -1);
+	MonoScreen.surface = CreateTexturePage(tSurf.dwWidth, tSurf.dwHeight, 0, NULL, RGBM_Mono, -1);
 
 	memset(&uSurf, 0, sizeof(uSurf));
 	uSurf.dwSize = sizeof(DDSURFACEDESC2);
-	MonoScreen[0].surface->Lock(0, &uSurf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
+	MonoScreen.surface->Lock(0, &uSurf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
 	pTexture = (ushort*)uSurf.lpSurface;
 
 	r.left = 0;
@@ -940,8 +940,8 @@ void ConvertSurfaceToTextures(LPDIRECTDRAWSURFACE4 surface)
 	r.bottom = tSurf.dwHeight;
 	CustomBlt(&uSurf, 0, 0, &tSurf, &r);
 
-	MonoScreen[0].surface->Unlock(0);
-	DXAttempt(MonoScreen[0].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[0].tex));
+	MonoScreen.surface->Unlock(0);
+	DXAttempt(MonoScreen.surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen.tex));
 	surface->Unlock(0);
 }
 
@@ -949,18 +949,18 @@ void FreeMonoScreen()
 {
 	if (MonoScreenOn == 1)
 	{
-		if (MonoScreen[0].surface)
+		if (MonoScreen.surface)
 		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen[0].surface, MonoScreen[0].surface->Release());
-			MonoScreen[0].surface = 0;
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen.surface, MonoScreen.surface->Release());
+			MonoScreen.surface = 0;
 		}
 		else
 			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
 
-		if (MonoScreen[0].tex)
+		if (MonoScreen.tex)
 		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[0].tex, MonoScreen[0].tex->Release());
-			MonoScreen[0].tex = 0;
+			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen.tex, MonoScreen.tex->Release());
+			MonoScreen.tex = 0;
 		}
 		else
 			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
@@ -1036,17 +1036,10 @@ void S_DrawTile(long x, long y, long w, long h, IDirect3DTexture2* t, long tU, l
 
 void S_DisplayMonoScreen()
 {
-	long x[4];
-	long y[4];
 	ulong col;
 
 	if (MonoScreenOn == 1 || MonoScreenOn == 2)
 	{
-		x[0] = phd_winxmin;
-		y[0] = phd_winymin;
-		x[1] = phd_winxmin + phd_winwidth;
-		y[1] = phd_winymin + phd_winheight;
-
 		if (MonoScreenOn == 2)	//pictures always the same!!
 			col = 0xFFFFFFFF;
 		else
@@ -1057,7 +1050,7 @@ void S_DisplayMonoScreen()
 				col = 0xFFFFFF80;
 		}
 
-		S_DrawTile(x[0], y[0], x[1] - x[0], y[1] - y[0], MonoScreen[0].tex, 0, 0, 256, 256, col, col, col, col);
+		S_DrawTile(0, 0, phd_winxmax, phd_winymax, MonoScreen.tex, 0, 0, 256, 256, col, col, col, col);
 	}
 }
 
