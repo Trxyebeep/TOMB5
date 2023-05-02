@@ -7,14 +7,25 @@
 #include "control.h"
 #include "lara.h"
 
-CREATURE_INFO baddie_slots[MAX_LOT];
+CREATURE_INFO* baddie_slots;
 
 static long slots_used = 0;
 
-void InitialiseLOTarray()
+void InitialiseLOTarray(long allocmem)
 {
+	CREATURE_INFO* creature;
+
+	if (allocmem)
+		baddie_slots = (CREATURE_INFO*)game_malloc(sizeof(CREATURE_INFO) * MAX_LOT);
+
 	for (int i = 0; i < MAX_LOT; i++)
-		baddie_slots[i].item_num = NO_ITEM;
+	{
+		creature = &baddie_slots[i];
+		creature->item_num = NO_ITEM;
+
+		if (allocmem)
+			creature->LOT.node = (BOX_NODE*)game_malloc(sizeof(BOX_NODE) * num_boxes);
+	}
 
 	slots_used = 0;
 }
@@ -46,7 +57,7 @@ void ClearLOT(LOT_INFO* lot)
 	lot->required_box = 2047;
 	node = lot->node;
 
-	for (int i = 0; i < MAX_NODES; i++)
+	for (int i = 0; i < num_boxes; i++)
 	{
 		node->next_expansion = 2047;
 		node->exit_box = 2047;

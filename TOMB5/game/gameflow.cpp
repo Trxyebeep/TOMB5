@@ -648,7 +648,7 @@ void DoTitle(uchar name, uchar audio)
 	InitSpotCamSequences();
 	title_controls_locked_out = 0;
 	InitialiseFXArray(1);
-	InitialiseLOTarray();
+	InitialiseLOTarray(1);
 	InitialisePickUpDisplay();
 	SOUND_Stop();
 	IsAtmospherePlaying = 0;
@@ -774,7 +774,7 @@ void DoLevel(uchar Name, uchar Audio)
 
 	S_LoadLevelFile(Name);
 	InitialiseFXArray(1);
-	InitialiseLOTarray();
+	InitialiseLOTarray(1);
 	GlobalSoftReset = 0;
 	InitSpotCamSequences();
 	InitialisePickUpDisplay();
