@@ -4623,7 +4623,7 @@ void DrawSteamLasers(ITEM_INFO* item)
 			clipflags[2] = c[9];
 			clipflags[3] = c[10];
 
-			if (App.dx.Flags & 0x80)
+			if (App.dx.Flags & DXF_HWR)
 				AddQuadSorted(v, 0, 1, 3, 2, &tex, 1);
 
 			v[0].sx = vbuf[0].sx;

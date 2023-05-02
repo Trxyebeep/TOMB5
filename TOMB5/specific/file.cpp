@@ -481,8 +481,6 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 		Textures[nTex].width = App.TextureSize;
 		Textures[nTex].height = App.TextureSize;
 		Textures[nTex].bump = 0;
-		Textures[nTex].realBump = 0;
-		Textures[nTex].staticTex = 0;
 		S_LoadBar();
 	}
 
@@ -504,7 +502,6 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 		Textures[nTex].width = App.TextureSize;
 		Textures[nTex].height = App.TextureSize;
 		Textures[nTex].bump = 0;
-		Textures[nTex].staticTex = 0;
 		App.dx.lpD3DDevice->SetTexture(0, pTex);
 		S_LoadBar();
 	}
@@ -550,7 +547,6 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 
 			Textures[nTex].bump = 1;
 			Textures[nTex].bumptpage = nTex + (BTPages >> 1);
-			Textures[nTex].staticTex = 0;
 			S_LoadBar();
 		}
 
@@ -630,7 +626,6 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 			Textures[nTex].width = 256;
 			Textures[nTex].height = 256;
 			Textures[nTex].bump = 0;
-			Textures[nTex].staticTex = 0;
 		}
 
 		free(pComp);
@@ -646,7 +641,6 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 	Textures[nTex].width = 256;
 	Textures[nTex].height = 256;
 	Textures[nTex].bump = 0;
-	Textures[nTex].staticTex = 0;
 
 	//font
 	ReadBlock(TextureData, 0x40000);
@@ -658,7 +652,6 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 	Textures[nTex].width = 256;
 	Textures[nTex].height = 256;
 	Textures[nTex].bump = 0;
-	Textures[nTex].staticTex = 0;
 
 	//sky
 	ReadBlock(TextureData, 0x40000);
@@ -670,7 +663,6 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 	Textures[nTex].width = 256;
 	Textures[nTex].height = 256;
 	Textures[nTex].bump = 0;
-	Textures[nTex].staticTex = 0;
 
 	free(TextureData);
 	free(pData);
@@ -708,7 +700,6 @@ bool LoadRooms()
 
 	Log(2, "LoadRooms");
 	wibble = 0;
-	MaxRoomLights = 0;
 
 	aLoadRoomStream();
 	BuildOutsideTable();
@@ -727,9 +718,7 @@ bool LoadObjects()
 	STATIC_INFO* stat;
 	short** mesh;
 	short** mesh_size;
-	long num, slot, lp;
-	static long num_meshes;
-	static long num_anims;
+	long num, num_anims, num_meshes, slot, lp;
 
 	Log(2, "LoadObjects");
 	memset(objects, 0, NUMBER_OBJECTS * sizeof(OBJECT_INFO));
@@ -1057,8 +1046,7 @@ bool LoadItems()
 	ROOM_INFO* r;
 	FLOOR_INFO* floor;
 	STATIC_INFO* stat;
-	long x, y, z;
-	static long num_items;
+	long x, y, z, num_items;
 
 	Log(2, "LoadItems");
 	num_items = ReadLong();
@@ -1144,25 +1132,24 @@ bool LoadCinematic()
 
 bool LoadSamples()
 {
-	long num_samples, uncomp_size, comp_size;
-	static long num_sample_infos;
+	long num_infos, num_samples, uncomp_size, comp_size;
 
 	Log(2, "LoadSamples");
 	sample_lut = (short*)game_malloc(MAX_SAMPLES * sizeof(short));
 	ReadBlock(sample_lut, MAX_SAMPLES * sizeof(short));
 
 
-	num_sample_infos = ReadLong();
-	Log(8, "Number Of Sample Infos %d", num_sample_infos);
+	num_infos = ReadLong();
+	Log(8, "Number Of Sample Infos %d", num_infos);
 
-	if (!num_sample_infos)
+	if (!num_infos)
 	{
 		Log(1, "No Sample Infos");
 		return 0;
 	}
 
-	sample_infos = (SAMPLE_INFO*)game_malloc(num_sample_infos * sizeof(SAMPLE_INFO));
-	ReadBlock(sample_infos, num_sample_infos * sizeof(SAMPLE_INFO));
+	sample_infos = (SAMPLE_INFO*)game_malloc(num_infos * sizeof(SAMPLE_INFO));
+	ReadBlock(sample_infos, num_infos * sizeof(SAMPLE_INFO));
 
 	num_samples = ReadLong();
 
@@ -1418,11 +1405,11 @@ long S_LoadLevelFile(long num)
 
 	while (LevelLoadingThread.active)
 	{
-		if (App.dx.Flags & 0x80 && loadbar_on)
+		if (App.dx.Flags & DXF_HWR && loadbar_on)
 			S_DrawLoadBar();
 	}
 
-	if (App.dx.Flags & 0x80 && !S_DrawLoadBar())
+	if (App.dx.Flags & DXF_HWR && !S_DrawLoadBar())
 		while (!S_DrawLoadBar());
 
 	return 1;

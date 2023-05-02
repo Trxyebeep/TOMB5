@@ -4750,7 +4750,6 @@ void lara_as_trfall(ITEM_INFO* item, COLL_INFO* coll)
 			item->anim_number = ANIM_FASTFALL;
 			item->frame_number = anims[ANIM_FASTFALL].frame_base;
 			item->fallspeed = 81;
-			camera.targetspeed = 16;
 			lara.gun_status = LG_NO_ARMS;
 		}
 

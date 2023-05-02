@@ -20,7 +20,7 @@ long NumShadowLights;
 long NumSpotLights;
 long NumFogBulbs;
 long TotalNumLights;
-long MaxRoomLights;
+
 D3DMATRIX aLightMatrix;
 SUNLIGHT_STRUCT SunLights[16];
 POINTLIGHT_STRUCT PointLights[64];

@@ -33,7 +33,7 @@ long MusicVolume = 40;
 long SFXVolume = 80;
 long ControlMethod;
 
-static MONOSCREEN_STRUCT MonoScreen;
+static DXTEXTURE MonoScreen;
 char MonoScreenOn;
 
 static long SpecialFeaturesNum = -1;

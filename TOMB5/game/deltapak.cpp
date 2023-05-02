@@ -3555,9 +3555,6 @@ void init_cutseq_actors(char* data, long resident)
 	camera.pos.y = lara_item->pos.y_pos;
 	camera.pos.z = lara_item->pos.z_pos;
 	camera.pos.room_number = lara_item->room_number;
-	camera.fpos.x = (float)camera.pos.x;
-	camera.fpos.y = (float)camera.pos.y;
-	camera.fpos.z = (float)camera.pos.z;
 	InitialiseHair();
 }
 

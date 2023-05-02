@@ -69,7 +69,6 @@ void InitialiseCamera()
 	camera.target.z = last_target.z;
 	camera.target.room_number = lara_item->room_number;
 
-	camera.shift = last_target.y;
 	camera.target_distance = 1536;
 	camera.item = 0;
 	camera.number_frames = 1;
@@ -1050,9 +1049,6 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 	camera.pos.y += (ideal->y - camera.pos.y) / speed;
 	camera.pos.z += (ideal->z - camera.pos.z) / speed;
 	camera.pos.room_number = ideal->room_number;
-	camera.fpos.x += ((float)ideal->x - camera.fpos.x) / (float)speed;
-	camera.fpos.y += ((float)ideal->y - camera.fpos.y) / (float)speed;
-	camera.fpos.z += ((float)ideal->z - camera.fpos.z) / (float)speed;
 
 	if (camera.bounce)
 	{
@@ -1135,9 +1131,6 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 		camera.pos.y = ideal->y;
 		camera.pos.z = ideal->z;
 		camera.pos.room_number = ideal->room_number;
-		camera.fpos.x = (float)ideal->x;
-		camera.fpos.y = (float)ideal->y;
-		camera.fpos.z = (float)ideal->z;
 	}
 
 	if (gfCurrentLevel == LVL5_THIRTEENTH_FLOOR || gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
@@ -1145,23 +1138,6 @@ void MoveCamera(GAME_VECTOR* ideal, long speed)
 
 	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-
-	if (camera.mike_at_lara)
-	{
-		camera.mike_pos.x = lara_item->pos.x_pos;
-		camera.mike_pos.y = lara_item->pos.y_pos;
-		camera.mike_pos.z = lara_item->pos.z_pos;
-	}
-	else
-	{
-		dx = camera.target.x - camera.pos.x;
-		dz = camera.target.z - camera.pos.z;
-		dx = phd_atan(dz, dx);
-		camera.mike_pos.x = camera.pos.x + (phd_persp * phd_sin(dx) >> 14);
-		camera.mike_pos.y = camera.pos.y;
-		camera.mike_pos.z = camera.pos.z + (phd_persp * phd_cos(dx) >> 14);
-	}
-
 	camera.old_type = camera.type;
 }
 
@@ -1275,21 +1251,6 @@ void BinocularCamera(ITEM_INFO* item)
 
 	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-
-	if (camera.mike_at_lara)
-	{
-		camera.mike_pos.x = lara_item->pos.x_pos;
-		camera.mike_pos.y = lara_item->pos.y_pos;
-		camera.mike_pos.z = lara_item->pos.z_pos;
-	}
-	else
-	{
-		c = phd_atan(camera.target.z - camera.pos.z, camera.target.x - camera.pos.x);
-		camera.mike_pos.x = (phd_sin(c) * phd_persp >> 14) + camera.pos.x;
-		camera.mike_pos.y = camera.pos.y;
-		camera.mike_pos.z = (phd_cos(c) * phd_persp >> 14) + camera.pos.z;
-	}
-
 	camera.old_type = camera.type;
 
 	if (inputBusy & IN_WALK)
@@ -1466,7 +1427,7 @@ void LookCamera(ITEM_INFO* item)
 	PHD_VECTOR pos2;
 	PHD_VECTOR pos3;
 	FLOOR_INFO* floor;
-	long shake, dx, dy, dz, wx, wy, wz, clipped, h, c, hxrot, txrot, hyrot, tyrot, rndval, lp;
+	long shake, dx, dy, dz, wx, wy, wz, h, c, hxrot, txrot, hyrot, tyrot, rndval, lp;
 	short room_number, room_number2;
 
 	hxrot = lara.head_x_rot;
@@ -1608,9 +1569,6 @@ void LookCamera(ITEM_INFO* item)
 		camera.target.x = pos3.x;
 		camera.target.y = pos3.y;
 		camera.target.z = pos3.z;
-		camera.fpos.x = (float)ideal.x;
-		camera.fpos.y = (float)ideal.y;
-		camera.fpos.z = (float)ideal.z;
 	}
 	else
 	{
@@ -1620,9 +1578,6 @@ void LookCamera(ITEM_INFO* item)
 		camera.pos.x += dx >> 2;
 		camera.pos.y += dy >> 2;
 		camera.pos.z += dz >> 2;
-		camera.fpos.x += float(dx >> 2);
-		camera.fpos.y += float(dy >> 2);
-		camera.fpos.z += float(dz >> 2);
 		dx = pos3.x - camera.target.x;
 		dy = pos3.y - camera.target.y;
 		dz = pos3.z - camera.target.z;
@@ -1701,24 +1656,8 @@ void LookCamera(ITEM_INFO* item)
 
 	GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
 	phd_LookAt(camera.pos.x, camera.pos.y, camera.pos.z, camera.target.x, camera.target.y, camera.target.z, 0);
-
-	if (camera.mike_at_lara)
-	{
-		camera.mike_pos.x = lara_item->pos.x_pos;
-		camera.mike_pos.y = lara_item->pos.y_pos;
-		camera.mike_pos.z = lara_item->pos.z_pos;
-	}
-	else
-	{
-		dx = camera.target.x - camera.pos.x;
-		dz = camera.target.z - camera.pos.z;
-		clipped = phd_atan(dz, dx);
-		camera.mike_pos.x = ((phd_persp * phd_sin(clipped)) >> 14) + camera.pos.x;
-		camera.mike_pos.y = camera.pos.y;
-		camera.mike_pos.z = ((phd_persp * phd_cos(clipped)) >> 14)+ camera.pos.z;
-	}
-
 	camera.old_type = camera.type;
+
 	lara.head_x_rot = (short)hxrot;
 	lara.head_y_rot = (short)hyrot;
 	lara.torso_x_rot = (short)txrot;

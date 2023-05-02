@@ -86,7 +86,7 @@ void ShowBinkFrame()
 	BinkCopyToBuffer(Bink, surf.lpSurface, surf.lPitch, Bink->num, 0, 0, BinkSurfaceType);
 	DXAttempt(BinkSurface->Unlock(0));
 
-	if (App.dx.Flags & 2)
+	if (App.dx.Flags & DXF_WINDOWED)
 		DXShowFrame();
 }
 
@@ -145,7 +145,7 @@ long PlayFmv(long num)
 	BinkSetSoundSystem(BinkOpenDirectSound, App.dx.lpDS);
 	Bink = (BINK_STRUCT*)BinkOpen(path, 0);
 
-	if (App.dx.Flags & 2)
+	if (App.dx.Flags & DXF_WINDOWED)
 		BinkSurface = App.dx.lpBackBuffer;
 	else
 		BinkSurface = App.dx.lpPrimaryBuffer;

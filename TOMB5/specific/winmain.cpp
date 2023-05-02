@@ -139,7 +139,7 @@ void WinProcessCommands(long cmd)
 		App.dx.WaitAtBeginScene = 0;
 		Log(5, "Game Thread Resumed");
 
-		if (App.dx.Flags & 1)
+		if (App.dx.Flags & DXF_FULLSCREEN)
 		{
 			SetCursor(0);
 			ShowCursor(0);
@@ -333,7 +333,6 @@ LRESULT CALLBACK WinMainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 				if (App.SetupComplete)
 				{
-					DXJoyAcquisition(0);
 					Log(5, "HangGameThread");
 					while (App.dx.InScene) {};
 					App.dx.WaitAtBeginScene = 1;
@@ -350,7 +349,6 @@ LRESULT CALLBACK WinMainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 				if (App.SetupComplete)
 				{
-					DXJoyAcquisition(1);
 					ResumeThread((HANDLE)MainThread.handle);
 					App.dx.WaitAtBeginScene = 0;
 					Log(5, "Game Thread Resumed");
@@ -408,14 +406,6 @@ void WinClose()
 	}
 	else
 		Log(1, "%s Attempt To Release NULL Ptr", "Keyboard");
-
-	if (G_dxptr->Joystick)
-	{
-		Log(4, "Released %s @ %x - RefCnt = %d", "Joystick", G_dxptr->Joystick, G_dxptr->Joystick->Release());
-		G_dxptr->Joystick = 0;
-	}
-	else
-		Log(1, "%s Attempt To Release NULL Ptr", "Joystick");
 
 	if (G_dxptr->lpDirectInput)
 	{
@@ -549,12 +539,12 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 		return 0;
 	}
 
-	WinSetStyle(G_dxptr->Flags & 1, G_dxptr->WindowStyle);
+	WinSetStyle(G_dxptr->Flags & DXF_FULLSCREEN, G_dxptr->WindowStyle);
 
 	UpdateWindow(App.hWnd);
 	ShowWindow(App.hWnd, nShowCmd);
 
-	if (App.dx.Flags & 1)
+	if (App.dx.Flags & DXF_FULLSCREEN)
 	{
 		SetCursor(0);
 		ShowCursor(0);

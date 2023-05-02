@@ -166,9 +166,6 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 	}
 
 	memcpy(r, s, sizeof(ROOM_INFO));
-
-	if (r->num_lights > MaxRoomLights)
-		MaxRoomLights = r->num_lights;
 }
 
 void aUpdate()

@@ -38,6 +38,17 @@ typedef unsigned long ulong;
 
 /*enums*/
 
+enum DX_FLAGS
+{
+	DXF_NONE = 0x0,
+	DXF_FULLSCREEN = 0x1,
+	DXF_WINDOWED = 0x2,
+	DXF_ZBUFFER = 0x10,
+	DXF_FPUSETUP = 0x20,
+	DXF_NOFREE = 0x40,
+	DXF_HWR = 0x80
+};
+
 enum target_type
 {
 	NO_TARGET,
@@ -856,7 +867,6 @@ struct CAMERA_INFO
 	GAME_VECTOR target;
 	camera_type type;
 	camera_type old_type;
-	long shift;
 	long flags;
 	long fixed_camera;
 	long number_frames;
@@ -868,19 +878,13 @@ struct CAMERA_INFO
 	short actual_elevation;
 	short actual_angle;
 	short lara_node;
-	short box;
 	short number;
 	short last;
 	short timer;
 	short speed;
-	short targetspeed;
 	ITEM_INFO* item;
 	ITEM_INFO* last_item;
 	OBJECT_VECTOR* fixed;
-	long mike_at_lara;
-	PHD_VECTOR mike_pos;
-	FVECTOR fpos;
-	FVECTOR ftgt;
 };
 
 struct OBJECT_INFO
@@ -1737,7 +1741,6 @@ struct DXPTR
 	LPDIRECTDRAW4 lpDD;
 	LPDIRECT3D3 lpD3D;
 	LPDIRECT3DDEVICE3 lpD3DDevice;
-	LPDIRECT3DDEVICE3 _lpD3DDevice;
 	LPDIRECTDRAWSURFACE4 lpPrimaryBuffer;
 	LPDIRECTDRAWSURFACE4 lpBackBuffer;
 	LPDIRECTDRAWSURFACE4 lpZBuffer;
@@ -1753,7 +1756,6 @@ struct DXPTR
 #if (DIRECTINPUT_VERSION >= 0x800)
 	LPDIRECTINPUT8 lpDirectInput;
 	LPDIRECTINPUTDEVICE8 Keyboard;
-	LPDIRECTINPUTDEVICE8 Joystick;
 #else
 	IDirectInput7* lpDirectInput;
 	IDirectInputDevice7* Keyboard;
@@ -2253,6 +2255,15 @@ struct POINTLIGHT_STRUCT
 	float rad;
 };
 
+struct SPOTLIGHT_STRUCT
+{
+	FVECTOR vec;
+	float r;
+	float g;
+	float b;
+	float rad;
+};
+
 struct FOGBULB_STRUCT	//fog data used to apply fog on vertices
 {
 	FVECTOR pos;
@@ -2266,15 +2277,6 @@ struct FOGBULB_STRUCT	//fog data used to apply fog on vertices
 	float b;
 	float d;
 	long visible;
-};
-
-struct SPOTLIGHT_STRUCT
-{
-	FVECTOR vec;
-	float r;
-	float g;
-	float b;
-	float rad;
 };
 
 struct D3DTLBUMPVERTEX
@@ -2291,20 +2293,22 @@ struct D3DTLBUMPVERTEX
 	D3DVALUE ty;
 };
 
+struct DXTEXTURE
+{
+	LPDIRECT3DTEXTURE2 tex;
+	LPDIRECTDRAWSURFACE4 surface;
+};
+
 struct TEXTURE
 {
 	LPDIRECT3DTEXTURE2 tex;
 	LPDIRECTDRAWSURFACE4 surface;
-	LPDIRECT3DTEXTURE2 bumpTex;
-	LPDIRECTDRAWSURFACE4 bumpSurface;
 	ulong xoff;
 	ulong yoff;
 	ulong width;
 	ulong height;
 	long tpage;
 	bool bump;
-	bool realBump;
-	bool staticTex;
 	long bumptpage;
 };
 
@@ -2358,16 +2362,9 @@ struct ROOMLET_LIGHT
 struct THREAD
 {
 	volatile long active;
-	long unk;
 	volatile long ended;
 	ulong handle;
 	ulong address;
-};
-
-struct MONOSCREEN_STRUCT
-{
-	LPDIRECT3DTEXTURE2 tex;
-	LPDIRECTDRAWSURFACE4 surface;
 };
 
 struct DS_SAMPLE
