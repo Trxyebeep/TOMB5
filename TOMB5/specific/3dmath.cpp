@@ -175,6 +175,17 @@ void phd_PushUnitMatrix()
 	aPushUnitMatrix();
 }
 
+static void aPopMatrix()
+{
+	aMXPtr -= indices_count;
+}
+
+void phd_PopMatrix()
+{
+	phd_mxptr -= indices_count;
+	aPopMatrix();
+}
+
 static void aSetTrans(long x, long y, long z)
 {
 	aMXPtr[M03] = (float)x;

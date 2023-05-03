@@ -41,7 +41,7 @@ static ushort GetRandom(WATERTAB* wt, long lp)
 	return ret;
 }
 
-void init_water_table()
+static void init_water_table()
 {
 	float fSin;
 	short sSin;
@@ -163,25 +163,14 @@ long S_LoadGame(long slot_num)
 	return 0;
 }
 
-void GameClose()
+bool GameInitialise()
 {
 	Log(__FUNCTION__);
-	ACMClose();
-	FreeLevel();
-	free(clipflags);
-
-	if (wav_file_buffer)
-		free(wav_file_buffer);
-
-	if (ADPCMBuffer)
-		free(ADPCMBuffer);
-
-	if (logF)
-		fclose(logF);
-
-	free(malloc_buffer);
-	free(gfScriptFile);
-	free(gfLanguageFile);
+	init_game_malloc();
+	clipflags = (short*)malloc(0x8000);
+	init_water_table();
+	aInitFX();
+	return 1;
 }
 
 unsigned int __stdcall GameMain(void* ptr)
@@ -192,7 +181,7 @@ unsigned int __stdcall GameMain(void* ptr)
 	{
 		InitialiseFunctionTable();
 		HWInitialise();
-		InitWindow(0, 0, App.dx.dwRenderWidth, App.dx.dwRenderHeight, 20, 20480, 80, App.dx.dwRenderWidth, App.dx.dwRenderHeight);
+		InitWindow(0, 0, App.dx.dwRenderWidth, App.dx.dwRenderHeight, 20, 20480, GAME_FOV, App.dx.dwRenderWidth, App.dx.dwRenderHeight);
 		InitFont();
 		TIME_Init();
 		App.SetupComplete = 1;
@@ -217,12 +206,23 @@ unsigned int __stdcall GameMain(void* ptr)
 	return 1;
 }
 
-bool GameInitialise()
+void GameClose()
 {
 	Log(__FUNCTION__);
-	init_game_malloc();
-	clipflags = (short*)malloc(0x8000);
-	init_water_table();
-	aInitFX();
-	return 1;
+	ACMClose();
+	FreeLevel();
+	free(clipflags);
+
+	if (wav_file_buffer)
+		free(wav_file_buffer);
+
+	if (ADPCMBuffer)
+		free(ADPCMBuffer);
+
+	if (logF)
+		fclose(logF);
+
+	free(malloc_buffer);
+	free(gfScriptFile);
+	free(gfLanguageFile);
 }
