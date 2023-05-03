@@ -39,6 +39,7 @@
 
 - Move input to DirectInput8.
 - Improve wrecking ball shadow.
+- Enable the debug cutscene selector menu.
 - Improve the cutscene selector's text positions.
 - Improve the PSX shadow sprite, and make it tilt with the floor.
 - Add new scaling system.

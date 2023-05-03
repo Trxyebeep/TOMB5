@@ -548,10 +548,8 @@ long TitleOptions()
 			ret = 3;
 		}
 
-#ifdef _DEBUG
-		if (keymap[DIK_F] && keymap[DIK_U] && keymap[DIK_C] && keymap[DIK_K])
+		if (keymap[DIK_C] && keymap[DIK_U] && keymap[DIK_T] && keymap[DIK_S])
 			dels_cutseq_selector_flag = 1;
-#endif
 	}
 
 	if (dbinput & IN_SELECT && !keymap[DIK_LALT] && menu < 2)
@@ -716,26 +714,35 @@ void DoTitle(uchar name, uchar audio)
 
 long do_dels_cutseq_selector()
 {
-	long num, ret;
+	long nList, num, ret, y, lp;
 	static uchar selection = 0;
 
+	nList = 10;
 	ret = 0;
 	PrintString(phd_centerx, font_height, 6, SCRIPT_TEXT(TXT_cut0), FF_CENTER);
-	num = selection - 4;
+	num = selection - (nList - 1);
 
 	if (num < 0)
 		num = 0;
 
 	if (dbinput & IN_FORWARD && selection)
+	{
 		selection--;
+		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+	}
 
 	if (dbinput & IN_BACK && selection < 35)
-		selection++;
-
-	for (int i = 0; num < 36 && i < 5; i++)
 	{
-		PrintString(phd_centerx, i * font_height + 136, (selection == num) ? 1 : 5, SCRIPT_TEXT(cutsel[num + 1].string), FF_CENTER);
-		num++;
+		selection++;
+		SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
+	}
+
+	y = font_height * 3;
+
+	for (lp = 0; num < 36 && lp < nList; lp++, num++)
+	{
+		PrintString(phd_centerx, y, (selection == num) ? 1 : 5, SCRIPT_TEXT(cutsel[num + 1].string), FF_CENTER);
+		y += font_height;
 	}
 
 	if (dbinput & IN_SELECT)
@@ -749,7 +756,7 @@ long do_dels_cutseq_selector()
 		ret = 3;
 	}
 
-	if (dbinput & IN_JUMP)
+	if (dbinput & (IN_JUMP | IN_DESELECT))
 		dels_cutseq_selector_flag = 0;
 
 	return ret;
