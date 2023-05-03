@@ -26,7 +26,7 @@ bool TIME_Init()
 {
 	__int64 pfq;
 
-	Log(2, "TIME_Init");
+	Log(__FUNCTION__);
 
 	if (!QueryPerformanceFrequency((LARGE_INTEGER*)&pfq))
 		return 0;

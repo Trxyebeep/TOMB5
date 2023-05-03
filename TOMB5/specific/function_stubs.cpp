@@ -23,7 +23,7 @@ void* game_malloc(long size)
 
 	if (size > malloc_free)
 	{
-		Log(0, "OUT OF MEMORY");
+		Log("OUT OF MEMORY");
 		return 0;
 	}
 	else
@@ -76,7 +76,7 @@ void game_free(long size)
 	malloc_used -= size;
 }
 
-void Log(ulong type, const char* s, ...)
+void Log(const char* s, ...)
 {
 #ifdef DO_LOG
 	va_list list;

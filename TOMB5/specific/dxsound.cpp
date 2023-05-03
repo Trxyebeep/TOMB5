@@ -49,7 +49,7 @@ bool DXChangeOutputFormat(long nSamplesPerSec, bool force)
 
 	if (DSPrimary && DXAttempt(DSPrimary->SetFormat(&pcfxFormat)) != DS_OK)
 	{
-		Log(1, "Can't set sound output format to %d", pcfxFormat.nSamplesPerSec);
+		Log("Can't set sound output format to %d", pcfxFormat.nSamplesPerSec);
 		return 0;
 	}
 
@@ -100,7 +100,7 @@ bool DXSetOutputFormat()
 {
 	DSBUFFERDESC desc;
 
-	Log(2, "DXSetOutputFormat");
+	Log(__FUNCTION__);
 	memset(&desc, 0, sizeof(desc));
 	desc.dwSize = sizeof(desc);
 	desc.dwFlags = DSBCAPS_PRIMARYBUFFER;
@@ -112,13 +112,13 @@ bool DXSetOutputFormat()
 		return 1;
 	}
 
-	Log(1, "Can't Get Primary Sound Buffer");
+	Log("Can't Get Primary Sound Buffer");
 	return 0;
 }
 
 bool DXDSCreate()
 {
-	Log(2, "DXDSCreate");
+	Log(__FUNCTION__);
 	DXAttempt(DirectSoundCreate(G_dxinfo->DSInfo[G_dxinfo->nDS].lpGuid, &App.dx.lpDS, 0));
 	DXAttempt(App.dx.lpDS->SetCooperativeLevel(App.hWnd, DSSCL_EXCLUSIVE));
 	DXSetOutputFormat();
@@ -138,7 +138,7 @@ bool InitSampleDecompress()
 	mmresult = acmStreamOpen(&d_hACMStream, hACMDriver, (LPWAVEFORMATEX)source_pcm_format, &pcm_format, 0, 0, 0, 0);
 
 	if (mmresult != DS_OK)
-		Log(1, "Stream Open %d", mmresult);
+		Log("Stream Open %d", mmresult);
 
 	decompressed_samples_buffer = (char*)malloc(0x40000);
 	samples_buffer = (char*)malloc(0x4005A);
@@ -151,7 +151,7 @@ bool InitSampleDecompress()
 	mmresult = acmStreamPrepareHeader(d_hACMStream, &ACMStreamHeader, 0);
 
 	if (mmresult != DS_OK)
-		Log(1, "Prepare Stream %d", mmresult);
+		Log("Prepare Stream %d", mmresult);
 
 	return 1;
 }
@@ -162,12 +162,12 @@ bool FreeSampleDecompress()
 	mmresult = acmStreamUnprepareHeader(d_hACMStream, &ACMStreamHeader, 0);
 
 	if (mmresult != DS_OK)
-		Log(1, "UnPrepare Stream %d", mmresult);
+		Log("UnPrepare Stream %d", mmresult);
 
 	mmresult = acmStreamClose(d_hACMStream, 0);
 
 	if (mmresult != DS_OK)
-		Log(1, "Stream Close %d", mmresult);
+		Log("Stream Close %d", mmresult);
 
 	free(decompressed_samples_buffer);
 	free(samples_buffer);
@@ -182,7 +182,7 @@ bool DXCreateSampleADPCM(char* data, long comp_size, long uncomp_size, long num)
 	DSBUFFERDESC desc;
 	ulong bytes;
 
-	Log(8, "DXCreateSampleADPCM");
+	Log(__FUNCTION__);
 
 	if (!App.dx.lpDS)
 		return 0;
@@ -190,13 +190,13 @@ bool DXCreateSampleADPCM(char* data, long comp_size, long uncomp_size, long num)
 	format = (LPWAVEFORMATEX)(data + 20);
 
 	if (format->nSamplesPerSec != 22050)
-		Log(1, "Incorrect SamplesPerSec");
+		Log("Incorrect SamplesPerSec");
 
 	ACMStreamHeader.cbSrcLength = comp_size -  (ushort)format->cbSize - 58;
 	mmresult = acmStreamConvert(d_hACMStream, &ACMStreamHeader, ACM_STREAMCONVERTF_BLOCKALIGN | ACM_STREAMCONVERTF_START);
 
 	if (mmresult != DS_OK)
-		Log(1, "Stream Convert %d", mmresult);
+		Log("Stream Convert %d", mmresult);
 
 	memset(&desc, 0, sizeof(DSBUFFERDESC));
 	desc.dwSize = sizeof(DSBUFFERDESC);
@@ -207,13 +207,13 @@ bool DXCreateSampleADPCM(char* data, long comp_size, long uncomp_size, long num)
 
 	if (DXAttempt(App.dx.lpDS->CreateSoundBuffer(&desc, &buffer, 0)) != DS_OK)
 	{
-		Log(1, "Unable To Create Sound Buffer");
+		Log("Unable To Create Sound Buffer");
 		return 0;
 	}
 
 	if (DXAttempt(buffer->Lock(0, uncomp_size - 32, &dest, &bytes, 0, 0, 0)) != DS_OK)
 	{
-		Log(1, "Unable To Lock Sound Buffer");
+		Log("Unable To Lock Sound Buffer");
 		return 0;
 	}
 
@@ -337,7 +337,7 @@ void DXFreeSounds()
 	{
 		if (DS_Buffers[i].buffer)
 		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "SoundBuffer", DS_Buffers[i].buffer, DS_Buffers[i].buffer->Release());
+			Log("Released %s @ %x - RefCnt = %d", "SoundBuffer", DS_Buffers[i].buffer, DS_Buffers[i].buffer->Release());
 			DS_Buffers[i].buffer = 0;
 		}
 	}
@@ -372,7 +372,7 @@ bool DXCreateSample(long num, LPWAVEFORMATEX format, LPVOID data, ulong bytes)
 	LPVOID lData;
 	ulong lBytes;
 
-	Log(2, "DXCreateSample");
+	Log(__FUNCTION__);
 
 	if (!App.dx.lpDS)
 		return 0;

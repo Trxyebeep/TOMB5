@@ -735,7 +735,7 @@ void ProcessMeshData(long num_meshes)
 	float minx, miny, minz, maxx, maxy, maxz;
 	long num, pre;
 
-	Log(2, "ProcessMeshData %d", num_meshes);
+	Log("ProcessMeshData %d", num_meshes);
 	num_level_meshes = num_meshes;
 	mesh_vtxbuf = (MESH_DATA**)game_malloc(4 * num_meshes);
 	mesh_base = (short*)malloc_ptr;
@@ -907,7 +907,7 @@ void ProcessMeshData(long num_meshes)
 		}
 	}
 
-	Log(2, "End ProcessMeshData");
+	Log("End ProcessMeshData");
 }
 
 long aBuildRoomletLights(ROOMLET* r)

@@ -254,7 +254,7 @@ void OpenStreamFile(char* name)
 
 	if (!audio_stream_fp)
 	{
-		Log(1, "%s - Not Found", name);
+		Log("%s - Not Found", name);
 		return;
 	}
 
@@ -265,7 +265,7 @@ void OpenStreamFile(char* name)
 	if (fread(wav_file_buffer, 1, FILE_BUFFER_SIZE, audio_stream_fp) < FILE_BUFFER_SIZE && audio_play_mode == 1)
 	{
 		fseek(audio_stream_fp, 90, SEEK_SET);
-		Log(0, "FileReset In OpenStreamFile");
+		Log("FileReset In OpenStreamFile");
 	}
 }
 
@@ -278,7 +278,7 @@ void GetADPCMData()
 
 	if (fread(audio_fp_write_ptr, 1, ACM_BUFFER_SIZE, audio_stream_fp) < ACM_BUFFER_SIZE && audio_play_mode == 1)
 	{
-		Log(0, "FileReset In GetADPCMData");
+		Log("FileReset In GetADPCMData");
 		fseek(audio_stream_fp, 90, SEEK_SET);
 	}
 
@@ -304,9 +304,9 @@ void ACMEmulateCDPlay(long track, long mode)
 	wsprintf(name, "audio\\%s", TrackFileNames[track]);
 
 	if (mode)
-		Log(8, "Playing %s %s %d", name, "Looped", track);
+		Log("Playing %s %s %d", name, "Looped", track);
 	else
-		Log(8, "Playing %s %s %d", name, "", track);
+		Log("Playing %s %s %d", name, "", track);
 
 	XATrack = track;
 	audio_play_mode = mode;
@@ -354,13 +354,13 @@ long ACMSetupNotifications()
 	NotifyEventHandles[1] = CreateEvent(0, 0, 0, 0);
 	posNotif[0].dwOffset = NotifySize;
 	posNotif[0].hEventNotify = NotifyEventHandles[0];
-	Log(8, "Set notifies for position %lu", posNotif[0].dwOffset);
+	Log("Set notifies for position %lu", posNotif[0].dwOffset);
 
 	for (int i = 1; i < 4; i++)
 	{
 		posNotif[i].dwOffset = NotifySize + posNotif[i - 1].dwOffset;
 		posNotif[i].hEventNotify = NotifyEventHandles[0];
-		Log(8, "Set notifies for positions %lu", posNotif[i].dwOffset);
+		Log("Set notifies for positions %lu", posNotif[i].dwOffset);
 	}
 
 	posNotif[3].dwOffset--;
@@ -369,7 +369,7 @@ long ACMSetupNotifications()
 	NotificationThreadHandle = CreateThread(0, 0, (LPTHREAD_START_ROUTINE)ACMHandleNotifications, 0, 0, &ThreadId);
 
 	if (!NotificationThreadHandle)
-		Log(1, "Create Notification Thread failed");
+		Log("Create Notification Thread failed");
 
 	result = DSNotify->SetNotificationPositions(5, posNotif);
 
@@ -381,7 +381,7 @@ long ACMSetupNotifications()
 		NotifyEventHandles[1] = 0;
 	}
 	else
-		Log(8, "Setup Notifications OK");
+		Log("Setup Notifications OK");
 
 	return result;
 }
@@ -408,7 +408,7 @@ void FillADPCMBuffer(char* p, long track)
 
 	if (track != XATrack || track == -1)
 	{
-		Log(0, "Not Current Track %d", track);
+		Log("Not Current Track %d", track);
 		reading_audio_file = 0;
 		continue_reading_audio_file = 0;
 		return;
@@ -517,18 +517,18 @@ bool ACMInit()
 	version = acmGetVersion();
 	InitializeCriticalSection(&audio_cs);
 	acm_ready = 0;
-	Log(8, "ACM Version %u.%.02u", ((version >> 16) & 0xFFFF) >> 8, (version >> 16) & 0xFF);
+	Log("ACM Version %u.%.02u", ((version >> 16) & 0xFFFF) >> 8, (version >> 16) & 0xFF);
 	acmDriverEnum(ACMEnumCallBack, 0, 0);
 
 	if (!hACMDriverID)
 	{
-		Log(1, "*** Unable To Locate MS-ADPCM Driver ***");
+		Log("*** Unable To Locate MS-ADPCM Driver ***");
 		return 0;
 	}
 
 	if (acmDriverOpen(&hACMDriver, hACMDriverID, 0))
 	{
-		Log(1, "*** Failed To Open Driver MS-ADPCM Driver ***");
+		Log("*** Failed To Open Driver MS-ADPCM Driver ***");
 		return 0;
 	}
 
@@ -588,19 +588,19 @@ void ACMClose()
 
 	if (DSNotify)
 	{
-		Log(4, "Released %s @ %x - RefCnt = %d", "Notification", DSNotify, DSNotify->Release());
+		Log("Released %s @ %x - RefCnt = %d", "Notification", DSNotify, DSNotify->Release());
 		DSNotify = 0;
 	}
 	else
-		Log(1, "%s Attempt To Release NULL Ptr", "Notification");
+		Log("%s Attempt To Release NULL Ptr", "Notification");
 
 	if (DSBuffer)
 	{
-		Log(4, "Released %s @ %x - RefCnt = %d", "Stream Buffer", DSBuffer, DSBuffer->Release());
+		Log("Released %s @ %x - RefCnt = %d", "Stream Buffer", DSBuffer, DSBuffer->Release());
 		DSBuffer = 0;
 	}
 	else
-		Log(1, "%s Attempt To Release NULL Ptr", "Stream Buffer");
+		Log("%s Attempt To Release NULL Ptr", "Stream Buffer");
 
 	LeaveCriticalSection(&audio_cs);
 }

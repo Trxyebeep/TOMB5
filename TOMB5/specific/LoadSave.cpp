@@ -951,19 +951,19 @@ void FreeMonoScreen()
 	{
 		if (MonoScreen.surface)
 		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen.surface, MonoScreen.surface->Release());
+			Log("Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen.surface, MonoScreen.surface->Release());
 			MonoScreen.surface = 0;
 		}
 		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
+			Log("%s Attempt To Release NULL Ptr", "Mono Screen Surface");
 
 		if (MonoScreen.tex)
 		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen.tex, MonoScreen.tex->Release());
+			Log("Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen.tex, MonoScreen.tex->Release());
 			MonoScreen.tex = 0;
 		}
 		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
+			Log("%s Attempt To Release NULL Ptr", "Mono Screen Texture");
 	}
 
 	MonoScreenOn = 0;
@@ -1181,7 +1181,7 @@ void LoadScreen(long screen, long pathNum)
 		ConvertSurfaceToTextures(screen_surface);
 	}
 	else
-		Log(0, "WHORE!");
+		Log("WHORE!");
 }
 
 void ReleaseScreen()
@@ -1190,11 +1190,11 @@ void ReleaseScreen()
 
 	if (screen_surface)
 	{
-		Log(4, "Released %s @ %x - RefCnt = %d", "Picture Surface", screen_surface, screen_surface->Release());
+		Log("Released %s @ %x - RefCnt = %d", "Picture Surface", screen_surface, screen_surface->Release());
 		screen_surface = 0;
 	}
 	else
-		Log(1, "%s Attempt To Release NULL Ptr", "Picture Surface");
+		Log("%s Attempt To Release NULL Ptr", "Picture Surface");
 
 	FreeMonoScreen();
 }
@@ -1219,7 +1219,7 @@ long GetSaveLoadFiles()
 		pSave = &SaveGames[i];
 		wsprintf(name, "savegame.%d", i);
 		file = fopen(name, "rb");
-		Log(0, "Attempting to open %s", name);
+		Log("Attempting to open %s", name);
 
 		if (!file)
 		{
@@ -1228,7 +1228,7 @@ long GetSaveLoadFiles()
 			continue;
 		}
 
-		Log(0, "Opened OK");
+		Log("Opened OK");
 		fread(&pSave->name, sizeof(char), 75, file);
 		fread(&pSave->num, sizeof(long), 1, file);
 		fread(&pSave->days, sizeof(short), 1, file);
@@ -1243,7 +1243,7 @@ long GetSaveLoadFiles()
 
 		pSave->valid = 1;
 		nSaves++;
-		Log(0, "Validated savegame");
+		Log("Validated savegame");
 	}
 
 	SaveCounter++;

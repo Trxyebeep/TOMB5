@@ -145,7 +145,7 @@ void aFixUpRoom(ROOM_INFO* r, char* s)
 
 	if ((long)pR->door & 1)
 	{
-		Log(0, "%X", pR->door);
+		Log("%X", pR->door);
 		pR->door = 0;
 	}
 

@@ -165,7 +165,7 @@ long S_LoadGame(long slot_num)
 
 void GameClose()
 {
-	Log(2, "GameClose");
+	Log(__FUNCTION__);
 	ACMClose();
 	FreeLevel();
 	free(clipflags);
@@ -186,7 +186,7 @@ void GameClose()
 
 unsigned int __stdcall GameMain(void* ptr)
 {
-	Log(2, "GameMain");
+	Log(__FUNCTION__);
 
 	if (GameInitialise())
 	{
@@ -219,7 +219,7 @@ unsigned int __stdcall GameMain(void* ptr)
 
 bool GameInitialise()
 {
-	Log(2, "GameInitialise");
+	Log(__FUNCTION__);
 	init_game_malloc();
 	clipflags = (short*)malloc(0x8000);
 	init_water_table();

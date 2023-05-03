@@ -1099,7 +1099,7 @@ HRESULT _LoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name)
 
 void do_boot_screen(long language)
 {
-	Log(2, "do_boot_screen");
+	Log(__FUNCTION__);
 
 	switch (language)
 	{

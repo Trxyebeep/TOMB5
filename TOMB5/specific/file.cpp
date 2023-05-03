@@ -101,18 +101,18 @@ FILE* FileOpen(const char* Filename)
 
 	memset(cdFilename, 0, 80);
 	strcat(cdFilename, Filename);
-	Log(5, "FileOpen - %s", cdFilename);
+	Log("FileOpen - %s", cdFilename);
 	fp = fopen(cdFilename, "rb");
 
 	if (!fp)
-		Log(1, "Unable To Open %s", cdFilename);
+		Log("Unable To Open %s", cdFilename);
 
 	return fp;
 }
 
 void FileClose(FILE* fp)
 {
-	Log(2, "FileClose");
+	Log(__FUNCTION__);
 	fclose(fp);
 }
 
@@ -131,8 +131,8 @@ long LoadFile(const char* name, char** dest)
 	FILE* file;
 	long size, count;
 
-	Log(2, "LoadFile");
-	Log(5, "File - %s", name);
+	Log(__FUNCTION__);
+	Log("File - %s", name);
 	file = FileOpen(name);
 
 	if (!file)
@@ -144,11 +144,11 @@ long LoadFile(const char* name, char** dest)
 		*dest = (char*)malloc(size);
 
 	count = fread(*dest, 1, size, file);
-	Log(5, "Read - %d FileSize - %d", count, size);
+	Log("Read - %d FileSize - %d", count, size);
 
 	if (count != size)
 	{
-		Log(1, "Error Reading File");
+		Log("Error Reading File");
 		FileClose(file);
 		free(*dest);
 		return 0;
@@ -162,7 +162,7 @@ bool Decompress(char* pDest, char* pCompressed, long compressedSize, long size)
 {
 	z_stream stream;
 
-	Log(2, "Decompress");
+	Log(__FUNCTION__);
 	memset(&stream, 0, sizeof(z_stream));
 	stream.avail_in = compressedSize;
 	stream.avail_out = size;
@@ -173,12 +173,12 @@ bool Decompress(char* pDest, char* pCompressed, long compressedSize, long size)
 
 	if (stream.total_out != size)
 	{
-		Log(1, "Error Decompressing Data");
+		Log("Error Decompressing Data");
 		return 0;
 	}
 
 	inflateEnd(&stream);
-	Log(5, "Decompression OK");
+	Log("Decompression OK");
 	return 1;
 }
 
@@ -188,7 +188,7 @@ void AdjustUV(long num)
 	float u, v;
 	ushort type;
 
-	Log(2, "AdjustUV");
+	Log(__FUNCTION__);
 
 	for (int i = 0; i < num; i++)
 	{
@@ -276,7 +276,7 @@ void AdjustUV(long num)
 				break;
 
 			default:
-				Log(1, "TextureInfo Type %d Not Found", type);
+				Log("TextureInfo Type %d Not Found", type);
 				break;
 			}
 		}
@@ -307,7 +307,7 @@ void AdjustUV(long num)
 				break;
 
 			default:
-				Log(1, "TextureInfo Type %d Not Found", type);
+				Log("TextureInfo Type %d Not Found", type);
 				break;
 			}
 		}
@@ -360,26 +360,9 @@ void S_GetUVRotateTextures()
 
 void FreeLevel()
 {
-	MESH_DATA** vbuf;
-	MESH_DATA* mesh;
+	Log(__FUNCTION__);
 
-	Log(2, "FreeLevel");
-
-	for (int i = 0; i < num_level_meshes; i++)
-	{
-		vbuf = &mesh_vtxbuf[i];
-		mesh = *vbuf;
-
-		if (mesh->SourceVB)
-		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mesh VB", mesh->SourceVB, mesh->SourceVB->Release());
-			mesh->SourceVB = 0;
-		}
-	}
-
-	Log(5, "Free Textures");
 	FreeTextures();
-
 	DXFreeSounds();
 	malloc_ptr = malloc_buffer;
 	malloc_free = malloc_size;
@@ -398,7 +381,8 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 	long format, skip, size, compressedSize, nTex, c;
 	uchar r, g, b, a;
 
-	Log(2, "LoadTextures");
+	Log(__FUNCTION__);
+
 	nTextures = 1;
 	format = 0;
 	skip = 4;
@@ -465,7 +449,7 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 
 	pData = FileData;
 
-	Log(5, "RTPages %d", RTPages);
+	Log("RTPages %d", RTPages);
 	size = RTPages * skip * 0x10000;
 	TextureData = (uchar*)malloc(size);
 	ReadBlock(TextureData, size);
@@ -486,7 +470,7 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 
 	free(TextureData);
 
-	Log(5, "OTPages %d", OTPages);
+	Log("OTPages %d", OTPages);
 	size = OTPages * skip * 0x10000;
 	TextureData = (uchar*)malloc(size);
 	ReadBlock(TextureData, size);
@@ -509,7 +493,7 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 	free(TextureData);
 	S_LoadBar();
 
-	Log(5, "BTPages %d", BTPages);
+	Log("BTPages %d", BTPages);
 
 	if (BTPages)
 	{
@@ -664,6 +648,8 @@ bool LoadTextures(long RTPages, long OTPages, long BTPages)
 	Textures[nTex].height = 256;
 	Textures[nTex].bump = 0;
 
+	Log("Created %d Texture Pages", nTextures - 1);
+
 	free(TextureData);
 	free(pData);
 	return 1;
@@ -698,7 +684,7 @@ bool LoadRooms()
 {
 	long size;
 
-	Log(2, "LoadRooms");
+	Log(__FUNCTION__);
 	wibble = 0;
 
 	aLoadRoomStream();
@@ -708,7 +694,7 @@ bool LoadRooms()
 	floor_data = (short*)game_malloc(size * sizeof(short));
 	ReadBlock(floor_data, sizeof(short) * size);
 
-	Log(0, "Floor Data Size %d @ %x", size, floor_data);
+	Log("Floor Data Size %d @ %x", size, floor_data);
 	return 1;
 }
 
@@ -720,7 +706,7 @@ bool LoadObjects()
 	short** mesh_size;
 	long num, num_anims, num_meshes, slot, lp;
 
-	Log(2, "LoadObjects");
+	Log(__FUNCTION__);
 	memset(objects, 0, NUMBER_OBJECTS * sizeof(OBJECT_INFO));
 	memset(static_objects, 0, 70 * sizeof(STATIC_INFO));
 
@@ -841,7 +827,7 @@ bool LoadSprites()
 	PHDSPRITESTRUCT sprite;
 	long num_sprites, num_slots, slot;
 
-	Log(2, "LoadSprites");
+	Log(__FUNCTION__);
 	ReadLong();			//SPR 0 marker
 
 	num_sprites = ReadLong();
@@ -895,7 +881,7 @@ bool LoadSprites()
 
 bool LoadCameras()
 {
-	Log(2, "LoadCameras");
+	Log(__FUNCTION__);
 	number_cameras = ReadLong();
 
 	if (number_cameras)
@@ -914,9 +900,9 @@ bool LoadCameras()
 
 bool LoadSoundEffects()
 {
-	Log(2, "LoadSoundEffects");
+	Log(__FUNCTION__);
 	number_sound_effects = ReadLong();
-	Log(8, "Number of SFX %d", number_sound_effects);
+	Log("Number of SFX %d", number_sound_effects);
 
 	if (number_sound_effects)
 	{
@@ -932,7 +918,7 @@ bool LoadBoxes()
 	BOX_INFO* box;
 	long size;
 
-	Log(2, "LoadBoxes");
+	Log(__FUNCTION__);
 	num_boxes = ReadLong();
 
 	boxes = (BOX_INFO*)game_malloc(num_boxes * sizeof(BOX_INFO));
@@ -969,6 +955,7 @@ bool LoadAnimatedTextures()
 {
 	long num_anim_ranges;
 
+	Log(__FUNCTION__);
 	num_anim_ranges = ReadLong();
 
 	aranges = (short*)game_malloc(num_anim_ranges * 2);
@@ -981,62 +968,86 @@ bool LoadAnimatedTextures()
 	return 1;
 }
 
+static bool LarasNoseTexture(long i)
+{
+	if (gfCurrentLevel == LVL5_STREETS_OF_ROME && (i == 200 || i == 204))
+		return 1;
+
+	if (gfCurrentLevel == LVL5_TRAJAN_MARKETS && (i == 225 || i == 229))
+		return 1;
+
+	if (gfCurrentLevel == LVL5_COLOSSEUM && (i == 240 || i == 244))
+		return 1;
+
+	if (gfCurrentLevel == LVL5_BASE && (i == 210 || i == 213))
+		return 1;
+
+	if (gfCurrentLevel == LVL5_SUBMARINE && (i == 205 || i == 208))
+		return 1;
+
+	if (gfCurrentLevel == LVL5_DEEPSEA_DIVE && (i == 201 || i == 205))
+		return 1;
+
+	if (gfCurrentLevel == LVL5_SINKING_SUBMARINE && (i == 235 || i == 238))
+		return 1;
+
+	if ((gfCurrentLevel >= LVL5_GALLOWS_TREE && gfCurrentLevel <= LVL5_OLD_MILL) && (i == 144 || i == 148))
+		return 1;
+
+	if (gfCurrentLevel == LVL5_THIRTEENTH_FLOOR && (i == 99 || i == 103))
+		return 1;
+
+	if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS && (i == 101 || i == 105))
+		return 1;
+
+	if (gfCurrentLevel == LVL5_RED_ALERT && (i == 133 || i == 137))
+		return 1;
+
+	return 0;
+}
+
 bool LoadTextureInfos()
 {
-	long val;
 	PHDTEXTURESTRUCT tex;
+	long nTInfos;
 
-	Log(2, "LoadTextureInfos");
+	Log(__FUNCTION__);
 
-	ReadLong();
-	val = ReadLong();
-	Log(5, "Texture Infos : %d", val);
-	textinfo = (TEXTURESTRUCT*)game_malloc(val * sizeof(TEXTURESTRUCT));
+	ReadLong();			//TEX 0 marker
+	nTInfos = ReadLong();
+	Log("Texture Infos : %d", nTInfos);
+	textinfo = (TEXTURESTRUCT*)game_malloc(nTInfos * sizeof(TEXTURESTRUCT));
 
-	for (int i = 0; i < val; i++)
+	for (int i = 0; i < nTInfos; i++)
 	{
 		ReadBlock(&tex, sizeof(PHDTEXTURESTRUCT));
 		textinfo[i].drawtype = tex.drawtype;
 		textinfo[i].tpage = tex.tpage & 0x7FFF;
 		textinfo[i].flag = tex.tpage ^ (tex.tpage ^ tex.flag) & 0x7FFF;
+		
+		textinfo[i].u1 = (tex.u1 >> 8) * (1.0F / 256.0F);
+		textinfo[i].v1 = (tex.v1 >> 8) * (1.0F / 256.0F);
 
-		if ((gfCurrentLevel == LVL5_STREETS_OF_ROME && (i == 200 || i == 204)) ||
-			(gfCurrentLevel == LVL5_TRAJAN_MARKETS && (i == 225 || i == 229)) ||
-			(gfCurrentLevel == LVL5_COLOSSEUM && (i == 244 || i == 240)) ||
-			(gfCurrentLevel == LVL5_BASE && (i == 213 || i == 210)) ||
-			(gfCurrentLevel == LVL5_SUBMARINE && (i == 205 || i == 208)) ||
-			(gfCurrentLevel == LVL5_DEEPSEA_DIVE && (i == 201 || i == 205)) ||
-			(gfCurrentLevel == LVL5_SINKING_SUBMARINE && (i == 238 || i == 235)) ||
-			((gfCurrentLevel >= LVL5_GALLOWS_TREE && gfCurrentLevel <= LVL5_OLD_MILL) && (i == 148 || i == 144)) ||
-			(gfCurrentLevel == LVL5_THIRTEENTH_FLOOR && (i == 99 || i == 103)) ||
-			(gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS && (i == 105 || i == 101)) ||
-			(gfCurrentLevel == LVL5_RED_ALERT && (i == 133 || i == 137)))
+		if (LarasNoseTexture(i))
 		{
-			textinfo[i].u1 = (tex.u1 >> 8) * (1.0f / 256.0f);
-			textinfo[i].v1 = (tex.v1 >> 8) * (1.0f / 256.0f);
-
-			textinfo[i].u2 = (tex.u2 >> 8) * 0.00393690f;
-			textinfo[i].v2 = (tex.v2 >> 8) * 0.00393690f;
-			textinfo[i].u3 = (tex.u3 >> 8) * 0.00393690f;
-			textinfo[i].v3 = (tex.v3 >> 8) * 0.00393690f;
-
-			textinfo[i].u4 = (tex.u4 >> 8) * (1.0f / 256.0f);
-			textinfo[i].v4 = (tex.v4 >> 8) * (1.0f / 256.0f);
-			continue;
+			textinfo[i].u2 = (tex.u2 >> 8) * 0.00393690F;
+			textinfo[i].v2 = (tex.v2 >> 8) * 0.00393690F;
+			textinfo[i].u3 = (tex.u3 >> 8) * 0.00393690F;
+			textinfo[i].v3 = (tex.v3 >> 8) * 0.00393690F;
+		}
+		else
+		{
+			textinfo[i].u2 = (tex.u2 >> 8) * (1.0F / 256.0F);
+			textinfo[i].v2 = (tex.v2 >> 8) * (1.0F / 256.0F);
+			textinfo[i].u3 = (tex.u3 >> 8) * (1.0F / 256.0F);
+			textinfo[i].v3 = (tex.v3 >> 8) * (1.0F / 256.0F);
 		}
 
-		textinfo[i].u1 = (tex.u1 >> 8) * (1.0f / 256.0f);
-		textinfo[i].v1 = (tex.v1 >> 8) * (1.0f / 256.0f);
-		textinfo[i].u2 = (tex.u2 >> 8) * (1.0f / 256.0f);
-		textinfo[i].v2 = (tex.v2 >> 8) * (1.0f / 256.0f);
-		textinfo[i].u3 = (tex.u3 >> 8) * (1.0f / 256.0f);
-		textinfo[i].v3 = (tex.v3 >> 8) * (1.0f / 256.0f);
-		textinfo[i].u4 = (tex.u4 >> 8) * (1.0f / 256.0f);
-		textinfo[i].v4 = (tex.v4 >> 8) * (1.0f / 256.0f);
+		textinfo[i].u4 = (tex.u4 >> 8) * (1.0F / 256.0F);
+		textinfo[i].v4 = (tex.v4 >> 8) * (1.0F / 256.0F);
 	}
 
-	AdjustUV(val);
-	Log(5, "Created %d Texture Pages", nTextures - 1);
+	AdjustUV(nTInfos);
 	return 1;
 }
 
@@ -1048,7 +1059,7 @@ bool LoadItems()
 	STATIC_INFO* stat;
 	long x, y, z, num_items;
 
-	Log(2, "LoadItems");
+	Log(__FUNCTION__);
 	num_items = ReadLong();
 
 	if (!num_items)
@@ -1113,6 +1124,7 @@ bool LoadAIInfo()
 {
 	long num;
 
+	Log(__FUNCTION__);
 	num = ReadLong();
 
 	if (!num)
@@ -1126,6 +1138,7 @@ bool LoadAIInfo()
 
 bool LoadCinematic()
 {
+	Log(__FUNCTION__);
 	ReadShort();
 	return 1;
 }
@@ -1134,17 +1147,16 @@ bool LoadSamples()
 {
 	long num_infos, num_samples, uncomp_size, comp_size;
 
-	Log(2, "LoadSamples");
+	Log(__FUNCTION__);
 	sample_lut = (short*)game_malloc(MAX_SAMPLES * sizeof(short));
 	ReadBlock(sample_lut, MAX_SAMPLES * sizeof(short));
 
-
 	num_infos = ReadLong();
-	Log(8, "Number Of Sample Infos %d", num_infos);
+	Log("Number Of Sample Infos %d", num_infos);
 
 	if (!num_infos)
 	{
-		Log(1, "No Sample Infos");
+		Log("No Sample Infos");
 		return 0;
 	}
 
@@ -1155,15 +1167,15 @@ bool LoadSamples()
 
 	if (!num_samples)
 	{
-		Log(1, "No Samples");
+		Log("No Samples");
 		return 0;
 	}
 
-	Log(8, "Number Of Samples %d", num_samples);
+	Log("Number Of Samples %d", num_samples);
 	fread(&num_samples, 1, 4, level_fp);
 
 	if (feof(level_fp))
-		Log(1, "END OF FILE");
+		Log("END OF FILE");
 
 	InitSampleDecompress();
 
@@ -1202,7 +1214,7 @@ unsigned int __stdcall LoadLevel(void* name)
 	short RTPages, OTPages, BTPages;
 	short data[16];
 
-	Log(5, "Begin LoadLevel");
+	Log("Begin " __FUNCTION__);
 	FreeLevel();
 	nTextures = 1;
 	Textures[0].tex = 0;
@@ -1224,7 +1236,6 @@ unsigned int __stdcall LoadLevel(void* name)
 		S_InitLoadBar(OTPages + BTPages + RTPages + 20);
 		S_LoadBar();
 
-		Log(7, "Process Level Data");
 		LoadTextures(RTPages, OTPages, BTPages);
 
 		fread(data, 1, 32, level_fp);
@@ -1238,11 +1249,9 @@ unsigned int __stdcall LoadLevel(void* name)
 
 		pData = FileData;
 
-		Log(5, "Rooms");
 		LoadRooms();
 		S_LoadBar();
 
-		Log(5, "Objects");
 		LoadObjects();
 		S_LoadBar();
 
@@ -1265,19 +1274,18 @@ unsigned int __stdcall LoadLevel(void* name)
 		S_LoadBar();
 
 		pBefore = FileData;
-
 		size = ReadLong();		//nItems
 		FileData += 24 * size;	//skip item data
+
 		LoadAIInfo();
+		S_LoadBar();
 
 		pAfter = FileData;
 		FileData = pBefore;
 
 		LoadItems();
+		S_LoadBar();
 		FileData = pAfter;
-
-		S_LoadBar();
-		S_LoadBar();
 
 		LoadCinematic();
 		S_LoadBar();
@@ -1352,7 +1360,7 @@ long S_LoadLevelFile(long num)
 	long chosen_screen;
 	char name[80];
 
-	Log(2, "S_LoadLevelFile");
+	Log(__FUNCTION__);
 
 	if (!tomb5.tr4_loadscreens || (!num && !bDoCredits && !gfStatus))
 	{
