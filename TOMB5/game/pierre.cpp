@@ -12,9 +12,9 @@
 #include "../specific/function_stubs.h"
 #include "lara.h"
 
-BITE_INFO larson_gun = { -55, 200, 5, 14 };
-BITE_INFO pierre_gun1 = { 60, 200, 0, 11 };
-BITE_INFO pierre_gun2 = { -57, 200, 0, 14 };
+static BITE_INFO larson_gun = { -55, 200, 5, 14 };
+static BITE_INFO pierre_gun1 = { 60, 200, 0, 11 };
+static BITE_INFO pierre_gun2 = { -57, 200, 0, 14 };
 
 void InitialisePierre(short item_number)
 {
@@ -24,21 +24,21 @@ void InitialisePierre(short item_number)
 	InitialiseCreature(item_number);
 	item->anim_number = objects[item->object_number].anim_index;
 	item->frame_number = anims[item->anim_number].frame_base;
-	item->goal_anim_state = 1;
 	item->current_anim_state = 1;
+	item->goal_anim_state = 1;
 
 	if (item->trigger_flags)
 	{
 		item->item_flags[3] = item->trigger_flags;
 
-		if (item->pos.y_rot > 4096 && item->pos.y_rot < 28672)
+		if (item->pos.y_rot > 0x1000 && item->pos.y_rot < 0x7000)
 			item->pos.x_pos += 384;
-		else if (item->pos.y_rot < -4096 && item->pos.y_rot > -28672)
+		else if (item->pos.y_rot < -0x1000 && item->pos.y_rot > -0x7000)
 			item->pos.x_pos -= 384;
 
-		if (item->pos.y_rot > -8192 && item->pos.y_rot < 8192)
+		if (item->pos.y_rot > -0x2000 && item->pos.y_rot < 0x2000)
 			item->pos.z_pos += 384;
-		else if (item->pos.y_rot < -20480 || item->pos.y_rot > 20480)
+		else if (item->pos.y_rot < -0x5000 || item->pos.y_rot > 0x5000)
 			item->pos.z_pos -= 384;
 	}
 }
@@ -94,7 +94,31 @@ void PierreControl(short item_number)
 		item->trigger_flags = 0;
 	}
 
-	if (item->hit_points > 0)
+	if (item->hit_points <= 0)
+	{
+		if (item->current_anim_state != 5)
+		{
+			if (item->object_number == PIERRE)
+				item->anim_number = objects[PIERRE].anim_index + 12;
+			else
+				item->anim_number = objects[LARSON].anim_index + 15;
+
+			item->frame_number = anims[item->anim_number].frame_base;
+			item->current_anim_state = 5;
+		}
+		else if (item->object_number == LARSON && item->frame_number == anims[item->anim_number].frame_end)
+		{
+			room_number = item->item_flags[2] & 0xFF;
+			r = &room[room_number];
+			x = r->x + ((item->draw_room & 0xFFFFFF00) << 2) + 512;
+			y = r->minfloor + (item->item_flags[2] & 0xFFFFFF00);
+			z = ((item->draw_room & 0xFF) << 10) + r->z + 512;
+			floor = GetFloor(x, y, z, &room_number);
+			GetHeight(floor, x, y, z);
+			TestTriggers(trigger_index, 1, 0);
+		}
+	}
+	else
 	{
 		if (item->ai_bits)
 			GetAITarget(pierre);
@@ -149,7 +173,7 @@ void PierreControl(short item_number)
 				else if (info.angle >= 0)
 					item->pos.y_rot += 364;
 				else
-					item->pos.y_rot -= 364;	
+					item->pos.y_rot -= 364;
 			}
 			else if (pierre->mood == BORED_MOOD)
 				item->goal_anim_state = GetRandomControl() >= 96 ? 2 : 6;
@@ -202,22 +226,19 @@ void PierreControl(short item_number)
 				item->goal_anim_state = 1;
 			else if (item->ai_bits == AMBUSH)
 				item->goal_anim_state = 3;
-			else if (pierre->mood != BORED_MOOD || GetRandomControl() >= 96)
-			{
-				if (Targetable(item, &info))
-				{
-					item->required_anim_state = 4;
-					item->goal_anim_state = 1;
-				}
-				else if (info.ahead && info.distance < 0x900000)
-				{
-					item->required_anim_state = 2;
-					item->goal_anim_state = 1;
-				}
-			}
-			else
+			else if (pierre->mood == BORED_MOOD && GetRandomControl() < 96)
 			{
 				item->required_anim_state = 6;
+				item->goal_anim_state = 1;
+			}
+			else if (Targetable(item, &info))
+			{
+				item->required_anim_state = 4;
+				item->goal_anim_state = 1;
+			}
+			else if (info.ahead && info.distance < 0x900000)
+			{
+				item->required_anim_state = 2;
 				item->goal_anim_state = 1;
 			}
 
@@ -297,30 +318,6 @@ void PierreControl(short item_number)
 
 			break;
 		}
-	}
-	else if (item->current_anim_state == 5)
-	{
-		if (item->object_number == LARSON && item->frame_number == anims[item->anim_number].frame_end)
-		{
-			room_number = item->item_flags[2] & 0xFF;
-			r = &room[room_number];
-			x = r->x + ((item->draw_room & 0xFFFFFF00) << 2) + 512;
-			y = r->minfloor + (item->item_flags[2] & 0xFFFFFF00);
-			z = ((item->draw_room & 0xFF) << 10) + r->z + 512;
-			floor = GetFloor(x, y, z, &room_number);
-			GetHeight(floor, x, y, z);
-			TestTriggers(trigger_index, 1, 0);
-		}
-	}
-	else
-	{
-		if (item->object_number == PIERRE)
-			item->anim_number = objects[PIERRE].anim_index + 12;
-		else
-			item->anim_number = objects[LARSON].anim_index + 15;
-
-		item->current_anim_state = 5;
-		item->frame_number = anims[item->anim_number].frame_base;
 	}
 
 	CreatureTilt(item, tilt);
