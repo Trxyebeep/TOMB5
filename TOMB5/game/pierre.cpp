@@ -86,10 +86,10 @@ void PierreControl(short item_number)
 		if (gfCurrentLevel == LVL5_TRAJAN_MARKETS)
 		{
 			item->item_flags[3] = 1;
-			item->ai_bits = 2;
+			item->ai_bits = AMBUSH;
 		}
 		else
-			item->ai_bits = 1;
+			item->ai_bits = GUARD;
 
 		item->trigger_flags = 0;
 	}
@@ -109,7 +109,7 @@ void PierreControl(short item_number)
 		if (pierre->flags)
 		{
 			item->hit_points = 60;
-			item->ai_bits = 2;
+			item->ai_bits = AMBUSH;
 			pierre->flags = 0;
 		}
 
@@ -118,7 +118,7 @@ void PierreControl(short item_number)
 
 		if (info.distance < 0x400000 && lara_item->speed > 20 || item->hit_status || TargetVisible(item, &info))
 		{
-			item->ai_bits &= ~1;
+			item->ai_bits &= ~GUARD;
 			pierre->alerted = 1;
 		}
 
@@ -135,11 +135,11 @@ void PierreControl(short item_number)
 
 			if (item->required_anim_state)
 				item->goal_anim_state = item->required_anim_state;
-			else if (item->ai_bits == 2)
+			else if (item->ai_bits == AMBUSH)
 				item->goal_anim_state = 3;
 			else if (Targetable(item, &info))
 				item->goal_anim_state = 4;
-			else if (item->ai_bits & 1 || gfCurrentLevel == LVL5_TRAJAN_MARKETS || item->item_flags[3])
+			else if (item->ai_bits & GUARD || gfCurrentLevel == LVL5_TRAJAN_MARKETS || item->item_flags[3])
 			{
 				pierre->maximum_turn = 0;
 				item->goal_anim_state = 1;
@@ -172,7 +172,7 @@ void PierreControl(short item_number)
 				item->required_anim_state = 6;
 				item->goal_anim_state = 1;
 			}
-			else if (pierre->mood == ESCAPE_MOOD || item->ai_bits == 2)
+			else if (pierre->mood == ESCAPE_MOOD || item->ai_bits == AMBUSH)
 			{
 				item->required_anim_state = 3;
 				item->goal_anim_state = 1;
@@ -200,7 +200,7 @@ void PierreControl(short item_number)
 
 			if (pierre->reached_goal)
 				item->goal_anim_state = 1;
-			else if (item->ai_bits == 2)
+			else if (item->ai_bits == AMBUSH)
 				item->goal_anim_state = 3;
 			else if (pierre->mood != BORED_MOOD || GetRandomControl() >= 96)
 			{

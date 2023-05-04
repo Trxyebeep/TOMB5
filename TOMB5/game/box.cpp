@@ -879,7 +879,7 @@ void CreatureDie(short item_number, long explode)
 	item->flags |= IFL_INVISIBLE | IFL_CLEARBODY;
 	DropBaddyPickups(item);
 
-	if (item->object_number == SCIENTIST && item->ai_bits == 8)
+	if (item->object_number == SCIENTIST && item->ai_bits == MODIFY)
 	{
 		item = find_a_fucking_item(ROLLINGBALL);
 
@@ -1580,7 +1580,7 @@ short AIGuard(CREATURE_INFO* creature)
 {
 	long rnd;
 
-	if (items[creature->item_num].ai_bits & 8)
+	if (items[creature->item_num].ai_bits & MODIFY)
 		return 0;
 
 	rnd = GetRandomControl();
@@ -1682,25 +1682,25 @@ void GetAITarget(CREATURE_INFO* creature)
 	item = &items[creature->item_num];
 	ai_bits = item->ai_bits;
 
-	if (ai_bits & 1)
+	if (ai_bits & GUARD)
 	{
 		if (creature->alerted)
 		{
-			item->ai_bits &= ~1;
+			item->ai_bits &= ~GUARD;
 
-			if (ai_bits & 2)
-				item->ai_bits |= 8;
+			if (ai_bits & AMBUSH)
+				item->ai_bits |= MODIFY;
 		}
 	}
-	else if (ai_bits & 4)
+	else if (ai_bits & PATROL1)
 	{
 		if (creature->alerted || creature->hurt_by_lara)
 		{
-			item->ai_bits &= ~4;
+			item->ai_bits &= ~PATROL1;
 
-			if (ai_bits & 2)
+			if (ai_bits & AMBUSH)
 			{
-				item->ai_bits |= 8;
+				item->ai_bits |= MODIFY;
 				item->item_flags[3] = item->TOSSPAD & 0xFF;
 			}
 		}
@@ -1710,7 +1710,7 @@ void GetAITarget(CREATURE_INFO* creature)
 			abs(enemy->pos.z_pos - item->pos.z_pos) < 640 || objects[item->object_number].water_creature)
 			creature->reached_goal = 1;
 	}
-	else if (ai_bits & 2)
+	else if (ai_bits & AMBUSH)
 	{
 		if (enemy_object != AI_AMBUSH)
 			FindAITargetObject(creature, AI_AMBUSH);
@@ -1721,31 +1721,31 @@ void GetAITarget(CREATURE_INFO* creature)
 			TestTriggers(trigger_index, 1, 0);
 			creature->reached_goal = 1;
 			creature->enemy = lara_item;
-			item->ai_bits &= ~2;
+			item->ai_bits &= ~AMBUSH;
 
-			if (item->ai_bits != 8)
+			if (item->ai_bits != MODIFY)
 			{
-				item->ai_bits |= 1;
+				item->ai_bits |= GUARD;
 				creature->alerted = 0;
 			}
 		}
 	}
-	else if (ai_bits & 0x10)
+	else if (ai_bits & FOLLOW)
 	{
 		if (creature->hurt_by_lara)
 		{
 			creature->enemy = lara_item;
 			creature->alerted = 1;
-			item->ai_bits &= ~0x10;
+			item->ai_bits &= ~FOLLOW;
 		}
 		else if (item->hit_status)
-			item->ai_bits &= ~0x10;
+			item->ai_bits &= ~FOLLOW;
 		else if (enemy_object != AI_FOLLOW)
 			FindAITargetObject(creature, AI_FOLLOW);
 		else if (abs(enemy->pos.x_pos - item->pos.x_pos) < 640 && abs(enemy->pos.y_pos - item->pos.y_pos) < 640 && abs(enemy->pos.z_pos - item->pos.z_pos) < 640)
 		{
 			creature->reached_goal = 1;
-			item->ai_bits &= ~0x10;
+			item->ai_bits &= ~FOLLOW;
 		}
 	}
 }

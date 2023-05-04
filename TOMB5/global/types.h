@@ -49,6 +49,15 @@ enum DX_FLAGS
 	DXF_HWR = 0x80
 };
 
+enum ai_bits
+{
+	GUARD = 1 << 0,
+	AMBUSH = 1 << 1,
+	PATROL1 = 1 << 2,
+	MODIFY = 1 << 3,
+	FOLLOW = 1 << 4
+};
+
 enum target_type
 {
 	NO_TARGET,

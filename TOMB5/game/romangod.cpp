@@ -394,11 +394,11 @@ void RomangodControl(short item_number)
 
 				head = angle;
 
-				if (!(item->ai_bits & 1) && (GetRandomControl() & 0x1F || info.distance <= 1048576 && roman->mood == ATTACK_MOOD))
+				if (!(item->ai_bits & GUARD) && (GetRandomControl() & 0x1F || info.distance <= 0x100000 && roman->mood == ATTACK_MOOD))
 				{
 					if (abs(info.angle) <= 20480)
 					{
-						if (info.ahead && info.distance < 1048576)
+						if (info.ahead && info.distance < 0x100000)
 						{
 							if (!(GetRandomControl() & 3) && info.bite)
 								item->goal_anim_state = 3;
@@ -414,7 +414,7 @@ void RomangodControl(short item_number)
 						}
 						else if (item->trigger_flags == 1 && Targetable(item, &info) && GetRandomControl() & 1)
 							item->goal_anim_state = 12;
-						else if (!item->trigger_flags && info.distance < 6553600 && info.bite)
+						else if (!item->trigger_flags && info.distance < 0x640000 && info.bite)
 							item->goal_anim_state = 3;
 						else
 							item->goal_anim_state = 7;

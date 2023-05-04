@@ -113,7 +113,7 @@ void MafiaControl(short item_number)
 		CreatureMood(item, &info, mood);
 		angle = CreatureTurn(item, mafia->maximum_turn);
 
-		if ((lara_info.distance < 0x400000 && lara_item->speed > 20 || item->hit_status || TargetVisible(item, &lara_info)) && !(item->ai_bits & 16))
+		if ((lara_info.distance < 0x400000 && lara_item->speed > 20 || item->hit_status || TargetVisible(item, &lara_info)) && !(item->ai_bits & FOLLOW))
 		{
 			mafia->enemy = lara_item;
 			AlertAllGuards(item_number);
@@ -127,13 +127,13 @@ void MafiaControl(short item_number)
 			mafia->LOT.is_jumping = 0;
 			mafia->maximum_turn = 0;
 
-			if (info.ahead && item->ai_bits != 1)
+			if (info.ahead && item->ai_bits != GUARD)
 			{
 				torso_y = info.angle >> 1;
 				torso_x = info.x_angle;
 			}
 
-			if (item->ai_bits & 1)
+			if (item->ai_bits & GUARD)
 			{
 				head = AIGuard(mafia);
 				break;
@@ -157,13 +157,13 @@ void MafiaControl(short item_number)
 			{
 				if (info.distance >= 0x1000000 && info.zone_number == info.enemy_zone)
 				{
-					if (item->ai_bits != 8)
+					if (item->ai_bits != MODIFY)
 						item->goal_anim_state = 5;
 				}
 				else
 					item->goal_anim_state = 4;
 			}
-			else if (item->ai_bits & 4)
+			else if (item->ai_bits & PATROL1)
 				item->goal_anim_state = 5;
 			else
 			{

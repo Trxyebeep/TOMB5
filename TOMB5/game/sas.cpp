@@ -171,7 +171,7 @@ void SasControl(short item_number)
 
 		if ((lara_info.distance < 0x400000 && lara_item->speed > 20) || item->hit_status || TargetVisible(item, &lara_info))
 		{
-			if (!(item->ai_bits & 16) && item->object_number != SCIENTIST)
+			if (!(item->ai_bits & FOLLOW) && item->object_number != SCIENTIST)
 			{
 				if (abs(item->pos.y_pos - lara_item->pos.y_pos) < 1280)
 				{
@@ -200,7 +200,7 @@ void SasControl(short item_number)
 			sas->LOT.is_jumping = 0;
 			sas->flags = 0;
 
-			if (sasAI.ahead && !(item->ai_bits & 1))
+			if (sasAI.ahead && !(item->ai_bits & GUARD))
 			{
 				torso_y = sasAI.angle >> 1;
 				torso_x = sasAI.x_angle;
@@ -210,26 +210,26 @@ void SasControl(short item_number)
 				item->goal_anim_state = 39;
 			else if (item->required_anim_state)
 				item->goal_anim_state = item->required_anim_state;
-			else if (item->ai_bits & 1)
+			else if (item->ai_bits & GUARD)
 			{
-				if (item->ai_bits & 8)
+				if (item->ai_bits & MODIFY)
 					head = 0;
 				else
 					head = AIGuard(sas);
 
-				if (item->ai_bits & 4)
+				if (item->ai_bits & PATROL1)
 				{
 					item->trigger_flags--;
 
 					if (item->trigger_flags < 1)
-						item->ai_bits &= -2;
+						item->ai_bits &= ~GUARD;
 				}
 			}
 			else if (sas->enemy == lara_item && (lara_info.angle > 20480 || lara_info.angle < -20480) && item->object_number != SCIENTIST)
 				item->goal_anim_state = 2;
-			else if (item->ai_bits & 4)
+			else if (item->ai_bits & PATROL1)
 				item->goal_anim_state = 5;
-			else if (item->ai_bits & 2)
+			else if (item->ai_bits & AMBUSH)
 				item->goal_anim_state = 7;
 			else if (!Targetable(item, &sasAI) || item->object_number == SCIENTIST)
 			{
@@ -251,18 +251,15 @@ void SasControl(short item_number)
 					item->goal_anim_state = 31;
 				else if (sas->mood == BORED_MOOD)
 					item->goal_anim_state = 1;
-				else if (sasAI.distance < 0x900000 || item->ai_bits & 16)
+				else if (sasAI.distance < 0x900000 || item->ai_bits & FOLLOW)
 					item->goal_anim_state = 5;
 				else
 					item->goal_anim_state = 7;
 			}
-			else
-			{
-				if (sasAI.distance < 0x1000000 || sasAI.zone_number != sasAI.enemy_zone)
-					item->goal_anim_state = 4;
-				else if (item->ai_bits != 8)
-					item->goal_anim_state = 5;
-			}
+			else if (sasAI.distance < 0x1000000 || sasAI.zone_number != sasAI.enemy_zone)
+				item->goal_anim_state = 4;
+			else if (item->ai_bits != MODIFY)
+				item->goal_anim_state = 5;
 
 			if (item->trigger_flags == 11)
 				item->trigger_flags = 0;
@@ -348,7 +345,7 @@ void SasControl(short item_number)
 			sas->maximum_turn = 910;
 
 			if (!Targetable(item, &sasAI) || sasAI.distance >= 0x1000000 && sasAI.zone_number == sasAI.enemy_zone ||
-				item->object_number == SCIENTIST || item->ai_bits & 6)
+				item->object_number == SCIENTIST || item->ai_bits & (AMBUSH | PATROL1))
 			{
 				if (jump_ahead || long_jump_ahead)
 				{
@@ -368,8 +365,8 @@ void SasControl(short item_number)
 					item->goal_anim_state = 1;
 				else if (los && !item->ai_bits)
 					item->goal_anim_state = 1;
-				else if (sasAI.distance > 0x900000 && !(item->ai_bits & 4))
-					item->goal_anim_state = 7;	
+				else if (sasAI.distance > 0x900000 && !(item->ai_bits & PATROL1))
+					item->goal_anim_state = 7;
 			}
 			else
 				item->goal_anim_state = 4;
@@ -567,16 +564,16 @@ void SasControl(short item_number)
 			if ((item->object_number != SCIENTIST || item != lara.target) &&
 				((GetRandomControl() & 0x7F || item->trigger_flags >= 10) || item->trigger_flags == 9))
 			{
-				if (item->ai_bits & 1)
+				if (item->ai_bits & GUARD)
 				{
 					head = AIGuard(sas);
 
-					if (item->ai_bits & 4)
+					if (item->ai_bits & PATROL1)
 					{
 						item->trigger_flags--;
 
 						if (item->trigger_flags < 1)
-							item->ai_bits = 4;
+							item->ai_bits = PATROL1;
 					}
 				}
 			}
@@ -631,13 +628,13 @@ void SasControl(short item_number)
 			item->goal_anim_state = 1;
 			item->required_anim_state = 38;
 			item->trigger_flags = 300;
-			item->ai_bits = 5;
+			item->ai_bits = GUARD | PATROL1;
 		}
 		else if (sas->enemy->flags & 32)
 		{
 			item->goal_anim_state = 1;
 			item->required_anim_state = 36;
-			item->ai_bits = 4;
+			item->ai_bits = PATROL1;
 		}
 		else
 		{
@@ -654,7 +651,7 @@ void SasControl(short item_number)
 			{
 				item->required_anim_state = 1;
 				item->trigger_flags = 300;
-				item->ai_bits |= 5;
+				item->ai_bits |= GUARD | PATROL1;
 			}
 		}
 

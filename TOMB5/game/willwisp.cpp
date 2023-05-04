@@ -43,8 +43,8 @@ void WillOWispControl(short item_number)
 	{
 		tilt = 0;
 		item = &items[item_number];
-		willowisp = (CREATURE_INFO*) item->data;
-		item->ai_bits = 0x10;
+		willowisp = (CREATURE_INFO*)item->data;
+		item->ai_bits = FOLLOW;
 
 		if (willowisp->reached_goal)
 		{

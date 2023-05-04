@@ -91,10 +91,10 @@ void HuskieControl(short item_number)
 		angle = CreatureTurn(item, huskie->maximum_turn);
 		torso_y = 4 * angle;
 
-		if (huskie->hurt_by_lara || lara_info.distance < 0x900000 && !(item->ai_bits & 8))
+		if (huskie->hurt_by_lara || lara_info.distance < 0x900000 && !(item->ai_bits & MODIFY))
 		{
 			AlertAllGuards(item_number);
-			item->ai_bits &= ~8;
+			item->ai_bits &= ~MODIFY;
 		}
 
 		random = (short)GetRandomControl();
@@ -107,7 +107,7 @@ void HuskieControl(short item_number)
 			head = 0;
 			head_x = 0;
 
-			if (item->current_anim_state && item->ai_bits != 8)
+			if (item->current_anim_state && item->ai_bits != MODIFY)
 				item->goal_anim_state = 1;
 			else
 			{
@@ -122,7 +122,7 @@ void HuskieControl(short item_number)
 
 		case 2:
 
-			if (item->ai_bits & 4)
+			if (item->ai_bits & PATROL1)
 				item->goal_anim_state = 2;
 			else if (huskie->mood == BORED_MOOD && random < 256)
 				item->goal_anim_state = 1;
@@ -197,7 +197,7 @@ void HuskieControl(short item_number)
 		case 1:
 			huskie->maximum_turn = 0;
 
-			if (item->ai_bits & 1)
+			if (item->ai_bits & GUARD)
 			{
 				head = AIGuard(huskie);
 
@@ -206,7 +206,7 @@ void HuskieControl(short item_number)
 			}
 			else if (item->current_anim_state == 9 && random < 128)
 				item->goal_anim_state = 1;
-			else if (item->ai_bits & 4)
+			else if (item->ai_bits & PATROL1)
 				item->goal_anim_state = item->current_anim_state == 1 ? 2 : 1;
 			else if (huskie->mood == ESCAPE_MOOD)
 			{
@@ -223,7 +223,7 @@ void HuskieControl(short item_number)
 				huskie->flags = 0;
 				huskie->maximum_turn = 182;
 
-				if (random < 256 && item->ai_bits & 8 && item->current_anim_state == 1)
+				if (random < 256 && item->ai_bits & MODIFY && item->current_anim_state == 1)
 				{
 					item->goal_anim_state = 8;
 					huskie->flags = 0;
