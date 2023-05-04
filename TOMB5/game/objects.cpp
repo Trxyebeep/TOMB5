@@ -49,8 +49,7 @@ static PHD_VECTOR TightRopePos = { 0, 0, 0 };
 void EarthQuake(short item_number)
 {
 	ITEM_INFO* item;
-	long pitch;
-	short earth_item;
+	long lp;
 
 	item = &items[item_number];
 
@@ -68,68 +67,65 @@ void EarthQuake(short item_number)
 			SoundEffect(SFX_J_GRAB_IMPACT, 0, SFX_DEFAULT);
 			KillItem(item_number);
 		}
+
+		return;
 	}
-	else if (item->trigger_flags == 333)
+
+	if (item->trigger_flags == 333)
 	{
-		if (item->item_flags[0] >= 495)
-			KillItem(item_number);
-		else
+		if (item->item_flags[0] < 495)
 		{
-			item->item_flags[0]++;
 			SoundEffect(SFX_EARTHQUAKE_LOOP, 0, SFX_DEFAULT);
+			item->item_flags[0]++;
+		}
+		else
+			KillItem(item_number);
+
+		return;
+	}
+
+	if (!item->item_flags[1])
+		item->item_flags[1] = 100;
+
+	if (!item->item_flags[2] && abs(item->item_flags[0] - item->item_flags[1]) < 16)
+	{
+
+		if (item->item_flags[1] == 20)
+		{
+			item->item_flags[1] = 100;
+			item->item_flags[2] = (GetRandomControl() & 0x7F) + 90;
+		}
+		else
+		{
+			item->item_flags[1] = 20;
+			item->item_flags[2] = (GetRandomControl() & 0x7F) + 30;
 		}
 	}
+
+	if (item->item_flags[2])
+		item->item_flags[2]--;
+
+	if (item->item_flags[0] <= item->item_flags[1])
+		item->item_flags[0] += (GetRandomControl() & 7) + 2;
 	else
+		item->item_flags[0] -= (GetRandomControl() & 7) + 2;
+
+	SoundEffect(SFX_EARTHQUAKE_LOOP, 0, (0x1000000 + (item->item_flags[0] << 16)) | SFX_SETPITCH);
+	camera.bounce = -item->item_flags[0];
+
+	if (GetRandomControl() < 1024)
 	{
-		if (!item->item_flags[1])
-			item->item_flags[1] = 100;
-
-		if (!item->item_flags[2])
+		for (lp = room[item->room_number].item_number; lp != NO_ITEM; lp = item->next_item)
 		{
-			if (abs(item->item_flags[0] - item->item_flags[1]) < 16)
+			item = &items[lp];
+
+			if (item->object_number == FLAME_EMITTER && item->status != ITEM_ACTIVE && item->status != ITEM_DEACTIVATED)
 			{
-				if (item->item_flags[1] == 20)
-				{
-					item->item_flags[1] = 100;
-					item->item_flags[2] = (GetRandomControl() & 0x7F) + 90;
-				}
-				else
-				{
-					item->item_flags[1] = 20;
-					item->item_flags[2] = (GetRandomControl() & 0x7F) + 30;
-				}
-			}
-		}
-
-		if (item->item_flags[2])
-			item->item_flags[2]--;
-
-		if (item->item_flags[0] <= item->item_flags[1])
-			item->item_flags[0] += (GetRandomControl() & 7) + 2;
-		else
-			item->item_flags[0] -= (GetRandomControl() & 7) + 2;
-
-		pitch = (item->item_flags[0] << 16) + 0x1000000;
-		SoundEffect(SFX_EARTHQUAKE_LOOP, 0, pitch | SFX_SETPITCH);
-		camera.bounce = -item->item_flags[0];
-
-		if (GetRandomControl() < 1024)
-		{
-			for (earth_item = room[item->room_number].item_number; earth_item != NO_ITEM; earth_item = item->next_item)
-			{
-				item = &items[earth_item];
-
-				if (item->object_number == FLAME_EMITTER)
-				{
-					if (item->status != ITEM_ACTIVE && item->status != ITEM_DEACTIVATED)
-					{
-						AddActiveItem(earth_item);
-						item->status = ITEM_ACTIVE;
-						item->timer = 0;
-						item->flags |= IFL_CODEBITS;
-						break;
-					}
-				}
+				AddActiveItem((short)lp);
+				item->status = ITEM_ACTIVE;
+				item->timer = 0;
+				item->flags |= IFL_CODEBITS;
+				break;
 			}
 		}
 	}
@@ -140,12 +136,10 @@ void SmashObject(short item_number)
 	ITEM_INFO* item;
 	ROOM_INFO* r;
 	BOX_INFO* box;
-	long sector;
 
 	item = &items[item_number];
 	r = &room[item->room_number];
-	sector = ((item->pos.z_pos - r->z) >> 10) + r->x_size * ((item->pos.x_pos - r->x) >> 10);
-	box = &boxes[r->floor[sector].box];
+	box = &boxes[r->floor[((item->pos.z_pos - r->z) >> 10) + r->x_size * ((item->pos.x_pos - r->x) >> 10)].box];
 
 	if (box->overlap_index & 0x8000)
 		box->overlap_index &= 0xBF00;
@@ -187,12 +181,14 @@ long GetOffset(ITEM_INFO* item, long x, long z)
 {
 	if (!item->pos.y_rot)
 		return ~x & 0x3FF;
-	else if (item->pos.y_rot == -0x8000)
+	
+	if (item->pos.y_rot == -0x8000)
 		return x & 0x3FF;
-	else if (item->pos.y_rot == 0x4000)
+	
+	if (item->pos.y_rot == 0x4000)
 		return z & 0x3FF;
-	else
-		return ~z & 0x3FF;
+
+	return ~z & 0x3FF;
 }
 
 void BridgeTilt1Floor(ITEM_INFO* item, long x, long y, long z, long* height)
@@ -243,15 +239,13 @@ void BridgeTilt2Ceiling(ITEM_INFO* item, long x, long y, long z, long* height)
 		*height = level + 256;
 }
 
-
-
 void ControlAnimatingSlots(short item_number)
 {
 	ITEM_INFO* item;
 	CREATURE_INFO* c;
 	PHD_VECTOR pos;
 	long f, fe;
-	short roomnum;
+	short room_number;
 
 	item = &items[item_number];
 
@@ -261,11 +255,11 @@ void ControlAnimatingSlots(short item_number)
 		pos.y = 0;
 		pos.z = 0;
 		GetJointAbsPosition(item, &pos, 0);
-		roomnum = item->room_number;
-		GetFloor(pos.x, pos.y, pos.z, &roomnum);
+		room_number = item->room_number;
+		GetFloor(pos.x, pos.y, pos.z, &room_number);
 
-		if (roomnum != item->room_number)
-			ItemNewRoom(item_number, roomnum);
+		if (item->room_number != room_number)
+			ItemNewRoom(item_number, room_number);
 	}
 
 	if (!TriggerActive(item))
@@ -301,27 +295,33 @@ void ControlAnimatingSlots(short item_number)
 		TriggerSkeletonFire(item);
 	else if (item->trigger_flags == 111)
 		ControlGunTestStation(item);
-	else if (item->object_number != SWITCH_TYPE8 || item->trigger_flags == 444)
+	else if (item->object_number == SWITCH_TYPE8 && item->trigger_flags != 444)
+	{
+		item->frame_number = anims[item->anim_number].frame_base;
+		RemoveActiveItem(item_number);
+		item->collidable = 0;
+		item->looked_at = 0;
+		item->flags &= ~IFL_CODEBITS;
+	}
+	else
 	{
 		switch (item->trigger_flags)
 		{
 		case 666:
 		case 667:
-			fe = item->frame_number - anims[item->anim_number].frame_base;
+			f = item->frame_number - anims[item->anim_number].frame_base;
+			fe = anims[item->anim_number].frame_end - item->frame_number;
 
-			if (item->frame_number - anims[item->anim_number].frame_base >= 16)
-			{
-				if (anims[item->anim_number].frame_end - item->frame_number >= 16)
-					SoundEffect(SFX_HELICOPTER_LOOP, &item->pos, (31 << 8) | SFX_SETVOL);
-				else
-					SoundEffect(SFX_HELICOPTER_LOOP, &item->pos, ((2 * (anims[item->anim_number].frame_end - item->frame_number)) << 8) | 8);
-			}
-			else
+			if (f < 16)
+				SoundEffect(SFX_HELICOPTER_LOOP, &item->pos, ((2 * f) << 8) | SFX_SETVOL);
+			else if (fe < 16)
 				SoundEffect(SFX_HELICOPTER_LOOP, &item->pos, ((2 * fe) << 8) | SFX_SETVOL);
+			else
+				SoundEffect(SFX_HELICOPTER_LOOP, &item->pos, 0x1F00 | SFX_SETVOL);
 
 			c = (CREATURE_INFO*)item->data;
-			c->joint_rotation[0] += 7343;
-			c->joint_rotation[1] += 7343;
+			c->joint_rotation[0] += 0x1CAF;
+			c->joint_rotation[1] += 0x1CAF;
 
 			if (item->frame_number == anims[item->anim_number].frame_end)
 				KillItem(item_number);
@@ -329,7 +329,7 @@ void ControlAnimatingSlots(short item_number)
 			break;
 
 		case 668:
-			SoundEffect(SFX_HELICOPTER_LOOP, 0, 2058);
+			SoundEffect(SFX_HELICOPTER_LOOP, 0, 0x800 | SFX_SETVOL | SFX_ALWAYS);
 			break;
 
 		case 777:
@@ -340,12 +340,13 @@ void ControlAnimatingSlots(short item_number)
 				pos.y= (GetRandomControl() & 0x3F) + 400;
 				pos.z = 496;
 				GetJointAbsPosition(item, &pos, 0);
-				TriggerLiftBrakeSparks(&pos, item->pos.y_rot - 16384);
+				TriggerLiftBrakeSparks(&pos, item->pos.y_rot - 0x4000);
+
 				pos.x = 1668;
 				pos.y = (GetRandomControl() & 0x3F) + 400;
 				pos.z = -512;
 				GetJointAbsPosition(item, &pos, 0);
-				TriggerLiftBrakeSparks(&pos, item->pos.y_rot - 16384);
+				TriggerLiftBrakeSparks(&pos, item->pos.y_rot - 0x4000);
 			}
 
 			break;
@@ -369,14 +370,6 @@ void ControlAnimatingSlots(short item_number)
 			break;
 		}
 	}
-	else if (item->frame_number >= anims[item->anim_number].frame_end)
-	{
-		item->frame_number = anims[item->anim_number].frame_base;
-		RemoveActiveItem(item_number);
-		item->collidable = 0;
-		item->looked_at = 0;
-		item->flags &= 0xC1FF;
-	}
 }
 
 void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
@@ -390,7 +383,6 @@ void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 		lara.IsMoving && lara.GeneralPtr == (void*)item_num)
 	{
 		roty = item->pos.y_rot;
-
 		item->pos.y_rot = l->pos.y_rot;
 
 		if (TestLaraPosition(PoleBounds, item, l))
@@ -405,19 +397,14 @@ void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 			}
 			else
 				lara.GeneralPtr = (void*)item_num;
-			
-			item->pos.y_rot = roty;
 		}
-		else
+		else if (lara.IsMoving && lara.GeneralPtr == (void*)item_num)
 		{
-			if (lara.IsMoving && lara.GeneralPtr == (void*)item_num)
-			{
-				lara.IsMoving = 0;
-				lara.gun_status = LG_NO_ARMS;
-			}
-
-			item->pos.y_rot = roty;
+			lara.IsMoving = 0;
+			lara.gun_status = LG_NO_ARMS;
 		}
+
+		item->pos.y_rot = roty;
 	}
 	else if (input & IN_ACTION && lara.gun_status == LG_NO_ARMS && l->gravity_status != 0 && l->fallspeed > 0 &&
 		(l->current_anim_state == AS_REACH || l->current_anim_state == AS_UPJUMP))
@@ -449,11 +436,8 @@ void PoleCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 			item->pos.y_rot = roty;
 		}
 	}
-	else
-	{
-		if ((l->current_anim_state < AS_POLESTAT || l->current_anim_state > AS_POLERIGHT) && l->current_anim_state != AS_BACKJUMP)
-			ObjectCollision(item_num, l, coll);
-	}
+	else if ((l->current_anim_state < AS_POLESTAT || l->current_anim_state > AS_POLERIGHT) && l->current_anim_state != AS_BACKJUMP)
+		ObjectCollision(item_num, l, coll);
 }
 
 void ControlTriggerTriggerer(short item_number)
@@ -465,39 +449,39 @@ void ControlTriggerTriggerer(short item_number)
 	GetHeight(GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &item->room_number), item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
 	data = trigger_index;
 
-	if (data)
+	if (!data)
+		return;
+
+	if ((*data & 0x1F) == LAVA_TYPE)
 	{
-		if ((*data & 0x1F) == LAVA_TYPE)
-		{
-			if (*data & 0x8000)
-				return;
+		if (*data & 0x8000)
+			return;
 
-			data++;
-		}
+		data++;
+	}
 
-		if ((*data & 0x1F) == CLIMB_TYPE)
-		{
-			if (*data & 0x8000)
-				return;
+	if ((*data & 0x1F) == CLIMB_TYPE)
+	{
+		if (*data & 0x8000)
+			return;
 
-			data++;
-		}
+		data++;
+	}
 
-		if ((*data & 0x1F) == MONKEY_TYPE)
-		{
-			if (*data & 0x8000)
-				return;
+	if ((*data & 0x1F) == MONKEY_TYPE)
+	{
+		if (*data & 0x8000)
+			return;
 
-			data++;
-		}
+		data++;
+	}
 
-		if ((*data & 0x1F) == TRIGTRIGGER_TYPE)
-		{
-			if (TriggerActive(item))
-				*data |= IFL_TRIGGERED;
-			else
-				*data &= ~IFL_TRIGGERED;
-		}
+	if ((*data & 0x1F) == TRIGTRIGGER_TYPE)
+	{
+		if (TriggerActive(item))
+			*data |= IFL_TRIGGERED;
+		else
+			*data &= ~IFL_TRIGGERED;
 	}
 }
 
@@ -554,11 +538,8 @@ void ControlWaterfall(short item_number)
 		else if (item->trigger_flags == 777)
 			SoundEffect(SFX_WATERFALL_LOOP, &item->pos, SFX_DEFAULT);
 	}
-	else
-	{
-		if (item->trigger_flags == 2 || item->trigger_flags == 668)
-			item->status = ITEM_INVISIBLE;
-	}
+	else if (item->trigger_flags == 2 || item->trigger_flags == 668)
+		item->status = ITEM_INVISIBLE;
 }
 
 void TightRopeCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
@@ -567,10 +548,10 @@ void TightRopeCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 
 	item = &items[item_num];
 
-	if (input & IN_ACTION && l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH &&
-		!l->gravity_status && lara.gun_status == LG_NO_ARMS || lara.IsMoving && lara.GeneralPtr == (void*)item_num)
+	if (input & IN_ACTION && l->current_anim_state == AS_STOP && l->anim_number == ANIM_BREATH && !l->gravity_status &&
+		lara.gun_status == LG_NO_ARMS || lara.IsMoving && lara.GeneralPtr == (void*)item_num)
 	{
-		item->pos.y_rot += 32768;
+		item->pos.y_rot += 0x8000;
 
 		if (TestLaraPosition(TightRopeBounds, item, l))
 		{
@@ -590,20 +571,14 @@ void TightRopeCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 			}
 			else
 				lara.GeneralPtr = (void*)item_num;
-
-			item->pos.y_rot += 32768;
 		}
-		else
-		{
-			if (lara.IsMoving && lara.GeneralPtr == (void*)item_num)
-				lara.IsMoving = 0;
+		else if (lara.IsMoving && lara.GeneralPtr == (void*)item_num)
+			lara.IsMoving = 0;
 
-			item->pos.y_rot += 32768;
-		}
+		item->pos.y_rot += 0x8000;
 	}
-	else if (l->current_anim_state == AS_TROPEWALK &&
-		l->goal_anim_state != AS_TROPEGETOFF && !lara.TightRopeOff && item->pos.y_rot == l->pos.y_rot &&
-		((abs(item->pos.x_pos - l->pos.x_pos) + abs(item->pos.z_pos - l->pos.z_pos)) < 640))
+	else if (l->current_anim_state == AS_TROPEWALK && l->goal_anim_state != AS_TROPEGETOFF && !lara.TightRopeOff &&
+		item->pos.y_rot == l->pos.y_rot && ((abs(item->pos.x_pos - l->pos.x_pos) + abs(item->pos.z_pos - l->pos.z_pos)) < 640))
 		lara.TightRopeOff = 1;
 }
 
@@ -618,10 +593,9 @@ void ParallelBarsCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 
 	if (!(input & IN_ACTION) || l->current_anim_state != AS_REACH || l->anim_number != ANIM_GRABLOOP)
 	{
-		if (l->current_anim_state == AS_PBSPIN)
-			return;
+		if (l->current_anim_state != AS_PBSPIN)
+			ObjectCollision(item_num, l, coll);
 
-		ObjectCollision(item_num, l, coll);
 		return;
 	}
 
@@ -629,9 +603,9 @@ void ParallelBarsCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 
 	if (!pass)
 	{
-		item->pos.y_rot += -32768;
+		item->pos.y_rot += 0x8000;
 		pass1 = (short)TestLaraPosition(ParallelBarsBounds, item, l);
-		item->pos.y_rot += -32768;
+		item->pos.y_rot += 0x8000;
 
 		if (!pass1)
 		{
@@ -645,15 +619,15 @@ void ParallelBarsCollision(short item_num, ITEM_INFO* l, COLL_INFO* coll)
 	l->frame_number = anims[ANIM_PB_GRAB].frame_base;
 	l->fallspeed = 0;
 	l->gravity_status = 0;
-	lara.head_y_rot = 0;
 	lara.head_x_rot = 0;
-	lara.torso_y_rot = 0;
+	lara.head_y_rot = 0;
 	lara.torso_x_rot = 0;
+	lara.torso_y_rot = 0;
 	
 	if (pass)
 		l->pos.y_rot = item->pos.y_rot;
 	else
-		l->pos.y_rot = item->pos.y_rot + 32768;
+		l->pos.y_rot = item->pos.y_rot + 0x8000;
 
 	pos.x = 0;
 	pos.y = -128;
@@ -701,16 +675,13 @@ void ControlXRayMachine(short item_number)
 			}
 		}
 		
-		if (lara.skelebob)
+		if (lara.skelebob && lara.hk_type_carried & W_PRESENT)
 		{
-			if (lara.hk_type_carried & W_PRESENT)
-			{
-				TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
-				item->item_flags[0] = 666;
-			}
+			TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
+			item->item_flags[0] = 666;
 		}
 
-		return;
+		break;
 
 	case 111:
 
@@ -718,7 +689,7 @@ void ControlXRayMachine(short item_number)
 		{
 			item->item_flags[0]--;
 
-			if (item->item_flags[0] == 0)
+			if (!item->item_flags[0])
 			{
 				TestTriggersAtXYZ(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 1, 0);
 				RemoveActiveItem(item_number);
@@ -764,14 +735,11 @@ void ControlXRayMachine(short item_number)
 
 		for (int i = 0; i < r->num_meshes; i++, mesh++)
 		{
-			if (mesh->Flags & 1)
+			if (mesh->Flags & 1 && item->pos.x_pos == mesh->x && item->pos.y_pos == mesh->y && item->pos.z_pos == mesh->z)
 			{
-				if (item->pos.x_pos == mesh->x && item->pos.y_pos == mesh->y && item->pos.z_pos == mesh->z)
-				{
-					ShatterObject(0, mesh, 128, item->room_number, 0);
-					mesh->Flags &= ~1;
-					SoundEffect(ShatterSounds[gfCurrentLevel][mesh->static_number - 50], (PHD_3DPOS*)&mesh->x, SFX_DEFAULT);
-				}
+				ShatterObject(0, mesh, 128, item->room_number, 0);
+				mesh->Flags &= ~1;
+				SoundEffect(ShatterSounds[gfCurrentLevel][mesh->static_number - 50], (PHD_3DPOS*)&mesh->x, SFX_DEFAULT);
 			}
 		}
 
@@ -799,10 +767,12 @@ void CutsceneRopeControl(short item_number)
 	pos1.y = -72;
 	pos1.z = -16;
 	GetJointAbsPosition(&items[item->item_flags[2]], &pos1, 0);
+
 	pos2.x = 830;
 	pos2.z = -12;
 	pos2.y = 0;
 	GetJointAbsPosition(&items[item->item_flags[3]], &pos2, 0);
+
 	item->pos.x_pos = pos2.x;
 	item->pos.y_pos = pos2.y;
 	item->pos.z_pos = pos2.z;
@@ -826,8 +796,8 @@ void HybridCollision(short item_num, ITEM_INFO* laraitem, COLL_INFO* coll)
 void DrawBaddieGunFlash(ITEM_INFO* item)
 {
 	float m[12];
-	short node[2];
-	short bite[2];
+	long node[2];
+	ushort bite[2];
 	short num;
 
 	if (!item->fired_weapon)
@@ -835,8 +805,8 @@ void DrawBaddieGunFlash(ITEM_INFO* item)
 
 	bite[0] = objects[item->object_number].bite_offset;
 	bite[1] = objects[item->object_number].bite_offset + 1;
-	node[0] = short(EnemyBites[bite[0]].mesh_num);
-	node[1] = short(EnemyBites[bite[1]].mesh_num);
+	node[0] = EnemyBites[bite[0]].mesh_num;
+	node[1] = EnemyBites[bite[1]].mesh_num;
 	
 	num = node[0] < 0 ? 1 : 0;
 
