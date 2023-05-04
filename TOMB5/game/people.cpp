@@ -25,17 +25,17 @@ long TargetVisible(ITEM_INFO* item, AI_INFO* info)
 	creature = (CREATURE_INFO*)item->data;
 	enemy = creature->enemy;
 
-	if (!enemy || enemy->hit_points <= 0 || !enemy->data || (info->angle - creature->joint_rotation[2]) <= -8192 ||
+	if (!enemy || enemy->hit_points <= 0 || !enemy->data || (info->angle - creature->joint_rotation[2]) <= -0x2000 ||
 		(info->angle - creature->joint_rotation[2]) >= 0x2000 || info->distance >= 0x4000000)
 		return 0;
 
+	bounds = GetBestFrame(enemy);
 	start.x = item->pos.x_pos;
 	start.y = item->pos.y_pos - 768;
 	start.z = item->pos.z_pos;
 	start.room_number = item->room_number;
 	target.x = enemy->pos.x_pos;
-	bounds = GetBestFrame(enemy);
-	target.y = enemy->pos.y_pos + ((((bounds[2] << 1) + bounds[2]) + bounds[3]) >> 2);
+	target.y = enemy->pos.y_pos + ((bounds[3] + 3 * bounds[2]) >> 2);
 	target.z = enemy->pos.z_pos;
 	return LOS(&start, &target);
 }
@@ -62,9 +62,9 @@ long Targetable(ITEM_INFO* item, AI_INFO* info)
 	else
 		start.y = item->pos.y_pos + ((bounds[3] + 3 * bounds[2]) >> 2);
 
+	bounds = GetBestFrame(enemy);
 	start.z = item->pos.z_pos;
 	start.room_number = item->room_number;
-	bounds = GetBestFrame(enemy);
 	target.x = enemy->pos.x_pos;
 	target.y = enemy->pos.y_pos + ((bounds[3] + 3 * bounds[2]) >> 2);
 	target.z = enemy->pos.z_pos;
@@ -84,6 +84,7 @@ short GunHit(long x, long y, long z, short speed, short yrot, short room_number)
 	pos.y = 0;
 	pos.z = 0;
 	GetJointAbsPosition(lara_item, &pos, (25 * GetRandomControl()) / 0x7FFF);
+
 	DoBloodSplat(pos.x, pos.y, pos.z, (GetRandomControl() & 3) + 3, lara_item->pos.y_rot, lara_item->room_number);
 	SoundEffect(SFX_LARA_INJURY_RND, &lara_item->pos, SFX_DEFAULT);
 	return GunShot(x, y, z, speed, yrot, room_number);
