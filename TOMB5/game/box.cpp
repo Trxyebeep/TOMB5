@@ -99,9 +99,9 @@ void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
 	else
 		ang = enemy->pos.y_rot;
 
-	x = enemy->pos.x_pos + (14 * enemy->speed * phd_sin(ang) >> 14) - (pivot * phd_sin(item->pos.y_rot) >> 14) - item->pos.x_pos;
+	x = enemy->pos.x_pos + (14 * enemy->speed * phd_sin(ang) >> W2V_SHIFT) - (pivot * phd_sin(item->pos.y_rot) >> W2V_SHIFT) - item->pos.x_pos;
 	y = item->pos.y_pos - enemy->pos.y_pos;
-	z = enemy->pos.z_pos + (14 * enemy->speed * phd_cos(ang) >> 14) - (pivot * phd_cos(item->pos.y_rot) >> 14) - item->pos.z_pos;
+	z = enemy->pos.z_pos + (14 * enemy->speed * phd_cos(ang) >> W2V_SHIFT) - (pivot * phd_cos(item->pos.y_rot) >> W2V_SHIFT) - item->pos.z_pos;
 
 	ang = (short)phd_atan(z, x);
 
@@ -1222,16 +1222,16 @@ short CreatureTurn(ITEM_INFO* item, short maximum_turn)
 	z = item->pos.z_pos;
 	r = &room[item->room_number];
 
-	feelxplus = x + (512 * phd_sin(item->pos.y_rot + 8190) >> 14);
-	feelzplus = z + (512 * phd_cos(item->pos.y_rot + 8190) >> 14);
+	feelxplus = x + (512 * phd_sin(item->pos.y_rot + 8190) >> W2V_SHIFT);
+	feelzplus = z + (512 * phd_cos(item->pos.y_rot + 8190) >> W2V_SHIFT);
 	feelplus = r->floor[((feelzplus - r->z) >> 10) + r->x_size * ((feelxplus - r->x) >> 10)].stopper;
 
-	feelxminus = x + (512 * phd_sin(item->pos.y_rot - 8190) >> 14);
-	feelzminus = z + (512 * phd_cos(item->pos.y_rot - 8190) >> 14);
+	feelxminus = x + (512 * phd_sin(item->pos.y_rot - 8190) >> W2V_SHIFT);
+	feelzminus = z + (512 * phd_cos(item->pos.y_rot - 8190) >> W2V_SHIFT);
 	feelminus = r->floor[((feelzminus - r->z) >> 10) + r->x_size * ((feelxminus - r->x) >> 10)].stopper;
 
-	feelxmid = x + (512 * phd_sin(item->pos.y_rot) >> 14);
-	feelzmid = z + (512 * phd_cos(item->pos.y_rot) >> 14);
+	feelxmid = x + (512 * phd_sin(item->pos.y_rot) >> W2V_SHIFT);
+	feelzmid = z + (512 * phd_cos(item->pos.y_rot) >> W2V_SHIFT);
 	feelmid = r->floor[((feelzmid - r->z) >> 10) + r->x_size * ((feelxmid - r->x) >> 10)].stopper;
 
 	if (feelminus && feelmid)
@@ -1516,9 +1516,9 @@ void CreatureKill(ITEM_INFO* item, short kill_anim, short kill_state, short lara
 	lara.hit_direction = -1;
 	lara.air = -1;
 	camera.pos.room_number = lara_item->room_number;
-	ForcedFixedCamera.x = item->pos.x_pos + ((2048 * phd_sin(item->pos.y_rot)) >> 14);
+	ForcedFixedCamera.x = item->pos.x_pos + ((2048 * phd_sin(item->pos.y_rot)) >> W2V_SHIFT);
 	ForcedFixedCamera.y = item->pos.y_pos - 1024;
-	ForcedFixedCamera.z = item->pos.z_pos + ((2048 * phd_cos(item->pos.y_rot)) >> 14);
+	ForcedFixedCamera.z = item->pos.z_pos + ((2048 * phd_cos(item->pos.y_rot)) >> W2V_SHIFT);
 	ForcedFixedCamera.room_number = item->room_number;
 	UseForcedFixedCamera = 1;
 }
@@ -1654,8 +1654,8 @@ void FindAITargetObject(CREATURE_INFO* creature, short obj_num)
 
 				if (!(creature->ai_target.flags & 0x20))
 				{
-					creature->ai_target.pos.x_pos += 256 * phd_sin(item->pos.y_rot) >> 14;
-					creature->ai_target.pos.z_pos += 256 * phd_cos(item->pos.y_rot) >> 14;
+					creature->ai_target.pos.x_pos += 256 * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
+					creature->ai_target.pos.z_pos += 256 * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
 				}
 
 				break;

@@ -215,10 +215,10 @@ void UpdateBats()
 		ox = fx->pos.x_pos;
 		oy = fx->pos.y_pos;
 		oz = fx->pos.z_pos;
-		speed = fx->speed * phd_cos(fx->pos.x_rot) >> 14;
-		fx->pos.x_pos += (speed * phd_sin(fx->pos.y_rot) >> 14);
-		fx->pos.y_pos += (fx->speed * phd_sin(-fx->pos.x_rot) >> 14);
-		fx->pos.z_pos += (speed * phd_cos(fx->pos.y_rot) >> 14);
+		speed = fx->speed * phd_cos(fx->pos.x_rot) >> W2V_SHIFT;
+		fx->pos.x_pos += (speed * phd_sin(fx->pos.y_rot) >> W2V_SHIFT);
+		fx->pos.y_pos += (fx->speed * phd_sin(-fx->pos.x_rot) >> W2V_SHIFT);
+		fx->pos.z_pos += (speed * phd_cos(fx->pos.y_rot) >> W2V_SHIFT);
 
 		if (!(i & 1))
 		{

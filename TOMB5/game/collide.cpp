@@ -88,7 +88,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 	switch (coll->quadrant)
 	{
 	case NORTH:
-		xfront = (phd_sin(coll->facing) * coll->radius) >> 14;
+		xfront = (phd_sin(coll->facing) * coll->radius) >> W2V_SHIFT;
 		zfront = coll->radius;
 		xright = coll->radius; 
 		zright = coll->radius; 
@@ -98,7 +98,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 
 	case EAST:
 		xfront = coll->radius;
-		zfront = (phd_cos(coll->facing) * coll->radius) >> 14;
+		zfront = (phd_cos(coll->facing) * coll->radius) >> W2V_SHIFT;
 		xright = coll->radius;
 		zright = -coll->radius;
 		zleft = coll->radius;
@@ -106,7 +106,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 		break;
 
 	case SOUTH:
-		xfront = (phd_sin(coll->facing) * coll->radius) >> 14;
+		xfront = (phd_sin(coll->facing) * coll->radius) >> W2V_SHIFT;
 		zfront = -coll->radius;
 		xright = -coll->radius;
 		zright = -coll->radius;
@@ -116,7 +116,7 @@ void GetCollisionInfo(COLL_INFO* coll, long xpos, long ypos, long zpos, short ro
 
 	case WEST:
 		xfront = -coll->radius;
-		zfront = (phd_cos(coll->facing) * coll->radius) >> 14;
+		zfront = (phd_cos(coll->facing) * coll->radius) >> W2V_SHIFT;
 		xright = -coll->radius;
 		zright = coll->radius;
 		zleft = -coll->radius;
@@ -580,12 +580,12 @@ void CreatureCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* coll)
 					c = phd_cos(laraitem->pos.y_rot);
 					x = (bounds[0] + bounds[1]) >> 1;
 					z = (bounds[3] - bounds[2]) >> 1;
-					rx = (laraitem->pos.x_pos - item->pos.x_pos) - ((c * x + s * z) >> 14);
-					rz = (laraitem->pos.z_pos - item->pos.z_pos) - ((c * z - s * x) >> 14);
+					rx = (laraitem->pos.x_pos - item->pos.x_pos) - ((c * x + s * z) >> W2V_SHIFT);
+					rz = (laraitem->pos.z_pos - item->pos.z_pos) - ((c * z - s * x) >> W2V_SHIFT);
 
 					if (bounds[3] - bounds[2] > 256)
 					{
-						lara.hit_direction = ushort((laraitem->pos.y_rot - phd_atan(rz, rx) - 24576)) >> 14;
+						lara.hit_direction = ushort((laraitem->pos.y_rot - phd_atan(rz, rx) - 0x6000)) >> W2V_SHIFT;
 						lara.hit_frame++;
 
 						if (lara.hit_frame > 30)
@@ -640,9 +640,9 @@ void TestForObjectOnLedge(ITEM_INFO* item, COLL_INFO* coll)
 		s.z = -128;
 		GetLaraJointPos((PHD_VECTOR*)&s, LMX_TORSO);
 		s.room_number = lara_item->room_number;
-		d.x = s.x + ((768 * phd_sin(lara_item->pos.y_rot)) >> 14);
+		d.x = s.x + ((768 * phd_sin(lara_item->pos.y_rot)) >> W2V_SHIFT);
 		d.y = s.y;
-		d.z = s.z + ((768 * phd_cos(lara_item->pos.y_rot)) >> 14);
+		d.z = s.z + ((768 * phd_cos(lara_item->pos.y_rot)) >> W2V_SHIFT);
 		LOS(&s, &d);
 		objectonlos2 = ObjectOnLOS2(&s, &d, &v, &StaticMesh);
 
@@ -735,11 +735,11 @@ long GetCollidedObjects(ITEM_INFO* item, long rad, long noInvisible, ITEM_INFO**
 						cy = phd_cos(mesh->y_rot);
 						dx = item->pos.x_pos - mesh->x;
 						dz = item->pos.z_pos - mesh->z;
-						num = (dx * cy - sy * dz) >> 14;
+						num = (dx * cy - sy * dz) >> W2V_SHIFT;
 
 						if (rad + num + 128 >= bounds[0] && num - rad - 128 <= bounds[1])
 						{
-							num = (dx * sy + cy * dz) >> 14;
+							num = (dx * sy + cy * dz) >> W2V_SHIFT;
 
 							if (rad + num + 128 >= bounds[4] && num - rad - 128 <= bounds[5])
 							{
@@ -828,7 +828,7 @@ long GetCollidedObjects(ITEM_INFO* item, long rad, long noInvisible, ITEM_INFO**
 			cy = phd_cos(item2->pos.y_rot);
 			dx = item->pos.x_pos - item2->pos.x_pos;
 			dz = item->pos.z_pos - item2->pos.z_pos;
-			num = (dx * cy - sy * dz) >> 14;
+			num = (dx * cy - sy * dz) >> W2V_SHIFT;
 
 			if (item2->object_number == TURN_SWITCH)
 			{
@@ -841,7 +841,7 @@ long GetCollidedObjects(ITEM_INFO* item, long rad, long noInvisible, ITEM_INFO**
 
 			if (rad + num + 128 >= bounds[0] && num - rad - 128 <= bounds[1])
 			{
-				num = (dx * sy + cy * dz) >> 14;
+				num = (dx * sy + cy * dz) >> W2V_SHIFT;
 
 				if (rad + num + 128 >= bounds[4] && num - rad - 128 <= bounds[5])
 				{
@@ -872,9 +872,9 @@ long MoveLaraPosition(PHD_VECTOR* v, ITEM_INFO* item, ITEM_INFO* laraitem)
 	pos.z_rot = item->pos.z_rot;
 	phd_PushUnitMatrix();
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-	pos.x_pos = item->pos.x_pos + ((v->x * phd_mxptr[M00] + v->y * phd_mxptr[M01] + v->z * phd_mxptr[M02]) >> 14);
-	pos.y_pos = item->pos.y_pos + ((v->x * phd_mxptr[M10] + v->y * phd_mxptr[M11] + v->z * phd_mxptr[M12]) >> 14);
-	pos.z_pos = item->pos.z_pos + ((v->x * phd_mxptr[M20] + v->y * phd_mxptr[M21] + v->z * phd_mxptr[M22]) >> 14);
+	pos.x_pos = item->pos.x_pos + ((v->x * phd_mxptr[M00] + v->y * phd_mxptr[M01] + v->z * phd_mxptr[M02]) >> W2V_SHIFT);
+	pos.y_pos = item->pos.y_pos + ((v->x * phd_mxptr[M10] + v->y * phd_mxptr[M11] + v->z * phd_mxptr[M12]) >> W2V_SHIFT);
+	pos.z_pos = item->pos.z_pos + ((v->x * phd_mxptr[M20] + v->y * phd_mxptr[M21] + v->z * phd_mxptr[M22]) >> W2V_SHIFT);
 	phd_PopMatrix();
 
 	if (item->object_number == FLARE_ITEM || item->object_number == BURNING_TORCH_ITEM)
@@ -1230,8 +1230,8 @@ long ItemPushLara(ITEM_INFO* item, ITEM_INFO* l, COLL_INFO* coll, long spaz, lon
 	dz = l->pos.z_pos - item->pos.z_pos;
 	s = phd_sin(item->pos.y_rot);
 	c = phd_cos(item->pos.y_rot);
-	x = (dx * c - dz * s) >> 14;
-	z = (dx * s + dz * c) >> 14;
+	x = (dx * c - dz * s) >> W2V_SHIFT;
+	z = (dx * s + dz * c) >> W2V_SHIFT;
 
 	if (BigPush & 2)
 		bounds = GlobalCollisionBounds;
@@ -1268,16 +1268,16 @@ long ItemPushLara(ITEM_INFO* item, ITEM_INFO* l, COLL_INFO* coll, long spaz, lon
 	else
 		z -= bottom;
 
-	l->pos.x_pos = item->pos.x_pos + ((c * x + s * z) >> 14);
-	l->pos.z_pos = item->pos.z_pos + ((c * z - s * x) >> 14);
+	l->pos.x_pos = item->pos.x_pos + ((c * x + s * z) >> W2V_SHIFT);
+	l->pos.z_pos = item->pos.z_pos + ((c * z - s * x) >> W2V_SHIFT);
 
 	if (spaz && bounds[3] - bounds[2] > 256)
 	{
 		x = (bounds[0] + bounds[1]) / 2;
 		z = (bounds[4] + bounds[5]) / 2;
-		dx -= (c * x + s * z) >> 14;
-		dz -= (c * z - s * x) >> 14;
-		lara.hit_direction = ushort(l->pos.y_rot - phd_atan(dz, dx) - 24576) >> 14;
+		dx -= (c * x + s * z) >> W2V_SHIFT;
+		dz -= (c * z - s * x) >> W2V_SHIFT;
+		lara.hit_direction = ushort(l->pos.y_rot - phd_atan(dz, dx) - 0x6000) >> W2V_SHIFT;
 
 		if (!lara.hit_frame)
 			SoundEffect(SFX_LARA_INJURY_RND, &l->pos, SFX_DEFAULT);
@@ -1328,8 +1328,8 @@ long ItemPushLaraStatic(ITEM_INFO* l, short* bounds, PHD_3DPOS* pos, COLL_INFO* 
 	dz = l->pos.z_pos - pos->z_pos;
 	s = phd_sin(pos->y_rot);
 	c = phd_cos(pos->y_rot);
-	x = (dx * c - dz * s) >> 14;
-	z = (dx * s + dz * c) >> 14;
+	x = (dx * c - dz * s) >> W2V_SHIFT;
+	z = (dx * s + dz * c) >> W2V_SHIFT;
 	xmin = bounds[0] - coll->radius;
 	xmax = bounds[1] + coll->radius;
 	zmin = bounds[4] - coll->radius;
@@ -1352,8 +1352,8 @@ long ItemPushLaraStatic(ITEM_INFO* l, short* bounds, PHD_3DPOS* pos, COLL_INFO* 
 	else
 		z -= bottom;
 
-	l->pos.x_pos = pos->x_pos + ((c * x + s * z) >> 14);
-	l->pos.z_pos = pos->z_pos + ((c * z - s * x) >> 14);
+	l->pos.x_pos = pos->x_pos + ((c * x + s * z) >> W2V_SHIFT);
+	l->pos.z_pos = pos->z_pos + ((c * z - s * x) >> W2V_SHIFT);
 	coll->bad_pos = -NO_HEIGHT;
 	coll->bad_neg = -384;
 	coll->bad_ceiling = 0;
@@ -1400,8 +1400,8 @@ long TestBoundsCollide(ITEM_INFO* item, ITEM_INFO* l, long rad)
 	c = phd_cos(item->pos.y_rot);
 	dx = l->pos.x_pos - item->pos.x_pos;
 	dz = l->pos.z_pos - item->pos.z_pos;
-	x = (dx * c - dz * s) >> 14;
-	z = (dx * s + dz * c) >> 14;
+	x = (dx * c - dz * s) >> W2V_SHIFT;
+	z = (dx * s + dz * c) >> W2V_SHIFT;
 	return x >= bounds[0] - rad && x <= rad + bounds[1] && z >= bounds[4] - rad && z <= rad + bounds[5];
 }
 
@@ -1422,8 +1422,8 @@ long TestBoundsCollideStatic(short* bounds, PHD_3DPOS* pos, long rad)
 	c = phd_cos(pos->y_rot);
 	dx = lara_item->pos.x_pos - pos->x_pos;
 	dz = lara_item->pos.z_pos - pos->z_pos;
-	x = (dx * c - dz * s) >> 14;
-	z = (dx * s + dz * c) >> 14;
+	x = (dx * c - dz * s) >> W2V_SHIFT;
+	z = (dx * s + dz * c) >> W2V_SHIFT;
 	return x >= bounds[0] - rad && x <= rad + bounds[1] && z >= bounds[4] - rad && z <= rad + bounds[5];
 }
 
@@ -1447,9 +1447,9 @@ long TestLaraPosition(short* bounds, ITEM_INFO* item, ITEM_INFO* l)
 	pos.x = l->pos.x_pos - item->pos.x_pos;
 	pos.y = l->pos.y_pos - item->pos.y_pos;
 	pos.z = l->pos.z_pos - item->pos.z_pos;
-	x = (pos.x * phd_mxptr[M00] + pos.y * phd_mxptr[M10] + pos.z * phd_mxptr[M20]) >> 14;
-	y = (pos.x * phd_mxptr[M01] + pos.y * phd_mxptr[M11] + pos.z * phd_mxptr[M21]) >> 14;
-	z = (pos.x * phd_mxptr[M02] + pos.y * phd_mxptr[M12] + pos.z * phd_mxptr[M22]) >> 14;
+	x = (pos.x * phd_mxptr[M00] + pos.y * phd_mxptr[M10] + pos.z * phd_mxptr[M20]) >> W2V_SHIFT;
+	y = (pos.x * phd_mxptr[M01] + pos.y * phd_mxptr[M11] + pos.z * phd_mxptr[M21]) >> W2V_SHIFT;
+	z = (pos.x * phd_mxptr[M02] + pos.y * phd_mxptr[M12] + pos.z * phd_mxptr[M22]) >> W2V_SHIFT;
 	phd_PopMatrix();
 
 	return x >= bounds[0] && x <= bounds[1] && y >= bounds[2] && y <= bounds[3] && z >= bounds[4] && z <= bounds[5];
@@ -1465,9 +1465,9 @@ void AlignLaraPosition(PHD_VECTOR* pos, ITEM_INFO* item, ITEM_INFO* l)
 
 	phd_PushUnitMatrix();
 	phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
-	x = item->pos.x_pos + ((pos->x * phd_mxptr[M00] + pos->y * phd_mxptr[M01] + pos->z * phd_mxptr[M02]) >> 14);
-	y = item->pos.y_pos + ((pos->x * phd_mxptr[M10] + pos->y * phd_mxptr[M11] + pos->z * phd_mxptr[M12]) >> 14);
-	z = item->pos.z_pos + ((pos->x * phd_mxptr[M20] + pos->y * phd_mxptr[M21] + pos->z * phd_mxptr[M22]) >> 14);
+	x = item->pos.x_pos + ((pos->x * phd_mxptr[M00] + pos->y * phd_mxptr[M01] + pos->z * phd_mxptr[M02]) >> W2V_SHIFT);
+	y = item->pos.y_pos + ((pos->x * phd_mxptr[M10] + pos->y * phd_mxptr[M11] + pos->z * phd_mxptr[M12]) >> W2V_SHIFT);
+	z = item->pos.z_pos + ((pos->x * phd_mxptr[M20] + pos->y * phd_mxptr[M21] + pos->z * phd_mxptr[M22]) >> W2V_SHIFT);
 	phd_PopMatrix();
 
 	l->pos.x_pos = x;

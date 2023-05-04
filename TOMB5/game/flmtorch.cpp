@@ -295,8 +295,8 @@ void FlameTorchControl(short item_number)
 	x = item->pos.x_pos;
 	y = item->pos.y_pos;
 	z = item->pos.z_pos;
-	xv = item->speed * phd_sin(item->pos.y_rot) >> 14;
-	zv = item->speed * phd_cos(item->pos.y_rot) >> 14;
+	xv = item->speed * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
+	zv = item->speed * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
 	item->pos.x_pos += xv;
 	item->pos.z_pos += zv;
 

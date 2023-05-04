@@ -125,10 +125,10 @@ void TriggerBlood(long x, long y, long z, long angle, long num)
 
 		ang &= 0xFFF;
 		speed = GetRandomControl() & 0xF;
-		Blood->Xvel = short(-(speed * rcossin_tbl[ang << 1]) >> 7);//sin
-		Blood->Zvel = short(speed * rcossin_tbl[(ang << 1) + 1] >> 7);//cos
-		Blood->Friction = 4;
+		Blood->Xvel = short(-(speed * rcossin_tbl[ang << 1]) >> 7);
 		Blood->Yvel = -128 - (GetRandomControl() & 0xFF);
+		Blood->Zvel = short(speed * rcossin_tbl[(ang << 1) + 1] >> 7);
+		Blood->Friction = 4;
 		Blood->RotAng = GetRandomControl() & 0xFFF;
 		Blood->RotAdd = (GetRandomControl() & 0x3F) + 64;
 
@@ -136,9 +136,9 @@ void TriggerBlood(long x, long y, long z, long angle, long num)
 			Blood->RotAdd = -Blood->RotAdd;
 
 		Blood->Gravity = (GetRandomControl() & 0x1F) + 31;
-		size = (uchar)((GetRandomControl() & 7) + 8);
-		Blood->sSize = size;
+		size = uchar((GetRandomControl() & 7) + 8);
 		Blood->Size = size;
+		Blood->sSize = size;
 		Blood->dSize = size >> 2;
 	}
 }
@@ -621,9 +621,9 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 			if (fx_number != NO_ITEM)
 			{
 				fx = &effects[fx_number];
-				fx->pos.x_pos = item->pos.x_pos + (phd_mxptr[M03] >> 14);
-				fx->pos.y_pos = item->pos.y_pos + (phd_mxptr[M13] >> 14);
-				fx->pos.z_pos = item->pos.z_pos + (phd_mxptr[M23] >> 14);
+				fx->pos.x_pos = item->pos.x_pos + (phd_mxptr[M03] >> W2V_SHIFT);
+				fx->pos.y_pos = item->pos.y_pos + (phd_mxptr[M13] >> W2V_SHIFT);
+				fx->pos.z_pos = item->pos.z_pos + (phd_mxptr[M23] >> W2V_SHIFT);
 				fx->room_number = item->room_number;
 				fx->pos.x_rot = 0;
 				fx->pos.y_rot = 0;
@@ -707,9 +707,9 @@ long ExplodingDeath2(short item_number, long mesh_bits, short Flags)
 			if (fx_number != NO_ITEM)
 			{
 				fx = &effects[fx_number];
-				fx->pos.x_pos = item->pos.x_pos + (phd_mxptr[M03] >> 14);
-				fx->pos.y_pos = item->pos.y_pos + (phd_mxptr[M13] >> 14);
-				fx->pos.z_pos = item->pos.z_pos + (phd_mxptr[M23] >> 14);
+				fx->pos.x_pos = item->pos.x_pos + (phd_mxptr[M03] >> W2V_SHIFT);
+				fx->pos.y_pos = item->pos.y_pos + (phd_mxptr[M13] >> W2V_SHIFT);
+				fx->pos.z_pos = item->pos.z_pos + (phd_mxptr[M23] >> W2V_SHIFT);
 				fx->room_number = item->room_number;
 				fx->pos.x_rot = 0;
 				fx->pos.y_rot = 0;
@@ -1052,8 +1052,8 @@ void TriggerShockwaveHitEffect(long x, long y, long z, long rgb, short dir, long
 	sptr->Life = (GetRandomControl() & 3) + 16;
 	sptr->sLife = sptr->Life;
 	speed += GetRandomControl() & 0xF;
-	xvel = speed * phd_sin(dir) >> 10;
-	zvel = speed * phd_cos(dir) >> 10;
+	xvel = speed * phd_sin(dir) >> (W2V_SHIFT - 4);
+	zvel = speed * phd_cos(dir) >> (W2V_SHIFT - 4);
 
 	if (GetRandomControl() & 1)
 		dir += 0x4000;
@@ -1061,8 +1061,8 @@ void TriggerShockwaveHitEffect(long x, long y, long z, long rgb, short dir, long
 		dir -= 0x4000;
 
 	speed = (GetRandomControl() & 0x1FF) - 256;
-	x += speed * phd_sin(dir) >> 14;
-	z += speed * phd_cos(dir) >> 14;
+	x += speed * phd_sin(dir) >> W2V_SHIFT;
+	z += speed * phd_cos(dir) >> W2V_SHIFT;
 	sptr->x = (GetRandomControl() & 0x1F) + x - 16;
 	sptr->y = (GetRandomControl() & 0x1F) + y - 16;
 	sptr->z = (GetRandomControl() & 0x1F) + z - 16;
@@ -1489,8 +1489,8 @@ void UpdateBubbles()
 		}
 		else
 		{
-			bubble->pos.x += (3 * phd_sin(bubble->y_rot << 8)) >> 14;
-			bubble->pos.z += phd_cos(bubble->y_rot << 8) >> 14;
+			bubble->pos.x += (3 * phd_sin(bubble->y_rot << 8)) >> W2V_SHIFT;
+			bubble->pos.z += phd_cos(bubble->y_rot << 8) >> W2V_SHIFT;
 		}
 
 		room_number = bubble->room_number;
@@ -1784,9 +1784,9 @@ void UpdateGunShells()
 		shell->pos.x_rot += 182 * ((shell->speed >> 1) + 7);
 		shell->pos.y_rot += 182 * shell->speed;
 		shell->pos.z_rot += 4186;
-		shell->pos.x_pos += shell->speed * phd_sin(shell->DirXrot) >> 15;
+		shell->pos.x_pos += shell->speed * phd_sin(shell->DirXrot) >> (W2V_SHIFT + 1);
 		shell->pos.y_pos += shell->fallspeed;
-		shell->pos.z_pos += shell->speed * phd_cos(shell->DirXrot) >> 15;
+		shell->pos.z_pos += shell->speed * phd_cos(shell->DirXrot) >> (W2V_SHIFT + 1);
 		floor = GetFloor(shell->pos.x_pos, shell->pos.y_pos, shell->pos.z_pos, &shell->room_number);
 
 		if (room[shell->room_number].flags & ROOM_UNDERWATER && !(room[oroom].flags & ROOM_UNDERWATER))

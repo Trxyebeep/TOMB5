@@ -48,8 +48,8 @@ void MafiaControl(short item_number)
 	torso_y = 0;
 	room_number = item->room_number;
 	y = item->pos.y_pos;
-	Xoffset = 870 * phd_sin(item->pos.y_rot) >> 14;
-	Zoffset = 870 * phd_cos(item->pos.y_rot) >> 14;
+	Xoffset = 870 * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
+	Zoffset = 870 * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
 	x = item->pos.x_pos + Xoffset;
 	z = item->pos.z_pos + Zoffset;
 	floor = GetFloor(x, y, z, &room_number);

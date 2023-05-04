@@ -390,10 +390,6 @@ void UnderwaterSwitchCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 			item->goal_anim_state = 1;
 			item->status = ITEM_ACTIVE;
 			AddActiveItem(item_number);
-			ForcedFixedCamera.x = item->pos.x_pos - ((1024 * phd_sin(item->pos.y_rot + 16380)) >> 14);
-			ForcedFixedCamera.y = item->pos.y_pos - 1024;
-			ForcedFixedCamera.z = item->pos.z_pos - ((1024 * phd_cos(item->pos.y_rot + 16380)) >> 14);
-			ForcedFixedCamera.room_number = item->room_number;
 		}
 	}
 }
@@ -537,8 +533,8 @@ void TurnSwitchCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 				item->frame_number = anims[item->anim_number].frame_base;
 				item->item_flags[0] = 1;
 				flag = -1;
-				ForcedFixedCamera.x = item->pos.x_pos - ((1024 * phd_sin(item->pos.y_rot)) >> 14);
-				ForcedFixedCamera.z = item->pos.z_pos - ((1024 * phd_cos(item->pos.y_rot)) >> 14);
+				ForcedFixedCamera.x = item->pos.x_pos - ((1024 * phd_sin(item->pos.y_rot)) >> W2V_SHIFT);
+				ForcedFixedCamera.z = item->pos.z_pos - ((1024 * phd_cos(item->pos.y_rot)) >> W2V_SHIFT);
 			}
 			else
 				lara.GeneralPtr = (void*)item_number;
@@ -555,8 +551,8 @@ void TurnSwitchCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 					l->anim_number = ANIM_TURNSWITCHC;
 					l->frame_number = anims[ANIM_TURNSWITCHC].frame_base;
 					item->item_flags[0] = 2;
-					ForcedFixedCamera.x = item->pos.x_pos + ((1024 * phd_sin(item->pos.y_rot)) >> 14);
-					ForcedFixedCamera.z = item->pos.z_pos + ((1024 * phd_cos(item->pos.y_rot)) >> 14);
+					ForcedFixedCamera.x = item->pos.x_pos + ((1024 * phd_sin(item->pos.y_rot)) >> W2V_SHIFT);
+					ForcedFixedCamera.z = item->pos.z_pos + ((1024 * phd_cos(item->pos.y_rot)) >> W2V_SHIFT);
 				}
 				else
 					lara.GeneralPtr = (void*)item_number;

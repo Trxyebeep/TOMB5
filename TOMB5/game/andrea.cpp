@@ -236,9 +236,9 @@ void TriggerFanEffects(long* b, long y, short angle, long rate)
 	{
 		dx = GetRandomControl() % ((3 * (b[1] - b[0])) >> 3);
 		dz = GetRandomControl() << 1;
-		sptr->x = ((b[0] + b[1]) >> 1) + (dx * phd_sin(dz) >> 14);
+		sptr->x = ((b[0] + b[1]) >> 1) + (dx * phd_sin(dz) >> W2V_SHIFT);
 		sptr->y = y < 0 ? b[2] : b[3];
-		sptr->z = ((b[4] + b[5]) >> 1) + (dx * phd_cos(dz) >> 14);
+		sptr->z = ((b[4] + b[5]) >> 1) + (dx * phd_cos(dz) >> W2V_SHIFT);
 		sptr->Xvel = 0;
 		sptr->Yvel = short(32 * y * ((GetRandomControl() & 0x1F) + 224));
 		sptr->Zvel = 0;
@@ -250,8 +250,8 @@ void TriggerFanEffects(long* b, long y, short angle, long rate)
 
 		if (angle & 0x7FFF)
 		{
-			sptr->x = ((b[0] + b[1]) >> 1) + (dx * phd_cos(dz) >> 14);
-			sptr->y = ((b[3] + b[2]) >> 1) + (dx * phd_sin(dz) >> 14);
+			sptr->x = ((b[0] + b[1]) >> 1) + (dx * phd_cos(dz) >> W2V_SHIFT);
+			sptr->y = ((b[3] + b[2]) >> 1) + (dx * phd_sin(dz) >> W2V_SHIFT);
 			sptr->z = y < 0 ? b[4] : b[5];
 			sptr->Xvel = 0;
 			sptr->Zvel = short(y * ((GetRandomControl() & 0x1F) + 224) << 4);
@@ -259,8 +259,8 @@ void TriggerFanEffects(long* b, long y, short angle, long rate)
 		else
 		{
 			sptr->x = y < 0 ? b[0] : b[1];
-			sptr->y = ((b[3] + b[2]) >> 1) + (dx * phd_sin(dz) >> 14);
-			sptr->z = ((b[4] + b[5]) >> 1) + (dx * phd_cos(dz) >> 14);
+			sptr->y = ((b[3] + b[2]) >> 1) + (dx * phd_sin(dz) >> W2V_SHIFT);
+			sptr->z = ((b[4] + b[5]) >> 1) + (dx * phd_cos(dz) >> W2V_SHIFT);
 			sptr->Xvel = short(y * ((GetRandomControl() & 0x1F) + 224) << 4);
 			sptr->Zvel = 0;
 		}

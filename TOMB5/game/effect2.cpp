@@ -266,16 +266,16 @@ void ControlSmokeEmitter(short item_number)
 
 			if (item->trigger_flags >= 0)
 			{
-				sptr->Xvel = (short)((size * phd_sin(item->pos.y_rot - 32768)) >> 14);
+				sptr->Xvel = (short)((size * phd_sin(item->pos.y_rot - 0x8000)) >> W2V_SHIFT);
 				sptr->Yvel = -16 - (GetRandomControl() & 0xF);
-				sptr->Zvel = (short)((size * phd_cos(item->pos.y_rot - 32768)) >> 14);
+				sptr->Zvel = (short)((size * phd_cos(item->pos.y_rot - 0x8000)) >> W2V_SHIFT);
 			}
 			else
 			{
 				size = (GetRandomControl() & 0x7F) + 2048;
-				sptr->Xvel = (short)((size * phd_sin(item->pos.y_rot + 20480)) >> 14);
+				sptr->Xvel = (short)((size * phd_sin(item->pos.y_rot + 0x5000)) >> W2V_SHIFT);
 				sptr->Yvel = -128 - (GetRandomControl() & 0xFF);
-				sptr->Zvel = (short)((size * phd_cos(item->pos.y_rot + 20480)) >> 14);
+				sptr->Zvel = (short)((size * phd_cos(item->pos.y_rot + 0x5000)) >> W2V_SHIFT);
 			}
 
 			sptr->Flags = 538;
@@ -516,10 +516,10 @@ void ControlEnemyMissile(short fx_number)
 	ox = fx->pos.x_pos;
 	oy = fx->pos.y_pos;
 	oz = fx->pos.z_pos;
-	speed = fx->speed * phd_cos(fx->pos.x_rot) >> 14;
-	fx->pos.x_pos += speed * phd_sin(fx->pos.y_rot) >> 14;
-	fx->pos.y_pos += fx->speed * phd_sin(-fx->pos.x_rot) >> 14;
-	fx->pos.z_pos += speed * phd_cos(fx->pos.y_rot) >> 14;
+	speed = fx->speed * phd_cos(fx->pos.x_rot) >> W2V_SHIFT;
+	fx->pos.x_pos += speed * phd_sin(fx->pos.y_rot) >> W2V_SHIFT;
+	fx->pos.y_pos += fx->speed * phd_sin(-fx->pos.x_rot) >> W2V_SHIFT;
+	fx->pos.z_pos += speed * phd_cos(fx->pos.y_rot) >> W2V_SHIFT;
 	room_number = fx->room_number;
 	floor = GetFloor(fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos, &room_number);
 	h = GetHeight(floor, fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos);
@@ -864,8 +864,8 @@ void TriggerWaterfallMist(long x, long y, long z, long ang)
 		sptr->FadeToBlack = sptr->Life - 4;
 
 		rad = ((i + (GlobalCounter << 6)) % 1536) + (GetRandomControl() & 0x3F) - 32;
-		xSize = rad * phd_sin(ang) >> 14;
-		zSize = rad * phd_cos(ang) >> 14;
+		xSize = rad * phd_sin(ang) >> W2V_SHIFT;
+		zSize = rad * phd_cos(ang) >> W2V_SHIFT;
 		sptr->x = xSize + (GetRandomControl() & 0xF) + x - 8;
 		sptr->y = (GetRandomControl() & 0xF) + y - 8;
 		sptr->z = zSize + (GetRandomControl() & 0xF) + z - 8;
@@ -899,8 +899,8 @@ void TriggerWaterfallMist(long x, long y, long z, long ang)
 	sptr->sLife = sptr->Life;
 	sptr->FadeToBlack = sptr->Life - 1;
 	rad = GetRandomControl() % 1408 + 64;
-	xSize = rad * phd_sin(ang) >> 14;
-	zSize = rad * phd_cos(ang) >> 14;
+	xSize = rad * phd_sin(ang) >> W2V_SHIFT;
+	zSize = rad * phd_cos(ang) >> W2V_SHIFT;
 	sptr->x = xSize + (GetRandomControl() & 0x1F) + x - 16;
 	sptr->y = (GetRandomControl() & 0xF) + y - 8;
 	sptr->z = zSize + (GetRandomControl() & 0x1F) + z - 16;

@@ -109,14 +109,14 @@ void GetRopePos(ROPE_STRUCT* rope, long pos, long* x, long* y, long* z)
 
 long mDotProduct(PHD_VECTOR* a, PHD_VECTOR* b)
 {
-	return (a->x * b->x + a->y * b->y + a->z * b->z) >> 14;
+	return (a->x * b->x + a->y * b->y + a->z * b->z) >> W2V_SHIFT;
 }
 
 void vMul(PHD_VECTOR* v, long scale, PHD_VECTOR* d)
 {
-	d->x = scale * v->x >> 14;
-	d->y = scale * v->y >> 14;
-	d->z = scale * v->z >> 14;
+	d->x = scale * v->x >> W2V_SHIFT;
+	d->y = scale * v->y >> W2V_SHIFT;
+	d->z = scale * v->z >> W2V_SHIFT;
 }
 
 void mCrossProduct(PHD_VECTOR* a, PHD_VECTOR* b, PHD_VECTOR* n)
@@ -126,9 +126,9 @@ void mCrossProduct(PHD_VECTOR* a, PHD_VECTOR* b, PHD_VECTOR* n)
 	t.x = a->y * b->z - a->z * b->y;
 	t.y = a->z * b->x - a->x * b->z;
 	t.z = a->x * b->y - a->y * b->x;
-	n->x = t.x >> 14;
-	n->y = t.y >> 14;
-	n->z = t.z >> 14;
+	n->x = t.x >> W2V_SHIFT;
+	n->y = t.y >> W2V_SHIFT;
+	n->z = t.z >> W2V_SHIFT;
 }
 
 void phd_GetMatrixAngles(long* m, short* dest)
@@ -179,7 +179,7 @@ void RopeCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 		bounds = GetBoundsAccurate(l);
 		x = l->pos.x_pos;
 		y = l->pos.y_pos + bounds[2] + 512;
-		z = l->pos.z_pos + (bounds[5] * phd_cos(l->pos.y_rot) >> 14);
+		z = l->pos.z_pos + (bounds[5] * phd_cos(l->pos.y_rot) >> W2V_SHIFT);
 		rad = l->current_anim_state == AS_REACH ? 128 : 320;
 		i = RopeNodeCollision(rope, x, y, z, rad);
 
@@ -575,9 +575,9 @@ void AlignLaraToRope(ITEM_INFO* l)
 	phd_PushUnitMatrix();
 	phd_RotYXZ(xyz[1], xyz[0], xyz[2]);
 	mptr = phd_mxptr;
-	l->pos.x_pos += -112 * mptr[2] >> 14;
-	l->pos.y_pos += -112 * mptr[6] >> 14;
-	l->pos.z_pos += -112 * mptr[10] >> 14;
+	l->pos.x_pos += -112 * mptr[2] >> W2V_SHIFT;
+	l->pos.y_pos += -112 * mptr[6] >> W2V_SHIFT;
+	l->pos.z_pos += -112 * mptr[10] >> W2V_SHIFT;
 	phd_PopMatrix();
 	l->pos.x_rot = xyz[0];
 	l->pos.y_rot = xyz[1];

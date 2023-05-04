@@ -227,8 +227,8 @@ void CalculateCamera()
 		if (!gotit)
 		{
 			shift = (bounds[0] + bounds[1] + bounds[4] + bounds[5]) >> 2;
-			camera.target.x = item->pos.x_pos + (shift * phd_sin(item->pos.y_rot) >> 14);
-			camera.target.z = item->pos.z_pos + (shift * phd_cos(item->pos.y_rot) >> 14);
+			camera.target.x = item->pos.x_pos + (shift * phd_sin(item->pos.y_rot) >> W2V_SHIFT);
+			camera.target.z = item->pos.z_pos + (shift * phd_cos(item->pos.y_rot) >> W2V_SHIFT);
 
 			if (item->object_number == LARA)
 				ConfirmCameraTargetPos();
@@ -729,7 +729,7 @@ void ChaseCamera(ITEM_INFO* item)
 	else if (camera.actual_elevation < -15470)
 		camera.actual_elevation = -15470;
 
-	distance = camera.target_distance * phd_cos(camera.actual_elevation) >> 14;
+	distance = camera.target_distance * phd_cos(camera.actual_elevation) >> W2V_SHIFT;
 	wx = camera.target.x;
 	wy = camera.target.y;
 	wz = camera.target.z;
@@ -751,7 +751,7 @@ void ChaseCamera(ITEM_INFO* item)
 		TargetSnaps = 0;
 
 	for (lp = 0; lp < 5; lp++)
-		ideals[lp].y = camera.target.y + (camera.target_distance * phd_sin(camera.actual_elevation) >> 14);
+		ideals[lp].y = camera.target.y + (camera.target_distance * phd_sin(camera.actual_elevation) >> W2V_SHIFT);
 
 	farthest = 0x7FFFFFFF;
 	farthestnum = 0;
@@ -759,12 +759,12 @@ void ChaseCamera(ITEM_INFO* item)
 	for (lp = 0; lp < 5; lp++)
 	{
 		if (lp)
-			angle = (lp - 1) << 14;
+			angle = (lp - 1) * 0x4000;
 		else
 			angle = camera.actual_angle;
 
-		ideals[lp].x = camera.target.x - (distance * phd_sin(angle) >> 14);
-		ideals[lp].z = camera.target.z - (distance * phd_cos(angle) >> 14);
+		ideals[lp].x = camera.target.x - (distance * phd_sin(angle) >> W2V_SHIFT);
+		ideals[lp].z = camera.target.z - (distance * phd_cos(angle) >> W2V_SHIFT);
 		ideals[lp].room_number = camera.target.room_number;
 
 		if (mgLOS(&camera.target, &ideals[lp], 200))
@@ -903,10 +903,10 @@ void CombatCamera(ITEM_INFO* item)
 
 	UpdateCameraElevation();
 	camera.target_distance = 1536;
-	distance = camera.target_distance * phd_cos(camera.actual_elevation) >> 14;
+	distance = camera.target_distance * phd_cos(camera.actual_elevation) >> W2V_SHIFT;
 
 	for (lp = 0; lp < 5; lp++)
-		ideals[lp].y = camera.target.y + (camera.target_distance * phd_sin(camera.actual_elevation) >> 14);
+		ideals[lp].y = camera.target.y + (camera.target_distance * phd_sin(camera.actual_elevation) >> W2V_SHIFT);
 
 	farthest = 0x7FFFFFFF;
 	farthestnum = 0;
@@ -914,12 +914,12 @@ void CombatCamera(ITEM_INFO* item)
 	for (lp = 0; lp < 5; lp++)
 	{
 		if (lp)
-			angle = (lp - 1) << 14;
+			angle = (lp - 1) * 0x4000;
 		else
 			angle = camera.actual_angle;
 
-		ideals[lp].x = camera.target.x - (distance * phd_sin(angle) >> 14);
-		ideals[lp].z = camera.target.z - (distance * phd_cos(angle) >> 14);
+		ideals[lp].x = camera.target.x - (distance * phd_sin(angle) >> W2V_SHIFT);
+		ideals[lp].z = camera.target.z - (distance * phd_cos(angle) >> W2V_SHIFT);
 		ideals[lp].room_number = camera.target.room_number;
 
 		if (mgLOS(&camera.target, &ideals[lp], 200))
@@ -1207,10 +1207,10 @@ void BinocularCamera(ITEM_INFO* item)
 	else
 		pos.y = c + 64;
 
-	speed = (0x5100 * phd_cos(hxrot)) >> 14;
-	pos1.x = pos.x + (phd_sin(hyrot) * speed >> 14);
-	pos1.y = pos.y - (0x5100 * phd_sin(hxrot) >> 14);
-	pos1.z = pos.z + (phd_cos(hyrot) * speed >> 14);
+	speed = (0x5100 * phd_cos(hxrot)) >> W2V_SHIFT;
+	pos1.x = pos.x + (phd_sin(hyrot) * speed >> W2V_SHIFT);
+	pos1.y = pos.y - (0x5100 * phd_sin(hxrot) >> W2V_SHIFT);
+	pos1.z = pos.z + (phd_cos(hyrot) * speed >> W2V_SHIFT);
 	camera.pos.x = pos.x;
 	camera.pos.y = pos.y;
 	camera.pos.z = pos.z;

@@ -117,7 +117,7 @@ long ShotLara(ITEM_INFO* item, AI_INFO* info, BITE_INFO* gun, short extra_rotati
 
 	if (info->distance <= 0x4000000 && Targetable(item, info))
 	{
-		distance = phd_sin(info->enemy_facing) * enemy->speed * 0x4000000 / 300 >> 14;
+		distance = phd_sin(info->enemy_facing) * enemy->speed * 0x4000000 / 300 >> W2V_SHIFT;
 		distance = info->distance + SQUARE(distance);
 
 		if (distance <= 0x4000000)

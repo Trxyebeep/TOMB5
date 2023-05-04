@@ -690,9 +690,9 @@ void TranslateItem(ITEM_INFO* item, short x, short y, short z)
 
 	s = phd_sin(item->pos.y_rot);
 	c = phd_cos(item->pos.y_rot);
-	item->pos.x_pos += (z * s + x * c) >> 14;
+	item->pos.x_pos += (z * s + x * c) >> W2V_SHIFT;
 	item->pos.y_pos += y;
-	item->pos.z_pos += (z * c - x * s) >> 14;
+	item->pos.z_pos += (z * c - x * s) >> W2V_SHIFT;
 }
 
 void InitCutPlayed()
@@ -2144,7 +2144,7 @@ void _TestTriggers(short* data, long heavy, long HeavyFlags)
 	{
 		if (!heavy)
 		{
-			quad = ushort(lara_item->pos.y_rot + 8192) >> 14;
+			quad = ushort(lara_item->pos.y_rot + 0x2000) / 0x4000;
 
 			if ((1 << (quad + 8)) & *data)
 				lara.climb_status = 1;
@@ -3318,10 +3318,10 @@ void AnimateItem(ITEM_INFO* item)
 		speed2 >>= 16;
 	}
 
-	item->pos.x_pos += (item->speed * phd_sin(item->pos.y_rot)) >> 14;
-	item->pos.z_pos += (item->speed * phd_cos(item->pos.y_rot)) >> 14;
-	item->pos.x_pos += (speed2 * phd_sin(item->pos.y_rot + 0x4000)) >> 14;
-	item->pos.z_pos += (speed2 * phd_cos(item->pos.y_rot + 0x4000)) >> 14;
+	item->pos.x_pos += (item->speed * phd_sin(item->pos.y_rot)) >> W2V_SHIFT;
+	item->pos.z_pos += (item->speed * phd_cos(item->pos.y_rot)) >> W2V_SHIFT;
+	item->pos.x_pos += (speed2 * phd_sin(item->pos.y_rot + 0x4000)) >> W2V_SHIFT;
+	item->pos.z_pos += (speed2 * phd_cos(item->pos.y_rot + 0x4000)) >> W2V_SHIFT;
 }
 
 long RayBoxIntersect(PHD_VECTOR* min, PHD_VECTOR* max, PHD_VECTOR* origin, PHD_VECTOR* dir, PHD_VECTOR* Coord)
@@ -3474,16 +3474,16 @@ long DoRayBox(GAME_VECTOR* start, GAME_VECTOR* target, short* bounds, PHD_3DPOS*
 	x = target->x - ItemPos->x_pos;
 	y = target->y - ItemPos->y_pos;
 	z = target->z - ItemPos->z_pos;
-	tpos.x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z) >> 14;
-	tpos.y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z) >> 14;
-	tpos.z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z) >> 14;
+	tpos.x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z) >> W2V_SHIFT;
+	tpos.y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z) >> W2V_SHIFT;
+	tpos.z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z) >> W2V_SHIFT;
 
 	x = start->x - ItemPos->x_pos;
 	y = start->y - ItemPos->y_pos;
 	z = start->z - ItemPos->z_pos;
-	spos.x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z) >> 14;
-	spos.y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z) >> 14;
-	spos.z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z) >> 14;
+	spos.x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z) >> W2V_SHIFT;
+	spos.y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z) >> W2V_SHIFT;
+	spos.z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z) >> W2V_SHIFT;
 
 	phd_PopMatrix();
 
@@ -3509,9 +3509,9 @@ long DoRayBox(GAME_VECTOR* start, GAME_VECTOR* target, short* bounds, PHD_3DPOS*
 	phd_PushUnitMatrix();
 	phd_RotY(ItemPos->y_rot);
 
-	x = (phd_mxptr[M00] * Coord->x + phd_mxptr[M01] * Coord->y + phd_mxptr[M02] * Coord->z) >> 14;
-	y = (phd_mxptr[M10] * Coord->x + phd_mxptr[M11] * Coord->y + phd_mxptr[M12] * Coord->z) >> 14;
-	z = (phd_mxptr[M20] * Coord->x + phd_mxptr[M21] * Coord->y + phd_mxptr[M22] * Coord->z) >> 14;
+	x = (phd_mxptr[M00] * Coord->x + phd_mxptr[M01] * Coord->y + phd_mxptr[M02] * Coord->z) >> W2V_SHIFT;
+	y = (phd_mxptr[M10] * Coord->x + phd_mxptr[M11] * Coord->y + phd_mxptr[M12] * Coord->z) >> W2V_SHIFT;
+	z = (phd_mxptr[M20] * Coord->x + phd_mxptr[M21] * Coord->y + phd_mxptr[M22] * Coord->z) >> W2V_SHIFT;
 	Coord->x = x;
 	Coord->y = y;
 	Coord->z = z;

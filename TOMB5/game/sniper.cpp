@@ -23,8 +23,8 @@ void InitialiseSniper(short item_number)
 	item->current_anim_state = 1;
 	item->frame_number = anims[item->anim_number].frame_base;
 	item->pos.y_pos += 512;
-	item->pos.x_pos += 256 * phd_sin(item->pos.y_rot + 16384) >> 14;
-	item->pos.z_pos += 256 * phd_cos(item->pos.y_rot + 16384) >> 14;
+	item->pos.x_pos += 256 * phd_sin(item->pos.y_rot + 0x4000) >> W2V_SHIFT;
+	item->pos.z_pos += 256 * phd_cos(item->pos.y_rot + 0x4000) >> W2V_SHIFT;
 }
 
 void SniperControl(short item_number)

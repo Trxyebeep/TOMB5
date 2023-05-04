@@ -52,8 +52,8 @@ void HitmanControl(short item_number)
 	torso_y = 0;
 
 	room_number = item->room_number;
-	Xoffset = 808 * phd_sin(item->pos.y_rot) >> 14;
-	Zoffset = 808 * phd_cos(item->pos.y_rot) >> 14;
+	Xoffset = 808 * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
+	Zoffset = 808 * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
 
 	x = item->pos.x_pos + Xoffset;
 	y = item->pos.y_pos;

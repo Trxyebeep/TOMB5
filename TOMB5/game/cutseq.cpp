@@ -238,10 +238,10 @@ void _special3_control()
 
 		a1 = GetRandomControl() << 1;
 		a2 = GetRandomControl() << 1;
-		f = (1024 * phd_cos(a1)) >> 14;
-		sptr->Xvel = short(f * phd_sin(a2) >> 14);
-		sptr->Yvel = 256 * phd_sin(-a1) >> 14;
-		sptr->Zvel = short(f * phd_cos(a2) >> 14);
+		f = (1024 * phd_cos(a1)) >> W2V_SHIFT;
+		sptr->Xvel = short(f * phd_sin(a2) >> W2V_SHIFT);
+		sptr->Yvel = 256 * phd_sin(-a1) >> W2V_SHIFT;
+		sptr->Zvel = short(f * phd_cos(a2) >> W2V_SHIFT);
 
 		sptr->Friction = 0;
 		sptr->Flags = 538;

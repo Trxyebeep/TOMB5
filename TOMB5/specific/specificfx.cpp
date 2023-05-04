@@ -1128,9 +1128,9 @@ void DoRain()
 			num_alive++;
 			rad = GetRandomDraw() & 8191;
 			angle = GetRandomDraw() & 8190;
-			rptr->x = camera.pos.x + (rad * rcossin_tbl[angle] >> 12);
-			rptr->y = camera.pos.y + -1024 - (GetRandomDraw() & 2047);
-			rptr->z = camera.pos.z + (rad * rcossin_tbl[angle + 1] >> 12);
+			rptr->x = camera.pos.x + (rad * rcossin_tbl[angle] >> (W2V_SHIFT - 2));
+			rptr->y = camera.pos.y + -1024 - (GetRandomDraw() & 0x7FF);
+			rptr->z = camera.pos.z + (rad * rcossin_tbl[angle + 1] >> (W2V_SHIFT - 2));
 
 			if (IsRoomOutside(rptr->x, rptr->y, rptr->z) < 0)
 			{
@@ -1358,9 +1358,9 @@ void DoSnow()
 			num_alive++;
 			rad = GetRandomDraw() & 0x1FFF;
 			angle = (GetRandomDraw() & 0xFFF) << 1;
-			snow->x = camera.pos.x + (rad * rcossin_tbl[angle] >> 12);
+			snow->x = camera.pos.x + (rad * rcossin_tbl[angle] >> (W2V_SHIFT - 2));
 			snow->y = camera.pos.y - 1024 - (GetRandomDraw() & 0x7FF);
-			snow->z = camera.pos.z + (rad * rcossin_tbl[angle + 1] >> 12);
+			snow->z = camera.pos.z + (rad * rcossin_tbl[angle + 1] >> (W2V_SHIFT - 2));
 
 			if (IsRoomOutside(snow->x, snow->y, snow->z) < 0)
 			{
@@ -2106,10 +2106,10 @@ void S_DrawFireSparks(long size, long life)
 			ang = sptr->RotAng << 1;
 			s = rcossin_tbl[ang];
 			c = rcossin_tbl[ang + 1];
-			sx1 = (-newSize * s) >> 12;
-			cx1 = (-newSize * c) >> 12;
-			sx2 = (newSize * s) >> 12;
-			cx2 = (newSize * c) >> 12;
+			sx1 = (-newSize * s) >> (W2V_SHIFT - 2);
+			cx1 = (-newSize * c) >> (W2V_SHIFT - 2);
+			sx2 = (newSize * s) >> (W2V_SHIFT - 2);
+			cx2 = (newSize * c) >> (W2V_SHIFT - 2);
 			x1 = XY[0] + (sx1 - cx1);
 			y1 = XY[1] + sx1 + cx1;
 			x2 = XY[0] + (sx2 - cx1);
@@ -2265,10 +2265,10 @@ void S_DrawSmokeSparks()
 			ang = sptr->RotAng << 1;
 			s = rcossin_tbl[ang];
 			c = rcossin_tbl[ang + 1];
-			ss = (s * size) >> 12;
-			cs = (c * size) >> 12;
-			sm = (s * -size) >> 12;
-			cm = (c * -size) >> 12;
+			ss = (s * size) >> (W2V_SHIFT - 2);
+			cs = (c * size) >> (W2V_SHIFT - 2);
+			sm = (s * -size) >> (W2V_SHIFT - 2);
+			cm = (c * -size) >> (W2V_SHIFT - 2);
 
 			x1 = sm + XY[0] - cm;
 			y1 = sm + XY[1] + cm;
@@ -2595,8 +2595,8 @@ void DrawBlood()
 
 		size <<= 1;
 		ang = bptr->RotAng << 1;
-		s = (size * rcossin_tbl[ang]) >> 12;
-		c = (size * rcossin_tbl[ang + 1]) >> 12;
+		s = (size * rcossin_tbl[ang]) >> (W2V_SHIFT - 2);
+		c = (size * rcossin_tbl[ang + 1]) >> (W2V_SHIFT - 2);
 		x1 = c + XY[0] - s;
 		y1 = XY[1] - c - s;
 		x2 = s + c + XY[0];
@@ -2782,9 +2782,9 @@ void DoUwEffect()
 			num_alive++;
 			rad = GetRandomDraw() & 0xFFF;
 			ang = GetRandomDraw() & 0x1FFE;
-			x = (rad * rcossin_tbl[ang]) >> 12;
+			x = (rad * rcossin_tbl[ang]) >> (W2V_SHIFT - 2);
 			y = (GetRandomDraw() & 0x7FF) - 1024;
-			z = (rad * rcossin_tbl[ang + 1]) >> 12;
+			z = (rad * rcossin_tbl[ang + 1]) >> (W2V_SHIFT - 2);
 			p->x = lara_item->pos.x_pos + x;
 			p->y = lara_item->pos.y_pos + y;
 			p->z = lara_item->pos.z_pos + z;
@@ -3073,12 +3073,12 @@ void DrawShockwaves()
 
 		for (int j = 0; j < 2; j++)
 		{
-			offsets[0] = (rad * phd_sin(0)) >> 14;
-			offsets[2] = (rad * phd_cos(0)) >> 14;
-			offsets[4] = (rad * phd_sin(0x1000)) >> 14;
-			offsets[6] = (rad * phd_cos(0x1000)) >> 14;
-			offsets[8] = (rad * phd_sin(0x2000)) >> 14;
-			offsets[10] = (rad * phd_cos(0x2000)) >> 14;
+			offsets[0] = (rad * phd_sin(0)) >> W2V_SHIFT;
+			offsets[2] = (rad * phd_cos(0)) >> W2V_SHIFT;
+			offsets[4] = (rad * phd_sin(0x1000)) >> W2V_SHIFT;
+			offsets[6] = (rad * phd_cos(0x1000)) >> W2V_SHIFT;
+			offsets[8] = (rad * phd_sin(0x2000)) >> W2V_SHIFT;
+			offsets[10] = (rad * phd_cos(0x2000)) >> W2V_SHIFT;
 
 			for (int k = 1; k < 7; k++)
 			{
@@ -3096,12 +3096,12 @@ void DrawShockwaves()
 				p3.y = long(offsets[8] * aMXPtr[M10] + offsets[9] * aMXPtr[M11] + offsets[10] * aMXPtr[M12] + aMXPtr[M13]);
 				p3.z = long(offsets[8] * aMXPtr[M20] + offsets[9] * aMXPtr[M21] + offsets[10] * aMXPtr[M22] + aMXPtr[M23]);
 
-				offsets[0] = (rad * phd_sin(v)) >> 14;
-				offsets[2] = (rad * phd_cos(v)) >> 14;
-				offsets[4] = (rad * phd_sin(v + 0x1000)) >> 14;
-				offsets[6] = (rad * phd_cos(v + 0x1000)) >> 14;
-				offsets[8] = (rad * phd_sin(v + 0x2000)) >> 14;
-				offsets[10] = (rad * phd_cos(v + 0x2000)) >> 14;
+				offsets[0] = (rad * phd_sin(v)) >> W2V_SHIFT;
+				offsets[2] = (rad * phd_cos(v)) >> W2V_SHIFT;
+				offsets[4] = (rad * phd_sin(v + 0x1000)) >> W2V_SHIFT;
+				offsets[6] = (rad * phd_cos(v + 0x1000)) >> W2V_SHIFT;
+				offsets[8] = (rad * phd_sin(v + 0x2000)) >> W2V_SHIFT;
+				offsets[10] = (rad * phd_cos(v + 0x2000)) >> W2V_SHIFT;
 
 				XY[0] = p1.x;
 				XY[1] = p1.y;
@@ -3493,9 +3493,9 @@ void S_DrawSplashes()
 		{
 			for (int k = 0; k < 0x10000; k += 0x2000)
 			{
-				offsets[0] = (rads[j] * phd_sin(k)) >> 13;
+				offsets[0] = (rads[j] * phd_sin(k)) >> (W2V_SHIFT - 1);
 				offsets[1] = yVals[j] >> 3;
-				offsets[2] = (rads[j] * phd_cos(k)) >> 13;
+				offsets[2] = (rads[j] * phd_cos(k)) >> (W2V_SHIFT - 1);
 				*XY++ = long(aMXPtr[M00] * offsets[0] + aMXPtr[M01] * offsets[1] + aMXPtr[M02] * offsets[2] + aMXPtr[M03]);
 				*XY++ = long(aMXPtr[M10] * offsets[0] + aMXPtr[M11] * offsets[1] + aMXPtr[M12] * offsets[2] + aMXPtr[M13]);
 				*Z++ = long(aMXPtr[M20] * offsets[0] + aMXPtr[M21] * offsets[1] + aMXPtr[M22] * offsets[2] + aMXPtr[M23]);
@@ -3796,7 +3796,7 @@ void DrawRope(ROPE_STRUCT* rope)
 	dy = (((__int64)dy * (__int64)w) >> 16) >> 16;
 	x1 = rope->Coords[0][0] - dx;
 	y1 = rope->Coords[0][1] - dy;
-	z1 = rope->Coords[0][2] >> 14;
+	z1 = rope->Coords[0][2] >> W2V_SHIFT;
 	x4 = rope->Coords[0][0] + dx;
 	y4 = rope->Coords[0][1] + dy;
 
@@ -3834,7 +3834,7 @@ void DrawRope(ROPE_STRUCT* rope)
 		dy = (((__int64)dy * (__int64)w) >> 16) >> 16;
 		x2 = rope->Coords[i + 1][0] - dx;
 		y2 = rope->Coords[i + 1][1] - dy;
-		z2 = rope->Coords[i + 1][2] >> 14;
+		z2 = rope->Coords[i + 1][2] >> W2V_SHIFT;
 		x3 = rope->Coords[i + 1][0] + dx;
 		y3 = rope->Coords[i + 1][1] + dy;
 
@@ -5118,10 +5118,10 @@ void S_DrawDarts(ITEM_INFO* item)
 	y1 = long(aMXPtr[M13] * zv + f_centery);
 	z1 = (long)aMXPtr[M23];
 
-	num = (-96 * phd_cos(item->pos.x_rot)) >> 14;
-	x = (num * phd_sin(item->pos.y_rot)) >> 14;
-	y = (96 * phd_sin(item->pos.x_rot)) >> 14;
-	z = (num * phd_cos(item->pos.y_rot)) >> 14;
+	num = (-96 * phd_cos(item->pos.x_rot)) >> W2V_SHIFT;
+	x = (num * phd_sin(item->pos.y_rot)) >> W2V_SHIFT;
+	y = (96 * phd_sin(item->pos.x_rot)) >> W2V_SHIFT;
+	z = (num * phd_cos(item->pos.y_rot)) >> W2V_SHIFT;
 
 	mx = aMXPtr[M00] * x + aMXPtr[M01] * y + aMXPtr[M02] * z + aMXPtr[M03];
 	my = aMXPtr[M10] * x + aMXPtr[M11] * y + aMXPtr[M12] * z + aMXPtr[M13];

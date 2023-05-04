@@ -256,9 +256,9 @@ void GetJointAbsPosition(ITEM_INFO* item, PHD_VECTOR* pos, long joint)
 		phd_TranslateRel(pos->x, pos->y, pos->z);
 	}
 
-	pos->x = item->pos.x_pos + (phd_mxptr[M03] >> 14);
-	pos->y = item->pos.y_pos + (phd_mxptr[M13] >> 14);
-	pos->z = item->pos.z_pos + (phd_mxptr[M23] >> 14);
+	pos->x = item->pos.x_pos + (phd_mxptr[M03] >> W2V_SHIFT);
+	pos->y = item->pos.y_pos + (phd_mxptr[M13] >> W2V_SHIFT);
+	pos->z = item->pos.z_pos + (phd_mxptr[M23] >> W2V_SHIFT);
 	phd_mxptr = mx;
 	IMptr = imx;
 	aMXPtr = fmx;
@@ -317,9 +317,9 @@ long GetSpheres(ITEM_INFO* item, SPHERE* ptr, long WorldSpace)
 	if (!(WorldSpace & 2))
 		phd_TranslateRel(meshp[0], meshp[1], meshp[2]);
 
-	ptr->x = x + (phd_mxptr[M03] >> 14);
-	ptr->y = y + (phd_mxptr[M13] >> 14);
-	ptr->z = z + (phd_mxptr[M23] >> 14);
+	ptr->x = x + (phd_mxptr[M03] >> W2V_SHIFT);
+	ptr->y = y + (phd_mxptr[M13] >> W2V_SHIFT);
+	ptr->z = z + (phd_mxptr[M23] >> W2V_SHIFT);
 	ptr->r = meshp[3];
 	ptr++;
 	phd_PopMatrix();
@@ -357,9 +357,9 @@ long GetSpheres(ITEM_INFO* item, SPHERE* ptr, long WorldSpace)
 		if (!(WorldSpace & 2))
 			phd_TranslateRel(meshp[0], meshp[1], meshp[2]);
 
-		ptr->x = x + (phd_mxptr[M03] >> 14);
-		ptr->y = y + (phd_mxptr[M13] >> 14);
-		ptr->z = z + (phd_mxptr[M23] >> 14);
+		ptr->x = x + (phd_mxptr[M03] >> W2V_SHIFT);
+		ptr->y = y + (phd_mxptr[M13] >> W2V_SHIFT);
+		ptr->z = z + (phd_mxptr[M23] >> W2V_SHIFT);
 		ptr->r = meshp[3];
 		ptr++;
 		phd_PopMatrix();

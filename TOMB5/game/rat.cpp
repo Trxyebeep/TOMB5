@@ -121,9 +121,9 @@ void UpdateRats()
 		oldx = fx->pos.x_pos;
 		oldy = fx->pos.y_pos;
 		oldz = fx->pos.z_pos;
-		fx->pos.x_pos += (phd_sin(fx->pos.y_rot) * fx->speed) >> 14;
+		fx->pos.x_pos += (phd_sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
 		fx->pos.y_pos += fx->fallspeed;
-		fx->pos.z_pos += (phd_cos(fx->pos.y_rot) * fx->speed) >> 14;
+		fx->pos.z_pos += (phd_cos(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
 		fx->fallspeed += 6;
 		dz = lara_item->pos.z_pos - fx->pos.z_pos;
 		dy = lara_item->pos.y_pos - fx->pos.y_pos;

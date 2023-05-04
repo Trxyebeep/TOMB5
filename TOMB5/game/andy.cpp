@@ -93,7 +93,7 @@ void ControlBurningRoots(short item_number)
 
 		if (item->item_flags[0] <= 127)
 		{
-			size = rcossin_tbl[item->item_flags[0] >> 3] << 9 >> 14;
+			size = 512 * rcossin_tbl[item->item_flags[0] >> 3] >> W2V_SHIFT;
 
 			for (int i = odd; i < 4; i += 2)
 			{
@@ -119,7 +119,7 @@ void ControlBurningRoots(short item_number)
 		{
 			if (s <= 127)
 			{
-				size = 128 * phd_sin(s << 8) >> 14;
+				size = 128 * phd_sin(s << 8) >> W2V_SHIFT;
 
 				for (int i = o; i < 28; i += 6)
 				{
@@ -229,17 +229,17 @@ void TriggerCoinGlow(short item_number)
 	sptr->dR = 0;
 	sptr->dG = 0;
 	sptr->dB = 0;
-	sptr->sR = shade * sptr->sR >> 14;
-	sptr->sG = shade * sptr->sG >> 14;
-	sptr->sB = shade * sptr->sB >> 14;
+	sptr->sR = shade * sptr->sR >> W2V_SHIFT;
+	sptr->sG = shade * sptr->sG >> W2V_SHIFT;
+	sptr->sB = shade * sptr->sB >> W2V_SHIFT;
 	sptr->ColFadeSpeed = 2;
 	sptr->FadeToBlack = 0;
 	sptr->Life = 2;
 	sptr->sLife = 2;
 	sptr->TransType = 2;
-	sptr->x = item->pos.x_pos + (32 * phd_sin((ang & 0xFFF) << 4) >> 14);
+	sptr->x = item->pos.x_pos + (32 * phd_sin((ang & 0xFFF) << 4) >> W2V_SHIFT);
 	sptr->y = item->pos.y_pos - 16;
-	sptr->z = item->pos.z_pos + (32 * phd_cos((ang & 0xFFF) << 4) >> 14);
+	sptr->z = item->pos.z_pos + (32 * phd_cos((ang & 0xFFF) << 4) >> W2V_SHIFT);
 	sptr->Xvel = 0;
 	sptr->Yvel = 0;
 	sptr->Zvel = 0;

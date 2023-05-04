@@ -29,6 +29,7 @@
 #define MALLOC_SIZE	15000000	//15MB
 #define GAME_FOV	(80 * 182)
 #define MAX_LOT		5
+#define W2V_SHIFT	14
 
 /*typedefs*/
 typedef unsigned char uchar;

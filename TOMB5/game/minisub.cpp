@@ -234,10 +234,10 @@ void TorpedoControl(short item_number)
 	x = item->pos.x_pos;
 	y = item->pos.y_pos;
 	z = item->pos.z_pos;
-	speed = item->speed * phd_cos(item->pos.x_rot) >> 14;
-	item->pos.x_pos += (speed * phd_sin(item->pos.y_rot) >> 14);
-	item->pos.y_pos += (item->speed * phd_sin(-item->pos.x_rot) >> 14);
-	item->pos.z_pos += (speed * phd_cos(item->pos.y_rot) >> 14);
+	speed = item->speed * phd_cos(item->pos.x_rot) >> W2V_SHIFT;
+	item->pos.x_pos += (speed * phd_sin(item->pos.y_rot) >> W2V_SHIFT);
+	item->pos.y_pos += (item->speed * phd_sin(-item->pos.x_rot) >> W2V_SHIFT);
+	item->pos.z_pos += (speed * phd_cos(item->pos.y_rot) >> W2V_SHIFT);
 	room_number = item->room_number;
 	floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 	height = GetHeight(floor, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos);
@@ -307,8 +307,8 @@ void ChaffControl(short item_number)
 	x = flare->pos.x_pos;
 	y = flare->pos.y_pos;
 	z = flare->pos.z_pos;
-	xv = flare->speed * phd_sin(flare->pos.y_rot) >> 14;
-	zv = flare->speed * phd_cos(flare->pos.y_rot) >> 14;
+	xv = flare->speed * phd_sin(flare->pos.y_rot) >> W2V_SHIFT;
+	zv = flare->speed * phd_cos(flare->pos.y_rot) >> W2V_SHIFT;
 	flare->pos.x_pos += xv;
 	flare->pos.z_pos += zv;
 

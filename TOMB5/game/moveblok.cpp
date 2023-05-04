@@ -40,7 +40,8 @@ void MovableBlock(short item_number)
 	pos.x = 0;
 	pos.y = 0;
 	pos.z = 0;
-	quadrant = (ushort)(lara_item->pos.y_rot + 8192) >> 14;
+	quadrant = ushort(lara_item->pos.y_rot + 0x2000) / 0x4000;
+
 	switch (lara_item->anim_number)
 	{
 	case ANIM_PUSH:
@@ -237,7 +238,7 @@ void MovableBlockCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* co
 
 			if (TestLaraPosition(MovingBlockBounds, item, laraitem))
 			{
-				if (((ushort(yrot + 8192) >> 14) + (ushort(item->pos.y_rot) >> 14)) & 1)
+				if (((ushort(yrot + 0x2000) / 0x4000) + (ushort(item->pos.y_rot) / 0x4000)) & 1)
 					MovingBlockPos.z = bounds[0] - 95;
 				else
 					MovingBlockPos.z = bounds[4] - 95;
@@ -270,7 +271,7 @@ void MovableBlockCollision(short item_number, ITEM_INFO* laraitem, COLL_INFO* co
 		pos.x = 0;
 		pos.y = 0;
 		pos.z = 0;
-		quadrant = (ushort)(laraitem->pos.y_rot + 8192) >> 14;
+		quadrant = ushort(laraitem->pos.y_rot + 0x2000) / 0x4000;
 
 		if (input & IN_FORWARD)
 		{

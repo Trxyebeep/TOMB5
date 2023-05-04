@@ -72,7 +72,7 @@ void LaraSwimCollision(ITEM_INFO* item, COLL_INFO* coll)
 		coll->facing = item->pos.y_rot;
 	}
 
-	height = 762 * phd_sin(item->pos.x_rot) >> 14;
+	height = 762 * phd_sin(item->pos.x_rot) >> W2V_SHIFT;
 
 	if (height < 0)
 		height = -height;
@@ -611,9 +611,9 @@ void LaraUnderWater(ITEM_INFO* item, COLL_INFO* coll)
 		LaraWaterCurrent(coll);
 
 	AnimateLara(item);
-	item->pos.x_pos += (item->fallspeed * phd_sin(item->pos.y_rot) >> 16) * phd_cos(item->pos.x_rot) >> 14;
-	item->pos.y_pos -= item->fallspeed * phd_sin(item->pos.x_rot) >> 16;
-	item->pos.z_pos += (item->fallspeed * phd_cos(item->pos.y_rot) >> 16) * phd_cos(item->pos.x_rot) >> 14;
+	item->pos.x_pos += (item->fallspeed * phd_sin(item->pos.y_rot) >> 16) * phd_cos(item->pos.x_rot) >> W2V_SHIFT;
+	item->pos.y_pos -= item->fallspeed * phd_sin(item->pos.x_rot) >> (W2V_SHIFT + 2);
+	item->pos.z_pos += (item->fallspeed * phd_cos(item->pos.y_rot) >> 16) * phd_cos(item->pos.x_rot) >> W2V_SHIFT;
 	LaraBaddieCollision(item, coll);
 	lara_collision_routines[item->current_anim_state](item, coll);
 	UpdateLaraRoom(item, 0);

@@ -170,9 +170,9 @@ void UpdateDebris()
 				dptr->Yvel = 4096;
 
 			dptr->Speed -= dptr->Speed >> 4;
-			dptr->x += dptr->Speed * phd_sin(dptr->Dir) >> 14;
+			dptr->x += dptr->Speed * phd_sin(dptr->Dir) >> W2V_SHIFT;
 			dptr->y += dptr->Yvel >> 4;
-			dptr->z += dptr->Speed * phd_cos(dptr->Dir) >> 14;
+			dptr->z += dptr->Speed * phd_cos(dptr->Dir) >> W2V_SHIFT;
 			floor = GetFloor(dptr->x, dptr->y, dptr->z, &dptr->RoomNumber);
 			height = GetHeight(floor, dptr->x, dptr->y, dptr->z);
 			ceiling = GetCeiling(floor, dptr->x, dptr->y, dptr->z);
@@ -265,9 +265,9 @@ void ShatterObject(SHATTER_ITEM* shatter_item, MESH_INFO* StaticMesh, short Num,
 		z = (long)*vtx++;
 		vtx += 5;
 
-		offsets[0] = short((phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z + phd_mxptr[M03]) >> 14);
-		offsets[1] = short((phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z + phd_mxptr[M13]) >> 14);
-		offsets[2] = short((phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z + phd_mxptr[M23]) >> 14);
+		offsets[0] = short((phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z + phd_mxptr[M03]) >> W2V_SHIFT);
+		offsets[1] = short((phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z + phd_mxptr[M13]) >> W2V_SHIFT);
+		offsets[2] = short((phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z + phd_mxptr[M23]) >> W2V_SHIFT);
 
 		pos.x += offsets[0];
 		pos.y += offsets[1];

@@ -198,14 +198,14 @@ static void DrawLara__1(ITEM_INFO* item, long mirror)
 				v1.y = lara_matrices[SkinUseMatrix[i][1] * indices_count + M11];
 				v1.z = lara_matrices[SkinUseMatrix[i][1] * indices_count + M21];
 
-				v0.x *= 1 << 14;
-				v0.y *= 1 << 14;
-				v0.z *= 1 << 14;
-				v1.x *= 1 << 14;
-				v1.y *= 1 << 14;
-				v1.z *= 1 << 14;
+				v0.x *= 1 << W2V_SHIFT;
+				v0.y *= 1 << W2V_SHIFT;
+				v0.z *= 1 << W2V_SHIFT;
+				v1.x *= 1 << W2V_SHIFT;
+				v1.y *= 1 << W2V_SHIFT;
+				v1.z *= 1 << W2V_SHIFT;
 
-				c = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
+				c = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> W2V_SHIFT;
 				s = phd_sqrt(0x1000000 - SQUARE(c));
 
 				if (i == 1 || i == 4)
@@ -400,14 +400,14 @@ static void DrawLara__4(ITEM_INFO* item, long mirror)
 			v1.y = lara_matrices[SkinUseMatrix[i][1] * indices_count + M11];
 			v1.z = lara_matrices[SkinUseMatrix[i][1] * indices_count + M21];
 
-			v0.x *= 1 << 14;
-			v0.y *= 1 << 14;
-			v0.z *= 1 << 14;
-			v1.x *= 1 << 14;
-			v1.y *= 1 << 14;
-			v1.z *= 1 << 14;
+			v0.x *= 1 << W2V_SHIFT;
+			v0.y *= 1 << W2V_SHIFT;
+			v0.z *= 1 << W2V_SHIFT;
+			v1.x *= 1 << W2V_SHIFT;
+			v1.y *= 1 << W2V_SHIFT;
+			v1.z *= 1 << W2V_SHIFT;
 
-			c = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
+			c = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> W2V_SHIFT;
 			s = phd_sqrt(0x1000000 - SQUARE(c));
 
 			if (i == 1 || i == 4)
@@ -654,14 +654,14 @@ static void DrawLara__6(ITEM_INFO* item, long mirror)
 			v1.y = lara_matrices[SkinUseMatrix[i][1] * indices_count + M11];
 			v1.z = lara_matrices[SkinUseMatrix[i][1] * indices_count + M21];
 
-			v0.x *= 1 << 14;
-			v0.y *= 1 << 14;
-			v0.z *= 1 << 14;
-			v1.x *= 1 << 14;
-			v1.y *= 1 << 14;
-			v1.z *= 1 << 14;
+			v0.x *= 1 << W2V_SHIFT;
+			v0.y *= 1 << W2V_SHIFT;
+			v0.z *= 1 << W2V_SHIFT;
+			v1.x *= 1 << W2V_SHIFT;
+			v1.y *= 1 << W2V_SHIFT;
+			v1.z *= 1 << W2V_SHIFT;
 
-			c = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
+			c = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> W2V_SHIFT;
 			s = phd_sqrt(0x1000000 - SQUARE(c));
 
 			if (i == 1 || i == 4)

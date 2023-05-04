@@ -530,9 +530,9 @@ void CalculateObjectLighting(ITEM_INFO* item, short* frame)
 		phd_SetTrans(0, 0, 0);
 		phd_RotYXZ(item->pos.y_rot, item->pos.x_rot, item->pos.z_rot);
 		phd_TranslateRel((frame[0] + frame[1]) >> 1, (frame[2] + frame[3]) >> 1, (frame[4] + frame[5]) >> 1);
-		x = item->pos.x_pos + (phd_mxptr[3] >> 14);
-		y = item->pos.y_pos + (phd_mxptr[7] >> 14);
-		z = item->pos.z_pos + (phd_mxptr[11] >> 14);
+		x = item->pos.x_pos + (phd_mxptr[3] >> W2V_SHIFT);
+		y = item->pos.y_pos + (phd_mxptr[7] >> W2V_SHIFT);
+		z = item->pos.z_pos + (phd_mxptr[11] >> W2V_SHIFT);
 		phd_PopMatrix();
 		current_item = item;
 		item->il.item_pos.x = x;
@@ -1182,9 +1182,9 @@ void mRotBoundingBoxNoPersp(short* bounds, short* rotatedBounds)
 
 	for (int i = 0; i < 8; i++)
 	{
-		x = (pos[i].x * phd_mxptr[M00] + pos[i].y * phd_mxptr[M01] + pos[i].z * phd_mxptr[M02]) >> 14;
-		y = (pos[i].x * phd_mxptr[M10] + pos[i].y * phd_mxptr[M11] + pos[i].z * phd_mxptr[M12]) >> 14;
-		z = (pos[i].x * phd_mxptr[M20] + pos[i].y * phd_mxptr[M21] + pos[i].z * phd_mxptr[M22]) >> 14;
+		x = (pos[i].x * phd_mxptr[M00] + pos[i].y * phd_mxptr[M01] + pos[i].z * phd_mxptr[M02]) >> W2V_SHIFT;
+		y = (pos[i].x * phd_mxptr[M10] + pos[i].y * phd_mxptr[M11] + pos[i].z * phd_mxptr[M12]) >> W2V_SHIFT;
+		z = (pos[i].x * phd_mxptr[M20] + pos[i].y * phd_mxptr[M21] + pos[i].z * phd_mxptr[M22]) >> W2V_SHIFT;
 
 		if (x < xMin)
 			xMin = (short)x;

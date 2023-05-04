@@ -2180,7 +2180,7 @@ void handle_cutseq_triggering(long name)
 		lara.holster = old_lara_holster;
 
 		if (cutseq_num <= 4)
-			DelsHandyTeleportLara(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, cutrot << 14);
+			DelsHandyTeleportLara(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, cutrot * 0x4000);
 
 		cutseq_trig = 0;
 		GLOBAL_playing_cutseq = 0;
@@ -3232,9 +3232,9 @@ void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PH
 	phd_TranslateRel(rot[6], rot[7], rot[8]);
 	rotation1 = rot + 9;
 	gar_RotYXZsuperpack(&rotation1, 0);
-	pos->x = phd_mxptr[M03] >> 14;
-	pos->y = phd_mxptr[M13] >> 14;
-	pos->z = phd_mxptr[M23] >> 14;
+	pos->x = phd_mxptr[M03] >> W2V_SHIFT;
+	pos->y = phd_mxptr[M13] >> W2V_SHIFT;
+	pos->z = phd_mxptr[M23] >> W2V_SHIFT;
 	pos->x += item->pos.x_pos;
 	pos->y += item->pos.y_pos;
 	pos->z += item->pos.z_pos;
@@ -3464,9 +3464,9 @@ void GetActorJointAbsPosition(long actornum, ulong nodenum, PHD_VECTOR* vec)
 	}
 
 	phd_TranslateRel(vec->x, vec->y, vec->z);
-	vec->x = phd_mxptr[M03] >> 14;
-	vec->y = phd_mxptr[M13] >> 14;
-	vec->z = phd_mxptr[M23] >> 14;
+	vec->x = phd_mxptr[M03] >> W2V_SHIFT;
+	vec->y = phd_mxptr[M13] >> W2V_SHIFT;
+	vec->z = phd_mxptr[M23] >> W2V_SHIFT;
 	vec->x += item->pos.x_pos;
 	vec->y += item->pos.y_pos;
 	vec->z += item->pos.z_pos;
