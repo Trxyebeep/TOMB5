@@ -19,13 +19,11 @@ void InitialiseMafia(short item_number)
 	InitialiseCreature(item_number);
 	item->anim_number = objects[item->object_number].anim_index;
 	item->frame_number = anims[item->anim_number].frame_base;
-	item->goal_anim_state = 1;
 	item->current_anim_state = 1;
-	item->meshswap_meshbits = 9216;
+	item->goal_anim_state = 1;
+	item->meshswap_meshbits = 0x2400;
 }
 
-#pragma warning(push)
-#pragma warning(disable : 4700)	//info is used in a block where it isn't initialised and so VS throws a fit
 void MafiaControl(short item_number)
 {
 	ITEM_INFO* item;
@@ -34,8 +32,8 @@ void MafiaControl(short item_number)
 	PHD_VECTOR pos;
 	AI_INFO info;
 	AI_INFO lara_info;
-	long Xoffset, Zoffset, x, y, z, nearheight, midheight, farheight, lara_dx, lara_dz;
-	short angle, head, torso_x, torso_y, room_number, jump_ahead, long_jump_ahead, y_rot, mood;
+	long Xoffset, Zoffset, x, y, z, nearheight, midheight, farheight;
+	short angle, head, torso_x, torso_y, room_number, jump_ahead, long_jump_ahead, mood;
 
 	if (!CreatureActive(item_number))
 		return;
@@ -46,19 +44,23 @@ void MafiaControl(short item_number)
 	head = 0;
 	torso_x = 0;
 	torso_y = 0;
-	room_number = item->room_number;
-	y = item->pos.y_pos;
+	
 	Xoffset = 870 * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
 	Zoffset = 870 * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
+
+	room_number = item->room_number;
 	x = item->pos.x_pos + Xoffset;
+	y = item->pos.y_pos;
 	z = item->pos.z_pos + Zoffset;
 	floor = GetFloor(x, y, z, &room_number);
 	nearheight = GetHeight(floor, x, y, z);
+
 	room_number = item->room_number;
 	x += Xoffset;
 	z += Zoffset;
 	floor = GetFloor(x, y, z, &room_number);
 	midheight = GetHeight(floor, x, y, z);
+
 	room_number = item->room_number;
 	x += Xoffset;
 	z += Zoffset;
@@ -87,7 +89,27 @@ void MafiaControl(short item_number)
 
 	CreatureAIInfo(item, &info);
 
-	if (item->hit_points > 0)
+	if (item->hit_points <= 0)
+	{
+		if (item->current_anim_state != 8 && item->current_anim_state != 6)
+		{
+			if (info.angle >= 0x3000 || info.angle <= -0x3000)
+			{
+				item->anim_number = objects[item->object_number].anim_index + 16;
+				item->current_anim_state = 8;
+				item->pos.y_rot += info.angle + 0x8000;
+			}
+			else
+			{
+				item->anim_number = objects[item->object_number].anim_index + 11;
+				item->current_anim_state = 6;
+				item->pos.y_rot += info.angle;
+			}
+
+			item->frame_number = anims[item->anim_number].frame_base;
+		}
+	}
+	else
 	{
 		if (item->ai_bits)
 			GetAITarget(mafia);
@@ -101,10 +123,10 @@ void MafiaControl(short item_number)
 		}
 		else
 		{
-			lara_dx = lara_item->pos.x_pos - item->pos.x_pos;
-			lara_dz = lara_item->pos.z_pos - item->pos.z_pos;
-			lara_info.angle = (short)(phd_atan(lara_dz, lara_dx) - item->pos.y_rot);
-			lara_info.distance = SQUARE(lara_dz) + SQUARE(lara_dx);
+			x = lara_item->pos.x_pos - item->pos.x_pos;
+			z = lara_item->pos.z_pos - item->pos.z_pos;
+			lara_info.angle = short(phd_atan(z, x) - item->pos.y_rot);
+			lara_info.distance = SQUARE(z) + SQUARE(x);
 		}
 
 		mood = mafia->enemy != lara_item;
@@ -134,66 +156,43 @@ void MafiaControl(short item_number)
 			}
 
 			if (item->ai_bits & GUARD)
-			{
 				head = AIGuard(mafia);
-				break;
-			}
-
-			if (lara_info.angle <= 20480 && lara_info.angle >= -20480)
+			else if (item->meshswap_meshbits == 0x2400)
 			{
-				if (item->meshswap_meshbits == 9216)
-				{
-					item->goal_anim_state = 37;
-					break;
-				}
-			}
-			else if (item->meshswap_meshbits == 9216)
-			{
-				item->goal_anim_state = 2;
-				break;
-			}
-
-			if (Targetable(item, &info))
-			{
-				if (info.distance >= 0x1000000 && info.zone_number == info.enemy_zone)
-				{
-					if (item->ai_bits != MODIFY)
-						item->goal_anim_state = 5;
-				}
+				if (lara_info.angle > 0x5000 || lara_info.angle < -0x5000)
+					item->goal_anim_state = 2;
 				else
+					item->goal_anim_state = 37;
+			}
+			else if (Targetable(item, &info))
+			{
+				if (info.distance < 0x1000000 || info.zone_number != info.enemy_zone)
 					item->goal_anim_state = 4;
+				else if (item->ai_bits != MODIFY)
+					item->goal_anim_state = 5;
 			}
 			else if (item->ai_bits & PATROL1)
 				item->goal_anim_state = 5;
-			else
+			else if (jump_ahead || long_jump_ahead)
 			{
-				if (jump_ahead || long_jump_ahead)
-				{
-					mafia->maximum_turn = 0;
-					item->anim_number = objects[item->object_number].anim_index + 41;
-					item->frame_number = anims[item->anim_number].frame_base;
-					item->current_anim_state = 26;
-					
-					if (long_jump_ahead)
-						item->goal_anim_state = 28;
-					else
-						item->goal_anim_state = 27;
+				mafia->maximum_turn = 0;
+				item->anim_number = objects[item->object_number].anim_index + 41;
+				item->frame_number = anims[item->anim_number].frame_base;
+				item->current_anim_state = 26;
 
-					mafia->LOT.is_jumping = 1;
-
-					break;
-				}
-
-				if (mafia->mood != BORED_MOOD)
-				{
-					if (info.distance >= 0x900000)
-						item->goal_anim_state = 7;
-					else
-						item->goal_anim_state = 5;
-				}
+				if (long_jump_ahead)
+					item->goal_anim_state = 28;
 				else
-					item->goal_anim_state = 1;
+					item->goal_anim_state = 27;
+
+				mafia->LOT.is_jumping = 1;
 			}
+			else if (mafia->mood == BORED_MOOD)
+				item->goal_anim_state = 1;
+			else if (info.distance < 0x900000)
+				item->goal_anim_state = 5;
+			else
+				item->goal_anim_state = 7;
 
 			break;
 
@@ -206,8 +205,8 @@ void MafiaControl(short item_number)
 			else
 				item->pos.y_rot += 364;
 
-			if (item->frame_number == anims[item->anim_number].frame_base + 16 && item->meshswap_meshbits == 9216)
-				item->meshswap_meshbits = 128;
+			if (item->frame_number == anims[item->anim_number].frame_base + 16 && item->meshswap_meshbits == 0x2400)
+				item->meshswap_meshbits = 0x80;
 			else if (item->frame_number == anims[item->anim_number].frame_end)
 				item->pos.y_rot += 0x8000;
 
@@ -222,15 +221,12 @@ void MafiaControl(short item_number)
 
 			mafia->maximum_turn = 0;
 
-			if (abs(info.angle) >= 364)
-			{
-				if (info.angle >= 0)
-					item->pos.y_rot += 364;
-				else
-					item->pos.y_rot -= 364;
-			}
-			else
+			if (abs(info.angle) < 364)
 				item->pos.y_rot += info.angle;
+			else if (info.angle < 0)
+				item->pos.y_rot -= 364;
+			else
+				item->pos.y_rot += 364;
 
 			if (!mafia->flags)
 			{
@@ -250,19 +246,16 @@ void MafiaControl(short item_number)
 			if (info.ahead)
 				torso_x = info.x_angle;
 
-			if (abs(info.angle) >= 364)
-			{
-				if (info.angle >= 0)
-					item->pos.y_rot += 364;
-				else
-					item->pos.y_rot -= 364;
-			}
-			else
+			if (abs(info.angle) < 364)
 				item->pos.y_rot += info.angle;
+			else if (info.angle < 0)
+				item->pos.y_rot -= 364;
+			else
+				item->pos.y_rot += 364;
 
 			if (Targetable(item, &info))
 				item->goal_anim_state = 3;
-			else if (lara_info.angle > 20480 || lara_info.angle < -20480)
+			else if (lara_info.angle > 0x5000 || lara_info.angle < -0x5000)
 				item->goal_anim_state = 32;
 			else
 				item->goal_anim_state = 1;
@@ -273,35 +266,26 @@ void MafiaControl(short item_number)
 			mafia->LOT.is_jumping = 0;
 			mafia->maximum_turn = 910;
 
-			if (!Targetable(item, &info) || info.distance >= 0x1000000 && info.zone_number == info.enemy_zone)
-			{
-				if (jump_ahead || long_jump_ahead)
-				{
-					mafia->maximum_turn = 0;
-					item->anim_number = objects[item->object_number].anim_index + 41;
-					item->frame_number = anims[item->anim_number].frame_base;
-					item->current_anim_state = 26;
-
-					if (long_jump_ahead)
-						item->goal_anim_state = 28;
-					else
-						item->goal_anim_state = 27;
-
-					mafia->LOT.is_jumping = 1;
-
-					break;
-				}
-
-				if (info.distance >= 0x100000)
-				{
-					if (info.distance > 0x900000)
-						item->goal_anim_state = 7;
-				}
-				else
-					item->goal_anim_state = 1;
-			}
-			else
+			if (Targetable(item, &info) && (info.distance < 0x1000000 || info.zone_number != info.enemy_zone))
 				item->goal_anim_state = 4;
+			else if (jump_ahead || long_jump_ahead)
+			{
+				mafia->maximum_turn = 0;
+				item->anim_number = objects[item->object_number].anim_index + 41;
+				item->frame_number = anims[item->anim_number].frame_base;
+				item->current_anim_state = 26;
+
+				if (long_jump_ahead)
+					item->goal_anim_state = 28;
+				else
+					item->goal_anim_state = 27;
+
+				mafia->LOT.is_jumping = 1;
+			}
+			else if (info.distance < 0x100000)
+				item->goal_anim_state = 1;
+			else if (info.distance > 0x900000)
+				item->goal_anim_state = 7;
 
 			break;
 
@@ -309,27 +293,24 @@ void MafiaControl(short item_number)
 			mafia->LOT.is_jumping = 0;
 			mafia->maximum_turn = 1820;
 
-			if (!Targetable(item, &info) || info.distance >= 0x1000000 && info.zone_number == info.enemy_zone)
-			{
-				if (jump_ahead || long_jump_ahead)
-				{
-					mafia->maximum_turn = 0;
-					item->anim_number = objects[item->object_number].anim_index + 50;
-					item->frame_number = anims[item->anim_number].frame_base;
-					item->current_anim_state = 26;
-
-					if (long_jump_ahead)
-						item->goal_anim_state = 28;
-					else
-						item->goal_anim_state = 27;
-
-					mafia->LOT.is_jumping = 1;
-				}
-				else if (info.distance < 0x900000)
-					item->goal_anim_state = 5;
-			}
-			else
+			if (Targetable(item, &info) && (info.distance < 0x1000000 || info.zone_number != info.enemy_zone))
 				item->goal_anim_state = 4;
+			else if (jump_ahead || long_jump_ahead)
+			{
+				mafia->maximum_turn = 0;
+				item->anim_number = objects[item->object_number].anim_index + 50;
+				item->frame_number = anims[item->anim_number].frame_base;
+				item->current_anim_state = 26;
+
+				if (long_jump_ahead)
+					item->goal_anim_state = 28;
+				else
+					item->goal_anim_state = 27;
+
+				mafia->LOT.is_jumping = 1;
+			}
+			else if (info.distance < 0x900000)
+				item->goal_anim_state = 5;
 
 			break;
 
@@ -341,31 +322,10 @@ void MafiaControl(short item_number)
 			else
 				item->pos.y_rot -= 364;
 
-			if (item->frame_number == anims[item->anim_number].frame_base + 16 && item->meshswap_meshbits == 9216)
-				item->meshswap_meshbits = 128;
+			if (item->frame_number == anims[item->anim_number].frame_base + 16 && item->meshswap_meshbits == 0x2400)
+				item->meshswap_meshbits = 0x80;
 
 			break;
-		}
-	}
-	else
-	{
-		if (item->current_anim_state != 8 && item->current_anim_state != 6)
-		{
-			if (info.angle >= 12288 || info.angle <= -12288)
-			{
-				item->current_anim_state = 8;
-				item->anim_number = objects[item->object_number].anim_index + 16;
-				y_rot = info.angle + 32768;
-			}
-			else
-			{
-				item->current_anim_state = 6;
-				item->anim_number = objects[item->object_number].anim_index + 11;
-				y_rot = info.angle;
-			}
-
-			item->pos.y_rot += y_rot;
-			item->frame_number = anims[item->anim_number].frame_base;
 		}
 	}
 
@@ -423,4 +383,3 @@ void MafiaControl(short item_number)
 		}
 	}
 }
-#pragma warning(pop)
