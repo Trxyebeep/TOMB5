@@ -55,14 +55,13 @@ void ClearLOT(LOT_INFO* lot)
 	lot->search_number = 0;
 	lot->target_box = 2047;
 	lot->required_box = 2047;
-	node = lot->node;
 
 	for (int i = 0; i < num_boxes; i++)
 	{
+		node = &lot->node[i];
 		node->next_expansion = 2047;
 		node->exit_box = 2047;
 		node->search_number = 0;
-		node++;
 	}
 }
 
@@ -82,12 +81,11 @@ void CreateZone(ITEM_INFO* item)
 	if (creature->LOT.fly)
 	{
 		creature->LOT.zone_count = 0;
-		node = creature->LOT.node;
 
 		for (int i = 0; i < num_boxes; i++)
 		{
+			node = &creature->LOT.node[i];
 			node->box_number = i;
-			node++;
 			creature->LOT.zone_count++;
 		}
 	}
