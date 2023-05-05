@@ -49,13 +49,13 @@ void TriggerRomanGodSparks(long x, long y, long z, long xv, long yv, long zv, lo
 	sptr->Life = 16;
 	sptr->sLife = 16;
 	sptr->TransType = 2;
-	sptr->Xvel = (short) xv;
-	sptr->Yvel = (short) yv;
-	sptr->Zvel = (short) zv;
+	sptr->Xvel = (short)xv;
+	sptr->Yvel = (short)yv;
+	sptr->Zvel = (short)zv;
 	sptr->Friction = 34;
 	sptr->MaxYvel = 0;
 	sptr->Gravity = 0;
-	sptr->Flags = 0;
+	sptr->Flags = SF_NONE;
 }
 
 void TriggerRomanGodMissileFlame(PHD_VECTOR* pos, long fxnum)
@@ -83,12 +83,12 @@ void TriggerRomanGodMissileFlame(PHD_VECTOR* pos, long fxnum)
 	sptr->Yvel = (GetRandomControl() & 0x3FF) - 512;
 	sptr->Zvel = (GetRandomControl() & 0x3FF) - 512;
 	sptr->Friction = 68;
-	sptr->Flags = 602;
+	sptr->Flags = SF_EMPTY | SF_FX | SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->Gravity = 0;
 	sptr->MaxYvel = 0;
 	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
-	sptr->FxObj = (uchar) fxnum;
+	sptr->FxObj = (uchar)fxnum;
 	sptr->Scalar = 2;
 	sptr->sSize = (GetRandomControl() & 0xF) + 96;
 	sptr->Size = sptr->sSize;
@@ -125,16 +125,16 @@ void TriggerRomanGodLightningGlow(long x, long y, long z, long rgb)
 	SPARKS* sptr;
 
 	sptr = &spark[GetFreeSpark()];
-	sptr->dG = (uchar) (rgb >> 8);
-	sptr->sG = (uchar) (rgb >> 8);
+	sptr->dG = uchar(rgb >> 8);
+	sptr->sG = uchar(rgb >> 8);
 	sptr->ColFadeSpeed = 2;
-	sptr->dR = (uchar) (rgb >> 16);
-	sptr->sR = (uchar) (rgb >> 16);
+	sptr->dR = uchar(rgb >> 16);
+	sptr->sR = uchar(rgb >> 16);
 	sptr->TransType = 2;
 	sptr->Life = 16;
 	sptr->sLife = 16;
-	sptr->dB = (uchar) rgb;
-	sptr->sB = (uchar) rgb;
+	sptr->dB = (uchar)rgb;
+	sptr->sB = (uchar)rgb;
 	sptr->On = 1;
 	sptr->FadeToBlack = 4;
 	sptr->x = x;
@@ -143,7 +143,7 @@ void TriggerRomanGodLightningGlow(long x, long y, long z, long rgb)
 	sptr->Xvel = 0;
 	sptr->Yvel = 0;
 	sptr->Zvel = 0;
-	sptr->Flags = 10;
+	sptr->Flags = SF_DEF | SF_SCALE;
 	sptr->Scalar = 3;
 	sptr->MaxYvel = 0;
 	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 11;
@@ -166,8 +166,8 @@ void TriggerRomanGodPowerupFlames(short item_number, long shade)
 
 	if (shade < 16)
 	{
-		sptr->sB = (uchar) (sptr->sB * shade >> 4);
-		sptr->dB = (uchar) (sptr->dB * shade >> 4);
+		sptr->sB = uchar(sptr->sB * shade >> 4);
+		sptr->dB = uchar(sptr->dB * shade >> 4);
 	}
 
 	sptr->sG = sptr->sB >> 1;
@@ -185,8 +185,8 @@ void TriggerRomanGodPowerupFlames(short item_number, long shade)
 	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Friction = 4;
-	sptr->Flags = 4762;
-	sptr->FxObj = (uchar) item_number;
+	sptr->Flags = SF_ATTACHEDNODE | SF_EMPTY | SF_ITEM | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->FxObj = (uchar)item_number;
 	sptr->NodeNumber = 6;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
@@ -194,7 +194,7 @@ void TriggerRomanGodPowerupFlames(short item_number, long shade)
 	sptr->Gravity = -8 - (GetRandomControl() & 7);
 	sptr->Scalar = 2;
 	sptr->dSize = 4;
-	sptr->sSize = (uchar) (((GetRandomControl() & 0x1F) + 64) * shade >> 4);
+	sptr->sSize = uchar(((GetRandomControl() & 0x1F) + 64) * shade >> 4);
 	sptr->Size = sptr->sSize;
 }
 
@@ -249,7 +249,7 @@ void TriggerRomangodGravel(ITEM_INFO* item, PHD_VECTOR* pos, long node)
 		sptr->Xvel = (GetRandomControl() & 0x7F) - 64;
 		sptr->Zvel = (GetRandomControl() & 0x7F) - 64;
 		sptr->Friction = 4;
-		sptr->Flags = 16;
+		sptr->Flags = SF_ROTATE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0x1F) - 16;
 		sptr->MaxYvel = 0;

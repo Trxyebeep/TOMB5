@@ -654,7 +654,7 @@ void TriggerGrapplingEffect(long x, long y, long z)
 			sptr->Friction = 82;
 		}
 
-		sptr->Flags = 16;
+		sptr->Flags = SF_ROTATE;
 		sptr->RotAng = (GetRandomControl() & 0xFFF);
 		sptr->RotAdd = (GetRandomControl() & 0x40) - 32;
 		sptr->MaxYvel = 0;

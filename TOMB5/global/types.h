@@ -58,6 +58,27 @@ enum ai_bits
 	FOLLOW = 1 << 4
 };
 
+enum spark_flags
+{
+	SF_NONE =			0x0,
+	SF_FIRE =			0x1,	//burns Lara at contact
+	SF_SCALE =			0x2,	//scale using sptr->Scalar
+	SF_UNUSED =			0x4,
+	SF_DEF =			0x8,	//use sptr->Def for the drawn sprite (otherwise do flat quad)
+	SF_ROTATE =			0x10,	//rotate the drawn sprite (for regular sparks, SF_DEF is required)
+	SF_NOKILL =			0x20,	//flag to avoid killing the spark in GetFreeSpark if no free slots are found
+	SF_FX =				0x40,	//spark is attached to an effect
+	SF_ITEM =			0x80,	//spark is attached to an item
+	SF_OUTSIDE =		0x100,	//spark is affected by wind
+	SF_EMPTY =			0x200,
+	SF_DAMAGE =			0x400,	//damages lara at contact
+	SF_UNWATER =		0x800,	//for underwater explosions to create bubbles etc.
+	SF_ATTACHEDNODE =	0x1000,	//spark is attached to an item node, uses NodeOffsets
+	SF_GREEN =			0x2000,	//turns the spark into a green-ish blue (for explosions only)
+	SF_EMPTY2 =			0x4000,
+	SF_EMPTY3 =			0x8000
+};
+
 enum target_type
 {
 	NO_TARGET,

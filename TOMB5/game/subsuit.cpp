@@ -211,7 +211,7 @@ void TriggerAirBubbles()
 	sptr->MaxYvel = 0;
 	sptr->Gravity = -4 - (GetRandomControl() & 3);
 	sptr->Scalar = 1;
-	sptr->Flags = 26;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0xF) - 8;
 	size = 16 + (GetRandomControl() & 15);
@@ -287,7 +287,7 @@ void TriggerSubMist(PHD_VECTOR* pos, PHD_VECTOR* pos1, long size)
 
 	if (n)
 	{
-		sptr->Flags = 26;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0xF) - 8;
 		sptr->Size = uchar((GetRandomControl() & 0xF) + 2 * size + 8);
@@ -296,7 +296,7 @@ void TriggerSubMist(PHD_VECTOR* pos, PHD_VECTOR* pos1, long size)
 	}
 	else
 	{
-		sptr->Flags = 10;
+		sptr->Flags = SF_DEF | SF_SCALE;
 		sptr->dSize = uchar((GetRandomControl() & 3) + size + 4);
 		sptr->Size = sptr->dSize >> 1;
 		sptr->sSize = sptr->Size >> 1;

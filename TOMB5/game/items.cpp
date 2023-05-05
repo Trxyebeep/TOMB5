@@ -85,7 +85,7 @@ void KillItem(short item_num)
 		return;
 	}
 
-	DetatchSpark(item_num, 128);
+	DetatchSpark(item_num, SF_ITEM);
 	item = &items[item_num];
 	item->active = 0;
 	item->really_active = 0;
@@ -402,7 +402,7 @@ void KillEffect(short fx_num)
 		return;
 	}
 
-	DetatchSpark(fx_num, 64);
+	DetatchSpark(fx_num, SF_FX);
 	fx = &effects[fx_num];
 
 	if (next_fx_active == fx_num)

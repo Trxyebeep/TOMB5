@@ -309,7 +309,7 @@ void ControlGunship(short item_number)
 				sptr->Friction = 0;
 				sptr->MaxYvel = 0;
 				sptr->Gravity = 0;
-				sptr->Flags = 0;
+				sptr->Flags = SF_NONE;
 			}
 		}
 
@@ -629,7 +629,7 @@ void ControlGasCloud(short item_number)
 		sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	}
 
-	sptr->Flags = 538;
+	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->MaxYvel = 0;
 	sptr->Gravity = 0;
@@ -689,7 +689,7 @@ void ControlGasCloud(short item_number)
 			sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 		}
 
-		sptr->Flags = 538;
+		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 		sptr->MaxYvel = 0;
@@ -948,7 +948,7 @@ void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
 	smoke->Zvel = short((v * phd_cos(yrot + yAdd)) >> W2V_SHIFT);
 
 	smoke->Friction = 84;
-	smoke->Flags = 16;
+	smoke->Flags = SF_ROTATE;
 	smoke->RotAng = GetRandomControl() & 0xFFF;
 	smoke->RotAdd = (GetRandomControl() & 0x1F) - 16;
 	smoke->MaxYvel = 0;
@@ -983,7 +983,7 @@ void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
 	sptr->Friction = 84;
 	sptr->MaxYvel = 0;
 	sptr->Gravity = 0;
-	sptr->Flags = 0;
+	sptr->Flags = SF_NONE;
 
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
@@ -1015,7 +1015,7 @@ void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
 	sptr->Size = (GetRandomControl() & 0xF) + 12;
 	sptr->sSize = sptr->Size;
 	sptr->dSize = sptr->Size >> 1;
-	sptr->Flags = 10;
+	sptr->Flags = SF_DEF | SF_SCALE;
 	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + W2V_SHIFT;
 	sptr->Gravity = (GetRandomControl() & 0xF) + 16;
 	sptr->Scalar = 1;
@@ -1072,7 +1072,7 @@ void TriggerSteelDoorSmoke(short angle, short nPos, ITEM_INFO* item)
 		sptr->Zvel = short((v * phd_cos(angle)) >> 10);
 
 		sptr->Friction = 4;
-		sptr->Flags = 538;
+		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 		sptr->Gravity = -8 - (GetRandomControl() & 7);
@@ -1114,7 +1114,7 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 	sptr->Yvel = 0;
 	sptr->Zvel = 0;
 
-	sptr->Flags = 16394;
+	sptr->Flags = SF_EMPTY2 | SF_DEF | SF_SCALE;
 	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
 	sptr->Scalar = 0;
 	sptr->MaxYvel = 0;
@@ -1149,7 +1149,7 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 		sptr->y = pos->y + (v >> 1) + (sptr->Yvel >> 5);
 		sptr->z = pos->z + (sptr->Zvel >> 5) + ((v * phd_cos(yrot + 0x4000)) >> W2V_SHIFT);
 		sptr->Friction = 5;
-		sptr->Flags = 0;
+		sptr->Flags = SF_NONE;
 		sptr->MaxYvel = 0;
 		sptr->Gravity = (GetRandomControl() & 0x1F) + 32;
 	}
@@ -1171,7 +1171,7 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 	smoke->Yvel = 0;
 	smoke->Zvel = sptr->Zvel >> 2;
 	smoke->Friction = 2;
-	smoke->Flags = 16;
+	smoke->Flags = SF_ROTATE;
 	smoke->RotAng = GetRandomControl() & 0xFFF;
 	smoke->RotAdd = (GetRandomControl() & 0x7F) - 64;
 	smoke->Gravity = -16 - (GetRandomControl() & 0xF);
@@ -1217,7 +1217,7 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 		sptr->Yvel = 0;
 		sptr->Zvel = 0;
 
-		sptr->Flags = 16394;
+		sptr->Flags = SF_EMPTY2 | SF_DEF | SF_SCALE;
 		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
 		sptr->Scalar = 1;
 		sptr->MaxYvel = 0;
@@ -1269,7 +1269,7 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 		sptr->Zvel = (v * phd_cos(yrot)) >> W2V_SHIFT;
 
 		sptr->Friction = 3;
-		sptr->Flags = 16394;
+		sptr->Flags = SF_EMPTY2 | SF_DEF | SF_SCALE;
 		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
 		sptr->Scalar = 1;
 		sptr->Gravity = (GetRandomControl() & 0xF) + 8;
@@ -1311,7 +1311,7 @@ void TriggerFishtankSpray(long x, long y, long z, long c)
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 
 	sptr->Friction = 4;
-	sptr->Flags = 538;
+	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 	sptr->Scalar = 3;

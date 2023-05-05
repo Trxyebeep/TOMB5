@@ -274,7 +274,7 @@ void TriggerFanEffects(long* b, long y, short angle, long rate)
 	sptr->Yvel = short(rate * sptr->Yvel >> 7);
 	sptr->Zvel = short(rate * sptr->Zvel >> 7);
 	sptr->Gravity = 0;
-	sptr->Flags = 0;
+	sptr->Flags = SF_NONE;
 }
 
 void ControlRaisingCog(short item_number)
@@ -414,7 +414,7 @@ void ControlPortalDoor(short item_number)
 	sptr->Friction = 6;
 	sptr->Gravity = 0;
 	sptr->MaxYvel = 0;
-	sptr->Flags = 10;
+	sptr->Flags = SF_DEF | SF_SCALE;
 	sptr->Size = (GetRandomControl() & 3) + 8;
 	sptr->sSize = sptr->Size;
 	sptr->dSize = sptr->Size;

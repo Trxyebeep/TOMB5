@@ -618,7 +618,7 @@ void TriggerLaraSparks(long smoke)
 	sptr->Friction = 51;
 	sptr->MaxYvel = 0;
 	sptr->Gravity = 0;
-	sptr->Flags = 0;
+	sptr->Flags = SF_NONE;
 
 	if (smoke)
 		TriggerFireFlame(pos.x, pos.y, pos.z, -1, 254);
@@ -655,7 +655,7 @@ void TriggerCableSparks(long x, long z, short item_number, long node, long flare
 	sptr->sLife = n;
 	sptr->FxObj = (uchar)item_number;
 	sptr->TransType = 2;
-	sptr->Flags = 4234;
+	sptr->Flags = SF_ATTACHEDNODE | SF_ITEM | SF_DEF | SF_SCALE;
 	sptr->NodeNumber = (uchar)node;
 	sptr->x = x;
 	sptr->y = 0;

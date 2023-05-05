@@ -116,7 +116,7 @@ void TriggerGuardianSparks(GAME_VECTOR* pos, long size, long rgb, long power)
 		sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) << power;
 		
 		sptr->Gravity = rnd >> 7 & 0x1F;
-		sptr->Flags = 0;
+		sptr->Flags = SF_NONE;
 		sptr->MaxYvel = 0;
 		sptr->Friction = 34 << power;
 	}

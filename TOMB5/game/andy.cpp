@@ -32,10 +32,10 @@ void TriggerRopeFlame(PHD_VECTOR* pos, long size)
 	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Friction = 5;
-	sptr->Flags = 538;
+	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
 
 	if (!(GetRandomControl() & 3))
-		sptr->Flags |= 32;
+		sptr->Flags |= SF_NOKILL;
 
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 
@@ -195,13 +195,13 @@ void ControlLavaEffect(short item_number)
 
 	if (GetRandomControl() & 3)
 	{
-		sptr->Flags = 538;
+		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->Scalar = 3;
 		sptr->Gravity = (GetRandomControl() & 0x3F) + 32;
 	}
 	else
 	{
-		sptr->Flags = 26;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
 		sptr->Scalar = 1;
 		sptr->Gravity = (GetRandomControl() & 0xF) + 64;
@@ -243,7 +243,7 @@ void TriggerCoinGlow(short item_number)
 	sptr->Xvel = 0;
 	sptr->Yvel = 0;
 	sptr->Zvel = 0;
-	sptr->Flags = 42;
+	sptr->Flags = SF_NOKILL | SF_DEF | SF_SCALE;
 	sptr->Scalar = 4;
 	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 11;
 	sptr->MaxYvel = 0;

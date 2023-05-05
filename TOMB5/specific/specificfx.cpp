@@ -1772,7 +1772,7 @@ void S_DrawSparks()
 		if (!sptr->On)
 			continue;
 
-		if (sptr->Flags & 0x40)
+		if (sptr->Flags & SF_FX)
 		{
 			fx = &effects[sptr->FxObj];
 			x = sptr->x + fx->pos.x_pos;
@@ -1784,14 +1784,14 @@ void S_DrawSparks()
 				sptr->x = x;
 				sptr->y = y;
 				sptr->z = z;
-				sptr->Flags &= ~0x40;
+				sptr->Flags &= ~SF_FX;
 			}
 		}
-		else if (sptr->Flags & 0x80)
+		else if (sptr->Flags & SF_ITEM)
 		{
 			item = &items[sptr->FxObj];
 
-			if (sptr->Flags & 0x1000)
+			if (sptr->Flags & SF_ATTACHEDNODE)
 			{
 				if (NodeOffsets[sptr->NodeNumber].GotIt)
 				{
@@ -1825,7 +1825,7 @@ void S_DrawSparks()
 					sptr->x = x;
 					sptr->y = y;
 					sptr->z = z;
-					sptr->Flags &= ~0x1080;
+					sptr->Flags &= ~(SF_ATTACHEDNODE | SF_ITEM);
 				}
 			}
 			else
@@ -1866,9 +1866,9 @@ void S_DrawSparks()
 		if (p[0] < f_left || p[0] > f_right || p[1] < f_top || p[1] > f_bottom)
 			continue;
 
-		if (sptr->Flags & 8)
+		if (sptr->Flags & SF_DEF)
 		{
-			if (sptr->Flags & 2)
+			if (sptr->Flags & SF_SCALE)
 				smallest_size = 4;
 
 			S_DrawDrawSparksNEW(sptr, smallest_size, p);
@@ -1941,102 +1941,99 @@ void S_DrawDrawSparksNEW(SPARKS* sptr, long smallest_size, float* xyz)
 	float fs1, fs2, sin, cos, sinf1, sinf2, cosf1, cosf2;
 	long s, scale, s1, s2;
 
-	if (!(sptr->Flags & 8))
-		return;
-
 	if (xyz[2] <= f_mznear || xyz[2] >= f_mzfar)
 	{
 		if (xyz[2] >= f_mzfar)
 			sptr->On = 0;
+
+		return;
+	}
+
+	if (sptr->Flags & SF_SCALE)
+	{
+		scale = sptr->Size << sptr->Scalar;
+		s = ((phd_persp * sptr->Size) << sptr->Scalar) / (long)xyz[2];
+		s1 = s;
+		s2 = s;
+
+		if (s > scale)
+			s1 = scale;
+		else if (s < smallest_size)
+			s1 = smallest_size;
+
+		if (s > scale)
+			s1 = scale;
+		else if (s < smallest_size)
+			s2 = smallest_size;
 	}
 	else
 	{
-		if (sptr->Flags & 2)
+		s1 = sptr->Size;
+		s2 = s1;
+	}
+
+	fs1 = (float)s1;
+	fs2 = (float)s2;
+
+	if ((fs1 * 2) + xyz[0] >= f_left && xyz[0] - (fs1 * 2) < f_right && (fs2 * 2) + xyz[1] >= f_top && xyz[1] - (fs2 * 2) < f_bottom)
+	{
+		fs1 *= 0.5F;
+		fs2 *= 0.5F;
+
+		if (sptr->Flags & SF_ROTATE)
 		{
-			scale = sptr->Size << sptr->Scalar;
-			s = ((phd_persp * sptr->Size) << sptr->Scalar) / (long)xyz[2];
-			s1 = s;
-			s2 = s;
-
-			if (s > scale)
-				s1 = scale;
-			else if (s < smallest_size)
-				s1 = smallest_size;
-
-			if (s > scale)
-				s1 = scale;
-			else if (s < smallest_size)
-				s2 = smallest_size;
+			sin = fSin(sptr->RotAng << 1);
+			cos = fCos(sptr->RotAng << 1);
+			sinf1 = sin * fs1;
+			sinf2 = sin * fs2;
+			cosf1 = cos * fs1;
+			cosf2 = cos * fs2;
+			x0 = cosf2 - sinf1 + xyz[0];
+			y0 = xyz[1] - cosf1 - sinf2;
+			x1 = sinf1 + cosf2 + xyz[0];
+			y1 = cosf1 + xyz[1] - sinf2;
+			x2 = sinf1 - cosf2 + xyz[0];
+			y2 = cosf1 + xyz[1] + sinf2;
+			x3 = -sinf1 - cosf2 + xyz[0];
+			y3 = xyz[1] - cosf1 + sinf2;
+			aSetXY4(v, x0, y0, x1, y1, x2, y2, x3, y3, xyz[2], clipflags);
 		}
 		else
 		{
-			s1 = sptr->Size;
-			s2 = s1;
+			x0 = xyz[0] - fs1;
+			x1 = fs1 + xyz[0];
+			y0 = xyz[1] - fs2;
+			y1 = fs2 + xyz[1];
+			aSetXY4(v, x0, y0, x1, y0, x1, y1, x0, y1, xyz[2], clipflags);
 		}
 
-		fs1 = (float)s1;
-		fs2 = (float)s2;
+		sprite = &spriteinfo[sptr->Def];
+		v[0].color = RGBA(sptr->R, sptr->G, sptr->B, 0xFF);
+		v[1].color = v[0].color;
+		v[2].color = v[0].color;
+		v[3].color = v[0].color;
+		v[0].specular = 0xFF000000;
+		v[1].specular = 0xFF000000;
+		v[2].specular = 0xFF000000;
+		v[3].specular = 0xFF000000;
 
-		if ((fs1 * 2) + xyz[0] >= f_left && xyz[0] - (fs1 * 2) < f_right && (fs2 * 2) + xyz[1] >= f_top && xyz[1] - (fs2 * 2) < f_bottom)
-		{
-			fs1 *= 0.5F;
-			fs2 *= 0.5F;
+		if (sptr->TransType == 3)
+			tex.drawtype = 5;
+		else if (sptr->TransType)
+			tex.drawtype = 2;
+		else
+			tex.drawtype = 1;
 
-			if (sptr->Flags & 0x10)
-			{
-				sin = fSin(sptr->RotAng << 1);
-				cos = fCos(sptr->RotAng << 1);
-				sinf1 = sin * fs1;
-				sinf2 = sin * fs2;
-				cosf1 = cos * fs1;
-				cosf2 = cos * fs2;
-				x0 = cosf2 - sinf1 + xyz[0];
-				y0 = xyz[1] - cosf1 - sinf2;
-				x1 = sinf1 + cosf2 + xyz[0];
-				y1 = cosf1 + xyz[1] - sinf2;
-				x2 = sinf1 - cosf2 + xyz[0];
-				y2 = cosf1 + xyz[1] + sinf2;
-				x3 = -sinf1 - cosf2 + xyz[0];
-				y3 = xyz[1] - cosf1 + sinf2;
-				aSetXY4(v, x0, y0, x1, y1, x2, y2, x3, y3, xyz[2], clipflags);
-			}
-			else
-			{
-				x0 = xyz[0] - fs1;
-				x1 = fs1 + xyz[0];
-				y0 = xyz[1] - fs2;
-				y1 = fs2 + xyz[1];
-				aSetXY4(v, x0, y0, x1, y0, x1, y1, x0, y1, xyz[2], clipflags);
-			}
-
-			sprite = &spriteinfo[sptr->Def];
-			v[0].color = RGBA(sptr->R, sptr->G, sptr->B, 0xFF);
-			v[1].color = v[0].color;
-			v[2].color = v[0].color;
-			v[3].color = v[0].color;
-			v[0].specular = 0xFF000000;
-			v[1].specular = 0xFF000000;
-			v[2].specular = 0xFF000000;
-			v[3].specular = 0xFF000000;
-
-			if (sptr->TransType == 3)
-				tex.drawtype = 5;
-			else if (sptr->TransType)
-				tex.drawtype = 2;
-			else
-				tex.drawtype = 1;
-
-			tex.tpage = sprite->tpage;
-			tex.u1 = sprite->x1;
-			tex.v1 = sprite->y1;
-			tex.u2 = sprite->x2;
-			tex.v2 = sprite->y1;
-			tex.u3 = sprite->x2;
-			tex.v3 = sprite->y2;
-			tex.u4 = sprite->x1;
-			tex.v4 = sprite->y2;
-			AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
-		}
+		tex.tpage = sprite->tpage;
+		tex.u1 = sprite->x1;
+		tex.v1 = sprite->y1;
+		tex.u2 = sprite->x2;
+		tex.v2 = sprite->y1;
+		tex.u3 = sprite->x2;
+		tex.v3 = sprite->y2;
+		tex.u4 = sprite->x1;
+		tex.v4 = sprite->y2;
+		AddQuadSorted(v, 0, 1, 2, 3, &tex, 0);
 	}
 }
 
@@ -2101,7 +2098,7 @@ void S_DrawFireSparks(long size, long life)
 		if (XY[0] + newSize < phd_winxmin || XY[0] - newSize >= phd_winxmax || XY[1] + newSize < phd_winymin || XY[1] - newSize >= phd_winymax)
 			continue;
 
-		if (sptr->Flags & 0x10)
+		if (sptr->Flags & SF_ROTATE)
 		{
 			ang = sptr->RotAng << 1;
 			s = rcossin_tbl[ang];
@@ -2260,7 +2257,7 @@ void S_DrawSmokeSparks()
 			continue;
 		}
 
-		if (sptr->Flags & 0x10)
+		if (sptr->Flags & SF_ROTATE)
 		{
 			ang = sptr->RotAng << 1;
 			s = rcossin_tbl[ang];
