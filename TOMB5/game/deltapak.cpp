@@ -2431,7 +2431,7 @@ void TriggerDelSmoke(long x, long y, long z, long sizeme)
 	sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
 	sptr->Friction = 2;
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
 	sptr->Scalar = 2;
@@ -2466,7 +2466,7 @@ void TriggerDelBrownSmoke(long x, long y, long z)
 	sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
 	sptr->Friction = 2;
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
 	sptr->Scalar = 2;
@@ -2502,7 +2502,7 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Friction = 51;
 	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
-	sptr->Flags = short(SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE | SF_EMPTY3);
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->MaxYvel = -16 - (GetRandomControl() & 7);
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0x1F) - 16;
@@ -2529,7 +2529,7 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->z = (GetRandomControl() & 0x3F) + pos->z - 32;
 	sptr->Friction = 51;
 	sptr->MaxYvel = 0;
-	sptr->Flags = short(SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE | SF_EMPTY3);
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->Scalar = 2;
 	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
 	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;

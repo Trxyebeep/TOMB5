@@ -43,7 +43,7 @@ void TriggerTorpedoSteam(PHD_VECTOR* pos1, PHD_VECTOR* pos2, long chaff)
 	sptr->Gravity = -4 - (GetRandomControl() & 3);
 	sptr->MaxYvel = 0;
 	sptr->Scalar = uchar(2 - chaff);
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 	sptr->Size = (GetRandomControl() & 0xF) + 32;
@@ -68,7 +68,7 @@ void TriggerMinisubLight(short item_number)
 	sptr->sLife = 2;
 	sptr->TransType = 2;
 	sptr->FadeToBlack = 0;
-	sptr->Flags = SF_EMPTY2 | SF_ATTACHEDNODE | SF_ITEM | SF_NOKILL | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ATTACHEDNODE | SF_ITEM | SF_NOKILL | SF_DEF | SF_SCALE;
 	sptr->FxObj = (uchar)item_number;
 	sptr->NodeNumber = 7;
 	sptr->x = 0;

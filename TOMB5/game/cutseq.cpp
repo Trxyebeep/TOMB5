@@ -244,7 +244,7 @@ void _special3_control()
 		sptr->Zvel = short(f * phd_cos(a2) >> W2V_SHIFT);
 
 		sptr->Friction = 0;
-		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0x7F) - 64;
 		sptr->MaxYvel = 0;
@@ -370,7 +370,7 @@ void FlamingHell(PHD_VECTOR* pos)
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Friction = 51;
 	sptr->MaxYvel = 0;
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->Scalar = 2;
 	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
 	sptr->dSize = uchar((GetRandomControl() & 0xF) + (r >> 6) + 16);

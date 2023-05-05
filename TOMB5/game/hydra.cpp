@@ -307,7 +307,7 @@ void TriggerHydraMissileFlame(PHD_VECTOR* pos, long xv, long yv, long zv)
 	sptr->Yvel = (short)yv;
 	sptr->Zvel = (short)zv;
 	sptr->Friction = 68;
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 
 	if (GetRandomControl() & 1)
@@ -355,7 +355,7 @@ void TriggerHydraPowerupFlames(short item_number, long shade)
 	sptr->Yvel = 0;
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Friction = 4;
-	sptr->Flags = SF_ATTACHEDNODE | SF_EMPTY | SF_ITEM | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ATTACHEDNODE | SF_ITEM | SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->FxObj = (uchar)item_number;
 	sptr->NodeNumber = 5;
 	sptr->RotAng = GetRandomControl() & 0xFFF;

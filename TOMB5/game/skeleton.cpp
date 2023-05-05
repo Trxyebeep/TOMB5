@@ -144,7 +144,7 @@ void TriggerSkeletonFire(ITEM_INFO* item)
 	sptr->Yvel = 0;
 	sptr->Zvel = (GetRandomControl() & 0x1FF) - 256;
 	sptr->Friction = 4;
-	sptr->Flags = SF_ATTACHEDNODE | SF_EMPTY | SF_ITEM | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ATTACHEDNODE | SF_ITEM | SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->NodeNumber = 8;
 	sptr->FxObj = item - items;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
@@ -199,7 +199,7 @@ void TriggerFontFire(ITEM_INFO* item, long num, long loop)
 		sptr->Yvel = 0;
 		sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 		sptr->Friction = 3;
-		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 		sptr->MaxYvel = 0;

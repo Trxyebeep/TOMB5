@@ -474,7 +474,7 @@ void TriggerTwogunPlasma(PHD_VECTOR* pos, short* angles, long life)
 	sptr->Zvel = short((size * phd_cos(ang)) >> W2V_SHIFT);
 
 	sptr->Friction = 0;
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0x7F) - 64;
 	sptr->Gravity = (GetRandomControl() & 0x1F) + 32;

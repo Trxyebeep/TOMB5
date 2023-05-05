@@ -70,13 +70,11 @@ enum spark_flags
 	SF_FX =				0x40,	//spark is attached to an effect
 	SF_ITEM =			0x80,	//spark is attached to an item
 	SF_OUTSIDE =		0x100,	//spark is affected by wind
-	SF_EMPTY =			0x200,
+	SF_UNUSED2 =		0x200,
 	SF_DAMAGE =			0x400,	//damages lara at contact
 	SF_UNWATER =		0x800,	//for underwater explosions to create bubbles etc.
 	SF_ATTACHEDNODE =	0x1000,	//spark is attached to an item node, uses NodeOffsets
-	SF_GREEN =			0x2000,	//turns the spark into a green-ish blue (for explosions only)
-	SF_EMPTY2 =			0x4000,
-	SF_EMPTY3 =			0x8000
+	SF_GREEN =			0x2000	//turns the spark into a green-ish blue (for explosions only)
 };
 
 enum target_type

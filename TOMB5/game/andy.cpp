@@ -32,7 +32,7 @@ void TriggerRopeFlame(PHD_VECTOR* pos, long size)
 	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Friction = 5;
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 
 	if (!(GetRandomControl() & 3))
 		sptr->Flags |= SF_NOKILL;
@@ -195,7 +195,7 @@ void ControlLavaEffect(short item_number)
 
 	if (GetRandomControl() & 3)
 	{
-		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->Scalar = 3;
 		sptr->Gravity = (GetRandomControl() & 0x3F) + 32;
 	}

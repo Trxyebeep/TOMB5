@@ -125,7 +125,7 @@ void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit)
 
 	if (GetRandomControl() & 1)
 	{
-		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 
 		if (GetRandomControl() & 1)
@@ -134,7 +134,7 @@ void TriggerDartSmoke(long x, long y, long z, long xv, long zv, long hit)
 			sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
 	}
 	else
-		sptr->Flags = SF_EMPTY | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_DEF | SF_SCALE;
 
 	sptr->Scalar = 1;
 	rand = (GetRandomControl() & 0x3F) + 72;
@@ -278,10 +278,10 @@ void ControlSmokeEmitter(short item_number)
 				sptr->Zvel = (short)((size * phd_cos(item->pos.y_rot + 0x5000)) >> W2V_SHIFT);
 			}
 
-			sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+			sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 
 			if (!(GlobalCounter & 3) && !(item->trigger_flags & 4))
-				sptr->Flags = SF_DAMAGE | SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+				sptr->Flags = SF_DAMAGE | SF_ROTATE | SF_DEF | SF_SCALE;
 
 			sptr->RotAng = GetRandomControl() & 0xFFF;
 
@@ -398,11 +398,11 @@ void ControlSmokeEmitter(short item_number)
 			sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 		}
 
-		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->Yvel = -16 - (GetRandomControl() & 0xF);
 
 		if (room[item->room_number].flags & ROOM_OUTSIDE)
-			sptr->Flags = SF_EMPTY | SF_OUTSIDE | SF_ROTATE | SF_DEF | SF_SCALE;
+			sptr->Flags = SF_OUTSIDE | SF_ROTATE | SF_DEF | SF_SCALE;
 
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 
@@ -664,7 +664,7 @@ void TriggerExplosionSmokeEnd(long x, long y, long z, long uw)
 	else
 		sptr->Friction = 6;
 
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 
 	if (GetRandomControl() & 1)
@@ -874,7 +874,7 @@ void TriggerWaterfallMist(long x, long y, long z, long ang)
 		sptr->Zvel = 0;
 
 		sptr->Friction = 0;
-		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0x1F) - 16;
 		sptr->Scalar = 3;
@@ -1292,7 +1292,7 @@ void TriggerExplosionSmoke(long x, long y, long z, long uw)
 	else
 		sptr->Friction = 6;
 
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->Scalar = 1;
 	sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
@@ -1414,17 +1414,17 @@ void TriggerExplosionSparks(long x, long y, long z, long extras, long dynamic, l
 		if (GetRandomControl() & 1)
 		{
 			if (uw == 1)
-				sptr->Flags = SF_UNWATER | SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+				sptr->Flags = SF_UNWATER | SF_ROTATE | SF_DEF | SF_SCALE;
 			else
-				sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+				sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 
 			sptr->RotAng = GetRandomControl() & 0xFFF;
 			sptr->RotAdd = (GetRandomControl() & 0xFF) + 128;
 		}
 		else if (uw == 1)
-			sptr->Flags = SF_UNWATER | SF_EMPTY | SF_DEF | SF_SCALE;
+			sptr->Flags = SF_UNWATER | SF_DEF | SF_SCALE;
 		else
-			sptr->Flags = SF_EMPTY | SF_DEF | SF_SCALE;
+			sptr->Flags = SF_DEF | SF_SCALE;
 
 		sptr->Scalar = 3;
 		sptr->Gravity = 0;
@@ -1602,7 +1602,7 @@ void TriggerFireFlame(long x, long y, long z, long body_part, long type)
 	if (body_part == -1)
 	{
 		sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
-		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->MaxYvel = -16 - (GetRandomControl() & 7);
 
 		if (type == 254)
@@ -1610,7 +1610,7 @@ void TriggerFireFlame(long x, long y, long z, long body_part, long type)
 	}
 	else
 	{
-		sptr->Flags = SF_EMPTY | SF_FX | SF_ROTATE | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_FX | SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->FxObj = (uchar)body_part;
 		sptr->Gravity = -32 - (GetRandomControl() & 0x3F);
 		sptr->MaxYvel = -24 - (GetRandomControl() & 7);
@@ -1687,10 +1687,10 @@ void TriggerSuperJetFlame(ITEM_INFO* item, long yvel, long deadly)
 	sptr->Friction = 51;
 	sptr->MaxYvel = 0;
 
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 
 	if (deadly)
-		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE | SF_FIRE;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE | SF_FIRE;
 
 	sptr->Scalar = 2;
 	sptr->dSize = uchar((GetRandomControl() & 0xF) + (dy >> 6) + 16);

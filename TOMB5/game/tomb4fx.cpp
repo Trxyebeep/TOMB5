@@ -1070,7 +1070,7 @@ void TriggerShockwaveHitEffect(long x, long y, long z, long rgb, short dir, long
 	sptr->Yvel = -512 - (GetRandomControl() & 0x1FF);
 	sptr->Zvel = (short)zvel;
 	sptr->Friction = 3;
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 
 	if (GetRandomControl() & 1)

@@ -629,7 +629,7 @@ void ControlGasCloud(short item_number)
 		sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	}
 
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->MaxYvel = 0;
 	sptr->Gravity = 0;
@@ -689,7 +689,7 @@ void ControlGasCloud(short item_number)
 			sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 		}
 
-		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 		sptr->MaxYvel = 0;
@@ -1072,7 +1072,7 @@ void TriggerSteelDoorSmoke(short angle, short nPos, ITEM_INFO* item)
 		sptr->Zvel = short((v * phd_cos(angle)) >> 10);
 
 		sptr->Friction = 4;
-		sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 		sptr->Gravity = -8 - (GetRandomControl() & 7);
@@ -1114,7 +1114,7 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 	sptr->Yvel = 0;
 	sptr->Zvel = 0;
 
-	sptr->Flags = SF_EMPTY2 | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_DEF | SF_SCALE;
 	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
 	sptr->Scalar = 0;
 	sptr->MaxYvel = 0;
@@ -1217,7 +1217,7 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 		sptr->Yvel = 0;
 		sptr->Zvel = 0;
 
-		sptr->Flags = SF_EMPTY2 | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_DEF | SF_SCALE;
 		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
 		sptr->Scalar = 1;
 		sptr->MaxYvel = 0;
@@ -1269,7 +1269,7 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 		sptr->Zvel = (v * phd_cos(yrot)) >> W2V_SHIFT;
 
 		sptr->Friction = 3;
-		sptr->Flags = SF_EMPTY2 | SF_DEF | SF_SCALE;
+		sptr->Flags = SF_DEF | SF_SCALE;
 		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
 		sptr->Scalar = 1;
 		sptr->Gravity = (GetRandomControl() & 0xF) + 8;
@@ -1311,7 +1311,7 @@ void TriggerFishtankSpray(long x, long y, long z, long c)
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 
 	sptr->Friction = 4;
-	sptr->Flags = SF_EMPTY | SF_ROTATE | SF_DEF | SF_SCALE;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 	sptr->Scalar = 3;
