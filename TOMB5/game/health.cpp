@@ -18,11 +18,12 @@
 #include "../specific/drawbars.h"
 
 DISPLAYPU pickups[8];
-short PickupX;
+long PickupX;
 short CurrentPickup;
 
 long health_bar_timer = 0;
 
+static long FullPickupX;
 static short PickupVel;
 
 long FlashIt()
@@ -171,7 +172,8 @@ void InitialisePickUpDisplay()
 	for (int i = 0; i < 8; i++)
 		pickups[i].life = -1;
 
-	PickupX = 128;
+	PickupX = GetFixedScale(128);
+	FullPickupX = PickupX;
 	PickupVel = 0;
 	CurrentPickup = 0;
 }
@@ -192,9 +194,9 @@ void DrawPickups(long timed)
 	}
 	else if (!pu->life)
 	{
-		if (PickupX < 128)
+		if (PickupX < FullPickupX)
 		{
-			if (PickupVel < 16)
+			if (PickupVel < FullPickupX >> 3)
 				PickupVel++;
 
 			PickupX += PickupVel;
@@ -209,20 +211,15 @@ void DrawPickups(long timed)
 	{
 		for (lp = 0; lp < 8; lp++)
 		{
-			if (pickups[(CurrentPickup + lp) % 8].life > 0)
+			if (pickups[CurrentPickup].life > 0)
 				break;
+
+			CurrentPickup = (CurrentPickup + 1) & 7;
 		}
 
 		if (lp == 8)
-		{
 			CurrentPickup = 0;
-			return;
-		}
-
-		CurrentPickup = (CurrentPickup + lp) % 8;
 	}
-
-	S_DrawPickup(pu->object_number);
 }
 
 void AddDisplayPickup(short object_number)
