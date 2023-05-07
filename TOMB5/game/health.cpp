@@ -195,10 +195,9 @@ void DrawPickups(long timed)
 		if (PickupX < 128)
 		{
 			if (PickupVel < 16)
-			{
 				PickupVel++;
-				PickupX += PickupVel;
-			}
+
+			PickupX += PickupVel;
 		}
 		else
 		{
