@@ -119,7 +119,7 @@ static short optmessages[11] =
 
 static uchar wanky_secrets_table[18] = { 0, 3, 3, 3, 3, 3, 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
 
-static ushort options_table[NUM_INVOBJ - 1] =
+static ushort options_table[NUM_INVOBJ] =
 {
 	OPT_EQUIP | OPT_COMBINE | OPT_UZI,			//INV_UZI_ITEM
 	OPT_EQUIP | OPT_COMBINE | OPT_PISTOLS,		//INV_PISTOLS_ITEM
@@ -220,6 +220,7 @@ static ushort options_table[NUM_INVOBJ - 1] =
 	OPT_USE,									//INV_CROSSBOW_AMMO1_ITEM
 	OPT_USE | OPT_COMBINE,						//INV_CLOTH
 	OPT_USE | OPT_COMBINE,						//INV_BOTTLE
+	0,											//INV_PUZZLE_HOLE8
 };
 
 #pragma warning(push)
@@ -235,7 +236,7 @@ INVOBJ inventry_objects_list[NUM_INVOBJ] =
 	{REVOLVER_ITEM, 0, 0x320, 0x4000, 0x2AAA, 0x3BC2, 2, TXT_Revolver_LaserSight, 7},
 	{CROSSBOW_AMMO2_ITEM, 0, 0x44C, 0x4000, -0x1000, 0, 2, TXT_GRAP2, -1},
 	{CROSSBOW_AMMO2_ITEM, 0, 0x44C, 0x4000, -0x1000, 0, 2, TXT_GRAP2, -1},
-	{HK_ITEM, 0, 0x320, 0, 0xC000, 0, 2, TXT_HKSTRING0, 1},
+	{HK_ITEM, 0, 0x320, 0, 0xC000, 0, 2, TXT_HKSTRING0, -1},
 	{HK_ITEM, 0, 0x320, 0, 0xC000, 0, 2, TXT_HKSTRING1, -1},
 	{SHOTGUN_AMMO1_ITEM, 0, 0x1F4, 0x4000, 0, 0, 2, TXT_Shotgun_Normal_Ammo, -1},
 	{SHOTGUN_AMMO2_ITEM, 0, 0x1F4, 0x4000, 0, 0, 2, TXT_Shotgun_Wideshot_Ammo, -1},
@@ -373,7 +374,7 @@ long S_CallInventory2()
 {
 	FLOOR_INFO* floor;
 	long return_value, val, flag;
-	short room_number;
+	short room_number, item;
 
 	if (gfCurrentLevel >= LVL5_BASE && gfCurrentLevel <= LVL5_SINKING_SUBMARINE)
 	{
@@ -390,30 +391,28 @@ long S_CallInventory2()
 
 	if (gfCurrentLevel >= LVL5_THIRTEENTH_FLOOR && gfCurrentLevel <= LVL5_RED_ALERT)
 	{
-		inventry_objects_list[INV_BINOCULARS_ITEM].scale1 = 0x384;
+		inventry_objects_list[INV_BINOCULARS_ITEM].scale1 = 900;
 		inventry_objects_list[INV_BINOCULARS_ITEM].yrot = -0x8000;
 		inventry_objects_list[INV_BINOCULARS_ITEM].objname = TXT_Headset;
 	}
 	else
 	{
-		inventry_objects_list[INV_BINOCULARS_ITEM].scale1 = 0x2BC;
+		inventry_objects_list[INV_BINOCULARS_ITEM].scale1 = 700;
 		inventry_objects_list[INV_BINOCULARS_ITEM].yrot = 0x1000;
 		inventry_objects_list[INV_BINOCULARS_ITEM].objname = TXT_Binoculars;
 	}
 
-	inventry_objects_list[INV_HK_ITEM1].meshbits = -1;
-
 	if (gfCurrentLevel == LVL5_ESCAPE_WITH_THE_IRIS)
 	{
-		inventry_objects_list[INV_HK_ITEM1].xrot = 8448;
-		inventry_objects_list[INV_HK_ITEM1].yrot = 16384;
-		inventry_objects_list[INV_HK_ITEM1].zrot = 16384;
+		inventry_objects_list[INV_HK_ITEM1].xrot = 0x2100;
+		inventry_objects_list[INV_HK_ITEM1].yrot = 0x4000;
+		inventry_objects_list[INV_HK_ITEM1].zrot = 0x4000;
 		inventry_objects_list[INV_HK_ITEM1].flags = 10;
 		inventry_objects_list[INV_HK_ITEM1].yoff = -40;
 	}
 	else
 	{
-		inventry_objects_list[INV_HK_ITEM1].xrot = -16384;
+		inventry_objects_list[INV_HK_ITEM1].xrot = -0x4000;
 		inventry_objects_list[INV_HK_ITEM1].yrot = 0;
 		inventry_objects_list[INV_HK_ITEM1].zrot = 0;
 		inventry_objects_list[INV_HK_ITEM1].flags = 2;
@@ -432,11 +431,11 @@ long S_CallInventory2()
 	InventoryActive = 1;
 	init_new_inventry();
 	camera.number_frames = 2;
+	return_value = 0;
+	val = 0;
 
-	while (!reset_flag)
+	while (!reset_flag && !val)
 	{
-		val = 0;
-
 		OBJLIST_SPACING = phd_centerx >> 1;
 		S_InitialisePolyList();
 		SetDebounce = 1;
@@ -466,12 +465,12 @@ long S_CallInventory2()
 
 		do_debounced_joystick_poo();
 
-		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
-			keymap[DIK_G] && keymap[DIK_U] && keymap[DIK_N] && keymap[DIK_S])//GUNS
+		item = rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem;
+
+		if (item == INV_COMPASS_ITEM && keymap[DIK_G] && keymap[DIK_U] && keymap[DIK_N] && keymap[DIK_S])//GUNS
 			dels_give_lara_guns_cheat();
 
-		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
-			keymap[DIK_B] && keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_S])//BITS
+		if (item == INV_COMPASS_ITEM && keymap[DIK_B] && keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_S])//BITS
 		{
 			savegame.CampaignSecrets[0] = 9;
 			savegame.CampaignSecrets[1] = 9;
@@ -479,23 +478,18 @@ long S_CallInventory2()
 			savegame.CampaignSecrets[3] = 9;
 		}
 
-#ifndef _DEBUG
-		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
-			keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_E] && keymap[DIK_M])	//ITEM
+		if (item == INV_COMPASS_ITEM && keymap[DIK_I] && keymap[DIK_T] && keymap[DIK_E] && keymap[DIK_M])	//ITEM
 			dels_give_lara_items_cheat();
 
-		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
-			keymap[DIK_S] && keymap[DIK_K] && keymap[DIK_I] && keymap[DIK_P])	//SKIP
+		if (item == INV_COMPASS_ITEM && keymap[DIK_S] && keymap[DIK_K] && keymap[DIK_I] && keymap[DIK_P])	//SKIP
 		{
 			gfLevelComplete = gfCurrentLevel + 1;
 			SCNoDrawLara = 0;
 			bDisableLaraControl = 0;
 		}
 
-		if (rings[RING_INVENTORY]->current_object_list[rings[RING_INVENTORY]->curobjinlist].invitem == INV_COMPASS_ITEM &&
-			keymap[DIK_H] && keymap[DIK_E] && keymap[DIK_A] && keymap[DIK_L])	//heal
+		if (item == INV_COMPASS_ITEM && keymap[DIK_H] && keymap[DIK_E] && keymap[DIK_A] && keymap[DIK_L])	//heal
 			lara_item->hit_points = 1000;
-#endif
 
 		if (GLOBAL_invkeypadmode)
 			do_keypad_mode();
@@ -551,15 +545,12 @@ long S_CallInventory2()
 					break;
 			}
 
-			friggrimmer2 = 1;
 			friggrimmer = 1;
-			deselect_debounce = 0;
+			friggrimmer2 = 1;
 			go_deselect = 0;
+			deselect_debounce = 0;
 			loading_or_saving = 0;
 		}
-
-		if (val)
-			break;
 	}
 
 	InitialisePickUpDisplay();
@@ -1525,7 +1516,7 @@ void handle_inventry_menu()
 
 	for (int i = 0; i < 3; i++)
 	{
-		current_options[i].type = 0;
+		current_options[i].type = ITYPE_EMPTY;
 		current_options[i].text = 0;
 	}
 
@@ -1535,49 +1526,49 @@ void handle_inventry_menu()
 	{
 		if (opts & OPT_LOAD)
 		{
-			current_options[n].type = 9;
+			current_options[n].type = ITYPE_LOAD;
 			current_options[n++].text = SCRIPT_TEXT(optmessages[6]);
 		}
 
 		if (opts & OPT_SAVE)
 		{
-			current_options[n].type = 10;
+			current_options[n].type = ITYPE_SAVE;
 			current_options[n++].text = SCRIPT_TEXT(optmessages[7]);
 		}
 
 		if (opts & OPT_EXAMINE)
 		{
-			current_options[n].type = 11;
+			current_options[n].type = ITYPE_EXAMINE;
 			current_options[n++].text = SCRIPT_TEXT(optmessages[8]);
 		}
 
 		if (opts & OPT_STATS)
 		{
-			current_options[n].type = 12;
+			current_options[n].type = ITYPE_STATS;
 			current_options[n++].text = SCRIPT_TEXT(optmessages[9]);
 		}
 
 		if (opts & OPT_USE)
 		{
-			current_options[n].type = 1;
+			current_options[n].type = ITYPE_USE;
 			current_options[n++].text = SCRIPT_TEXT(optmessages[0]);
 		}
 
 		if (opts & OPT_EQUIP)
 		{
-			current_options[n].type = 5;
+			current_options[n].type = ITYPE_EQUIP;
 			current_options[n++].text = SCRIPT_TEXT(optmessages[4]);
 		}
 
 		if (opts & (OPT_SHOTGUN | OPT_CROSSBOW))
 		{
-			current_options[n].type = 2;
+			current_options[n].type = ITYPE_CHOOSEAMMO;
 			current_options[n++].text = SCRIPT_TEXT(optmessages[1]);
 		}
 
 		if (opts & OPT_HK)
 		{
-			current_options[n].type = 2;
+			current_options[n].type = ITYPE_CHOOSEAMMO;
 			current_options[n++].text = SCRIPT_TEXT(optmessages[10]);
 		}
 
@@ -1585,33 +1576,33 @@ void handle_inventry_menu()
 		{
 			if (is_item_currently_combinable((short)num))
 			{
-				current_options[n].type = 3;
+				current_options[n].type = ITYPE_COMBINE;
 				current_options[n++].text = SCRIPT_TEXT(optmessages[2]);
 			}
 		}
 
 		if (opts & OPT_UNUSED)
 		{
-			current_options[n].type = 3;
+			current_options[n].type = ITYPE_COMBINE;
 			current_options[n++].text = SCRIPT_TEXT(optmessages[2]);
 		}
 
 		if (opts & OPT_SEPARATE)
 		{
-			current_options[n].type = 4;
+			current_options[n].type = ITYPE_SEPERATE;
 			current_options[n++].text = SCRIPT_TEXT(optmessages[3]);
 		}
 	}
 	else
 	{
-		current_options[n].type = 6;
+		current_options[n].type = ITYPE_AMMO1;
 		current_options[n++].text = SCRIPT_TEXT(inventry_objects_list[ammo_object_list[0].invitem].objname);
-		current_options[n].type = 7;
+		current_options[n].type = ITYPE_AMMO2;
 		current_options[n++].text = SCRIPT_TEXT(inventry_objects_list[ammo_object_list[1].invitem].objname);
 
 		if (opts & OPT_HK)
 		{
-			current_options[n].type = 8;
+			current_options[n].type = ITYPE_AMMO3;
 			current_options[n++].text = SCRIPT_TEXT(inventry_objects_list[ammo_object_list[2].invitem].objname);
 		}
 
@@ -1663,12 +1654,12 @@ void handle_inventry_menu()
 
 		if (go_select)
 		{
-			if (current_options[current_selected_option].type != 5 && current_options[current_selected_option].type != 1)
+			if (current_options[current_selected_option].type != ITYPE_EQUIP && current_options[current_selected_option].type != ITYPE_USE)
 				SoundEffect(SFX_MENU_CHOOSE, 0, SFX_ALWAYS);
 
 			switch (current_options[current_selected_option].type)
 			{
-			case 2:
+			case ITYPE_CHOOSEAMMO:
 				rings[RING_INVENTORY]->ringactive = 0;
 				ammo_active = 1;
 				Stashedcurrent_selected_option = current_selected_option;
@@ -1679,31 +1670,31 @@ void handle_inventry_menu()
 				StashedCurrentGrenadeGunAmmoType = CurrentGrenadeGunAmmoType;
 				break;
 
-			case 9:
+			case ITYPE_LOAD:
 				loading_or_saving = 1;
 				break;
 
-			case 10:
+			case ITYPE_SAVE:
 				loading_or_saving = 2;
 				break;
 
-			case 11:
+			case ITYPE_EXAMINE:
 				examine_mode = 1;
 				break;
 
-			case 12:
+			case ITYPE_STATS:
 				stats_mode = 1;
 				break;
 
-			case 6:
-			case 7:
-			case 8:
+			case ITYPE_AMMO1:
+			case ITYPE_AMMO2:
+			case ITYPE_AMMO3:
 				ammo_active = 0;
 				rings[RING_INVENTORY]->ringactive = 1;
 				current_selected_option = 0;
 				break;
 
-			case 3:
+			case ITYPE_COMBINE:
 				construct_combine_object_list();
 				rings[RING_INVENTORY]->ringactive = 0;
 				rings[RING_AMMO]->ringactive = 1;
@@ -1712,13 +1703,13 @@ void handle_inventry_menu()
 				combine_ring_fade_dir = 1;
 				break;
 
-			case 4:
+			case ITYPE_SEPERATE:
 				seperate_type_flag = 1;
 				normal_ring_fade_dir = 2;
 				break;
 
-			case 5:
-			case 1:
+			case ITYPE_EQUIP:
+			case ITYPE_USE:
 				menu_active = 0;
 				use_the_bitch = 1;
 				break;
@@ -3087,6 +3078,7 @@ void dels_give_lara_guns_cheat()
 				lara.num_crossbow_ammo2 = 0;
 			}
 		}
+
 		if (objects[HK_ITEM].loaded)
 		{
 			lara.num_hk_ammo1 = -1;
