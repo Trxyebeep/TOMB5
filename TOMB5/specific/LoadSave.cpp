@@ -1446,29 +1446,29 @@ static const char* GetStupidText(long type)	//0: next, 1: both, 2: previous
 		if (!type)
 			strcpy(buf, "Ensuite \x1B");
 		else if (type == 1)
-			strcpy(buf, "\x19 Precedent / Ensuite \x1b");
+			strcpy(buf, "\x19 Précédent / Ensuite \x1b");
 		else
-			strcpy(buf, "\x19 Precedent");
+			strcpy(buf, "\x19 Précédent");
 
 		break;
 
 	case GERMAN:
 
 		if (!type)
-			strcpy(buf, "Zunachst \x1B");
+			strcpy(buf, "Weiter \x1B");
 		else if (type == 1)
-			strcpy(buf, "\x19 Vorhergehend / Zunachst \x1b");
+			strcpy(buf, "\x19 Zurück / Weiter \x1b");
 		else
-			strcpy(buf, "\x19 Vorhergehend");
+			strcpy(buf, "\x19 Zurück");
 
 		break;
 
 	case ITALIAN:
 
 		if (!type)
-			strcpy(buf, "Dopo \x1B");
+			strcpy(buf, "Prossimo \x1B");
 		else if (type == 1)
-			strcpy(buf, "\x19 Precedente / Dopo \x1b");
+			strcpy(buf, "\x19 Precedente / Prossimo \x1b");
 		else
 			strcpy(buf, "\x19 Precedente");
 
@@ -1477,9 +1477,9 @@ static const char* GetStupidText(long type)	//0: next, 1: both, 2: previous
 	case SPANISH:
 
 		if (!type)
-			strcpy(buf, "Despues \x1B");
+			strcpy(buf, "Siguiente \x1B");
 		else if (type == 1)
-			strcpy(buf, "\x19 Anterior / Despues \x1b");
+			strcpy(buf, "\x19 Anterior / Siguiente \x1b");
 		else
 			strcpy(buf, "\x19 Anterior");
 
