@@ -59,6 +59,7 @@
 - Heavily optimize and greatly reduce memory usage in effect drawing.
 - Move all matrix operations to floats.
 - Stop skipping title cutscenes.
+- Localize special features text.
 
 
 ## [3.2.0](https://github.com/Trxyebeep/TOMB5/tree/V3.2.0) (Feb. 4 2023)

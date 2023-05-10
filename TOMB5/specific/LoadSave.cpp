@@ -1435,6 +1435,71 @@ void CalculateNumSpecialFeatures()
 	}
 }
 
+static const char* GetStupidText(long type)	//0: next, 1: both, 2: previous
+{
+	static char buf[32];
+
+	switch (Gameflow->Language)
+	{
+	case FRENCH:
+
+		if (!type)
+			strcpy(buf, "Ensuite \x1B");
+		else if (type == 1)
+			strcpy(buf, "\x19 Precedent / Ensuite \x1b");
+		else
+			strcpy(buf, "\x19 Precedent");
+
+		break;
+
+	case GERMAN:
+
+		if (!type)
+			strcpy(buf, "Zunachst \x1B");
+		else if (type == 1)
+			strcpy(buf, "\x19 Vorhergehend / Zunachst \x1b");
+		else
+			strcpy(buf, "\x19 Vorhergehend");
+
+		break;
+
+	case ITALIAN:
+
+		if (!type)
+			strcpy(buf, "Dopo \x1B");
+		else if (type == 1)
+			strcpy(buf, "\x19 Precedente / Dopo \x1b");
+		else
+			strcpy(buf, "\x19 Precedente");
+
+		break;
+
+	case SPANISH:
+
+		if (!type)
+			strcpy(buf, "Despues \x1B");
+		else if (type == 1)
+			strcpy(buf, "\x19 Anterior / Despues \x1b");
+		else
+			strcpy(buf, "\x19 Anterior");
+
+		break;
+
+	default:
+
+		if (!type)
+			strcpy(buf, "Next \x1B");
+		else if (type == 1)
+			strcpy(buf, "\x19 Previous / Next \x1b");
+		else
+			strcpy(buf, "\x19 Previous");
+
+		break;
+	}
+
+	return buf;
+}
+
 void SpecialFeaturesDisplayScreens(long num)
 {
 	static long start[4] = { 0, 0, 0, 0 };
@@ -1467,11 +1532,11 @@ void SpecialFeaturesDisplayScreens(long num)
 		}
 
 		if (!pos)
-			PrintString(font_height, phd_winymax - font_height, 6, "Next \x1B", 0);
+			PrintString(font_height, phd_winymax - font_height, 6, GetStupidText(0), 0);
 		else if (pos < max)
-			PrintString(font_height, phd_winymax - font_height, 6, "\x19 Previous / Next \x1b", 0);
+			PrintString(font_height, phd_winymax - font_height, 6, GetStupidText(1), 0);
 		else
-			PrintString(font_height, phd_winymax - font_height, 6, "\x19 Previous", 0);
+			PrintString(font_height, phd_winymax - font_height, 6, GetStupidText(2), 0);
 
 		UpdatePulseColour();
 		S_OutputPolyList();
