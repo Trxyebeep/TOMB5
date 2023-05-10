@@ -217,11 +217,11 @@ static void S_DoTR4Bar(long x, long y, long width, long height, long pos, long c
 	y2 = y + height;
 	bar = width * pos / 100;
 
-	DrawColoredRect((float)x, (float)y, float(x + bar), float(y2), f_mznear - 6, c1, c1, c2, c2, &tex);
-	DrawColoredRect((float)x, float(y2), float(x + bar), float(y2 + height), f_mznear - 6, c2, c2, c1, c1, &tex);
+	DrawColoredRect((float)x, (float)y, float(x + bar), float(y2), f_mznear, c1, c1, c2, c2, &tex);
+	DrawColoredRect((float)x, float(y2), float(x + bar), float(y2 + height), f_mznear, c2, c2, c1, c1, &tex);
 
-	DrawColoredRect(float(x - p), float(y - p), float(xw + p), float(y2 + height + p), f_mznear - 3, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, &tex);
-	DrawColoredRect((float)x, (float)y, (float)xw, float(y2 + height), f_mznear - 4, 0, 0, 0, 0, &tex);
+	DrawColoredRect((float)x, (float)y, (float)xw, float(y2 + height), f_mznear + 1, 0, 0, 0, 0, &tex);
+	DrawColoredRect(float(x - p), float(y - p), float(xw + p), float(y2 + height + p), f_mznear + 2, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, &tex);
 }
 
 static void DoBar(long x, long y, long width, long height, long pos, long clr1, long clr2)
@@ -530,7 +530,7 @@ void DoSlider(long x, long y, long width, long height, long pos, long c1, long c
 	clipflags[2] = 0;
 	clipflags[3] = 0;
 
-	sx = (float)GetFixedScale(x);
+	sx = (float)x * (float)phd_winxmax / 640.0F;
 	sy = (float)y;
 	w = (float)GetFixedScale(width);
 	h = (float)GetFixedScale(height >> 1);
@@ -546,13 +546,13 @@ void DoSlider(long x, long y, long width, long height, long pos, long c1, long c
 	tex.v3 = V + 0.01F;
 	tex.u4 = 0;
 	tex.v4 = V + 0.01F;
-	DrawColoredRect(sx, sy, sx + w, sy + h, f_mznear, c1, c1, c2, c2, &tex);
-	DrawColoredRect(sx, sy + h, sx + w, sy + (h * 2), f_mznear, c2, c2, c1, c1, &tex);
+	DrawColoredRect(sx, sy, sx + w, sy + h, f_mznear + 2, c1, c1, c2, c2, &tex);
+	DrawColoredRect(sx, sy + h, sx + w, sy + (h * 2), f_mznear + 2, c2, c2, c1, c1, &tex);
 
 	tex.tpage = 0;
-	DrawColoredRect(sx - 1, sy - 1, sx + w + 1, sy + (h * 2) + 1, f_mznear + 2, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, &tex);
+	DrawColoredRect(sx - 1, sy - 1, sx + w + 1, sy + (h * 2) + 1, f_mznear + 4, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, &tex);
 
 	w = pos * w / 100;
 	tex.drawtype = 2;
-	DrawColoredRect(sx, sy, sx + w + 1, sy + (h * 2), f_mznear - 1, c3, c3, c3, c3, &tex);
+	DrawColoredRect(sx, sy, sx + w + 1, sy + (h * 2), f_mznear + 1, c3, c3, c3, c3, &tex);
 }
