@@ -19,6 +19,9 @@
 - Fix Lara's holsters and back weapon not getting affected by fog.
 - Fix underwater shimmer discontinuity.
 - Fix upper arm underwater ambience.
+- Fix floordata issues with triangular geometry, no collision tiles, and more generic situations.
+- Fix Lara snapping when moving off a ledge while wading.
+- Fix accented character drawing for multiple languages.
 
 ### tomb5 bug fixes
 
@@ -60,6 +63,7 @@
 - Move all matrix operations to floats.
 - Stop skipping title cutscenes.
 - Localize special features text.
+- Improve how the hair interacts with water.
 
 
 ## [3.2.0](https://github.com/Trxyebeep/TOMB5/tree/V3.2.0) (Feb. 4 2023)

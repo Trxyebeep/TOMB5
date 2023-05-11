@@ -1023,7 +1023,10 @@ void lara_col_walk(ITEM_INFO* item, COLL_INFO* coll)
 	coll->lava_is_pit = 1;
 	GetLaraCollisionInfo(item, coll);
 
-	if (LaraHitCeiling(item, coll) || TestLaraVault(item, coll))
+	if (LaraHitCeiling(item, coll))
+		return;
+
+	if (TestLaraVault(item, coll))
 		return;
 
 	if (LaraDeflectEdge(item, coll))
@@ -1080,7 +1083,10 @@ void lara_col_walk(ITEM_INFO* item, COLL_INFO* coll)
 		}
 	}
 
-	if (!TestLaraSlide(item, coll) && coll->mid_floor != NO_HEIGHT)
+	if (TestLaraSlide(item, coll))
+		return;
+
+	if (coll->mid_floor != NO_HEIGHT)
 		item->pos.y_pos += coll->mid_floor;
 }
 
@@ -1310,7 +1316,10 @@ void lara_col_run(ITEM_INFO* item, COLL_INFO* coll)
 	coll->slopes_are_walls = 1;
 	GetLaraCollisionInfo(item, coll);
 
-	if (LaraHitCeiling(item, coll) || TestLaraVault(item, coll))
+	if (LaraHitCeiling(item, coll))
+		return;
+
+	if (TestLaraVault(item, coll))
 		return;
 
 	if (LaraDeflectEdge(item, coll))
@@ -1518,7 +1527,13 @@ void lara_col_stop(ITEM_INFO* item, COLL_INFO* coll)
 	coll->slopes_are_walls = 1;
 	GetLaraCollisionInfo(item, coll);
 
-	if (LaraHitCeiling(item, coll) || LaraFallen(item, coll) || TestLaraSlide(item, coll))
+	if (LaraHitCeiling(item, coll))
+		return;
+
+	if (LaraFallen(item, coll))
+		return;
+
+	if (TestLaraSlide(item, coll))
 		return;
 
 	ShiftItem(item, coll);
@@ -1599,7 +1614,12 @@ void lara_col_back(ITEM_INFO* item, COLL_INFO* coll)
 		}
 	}
 
-	if (!TestLaraSlide(item, coll) && coll->mid_floor != NO_HEIGHT)
+	if (TestLaraSlide(item, coll))
+		return;
+
+	if (lara.water_status == LW_WADE && coll->mid_floor >= 50)
+		item->pos.y_pos += 50;
+	else if (coll->mid_floor != NO_HEIGHT)
 		item->pos.y_pos += coll->mid_floor;
 }
 
@@ -1655,7 +1675,10 @@ void lara_col_wade(ITEM_INFO* item, COLL_INFO* coll)
 	coll->slopes_are_walls = 1;
 	GetLaraCollisionInfo(item, coll);
 
-	if (LaraHitCeiling(item, coll) || TestLaraVault(item, coll))
+	if (LaraHitCeiling(item, coll))
+		return;
+
+	if (TestLaraVault(item, coll))
 		return;
 
 	if (LaraDeflectEdge(item, coll))
@@ -1769,7 +1792,10 @@ void lara_col_dash(ITEM_INFO* item, COLL_INFO* coll)
 	coll->slopes_are_walls = 1;
 	GetLaraCollisionInfo(item, coll);
 
-	if (LaraHitCeiling(item, coll) || TestLaraVault(item, coll))
+	if (LaraHitCeiling(item, coll))
+		return;
+
+	if (TestLaraVault(item, coll))
 		return;
 
 	if (LaraDeflectEdge(item, coll))
@@ -2024,20 +2050,22 @@ void lara_col_turn_r(ITEM_INFO* item, COLL_INFO* coll)
 	coll->bad_ceiling = 0;
 	GetLaraCollisionInfo(item, coll);
 
-	if (coll->mid_floor <= 100)
+	if (coll->mid_floor > 100)
 	{
-		if (!TestLaraSlide(item, coll) && coll->mid_floor != NO_HEIGHT)
-			item->pos.y_pos += coll->mid_floor;
-	}
-	else
-	{
-		item->fallspeed = 0;
 		item->anim_number = ANIM_FALLDOWN;
 		item->frame_number = anims[ANIM_FALLDOWN].frame_base;
 		item->current_anim_state = AS_FORWARDJUMP;
 		item->goal_anim_state = AS_FORWARDJUMP;
 		item->gravity_status = 1;
+		item->fallspeed = 0;
+		return;
 	}
+
+	if (TestLaraSlide(item, coll))
+		return;
+
+	if (coll->mid_floor != NO_HEIGHT)
+		item->pos.y_pos += coll->mid_floor;
 }
 
 void lara_as_turn_l(ITEM_INFO* item, COLL_INFO* coll)
@@ -2688,14 +2716,22 @@ void lara_col_stepright(ITEM_INFO* item, COLL_INFO* coll)
 	coll->bad_ceiling = 0;
 	GetLaraCollisionInfo(item, coll);
 
-	if (!LaraHitCeiling(item, coll))
-	{
-		if (LaraDeflectEdge(item, coll))
-			LaraCollideStop(item, coll);
+	if (LaraHitCeiling(item, coll))
+		return;
 
-		if (!LaraFallen(item, coll) && !TestLaraSlide(item, coll) && coll->mid_floor != NO_HEIGHT)
-			item->pos.y_pos += coll->mid_floor;
-	}
+	if (LaraDeflectEdge(item, coll))
+		LaraCollideStop(item, coll);
+
+	if (LaraFallen(item, coll))
+		return;
+
+	if (TestLaraSlide(item, coll))
+		return;
+
+	if (lara.water_status == LW_WADE && coll->mid_floor >= 50)
+		item->pos.y_pos += 50;
+	else if (coll->mid_floor != NO_HEIGHT)
+		item->pos.y_pos += coll->mid_floor;
 }
 
 void lara_as_stepleft(ITEM_INFO* item, COLL_INFO* coll)
@@ -2747,25 +2783,27 @@ void lara_col_roll2(ITEM_INFO* item, COLL_INFO* coll)
 	coll->bad_ceiling = 0;
 	GetLaraCollisionInfo(item, coll);
 
-	if (LaraHitCeiling(item, coll) || TestLaraSlide(item, coll))
+	if (LaraHitCeiling(item, coll))
 		return;
 
-	if (coll->mid_floor <= 200)
-	{
-		ShiftItem(item, coll);
+	if (TestLaraSlide(item, coll))
+		return;
 
-		if (coll->mid_floor != NO_HEIGHT)
-			item->pos.y_pos += coll->mid_floor;
-	}
-	else
+	if (coll->mid_floor > 200)
 	{
-		item->fallspeed = 0;
 		item->anim_number = ANIM_FALLBACK;
 		item->frame_number = anims[ANIM_FALLBACK].frame_base;
 		item->current_anim_state = AS_FALLBACK;
 		item->goal_anim_state = AS_FALLBACK;
 		item->gravity_status = 1;
+		item->fallspeed = 0;
+		return;
 	}
+
+	ShiftItem(item, coll);
+
+	if (coll->mid_floor != NO_HEIGHT)
+		item->pos.y_pos += coll->mid_floor;
 }
 
 void lara_as_slide(ITEM_INFO* item, COLL_INFO* coll)
@@ -3278,11 +3316,7 @@ void lara_col_duck(ITEM_INFO* item, COLL_INFO* coll)
 	if (TestLaraSlide(item, coll))
 		return;
 
-	if (coll->mid_ceiling >= -362)
-		lara.keep_ducked = 1;
-	else
-		lara.keep_ducked = 0;
-
+	lara.keep_ducked = coll->mid_ceiling >= -362;
 	ShiftItem(item, coll);
 
 	if (coll->mid_floor != NO_HEIGHT)
@@ -3671,12 +3705,7 @@ void lara_col_all4s(ITEM_INFO* item, COLL_INFO* coll)
 		return;
 
 	slope = abs(coll->left_floor2 - coll->right_floor2);
-
-	if (coll->mid_ceiling >= -362)
-		lara.keep_ducked = 1;
-	else
-		lara.keep_ducked = 0;
-
+	lara.keep_ducked = coll->mid_ceiling >= -362;
 	ShiftItem(item, coll);
 
 	if (coll->mid_floor != NO_HEIGHT && coll->mid_floor > -256)
@@ -3858,16 +3887,23 @@ void lara_col_crawl(ITEM_INFO* item, COLL_INFO* coll)
 			item->anim_number = ANIM_ALL4S;
 			item->frame_number = anims[ANIM_ALL4S].frame_base;
 		}
-	}
-	else if (LaraFallen(item, coll))
-		lara.gun_status = LG_NO_ARMS;
-	else if (!TestLaraSlide(item, coll))
-	{
-		ShiftItem(item, coll);
 
-		if (coll->mid_floor != NO_HEIGHT && coll->mid_floor > -256)
-			item->pos.y_pos += coll->mid_floor;
+		return;
 	}
+
+	if (LaraFallen(item, coll))
+	{
+		lara.gun_status = LG_NO_ARMS;
+		return;
+	}
+
+	if (TestLaraSlide(item, coll))
+		return;
+
+	ShiftItem(item, coll);
+
+	if (coll->mid_floor != NO_HEIGHT && coll->mid_floor > -256)
+		item->pos.y_pos += coll->mid_floor;
 }
 
 long LaraDeflectEdgeDuck(ITEM_INFO* item, COLL_INFO* coll)
@@ -3966,7 +4002,10 @@ void lara_col_all4turnlr(ITEM_INFO* item, COLL_INFO* coll)
 	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 400);
 	TiltHer(item, 140, 400);
 
-	if (!TestLaraSlide(item, coll) && (coll->mid_floor != NO_HEIGHT && coll->mid_floor > -256))
+	if (TestLaraSlide(item, coll))
+		return;
+
+	if (coll->mid_floor != NO_HEIGHT && coll->mid_floor > -256)
 		item->pos.y_pos += coll->mid_floor;
 }
 
@@ -4033,18 +4072,25 @@ void lara_col_crawlb(ITEM_INFO* item, COLL_INFO* coll)
 			item->anim_number = ANIM_ALL4S;
 			item->frame_number = anims[ANIM_ALL4S].frame_base;
 		}
+
+		return;
 	}
-	else if (LaraFallen(item, coll))
-		lara.gun_status = LG_NO_ARMS;
-	else if (!TestLaraSlide(item, coll))
+
+	if (LaraFallen(item, coll))
 	{
-		ShiftItem(item, coll);
-
-		if (coll->mid_floor != NO_HEIGHT && coll->mid_floor > -256)
-			item->pos.y_pos += coll->mid_floor;
-
-		lara.move_angle = item->pos.y_rot;
+		lara.gun_status = LG_NO_ARMS;
+		return;
 	}
+
+	if (TestLaraSlide(item, coll))
+		return;
+
+	ShiftItem(item, coll);
+
+	if (coll->mid_floor != NO_HEIGHT && coll->mid_floor > -256)
+		item->pos.y_pos += coll->mid_floor;
+
+	lara.move_angle = item->pos.y_rot;
 }
 
 void lara_col_crawl2hang(ITEM_INFO* item, COLL_INFO* coll)
@@ -4162,7 +4208,13 @@ void lara_col_roll(ITEM_INFO* item, COLL_INFO* coll)
 	coll->slopes_are_walls = 1;
 	GetLaraCollisionInfo(item, coll);
 
-	if (LaraHitCeiling(item, coll) || TestLaraSlide(item, coll) || LaraFallen(item, coll))
+	if (LaraHitCeiling(item, coll))
+		return;
+
+	if (TestLaraSlide(item, coll))
+		return;
+
+	if (LaraFallen(item, coll))
 		return;
 
 	ShiftItem(item, coll);
@@ -4424,19 +4476,19 @@ void lara_col_ducklr(ITEM_INFO* item, COLL_INFO* coll)
 	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, 400);
 
 	if (LaraFallen(item, coll))
-		lara.gun_status = LG_NO_ARMS;
-	else if (!TestLaraSlide(item, coll))
 	{
-		if (coll->mid_ceiling < -362)
-			lara.keep_ducked = 0;
-		else
-			lara.keep_ducked = 1;
-
-		ShiftItem(item, coll);
-
-		if (coll->mid_floor != NO_HEIGHT)
-			item->pos.y_pos += coll->mid_floor;
+		lara.gun_status = LG_NO_ARMS;
+		return;
 	}
+
+	if (TestLaraSlide(item, coll))
+		return;
+
+	lara.keep_ducked = coll->mid_ceiling >= -362;
+	ShiftItem(item, coll);
+
+	if (coll->mid_floor != NO_HEIGHT)
+		item->pos.y_pos += coll->mid_floor;
 }
 
 void lara_as_extcornerl(ITEM_INFO* item, COLL_INFO* coll)
@@ -5867,25 +5919,29 @@ void lara_col_duckroll(ITEM_INFO* item, COLL_INFO* coll)
 	GetCollisionInfo(coll, item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, item->room_number, -400);
 
 	if (LaraFallen(item, coll))
-		lara.gun_status = LG_NO_ARMS;
-	else if (!TestLaraSlide(item, coll))
 	{
-		if (coll->mid_ceiling >= -362)
-			lara.keep_ducked = 1;
-		else
-			lara.keep_ducked = 0;
-
-		if (coll->mid_floor < coll->bad_neg || coll->front_floor > coll->bad_pos)
-		{
-			item->pos.x_pos = coll->old.x;
-			item->pos.y_pos = coll->old.y;
-			item->pos.z_pos = coll->old.z;
-			return;
-		}
-
-		ShiftItem(item, coll);
-
-		if (!LaraHitCeiling(item, coll))
-			item->pos.y_pos += coll->mid_floor;
+		lara.gun_status = LG_NO_ARMS;
+		return;
 	}
+
+	if (TestLaraSlide(item, coll))
+		return;
+
+	lara.keep_ducked = coll->mid_ceiling >= -362;
+
+	if (coll->mid_floor < coll->bad_neg || coll->front_floor > coll->bad_pos)
+	{
+		item->pos.x_pos = coll->old.x;
+		item->pos.y_pos = coll->old.y;
+		item->pos.z_pos = coll->old.z;
+		return;
+	}
+
+	ShiftItem(item, coll);
+
+	if (LaraHitCeiling(item, coll))
+		return;
+
+	if (coll->mid_floor != NO_HEIGHT)
+		item->pos.y_pos += coll->mid_floor;
 }
