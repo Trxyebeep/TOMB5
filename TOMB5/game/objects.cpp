@@ -297,11 +297,14 @@ void ControlAnimatingSlots(short item_number)
 		ControlGunTestStation(item);
 	else if (item->object_number == SWITCH_TYPE8 && item->trigger_flags != 444)
 	{
-		item->frame_number = anims[item->anim_number].frame_base;
-		RemoveActiveItem(item_number);
-		item->collidable = 0;
-		item->looked_at = 0;
-		item->flags &= ~IFL_CODEBITS;
+		if (item->frame_number >= anims[item->anim_number].frame_end)
+		{
+			item->frame_number = anims[item->anim_number].frame_base;
+			RemoveActiveItem(item_number);
+			item->collidable = 0;
+			item->looked_at = 0;
+			item->flags &= ~IFL_CODEBITS;
+		}
 	}
 	else
 	{
