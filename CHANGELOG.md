@@ -22,6 +22,7 @@
 - Fix floordata issues with triangular geometry, no collision tiles, and more generic situations.
 - Fix Lara snapping when moving off a ledge while wading.
 - Fix accented character drawing for multiple languages.
+- Fix Sound Adapter names.
 
 ### tomb5 bug fixes
 
@@ -64,6 +65,7 @@
 - Stop skipping title cutscenes.
 - Localize special features text.
 - Improve how the hair interacts with water.
+- New setup window.
 
 
 ## [3.2.0](https://github.com/Trxyebeep/TOMB5/tree/V3.2.0) (Feb. 4 2023)

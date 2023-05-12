@@ -6,6 +6,8 @@ bool WinRunCheck(LPSTR WindowName, LPSTR ClassName, HANDLE* mutex);
 float WinFrameRate();
 void WinProcMsg();
 void WinProcessCommands(long cmd);
+void CLSetup(char* cmd);
+void CLNoFMV(char* cmd);
 void WinProcessCommandLine(LPSTR cmd);
 LRESULT CALLBACK WinMainWndProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void WinClose();

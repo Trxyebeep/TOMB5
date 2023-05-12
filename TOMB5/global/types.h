@@ -1713,8 +1713,8 @@ struct DXZBUFFERINFO
 
 struct DXD3DDEVICE
 {
-	char Name[30];
-	char About[80];
+	char Name[256];
+	char About[256];
 	LPGUID lpGuid;
 	GUID Guid;
 	D3DDEVICEDESC DeviceDesc;
@@ -1729,8 +1729,8 @@ struct DXD3DDEVICE
 
 struct DXDIRECTDRAWINFO
 {
-	char Name[30];  
-	char About[80];
+	char Name[256];  
+	char About[256];
 	LPGUID lpGuid;
 	GUID Guid;
 	DDCAPS DDCaps;
@@ -1743,8 +1743,8 @@ struct DXDIRECTDRAWINFO
 
 struct DXDIRECTSOUNDINFO
 {
-	char Name[30];
-	char About[80];
+	char Name[256];
+	char About[256];
 	LPGUID lpGuid;
 	GUID Guid;
 };

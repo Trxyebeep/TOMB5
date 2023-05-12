@@ -332,7 +332,6 @@
     </ClCompile>
     <ClCompile Include="TOMB5\specific\time.cpp" />
     <ClCompile Include="TOMB5\tomb5\troyestuff.cpp" />
-    <ClCompile Include="TOMB5\specific\cmdline.cpp" />
     <ClCompile Include="TOMB5\specific\clipping.cpp" />
     <ClCompile Include="TOMB5\tomb5\libs\zlib\adler32.c" />
     <ClCompile Include="TOMB5\tomb5\libs\zlib\crc32.c" />
@@ -341,6 +340,7 @@
     <ClCompile Include="TOMB5\tomb5\libs\zlib\inftrees.c" />
     <ClCompile Include="TOMB5\tomb5\libs\zlib\zutil.c" />
     <ClCompile Include="TOMB5\specific\drawbars.cpp" />
+    <ClCompile Include="TOMB5\specific\setupdlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TOMB5\game\bat.h">
@@ -669,10 +669,10 @@
     <ClInclude Include="TOMB5\tomb5\troyestuff.h" />
     <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_register.h" />
     <ClInclude Include="TOMB5\tomb5\libs\discordRPC\discord_rpc.h" />
-    <ClInclude Include="TOMB5\specific\cmdline.h" />
     <ClInclude Include="TOMB5\specific\clipping.h" />
     <ClInclude Include="TOMB5\tomb5\libs\zlib\zlib.h" />
     <ClInclude Include="TOMB5\specific\drawbars.h" />
+    <ClInclude Include="TOMB5\specific\setupdlg.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="tomb5.rc" />
@@ -683,5 +683,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon.ico" />
+    <Image Include="setup.bmp" />
   </ItemGroup>
 </Project>

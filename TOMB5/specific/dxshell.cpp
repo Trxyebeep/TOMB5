@@ -175,7 +175,7 @@ HRESULT __stdcall DXEnumDisplayModes(DDSURFACEDESC2* lpDDSurfaceDesc2, LPVOID lp
 	DXDISPLAYMODE* DM;
 	long nDisplayModes;
 
-	if (lpDDSurfaceDesc2->ddpfPixelFormat.dwRGBBitCount == 16)
+	if (lpDDSurfaceDesc2->ddpfPixelFormat.dwRGBBitCount != 32)
 		return DDENUMRET_OK;
 
 	DDInfo = (DXDIRECTDRAWINFO*)lpContext;

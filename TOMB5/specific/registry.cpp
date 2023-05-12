@@ -3,7 +3,7 @@
 #include "LoadSave.h"
 #include "winmain.h"
 #include "input.h"
-#include "cmdline.h"
+#include "setupdlg.h"
 
 static HKEY phkResult;
 static DWORD dwDisposition;
@@ -108,7 +108,7 @@ bool LoadSettings()
 		REG_ReadLong((char*)"VMode", (ulong&)App.DXInfo.nDisplayMode, 0);
 		REG_ReadLong((char*)"TFormat", (ulong&)App.DXInfo.nTexture, 0);
 		REG_ReadLong((char*)"DS", (ulong&)App.DXInfo.nDS, 0);
-		REG_ReadBool((char*)"BumpMap", App.BumpMapping, 1);
+		App.BumpMapping = 0;
 		REG_ReadBool((char*)"Filter", App.Filtering, 1);
 		REG_ReadBool((char*)"DisableSound", App.SoundDisabled, 0);
 		REG_ReadBool((char*)"Volumetric", App.Volumetric, 1);
@@ -119,15 +119,7 @@ bool LoadSettings()
 		if (val)
 			App.TextureSize = 128;
 
-		REG_ReadBool((char*)"BumpLow", val, 0);
-
-		if (val)
-			App.BumpMapSize = 128;
-
-		REG_ReadBool((char*)"HardWare", val, 0);
-
-		if (val)
-			App.StartFlags |= DXF_HWR | DXF_ZBUFFER;
+		App.StartFlags |= DXF_HWR | DXF_ZBUFFER;
 
 		REG_ReadBool((char*)"Window", val, 0);
 
@@ -271,21 +263,17 @@ bool SaveSetup(HWND hDlg)
 {
 	OpenRegistry("System");
 
-	REG_WriteLong((char*)"DD", SendMessage(GetDlgItem(hDlg, 1000), CB_GETCURSEL, 0, 0));
-	REG_WriteLong((char*)"D3D", SendMessage(GetDlgItem(hDlg, 1003), CB_GETCURSEL, 0, 0));
-	REG_WriteLong((char*)"VMode", SendMessage(GetDlgItem(hDlg, 1004), CB_GETITEMDATA, SendMessage(GetDlgItem(hDlg, 1004), CB_GETCURSEL, 0, 0), 0));
-	REG_WriteLong((char*)"DS", SendMessage(GetDlgItem(hDlg, 1005), CB_GETCURSEL, 0, 0));
-	REG_WriteLong((char*)"TFormat", SendMessage(GetDlgItem(hDlg, 1006), CB_GETCURSEL, 0, 0));
+	REG_WriteLong((char*)"DD", SendMessage(GetDlgItem(hDlg, IDC_GRAPHICS_ADAPTER), CB_GETCURSEL, 0, 0));
+	REG_WriteLong((char*)"D3D", SendMessage(GetDlgItem(hDlg, IDC_D3D), CB_GETCURSEL, 0, 0));
+	REG_WriteLong((char*)"VMode", SendMessage(GetDlgItem(hDlg, IDC_RESOLUTION), CB_GETITEMDATA, SendMessage(GetDlgItem(hDlg, IDC_RESOLUTION), CB_GETCURSEL, 0, 0), 0));
+	REG_WriteLong((char*)"DS", SendMessage(GetDlgItem(hDlg, IDC_SOUND_ADAPTER), CB_GETCURSEL, 0, 0));
+	REG_WriteLong((char*)"TFormat", SendMessage(GetDlgItem(hDlg, IDC_TFORMAT), CB_GETCURSEL, 0, 0));
 
-	REG_WriteBool((char*)"Filter", SendMessage(GetDlgItem(hDlg, 1012), BM_GETCHECK, 0, 0));
-	REG_WriteBool((char*)"BumpMap", SendMessage(GetDlgItem(hDlg, 1016), BM_GETCHECK, 0, 0));
-	REG_WriteBool((char*)"HardWare", SendMessage(GetDlgItem(hDlg, 1010), BM_GETCHECK, 0, 0));
-	REG_WriteBool((char*)"DisableSound", SendMessage(GetDlgItem(hDlg, 1018), BM_GETCHECK, 0, 0));
-	REG_WriteBool((char*)"TextLow", SendMessage(GetDlgItem(hDlg, 1014), BM_GETCHECK, 0, 0));
-	REG_WriteBool((char*)"BumpLow", SendMessage(GetDlgItem(hDlg, 1015), BM_GETCHECK, 0, 0));
-	REG_WriteBool((char*)"Window", SendMessage(GetDlgItem(hDlg, 1025), BM_GETCHECK, 0, 0));
-	REG_WriteBool((char*)"Volumetric", SendMessage(GetDlgItem(hDlg, 1029), BM_GETCHECK, 0, 0));
-	REG_WriteBool((char*)"NoFMV", SendMessage(GetDlgItem(hDlg, 1030), BM_GETCHECK, 0, 0));
+	REG_WriteBool((char*)"Filter", SendMessage(GetDlgItem(hDlg, IDC_BILINEAR), BM_GETCHECK, 0, 0));
+	REG_WriteBool((char*)"DisableSound", SendMessage(GetDlgItem(hDlg, IDC_DISABLE_SOUND), BM_GETCHECK, 0, 0));
+	REG_WriteBool((char*)"TextLow", SendMessage(GetDlgItem(hDlg, IDC_LOW_QUALITY_TEX), BM_GETCHECK, 0, 0));
+	REG_WriteBool((char*)"Window", SendMessage(GetDlgItem(hDlg, IDC_WINDOWED), BM_GETCHECK, 0, 0));
+	REG_WriteBool((char*)"NoFMV", SendMessage(GetDlgItem(hDlg, IDC_DISABLE_FMV), BM_GETCHECK, 0, 0));
 	REG_WriteBool((char*)"Setup", 1);
 
 	CloseRegistry();

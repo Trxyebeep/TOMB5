@@ -8,7 +8,6 @@
 #include "function_table.h"
 #include "d3dmatrix.h"
 #include "3dmath.h"
-#include "cmdline.h"
 #include "audio.h"
 #include "registry.h"
 #include "../game/gameflow.h"
@@ -17,6 +16,7 @@
 #include "gamemain.h"
 #include "file.h"
 #include "fmv.h"
+#include "setupdlg.h"
 
 WINAPP App;
 long resChangeCounter;
@@ -35,10 +35,8 @@ void ClearSurfaces()
 	r.y1 = App.dx.rViewport.top;
 	r.y2 = App.dx.rViewport.top + App.dx.rViewport.bottom;
 	r.x2 = App.dx.rViewport.left + App.dx.rViewport.right;
-	DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
-	S_DumpScreen();
-	DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
 
+	DXAttempt(App.dx.lpViewport->Clear2(1, &r, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0, 1.0F, 0));
 	S_DumpScreen();
 }
 
@@ -228,6 +226,26 @@ void WinProcessCommands(long cmd)
 		Log("Game Thread Resumed");
 		resChangeCounter = 120;
 	}
+}
+
+void CLSetup(char* cmd)
+{
+	Log("CLSetup");
+
+	if (cmd)
+		start_setup = 0;
+	else
+		start_setup = 1;
+}
+
+void CLNoFMV(char* cmd)
+{
+	Log("CLNoFMV");
+
+	if (cmd)
+		fmvs_disabled = 0;
+	else
+		fmvs_disabled = 1;
 }
 
 void WinProcessCommandLine(LPSTR cmd)
@@ -505,7 +523,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 
 	if (start_setup || !LoadSettings())
 	{
-		if (!DXSetupDialog())
+		if (!SetupDialog())
 		{
 			free(gfScriptFile);
 			free(gfLanguageFile);

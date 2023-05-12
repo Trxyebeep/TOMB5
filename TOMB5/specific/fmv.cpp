@@ -13,7 +13,7 @@
 #include "dxsound.h"
 #include "gamemain.h"
 #include "LoadSave.h"
-#include "cmdline.h"
+#include "setupdlg.h"
 
 #define GET_DLL_PROC(dll, proc, n) \
 { \
