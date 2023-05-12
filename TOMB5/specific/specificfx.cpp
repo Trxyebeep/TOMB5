@@ -5892,7 +5892,7 @@ static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 	PHD_VECTOR pos;
 	float fx, fy, fz;
 	long x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, xSize, zSize, xDist, zDist;
-	short room_number;
+	short room_number, s;
 
 	xSize = size * (box[1] - box[0]) / 192;	//x size of grid
 	zSize = size * (box[5] - box[4]) / 192;	//z size of grid
@@ -5910,8 +5910,9 @@ static void S_PrintCircleShadow(short size, short* box, ITEM_INFO* item)
 	}
 
 	phd_PushUnitMatrix();
+	s = item->current_anim_state;
 
-	if (item == lara_item)	//position the grid
+	if (item == lara_item && s != AS_ALL4S && s != AS_ALL4TURNL && s != AS_ALL4TURNR && s != AS_CRAWL && s != AS_CRAWLBACK)	//position the grid
 	{
 		pos.x = 0;
 		pos.y = 0;
@@ -6053,7 +6054,7 @@ static void S_PrintSpriteShadow(short size, short* box, ITEM_INFO* item)
 	long hxz[GRID_POINTS * 2];
 	long hy[GRID_POINTS];
 	long p, x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, xSize, zSize, xDist, zDist;
-	short room_number, anim;
+	short room_number, s;
 
 	v = aVertexBuffer;
 	sprite = &spriteinfo[objects[DEFAULT_SPRITES].mesh_index + 14];
@@ -6083,11 +6084,9 @@ static void S_PrintSpriteShadow(short size, short* box, ITEM_INFO* item)
 	}
 
 	phd_PushUnitMatrix();
+	s = item->current_anim_state;
 
-	anim = item->anim_number;
-
-	if (item == lara_item && (cutseq_trig || (anim == ANIM_PULL || anim == ANIM_PUSH || anim == ANIM_SCABINET || anim == ANIM_SDRAWERS ||
-		anim == ANIM_SSHELVES || anim == ANIM_SBOX || anim == 417 || anim == 418)))
+	if (item == lara_item && s != AS_ALL4S && s != AS_ALL4TURNL && s != AS_ALL4TURNR && s != AS_CRAWL && s != AS_CRAWLBACK)
 	{
 		pos.x = 0;
 		pos.y = 0;
@@ -6217,7 +6216,7 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 	long triA, triB, triC;
 	float fx, fy, fz;
 	long x, y, z, x1, y1, z1, x2, y2, z2, x3, y3, z3, xSize, zSize, xDist, zDist;
-	short room_number;
+	short room_number, s;
 
 	if (tomb5.shadow_mode != 1)
 	{
@@ -6252,8 +6251,9 @@ void S_PrintShadow(short size, short* box, ITEM_INFO* item)
 	}
 
 	phd_PushUnitMatrix();
+	s = item->current_anim_state;
 
-	if (item == lara_item)	//position the grid
+	if (item == lara_item && s != AS_ALL4S && s != AS_ALL4TURNL && s != AS_ALL4TURNR && s != AS_CRAWL && s != AS_CRAWLBACK)	//position the grid
 	{
 		pos.x = 0;
 		pos.y = 0;
