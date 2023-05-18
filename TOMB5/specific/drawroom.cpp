@@ -16,6 +16,7 @@
 #include "3dmath.h"
 #include "../game/effect2.h"
 #include "../game/gameflow.h"
+#include "../game/objects.h"
 #include "../tomb5/tomb5.h"
 
 FOGBULB_INFO LevelFogBulbs[64];		//list of all fogbulbs in the level (copied from room data)
@@ -729,185 +730,179 @@ void ProcessMeshData(long num_meshes)
 	MESH_DATA* data;
 	D3DVECTOR d3dvec;
 	FVECTOR vec;
-	short* sMeshPtr;
-	short* no_mesh;
+	short* mesh_ptr;
+	short* last_mesh_ptr;
 	short* gtx;
 	float minx, miny, minz, maxx, maxy, maxz;
-	long num, pre;
+	long num, c;
+	bool hand;
 
-	Log("ProcessMeshData %d", num_meshes);
+	Log(__FUNCTION__ " %d", num_meshes);
 	num_level_meshes = num_meshes;
 	mesh_vtxbuf = (MESH_DATA**)game_malloc(4 * num_meshes);
 	mesh_base = (short*)malloc_ptr;
-	no_mesh = 0;
+	last_mesh_ptr = 0;
 	data = 0;
 
 	for (int i = 0; i < num_meshes; i++)
 	{
-		sMeshPtr = meshes[i];
+		mesh_ptr = meshes[i];
+		hand = i == objects[LARA_SKIN].mesh_index + LM_LHAND * 2 && gfCurrentLevel >= LVL5_GALLOWS_TREE && gfCurrentLevel <= LVL5_OLD_MILL;
 
-		if (no_mesh == sMeshPtr)
+		if (mesh_ptr == last_mesh_ptr)
 		{
 			meshes[i] = (short*)data;
 			mesh_vtxbuf[i] = data;
+			continue;
 		}
-		else
+
+		last_mesh_ptr = meshes[i];
+		minx = 20000.0F;
+		miny = 20000.0F;
+		minz = 20000.0F;
+		maxx = -20000.0F;
+		maxy = -20000.0F;
+		maxz = -20000.0F;
+		data = (MESH_DATA*)game_malloc(sizeof(MESH_DATA));
+		memset(data, 0, sizeof(MESH_DATA));
+		meshes[i] = (short*)data;
+		mesh_vtxbuf[i] = data;
+		data->x = *mesh_ptr++;
+		data->y = *mesh_ptr++;
+		data->z = *mesh_ptr++;
+		data->r = *mesh_ptr++;
+		data->flags = *mesh_ptr++;
+		data->nVerts = *mesh_ptr & 0xFF;
+
+		if (!data->nVerts)
+			num = *mesh_ptr >> 8;
+
+		mesh_ptr++;
+		data->aVtx = (ACMESHVERTEX*)game_malloc(sizeof(ACMESHVERTEX) * data->nVerts);
+
+		if (data->nVerts)
 		{
-			no_mesh = meshes[i];
-			minx = 20000.0F;
-			miny = 20000.0F;
-			minz = 20000.0F;
-			maxx = -20000.0F;
-			maxy = -20000.0F;
-			maxz = -20000.0F;
-			data = (MESH_DATA*)game_malloc(sizeof(MESH_DATA));
-			memset(data, 0, sizeof(MESH_DATA));
-			meshes[i] = (short*)data;
-			mesh_vtxbuf[i] = data;
-			data->x = *sMeshPtr;
-			sMeshPtr++;
-			data->y = *sMeshPtr;
-			sMeshPtr++;
-			data->z = *sMeshPtr;
-			sMeshPtr++;
-			data->r = *sMeshPtr;
-			sMeshPtr++;
-			data->flags = *sMeshPtr;
-			sMeshPtr++;
-			data->nVerts = *sMeshPtr & 0xFF;
-
-			if (!data->nVerts)
-				num = *sMeshPtr >> 8;
-
-			sMeshPtr++;
-			data->aVtx = (ACMESHVERTEX*)game_malloc(sizeof(ACMESHVERTEX) * data->nVerts);
-
-			if (data->nVerts)
+			for (int j = 0; j < data->nVerts; j++)
 			{
+				vec.x = *mesh_ptr++;
+				vec.y = *mesh_ptr++;
+				vec.z = *mesh_ptr++;
+				data->aVtx[j].x = vec.x;
+				data->aVtx[j].y = vec.y;
+				data->aVtx[j].z = vec.z;
+
+				if (vec.x < minx)
+					minx = vec.x;
+
+				if (vec.x > maxx)
+					maxx = vec.x;
+
+				if (vec.y < miny)
+					miny = vec.y;
+
+				if (vec.y > maxy)
+					maxy = vec.y;
+
+				if (vec.z < minz)
+					minz = vec.z;
+
+				if (vec.z > maxz)
+					maxz = vec.z;
+			}
+
+			data->bbox[0] = minx;
+			data->bbox[1] = miny;
+			data->bbox[2] = minz;
+			data->bbox[3] = maxx;
+			data->bbox[4] = maxy;
+			data->bbox[5] = maxz;
+			data->nNorms = *mesh_ptr++;
+
+			if (!data->nNorms)
+				data->nNorms = data->nVerts;
+
+			if (data->nNorms <= 0)
+			{
+				data->Normals = 0;
+				data->prelight = (long*)game_malloc(4 * data->nVerts);
+
 				for (int j = 0; j < data->nVerts; j++)
 				{
-					vec.x = *sMeshPtr;
-					sMeshPtr++;
-					vec.y = *sMeshPtr;
-					sMeshPtr++;
-					vec.z = *sMeshPtr;
-					sMeshPtr++;
-					data->aVtx[j].x = vec.x;
-					data->aVtx[j].y = vec.y;
-					data->aVtx[j].z = vec.z;
-
-					if (vec.x < minx)
-						minx = vec.x;
-
-					if (vec.x > maxx)
-						maxx = vec.x;
-
-					if (vec.y < miny)
-						miny = vec.y;
-
-					if (vec.y > maxy)
-						maxy = vec.y;
-
-					if (vec.z < minz)
-						minz = vec.z;
-
-					if (vec.z > maxz)
-						maxz = vec.z;
+					c = 255 - (*mesh_ptr++ >> 5);
+					data->prelight[j] = RGBONLY(c, c, c);
+					data->aVtx[j].prelight = RGBONLY(c, c, c);
 				}
 
-				data->bbox[0] = minx;
-				data->bbox[1] = miny;
-				data->bbox[2] = minz;
-				data->bbox[3] = maxx;
-				data->bbox[4] = maxy;
-				data->bbox[5] = maxz;
-				data->nNorms = *sMeshPtr;
-				sMeshPtr++;
-
-				if (!data->nNorms)
-					data->nNorms = data->nVerts;
-
-				if (data->nNorms <= 0)
-				{
-					data->Normals = 0;
-					data->prelight = (long*)game_malloc(4 * data->nVerts);
-
-					for (int j = 0; j < data->nVerts; j++)
-					{
-						pre = 255 - (*sMeshPtr >> 5);
-						sMeshPtr++;
-						data->prelight[j] = pre | ((pre | (pre << 8)) << 8);
-						data->aVtx[j].prelight = pre | ((pre | (pre << 8)) << 8);
-					}
-
-					data->aFlags |= 2;
-				}
-				else
-				{
-					data->Normals = (D3DVECTOR*)game_malloc(sizeof(D3DVECTOR) * data->nNorms);
-
-					for (int j = 0; j < data->nVerts; j++)
-					{
-						d3dvec.x = *sMeshPtr;
-						sMeshPtr++;
-						d3dvec.y = *sMeshPtr;
-						sMeshPtr++;
-						d3dvec.z = *sMeshPtr;
-						sMeshPtr++;
-						D3DNormalise(&d3dvec);
-						data->aVtx[j].nx = d3dvec.x;
-						data->aVtx[j].ny = d3dvec.y;
-						data->aVtx[j].nz = d3dvec.z;
-					}
-
-					data->prelight = 0;
-				}
+				data->aFlags |= 2;
 			}
 			else
-				sMeshPtr += (6 * num) + 1;
-
-			data->ngt4 = *sMeshPtr;
-			sMeshPtr++;
-
-			if (data->ngt4)
 			{
-				data->gt4 = (short*)game_malloc(12 * data->ngt4);
-				memcpy(data->gt4, sMeshPtr, 12 * data->ngt4);
-				sMeshPtr += 6 * data->ngt4;
-				gtx = data->gt4 + 5;
+				data->Normals = (D3DVECTOR*)game_malloc(sizeof(D3DVECTOR) * data->nNorms);
 
-				for (int j = 0; j < data->ngt4; j++)
+				for (int j = 0; j < data->nVerts; j++)
 				{
-					if (gtx[j * 6] & 2)
-					{
-						data->aFlags |= 1;
-						break;
-					}
+					d3dvec.x = *mesh_ptr++;
+					d3dvec.y = *mesh_ptr++;
+					d3dvec.z = *mesh_ptr++;
+					D3DNormalise(&d3dvec);
+					data->aVtx[j].nx = d3dvec.x;
+					data->aVtx[j].ny = d3dvec.y;
+					data->aVtx[j].nz = d3dvec.z;
+				}
+
+				data->prelight = 0;
+			}
+		}
+		else
+			mesh_ptr += (6 * num) + 1;
+
+		data->ngt4 = *mesh_ptr++;
+
+		if (data->ngt4)
+		{
+			data->gt4 = (short*)game_malloc(12 * data->ngt4);
+			memcpy(data->gt4, mesh_ptr, 12 * data->ngt4);
+			mesh_ptr += 6 * data->ngt4;
+			gtx = data->gt4 + 5;
+
+			for (int j = 0; j < data->ngt4; j++)
+			{
+				if (gtx[j * 6] & 2)
+				{
+					data->aFlags |= 1;
+					break;
 				}
 			}
+		}
 
-			data->ngt3 = *sMeshPtr;
-			sMeshPtr++;
+		data->ngt3 = *mesh_ptr++;
 
-			if (data->ngt3)
+		if (data->ngt3)
+		{
+			data->gt3 = (short*)game_malloc(10 * data->ngt3);
+			memcpy(data->gt3, mesh_ptr, 10 * data->ngt3);
+
+			if (hand)
 			{
-				data->gt3 = (short*)game_malloc(10 * data->ngt3);
-				memcpy(data->gt3, sMeshPtr, 10 * data->ngt3);
-				gtx = data->gt3 + 4;
+				gtx = &data->gt3[30 * 5];
+				gtx[0] = 3;
+				gtx[1] = 4;
+			}
 
-				for (int j = 0; j < data->ngt3; j++)
+			gtx = data->gt3 + 4;
+
+			for (int j = 0; j < data->ngt3; j++)
+			{
+				if (gtx[j * 5] & 2)
 				{
-					if (gtx[j * 5] & 2)
-					{
-						data->aFlags |= 1;
-						break;
-					}
+					data->aFlags |= 1;
+					break;
 				}
 			}
 		}
 	}
 
-	Log("End ProcessMeshData");
+	Log("End " __FUNCTION__);
 }
 
 long aBuildRoomletLights(ROOMLET* r)

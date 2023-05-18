@@ -23,6 +23,7 @@
 - Fix Lara snapping when moving off a ledge while wading.
 - Fix accented character drawing for multiple languages.
 - Fix Sound Adapter names.
+- FIx the hole on Lara's hand in Ireland levels.
 
 ### tomb5 bug fixes
 
