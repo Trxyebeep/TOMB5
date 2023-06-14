@@ -39,6 +39,7 @@
 - Fix "Loading" text position.
 - Fix credit cutscenes.
 - Fix monoscreen corruption.
+- Fix left hand uzi stop sound
 
 ### tomb5 additions
 
