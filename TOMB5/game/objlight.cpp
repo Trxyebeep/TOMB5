@@ -10,18 +10,18 @@
 void TriggerAlertLight(long x, long y, long z, long r, long g, long b, long angle, long room_no, long falloff)
 {
 	GAME_VECTOR src, target;
-	long sin, cos;
+	long s, c;
 
 	src.x = x;
 	src.y = y;
 	src.z = z;
-	GetFloor(x, y, z, (short*) &room_no);
+	GetFloor(x, y, z, (short*)&room_no);
 	src.room_number = (short)room_no;
-	sin = phd_sin(16 * angle);
-	cos = phd_cos(16 * angle);
-	target.x = x + sin;
+	s = phd_sin(angle << 4);
+	c = phd_cos(angle << 4);
+	target.x = x + s;
 	target.y = y;
-	target.z = z + cos;
+	target.z = z + c;
 
 	if (!LOS(&src, &target))
 		TriggerDynamic(target.x, target.y, target.z, falloff, r, g, b);
@@ -30,7 +30,7 @@ void TriggerAlertLight(long x, long y, long z, long r, long g, long b, long angl
 void ControlStrobeLight(short item_number)
 {
 	ITEM_INFO* item;
-	long angle, sin, cos, r, g, b;
+	long angle, s, c, r, g, b;
 
 	item = &items[item_number];
 
@@ -41,18 +41,17 @@ void ControlStrobeLight(short item_number)
 	r = (item->trigger_flags & 0x1F) << 3;
 	g = (item->trigger_flags >> 2) & 0xF8;
 	b = (item->trigger_flags >> 7) & 0xF8;
-	phd_sin(r);
 	angle = ((item->pos.y_rot + 0x5800) >> 4) & 0xFFF;
-	sin = rcossin_tbl[angle << 1] >> 4;
-	cos = rcossin_tbl[(angle << 1) + 1] >> 4;
+	s = rcossin_tbl[angle << 1] >> 4;
+	c = rcossin_tbl[(angle << 1) + 1] >> 4;
 	TriggerAlertLight(item->pos.x_pos, item->pos.y_pos - 512, item->pos.z_pos, r, g, b, angle, item->room_number, 12);
-	TriggerDynamic(item->pos.x_pos + sin, item->pos.y_pos - 768, item->pos.z_pos + cos, 8, r, g, b);
+	TriggerDynamic(item->pos.x_pos + s, item->pos.y_pos - 768, item->pos.z_pos + c, 8, r, g, b);
 }
 
 void ControlPulseLight(short item_number)
 {
 	ITEM_INFO* item;
-	long sin, r, g, b;
+	long s, r, g, b;
 
 	item = &items[item_number];
 
@@ -61,15 +60,14 @@ void ControlPulseLight(short item_number)
 
 	item->item_flags[0] -= 1024;
 	
-	sin = abs(phd_sin(item->item_flags[0] + ((item->pos.y_pos & 0x3FFF) << 2)) >> 6);
+	s = abs(phd_sin(item->item_flags[0] + ((item->pos.y_pos & 0x3FFF) << 2)) >> 6);
 
-	if (sin > 255)
-		sin = 255;
+	if (s > 255)
+		s = 255;
 
-	r = (sin * ((item->trigger_flags & 0x1F) << 3)) >> 9;
-	g = (sin * ((item->trigger_flags >> 2) & 0xF8)) >> 9;
-	b = (sin * ((item->trigger_flags >> 7) & 0xF8)) >> 9;
-
+	r = (s * ((item->trigger_flags & 0x1F) << 3)) >> 9;
+	g = (s * ((item->trigger_flags >> 2) & 0xF8)) >> 9;
+	b = (s * ((item->trigger_flags >> 7) & 0xF8)) >> 9;
 	TriggerDynamic(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, 24, r, g, b);
 }
 
@@ -86,7 +84,6 @@ void ControlColouredLight(short item_number)
 	r = (item->trigger_flags & 0x1F) << 3;
 	g = (item->trigger_flags >> 2) & 0xF8;
 	b = (item->trigger_flags >> 7) & 0xF8;
-
 	TriggerDynamic(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, 24, r, g, b);
 }
 
@@ -110,31 +107,28 @@ void ControlElectricalLight(short item_number)
 			shade = (GetRandomControl() & 0x3F) << 2;
 			item->item_flags[0]++;
 		}
-		else
+		else if (item->item_flags[0] >= 96)
 		{
-			if (item->item_flags[0] >= 96)
-			{
-				if (item->item_flags[0] >= 160)
-					shade = 255 - (GetRandomControl() & 0x1F);
-				else
-				{
-					shade = 96 - (GetRandomControl() & 0x1F);
-
-					if (!(GetRandomControl() & 0x1F) && item->item_flags[0] > 128)
-						item->item_flags[0] = 160;
-					else
-						item->item_flags[0]++;
-				}
-			}
+			if (item->item_flags[0] >= 160)
+				shade = 255 - (GetRandomControl() & 0x1F);
 			else
 			{
-				if (wibble & 0x3F && GetRandomControl() & 7)
-					shade = GetRandomControl() & 0x3F;
-				else
-					shade = 192 - (GetRandomControl() & 0x3F);
+				shade = 96 - (GetRandomControl() & 0x1F);
 
-				item->item_flags[0]++;
+				if (!(GetRandomControl() & 0x1F) && item->item_flags[0] > 128)
+					item->item_flags[0] = 160;
+				else
+					item->item_flags[0]++;
 			}
+		}
+		else
+		{
+			if (wibble & 0x3F && GetRandomControl() & 7)
+				shade = GetRandomControl() & 0x3F;
+			else
+				shade = 192 - (GetRandomControl() & 0x3F);
+
+			item->item_flags[0]++;
 		}
 	}
 	else
@@ -155,7 +149,7 @@ void ControlElectricalLight(short item_number)
 		shade = item->item_flags[1] - (GetRandomControl() & 0x7F);
 
 		if (shade > 64)
-			SoundEffectCS(SFX_ELEC_LIGHT_CRACKLES, &item->pos, (32 * (shade & 0xFFFFFFF8)) | 8);
+			SoundEffectCS(SFX_ELEC_LIGHT_CRACKLES, &item->pos, ((shade >> 3) << 5) | SFX_SETVOL);
 	}
 
 	r = ((shade * (item->trigger_flags & 0x1F)) << 3) >> 8;
@@ -185,6 +179,7 @@ void ControlBlinker(short item_number)
 		pos.y = 0;
 		pos.x = 0;
 		GetJointAbsPosition(item, &pos, 0);
+
 		r = (item->trigger_flags & 0x1F) << 3;
 		g = (item->trigger_flags >> 2) & 0xF8;
 		b = (item->trigger_flags >> 7) & 0xF8;

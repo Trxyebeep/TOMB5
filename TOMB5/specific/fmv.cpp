@@ -13,7 +13,7 @@
 #include "dxsound.h"
 #include "gamemain.h"
 #include "LoadSave.h"
-#include "cmdline.h"
+#include "setupdlg.h"
 
 #define GET_DLL_PROC(dll, proc, n) \
 { \
@@ -86,7 +86,7 @@ void ShowBinkFrame()
 	BinkCopyToBuffer(Bink, surf.lpSurface, surf.lPitch, Bink->num, 0, 0, BinkSurfaceType);
 	DXAttempt(BinkSurface->Unlock(0));
 
-	if (App.dx.Flags & 2)
+	if (App.dx.Flags & DXF_WINDOWED)
 		DXShowFrame();
 }
 
@@ -115,7 +115,7 @@ long PlayFmv(long num)
 	sprintf(name, "movie\\fmv%01d.bik", num);
 	memset(path, 0, sizeof(path));
 	strcat(path, name);
-	Log(5, "PlayFMV %s", path);
+	Log("PlayFMV %s", path);
 	App.fmv = 1;
 	modes = G_dxinfo->DDInfo[App.DXInfo.nDD].D3DDevices[App.DXInfo.nD3D].DisplayModes;
 	rm = 0;
@@ -145,7 +145,7 @@ long PlayFmv(long num)
 	BinkSetSoundSystem(BinkOpenDirectSound, App.dx.lpDS);
 	Bink = (BINK_STRUCT*)BinkOpen(path, 0);
 
-	if (App.dx.Flags & 2)
+	if (App.dx.Flags & DXF_WINDOWED)
 		BinkSurface = App.dx.lpBackBuffer;
 	else
 		BinkSurface = App.dx.lpPrimaryBuffer;
@@ -154,7 +154,7 @@ long PlayFmv(long num)
 
 	if (Bink)
 	{
-		Log(5, "Entering Bink Loop");
+		Log("Entering Bink Loop");
 		BinkDoFrame(Bink);
 		S_UpdateInput();
 
@@ -177,7 +177,7 @@ long PlayFmv(long num)
 		Bink = 0;
 	}
 	else
-		Log(1, "FAILED TO CREATE BINK OBJECT");
+		Log("FAILED TO CREATE BINK OBJECT");
 
 	if (rm)
 	{

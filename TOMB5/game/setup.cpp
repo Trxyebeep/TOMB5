@@ -189,20 +189,21 @@ void InitialiseLara(long restore)
 void ObjectObjects()
 {
 	OBJECT_INFO* obj;
+	long lp;
 
 	obj = &objects[CAMERA_TARGET];
 	obj->using_drawanimating_item = 0;
 	obj->draw_routine = 0;
 
-	for (int i = SMASH_OBJECT1; i < MESHSWAP1; i++)
+	for (lp = SMASH_OBJECT1; lp <= SMASH_OBJECT8; lp++)
 	{
-		obj = &objects[i];
-		obj->save_flags = 1;
-		obj->save_anim = 1;
-		obj->save_mesh = 1;
+		obj = &objects[lp];
 		obj->initialise = InitialiseSmashObject;
 		obj->control = SmashObjectControl;
 		obj->collision = ObjectCollision;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		obj->save_mesh = 1;
 	}
 
 	obj = &objects[BRIDGE_FLAT];
@@ -230,15 +231,15 @@ void ObjectObjects()
 	obj->floor = FallingBlockFloor;
 	obj->ceiling = FallingBlockCeiling;
 
-	for (int i = SWITCH_TYPE1; i < SWITCH_TYPE7; i++)
+	for (lp = SWITCH_TYPE1; lp <= SWITCH_TYPE6; lp++)
 	{
-		obj = &objects[i];
-		obj->save_flags = 1;
-		obj->save_anim = 1;
-		obj->save_mesh = 1;
+		obj = &objects[lp];
 		obj->initialise = InitialiseSwitch;
 		obj->control = SwitchControl;
 		obj->collision = SwitchCollision;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
+		obj->save_mesh = 1;
 	}
 
 	obj = &objects[AIRLOCK_SWITCH];
@@ -247,13 +248,13 @@ void ObjectObjects()
 	obj->save_flags = 1;
 	obj->save_anim = 1;
 
-	for (int i = SEQUENCE_SWITCH1; i < STEEL_DOOR; i++)
+	for (lp = SEQUENCE_SWITCH1; lp <= SEQUENCE_SWITCH3; lp++)
 	{
-		obj = &objects[i];
-		obj->save_flags = 1;
-		obj->save_anim = 1;
+		obj = &objects[lp];
 		obj->control = FullBlockSwitchControl;
 		obj->collision = FullBlockSwitchCollision;
+		obj->save_flags = 1;
+		obj->save_anim = 1;
 	}
 
 	obj = &objects[UNDERWATER_SWITCH1];
@@ -314,9 +315,9 @@ void ObjectObjects()
 	obj->save_anim = 1;
 	obj->save_mesh = 1;
 
-	for (int i = DOOR_TYPE1; i < CLOSED_DOOR6_MIP; i += 2)	//skips over MIPs
+	for (lp = DOOR_TYPE1; lp <= CLOSED_DOOR6; lp += 2)	//skips over MIPs
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseDoor;
 		obj->control = DoorControl;
 		obj->collision = DoorCollision;
@@ -326,9 +327,9 @@ void ObjectObjects()
 		obj->save_mesh = 1;
 	}
 
-	for (int i = LIFT_DOORS1; i < PUSHPULL_DOOR1; i += 2)	//skips over MIPs
+	for (lp = LIFT_DOORS1; lp <= LIFT_DOORS2; lp += 2)	//skips over MIPs
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseDoor;
 		obj->control = DoorControl;
 		obj->draw_routine = DrawLiftDoors;
@@ -360,9 +361,9 @@ void ObjectObjects()
 	obj->save_flags = 1;
 	obj->save_anim = 1;
 
-	for (int i = PUSHPULL_DOOR1; i < KICK_DOOR2_MIP; i += 2)	//skips over MIPs
+	for (lp = PUSHPULL_DOOR1; lp <= KICK_DOOR2; lp += 2)	//skips over MIPs
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseDoor;
 		obj->control = PushPullKickDoorControl;
 		obj->collision = PushPullKickDoorCollision;
@@ -371,9 +372,9 @@ void ObjectObjects()
 		obj->save_anim = 1;
 	}
 
-	for (int i = FLOOR_TRAPDOOR1; i < CEILING_TRAPDOOR1; i++)
+	for (lp = FLOOR_TRAPDOOR1; lp <= FLOOR_TRAPDOOR2; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseTrapDoor;
 		obj->control = TrapDoorControl;
 		obj->collision = FloorTrapDoorCollision;
@@ -381,9 +382,9 @@ void ObjectObjects()
 		obj->save_anim = 1;
 	}
 
-	for (int i = CEILING_TRAPDOOR1; i < SCALING_TRAPDOOR; i++)
+	for (lp = CEILING_TRAPDOOR1; lp <= CEILING_TRAPDOOR2; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseTrapDoor;
 		obj->control = TrapDoorControl;
 		obj->collision = CeilingTrapDoorCollision;
@@ -391,9 +392,9 @@ void ObjectObjects()
 		obj->save_anim = 1;
 	}
 
-	for (int i = TRAPDOOR1; i < FLOOR_TRAPDOOR1; i++)
+	for (lp = TRAPDOOR1; lp <= TRAPDOOR3; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseTrapDoor;
 		obj->control = TrapDoorControl;
 		obj->collision = TrapDoorCollision;
@@ -401,9 +402,9 @@ void ObjectObjects()
 		obj->save_anim = 1;
 	}
 
-	for (int i = PUZZLE_ITEM1; i < PUZZLE_HOLE1; i++)
+	for (lp = PUZZLE_ITEM1; lp <= BURNING_TORCH_ITEM; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialisePickup;
 		obj->control = AnimatingPickUp;
 		obj->collision = PickUpCollision;
@@ -411,9 +412,9 @@ void ObjectObjects()
 		obj->save_flags = 1;
 	}
 
-	for (int i = PISTOLS_ITEM; i < COMPASS_ITEM; i++)
+	for (lp = PISTOLS_ITEM; lp <= FLARE_INV_ITEM; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialisePickup;
 		obj->control = AnimatingPickUp;
 		obj->collision = PickUpCollision;
@@ -421,9 +422,9 @@ void ObjectObjects()
 		obj->save_flags = 1;
 	}
 
-	for (int i = SEARCH_OBJECT1; i < SEARCH_OBJECT4_MIP; i += 2)
+	for (lp = SEARCH_OBJECT1; lp <= SEARCH_OBJECT4; lp += 2)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseSearchObject;
 		obj->control = SearchObjectControl;
 		obj->collision = SearchObjectCollision;
@@ -468,35 +469,35 @@ void ObjectObjects()
 	obj->save_position = 1;
 	obj->save_flags = 1;
 
-	for (int i = KEY_HOLE1; i < SWITCH_TYPE1; i++)
+	for (lp = KEY_HOLE1; lp <= KEY_HOLE8; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseKeyhole;
 		obj->collision = KeyHoleCollision;
 		obj->save_flags = 1;
 	}
 
-	for (int i = PUZZLE_HOLE1; i < PUZZLE_DONE1; i++)
+	for (lp = PUZZLE_HOLE1; lp <= PUZZLE_HOLE8; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->control = ControlAnimatingSlots;
 		obj->collision = PuzzleHoleCollision;
 		obj->save_flags = 1;
 		obj->save_anim = 1;
 	}
 
-	for (int i = PUZZLE_DONE1; i < KEY_HOLE1; i++)
+	for (lp = PUZZLE_DONE1; lp <= PUZZLE_DONE8; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->control = ControlAnimatingSlots;
 		obj->collision = PuzzleDoneCollision;
 		obj->save_flags = 1;
 		obj->save_anim = 1;
 	}
 
-	for (int i = ANIMATING1; i < ANIMATING13; i++)
+	for (lp = ANIMATING1; lp <= ANIMATING12_MIP; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseAnimatingSlots;
 		obj->control = ControlAnimatingSlots;
 		obj->collision = ObjectCollision;
@@ -507,9 +508,9 @@ void ObjectObjects()
 		bones[obj->bone_index + 4] |= 4;
 	}
 
-	for (int i = ANIMATING13; i < BRIDGE_FLAT; i++)
+	for (lp = ANIMATING13; lp <= ANIMATING16_MIP; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseAnimatingSlots;
 		obj->control = ControlAnimatingSlots;
 		obj->save_flags = 1;
@@ -526,8 +527,8 @@ void ObjectObjects()
 	obj->save_anim = 1;
 	obj->save_mesh = 1;
 
-	for (int i = 0; i < 28; i++)
-		meshes[(objects[BURNING_ROOTS].mesh_index + (i * 2)) + 1] = meshes[objects[ANIMATING16_MIP].mesh_index + (i * 2)];
+	for (lp = 0; lp < 28; lp++)
+		meshes[(objects[BURNING_ROOTS].mesh_index + (lp * 2)) + 1] = meshes[objects[ANIMATING16_MIP].mesh_index + (lp * 2)];
 
 	obj = &objects[GRAPPLING_TARGET];
 	obj->initialise = InitialiseGrapplingTarget;
@@ -568,9 +569,9 @@ void ObjectObjects()
 	obj->save_anim = 1;
 	obj->save_mesh = 1;
 
-	for (int i = SWITCH_TYPE7; i < AIRLOCK_SWITCH; i++)
+	for (lp = SWITCH_TYPE7; lp <= SWITCH_TYPE8; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseExplodingSwitch;
 		obj->control = ControlAnimatingSlots;
 		obj->collision = AIPickupCollision;
@@ -586,9 +587,9 @@ void ObjectObjects()
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
 
-	for (int i = RAISING_BLOCK1; i < EXPANDING_PLATFORM; i++)
+	for (lp = RAISING_BLOCK1; lp <= RAISING_BLOCK2; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseRaisingBlock;
 		obj->control = ControlRaisingBlock;
 		obj->collision = 0;
@@ -597,9 +598,9 @@ void ObjectObjects()
 		obj->save_flags = 1;
 	}
 
-	for (int i = SMOKE_EMITTER_WHITE; i < EARTHQUAKE; i++)
+	for (lp = SMOKE_EMITTER_WHITE; lp <= STEAM_EMITTER; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseSmokeEmitter;
 		obj->control = ControlSmokeEmitter;
 		obj->draw_routine = 0;
@@ -725,16 +726,16 @@ void ObjectObjects()
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
 
-	for (int i = WATERFALL1; i < FISHTANK; i++)
+	for (lp = WATERFALL1; lp <= WATERFALL3; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->control = ControlWaterfall;
 		obj->save_flags = 1;
 	}
 
-	for (int i = WATERFALLSS1; i < ANIMATING1; i++)
+	for (lp = WATERFALLSS1; lp <= WATERFALLSS2; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->control = ControlWaterfall;
 		obj->save_flags = 1;
 	}
@@ -761,6 +762,7 @@ void ObjectObjects()
 void TrapObjects()
 {
 	OBJECT_INFO* obj;
+	long lp;
 
 	obj = &objects[ELECTRICAL_CABLES];
 	obj->control = ControlElectricalCables;
@@ -803,9 +805,9 @@ void TrapObjects()
 	obj->hit_points = 0;
 	obj->save_flags = 1;
 
-	for (int i = FALLING_BLOCK; i < CRUMBLING_FLOOR; i++)
+	for (lp = FALLING_BLOCK; lp <= FALLING_BLOCK2; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseFallingBlock2;
 		obj->control = FallingBlock;
 		obj->collision = FallingBlockCollision;
@@ -822,9 +824,9 @@ void TrapObjects()
 	obj->save_flags = 1;
 	obj->save_anim = 1;
 
-	for (int i = PUSHABLE_OBJECT1; i < WRECKING_BALL; i++)
+	for (lp = PUSHABLE_OBJECT1; lp <= PUSHABLE_OBJECT5; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialiseMovingBlock;
 		obj->control = MovableBlock;
 		obj->collision = MovableBlockCollision;
@@ -958,9 +960,9 @@ void TrapObjects()
 	obj->using_drawanimating_item = 0;
 	obj->save_flags = 1;
 
-	for (int i = PROPELLER_H; i < GRAPPLING_TARGET; i++)
+	for (lp = PROPELLER_H; lp <= PROPELLER_V; lp++)
 	{
-		obj = &objects[i];
+		obj = &objects[lp];
 		obj->initialise = InitialisePropeller;
 		obj->control = ControlPropeller;
 		obj->save_flags = 1;
@@ -978,6 +980,7 @@ void TrapObjects()
 void BaddyObjects()
 {
 	OBJECT_INFO* obj;
+	long lp;
 
 	obj = &objects[LARA];
 	obj->initialise = InitialiseLaraLoad;
@@ -1505,8 +1508,8 @@ void BaddyObjects()
 		bones[obj->bone_index + 52] |= 8;
 		bones[obj->bone_index + 52] |= 4;
 
-		for (int i = 0; i < 20; i++)
-			meshes[obj->mesh_index + (i * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (i * 2)];
+		for (lp = 0; lp < 20; lp++)
+			meshes[obj->mesh_index + (lp * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (lp * 2)];
 	}
 
 	if (objects[SNIPER].loaded)
@@ -1784,8 +1787,8 @@ void BaddyObjects()
 		bones[obj->bone_index + 52] |= 8;
 		bones[obj->bone_index + 52] |= 4;
 
-		for (int i = 0; i < 16; i++)
-			meshes[obj->mesh_index + ((i * 2) + 1)] = meshes[objects[MESHSWAP1].mesh_index + (i * 2)];
+		for (lp = 0; lp < 16; lp++)
+			meshes[obj->mesh_index + (lp * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (lp * 2)];
 	}
 
 	if (objects[ROMAN_GOD].loaded)
@@ -1811,8 +1814,8 @@ void BaddyObjects()
 		bones[obj->bone_index + 52] |= 8;
 		bones[obj->bone_index + 52] |= 4;
 
-		for (int i = 0; i < 17; i++)
-			meshes[obj->mesh_index + ((i * 2) + 1)] = meshes[objects[MESHSWAP1].mesh_index + (i * 2)];
+		for (lp = 0; lp < 17; lp++)
+			meshes[obj->mesh_index + (lp * 2) + 1] = meshes[objects[MESHSWAP1].mesh_index + (lp * 2)];
 	}
 
 	if (objects[GUARDIAN].loaded)
@@ -1857,30 +1860,34 @@ void BaddyObjects()
 
 void InitialiseObjects()
 {
-	for (int i = 0; i < 460; i++)
+	OBJECT_INFO* obj;
+	long lp;
+
+	for (lp = 0; lp < NUMBER_OBJECTS; lp++)
 	{
-		objects[i].initialise = 0;
-		objects[i].collision = 0;
-		objects[i].control = 0;
-		objects[i].intelligent = 0;
-		objects[i].save_position = 0;
-		objects[i].save_hitpoints = 0;
-		objects[i].save_flags = 0;
-		objects[i].save_anim = 0;
-		objects[i].water_creature = 0;
-		objects[i].using_drawanimating_item = 1;
-		objects[i].save_mesh = 0;
-		objects[i].draw_routine = DrawAnimatingItem;
-		objects[i].ceiling = 0;
-		objects[i].floor = 0;
-		objects[i].pivot_length = 0;
-		objects[i].radius = 10;
-		objects[i].shadow_size = 0;
-		objects[i].hit_points = -16384;
-		objects[i].explodable_meshbits = 0;
-		objects[i].draw_routine_extra = 0;
-		objects[i].frame_base = (short*)((long) objects[i].frame_base + (char*) frames);
-		objects[i].object_mip = 0;
+		obj = &objects[lp];
+		obj->initialise = 0;
+		obj->collision = 0;
+		obj->control = 0;
+		obj->intelligent = 0;
+		obj->save_position = 0;
+		obj->save_hitpoints = 0;
+		obj->save_flags = 0;
+		obj->save_anim = 0;
+		obj->water_creature = 0;
+		obj->using_drawanimating_item = 1;
+		obj->save_mesh = 0;
+		obj->draw_routine = DrawAnimatingItem;
+		obj->ceiling = 0;
+		obj->floor = 0;
+		obj->pivot_length = 0;
+		obj->radius = 10;
+		obj->shadow_size = 0;
+		obj->hit_points = -16384;
+		obj->explodable_meshbits = 0;
+		obj->draw_routine_extra = 0;
+		obj->frame_base = (short*)((long)obj->frame_base + (char*)frames);
+		obj->object_mip = 0;
 	}
 
 	BaddyObjects();
@@ -1889,8 +1896,8 @@ void InitialiseObjects()
 	InitialiseHair();
 	InitialiseEffects();
 
-	for (int i = 0; i < 6; i++)
-		SequenceUsed[i] = 0;
+	for (lp = 0; lp < 6; lp++)
+		SequenceUsed[lp] = 0;
 
 	NumRPickups = 0;
 	CurrentSequence = 0;
@@ -1901,8 +1908,8 @@ void InitialiseObjects()
 	SequenceResults[2][0][1] = 4;
 	SequenceResults[2][1][0] = 5;
 
-	for (int i = 0; i < gfNumMips; i++)
-		objects[2 * (gfMips[i] & 0xF) + ANIMATING1].object_mip = 64 * (gfMips[i] & 0xF0);
+	for (lp = 0; lp < gfNumMips; lp++)
+		objects[2 * (gfMips[lp] & 0xF) + ANIMATING1].object_mip = 64 * (gfMips[lp] & 0xF0);
 
 	if (objects[RAT].loaded)
 		Rats = (RAT_STRUCT*)game_malloc(832);
@@ -1919,17 +1926,18 @@ void GetCarriedItems()
 	ITEM_INFO* baddy;
 	ITEM_INFO* pickup;
 	ROOM_INFO* r;
+	long lp;
 	short item_num;
 
-	for (int i = 0; i < level_items; i++)
+	for (lp = 0; lp < level_items; lp++)
 	{
-		baddy = &items[i];
+		baddy = &items[lp];
 		baddy->carried_item = NO_ITEM;
 	}
 
-	for (int i = 0; i < level_items; i++)
+	for (lp = 0; lp < level_items; lp++)
 	{
-		baddy = &items[i];
+		baddy = &items[lp];
 
 		if (objects[baddy->object_number].intelligent || (baddy->object_number >= SEARCH_OBJECT1 && baddy->object_number <= SEARCH_OBJECT3))
 		{

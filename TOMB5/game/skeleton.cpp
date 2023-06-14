@@ -144,7 +144,7 @@ void TriggerSkeletonFire(ITEM_INFO* item)
 	sptr->Yvel = 0;
 	sptr->Zvel = (GetRandomControl() & 0x1FF) - 256;
 	sptr->Friction = 4;
-	sptr->Flags = 4762;
+	sptr->Flags = SF_ATTACHEDNODE | SF_ITEM | SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->NodeNumber = 8;
 	sptr->FxObj = item - items;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
@@ -182,9 +182,9 @@ void TriggerFontFire(ITEM_INFO* item, long num, long loop)
 		sptr->On = 1;
 		sptr->dB = 0;
 		sptr->sR = 0;
-		sptr->dR = (uchar)((num * ((GetRandomControl() & 0xF) + 64)) >> 5);
+		sptr->dR = uchar((num * ((GetRandomControl() & 0xF) + 64)) >> 5);
 		sptr->dG = sptr->dR - (sptr->dR >> 2);
-		sptr->sB = (uchar)((num * ((GetRandomControl() & 0x1F) + 48)) >> 5);
+		sptr->sB = uchar((num * ((GetRandomControl() & 0x1F) + 48)) >> 5);
 		sptr->sG = sptr->sB >> 1;
 		sptr->FadeToBlack = 4;
 		sptr->ColFadeSpeed = (GetRandomControl() & 3) + 16;
@@ -199,7 +199,7 @@ void TriggerFontFire(ITEM_INFO* item, long num, long loop)
 		sptr->Yvel = 0;
 		sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 		sptr->Friction = 3;
-		sptr->Flags = 538;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 		sptr->MaxYvel = 0;

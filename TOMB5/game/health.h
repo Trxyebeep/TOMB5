@@ -10,6 +10,6 @@ void DrawPickups(long timed);
 void AddDisplayPickup(short object_number);
 
 extern DISPLAYPU pickups[8];
-extern short PickupX;
+extern long PickupX;
 extern short CurrentPickup;
 extern long health_bar_timer;

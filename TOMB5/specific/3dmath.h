@@ -5,6 +5,7 @@ void AlterFOV(short fov);
 void aSetViewMatrix();
 void phd_PushMatrix();
 void phd_PushUnitMatrix();
+void phd_PopMatrix();
 void phd_SetTrans(long x, long y, long z);
 void phd_TranslateRel(long x, long y, long z);
 void phd_TranslateAbs(long x, long y, long z);
@@ -96,10 +97,4 @@ __inline float fSin(long angle)
 __inline float fCos(long angle)
 {
 	return fcossin_tbl[ushort(angle + 0x4000)];
-}
-
-__inline void phd_PopMatrix()
-{
-	phd_mxptr -= indices_count;
-	aMXPtr -= indices_count;
 }

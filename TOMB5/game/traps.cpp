@@ -408,10 +408,10 @@ void DartsControl(short item_number)
 	{
 		x = item->pos.x_pos;
 		z = item->pos.z_pos;
-		speed = (item->speed * phd_cos(item->pos.x_rot)) >> 14;
-		item->pos.z_pos += (speed * phd_cos(item->pos.y_rot)) >> 14;
-		item->pos.x_pos += (speed * phd_sin(item->pos.y_rot)) >> 14;
-		item->pos.y_pos -= (item->speed * phd_sin(item->pos.x_rot)) >> 14;
+		speed = (item->speed * phd_cos(item->pos.x_rot)) >> W2V_SHIFT;
+		item->pos.z_pos += (speed * phd_cos(item->pos.y_rot)) >> W2V_SHIFT;
+		item->pos.x_pos += (speed * phd_sin(item->pos.y_rot)) >> W2V_SHIFT;
+		item->pos.y_pos -= (item->speed * phd_sin(item->pos.x_rot)) >> W2V_SHIFT;
 		room_num = item->room_number;
 		floor = GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_num);
 
@@ -801,7 +801,7 @@ void ControlRollingBall(short item_number)
 			fz = phd_sqrt(SQUARE(camera.pos.x - item->pos.x_pos) + SQUARE(camera.pos.y - item->pos.y_pos) + SQUARE(camera.pos.z - item->pos.z_pos));
 
 			if (fz < 16384)
-				camera.bounce = -(((16384 - fz) * abs(item->fallspeed)) >> 14);
+				camera.bounce = -(((16384 - fz) * abs(item->fallspeed)) >> W2V_SHIFT);
 		}
 
 		if (item->pos.y_pos - h < 512)
@@ -1047,8 +1047,8 @@ void FloorTrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 				item->goal_anim_state = 1;
 				item->status = ITEM_ACTIVE;
 				UseForcedFixedCamera = 1;
-				ForcedFixedCamera.x = item->pos.x_pos - ((2048 * phd_sin(item->pos.y_rot) >> 14));
-				ForcedFixedCamera.z = item->pos.z_pos - ((2048 * phd_cos(item->pos.y_rot) >> 14));
+				ForcedFixedCamera.x = item->pos.x_pos - ((2048 * phd_sin(item->pos.y_rot) >> W2V_SHIFT));
+				ForcedFixedCamera.z = item->pos.z_pos - ((2048 * phd_cos(item->pos.y_rot) >> W2V_SHIFT));
 				y = item->pos.y_pos - 2048;
 
 				if (y < room[item->room_number].maxceiling)
@@ -1102,9 +1102,9 @@ void CeilingTrapDoorCollision(short item_number, ITEM_INFO* l, COLL_INFO* coll)
 		item->status = ITEM_ACTIVE;
 		item->goal_anim_state = 1;
 		UseForcedFixedCamera = 1;
-		ForcedFixedCamera.x = item->pos.x_pos - ((1024 * phd_sin(item->pos.y_rot)) >> 14);
+		ForcedFixedCamera.x = item->pos.x_pos - ((1024 * phd_sin(item->pos.y_rot)) >> W2V_SHIFT);
 		ForcedFixedCamera.y = item->pos.y_pos + 1024;
-		ForcedFixedCamera.z = item->pos.z_pos - ((1024 * phd_cos(item->pos.y_rot)) >> 14);
+		ForcedFixedCamera.z = item->pos.z_pos - ((1024 * phd_cos(item->pos.y_rot)) >> W2V_SHIFT);
 		ForcedFixedCamera.room_number = item->room_number;
 	}
 	else if (item->current_anim_state == 1)

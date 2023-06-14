@@ -41,7 +41,8 @@ void InitialiseFunctionTable()
 
 void HWInitialise()
 {
-	Log(2, "HWIntialise");	//nice typo
+	Log(__FUNCTION__);
+
 	App.dx.lpD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_DISABLE);	//disable all stages
 	App.dx.lpD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
 	App.dx.lpD3DDevice->SetTextureStageState(2, D3DTSS_COLOROP, D3DTOP_DISABLE);
@@ -100,7 +101,7 @@ void HWInitialise()
 HRESULT HWBeginScene()
 {
 	if (App.dx.InScene)
-		Log(1, "Already In Scene");
+		Log("Already In Scene");
 
 	App.dx.InScene = 1;
 	App.dx.DoneBlit = 0;

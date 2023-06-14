@@ -52,8 +52,8 @@ void HitmanControl(short item_number)
 	torso_y = 0;
 
 	room_number = item->room_number;
-	Xoffset = 808 * phd_sin(item->pos.y_rot) >> 14;
-	Zoffset = 808 * phd_cos(item->pos.y_rot) >> 14;
+	Xoffset = 808 * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
+	Zoffset = 808 * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
 
 	x = item->pos.x_pos + Xoffset;
 	y = item->pos.y_pos;
@@ -214,7 +214,7 @@ void HitmanControl(short item_number)
 		CreatureMood(item, &info, hitman->enemy != lara_item);
 		angle = CreatureTurn(item, hitman->maximum_turn);
 
-		if ((larainfo.distance < 0x400000 && lara_item->speed > 20 || item->hit_status || TargetVisible(item, &larainfo)) && !(item->ai_bits & 16))
+		if ((larainfo.distance < 0x400000 && lara_item->speed > 20 || item->hit_status || TargetVisible(item, &larainfo)) && !(item->ai_bits & FOLLOW))
 		{
 			hitman->enemy = lara_item;
 			AlertAllGuards(item_number);
@@ -228,7 +228,7 @@ void HitmanControl(short item_number)
 			hitman->LOT.is_jumping = 0;
 			hitman->maximum_turn = 0;
 
-			if (info.ahead && item->ai_bits != 1)
+			if (info.ahead && item->ai_bits != GUARD)
 			{
 				torso_y = info.angle >> 1;
 				torso_x = info.x_angle;
@@ -236,26 +236,26 @@ void HitmanControl(short item_number)
 
 			if (item->required_anim_state)
 				item->goal_anim_state = item->required_anim_state;
-			else if (item->ai_bits & 1)
+			else if (item->ai_bits & GUARD)
 			{
 				head = AIGuard(hitman);
 
-				if (item->ai_bits & 4)
+				if (item->ai_bits & PATROL1)
 				{
 					item->trigger_flags--;
 
 					if (item->trigger_flags < 1)
-						item->ai_bits = 4;
+						item->ai_bits = PATROL1;
 				}
 			}
 			else if (Targetable(item, &info))
 			{
 				if (info.distance < 0x1000000 || info.zone_number != info.enemy_zone)
 					item->goal_anim_state = 38;
-				else if (item->ai_bits != 4)
+				else if (item->ai_bits != PATROL1)
 					item->goal_anim_state = 2;
 			}
-			else if (item->ai_bits & 4)
+			else if (item->ai_bits & PATROL1)
 				item->goal_anim_state = 2;
 			else if (jump_ahead || long_jump_ahead)
 			{
@@ -273,7 +273,7 @@ void HitmanControl(short item_number)
 			{
 				if (hitman->mood == BORED_MOOD)
 					item->goal_anim_state = 1;
-				else if (info.distance < 0x900000 || item->ai_bits & 0x10)
+				else if (info.distance < 0x900000 || item->ai_bits & FOLLOW)
 					item->goal_anim_state = 2;
 				else
 					item->goal_anim_state = 3;
@@ -455,7 +455,7 @@ void HitmanControl(short item_number)
 		{
 			item->required_anim_state = 1;
 			item->trigger_flags = 300;
-			item->ai_bits = 5;
+			item->ai_bits = GUARD | PATROL1;
 		}
 
 		item->item_flags[3]++;

@@ -40,8 +40,8 @@ void FlareControl(short item_number)
 	x = flare->pos.x_pos;
 	y = flare->pos.y_pos;
 	z = flare->pos.z_pos;
-	xv = flare->speed * phd_sin(flare->pos.y_rot) >> 14;
-	zv = flare->speed * phd_cos(flare->pos.y_rot) >> 14;
+	xv = flare->speed * phd_sin(flare->pos.y_rot) >> W2V_SHIFT;
+	zv = flare->speed * phd_cos(flare->pos.y_rot) >> W2V_SHIFT;
 	flare->pos.x_pos += xv;
 	flare->pos.z_pos += zv;
 
@@ -121,9 +121,9 @@ void CreateFlare(short object, long thrown)
 	if (collision || pos.y > GetHeight(floor, pos.x, pos.y, pos.z))
 	{
 		collided = 1;
-		flare->pos.y_rot = lara_item->pos.y_rot - 32768;
-		flare->pos.x_pos = lara_item->pos.x_pos + (320 * phd_sin(flare->pos.y_rot) >> 14);
-		flare->pos.z_pos = lara_item->pos.z_pos + (320 * phd_cos(flare->pos.y_rot) >> 14);
+		flare->pos.y_rot = lara_item->pos.y_rot - 0x8000;
+		flare->pos.x_pos = lara_item->pos.x_pos + (320 * phd_sin(flare->pos.y_rot) >> W2V_SHIFT);
+		flare->pos.z_pos = lara_item->pos.z_pos + (320 * phd_cos(flare->pos.y_rot) >> W2V_SHIFT);
 		flare->room_number = room_number;
 	}
 	else if (thrown)

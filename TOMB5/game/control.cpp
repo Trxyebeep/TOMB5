@@ -646,7 +646,7 @@ long CheckGuardOnTrigger()
 	room_number = lara_item->room_number;
 	GetFloor(lara_item->pos.x_pos, lara_item->pos.y_pos, lara_item->pos.z_pos, &room_number);
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < MAX_LOT; i++)
 	{
 		cinfo = &baddie_slots[i];
 
@@ -690,9 +690,9 @@ void TranslateItem(ITEM_INFO* item, short x, short y, short z)
 
 	s = phd_sin(item->pos.y_rot);
 	c = phd_cos(item->pos.y_rot);
-	item->pos.x_pos += (z * s + x * c) >> 14;
+	item->pos.x_pos += (z * s + x * c) >> W2V_SHIFT;
 	item->pos.y_pos += y;
-	item->pos.z_pos += (z * c - x * s) >> 14;
+	item->pos.z_pos += (z * c - x * s) >> W2V_SHIFT;
 }
 
 void InitCutPlayed()
@@ -1120,7 +1120,7 @@ long GetHeight(FLOOR_INFO* floor, long x, long y, long z)
 			break;
 
 		default:
-			Log(0, "GetHeight(): Unknown type");
+			Log("GetHeight(): Unknown type");
 			break;
 		}
 
@@ -1177,20 +1177,20 @@ FLOOR_INFO* GetFloor(long x, long y, long z, short* room_number)
 
 	} while (door != NO_ROOM);
 
-	if (y < floor->floor << 8)
+	if (y < GetMaximumFloor(floor, x, z))
 	{
-		if (y < floor->ceiling << 8 && floor->sky_room != NO_ROOM)
+		if (y < GetMinimumCeiling(floor, x, z) && floor->sky_room != NO_ROOM)
 		{
 			do
 			{
-				if (CheckNoColCeilingTriangle(floor, x, z) == 1 || CheckNoColCeilingTriangle(floor, x, z) == -1 && y >= r->maxceiling)
+				if (CheckNoColCeilingTriangle(floor, x, z) == 1)
 					break;
 
 				*room_number = floor->sky_room;
 				r = &room[floor->sky_room];
 				floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
 
-				if (y >= floor->ceiling << 8)
+				if (y >= GetMinimumCeiling(floor, x, z))
 					break;
 
 			} while (floor->sky_room != NO_ROOM);
@@ -1200,7 +1200,7 @@ FLOOR_INFO* GetFloor(long x, long y, long z, short* room_number)
 	{
 		while (1)
 		{
-			if (CheckNoColFloorTriangle(floor, x, z) == 1 || CheckNoColFloorTriangle(floor, x, z) == -1 && y < r->minfloor)
+			if (CheckNoColFloorTriangle(floor, x, z) == 1)
 				break;
 
 			*room_number = floor->pit_room;
@@ -1208,7 +1208,7 @@ FLOOR_INFO* GetFloor(long x, long y, long z, short* room_number)
 
 			floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
 
-			if (y < floor->floor << 8)
+			if (y < GetMaximumFloor(floor, x, z))
 				break;
 
 			if (floor->pit_room == NO_ROOM)
@@ -1483,7 +1483,7 @@ long GetCeiling(FLOOR_INFO* floor, long x, long y, long z)
 				break;
 
 			default:
-				Log(0, "GetCeiling(): Unknown type");
+				Log("GetCeiling(): Unknown type");
 				break;
 			}
 
@@ -2144,7 +2144,7 @@ void _TestTriggers(short* data, long heavy, long HeavyFlags)
 	{
 		if (!heavy)
 		{
-			quad = ushort(lara_item->pos.y_rot + 8192) >> 14;
+			quad = ushort(lara_item->pos.y_rot + 0x2000) / 0x4000;
 
 			if ((1 << (quad + 8)) & *data)
 				lara.climb_status = 1;
@@ -2621,7 +2621,7 @@ void FlipMap(long FlipNumber)
 	flip_stats[FlipNumber] = !flip_stats[FlipNumber];
 	flip_status = flip_stats[FlipNumber];
 
-	for (short slot = 0; slot < 5; slot++)
+	for (short slot = 0; slot < MAX_LOT; slot++)
 	{
 		cinfo = &baddie_slots[slot];
 		cinfo->LOT.target_box = 0x7FF;
@@ -2856,12 +2856,12 @@ long GetWaterHeight(long x, long y, long z, short room_number)
 			r = &room[floor->sky_room];
 
 			if (!(r->flags & ROOM_UNDERWATER))
-				return r->minfloor;
+				break;
 
 			floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
 		}
 
-		return r->maxceiling;
+		return GetMinimumCeiling(floor, x, z);
 	}
 	else
 	{
@@ -2873,7 +2873,7 @@ long GetWaterHeight(long x, long y, long z, short room_number)
 			r = &room[floor->pit_room];
 
 			if (r->flags & ROOM_UNDERWATER)
-				return r->maxceiling;
+				return GetMaximumFloor(floor, x, z);
 
 			floor = &r->floor[((z - r->z) >> 10) + r->x_size * ((x - r->x) >> 10)];
 		}
@@ -3318,10 +3318,10 @@ void AnimateItem(ITEM_INFO* item)
 		speed2 >>= 16;
 	}
 
-	item->pos.x_pos += (item->speed * phd_sin(item->pos.y_rot)) >> 14;
-	item->pos.z_pos += (item->speed * phd_cos(item->pos.y_rot)) >> 14;
-	item->pos.x_pos += (speed2 * phd_sin(item->pos.y_rot + 0x4000)) >> 14;
-	item->pos.z_pos += (speed2 * phd_cos(item->pos.y_rot + 0x4000)) >> 14;
+	item->pos.x_pos += (item->speed * phd_sin(item->pos.y_rot)) >> W2V_SHIFT;
+	item->pos.z_pos += (item->speed * phd_cos(item->pos.y_rot)) >> W2V_SHIFT;
+	item->pos.x_pos += (speed2 * phd_sin(item->pos.y_rot + 0x4000)) >> W2V_SHIFT;
+	item->pos.z_pos += (speed2 * phd_cos(item->pos.y_rot + 0x4000)) >> W2V_SHIFT;
 }
 
 long RayBoxIntersect(PHD_VECTOR* min, PHD_VECTOR* max, PHD_VECTOR* origin, PHD_VECTOR* dir, PHD_VECTOR* Coord)
@@ -3474,16 +3474,16 @@ long DoRayBox(GAME_VECTOR* start, GAME_VECTOR* target, short* bounds, PHD_3DPOS*
 	x = target->x - ItemPos->x_pos;
 	y = target->y - ItemPos->y_pos;
 	z = target->z - ItemPos->z_pos;
-	tpos.x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z) >> 14;
-	tpos.y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z) >> 14;
-	tpos.z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z) >> 14;
+	tpos.x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z) >> W2V_SHIFT;
+	tpos.y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z) >> W2V_SHIFT;
+	tpos.z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z) >> W2V_SHIFT;
 
 	x = start->x - ItemPos->x_pos;
 	y = start->y - ItemPos->y_pos;
 	z = start->z - ItemPos->z_pos;
-	spos.x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z) >> 14;
-	spos.y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z) >> 14;
-	spos.z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z) >> 14;
+	spos.x = (phd_mxptr[M00] * x + phd_mxptr[M01] * y + phd_mxptr[M02] * z) >> W2V_SHIFT;
+	spos.y = (phd_mxptr[M10] * x + phd_mxptr[M11] * y + phd_mxptr[M12] * z) >> W2V_SHIFT;
+	spos.z = (phd_mxptr[M20] * x + phd_mxptr[M21] * y + phd_mxptr[M22] * z) >> W2V_SHIFT;
 
 	phd_PopMatrix();
 
@@ -3509,9 +3509,9 @@ long DoRayBox(GAME_VECTOR* start, GAME_VECTOR* target, short* bounds, PHD_3DPOS*
 	phd_PushUnitMatrix();
 	phd_RotY(ItemPos->y_rot);
 
-	x = (phd_mxptr[M00] * Coord->x + phd_mxptr[M01] * Coord->y + phd_mxptr[M02] * Coord->z) >> 14;
-	y = (phd_mxptr[M10] * Coord->x + phd_mxptr[M11] * Coord->y + phd_mxptr[M12] * Coord->z) >> 14;
-	z = (phd_mxptr[M20] * Coord->x + phd_mxptr[M21] * Coord->y + phd_mxptr[M22] * Coord->z) >> 14;
+	x = (phd_mxptr[M00] * Coord->x + phd_mxptr[M01] * Coord->y + phd_mxptr[M02] * Coord->z) >> W2V_SHIFT;
+	y = (phd_mxptr[M10] * Coord->x + phd_mxptr[M11] * Coord->y + phd_mxptr[M12] * Coord->z) >> W2V_SHIFT;
+	z = (phd_mxptr[M20] * Coord->x + phd_mxptr[M21] * Coord->y + phd_mxptr[M22] * Coord->z) >> W2V_SHIFT;
 	Coord->x = x;
 	Coord->y = y;
 	Coord->z = z;
@@ -3671,4 +3671,167 @@ void ResetGuards()
 		if (item->room_number != room_number)
 			ItemNewRoom(item_number, room_number);
 	}
+}
+
+long GetMaximumFloor(FLOOR_INFO* floor, long x, long z)
+{
+	long height, h1, h2;
+	short* data, type, dx, dz, t0, t1, t2, t3, hadj;
+
+	height = floor->floor << 8;
+
+	if (height != NO_HEIGHT && floor->index)
+	{
+		data = &floor_data[floor->index];
+		type = *data++;
+		h1 = 0;
+		h2 = 0;
+
+		if ((type & 0x1F) != TILT_TYPE)
+		{
+			if ((type & 0x1F) == SPLIT1 || (type & 0x1F) == SPLIT2 || (type & 0x1F) == NOCOLF1T || (type & 0x1F) == NOCOLF1B || (type & 0x1F) == NOCOLF2T || (type & 0x1F) == NOCOLF2B)
+			{
+				dx = x & 0x3FF;
+				dz = z & 0x3FF;
+				t0 = *data & 0xF;
+				t1 = *data >> 4 & 0xF;
+				t2 = *data >> 8 & 0xF;
+				t3 = *data >> 12 & 0xF;
+
+				if ((type & 0x1F) == SPLIT1 || (type & 0x1F) == NOCOLF1T || (type & 0x1F) == NOCOLF1B)
+				{
+					if (dx <= 1024 - dz)
+					{
+						hadj = type >> 10 & 0x1F;
+						h1 = t2 - t1;
+						h2 = t0 - t1;
+					}
+					else
+					{
+						hadj = type >> 5 & 0x1F;
+						h1 = t3 - t0;
+						h2 = t3 - t2;
+					}
+				}
+				else
+				{
+					if (dx <= dz)
+					{
+						hadj = type >> 10 & 0x1F;
+						h1 = t2 - t1;
+						h2 = t3 - t2;
+					}
+					else
+					{
+						hadj = type >> 5 & 0x1F;
+						h1 = t3 - t0;
+						h2 = t0 - t1;
+					}
+				}
+
+				if (hadj & 0x10)
+					hadj |= 0xFFF0;
+
+				height += hadj << 8;
+			}
+		}
+		else
+		{
+			h1 = *data >> 8;
+			h2 = *(char*)data;
+		}
+
+		height += 256 * (abs(h1) + abs(h2));
+	}
+
+	return height;
+}
+
+long GetMinimumCeiling(FLOOR_INFO* floor, long x, long z)
+{
+	long height, h1, h2;
+	short* data, type, dx, dz, t0, t1, t2, t3, hadj, ended;
+
+	height = floor->ceiling << 8;
+
+	if (height != NO_HEIGHT && floor->index)
+	{
+		data = &floor_data[floor->index];
+		type = *data++;
+		ended = 0;
+
+		if ((type & 0x1F) == TILT_TYPE || (type & 0x1F) == SPLIT1 || (type & 0x1F) == SPLIT2 || (type & 0x1F) == NOCOLF1T || (type & 0x1F) == NOCOLF1B || (type & 0x1F) == NOCOLF2T || (type & 0x1F) == NOCOLF2B)
+		{
+			data++;
+
+			if (type & 0x8000)
+				ended = 1;
+
+			type = *data++;
+		}
+
+		if (!ended)
+		{
+			h1 = 0;
+			h2 = 0;
+
+			if ((type & 0x1F) != ROOF_TYPE)
+			{
+				if ((type & 0x1F) == SPLIT3 || (type & 0x1F) == SPLIT4 || (type & 0x1F) == NOCOLC1T || (type & 0x1F) == NOCOLC1B || (type & 0x1F) == NOCOLC2T || (type & 0x1F) == NOCOLC2B)
+				{
+					dx = x & 0x3FF;
+					dz = z & 0x3FF;
+					t0 = -(*data & 0xF);
+					t1 = -(*data >> 4 & 0xF);
+					t2 = -(*data >> 8 & 0xF);
+					t3 = -(*data >> 12 & 0xF);
+
+					if ((type & 0x1F) == SPLIT3 || (type & 0x1F) == NOCOLC1T || (type & 0x1F) == NOCOLC1B)
+					{
+						if (dx <= 1024 - dz)
+						{
+							hadj = type >> 10 & 0x1F;
+							h1 = t2 - t1;
+							h2 = t3 - t2;
+						}
+						else
+						{
+							hadj = type >> 5 & 0x1F;
+							h1 = t3 - t0;
+							h2 = t0 - t1;
+						}
+					}
+					else
+					{
+						if (dx <= dz)
+						{
+							hadj = type >> 10 & 0x1F;
+							h1 = t2 - t1;
+							h2 = t0 - t1;
+						}
+						else
+						{
+							hadj = type >> 5 & 0x1F;
+							h1 = t3 - t0;
+							h2 = t3 - t2;
+						}
+					}
+
+					if (hadj & 0x10)
+						hadj |= 0xFFF0;
+
+					height += hadj << 8;
+				}
+			}
+			else
+			{
+				h1 = *data >> 8;
+				h2 = *(char*)data;
+			}
+
+			height -= 256 * (abs(h1) + abs(h2));
+		}
+	}
+
+	return height;
 }

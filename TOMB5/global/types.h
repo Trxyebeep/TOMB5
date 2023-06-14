@@ -28,6 +28,8 @@
 #define FVF (D3DFVF_TEX2 | D3DFVF_SPECULAR | D3DFVF_DIFFUSE | D3DFVF_XYZRHW)
 #define MALLOC_SIZE	15000000	//15MB
 #define GAME_FOV	(80 * 182)
+#define MAX_LOT		5
+#define W2V_SHIFT	14
 
 /*typedefs*/
 typedef unsigned char uchar;
@@ -35,6 +37,45 @@ typedef unsigned short ushort;
 typedef unsigned long ulong;
 
 /*enums*/
+
+enum DX_FLAGS
+{
+	DXF_NONE = 0x0,
+	DXF_FULLSCREEN = 0x1,
+	DXF_WINDOWED = 0x2,
+	DXF_ZBUFFER = 0x10,
+	DXF_FPUSETUP = 0x20,
+	DXF_NOFREE = 0x40,
+	DXF_HWR = 0x80
+};
+
+enum ai_bits
+{
+	GUARD = 1 << 0,
+	AMBUSH = 1 << 1,
+	PATROL1 = 1 << 2,
+	MODIFY = 1 << 3,
+	FOLLOW = 1 << 4
+};
+
+enum spark_flags
+{
+	SF_NONE =			0x0,
+	SF_FIRE =			0x1,	//burns Lara at contact
+	SF_SCALE =			0x2,	//scale using sptr->Scalar
+	SF_UNUSED =			0x4,
+	SF_DEF =			0x8,	//use sptr->Def for the drawn sprite (otherwise do flat quad)
+	SF_ROTATE =			0x10,	//rotate the drawn sprite (for regular sparks, SF_DEF is required)
+	SF_NOKILL =			0x20,	//flag to avoid killing the spark in GetFreeSpark if no free slots are found
+	SF_FX =				0x40,	//spark is attached to an effect
+	SF_ITEM =			0x80,	//spark is attached to an item
+	SF_OUTSIDE =		0x100,	//spark is affected by wind
+	SF_UNUSED2 =		0x200,
+	SF_DAMAGE =			0x400,	//damages lara at contact
+	SF_UNWATER =		0x800,	//for underwater explosions to create bubbles etc.
+	SF_ATTACHEDNODE =	0x1000,	//spark is attached to an item node, uses NodeOffsets
+	SF_GREEN =			0x2000	//turns the spark into a green-ish blue (for explosions only)
+};
 
 enum target_type
 {
@@ -854,7 +895,6 @@ struct CAMERA_INFO
 	GAME_VECTOR target;
 	camera_type type;
 	camera_type old_type;
-	long shift;
 	long flags;
 	long fixed_camera;
 	long number_frames;
@@ -866,19 +906,13 @@ struct CAMERA_INFO
 	short actual_elevation;
 	short actual_angle;
 	short lara_node;
-	short box;
 	short number;
 	short last;
 	short timer;
 	short speed;
-	short targetspeed;
 	ITEM_INFO* item;
 	ITEM_INFO* last_item;
 	OBJECT_VECTOR* fixed;
-	long mike_at_lara;
-	PHD_VECTOR mike_pos;
-	FVECTOR fpos;
-	FVECTOR ftgt;
 };
 
 struct OBJECT_INFO
@@ -1679,8 +1713,8 @@ struct DXZBUFFERINFO
 
 struct DXD3DDEVICE
 {
-	char Name[30];
-	char About[80];
+	char Name[256];
+	char About[256];
 	LPGUID lpGuid;
 	GUID Guid;
 	D3DDEVICEDESC DeviceDesc;
@@ -1695,8 +1729,8 @@ struct DXD3DDEVICE
 
 struct DXDIRECTDRAWINFO
 {
-	char Name[30];  
-	char About[80];
+	char Name[256];  
+	char About[256];
 	LPGUID lpGuid;
 	GUID Guid;
 	DDCAPS DDCaps;
@@ -1709,8 +1743,8 @@ struct DXDIRECTDRAWINFO
 
 struct DXDIRECTSOUNDINFO
 {
-	char Name[30];
-	char About[80];
+	char Name[256];
+	char About[256];
 	LPGUID lpGuid;
 	GUID Guid;
 };
@@ -1735,7 +1769,6 @@ struct DXPTR
 	LPDIRECTDRAW4 lpDD;
 	LPDIRECT3D3 lpD3D;
 	LPDIRECT3DDEVICE3 lpD3DDevice;
-	LPDIRECT3DDEVICE3 _lpD3DDevice;
 	LPDIRECTDRAWSURFACE4 lpPrimaryBuffer;
 	LPDIRECTDRAWSURFACE4 lpBackBuffer;
 	LPDIRECTDRAWSURFACE4 lpZBuffer;
@@ -1751,7 +1784,6 @@ struct DXPTR
 #if (DIRECTINPUT_VERSION >= 0x800)
 	LPDIRECTINPUT8 lpDirectInput;
 	LPDIRECTINPUTDEVICE8 Keyboard;
-	LPDIRECTINPUTDEVICE8 Joystick;
 #else
 	IDirectInput7* lpDirectInput;
 	IDirectInputDevice7* Keyboard;
@@ -2251,6 +2283,15 @@ struct POINTLIGHT_STRUCT
 	float rad;
 };
 
+struct SPOTLIGHT_STRUCT
+{
+	FVECTOR vec;
+	float r;
+	float g;
+	float b;
+	float rad;
+};
+
 struct FOGBULB_STRUCT	//fog data used to apply fog on vertices
 {
 	FVECTOR pos;
@@ -2264,15 +2305,6 @@ struct FOGBULB_STRUCT	//fog data used to apply fog on vertices
 	float b;
 	float d;
 	long visible;
-};
-
-struct SPOTLIGHT_STRUCT
-{
-	FVECTOR vec;
-	float r;
-	float g;
-	float b;
-	float rad;
 };
 
 struct D3DTLBUMPVERTEX
@@ -2289,20 +2321,22 @@ struct D3DTLBUMPVERTEX
 	D3DVALUE ty;
 };
 
+struct DXTEXTURE
+{
+	LPDIRECT3DTEXTURE2 tex;
+	LPDIRECTDRAWSURFACE4 surface;
+};
+
 struct TEXTURE
 {
-	IDirect3DTexture2* tex;
+	LPDIRECT3DTEXTURE2 tex;
 	LPDIRECTDRAWSURFACE4 surface;
-	IDirect3DTexture2* bumpTex;
-	LPDIRECTDRAWSURFACE4 bumpSurface;
 	ulong xoff;
 	ulong yoff;
 	ulong width;
 	ulong height;
 	long tpage;
 	bool bump;
-	bool realBump;
-	bool staticTex;
 	long bumptpage;
 };
 
@@ -2356,16 +2390,9 @@ struct ROOMLET_LIGHT
 struct THREAD
 {
 	volatile long active;
-	long unk;
 	volatile long ended;
 	ulong handle;
 	ulong address;
-};
-
-struct MONOSCREEN_STRUCT
-{
-	IDirect3DTexture2* tex;
-	LPDIRECTDRAWSURFACE4 surface;
 };
 
 struct DS_SAMPLE

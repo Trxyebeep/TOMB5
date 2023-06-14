@@ -195,7 +195,7 @@ void ImpControl(short item_number)
 				else
 					item->goal_anim_state = 5;
 			}
-			else if (item->ai_bits == 16)
+			else if (item->ai_bits == FOLLOW)
 				item->goal_anim_state = 0;
 			else if (item->trigger_flags == 3)
 				item->goal_anim_state = 11;

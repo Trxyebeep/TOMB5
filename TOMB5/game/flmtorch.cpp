@@ -238,7 +238,7 @@ void TriggerTorchFlame(short item_number, long node)
 	sptr->Yvel = -16 - (GetRandomControl() & 0xF);
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Friction = 5;
-	sptr->Flags = 4762;
+	sptr->Flags = SF_ATTACHEDNODE | SF_ITEM | SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 
 	if (GetRandomControl() & 1)
@@ -295,8 +295,8 @@ void FlameTorchControl(short item_number)
 	x = item->pos.x_pos;
 	y = item->pos.y_pos;
 	z = item->pos.z_pos;
-	xv = item->speed * phd_sin(item->pos.y_rot) >> 14;
-	zv = item->speed * phd_cos(item->pos.y_rot) >> 14;
+	xv = item->speed * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
+	zv = item->speed * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
 	item->pos.x_pos += xv;
 	item->pos.z_pos += zv;
 

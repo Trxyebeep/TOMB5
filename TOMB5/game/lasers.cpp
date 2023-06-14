@@ -89,7 +89,7 @@ void ControlSteamLasers(short item_number)
 	if (item->item_flags[3])
 		item->item_flags[3]--;
 
-	item->item_flags[0] = (256 * phd_sin(256 * (GlobalCounter + (item->trigger_flags << 5))) >> 14) - ((item->trigger_flags & 1) << 8);
+	item->item_flags[0] = (256 * phd_sin(256 * (GlobalCounter + (item->trigger_flags << 5))) >> W2V_SHIFT) - ((item->trigger_flags & 1) << 8);
 
 	if (item->room_number == lara_item->room_number)
 	{

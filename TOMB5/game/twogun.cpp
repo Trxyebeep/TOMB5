@@ -229,7 +229,7 @@ void TwogunControl(short item_number)
 			creature->flags = 0;
 			creature->maximum_turn = 0;
 
-			if (!(item->ai_bits & 1))
+			if (!(item->ai_bits & GUARD))
 			{
 				if (abs(info.angle) < 364)
 					item->pos.y_rot += info.angle;
@@ -246,7 +246,7 @@ void TwogunControl(short item_number)
 				torso_x = info.x_angle >> 1;
 			}
 
-			if (item->ai_bits & 1)
+			if (item->ai_bits & GUARD)
 				head = AIGuard(creature);
 			else if (lara_info.angle > 20480 || lara_info.angle < -20480)
 				item->goal_anim_state = 8;
@@ -257,7 +257,7 @@ void TwogunControl(short item_number)
 			}
 			else if (info.distance < 0x900000 || info.zone_number != info.enemy_zone)
 				item->goal_anim_state = 5;
-			else if (item->ai_bits != 8)
+			else if (item->ai_bits != MODIFY)
 			{
 				if (item->trigger_flags != 1)
 					item->goal_anim_state = 2;
@@ -468,13 +468,13 @@ void TriggerTwogunPlasma(PHD_VECTOR* pos, short* angles, long life)
 	sptr->z = pos->z;
 	
 	ang = (GetRandomControl() & 0x7FFF) + angles[0] - 0x4000;
-	size = ((life << 6) * phd_cos(angles[1])) >> 14;
-	sptr->Xvel = short((size * phd_sin(ang)) >> 14);
-	sptr->Yvel = short(((life << 4) * phd_sin(-angles[1])) >> 14);
-	sptr->Zvel = short((size * phd_cos(ang)) >> 14);
+	size = ((life << 6) * phd_cos(angles[1])) >> W2V_SHIFT;
+	sptr->Xvel = short((size * phd_sin(ang)) >> W2V_SHIFT);
+	sptr->Yvel = short(((life << 4) * phd_sin(-angles[1])) >> W2V_SHIFT);
+	sptr->Zvel = short((size * phd_cos(ang)) >> W2V_SHIFT);
 
 	sptr->Friction = 0;
-	sptr->Flags = 538;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0x7F) - 64;
 	sptr->Gravity = (GetRandomControl() & 0x1F) + 32;
@@ -625,9 +625,9 @@ void ControlGunTestStation(ITEM_INFO* item)
 		}
 
 		p = &twogun[lp];
-		p->pos.x_pos = item->pos.x_pos + (512 * phd_sin(item->pos.y_rot) >> 14);
+		p->pos.x_pos = item->pos.x_pos + (512 * phd_sin(item->pos.y_rot) >> W2V_SHIFT);
 		p->pos.y_pos = item->pos.y_pos - 628;
-		p->pos.z_pos = item->pos.z_pos + (512 * phd_cos(item->pos.y_rot) >> 14);
+		p->pos.z_pos = item->pos.z_pos + (512 * phd_cos(item->pos.y_rot) >> W2V_SHIFT);
 		p->pos.x_rot = -512;
 		p->pos.y_rot = item->pos.y_rot;
 		p->pos.z_rot = 0;
@@ -658,9 +658,9 @@ void ControlGunTestStation(ITEM_INFO* item)
 	if (f == 340 || GlobalCounter & 1 && f < 356)
 	{
 		p = &twogun[item->item_flags[0]];
-		pos2.x = p->pos.x_pos + (p->dlength * phd_sin(item->pos.y_rot) >> 14);
+		pos2.x = p->pos.x_pos + (p->dlength * phd_sin(item->pos.y_rot) >> W2V_SHIFT);
 		pos2.y = p->pos.y_pos + 128;
-		pos2.z = p->pos.z_pos + (p->dlength * phd_cos(item->pos.y_rot) >> 14);
+		pos2.z = p->pos.z_pos + (p->dlength * phd_cos(item->pos.y_rot) >> W2V_SHIFT);
 
 		if (f == 340)
 			TriggerLightning(&pos, &pos2, (GetRandomControl() & 7) + 8, RGBA(uchar(p->r >> 1), uchar(p->g >> 1), uchar(p->b >> 1), 50), 12, 64, 5);

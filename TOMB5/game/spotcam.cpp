@@ -439,9 +439,6 @@ void CalculateSpotCams()
 		camera.pos.x = cpx;
 		camera.pos.y = cpy;
 		camera.pos.z = cpz;
-		camera.fpos.x = (float)cpx;
-		camera.fpos.y = (float)cpy;
-		camera.fpos.z = (float)cpz;
 
 		if (s->flags & (SP_TARGETLARA | SP_TRACKCAMERA))
 		{

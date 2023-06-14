@@ -1049,11 +1049,11 @@ HRESULT DDCopyBitmap(LPDIRECTDRAWSURFACE4 surf, HBITMAP hbm, long x, long y, lon
 	l = 0;
 	t = 0;
 
-	if (!(App.dx.Flags & 0x80))
+	if (!(App.dx.Flags & DXF_HWR))
 	{
 		surf = App.dx.lpPrimaryBuffer;
 
-		if (App.dx.Flags & 2)
+		if (App.dx.Flags & DXF_WINDOWED)
 		{
 			l = App.dx.rScreen.left;
 			t = App.dx.rScreen.top;
@@ -1062,7 +1062,7 @@ HRESULT DDCopyBitmap(LPDIRECTDRAWSURFACE4 surf, HBITMAP hbm, long x, long y, lon
 
 	result = surf->GetDC(&hdc2);
 
-	if (!result)
+	if (result == DD_OK)
 	{
 		StretchBlt(hdc2, l, t, desc.dwWidth, desc.dwHeight, hdc, x, y, dx, dy, SRCCOPY);
 		surf->ReleaseDC(hdc2);
@@ -1099,7 +1099,7 @@ HRESULT _LoadBitmap(LPDIRECTDRAWSURFACE4 surf, LPCSTR name)
 
 void do_boot_screen(long language)
 {
-	Log(2, "do_boot_screen");
+	Log(__FUNCTION__);
 
 	switch (language)
 	{

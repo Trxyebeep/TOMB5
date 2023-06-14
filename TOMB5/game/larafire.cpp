@@ -581,7 +581,7 @@ void LaraGetNewTarget(WEAPON_INFO* winfo)
 	creature = baddie_slots;
 	targets = 0;
 
-	for (slot = 0; slot < 5; slot++, creature++)
+	for (slot = 0; slot < MAX_LOT; slot++, creature++)
 	{
 		if (creature->item_num == NO_ITEM)
 			continue;
@@ -708,9 +708,9 @@ void find_target_point(ITEM_INFO* item, GAME_VECTOR* target)
 	z = (bounds[4] + bounds[5]) >> 1;
 	s = phd_sin(item->pos.y_rot);
 	c = phd_cos(item->pos.y_rot);
-	target->x = item->pos.x_pos + ((x * c + z * s) >> 14);
+	target->x = item->pos.x_pos + ((x * c + z * s) >> W2V_SHIFT);
 	target->y = item->pos.y_pos + y;
-	target->z = item->pos.z_pos + ((z * c - x * s) >> 14);
+	target->z = item->pos.z_pos + ((z * c - x * s) >> W2V_SHIFT);
 	target->room_number = item->room_number;
 }
 
@@ -810,17 +810,17 @@ long FireWeapon(long weapon_type, ITEM_INFO* target, ITEM_INFO* src, short* angl
 
 	if (best < 0)
 	{
-		bum_vdest.x = bum_vsrc.x + (20480 * phd_mxptr[M20] >> 14);
-		bum_vdest.y = bum_vsrc.y + (20480 * phd_mxptr[M21] >> 14);
-		bum_vdest.z = bum_vsrc.z + (20480 * phd_mxptr[M22] >> 14);
+		bum_vdest.x = bum_vsrc.x + (20480 * phd_mxptr[M20] >> W2V_SHIFT);
+		bum_vdest.y = bum_vsrc.y + (20480 * phd_mxptr[M21] >> W2V_SHIFT);
+		bum_vdest.z = bum_vsrc.z + (20480 * phd_mxptr[M22] >> W2V_SHIFT);
 		GetTargetOnLOS(&bum_vsrc, &bum_vdest, 0, 1);
 		return -1;
 	}
 
 	savegame.Game.AmmoHits++;
-	bum_vdest.x = bum_vsrc.x + (bestdist * phd_mxptr[M20] >> 14);
-	bum_vdest.y = bum_vsrc.y + (bestdist * phd_mxptr[M21] >> 14);
-	bum_vdest.z = bum_vsrc.z + (bestdist * phd_mxptr[M22] >> 14);
+	bum_vdest.x = bum_vsrc.x + (bestdist * phd_mxptr[M20] >> W2V_SHIFT);
+	bum_vdest.y = bum_vsrc.y + (bestdist * phd_mxptr[M21] >> W2V_SHIFT);
+	bum_vdest.z = bum_vsrc.z + (bestdist * phd_mxptr[M22] >> W2V_SHIFT);
 
 	if (!GetTargetOnLOS(&bum_vsrc, &bum_vdest, 0, 1))
 		HitTarget(target, &bum_vdest, winfo->damage, 0);

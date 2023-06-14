@@ -80,9 +80,9 @@ void ControlDeathSlide(short item_number)
 		if (item->fallspeed < 100)
 			item->fallspeed += 5;
 
-		item->pos.x_pos += item->fallspeed * phd_sin(item->pos.y_rot) >> 14;
+		item->pos.x_pos += item->fallspeed * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
 		item->pos.y_pos += item->fallspeed >> 2;
-		item->pos.z_pos += item->fallspeed * phd_cos(item->pos.y_rot) >> 14;
+		item->pos.z_pos += item->fallspeed * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
 		room_number = item->room_number;
 		GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 
@@ -96,9 +96,9 @@ void ControlDeathSlide(short item_number)
 			lara_item->pos.z_pos = item->pos.z_pos;
 		}
 
-		x = item->pos.x_pos + (1024 * phd_sin(item->pos.y_rot) >> 14);
+		x = item->pos.x_pos + (1024 * phd_sin(item->pos.y_rot) >> W2V_SHIFT);
 		y = item->pos.y_pos + 64;
-		z = item->pos.z_pos + (1024 * phd_cos(item->pos.y_rot) >> 14);
+		z = item->pos.z_pos + (1024 * phd_cos(item->pos.y_rot) >> W2V_SHIFT);
 		floor = GetFloor(x, y, z, &room_number);
 
 		if (GetHeight(floor, x, y, z) <= y + 256 || GetCeiling(floor, x, y, z) >= y - 256)

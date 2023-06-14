@@ -1876,7 +1876,7 @@ void joby8_control()
 			sptr->Friction = 51;
 			sptr->MaxYvel = 0;
 			sptr->Gravity = 0;
-			sptr->Flags = 0;
+			sptr->Flags = SF_NONE;
 			TriggerFireFlame(s.x, s.y, s.z, -1, 254);
 		}
 
@@ -2180,7 +2180,7 @@ void handle_cutseq_triggering(long name)
 		lara.holster = old_lara_holster;
 
 		if (cutseq_num <= 4)
-			DelsHandyTeleportLara(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, cutrot << 14);
+			DelsHandyTeleportLara(GLOBAL_cutme->orgx, GLOBAL_cutme->orgy, GLOBAL_cutme->orgz, cutrot * 0x4000);
 
 		cutseq_trig = 0;
 		GLOBAL_playing_cutseq = 0;
@@ -2431,7 +2431,7 @@ void TriggerDelSmoke(long x, long y, long z, long sizeme)
 	sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
 	sptr->Friction = 2;
-	sptr->Flags = 538;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
 	sptr->Scalar = 2;
@@ -2466,7 +2466,7 @@ void TriggerDelBrownSmoke(long x, long y, long z)
 	sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) >> 2;
 	sptr->Friction = 2;
-	sptr->Flags = 538;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0xF) + 16;
 	sptr->Scalar = 2;
@@ -2502,7 +2502,7 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	sptr->Friction = 51;
 	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
-	sptr->Flags = -32230;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->MaxYvel = -16 - (GetRandomControl() & 7);
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0x1F) - 16;
@@ -2529,7 +2529,7 @@ void DelTorchFlames(PHD_VECTOR* pos)
 	sptr->z = (GetRandomControl() & 0x3F) + pos->z - 32;
 	sptr->Friction = 51;
 	sptr->MaxYvel = 0;
-	sptr->Flags = -32230;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->Scalar = 2;
 	sptr->Gravity = -16 - (GetRandomControl() & 0x1F);
 	sptr->Xvel = (GetRandomControl() & 0xFF) - 128;
@@ -3232,9 +3232,9 @@ void GetJointAbsPositionCutSeq(ITEM_INFO* item, OBJECT_INFO* obj, short* rot, PH
 	phd_TranslateRel(rot[6], rot[7], rot[8]);
 	rotation1 = rot + 9;
 	gar_RotYXZsuperpack(&rotation1, 0);
-	pos->x = phd_mxptr[M03] >> 14;
-	pos->y = phd_mxptr[M13] >> 14;
-	pos->z = phd_mxptr[M23] >> 14;
+	pos->x = phd_mxptr[M03] >> W2V_SHIFT;
+	pos->y = phd_mxptr[M13] >> W2V_SHIFT;
+	pos->z = phd_mxptr[M23] >> W2V_SHIFT;
 	pos->x += item->pos.x_pos;
 	pos->y += item->pos.y_pos;
 	pos->z += item->pos.z_pos;
@@ -3464,9 +3464,9 @@ void GetActorJointAbsPosition(long actornum, ulong nodenum, PHD_VECTOR* vec)
 	}
 
 	phd_TranslateRel(vec->x, vec->y, vec->z);
-	vec->x = phd_mxptr[M03] >> 14;
-	vec->y = phd_mxptr[M13] >> 14;
-	vec->z = phd_mxptr[M23] >> 14;
+	vec->x = phd_mxptr[M03] >> W2V_SHIFT;
+	vec->y = phd_mxptr[M13] >> W2V_SHIFT;
+	vec->z = phd_mxptr[M23] >> W2V_SHIFT;
 	vec->x += item->pos.x_pos;
 	vec->y += item->pos.y_pos;
 	vec->z += item->pos.z_pos;
@@ -3555,9 +3555,6 @@ void init_cutseq_actors(char* data, long resident)
 	camera.pos.y = lara_item->pos.y_pos;
 	camera.pos.z = lara_item->pos.z_pos;
 	camera.pos.room_number = lara_item->room_number;
-	camera.fpos.x = (float)camera.pos.x;
-	camera.fpos.y = (float)camera.pos.y;
-	camera.fpos.z = (float)camera.pos.z;
 	InitialiseHair();
 }
 

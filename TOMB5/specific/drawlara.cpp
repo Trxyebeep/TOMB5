@@ -93,42 +93,15 @@ static uchar SkinUseMatrix[14][2] =
 	{255, 255}
 };
 
-void DrawLara(ITEM_INFO* item, long mirror)
-{
-	if (lara.skelebob)
-		DrawLara__6(item, mirror);
-	else
-	{
-		switch (LaraDrawType)
-		{
-		case LARA_NORMAL:
-		case LARA_YOUNG:
-		case LARA_BUNHEAD:
-			DrawLara__1(item, mirror);
-			break;
-
-		case LARA_CATSUIT:
-			DrawLara__4(item, mirror);
-			break;
-
-		case LARA_DIVESUIT:
-			DrawLara__5(item, mirror);
-			break;
-		}
-	}
-}
-
-void DrawLara__1(ITEM_INFO* item, long mirror)
+static void DrawLara__1(ITEM_INFO* item, long mirror)
 {
 	OBJECT_INFO* obj;
 	FVECTOR v0;
 	FVECTOR v1;
 	short** meshpp;
 	short* rot;
-	long dx, dy, dz, dist, cos, sin, xRot, bone, top, bottom, left, right, stash;
-	static long trans_lara = 255;
+	long c, s, xRot, bone, top, bottom, left, right, stash;
 
-	aGlobalSkinMesh = 1;
 	top = phd_top;
 	bottom = phd_bottom;
 	left = phd_left;
@@ -140,38 +113,6 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-
-	if (tomb5.look_transparency)
-	{
-		if (input & IN_LOOK)
-		{
-			dx = lara_item->pos.x_pos - CamPos.x;
-			dy = lara_item->pos.y_pos - CamPos.y - 512;
-			dz = lara_item->pos.z_pos - CamPos.z;
-			dist = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
-			trans_lara = dist >> 2;
-
-			if (trans_lara < 0)
-				trans_lara = 0;
-
-			if (trans_lara > 255)
-				trans_lara = 255;
-
-			GlobalAlpha = trans_lara << 24;
-		}
-		else
-		{
-			if (trans_lara < 255)
-			{
-				trans_lara += 8;
-
-				if (trans_lara > 255)
-					trans_lara = 255;
-			}
-
-			GlobalAlpha = trans_lara << 24;
-		}
-	}
 
 	if (!mirror)
 		CalculateObjectLightingLara();
@@ -257,20 +198,20 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 				v1.y = lara_matrices[SkinUseMatrix[i][1] * indices_count + M11];
 				v1.z = lara_matrices[SkinUseMatrix[i][1] * indices_count + M21];
 
-				v0.x *= 1 << 14;
-				v0.y *= 1 << 14;
-				v0.z *= 1 << 14;
-				v1.x *= 1 << 14;
-				v1.y *= 1 << 14;
-				v1.z *= 1 << 14;
+				v0.x *= 1 << W2V_SHIFT;
+				v0.y *= 1 << W2V_SHIFT;
+				v0.z *= 1 << W2V_SHIFT;
+				v1.x *= 1 << W2V_SHIFT;
+				v1.y *= 1 << W2V_SHIFT;
+				v1.z *= 1 << W2V_SHIFT;
 
-				cos = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
-				sin = phd_sqrt(0x1000000 - SQUARE(cos));
+				c = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> W2V_SHIFT;
+				s = phd_sqrt(0x1000000 - SQUARE(c));
 
 				if (i == 1 || i == 4)
-					xRot = -phd_atan(cos, sin);
+					xRot = -phd_atan(c, s);
 				else
-					xRot = phd_atan(cos, sin);
+					xRot = phd_atan(c, s);
 
 				phd_RotX(short(-xRot >> 1));
 				phd_PutPolygons(*meshpp, -1);
@@ -345,30 +286,26 @@ void DrawLara__1(ITEM_INFO* item, long mirror)
 
 	phd_PopMatrix();
 
-	aGlobalSkinMesh = 0;
 	bLaraUnderWater = 0;
 	phd_top = top;
 	phd_bottom = bottom;
 	phd_left = left;
 	phd_right = right;
-	GlobalAlpha = 0xFF000000;
 }
 
-void DrawLara__4(ITEM_INFO* item, long mirror)
+static void DrawLara__4(ITEM_INFO* item, long mirror)
 {
 	OBJECT_INFO* obj;
 	FVECTOR v0;
 	FVECTOR v1;
 	short** meshpp;
 	short* rot;
-	long dx, dy, dz, dist, cos, sin, xRot, bone, top, bottom, left, right, stash;
-	static long trans_lara = 255;
+	long c, s, xRot, bone, top, bottom, left, right, stash;
 
 	top = phd_top;
 	bottom = phd_bottom;
 	left = phd_left;
 	right = phd_right;
-	aGlobalSkinMesh = 1;
 	phd_top = 0;
 	phd_bottom = phd_winymax;
 	phd_left = 0;
@@ -376,38 +313,6 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-
-	if (tomb5.look_transparency)
-	{
-		if (input & IN_LOOK)
-		{
-			dx = lara_item->pos.x_pos - CamPos.x;
-			dy = lara_item->pos.y_pos - CamPos.y - 512;
-			dz = lara_item->pos.z_pos - CamPos.z;
-			dist = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
-			trans_lara = dist >> 2;
-
-			if (trans_lara < 0)
-				trans_lara = 0;
-
-			if (trans_lara > 255)
-				trans_lara = 255;
-
-			GlobalAlpha = trans_lara << 24;
-		}
-		else
-		{
-			if (trans_lara < 255)
-			{
-				trans_lara += 8;
-
-				if (trans_lara > 255)
-					trans_lara = 255;
-			}
-
-			GlobalAlpha = trans_lara << 24;
-		}
-	}
 
 	if (!mirror)
 		CalculateObjectLightingLara();
@@ -495,20 +400,20 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 			v1.y = lara_matrices[SkinUseMatrix[i][1] * indices_count + M11];
 			v1.z = lara_matrices[SkinUseMatrix[i][1] * indices_count + M21];
 
-			v0.x *= 1 << 14;
-			v0.y *= 1 << 14;
-			v0.z *= 1 << 14;
-			v1.x *= 1 << 14;
-			v1.y *= 1 << 14;
-			v1.z *= 1 << 14;
+			v0.x *= 1 << W2V_SHIFT;
+			v0.y *= 1 << W2V_SHIFT;
+			v0.z *= 1 << W2V_SHIFT;
+			v1.x *= 1 << W2V_SHIFT;
+			v1.y *= 1 << W2V_SHIFT;
+			v1.z *= 1 << W2V_SHIFT;
 
-			cos = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
-			sin = phd_sqrt(0x1000000 - SQUARE(cos));
+			c = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> W2V_SHIFT;
+			s = phd_sqrt(0x1000000 - SQUARE(c));
 
 			if (i == 1 || i == 4)
-				xRot = -phd_atan(cos, sin);
+				xRot = -phd_atan(c, s);
 			else
-				xRot = phd_atan(cos, sin);
+				xRot = phd_atan(c, s);
 
 			phd_RotX(short(-xRot >> 1));
 			aSetViewMatrix();
@@ -547,21 +452,18 @@ void DrawLara__4(ITEM_INFO* item, long mirror)
 
 	phd_PopMatrix();
 
-	aGlobalSkinMesh = 0;
 	bLaraUnderWater = 0;
 	phd_top = top;
 	phd_bottom = bottom;
 	phd_left = left;
 	phd_right = right;
-	GlobalAlpha = 0xFF000000;
 }
 
-void DrawLara__5(ITEM_INFO* item, long mirror)
+static void DrawLara__5(ITEM_INFO* item, long mirror)
 {
 	OBJECT_INFO* obj;
 	short** meshpp;
-	long dx, dy, dz, dist, top, bottom, left, right;
-	static long trans_lara = 255;
+	long top, bottom, left, right;
 
 	top = phd_top;
 	bottom = phd_bottom;
@@ -575,39 +477,6 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	phd_PushMatrix();
 	obj = &objects[item->object_number];
 	S_PrintShadow(obj->shadow_size, GLaraShadowframe, item);
-
-	if (tomb5.look_transparency)
-	{
-		if (input & IN_LOOK)
-		{
-			dx = lara_item->pos.x_pos - CamPos.x;
-			dy = lara_item->pos.y_pos - CamPos.y - 512;
-			dz = lara_item->pos.z_pos - CamPos.z;
-			dist = phd_sqrt(SQUARE(dx) + SQUARE(dy) + SQUARE(dz));
-			trans_lara = dist >> 2;
-
-			if (trans_lara < 0)
-				trans_lara = 0;
-
-			if (trans_lara > 255)
-				trans_lara = 255;
-
-			GlobalAlpha = trans_lara << 24;
-		}
-		else
-		{
-			if (trans_lara < 255)
-			{
-				trans_lara += 8;
-
-				if (trans_lara > 255)
-					trans_lara = 255;
-			}
-
-			GlobalAlpha = trans_lara << 24;
-		}
-	}
-
 	CalculateObjectLightingLara();
 
 	for (int i = 0; i < 15; i++)//skin
@@ -677,28 +546,25 @@ void DrawLara__5(ITEM_INFO* item, long mirror)
 	phd_PopMatrix();
 
 	bLaraUnderWater = 0;
-
-	phd_left = left;
-	phd_right = right;
 	phd_top = top;
 	phd_bottom = bottom;
-	GlobalAlpha = 0xFF000000;
+	phd_left = left;
+	phd_right = right;
 }
 
-void DrawLara__6(ITEM_INFO* item, long mirror)
+static void DrawLara__6(ITEM_INFO* item, long mirror)
 {
 	OBJECT_INFO* obj;
 	FVECTOR v0;
 	FVECTOR v1;
 	short** meshpp;
 	short* rot;
-	long cos, sin, xRot, top, bottom, left, right, stash, bone;
+	long c, s, xRot, top, bottom, left, right, stash, bone;
 
 	top = phd_top;
 	bottom = phd_bottom;
 	left = phd_left;
 	right = phd_right;
-	aGlobalSkinMesh = 1;
 	phd_top = 0;
 	phd_bottom = phd_winymax;
 	phd_left = 0;
@@ -788,20 +654,20 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 			v1.y = lara_matrices[SkinUseMatrix[i][1] * indices_count + M11];
 			v1.z = lara_matrices[SkinUseMatrix[i][1] * indices_count + M21];
 
-			v0.x *= 1 << 14;
-			v0.y *= 1 << 14;
-			v0.z *= 1 << 14;
-			v1.x *= 1 << 14;
-			v1.y *= 1 << 14;
-			v1.z *= 1 << 14;
+			v0.x *= 1 << W2V_SHIFT;
+			v0.y *= 1 << W2V_SHIFT;
+			v0.z *= 1 << W2V_SHIFT;
+			v1.x *= 1 << W2V_SHIFT;
+			v1.y *= 1 << W2V_SHIFT;
+			v1.z *= 1 << W2V_SHIFT;
 
-			cos = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> 14;
-			sin = phd_sqrt(0x1000000 - SQUARE(cos));
+			c = long((v0.x * v1.x) + (v0.y * v1.y) + (v0.z * v1.z)) >> W2V_SHIFT;
+			s = phd_sqrt(0x1000000 - SQUARE(c));
 
 			if (i == 1 || i == 4)
-				xRot = -phd_atan(cos, sin);
+				xRot = -phd_atan(c, s);
 			else
-				xRot = phd_atan(cos, sin);
+				xRot = phd_atan(c, s);
 
 			phd_RotX(short(-xRot >> 1));
 			phd_PutPolygonsSpcXLU(*meshpp, -1);
@@ -835,13 +701,72 @@ void DrawLara__6(ITEM_INFO* item, long mirror)
 	}
 
 	phd_PopMatrix();
-	phd_left = left;
-	phd_right = right;
+
+	bLaraUnderWater = 0;
 	phd_top = top;
 	phd_bottom = bottom;
-	GlobalAlpha = 0xFF000000;
+	phd_left = left;
+	phd_right = right;
+}
+
+void DrawLara(ITEM_INFO* item, long mirror)
+{
+	long x, y, z, d;
+	static long alpha = 255;
+
+	if (tomb5.look_transparency)
+	{
+		if (input & IN_LOOK)
+		{
+			x = lara_item->pos.x_pos - CamPos.x;
+			y = lara_item->pos.y_pos - CamPos.y - 512;
+			z = lara_item->pos.z_pos - CamPos.z;
+			d = phd_sqrt(SQUARE(x) + SQUARE(y) + SQUARE(z));
+			alpha = d >> 2;
+
+			if (alpha < 0)
+				alpha = 0;
+
+			if (alpha > 255)
+				alpha = 255;
+		}
+		else if (alpha < 255)
+		{
+			alpha += 8;
+
+			if (alpha > 255)
+				alpha = 255;
+		}
+
+		GlobalAlpha = alpha << 24;
+	}
+
+	aGlobalSkinMesh = 1;
+
+	if (lara.skelebob)
+		DrawLara__6(item, mirror);
+	else
+	{
+		switch (LaraDrawType)
+		{
+		case LARA_NORMAL:
+		case LARA_YOUNG:
+		case LARA_BUNHEAD:
+			DrawLara__1(item, mirror);
+			break;
+
+		case LARA_CATSUIT:
+			DrawLara__4(item, mirror);
+			break;
+
+		case LARA_DIVESUIT:
+			DrawLara__5(item, mirror);
+			break;
+		}
+	}
+
 	aGlobalSkinMesh = 0;
-	bLaraUnderWater = 0;
+	GlobalAlpha = 0xFF000000;
 }
 
 void SetLaraUnderwaterNodes()

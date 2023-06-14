@@ -102,19 +102,19 @@ void WaterFall(short item_number)
 
 	item = &items[item_number];
 	ang = item->pos.y_rot + 0x8000;
-	x = item->pos.x_pos - (512 * phd_sin(ang) >> 14);
-	z = item->pos.z_pos - (512 * phd_cos(ang) >> 14);
+	x = item->pos.x_pos - (512 * phd_sin(ang) >> W2V_SHIFT);
+	z = item->pos.z_pos - (512 * phd_cos(ang) >> W2V_SHIFT);
 
 	switch (ang)
 	{
 	case 0:
-		x += (wf * phd_sin(ang + 0x4000) >> 14);
-		z += (wf * phd_cos(ang + 0x4000) >> 14);
+		x += (wf * phd_sin(ang + 0x4000) >> W2V_SHIFT);
+		z += (wf * phd_cos(ang + 0x4000) >> W2V_SHIFT);
 		break;
 
 	default:
-		x += (wf * phd_sin(ang - 0x4000) >> 14);
-		z += (wf * phd_cos(ang - 0x4000) >> 14);
+		x += (wf * phd_sin(ang - 0x4000) >> W2V_SHIFT);
+		z += (wf * phd_cos(ang - 0x4000) >> W2V_SHIFT);
 		break;
 	}
 

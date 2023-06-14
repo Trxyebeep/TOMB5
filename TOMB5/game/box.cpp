@@ -99,9 +99,9 @@ void CreatureAIInfo(ITEM_INFO* item, AI_INFO* info)
 	else
 		ang = enemy->pos.y_rot;
 
-	x = enemy->pos.x_pos + (14 * enemy->speed * phd_sin(ang) >> 14) - (pivot * phd_sin(item->pos.y_rot) >> 14) - item->pos.x_pos;
+	x = enemy->pos.x_pos + (14 * enemy->speed * phd_sin(ang) >> W2V_SHIFT) - (pivot * phd_sin(item->pos.y_rot) >> W2V_SHIFT) - item->pos.x_pos;
 	y = item->pos.y_pos - enemy->pos.y_pos;
-	z = enemy->pos.z_pos + (14 * enemy->speed * phd_cos(ang) >> 14) - (pivot * phd_cos(item->pos.y_rot) >> 14) - item->pos.z_pos;
+	z = enemy->pos.z_pos + (14 * enemy->speed * phd_cos(ang) >> W2V_SHIFT) - (pivot * phd_cos(item->pos.y_rot) >> W2V_SHIFT) - item->pos.z_pos;
 
 	ang = (short)phd_atan(z, x);
 
@@ -879,7 +879,7 @@ void CreatureDie(short item_number, long explode)
 	item->flags |= IFL_INVISIBLE | IFL_CLEARBODY;
 	DropBaddyPickups(item);
 
-	if (item->object_number == SCIENTIST && item->ai_bits == 8)
+	if (item->object_number == SCIENTIST && item->ai_bits == MODIFY)
 	{
 		item = find_a_fucking_item(ROLLINGBALL);
 
@@ -1222,16 +1222,16 @@ short CreatureTurn(ITEM_INFO* item, short maximum_turn)
 	z = item->pos.z_pos;
 	r = &room[item->room_number];
 
-	feelxplus = x + (512 * phd_sin(item->pos.y_rot + 8190) >> 14);
-	feelzplus = z + (512 * phd_cos(item->pos.y_rot + 8190) >> 14);
+	feelxplus = x + (512 * phd_sin(item->pos.y_rot + 8190) >> W2V_SHIFT);
+	feelzplus = z + (512 * phd_cos(item->pos.y_rot + 8190) >> W2V_SHIFT);
 	feelplus = r->floor[((feelzplus - r->z) >> 10) + r->x_size * ((feelxplus - r->x) >> 10)].stopper;
 
-	feelxminus = x + (512 * phd_sin(item->pos.y_rot - 8190) >> 14);
-	feelzminus = z + (512 * phd_cos(item->pos.y_rot - 8190) >> 14);
+	feelxminus = x + (512 * phd_sin(item->pos.y_rot - 8190) >> W2V_SHIFT);
+	feelzminus = z + (512 * phd_cos(item->pos.y_rot - 8190) >> W2V_SHIFT);
 	feelminus = r->floor[((feelzminus - r->z) >> 10) + r->x_size * ((feelxminus - r->x) >> 10)].stopper;
 
-	feelxmid = x + (512 * phd_sin(item->pos.y_rot) >> 14);
-	feelzmid = z + (512 * phd_cos(item->pos.y_rot) >> 14);
+	feelxmid = x + (512 * phd_sin(item->pos.y_rot) >> W2V_SHIFT);
+	feelzmid = z + (512 * phd_cos(item->pos.y_rot) >> W2V_SHIFT);
 	feelmid = r->floor[((feelzmid - r->z) >> 10) + r->x_size * ((feelxmid - r->x) >> 10)].stopper;
 
 	if (feelminus && feelmid)
@@ -1516,9 +1516,9 @@ void CreatureKill(ITEM_INFO* item, short kill_anim, short kill_state, short lara
 	lara.hit_direction = -1;
 	lara.air = -1;
 	camera.pos.room_number = lara_item->room_number;
-	ForcedFixedCamera.x = item->pos.x_pos + ((2048 * phd_sin(item->pos.y_rot)) >> 14);
+	ForcedFixedCamera.x = item->pos.x_pos + ((2048 * phd_sin(item->pos.y_rot)) >> W2V_SHIFT);
 	ForcedFixedCamera.y = item->pos.y_pos - 1024;
-	ForcedFixedCamera.z = item->pos.z_pos + ((2048 * phd_cos(item->pos.y_rot)) >> 14);
+	ForcedFixedCamera.z = item->pos.z_pos + ((2048 * phd_cos(item->pos.y_rot)) >> W2V_SHIFT);
 	ForcedFixedCamera.room_number = item->room_number;
 	UseForcedFixedCamera = 1;
 }
@@ -1531,7 +1531,7 @@ void AlertAllGuards(short item_number)
 
 	item = &items[item_number];
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < MAX_LOT; i++)
 	{
 		creature = &baddie_slots[i];
 
@@ -1551,7 +1551,7 @@ void AlertNearbyGuards(ITEM_INFO* item)
 	CREATURE_INFO* creature;
 	long dx, dy, dz, dist;
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < MAX_LOT; i++)
 	{
 		creature = &baddie_slots[i];
 
@@ -1580,7 +1580,7 @@ short AIGuard(CREATURE_INFO* creature)
 {
 	long rnd;
 
-	if (items[creature->item_num].ai_bits & 8)
+	if (items[creature->item_num].ai_bits & MODIFY)
 		return 0;
 
 	rnd = GetRandomControl();
@@ -1616,6 +1616,7 @@ short AIGuard(CREATURE_INFO* creature)
 void FindAITargetObject(CREATURE_INFO* creature, short obj_num)
 {
 	ITEM_INFO* item;
+	ITEM_INFO* enemy;
 	AIOBJECT* aiObj;
 	ROOM_INFO* r;
 	short* zone;
@@ -1642,20 +1643,21 @@ void FindAITargetObject(CREATURE_INFO* creature, short obj_num)
 			if (zone_number == ai_zone)
 			{
 				creature->enemy = &creature->ai_target;
-				creature->ai_target.object_number = aiObj->object_number;
-				creature->ai_target.room_number = aiObj->room_number;
-				creature->ai_target.pos.x_pos = aiObj->x;
-				creature->ai_target.pos.y_pos = aiObj->y;
-				creature->ai_target.pos.z_pos = aiObj->z;
-				creature->ai_target.pos.y_rot = aiObj->y_rot;
-				creature->ai_target.flags = aiObj->flags;
-				creature->ai_target.trigger_flags = aiObj->trigger_flags;
-				creature->ai_target.box_number = aiObj->box_number;
+				enemy = creature->enemy;
+				enemy->object_number = aiObj->object_number;
+				enemy->room_number = aiObj->room_number;
+				enemy->pos.x_pos = aiObj->x;
+				enemy->pos.y_pos = aiObj->y;
+				enemy->pos.z_pos = aiObj->z;
+				enemy->pos.y_rot = aiObj->y_rot;
+				enemy->flags = aiObj->flags;
+				enemy->trigger_flags = aiObj->trigger_flags;
+				enemy->box_number = aiObj->box_number;
 
-				if (!(creature->ai_target.flags & 0x20))
+				if (!(enemy->flags & 0x20))
 				{
-					creature->ai_target.pos.x_pos += 256 * phd_sin(item->pos.y_rot) >> 14;
-					creature->ai_target.pos.z_pos += 256 * phd_cos(item->pos.y_rot) >> 14;
+					enemy->pos.x_pos += 256 * phd_sin(enemy->pos.y_rot) >> W2V_SHIFT;
+					enemy->pos.z_pos += 256 * phd_cos(enemy->pos.y_rot) >> W2V_SHIFT;
 				}
 
 				break;
@@ -1682,25 +1684,25 @@ void GetAITarget(CREATURE_INFO* creature)
 	item = &items[creature->item_num];
 	ai_bits = item->ai_bits;
 
-	if (ai_bits & 1)
+	if (ai_bits & GUARD)
 	{
 		if (creature->alerted)
 		{
-			item->ai_bits &= ~1;
+			item->ai_bits &= ~GUARD;
 
-			if (ai_bits & 2)
-				item->ai_bits |= 8;
+			if (ai_bits & AMBUSH)
+				item->ai_bits |= MODIFY;
 		}
 	}
-	else if (ai_bits & 4)
+	else if (ai_bits & PATROL1)
 	{
 		if (creature->alerted || creature->hurt_by_lara)
 		{
-			item->ai_bits &= ~4;
+			item->ai_bits &= ~PATROL1;
 
-			if (ai_bits & 2)
+			if (ai_bits & AMBUSH)
 			{
-				item->ai_bits |= 8;
+				item->ai_bits |= MODIFY;
 				item->item_flags[3] = item->TOSSPAD & 0xFF;
 			}
 		}
@@ -1710,7 +1712,7 @@ void GetAITarget(CREATURE_INFO* creature)
 			abs(enemy->pos.z_pos - item->pos.z_pos) < 640 || objects[item->object_number].water_creature)
 			creature->reached_goal = 1;
 	}
-	else if (ai_bits & 2)
+	else if (ai_bits & AMBUSH)
 	{
 		if (enemy_object != AI_AMBUSH)
 			FindAITargetObject(creature, AI_AMBUSH);
@@ -1721,31 +1723,31 @@ void GetAITarget(CREATURE_INFO* creature)
 			TestTriggers(trigger_index, 1, 0);
 			creature->reached_goal = 1;
 			creature->enemy = lara_item;
-			item->ai_bits &= ~2;
+			item->ai_bits &= ~AMBUSH;
 
-			if (item->ai_bits != 8)
+			if (item->ai_bits != MODIFY)
 			{
-				item->ai_bits |= 1;
+				item->ai_bits |= GUARD;
 				creature->alerted = 0;
 			}
 		}
 	}
-	else if (ai_bits & 0x10)
+	else if (ai_bits & FOLLOW)
 	{
 		if (creature->hurt_by_lara)
 		{
 			creature->enemy = lara_item;
 			creature->alerted = 1;
-			item->ai_bits &= ~0x10;
+			item->ai_bits &= ~FOLLOW;
 		}
 		else if (item->hit_status)
-			item->ai_bits &= ~0x10;
+			item->ai_bits &= ~FOLLOW;
 		else if (enemy_object != AI_FOLLOW)
 			FindAITargetObject(creature, AI_FOLLOW);
 		else if (abs(enemy->pos.x_pos - item->pos.x_pos) < 640 && abs(enemy->pos.y_pos - item->pos.y_pos) < 640 && abs(enemy->pos.z_pos - item->pos.z_pos) < 640)
 		{
 			creature->reached_goal = 1;
-			item->ai_bits &= ~0x10;
+			item->ai_bits &= ~FOLLOW;
 		}
 	}
 }

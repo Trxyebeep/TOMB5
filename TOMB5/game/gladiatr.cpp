@@ -104,13 +104,13 @@ void GladiatorControl(short item_number)
 			gladiator->maximum_turn = gladiator->mood == BORED_MOOD ? 0 : 364;
 			head = da;
 
-			if (item->ai_bits & 1 || (!(GetRandomControl() & 0x1F) && (info.distance > 0x100000 || gladiator->mood != ATTACK_MOOD)))
+			if (item->ai_bits & GUARD || (!(GetRandomControl() & 0x1F) && (info.distance > 0x100000 || gladiator->mood != ATTACK_MOOD)))
 				head = AIGuard(gladiator);
-			else if (item->ai_bits & 4)
+			else if (item->ai_bits & PATROL1)
 				item->goal_anim_state = 2;
 			else if (gladiator->mood == ESCAPE_MOOD)
 				item->goal_anim_state = lara.target != item && info.ahead && !item->hit_status ? 1 : 2;
-			else if (gladiator->mood != BORED_MOOD && (!(item->ai_bits & 0x10) || !gladiator->reached_goal && distance <= 4194304))
+			else if (gladiator->mood != BORED_MOOD && (!(item->ai_bits & FOLLOW) || !gladiator->reached_goal && distance <= 0x400000))
 			{
 				if (lara.target == item && front && distance < 0x240000 && GetRandomControl() & 1 && (lara.gun_type == WEAPON_SHOTGUN || !(GetRandomControl() & 0xF)) && item->mesh_bits == -1)
 					item->goal_anim_state = 4;
@@ -131,7 +131,7 @@ void GladiatorControl(short item_number)
 			head = da;
 			gladiator->maximum_turn = gladiator->mood == BORED_MOOD ? 364 : 1274;
 
-			if (item->ai_bits & 4)
+			if (item->ai_bits & PATROL1)
 			{
 				item->goal_anim_state = 2;
 				head = 0;
@@ -161,7 +161,7 @@ void GladiatorControl(short item_number)
 			gladiator->maximum_turn = 2002;
 			tilt = angle / 2;
 
-			if (item->ai_bits & 1)
+			if (item->ai_bits & GUARD)
 			{
 				gladiator->maximum_turn = 0;
 				item->goal_anim_state = 1;
@@ -171,7 +171,7 @@ void GladiatorControl(short item_number)
 				if (lara.target != item && info.ahead)
 					item->goal_anim_state = 1;
 			}
-			else if (item->ai_bits & 0x10)
+			else if (item->ai_bits & FOLLOW)
 			{
 				if (gladiator->reached_goal || distance > 0x400000)
 					item->goal_anim_state = 1;

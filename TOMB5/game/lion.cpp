@@ -7,8 +7,8 @@
 #include "control.h"
 #include "lara.h"
 
-BITE_INFO lion_pounce = { -2, -10, 250, 21 };
-BITE_INFO lion_bite = { -2, -10, 132, 21 };
+static BITE_INFO lion_pounce = { -2, -10, 250, 21 };
+static BITE_INFO lion_bite = { -2, -10, 132, 21 };
 
 void InitialiseLion(short item_number)
 {
@@ -18,8 +18,8 @@ void InitialiseLion(short item_number)
 	InitialiseCreature(item_number);
 	item->anim_number = objects[LION].anim_index;
 	item->frame_number = anims[item->anim_number].frame_base;
-	item->goal_anim_state = 1;
 	item->current_anim_state = 1;
+	item->goal_anim_state = 1;
 }
 
 void LionControl(short item_number)
@@ -45,7 +45,7 @@ void LionControl(short item_number)
 
 		if (item->current_anim_state != 5)
 		{
-			item->anim_number = objects[57].anim_index + (GetRandomControl() & 1) + 7;
+			item->anim_number = objects[LION].anim_index + (GetRandomControl() & 1) + 7;
 			item->frame_number = anims[item->anim_number].frame_base;
 			item->current_anim_state = 5;
 		}
@@ -100,20 +100,17 @@ void LionControl(short item_number)
 			lion->maximum_turn = 910;
 			tilt = angle;
 
-			if (lion->mood != BORED_MOOD)
-			{
-				if (info.ahead && info.distance < 0x100000)
-					item->goal_anim_state = 1;
-				else if (item->touch_bits & 0x200048 && info.ahead)
-					item->goal_anim_state = 1;
-				else if (lion->mood != ESCAPE_MOOD && GetRandomControl() < 128)
-				{
-					item->required_anim_state = 6;
-					item->goal_anim_state = 1;
-				}
-			}
-			else
+			if (lion->mood == BORED_MOOD)
 				item->goal_anim_state = 1;
+			else if (info.ahead && info.distance < 0x100000)
+				item->goal_anim_state = 1;
+			else if (item->touch_bits & 0x200048 && info.ahead)
+				item->goal_anim_state = 1;
+			else if (lion->mood != ESCAPE_MOOD && GetRandomControl() < 128)
+			{
+				item->required_anim_state = 6;
+				item->goal_anim_state = 1;
+			}
 
 			break;
 

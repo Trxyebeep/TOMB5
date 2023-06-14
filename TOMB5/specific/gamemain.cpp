@@ -41,7 +41,7 @@ static ushort GetRandom(WATERTAB* wt, long lp)
 	return ret;
 }
 
-void init_water_table()
+static void init_water_table()
 {
 	float fSin;
 	short sSin;
@@ -163,30 +163,19 @@ long S_LoadGame(long slot_num)
 	return 0;
 }
 
-void GameClose()
+bool GameInitialise()
 {
-	Log(2, "GameClose");
-	ACMClose();
-	FreeLevel();
-	free(clipflags);
-
-	if (wav_file_buffer)
-		free(wav_file_buffer);
-
-	if (ADPCMBuffer)
-		free(ADPCMBuffer);
-
-	if (logF)
-		fclose(logF);
-
-	free(malloc_buffer);
-	free(gfScriptFile);
-	free(gfLanguageFile);
+	Log(__FUNCTION__);
+	init_game_malloc();
+	clipflags = (short*)malloc(0x8000);
+	init_water_table();
+	aInitFX();
+	return 1;
 }
 
 unsigned int __stdcall GameMain(void* ptr)
 {
-	Log(2, "GameMain");
+	Log(__FUNCTION__);
 
 	if (GameInitialise())
 	{
@@ -217,12 +206,23 @@ unsigned int __stdcall GameMain(void* ptr)
 	return 1;
 }
 
-bool GameInitialise()
+void GameClose()
 {
-	Log(2, "GameInitialise");
-	init_game_malloc(1);
-	clipflags = (short*)malloc(0x8000);
-	init_water_table();
-	aInitFX();
-	return 1;
+	Log(__FUNCTION__);
+	ACMClose();
+	FreeLevel();
+	free(clipflags);
+
+	if (wav_file_buffer)
+		free(wav_file_buffer);
+
+	if (ADPCMBuffer)
+		free(ADPCMBuffer);
+
+	if (logF)
+		fclose(logF);
+
+	free(malloc_buffer);
+	free(gfScriptFile);
+	free(gfLanguageFile);
 }

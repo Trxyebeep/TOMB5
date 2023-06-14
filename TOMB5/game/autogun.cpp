@@ -196,7 +196,7 @@ void TriggerAutoGunSmoke(GAME_VECTOR* pos, long shade)
 	sptr->Yvel = 0;
 	sptr->Zvel = 0;
 	sptr->Friction = 4;
-	sptr->Flags = 16;
+	sptr->Flags = SF_ROTATE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0x3F) - 31;
 	sptr->MaxYvel = 0;

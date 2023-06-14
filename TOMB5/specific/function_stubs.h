@@ -1,14 +1,13 @@
 #pragma once
 #include "../global/types.h"
 
+void init_game_malloc();
 void* game_malloc(long size);
 long GetRandomControl();
 void SeedRandomControl(long seed);
 long GetRandomDraw();
 void SeedRandomDraw(long seed);
-void init_game_malloc(bool alloc);
-void game_free(long size);
-void Log(ulong type, const char* s, ...);
+void Log(const char* s, ...);
 
 extern FILE* logF;
 extern char* malloc_buffer;

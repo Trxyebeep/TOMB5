@@ -50,8 +50,8 @@ long TestBoundsCollideCamera(short* bounds, PHD_3DPOS* pos, long radius)
 		dz = camera.pos.z - pos->z_pos;
 		sin = phd_sin(pos->y_rot);
 		cos = phd_cos(pos->y_rot);
-		x = (cos * dx - sin * dz) >> 14;
-		z = (cos * dz + sin * dx) >> 14;
+		x = (cos * dx - sin * dz) >> W2V_SHIFT;
+		z = (cos * dz + sin * dx) >> W2V_SHIFT;
 
 		if (x >= bounds[0] - radius && x <= radius + bounds[1] && z >= bounds[4] - radius && z <= radius + bounds[5])
 			return 1;
@@ -134,8 +134,8 @@ void ItemPushCamera(short* bounds, PHD_3DPOS* pos)
 	dz = camera.pos.z - pos->z_pos;
 	sin = phd_sin(pos->y_rot);
 	cos = phd_cos(pos->y_rot);
-	x = (dx * cos - dz * sin) >> 14;
-	z = (dx * sin + dz * cos) >> 14;
+	x = (dx * cos - dz * sin) >> W2V_SHIFT;
+	z = (dx * sin + dz * cos) >> W2V_SHIFT;
 	xmin = bounds[0] - 384;
 	xmax = bounds[1] + 384;
 	zmin = bounds[4] - 384;
@@ -158,8 +158,8 @@ void ItemPushCamera(short* bounds, PHD_3DPOS* pos)
 	else
 		z -= bottom;//bottom
 
-	camera.pos.x = pos->x_pos + ((cos * x + sin * z) >> 14);
-	camera.pos.z = pos->z_pos + ((cos * z - sin * x) >> 14);
+	camera.pos.x = pos->x_pos + ((cos * x + sin * z) >> W2V_SHIFT);
+	camera.pos.z = pos->z_pos + ((cos * z - sin * x) >> W2V_SHIFT);
 	floor = GetFloor(camera.pos.x, camera.pos.y, camera.pos.z, &camera.pos.room_number);
 	h = GetHeight(floor, camera.pos.x, camera.pos.y, camera.pos.z);
 	c = GetCeiling(floor, camera.pos.x, camera.pos.y, camera.pos.z);
@@ -309,7 +309,7 @@ void ControlGunship(short item_number)
 				sptr->Friction = 0;
 				sptr->MaxYvel = 0;
 				sptr->Gravity = 0;
-				sptr->Flags = 0;
+				sptr->Flags = SF_NONE;
 			}
 		}
 
@@ -380,9 +380,9 @@ void ControlIris(short item_number)
 				if (GlobalCounter & 4)
 					rot += 32768;
 
-				pos2.x = pos.x - ((2240 * phd_sin(rot)) >> 14);
+				pos2.x = pos.x - ((2240 * phd_sin(rot)) >> W2V_SHIFT);
 				pos2.y = pos.y;
-				pos2.z = pos.z - ((2240 * phd_cos(rot)) >> 14);
+				pos2.z = pos.z - ((2240 * phd_cos(rot)) >> W2V_SHIFT);
 				TriggerLightning(&pos, &pos2, (GetRandomControl() & 0x3F) + 64, RGBA(r, g, b, 50), 21, 48, 5);
 				TriggerLightningGlow(pos2.x, pos2.y, pos2.z, RGBA(r >> 1, g >> 1, b >> 1, 32));
 			}
@@ -460,8 +460,8 @@ void ControlArea51Laser(short item_number)
 		if (dz < 768)
 		{
 			item->trigger_flags = 32;
-			x = ((((item->item_flags[0] & 0xFF) << 9) + ((-2560 * (item->item_flags[2] * phd_sin(item->pos.y_rot))) >> 14)) >> 9) & 0xFF;
-			z = (((((-2560 * (item->item_flags[2] * phd_cos(item->pos.y_rot))) >> 14) + ((item->item_flags[0] & 0xFF00) << 1)) >> 9) & 0xFF) << 8;
+			x = ((((item->item_flags[0] & 0xFF) << 9) + ((-2560 * (item->item_flags[2] * phd_sin(item->pos.y_rot))) >> W2V_SHIFT)) >> 9) & 0xFF;
+			z = (((((-2560 * (item->item_flags[2] * phd_cos(item->pos.y_rot))) >> W2V_SHIFT) + ((item->item_flags[0] & 0xFF00) << 1)) >> 9) & 0xFF) << 8;
 			item->item_flags[1] = (short)(x | z);
 		}
 	}
@@ -612,15 +612,15 @@ void ControlGasCloud(short item_number)
 
 	if (item->trigger_flags == 2)
 	{
-		sptr->Xvel = short((rad * phd_sin(item->pos.y_rot - 0x8000)) >> 14);
+		sptr->Xvel = short((rad * phd_sin(item->pos.y_rot - 0x8000)) >> W2V_SHIFT);
 		sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
-		sptr->Zvel = short((rad * phd_cos(item->pos.y_rot - 0x8000)) >> 14);
+		sptr->Zvel = short((rad * phd_cos(item->pos.y_rot - 0x8000)) >> W2V_SHIFT);
 	}
 	else if (item->trigger_flags == 3)
 	{
-		sptr->Xvel = short((rad * phd_sin(item->pos.y_rot - 0x8000)) >> 14);
+		sptr->Xvel = short((rad * phd_sin(item->pos.y_rot - 0x8000)) >> W2V_SHIFT);
 		sptr->Yvel = (short)rad;
-		sptr->Zvel = short((rad * phd_cos(item->pos.y_rot - 0x8000)) >> 14);
+		sptr->Zvel = short((rad * phd_cos(item->pos.y_rot - 0x8000)) >> W2V_SHIFT);
 	}
 	else
 	{
@@ -629,7 +629,7 @@ void ControlGasCloud(short item_number)
 		sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 	}
 
-	sptr->Flags = 538;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->MaxYvel = 0;
 	sptr->Gravity = 0;
@@ -660,12 +660,12 @@ void ControlGasCloud(short item_number)
 		if (item->trigger_flags == 2)
 		{
 			num = (GetRandomControl() & 0x1FF) - 256;
-			sptr->x = item->pos.x_pos + (GetRandomControl() & 0x1F) + ((num * phd_sin(item->pos.y_rot + 0x4000)) >> 14) - 16;
+			sptr->x = item->pos.x_pos + (GetRandomControl() & 0x1F) + ((num * phd_sin(item->pos.y_rot + 0x4000)) >> W2V_SHIFT) - 16;
 			sptr->y = item->pos.y_pos + (GetRandomControl() & 0x1F) + ((GetRandomControl() & 0x1FF) - 256) - 16;
-			sptr->z = item->pos.z_pos + (GetRandomControl() & 0x1F) + ((num * phd_cos(item->pos.y_rot + 0x4000)) >> 14) - 16;
-			sptr->Xvel = short((rad * phd_sin(item->pos.y_rot - 32768)) >> 14);
+			sptr->z = item->pos.z_pos + (GetRandomControl() & 0x1F) + ((num * phd_cos(item->pos.y_rot + 0x4000)) >> W2V_SHIFT) - 16;
+			sptr->Xvel = short((rad * phd_sin(item->pos.y_rot - 0x8000)) >> W2V_SHIFT);
 			sptr->Yvel = (GetRandomControl() & 0xFF) - 128;
-			sptr->Zvel = short((rad * phd_cos(item->pos.y_rot - 32768)) >> 14);
+			sptr->Zvel = short((rad * phd_cos(item->pos.y_rot - 0x8000)) >> W2V_SHIFT);
 		}
 		else
 		{
@@ -689,7 +689,7 @@ void ControlGasCloud(short item_number)
 			sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 		}
 
-		sptr->Flags = 538;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 		sptr->MaxYvel = 0;
@@ -943,12 +943,12 @@ void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
 	smoke->x = (GetRandomControl() & 0x1F) + pos->x - 16;
 	smoke->y = pos->y;
 	smoke->z = (GetRandomControl() & 0x1F) + pos->z - 16;
-	smoke->Xvel = short((v * phd_sin(yrot + yAdd)) >> 14);
+	smoke->Xvel = short((v * phd_sin(yrot + yAdd)) >> W2V_SHIFT);
 	smoke->Yvel = (-128 - (GetRandomControl() & 0x7F)) << 3;
-	smoke->Zvel = short((v * phd_cos(yrot + yAdd)) >> 14);
+	smoke->Zvel = short((v * phd_cos(yrot + yAdd)) >> W2V_SHIFT);
 
 	smoke->Friction = 84;
-	smoke->Flags = 16;
+	smoke->Flags = SF_ROTATE;
 	smoke->RotAng = GetRandomControl() & 0xFFF;
 	smoke->RotAdd = (GetRandomControl() & 0x1F) - 16;
 	smoke->MaxYvel = 0;
@@ -973,9 +973,9 @@ void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
 
 	yAdd = short((GetRandomControl() >> 1) - 8192);
 	v = GetRandomControl() & 0x1FF;
-	sptr->Xvel = short((v * phd_sin(yrot + yAdd)) >> 14);
+	sptr->Xvel = short((v * phd_sin(yrot + yAdd)) >> W2V_SHIFT);
 	sptr->Yvel = (-512 - (GetRandomControl() & 0x7F)) << 2;
-	sptr->Zvel = short((v * phd_cos(yrot + yAdd)) >> 14);
+	sptr->Zvel = short((v * phd_cos(yrot + yAdd)) >> W2V_SHIFT);
 	sptr->x = (sptr->Xvel >> 5) + (GetRandomControl() & 0x1F) + pos->x - 16;
 	sptr->y = pos->y + (sptr->Yvel >> 5);
 	sptr->z = (sptr->Zvel >> 5) + (GetRandomControl() & 0x1F) + pos->z - 16;
@@ -983,7 +983,7 @@ void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
 	sptr->Friction = 84;
 	sptr->MaxYvel = 0;
 	sptr->Gravity = 0;
-	sptr->Flags = 0;
+	sptr->Flags = SF_NONE;
 
 	sptr = &spark[GetFreeSpark()];
 	sptr->On = 1;
@@ -1004,9 +1004,9 @@ void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
 	sptr->x = (GetRandomControl() & 0xF) + pos->x - 8;
 	sptr->y = pos->y;
 	sptr->z = (GetRandomControl() & 0xF) + pos->z - 8;
-	sptr->Xvel = short((v * phd_sin(yrot + yAdd)) >> 14);
+	sptr->Xvel = short((v * phd_sin(yrot + yAdd)) >> W2V_SHIFT);
 	sptr->Yvel = -512 - (GetRandomControl() & 0x3FF);
-	sptr->Zvel = short((v * phd_cos(yrot + yAdd)) >> 14);
+	sptr->Zvel = short((v * phd_cos(yrot + yAdd)) >> W2V_SHIFT);
 
 	sptr->Friction = 6;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
@@ -1015,8 +1015,8 @@ void TriggerLiftBrakeSparks(PHD_VECTOR* pos, short yrot)
 	sptr->Size = (GetRandomControl() & 0xF) + 12;
 	sptr->sSize = sptr->Size;
 	sptr->dSize = sptr->Size >> 1;
-	sptr->Flags = 10;
-	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
+	sptr->Flags = SF_DEF | SF_SCALE;
+	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + W2V_SHIFT;
 	sptr->Gravity = (GetRandomControl() & 0xF) + 16;
 	sptr->Scalar = 1;
 }
@@ -1072,7 +1072,7 @@ void TriggerSteelDoorSmoke(short angle, short nPos, ITEM_INFO* item)
 		sptr->Zvel = short((v * phd_cos(angle)) >> 10);
 
 		sptr->Friction = 4;
-		sptr->Flags = 538;
+		sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 		sptr->RotAng = GetRandomControl() & 0xFFF;
 		sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 		sptr->Gravity = -8 - (GetRandomControl() & 7);
@@ -1107,14 +1107,14 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 	sptr->sLife = sptr->Life;
 
 	v = (GetRandomControl() & 0x1F) - 16;
-	sptr->x = pos->x + ((v * phd_sin(yrot + 0x4000)) >> 14);
+	sptr->x = pos->x + ((v * phd_sin(yrot + 0x4000)) >> W2V_SHIFT);
 	sptr->y = pos->y + (v >> 1);
-	sptr->z = pos->z + ((v * phd_cos(yrot + 0x4000)) >> 14);
+	sptr->z = pos->z + ((v * phd_cos(yrot + 0x4000)) >> W2V_SHIFT);
 	sptr->Xvel = 0;
 	sptr->Yvel = 0;
 	sptr->Zvel = 0;
 
-	sptr->Flags = 16394;
+	sptr->Flags = SF_DEF | SF_SCALE;
 	sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
 	sptr->Scalar = 0;
 	sptr->MaxYvel = 0;
@@ -1145,11 +1145,11 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 		sptr->Yvel = -(GetRandomControl() & 0x7F);
 		sptr->Zvel = (v * phd_cos(ang)) >> 10;
 		v = short((GetRandomControl() & 0x1F) - 16);
-		sptr->x = pos->x + (sptr->Xvel >> 5) + ((v * phd_sin(yrot + 0x4000)) >> 14);
+		sptr->x = pos->x + (sptr->Xvel >> 5) + ((v * phd_sin(yrot + 0x4000)) >> W2V_SHIFT);
 		sptr->y = pos->y + (v >> 1) + (sptr->Yvel >> 5);
-		sptr->z = pos->z + (sptr->Zvel >> 5) + ((v * phd_cos(yrot + 0x4000)) >> 14);
+		sptr->z = pos->z + (sptr->Zvel >> 5) + ((v * phd_cos(yrot + 0x4000)) >> W2V_SHIFT);
 		sptr->Friction = 5;
-		sptr->Flags = 0;
+		sptr->Flags = SF_NONE;
 		sptr->MaxYvel = 0;
 		sptr->Gravity = (GetRandomControl() & 0x1F) + 32;
 	}
@@ -1171,7 +1171,7 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 	smoke->Yvel = 0;
 	smoke->Zvel = sptr->Zvel >> 2;
 	smoke->Friction = 2;
-	smoke->Flags = 16;
+	smoke->Flags = SF_ROTATE;
 	smoke->RotAng = GetRandomControl() & 0xFFF;
 	smoke->RotAdd = (GetRandomControl() & 0x7F) - 64;
 	smoke->Gravity = -16 - (GetRandomControl() & 0xF);
@@ -1209,15 +1209,15 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 			sptr->y += v;
 		else
 		{
-			sptr->x += (v * phd_sin(yrot + 0x4000)) >> 14;
-			sptr->z += (v * phd_cos(yrot + 0x4000)) >> 14;
+			sptr->x += (v * phd_sin(yrot + 0x4000)) >> W2V_SHIFT;
+			sptr->z += (v * phd_cos(yrot + 0x4000)) >> W2V_SHIFT;
 		}
 
 		sptr->Xvel = 0;
 		sptr->Yvel = 0;
 		sptr->Zvel = 0;
 
-		sptr->Flags = 16394;
+		sptr->Flags = SF_DEF | SF_SCALE;
 		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
 		sptr->Scalar = 1;
 		sptr->MaxYvel = 0;
@@ -1259,17 +1259,17 @@ void TriggerWeldingEffects(PHD_VECTOR* pos, short yrot, short flag)
 		}
 		else
 		{
-			sptr->x += (v * phd_sin(yrot + 0x4000)) >> 14;
-			sptr->z += (v * phd_cos(yrot + 0x4000)) >> 14;
+			sptr->x += (v * phd_sin(yrot + 0x4000)) >> W2V_SHIFT;
+			sptr->z += (v * phd_cos(yrot + 0x4000)) >> W2V_SHIFT;
 		}
 
 		v = short((GetRandomControl() & 0x7F) + 16);
-		sptr->Xvel = (v * phd_sin(yrot)) >> 14;
+		sptr->Xvel = (v * phd_sin(yrot)) >> W2V_SHIFT;
 		sptr->Yvel = (GetRandomControl() & 0xF) + 16;
-		sptr->Zvel = (v * phd_cos(yrot)) >> 14;
+		sptr->Zvel = (v * phd_cos(yrot)) >> W2V_SHIFT;
 
 		sptr->Friction = 3;
-		sptr->Flags = 16394;
+		sptr->Flags = SF_DEF | SF_SCALE;
 		sptr->Def = objects[DEFAULT_SPRITES].mesh_index + 14;
 		sptr->Scalar = 1;
 		sptr->Gravity = (GetRandomControl() & 0xF) + 8;
@@ -1311,7 +1311,7 @@ void TriggerFishtankSpray(long x, long y, long z, long c)
 	sptr->Zvel = (GetRandomControl() & 0xFF) - 128;
 
 	sptr->Friction = 4;
-	sptr->Flags = 538;
+	sptr->Flags = SF_ROTATE | SF_DEF | SF_SCALE;
 	sptr->RotAng = GetRandomControl() & 0xFFF;
 	sptr->RotAdd = (GetRandomControl() & 0x3F) - 32;
 	sptr->Scalar = 3;

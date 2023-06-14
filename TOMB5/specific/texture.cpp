@@ -33,7 +33,7 @@ LPDIRECTDRAWSURFACE4 CreateTexturePage(long w, long h, long MipMapCount, long* p
 	desc.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
 	desc.ddsCaps.dwCaps = DDSCAPS_TEXTURE;
 
-	if (App.dx.Flags & 0x80)
+	if (App.dx.Flags & DXF_HWR)
 		desc.ddsCaps.dwCaps2 = DDSCAPS2_TEXTUREMANAGE;
 	else
 		desc.ddsCaps.dwCaps |= DDSCAPS_SYSTEMMEMORY;
@@ -112,6 +112,8 @@ void FreeTextures()
 {
 	TEXTURE* tex;
 
+	Log(__FUNCTION__);
+
 	DXAttempt(App.dx.lpD3DDevice->SetTexture(0, 0));
 	DXAttempt(App.dx.lpD3D->EvictManagedTextures());
 
@@ -121,21 +123,18 @@ void FreeTextures()
 
 		if (tex->tex)
 		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Texture", tex->tex, tex->tex->Release());
+			Log("Released %s @ %x - RefCnt = %d", "Texture", tex->tex, tex->tex->Release());
 			tex->tex = 0;
 		}
 		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Texture");
+			Log("%s Attempt To Release NULL Ptr", "Texture");
 
-		if (!tex->staticTex)
+		if (tex->surface)
 		{
-			if (tex->surface)
-			{
-				Log(4, "Released %s @ %x - RefCnt = %d", "Surface", tex->surface, tex->surface->Release());
-				tex->surface = 0;
-			}
-			else
-				Log(1, "%s Attempt To Release NULL Ptr", "Surface");
+			Log("Released %s @ %x - RefCnt = %d", "Surface", tex->surface, tex->surface->Release());
+			tex->surface = 0;
 		}
+		else
+			Log("%s Attempt To Release NULL Ptr", "Surface");
 	}
 }

@@ -19,6 +19,11 @@
 - Fix Lara's holsters and back weapon not getting affected by fog.
 - Fix underwater shimmer discontinuity.
 - Fix upper arm underwater ambience.
+- Fix floordata issues with triangular geometry, no collision tiles, and more generic situations.
+- Fix Lara snapping when moving off a ledge while wading.
+- Fix accented character drawing for multiple languages.
+- Fix Sound Adapter names.
+- FIx the hole on Lara's hand in Ireland levels.
 
 ### tomb5 bug fixes
 
@@ -33,11 +38,13 @@
 - Fix VCI headset name.
 - Fix "Loading" text position.
 - Fix credit cutscenes.
+- Fix monoscreen corruption.
 
 ### tomb5 additions
 
 - Move input to DirectInput8.
 - Improve wrecking ball shadow.
+- Enable the debug cutscene selector menu.
 - Improve the cutscene selector's text positions.
 - Improve the PSX shadow sprite, and make it tilt with the floor.
 - Add new scaling system.
@@ -57,6 +64,9 @@
 - Heavily optimize and greatly reduce memory usage in effect drawing.
 - Move all matrix operations to floats.
 - Stop skipping title cutscenes.
+- Localize special features text.
+- Improve how the hair interacts with water.
+- New setup window.
 
 
 ## [3.2.0](https://github.com/Trxyebeep/TOMB5/tree/V3.2.0) (Feb. 4 2023)

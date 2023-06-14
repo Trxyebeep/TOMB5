@@ -17,29 +17,29 @@ static long next_rat = 0;
 long GetFreeRat()
 {
 	RAT_STRUCT* fx;
+	long free;
 
 	fx = &Rats[next_rat];
+	free = next_rat;
 
-	for (int free = next_rat, i = 0; i < 32; i++)
+	for (int i = 0; i < 32; i++)
 	{
-		if (fx->On)
-		{
-			if (free == 31)
-			{
-				fx = Rats;
-				free = 0;
-			}
-			else
-			{
-				free++;
-				fx++;
-			}
-		}
-		else
+		if (!fx->On)
 		{
 			next_rat = free + 1;
 			next_rat &= 31;
 			return free;
+		}
+
+		if (free == 31)
+		{
+			fx = Rats;
+			free = 0;
+		}
+		else
+		{
+			free++;
+			fx++;
 		}
 	}
 
@@ -121,18 +121,18 @@ void UpdateRats()
 		oldx = fx->pos.x_pos;
 		oldy = fx->pos.y_pos;
 		oldz = fx->pos.z_pos;
-		fx->pos.x_pos += (phd_sin(fx->pos.y_rot) * fx->speed) >> 14;
+		fx->pos.x_pos += (phd_sin(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
 		fx->pos.y_pos += fx->fallspeed;
-		fx->pos.z_pos += (phd_cos(fx->pos.y_rot) * fx->speed) >> 14;
+		fx->pos.z_pos += (phd_cos(fx->pos.y_rot) * fx->speed) >> W2V_SHIFT;
 		fx->fallspeed += 6;
 		dz = lara_item->pos.z_pos - fx->pos.z_pos;
 		dy = lara_item->pos.y_pos - fx->pos.y_pos;
 		dx = lara_item->pos.x_pos - fx->pos.x_pos;
 
 		if (fx->flags >= 170)
-			angle = (short)(fx->pos.y_rot - phd_atan(dz, dx));
+			angle = short(fx->pos.y_rot - phd_atan(dz, dx));
 		else
-			angle = (short)(phd_atan(dz, dx) - fx->pos.y_rot);
+			angle = short(phd_atan(dz, dx) - fx->pos.y_rot);
 
 		if (abs(dz) < 85 && abs(dy) < 85 && abs(dx) < 85)
 		{
@@ -181,9 +181,9 @@ void UpdateRats()
 			}
 
 			if (angle <= 0)
-				fx->pos.y_rot -= 16384;
+				fx->pos.y_rot -= 0x4000;
 			else
-				fx->pos.y_rot += 16384;
+				fx->pos.y_rot += 0x4000;
 
 			fx->pos.x_pos = oldx;
 			fx->pos.y_pos = oldy;
@@ -192,7 +192,7 @@ void UpdateRats()
 		}
 		else if (h < fx->pos.y_pos - 64)
 		{
-			fx->pos.x_rot = 14336;
+			fx->pos.x_rot = 0x3800;
 			fx->pos.x_pos = oldx;
 			fx->pos.y_pos = oldy - 24;
 			fx->pos.z_pos = oldz;
@@ -234,7 +234,7 @@ void UpdateRats()
 		if (!i)
 		{
 			if (!(GetRandomControl() & 4))
-				SoundEffect(SFX_RATS_1, &fx->pos, 0);
+				SoundEffect(SFX_RATS_1, &fx->pos, SFX_DEFAULT);
 		}
 	}
 }
@@ -250,15 +250,15 @@ void DrawRats()
 		{
 			fx = &Rats[i];
 
-			if (fx->On)
-			{
-				meshpp = &meshes[objects[RAT].mesh_index + (((wibble + (i << 2)) & 0x38) >> 2)];
-				phd_PushMatrix();
-				phd_TranslateAbs(fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos);
-				phd_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
-				phd_PutPolygons_train(*meshpp, 0);
-				phd_PopMatrix();
-			}
+			if (!fx->On)
+				continue;
+
+			meshpp = &meshes[objects[RAT].mesh_index + (((wibble + (i << 2)) & 0x38) >> 2)];
+			phd_PushMatrix();
+			phd_TranslateAbs(fx->pos.x_pos, fx->pos.y_pos, fx->pos.z_pos);
+			phd_RotYXZ(fx->pos.y_rot, fx->pos.x_rot, fx->pos.z_rot);
+			phd_PutPolygons_train(*meshpp, 0);
+			phd_PopMatrix();
 		}
 	}
 }
@@ -278,14 +278,14 @@ void InitialiseRatGenerator(short item_number)
 
 	if (!item->item_flags[0])
 	{
-		if (item->pos.y_rot > 4096 && item->pos.y_rot < 28672)
+		if (item->pos.y_rot > 0x1000 && item->pos.y_rot < 0x7000)
 			item->pos.x_pos -= 512;
-		else if (item->pos.y_rot < -4096 && item->pos.y_rot > -28672)
+		else if (item->pos.y_rot < -0x1000 && item->pos.y_rot > -0x7000)
 			item->pos.x_pos += 512;
 
-		if (item->pos.y_rot > -8192 && item->pos.y_rot < 8192)
+		if (item->pos.y_rot > -0x2000 && item->pos.y_rot < 0x2000)
 			item->pos.z_pos -= 512;
-		else if (item->pos.y_rot < -20480 || item->pos.y_rot > 20480)
+		else if (item->pos.y_rot < -0x5000 || item->pos.y_rot > 0x5000)
 			item->pos.z_pos += 512;
 	}
 

@@ -102,9 +102,9 @@ void RifleHandler(long weapon_type)
 
 		if (weapon_type == WEAPON_SHOTGUN || weapon_type == WEAPON_HK)
 		{
-			pos.x = lara_item->pos.x_pos + (1024 * phd_sin(lara_item->pos.y_rot) >> 14) + (GetRandomControl() & 0xFF);
+			pos.x = lara_item->pos.x_pos + (1024 * phd_sin(lara_item->pos.y_rot) >> W2V_SHIFT) + (GetRandomControl() & 0xFF);
 			pos.y = lara_item->pos.y_pos + ((GetRandomControl() & 0x7F) - 575);
-			pos.z = lara_item->pos.z_pos + (1024 * phd_cos(lara_item->pos.y_rot) >> 14) + (GetRandomControl() & 0xFF);
+			pos.z = lara_item->pos.z_pos + (1024 * phd_cos(lara_item->pos.y_rot) >> W2V_SHIFT) + (GetRandomControl() & 0xFF);
 
 			if (gfLevelFlags & GF_MIRROR && lara_item->room_number == gfMirrorRoom)
 				TriggerDynamic_MIRROR(pos.x, pos.y, pos.z, 12, r, g, b);
@@ -283,9 +283,9 @@ void ControlCrossbow(short item_number)
 
 	item = &items[item_number];
 	speed = item->speed;
-	item->pos.x_pos += (speed * phd_cos(item->pos.x_rot) >> 14) * phd_sin(item->pos.y_rot) >> 14;
-	item->pos.y_pos += speed * phd_sin(-item->pos.x_rot) >> 14;
-	item->pos.z_pos += (speed * phd_cos(item->pos.x_rot) >> 14) * phd_cos(item->pos.y_rot) >> 14;
+	item->pos.x_pos += (speed * phd_cos(item->pos.x_rot) >> W2V_SHIFT) * phd_sin(item->pos.y_rot) >> W2V_SHIFT;
+	item->pos.y_pos += speed * phd_sin(-item->pos.x_rot) >> W2V_SHIFT;
+	item->pos.z_pos += (speed * phd_cos(item->pos.x_rot) >> W2V_SHIFT) * phd_cos(item->pos.y_rot) >> W2V_SHIFT;
 	room_number = item->room_number;
 	GetFloor(item->pos.x_pos, item->pos.y_pos, item->pos.z_pos, &room_number);
 
@@ -654,7 +654,7 @@ void TriggerGrapplingEffect(long x, long y, long z)
 			sptr->Friction = 82;
 		}
 
-		sptr->Flags = 16;
+		sptr->Flags = SF_ROTATE;
 		sptr->RotAng = (GetRandomControl() & 0xFFF);
 		sptr->RotAdd = (GetRandomControl() & 0x40) - 32;
 		sptr->MaxYvel = 0;

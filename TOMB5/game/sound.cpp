@@ -175,7 +175,7 @@ long SoundEffect(long sfx, PHD_3DPOS* pos, long flags)
 
 	if (lut == -1)
 	{
-		Log(0, "Non present sample:%d", sfx);
+		Log("Non present sample:%d", sfx);
 		sample_lut[sfx] = -2;
 		return 0;
 	}
@@ -400,7 +400,7 @@ long SoundEffect(long sfx, PHD_3DPOS* pos, long flags)
 	}
 
 	if (sample >= 0)
-		Log(0, "Can't play SFX %d", sfx);
+		Log("Can't play SFX %d", sfx);
 
 	info->number = -1;
 	return 0;

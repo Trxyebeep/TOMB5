@@ -33,7 +33,7 @@ long MusicVolume = 40;
 long SFXVolume = 80;
 long ControlMethod;
 
-MONOSCREEN_STRUCT MonoScreen[5];
+static DXTEXTURE MonoScreen;
 char MonoScreenOn;
 
 static long SpecialFeaturesNum = -1;
@@ -927,11 +927,11 @@ void ConvertSurfaceToTextures(LPDIRECTDRAWSURFACE4 surface)
 	tSurf.dwSize = sizeof(DDSURFACEDESC2);
 	surface->Lock(0, &tSurf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
 	pSrc = (ushort*)tSurf.lpSurface;
-	MonoScreen[0].surface = CreateTexturePage(tSurf.dwWidth, tSurf.dwHeight, 0, NULL, RGBM_Mono, -1);
+	MonoScreen.surface = CreateTexturePage(tSurf.dwWidth, tSurf.dwHeight, 0, NULL, RGBM_Mono, -1);
 
 	memset(&uSurf, 0, sizeof(uSurf));
 	uSurf.dwSize = sizeof(DDSURFACEDESC2);
-	MonoScreen[0].surface->Lock(0, &uSurf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
+	MonoScreen.surface->Lock(0, &uSurf, DDLOCK_WAIT | DDLOCK_NOSYSLOCK, 0);
 	pTexture = (ushort*)uSurf.lpSurface;
 
 	r.left = 0;
@@ -940,8 +940,8 @@ void ConvertSurfaceToTextures(LPDIRECTDRAWSURFACE4 surface)
 	r.bottom = tSurf.dwHeight;
 	CustomBlt(&uSurf, 0, 0, &tSurf, &r);
 
-	MonoScreen[0].surface->Unlock(0);
-	DXAttempt(MonoScreen[0].surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen[0].tex));
+	MonoScreen.surface->Unlock(0);
+	DXAttempt(MonoScreen.surface->QueryInterface(IID_IDirect3DTexture2, (void**)&MonoScreen.tex));
 	surface->Unlock(0);
 }
 
@@ -949,21 +949,21 @@ void FreeMonoScreen()
 {
 	if (MonoScreenOn == 1)
 	{
-		if (MonoScreen[0].surface)
+		if (MonoScreen.surface)
 		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen[0].surface, MonoScreen[0].surface->Release());
-			MonoScreen[0].surface = 0;
+			Log("Released %s @ %x - RefCnt = %d", "Mono Screen Surface", MonoScreen.surface, MonoScreen.surface->Release());
+			MonoScreen.surface = 0;
 		}
 		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Surface");
+			Log("%s Attempt To Release NULL Ptr", "Mono Screen Surface");
 
-		if (MonoScreen[0].tex)
+		if (MonoScreen.tex)
 		{
-			Log(4, "Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen[0].tex, MonoScreen[0].tex->Release());
-			MonoScreen[0].tex = 0;
+			Log("Released %s @ %x - RefCnt = %d", "Mono Screen Texture", MonoScreen.tex, MonoScreen.tex->Release());
+			MonoScreen.tex = 0;
 		}
 		else
-			Log(1, "%s Attempt To Release NULL Ptr", "Mono Screen Texture");
+			Log("%s Attempt To Release NULL Ptr", "Mono Screen Texture");
 	}
 
 	MonoScreenOn = 0;
@@ -1036,17 +1036,10 @@ void S_DrawTile(long x, long y, long w, long h, IDirect3DTexture2* t, long tU, l
 
 void S_DisplayMonoScreen()
 {
-	long x[4];
-	long y[4];
 	ulong col;
 
 	if (MonoScreenOn == 1 || MonoScreenOn == 2)
 	{
-		x[0] = phd_winxmin;
-		y[0] = phd_winymin;
-		x[1] = phd_winxmin + phd_winwidth;
-		y[1] = phd_winymin + phd_winheight;
-
 		if (MonoScreenOn == 2)	//pictures always the same!!
 			col = 0xFFFFFFFF;
 		else
@@ -1057,7 +1050,7 @@ void S_DisplayMonoScreen()
 				col = 0xFFFFFF80;
 		}
 
-		S_DrawTile(x[0], y[0], x[1] - x[0], y[1] - y[0], MonoScreen[0].tex, 0, 0, 256, 256, col, col, col, col);
+		S_DrawTile(0, 0, phd_winxmax, phd_winymax, MonoScreen.tex, 0, 0, 256, 256, col, col, col, col);
 	}
 }
 
@@ -1188,7 +1181,7 @@ void LoadScreen(long screen, long pathNum)
 		ConvertSurfaceToTextures(screen_surface);
 	}
 	else
-		Log(0, "WHORE!");
+		Log("WHORE!");
 }
 
 void ReleaseScreen()
@@ -1197,11 +1190,11 @@ void ReleaseScreen()
 
 	if (screen_surface)
 	{
-		Log(4, "Released %s @ %x - RefCnt = %d", "Picture Surface", screen_surface, screen_surface->Release());
+		Log("Released %s @ %x - RefCnt = %d", "Picture Surface", screen_surface, screen_surface->Release());
 		screen_surface = 0;
 	}
 	else
-		Log(1, "%s Attempt To Release NULL Ptr", "Picture Surface");
+		Log("%s Attempt To Release NULL Ptr", "Picture Surface");
 
 	FreeMonoScreen();
 }
@@ -1226,7 +1219,7 @@ long GetSaveLoadFiles()
 		pSave = &SaveGames[i];
 		wsprintf(name, "savegame.%d", i);
 		file = fopen(name, "rb");
-		Log(0, "Attempting to open %s", name);
+		Log("Attempting to open %s", name);
 
 		if (!file)
 		{
@@ -1235,7 +1228,7 @@ long GetSaveLoadFiles()
 			continue;
 		}
 
-		Log(0, "Opened OK");
+		Log("Opened OK");
 		fread(&pSave->name, sizeof(char), 75, file);
 		fread(&pSave->num, sizeof(long), 1, file);
 		fread(&pSave->days, sizeof(short), 1, file);
@@ -1250,7 +1243,7 @@ long GetSaveLoadFiles()
 
 		pSave->valid = 1;
 		nSaves++;
-		Log(0, "Validated savegame");
+		Log("Validated savegame");
 	}
 
 	SaveCounter++;
@@ -1442,6 +1435,71 @@ void CalculateNumSpecialFeatures()
 	}
 }
 
+static const char* GetStupidText(long type)	//0: next, 1: both, 2: previous
+{
+	static char buf[32];
+
+	switch (Gameflow->Language)
+	{
+	case FRENCH:
+
+		if (!type)
+			strcpy(buf, "Ensuite \x1B");
+		else if (type == 1)
+			strcpy(buf, "\x19 Précédent / Ensuite \x1b");
+		else
+			strcpy(buf, "\x19 Précédent");
+
+		break;
+
+	case GERMAN:
+
+		if (!type)
+			strcpy(buf, "Weiter \x1B");
+		else if (type == 1)
+			strcpy(buf, "\x19 Zurück / Weiter \x1b");
+		else
+			strcpy(buf, "\x19 Zurück");
+
+		break;
+
+	case ITALIAN:
+
+		if (!type)
+			strcpy(buf, "Prossimo \x1B");
+		else if (type == 1)
+			strcpy(buf, "\x19 Precedente / Prossimo \x1b");
+		else
+			strcpy(buf, "\x19 Precedente");
+
+		break;
+
+	case SPANISH:
+
+		if (!type)
+			strcpy(buf, "Siguiente \x1B");
+		else if (type == 1)
+			strcpy(buf, "\x19 Anterior / Siguiente \x1b");
+		else
+			strcpy(buf, "\x19 Anterior");
+
+		break;
+
+	default:
+
+		if (!type)
+			strcpy(buf, "Next \x1B");
+		else if (type == 1)
+			strcpy(buf, "\x19 Previous / Next \x1b");
+		else
+			strcpy(buf, "\x19 Previous");
+
+		break;
+	}
+
+	return buf;
+}
+
 void SpecialFeaturesDisplayScreens(long num)
 {
 	static long start[4] = { 0, 0, 0, 0 };
@@ -1474,11 +1532,11 @@ void SpecialFeaturesDisplayScreens(long num)
 		}
 
 		if (!pos)
-			PrintString(font_height, phd_winymax - font_height, 6, "Next \x1B", 0);
+			PrintString(font_height, phd_winymax - font_height, 6, GetStupidText(0), 0);
 		else if (pos < max)
-			PrintString(font_height, phd_winymax - font_height, 6, "\x19 Previous / Next \x1b", 0);
+			PrintString(font_height, phd_winymax - font_height, 6, GetStupidText(1), 0);
 		else
-			PrintString(font_height, phd_winymax - font_height, 6, "\x19 Previous", 0);
+			PrintString(font_height, phd_winymax - font_height, 6, GetStupidText(2), 0);
 
 		UpdatePulseColour();
 		S_OutputPolyList();

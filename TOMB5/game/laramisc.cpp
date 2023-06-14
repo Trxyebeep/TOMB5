@@ -387,10 +387,10 @@ void AnimateLara(ITEM_INFO* item)
 
 	if (!lara.IsMoving)
 	{
-		item->pos.x_pos += item->speed * phd_sin(lara.move_angle) >> 14;
-		item->pos.z_pos += item->speed * phd_cos(lara.move_angle) >> 14;
-		item->pos.x_pos += speed2 * phd_sin(lara.move_angle + 0x4000) >> 14;
-		item->pos.z_pos += speed2 * phd_cos(lara.move_angle + 0x4000) >> 14;
+		item->pos.x_pos += item->speed * phd_sin(lara.move_angle) >> W2V_SHIFT;
+		item->pos.z_pos += item->speed * phd_cos(lara.move_angle) >> W2V_SHIFT;
+		item->pos.x_pos += speed2 * phd_sin(lara.move_angle + 0x4000) >> W2V_SHIFT;
+		item->pos.z_pos += speed2 * phd_cos(lara.move_angle + 0x4000) >> W2V_SHIFT;
 	}
 }
 

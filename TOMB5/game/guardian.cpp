@@ -116,7 +116,7 @@ void TriggerGuardianSparks(GAME_VECTOR* pos, long size, long rgb, long power)
 		sptr->Zvel = ((GetRandomControl() & 0xFFF) - 2048) << power;
 		
 		sptr->Gravity = rnd >> 7 & 0x1F;
-		sptr->Flags = 0;
+		sptr->Flags = SF_NONE;
 		sptr->MaxYvel = 0;
 		sptr->Friction = 34 << power;
 	}
@@ -260,7 +260,7 @@ void GuardianControl(short item_number)
 	else if (item->item_flags[0] <= 2)
 	{
 		item->trigger_flags++;
-		item->pos.y_pos = item->item_flags[1] - (128 * phd_sin(item->item_flags[2]) >> 14);
+		item->pos.y_pos = item->item_flags[1] - (128 * phd_sin(item->item_flags[2]) >> W2V_SHIFT);
 		item->item_flags[2] += 546;
 		s.x = 0;
 		s.y = 168;
@@ -310,9 +310,9 @@ void GuardianControl(short item_number)
 						a2 = ushort(GetRandomControl() << 1);
 
 					lp = (GetRandomControl() & 0x1FFF) + 0x2000;
-					d.x = s.x + ((lp * phd_cos(a1) >> 14) * phd_sin(a2) >> 14);
-					d.y = s.y + (lp * phd_sin(a1) >> 14);
-					d.z = s.z + ((lp * phd_cos(a1) >> 14) * phd_cos(a2) >> 14);
+					d.x = s.x + ((lp * phd_cos(a1) >> W2V_SHIFT) * phd_sin(a2) >> W2V_SHIFT);
+					d.y = s.y + (lp * phd_sin(a1) >> W2V_SHIFT);
+					d.z = s.z + ((lp * phd_cos(a1) >> W2V_SHIFT) * phd_cos(a2) >> W2V_SHIFT);
 
 					if (farflag)
 					{
@@ -338,9 +338,9 @@ void GuardianControl(short item_number)
 
 			if (JustLoaded)
 			{
-				d.x = s.x + ((0x2000 * phd_cos(item->pos.x_rot + 0xD00) >> 14) * phd_sin(item->pos.y_rot) >> 14);
-				d.y = s.y + (0x2000 * phd_sin(0xD00 - item->pos.x_rot) >> 14);
-				d.z = s.z + ((0x2000 * phd_cos(item->pos.x_rot + 0xD00) >> 14) * phd_cos(item->pos.y_rot) >> 14);
+				d.x = s.x + ((0x2000 * phd_cos(item->pos.x_rot + 0xD00) >> W2V_SHIFT) * phd_sin(item->pos.y_rot) >> W2V_SHIFT);
+				d.y = s.y + (0x2000 * phd_sin(0xD00 - item->pos.x_rot) >> W2V_SHIFT);
+				d.z = s.z + ((0x2000 * phd_cos(item->pos.x_rot + 0xD00) >> W2V_SHIFT) * phd_cos(item->pos.y_rot) >> W2V_SHIFT);
 
 				gt.y = d.y;
 				gt.x = d.x;
@@ -417,9 +417,9 @@ void GuardianControl(short item_number)
 							d.y = 0;
 							d.z = 0;
 							GetJointAbsPosition(item, (PHD_VECTOR*) &d, Eye[i].mesh_num);
-							eye.x = d.x + ((0x2000 * phd_cos(angles[1]) >> 14) * phd_sin(item->pos.y_rot) >> 14);
-							eye.y = d.y + (0x2000 * phd_sin(-angles[1]) >> 14);
-							eye.z = d.z + ((0x2000 * phd_cos(angles[1]) >> 14) * phd_cos(item->pos.y_rot) >> 14);
+							eye.x = d.x + ((0x2000 * phd_cos(angles[1]) >> W2V_SHIFT) * phd_sin(item->pos.y_rot) >> W2V_SHIFT);
+							eye.y = d.y + (0x2000 * phd_sin(-angles[1]) >> W2V_SHIFT);
+							eye.z = d.z + ((0x2000 * phd_cos(angles[1]) >> W2V_SHIFT) * phd_cos(item->pos.y_rot) >> W2V_SHIFT);
 
 							if (item->item_flags[3] != 90 && gt.elptr[i])
 							{
@@ -571,7 +571,7 @@ void GuardianControl(short item_number)
 			}
 		}
 
-		item->pos.y_pos = item->item_flags[1] - ((192 - item->speed) * phd_sin(item->item_flags[2]) >> 14);
+		item->pos.y_pos = item->item_flags[1] - ((192 - item->speed) * phd_sin(item->item_flags[2]) >> W2V_SHIFT);
 		item->item_flags[2] += 182 * item->speed;
 
 		if (!(GlobalCounter & 7))
