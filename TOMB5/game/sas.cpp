@@ -357,7 +357,7 @@ void SasControl(short item_number)
 					if (!long_jump_ahead)
 						item->goal_anim_state = 27;
 					else
-						item->goal_anim_state = 26;
+						item->goal_anim_state = 28;
 
 					sas->LOT.is_jumping = 1;
 				}
